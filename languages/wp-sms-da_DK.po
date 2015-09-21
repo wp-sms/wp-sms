@@ -1,0 +1,1045 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wordpress SMS\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-09 23:02+0330\n"
+"PO-Revision-Date: 2014-11-27 21:46+0100\n"
+"Last-Translator: Kasper Snæver <kasper@snaever.dk>\n"
+"Language-Team: Snæver Media <kasper@snaevermedia.dk>\n"
+"Language: da_DK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: F:\\xampp\\htdocs\\cms\\wordpress\\wp-content\\plugins"
+"\\wp-sms-pro\n"
+"X-Generator: Poedit 1.6.9\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SearchPath-0: F:\\xampp\\htdocs\\cms\\wordpress\\wp-content\\plugins"
+"\\wp-sms-pro\n"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-export.php:5
+msgid "Access denied!"
+msgstr "Adgang nægtet!"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-export.php:49
+msgid "Please select the desired items."
+msgstr "Vælg venligst en fortrukken ting."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:21
+#, php-format
+msgid "Hi %s, the %s post suggested to you by %s. url: %s"
+msgstr "Hej %s, indlægget %s er anbefalet til dig af %s. URL: %s"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:24
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:85
+msgid "SMS was sent with success"
+msgstr "SMS blev sendt uden problemer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:371
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:450
+msgid "Please enter a valid mobile number"
+msgstr "Indtast venligst et gyldigt mobilnummer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:30
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe-activation.php:24
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:374
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:453
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:504
+msgid "Please complete all fields"
+msgstr "Udfyld venligst alle felter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:44
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:88
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:144
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:185
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:256
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:84
+msgid "Mobile"
+msgstr "Mobil"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:53
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:14
+msgid "Your Mobile Number"
+msgstr "Dit mobilnummer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-features.php:61
+msgid "<strong>ERROR</strong>: You must include a mobile number."
+msgstr "<strong>FEJL</strong>: Du skal inkludere et mobilnummer."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-newslleter.php:5
+msgid "Subscribe SMS"
+msgstr "Tilmeld SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-notifications.php:21
+#, php-format
+msgid "WordPress %s is available! Please update now"
+msgstr "WordPress %s er tilgængelig. Opdater venligst nu"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe-activation.php:21
+msgid "Security Code is wrong"
+msgstr "Sikkerhedskode er forkert"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe.php:38
+msgid "Your activation code"
+msgstr "Din aktiveringskode"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe.php:73
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:423
+msgid "Nothing found!"
+msgstr "Intet fundet!"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/admin/wp-sms-subscribe.php:78
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:368
+msgid "Phone number is repeated"
+msgstr "Telefonnummer er gentaget"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:2
+msgid "About Plugin"
+msgstr "Om plugin"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:3
+#, php-format
+msgid "Plugin base: %s"
+msgstr "Plugin base: %s"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:4
+#, php-format
+msgid "Premium Version: %s"
+msgstr "Premium version: %s"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:5
+msgid ""
+"Premium version from Wordpress SMS Plugin with feature and new web services."
+msgstr ""
+"Premium version fra WordPress SMS Plugin med funktioner og nye web services."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:6
+#, php-format
+msgid "This plugin created by %s from %s gorup"
+msgstr "Dette plugin er skabt af %s fra %s gruppen"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:7
+msgid "do you have problem with plugin?"
+msgstr "har du nogle problemer med dette plugin?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:8
+#, php-format
+msgid "if you have you can tell your problem in <a href=\"%s\">forum</a>."
+msgstr ""
+"hvis du har, så fortæl om dit problem i vores <a href=\"%s\">forum</a>."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:10
+msgid "are you a translator?"
+msgstr "er du en oversætter?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:11
+#, php-format
+msgid "please send your translation to %s."
+msgstr "send venligst dine oversættelser til %s."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:13
+msgid "you want to know about how to add your web service to this plugin?"
+msgstr ""
+"vil du vide mere om hvordan du tilføjer din web service til dette plugin?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/about.php:14
+#, php-format
+msgid "to adding your web service please contact with %s."
+msgstr "for at tilføje din web service, kontakt os venligst med %s."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/export.php:2
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/export.php:23
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:42
+msgid "Export"
+msgstr "Exporter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/export.php:7
+msgid "Export To"
+msgstr "Exporter til"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/export.php:12
+msgid "Please select."
+msgstr "Vælg venligst"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/export.php:18
+msgid "Select the output file type."
+msgstr "Vælg output filetypen."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/export.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/import.php:22
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:287
+msgid "Back"
+msgstr "Tilbage"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:3
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:11
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:35
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:3
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:22
+msgid "General"
+msgstr "Generelt"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:4
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:12
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:36
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:4
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:23
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:33
+msgid "Web Service"
+msgstr "Web Service"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:5
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:13
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:37
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:5
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:24
+msgid "Newsletter"
+msgstr "Nyhedsbrev"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:6
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:14
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:38
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:6
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:25
+msgid "Features"
+msgstr "Funktioner"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:7
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:15
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:39
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:7
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:26
+msgid "Notification"
+msgstr "Notifikation"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:14
+msgid "Suggested post by SMS?"
+msgstr "Foreslå indlæg med SMS?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:17
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:25
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:25
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:33
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:41
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:67
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:53
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:80
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:89
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:127
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:157
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:187
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:200
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:229
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:254
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:157
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:275
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:190
+msgid "Active"
+msgstr "Aktiv"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:22
+msgid "Add Mobile number field?"
+msgstr "TIlføj mobilnummer felt?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:26
+msgid "Add Mobile number to user profile and register form."
+msgstr "Tilføj mobilnummer til brugeres profil og registreringsformular."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/features.php:35
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:276
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:33
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:215
+msgid "Update"
+msgstr "Opdater"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/import.php:2
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:41
+msgid "Import"
+msgstr "Importer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/import.php:7
+#, php-format
+msgid ""
+"<code>.xls</code> is the only acceptable format. Please see <a href=\"%s"
+"\">this image</a> to show a standard xls import file."
+msgstr ""
+"<code>.xls</code> er det eneste accepterede format. Se venligst <a href=\"%s"
+"\">dette billede</a> for at vise en standard xls import fil."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/import.php:11
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:23
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:89
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:145
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:190
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:89
+msgid "Group"
+msgstr "Gruppe"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/import.php:19
+msgid "Upload"
+msgstr "Upload"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/meta-box.php:2
+msgid "Send this post to subscribers?"
+msgstr "Send indlæg til abonnenter?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/meta-box.php:4
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:149
+msgid "Yes"
+msgstr "Ja"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/meta-box.php:5
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:152
+msgid "No"
+msgstr "Nej"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:22
+msgid "Register?"
+msgstr "Registrer?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:30
+msgid "Verified with the activation code?"
+msgstr "Verificeret med aktiveringskode?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:38
+msgid "Send SMS?"
+msgstr "Send SMS?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:42
+msgid "Send a sms to subscriber when register."
+msgstr "Send en sms til abonnent ved oprettelse."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:49
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:61
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:97
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:135
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:165
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:208
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:237
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:262
+msgid "Text template"
+msgstr "Tekst skabelon"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:54
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:66
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:103
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:113
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:140
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:170
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:213
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:242
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:267
+msgid "Enter the contents of the sms message."
+msgstr "Indtast indholdet af SMS beskeden."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:56
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:68
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:105
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:115
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:142
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:172
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:215
+msgid "Input data:"
+msgstr "Input data:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:57
+msgid "Subscribe name"
+msgstr "Abonnent navn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:58
+msgid "Subscribe mobile"
+msgstr "Abonnent mobil"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:64
+msgid "Calling jQuery in Wordpress?"
+msgstr "Kald jQuery i WordPress?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/newsletter.php:68
+msgid "Enable this option with JQuery is called in the theme"
+msgstr "Aktiver denne funktion hvis jQuery er kaldt i temaet"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:46
+msgid "Wordpress Notifications"
+msgstr "WordPress notifikationer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:50
+msgid "Published new posts"
+msgstr "Udgivede nye indlæg"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:54
+msgid "Send a sms to subscribers When published new posts."
+msgstr "Send en SMS til abonnenter ved nye indlæg."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:69
+msgid "Title post"
+msgstr "Indlægs titel"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:70
+msgid "URL post"
+msgstr "Indlægs URL"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:71
+msgid "Date post"
+msgstr "Indlægs dato"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:77
+msgid "The new release of WordPress"
+msgstr "Den nye version af WordPress"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:81
+msgid "Send a sms to you When the new release of WordPress."
+msgstr "Få en SMS når der er en ny version af WordPress."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:86
+msgid "Register a new user"
+msgstr "Registrer ny bruger"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:90
+msgid "Send a sms to you and user when register on wordpress."
+msgstr "Få en SMS når en ny bruger er registreret i WordPress."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:101
+msgid "For users:"
+msgstr "Til brugere:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:106
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:116
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:145
+msgid "Username"
+msgstr "Brugernavn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:107
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:117
+msgid "User email"
+msgstr "E-mail adresse"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:108
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:118
+msgid "Date register"
+msgstr "Dato for registrering"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:111
+msgid "For admin:"
+msgstr "For administrator:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:124
+msgid "New comment"
+msgstr "Ny kommentar"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:128
+msgid "Send a sms to you When get a new comment."
+msgstr "Få en SMS når der kommer en ny kommentar."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:143
+msgid "Comment author"
+msgstr "Kommentar forfatter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:144
+msgid "Comment author email"
+msgstr "Kommentar forfatter email"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:145
+msgid "Comment author url"
+msgstr "Kommentar forfatter URL"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:146
+msgid "Comment author IP"
+msgstr "Kommentar forfatter IP"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:147
+msgid "Comment date"
+msgstr "Kommentar dato"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:148
+msgid "Comment content"
+msgstr "Kommentar indhold"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:154
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:173
+msgid "User login"
+msgstr "Brugerlogin"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:158
+msgid "Send a sms to you When user is login."
+msgstr "Få en SMS når en bruger logger ind."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:174
+msgid "Display name"
+msgstr "Vist navn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:180
+msgid "Contact form 7 plugin"
+msgstr "Contact form 7 plugin"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:184
+msgid "SMS meta box"
+msgstr "SMS meta boks"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:188
+msgid ""
+"Added Wordpress SMS meta box to Contact form 7 plugin when enable this "
+"option."
+msgstr ""
+"Tilføj WordPress SMS meta boks til Contact form 7 plugin når dette er slået "
+"til."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:193
+msgid "WooCommerce plugin"
+msgstr "WooCommerce plugin"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:197
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:226
+msgid "New order"
+msgstr "Ny ordre"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:201
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:230
+msgid "Send a sms to you When get new order."
+msgstr "Få en SMS når der kommer en ny ordre."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:216
+msgid "Order ID"
+msgstr "Ordre ID"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:222
+msgid "Easy Digital Downloads plugin"
+msgstr "Easy Digital Downloads plugin"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:247
+msgid "Quform plugin"
+msgstr "Quform plugin"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:251
+msgid "New Message"
+msgstr "Ny besked"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/notification.php:255
+msgid "Send a sms to you When get new message from contact form."
+msgstr "Få en SMS når du får en ny besked fra kontaktformularen."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:8
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:8
+msgid "Are you sure?"
+msgstr "Er du sikker?"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:35
+msgid "Posted SMS"
+msgstr "Skrevet SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:134
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:138
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-wpcf7-form.php:4
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:76
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:121
+msgid "SMS"
+msgstr "SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:26
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:78
+msgid "Post Date"
+msgstr "Dato"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:79
+msgid "Sender"
+msgstr "Afsender"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:28
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:80
+msgid "Message"
+msgstr "Besked"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:29
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:81
+msgid "Recipient"
+msgstr "Modtager"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:134
+msgid "Not Found!"
+msgstr "Ikke fundet!"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:89
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:155
+msgid "Bulk Actions"
+msgstr "Bulk handlinger"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:90
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:156
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:237
+msgid "Remove"
+msgstr "Fjern"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:92
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:160
+msgid "Apply"
+msgstr "Anvend"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:102
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:170
+msgid "Page"
+msgstr "Side"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/posted.php:102
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:170
+msgid "From"
+msgstr "Fra"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:43
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:97
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:162
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:34
+msgid "Send SMS"
+msgstr "Send SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:89
+msgid "Please enter a message"
+msgstr "Indtast venligst en besked"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:100
+msgid "Send from"
+msgstr "Send fra"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:104
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-wpcf7-form.php:10
+msgid "Send to"
+msgstr "Send til"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:109
+msgid "Subscribe users"
+msgstr "Abonnenter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:111
+msgid "Number(s)"
+msgstr "Nummer/numre"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:118
+#, php-format
+msgid "All (%s subscribers active)"
+msgstr "Alle (%s aktive abonnenter)"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:128
+msgid "For example"
+msgstr "For eksempel"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:137
+msgid "The remaining words"
+msgstr "Resterende ord"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:140
+msgid "Your credit"
+msgstr "Din kredit"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:146
+msgid "Send a Flash"
+msgstr "Send Flash"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:155
+msgid "Flash is possible to send messages without being asked, opens"
+msgstr "Det er muligt at sende Flash uden at blive spurgt"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:173
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/send-sms.php:181
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:158
+#, php-format
+msgid "Please check the <a href=\"%s\">SMS credit</a> the settings"
+msgstr "Tjek venligst <a href=\"%s\">SMS kredit</a> indstillingerne"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:21
+msgid "Your mobile country code"
+msgstr "Din mobils områdekode"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/setting.php:24
+msgid "Enter your mobile country code. (For example: Iran 09, Australia 61)"
+msgstr "Indtast venligst din mobils områdekode (45 for Danmark)"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:23
+msgid "Outset Create group to better manage the subscribers."
+msgstr "Begynd opret gruppe for bedre håndtering af abonnenter."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:40
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:36
+msgid "Members Newsletter"
+msgstr "Medlemmers nyhedsbrev"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:43
+#, php-format
+msgid "Search result for %s"
+msgstr "Søgeresultater for %s"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:48
+msgid "All"
+msgstr "Alle"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:77
+msgid "Search subscribers"
+msgstr "Søg i abonnenter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:86
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:142
+msgid "Register date"
+msgstr "Registreringsdato"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:87
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:143
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:180
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:251
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:79
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-widget.php:2
+msgid "Name"
+msgstr "Navn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:90
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:146
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:272
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:188
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:202
+msgid "Status"
+msgstr "Status"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:91
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:128
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:147
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:282
+msgid "Edit"
+msgstr "Rediger"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:158
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:276
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:204
+msgid "Deactive"
+msgstr "Deaktiver"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:178
+msgid "Add new subscribe:"
+msgstr "Tilføj ny abonnent:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:201
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:216
+msgid "Add"
+msgstr "TIlføj"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:209
+msgid "Add new Group:"
+msgstr "Tilføj ny gruppe:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:211
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:226
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:261
+msgid "Group name"
+msgstr "Gruppenavn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:224
+msgid "Delete Group:"
+msgstr "Slet gruppe:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/subscribes.php:249
+msgid "Edit subscribe:"
+msgstr "Rediger abonnent:"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:36
+msgid "Select your Web Service"
+msgstr "Vælg din web service"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:38
+msgid "Premium list"
+msgstr "Premium liste"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:52
+msgid "Iran"
+msgstr "Iran"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:111
+msgid "Australia"
+msgstr "Australien"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:115
+msgid "New Zealand"
+msgstr "New Zealand"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:119
+msgid "Austria"
+msgstr "Østrig"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:123
+msgid "Pakistan"
+msgstr "Pakistan"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:127
+msgid "Indian"
+msgstr "Indien"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:132
+msgid "For more information about adding Web Service"
+msgstr "For mere information omkring tilføjelse af web service"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:137
+#, php-format
+msgid ""
+"If you do not have a web service, <a href=\"%s\" target=\"_blank\">click "
+"here.</a>"
+msgstr ""
+"Hvis du ikke har en web service, <a href=\"%s\" target=\"_blank\">klik her.</"
+"a>"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:138
+#, php-format
+msgid ""
+"If your Web service is not on the top list, <a href=\"%s\" target=\"_blank"
+"\">click here.</a>"
+msgstr ""
+"Hvis din web service ikke er på listen, <a href=\"%s\" target=\"_blank"
+"\">klik her.</a>"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:148
+msgid "Your username in"
+msgstr "Dit brugernavn hos"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:151
+#, php-format
+msgid ""
+"If you do not have a username for this service <a href=\"%s\">click here..</"
+"a>"
+msgstr ""
+"Hvis du ikke har et brugernavn for denne service, <a href=\"%s\">klik her</a>"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:157
+msgid "Password"
+msgstr "Kodeord"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:160
+msgid "Your password in"
+msgstr "Dit kodeord hos"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:163
+#, php-format
+msgid ""
+"If you do not have a password for this service <a href=\"%s\">click here..</"
+"a>"
+msgstr ""
+"Hvis du ikke har et kodeord for denne service, <a href=\"%s\">klik her</a>"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:170
+msgid "API/Key"
+msgstr "API/key"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:173
+msgid "Your API Key in"
+msgstr "Din API nøgle hos"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:179
+msgid "Number"
+msgstr "Nummer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:182
+msgid "Your SMS sender number in"
+msgstr "Dit SMS afsendelsesnummer hos"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/settings/web-service.php:195
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:132
+msgid "Credit"
+msgstr "Kredit"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:26
+msgid "You will join the newsletter!"
+msgstr "Du er nu tilmeldt nyhedsbrevet!"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:31
+msgid "Your subscription was canceled."
+msgstr "Dit abonnement blev annulleret."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:37
+msgid "You will join the newsletter, Activation code sent to your number."
+msgstr ""
+"Du vil nu tilmeldes nyhedsbrevet, aktiveringskode er sendt til dit nummer."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:59
+msgid "Your membership in the complete newsletter!"
+msgstr "Dit medlemskab er i det komplette nyhedsbrev!"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:75
+msgid "Enter your information for SMS Subscribe"
+msgstr "Indtast information for SMS tilmelding"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:102
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:111
+msgid "Subscribe"
+msgstr "Abonner"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:105
+msgid "Unsubscribe"
+msgstr "Afmeld"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:118
+msgid "Please enter the activation code:"
+msgstr "Indtast venligst aktiveringskoden"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:120
+msgid "Activation"
+msgstr "Aktivering"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-subscribe-form.php:126
+msgid "Subscribe is Deactive!"
+msgstr "Tilmelding er deaktiveret!"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-tell-friend.php:1
+msgid "Suggested by SMS"
+msgstr "Forslået af SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-tell-friend.php:5
+msgid "Your name"
+msgstr "Dit navn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-tell-friend.php:6
+msgid "Your friend name"
+msgstr "Din vens navn"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-tell-friend.php:7
+msgid "Your friend mobile"
+msgstr "Din vens nummer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-tell-friend.php:15
+msgid "Send"
+msgstr "Send"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-wpcf7-form.php:12
+msgid "Enter enter mobile number to receive message."
+msgstr "Indtast mobilnummeret der skal modtage beskeden."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/includes/templates/wp-sms-wpcf7-form.php:18
+msgid "Message body"
+msgstr "Besked"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:22
+msgid "Wordpress SMS (Premium version)"
+msgstr "Wordpress SMS (Premium version)"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:23
+msgid ""
+"Send a SMS via WordPress, Subscribe for sms newsletter and send an SMS to "
+"the subscriber newsletter."
+msgstr ""
+"Send en SMS via WordPress, tilmeld SMS nyhedsbrev og send en SMS til "
+"abonnenter."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:33
+msgid "Wordpress SMS"
+msgstr "Wordpress SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:35
+msgid "Posted"
+msgstr "Sendt"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:36
+msgid "Newsletter subscribers"
+msgstr "Nyhedsbrev abonnenter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:37
+msgid "Setting"
+msgstr "Indstillinger"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:38
+msgid "About"
+msgstr "Om"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:74
+msgid "Rial"
+msgstr "Rial"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:113
+#, php-format
+msgid "Your Credit: %s %s"
+msgstr "Din kredit: %s %s"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:139
+msgid "Newsletter Subscriber"
+msgstr "Nyhedsbrev abonnent"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:150
+#, php-format
+msgid "%s Subscriber"
+msgstr "%s abonnenter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:151
+#, php-format
+msgid "%s SMS Credit"
+msgstr "%s SMS kredit"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:166
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:167
+msgid "Subscribe to SMS"
+msgstr "Tilmeld SMS"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:197
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:212
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:250
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:526
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:567
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Du har ikke de nødvendige tilladelser til at tilgå denne side."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:234
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:299
+msgid "With success was removed"
+msgstr "Det blev fjernet uden problemer"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:236
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:301
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:314
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:327
+msgid "Not Found"
+msgstr "Ikke fundet"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:312
+msgid "User is active."
+msgstr "Brugeren er aktiv"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:325
+msgid "User is Deactive.."
+msgstr "Brugeren er deaktiveret"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:364
+#, php-format
+msgid "username <strong>%s</strong> was added successfully."
+msgstr "brugernavn <strong>%s</strong> blev tilføjet korrekt."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:395
+#, php-format
+msgid "Group <strong>%s</strong> was added successfully."
+msgstr "Gruppe <strong>%s</strong> blev tilføjet korrekt."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:399
+msgid "Group name is repeated"
+msgstr "Gruppenavn eksisterer allerede"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:402
+msgid "Please complete field"
+msgstr "Udfyld alle felter"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:418
+#, php-format
+msgid "Group <strong>%s</strong> was successfully removed."
+msgstr "Gruppen <strong>%s</strong> blev fjernet korrekt."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:446
+#, php-format
+msgid "username <strong>%s</strong> was update successfully."
+msgstr "brugernavn <strong>%s</strong> blev opdateret korrekt."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:498
+#, php-format
+msgid "<strong>%s</strong> items was successfully added."
+msgstr "<strong>%s</strong> ting blev tilføjet med succes."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms-pro/wp-sms.php:501
+#, php-format
+msgid "<strong>%s</strong> Mobile numbers Was repeated."
+msgstr "<strong>%s</strong> mobilnumre eksisterer allerede"

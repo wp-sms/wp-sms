@@ -1,0 +1,94 @@
+#wpsms-subscribe {
+    font-family: Tahoma,Arial;
+}
+.wpsms-subscribe-form {
+    margin: 0 0 10px;
+}
+.wpsms-subscribe-form > label {
+    display: block;
+}
+.wpsms-input {
+  padding: 5px 7px;
+  border: none;
+  border: solid 2px #c9c9c9;
+  transition: border 0.3s;
+  font-family: Tahoma,Arial;
+  font-size: 12px;
+}
+.wpsms-input:focus,
+.wpsms-input.focus {
+  border: solid 2px #969696;
+}
+.wpsms-button:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+    pointer-events: none;
+}
+.wpsms-button {
+	-moz-box-shadow:inset 0px 1px 0px 0px #caefab;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
+	box-shadow:inset 0px 1px 0px 0px #caefab;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811));
+	background:-moz-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-webkit-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-o-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-ms-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811',GradientType=0);
+	background-color:#77d42a;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #268a16;
+	display:inline-block;
+	cursor:pointer;
+	color:#306108;
+	font-family: Tahoma,Arial;
+	font-size:12px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #aade7c;
+}
+.wpsms-button:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a));
+	background:-moz-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-webkit-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-o-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-ms-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a',GradientType=0);
+	background-color:#5cb811;
+}
+.wpsms-button:active {
+	position:relative;
+	top:1px;
+}
+#wpsms-step-1 {
+	
+}
+#wpsms-step-2 {
+	display: none;
+}
+#wpsms-result {
+    display: inline-flex;
+    margin: 0 0 7px;
+	width: 100%;
+}
+.wpsms-message-error {
+    background-color: rgba(255, 0, 0, 0.24);
+    border: 2px solid #b36262;
+    color: #820000;
+    font-size: 12px;
+    padding: 5px;
+	width: 100%;
+}
+.wpsms-message-success {
+    background-color: rgba(87, 241, 45, 0.24);
+    border: 2px solid #16c900;
+    color: #0f8500;
+    font-size: 12px;
+    padding: 5px;
+	width: 100%;
+}
