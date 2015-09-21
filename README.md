@@ -2,7 +2,7 @@
 A complete wordpress plugin to send sms with a high capability.
 Send SMS via WordPress, Subscribe SMS newsletter and Send SMS to Number(s), Subscribes and Wordpress Users.
 
-# wp-sms
+# Features
 * Send SMS to number(s), subscribes and wordpress users.
 * Subsribe sms.
 * Show credit of sms provider in admin menu.
