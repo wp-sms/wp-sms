@@ -3,8 +3,8 @@ Contributors: mostafa.s1990
 Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 3.0
+Tested up to: 4.5
+Stable tag: 3.1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,6 +12,12 @@ A complete wordpress plugin to send sms with a high capability.
 Send SMS via WordPress, Subscribe SMS newsletter and Send SMS to Number(s), Subscribes and Wordpress Users.
 
 == Description ==
+You can add to wordpress, the ability of sending sms. you can make users, member of sms newsletter and send to them sms.
+To every changement of position in wordpress, you can send a sms through this plugin.
+
+The usage of this plugin is completely free. You have to just have an account from a service in the gateway listes that we support them. 
+Don't worry , we have tried to add the best and the most gateways to plugin. 
+
 Very easy Send SMS by PHP code:
 
 1. `global $sms;`
@@ -19,71 +25,83 @@ Very easy Send SMS by PHP code:
 3. `$sms->msg = "Hello World!";`
 4. `$sms->SendSMS();`
 
-[Premium version is available.](http://wp-sms-plugin.com/purchases)
+= Send SMS with WordPress in less than 1 minute! =
+
+https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
 
-* Send SMS to number(s), subscribes and wordpress users.
-* Subsribe sms.
-* Show credit of sms provider in admin menu.
-* Send SMS via FLASH.
-* Widget for register user to sms subscribes.
+* Send SMS to number(s), subscribers and wordpress users.
+* Subscribe newsletter SMS.
+* Widget for register user to sms subscribed.
 * Support Wordpress Hooks.
-* Support Shortcode.
-* Suggestion post by SMS.
-* Send activation code to subscribes.
+* Support Wordpress Shortcode.
+* Send Suggestion post via SMS.
+* Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.
 * Notification SMS when registering a new User.
 * Notification SMS when get new comment.
-* Notification SMS when username login.
-* Notification SMS when registering a new subscribe.
-* Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads, Awesome Support)
-* Import/Export Subscribes.
+* Notification SMS when user logged into wordpress.
+* Notification SMS when user registered to subscription form.
+* Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
+* Create Category for newsletter.
+* Import/Export Subscribers.
 
-= Premium Features =
+= Professional Package =
+In the Professional pack added many features, another useful gateway and is integrated with another plugins.
 
-Webservice added:
+[Buy Professional Package](http://wp-sms-plugin.com/purchases)
 
-* twilio.com
+Gateways:
+
+* Smshosting.it
+* Twilio.com
 * plivo.com
 * clickatell.com
 * bulksms.com
-* clockworksms.com
 * infobip.com
-* smstrade.de
-* yamamah.com
-* viensms.com
-* isms.com.my
 * nexmo.com
-* sms4marketing.it
-* mobily.ws
+* clockworksms.com
+* cmtelecom.com
+* viensms.com
+* moceansms.com
 * msg91.com
+* yamamah.com
 * magicdeal4u.com
+* sendsms247.com
+* smslive247.com
+* isms.com.my
+* ssdindia.com
+* vsms.club
 * livesms.eu
 * cellsynt.net
 * gateway.sa
 * ra.sa
+* mobily.ws
+* sms4marketing.it
+* smstrade.de
 * dsms.in
 * cpsms.dk
-* cmtelecom.com
 * bulksmshyderabad.co.in
 * ozioma.net
-* sendsms247.com
-* smslive247.com
-* vsms.club
 	
 Other features:
 
+* Integrate with BuddyPress
+You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
+* Integrate with WooCommerce.
+You can adding mobile number field to checkout page, send sms to users or subscribers when added new product to woocommerce. send SMS to admin when submitted new order in woocommerce and send sms to customers when submit the order.
+when one stock product is load, the plugin can send SMS to admin for notify and you can send sms to customers when the orders have been changed.
+* Integrate with Gravity form.
+Plugin can be send sms to user or admin after submit the form.
+* Integrate with Quform.
+Plugin can be send sms to user or admin after submit the form.
+* Integrate with Easy Digital Downloads.
+You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
 * Premium Support
-* Integrate with Quform
-* Integrate with Gravity form
-* Notification SMS when published new woocommerce products to subscribers.
-* Notification SMS when Change order in woocommerce.
-* Mobile field number in woocommerce checkout page.
-* Adding a web service with request.
 
-[Buy Pro Version](http://wp-sms-plugin.com/purchases)
+[Buy Professional Package](http://wp-sms-plugin.com/purchases)
 
 = Translators =
 * English
@@ -92,13 +110,16 @@ Other features:
 * Portuguese (Thanks Matt Moxx)
 * Spanish (Thanks Yordan Soares)
 * German (Thanks Robert Skiba)
+* Swedish (Thanks Kramfors)
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://teamwork.wp-parsi.com/projects/wp-sms/) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-plugin.com/translators) today!
 
 = Support =
 * [Donate to this plugin](http://mostafa-soufi.ir/donate/)
 * [English Support Forum](https://wordpress.org/support/plugin/wp-sms)
 * [Persian Support Forum](http://forum.wp-parsi.com/forum/17-%D9%85%D8%B4%DA%A9%D9%84%D8%A7%D8%AA-%D8%AF%DB%8C%DA%AF%D8%B1/)
+
+This plugin is a free product of the [Verona Labs](http://veronalabs.com/)
 
 == Installation ==
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
@@ -150,6 +171,10 @@ add_action('wp_sms_subscribe', 'send_sms_when_subscribe_new_user', 10, 2);`
 13. Contact Form 7 page.
 
 == Upgrade Notice ==
+= 3.0 =
+* CHANGE In this version of the plugin has changed the structure and optimized codes.
+In this version, we have made a lot of changes. We tried using the free version as a core and base. The professional version of plugin is made to a professional parcel that through the free plugin is activated.  
+
 = 2.4 =
 * CHANGE `$obj` variable TO `$sms` IN YOUR SOURCE CODE.
 
@@ -157,6 +182,50 @@ add_action('wp_sms_subscribe', 'send_sms_when_subscribe_new_user', 10, 2);`
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 3.1.3 =
+* Compatible with wordpress 4.5
+* Gateway smsline.ir Added.
+
+= 3.1.2 =
+* Gateway gateway.sa Added.
+* Gateway modiranweb.net Added.
+* Fixed empty value in cf7 option.
+* Fixed Subscribe url and credit url in dashboard glance.
+
+= 3.1.1 =
+* Language `German` updated. (Thanks Robert Skiba Medientechnik)
+* Fixed activation code for SMS newsletter.
+* Fixed Showing SMS tab in CF7 Meta box.
+* Gateway `esms24.ir` Added.
+* Gateway `payamakaria.ir` Added.
+* Gateway `tgfsms.ir` Added.
+* Gateway `pichakhost.com Added.
+* Gateway `tsms.ir Added.
+* Gateway `parsasms.com Added.
+
+= 3.1.0 =
+* Gateway `Bestit.co` Added.
+* Gateway `Pegah-Payamak.ir` Added.
+* Gateway `Loginpanel.ir` Added.
+* Gateway `Adspanel.ir` Added.
+* Gateway `Adspanel.ir` Added.
+* Gateway `Mydnspanel.com` Added.
+* Fixed Update option on notification page.
+* Language `Arabic` updated. (Thanks Hammad)
+
+= 3.0.2 =
+* Gateway `LabsMobile` updated.
+* Gateway `Mtarget` updated.
+* Gateway `Razpayamak` Added.
+* Added select status in edit subscribe page.
+* Fixed send to subscribes in Send SMS page.
+* Fixed send notification new post to subscribers.
+* Fixed custom text for notifications new post.
+
+= 3.0.1 =
+* Fixed show group page and subscribe page on admin.
+* Language: Swedish added. (Thanks Kramfors)
+
 = 3.0 =
 * Added `WP_SMS_Subscribers` class for processing subscribers (just in admin).
 * Added `Default_Gateway` class for use it if webservice not active in the plugin.
@@ -171,11 +240,13 @@ add_action('wp_sms_subscribe', 'send_sms_when_subscribe_new_user', 10, 2);`
 * Added custom message for sms post suggestion.
 * Added css file for sms post suggestion form.
 * Added select group in sms meta box for sending the sms to subscribers when publish new post.
+* Added note for gateways after web services list.
 * Added `smsapi.pl` polish gateway.
 * Added `wifisms.ir` iranian gateway.
-* Compatible with wordpress 4.3.
 * Improvement list table in for subscriber and outbox page (use `WP_List_Table` library).
 * Improvement notifications page.
+* Fixed notification new comment conflict with woocommerce.
+* Compatible with wordpress 4.3.
 * Language: updated.
 * Reseted all notifications option.
 * Remove add-ons page.

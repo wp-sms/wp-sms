@@ -1,7 +1,7 @@
 <?php
 	class smsmart extends WP_SMS {
-		private $wsdl_link = "http://www.smsmart.info/post/send.asmx?wsdl";
-		public $tariff = "http://smsmart.info/";
+		private $wsdl_link = "http://www.smsmart.ir/post/send.asmx?wsdl";
+		public $tariff = "http://smsmart.ir/";
 		public $unitrial = true;
 		public $unit;
 		public $flash = "disable";

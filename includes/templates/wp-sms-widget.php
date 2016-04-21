@@ -11,14 +11,14 @@
 
 <p>
     <label for="<?php echo $this->get_field_id('show_group'); ?>">
-        <?php echo('Show Group:'); ?>
+        <?php _e('Show Group', 'wp-sms'); ?>:
     </label><br>
     <label for="<?php echo $this->get_field_id('show_group'); ?>">
-        <?php _e('Yes:'); ?>
+        <?php _e('Yes', 'wp-sms'); ?>:
         <input class="" id="<?php echo $this->get_field_id('yes'); ?>" name="<?php echo $this->get_field_name('show_group'); ?>" type="radio" value="1" <?php if($show_group){ echo 'checked="checked"'; } ?> />
     </label><br>
     <label for="<?php echo $this->get_field_id('show_group'); ?>">
-        <?php _e('No:'); ?>
+        <?php _e('No', 'wp-sms'); ?>:
         <input class="" id="<?php echo $this->get_field_id('no'); ?>" name="<?php echo $this->get_field_name('show_group'); ?>" type="radio" value="0" <?php if(!$show_group){ echo 'checked="checked"'; } ?> />
     </label>
     </p>

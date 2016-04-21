@@ -13,7 +13,10 @@
 			</tr>
 			
 			<tr valign="top">
-				<td align="center" scope="row"><?php _e('Send a SMS via WordPress, Subscribe for sms newsletter and send an SMS to the subscriber newsletter.', 'wp-sms'); ?></td>
+				<td align="center" scope="row">
+					<?php _e('Send a SMS via WordPress, Subscribe for sms newsletter and send an SMS to the subscriber newsletter.', 'wp-sms'); ?>
+					<p><?php echo sprintf(__('This plugin is a free product of the %s', 'wp-sms'), '<a href="http://veronalabs.com/" target="_blank">Verona Labs</a>'); ?></p>
+				</td>
 			</tr>
 			
 			<tr valign="top">
@@ -42,11 +45,11 @@
 			<tr valign="top">
 				<td colspan="2" scope="row">
 					<p><?php _e('Do you have a problem?', 'wp-sms'); ?></p>
-					<p>— <?php echo sprintf(__('Please contact with email %s', 'wp-sms'), '<code>info@wp-sms-plugin.com</code>'); ?></p>
+					<p>— <?php echo sprintf(__('Please open a new thread on the <a href="%s" target="_blank">Wordpress.org support forum</a>', 'wp-sms'), 'http://wordpress.org/support/plugin/wp-sms'); ?></p>
 					<p><?php _e('You want add your gateway to this plugin?', 'wp-sms'); ?></p>
-					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms-plugin.com/add-gateway/" target="_blank">wp-sms-plugin.com/add-gateway</a>'); ?></p>
+					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms-plugin.com/gateways/" target="_blank">wp-sms-plugin.com/gateways</a>'); ?></p>
 					<p><?php _e('Are you a translator?', 'wp-sms'); ?></p>
-					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms-plugin.com/contact/" target="_blank">wp-sms-plugin.com/contact</a>'); ?></p>
+					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms-plugin.com/translators/" target="_blank">wp-sms-plugin.com/contact</a>'); ?></p>
 				</td>
 			</tr>
 		</tbody>

@@ -1,6 +1,6 @@
 <?php
 	class tgfsms extends WP_SMS {
-		private $wsdl_link = "http://tgfsms.ir/smsSendWebService.asmx?WSDL";
+		private $wsdl_link = "http://tgfsms.ir/sendSmsViaURL.aspx";
 		public $tariff = "http://tgfsms.ir/";
 		public $unitrial = false;
 		public $unit;
@@ -10,6 +10,7 @@
 		public function __construct() {
 			parent::__construct();
 			$this->validateNumber = "09xxxxxxxx";
+			$this->has_key = true;
 			
 			ini_set("soap.wsdl_cache_enabled", "0");
 		}
@@ -18,21 +19,11 @@
 			// Check credit for the gateway
 			if(!$this->GetCredit()) return;
 			
-			$client = new SoapClient($this->wsdl_link);
+			$msg = urlencode($this->msg);
 			
-			$result = $client->sendSms(
-				array(
-					'userName'		=> $this->username,
-					'password'		=> $this->password,
-					'SenderNumber'	=> $this->from,
-					'MobileNumber'	=> $this->to,
-					'SmsText'		=> array($this->msg),
-					'sendType'		=> 1,
-					'smsMode'		=> 1,
-				)
-			);
-			
-			//http://www.tgfsms.ir/sendSmsViaURL2.aspx?userName=hossein_mahzoon&password=123456&smsText=myText&reciverNumber=09351523606&senderNumber=10007132302309
+			foreach($this->to as $number) {
+				$result = file_get_contents($this->wsdl_link."?userName=".$this->username."&password=".$this->password."&domainName=".$this->has_key."&smsText=".$msg."&reciverNumber=".$number."&senderNumber=".$this->from);
+			}
 			
 			if($result) {
 				$this->InsertToDB($this->from, $this->msg, $this->to);

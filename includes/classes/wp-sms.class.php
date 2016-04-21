@@ -38,6 +38,13 @@ abstract class WP_SMS {
 	public $validateNumber = "";
 	
 	/**
+	 * Help to gateway
+	 *
+	 * @var string
+	 */
+	public $help = false;
+	
+	/**
 	 * SMsS send from number
 	 *
 	 * @var string

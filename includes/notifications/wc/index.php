@@ -3,8 +3,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Get WP SMS Option values
 $wps_options = get_option('wpsms');
+if(empty($wps_options['wpsms_wc_no_tt'])) $wps_options['wpsms_wc_no_tt'] = '';
+if(empty($wps_options['wpsms_wc_no_stats'])) $wps_options['wpsms_wc_no_stats'] = '';
 
 function wps_woc_options() {
+	global $wps_options;
 	include_once dirname( __FILE__ ) . '/options.php';
 }
 add_action('wp_sms_notification_page', 'wps_woc_options');

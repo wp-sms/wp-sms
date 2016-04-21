@@ -3,6 +3,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Get WP SMS Option values
 $wps_options = get_option('wpsms');
+if(empty($wps_options['wp_notification_new_wp_version'])) $wps_options['wp_notification_new_wp_version'] = '';
+if(empty($wps_options['wp_webservice'])) $wps_options['wp_webservice'] = '';
+if(empty($wps_options['wp_last_send_notification'])) $wps_options['wp_last_send_notification'] = '';
+if(empty($wps_options['wpsms_narnu_tt'])) $wps_options['wpsms_narnu_tt'] = '';
+if(empty($wps_options['wpsms_nrnu_tt'])) $wps_options['wpsms_nrnu_tt'] = '';
+if(empty($wps_options['wpsms_nrnu_stats'])) $wps_options['wpsms_nrnu_stats'] = '';
+if(empty($wps_options['wpsms_gnc_tt'])) $wps_options['wpsms_gnc_tt'] = '';
+if(empty($wps_options['wpsms_gnc_stats'])) $wps_options['wpsms_gnc_stats'] = '';
+if(empty($wps_options['wpsms_ul_tt'])) $wps_options['wpsms_ul_tt'] = '';
+if(empty($wps_options['wpsms_ul_stats'])) $wps_options['wpsms_ul_stats'] = '';
 
 function wps_wp_options() {
 	global $wps_options;
@@ -60,6 +70,12 @@ if($wps_options['wpsms_nrnu_stats'])
 // New Comment
 function wps_notification_new_comment($comment_id, $comment_smsect){
 	global $sms, $wps_options;
+	
+	if($comment_smsect->comment_type == 'order_note')
+		return;
+	
+	if($comment_smsect->comment_type == 'edd_payment_note')
+		return;
 	
 	$sms->to = array(get_option('wp_admin_mobile'));
 	$string = $wps_options['wpsms_gnc_tt'];

@@ -16,7 +16,28 @@
 #wpsms-select-subscriber-group{
 	display: none;
 }
+#wpsms-custom-text{
+	display: none;
+}
+#wpsms-custom-text textarea {
+    font-size: 12px;
+    width: 100%;
+    height: 114px;
+}
+#wpsms-custom-text p.description.data,  #wpsms-custom-text code {
+    font-size: 11px !important;
+}
 .wpsms-plugin-meta-link span {
     font-size: 14px;
     vertical-align: sub;
+}
+.wpsms-has-credit {
+    color: #3b9d00;
+}
+.wpsms-no-credit{
+	color: #c20000;
+}
+.wpsms-premium-tab {
+    color: #F1F1F1;
+    background: #21A8D2;
 }

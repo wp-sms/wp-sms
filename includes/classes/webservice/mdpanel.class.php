@@ -9,9 +9,6 @@
 		public $isflash = false;
 
 		public function __construct() {
-			// Check credit for the gateway
-			if(!$this->GetCredit()) return;
-			
 			parent::__construct();
 			$this->validateNumber = "09xxxxxxxx";
 			
@@ -25,6 +22,9 @@
 		}
 
 		public function SendSMS() {
+			// Check credit for the gateway
+			if(!$this->GetCredit()) return;
+			
 			$result = $this->client->call("SendSMS", array('Username' => $this->username, 'Password' => $this->password, 'SenderNumber' => $this->from, 'RecipientNumbers' => $this->to, 'Message' => $this->msg, 'Type' => 'normal'));
 			
 			if($result) {

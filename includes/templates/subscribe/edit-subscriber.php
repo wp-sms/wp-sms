@@ -30,6 +30,16 @@
 				<td><?php echo sprintf(__('There is no group! <a href="%s">Add</a>', 'wp-sms'), 'admin.php?page=wp-sms-subscribers&action=manage_group'); ?></td>
 			</tr>
 			<?php endif; ?>
+			
+			<tr>
+				<td><span class="label_td" for="wpsms_subscribe_status"><?php _e('Status', 'wp-sms'); ?>:</span></td>
+				<td>
+					<select name="wpsms_subscribe_status" id="wpsms_subscribe_status">
+						<option value="0" <?php selected($get_subscribe->status, '0'); ?>><?php _e('Deactive', 'wp-sms'); ?></option>
+						<option value="1" <?php selected($get_subscribe->status, '1'); ?>><?php _e('Active', 'wp-sms'); ?></option>
+					</select>
+				</td>
+			</tr>
 
 			<tr>
 				<td colspan="2">

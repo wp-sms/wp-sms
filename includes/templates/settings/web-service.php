@@ -49,12 +49,13 @@
 							<option value="smsde" <?php selected(get_option('wp_webservice'), 'smsde'); ?>>smsde.ir</option>
 							<option value="payamakde" <?php selected(get_option('wp_webservice'), 'payamakde'); ?>>payamakde.ir</option>
 							<option value="farapayamak" <?php selected(get_option('wp_webservice'), 'farapayamak'); ?>>farapayamak.com</option>
+							<option value="panizsms" <?php selected(get_option('wp_webservice'), 'panizsms'); ?>>panizsms.com</option>
+							<option value="sepehritc" <?php selected(get_option('wp_webservice'), 'sepehritc'); ?>>sepehritc.com</option>
 							<option value="markazpayamak" <?php selected(get_option('wp_webservice'), 'markazpayamak'); ?>>markazpayamak.ir</option>
 							<option value="payameavval" <?php selected(get_option('wp_webservice'), 'payameavval'); ?>>payameavval.com</option>
 							<option value="smsclick" <?php selected(get_option('wp_webservice'), 'smsclick'); ?>>smsclick.ir</option>
 							<option value="persiansms" <?php selected(get_option('wp_webservice'), 'persiansms'); ?>>persiansms.com</option>
 							<option value="ariaideh" <?php selected(get_option('wp_webservice'), 'ariaideh'); ?>>ariaideh.com</option>
-							<option value="panizsms" <?php selected(get_option('wp_webservice'), 'panizsms'); ?>>panizsms.ir</option>
 							<option value="sms_s" <?php selected(get_option('wp_webservice'), 'sms_s'); ?>>modiresms.com</option>
 							<option value="sadat24" <?php selected(get_option('wp_webservice'), 'sadat24'); ?>>sadat24.ir</option>
 							<option value="smscall" <?php selected(get_option('wp_webservice'), 'smscall'); ?>>smscall.ir</option>
@@ -64,7 +65,8 @@
 							<option value="jahanpayamak" <?php selected(get_option('wp_webservice'), 'jahanpayamak'); ?>>jahanpayamak.info</option>
 							<option value="opilo" <?php selected(get_option('wp_webservice'), 'opilo'); ?>>opilo.com</option>
 							<option value="barzinsms" <?php selected(get_option('wp_webservice'), 'barzinsms'); ?>>barzinsms.ir</option>
-							<option value="smsmart" <?php selected(get_option('wp_webservice'), 'smsmart'); ?>>smsmart.info</option>
+							<option value="smsmart" <?php selected(get_option('wp_webservice'), 'smsmart'); ?>>smsmart.ir</option>
+							<option value="loginpanel" <?php selected(get_option('wp_webservice'), 'loginpanel'); ?>>loginpanel.ir</option>
 							<option value="imencms" <?php selected(get_option('wp_webservice'), 'imencms'); ?>>imencms.com</option>
 							<option value="tcisms" <?php selected(get_option('wp_webservice'), 'tcisms'); ?>>tcisms.com</option>
 							<option value="caffeweb" <?php selected(get_option('wp_webservice'), 'caffeweb'); ?>>caffeweb.com</option>
@@ -89,7 +91,7 @@
 							<option value="sms_new" <?php selected(get_option('wp_webservice'), 'sms_new'); ?>>sms.ir - New</option>
 							<option value="popaksms" <?php selected(get_option('wp_webservice'), 'popaksms'); ?>>popaksms.ir</option>
 							<option value="novin1sms" <?php selected(get_option('wp_webservice'), 'novin1sms'); ?>>novin1sms.ir</option>
-							<option value="hamyaarsms" <?php selected(get_option('wp_webservice'), 'hamyaarsms'); ?>>hamyaarsms.ir</option>
+							<option value="hamyaarsms" <?php selected(get_option('wp_webservice'), 'hamyaarsms'); ?>>parhost.net</option>
 							<option value="matinsms" <?php selected(get_option('wp_webservice'), 'matinsms'); ?>>smspanel.mat-in.ir</option>
 							<option value="iranspk" <?php selected(get_option('wp_webservice'), 'iranspk'); ?>>iranspk.ir</option>
 							<option value="freepayamak" <?php selected(get_option('wp_webservice'), 'freepayamak'); ?>>freepayamak.ir</option>
@@ -130,6 +132,18 @@
 							<option value="yashilsms" <?php selected(get_option('wp_webservice'), 'yashilsms'); ?>>yashil-sms.ir</option>
 							<option value="ismsie" <?php selected(get_option('wp_webservice'), 'ismsie'); ?>>isms.ir</option>
 							<option value="wifisms" <?php selected(get_option('wp_webservice'), 'wifisms'); ?>>wifisms.ir</option>
+							<option value="razpayamak" <?php selected(get_option('wp_webservice'), 'razpayamak'); ?>>razpayamak.com</option>
+							<option value="bestit" <?php selected(get_option('wp_webservice'), 'bestit'); ?>>bestit.co</option>
+							<option value="pegahpayamak" <?php selected(get_option('wp_webservice'), 'pegahpayamak'); ?>>pegah-payamak.ir</option>
+							<option value="adspanel" <?php selected(get_option('wp_webservice'), 'adspanel'); ?>>adspanel.ir</option>
+							<option value="mydnspanel" <?php selected(get_option('wp_webservice'), 'mydnspanel'); ?>>mydnspanel.com</option>
+							<option value="esms24" <?php selected(get_option('wp_webservice'), 'esms24'); ?>>esms24.ir</option>
+							<option value="payamakaria" <?php selected(get_option('wp_webservice'), 'payamakaria'); ?>>payamakaria.ir</option>
+							<option value="pichakhost" <?php selected(get_option('wp_webservice'), 'pichakhost'); ?>>pichakhost.com</option>
+							<option value="tsms" <?php selected(get_option('wp_webservice'), 'tsms'); ?>>tsms.ir</option>
+							<option value="parsasms" <?php selected(get_option('wp_webservice'), 'parsasms'); ?>>parsasms.com</option>
+							<option value="modiranweb" <?php selected(get_option('wp_webservice'), 'modiranweb'); ?>>modiranweb.net</option>
+							<option value="smsline" <?php selected(get_option('wp_webservice'), 'smsline'); ?>>smsline.ir</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Spania', 'wp-sms'); ?>">
@@ -166,6 +180,10 @@
 							<option value="smsapi" <?php selected(get_option('wp_webservice'), 'smsapi'); ?>>smsapi.pl</option>
 						</optgroup>
 						
+						<optgroup label="<?php _e('Arabia', 'wp-sms'); ?>">
+							<option value="gateway" <?php selected(get_option('wp_webservice'), 'gateway'); ?>>gateway.sa</option>
+						</optgroup>
+						
 						<optgroup label="<?php _e('Global', 'wp-sms'); ?>">
 							<option value="smsglobal" <?php selected(get_option('wp_webservice'), 'smsglobal'); ?>>smsglobal.com</option>
 							<option value="bearsms" <?php selected(get_option('wp_webservice'), 'bearsms'); ?>>bearsms.com</option>
@@ -181,6 +199,8 @@
 					<?php if(get_option('wp_webservice')) { ?>
 						<a href="admin.php?page=wp-sms-settings&tab=web-service&action=reset" class="button" id="wps_reset"><?php _e('Reset', 'wp-sms'); ?></a>
 					<?php } ?>
+					
+					<?php do_action('wp_after_sms_gateway'); ?>
 					
 					<?php if(!get_option('wp_webservice')) { ?>
 					<p class="description"><?php echo sprintf(__('If your Web service is not on the top list, <a href="%s">click here.</a>', 'wp-sms'), $sms_page['about']); ?></p>
@@ -227,8 +247,8 @@
 			<?php if($sms->GetCredit() > 0) { ?>
 			<tr>
 				<th><?php _e('Status', 'wp-sms'); ?>:</th>
-				<td>
-					<img src="<?php echo WP_SMS_DIR_PLUGIN; ?>assets/images/1.png" alt="Active" align="absmiddle"/><span style="font-weight: bold;"><?php _e('Active', 'wp-sms'); ?></span>
+				<td class="wpsms-has-credit">
+					<span class="dashicons dashicons-yes"></span><span style="font-weight: bold;"><?php _e('Active', 'wp-sms'); ?></span>
 				</td>
 			</tr>
 			
@@ -241,8 +261,8 @@
 			<?php } else { ?>
 			<tr>
 				<th><?php _e('Status', 'wp-sms'); ?>:</th>
-				<td>
-					<img src="<?php echo WP_SMS_DIR_PLUGIN; ?>assets/images/0.png" alt="Deactive" align="absmiddle"/><span style="font-weight: bold;"><?php _e('Deactive', 'wp-sms'); ?></span>
+				<td class="wpsms-no-credit">
+					<span class="dashicons dashicons-no"></span><span style="font-weight: bold;"><?php _e('Deactive', 'wp-sms'); ?></span>
 				</td>
 			</tr>
 			<?php } ?>

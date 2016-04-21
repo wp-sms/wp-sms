@@ -5,7 +5,7 @@
  * @author     Mostafa Soufi <info@mostafa-soufi.ir>
  * @copyright  2015 wp-sms-plugin.com
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
- * @version    1.0
+ * @version    1.1
  */
 class WP_SMS_Subscriptions {
 	/**
@@ -117,7 +117,7 @@ class WP_SMS_Subscriptions {
 	 *
 	 * @param  Not param
 	 */
-	public function update_subscriber($id, $name, $mobile, $group_id = '') {
+	public function update_subscriber($id, $name, $mobile, $group_id = '', $status = '1') {
 		
 		if(empty($id) or empty($name) or empty($mobile))
 			return;
@@ -128,6 +128,7 @@ class WP_SMS_Subscriptions {
 				'name'		=>	$name,
 				'mobile'	=>	$mobile,
 				'group_ID'	=>	$group_id,
+				'status'	=>	$status,
 			),
 			array(
 				'ID'		=>	$id

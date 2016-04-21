@@ -1,6 +1,6 @@
 <?php
 	class mtarget extends WP_SMS {
-		private $wsdl_link = "http://smswebservices.mtarget.fr/SmsWebServices/ServletSms";
+		private $wsdl_link = "http://smswebservices.public.mtarget.fr/SmsWebServices/ServletSms";
 		public $tariff = "http://mtarget.fr/";
 		public $unitrial = false;
 		public $unit;

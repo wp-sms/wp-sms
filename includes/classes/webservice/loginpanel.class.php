@@ -1,7 +1,7 @@
 <?php
-	class panizsms extends WP_SMS {
-		private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?wsdl";
-		public $tariff = "http://panizsms.com/";
+	class loginpanel extends WP_SMS {
+		private $wsdl_link = "http://www.loginpanel.ir/post/send.asmx?wsdl";
+		public $tariff = "http://loginpanel.ir/";
 		public $unitrial = true;
 		public $unit;
 		public $flash = "disable";
@@ -30,15 +30,18 @@
 				$parameters['udh'] = "";
 				$parameters['recId'] = array(0);
 				$parameters['status'] = 0x0;
+				$return='';
+				$return .=$client->SendSms($parameters)->SendSmsResult;
+				$return .=$status;
 				
 				$this->InsertToDB($this->from, $this->msg, $this->to);
 				$this->Hook('wp_sms_send', $result);
 				
-				return $client->SendSms($parameters)->SendSmsResult;
+				return $return;
 			}
 			catch(SoapFault $ex)
 			{
-				echo $ex->faultstring;
+				return $ex->faultstring;
 			}
 		}
 
@@ -50,7 +53,7 @@
 			}
 			catch(SoapFault $ex)
 			{
-				echo $ex->faultstring;
+				return $ex->faultstring;
 			}
 		}
 	}

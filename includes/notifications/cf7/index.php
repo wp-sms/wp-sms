@@ -3,14 +3,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Get WP SMS Option values
 $wps_options = get_option('wpsms');
+if(empty($wps_options['wpsms_add_wpcf7'])) $wps_options['wpsms_add_wpcf7'] = '';
 
 function wps_cf7_options() {
+	global $wps_options;
 	include_once dirname( __FILE__ ) . '/options.php';
 }
 add_action('wp_sms_notification_page', 'wps_cf7_options');
 
 // Contact Form 7 Hooks
-if( $wps_options['wps_add_wpcf7'] ) {
+if( $wps_options['wpsms_add_wpcf7'] ) {
 	add_filter('wpcf7_editor_panels', 'wps_cf7_editor_panels');
 	add_action('wpcf7_after_save', 'wps_save_wpcf7_form');
 	add_action('wpcf7_before_send_mail', 'wps_send_wpcf7_sms');

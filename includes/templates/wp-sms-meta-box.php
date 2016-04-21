@@ -2,20 +2,23 @@
 	jQuery(document).ready(function(){
 		if(jQuery('#wps-send-subscribe').val() == 'yes') {
 			jQuery('#wpsms-select-subscriber-group').show();
+			jQuery('#wpsms-custom-text').show();
 		}
 		
 		jQuery("#wps-send-subscribe").change(function() {
 			if(this.value == 'yes') {
 				jQuery('#wpsms-select-subscriber-group').show();
+				jQuery('#wpsms-custom-text').show();
 			} else {
 				jQuery('#wpsms-select-subscriber-group').hide();
+				jQuery('#wpsms-custom-text').hide();
 			}
 			
 		});
 	})
 </script>
 
-<p>
+<div>
 	<label>
 		<?php _e('Send this post to subscribers?', 'wp-sms'); ?><br/>
 		<select name="wps_send_subscribe" id="wps-send-subscribe">
@@ -24,9 +27,9 @@
 			<option value="no"><?php _e('No'); ?></option>
 		</select>
 	</label>
-</p>
+</div>
 
-<p id="wpsms-select-subscriber-group">
+<div id="wpsms-select-subscriber-group">
 	<label>
 		<?php _e('Select the group', 'wp-sms'); ?><br/>
 		<select name="wps_subscribe_group">
@@ -34,4 +37,17 @@
 			<?php foreach($get_group_result as $items): ?><option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option><?php endforeach; ?>
 		</select>
 	</label>
-</p>
+</div>
+
+<div id="wpsms-custom-text">
+	<label>
+		<?php _e('Text template', 'wp-sms'); ?><br/>
+		<textarea id="wpsms-text-template" name="wps_custom_text"><?php global $wps_options; echo $wps_options['wp_sms_text_template']; ?></textarea>
+		<p class="description data">
+			<?php _e('Input data:', 'wp-sms'); ?>
+			<br/><?php _e('Title post', 'wp-sms'); ?>: <code>%title_post%</code>
+			<br/><?php _e('URL post', 'wp-sms'); ?>: <code>%url_post%</code>
+			<br/><?php _e('Date post', 'wp-sms'); ?>: <code>%date_post%</code>
+		</p>
+	</label>
+</div>

@@ -1,7 +1,7 @@
 <?php
-	class panizsms extends WP_SMS {
-		private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?wsdl";
-		public $tariff = "http://panizsms.com/";
+	class razpayamak extends WP_SMS {
+		private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?WSDL";
+		public $tariff = "http://razpayamak.com/";
 		public $unitrial = true;
 		public $unit;
 		public $flash = "disable";

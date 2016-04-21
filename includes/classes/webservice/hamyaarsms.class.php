@@ -1,7 +1,7 @@
 <?php
 	class hamyaarsms extends WP_SMS {
-		private $wsdl_link = "http://www.hamyaarsms.ir/webservice/smsService.php?wsdl";
-		public $tariff = "http://www.hamyaarsms.ir/";
+		private $wsdl_link = "http://smscp.parhost.net/webservice/smsService.php?wsdl";
+		public $tariff = "http://smscp.parhost.net/";
 		public $unitrial = true;
 		public $unit;
 		public $flash = "disable";

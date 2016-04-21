@@ -1,6 +1,6 @@
 <?php
 	class farapayamak extends WP_SMS {
-		private $wsdl_link = "http://api.payamak-panel.com//post/send.asmx?wsdl";
+		private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?wsdl";
 		public $tariff = "http://www.farapayamak.com/";
 		public $unitrial = true;
 		public $unit;

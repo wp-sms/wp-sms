@@ -1,7 +1,7 @@
 <?php
-	class panizsms extends WP_SMS {
-		private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?wsdl";
-		public $tariff = "http://panizsms.com/";
+	class payamakaria extends WP_SMS {
+		private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?WSDL";
+		public $tariff = "http://www.payamakaria.ir/";
 		public $unitrial = true;
 		public $unit;
 		public $flash = "disable";
@@ -54,4 +54,3 @@
 			}
 		}
 	}
-?>

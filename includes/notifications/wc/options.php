@@ -25,7 +25,7 @@ jQuery(document).ready(function() {
 	</th>
 	
 	<td>
-		<textarea id="wpsms-wc-no-tt" cols="50" rows="7" name="wpsms[wpsms_wc_no_tt]"><?php echo $options['wpsms_wc_no_tt']; ?></textarea>
+		<textarea id="wpsms-wc-no-tt" cols="50" rows="7" name="wpsms[wpsms_wc_no_tt]"><?php echo $wps_options['wpsms_wc_no_tt']; ?></textarea>
 		<p class="description"><?php _e('Enter the contents of the sms message.', 'wp-sms'); ?></p>
 		<p class="description data">
 			<?php _e('Input data:', 'wp-sms'); ?>

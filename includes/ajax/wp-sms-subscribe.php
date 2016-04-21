@@ -54,6 +54,7 @@
 			
 			$sms->to = array($mobile);
 			$sms->msg = __('Your activation code', 'wp-sms') . ': ' . $key;
+			$sms->SendSMS();
 			
 			$check = $wpdb->insert("{$table_prefix}sms_subscribes",
 				array(

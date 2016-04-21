@@ -40,7 +40,7 @@
 			</tr>
 			
 			<tr>
-				<th><?php _e('Send SMS', 'wp-sms'); ?></th>
+				<th><?php _e('Send Welcome-SMS', 'wp-sms'); ?></th>
 				<td>
 					<input type="checkbox" name="wp_subscribes_send_sms" id="wp_subscribes_send_sms" <?php echo get_option('wp_subscribes_send_sms') ==true? 'checked="checked"':'';?>/>
 					<label for="wp_subscribes_send_sms"><?php _e('Active', 'wp-sms'); ?></label>
@@ -118,11 +118,11 @@
 			</tr>
 			
 			<tr valign="top">
-				<th><?php _e('Add wordpress user mobile to newsletter', 'wp-sms'); ?>:</th>
+				<th><?php _e('Auto subscribe new user', 'wp-sms'); ?>:</th>
 				
 				<td>
 					<input type="checkbox" name="wps_add_user_to_newsletter" id="wps-add-user-to-newsletter" <?php echo get_option('wps_add_user_to_newsletter') ==true? 'checked="checked"':'';?>/>
-					<label for="wps_mnt_status"><?php _e('Active', 'wp-sms'); ?></label>
+					<label for="wps-add-user-to-newsletter"><?php _e('Active', 'wp-sms'); ?></label>
 					<p class="description"><?php _e('Should be enable mobile field number in register form', 'wp-sms'); ?></p>
 				</td>
 			</tr>
