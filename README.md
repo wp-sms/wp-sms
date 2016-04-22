@@ -37,8 +37,6 @@ Very easy Send SMS by PHP code:
 # Professional Package
 In the Professional pack added many features, another useful gateway and is integrated with another plugins.
 
-# Gateways:
-
 * Smshosting.it
 * Twilio.com
 * plivo.com
@@ -69,8 +67,6 @@ In the Professional pack added many features, another useful gateway and is inte
 * cpsms.dk
 * bulksmshyderabad.co.in
 * ozioma.net
-	
-# Other features:
 
 * Integrate with BuddyPress
 You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
@@ -108,59 +104,79 @@ or using this Shortcode `[subscribe]` in Posts pages or Widget.
 
 # Actions
 Run following action when send sms with this plugin.
-`wp_sms_send`
+```sh
+wp_sms_send
+```
 
 Example: Send mail when send sms.
-`function send_mail_when_send_sms($message_info) {
+```sh
+function send_mail_when_send_sms($message_info) {
 	wp_mail('you@mail.com', 'Send SMS', $message_info);
 }
-add_action('wp_sms_send', 'send_mail_when_send_sms');`
+add_action('wp_sms_send', 'send_mail_when_send_sms');
+```
 
 Run following action when subscribe a new user.
-`wp_sms_add_subscriber`
+```sh
+wp_sms_add_subscriber
+```
 
 Example: Send sms to user when register a new subscriber.
-`function send_sms_when_subscribe_new_user($name, $mobile) {
+```sh
+function send_sms_when_subscribe_new_user($name, $mobile) {
 	global $sms;
 	$sms->to = array($mobile);
 	$sms->msg = "Hi {$name}, Thanks for subscribe.";
 	$sms->SendSMS();
 }
-add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
+add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
+```
 
 # Filters
 You can use following filter for modify from number.
-`wp_sms_from`
+```sh
+wp_sms_from
+```
 
 Example: Add 0 to the end sender number.
-`function wp_sms_modify_from($from) {
+```sh
+function wp_sms_modify_from($from) {
 	$from = $from . ' 0';
 	
 	return $val;
 }
-add_filter('wp_sms_from', 'wp_sms_modify_from');`
+add_filter('wp_sms_from', 'wp_sms_modify_from');
+```
 
 You can use following filter for modify receivers number.
-`wp_sms_to`
+```sh
+wp_sms_to
+```
 
 Example: Add new number to get message.
-`function wp_sms_modify_receiver($numbers) {
+```sh
+function wp_sms_modify_receiver($numbers) {
 	$numbers[] = '09xxxxxxxx';
 	
 	return $numbers;
 }
-add_filter('wp_sms_to', 'wp_sms_modify_receiver');`
+add_filter('wp_sms_to', 'wp_sms_modify_receiver');
+```
 
 You can use following filter for modify text message.
-`wp_sms_msg`
+```sh
+wp_sms_msg
+```
 
 Example: Add signature to messages that are sent.
-`function wp_sms_modify_message($message) {
+```sh
+function wp_sms_modify_message($message) {
 	$message = $message . ' /n Powerby: WP-SMS';
 	
 	return $message;
 }
-add_filter('wp_sms_msg', 'wp_sms_modify_message');`
+add_filter('wp_sms_msg', 'wp_sms_modify_message');
+```
 
 # Sources
 Wordpress plugin page: www.wordpress.org/plugins/wp-sms/
