@@ -200,7 +200,7 @@
 						<a href="admin.php?page=wp-sms-settings&tab=web-service&action=reset" class="button" id="wps_reset"><?php _e('Reset', 'wp-sms'); ?></a>
 					<?php } ?>
 					
-					<?php do_action('wp_after_sms_gateway'); ?>
+					<?php do_action('wp_sms_after_gateway'); ?>
 					
 					<?php if(!get_option('wp_webservice')) { ?>
 					<p class="description"><?php echo sprintf(__('If your Web service is not on the top list, <a href="%s">click here.</a>', 'wp-sms'), $sms_page['about']); ?></p>

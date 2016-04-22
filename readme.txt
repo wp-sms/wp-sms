@@ -4,7 +4,7 @@ Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.5
-Stable tag: 3.1.3
+Stable tag: 3.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -52,6 +52,11 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 In the Professional pack added many features, another useful gateway and is integrated with another plugins.
 
 [Buy Professional Package](http://wp-sms-plugin.com/purchases)
+
+= Available on GitHub =
+WP-SMS is now available for develop on the GitHub. I look forward to your feedback!
+
+[Here it is](https://github.com/veronalabs/wp-sms)
 
 Gateways:
 
@@ -144,7 +149,7 @@ Example: Send mail when send sms.
 add_action('wp_sms_send', 'send_mail_when_send_sms');`
 
 Run following action when subscribe a new user.
-`wp_sms_subscribe`
+`wp_sms_add_subscriber`
 
 Example: Send sms to user when register a new subscriber.
 `function send_sms_when_subscribe_new_user($name, $mobile) {
@@ -153,7 +158,41 @@ Example: Send sms to user when register a new subscriber.
 	$sms->msg = "Hi {$name}, Thanks for subscribe.";
 	$sms->SendSMS();
 }
-add_action('wp_sms_subscribe', 'send_sms_when_subscribe_new_user', 10, 2);`
+add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
+
+= Filters =
+You can use following filter for modify from number.
+`wp_sms_from`
+
+Example: Add 0 to the end sender number.
+`function wp_sms_modify_from($from) {
+	$from = $from . ' 0';
+	
+	return $val;
+}
+add_filter('wp_sms_from', 'wp_sms_modify_from');`
+
+You can use following filter for modify receivers number.
+`wp_sms_to`
+
+Example: Add new number to get message.
+`function wp_sms_modify_receiver($numbers) {
+	$numbers[] = '09xxxxxxxx';
+	
+	return $numbers;
+}
+add_filter('wp_sms_to', 'wp_sms_modify_receiver');`
+
+You can use following filter for modify text message.
+`wp_sms_msg`
+
+Example: Add signature to messages that are sent.
+`function wp_sms_modify_message($message) {
+	$message = $message . ' /n Powerby: WP-SMS';
+	
+	return $message;
+}
+add_filter('wp_sms_msg', 'wp_sms_modify_message');`
 
 == Screenshots ==
 1. SMS Setting Page.
@@ -182,6 +221,20 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 3.4 =
+* Added New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
+* Added New filters `wp_sms_from`, `wp_sms_to`, `wp_sms_msg` in the plugin.
+* Fixed issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.
+* Renamed `wp_after_sms_gateway` action to `wp_sms_after_gateway`.
+* Renamed `wps_add_subscriber` action to `wp_sms_add_subscriber`.
+* Renamed `wps_delete_subscriber` action to `wp_sms_delete_subscriber`.
+* Renamed `wps_update_subscriber` action to `wp_sms_update_subscriber`.
+* Renamed `wps_add_group` action to `wp_sms_add_group`.
+* Renamed `wps_delete_group` action to `wp_sms_delete_group`.
+* Renamed `wps_update_group` action to `wp_sms_update_group`.
+* Removed select access option in settig page.
+* Removed `Hook` method from `WP_SMS` class and used `do_action` for gateways class.
+
 = 3.1.3 =
 * Compatible with wordpress 4.5
 * Gateway smsline.ir Added.
@@ -227,7 +280,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Language: Swedish added. (Thanks Kramfors)
 
 = 3.0 =
-* Added `WP_SMS_Subscribers` class for processing subscribers (just in admin).
+* Added `WP_SMS_Subscriptions` class for processing subscribers (just in admin).
 * Added `Default_Gateway` class for use it if webservice not active in the plugin.
 * Added check sms credit in `SendSMS` method.
 * Added subscribers hook to plugin hooks collactions.

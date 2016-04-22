@@ -3,12 +3,12 @@
 Plugin Name: WP SMS
 Plugin URI: http://wp-sms-plugin.com/
 Description: A complete wordpress plugin to send sms with a high capability.
-Version: 3.1.3
+Version: 3.4
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
 */
-define('WP_SMS_VERSION', '3.1.3');
+define('WP_SMS_VERSION', '3.4');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'http://wp-sms-plugin.com');
@@ -32,7 +32,7 @@ if(get_option('wp_webservice')) {
 	if(is_file(dirname( __FILE__ ) . '/includes/classes/webservice/'.$webservice.'.class.php')) {
 		include_once dirname( __FILE__ ) . '/includes/classes/webservice/'.$webservice.'.class.php';
 	} else {
-		include_once( ABSPATH . 'wp-content/plugins/wp-sms-pro/gateway/gateways/'.$webservice.'.class.php' );
+		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateway/gateways/'.$webservice.'.class.php' );
 	}
 	
 	$sms = new $webservice;
@@ -50,7 +50,7 @@ if(get_option('wp_webservice')) {
 			global $sms;
 			echo '<p class="description">'.$sms->help.'</p>';
 		}
-		add_action('wp_after_sms_gateway', 'wps_gateway_help');
+		add_action('wp_sms_after_gateway', 'wps_gateway_help');
 	}
 	
 	if($sms->unitrial == true) {
@@ -68,6 +68,7 @@ $wps_options = get_option('wpsms');
 // Create object of plugin
 $WP_SMS_Plugin = new WP_SMS_Plugin;
 register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
+register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'add_cap' ) );
 
 // WP SMS Plugin Class
 class WP_SMS_Plugin {
@@ -162,9 +163,22 @@ class WP_SMS_Plugin {
 		
 		// Delete notification new wp_version option
 		delete_option('wp_notification_new_wp_version');
+	}
+	
+	/**
+	 * Adding new capability in the plugin
+	 *
+	 * @param  Not param
+	 */
+	public function add_cap() {
+		// gets the administrator role
+		$role = get_role( 'administrator' );
 		
-		// If this is a first time install or an upgrade and we've added options, set some intelligent defaults.
-		if( get_option('wps_access_level') === FALSE ) { update_option('wps_access_level', 'manage_options'); }
+		$role->add_cap( 'wpsms_sendsms' );
+		$role->add_cap( 'wpsms_outbox' );
+		$role->add_cap( 'wpsms_subscribers' );
+		$role->add_cap( 'wpsms_subscribe_groups' );
+		$role->add_cap( 'wpsms_setting' );
 	}
 	
 	/**
@@ -252,6 +266,16 @@ class WP_SMS_Plugin {
 		if(!get_option('wpsms_hide_newsletter')) {
 			add_action('wp_sms_settings_page', array(&$this, 'admin_newsletter'));
 		}
+		
+		// Check exists require function
+		if( !function_exists('wp_get_current_user') ) {
+			include(ABSPATH . "wp-includes/pluggable.php");
+		}
+		
+		// Add plugin caps to admin role
+		if( is_admin() and is_super_admin() ) {
+			$this->add_cap();
+		}
 	}
 	
 	/**
@@ -325,12 +349,12 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function menu() {
-		add_menu_page(__('Wordpress SMS', 'wp-sms'), __('Wordpress SMS', 'wp-sms'), get_option('wps_access_level'), 'wp-sms', array(&$this, 'send_page'), 'dashicons-email-alt');
-		add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), get_option('wps_access_level'), 'wp-sms', array(&$this, 'send_page'));
-		add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'manage_options', 'wp-sms-outbox', array(&$this, 'outbox_page'));
-		add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'manage_options', 'wp-sms-subscribers', array(&$this, 'subscribe_page'));
-		add_submenu_page('wp-sms', __('Subscribers Group', 'wp-sms'), __('Subscribers Group', 'wp-sms'), 'manage_options', 'wp-sms-subscribers-group', array(&$this, 'groups_page'));
-		add_submenu_page('wp-sms', __('Setting', 'wp-sms'), __('Setting', 'wp-sms'), 'manage_options', 'wp-sms-settings', array(&$this, 'setting_page'));
+		add_menu_page(__('Wordpress SMS', 'wp-sms'), __('Wordpress SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'), 'dashicons-email-alt');
+		add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'));
+		add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array(&$this, 'outbox_page'));
+		add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array(&$this, 'subscribe_page'));
+		add_submenu_page('wp-sms', __('Subscribers Group', 'wp-sms'), __('Subscribers Group', 'wp-sms'), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(&$this, 'groups_page'));
+		add_submenu_page('wp-sms', __('Setting', 'wp-sms'), __('Setting', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array(&$this, 'setting_page'));
 	}
 	
 	/**

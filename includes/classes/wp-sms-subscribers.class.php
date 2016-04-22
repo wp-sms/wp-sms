@@ -41,15 +41,6 @@ class WP_SMS_Subscriptions {
 	}
 	
 	/**
-	 * Wordress plugin hook
-	 *
-	 * @param  Not param
-	 */
-	public function hook($tag, $arg, $arg2 = null) {
-		do_action($tag, $arg, $arg2);
-	}
-	
-	/**
 	 * Add Subscriber
 	 *
 	 * @param  Not param
@@ -72,7 +63,16 @@ class WP_SMS_Subscriptions {
 		);
 		
 		if($result){
-			$this->hook('wps_add_subscriber', $name, $mobile);
+			
+			/**
+			 * Run hook after adding subscribe.
+			 *
+			 * @since 3.0
+			 * @param string $name name.
+			 * @param string $mobile mobile.
+			 */
+			do_action('wp_sms_add_subscriber', $name, $mobile);
+			
 			return array('result' => 'update', 'message' => __('Subscriber successfully added.', 'wp-sms'));
 		}
 	}
@@ -107,7 +107,15 @@ class WP_SMS_Subscriptions {
 		);
 		
 		if($result){
-			$this->hook('wps_delete_subscriber', $result);
+			
+			/**
+			 * Run hook after deleting subscribe.
+			 *
+			 * @since 3.0
+			 * @param string $result result query.
+			 */
+			do_action('wp_sms_delete_subscriber', $result);
+			
 			return $result;
 		}
 	}
@@ -136,7 +144,15 @@ class WP_SMS_Subscriptions {
 		);
 		
 		if($result){
-			$this->hook('wps_update_subscriber', $result);
+			
+			/**
+			 * Run hook after updating subscribe.
+			 *
+			 * @since 3.0
+			 * @param string $result result query.
+			 */
+			do_action('wp_sms_update_subscriber', $result);
+			
 			return array('result' => 'update', 'message' => __('Subscriber successfully updated.', 'wp-sms'));
 		}
 	}
@@ -183,7 +199,15 @@ class WP_SMS_Subscriptions {
 		);
 		
 		if($result){
-			$this->hook('wps_add_group', $result);
+			
+			/**
+			 * Run hook after adding group.
+			 *
+			 * @since 3.0
+			 * @param string $result result query.
+			 */
+			do_action('wp_sms_add_group', $result);
+			
 			return array('result' => 'update', 'message' => __('Group successfully added.', 'wp-sms'));
 		}
 		
@@ -207,7 +231,15 @@ class WP_SMS_Subscriptions {
 		);
 		
 		if($result){
-			$this->hook('wps_delete_group', $result);
+			
+			/**
+			 * Run hook after deleting group.
+			 *
+			 * @since 3.0
+			 * @param string $result result query.
+			 */
+			do_action('wp_sms_delete_group', $result);
+			
 			return $result;
 		}
 	}
@@ -233,7 +265,15 @@ class WP_SMS_Subscriptions {
 		);
 		
 		if($result){
-			$this->hook('wps_update_group', $result);
+			
+			/**
+			 * Run hook after updating group.
+			 *
+			 * @since 3.0
+			 * @param string $result result query.
+			 */
+			do_action('wp_sms_update_group', $result);
+			
 			return array('result' => 'update', 'message' => __('Group successfully updated.', 'wp-sms'));
 		}
 	}

@@ -89,10 +89,6 @@ abstract class WP_SMS {
 		$this->tb_prefix = $table_prefix;
 	}
 	
-	public function Hook($tag, $arg) {
-		do_action($tag, $arg);
-	}
-	
 	public function InsertToDB($sender, $message, $recipient) {
 		return $this->db->insert(
 			$this->tb_prefix . "sms_send",
@@ -104,4 +100,5 @@ abstract class WP_SMS {
 			)
 		);
 	}
+	
 }
