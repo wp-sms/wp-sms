@@ -90,6 +90,7 @@ Gateways:
 * cpsms.dk
 * bulksmshyderabad.co.in
 * ozioma.net
+* Bulutfon.com
 	
 Other features:
 

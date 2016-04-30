@@ -146,6 +146,10 @@
 							<option value="smsline" <?php selected(get_option('wp_webservice'), 'smsline'); ?>>smsline.ir</option>
 						</optgroup>
 						
+						<optgroup label="<?php _e('Turkey', 'wp-sms'); ?>">
+							<option value="bulutfon" <?php selected(get_option('wp_webservice'), 'bulutfon'); ?>>bulutfon.com</option>
+						</optgroup>
+
 						<optgroup label="<?php _e('Spania', 'wp-sms'); ?>">
 							<option value="afilnet" <?php selected(get_option('wp_webservice'), 'afilnet'); ?>>afilnet.com</option>
 							<option value="labsmobile" <?php selected(get_option('wp_webservice'), 'labsmobile'); ?>>labsmobile.com</option>
