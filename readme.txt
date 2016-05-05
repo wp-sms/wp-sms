@@ -4,7 +4,7 @@ Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.5
-Stable tag: 3.4
+Stable tag: 3.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -222,7 +222,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= 3.4 =
+= 3.2 =
 * Added New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
 * Added New filters `wp_sms_from`, `wp_sms_to`, `wp_sms_msg` in the plugin.
 * Fixed issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.

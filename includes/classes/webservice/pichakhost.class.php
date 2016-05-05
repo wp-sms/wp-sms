@@ -1,7 +1,7 @@
 <?php
 	class pichakhost extends WP_SMS {
-		private $wsdl_link = "http://sms.pichakhost.com/API/Send.asmx?WSDL";
-		public $tariff = "http://sms.pichakhost.com/";
+		private $wsdl_link = "http://sms.sitralweb.com/API/Send.asmx?WSDL";
+		public $tariff = "http://sms.sitralweb.com/";
 		public $unitrial = false;
 		public $unit;
 		public $flash = "enable";

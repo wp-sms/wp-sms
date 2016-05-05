@@ -139,7 +139,7 @@
 							<option value="mydnspanel" <?php selected(get_option('wp_webservice'), 'mydnspanel'); ?>>mydnspanel.com</option>
 							<option value="esms24" <?php selected(get_option('wp_webservice'), 'esms24'); ?>>esms24.ir</option>
 							<option value="payamakaria" <?php selected(get_option('wp_webservice'), 'payamakaria'); ?>>payamakaria.ir</option>
-							<option value="pichakhost" <?php selected(get_option('wp_webservice'), 'pichakhost'); ?>>pichakhost.com</option>
+							<option value="pichakhost" <?php selected(get_option('wp_webservice'), 'pichakhost'); ?>>sitralweb.com</option>
 							<option value="tsms" <?php selected(get_option('wp_webservice'), 'tsms'); ?>>tsms.ir</option>
 							<option value="parsasms" <?php selected(get_option('wp_webservice'), 'parsasms'); ?>>parsasms.com</option>
 							<option value="modiranweb" <?php selected(get_option('wp_webservice'), 'modiranweb'); ?>>modiranweb.net</option>
