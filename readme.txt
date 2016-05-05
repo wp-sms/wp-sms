@@ -90,7 +90,6 @@ Gateways:
 * cpsms.dk
 * bulksmshyderabad.co.in
 * ozioma.net
-* Bulutfon.com
 	
 Other features:
 
@@ -226,6 +225,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
 * Added New filters `wp_sms_from`, `wp_sms_to`, `wp_sms_msg` in the plugin.
 * Fixed issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.
+* Added New gateway (bulutfon.com).
 * Renamed `wp_after_sms_gateway` action to `wp_sms_after_gateway`.
 * Renamed `wps_add_subscriber` action to `wp_sms_add_subscriber`.
 * Renamed `wps_delete_subscriber` action to `wp_sms_delete_subscriber`.
