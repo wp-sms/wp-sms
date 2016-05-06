@@ -435,48 +435,58 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function subscribe_page() {
-		// Add subscriber page
-		if($_GET['action'] == 'add') {
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/add-subscriber.php";
-			
-			if(isset($_POST['wp_add_subscribe'])) {
-				$result = $this->subscribe->add_subscriber($_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name']);
-				echo $this->notice_result($result['result'], $result['message']);
-			}
 		
-		// Edit subscriber page
-		} else if ($_GET['action'] == 'edit') {
-			
-			if(isset($_POST['wp_update_subscribe'])) {
-				$result = $this->subscribe->update_subscriber($_GET['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'], $_POST['wpsms_subscribe_status']);
-				echo $this->notice_result($result['result'], $result['message']);
+		if(isset($_GET['action'])) {
+			// Add subscriber page
+			if($_GET['action'] == 'add') {
+				include_once dirname( __FILE__ ) . "/includes/templates/subscribe/add-subscriber.php";
+				
+				if(isset($_POST['wp_add_subscribe'])) {
+					$result = $this->subscribe->add_subscriber($_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name']);
+					echo $this->notice_result($result['result'], $result['message']);
+				}
+				
+				return;
 			}
 			
-			$get_subscribe = $this->subscribe->get_subscriber($_GET['ID']);
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/edit-subscriber.php";
+			// Edit subscriber page
+			if($_GET['action'] == 'edit') {
+				if(isset($_POST['wp_update_subscribe'])) {
+					$result = $this->subscribe->update_subscriber($_GET['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'], $_POST['wpsms_subscribe_status']);
+					echo $this->notice_result($result['result'], $result['message']);
+				}
+				
+				$get_subscribe = $this->subscribe->get_subscriber($_GET['ID']);
+				include_once dirname( __FILE__ ) . "/includes/templates/subscribe/edit-subscriber.php";
+				
+				return;
+			}
 			
-		// Import subscriber page
-		} else if ($_GET['action'] == 'import') {
-			include_once dirname( __FILE__ ) . "/import.php";
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/import.php";
+			// Import subscriber page
+			if($_GET['action'] == 'import') {
+				include_once dirname( __FILE__ ) . "/import.php";
+				include_once dirname( __FILE__ ) . "/includes/templates/subscribe/import.php";
+				
+				return;
+			}
 			
-		// Export subscriber page
-		} else if ($_GET['action'] == 'export') {
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/export.php";
-			
-		// Subscriber page
-		} else {
-			include_once dirname( __FILE__ ) . '/includes/wp-sms-subscribers.php';
-			
-			//Create an instance of our package class...
-			$list_table = new WP_SMS_Subscribers_List_Table();
-			
-			//Fetch, prepare, sort, and filter our data...
-			$list_table->prepare_items();
-			
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/subscribes.php";
-			
+			// Export subscriber page
+			if($_GET['action'] == 'export') {
+				include_once dirname( __FILE__ ) . "/includes/templates/subscribe/export.php";
+				
+				return;
+			}
 		}
+		
+		include_once dirname( __FILE__ ) . '/includes/wp-sms-subscribers.php';
+		
+		//Create an instance of our package class...
+		$list_table = new WP_SMS_Subscribers_List_Table();
+		
+		//Fetch, prepare, sort, and filter our data...
+		$list_table->prepare_items();
+		
+		include_once dirname( __FILE__ ) . "/includes/templates/subscribe/subscribes.php";
 	}
 	
 	/**
@@ -485,38 +495,42 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function groups_page() {
-		if($_GET['action'] == 'add') {
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/add-group.php";
-			
-			if(isset($_POST['wp_add_group'])) {
-				$result = $this->subscribe->add_group($_POST['wp_group_name']);
-				echo $this->notice_result($result['result'], $result['message']);
+		
+		if(isset($_GET['action'])) {
+			// Add group page
+			if($_GET['action'] == 'add') {
+				include_once dirname( __FILE__ ) . "/includes/templates/subscribe/add-group.php";
+				if(isset($_POST['wp_add_group'])) {
+					$result = $this->subscribe->add_group($_POST['wp_group_name']);
+					echo $this->notice_result($result['result'], $result['message']);
+				}
+				
+				return;
 			}
 			
-		// Manage group page
-		} else if ($_GET['action'] == 'edit') {
-			
-			if(isset($_POST['wp_update_group'])) {
-				$result = $this->subscribe->update_group($_GET['ID'], $_POST['wp_group_name']);
-				echo $this->notice_result($result['result'], $result['message']);
+			// Manage group page
+			if($_GET['action'] == 'edit') {
+				if(isset($_POST['wp_update_group'])) {
+					$result = $this->subscribe->update_group($_GET['ID'], $_POST['wp_group_name']);
+					echo $this->notice_result($result['result'], $result['message']);
+				}
+				
+				$get_group = $this->subscribe->get_group($_GET['ID']);
+				include_once dirname( __FILE__ ) . "/includes/templates/subscribe/edit-group.php";
+				
+				return;
 			}
-			
-			$get_group = $this->subscribe->get_group($_GET['ID']);
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/edit-group.php";
-			
-		// Subscriber page
-		} else {
-			include_once dirname( __FILE__ ) . '/includes/wp-sms-subscribers-groups.php';
-			
-			//Create an instance of our package class...
-			$list_table = new WP_SMS_Subscribers_Groups_List_Table();
-			
-			//Fetch, prepare, sort, and filter our data...
-			$list_table->prepare_items();
-			
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/groups.php";
-			
 		}
+		
+		include_once dirname( __FILE__ ) . '/includes/wp-sms-subscribers-groups.php';
+		
+		//Create an instance of our package class...
+		$list_table = new WP_SMS_Subscribers_Groups_List_Table();
+		
+		//Fetch, prepare, sort, and filter our data...
+		$list_table->prepare_items();
+		
+		include_once dirname( __FILE__ ) . "/includes/templates/subscribe/groups.php";
 	}
 	
 	/**

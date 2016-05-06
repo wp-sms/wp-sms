@@ -7,7 +7,7 @@ function wp_sms_subscribe_meta_box() {
 	add_meta_box('subscribe-meta-box', __('SMS', 'wp-sms'), 'wp_sms_subscribe_post', 'post', 'normal', 'high');
 }
 
-if($wps_options['wp_subscribes_send'])
+if(isset($wps_options['wp_subscribes_send']))
 	add_action('add_meta_boxes', 'wp_sms_subscribe_meta_box');
 
 function wp_sms_subscribe_post($post) {
@@ -42,7 +42,7 @@ function wp_sms_subscribe_send($wp_sms_new_status = NULL, $wp_sms_old_status = N
 	}
 	return $post;
 }
-if($wps_options['wp_subscribes_send'])
+if(isset($wps_options['wp_subscribes_send']))
 	add_action('transition_post_status', 'wp_sms_subscribe_send', 10, 3);
 
 function wp_sms_register_new_subscribe($name, $mobile) {

@@ -91,26 +91,28 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 		
         //Detect when a bulk action is being triggered...
 		// Search action
-        if( $_GET['s'] ) {
+        if( isset($_GET['s']) ) {
 			$this->data = $wpdb->get_results($wpdb->prepare( "SELECT * from `{$table_prefix}sms_send` WHERE message LIKE %s OR recipient LIKE %s;", '%' . $wpdb->esc_like($_GET['s']) . '%', '%' . $wpdb->esc_like($_GET['s']) . '%'), ARRAY_A);
-			
+        }
+		
 		// Bulk delete action
-        } else if( 'bulk_delete'===$this->current_action() and $_GET['id'] ) {
+		if( 'bulk_delete' == $this->current_action() ) {
 			foreach($_GET['id'] as $id)
 				$wpdb->delete($table_prefix . "sms_send", array('ID' => $id) );
 				
 			$this->data = $wpdb->get_results("SELECT * FROM `{$table_prefix}sms_send`", ARRAY_A);
 			echo '<div class="updated notice is-dismissible below-h2"><p>'.__('Items removed.', 'wp-sms').'</p></div>';
-			
-        // Single delete action
-		} else if( 'delete'===$this->current_action() ) {
+		}
+		
+		// Single delete action
+		if( 'delete' == $this->current_action() ) {
 			$wpdb->delete($table_prefix . "sms_send", array('ID' => $_GET['ID']) );
 			$this->data = $wpdb->get_results("SELECT * FROM `{$table_prefix}sms_send`", ARRAY_A);
 			echo '<div class="updated notice is-dismissible below-h2"><p>'.__('Item removed.', 'wp-sms').'</p></div>';
 		}
 		
 		// Resend sms
-		if( 'resend'===$this->current_action() ) {
+		if( 'resend' == $this->current_action() ) {
 			global $sms;
 			
 			$result = $wpdb->get_row($wpdb->prepare( "SELECT * from `{$table_prefix}sms_send` WHERE ID =%s;", $_GET['ID']));
@@ -118,8 +120,7 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 			$sms->msg = $result->message;
 			$sms->SendSMS();
 			
-			echo '<div class="updated notice is-dismissible below-h2"><p>'.__('SMS Sended.', 'wp-sms').'</p></div>';
-			
+			echo '<div class="updated notice is-dismissible below-h2"><p>'.__('SMS Sended.', 'wp-sms').'</p></div>';	
 		}
         
     }
