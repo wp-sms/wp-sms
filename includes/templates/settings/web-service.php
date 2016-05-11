@@ -145,6 +145,7 @@
 							<option value="modiranweb" <?php selected(get_option('wp_webservice'), 'modiranweb'); ?>>modiranweb.net</option>
 							<option value="smsline" <?php selected(get_option('wp_webservice'), 'smsline'); ?>>smsline.ir</option>
 							<option value="iransms" <?php selected(get_option('wp_webservice'), 'iransms'); ?>>iransms.co</option>
+							<option value="arkapayamak" <?php selected(get_option('wp_webservice'), 'arkapayamak'); ?>>arkapayamak.ir</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Turkey', 'wp-sms'); ?>">
