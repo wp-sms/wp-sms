@@ -1,6 +1,6 @@
 <?php
 	class gateway extends WP_SMS {
-		private $wsdl_link = "http://sms.gateway.sa/api/";
+		private $wsdl_link = "https://sms.gateway.sa/api/";
 		public $tariff = "http://sms.gateway.sa/";
 		public $unitrial = false;
 		public $unit;

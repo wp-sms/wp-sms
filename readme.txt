@@ -239,6 +239,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Renamed `wps_update_group` action to `wp_sms_update_group`.
 * Removed select access option in settig page.
 * Removed `Hook` method from `WP_SMS` class and used `do_action` for gateways class.
+* Updated `http` to `https` link in gateway.sa gateway.
 
 = 3.1.3 =
 * Compatible with wordpress 4.5
