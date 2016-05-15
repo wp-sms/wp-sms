@@ -15,7 +15,10 @@
 				<td><?php _e('Your Mobile Number', 'wp-sms'); ?>:</td>
 				<td>
 					<input type="text" dir="ltr" style="width: 200px;" name="wp_admin_mobile" value="<?php echo get_option('wp_admin_mobile'); ?>"/>
-					<p class="description"><?php echo sprintf(__('Enter your mobile number for get sms from plugin. Your mobile should like <code>%s</code>', 'wp-sms'), $sms->validateNumber); ?></p>
+					<p class="description"><?php _e('Enter your mobile number for get sms notification from plugin.', 'wp-sms'); ?></p>
+					<?php if( $sms->validateNumber ) { ?>
+					<p class="description"><?php echo sprintf(__('Example: <code>%s</code>', 'wp-sms'), $sms->validateNumber); ?></p>
+					<?php } ?>
 				</td>
 			</tr>
 			

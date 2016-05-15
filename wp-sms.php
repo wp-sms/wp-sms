@@ -251,9 +251,6 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	private function activity() {
-		if(!get_option('wp_username') || !get_option('wp_password'))
-			add_action('admin_notices', array($this, 'admin_notices'));
-		
 		if(!get_option('wp_sms_mcc'))
 			update_option('wp_sms_mcc', '09');
 		
@@ -313,16 +310,6 @@ class WP_SMS_Plugin {
 		$subscribe = $this->db->get_var("SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes");
 		echo "<li class='wpsms-subscribe-count'><a href='".$this->admin_url."admin.php?page=wp-sms-subscribers'>".sprintf(__('%s Subscriber', 'wp-sms'), $subscribe)."</a></li>";
 		echo "<li class='wpsms-credit-count'><a href='".$this->admin_url."admin.php?page=wp-sms-settings&tab=web-service'>".sprintf(__('%s SMS Credit', 'wp-sms'), get_option('wp_last_credit'))."</a></li>";
-	}
-	
-	/**
-	 * Admin notieces plugin
-	 *
-	 * @param  Not param
-	 */
-	public function admin_notices() {
-		$get_bloginfo_url = get_admin_url() . "admin.php?page=wp-sms-settings&tab=web-service";
-		echo '<br><div class="update-nag">'.sprintf(__('For Activate WP SMS Plugin, please enable your <a href="%s">SMS gateway</a>.', 'wp-sms'), $get_bloginfo_url).'</div>';
 	}
 	
 	/**

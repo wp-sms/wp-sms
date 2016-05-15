@@ -33,7 +33,7 @@
 		<table class="form-table">
 			<?php wp_nonce_field('update-options');?>
 			<tr>
-				<th><?php _e('Web Service', 'wp-sms'); ?>:</th>
+				<th><?php _e('Gateway', 'wp-sms'); ?>:</th>
 				<td>
 					<select name="wp_webservice" id="wp-webservice" class="chosen-select<?php echo is_rtl() == true? " chosen-rtl":""; ?>" onChange="javascript:openwin()">
 						<option value=""><?php _e('Select your Web Service', 'wp-sms'); ?></option>
@@ -116,7 +116,6 @@
 							<option value="afe" <?php selected(get_option('wp_webservice'), 'afe'); ?>>afe.ir</option>
 							<option value="smshooshmand" <?php selected(get_option('wp_webservice'), 'smshooshmand'); ?>>smshooshmand.com</option>
 							<option value="asanak" <?php selected(get_option('wp_webservice'), 'asanak'); ?>>asanak.ir</option>
-							<option value="smsservice" <?php selected(get_option('wp_webservice'), 'smsservice'); ?>>smsservice.ir</option>
 							<option value="payamakpanel" <?php selected(get_option('wp_webservice'), 'payamakpanel'); ?>>payamak-panel.com</option>
 							<option value="barmanpayamak" <?php selected(get_option('wp_webservice'), 'barmanpayamak'); ?>>barmanpayamak.ir</option>
 							<option value="farazpayam" <?php selected(get_option('wp_webservice'), 'farazpayam'); ?>>farazpayam.com</option>
@@ -146,6 +145,7 @@
 							<option value="smsline" <?php selected(get_option('wp_webservice'), 'smsline'); ?>>smsline.ir</option>
 							<option value="iransms" <?php selected(get_option('wp_webservice'), 'iransms'); ?>>iransms.co</option>
 							<option value="arkapayamak" <?php selected(get_option('wp_webservice'), 'arkapayamak'); ?>>arkapayamak.ir</option>
+							<option value="smsservice" <?php selected(get_option('wp_webservice'), 'smsservice'); ?>>smsservice.ir</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Turkey', 'wp-sms'); ?>">
@@ -209,8 +209,7 @@
 					<?php do_action('wp_sms_after_gateway'); ?>
 					
 					<?php if(!get_option('wp_webservice')) { ?>
-					<p class="description"><?php echo sprintf(__('If your Web service is not on the top list, <a href="%s">click here.</a>', 'wp-sms'), $sms_page['about']); ?></p>
-					<p class="description"><?php echo sprintf(__('If you do not have a web service, <a href="%s">click here.</a>', 'wp-sms'), $sms_page['about']); ?></p>
+					<p class="description"><?php echo sprintf(__('If your gateway is not on the top list, <a href="%s">click here.</a>', 'wp-sms'), $sms_page['about']); ?></p>
 					<?php } ?>
 				</td>
 			</tr>
