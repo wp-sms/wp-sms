@@ -146,6 +146,7 @@
 							<option value="iransms" <?php selected(get_option('wp_webservice'), 'iransms'); ?>>iransms.co</option>
 							<option value="arkapayamak" <?php selected(get_option('wp_webservice'), 'arkapayamak'); ?>>arkapayamak.ir</option>
 							<option value="smsservice" <?php selected(get_option('wp_webservice'), 'smsservice'); ?>>smsservice.ir</option>
+							<option value="chaparpanel" <?php selected(get_option('wp_webservice'), 'chaparpanel'); ?>>chaparpanel.ir</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Turkey', 'wp-sms'); ?>">

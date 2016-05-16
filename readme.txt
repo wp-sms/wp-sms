@@ -227,6 +227,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added New gateway (bulutfon.com).
 * Added New gateway (iransms.co).
 * Added New gateway (arkapayamak.ir).
+* Added New gateway (chaparpanel.ir).
 * Fixed issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.
 * Fixed `Undefined index` errors in ths plugin when wordpress debug is enable.
 * Fixed Issue in outbox, subscribe and group page after bulk edit.
