@@ -16,6 +16,7 @@
 				<td align="center" scope="row">
 					<?php _e('Send a SMS via WordPress, Subscribe for sms newsletter and send an SMS to the subscriber newsletter.', 'wp-sms'); ?>
 					<p><?php echo sprintf(__('This plugin is a free product of the %s', 'wp-sms'), '<a href="http://veronalabs.com/" target="_blank">Verona Labs</a>'); ?></p>
+					<p><?php echo sprintf(__('Available in %s for contributors', 'wp-sms'), '<a href="https://github.com/veronalabs/wp-sms" target="_blank">Github</a>'); ?></p>
 				</td>
 			</tr>
 			
