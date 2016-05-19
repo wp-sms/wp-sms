@@ -36,7 +36,6 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 * Widget for register user to sms subscribed.
 * Support Wordpress Hooks.
 * Support Wordpress Shortcode.
-* Send Suggestion post via SMS.
 * Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.
@@ -231,6 +230,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.
 * Fixed `Undefined index` errors in ths plugin when wordpress debug is enable.
 * Fixed Issue in outbox, subscribe and group page after bulk edit.
+* Updated `http` to `https` link in gateway.sa gateway.
+* Updated Language file and any string in the plugin.
 * Renamed `wp_after_sms_gateway` action to `wp_sms_after_gateway`.
 * Renamed `wps_add_subscriber` action to `wp_sms_add_subscriber`.
 * Renamed `wps_delete_subscriber` action to `wp_sms_delete_subscriber`.
@@ -241,8 +242,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Removed select access option in settig page.
 * Removed `Hook` method from `WP_SMS` class and used `do_action` for gateways class.
 * Removed gateway message in `wp-admin`.
-* Updated `http` to `https` link in gateway.sa gateway.
-* Updated Language file and any string in the plugin.
+* Removed Suggestion sms from plugin.
 
 = 3.1.3 =
 * Compatible with wordpress 4.5

@@ -22,7 +22,6 @@ Very easy Send SMS by PHP code:
 * Widget for register user to sms subscribed.
 * Support Wordpress Hooks.
 * Support Wordpress Shortcode.
-* Send Suggestion post via SMS.
 * Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.

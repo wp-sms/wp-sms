@@ -42,13 +42,14 @@
 						
 						<optgroup label="<?php _e('Iran', 'wp-sms'); ?>">
 							<option value="sarinapayamak" <?php selected(get_option('wp_webservice'), 'sarinapayamak'); ?>>Sarinapayamak.com</option>
-							<option value="parandhost" <?php selected(get_option('wp_webservice'), 'parandhost'); ?>>parandhost.com</option>
 							<option value="iransmspanel" <?php selected(get_option('wp_webservice'), 'iransmspanel'); ?>>iransmspanel.ir</option>
-							<option value="hostiran" <?php selected(get_option('wp_webservice'), 'hostiran'); ?>>hostiran.net</option>
+							<option value="chaparpanel" <?php selected(get_option('wp_webservice'), 'chaparpanel'); ?>>chaparpanel.ir</option>
 							<option value="adpdigital" <?php selected(get_option('wp_webservice'), 'adpdigital'); ?>>adpdigital.com</option>
+							<option value="hostiran" <?php selected(get_option('wp_webservice'), 'hostiran'); ?>>hostiran.net</option>
+							<option value="farapayamak" <?php selected(get_option('wp_webservice'), 'farapayamak'); ?>>farapayamak.com</option>
+							<option value="parandhost" <?php selected(get_option('wp_webservice'), 'parandhost'); ?>>parandhost.com</option>
 							<option value="smsde" <?php selected(get_option('wp_webservice'), 'smsde'); ?>>smsde.ir</option>
 							<option value="payamakde" <?php selected(get_option('wp_webservice'), 'payamakde'); ?>>payamakde.ir</option>
-							<option value="farapayamak" <?php selected(get_option('wp_webservice'), 'farapayamak'); ?>>farapayamak.com</option>
 							<option value="panizsms" <?php selected(get_option('wp_webservice'), 'panizsms'); ?>>panizsms.com</option>
 							<option value="sepehritc" <?php selected(get_option('wp_webservice'), 'sepehritc'); ?>>sepehritc.com</option>
 							<option value="markazpayamak" <?php selected(get_option('wp_webservice'), 'markazpayamak'); ?>>markazpayamak.ir</option>
@@ -146,7 +147,6 @@
 							<option value="iransms" <?php selected(get_option('wp_webservice'), 'iransms'); ?>>iransms.co</option>
 							<option value="arkapayamak" <?php selected(get_option('wp_webservice'), 'arkapayamak'); ?>>arkapayamak.ir</option>
 							<option value="smsservice" <?php selected(get_option('wp_webservice'), 'smsservice'); ?>>smsservice.ir</option>
-							<option value="chaparpanel" <?php selected(get_option('wp_webservice'), 'chaparpanel'); ?>>chaparpanel.ir</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Turkey', 'wp-sms'); ?>">
