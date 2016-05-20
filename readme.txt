@@ -242,7 +242,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Removed select access option in settig page.
 * Removed `Hook` method from `WP_SMS` class and used `do_action` for gateways class.
 * Removed gateway message in `wp-admin`.
-* Removed Suggestion sms from plugin.
+* Removed Suggestion sms from plugin (Because of the inefficiency).
 
 = 3.1.3 =
 * Compatible with wordpress 4.5

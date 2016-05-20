@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-19 17:15+0330\n"
-"PO-Revision-Date: 2016-05-19 17:16+0330\n"
+"POT-Creation-Date: 2016-05-19 18:38+0330\n"
+"PO-Revision-Date: 2016-05-19 18:38+0330\n"
 "Last-Translator: Mostafa Soufi <mst404@gmail.com>\n"
 "Language-Team: Parsi Wordpress\n"
 "Language: fa_IR\n"
@@ -1087,7 +1087,7 @@ msgstr "امتیاز به افزونه"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/version.php:8
 msgid "Subscribe to our Email Newsletter"
-msgstr "اشتراک در خبرنامه ایمیلی ما"
+msgstr "عضویت در خبرنامه ما"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/version.php:10
 msgid "Get professional package!"
