@@ -100,7 +100,7 @@ function wps_notification_login($username_login, $username){
 	$sms->to = array(get_option('wp_admin_mobile'));
 	$string = $wps_options['wpsms_ul_tt'];
 	$template_vars = array(
-		'username_login'	=> $username->username_login,
+		'username_login'	=> $username->user_login,
 		'display_name'	=> $username->display_name
 	);
 	$final_message = preg_replace('/%(.*?)%/ime', "\$template_vars['$1']", $string);
