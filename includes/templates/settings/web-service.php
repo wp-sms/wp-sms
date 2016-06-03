@@ -149,6 +149,10 @@
 							<option value="smsservice" <?php selected(get_option('wp_webservice'), 'smsservice'); ?>>smsservice.ir</option>
 						</optgroup>
 						
+						<optgroup label="<?php _e('Brazil', 'wp-sms'); ?>">
+							<option value="sonoratecnologia" <?php selected(get_option('wp_webservice'), 'sonoratecnologia'); ?>>sonoratecnologia.com.br</option>
+						</optgroup>
+
 						<optgroup label="<?php _e('Turkey', 'wp-sms'); ?>">
 							<option value="bulutfon" <?php selected(get_option('wp_webservice'), 'bulutfon'); ?>>bulutfon.com</option>
 						</optgroup>

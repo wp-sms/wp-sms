@@ -8,6 +8,7 @@ Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
 */
+
 define('WP_SMS_VERSION', '3.2');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_ADMIN_URL', get_admin_url());

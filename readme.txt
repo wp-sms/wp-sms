@@ -220,6 +220,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 3.2.1 =
+* Added New gateway (sonoratecnologia.com.br).
+
 = 3.2 =
 * Added New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
 * Added New filters `wp_sms_from`, `wp_sms_to`, `wp_sms_msg` in the plugin.
