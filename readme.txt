@@ -89,6 +89,7 @@ Gateways:
 * cpsms.dk
 * bulksmshyderabad.co.in
 * ozioma.net
+* smsfactor.com
 	
 Other features:
 
