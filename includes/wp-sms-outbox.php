@@ -60,10 +60,10 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
     function get_columns(){
         $columns = array(
             'cb'		=> '<input type="checkbox" />', //Render a checkbox instead of text
-            'sender'	=> __('Sender', 'wp-sms') . ' <span class="dashicons dashicons-admin-users"></span>',
-            'date'		=> __('Date', 'wp-sms') . ' <span class="dashicons dashicons-clock"></span>',
-            'message'	=> __('Message', 'wp-sms') . ' <span class="dashicons dashicons-format-status"></span>',
-            'recipient'	=> __('Recipient', 'wp-sms') . ' <span class="dashicons dashicons-groups"></span>',
+            'sender'	=> __('Sender', 'wp-sms'),
+            'date'		=> __('Date', 'wp-sms'),
+            'message'	=> __('Message', 'wp-sms'),
+            'recipient'	=> __('Recipient', 'wp-sms'),
         );
         return $columns;
     }

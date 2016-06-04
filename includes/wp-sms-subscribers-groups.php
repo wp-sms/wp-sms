@@ -59,8 +59,8 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
     function get_columns(){
         $columns = array(
             'cb'		=> '<input type="checkbox" />', //Render a checkbox instead of text
-            'name'		=> __('Name', 'wp-sms') . ' <span class="dashicons dashicons-category"></span>',
-            'total_subscribers'	=> __('Total subscribers', 'wp-sms') . ' <span class="dashicons dashicons-groups"></span>',
+            'name'		=> __('Name', 'wp-sms'),
+            'total_subscribers'	=> __('Total subscribers', 'wp-sms'),
         );
         return $columns;
     }

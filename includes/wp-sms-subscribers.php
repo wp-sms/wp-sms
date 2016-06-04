@@ -69,12 +69,12 @@ class WP_SMS_Subscribers_List_Table extends WP_List_Table {
     function get_columns(){
         $columns = array(
             'cb'		=> '<input type="checkbox" />', //Render a checkbox instead of text
-            'name'		=> __('Name', 'wp-sms') . ' <span class="dashicons dashicons-admin-users"></span>',
-            'mobile'	=> __('Mobile', 'wp-sms') . ' <span class="dashicons dashicons-image-filter"></span>',
-            'group_ID'	=> __('Group', 'wp-sms') . ' <span class="dashicons dashicons-category"></span>',
-            'date'		=> __('Date', 'wp-sms') . ' <span class="dashicons dashicons-clock"></span>',
-            'status'	=> __('Status', 'wp-sms') . ' <span class="dashicons dashicons-forms"></span>',
-            'activate_key'	=> __('Activate code', 'wp-sms') . ' <span class="dashicons dashicons-admin-network"></span>',
+            'name'		=> __('Name', 'wp-sms'),
+            'mobile'	=> __('Mobile', 'wp-sms'),
+            'group_ID'	=> __('Group', 'wp-sms'),
+            'date'		=> __('Date', 'wp-sms'),
+            'status'	=> __('Status', 'wp-sms'),
+            'activate_key'	=> __('Activate code', 'wp-sms'),
         );
         return $columns;
     }

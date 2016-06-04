@@ -222,6 +222,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 3.2.1 =
 * Added New gateway (sonoratecnologia.com.br).
+* Removed dashicons from `WP_List_Table`.
 
 = 3.2 =
 * Added New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
