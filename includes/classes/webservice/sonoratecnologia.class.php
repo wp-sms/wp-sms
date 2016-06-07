@@ -47,12 +47,18 @@
 
 			// Encode message
 			$msg = urlencode($this->msg);
+
+			// Set gateway port
+			if( $this->has_key )
+				$port = "&port=".$this->has_key;
+			else
+				$port = '';
 			
 			$curl = curl_init();
 
 			curl_setopt_array($curl, array(
 				CURLOPT_PORT => "1002",
-				CURLOPT_URL => $this->wsdl_link. "sendsms?username=".$this->username."&password=".$this->password."&phonenumber=".$to."&message=".$msg."&port=".$this->has_key."&report=1&timeout=0",
+				CURLOPT_URL => $this->wsdl_link. "sendsms?username=".$this->username."&password=".$this->password."&phonenumber=".$to."&message=".$msg.$port."&report=1&timeout=0",
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING => "",
 				CURLOPT_MAXREDIRS => 10,
