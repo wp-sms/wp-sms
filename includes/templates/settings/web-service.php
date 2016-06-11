@@ -92,7 +92,7 @@
 							<option value="sms_new" <?php selected(get_option('wp_webservice'), 'sms_new'); ?>>sms.ir - New</option>
 							<option value="popaksms" <?php selected(get_option('wp_webservice'), 'popaksms'); ?>>popaksms.ir</option>
 							<option value="novin1sms" <?php selected(get_option('wp_webservice'), 'novin1sms'); ?>>novin1sms.ir</option>
-							<option value="hamyaarsms" <?php selected(get_option('wp_webservice'), 'hamyaarsms'); ?>>parhost.net</option>
+							<option value="_500sms" <?php selected(get_option('wp_webservice'), '_500sms'); ?>>500sms.ir</option>
 							<option value="matinsms" <?php selected(get_option('wp_webservice'), 'matinsms'); ?>>smspanel.mat-in.ir</option>
 							<option value="iranspk" <?php selected(get_option('wp_webservice'), 'iranspk'); ?>>iranspk.ir</option>
 							<option value="freepayamak" <?php selected(get_option('wp_webservice'), 'freepayamak'); ?>>freepayamak.ir</option>
