@@ -179,7 +179,7 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
 # Sources
 * Wordpress plugin page: www.wordpress.org/plugins/wp-sms/
-* Website plugin: www.wp-sms-plugin.com
-* Translator: www.wp-sms-plugin.com/translators
-* Buy Pro version: www.wp-sms-plugin.com/purchases
+* Website plugin: www.wp-sms.ir
+* Translator: www.wp-sms.ir/translators
+* Buy Pro version: www.wp-sms.ir/purchases
 * Donate: www.mostafa-soufi.ir/donate/

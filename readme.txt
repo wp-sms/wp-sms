@@ -50,7 +50,7 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 = Professional Package =
 In the Professional pack added many features, another useful gateway and is integrated with another plugins.
 
-[Buy Professional Package](http://wp-sms-plugin.com/purchases)
+[Buy Professional Package](http://wp-sms.ir/purchases)
 
 = Available on GitHub =
 WP-SMS is now available for develop on the GitHub. I look forward to your feedback!
@@ -106,7 +106,7 @@ Plugin can be send sms to user or admin after submit the form.
 You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
 * Premium Support
 
-[Buy Professional Package](http://wp-sms-plugin.com/purchases)
+[Buy Professional Package](http://wp-sms.ir/purchases)
 
 = Translators =
 * English
@@ -117,7 +117,7 @@ You can adding mobile number field to profile page. can be send sms to user or a
 * German (Thanks Robert Skiba)
 * Swedish (Thanks Kramfors)
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-plugin.com/translators) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms.ir/translators) today!
 
 = Support =
 * [Donate to this plugin](http://mostafa-soufi.ir/donate/)

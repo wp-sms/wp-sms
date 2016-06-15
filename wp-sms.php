@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP SMS
-Plugin URI: http://wp-sms-plugin.com/
+Plugin URI: http://wp-sms.ir/
 Description: A complete wordpress plugin to send sms with a high capability.
 Version: 3.2.1
 Author: Mostafa Soufi
@@ -12,7 +12,7 @@ Text Domain: wp-sms
 define('WP_SMS_VERSION', '3.2.1');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_ADMIN_URL', get_admin_url());
-define('WP_SMS_SITE', 'http://wp-sms-plugin.com');
+define('WP_SMS_SITE', 'http://wp-sms.ir');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
 $date = date('Y-m-d H:i:s' ,current_time('timestamp', 0));
