@@ -180,6 +180,8 @@
 						
 						<optgroup label="<?php _e('Indian', 'wp-sms'); ?>">
 							<option value="shreesms" <?php selected(get_option('wp_webservice'), 'shreesms'); ?>>shreesms.net</option>
+							<option value="instantalerts" <?php selected(get_option('wp_webservice'), 'instantalerts'); ?>>springedge.com</option>
+							<option value="smsgatewayhub" <?php selected(get_option('wp_webservice'), 'smsgatewayhub'); ?>>smsgatewayhub.com</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Italian', 'wp-sms'); ?>">
@@ -193,6 +195,10 @@
 						
 						<optgroup label="<?php _e('Arabia', 'wp-sms'); ?>">
 							<option value="gateway" <?php selected(get_option('wp_webservice'), 'gateway'); ?>>gateway.sa</option>
+						</optgroup>
+
+						<optgroup label="<?php _e('United Kingdom', 'wp-sms'); ?>">
+							<option value="_textplode" <?php selected(get_option('wp_webservice'), '_textplode'); ?>>textplode.com</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Global', 'wp-sms'); ?>">

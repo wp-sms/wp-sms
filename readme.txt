@@ -222,6 +222,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 3.2.2 =
+* Added new gateway (smsgatewayhub.com)
+* Added new gateway (textplode.com)
 * Language (Brazil) updated.
 
 = 3.2.1 =

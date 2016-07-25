@@ -37,7 +37,14 @@
 			
 			if($result) {
 				$this->InsertToDB($this->from, $this->msg, $this->to);
-				$this->Hook('wp_sms_send', $json);
+				
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 * @param string $result result output.
+				 */
+				do_action('wp_sms_send', $result);
 				
 				return $json;
 			}
