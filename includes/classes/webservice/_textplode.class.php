@@ -48,17 +48,18 @@
 			$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
 			// Init class
-			$textplode = new Textplode('API_KEY');
-
-			$merge_data = array( array('{FNAME}', 'Contact'), array('{LNAME}', 'One') );
+			$textplode = new Textplode($this->has_key);
 
 			// Add recipient
 			foreach ($this->to as $to) {
-				$textplode->messages->add_recipient($to, $merge_data);
+				$textplode->messages->add_recipient($to, array());
 			}
 
+			// Set Message
+			$textplode->messages->set_message($this->msg);
+
 			// Send sms
-			$result = $textplode->messages->set_message($this->msg);
+			$result = $textplode->messages->send();
 			
 			// Check result
 			if(!$result)
@@ -78,8 +79,8 @@
 		public function GetCredit() {
 
 			// Check params
-			if(!$this->username and !$this->password)
-				return false;
+			// if(!$this->username and !$this->password)
+				// return false;
 
 			// Init class
 			$textplode = new Textplode($this->has_key);
