@@ -3,7 +3,7 @@ Contributors: mostafa.s1990
 Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 4.5
+Tested up to: 4.5.3
 Stable tag: 3.2.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
