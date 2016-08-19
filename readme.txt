@@ -222,7 +222,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 3.2.2 =
-* Added new gateway (instantalerts.co)
+* Added new gateway (springedge.com)
 * Added new gateway (textplode.com)
 * Added new gateway (textplode.com)
 * Language (Brazil) updated.
