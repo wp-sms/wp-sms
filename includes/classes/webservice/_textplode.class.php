@@ -55,6 +55,9 @@
 				$textplode->messages->add_recipient($to, array());
 			}
 
+			// Set From Name
+			$textplode->messages->set_from($this->from);
+
 			// Set Message
 			$textplode->messages->set_message($this->msg);
 
@@ -79,8 +82,8 @@
 		public function GetCredit() {
 
 			// Check params
-			// if(!$this->username and !$this->password)
-				// return false;
+			if(!$this->username and !$this->password)
+				return false;
 
 			// Init class
 			$textplode = new Textplode($this->has_key);

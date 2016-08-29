@@ -40,8 +40,6 @@
 		}
 		
 		public function GetCredit() {
-			// Check fields
-			if(!$this->username && !$this->password && $this->has_key) return;
 			
 			// Get data
 			$get_data = file_get_contents($this->wsdl_link . 'status/credit?apikey=' . $this->has_key);
