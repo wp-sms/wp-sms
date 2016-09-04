@@ -12,13 +12,13 @@ jQuery(document).ready(function() {
 <tr>
 	<th><?php _e('New order', 'wp-sms'); ?></th>
 	<td>
-		<input type="checkbox" name="wpsms[wpsms_edd_no_stats]" id="wpsms-edd-no-stats" <?php echo $wps_options['wpsms_edd_no_stats'] ==true? 'checked="checked"':'';?>/>
+		<input type="checkbox" name="wpsms[wpsms_edd_no_stats]" id="wpsms-edd-no-stats" <?php echo isset($wps_options['wpsms_edd_no_stats']) ==true? 'checked="checked"':'';?>/>
 		<label for="wpsms-edd-no-stats"><?php _e('Active', 'wp-sms'); ?></label>
 		<p class="description"><?php _e('Send a sms to you When get new order.', 'wp-sms'); ?></p>
 	</td>
 </tr>
 
-<?php if( $wps_options['wpsms_edd_no_stats'] ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
+<?php if( isset($wps_options['wpsms_edd_no_stats']) ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
 <tr valign="top"<?php echo $hidden;?> id="wpsms-edd-no">
 	<td scope="row">
 		<label for="wpsms-edd-no-tt"><?php _e('Text template', 'wp-sms'); ?>:</label>

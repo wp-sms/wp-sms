@@ -50,7 +50,7 @@ jQuery(document).ready(function() {
 <tr>
 	<th><?php _e('The new release of WordPress', 'wp-sms'); ?></th>
 	<td>
-		<input type="checkbox" name="wpsms[wp_notification_new_wp_version]" id="wp_notification_new_wp_version" <?php echo $wps_options['wp_notification_new_wp_version'] ==true? 'checked="checked"':'';?>/>
+		<input type="checkbox" name="wpsms[wp_notification_new_wp_version]" id="wp_notification_new_wp_version" <?php echo isset($wps_options['wp_notification_new_wp_version']) ==true? 'checked="checked"':'';?>/>
 		<label for="wp_notification_new_wp_version"><?php _e('Active', 'wp-sms'); ?></label>
 		<p class="description"><?php _e('Send a sms to you When the new release of WordPress.', 'wp-sms'); ?></p>
 	</td>
@@ -59,13 +59,13 @@ jQuery(document).ready(function() {
 <tr>
 	<th><?php _e('Register a new user', 'wp-sms'); ?></th>
 	<td>
-		<input type="checkbox" name="wpsms[wpsms_nrnu_stats]" id="wpsms-nrnu-stats" <?php echo $wps_options['wpsms_nrnu_stats'] ==true? 'checked="checked"':'';?>/>
+		<input type="checkbox" name="wpsms[wpsms_nrnu_stats]" id="wpsms-nrnu-stats" <?php echo isset($wps_options['wpsms_nrnu_stats']) ==true? 'checked="checked"':'';?>/>
 		<label for="wpsms-nrnu-stats"><?php _e('Active', 'wp-sms'); ?></label>
 		<p class="description"><?php _e('Send a sms to you and user when register on wordpress.', 'wp-sms'); ?></p>
 	</td>
 </tr>
 
-<?php if( $wps_options['wpsms_nrnu_stats'] ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
+<?php if( isset($wps_options['wpsms_nrnu_stats']) ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
 <tr valign="top"<?php echo $hidden;?> id="wpsms-nrnu">
 	<td scope="row">
 		<label for="wpsms-nrnu-tt"><?php _e('Text template', 'wp-sms'); ?>:</label>
@@ -97,13 +97,13 @@ jQuery(document).ready(function() {
 <tr>
 	<th><?php _e('New comment', 'wp-sms'); ?></th>
 	<td>
-		<input type="checkbox" name="wpsms[wpsms_gnc_stats]" id="wpsms-gnc-stats" <?php echo $wps_options['wpsms_gnc_stats'] ==true? 'checked="checked"':'';?>/>
+		<input type="checkbox" name="wpsms[wpsms_gnc_stats]" id="wpsms-gnc-stats" <?php echo isset($wps_options['wpsms_gnc_stats']) ==true? 'checked="checked"':'';?>/>
 		<label for="wpsms-gnc-stats"><?php _e('Active', 'wp-sms'); ?></label>
 		<p class="description"><?php _e('Send a sms to you When get a new comment.', 'wp-sms'); ?></p>
 	</td>
 </tr>
 
-<?php if( $wps_options['wpsms_gnc_stats'] ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
+<?php if( isset($wps_options['wpsms_gnc_stats']) ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
 <tr valign="top"<?php echo $hidden;?> id="wpsms-gnc">
 	<td scope="row">
 		<label for="wpsms-gnc-tt"><?php _e('Text template', 'wp-sms'); ?>:</label>
@@ -127,13 +127,13 @@ jQuery(document).ready(function() {
 <tr>
 	<th><?php _e('User login', 'wp-sms'); ?></th>
 	<td>
-		<input type="checkbox" name="wpsms[wpsms_ul_stats]" id="wpsms-ul-stats" <?php echo $wps_options['wpsms_ul_stats'] ==true? 'checked="checked"':'';?>/>
+		<input type="checkbox" name="wpsms[wpsms_ul_stats]" id="wpsms-ul-stats" <?php echo isset($wps_options['wpsms_ul_stats']) ==true? 'checked="checked"':'';?>/>
 		<label for="wpsms-ul-stats"><?php _e('Active', 'wp-sms'); ?></label>
 		<p class="description"><?php _e('Send a sms to you When user is login.', 'wp-sms'); ?></p>
 	</td>
 </tr>
 
-<?php if( $wps_options['wpsms_ul_stats'] ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
+<?php if( isset($wps_options['wpsms_ul_stats']) ) { $hidden=""; } else { $hidden=" style='display: none;'"; }?>
 <tr valign="top"<?php echo $hidden;?> id="wpsms-ul">
 	<td scope="row">
 		<label for="wpsms-ul-tt"><?php _e('Text template', 'wp-sms'); ?>:</label>
