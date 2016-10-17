@@ -55,6 +55,9 @@
 				$textplode->messages->add_recipient($to, array());
 			}
 
+			// Set From Name
+			$textplode->messages->set_from($this->from);
+
 			// Set Message
 			$textplode->messages->set_message($this->msg);
 
