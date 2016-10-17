@@ -1,6 +1,6 @@
 <?php
 	class niazpardazcom extends WP_SMS {
-		private $wsdl_link = "http://5.9.76.186/SendService.svc?singleWsdl";
+		private $wsdl_link = "http://payamak-service.ir/SendService.svc?singleWsdl";
 		public $tariff = "http://www.niazpardaz.com/";
 		public $unitrial = true;
 		public $unit;
