@@ -357,7 +357,7 @@ class WP_SMS_Plugin {
 		$get_users_mobile = $this->db->get_col("SELECT `meta_value` FROM `{$this->tb_prefix}usermeta` WHERE `meta_key` = 'mobile'");
 		
 		if(get_option('wp_webservice') && !$this->sms->GetCredit()) {
-			$get_bloginfo_url = $this->get_admin_url . "admin.php?page=wp-sms-settings&tab=web-service";
+			$get_bloginfo_url = WP_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
 			echo '<br><div class="update-nag">'.sprintf(__('Your credit for send sms is low!', 'wp-sms'), $get_bloginfo_url).'</div>';
 			return;
 		} else if(!get_option('wp_webservice')) {
@@ -527,7 +527,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function setting_page() {
-		$sms_page['about'] = get_admin_url() . "admin.php?page=wp-sms-settings&tab=about";
+		$sms_page['about'] = WP_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=about";
 		global $sms;
 		
 		if(isset($_GET['tab'])) {
