@@ -222,6 +222,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 3.2.3 =
+* Added new fateway (fortytwo.com)
 * Compatible up to wordpress 4.6
 * Fixes Undefined index error in plugin pages
 * Updated textplode gateway.

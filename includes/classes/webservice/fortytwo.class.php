@@ -1,7 +1,7 @@
 <?php
-	class firstpayamak extends WP_SMS {
-		private $wsdl_link = "http://ui.firstpayamak.ir/webservice/v2.asmx?WSDL";
-		public $tariff = "http://firstpayamak.ir/";
+	class fortytwo extends WP_SMS {
+		private $wsdl_link = "http://imghttp.fortytwotele.com/api/current";
+		public $tariff = "http://fortytwo.com/";
 		public $unitrial = false;
 		public $unit;
 		public $flash = "enable";
@@ -9,9 +9,7 @@
 
 		public function __construct() {
 			parent::__construct();
-			$this->validateNumber = "09xxxxxxxx";
-			
-			ini_set("soap.wsdl_cache_enabled", "0");
+			$this->validateNumber = "46731111111";
 		}
 
 		public function SendSMS() {
@@ -44,11 +42,14 @@
 			$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
 			$msg = urlencode($this->msg);
+			$route = "G1";
 			
 			foreach($this->to as $number) {
-				$result = file_get_contents("http://ui.firstpayamak.ir/tools/urlservice/send/?username={$this->username}&password={$this->password}&form={$this->from}&to={$number}&message={$msg}");
+				$result[] = file_get_contents($this->wsdl_link . "/send/message.php?username=".$this->username."&password=".$this->password."&to=".$number."&from=".$this->from."&message=".$msg."&route=".$route);
 			}
-			
+
+			file_put_contents('log', print_r($result, 1));
+
 			if($result) {
 				$this->InsertToDB($this->from, $this->msg, $this->to);
 				
@@ -63,8 +64,9 @@
 		}
 
 		public function GetCredit() {
-			$client = new SoapClient($this->wsdl_link);
-			$result = $client->GetCredit( array('username' => $this->username, 'password' => $this->password) );
-			return $result->GetCreditResult;
+			if( !$this->username or !$this->password )
+				return;
+
+			return true;
 		}
 	}

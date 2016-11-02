@@ -175,6 +175,10 @@
 						<optgroup label="<?php _e('Austria', 'wp-sms'); ?>">
 							<option value="smsgateway" <?php selected(get_option('wp_webservice'), 'smsgateway'); ?>>sms-gateway.at</option>
 						</optgroup>
+
+						<optgroup label="<?php _e('Malta', 'wp-sms'); ?>">
+							<option value="fortytwo" <?php selected(get_option('wp_webservice'), 'fortytwo'); ?>>fortytwo.com</option>
+						</optgroup>
 						
 						<optgroup label="<?php _e('Pakistan', 'wp-sms'); ?>">
 							<option value="difaan" <?php selected(get_option('wp_webservice'), 'difaan'); ?>>difaan</option>
