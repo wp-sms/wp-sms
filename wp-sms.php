@@ -1,22 +1,27 @@
 <?php
 /*
 Plugin Name: WP SMS
-Plugin URI: http://wp-sms.ir/
+Plugin URI: http://wpsms.veronalabs.com/
 Description: A complete wordpress plugin to send sms with a high capability.
-Version: 3.2.3
+Version: 4.0.0
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
 */
 
-define('WP_SMS_VERSION', '3.2.3');
-define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
-define('WP_ADMIN_URL', get_admin_url());
-define('WP_SMS_SITE', 'http://wp-sms.ir');
-define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
 
-$date = date('Y-m-d H:i:s' ,current_time('timestamp', 0));
-load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
+/**
+ * Plugin defines
+ */
+define('WP_SMS_VERSION', '3.2.3');
+define('WP_SMS_PLUGIN_DIR', plugin_dir_url(__FILE__));
+define('WP_SMS_ADMIN_URL', get_admin_url());
+define('WP_SMS_SITE_URL', 'http://wpsms.veronalabs.com/');
+define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
 // Use default gateway class if webservice not active
 if(!class_exists('WP_SMS')) {
@@ -78,7 +83,7 @@ class WP_SMS_Plugin {
 	 *
 	 * @var string
 	 */
-	public $admin_url = WP_ADMIN_URL;
+	public $admin_url = WP_SMS_ADMIN_URL;
 	
 	/**
 	 * WP SMS gateway object
@@ -118,23 +123,29 @@ class WP_SMS_Plugin {
 	/**
 	 * Constructors plugin
 	 *
-	 * @param  Not param
 	 */
 	public function __construct() {
+
+		// Global variables
 		global $sms, $wpdb, $table_prefix, $date, $wps_options;
 		
 		$this->sms = $sms;
 		$this->date = $date;
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
+		$this->date = date('Y-m-d H:i:s' ,current_time('timestamp', 0));
 		
 		__('WP SMS', 'wp-sms');
 		__('A complete wordpress plugin to send sms with a high capability.', 'wp-sms');
+
+		// Load textdomain
+		add_action( 'init', array($this, 'load_textdomain') );
+
 		
 		$this->includes();
 		$this->notifications();
 		$this->activity();
-		
+
 		$this->subscribe = new WP_SMS_Subscriptions();
 		
 		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
@@ -143,6 +154,17 @@ class WP_SMS_Plugin {
 		add_action('admin_bar_menu', array($this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'menu'));
+
+		// Setting api
+		$this->setting();
+	}
+
+	/**
+	 * Load plugin textdomain
+	 * @return void
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
 	}
 	
 	/**
@@ -357,7 +379,7 @@ class WP_SMS_Plugin {
 		$get_users_mobile = $this->db->get_col("SELECT `meta_value` FROM `{$this->tb_prefix}usermeta` WHERE `meta_key` = 'mobile'");
 		
 		if(get_option('wp_webservice') && !$this->sms->GetCredit()) {
-			$get_bloginfo_url = WP_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
+			$get_bloginfo_url = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
 			echo '<br><div class="update-nag">'.sprintf(__('Your credit for send sms is low!', 'wp-sms'), $get_bloginfo_url).'</div>';
 			return;
 		} else if(!get_option('wp_webservice')) {
@@ -520,14 +542,26 @@ class WP_SMS_Plugin {
 		
 		include_once dirname( __FILE__ ) . "/includes/templates/subscribe/groups.php";
 	}
+
+	/**
+	 * Plugin setting page
+	 * @return void
+	 */
+	private function setting() {
+		// Load setting api class
+		require_once dirname( __FILE__ ) . '/includes/classes/class.settings-api.php';
+		require_once dirname( __FILE__ ) . '/admin/settings.php';
+
+		new WP_SMS_Settings();
+	}
 	
 	/**
 	 * Plugin Setting page
 	 *
-	 * @param  Not param
 	 */
 	public function setting_page() {
-		$sms_page['about'] = WP_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=about";
+
+		$sms_page['about'] = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=about";
 		global $sms;
 		
 		if(isset($_GET['tab'])) {
