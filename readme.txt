@@ -64,6 +64,7 @@ Gateways:
 * plivo.com
 * clickatell.com
 * bulksms.com
+* fortytwo.com
 * infobip.com
 * nexmo.com
 * clockworksms.com

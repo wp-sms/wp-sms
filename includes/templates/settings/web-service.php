@@ -148,10 +148,6 @@
 							<option value="parsgreen" <?php selected(get_option('wp_webservice'), 'parsgreen'); ?>>api.ir</option>
 							<option value="firstpayamak" <?php selected(get_option('wp_webservice'), 'firstpayamak'); ?>>firstpayamak.ir</option>
 						</optgroup>
-						
-						<optgroup label="<?php _e('Malta', 'wp-sms'); ?>">
-							<option value="fortytwo" <?php selected(get_option('wp_webservice'), 'fortytwo'); ?>>fortytwo.com</option>
-						</optgroup>
 
 						<optgroup label="<?php _e('Brazil', 'wp-sms'); ?>">
 							<option value="sonoratecnologia" <?php selected(get_option('wp_webservice'), 'sonoratecnologia'); ?>>sonoratecnologia.com.br</option>
@@ -206,6 +202,7 @@
 						</optgroup>
 						
 						<optgroup label="<?php _e('Global', 'wp-sms'); ?>">
+							<option value="fortytwo" <?php selected(get_option('wp_webservice'), 'fortytwo'); ?>>fortytwo.com</option>
 							<option value="smsglobal" <?php selected(get_option('wp_webservice'), 'smsglobal'); ?>>smsglobal.com</option>
 							<option value="bearsms" <?php selected(get_option('wp_webservice'), 'bearsms'); ?>>bearsms.com</option>
 							<option value="smss" <?php selected(get_option('wp_webservice'), 'smss'); ?>>smss.co.il</option>
