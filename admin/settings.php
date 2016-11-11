@@ -81,7 +81,7 @@ class WP_SMS_Settings {
 				'default' => '',
 			),
 			array(
-				'name'    => 'mobile_country_code',
+				'name'    => 'country_code',
 				'label'   => __( 'Mobile country code', 'wp-sms' ),
 				'desc'    => __( 'Your mobile country code', 'wp-sms' ),
 				'type'    => 'text',
@@ -91,7 +91,7 @@ class WP_SMS_Settings {
 
 		// Gateways fields
 		$settings_fields['wpsms_gateway']['sms_gateway'] = array(
-			'name'    => 'sms_gateway',
+			'name'    => 'gateway',
 			'label'   => __( 'SMS Gateway', 'wp-sms' ),
 			'desc'    => __( 'Please select your sms gateway', 'wp-sms' ),
 			'type'    => 'select',
@@ -106,7 +106,7 @@ class WP_SMS_Settings {
 
 			// Gateways field (username)
 			$settings_fields['wpsms_gateway']['username'] = array(
-				'name'    => 'username',
+				'name'    => 'gateway_username',
 				'label'   => __( 'Gateway username', 'wp-sms' ),
 				'desc'    => __( 'Please enter gateway username', 'wp-sms' ),
 				'type'    => 'text',
@@ -115,7 +115,7 @@ class WP_SMS_Settings {
 
 			// Gateways field (password)
 			$settings_fields['wpsms_gateway']['password'] = array(
-				'name'    => 'password',
+				'name'    => 'gateway_password',
 				'label'   => __( 'Gateway password', 'wp-sms' ),
 				'desc'    => __( 'Please enter gateway password', 'wp-sms' ),
 				'type'    => 'text',
@@ -124,7 +124,7 @@ class WP_SMS_Settings {
 
 			// Gateways field (api_key)
 			$settings_fields['wpsms_gateway']['api_key'] = array(
-				'name'    => 'api_key',
+				'name'    => 'gateway_api_key',
 				'label'   => __( 'Gateway API key', 'wp-sms' ),
 				'desc'    => __( 'Please enter  gateway api key', 'wp-sms' ),
 				'type'    => 'text',
@@ -145,14 +145,14 @@ class WP_SMS_Settings {
 		// Features fields
 		$settings_fields['wpsms_features'] = array(
 			array(
-				'name'    => 'mobile_field',
+				'name'    => 'add_mobile_field',
 				'label'   => __( 'Add mobile field', 'wp-sms' ),
 				'desc'    => __( 'Add mobile field to users profile', 'wp-sms' ),
 				'type'    => 'checkbox',
 				'default' => '',
 			),
 			array(
-				'name'    => 'sms_login',
+				'name'    => 'enable_sms_login',
 				'label'   => __( 'Login with sms', 'wp-sms' ),
 				'desc'    => __( 'Login to wordpress profile with sms', 'wp-sms' ),
 				'type'    => 'checkbox',
@@ -165,10 +165,15 @@ class WP_SMS_Settings {
 		// Notifications fields
 		$settings_fields['wpsms_notifications'] = array(
 			array(
-				'name'    => 'subscribers_newpost',
+				'name'    => 'subscribers_newpost_header', // Header
 				'label'   => __( 'Published new posts', 'wp-sms' ),
+				'type'    => 'header',
+			),
+			array(
+				'name'    => 'subscribers_newpost',
+				'label'   => __( 'Status', 'wp-sms' ),
 				'desc'    => __( 'Send a sms to subscribers When published new posts', 'wp-sms' ),
-				'type'    => 'checkbox',
+				'type'    => 'checkbox2',
 				'default' => '',
 			),
 			array(
@@ -179,52 +184,72 @@ class WP_SMS_Settings {
 				'type'        => 'textarea'
 			),
 			array(
-				'name'    => 'wp_new_version',
+				'name'    => 'wordpress_newversion_header', // Header
 				'label'   => __( 'The new release of WordPress', 'wp-sms' ),
+				'type'    => 'header',
+			),
+			array(
+				'name'    => 'wordpress_newversion',
+				'label'   => __( 'Status', 'wp-sms' ),
 				'desc'    => __( 'Send a sms to you When the new release of WordPress', 'wp-sms' ),
-				'type'    => 'checkbox',
+				'type'    => 'checkbox2',
 				'default' => '',
 			),
 			array(
-				'name'    => 'register_user',
+				'name'    => 'register_newuser_header', // Header
 				'label'   => __( 'Register a new user', 'wp-sms' ),
+				'type'    => 'header',
+			),
+			array(
+				'name'    => 'register_newuser',
+				'label'   => __( 'Status', 'wp-sms' ),
 				'desc'    => __( 'Send a sms to you and user when register on wordpress', 'wp-sms' ),
-				'type'    => 'checkbox',
+				'type'    => 'checkbox2',
 				'default' => '',
 			),
 			array(
-				'name'    => 'register_user_admin_template',
+				'name'    => 'register_newuser_admin_template',
 				'label'   => __( 'Text template for admin', 'wp-sms' ),
 				'desc'    => $this->render_input_data( array('user_login', 'user_email', 'register_date') ),
 				'placeholder' => __( 'Enter the contents of the sms message', 'wp-sms' ),
 				'type'        => 'textarea'
 			),
 			array(
-				'name'    => 'register_user_user_template',
+				'name'    => 'register_newuser_user_template',
 				'label'   => __( 'Text template for user', 'wp-sms' ),
 				'desc'    => $this->render_input_data( array('user_login', 'user_email', 'register_date') ),
 				'placeholder' => __( 'Enter the contents of the sms message', 'wp-sms' ),
 				'type'        => 'textarea'
 			),
 			array(
-				'name'    => 'new_comment',
+				'name'    => 'insert_newcomment_header', // Header
 				'label'   => __( 'New comment', 'wp-sms' ),
+				'type'    => 'header',
+			),
+			array(
+				'name'    => 'insert_newcomment',
+				'label'   => __( 'Status', 'wp-sms' ),
 				'desc'    => __( 'Send a sms to you When get a new comment', 'wp-sms' ),
-				'type'    => 'checkbox',
+				'type'    => 'checkbox2',
 				'default' => '',
 			),
 			array(
-				'name'    => 'new_comment_template',
+				'name'    => 'insert_newcomment_template',
 				'label'   => __( 'Text template', 'wp-sms' ),
 				'desc'    => $this->render_input_data( array('comment_author', 'comment_author_email', 'comment_author_url', 'comment_author_IP', 'comment_date', 'comment_content') ),
 				'placeholder' => __( 'Enter the contents of the sms message', 'wp-sms' ),
 				'type'        => 'textarea'
 			),
 			array(
-				'name'    => 'user_login',
+				'name'    => 'user_login_header', // Header
 				'label'   => __( 'User login', 'wp-sms' ),
+				'type'    => 'header',
+			),
+			array(
+				'name'    => 'user_login',
+				'label'   => __( 'Status', 'wp-sms' ),
 				'desc'    => __( 'Send a sms to you When user is login', 'wp-sms' ),
-				'type'    => 'checkbox',
+				'type'    => 'checkbox2',
 				'default' => '',
 			),
 			array(

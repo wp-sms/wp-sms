@@ -72,12 +72,12 @@ if(get_option('wp_webservice')) {
 $wps_options = get_option('wpsms');
 
 // Create object of plugin
-$WP_SMS_Plugin = new WP_SMS_Plugin;
-register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
-register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'add_cap' ) );
+$WP_SMS = new WP_SMS;
+register_activation_hook( __FILE__, array( 'WP_SMS', 'install' ) );
+register_activation_hook( __FILE__, array( 'WP_SMS', 'add_cap' ) );
 
 // WP SMS Plugin Class
-class WP_SMS_Plugin {
+class WP_SMS {
 	/**
 	 * Wordpress Admin url
 	 *

@@ -183,6 +183,26 @@ class WP_SMS_Settings_API {
     }
 
     /**
+     * Displays a header field for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_header( $args ) {
+
+        $value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size        = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $type        = isset( $args['type'] ) ? $args['type'] : 'text';
+        $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';
+        $disable     = empty( $args['disable'] ) ? '' : ' disabled="disabled"';
+
+        $html        = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s/>', $type, $size, $args['section'], $args['id'], $value, $placeholder, $disable );
+        $html       .= $this->get_field_premium( $args );
+        $html       .= $this->get_field_description( $args );
+
+        echo '<hr>';
+    }
+
+    /**
      * Displays a text field for a settings field
      *
      * @param array   $args settings field args
@@ -198,8 +218,6 @@ class WP_SMS_Settings_API {
         $html        = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s/>', $type, $size, $args['section'], $args['id'], $value, $placeholder, $disable );
         $html       .= $this->get_field_premium( $args );
         $html       .= $this->get_field_description( $args );
-
-       // print_r($args);
 
         echo $html;
     }
@@ -250,6 +268,29 @@ class WP_SMS_Settings_API {
         $html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
         $html  .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s %4$s />', $args['section'], $args['id'], checked( $value, 'on', false ), $disable );
         $html  .= sprintf( '%1$s</label>', $args['desc'] );
+        $html  .= '</fieldset>';
+
+        $html  .= $this->get_field_premium( $args );
+
+        echo $html;
+    }
+
+    /**
+     * Displays a secoundry checkbox for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_checkbox2( $args ) {
+
+        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $disable = empty( $args['disable'] ) ? '' : ' disabled="disabled"';
+
+        $html  = '<fieldset>';
+        $html  .= sprintf( '<label for="wpuf-%1$s[%2$s]">', $args['section'], $args['id'] );
+        $html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
+        $html  .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s %4$s />', $args['section'], $args['id'], checked( $value, 'on', false ), $disable );
+        $html  .= sprintf( '%1$s</label>', __('Active', 'wp-sms') );
+        $html  .= sprintf( '<p class="description">%1$s</p>', $args['desc'] );
         $html  .= '</fieldset>';
 
         $html  .= $this->get_field_premium( $args );
