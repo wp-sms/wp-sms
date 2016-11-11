@@ -46,7 +46,7 @@
 			$msg = urlencode($this->msg);
 			
 			foreach($this->to as $number) {
-				$result = file_get_contents("http://ui.firstpayamak.ir/tools/urlservice/send/?username={$this->username}&password={$this->password}&form={$this->from}&to={$number}&message={$msg}");
+				$result = file_get_contents("http://ui.firstpayamak.ir/tools/urlservice/send/?username={$this->username}&password={$this->password}&from={$this->from}&to={$number}&message={$msg}");
 			}
 			
 			if($result) {
