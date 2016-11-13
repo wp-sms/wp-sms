@@ -23,59 +23,6 @@ define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE_URL', 'http://wpsms.veronalabs.com/');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
-// Use default gateway class if webservice not active
-if(!class_exists('WP_SMS')) {
-	include_once dirname( __FILE__ ) . '/includes/classes/webservice/default.class.php';
-	$sms = new Default_Gateway;
-}
-
-// SMS Gateway plugin
-if(get_option('wp_webservice')) {
-	$webservice = get_option('wp_webservice');
-	
-	include_once dirname( __FILE__ ) . '/includes/classes/wp-sms.class.php';
-	
-	if(is_file(dirname( __FILE__ ) . '/includes/classes/webservice/'.$webservice.'.class.php')) {
-		include_once dirname( __FILE__ ) . '/includes/classes/webservice/'.$webservice.'.class.php';
-	} else {
-		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateway/gateways/'.$webservice.'.class.php' );
-	}
-	
-	$sms = new $webservice;
-	
-	$sms->username = get_option('wp_username');
-	$sms->password = get_option('wp_password');
-	
-	if($sms->has_key && get_option('wps_key')) {
-		$sms->has_key = get_option('wps_key');
-	}
-	
-	// Added help to gateway if have it.
-	if($sms->help) {
-		function wps_gateway_help() {
-			global $sms;
-			echo '<p class="description">'.$sms->help.'</p>';
-		}
-		add_action('wp_sms_after_gateway', 'wps_gateway_help');
-	}
-	
-	if($sms->unitrial == true) {
-		$sms->unit = __('Credit', 'wp-sms');
-	} else {
-		$sms->unit = __('SMS', 'wp-sms');
-	}
-	
-	$sms->from = get_option('wp_number');
-}
-
-// Get WP SMS Option values
-$wps_options = get_option('wpsms');
-
-// Create object of plugin
-$WP_SMS = new WP_SMS;
-register_activation_hook( __FILE__, array( 'WP_SMS', 'install' ) );
-register_activation_hook( __FILE__, array( 'WP_SMS', 'add_cap' ) );
-
 // WP SMS Plugin Class
 class WP_SMS {
 	/**
@@ -111,14 +58,20 @@ class WP_SMS {
 	 *
 	 * @var string
 	 */
-	protected $db;
+	public $db;
 	
 	/**
 	 * Wordpress Table prefix
 	 *
 	 * @var string
 	 */
-	protected $tb_prefix;
+	public $tb_prefix;
+
+	/**
+	 * WP-SMS Options
+	 * @var array
+	 */
+	public $options = array();
 	
 	/**
 	 * Constructors plugin
@@ -128,7 +81,7 @@ class WP_SMS {
 
 		// Global variables
 		global $sms, $wpdb, $table_prefix, $date, $wps_options;
-		
+
 		$this->sms = $sms;
 		$this->date = $date;
 		$this->db = $wpdb;
@@ -141,22 +94,12 @@ class WP_SMS {
 		// Load textdomain
 		add_action( 'init', array($this, 'load_textdomain') );
 
-		
+		$this->init_hooks();
 		$this->includes();
 		$this->notifications();
-		$this->activity();
+		$this->setting();
 
 		$this->subscribe = new WP_SMS_Subscriptions();
-		
-		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
-		add_action('wp_enqueue_scripts', array(&$this, 'front_assets'));
-		
-		add_action('admin_bar_menu', array($this, 'adminbar'));
-		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
-		add_action('admin_menu', array(&$this, 'menu'));
-
-		// Setting api
-		$this->setting();
 	}
 
 	/**
@@ -166,44 +109,7 @@ class WP_SMS {
 	public function load_textdomain() {
 		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
 	}
-	
-	/**
-	 * Creating plugin tables
-	 *
-	 * @param  Not param
-	 */
-	static function install() {
-		global $wp_sms_db_version;
-		
-		include_once dirname( __FILE__ ) . '/install.php';
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		
-		dbDelta($create_sms_subscribes);
-		dbDelta($create_sms_subscribes_group);
-		dbDelta($create_sms_send);
-		
-		add_option('wp_sms_db_version', WP_SMS_VERSION);
-		
-		// Delete notification new wp_version option
-		delete_option('wp_notification_new_wp_version');
-	}
-	
-	/**
-	 * Adding new capability in the plugin
-	 *
-	 * @param  Not param
-	 */
-	public function add_cap() {
-		// gets the administrator role
-		$role = get_role( 'administrator' );
-		
-		$role->add_cap( 'wpsms_sendsms' );
-		$role->add_cap( 'wpsms_outbox' );
-		$role->add_cap( 'wpsms_subscribers' );
-		$role->add_cap( 'wpsms_subscribe_groups' );
-		$role->add_cap( 'wpsms_setting' );
-	}
-	
+
 	/**
 	 * Includes plugin files
 	 *
@@ -241,7 +147,78 @@ class WP_SMS {
 			include_once dirname( __FILE__ ) . '/includes/notifications/' . $file . '/index.php';
 		}
 	}
-	
+
+	/**
+	 * Hook into actions and filters.
+	 *
+	 * @since 4.0.0
+	 */
+	private function init_hooks() {
+		register_activation_hook( __FILE__, array( &$this, 'install' ) );
+		register_activation_hook( __FILE__, array( &$this, 'add_cap' ) );
+		
+		add_action('wpsms_options', array(&$this, 'set_options'));
+		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
+		add_action('wp_enqueue_scripts', array(&$this, 'front_assets'));
+		
+		add_action('admin_bar_menu', array($this, 'adminbar'));
+		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
+		add_action('admin_menu', array(&$this, 'menu'));
+		add_action('init', array(&$this, 'gateways'));
+
+		/*if(isset($_GET['action'])) {
+			if($_GET['action'] == 'wpsms-hide-newsletter') {
+				update_option('wpsms_hide_newsletter', true);
+			}
+		}
+		
+		if(!get_option('wpsms_hide_newsletter')) {
+			add_action('wp_sms_settings_page', array(&$this, 'admin_newsletter'));
+		}*/
+	}
+
+	/**
+	 * Creating plugin tables
+	 *
+	 * @param  Not param
+	 */
+	static function install() {
+		global $wp_sms_db_version;
+		
+		include_once dirname( __FILE__ ) . '/install.php';
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		
+		dbDelta($create_sms_subscribes);
+		dbDelta($create_sms_subscribes_group);
+		dbDelta($create_sms_send);
+		
+		add_option('wp_sms_db_version', WP_SMS_VERSION);
+	}
+
+	/**
+	 * Adding new capability in the plugin
+	 *
+	 * @param  Not param
+	 */
+	public function add_cap() {
+		// gets the administrator role
+		$role = get_role( 'administrator' );
+		
+		$role->add_cap( 'wpsms_sendsms' );
+		$role->add_cap( 'wpsms_outbox' );
+		$role->add_cap( 'wpsms_subscribers' );
+		$role->add_cap( 'wpsms_subscribe_groups' );
+		$role->add_cap( 'wpsms_setting' );
+	}
+
+	/**
+	 * Set options
+	 * @param array $options Options
+	 */
+	public function set_options($options) {
+		$this->options = $options;
+	}
+
 	/**
 	 * Include admin assets
 	 *
@@ -266,36 +243,6 @@ class WP_SMS {
 	public function front_assets() {
 		wp_register_style('wpsms-subscribe', plugin_dir_url(__FILE__) . 'assets/css/subscribe.css', true, '1.1');
 		wp_enqueue_style('wpsms-subscribe');
-	}
-	
-	/**
-	 * Activity plugin
-	 *
-	 * @param  Not param
-	 */
-	private function activity() {
-		if(!get_option('wp_sms_mcc'))
-			update_option('wp_sms_mcc', '09');
-		
-		if(isset($_GET['action'])) {
-			if($_GET['action'] == 'wpsms-hide-newsletter') {
-				update_option('wpsms_hide_newsletter', true);
-			}
-		}
-		
-		if(!get_option('wpsms_hide_newsletter')) {
-			add_action('wp_sms_settings_page', array(&$this, 'admin_newsletter'));
-		}
-		
-		// Check exists require function
-		if( !function_exists('wp_get_current_user') ) {
-			include(ABSPATH . "wp-includes/pluggable.php");
-		}
-		
-		// Add plugin caps to admin role
-		if( is_admin() and is_super_admin() ) {
-			$this->add_cap();
-		}
 	}
 	
 	/**
@@ -364,7 +311,6 @@ class WP_SMS {
 		add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array(&$this, 'outbox_page'));
 		add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array(&$this, 'subscribe_page'));
 		add_submenu_page('wp-sms', __('Subscribers Group', 'wp-sms'), __('Subscribers Group', 'wp-sms'), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(&$this, 'groups_page'));
-		add_submenu_page('wp-sms', __('Setting', 'wp-sms'), __('Setting', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array(&$this, 'setting_page'));
 	}
 	
 	/**
@@ -549,60 +495,12 @@ class WP_SMS {
 	 */
 	private function setting() {
 		// Load setting api class
-		require_once dirname( __FILE__ ) . '/includes/classes/class.settings-api.php';
+		require_once dirname( __FILE__ ) . '/includes/class-wpsms-settings-api.php';
 		require_once dirname( __FILE__ ) . '/admin/settings.php';
 
 		new WP_SMS_Settings();
 	}
-	
-	/**
-	 * Plugin Setting page
-	 *
-	 */
-	public function setting_page() {
 
-		$sms_page['about'] = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=about";
-		global $sms;
-		
-		if(isset($_GET['tab'])) {
-			switch($_GET['tab']) {
-				case 'web-service':
-					if(isset($_GET['action']) == 'reset') {
-						delete_option('wp_webservice');
-						delete_option('wp_username');
-						delete_option('wp_password');
-						echo '<meta http-equiv="refresh" content="0; url=admin.php?page=wp-sms-settings&tab=web-service" />';
-					}
-					
-					include_once dirname( __FILE__ ) . "/includes/templates/settings/web-service.php";
-					
-					if(get_option('wp_webservice'))
-						update_option('wp_last_credit', $sms->GetCredit());
-					break;
-				
-				case 'newsletter':
-					include_once dirname( __FILE__ ) . "/includes/templates/settings/newsletter.php";
-				break;
-				
-				case 'features':
-					include_once dirname( __FILE__ ) . "/includes/templates/settings/features.php";
-				break;
-				
-				case 'notifications':
-					include_once dirname( __FILE__ ) . "/includes/templates/settings/notifications.php";
-				break;
-				
-				case 'about':
-					$json_url = file_get_contents(WP_SMS_SITE . '/gateway.php?lang=' . get_locale());
-					$json = json_decode($json_url);
-					include_once dirname( __FILE__ ) . "/includes/templates/settings/about.php";
-				break;
-			}
-		} else {
-			include_once dirname( __FILE__ ) . "/includes/templates/settings/setting.php";
-		}
-	}
-	
 	/**
 	 * Show message notice in admin
 	 *
@@ -618,4 +516,17 @@ class WP_SMS {
 		if($result == 'update')
 			return '<div class="updated settings-update notice is-dismissible"><p><strong>'.$message.'</strong></p><button class="notice-dismiss" type="button"><span class="screen-reader-text">'.__('Close', 'wp-sms').'</span></button></div>';
 	}
+
+	/**
+	 * Gateways sms
+	 * @return [type] [description]
+	 */
+	public function gateways() {
+		// Load gateways class
+		require_once dirname( __FILE__ ) . '/includes/class-wpsms-gateways.php';
+		new WP_SMS_Gateways();
+	}
 }
+
+// Create object of plugin
+$WP_SMS = new WP_SMS;

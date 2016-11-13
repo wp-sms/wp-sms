@@ -21,6 +21,20 @@ class WP_SMS_Settings {
 
 		add_action( 'admin_init', array($this, 'admin_init') );
 		add_action( 'admin_menu', array($this, 'admin_menu') );
+
+		// Set options
+		$this->options['wpsms_general'] = get_option('wpsms_general');
+		$this->options['wpsms_gateway'] = get_option('wpsms_gateway');
+		$this->options['wpsms_features'] = get_option('wpsms_features');
+		$this->options['wpsms_notifications'] = get_option('wpsms_notifications');
+
+		/**
+		 * wpsms_options action
+		 *
+		 * @since 4.0.0
+		 * @param array $wpsms_options
+		 */
+		do_action('wpsms_options', $this->options);
 	}
 
 	public function admin_init() {
@@ -33,7 +47,7 @@ class WP_SMS_Settings {
 	}
 
 	public function admin_menu() {
-		add_submenu_page( 'wp-sms', __('Setting', 'wp-sms'), __('Setting', 'wp-sms'), 'wpsms_setting', 'my-secondary-slug', array($this, 'plugin_page'));
+		add_submenu_page( 'wp-sms', __('Setting', 'wp-sms'), __('Setting', 'wp-sms'), 'wpsms_setting', 'wp-sms-setting', array($this, 'plugin_page'));
 	}
 
 	public function get_settings_sections() {
@@ -55,11 +69,6 @@ class WP_SMS_Settings {
 				'title' => __( 'Notifications', 'wp-sms' )
 			)
 		);
-
-		// Set options value
-		foreach ($sections as $value) {
-			$this->options[ $value['id'] ] = get_option($value['id']);
-		}
 
 		return $sections;
 	}
@@ -96,13 +105,11 @@ class WP_SMS_Settings {
 			'desc'    => __( 'Please select your sms gateway', 'wp-sms' ),
 			'type'    => 'select',
 			'default' => 'no',
-			'options' => array(
-				'none' => 'Gateway',
-			),
+			'options' => array(),
 		);
 
 		// Check gateway exists
-		if( isset($this->options['wpsms_gateway']['sms_gateway']) and $this->options['wpsms_gateway']['sms_gateway'] != 'none' ) {
+		if( isset($this->options['wpsms_gateway']['gateway']) and $this->options['wpsms_gateway']['gateway'] != 'none' ) {
 
 			// Gateways field (username)
 			$settings_fields['wpsms_gateway']['username'] = array(
