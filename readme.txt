@@ -117,6 +117,7 @@ You can adding mobile number field to profile page. can be send sms to user or a
 * Spanish (Thanks Yordan Soares)
 * German (Thanks Robert Skiba)
 * Swedish (Thanks Kramfors)
+* French (Thanks Yves)
 
 Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms.ir/translators) today!
 
@@ -222,6 +223,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 3.2.* =
+* Language french added. thanks `yves.le.bouffant@libertysurf.fr`
+
 = 3.2.3 =
 * Added fortytwo.com gateway.
 * Added parsgreen (api.ir) gateway.
