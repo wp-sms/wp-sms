@@ -63,16 +63,13 @@ class WP_SMS_Gateways {
 	 *
 	 * @var string
 	 */
-	public $msg;
+	public $message;
 
 	/**
 	 * Constructor for the gateways class
 	 */
 	public function __construct() {
 		add_filter('wpsms_settings_fields', array(&$this, 'modify_gateways'));
-
-		// Load gateway class
-		$this->load_gateway_class();
 	}
 
 	/**
@@ -245,21 +242,38 @@ class WP_SMS_Gateways {
 	 * 
 	 */
 	public function load_gateway_class() {
+
 		// Global WP SMS object
-		global $WP_SMS;
+		global $wp_sms;
 
 		// Get options
-		$gateway = $WP_SMS->options['wpsms_gateway'];
+		$gateway = $wp_sms->options['wpsms_gateway'];
 
 		// Check option exists
 		if( empty($gateway['gateway']) or $gateway['gateway'] == 'none' )
 			return false;
 
 		// Check file exists
-		if( !file_exists('gateways/class-gateway-' . $gateway['gateway'] . '.php') )
+		if( !file_exists(dirname( __FILE__ ) . '/gateways/class-gateway-' . $gateway['gateway'] . '.php') )
 			return false;
 
 		// Include class
-		include 'gateways/class-gateway-' . $gateway['gateway'] . '.php';
+		include_once 'gateways/class-gateway-' . $gateway['gateway'] . '.php';
+
+		return $gateway['gateway'];
+
+	}
+
+	public function send() {
+
+		// Check gateway loaded
+		$gateway = $this->load_gateway_class();
+		
+		if( !$gateway ) {
+			return;
+		}
+
+		new $gateway;
+
 	}
 }

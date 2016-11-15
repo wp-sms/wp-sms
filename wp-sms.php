@@ -72,6 +72,8 @@ class WP_SMS {
 	 * @var array
 	 */
 	public $options = array();
+
+	public $gateway;
 	
 	/**
 	 * Constructors plugin
@@ -95,11 +97,12 @@ class WP_SMS {
 		add_action( 'init', array($this, 'load_textdomain') );
 
 		$this->init_hooks();
-		$this->includes();
+		$this->include_files();
 		$this->notifications();
 		$this->setting();
 
 		$this->subscribe = new WP_SMS_Subscriptions();
+		$this->gateway = new WP_SMS_Gateways();
 	}
 
 	/**
@@ -115,7 +118,7 @@ class WP_SMS {
 	 *
 	 * @param  Not param
 	 */
-	public function includes() {
+	public function include_files() {
 		$files = array(
 			'version',
 			'features',
@@ -123,6 +126,7 @@ class WP_SMS {
 			'newslleter',
 			'includes/functions',
 			'includes/classes/wp-sms-subscribers.class',
+			'includes/class-wpsms-gateways',
 		);
 		
 		foreach($files as $file) {
@@ -164,17 +168,6 @@ class WP_SMS {
 		add_action('admin_bar_menu', array($this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'menu'));
-		add_action('init', array(&$this, 'gateways'));
-
-		/*if(isset($_GET['action'])) {
-			if($_GET['action'] == 'wpsms-hide-newsletter') {
-				update_option('wpsms_hide_newsletter', true);
-			}
-		}
-		
-		if(!get_option('wpsms_hide_newsletter')) {
-			add_action('wp_sms_settings_page', array(&$this, 'admin_newsletter'));
-		}*/
 	}
 
 	/**
@@ -516,17 +509,15 @@ class WP_SMS {
 		if($result == 'update')
 			return '<div class="updated settings-update notice is-dismissible"><p><strong>'.$message.'</strong></p><button class="notice-dismiss" type="button"><span class="screen-reader-text">'.__('Close', 'wp-sms').'</span></button></div>';
 	}
-
-	/**
-	 * Gateways sms
-	 * @return [type] [description]
-	 */
-	public function gateways() {
-		// Load gateways class
-		require_once dirname( __FILE__ ) . '/includes/class-wpsms-gateways.php';
-		new WP_SMS_Gateways();
-	}
 }
 
 // Create object of plugin
-$WP_SMS = new WP_SMS;
+$wp_sms = new WP_SMS;
+
+global $wp_sms;
+
+$wp_sms->gateway->to = array('09128705922');
+$wp_sms->gateway->message = 'Hello';
+$result = $wp_sms->gateway->send();
+
+print_r($result);
