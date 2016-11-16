@@ -117,7 +117,7 @@ You can adding mobile number field to profile page. can be send sms to user or a
 * Spanish (Thanks Yordan Soares)
 * German (Thanks Robert Skiba)
 * Swedish (Thanks Kramfors)
-* French (Thanks Yves)
+* French (Thanks Yves Le Bouffant)
 
 Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms.ir/translators) today!
 
