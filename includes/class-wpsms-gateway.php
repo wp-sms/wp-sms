@@ -7,69 +7,55 @@
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    1.0
  */
-class WP_SMS_Gateways {
+class WP_SMS_Gateway {
 
 	/**
-	 * Webservice username
-	 *
-	 * @var string
-	 */
-	public $username;
-	
-	/**
-	 * Webservice password
-	 *
-	 * @var string
-	 */
-	public $password;
-	
-	/**
-	 * Webservice API/Key
-	 *
-	 * @var string
-	 */
-	public $has_key = false;
-	
-	/**
-	 * Validation mobile number
-	 *
-	 * @var string
-	 */
-	public $validateNumber = "";
-	
-	/**
-	 * Help to gateway
-	 *
-	 * @var string
-	 */
-	public $help = false;
-	
-	/**
-	 * SMsS send from number
-	 *
-	 * @var string
-	 */
-	public $from;
-	
-	/**
-	 * Send SMS to number
-	 *
+	 * Recipients sms
 	 * @var string
 	 */
 	public $to;
-	
+
 	/**
-	 * SMS text
-	 *
+	 * From number
+	 * @var [type]
+	 */
+	public $from;
+
+	/**
+	 * Message sms
 	 * @var string
 	 */
 	public $message;
 
 	/**
+	 * WP-SMS Options
+	 * @var array
+	 */
+	public $options;
+
+	/**
+	 * Gateway object
+	 * @var object
+	 */
+	public $gateway;
+
+	/**
 	 * Constructor for the gateways class
 	 */
 	public function __construct() {
+		// Set global options
+		$this->options = $GLOBALS['wp_sms_options'];
+
+		// Modify gateways
 		add_filter('wpsms_settings_fields', array(&$this, 'modify_gateways'));
+
+		// Load selected gateway
+		$gateway_name = $this->load_gateway_class();
+
+		// Create new object from gateway
+		if( $gateway_name ) {
+			$this->gateway = new $gateway_name();
+		}
 	}
 
 	/**
@@ -81,7 +67,7 @@ class WP_SMS_Gateways {
 	public function modify_gateways($options) {
 
 		// Get gateway path
-		/*$dir = dirname(__FILE__) . "/gateways";
+		$dir = dirname(__FILE__) . "/gateways";
 
 		// Open a directory, and read its contents
 		if ( is_dir($dir) ) {
@@ -95,7 +81,7 @@ class WP_SMS_Gateways {
 				}
 				closedir($dh);
 			}
-		}*/
+		}
 
 		// Gateways
 		$gateways = array(
@@ -243,11 +229,8 @@ class WP_SMS_Gateways {
 	 */
 	public function load_gateway_class() {
 
-		// Global WP SMS object
-		global $wp_sms;
-
 		// Get options
-		$gateway = $wp_sms->options['wpsms_gateway'];
+		$gateway = $this->options['wpsms_gateway'];
 
 		// Check option exists
 		if( empty($gateway['gateway']) or $gateway['gateway'] == 'none' )
@@ -261,19 +244,66 @@ class WP_SMS_Gateways {
 		include_once 'gateways/class-gateway-' . $gateway['gateway'] . '.php';
 
 		return $gateway['gateway'];
-
 	}
 
+	/**
+	 * Send sms
+	 * @return string Result of gateway
+	 */
 	public function send() {
 
-		// Check gateway loaded
-		$gateway = $this->load_gateway_class();
-		
-		if( !$gateway ) {
+		return;
+
+		// Check gateway
+		if( !$this->gateway ) {
 			return;
 		}
 
-		new $gateway;
+		// Configuration gateway
+		$this->gateway->username = $this->options['wpsms_gateway']['gateway_username'];
+		$this->gateway->password = $this->options['wpsms_gateway']['gateway_password'];
+		$this->gateway->has_key = $this->options['wpsms_gateway']['gateway_api_key'];
+
+		/**
+		 * Modify text message
+		 *
+		 * @since 3.4
+		 * @param string $message text message.
+		 */
+		$message = apply_filters('wp_sms_msg', $this->message);
+
+		/**
+		 * Modify Receiver number
+		 *
+		 * @since 3.4
+		 * @param array $to receiver number
+		 */
+		$to = apply_filters('wp_sms_to', $this->to);
+
+		/**
+		 * Modify sender number
+		 *
+		 * @since 3.4
+		 * @param string $from sender number.
+		 */
+		$from = apply_filters('wp_sms_from', $this->options['wpsms_gateway']['sender_id']);
+
+		// Fired sms!
+		$response = $this->gateway->SendSMS($message, $to, $from);
+
+		if( $response ) {
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 * @param string $result result output.
+			 */
+			do_action('wp_sms_sended', $message, $to, $from);
+
+			return true;
+		} else {
+			return false;
+		}
 
 	}
 }

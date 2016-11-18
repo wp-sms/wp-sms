@@ -92,25 +92,20 @@ class WP_SMS {
 		
 		__('WP SMS', 'wp-sms');
 		__('A complete wordpress plugin to send sms with a high capability.', 'wp-sms');
-
-		// Load textdomain
-		add_action( 'init', array($this, 'load_textdomain') );
-
+		
 		$this->init_hooks();
 		$this->include_files();
 		$this->notifications();
-		$this->setting();
 
+		$this->options = new WP_SMS_Settings();
+		$this->gateway = new WP_SMS_Gateway();
 		$this->subscribe = new WP_SMS_Subscriptions();
-		$this->gateway = new WP_SMS_Gateways();
-	}
 
-	/**
-	 * Load plugin textdomain
-	 * @return void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
+		//$this->gateway->to = '09128705922';
+		//$this->gateway->from = '8060';
+		//$this->gateway->message = 'Hello';
+		//$this->gateway->send();
+
 	}
 
 	/**
@@ -126,9 +121,11 @@ class WP_SMS {
 			'newslleter',
 			'includes/functions',
 			'includes/classes/wp-sms-subscribers.class',
-			'includes/class-wpsms-gateways',
+			'includes/class-wpsms-settings-api',
+			'includes/class-wpsms-gateway',
+			'admin/settings',
 		);
-		
+
 		foreach($files as $file) {
 			include_once dirname( __FILE__ ) . '/' . $file . '.php';
 		}
@@ -161,13 +158,21 @@ class WP_SMS {
 		register_activation_hook( __FILE__, array( &$this, 'install' ) );
 		register_activation_hook( __FILE__, array( &$this, 'add_cap' ) );
 		
-		add_action('wpsms_options', array(&$this, 'set_options'));
+		add_action( 'init', array($this, 'load_textdomain') );
 		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
 		add_action('wp_enqueue_scripts', array(&$this, 'front_assets'));
 		
 		add_action('admin_bar_menu', array($this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'menu'));
+	}
+
+	/**
+	 * Load plugin textdomain
+	 * @return void
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
 	}
 
 	/**
@@ -202,14 +207,6 @@ class WP_SMS {
 		$role->add_cap( 'wpsms_subscribers' );
 		$role->add_cap( 'wpsms_subscribe_groups' );
 		$role->add_cap( 'wpsms_setting' );
-	}
-
-	/**
-	 * Set options
-	 * @param array $options Options
-	 */
-	public function set_options($options) {
-		$this->options = $options;
 	}
 
 	/**
@@ -483,18 +480,6 @@ class WP_SMS {
 	}
 
 	/**
-	 * Plugin setting page
-	 * @return void
-	 */
-	private function setting() {
-		// Load setting api class
-		require_once dirname( __FILE__ ) . '/includes/class-wpsms-settings-api.php';
-		require_once dirname( __FILE__ ) . '/admin/settings.php';
-
-		new WP_SMS_Settings();
-	}
-
-	/**
 	 * Show message notice in admin
 	 *
 	 * @param  Not param
@@ -514,10 +499,6 @@ class WP_SMS {
 // Create object of plugin
 $wp_sms = new WP_SMS;
 
-global $wp_sms;
-
-$wp_sms->gateway->to = array('09128705922');
-$wp_sms->gateway->message = 'Hello';
-$result = $wp_sms->gateway->send();
-
-print_r($result);
+//$wp_sms->gateway->to = array('09128705922');
+//$wp_sms->gateway->message = 'Hello';
+//$result = $wp_sms->gateway->send();

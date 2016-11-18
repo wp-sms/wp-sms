@@ -14,7 +14,7 @@ class WP_SMS_Settings {
 	 * Options
 	 * @var array
 	 */
-	private $options = array();
+	public $options = array();
 
 	public function __construct() {
 		$this->settings_api = new WP_SMS_Settings_API;
@@ -35,6 +35,9 @@ class WP_SMS_Settings {
 		 * @param array $wpsms_options
 		 */
 		do_action('wpsms_options', $this->options);
+
+		// Set global option variable
+		$GLOBALS['wp_sms_options'] = $this->options;
 	}
 
 	public function admin_init() {
