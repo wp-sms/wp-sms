@@ -1,10 +1,9 @@
 <?php
 /**
+ * Main gateway class
+ * 
  * @category   class
  * @package    WP_SMS
- * @author     Mostafa Soufi <info@mostafa-soufi.ir>
- * @copyright  2015 wp-sms-plugin.com
- * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    1.0
  */
 class WP_SMS_Gateway {
@@ -17,7 +16,7 @@ class WP_SMS_Gateway {
 
 	/**
 	 * From number
-	 * @var [type]
+	 * @var array
 	 */
 	public $from;
 
@@ -53,14 +52,13 @@ class WP_SMS_Gateway {
 		$gateway_name = $this->load_gateway_class();
 
 		// Create new object from gateway
-		if( $gateway_name ) {
+		if( $gateway_name and class_exists($gateway_name) ) {
 			$this->gateway = new $gateway_name();
 		}
 	}
 
 	/**
 	 * Modify gateways
-	 * 
 	 * @param  array $options options
 	 * @return array          options
 	 */
@@ -218,14 +216,14 @@ class WP_SMS_Gateway {
 		);
 
 		// Set gateways
-		$options['wpsms_gateway']['sms_gateway']['options'] = $gateways;
+		$options['wpsms_gateway']['sms_gateway']['options'] = $files;
 
 		return $options;
 	}
 
 	/**
-	 * Load gateway class class
-	 * 
+	 * Load gateway class
+	 * @return string Gateway class name
 	 */
 	public function load_gateway_class() {
 
@@ -243,7 +241,14 @@ class WP_SMS_Gateway {
 		// Include class
 		include_once 'gateways/class-gateway-' . $gateway['gateway'] . '.php';
 
-		return $gateway['gateway'];
+		$class_name = $gateway['gateway'] . 'Gateway';
+
+		if( class_exists( $class_name ) ) {
+			return $class_name;
+		} else {
+			WP_SMS_AdminNotices::error( sprintf(__('Class <b>%s</b> does not exits and WP-SMS cant load this.', 'wp-sms'), $class_name) );
+		}
+		
 	}
 
 	/**
@@ -252,17 +257,23 @@ class WP_SMS_Gateway {
 	 */
 	public function send() {
 
-		return;
-
 		// Check gateway
 		if( !$this->gateway ) {
-			return;
+			return new WP_Error( 'gateway', __( 'Does not gateway to sending sms!', 'wp-sms' ) );
 		}
 
 		// Configuration gateway
 		$this->gateway->username = $this->options['wpsms_gateway']['gateway_username'];
 		$this->gateway->password = $this->options['wpsms_gateway']['gateway_password'];
 		$this->gateway->has_key = $this->options['wpsms_gateway']['gateway_api_key'];
+
+		// Get account credit
+		$response = $this->gateway->get_credit();
+
+		// Check account credit
+		if( $response['status'] == 'error' ) {
+			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms!', 'wp-sms' ), $response['response'] );
+		}
 
 		/**
 		 * Modify text message
@@ -280,18 +291,26 @@ class WP_SMS_Gateway {
 		 */
 		$to = apply_filters('wp_sms_to', $this->to);
 
+		// Check sender from
+		if( $this->from ) {
+			$from = $this->from;
+		} else {
+			$from = $this->options['wpsms_gateway']['sender_id'];
+		}
+
 		/**
 		 * Modify sender number
 		 *
 		 * @since 3.4
 		 * @param string $from sender number.
 		 */
-		$from = apply_filters('wp_sms_from', $this->options['wpsms_gateway']['sender_id']);
-
+		$from = apply_filters('wp_sms_from', $from);
+		
 		// Fired sms!
-		$response = $this->gateway->SendSMS($message, $to, $from);
+		$response = $this->gateway->send($message, $to, $from);
 
-		if( $response ) {
+		if( $response['status'] == 'success' ) {
+
 			/**
 			 * Run hook after send sms.
 			 *
@@ -301,8 +320,9 @@ class WP_SMS_Gateway {
 			do_action('wp_sms_sended', $message, $to, $from);
 
 			return true;
+
 		} else {
-			return false;
+			return new WP_Error( 'send-sms', __( 'SMS not sent! please read response error!', 'wp-sms' ), $response['response'] );
 		}
 
 	}

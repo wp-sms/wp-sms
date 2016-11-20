@@ -101,11 +101,6 @@ class WP_SMS {
 		$this->gateway = new WP_SMS_Gateway();
 		$this->subscribe = new WP_SMS_Subscriptions();
 
-		//$this->gateway->to = '09128705922';
-		//$this->gateway->from = '8060';
-		//$this->gateway->message = 'Hello';
-		//$this->gateway->send();
-
 	}
 
 	/**
@@ -123,6 +118,7 @@ class WP_SMS {
 			'includes/classes/wp-sms-subscribers.class',
 			'includes/class-wpsms-settings-api',
 			'includes/class-wpsms-gateway',
+			'includes/class-wpsms-notice',
 			'admin/settings',
 		);
 
@@ -158,21 +154,14 @@ class WP_SMS {
 		register_activation_hook( __FILE__, array( &$this, 'install' ) );
 		register_activation_hook( __FILE__, array( &$this, 'add_cap' ) );
 		
-		add_action( 'init', array($this, 'load_textdomain') );
+		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
+
 		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
 		add_action('wp_enqueue_scripts', array(&$this, 'front_assets'));
 		
 		add_action('admin_bar_menu', array($this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'menu'));
-	}
-
-	/**
-	 * Load plugin textdomain
-	 * @return void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
 	}
 
 	/**
@@ -224,7 +213,7 @@ class WP_SMS {
 		if( get_option('wp_call_jquery') )
 			wp_enqueue_script('jquery');
 	}
-	
+
 	/**
 	 * Include front table
 	 *
@@ -479,26 +468,18 @@ class WP_SMS {
 		include_once dirname( __FILE__ ) . "/includes/templates/subscribe/groups.php";
 	}
 
-	/**
-	 * Show message notice in admin
-	 *
-	 * @param  Not param
-	 */
-	public function notice_result($result, $message) {
-		if(empty($result))
-			return;
-		
-		if($result == 'error')
-			return '<div class="updated settings-error notice error is-dismissible"><p><strong>'.$message.'</strong></p><button class="notice-dismiss" type="button"><span class="screen-reader-text">'.__('Close', 'wp-sms').'</span></button></div>';
-		
-		if($result == 'update')
-			return '<div class="updated settings-update notice is-dismissible"><p><strong>'.$message.'</strong></p><button class="notice-dismiss" type="button"><span class="screen-reader-text">'.__('Close', 'wp-sms').'</span></button></div>';
-	}
 }
 
 // Create object of plugin
 $wp_sms = new WP_SMS;
 
-//$wp_sms->gateway->to = array('09128705922');
-//$wp_sms->gateway->message = 'Hello';
-//$result = $wp_sms->gateway->send();
+/*$wp_sms->gateway->to = array('00000000000');
+$wp_sms->gateway->from = '982188384690';
+$wp_sms->gateway->message = 'Hello';
+$result = $wp_sms->gateway->send();
+
+print_r($result);
+
+if( is_wp_error( $result ) ) {
+	echo $result->get_error_message();
+}*/

@@ -1,5 +1,5 @@
 <?php
-class pichakhost {
+class pichakhostGateway {
 
 	/**
 	 * Gateway username
@@ -43,10 +43,11 @@ class pichakhost {
 
 	/**
 	 * Fire sms!
+	 * 
 	 * @param string $message SMS message
-	 * @param array $to      SMS recipients
+	 * @param array $to SMS recipients
 	 */
-	public function SendSMS($message, $to, $from = null) {
+	public function send($message, $to, $from = null) {
 
 		// Check credit for the gateway
 		if(!$this->GetCredit()) return;
@@ -73,9 +74,9 @@ class pichakhost {
 
 	/**
 	 * Get credit
+	 * 
 	 */
-	public function GetCredit() {
-	
+	public function get_credit() {
 		$client = new SoapClient($this->api_url);
 
 		$result = $client->Credit(array('username' => $this->username, 'password' => $this->password));
