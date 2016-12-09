@@ -1,7 +1,7 @@
 <?php
-	class fortytwo extends WP_SMS {
-		private $wsdl_link = "http://imghttp.fortytwotele.com/api/current";
-		public $tariff = "http://fortytwo.com/";
+	class smsgatewaycenter extends WP_SMS {
+		private $wsdl_link = "http://www.smsgatewaycenter.com/library/";
+		public $tariff = "http://www.smsgatewaycenter.com/";
 		public $unitrial = false;
 		public $unit;
 		public $flash = "enable";
@@ -9,7 +9,7 @@
 
 		public function __construct() {
 			parent::__construct();
-			$this->validateNumber = "46731111111";
+			$this->validateNumber = "91xxxxxxxxxx";
 		}
 
 		public function SendSMS() {
@@ -42,12 +42,13 @@
 			$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
 			$msg = urlencode($this->msg);
-			$route = "G1";
 			
-			foreach($this->to as $number) {
-				$result[] = file_get_contents($this->wsdl_link . "/send/message.php?username=".$this->username."&password=".$this->password."&to=".$number."&from=".$this->from."&message=".$msg."&route=".$route);
+			$result = file_get_contents($this->wsdl_link . "send_sms_2.php?UserName=".$this->username."&Password=".$this->password."&Type=Bulk&To=".implode(',', $this->to)."&Mask=".$this->from."&Message=".$msg);
+
+			if( strpos( $result, 'error' ) !== false ) {
+				return false;
 			}
-			
+
 			if($result) {
 				$this->InsertToDB($this->from, $this->msg, $this->to);
 				
@@ -64,6 +65,12 @@
 		public function GetCredit() {
 			if( !$this->username or !$this->password )
 				return;
+
+			$result = file_get_contents($this->wsdl_link . "checkbalance.php?Username=".$this->username."&Password=".$this->password);
+
+			if( strpos( $result, 'error' ) !== false ) {
+				return false;
+			}
 
 			return true;
 		}

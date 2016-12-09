@@ -182,6 +182,7 @@
 							<option value="shreesms" <?php selected(get_option('wp_webservice'), 'shreesms'); ?>>shreesms.net</option>
 							<option value="instantalerts" <?php selected(get_option('wp_webservice'), 'instantalerts'); ?>>springedge.com</option>
 							<option value="smsgatewayhub" <?php selected(get_option('wp_webservice'), 'smsgatewayhub'); ?>>smsgatewayhub.com</option>
+							<option value="smsgatewaycenter" <?php selected(get_option('wp_webservice'), 'smsgatewaycenter'); ?>>smsgatewaycenter.com</option>
 						</optgroup>
 						
 						<optgroup label="<?php _e('Italian', 'wp-sms'); ?>">
