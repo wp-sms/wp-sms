@@ -119,6 +119,7 @@ class WP_SMS {
 			'includes/class-wpsms-settings-api',
 			'includes/class-wpsms-gateway',
 			'includes/class-wpsms-notice',
+			'includes/class-wpsms-features',
 			'admin/settings',
 		);
 
