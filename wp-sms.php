@@ -3,13 +3,16 @@
 Plugin Name: WP SMS
 Plugin URI: http://wp-sms.ir/
 Description: A complete wordpress plugin to send sms with a high capability.
-Version: 3.2.3
+Version: 4.0.0
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
 */
 
-define('WP_SMS_VERSION', '3.2.3');
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+// Plugin defines
+define('WP_SMS_VERSION', '4.0.0');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'http://wp-sms.ir');
@@ -20,7 +23,7 @@ load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) .
 
 // Use default gateway class if webservice not active
 if(!class_exists('WP_SMS')) {
-	include_once dirname( __FILE__ ) . '/includes/classes/webservice/default.class.php';
+	include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
 	$sms = new Default_Gateway;
 }
 
@@ -28,12 +31,12 @@ if(!class_exists('WP_SMS')) {
 if(get_option('wp_webservice')) {
 	$webservice = get_option('wp_webservice');
 	
-	include_once dirname( __FILE__ ) . '/includes/classes/wp-sms.class.php';
+	include_once dirname( __FILE__ ) . '/includes/class-wp-sms.php';
 	
-	if(is_file(dirname( __FILE__ ) . '/includes/classes/webservice/'.$webservice.'.class.php')) {
-		include_once dirname( __FILE__ ) . '/includes/classes/webservice/'.$webservice.'.class.php';
+	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$webservice.'.class.php')) {
+		include_once dirname( __FILE__ ) . '/includes/gateways/'.$webservice.'.class.php';
 	} else {
-		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateway/gateways/'.$webservice.'.class.php' );
+		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateways/'.$webservice.'.class.php' );
 	}
 	
 	$sms = new $webservice;
@@ -68,8 +71,9 @@ $wps_options = get_option('wpsms');
 
 // Create object of plugin
 $WP_SMS_Plugin = new WP_SMS_Plugin;
+
+// Run installer
 register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
-register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'add_cap' ) );
 
 // WP SMS Plugin Class
 class WP_SMS_Plugin {
@@ -133,7 +137,7 @@ class WP_SMS_Plugin {
 		
 		$this->includes();
 		$this->notifications();
-		$this->activity();
+		$this->init();
 		
 		$this->subscribe = new WP_SMS_Subscriptions();
 		
@@ -172,7 +176,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function add_cap() {
-		// gets the administrator role
+		// get administrator role
 		$role = get_role( 'administrator' );
 		
 		$role->add_cap( 'wpsms_sendsms' );
@@ -190,11 +194,11 @@ class WP_SMS_Plugin {
 	public function includes() {
 		$files = array(
 			'version',
-			'features',
-			'widget',
 			'newslleter',
+			'includes/features/wp-sms-wordpress',
 			'includes/functions',
-			'includes/classes/wp-sms-subscribers.class',
+			'includes/class-wp-sms-widget',
+			'includes/class-wp-sms-subscribers',
 		);
 		
 		foreach($files as $file) {
@@ -247,14 +251,11 @@ class WP_SMS_Plugin {
 	}
 	
 	/**
-	 * Activity plugin
+	 * init plugin
 	 *
 	 * @param  Not param
 	 */
-	private function activity() {
-		if(!get_option('wp_sms_mcc'))
-			update_option('wp_sms_mcc', '09');
-		
+	private function init() {
 		if(isset($_GET['action'])) {
 			if($_GET['action'] == 'wpsms-hide-newsletter') {
 				update_option('wpsms_hide_newsletter', true);
@@ -406,7 +407,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function outbox_page() {
-		include_once dirname( __FILE__ ) . '/includes/wp-sms-outbox.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wp-sms-outbox.php';
 		
 		//Create an instance of our package class...
 		$list_table = new WP_SMS_Outbox_List_Table();
@@ -466,7 +467,7 @@ class WP_SMS_Plugin {
 			}
 		}
 		
-		include_once dirname( __FILE__ ) . '/includes/wp-sms-subscribers.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wp-sms-subscribers-table.php';
 		
 		//Create an instance of our package class...
 		$list_table = new WP_SMS_Subscribers_List_Table();
@@ -510,7 +511,7 @@ class WP_SMS_Plugin {
 			}
 		}
 		
-		include_once dirname( __FILE__ ) . '/includes/wp-sms-subscribers-groups.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wp-sms-groups-table.php';
 		
 		//Create an instance of our package class...
 		$list_table = new WP_SMS_Subscribers_Groups_List_Table();

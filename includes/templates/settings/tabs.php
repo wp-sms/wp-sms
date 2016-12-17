@@ -6,6 +6,6 @@
 	<a href="?page=wp-sms-settings&tab=notifications" class="nav-tab<?php if(isset($_GET['tab']) and $_GET['tab'] == 'notifications') { echo " nav-tab-active"; } ?>"><?php _e('Notifications', 'wp-sms'); ?></a>
 	<a href="?page=wp-sms-settings&tab=about" class="nav-tab<?php if(isset($_GET['tab']) and $_GET['tab'] == 'about') { echo " nav-tab-active"; } ?>"><?php _e('About', 'wp-sms'); ?></a>
 	<?php if( is_plugin_active( 'wp-sms-pro/wp-sms-pro.php' ) == false ) { ?>
-	<a href="http://wp-sms-plugin.com/purchase/" target="_blank" class="nav-tab wpsms-premium-tab"><?php _e('Premium Pack', 'wp-sms'); ?></a>
+	<a href="<?php echo WP_SMS_SITE; ?>" target="_blank" class="nav-tab wpsms-premium-tab"><?php _e('Premium Pack', 'wp-sms'); ?></a>
 	<?php } ?>
 </h2>
