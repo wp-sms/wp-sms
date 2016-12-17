@@ -225,7 +225,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.0 =
 * Fixes issue when enable plugin to add new cap.
-* Fixes issue (Missing `validateNumber` on the default gateway class)
+* Fixes issue (Missing `$this->validateNumber` on the default gateway class)
+* Fixes issue (Missing `$user->ID` in mobile field when create new user)
 * Improvement structure files and folders.
 
 = 3.2.3 =
