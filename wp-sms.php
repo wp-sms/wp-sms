@@ -18,9 +18,6 @@ define('WP_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'http://wp-sms.ir');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
-$date = date('Y-m-d H:i:s' ,current_time('timestamp', 0));
-load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
-
 // Use default gateway class if webservice not active
 if(!class_exists('WP_SMS')) {
 	include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
@@ -29,17 +26,17 @@ if(!class_exists('WP_SMS')) {
 
 // SMS Gateway plugin
 if(get_option('wp_webservice')) {
-	$webservice = get_option('wp_webservice');
+	$gateway = get_option('wp_webservice');
 	
 	include_once dirname( __FILE__ ) . '/includes/class-wp-sms.php';
 	
-	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$webservice.'.class.php')) {
-		include_once dirname( __FILE__ ) . '/includes/gateways/'.$webservice.'.class.php';
+	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$gateway.'.class.php')) {
+		include_once dirname( __FILE__ ) . '/includes/gateways/'.$gateway.'.class.php';
 	} else {
-		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateways/'.$webservice.'.class.php' );
+		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateways/'.$gateway.'.class.php' );
 	}
 	
-	$sms = new $webservice;
+	$sms = new $gateway;
 	
 	$sms->username = get_option('wp_username');
 	$sms->password = get_option('wp_password');
@@ -65,9 +62,6 @@ if(get_option('wp_webservice')) {
 	
 	$sms->from = get_option('wp_number');
 }
-
-// Get WP SMS Option values
-$wps_options = get_option('wpsms');
 
 // Create object of plugin
 $WP_SMS_Plugin = new WP_SMS_Plugin;
@@ -97,14 +91,7 @@ class WP_SMS_Plugin {
 	 * @var string
 	 */
 	public $subscribe;
-	
-	/**
-	 * Current date/time
-	 *
-	 * @var string
-	 */
-	public $date;
-	
+
 	/**
 	 * Wordpress Database
 	 *
@@ -125,12 +112,14 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function __construct() {
-		global $sms, $wpdb, $table_prefix, $date, $wps_options;
+		global $sms, $wpdb, $table_prefix;
 		
 		$this->sms = $sms;
-		$this->date = $date;
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
+
+		// Load text domain
+		add_action( 'init', array($this, 'load_textdomain') );
 		
 		__('WP SMS', 'wp-sms');
 		__('A complete wordpress plugin to send sms with a high capability.', 'wp-sms');
@@ -147,6 +136,15 @@ class WP_SMS_Plugin {
 		add_action('admin_bar_menu', array($this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'menu'));
+	}
+
+	/**
+	 * Load plugin textdomain.
+	 * 
+	 * @param  Not param
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain('wp-sms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
 	}
 	
 	/**
