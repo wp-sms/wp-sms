@@ -42,8 +42,11 @@ class WP_SMS_Gateway {
 	 * Constructor for the gateways class
 	 */
 	public function __construct() {
+
+		global $wp_sms_options;
+
 		// Set global options
-		$this->options = $GLOBALS['wp_sms_options'];
+		$this->options = $wp_sms_options;
 
 		// Modify gateways
 		add_filter('wpsms_settings_fields', array(&$this, 'modify_gateways'));

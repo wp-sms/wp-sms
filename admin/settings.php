@@ -340,3 +340,5 @@ class WP_SMS_Settings {
 
 }
 endif;
+
+new WP_SMS_Settings();

@@ -17,7 +17,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Plugin defines
  */
-define('WP_SMS_VERSION', '3.2.3');
+define('WP_SMS_VERSION', '4.0.0');
 define('WP_SMS_PLUGIN_DIR', plugin_dir_url(__FILE__));
 define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE_URL', 'http://wpsms.veronalabs.com/');
@@ -25,26 +25,28 @@ define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
 // WP SMS Plugin Class
 class WP_SMS {
+
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var WP_SMS
+	 * @since 2.1
+	 */
+	protected static $_instance = null;
+
 	/**
 	 * Wordpress Admin url
 	 *
 	 * @var string
 	 */
 	public $admin_url = WP_SMS_ADMIN_URL;
-	
+
 	/**
-	 * WP SMS gateway object
+	 * WP SMS subscriber object
 	 *
 	 * @var string
 	 */
-	public $sms;
-	
-	/**
-	 * WP SMS subscribe object
-	 *
-	 * @var string
-	 */
-	public $subscribe;
+	public $subscriber;
 	
 	/**
 	 * Current date/time
@@ -67,13 +69,24 @@ class WP_SMS {
 	 */
 	public $tb_prefix;
 
-	/**
-	 * WP-SMS Options
-	 * @var array
-	 */
-	public $options = array();
-
 	public $gateway;
+
+	/**
+	 * Main WP_SMS Instance.
+	 *
+	 * Ensures only one instance of WP_SMS is loaded or can be loaded.
+	 *
+	 * @since 2.1
+	 * @static
+	 * @see WC()
+	 * @return WP_SMS - Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 	
 	/**
 	 * Constructors plugin
@@ -82,9 +95,8 @@ class WP_SMS {
 	public function __construct() {
 
 		// Global variables
-		global $sms, $wpdb, $table_prefix, $date, $wps_options;
+		global $wpdb, $table_prefix, $date;
 
-		$this->sms = $sms;
 		$this->date = $date;
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
@@ -96,11 +108,6 @@ class WP_SMS {
 		$this->init_hooks();
 		$this->include_files();
 		$this->notifications();
-
-		$this->options = new WP_SMS_Settings();
-		$this->gateway = new WP_SMS_Gateway();
-		$this->subscribe = new WP_SMS_Subscriptions();
-
 	}
 
 	/**
@@ -115,17 +122,20 @@ class WP_SMS {
 			'widget',
 			'newslleter',
 			'includes/functions',
-			'includes/classes/wp-sms-subscribers.class',
 			'includes/class-wpsms-settings-api',
+			'admin/settings',
+			'includes/classes/wp-sms-subscribers.class',
 			'includes/class-wpsms-gateway',
 			'includes/class-wpsms-notice',
 			'includes/class-wpsms-features',
-			'admin/settings',
 		);
 
 		foreach($files as $file) {
 			include_once dirname( __FILE__ ) . '/' . $file . '.php';
 		}
+
+		$this->gateway = new WP_SMS_Gateway();
+		$this->subscriber = new WP_SMS_Subscriptions();
 	}
 	
 	/**
@@ -471,13 +481,26 @@ class WP_SMS {
 
 }
 
-// Create object of plugin
-$wp_sms = new WP_SMS;
+/**
+ * Main instance of WP_SMS.
+ *
+ * Returns the main instance of WP_SMS to prevent the need to use globals.
+ *
+ * @since  2.1
+ * @return WP_SMS
+ */
+function WP_SMS() {
+	return WP_SMS::instance();
+}
 
-/*$wp_sms->gateway->to = array('00000000000');
-$wp_sms->gateway->from = '982188384690';
-$wp_sms->gateway->message = 'Hello';
-$result = $wp_sms->gateway->send();
+// Global for backwards compatibility.
+add_action('plugins_loaded', 'WP_SMS');
+
+
+/*WP_SMS()->gateway->to = array('09128705922');
+WP_SMS()->gateway->from = '982188384690';
+WP_SMS()->gateway->message = 'Hello 2';
+$result = WP_SMS()->gateway->send();
 
 print_r($result);
 
