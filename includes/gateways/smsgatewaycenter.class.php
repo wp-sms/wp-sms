@@ -1,7 +1,7 @@
 <?php
 	class smsgatewaycenter extends WP_SMS {
-		private $wsdl_link = "http://www.smsgatewaycenter.com/library/";
-		public $tariff = "http://www.smsgatewaycenter.com/";
+		private $wsdl_link = "https://www.smsgatewaycenter.com/library/";
+		public $tariff = "https://www.smsgatewaycenter.com/";
 		public $unitrial = false;
 		public $unit;
 		public $flash = "enable";

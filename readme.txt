@@ -227,7 +227,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixes issue when enable plugin to add new cap.
 * Fixes issue (Missing `$this->validateNumber` on the default gateway class)
 * Fixes issue (Missing `$user->ID` in mobile field when create new user)
-* Improvement structure files and folders.
+* Improvement structure files, folders and cleaning codes.
 
 = 3.2.3 =
 * Language french added. thanks `yves.le.bouffant@libertysurf.fr`
