@@ -33,7 +33,7 @@
 				<td colspan="2" scope="row">
 					<p><?php _e('Dont have a sms gateway? we recommend to you the following gateways', 'wp-sms'); ?></p>
 					<?php foreach($json->data as $item) { ?>
-						<p>— <?php echo $item->country; ?>: <a href="<?php echo $item->url; ?>" target="_blank"><?php echo $item->name; ?></a></p>
+						<p>— <a href="<?php echo $item->url; ?>" target="_blank"><?php echo $item->name; ?></a></p>
 					<?php } ?>
 				</td>
 			</tr>
@@ -48,9 +48,9 @@
 					<p><?php _e('Do you have a problem?', 'wp-sms'); ?></p>
 					<p>— <?php echo sprintf(__('Please open a new thread on the <a href="%s" target="_blank">Wordpress.org support forum</a>', 'wp-sms'), 'http://wordpress.org/support/plugin/wp-sms'); ?></p>
 					<p><?php _e('You want add your gateway to this plugin?', 'wp-sms'); ?></p>
-					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms-plugin.com/gateways/" target="_blank">wp-sms-plugin.com/gateways</a>'); ?></p>
+					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms.ir/gateways/" target="_blank">wp-sms.ir/gateways</a>'); ?></p>
 					<p><?php _e('Are you a translator?', 'wp-sms'); ?></p>
-					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms-plugin.com/translators/" target="_blank">wp-sms-plugin.com/contact</a>'); ?></p>
+					<p>— <?php echo sprintf(__('Go to the link %s', 'wp-sms'), '<a href="http://wp-sms.ir/contact/" target="_blank">wp-sms.ir/contact</a>'); ?></p>
 				</td>
 			</tr>
 		</tbody>
