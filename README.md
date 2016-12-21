@@ -1,4 +1,4 @@
-# WP-SMS Wordpress Plugin
+# WP-SMS Plugin
 A complete wordpress plugin to send sms with a high capability.
 Send SMS via WordPress, Subscribe SMS newsletter and Send SMS to Number(s), Subscribes and Wordpress Users.
 
@@ -80,7 +80,7 @@ Plugin can be send sms to user or admin after submit the form.
 You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
 * Premium Support
 
-# Translators
+# Internationalization
 * English
 * Persian
 * Arabic (Thanks Hamad Al-Shammari, Gateway.sa)
@@ -177,9 +177,9 @@ function wp_sms_modify_message($message) {
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
 
-# Sources
+# Community Links
 * Wordpress plugin page: www.wordpress.org/plugins/wp-sms/
-* Website plugin: www.wp-sms.ir
-* Translator: www.wp-sms.ir/translators
-* Buy Pro version: www.wp-sms.ir/purchases
+* Website plugin: wp-sms.ir
+* Translator: wp-sms.ir/contact
+* Buy Pro version: wp-sms.ir/purchases
 * Donate: www.mostafa-soufi.ir/donate/
