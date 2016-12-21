@@ -33,7 +33,7 @@ if(get_option('wp_webservice')) {
 	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$gateway.'.class.php')) {
 		include_once dirname( __FILE__ ) . '/includes/gateways/'.$gateway.'.class.php';
 	} else {
-		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateways/'.$gateway.'.class.php' );
+		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateway/gateways/'.$gateway.'.class.php' );
 	}
 	
 	$sms = new $gateway;
