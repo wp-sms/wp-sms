@@ -196,6 +196,7 @@
 						
 						<optgroup label="<?php _e('Arabia', 'wp-sms'); ?>">
 							<option value="gateway" <?php selected(get_option('wp_webservice'), 'gateway'); ?>>gateway.sa</option>
+							<option value="resalaty" <?php selected(get_option('wp_webservice'), 'resalaty'); ?>>resalaty.com</option>
 						</optgroup>
 
 						<optgroup label="<?php _e('United Kingdom', 'wp-sms'); ?>">

@@ -223,6 +223,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 3.2.* =
+* Added `resalaty.com` gateway.
+
 = 3.2.4 =
 * Compatible with WP 4.7
 * Fixes issue when enable plugin to add new cap.
