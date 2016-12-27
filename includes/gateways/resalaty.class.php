@@ -71,7 +71,7 @@
 		}
 		
 		public function GetCredit() {
-			return 100;
+
 			// Get response
 			$response = wp_remote_get( $this->wsdl_link . 'getbalance.php?username='.$this->username.'&password='.$this->password.'&hangedBalance=true&return=json' );
 
