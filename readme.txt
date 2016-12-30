@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 4.0.0 =
 * Improvement options page and removed all notice errors in setting page.
 * Improvement all syntax for notice errors.
+* Improvement main class and used new class for doing any proccess.
 * Added Setting class for all options in the plugin for better settings performance.
 * Fixed Load template widget in admin.
 * Fixed Widget plugin name (Important! after update, re-add `SMS newsletter form` widget in your theme)
