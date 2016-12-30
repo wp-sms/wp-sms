@@ -31,6 +31,11 @@ class WP_SMS_Integrations {
 		if( isset($this->options['wc_notif_new_order']) ) {
 			add_action('woocommerce_new_order', array(&$this, 'wc_new_order'));
 		}
+
+		// EDD
+		if( isset($this->options['edd_notif_new_order']) ) {
+			add_action('edd_complete_purchase', array(&$this, 'edd_new_order'));
+		}
 	}
 
 	public function cf7_editor_panels($panels) {
@@ -86,6 +91,12 @@ class WP_SMS_Integrations {
 		$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['wc_notif_new_order_template']);
 		$this->sms->msg = $message;
 
+		$this->sms->SendSMS();
+	}
+
+	public function edd_new_order() {
+		$this->sms->to = array( $this->options['admin_mobile_number'] );
+		$this->sms->msg = $this->options['edd_notif_new_order_template'];
 		$this->sms->SendSMS();
 	}
 
