@@ -27,10 +27,10 @@ if(!class_exists('WP_SMS')) {
 
 $wpsms_option = get_option('wpsms_settings');
 
-//file_put_contents('log', print_r($wpsms_option, 1));
+// file_put_contents('log', print_r($wpsms_option, 1));
 
 // SMS Gateway plugin
-if( $wpsms_option['gateway_name'] ) {
+if( isset($wpsms_option['gateway_name']) ) {
 	$gateway = $wpsms_option['gateway_name'];
 	
 	include_once dirname( __FILE__ ) . '/includes/class-wp-sms.php';
@@ -198,10 +198,10 @@ class WP_SMS_Plugin {
 	public function includes() {
 		$files = array(
 			'version',
-			'includes/features/wp-sms-wordpress',
 			'includes/functions',
 			'includes/class-wp-sms-gateway',
 			'includes/class-wp-sms-settings',
+			'includes/class-wp-sms-features',
 			'includes/class-wp-sms-notifications',
 			'includes/class-wp-sms-subscribers',
 			'includes/class-wp-sms-widget',

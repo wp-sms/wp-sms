@@ -100,25 +100,24 @@ class WP_SMS_Notifications {
 	public function new_user($user_id) {
 
 		$user = get_userdata($user_id);
+
 		$template_vars = array(
-			'user_login'	=> $user->user_login,
-			'user_email'	=> $user->user_email,
-			'date_register'	=> $this->date,
+			'%user_login%' => $user->user_login,
+			'%user_email%' => $user->user_email,
+			'%date_register%' => $this->date,
 		);
-		
+
 		// Send SMS to admin
 		$this->sms->to = array( $this->options['admin_mobile_number'] );
-		$string = $this->options['notif_register_new_user_admin_template'];
-		$final_message = preg_replace('/%(.*?)%/ime', "\$template_vars['$1']", $string);
-		$this->sms->msg = $final_message;
+		$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_register_new_user_admin_template']);
+		$this->sms->msg = $message;
 		$this->sms->SendSMS();
 		
 		// Send SMS to user register
 		if( isset($user->mobile) ) {
 			$this->sms->to = array($user->mobile);
-			$string = $this->options['notif_register_new_user_template'];
-			$final_message = preg_replace('/%(.*?)%/ime', "\$template_vars['$1']", $string);
-			$this->sms->msg = $final_message;
+			$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_register_new_user_template']);
+			$this->sms->msg = $message;
 			$this->sms->SendSMS();
 		}
 	}
@@ -133,30 +132,29 @@ class WP_SMS_Notifications {
 			return;
 		
 		$this->sms->to = array( $this->options['admin_mobile_number'] );
-		$string = $this->options['notif_new_comment_template'];
 		$template_vars = array(
-			'comment_author'		=> $comment_smsect->comment_author,
-			'comment_author_email'	=> $comment_smsect->comment_author_email,
-			'comment_author_url'	=> $comment_smsect->comment_author_url,
-			'comment_author_IP'		=> $comment_smsect->comment_author_IP,
-			'comment_date'			=> $comment_smsect->comment_date,
-			'comment_content'		=> $comment_smsect->comment_content
+			'%comment_author%' => $comment_smsect->comment_author,
+			'%comment_author_email%' => $comment_smsect->comment_author_email,
+			'%comment_author_url%' => $comment_smsect->comment_author_url,
+			'%comment_author_IP%' => $comment_smsect->comment_author_IP,
+			'%comment_date%' => $comment_smsect->comment_date,
+			'%comment_content%' => $comment_smsect->comment_content
 		);
-		$final_message = preg_replace('/%(.*?)%/ime', "\$template_vars['$1']", $string);
-		$this->sms->msg = $final_message;
+		$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_new_comment_template']);
+		$this->sms->msg = $message;
 		$this->sms->SendSMS();
 	}
 
 	// Login user
 	public function login_user($username_login, $username){
 		$this->sms->to = array( $this->options['admin_mobile_number'] );
-		$string = $this->options['notif_user_login_template'];
+
 		$template_vars = array(
-			'username_login'	=> $username->user_login,
-			'display_name'	=> $username->display_name
+			'%username_login%' => $username->user_login,
+			'%display_name%' => $username->display_name
 		);
-		$final_message = preg_replace('/%(.*?)%/ime', "\$template_vars['$1']", $string);
-		$this->sms->msg = $final_message;
+		$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_user_login_template']);
+		$this->sms->msg = $message;
 		$this->sms->SendSMS();
 	}
 
