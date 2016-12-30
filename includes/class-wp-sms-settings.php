@@ -414,8 +414,8 @@ class WP_SMS_Settings {
 					'name'	=>  __( 'Contact Form 7', 'wp-sms' ),
 					'type'	=>  'header'
 				),
-				'intg_cf7'	=>  array(
-					'id'	=>  'intg_cf7',
+				'cf7_metabox'	=>  array(
+					'id'	=>  'cf7_metabox',
 					'name'	=>  __( 'SMS meta box', 'wp-sms' ),
 					'type'	=>  'checkbox',
 					'options'	=> $options,

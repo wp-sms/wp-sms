@@ -227,13 +227,15 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.0 =
+* Added Setting class for all options in the plugin for better settings performance.
+* Added new class in the plugin for doing any proccess.
+* Added `resalaty.com` gateway.
 * Improvement options page and removed all notice errors in setting page.
 * Improvement all syntax for notice errors.
-* Improvement main class and used new class for doing any proccess.
-* Added Setting class for all options in the plugin for better settings performance.
+* Improvement main class.
 * Fixed Load template widget in admin.
 * Fixed Widget plugin name (Important! after update, re-add `SMS newsletter form` widget in your theme)
-* Added `resalaty.com` gateway.
+* Fixed notice error in `cf7` editor panel, used id() method instead.
 
 = 3.2.4 =
 * Compatible with WP 4.7
