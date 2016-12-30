@@ -203,6 +203,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-settings',
 			'includes/class-wp-sms-features',
 			'includes/class-wp-sms-notifications',
+			'includes/class-wp-sms-integrations',
 			'includes/class-wp-sms-subscribers',
 			'includes/class-wp-sms-widget',
 		);
