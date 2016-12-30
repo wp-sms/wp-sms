@@ -20,11 +20,16 @@ class WP_SMS_Integrations {
 		$this->date = WP_SMS_CURRENT_DATE;
 		$this->options = $wpsms_option;
 
-		// Contact Form 7 Hooks
+		// Contact Form 7
 		if( isset($this->options['cf7_metabox']) ) {
 			add_filter('wpcf7_editor_panels', array(&$this, 'cf7_editor_panels'));
 			add_action('wpcf7_after_save', array(&$this, 'wpcf7_save_form'));
 			add_action('wpcf7_before_send_mail', array(&$this, 'wpcf7_sms_handler'));
+		}
+
+		// Woocommerce
+		if( isset($this->options['wc_notif_new_order']) ) {
+			add_action('woocommerce_new_order', array(&$this, 'wc_new_order'));
 		}
 	}
 
@@ -68,6 +73,20 @@ class WP_SMS_Integrations {
 			$this->sms->msg = @preg_replace('/%([a-zA-Z0-9._-]+)%/e', '$_POST["$1"]', $cf7_options_field['message']);
 			$this->sms->SendSMS();
 		}
+	}
+
+	public function wc_new_order($order_id){
+		$order = new WC_Order($order_id);
+		$this->sms->to = array( $this->options['admin_mobile_number'] );
+		$template_vars = array(
+			'%order_id%' => $order_id,
+			'%status%' => $order->get_status(),
+			'%order_name%' => $order->get_order_number(),
+		);
+		$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['wc_notif_new_order_template']);
+		$this->sms->msg = $message;
+
+		$this->sms->SendSMS();
 	}
 
 }
