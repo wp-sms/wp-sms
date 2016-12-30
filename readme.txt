@@ -4,7 +4,7 @@ Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.7
-Stable tag: 3.2.4
+Stable tag: 4.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -212,6 +212,9 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');`
 13. Contact Form 7 page.
 
 == Upgrade Notice ==
+= 4.0.0 =
+* 
+
 = 3.0 =
 * CHANGE In this version of the plugin has changed the structure and optimized codes.
 In this version, we have made a lot of changes. We tried using the free version as a core and base. The professional version of plugin is made to a professional parcel that through the free plugin is activated.  
@@ -223,7 +226,12 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= 3.2.* =
+= 4.0.0 =
+* Improvement options page and removed all notice errors in setting page.
+* Improvement all syntax for notice errors.
+* Added Setting class for all options in the plugin for better settings performance.
+* Fixed Load template widget in admin.
+* Fixed Widget plugin name (Important! after update, re-add `SMS newsletter form` widget in your theme)
 * Added `resalaty.com` gateway.
 
 = 3.2.4 =

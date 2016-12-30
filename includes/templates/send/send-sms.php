@@ -92,11 +92,11 @@
 			<tr>
 				<td><?php _e('SMS', 'wp-sms'); ?>:</td>
 				<td>
-					<textarea name="wp_get_message" id="wp_get_message" style="width:350px; height: 200px; direction:ltr;"></textarea><br />
+					<textarea name="wp_get_message" id="wp_get_message" style="width:600px; height: 250px; direction:ltr;"></textarea><br />
 					<?php _e('The remaining words', 'wp-sms'); ?>: <span id="wp_counter" class="number"></span>/<span id="wp_max" class="number"></span><br />
 					<span id="wp_part" class="number"></span> <?php _e('SMS', 'wp-sms'); ?><br />
 					<p class="number">
-						<?php echo __('Your credit', 'wp-sms') . ': ' . $this->sms->GetCredit() . ' ' . $this->sms->unit; ?>
+						<?php echo __('Your account credit', 'wp-sms') . ': ' . $this->sms->GetCredit(); ?>
 					</p>
 				</td>
 			</tr>

@@ -1,0 +1,197 @@
+<?php
+/**
+ * WP SMS gateway class
+ * 
+ * @category   class
+ * @package    WP_SMS
+ * @version    1.0
+ */
+class WP_SMS_Gateway {
+
+	public static function gateway() {
+		$gateways = array(
+			'global' => array(
+				'fortytwo'		=>	'fortytwo.com',
+				'smsglobal'		=>	'smsglobal.com',
+			),
+			'united kingdom' => array(
+				'_textplode'	=>	'textplode.com',
+			),
+			'brazil' => array(
+				'sonoratecnologia'=>	'sonoratecnologia.com.br',
+			),
+			'germany' => array(
+				'sms77'			=>	'sms77.de',
+			),
+			'turkey' => array(
+				'bulutfon'		=>	'bulutfon.com',
+			),
+			'austria' => array(
+				'smsgateway'	=>	'sms-gateway.at',
+			),
+			'spain' => array(
+				'afilnet'		=>	'afilnet.com',
+				'labsmobile'	=>	'labsmobile.com',
+			),
+			'new zealand' => array(
+				'unisender'		=>	'unisender.com',
+			),
+			'polish' => array(
+				'smsapi'		=>	'smsapi.pl',
+			),
+			'italy' => array(
+				'dot4all'		=>	'dot4all.it',
+				'smshosting'	=>	'smshosting.it',
+			),
+			'india' => array(
+				'shreesms'		=>	'shreesms.net',
+				'instantalerts'	=>	'springedge.com',
+				'smsgatewayhub'	=>	'smsgatewayhub.com',
+				'smsgatewaycenter'=>	'smsgatewaycenter.com',
+			),
+			'iran' => array(
+				'parandhost'	=> 'parandhost.com',
+				'iransmspanel'	=>	'iransmspanel.ir',
+				'chaparpanel'	=>	'chaparpanel.ir',
+				'adpdigital'	=>	'adpdigital.com',
+				'hostiran'		=>	'hostiran.net',
+				'farapayamak'	=>	'farapayamak.com',
+				'smsde'			=>	'smsde.ir',
+				'payamakde'		=>	'payamakde.ir',
+				'panizsms'		=>	'panizsms.com',
+				'sepehritc'		=>	'sepehritc.com',
+				'markazpayamak'	=>	'markazpayamak.ir',
+				'payameavval'	=>	'payameavval.com',
+				'smsclick'		=>	'smsclick.ir',
+				'persiansms'	=>	'persiansms.com',
+				'ariaideh'		=>	'ariaideh.com',
+				'sms_s'			=>	'modiresms.com',
+				'sadat24'		=>	'sadat24.ir',
+				'smscall'		=>	'smscall.ir',
+				'tablighsmsi'	=>	'tablighsmsi.com',
+				'paaz'			=>	'paaz.ir',
+				'textsms'		=>	'textsms.ir',
+				'jahanpayamak'	=>	'jahanpayamak.info',
+				'opilo'			=>	'opilo.com',
+				'barzinsms'		=>	'barzinsms.ir',
+				'smsmart'		=>	'smsmart.ir',
+				'loginpanel'	=>	'loginpanel.ir',
+				'imencms'		=>	'imencms.com',
+				'tcisms'		=>	'tcisms.com',
+				'caffeweb'		=>	'caffeweb.com',
+				'nasrpayam'		=>	'nasrPayam.ir',
+				'smsbartar'		=>	'sms-bartar.com',
+				'fayasms'		=>	'fayasms.ir',
+				'payamresan'	=>	'payam-resan.com',
+				'mdpanel'		=>	'ippanel.com',
+				'payameroz'		=>	'payameroz.ir',
+				'niazpardaz'	=>	'niazpardaz.com',
+				'niazpardazcom'	=>	'niazpardaz.com - New',
+				'hisms'			=>	'hi-sms.ir',
+				'joghataysms'	=>	'joghataysms.ir',
+				'mediana'		=>	'mediana.ir',
+				'aradsms'		=>	'arad-sms.ir',
+				'asiapayamak'	=>	'payamak.asia',
+				'sharifpardazan'=>	'2345.ir',
+				'sarabsms'		=>	'sarabsms.ir',
+				'ponishasms'	=>	'ponishasms.ir',
+				'payamakalmas'	=>	'payamakalmas.ir',
+				'sms'			=>	'sms.ir - Old',
+				'sms_new'		=>	'sms.ir - New',
+				'popaksms'		=>	'popaksms.ir',
+				'novin1sms'		=>	'novin1sms.ir',
+				'_500sms'		=>	'500sms.ir',
+				'matinsms'		=>	'smspanel.mat-in.ir',
+				'iranspk'		=>	'iranspk.ir',
+				'freepayamak'	=>	'freepayamak.ir',
+				'itpayamak'		=>	'itpayamak.ir',
+				'irsmsland'		=>	'irsmsland.ir',
+				'avalpayam'		=>	'avalpayam.com',
+				'smstoos'		=>	'smstoos.ir',
+				'smsmaster'		=>	'smsmaster.ir',
+				'ssmss'			=>	'ssmss.ir',
+				'isun'			=>	'isun.company',
+				'idehpayam'		=>	'idehpayam.com',
+				'smsarak'		=>	'smsarak.ir',
+				'novinpayamak'	=>	'novinpayamak.com',
+				'melipayamak'	=>	'melipayamak.ir',
+				'postgah'		=>	'postgah.net',
+				'smsfa'			=>	'smsfa.net',
+				'rayanbit'		=>	'rayanbit.net',
+				'smsmelli'		=>	'smsmelli.com',
+				'smsban'		=>	'smsban.ir',
+				'smsroo'		=>	'smsroo.ir',
+				'navidsoft'		=>	'navid-soft.ir',
+				'afe'			=>	'afe.ir',
+				'smshooshmand'	=>	'smshooshmand.com',
+				'asanak'		=>	'asanak.ir',
+				'payamakpanel'	=>	'payamak-panel.com',
+				'barmanpayamak'	=>	'barmanpayamak.ir',
+				'farazpayam'	=>	'farazpayam.com',
+				'_0098sms'		=>	'0098sms.com',
+				'amansoft'		=>	'amansoft.ir',
+				'faraed'		=>	'faraed.com',
+				'spadbs'		=>	'spadsms.ir',
+				'bandarsms'		=>	'bandarit.ir',
+				'tgfsms'		=>	'tgfsms.ir',
+				'payamgah'		=>	'payamgah.net',
+				'sabasms'		=>	'sabasms.biz',
+				'chapargah'		=>	'chapargah.ir',
+				'yashilsms'		=>	'yashil-sms.ir',
+				'ismsie'		=>	'isms.ir',
+				'wifisms'		=>	'wifisms.ir',
+				'razpayamak'	=>	'razpayamak.com',
+				'bestit'		=>	'bestit.co',
+				'pegahpayamak'	=>	'pegah-payamak.ir',
+				'adspanel'		=>	'adspanel.ir',
+				'mydnspanel'	=>	'mydnspanel.com',
+				'esms24'		=>	'esms24.ir',
+				'payamakaria'	=>	'payamakaria.ir',
+				'pichakhost'	=>	'sitralweb.com',
+				'tsms'			=>	'tsms.ir',
+				'parsasms'		=>	'parsasms.com',
+				'modiranweb'	=>	'modiranweb.net',
+				'smsline'		=>	'smsline.ir',
+				'iransms'		=>	'iransms.co',
+				'arkapayamak'	=>	'arkapayamak.ir',
+				'smsservice'	=>	'smsservice.ir',
+				'parsgreen'		=>	'api.ir',
+				'firstpayamak'	=>	'firstpayamak.ir',				
+			),
+			'pakistan' => array(
+				'difaan'		=>	'difaan',
+			),
+			'arabic' => array(
+				'gateway'		=>	'gateway.sa',
+				'resalaty'		=>	'resalaty.com',
+			),
+			'other' => array(
+				'smss'			=>	'smss.co.il',
+				'bearsms'		=>	'bearsms.com',
+				'mtarget'		=>	'mtarget.fr',
+			),
+		);
+
+		return apply_filters( 'wpsms_gateway_list', $gateways );
+	}
+
+	/**
+	 * Get gateway status
+	 */
+	public static function status() {
+		global $wpsms_option, $sms;
+
+		// Get credit
+		$credit = $sms->GetCredit();
+
+		// Update credit
+		update_option('wp_last_credit', $credit);
+
+		if( $credit ) {
+			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . sprintf(__('Active!, account balance: %s', 'wp-sms'), $credit) . '</div>';
+		} else {
+			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . sprintf(__('Deactive!, the return result: %s', 'wp-sms'), $credit) . '</div>';
+		}
+	}
+
+}

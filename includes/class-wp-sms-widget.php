@@ -7,12 +7,13 @@ class WPSMS_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.
 	 */
-	function __construct() {
-		parent::__construct(
-			'foo_widget',
-			__( 'Subscribe SMS Form', 'wp-sms' ),
-			array( 'description' => __( 'Subscribe SMS Widget', 'wp-sms' ), )
+	public function __construct() {
+		$widget_options = array(
+			'classname' => 'wpsms_widget',
+			'description' => __( 'SMS newsletter form', 'wp-sms' ),
 		);
+
+		parent::__construct( 'wpsms_widget', __( 'SMS newsletter', 'wp-sms' ), $widget_options );
 	}
 
 	/**
@@ -44,7 +45,7 @@ class WPSMS_Widget extends WP_Widget {
 		$title = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Subscribe SMS', 'wp-sms' );
 		$description = ! empty( $instance['description'] ) ? $instance['description'] : '';
 		$show_group = ! empty( $instance['show_group'] ) ? $instance['show_group'] : '';
-		include dirname( __FILE__ ) . "/includes/templates/wp-sms-widget.php"; 
+		include dirname( __FILE__ ) . "/templates/wp-sms-widget.php"; 
 	}
 
 	/**
@@ -67,9 +68,3 @@ class WPSMS_Widget extends WP_Widget {
 	}
 
 }
-
-// register WPSMS_Widget widget
-function register_wpsms_widget() {
-    register_widget( 'WPSMS_Widget' );
-}
-add_action( 'widgets_init', 'register_wpsms_widget' );
