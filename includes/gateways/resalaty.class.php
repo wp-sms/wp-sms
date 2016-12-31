@@ -6,12 +6,12 @@
 		public $unit;
 		public $flash = "enable";
 		public $isflash = false;
-		
+
 		public function __construct() {
 			parent::__construct();
 			$this->validateNumber = "";
 		}
-		
+
 		public function SendSMS() {
 			// Check credit for the gateway
 			if(!$this->GetCredit()) return;
@@ -23,7 +23,7 @@
 			 * @param string $this->from sender number.
 			 */
 			$this->from = apply_filters('wp_sms_from', $this->from);
-			
+
 			/**
 			 * Modify Receiver number
 			 *
@@ -31,7 +31,7 @@
 			 * @param array $this->to receiver number
 			 */
 			$this->to = apply_filters('wp_sms_to', $this->to);
-			
+
 			/**
 			 * Modify text message
 			 *
@@ -39,9 +39,9 @@
 			 * @param string $this->msg text message.
 			 */
 			$this->msg = apply_filters('wp_sms_msg', $this->msg);
-			
+
 			$to = implode(',', $this->to);
-			
+
 			$msg = urlencode($this->msg);
 
 			// Get response
@@ -57,7 +57,7 @@
 
 			if( $response->Code == 100 ) {
 				$this->InsertToDB($this->from, $this->msg, $this->to);
-				
+
 				/**
 				 * Run hook after send sms.
 				 *
@@ -69,11 +69,11 @@
 				return true;
 			}
 		}
-		
+
 		public function GetCredit() {
 
 			// Get response
-			$response = wp_remote_get( $this->wsdl_link . 'getbalance.php?username='.$this->username.'&password='.$this->password.'&hangedBalance=true&return=json' );
+			$response = wp_remote_get($this->wsdl_link.'getbalance.php?username='.$this->username.'&password='.$this->password.'&return=json');
 
 			// Check response
 			if( $response['response']['message'] != 'OK' ) {
@@ -87,4 +87,3 @@
 			return $response->currentuserpoints;
 		}
 	}
-?>
