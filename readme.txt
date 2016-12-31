@@ -216,11 +216,11 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');`
 * 
 
 = 3.0 =
-* CHANGE In this version of the plugin has changed the structure and optimized codes.
+* CHANGED In this version of the plugin has changed the structure and optimized codes.
 In this version, we have made a lot of changes. We tried using the free version as a core and base. The professional version of plugin is made to a professional parcel that through the free plugin is activated.  
 
 = 2.4 =
-* CHANGE `$obj` variable TO `$sms` IN YOUR SOURCE CODE.
+* CHANGED `$obj` variable TO `$sms` IN YOUR SOURCE CODE.
 
 = 2.0 =
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added Setting class for all options in the plugin for better settings performance.
 * Added new class in the plugin for doing any proccess.
 * Added `resalaty.com` gateway.
+* Removed newsletter tabs from option page and moved all option on the newsletter widget.
 * Improvement options page and removed all notice errors in setting page.
 * Improvement all syntax for notice errors.
 * Improvement main class.
