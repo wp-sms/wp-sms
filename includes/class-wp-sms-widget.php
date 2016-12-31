@@ -1,6 +1,6 @@
 <?php
 /**
- * Adds Foo_Widget widget.
+ * WP SMS Widget widget.
  */
 class WPSMS_Widget extends WP_Widget {
 
@@ -31,6 +31,7 @@ class WPSMS_Widget extends WP_Widget {
 		}
 		
 		wp_subscribes($instance['description'], $instance['show_group']);
+		
 		echo $args['after_widget'];
 	}
 
@@ -45,6 +46,15 @@ class WPSMS_Widget extends WP_Widget {
 		$title = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Subscribe SMS', 'wp-sms' );
 		$description = ! empty( $instance['description'] ) ? $instance['description'] : '';
 		$show_group = ! empty( $instance['show_group'] ) ? $instance['show_group'] : '';
+		$send_activation_code = ! empty( $instance['send_activation_code'] ) ? $instance['send_activation_code'] : '';
+		$send_welcome_sms = ! empty( $instance['send_welcome_sms'] ) ? $instance['send_welcome_sms'] : '';
+		$welcome_sms_template = ! empty( $instance['welcome_sms_template'] ) ? $instance['welcome_sms_template'] : '';
+		$mobile_number_terms = ! empty( $instance['mobile_number_terms'] ) ? $instance['mobile_number_terms'] : '';
+		$mobile_field_placeholder = ! empty( $instance['mobile_field_placeholder'] ) ? $instance['mobile_field_placeholder'] : '';
+		$mobile_field_max = ! empty( $instance['mobile_field_max'] ) ? $instance['mobile_field_max'] : '';
+		$mobile_field_min = ! empty( $instance['mobile_field_min'] ) ? $instance['mobile_field_min'] : '';
+
+		// Load template
 		include dirname( __FILE__ ) . "/templates/wp-sms-widget.php"; 
 	}
 
@@ -63,6 +73,13 @@ class WPSMS_Widget extends WP_Widget {
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
 		$instance['description'] = ( ! empty( $new_instance['description'] ) ) ? $new_instance['description'] : '';
 		$instance['show_group'] = ( ! empty( $new_instance['show_group'] ) ) ? $new_instance['show_group'] : '';
+		$instance['send_activation_code'] = ( ! empty( $new_instance['send_activation_code'] ) ) ? $new_instance['send_activation_code'] : '';
+		$instance['send_welcome_sms'] = ( ! empty( $new_instance['send_welcome_sms'] ) ) ? $new_instance['send_welcome_sms'] : '';
+		$instance['welcome_sms_template'] = ( ! empty( $new_instance['welcome_sms_template'] ) ) ? $new_instance['welcome_sms_template'] : '';
+		$instance['mobile_number_terms'] = ( ! empty( $new_instance['mobile_number_terms'] ) ) ? $new_instance['mobile_number_terms'] : '';
+		$instance['mobile_field_placeholder'] = ( ! empty( $new_instance['mobile_field_placeholder'] ) ) ? $new_instance['mobile_field_placeholder'] : '';
+		$instance['mobile_field_max'] = ( ! empty( $new_instance['mobile_field_max'] ) ) ? $new_instance['mobile_field_max'] : '';
+		$instance['mobile_field_min'] = ( ! empty( $new_instance['mobile_field_min'] ) ) ? $new_instance['mobile_field_min'] : '';
 
 		return $instance;
 	}
