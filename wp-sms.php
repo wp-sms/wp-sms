@@ -107,6 +107,13 @@ class WP_SMS_Plugin {
 	 * @var string
 	 */
 	protected $tb_prefix;
+
+	/**
+	 * Options
+	 *
+	 * @var string
+	 */
+	protected $option;
 	
 	/**
 	 * Constructors plugin
@@ -114,14 +121,15 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function __construct() {
-		global $sms, $wpdb, $table_prefix;
+		global $sms, $wpdb, $table_prefix, $wpsms_option;
 		
 		$this->sms = $sms;
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
+		$this->options = $wpsms_option;
 
 		// Load text domain
-		add_action( 'init', array(&$this, 'load_textdomain') );
+		add_action('init', array(&$this, 'load_textdomain'));
 		
 		__('WP SMS', 'wp-sms');
 		__('A complete wordpress plugin to send sms with a high capability.', 'wp-sms');
@@ -134,11 +142,15 @@ class WP_SMS_Plugin {
 		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
 		add_action('wp_enqueue_scripts', array(&$this, 'front_assets'));
 		
-		add_action('admin_bar_menu', array($this, 'adminbar'));
+		add_action('admin_bar_menu', array(&$this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
-		add_action('admin_menu', array(&$this, 'menu'));
+		add_action('admin_menu', array(&$this, 'admin_menu'));
+		add_action('widgets_init', array(&$this, 'register_widget'));
 
-		add_action( 'widgets_init', array(&$this, 'register_wpsms_widget') );
+		// ajax for logged in users
+		add_action('wp_ajax_ajax_action', array(&$this, 'ajax_action_stuff'));
+		// ajax for not logged in users
+		add_action('wp_ajax_nopriv_ajax_action', array(&$this, 'ajax_action_stuff'));
 	}
 
 	/**
@@ -211,31 +223,7 @@ class WP_SMS_Plugin {
 	}
 
 	/**
-	 * Include admin assets
-	 *
-	 * @param  Not param
-	 */
-	public function admin_assets() {
-		wp_register_style('wpsms-admin-css', plugin_dir_url(__FILE__) . 'assets/css/admin.css', true, '1.1');
-		wp_enqueue_style('wpsms-admin-css');
-		
-		wp_enqueue_style('wpsms-chosen-css', plugin_dir_url(__FILE__) . 'assets/css/chosen.min.css', true, '1.2.0');
-		wp_enqueue_script('wpsms-chosen-js', plugin_dir_url(__FILE__) . 'assets/js/chosen.jquery.min.js', true, '1.2.0');
-		wp_enqueue_script('wpsms-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', true, '1.2.0');
-	}
-	
-	/**
-	 * Include front table
-	 *
-	 * @param  Not param
-	 */
-	public function front_assets() {
-		wp_register_style('wpsms-subscribe', plugin_dir_url(__FILE__) . 'assets/css/subscribe.css', true, '1.1');
-		wp_enqueue_style('wpsms-subscribe');
-	}
-	
-	/**
-	 * init plugin
+	 * Initial plugin
 	 *
 	 * @param  Not param
 	 */
@@ -260,7 +248,40 @@ class WP_SMS_Plugin {
 			$this->add_cap();
 		}
 	}
+
+	/**
+	 * Include admin assets
+	 *
+	 * @param  Not param
+	 */
+	public function admin_assets() {
+		wp_register_style('wpsms-admin-css', plugin_dir_url(__FILE__) . 'assets/css/admin.css', true, '1.1');
+		wp_enqueue_style('wpsms-admin-css');
+		
+		wp_enqueue_style('wpsms-chosen-css', plugin_dir_url(__FILE__) . 'assets/css/chosen.min.css', true, '1.2.0');
+		wp_enqueue_script('wpsms-chosen-js', plugin_dir_url(__FILE__) . 'assets/js/chosen.jquery.min.js', true, '1.2.0');
+		wp_enqueue_script('wpsms-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', true, '1.2.0');
+	}
 	
+	/**
+	 * Include front table
+	 *
+	 * @param  Not param
+	 */
+	public function front_assets() {
+		wp_register_style('wpsms-subscribe', plugin_dir_url(__FILE__) . 'assets/css/subscribe.css', true, '1.1');
+		wp_enqueue_style('wpsms-subscribe');
+
+		// jQuery will be included automatically
+		wp_enqueue_script( 'ajax-script', plugins_url( '/assets/js/script.js', __FILE__ ), array('jquery'), 1.0 );
+
+		// Ajax params
+		wp_localize_script( 'ajax-script', 'ajax_object', array(
+			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
+			'nonce'		=> wp_create_nonce( 'wpsms-nonce' )
+		));
+	}
+
 	/**
 	 * Admin bar plugin
 	 *
@@ -299,29 +320,11 @@ class WP_SMS_Plugin {
 	}
 	
 	/**
-	 * Admin newsletter
+	 * Administrator admin_menu
 	 *
 	 * @param  Not param
 	 */
-	public function admin_newsletter() {
-		include_once dirname( __FILE__ ) . '/includes/templates/wp-sms-admin-newsletter.php';
-	}
-	
-	/**
-	 * Shortcodes plugin
-	 *
-	 * @param  Not param
-	 */
-	public function shortcode( $atts, $content = null ) {
-		
-	}
-	
-	/**
-	 * Administrator menu
-	 *
-	 * @param  Not param
-	 */
-	public function menu() {
+	public function admin_menu() {
 		add_menu_page(__('Wordpress SMS', 'wp-sms'), __('Wordpress SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'), 'dashicons-email-alt');
 		add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'));
 		add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array(&$this, 'outbox_page'));
@@ -329,9 +332,134 @@ class WP_SMS_Plugin {
 		add_submenu_page('wp-sms', __('Subscribers Group', 'wp-sms'), __('Subscribers Group', 'wp-sms'), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(&$this, 'groups_page'));
 	}
 
-	// register WPSMS_Widget widget
-	public function register_wpsms_widget() {
+	/**
+	 * Register widget
+	 */
+	public function register_widget() {
 		register_widget( 'WPSMS_Widget' );
+	}
+
+	/**
+	 * Ajax handler
+	 */
+	public function ajax_action_stuff() {
+		// Check nonce
+		$nonce = $_POST['nonce'];
+		if ( ! wp_verify_nonce( $nonce, 'wpsms-nonce' ) ) {
+			die ( 'Busted!' );
+		}
+
+		// Get widget option
+		$get_widget = get_option('widget_wpsms_widget');
+		$options = $get_widget[$_POST['widget_id']];
+
+		// Check current widget
+		if( !isset($options) ) {
+			echo json_encode(array('status' => 'error', 'response' => __('Params does not found! please refresh the current page!', 'wp-sms')));
+			die();
+		}
+
+		$name = trim($_POST['name']);
+		$mobile = trim($_POST['mobile']);
+		$group = trim($_POST['group']);
+		$type = $_POST['type'];
+		
+		if(!$name or !$mobile) {
+			echo json_encode(array('status' => 'error', 'response' => __('Please complete all fields', 'wp-sms')));
+			die();
+		}
+		
+		if(preg_match(WP_SMS_MOBILE_REGEX, $mobile) == false) {
+			echo json_encode(array('status' => 'error', 'response' => __('Please enter a valid mobile number', 'wp-sms')));
+			die();
+		}
+		
+		if($options['mobile_number_terms']) {
+			if($options['mobile_field_max']) {
+				if(strlen($mobile) > $options['mobile_field_max']) {
+					echo json_encode(array('status' => 'error', 'response' => __('Your mobile number is high!', 'wp-sms')));
+					die();
+				}
+			}
+			
+			if($options['mobile_field_min']) {
+				if(strlen($mobile) < $options['mobile_field_min']) {
+					echo json_encode(array('status' => 'error', 'response' => __('Your mobile number is low!', 'wp-sms')));
+					die();
+				}
+			}
+		}
+
+		$check_mobile = $this->db->query($this->db->prepare("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE `mobile` = '%s'", $mobile));
+
+		if($check_mobile and $type == 'subscribe') {
+			echo json_encode(array('status' => 'error', 'response' => __('Phone number is repeated', 'wp-sms')));
+			die();
+		}
+		
+		if($type == 'subscribe') {
+			
+			$get_current_date = date('Y-m-d H:i:s', current_time('timestamp',0));
+
+			if($options['send_activation_code'] and $this->options['gateway_name']) {
+				if(!$this->options['gateway_name']){
+					echo json_encode(array('status' => 'error', 'response' => __('Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms')));
+					die();
+				}
+				
+				$key = rand(1000, 9999);
+				
+				$this->sms->to = array($mobile);
+				$this->sms->msg = __('Your activation code', 'wp-sms') . ': ' . $key;
+				$this->sms->SendSMS();
+				
+				$check = $this->db->insert("{$this->tb_prefix}sms_subscribes",
+					array(
+						'date'			=>	$get_current_date,
+						'name'			=>	$name,
+						'mobile'		=>	$mobile,
+						'status'		=>	'0',
+						'activate_key'	=>	$key,
+						'group_ID'		=>	$group
+					)
+				);
+
+				if($check) {
+					echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter, Activation code sent to your mobile.', 'wp-sms'), 'action' => 'activation'));
+					die();
+				}
+			} else {
+				$check = $this->db->insert("{$this->tb_prefix}sms_subscribes",
+					array(
+						'date'			=>	$get_current_date,
+						'name'			=>	$name,
+						'mobile'		=>	$mobile,
+						'status'		=>	'1',
+						'group_ID'		=>	$group
+					)
+				);
+				
+				if($check) {
+					do_action('wpsms_add_subscriber', $name, $mobile);
+					echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter', 'wp-sms')));
+					die();
+				}
+			}
+			
+		} else if($type == 'unsubscribe') {
+			
+			if(!$check_mobile) {
+				echo json_encode(array('status' => 'error', 'response' => __('Not found!', 'wp-sms')));
+				die();
+			}
+			
+			$this->db->delete("{$this->tb_prefix}sms_subscribes", array('mobile' => $mobile) );
+			echo json_encode(array('status' => 'success', 'response' => __('Your subscription was canceled.', 'wp-sms')));
+			die();
+		}
+
+		// Stop executing script
+		die();
 	}
 	
 	/**
@@ -525,5 +653,23 @@ class WP_SMS_Plugin {
 		
 		if($result == 'update')
 			return '<div class="updated settings-update notice is-dismissible"><p><strong>'.$message.'</strong></p><button class="notice-dismiss" type="button"><span class="screen-reader-text">'.__('Close', 'wp-sms').'</span></button></div>';
+	}
+
+	/**
+	 * Admin newsletter
+	 *
+	 * @param  Not param
+	 */
+	public function admin_newsletter() {
+		include_once dirname( __FILE__ ) . '/includes/templates/wp-sms-admin-newsletter.php';
+	}
+	
+	/**
+	 * Shortcodes plugin
+	 *
+	 * @param  Not param
+	 */
+	public function shortcode( $atts, $content = null ) {
+		
 	}
 }

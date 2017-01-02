@@ -29,8 +29,13 @@ class WPSMS_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 		}
-		
-		wp_subscribes($instance['description'], $instance['show_group']);
+
+		global $wpdb, $table_prefix;
+
+		$widget_id = $this->get_numerics($args['widget_id']);
+		$get_group = $wpdb->get_results("SELECT * FROM `{$table_prefix}sms_subscribes_group`");
+
+		include_once dirname( __FILE__ ) . "/templates/wp-sms-subscribe-form.php";
 		
 		echo $args['after_widget'];
 	}
@@ -82,6 +87,11 @@ class WPSMS_Widget extends WP_Widget {
 		$instance['mobile_field_min'] = ( ! empty( $new_instance['mobile_field_min'] ) ) ? $new_instance['mobile_field_min'] : '';
 
 		return $instance;
+	}
+
+	public function get_numerics($str) {
+		preg_match('/\d+/', $str, $matches);
+		return $matches[0];
 	}
 
 }
