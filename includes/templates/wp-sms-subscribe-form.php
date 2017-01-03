@@ -9,7 +9,7 @@
 		
 		<div class="wpsms-subscribe-form">
 			<label><?php _e('Your mobile', 'wp-sms'); ?>:</label>
-			<input id="wpsms-mobile" type="text" placeholder="<?php echo get_option('wps_mnt_place_holder'); ?>" class="wpsms-input"/>
+			<input id="wpsms-mobile" type="text" placeholder="<?php echo $instance['mobile_field_placeholder']; ?>" class="wpsms-input"/>
 		</div>
 		
 		<?php if($instance['show_group']) { ?>
@@ -47,35 +47,3 @@
 	</div>
 	<input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
 </div>
-
-<?php /*if(get_option('wp_subscribes_activation')) { ?>
-$("#activation").on('click', function() {
-	$("#wpsms-result").hide();
-	subscriber['activation'] = $("#wpsms-ativation-code").val();
-	
-	$("#wpsms-subscribe").ajaxStart(function(){
-		$("#activation").attr('disabled', 'disabled');
-		$("#activation").text("<?php _e('Loading...', 'wp-sms'); ?>");
-	});
-	
-	$("#wpsms-subscribe").ajaxComplete(function(){
-		$("#activation").removeAttr('disabled');
-		$("#activation").text("<?php _e('Activation', 'wp-sms'); ?>");
-	});
-	
-	$.get("<?php echo WP_SMS_DIR_PLUGIN; ?>includes/ajax/wp-sms-subscribe-activation.php", {mobile:subscriber['mobile'], activation:subscriber['activation']}, function(data, status){
-		var response = $.parseJSON(data);
-		
-		if(response.status == 'error') {
-			$("#wpsms-result").fadeIn();
-			$("#wpsms-result").html('<span class="wpsms-message-error">' + response.response + '</div>');
-		}
-		
-		if(response.status == 'success') {
-			$("#wpsms-result").fadeIn();
-			$("#wpsms-step-2").hide();
-			$("#wpsms-result").html('<span class="wpsms-message-success">' + response.response + '</div>');
-		}
-	});
-});
-<?php } */?>

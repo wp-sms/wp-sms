@@ -146,11 +146,6 @@ class WP_SMS_Plugin {
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'admin_menu'));
 		add_action('widgets_init', array(&$this, 'register_widget'));
-
-		// ajax for logged in users
-		add_action('wp_ajax_ajax_action', array(&$this, 'ajax_action_stuff'));
-		// ajax for not logged in users
-		add_action('wp_ajax_nopriv_ajax_action', array(&$this, 'ajax_action_stuff'));
 	}
 
 	/**
@@ -213,6 +208,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-features',
 			'includes/class-wp-sms-notifications',
 			'includes/class-wp-sms-integrations',
+			'includes/class-wp-sms-newsletter',
 			'includes/class-wp-sms-subscribers',
 			'includes/class-wp-sms-widget',
 		);
@@ -271,15 +267,6 @@ class WP_SMS_Plugin {
 	public function front_assets() {
 		wp_register_style('wpsms-subscribe', plugin_dir_url(__FILE__) . 'assets/css/subscribe.css', true, '1.1');
 		wp_enqueue_style('wpsms-subscribe');
-
-		// jQuery will be included automatically
-		wp_enqueue_script( 'ajax-script', plugins_url( '/assets/js/script.js', __FILE__ ), array('jquery'), 1.0 );
-
-		// Ajax params
-		wp_localize_script( 'ajax-script', 'ajax_object', array(
-			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
-			'nonce'		=> wp_create_nonce( 'wpsms-nonce' )
-		));
 	}
 
 	/**
@@ -339,129 +326,6 @@ class WP_SMS_Plugin {
 		register_widget( 'WPSMS_Widget' );
 	}
 
-	/**
-	 * Ajax handler
-	 */
-	public function ajax_action_stuff() {
-		// Check nonce
-		$nonce = $_POST['nonce'];
-		if ( ! wp_verify_nonce( $nonce, 'wpsms-nonce' ) ) {
-			die ( 'Busted!' );
-		}
-
-		// Get widget option
-		$get_widget = get_option('widget_wpsms_widget');
-		$options = $get_widget[$_POST['widget_id']];
-
-		// Check current widget
-		if( !isset($options) ) {
-			echo json_encode(array('status' => 'error', 'response' => __('Params does not found! please refresh the current page!', 'wp-sms')));
-			die();
-		}
-
-		$name = trim($_POST['name']);
-		$mobile = trim($_POST['mobile']);
-		$group = trim($_POST['group']);
-		$type = $_POST['type'];
-		
-		if(!$name or !$mobile) {
-			echo json_encode(array('status' => 'error', 'response' => __('Please complete all fields', 'wp-sms')));
-			die();
-		}
-		
-		if(preg_match(WP_SMS_MOBILE_REGEX, $mobile) == false) {
-			echo json_encode(array('status' => 'error', 'response' => __('Please enter a valid mobile number', 'wp-sms')));
-			die();
-		}
-		
-		if($options['mobile_number_terms']) {
-			if($options['mobile_field_max']) {
-				if(strlen($mobile) > $options['mobile_field_max']) {
-					echo json_encode(array('status' => 'error', 'response' => __('Your mobile number is high!', 'wp-sms')));
-					die();
-				}
-			}
-			
-			if($options['mobile_field_min']) {
-				if(strlen($mobile) < $options['mobile_field_min']) {
-					echo json_encode(array('status' => 'error', 'response' => __('Your mobile number is low!', 'wp-sms')));
-					die();
-				}
-			}
-		}
-
-		$check_mobile = $this->db->query($this->db->prepare("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE `mobile` = '%s'", $mobile));
-
-		if($check_mobile and $type == 'subscribe') {
-			echo json_encode(array('status' => 'error', 'response' => __('Phone number is repeated', 'wp-sms')));
-			die();
-		}
-		
-		if($type == 'subscribe') {
-			
-			$get_current_date = date('Y-m-d H:i:s', current_time('timestamp',0));
-
-			if($options['send_activation_code'] and $this->options['gateway_name']) {
-				if(!$this->options['gateway_name']){
-					echo json_encode(array('status' => 'error', 'response' => __('Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms')));
-					die();
-				}
-				
-				$key = rand(1000, 9999);
-				
-				$this->sms->to = array($mobile);
-				$this->sms->msg = __('Your activation code', 'wp-sms') . ': ' . $key;
-				$this->sms->SendSMS();
-				
-				$check = $this->db->insert("{$this->tb_prefix}sms_subscribes",
-					array(
-						'date'			=>	$get_current_date,
-						'name'			=>	$name,
-						'mobile'		=>	$mobile,
-						'status'		=>	'0',
-						'activate_key'	=>	$key,
-						'group_ID'		=>	$group
-					)
-				);
-
-				if($check) {
-					echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter, Activation code sent to your mobile.', 'wp-sms'), 'action' => 'activation'));
-					die();
-				}
-			} else {
-				$check = $this->db->insert("{$this->tb_prefix}sms_subscribes",
-					array(
-						'date'			=>	$get_current_date,
-						'name'			=>	$name,
-						'mobile'		=>	$mobile,
-						'status'		=>	'1',
-						'group_ID'		=>	$group
-					)
-				);
-				
-				if($check) {
-					do_action('wpsms_add_subscriber', $name, $mobile);
-					echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter', 'wp-sms')));
-					die();
-				}
-			}
-			
-		} else if($type == 'unsubscribe') {
-			
-			if(!$check_mobile) {
-				echo json_encode(array('status' => 'error', 'response' => __('Not found!', 'wp-sms')));
-				die();
-			}
-			
-			$this->db->delete("{$this->tb_prefix}sms_subscribes", array('mobile' => $mobile) );
-			echo json_encode(array('status' => 'success', 'response' => __('Your subscription was canceled.', 'wp-sms')));
-			die();
-		}
-
-		// Stop executing script
-		die();
-	}
-	
 	/**
 	 * Sending sms admin page
 	 *
