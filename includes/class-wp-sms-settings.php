@@ -443,7 +443,7 @@ class WP_SMS_Settings {
 						__('Order ID: %s, Order status: %s, Order name: %s', 'wp-sms'),
 						'<code>%order_id%</code>',
 						'<code>%status%</code>',
-						'<code>%order_name%</code>'
+						'<code>%order_number%</code>'
 					)
 				),
 				// EDD

@@ -86,7 +86,7 @@ class WP_SMS_Integrations {
 		$template_vars = array(
 			'%order_id%' => $order_id,
 			'%status%' => $order->get_status(),
-			'%order_name%' => $order->get_order_number(),
+			'%order_number%' => $order->get_order_number(),
 		);
 		$message = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['wc_notif_new_order_template']);
 		$this->sms->msg = $message;
