@@ -35,7 +35,7 @@ if( isset($wpsms_option['gateway_name']) ) {
 	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php')) {
 		include_once dirname( __FILE__ ) . '/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php';
 	} else {
-		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/gateway/gateways/'.$wpsms_option['gateway_name'].'.class.php' );
+		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php' );
 	}
 	
 	$sms = new $wpsms_option['gateway_name'];

@@ -217,6 +217,12 @@ class WP_SMS_Settings {
 					'options'	=>  WP_SMS_Gateway::gateway(),
 					'desc'	=>  __( 'Please select your gateway.', 'wp-sms' )
 				),
+				'gateway_help'	=>  array(
+					'id'	=>  'gateway_help',
+					'name'	=>  __( 'Gateway description', 'wp-sms' ),
+					'type'	=>  'html',
+					'options'	=>  WP_SMS_Gateway::help(),
+				),
 				'gateway_username'	=>  array(
 					'id'	=>  'gateway_username',
 					'name'	=>  __( 'API username', 'wp-sms' ),
@@ -252,6 +258,12 @@ class WP_SMS_Settings {
 					'name'	=>  __( 'Status', 'wp-sms' ),
 					'type'	=>  'html',
 					'options'	=>	WP_SMS_Gateway::status(),
+				),
+				'account_response'	=>  array(
+					'id'	=>  'account_response',
+					'name'	=>  __( 'Result request', 'wp-sms' ),
+					'type'	=>  'html',
+					'options'	=>	WP_SMS_Gateway::response(),
 				),
 				'account_credit_in_menu'	=>  array(
 					'id'	=>  'account_credit_in_menu',

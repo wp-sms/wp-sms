@@ -8,6 +8,8 @@
  */
 class WP_SMS_Gateway {
 
+	static $error_message;
+
 	public static function gateway() {
 		$gateways = array(
 			'global' => array(
@@ -182,16 +184,36 @@ class WP_SMS_Gateway {
 		global $wpsms_option, $sms;
 
 		// Get credit
-		$credit = $sms->GetCredit();
+		$result = $sms->GetCredit();
 
-		// Update credit
-		update_option('wp_last_credit', $credit);
+		if( is_wp_error($result) ) {
+			// Set error message
+			self::$error_message = $result->get_error_message();
 
-		if( $credit ) {
-			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . sprintf(__('Active!, account balance: %s', 'wp-sms'), $credit) . '</div>';
+			// Update credit
+			update_option('wp_last_credit', 0);
+			
+			// Return html
+			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Deactive!', 'wp-sms'). '</div>';
 		} else {
-			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . sprintf(__('Deactive!, the return result: %s', 'wp-sms'), $credit) . '</div>';
+			// Update credit
+			update_option('wp_last_credit', $result);
+
+			// Return html
+			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . sprintf(__('Active!, account balance: %s', 'wp-sms'), $result) . '</div>';
 		}
+
+	}
+
+	public static function response() {
+		return self::$error_message;
+	}
+
+	public static function help() {
+		global $sms;
+
+		// Get gateway help
+		return $sms->help;
 	}
 
 }
