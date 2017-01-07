@@ -146,6 +146,8 @@ class WP_SMS_Plugin {
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'admin_menu'));
 		add_action('widgets_init', array(&$this, 'register_widget'));
+
+		add_filter('wp_sms_to', array(&$this, 'modify_bulk_send'));
 	}
 
 	/**
@@ -324,6 +326,19 @@ class WP_SMS_Plugin {
 	 */
 	public function register_widget() {
 		register_widget( 'WPSMS_Widget' );
+	}
+
+	/**
+	 * Modify destination number
+	 * @param  array $to
+	 * @return array/string
+	 */
+	public function modify_bulk_send($to) {
+		if(!$this->sms->bulk_send) {
+			return array($to[0]);
+		}
+
+		return $to;
 	}
 
 	/**

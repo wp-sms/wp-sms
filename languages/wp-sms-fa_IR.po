@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-07 21:10+0330\n"
-"PO-Revision-Date: 2017-01-07 21:10+0330\n"
+"POT-Creation-Date: 2017-01-07 22:28+0330\n"
+"PO-Revision-Date: 2017-01-07 22:28+0330\n"
 "Last-Translator: Mostafa Soufi <mostafa.soufi@hotmail.com>\n"
 "Language-Team: Verona Labs <hi@veronalabs.com>\n"
 "Language: fa_IR\n"
@@ -112,10 +112,10 @@ msgstr "آیتم حذف شد."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-integrations.php:44
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-notifications.php:63
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:93
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:97
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:100
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:104
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:62
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:292
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:294
 msgid "SMS"
 msgstr "پیامک"
 
@@ -341,7 +341,7 @@ msgstr "نتیجه بازگشتی"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:270
 msgid "Bulk send"
-msgstr "رسال گروهی"
+msgstr "ارسال گروهی"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:276
 msgid "Show in admin menu"
@@ -558,6 +558,10 @@ msgstr "خبرنامه پیامکی"
 msgid "Subscribe SMS"
 msgstr "اشتراک پیامک"
 
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:71
+msgid "Username/Password does not set for this gateway"
+msgstr "نام کاربری یا رمز عبور برای این درگاه ست نشده است"
+
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/outbox/outbox.php:2
 msgid "Outbox SMS"
 msgstr "صندوق ارسال پیامک"
@@ -570,8 +574,8 @@ msgstr "جستجو"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:48
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:53
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:119
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:316
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:126
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:318
 msgid "Send SMS"
 msgstr "ارسال پیامک"
 
@@ -612,29 +616,37 @@ msgstr "<b>%s</b> کاربر شماره موبایل دارند."
 msgid "For example: <code>%s</code>"
 msgstr "برای مثال: <code>%s</code>"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:96
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:95
+msgid ""
+"This gateway does not support sending bulk message and used first number to "
+"sending sms."
+msgstr ""
+"این درگاه از ارسال گروهی پشتیبانی نمیکند و از اولین شماره برای ارسال پیامک "
+"استفاده میکند."
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:103
 msgid "The remaining words"
 msgstr "کلمات باقی‌مانده"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:99
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:106
 msgid "Your account credit"
 msgstr "اعتبار حساب شما"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:105
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:112
 msgid "Send a Flash"
 msgstr "ارسال یه‌صورت فلش"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:108
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:115
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-meta-box.php:26
 msgid "Yes"
 msgstr "بله"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:110
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:117
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-meta-box.php:27
 msgid "No"
 msgstr "خیر"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:112
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:119
 msgid "Flash is possible to send messages without being asked, opens"
 msgstr "ارسال فلش امکانی است که پیام را بدون درخواست گیرند، باز می کند"
 
@@ -733,7 +745,7 @@ msgid "Upload"
 msgstr "بارگزاری"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/subscribe/subscribes.php:2
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:318
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:320
 msgid "Subscribers"
 msgstr "مشترکین"
 
@@ -756,8 +768,8 @@ msgid "Subscribe"
 msgstr "اشتراک"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-admin-newsletter.php:8
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:516
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:519
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:531
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:534
 msgid "Close"
 msgstr "بستن"
 
@@ -930,37 +942,37 @@ msgstr "پیامک وردپرس"
 msgid "A complete wordpress plugin to send sms with a high capability."
 msgstr "یک افزونه کامل برای وردپرس برای ارسال پیامک با قابلیت های فراوان."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:305
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:307
 #, php-format
 msgid "%s Subscriber"
 msgstr "%s مشترک"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:306
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:308
 #, php-format
 msgid "%s SMS Credit"
 msgstr "%s اعتبار پیامک"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:315
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:317
 msgid "Wordpress SMS"
 msgstr "پیامک وردپرس"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:317
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:319
 msgid "Outbox"
 msgstr "صندوق ارسال"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:319
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:321
 msgid "Subscribers Group"
 msgstr "گروه مشترکین"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:344
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:359
 msgid "Your credit for send sms is low!"
 msgstr "اعتبار شما برای ارسال پیامک کم است!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:374
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:389
 msgid "SMS was sent with success"
 msgstr "پیامک با موفقیت ارسال شد"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:378
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:393
 msgid "Please enter a message"
 msgstr "لطفا قسمت پیامک را وارد کنید"
 

@@ -88,6 +88,13 @@
 					</span>
 				</td>
 			</tr>
+
+			<?php if(!$this->sms->bulk_send) : ?>
+			<tr>
+				<td></td>
+				<td><?php _e('This gateway does not support sending bulk message and used first number to sending sms.', 'wp-sms'); ?></td>
+			</tr>
+			<?php endif; ?>
 			
 			<tr>
 				<td><?php _e('SMS', 'wp-sms'); ?>:</td>

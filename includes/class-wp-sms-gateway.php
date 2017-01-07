@@ -9,7 +9,7 @@
 class WP_SMS_Gateway {
 
 	static $error_message;
-
+	
 	public static function gateway() {
 		$gateways = array(
 			'global' => array(
