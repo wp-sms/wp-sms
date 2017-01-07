@@ -216,4 +216,17 @@ class WP_SMS_Gateway {
 		return $sms->help;
 	}
 
+	public static function bulk_status() {
+		global $sms;
+
+		// Get bulk status
+		if( $sms->bulk_send == true ) {
+			// Return html
+			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
+		} else {
+			// Return html
+			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms'). '</div>';
+		}
+	}
+
 }

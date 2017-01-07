@@ -265,6 +265,12 @@ class WP_SMS_Settings {
 					'type'	=>  'html',
 					'options'	=>	WP_SMS_Gateway::response(),
 				),
+				'bulk_send'	=>  array(
+					'id'	=>  'bulk_send',
+					'name'	=>  __( 'Bulk send', 'wp-sms' ),
+					'type'	=>  'html',
+					'options'	=>	WP_SMS_Gateway::bulk_status(),
+				),
 				'account_credit_in_menu'	=>  array(
 					'id'	=>  'account_credit_in_menu',
 					'name'	=>  __( 'Show in admin menu', 'wp-sms' ),

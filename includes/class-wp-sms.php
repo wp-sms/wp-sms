@@ -43,6 +43,13 @@ abstract class WP_SMS {
 	 * @var string
 	 */
 	public $help = false;
+
+	/**
+	 * Bulk send
+	 *
+	 * @var boolean
+	 */
+	public $bulk_send = true;
 	
 	/**
 	 * SMsS send from number
