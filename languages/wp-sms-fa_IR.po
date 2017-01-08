@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-07 22:28+0330\n"
-"PO-Revision-Date: 2017-01-07 22:28+0330\n"
+"POT-Creation-Date: 2017-01-08 22:25+0330\n"
+"PO-Revision-Date: 2017-01-08 22:26+0330\n"
 "Last-Translator: Mostafa Soufi <mostafa.soufi@hotmail.com>\n"
 "Language-Team: Verona Labs <hi@veronalabs.com>\n"
 "Language: fa_IR\n"
@@ -558,7 +558,7 @@ msgstr "خبرنامه پیامکی"
 msgid "Subscribe SMS"
 msgstr "اشتراک پیامک"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:70
 msgid "Username/Password does not set for this gateway"
 msgstr "نام کاربری یا رمز عبور برای این درگاه ست نشده است"
 
@@ -768,8 +768,8 @@ msgid "Subscribe"
 msgstr "اشتراک"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-admin-newsletter.php:8
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:531
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:534
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:535
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:538
 msgid "Close"
 msgstr "بستن"
 
@@ -968,11 +968,16 @@ msgstr "گروه مشترکین"
 msgid "Your credit for send sms is low!"
 msgstr "اعتبار شما برای ارسال پیامک کم است!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:389
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:391
+#, php-format
+msgid "SMS was not delivered! results received: %s"
+msgstr "پیامک ارسال نشد! نتیجه دریافتی: %s"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:393
 msgid "SMS was sent with success"
 msgstr "پیامک با موفقیت ارسال شد"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:393
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:397
 msgid "Please enter a message"
 msgstr "لطفا قسمت پیامک را وارد کنید"
 

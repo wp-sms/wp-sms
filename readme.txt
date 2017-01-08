@@ -233,6 +233,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added return request in the gateway tab on the option page for get any message of the request.
 * Added `WP_Error` in the all gateway classes.
 * Added ‌Bulk send status in the gateway tabs on the setting page.
+* Added response gateway message after sending sms on the sending page.
 * Removed newsletter tabs from option page and moved all option on the newsletter widget.
 * Improvement options page and removed all notice errors in setting page.
 * Improvement all syntax for notice errors.

@@ -384,8 +384,12 @@ class WP_SMS_Plugin {
 					$this->sms->isflash = false;
 				}
 
-				if($this->sms->SendSMS()) {
-					$to = implode($this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes"), ",");
+				// Send sms
+				$response = $this->sms->SendSMS();
+
+				if( is_wp_error($response) )  {
+					echo "<div class='error'><p>" . sprintf(__('SMS was not delivered! results received: %s', 'wp-sms'), $response->get_error_message()) . "</p></div>";
+				} else {
 					echo "<div class='updated'><p>" . __('SMS was sent with success', 'wp-sms') . "</p></div>";
 					update_option('wp_last_credit', $this->sms->GetCredit());
 				}
