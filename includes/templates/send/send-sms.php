@@ -103,7 +103,7 @@
 					<?php _e('The remaining words', 'wp-sms'); ?>: <span id="wp_counter" class="number"></span>/<span id="wp_max" class="number"></span><br />
 					<span id="wp_part" class="number"></span> <?php _e('SMS', 'wp-sms'); ?><br />
 					<p class="number">
-						<?php echo __('Your account credit', 'wp-sms') . ': ' . $this->sms->GetCredit(); ?>
+						<?php echo __('Your account credit', 'wp-sms') . ': ' . WP_SMS_Gateway::credit(); ?>
 					</p>
 				</td>
 			</tr>

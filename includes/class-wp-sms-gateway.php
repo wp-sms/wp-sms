@@ -181,7 +181,7 @@ class WP_SMS_Gateway {
 	 * Get gateway status
 	 */
 	public static function status() {
-		global $wpsms_option, $sms;
+		global $sms;
 
 		// Get credit
 		$result = $sms->GetCredit();
@@ -202,7 +202,6 @@ class WP_SMS_Gateway {
 			// Return html
 			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . sprintf(__('Active!, account balance: %s', 'wp-sms'), $result) . '</div>';
 		}
-
 	}
 
 	public static function response() {
@@ -226,6 +225,19 @@ class WP_SMS_Gateway {
 		} else {
 			// Return html
 			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms'). '</div>';
+		}
+	}
+
+	public static function credit() {
+		global $sms;
+
+		// Get credit
+		$result = $sms->GetCredit();
+
+		if( is_wp_error($result) ) {
+			return 0;
+		} else {
+			return $result;
 		}
 	}
 
