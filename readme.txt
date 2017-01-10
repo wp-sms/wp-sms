@@ -228,7 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.0 =
 * Added setting class for all options in the plugin for better settings performance.
-* Added new class in the plugin for doing any proccess.
+* Added new classes for doing any proccess.
 * Added `resalaty.com` gateway.
 * Added return request in the gateway tab on the option page for get any message of the request.
 * Added `WP_Error` in the all gateway classes.

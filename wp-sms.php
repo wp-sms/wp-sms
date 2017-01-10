@@ -113,7 +113,7 @@ class WP_SMS_Plugin {
 	 *
 	 * @var string
 	 */
-	protected $option;
+	protected $options;
 	
 	/**
 	 * Constructors plugin
