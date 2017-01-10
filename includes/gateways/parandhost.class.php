@@ -16,7 +16,7 @@ class parandhost extends WP_SMS {
 	public function SendSMS() {
 		// Check gateway credit
 		if( is_wp_error($this->GetCredit()) ) {
-			return;
+			return new WP_Error( 'account-credit', __('Your account does not credit for sending sms.', 'wp-sms') );
 		}
 		
 		/**
@@ -46,9 +46,10 @@ class parandhost extends WP_SMS {
 		$options = array('login' => $this->username, 'password' => $this->password);
 		$client = new SoapClient($this->wsdl_link, $options);
 		
-		$result = $client->sendToMany($this->to, $this->msg, $this->from);
-		
-		if($result) {
+		try {
+			
+			$result = $client->sendToMany($this->to, $this->msg, $this->from);
+
 			$this->InsertToDB($this->from, $this->msg, $this->to);
 			
 			/**
@@ -58,10 +59,11 @@ class parandhost extends WP_SMS {
 			 * @param string $result result output.
 			 */
 			do_action('wp_sms_send', $result);
-			
 			return $result;
+
+		} catch (Exception $e) {
+			return new WP_Error( 'send-sms', $e->getMessage() );
 		}
-		
 	}
 
 	public function GetCredit() {

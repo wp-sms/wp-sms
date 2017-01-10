@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-08 22:25+0330\n"
-"PO-Revision-Date: 2017-01-08 22:26+0330\n"
+"POT-Creation-Date: 2017-01-10 17:48+0330\n"
+"PO-Revision-Date: 2017-01-10 17:48+0330\n"
 "Last-Translator: Mostafa Soufi <mostafa.soufi@hotmail.com>\n"
 "Language-Team: Verona Labs <hi@veronalabs.com>\n"
 "Language: fa_IR\n"
@@ -63,11 +63,11 @@ msgstr "غیرفعال"
 msgid "Active!, account balance: %s"
 msgstr "فعال! موجودی حساب: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:225
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:224
 msgid "Supported"
 msgstr "پشتیبانی میکند"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:228
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:227
 msgid "Does not support!"
 msgstr "پشتیبانی نمی کند!"
 
@@ -557,6 +557,10 @@ msgstr "خبرنامه پیامکی"
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-widget.php:51
 msgid "Subscribe SMS"
 msgstr "اشتراک پیامک"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:19
+msgid "Your account does not credit for sending sms."
+msgstr "اعتبار شما برای ارسال پیامک کم است."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:70
 msgid "Username/Password does not set for this gateway"
