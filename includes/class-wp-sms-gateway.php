@@ -12,6 +12,9 @@ class WP_SMS_Gateway {
 	
 	public static function gateway() {
 		$gateways = array(
+			'' => array(
+				'default'		=>	__('Please select your gateway', 'wp-sms'),
+			),
 			'global' => array(
 				'fortytwo'		=>	'fortytwo.com',
 				'smsglobal'		=>	'smsglobal.com',
@@ -230,7 +233,6 @@ class WP_SMS_Gateway {
 
 	public static function credit() {
 		global $sms;
-
 		// Get credit
 		$result = $sms->GetCredit();
 

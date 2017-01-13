@@ -241,7 +241,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed load template widget in admin.
 * Fixed widget plugin name (Important! after update, re-add `SMS newsletter form` widget in your theme)
 * Fixed notice error in `cf7` editor panel, used `id()` method instead.
-* Deprecated `wp_subscribes` function.
+* Removed function: `wp_subscribes`.
 
 = 3.2.4 =
 * Compatible with WP 4.7

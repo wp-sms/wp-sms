@@ -19,19 +19,12 @@ define('WP_SMS_SITE', 'http://wp-sms.ir');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 define('WP_SMS_CURRENT_DATE', date('Y-m-d H:i:s' ,current_time('timestamp', 0)));
 
-// Use default gateway class if webservice not active
-if(!class_exists('WP_SMS')) {
-	include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
-	$sms = new Default_Gateway;
-}
-
 // Get options
 $wpsms_option = get_option('wpsms_settings');
+include_once dirname( __FILE__ ) . '/includes/class-wp-sms.php';
 
 // SMS Gateway plugin
 if( isset($wpsms_option['gateway_name']) ) {
-	include_once dirname( __FILE__ ) . '/includes/class-wp-sms.php';
-	
 	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php')) {
 		include_once dirname( __FILE__ ) . '/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php';
 	} else {
@@ -63,6 +56,9 @@ if( isset($wpsms_option['gateway_name']) ) {
 	}
 	
 	$sms->from = $wpsms_option['gateway_sender_id'];
+} else {
+	include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
+	$sms = new Default_Gateway;
 }
 
 // Create object of plugin

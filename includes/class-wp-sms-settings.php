@@ -18,7 +18,10 @@ class WP_SMS_Settings {
 		}
 
 		add_action( 'admin_menu', array(&$this, 'add_settings_menu'), 11 );
-		add_action( 'admin_init', array(&$this, 'register_settings') );
+
+		if( isset($_GET['page']) and $_GET['page'] == 'wp-sms-settings' or isset($_POST['option_page']) and $_POST['option_page'] == 'wpsms_settings' ) {
+			add_action( 'admin_init', array(&$this, 'register_settings') );
+		}
 	}
 
 	/**
@@ -202,6 +205,7 @@ class WP_SMS_Settings {
 					'desc'	=>  __( 'Enter your mobile country code.', 'wp-sms' )
 				),
 			) ),
+
 			// Gateway tab
 			'gateway'	=>  apply_filters( 'wpsms_gateway_settings', array(
 				// Gateway
