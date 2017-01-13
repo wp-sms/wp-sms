@@ -124,7 +124,6 @@ This plugin is a free product of the [Verona Labs](http://veronalabs.com/)
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. To display Subscribe goto Themes -> Widgets, and adding `Subscribe to SMS` into your sidebar Or using this functions: `<?php wp_subscribes(); ?>` into theme.
-or using this Shortcode `[subscribe]` in Posts pages or Widget.
 4. Using this functions for send manual SMS:
 
 * First: `global $sms;`
