@@ -176,6 +176,6 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
 
 # Community Links
-* [Wordpress plugin page](www.wordpress.org/plugins/wp-sms/)
+* [Wordpress plugin page](http://wordpress.org/plugins/wp-sms/)
 * [Plugin website](http://wp-sms.ir)
 * [Buy Pro version](http://wp-sms.ir/purchases)
