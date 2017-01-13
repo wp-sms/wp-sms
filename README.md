@@ -1,6 +1,5 @@
 # WP-SMS Plugin
 A complete wordpress plugin to send sms with a high capability.
-Send SMS via WordPress, Subscribe SMS newsletter and Send SMS to Number(s), Subscribes and Wordpress Users.
 
 You can add to wordpress, the ability of sending sms. you can make users, member of sms newsletter and send to them sms.
 To every changement of position in wordpress, you can send a sms through this plugin.
@@ -17,11 +16,9 @@ Very easy Send SMS by PHP code:
 
 # Features
 
+* Supported +150 sms gateways. [(List all gateways)](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
 * Send SMS to number(s), subscribers and wordpress users.
 * Subscribe newsletter SMS.
-* Widget for register user to sms subscribed.
-* Support Wordpress Hooks.
-* Support Wordpress Shortcode.
 * Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.
@@ -30,7 +27,8 @@ Very easy Send SMS by PHP code:
 * Notification SMS when user logged into wordpress.
 * Notification SMS when user registered to subscription form.
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
-* Create Category for newsletter.
+* Supported WP Widget for newsletter subscribers.
+* Support Wordpress Hooks.
 * Import/Export Subscribers.
 
 # Professional Package
@@ -178,8 +176,6 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
 
 # Community Links
-* Wordpress plugin page: www.wordpress.org/plugins/wp-sms/
-* Website plugin: wp-sms.ir
-* Translator: wp-sms.ir/contact
-* Buy Pro version: wp-sms.ir/purchases
-* Donate: www.mostafa-soufi.ir/donate/
+* [Wordpress plugin page](www.wordpress.org/plugins/wp-sms/)
+* [Plugin website](http://wp-sms.ir)
+* [Buy Pro version](http://wp-sms.ir/purchases)

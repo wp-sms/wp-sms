@@ -9,7 +9,6 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 A complete wordpress plugin to send sms with a high capability.
-Send SMS via WordPress, Subscribe SMS newsletter and Send SMS to Number(s), Subscribes and Wordpress Users.
 
 == Description ==
 You can add to wordpress, the ability of sending sms. you can make users, member of sms newsletter and send to them sms.
@@ -31,11 +30,9 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
 
+* Supported +150 sms gateways. (List all gateways)[https://github.com/veronalabs/wp-sms/tree/master/includes/gateways]
 * Send SMS to number(s), subscribers and wordpress users.
 * Subscribe newsletter SMS.
-* Widget for register user to sms subscribed.
-* Support Wordpress Hooks.
-* Support Wordpress Shortcode.
 * Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.
@@ -44,7 +41,8 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 * Notification SMS when user logged into wordpress.
 * Notification SMS when user registered to subscription form.
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
-* Create Category for newsletter.
+* Supported WP Widget for newsletter subscribers.
+* Support Wordpress Hooks.
 * Import/Export Subscribers.
 
 = Professional Package =
@@ -52,12 +50,7 @@ In the Professional pack added many features, another useful gateway and is inte
 
 [Buy Professional Package](http://wp-sms.ir/purchases)
 
-= Available on GitHub =
-WP-SMS is now available for develop on the GitHub. I look forward to your feedback!
-
-[Here it is](https://github.com/veronalabs/wp-sms)
-
-Gateways:
+Supported gateways list on the professional package:
 
 * Smshosting.it
 * Twilio.com
@@ -109,7 +102,7 @@ You can adding mobile number field to profile page. can be send sms to user or a
 
 [Buy Professional Package](http://wp-sms.ir/purchases)
 
-= Translators =
+= Internationalization =
 * English
 * Persian
 * Arabic (Thanks Hamad Al-Shammari, Gateway.sa)
@@ -123,8 +116,7 @@ Translations are done by people just like you, help make WP SMS available to mor
 
 = Support =
 * [Donate to this plugin](http://mostafa-soufi.ir/donate/)
-* [English Support Forum](https://wordpress.org/support/plugin/wp-sms)
-* [Persian Support Forum](http://forum.wp-parsi.com/forum/17-%D9%85%D8%B4%DA%A9%D9%84%D8%A7%D8%AA-%D8%AF%DB%8C%DA%AF%D8%B1/)
+* [Github repository](https://github.com/veronalabs/wp-sms)
 
 This plugin is a free product of the [Verona Labs](http://veronalabs.com/)
 
@@ -213,7 +205,7 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');`
 
 == Upgrade Notice ==
 = 4.0.0 =
-* 
+* IMPORTANT! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 
 = 3.0 =
 * CHANGED In this version of the plugin has changed the structure and optimized codes.
