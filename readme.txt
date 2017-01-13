@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 A complete wordpress plugin to send sms with a high capability.
 
 == Description ==
-You can add to wordpress, the ability of sending sms. you can make users, member of sms newsletter and send to them sms.
+You can add to wordpress, the ability of sending sms, member of sms newsletter and send to them sms.
 To every changement of position in wordpress, you can send a sms through this plugin.
 
 The usage of this plugin is completely free. You have to just have an account from a service in the gateway listes that we support them. 
@@ -30,7 +30,7 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
 
-* Supported +150 sms gateways. (List all gateways)[https://github.com/veronalabs/wp-sms/tree/master/includes/gateways]
+* Supported +150 sms gateways. [List all gateways](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
 * Send SMS to number(s), subscribers and wordpress users.
 * Subscribe newsletter SMS.
 * Send activation code to subscribe for complete subscription.
@@ -218,6 +218,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.0 =
+IMPORTANT! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 * Added setting class for all options in the plugin for better settings performance.
 * Added new classes for doing any proccess.
 * Added `resalaty.com` gateway.

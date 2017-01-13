@@ -1,7 +1,7 @@
 # WP-SMS Plugin
 A complete wordpress plugin to send sms with a high capability.
 
-You can add to wordpress, the ability of sending sms. you can make users, member of sms newsletter and send to them sms.
+You can add to wordpress, the ability of sending sms, member of sms newsletter and send to them sms.
 To every changement of position in wordpress, you can send a sms through this plugin.
 
 The usage of this plugin is completely free. You have to just have an account from a service in the gateway listes that we support them. 
