@@ -121,7 +121,7 @@ class WP_SMS_Newsletter {
 			if($widget_options['mobile_field_max']) {
 				if(strlen($mobile) > $widget_options['mobile_field_max']) {
 					// Return response
-					echo json_encode(array('status' => 'error', 'response' => __('Your mobile number is high!', 'wp-sms')));
+					echo json_encode(array('status' => 'error', 'response' => sprintf(__('Your mobile number should be less than %s digits', 'wp-sms'), $widget_options['mobile_field_max'])));
 
 					// Stop executing script
 					die();
@@ -131,7 +131,9 @@ class WP_SMS_Newsletter {
 			if($widget_options['mobile_field_min']) {
 				if(strlen($mobile) < $widget_options['mobile_field_min']) {
 					// Return response
-					echo json_encode(array('status' => 'error', 'response' => __('Your mobile number is low!', 'wp-sms')));
+					echo json_encode(array('status' => 'error', 'response' => sprintf(__('Your mobile number should be greater than %s digits', 'wp-sms'), $widget_options['mobile_field_min'])));
+
+					// Stop executing script
 					die();
 				}
 			}

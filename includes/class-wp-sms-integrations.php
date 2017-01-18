@@ -54,6 +54,11 @@ class WP_SMS_Integrations {
 	public function cf7_setup_form($form) {
 		$cf7_options = get_option('wpcf7_sms_' . $form->id());
 		$cf7_options_field = get_option('wpcf7_sms_form' . $form->id());
+
+		if( !isset($cf7_options['phone']) ) $cf7_options['phone'] = '';
+		if( !isset($cf7_options['message']) ) $cf7_options['message'] = '';
+		if( !isset($cf7_options_field['phone']) ) $cf7_options_field['phone'] = '';
+		if( !isset($cf7_options_field['message']) ) $cf7_options_field['message'] = '';
 		
 		include_once dirname( __FILE__ ) . "/templates/wp-sms-wpcf7-form.php";
 	}

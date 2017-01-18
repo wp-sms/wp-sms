@@ -219,6 +219,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.1 =
 * Fixed default gateway issue.
+* Fixed Illegal error in cf7 sms meta box.
+* Fixed Spelling mistakes in language file.
 
 = 4.0.0 =
 = IMPORTANT! =

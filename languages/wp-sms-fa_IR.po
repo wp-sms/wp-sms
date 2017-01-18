@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-13 11:55+0330\n"
-"PO-Revision-Date: 2017-01-13 11:55+0330\n"
+"POT-Creation-Date: 2017-01-18 23:07+0330\n"
+"PO-Revision-Date: 2017-01-18 23:09+0330\n"
 "Last-Translator: Mostafa Soufi <mostafa.soufi@hotmail.com>\n"
 "Language-Team: Verona Labs <hi@veronalabs.com>\n"
 "Language: fa_IR\n"
@@ -42,7 +42,7 @@ msgid "Please complete all fields"
 msgstr "لطفا تمامی فیلدها را کامل کنید"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-features.php:37
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:189
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:192
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-subscribers-table.php:73
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/subscribe/add-subscriber.php:12
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/subscribe/edit-subscriber.php:12
@@ -118,33 +118,35 @@ msgstr "آیتم حذف شد."
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-notifications.php:63
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:100
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/send/send-sms.php:104
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:62
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:59
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:294
 msgid "SMS"
 msgstr "پیامک"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:93
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:265
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:267
 msgid "Params does not found! please refresh the current page!"
-msgstr "پارامتری یافن نشد! لطفأ صفحه را مجدد بارگزاری نمائید."
+msgstr "پارامتری یافت نشد! لطفأ صفحه را مجدد بارگزاری نمائید."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:114
 msgid "Please enter a valid mobile number"
 msgstr "شماره موبایل معتبر نیست"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:124
-msgid "Your mobile number is high!"
-msgstr "شماره موبایل وارد شده طولانی است!"
+#, php-format
+msgid "Your mobile number should be less than %s digits"
+msgstr "شماره موبایل شما باید کمتر از %s رقم باشد."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:134
-msgid "Your mobile number is low!"
-msgstr "شماره موبایل وارد شده کم است!"
+#, php-format
+msgid "Your mobile number should be greater than %s digits"
+msgstr "شماره موبایل شما باید بزرگتر از %s رقم باشد."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:144
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:146
 msgid "Phone number is repeated"
 msgstr "شماره موبایل تکراری است"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:157
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:159
 msgid ""
 "Service provider is not available for send activate key to your mobile. "
 "Please contact with site."
@@ -152,39 +154,39 @@ msgstr ""
 "سرویس‌هنده برای ارسال کد فعال سازی به موبایل شما در دسترس نیست. لطفاً با "
 "مدیریت سایت تماس بگیرید."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:166
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:168
 msgid "Your activation code"
 msgstr "کدفعال سازی شما"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:182
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:184
 msgid "You will join the newsletter, Activation code sent to your mobile."
 msgstr "اشتراک شما انجام شد. کد فعال سازی به موبایل شما ارسال شد."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:217
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:219
 msgid "You will join the newsletter"
 msgstr "شما عضو خبرنامه شدید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:228
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:230
 msgid "Not found!"
 msgstr "یافت نشد!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:237
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:239
 msgid "Your subscription was canceled."
 msgstr "عضویت شما لغو شد."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:276
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:278
 msgid "Mobile number is missing!"
 msgstr "شماره موبایل یافت نشد!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:284
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:286
 msgid "Please enter the activation code!"
 msgstr "لطفا کدفعال سازی را وارد کنید!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:294
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:296
 msgid "Activation code is wrong!"
 msgstr "کد فعال سازی اشتباه است!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:305
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-newsletter.php:307
 msgid "Your subscription was successful!"
 msgstr "عضویت شما انجام شد!"
 
@@ -224,221 +226,221 @@ msgstr "دریافت کننده"
 msgid "SMS Sended."
 msgstr "پیامک ارسال شد."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:28
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:31
 msgid "Setting"
 msgstr "تنظیمات"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:102
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:105
 msgid "General"
 msgstr "عمومی"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:103
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:106
 msgid "Gateway"
 msgstr "درگاه"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:104
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:107
 msgid "Features"
 msgstr "امکانات"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:105
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:108
 msgid "Notifications"
 msgstr "اطلاع رسانی"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:106
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:109
 msgid "Integration"
 msgstr "یکپارچه سازی"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:166
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:169
 msgid "Settings updated"
 msgstr "تنظیمات به روز رسانی شد"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:180
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:183
 msgid "Enable"
 msgstr "فعال"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:181
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:184
 msgid "Disable"
 msgstr "غیرفعال"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:194
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:197
 msgid "Admin mobile number"
 msgstr "شماره موبایل مدیر"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:196
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:199
 msgid "Admin mobile number for get any sms notifications"
 msgstr "شماره موبایل مدیر برای دریافت هرگونه اطلاعیه های پیامکی"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:200
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:203
 msgid "Mobile country code"
 msgstr "کد موبایل کشور شما"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:202
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:205
 msgid "Enter your mobile country code."
 msgstr "کد موبایل کشور خود را وارد کنید."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:210
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:214
 msgid "Gateway information"
 msgstr "اطلاعات درگاه"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:215
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:219
 msgid "Gateway name"
 msgstr "نام درگاه"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:218
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:222
 msgid "Please select your gateway."
 msgstr "لطفأ درگاه را انتخاب کنید."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:222
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:226
 msgid "Gateway description"
 msgstr "توضیحات درگاه"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:228
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:232
 msgid "API username"
 msgstr "نام کاربری API"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:230
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:234
 msgid "Enter API username of gateway"
 msgstr "نام کاربری API درگاه را وارد نمائید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:234
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:238
 msgid "API password"
 msgstr "رمز API"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:236
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:240
 msgid "Enter API password of gateway"
 msgstr "رمز API درگاه را وارد نمائید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:240
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:244
 msgid "Sender number"
 msgstr "شماره ارسال کننده"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:242
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:246
 msgid "Sender number or sender ID"
 msgstr "شماره یا شناسه ارسال"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:246
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:250
 msgid "API key"
 msgstr "کلید API را وارد نمائید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:248
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:252
 msgid "Enter API key of gateway"
 msgstr "کلید API درگاه را وارد نمائید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:253
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:257
 msgid "Account credit"
 msgstr "اعتبار حساب"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:258
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:307
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:332
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:345
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:382
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:410
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:262
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:311
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:336
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:349
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:386
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:414
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-subscribers-table.php:76
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/subscribe/edit-subscriber.php:35
 msgid "Status"
 msgstr "وضعیت"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:264
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:268
 msgid "Result request"
 msgstr "نتیجه بازگشتی"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:270
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:274
 msgid "Bulk send"
 msgstr "ارسال گروهی"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:276
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:280
 msgid "Show in admin menu"
 msgstr "نمایش نوار ابزار مدیریت"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:279
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:283
 msgid "Show your account credit in admin menu."
 msgstr "نمایش اعتبار حساب شما در نوار ابزار مدیریت."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:286
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:290
 msgid "Mobile field"
 msgstr "فیلد شماره موبایل"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:291
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:295
 msgid "Add Mobile number field"
 msgstr "افزودن فیلد شماره موبایل"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:294
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:298
 msgid "Add Mobile number to user profile and register form."
 msgstr "افزودن فیلد شماره موبایل به شناسنامه کاربری و فرم نام‌نویسی."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:302
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:306
 msgid "Published new posts"
 msgstr "انتشار نوشته‌ی تازه"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:310
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:314
 msgid "Send a sms to subscribers When published new posts."
 msgstr "ارسال پیامک به مشترکین خبرنامه هنگام انتشار نوشته‌ی تازه."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:314
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:389
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:417
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:457
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:482
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:318
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:393
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:421
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:461
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:486
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-wpcf7-form.php:15
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-wpcf7-form.php:35
 msgid "Message body"
 msgstr "متن پیام"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:316
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:354
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:366
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:391
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:419
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:459
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:484
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:320
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:358
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:370
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:395
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:423
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:463
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:488
 msgid "Enter the contents of the sms message."
 msgstr "محتوای متن ارسال پیامک را وارد کنید."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:318
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:322
 #, php-format
 msgid "Post title: %s, Post url: %s, Post date: %s"
 msgstr "عنوان نوشته: %s، لینک نوشته: %s، تاریخ نوشته: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:327
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:331
 msgid "The new release of WordPress"
 msgstr "انتشار نگارش تازه وردپرس"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:335
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:339
 msgid "Send a sms to you When the new release of WordPress."
 msgstr "ارسال پیامک به شما هنگام انتشار نگارش تازه‌ی وردپرس."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:340
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:344
 msgid "Register a new user"
 msgstr "نام‌نویسی کاربر جدید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:348
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:352
 msgid "Send a sms to you and user when register on wordpress."
 msgstr "ارسال پیامک به شما و خود کاربر هنگام نام‌نویسی در وردپرس."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:352
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:356
 msgid "Message body for admin"
 msgstr "متن پیام برای مدیر"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:356
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:368
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:360
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:372
 #, php-format
 msgid "User login: %s, User email: %s, Register date: %s"
 msgstr "نام کاربری: %s، ایمیل کاربر: %s، تاریخ ثبت نام: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:364
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:368
 msgid "Message body for user"
 msgstr "متن پیغام برای کاربر"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:377
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:381
 msgid "New comment"
 msgstr "دیدگاه تازه"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:385
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:389
 msgid "Send a sms to you When get a new comment."
 msgstr "ارسال پیامک به شما هنگام دریافت دیدگاه تازه."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:393
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:397
 #, php-format
 msgid ""
 "Comment author: %s, Author email: %s, Author url: %s, Author IP: %s, Comment "
@@ -447,28 +449,28 @@ msgstr ""
 "نام ارسال کننده نظر: %s، ایمیل نظردهنده: %s، سایت نظردهنده: %s، آی‌پی "
 "نظردهنده: %s، تاریخ نظر: %s، متن نظر: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:405
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:409
 msgid "User login"
 msgstr "ورود کاربر"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:413
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:417
 msgid "Send a sms to you When user is login."
 msgstr "ارسال پیامک به شما هنگام ورود کاربر به سایت."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:421
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:425
 #, php-format
 msgid "Username: %s, Nickname: %s"
 msgstr "نام کاربر: %s، نام نمایشی: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:432
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:436
 msgid "Contact Form 7"
 msgstr "فرم تماس 7"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:437
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:441
 msgid "SMS meta box"
 msgstr "جعبه اطلاعات پیامک"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:440
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:444
 msgid ""
 "Added Wordpress SMS meta box to Contact form 7 plugin when enable this "
 "option."
@@ -476,39 +478,39 @@ msgstr ""
 "با فعال کردن این گزینه جعبه اطلاعات پیامک وردپرس به افزونه فرم تماس 7 اضافه "
 "میشود."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:445
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:449
 msgid "WooCommerce"
 msgstr "ووکامرس"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:450
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:475
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:454
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:479
 msgid "New order"
 msgstr "سفارش جدید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:453
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:478
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:457
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:482
 msgid "Send a sms to you When get new order."
 msgstr "ارسال پیامک به شما هنگام دریافت سفارش جدید."
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:461
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:465
 #, php-format
 msgid "Order ID: %s, Order status: %s, Order name: %s"
 msgstr "شناسه سفارش: %s، وضعیت سفارش: %s، نام سفارش: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:470
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:474
 msgid "Easy Digital Downloads"
 msgstr "Easy Digital Downloads"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:508
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:512
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/subscribe/edit-subscriber.php:39
 msgid "Active"
 msgstr "فعال"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:712
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:716
 msgid "Upload File"
 msgstr "بارگزاری فایل"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:741
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-settings.php:745
 msgid "Settings"
 msgstr "تنظیمات"
 
@@ -562,13 +564,278 @@ msgstr "خبرنامه پیامکی"
 msgid "Subscribe SMS"
 msgstr "اشتراک پیامک"
 
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/_0098sms.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/_500sms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/_textplode.class.php:24
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/adpdigital.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/adspanel.class.php:26
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/afe.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/afilnet.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/amansoft.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/aradsms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ariaideh.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/arkapayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asanak.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asiapayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/avalpayam.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bandarsms.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/barmanpayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/barzinsms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bearsms.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bestit.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bulutfon.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/chapargah.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/chaparpanel.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/default.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/difaan.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/dot4all.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/esms24.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/faraed.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/farapayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/farazpayam.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/fayasms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/firstpayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/fortytwo.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/freepayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/gateway.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/hisms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/hostiran.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/idehpayam.class.php:26
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/imencms.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/instantalerts.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/iransms.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/iransmspanel.class.php:174
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/iranspk.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/irsmsland.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ismsie.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/isun.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/itpayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/jahanpayamak.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/joghataysms.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/labsmobile.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/loginpanel.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/markazpayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/matinsms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mdpanel.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mediana.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/melipayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/modiranweb.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mtarget.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mydnspanel.class.php:26
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/nasrpayam.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/navidsoft.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/niazpardaz.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/niazpardazcom.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/novin1sms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/novinpayamak.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/opilo.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/paaz.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/panizsms.class.php:20
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parsasms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parsgreen.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakalmas.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakaria.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakde.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakpanel.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payameavval.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payameroz.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamgah.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamresan.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/pegahpayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/persiansms.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/pichakhost.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ponishasms.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/popaksms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/postgah.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/rayanbit.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/razpayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/resalaty.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sabasms.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sadat24.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sarabsms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sarinapayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sepehritc.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sharifpardazan.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/shreesms.class.php:17
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms77.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms_new.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms_s.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsapi.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsarak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsban.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsbartar.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smscall.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsclick.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsde.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsfa.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsgateway.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsgatewaycenter.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsgatewayhub.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsglobal.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smshooshmand.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smshosting.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsline.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsmart.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsmaster.class.php:23
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsmelli.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsroo.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smss.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsservice.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smstoos.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sonoratecnologia.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/spadbs.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ssmss.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tablighsmsi.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tcisms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/textsms.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tgfsms.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tsms.class.php:19
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/unisender.class.php:18
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/wifisms.class.php:21
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/yashilsms.class.php:27
 msgid "Your account does not credit for sending sms."
 msgstr "اعتبار شما برای ارسال پیامک کم است."
 
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/_0098sms.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/_500sms.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/_textplode.class.php:88
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/adpdigital.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/adspanel.class.php:87
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/afe.class.php:86
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/afilnet.class.php:68
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/amansoft.class.php:82
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/aradsms.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ariaideh.class.php:82
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/arkapayamak.class.php:89
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asanak.class.php:82
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asiapayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/avalpayam.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bandarsms.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/barmanpayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/barzinsms.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bearsms.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bestit.class.php:93
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bulutfon.class.php:61
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/caffeweb.class.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/chapargah.class.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/chaparpanel.class.php:89
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/default.class.php:27
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/difaan.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/dot4all.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/esms24.class.php:73
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/faraed.class.php:73
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/farapayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/farazpayam.class.php:82
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/fayasms.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/firstpayamak.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/fortytwo.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/freepayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/gateway.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/hisms.class.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/hostiran.class.php:73
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/idehpayam.class.php:76
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/imencms.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/instantalerts.class.php:49
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/iransms.class.php:68
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/iransmspanel.class.php:228
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/iranspk.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/irsmsland.class.php:69
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ismsie.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/isun.class.php:87
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/itpayamak.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/jahanpayamak.class.php:91
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/joghataysms.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/labsmobile.class.php:93
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/loginpanel.class.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/markazpayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/matinsms.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mdpanel.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mediana.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/melipayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/modiranweb.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mtarget.class.php:74
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/mydnspanel.class.php:87
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/nasrpayam.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/navidsoft.class.php:82
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/niazpardaz.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/niazpardazcom.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/novin1sms.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/novinpayamak.class.php:82
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/opilo.class.php:103
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/paaz.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/panizsms.class.php:83
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parsasms.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parsgreen.class.php:93
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakalmas.class.php:77
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakaria.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakde.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamakpanel.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payameavval.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payameroz.class.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamgah.class.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/payamresan.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/pegahpayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/persiansms.class.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/pichakhost.class.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ponishasms.class.php:74
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/popaksms.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/postgah.class.php:79
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/rayanbit.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/razpayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/resalaty.class.php:80
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sabasms.class.php:80
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sadat24.class.php:76
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sarabsms.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sarinapayamak.class.php:89
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sepehritc.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sharifpardazan.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/shreesms.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms77.class.php:67
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms_new.class.php:73
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sms_s.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsapi.class.php:67
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsarak.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsban.class.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsbartar.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smscall.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsclick.class.php:80
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsde.class.php:76
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsfa.class.php:81
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsgateway.class.php:71
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsgatewaycenter.class.php:73
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsgatewayhub.class.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsglobal.class.php:74
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smshooshmand.class.php:76
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smshosting.class.php:98
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsline.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsmart.class.php:84
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsmaster.class.php:67
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsmelli.class.php:68
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsroo.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smss.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smsservice.class.php:78
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/smstoos.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/sonoratecnologia.class.php:108
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/spadbs.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/ssmss.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tablighsmsi.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tcisms.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/textsms.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tgfsms.class.php:75
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/tsms.class.php:72
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/unisender.class.php:94
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/wifisms.class.php:70
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/yashilsms.class.php:77
 msgid "Username/Password does not set for this gateway"
 msgstr "نام کاربری یا رمز عبور برای این درگاه ست نشده است"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/default.class.php:21
+msgid "Does not set any gateway"
+msgstr "درگاه پیامکی تنظیم نشده است"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/outbox/outbox.php:2
 msgid "Outbox SMS"
@@ -938,7 +1205,7 @@ msgstr "عضویت در خبرنامه ما"
 msgid "Get professional package!"
 msgstr "دریافت بسته حرفه‌ای!"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:60
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:57
 msgid "Credit"
 msgstr "اعتبار"
 
@@ -973,8 +1240,8 @@ msgid "Subscribers Group"
 msgstr "گروه مشترکین"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:359
-msgid "Your credit for send sms is low!"
-msgstr "اعتبار شما برای ارسال پیامک کم است!"
+msgid "You should have sufficient funds for sending sms in the account"
+msgstr "برای ارسال اس ام اس باید اعتبار کافی در حساب کاربری داشته باشید."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:397
 #, php-format
@@ -988,6 +1255,12 @@ msgstr "پیامک با موفقیت ارسال شد"
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:403
 msgid "Please enter a message"
 msgstr "لطفا قسمت پیامک را وارد کنید"
+
+#~ msgid "Your mobile number is low!"
+#~ msgstr "شماره موبایل وارد شده کم است!"
+
+#~ msgid "Your credit for send sms is low!"
+#~ msgstr "اعتبار شما برای ارسال پیامک کم است!"
 
 #, fuzzy
 #~ msgid "Gateway help"
@@ -1561,9 +1834,6 @@ msgstr "لطفا قسمت پیامک را وارد کنید"
 
 #~ msgid "Please check the <a href=\"%s\">SMS credit</a> the settings"
 #~ msgstr "لطفاً تنظیمات <a href=\"%s\">اعتباری پیامک</a> را بررسی کنید."
-
-#~ msgid "Dont have a gateway?"
-#~ msgstr "آیا درگاه پیامک ندارید؟"
 
 #~ msgid "Enter enter mobile number to receive message."
 #~ msgstr "برای دریافت پیغام، شماره موبایل را وارد کنید."
