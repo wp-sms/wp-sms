@@ -45,9 +45,10 @@
 		<textarea id="wpsms-text-template" name="wpsms_text_template"><?php global $wpsms_option; echo $wpsms_option['notif_publish_new_post_template']; ?></textarea>
 		<p class="description data">
 			<?php _e('Input data:', 'wp-sms'); ?>
-			<br/><?php _e('Title post', 'wp-sms'); ?>: <code>%title_post%</code>
-			<br/><?php _e('URL post', 'wp-sms'); ?>: <code>%url_post%</code>
-			<br/><?php _e('Date post', 'wp-sms'); ?>: <code>%date_post%</code>
+			<br/><?php _e('Post title', 'wp-sms'); ?>: <code>%post_title%</code>
+			<br/><?php _e('Post content', 'wp-sms'); ?>: <code>%post_content%</code>
+			<br/><?php _e('Post url', 'wp-sms'); ?>: <code>%post_url%</code>
+			<br/><?php _e('Post date', 'wp-sms'); ?>: <code>%post_date%</code>
 		</p>
 	</label>
 </div>

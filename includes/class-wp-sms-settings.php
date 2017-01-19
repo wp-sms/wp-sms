@@ -319,10 +319,11 @@ class WP_SMS_Settings {
 					'type'	=>  'textarea',
 					'desc'	=>  __( 'Enter the contents of the sms message.', 'wp-sms' ).'<br>'.
 					sprintf(
-						__('Post title: %s, Post url: %s, Post date: %s', 'wp-sms'),
-						'<code>%title_post%</code>',
-						'<code>%url_post%</code>',
-						'<code>%date_post%</code>'
+						__('Post title: %s, Post content: %s, Post url: %s, Post date: %s', 'wp-sms'),
+						'<code>%post_title%</code>',
+						'<code>%post_content%</code>',
+						'<code>%post_url%</code>',
+						'<code>%post_date%</code>'
 					)
 				),
 				// Publish new wp version

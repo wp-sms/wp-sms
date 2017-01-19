@@ -82,11 +82,12 @@ class WP_SMS_Notifications {
 			}
 
 			$template_vars = array(
-				'%title_post%' => get_the_title($post->ID),
-				'%url_post%' => wp_get_shortlink($post->ID),
-				'%date_post%' => get_post_time('Y-m-d', true, $post->ID, true),
+				'%post_title%' => get_the_title($post->ID),
+				'%post_content%' => wp_trim_words($post->post_content, 10),
+				'%post_url%' => wp_get_shortlink($post->ID),
+				'%post_date%' => get_post_time('Y-m-d', true, $post->ID, true),
 			);
-			
+
 			$message = str_replace(array_keys($template_vars), array_values($template_vars), $_REQUEST['wpsms_text_template']);
 			
 			$this->sms->msg = $message;

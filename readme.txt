@@ -221,6 +221,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed default gateway issue.
 * Fixed Illegal error in cf7 sms meta box.
 * Fixed Spelling mistakes in language file.
+* Added `post_content` to the post notification input data. (Supported until 10 words due to restrictions in some gateways)
+* Changed `title_post`, `url_post`, `date_post` to `post_title`, `post_url`, `post_date` on post notification input data.
 
 = 4.0.0 =
 = IMPORTANT! =
