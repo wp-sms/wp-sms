@@ -31,56 +31,6 @@ Very easy Send SMS by PHP code:
 * Support Wordpress Hooks.
 * Import/Export Subscribers.
 
-# Professional Package
-In the Professional pack added many features, another useful gateway and is integrated with another plugins.
-
-* Smshosting.it
-* Twilio.com
-* plivo.com
-* clickatell.com
-* bulksms.com
-* fortytwo.com
-* infobip.com
-* nexmo.com
-* clockworksms.com
-* cmtelecom.com
-* viensms.com
-* moceansms.com
-* msg91.com
-* yamamah.com
-* magicdeal4u.com
-* sendsms247.com
-* smslive247.com
-* isms.com.my
-* ssdindia.com
-* vsms.club
-* livesms.eu
-* cellsynt.net
-* gateway.sa
-* ra.sa
-* mobily.ws
-* sms4marketing.it
-* smstrade.de
-* dsms.in
-* cpsms.dk
-* bulksmshyderabad.co.in
-* ozioma.net
-* smsfactor.com
-* textmarketer.co.uk
-
-* Integrate with BuddyPress
-You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
-* Integrate with WooCommerce.
-You can adding mobile number field to checkout page, send sms to users or subscribers when added new product to woocommerce. send SMS to admin when submitted new order in woocommerce and send sms to customers when submit the order.
-when one stock product is load, the plugin can send SMS to admin for notify and you can send sms to customers when the orders have been changed.
-* Integrate with Gravity form.
-Plugin can be send sms to user or admin after submit the form.
-* Integrate with Quform.
-Plugin can be send sms to user or admin after submit the form.
-* Integrate with Easy Digital Downloads.
-You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
-* Premium Support
-
 # Internationalization
 * English
 * Persian
