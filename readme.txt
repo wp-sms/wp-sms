@@ -230,10 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed Illegal error in cf7 sms meta box.
 
 = 4.0.0 =
-= IMPORTANT! =
-
-Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
-
+* Important! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 * Added setting class for all options in the plugin for better settings performance.
 * Added new classes for doing any proccess.
 * Added `resalaty.com` gateway.
