@@ -218,7 +218,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= 4.*.* =
+= 4.0.2 =
 * PHP 7.1 compatibility
 * Added mobile number checker in register and update profile page for avoid to duplicate mobile numbers
 * Added `post_content` to the post notification input data. (Supported until 10 words due for restrictions in some gateways)
