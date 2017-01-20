@@ -13,10 +13,15 @@ class WP_SMS_Features {
 	public $date;
 	public $options;
 
+	protected $db;
+	protected $tb_prefix;
+
 	public function __construct() {
-		global $wpsms_option, $sms, $wp_version;
+		global $wpsms_option, $sms, $wp_version, $wpdb, $table_prefix;
 
 		$this->sms = $sms;
+		$this->db = $wpdb;
+		$this->tb_prefix = $table_prefix;
 		$this->date = WP_SMS_CURRENT_DATE;
 		$this->options = $wpsms_option;
 
@@ -26,6 +31,47 @@ class WP_SMS_Features {
 			add_action('register_form', array(&$this, 'add_mobile_field_to_register_form'));
 			add_filter('registration_errors', array(&$this, 'registration_errors'), 10, 3);
 			add_action('user_register', array(&$this, 'save_register'));
+
+			add_action('user_register', array(&$this, 'check_admin_duplicate_number'));
+			add_action('profile_update', array(&$this, 'check_admin_duplicate_number'));
+		}
+	}
+
+	private function check_mobile_number($mobile_number, $user_id = null) {
+		if($user_id) {
+			$result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobile_number}' AND user_id != '{$user_id}'");
+		} else {
+			$result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobile_number}'");
+		}
+
+		if($result) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private function delete_user_mobile($user_id) {
+		$this->db->delete(
+			$this->tb_prefix . "usermeta",
+			array(
+				'user_id'	=>	$user_id,
+				'meta_key'	=>	'mobile',
+			)
+		);
+	}
+
+	public function check_admin_duplicate_number($user_id) {
+		// Get user mobile
+		$user_mobile = get_user_meta($user_id, 'mobile', true);
+
+		if( empty($user_mobile) ) {
+			return;
+		}
+
+		// Delete user mobile
+		if( $this->check_mobile_number($user_mobile, $user_id) ) {
+			$this->delete_user_mobile($user_id);
 		}
 	}
 
@@ -44,8 +90,14 @@ class WP_SMS_Features {
 	}
 
 	public function registration_errors($errors, $sanitized_user_login, $user_email) {
-		if ( empty( $_POST['mobile'] ) )
-		$errors->add( 'first_name_error', __('<strong>ERROR</strong>: You must include a mobile number.', 'wp-sms') );
+		if ( empty( $_POST['mobile'] ) ) {
+			$errors->add( 'first_name_error', __('<strong>ERROR</strong>: You must include a mobile number.', 'wp-sms') );
+		}
+
+		if( $this->check_mobile_number($_POST['mobile']) ) {
+			$errors->add( 'duplicate_mobile_number', __('<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms') );
+		}
+
 		return $errors;
 	}
 

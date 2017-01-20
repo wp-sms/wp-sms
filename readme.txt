@@ -220,6 +220,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.*.* =
 * PHP 7.1 compatibility
+* Added mobile number checker in register and update profile page for avoid to duplicate mobile numbers
 * Added `post_content` to the post notification input data. (Supported until 10 words due for restrictions in some gateways)
 * Changed `title_post`, `url_post`, `date_post` to `post_title`, `post_url`, `post_date` on post notification input data.
 * Fixed Spelling mistakes in language file.
