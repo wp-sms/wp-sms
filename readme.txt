@@ -218,7 +218,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.*.* =
-* PHP 7 compatibility
+* PHP 7.1 compatibility
 
 = 4.0.1 =
 * Fixed default gateway issue.
