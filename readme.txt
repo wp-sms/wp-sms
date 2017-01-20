@@ -84,6 +84,7 @@ Supported gateways list on the professional package:
 * bulksmshyderabad.co.in
 * ozioma.net
 * smsfactor.com
+* textmarketer.co.uk
 	
 Other features:
 
@@ -219,13 +220,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.*.* =
 * PHP 7.1 compatibility
+* Added `post_content` to the post notification input data. (Supported until 10 words due for restrictions in some gateways)
+* Changed `title_post`, `url_post`, `date_post` to `post_title`, `post_url`, `post_date` on post notification input data.
+* Fixed Spelling mistakes in language file.
 
 = 4.0.1 =
 * Fixed default gateway issue.
 * Fixed Illegal error in cf7 sms meta box.
-* Fixed Spelling mistakes in language file.
-* Added `post_content` to the post notification input data. (Supported until 10 words due to restrictions in some gateways)
-* Changed `title_post`, `url_post`, `date_post` to `post_title`, `post_url`, `post_date` on post notification input data.
 
 = 4.0.0 =
 = IMPORTANT! =

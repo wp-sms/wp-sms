@@ -39,6 +39,7 @@ In the Professional pack added many features, another useful gateway and is inte
 * plivo.com
 * clickatell.com
 * bulksms.com
+* fortytwo.com
 * infobip.com
 * nexmo.com
 * clockworksms.com
@@ -64,6 +65,8 @@ In the Professional pack added many features, another useful gateway and is inte
 * cpsms.dk
 * bulksmshyderabad.co.in
 * ozioma.net
+* smsfactor.com
+* textmarketer.co.uk
 
 * Integrate with BuddyPress
 You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
