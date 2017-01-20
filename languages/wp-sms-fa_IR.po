@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-19 17:45+0330\n"
-"PO-Revision-Date: 2017-01-19 17:45+0330\n"
+"POT-Creation-Date: 2017-01-20 12:03+0330\n"
+"PO-Revision-Date: 2017-01-20 12:04+0330\n"
 "Last-Translator: Mostafa Soufi <mostafa.soufi@hotmail.com>\n"
 "Language-Team: Verona Labs <hi@veronalabs.com>\n"
 "Language: fa_IR\n"
@@ -836,6 +836,10 @@ msgstr "نام کاربری یا رمز عبور برای این درگاه ست
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/default.class.php:21
 msgid "Does not set any gateway"
 msgstr "درگاه پیامکی تنظیم نشده است"
+
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/parandhost.class.php:76
+msgid "Class SoapClient not found. please enable php_soap in your php."
+msgstr "کلاس SoapClient یافت نشد. لطفأ php_soap را در php خود فعال کنید."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/outbox/outbox.php:2
 msgid "Outbox SMS"

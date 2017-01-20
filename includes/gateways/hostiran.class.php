@@ -73,8 +73,17 @@ class hostiran extends WP_SMS {
 			return new WP_Error( 'account-credit', __('Username/Password does not set for this gateway', 'wp-sms') );
 		}
 
+		if( !class_exists('SoapClient') ) {
+			return new WP_Error( 'required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms') );
+		}
+
 		$options = array('login' => $this->username, 'password' => $this->password);
-		$client = new SoapClient($this->wsdl_link, $options);
+		
+		try {
+			$client = new SoapClient($this->wsdl_link, $options);
+		} catch (Exception $e) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
+		}
 
 		try
 		{

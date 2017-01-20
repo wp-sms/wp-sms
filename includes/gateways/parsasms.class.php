@@ -77,7 +77,15 @@ class parsasms extends WP_SMS {
 			return new WP_Error( 'account-credit', __('Username/Password does not set for this gateway', 'wp-sms') );
 		}
 
-		$this->client = new SoapClient($this->wsdl_link);
+		if( !class_exists('SoapClient') ) {
+			return new WP_Error( 'required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms') );
+		}
+
+		try {
+			$this->client = new SoapClient($this->wsdl_link);
+		} catch (Exception $e) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
+		}
 		
 		$params = array(
 			'username' 	=> $this->username,

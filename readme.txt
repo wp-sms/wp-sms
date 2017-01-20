@@ -217,6 +217,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 4.*.* =
+* PHP 7 compatibility
+
 = 4.0.1 =
 * Fixed default gateway issue.
 * Fixed Illegal error in cf7 sms meta box.

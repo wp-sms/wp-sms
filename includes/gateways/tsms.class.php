@@ -45,7 +45,7 @@ class tsms extends WP_SMS {
 		
 		$messagid = rand();
 		$mclass = array('');
-		$this->client = new SoapClient('http://www.tsms.ir/soapWSDL/?wsdl');
+		$this->client = new SoapClient($this->wsdl_link);
 		
 		$result = $this->client->sendSms($this->username, $this->password, array($this->from), $this->to, array($this->msg), $mclass, $messagid);
 		
@@ -71,8 +71,17 @@ class tsms extends WP_SMS {
 		if(!$this->username && !$this->password) {
 			return new WP_Error( 'account-credit', __('Username/Password does not set for this gateway', 'wp-sms') );
 		}
+
+		if( !class_exists('SoapClient') ) {
+			return new WP_Error( 'required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms') );
+		}
 		
-		$this->client = new SoapClient('http://www.tsms.ir/soapWSDL/?wsdl');
+		try {
+			$this->client = new SoapClient($this->wsdl_link);
+		} catch (Exception $e) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
+		}
+		
 		$result = $this->client->userinfo($this->username, $this->password);
 		
 		if($result) {
