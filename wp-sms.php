@@ -3,7 +3,7 @@
 Plugin Name: WP SMS
 Plugin URI: http://wp-sms.ir/
 Description: A complete wordpress plugin to send sms with a high capability.
-Version: 4.0.2
+Version: 4.0.3
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
@@ -12,7 +12,7 @@ Text Domain: wp-sms
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // Plugin defines
-define('WP_SMS_VERSION', '4.0.2');
+define('WP_SMS_VERSION', '4.0.3');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'http://wp-sms.ir');
@@ -145,6 +145,7 @@ class WP_SMS_Plugin {
 		add_action('admin_bar_menu', array(&$this, 'adminbar'));
 		add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
 		add_action('admin_menu', array(&$this, 'admin_menu'));
+		add_filter('plugin_row_meta', array(&$this, 'meta_links'), 0, 2);
 		add_action('widgets_init', array(&$this, 'register_widget'));
 
 		add_filter('wp_sms_to', array(&$this, 'modify_bulk_send'));
@@ -203,16 +204,17 @@ class WP_SMS_Plugin {
 	 */
 	public function includes() {
 		$files = array(
-			'version',
 			'includes/functions',
 			'includes/class-wp-sms-gateway',
 			'includes/class-wp-sms-settings',
+			'includes/class-wp-sms-settings-pro',
 			'includes/class-wp-sms-features',
 			'includes/class-wp-sms-notifications',
 			'includes/class-wp-sms-integrations',
 			'includes/class-wp-sms-newsletter',
 			'includes/class-wp-sms-subscribers',
 			'includes/class-wp-sms-widget',
+			'includes/class-wp-sms-version',
 		);
 		
 		foreach($files as $file) {
@@ -319,6 +321,18 @@ class WP_SMS_Plugin {
 		add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array(&$this, 'outbox_page'));
 		add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array(&$this, 'subscribe_page'));
 		add_submenu_page('wp-sms', __('Subscribers Group', 'wp-sms'), __('Subscribers Group', 'wp-sms'), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(&$this, 'groups_page'));
+	}
+
+	public function meta_links($links, $file) {
+		if( $file == 'wp-sms/wp-sms.php' ) {
+			$rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
+			$links[] = '<a href="'. $rate_url .'" target="_blank" class="wpsms-plugin-meta-link" title="'. __('Click here to rate and review this plugin on WordPress.org', 'wp-sms') .'">'. __('Rate this plugin', 'wp-sms') .'</a>';
+			
+			$newsletter_url = WP_SMS_SITE . '/newsletter';
+			$links[] = '<a href="'. $newsletter_url .'" target="_blank" class="wpsms-plugin-meta-link" title="'. __('Click here to rate and review this plugin on WordPress.org', 'wp-sms') .'">'. __('Subscribe to our Email Newsletter', 'wp-sms') .'</a>';
+		}
+		
+		return $links;
 	}
 
 	/**
