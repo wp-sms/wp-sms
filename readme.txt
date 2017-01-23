@@ -85,6 +85,7 @@ Supported gateways list on the professional package:
 * ozioma.net
 * smsfactor.com
 * textmarketer.co.uk
+* clicksend.com
 	
 Other features:
 
