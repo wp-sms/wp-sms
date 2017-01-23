@@ -41,7 +41,7 @@ class WP_SMS_Integrations {
 	public function cf7_editor_panels($panels) {
 		$new_page = array(
 			'wpsms' => array(
-				'title' => __('SMS', 'wp-sms'),
+				'title' => __('SMS Notification', 'wp-sms'),
 				'callback' => array(&$this, 'cf7_setup_form')
 			)
 		);

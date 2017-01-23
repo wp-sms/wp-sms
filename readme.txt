@@ -219,7 +219,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.3 =
-* Added pro pack options to the plugin.
+* Added pro pack options to the plugin
 
 = 4.0.2 =
 * PHP 7.1 compatibility
