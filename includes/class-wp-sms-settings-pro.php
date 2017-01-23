@@ -357,17 +357,29 @@ class WP_SMS_Settings_Pro {
 		$settings = apply_filters( 'wps_pp_registered_settings', array(
 			// Options for wordpress tab
 			'wp'                  =>  apply_filters( 'wps_pp_wp_settings', array(
-				'login_title'         =>  array(
+				'login_title'			=>  array(
 					'id'            =>  'login_title',
 					'name'          =>  __( 'Login', 'wp-sms' ),
 					'type'          =>  'header'
 				),
-				'login_sms'      =>  array(
+				'login_sms'				=>  array(
 					'id'            =>  'login_sms',
 					'name'          =>  __( 'Login with mobile', 'wp-sms' ),
 					'type'          =>  'checkbox',
 					'options'       =>  $options,
 					'desc'          =>  __( 'This option add login with sms in the auth form', 'wp-sms' ),
+				),
+				'register_title'		=>  array(
+					'id'            =>  'register_title',
+					'name'          =>  __( 'Register', 'wp-sms' ),
+					'type'          =>  'header'
+				),
+				'register_verify_sms'	=>  array(
+					'id'            =>  'register_verify_sms',
+					'name'          =>  __( 'Register with mobile', 'wp-sms' ),
+					'type'          =>  'checkbox',
+					'options'       =>  $options,
+					'desc'          =>  __( 'Register and verify user in wordpress with sms verification', 'wp-sms' ),
 				),
 			) ),
 			// Options for BuddyPress tab
