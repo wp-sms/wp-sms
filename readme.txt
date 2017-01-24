@@ -90,6 +90,7 @@ The professional package supported following gateways:
 * smsfactor.com
 * textmarketer.co.uk
 * clicksend.com
+* smsapi.com
 	
 Other features:
 
@@ -194,19 +195,18 @@ Add new subscribe to sms newsletter
 `POST /wpsms/v1/subscriber/add`
 
 == Screenshots ==
-1. SMS Setting Page.
-2. Webservice page.
-3. Newslleter page.
-4. Features page.
-5. Notifications page.
+1. Settings Page.
+2. Gateway configuration.
+3. Features page.
+4. Notifications page.
+5. Integrations page.
 6. Send SMS Page.
-7. SMS Posted Page.
-8. Subscribe list Page.
+7. Outbox SMS Page.
+8. Subscribers Page.
 9. At a Glance.
-10. SMS Subscribe widget.
-11. Subscribe new-post.php.
-12. Suggestion post in single.
-13. Contact Form 7 page.
+10. SMS Newsletter widget.
+11. Send post to subscribers.
+12. Contact Form 7 notifications.
 
 == Upgrade Notice ==
 = 4.0.0 =
