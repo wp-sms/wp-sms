@@ -43,7 +43,7 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
 * Supported WP Widget for newsletter subscribers.
 * Support Wordpress Hooks.
-* Support WP Rest Api
+* Support WP REST API
 * Import/Export Subscribers.
 
 = Some popular sms gateway in free version =
@@ -224,7 +224,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.3 =
-* Support WP REST API
+* Supported WP REST API
 * Improvements settings page and used main plugin for settings handler
 
 = 4.0.2 =

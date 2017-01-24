@@ -29,7 +29,7 @@ Very easy Send SMS by PHP code:
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
 * Supported WP Widget for newsletter subscribers.
 * Support Wordpress Hooks.
-* Support WP Rest Api
+* Support WP REST API
 * Import/Export Subscribers.
 
 # Internationalization
