@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP SMS
 Plugin URI: http://wp-sms.ir/
-Description: A complete wordpress plugin to send sms with a high capability.
+Description: A simple and powerful texting plugin for wordpress
 Version: 4.0.3
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
@@ -132,7 +132,7 @@ class WP_SMS_Plugin {
 		add_action('init', array(&$this, 'load_textdomain'));
 		
 		__('WP SMS', 'wp-sms');
-		__('A complete wordpress plugin to send sms with a high capability.', 'wp-sms');
+		__('A simple and powerful texting plugin for wordpress', 'wp-sms');
 		
 		$this->includes();
 		$this->init();

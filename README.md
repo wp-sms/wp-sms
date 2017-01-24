@@ -1,5 +1,5 @@
 # WP-SMS Plugin
-A complete wordpress plugin to send sms with a high capability.
+A simple and powerful texting plugin for wordpress
 
 You can add to wordpress, the ability of sending sms, member of sms newsletter and send to them sms.
 To every changement of position in wordpress, you can send a sms through this plugin.
@@ -10,7 +10,7 @@ Don't worry , we have tried to add the best and the most gateways to plugin.
 Very easy Send SMS by PHP code:
 
 1. `global $sms;`
-2. `$sms->to = array('09000000000');`
+2. `$sms->to = array('01000000000');`
 3. `$sms->msg = "Hello World!";`
 4. `$sms->SendSMS();`
 

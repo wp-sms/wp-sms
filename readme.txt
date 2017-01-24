@@ -8,7 +8,7 @@ Stable tag: 4.0.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-A complete wordpress plugin to send sms with a high capability.
+A simple and powerful texting plugin for wordpress
 
 == Description ==
 You can add to wordpress, the ability of sending sms, member of sms newsletter and send to them sms.
@@ -19,10 +19,10 @@ Don't worry , we have tried to add the best and the most gateways to plugin.
 
 Very easy Send SMS by PHP code:
 
-1. `global $sms;`
-2. `$sms->to = array('09000000000');`
-3. `$sms->msg = "Hello World!";`
-4. `$sms->SendSMS();`
+* `global $sms;`
+* `$sms->to = array('Mobile Number');`
+* `$sms->msg = "Your Message";`
+* `$sms->SendSMS();`
 
 = Send SMS with WordPress in less than 1 minute! =
 
@@ -30,7 +30,7 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
 
-* Supported +150 sms gateways. [List all gateways](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
+* Supported +150 sms gateways.
 * Send SMS to number(s), subscribers and wordpress users.
 * Subscribe newsletter SMS.
 * Send activation code to subscribe for complete subscription.
@@ -45,19 +45,22 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 * Support Wordpress Hooks.
 * Import/Export Subscribers.
 
-= Professional Package =
-In the Professional pack added many features, another useful gateway and is integrated with another plugins.
-
-[Buy Professional Package](http://wp-sms.ir/purchases)
-
-Supported gateways list on the professional package:
-
+= Some popular sms gateway in free version =
 * Smshosting.it
+* Fortytwo.com
+* Unisender.com
+* Smsglobal.com
+* And [see list all](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways) of gateways
+
+= Professional Package =
+In the Professional pack added many features, most popular gateway and is integrated with another plugins.
+
+The professional package supported following gateways:
+
 * Twilio.com
 * plivo.com
 * clickatell.com
 * bulksms.com
-* fortytwo.com
 * infobip.com
 * nexmo.com
 * clockworksms.com
@@ -89,17 +92,13 @@ Supported gateways list on the professional package:
 	
 Other features:
 
-* Integrate with BuddyPress
-You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
-* Integrate with WooCommerce.
-You can adding mobile number field to checkout page, send sms to users or subscribers when added new product to woocommerce. send SMS to admin when submitted new order in woocommerce and send sms to customers when submit the order.
+* Verify user registration by sms verification code
+* Integrate with BuddyPress. You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
+* Integrate with WooCommerce. You can adding mobile number field to checkout page, send sms to users or subscribers when added new product to woocommerce. send SMS to admin when submitted new order in woocommerce and send sms to customers when submit the order.
 when one stock product is load, the plugin can send SMS to admin for notify and you can send sms to customers when the orders have been changed.
-* Integrate with Gravity form.
-Plugin can be send sms to user or admin after submit the form.
-* Integrate with Quform.
-Plugin can be send sms to user or admin after submit the form.
-* Integrate with Easy Digital Downloads.
-You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
+* Integrate with Gravity form. Plugin can be send sms to user or admin after submit the form.
+* Integrate with Quform. Plugin can be send sms to user or admin after submit the form.
+* Integrate with Easy Digital Downloads. You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
 * Premium Support
 
 [Buy Professional Package](http://wp-sms.ir/purchases)
@@ -114,7 +113,7 @@ You can adding mobile number field to profile page. can be send sms to user or a
 * Swedish (Thanks Kramfors)
 * French (Thanks Yves Le Bouffant)
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms.ir/translators) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](https://translate.wordpress.org/projects/wp-plugins/wp-sms) today!
 
 = Support =
 * [Donate to this plugin](http://mostafa-soufi.ir/donate/)
@@ -129,8 +128,8 @@ This plugin is a free product of the [Verona Labs](http://veronalabs.com/)
 4. Using this functions for send manual SMS:
 
 * First: `global $sms;`
-* `$sms->to = array('MobileNumber');`
-* `$sms->msg = "YourMessage";`
+* `$sms->to = array('Mobile Number');`
+* `$sms->msg = "Your Message";`
 * Send SMS: `$sms->SendSMS();`
 
 = Actions =
@@ -220,7 +219,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.3 =
-* Added pro pack options to the plugin
+* Improvements settings page and used main plugin for settings handler
 
 = 4.0.2 =
 * PHP 7.1 compatibility
