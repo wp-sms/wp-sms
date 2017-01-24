@@ -214,6 +214,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-newsletter',
 			'includes/class-wp-sms-subscribers',
 			'includes/class-wp-sms-widget',
+			'includes/class-wp-sms-rest-api',
 			'includes/class-wp-sms-version',
 		);
 		

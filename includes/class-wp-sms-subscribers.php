@@ -46,10 +46,6 @@ class WP_SMS_Subscriptions {
 	 * @param  Not param
 	 */
 	public function add_subscriber($name, $mobile, $group_id = '') {
-		
-		if(empty($name) or empty($mobile))
-			return array('result' => 'error', 'message' => __('Name or mobile is empty!', 'wp-sms'));
-		
 		$result = $this->db->insert(
 			$this->tb_prefix . "sms_subscribes",
 			array(
@@ -62,8 +58,7 @@ class WP_SMS_Subscriptions {
 			)
 		);
 		
-		if($result){
-			
+		if($result) {
 			/**
 			 * Run hook after adding subscribe.
 			 *

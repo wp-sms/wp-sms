@@ -29,6 +29,7 @@ Very easy Send SMS by PHP code:
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
 * Supported WP Widget for newsletter subscribers.
 * Support Wordpress Hooks.
+* Support WP Rest Api
 * Import/Export Subscribers.
 
 # Internationalization
@@ -126,6 +127,12 @@ function wp_sms_modify_message($message) {
 	return $message;
 }
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
+```
+
+# Rest API Endpoints
+Add new subscribe to sms newsletter
+```sh
+POST /wpsms/v1/subscriber/add
 ```
 
 # Community Links

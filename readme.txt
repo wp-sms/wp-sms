@@ -43,6 +43,7 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
 * Supported WP Widget for newsletter subscribers.
 * Support Wordpress Hooks.
+* Support WP Rest Api
 * Import/Export Subscribers.
 
 = Some popular sms gateway in free version =
@@ -188,6 +189,10 @@ Example: Add signature to messages that are sent.
 }
 add_filter('wp_sms_msg', 'wp_sms_modify_message');`
 
+= Rest API Endpoints =
+Add new subscribe to sms newsletter
+`POST /wpsms/v1/subscriber/add`
+
 == Screenshots ==
 1. SMS Setting Page.
 2. Webservice page.
@@ -219,6 +224,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.3 =
+* Support WP REST API
 * Improvements settings page and used main plugin for settings handler
 
 = 4.0.2 =

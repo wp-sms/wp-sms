@@ -297,6 +297,18 @@ class WP_SMS_Settings {
 					'options'	=> $options,
 					'desc'	=>  __( 'Add Mobile number to user profile and register form.', 'wp-sms' )
 				),
+				'rest_api'	=>  array(
+					'id'	=>  'rest_api',
+					'name'	=>  __( 'REST API', 'wp-sms' ),
+					'type'	=>  'header'
+				),
+				'rest_api_status'	=>  array(
+					'id'	=>  'rest_api_status',
+					'name'	=>  __( 'Rest api status', 'wp-sms' ),
+					'type'	=>  'checkbox',
+					'options'	=> $options,
+					'desc'	=>  __( 'Add WP-SMS endpoints to the WP Rest API', 'wp-sms' )
+				),
 			) ),
 			// Notifications tab
 			'notifications'	=>  apply_filters( 'wpsms_notifications_settings', array(
