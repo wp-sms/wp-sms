@@ -121,7 +121,7 @@ Translations are done by people just like you, help make WP SMS available to mor
 * [Donate to this plugin](http://mostafa-soufi.ir/donate/)
 * [Github repository](https://github.com/veronalabs/wp-sms)
 
-This plugin is a free product of the [Verona Labs](http://veronalabs.com/)
+This plugin is a free product of the [Verona Labs](http://veronalabs.com/) and Thank you [jetbrains](https://www.jetbrains.com) for giving us Intellij IDEA Ultimate licenses for develop this project.
 
 == Installation ==
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
