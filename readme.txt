@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 4.0.3 =
 * Supported WP REST API
 * Improvements settings page and used main plugin for settings handler
+* Updated arabic translations. (Thanks Hammad)
 
 = 4.0.2 =
 * PHP 7.1 compatibility
