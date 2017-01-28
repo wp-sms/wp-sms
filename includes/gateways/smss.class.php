@@ -74,7 +74,7 @@ class smss extends WP_SMS {
 		$result = json_decode($result);
 		
 		if($result->status == 'ERR') {
-			return new WP_Error( 'account-credit', $result );
+			return new WP_Error( 'account-credit', print_r($result) );
 		}
 		
 		return $result->credit;
