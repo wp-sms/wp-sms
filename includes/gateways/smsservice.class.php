@@ -12,7 +12,7 @@ class smsservice extends WP_SMS {
 		$this->validateNumber = "09xxxxxxxx";
 		
 		if(!class_exists('nusoap_client'))
-			include_once dirname( __FILE__ ) . '/../nusoap.class.php';
+			include_once dirname( __FILE__ ) . '/../classes/nusoap.class.php';
 	}
 
 	public function SendSMS() {
