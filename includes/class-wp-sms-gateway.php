@@ -169,6 +169,7 @@ class WP_SMS_Gateway {
 			'arabic' => array(
 				'gateway'		=>	'gateway.sa',
 				'resalaty'		=>	'resalaty.com',
+				'asr3sms'		=>	'asr3sms.com',
 			),
 			'other' => array(
 				'smss'			=>	'smss.co.il',
