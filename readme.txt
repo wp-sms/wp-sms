@@ -103,7 +103,7 @@ when one stock product is load, the plugin can send SMS to admin for notify and 
 * Integrate with Easy Digital Downloads. You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
 * Premium Support
 
-[Buy Professional Package](http://wp-sms.ir/purchases)
+[Buy Professional Package](http://wordpresssmsplugin.com/purchases)
 
 = Internationalization =
 * English

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wordpress SMS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-24 20:55+0330\n"
-"PO-Revision-Date: 2017-01-24 20:55+0330\n"
+"POT-Creation-Date: 2017-02-02 17:17+0330\n"
+"PO-Revision-Date: 2017-02-02 17:18+0330\n"
 "Last-Translator: Mostafa Soufi <mostafa.soufi@hotmail.com>\n"
 "Language-Team: Verona Labs <hi@veronalabs.com>\n"
 "Language: fa_IR\n"
@@ -66,20 +66,20 @@ msgstr ""
 msgid "Please select your gateway"
 msgstr "لطفأ درگاه را انتخاب کنید"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:200
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:201
 msgid "Deactive!"
 msgstr "غیرفعال"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:206
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:207
 #, php-format
 msgid "Active!, account balance: %s"
 msgstr "فعال! موجودی حساب: %s"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:227
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:228
 msgid "Supported"
 msgstr "پشتیبانی میکند"
 
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:230
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-gateway.php:231
 msgid "Does not support!"
 msgstr "پشتیبانی نمی کند!"
 
@@ -904,8 +904,13 @@ msgid "Group successfully updated."
 msgstr "گروه با موفقیت به روز شد."
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-version.php:27
-msgid "Get professional package!"
-msgstr "دریافت بسته حرفه‌ای!"
+#, php-format
+msgid ""
+"<b><a href=\"%s\" target=\"_blank\" class=\"wpsms-plugin-meta-link\" title="
+"\"Get professional package!\">Get professional package!</a></b>"
+msgstr ""
+"<b><a href=\"%s\" target=\"_blank\" class=\"wpsms-plugin-meta-link\" title="
+"\"دریافت بسته حرفه‌ای!\">دریافت بسته حرفه‌ای!</a></b>"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/class-wp-sms-version.php:34
 #, php-format
@@ -941,6 +946,7 @@ msgstr "اشتراک پیامک"
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/arkapayamak.class.php:20
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asanak.class.php:18
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asiapayamak.class.php:20
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asr3sms.class.php:22
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/avalpayam.class.php:27
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bandarsms.class.php:27
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/barmanpayamak.class.php:20
@@ -1075,6 +1081,7 @@ msgstr "اعتبار شما برای ارسال پیامک کم است."
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/arkapayamak.class.php:89
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asanak.class.php:82
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asiapayamak.class.php:83
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/asr3sms.class.php:86
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/avalpayam.class.php:77
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/bandarsms.class.php:77
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/gateways/barmanpayamak.class.php:83
@@ -1481,8 +1488,8 @@ msgid "Subscribe"
 msgstr "اشتراک"
 
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/includes/templates/wp-sms-admin-newsletter.php:8
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:556
-#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:559
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:557
+#: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:560
 msgid "Close"
 msgstr "بستن"
 
@@ -1693,6 +1700,9 @@ msgstr "پیامک با موفقیت ارسال شد"
 #: F:\xampp\htdocs\cms\wordpress\wp-content\plugins\wp-sms/wp-sms.php:418
 msgid "Please enter a message"
 msgstr "لطفا قسمت پیامک را وارد کنید"
+
+#~ msgid "Get professional package!"
+#~ msgstr "دریافت بسته حرفه‌ای!"
 
 #~ msgid "Name or mobile is empty!"
 #~ msgstr "نام یا موبایل خالی است!"

@@ -24,7 +24,7 @@ class WP_SMS_Version {
 
 	public function pro_meta_links($links, $file) {
 		if( $file == 'wp-sms/wp-sms.php' ) {
-			$links[] = '<b><a href="http://wp-sms.ir/purchases" target="_blank" class="wpsms-plugin-meta-link" title="'. __('Get professional package!', 'wp-sms') .'">'. __('Get professional package!', 'wp-sms') .'</a></b>';
+			$links[] = sprintf(__('<b><a href="%s" target="_blank" class="wpsms-plugin-meta-link" title="Get professional package!">Get professional package!</a></b>', 'wp-sms'), WP_SMS_SITE . '/purchase');
 		}
 		
 		return $links;
