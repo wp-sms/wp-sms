@@ -234,7 +234,7 @@ class WP_SMS_Plugin {
 		include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
 
 		// Using default gateway if does not set gateway in the setting
-		if( empty($this->options['gateway_name'] or $this->options['gateway_name'] == 'default') ) {
+		if( empty($this->options['gateway_name']) ) {
 			return new Default_Gateway;
 		}
 
@@ -247,7 +247,11 @@ class WP_SMS_Plugin {
 		}
 
 		// Create object from the gateway class
-		$sms = new $this->options['gateway_name'];
+		if( $this->options['gateway_name'] == 'default' ) {
+			$sms = new Default_Gateway();
+		} else {
+			$sms = new $this->options['gateway_name'];
+		}
 
 		// Set username and password
 		$sms->username = $this->options['gateway_username'];
