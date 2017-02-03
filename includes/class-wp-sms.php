@@ -100,7 +100,7 @@ abstract class WP_SMS {
 		return $this->db->insert(
 			$this->tb_prefix . "sms_send",
 			array(
-				'date'		=>	date('Y-m-d H:i:s' ,current_time('timestamp', 0)),
+				'date'		=>	WP_SMS_CURRENT_DATE,
 				'sender'	=>	$sender,
 				'message'	=>	$message,
 				'recipient'	=>	implode(',', $recipient)

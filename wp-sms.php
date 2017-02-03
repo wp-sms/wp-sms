@@ -8,70 +8,41 @@ Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
 */
-
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-// Plugin defines
+/**
+ * Plugin defines
+ */
 define('WP_SMS_VERSION', '4.0.5');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'http://wordpresssmsplugin.com');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
-define('WP_SMS_CURRENT_DATE', date('Y-m-d H:i:s' ,current_time('timestamp', 0)));
+define('WP_SMS_CURRENT_DATE', date('Y-m-d H:i:s', current_time('timestamp', 1)));
 
-// Get options
+/**
+ * Get plugin options
+ */
 $wpsms_option = get_option('wpsms_settings');
-include_once dirname( __FILE__ ) . '/includes/class-wp-sms.php';
 
-// SMS Gateway plugin
-if( isset($wpsms_option['gateway_name']) ) {
-	if(is_file(dirname( __FILE__ ) . '/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php')) {
-		include_once dirname( __FILE__ ) . '/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php';
-	} else {
-		include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/'.$wpsms_option['gateway_name'].'.class.php' );
-	}
-
-	if($wpsms_option['gateway_name'] == 'default') {
-		$sms = new Default_Gateway();
-	} else {
-		$sms = new $wpsms_option['gateway_name'];
-	}
-	
-	$sms->username = $wpsms_option['gateway_username'];
-	$sms->password = $wpsms_option['gateway_password'];
-	
-	if($sms->has_key && $wpsms_option['gateway_key']) {
-		$sms->has_key = $wpsms_option['gateway_key'];
-	}
-	
-	// Added help to gateway if have it.
-	if($sms->help) {
-		function wps_gateway_help() {
-			global $sms;
-			echo '<p class="description">'.$sms->help.'</p>';
-		}
-		add_action('wp_sms_after_gateway', 'wps_gateway_help');
-	}
-	
-	if($sms->unitrial == true) {
-		$sms->unit = __('Credit', 'wp-sms');
-	} else {
-		$sms->unit = __('SMS', 'wp-sms');
-	}
-	
-	$sms->from = $wpsms_option['gateway_sender_id'];
-} else {
-	include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
-	$sms = new Default_Gateway;
-}
-
-// Create object of plugin
+/**
+ * Create object of plugin
+ */
 $WP_SMS_Plugin = new WP_SMS_Plugin;
 
-// Run installer
+/**
+ * Initial gateway
+ */
+$sms = $WP_SMS_Plugin->initial_gateway();
+
+/**
+ * Install plugin
+ */
 register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
 
-// WP SMS Plugin Class
+/**
+ * Class WP_SMS_Plugin
+ */
 class WP_SMS_Plugin {
 	/**
 	 * Wordpress Admin url
@@ -121,9 +92,8 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function __construct() {
-		global $sms, $wpdb, $table_prefix, $wpsms_option;
-		
-		$this->sms = $sms;
+		global $wpdb, $table_prefix, $wpsms_option;
+
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
 		$this->options = $wpsms_option;
@@ -135,7 +105,11 @@ class WP_SMS_Plugin {
 		__('A simple and powerful texting plugin for wordpress', 'wp-sms');
 		
 		$this->includes();
+		$this->sms = $this->initial_gateway();
+
 		$this->init();
+
+
 		
 		$this->subscribe = new WP_SMS_Subscriptions();
 		
@@ -205,6 +179,7 @@ class WP_SMS_Plugin {
 	public function includes() {
 		$files = array(
 			'includes/functions',
+			'includes/class-wp-sms',
 			'includes/class-wp-sms-gateway',
 			'includes/class-wp-sms-settings',
 			'includes/class-wp-sms-settings-pro',
@@ -248,6 +223,60 @@ class WP_SMS_Plugin {
 		if( is_admin() and is_super_admin() ) {
 			$this->add_cap();
 		}
+	}
+
+	/**
+	 * Initial gateway
+	 * @return mixed
+	 */
+	public function initial_gateway() {
+		// Include default gateway
+		include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
+
+		// Using default gateway if does not set gateway in the setting
+		if( empty($this->options['gateway_name'] or $this->options['gateway_name'] == 'default') ) {
+			return new Default_Gateway;
+		}
+
+		if( is_file(dirname( __FILE__ ) . '/includes/gateways/'.$this->options['gateway_name'].'.class.php') ) {
+			include_once dirname( __FILE__ ) . '/includes/gateways/'.$this->options['gateway_name'].'.class.php';
+		} else if( is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/'.$this->options['gateway_name'].'.class.php') ) {
+			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/'.$this->options['gateway_name'].'.class.php' );
+		} else {
+			return new Default_Gateway;
+		}
+
+		// Create object from the gateway class
+		$sms = new $this->options['gateway_name'];
+
+		// Set username and password
+		$sms->username = $this->options['gateway_username'];
+		$sms->password = $this->options['gateway_password'];
+
+		// Set api key
+		if($sms->has_key && $this->options['gateway_key']) {
+			$sms->has_key = $this->options['gateway_key'];
+		}
+
+		// Show gateway help configuration in gateway page
+		if($sms->help) {
+			add_action('wp_sms_after_gateway', function() {
+				echo '<p class="description">'.$sms->help.'</p>';
+			});
+		}
+
+		// Check unit credit gateway
+		if($sms->unitrial == true) {
+			$sms->unit = __('Credit', 'wp-sms');
+		} else {
+			$sms->unit = __('SMS', 'wp-sms');
+		}
+
+		// Set from sender id
+		$sms->from = $this->options['gateway_sender_id'];
+
+		// Return gateway object
+		return $sms;
 	}
 
 	/**

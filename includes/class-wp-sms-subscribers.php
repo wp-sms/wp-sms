@@ -34,8 +34,8 @@ class WP_SMS_Subscriptions {
 	 */
 	public function __construct() {
 		global $wpdb, $table_prefix;
-		
-		$this->date = date('Y-m-d H:i:s' ,current_time('timestamp', 0));
+
+		$this->date = WP_SMS_CURRENT_DATE;
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
 	}

@@ -24,7 +24,7 @@ if(isset($_POST['wps_import'])) {
 			
 			$result = $wpdb->insert("{$table_prefix}sms_subscribes",
 				array(
-					'date'		=>	date('Y-m-d H:i:s' ,current_time('timestamp', 0)),
+					'date'		=>	WP_SMS_CURRENT_DATE,
 					'name'		=>	$items[1],
 					'mobile'	=>	$items[2],
 					'status'	=>	'1',
