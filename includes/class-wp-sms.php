@@ -2,9 +2,6 @@
 /**
  * @category   class
  * @package    WP_SMS
- * @author     Mostafa Soufi <info@mostafa-soufi.ir>
- * @copyright  2015 wp-sms-plugin.com
- * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    1.0
  */
 abstract class WP_SMS {

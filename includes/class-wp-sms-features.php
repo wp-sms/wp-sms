@@ -6,7 +6,6 @@
  * @package    WP_SMS
  * @version    1.0
  */
-
 class WP_SMS_Features {
 
 	public $sms;

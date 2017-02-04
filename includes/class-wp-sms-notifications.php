@@ -6,13 +6,15 @@
  * @package    WP_SMS
  * @version    1.0
  */
-
 class WP_SMS_Notifications {
 
 	public $sms;
 	public $date;
 	public $options;
 
+	/**
+	 * WP_SMS_Notifications constructor.
+	 */
 	public function __construct() {
 		global $wpsms_option, $sms, $wp_version;
 
@@ -63,6 +65,9 @@ class WP_SMS_Notifications {
 		add_meta_box('subscribe-meta-box', __('SMS', 'wp-sms'), array(&$this, 'notification_meta_box_handler'), 'post', 'normal', 'high');
 	}
 
+	/**
+	 * @param $post
+	 */
 	public function notification_meta_box_handler($post) {
 		global $wpdb, $table_prefix;
 
@@ -71,6 +76,12 @@ class WP_SMS_Notifications {
 		include_once dirname( __FILE__ ) . "/templates/wp-sms-meta-box.php";
 	}
 
+	/**
+	 * @param null $wp_sms_new_status
+	 * @param null $wp_sms_old_status
+	 * @param null $post
+	 * @return null
+	 */
 	public function new_post($wp_sms_new_status = NULL, $wp_sms_old_status = NULL, $post = NULL) {
 		if($_REQUEST['wps_send_subscribe'] == 'yes') {
 			global $wpdb, $table_prefix;
@@ -97,7 +108,9 @@ class WP_SMS_Notifications {
 		return $post;
 	}
 
-	// Register new user
+	/**
+	 * @param $user_id
+	 */
 	public function new_user($user_id) {
 
 		$user = get_userdata($user_id);
@@ -123,7 +136,10 @@ class WP_SMS_Notifications {
 		}
 	}
 
-	// New Comment
+	/**
+	 * @param $comment_id
+	 * @param $comment_smsect
+	 */
 	public function new_comment($comment_id, $comment_smsect){
 
 		if($comment_smsect->comment_type == 'order_note')
@@ -146,7 +162,10 @@ class WP_SMS_Notifications {
 		$this->sms->SendSMS();
 	}
 
-	// Login user
+	/**
+	 * @param $username_login
+	 * @param $username
+	 */
 	public function login_user($username_login, $username){
 		$this->sms->to = array( $this->options['admin_mobile_number'] );
 

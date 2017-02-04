@@ -6,7 +6,6 @@
  * @package    WP_SMS
  * @version    4.0
  */
-
 class WP_SMS_RestApi {
 
 	/**

@@ -39,11 +39,12 @@ class WP_SMS_Subscriptions {
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
 	}
-	
+
 	/**
 	 * Add Subscriber
 	 *
 	 * @param  Not param
+	 * @return array
 	 */
 	public function add_subscriber($name, $mobile, $group_id = '') {
 		$result = $this->db->insert(
@@ -71,11 +72,12 @@ class WP_SMS_Subscriptions {
 			return array('result' => 'update', 'message' => __('Subscriber successfully added.', 'wp-sms'));
 		}
 	}
-	
+
 	/**
 	 * Get Subscriber
 	 *
 	 * @param  Not param
+	 * @return array|null|object|void
 	 */
 	public function get_subscriber($id) {
 		$result = $this->db->get_row("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE ID = '".$id."'");
@@ -83,11 +85,12 @@ class WP_SMS_Subscriptions {
 		if($result)
 			return $result;
 	}
-	
+
 	/**
 	 * Delete Subscriber
 	 *
 	 * @param  Not param
+	 * @return false|int|void
 	 */
 	public function delete_subscriber($id) {
 		
@@ -114,11 +117,12 @@ class WP_SMS_Subscriptions {
 			return $result;
 		}
 	}
-	
+
 	/**
 	 * Update Subscriber
 	 *
 	 * @param  Not param
+	 * @return array|void
 	 */
 	public function update_subscriber($id, $name, $mobile, $group_id = '', $status = '1') {
 		
@@ -151,11 +155,12 @@ class WP_SMS_Subscriptions {
 			return array('result' => 'update', 'message' => __('Subscriber successfully updated.', 'wp-sms'));
 		}
 	}
-	
+
 	/**
 	 * Get Subscriber
 	 *
 	 * @param  Not param
+	 * @return array|null|object
 	 */
 	public function get_groups() {
 		$result = $this->db->get_results("SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`");
@@ -163,11 +168,12 @@ class WP_SMS_Subscriptions {
 		if($result)
 			return $result;
 	}
-	
+
 	/**
 	 * Get Group
 	 *
 	 * @param  Not param
+	 * @return array|null|object|void
 	 */
 	public function get_group($group_id) {
 		$result = $this->db->get_row("SELECT * FROM `{$this->tb_prefix}sms_subscribes_group` WHERE ID = '".$group_id."'");
@@ -175,11 +181,12 @@ class WP_SMS_Subscriptions {
 		if($result)
 			return $result;
 	}
-	
+
 	/**
 	 * Add Group
 	 *
 	 * @param  Not param
+	 * @return array
 	 */
 	public function add_group($name) {
 		
@@ -207,11 +214,12 @@ class WP_SMS_Subscriptions {
 		}
 		
 	}
-	
+
 	/**
 	 * Delete Group
 	 *
 	 * @param  Not param
+	 * @return false|int|void
 	 */
 	public function delete_group($id) {
 		
@@ -238,11 +246,12 @@ class WP_SMS_Subscriptions {
 			return $result;
 		}
 	}
-	
+
 	/**
 	 * Update Group
 	 *
 	 * @param  Not param
+	 * @return array|void
 	 */
 	public function update_group($id, $name) {
 		
