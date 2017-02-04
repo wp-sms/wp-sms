@@ -16,7 +16,7 @@ class WP_SMS_Features {
 	protected $tb_prefix;
 
 	public function __construct() {
-		global $wpsms_option, $sms, $wp_version, $wpdb, $table_prefix;
+		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
 		$this->sms = $sms;
 		$this->db = $wpdb;

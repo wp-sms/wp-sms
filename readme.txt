@@ -4,7 +4,7 @@ Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.7
-Stable tag: 4.0.5
+Stable tag: 4.0.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -223,13 +223,15 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 4.0.6 =
+* Improvement plugin to initial the gateways
+* Updated German translations. [Thanks Robert Skiba](skibamedia.de)
+* Added asr3sms.com gateway
+
 = 4.0.5 =
 * Fixed path to the nusoap class on some gateways [Thanks nekofar](https://github.com/nekofar)
 * Fixed send sms time in database
 * Fixes including gateways class error when the class was not in the plugin
-* Improvement plugin to initial the gateways
-* Added asr3sms.com gateway
-* Updated German translations. [Thanks Robert Skiba](skibamedia.de)
 
 = 4.0.4 =
 * Fixes dissabled options.

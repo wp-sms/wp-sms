@@ -14,7 +14,7 @@ class WP_SMS_Integrations {
 	public $options;
 
 	public function __construct() {
-		global $wpsms_option, $sms, $wp_version;
+		global $wpsms_option, $sms;
 
 		$this->sms = $sms;
 		$this->date = WP_SMS_CURRENT_DATE;

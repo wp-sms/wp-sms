@@ -3,7 +3,7 @@
 Plugin Name: WP SMS
 Plugin URI: http://wordpresssmsplugin.com/
 Description: A simple and powerful texting plugin for wordpress
-Version: 4.0.5
+Version: 4.0.6
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Plugin defines
  */
-define('WP_SMS_VERSION', '4.0.5');
+define('WP_SMS_VERSION', '4.0.6');
 define('WP_SMS_DIR_PLUGIN', plugin_dir_url(__FILE__));
 define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'http://wordpresssmsplugin.com');
@@ -26,14 +26,12 @@ define('WP_SMS_CURRENT_DATE', date('Y-m-d H:i:s', current_time('timestamp', 1)))
 $wpsms_option = get_option('wpsms_settings');
 
 /**
- * Create object of plugin
- */
-$WP_SMS_Plugin = new WP_SMS_Plugin;
-
-/**
  * Initial gateway
  */
-$sms = $WP_SMS_Plugin->initial_gateway();
+include_once dirname( __FILE__ ) . '/includes/functions.php';
+$sms = initial_gateway();
+
+$WP_SMS_Plugin = new WP_SMS_Plugin;
 
 /**
  * Install plugin
@@ -92,7 +90,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function __construct() {
-		global $wpdb, $table_prefix, $wpsms_option;
+		global $wpdb, $table_prefix, $wpsms_option, $sms;
 
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
@@ -105,12 +103,10 @@ class WP_SMS_Plugin {
 		__('A simple and powerful texting plugin for wordpress', 'wp-sms');
 		
 		$this->includes();
-		$this->sms = $this->initial_gateway();
+		$this->sms = $sms;
 
 		$this->init();
 
-
-		
 		$this->subscribe = new WP_SMS_Subscriptions();
 		
 		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
@@ -178,8 +174,6 @@ class WP_SMS_Plugin {
 	 */
 	public function includes() {
 		$files = array(
-			'includes/functions',
-			'includes/class-wp-sms',
 			'includes/class-wp-sms-gateway',
 			'includes/class-wp-sms-settings',
 			'includes/class-wp-sms-settings-pro',
@@ -223,64 +217,6 @@ class WP_SMS_Plugin {
 		if( is_admin() and is_super_admin() ) {
 			$this->add_cap();
 		}
-	}
-
-	/**
-	 * Initial gateway
-	 * @return mixed
-	 */
-	public function initial_gateway() {
-		// Include default gateway
-		include_once dirname( __FILE__ ) . '/includes/gateways/default.class.php';
-
-		// Using default gateway if does not set gateway in the setting
-		if( empty($this->options['gateway_name']) ) {
-			return new Default_Gateway;
-		}
-
-		if( is_file(dirname( __FILE__ ) . '/includes/gateways/'.$this->options['gateway_name'].'.class.php') ) {
-			include_once dirname( __FILE__ ) . '/includes/gateways/'.$this->options['gateway_name'].'.class.php';
-		} else if( is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/'.$this->options['gateway_name'].'.class.php') ) {
-			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/'.$this->options['gateway_name'].'.class.php' );
-		} else {
-			return new Default_Gateway;
-		}
-
-		// Create object from the gateway class
-		if( $this->options['gateway_name'] == 'default' ) {
-			$sms = new Default_Gateway();
-		} else {
-			$sms = new $this->options['gateway_name'];
-		}
-
-		// Set username and password
-		$sms->username = $this->options['gateway_username'];
-		$sms->password = $this->options['gateway_password'];
-
-		// Set api key
-		if($sms->has_key && $this->options['gateway_key']) {
-			$sms->has_key = $this->options['gateway_key'];
-		}
-
-		// Show gateway help configuration in gateway page
-		if($sms->help) {
-			add_action('wp_sms_after_gateway', function() {
-				echo '<p class="description">'.$sms->help.'</p>';
-			});
-		}
-
-		// Check unit credit gateway
-		if($sms->unitrial == true) {
-			$sms->unit = __('Credit', 'wp-sms');
-		} else {
-			$sms->unit = __('SMS', 'wp-sms');
-		}
-
-		// Set from sender id
-		$sms->from = $this->options['gateway_sender_id'];
-
-		// Return gateway object
-		return $sms;
 	}
 
 	/**
