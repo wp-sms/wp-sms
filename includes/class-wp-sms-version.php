@@ -17,7 +17,7 @@ class WP_SMS_Version {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if ( !is_plugin_active( 'wp-sms-pro/wp-sms-pro.php' ) ) {
 			add_filter('plugin_row_meta', array(&$this, 'pro_meta_links'), 10, 2);
-			add_action('wp_sms_settings_page', array(&$this, 'pro_pack_message'));
+			add_action('wp_sms_pro_settings_page', array(&$this, 'pro_pack_message'));
 			add_action('admin_enqueue_scripts', array(&$this, 'pro_pack_admin_assets'));
 		}
 	}

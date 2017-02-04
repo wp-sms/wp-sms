@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixes including gateways class error when the class was not in the plugin
 * Improvement plugin to initial the gateways
 * Added asr3sms.com gateway
+* Updated German translations. [Thanks Robert Skiba](skibamedia.de)
 
 = 4.0.4 =
 * Fixes dissabled options.
