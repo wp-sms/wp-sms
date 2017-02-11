@@ -50,7 +50,7 @@
 		<table class="form-table">
 			<?php wp_nonce_field('update-options');?>
 			<tr>
-				<th><h3><?php _e('Send SMS', 'wp-sms'); ?></h4></th>
+				<th><h3><?php _e('Send SMS', 'wp-sms'); ?></h3></th>
 			</tr>
 			<tr>
 				<td><?php _e('Send from', 'wp-sms'); ?>:</td>

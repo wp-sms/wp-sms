@@ -535,7 +535,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_newsletter() {
-		include_once dirname( __FILE__ ) . '/includes/templates/wp-sms-admin-newsletter.php';
+		include_once dirname(__FILE__) . '/includes/templates/wp-sms-admin-newsletter.php';
 	}
 	
 	/**

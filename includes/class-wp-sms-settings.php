@@ -475,10 +475,9 @@ class WP_SMS_Settings {
 					'type'	=>  'textarea',
 					'desc'	=>  __( 'Enter the contents of the sms message.', 'wp-sms' ).'<br>'.
 					sprintf(
-						__('Order ID: %s, Order status: %s, Order name: %s', 'wp-sms'),
+						__('Order ID: %s, Order status: %s', 'wp-sms'),
 						'<code>%order_id%</code>',
-						'<code>%status%</code>',
-						'<code>%order_number%</code>'
+						'<code>%status%</code>'
 					)
 				),
 				// EDD
@@ -498,7 +497,13 @@ class WP_SMS_Settings {
 					'id'	=>  'edd_notif_new_order_template',
 					'name'	=>  __( 'Message body', 'wp-sms' ),
 					'type'	=>  'textarea',
-					'desc'	=>  __( 'Enter the contents of the sms message.', 'wp-sms' ),
+					'desc'  =>  __( 'Enter the contents of the message.', 'wp-telegram-notifications' ).'<br>'.
+						sprintf(
+							__('Customer email: %s, Customer name: %s, Customer last name: %s', 'wp-telegram-notifications'),
+							'<code>%edd_email%</code>',
+							'<code>%edd_first%</code>',
+							'<code>%edd_last%</code>'
+						)
 				),
 			) ),
 		) );

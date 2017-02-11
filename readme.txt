@@ -223,8 +223,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= 4.0.6 =
+= 4.0.7 =
 * Added websms.com.cy gateway
+* Added smsgatewayhub.com gateway
+* Added variable data to EDD message option
 
 = 4.0.6 =
 * Improvement plugin to initial the gateways

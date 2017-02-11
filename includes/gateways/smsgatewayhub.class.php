@@ -50,32 +50,39 @@ class smsgatewayhub extends WP_SMS {
 
 		// Unicide message
 		$msg = urlencode($this->msg);
+
+		$response = wp_remote_get($this->wsdl_link.'SendSMS?APIKey='.$this->has_key.'&senderid='.$this->from.'&channel=2&DCS=0&flashsms=0&number='.$to.'&text='.$msg.'&route=clickhere');
+
+		// Check gateway credit
+		if( is_wp_error($response) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if( $response_code == '200' ) {
+			// Decode json
+			$result = json_decode($response['body']);
+
+			// Check response
+			if($result->ErrorMessage != 'Success')
+				return new WP_Error( 'send-sms', $result->ErrorMessage );
+
+			$this->InsertToDB($this->from, $this->msg, $this->to);
+
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 * @param string $result result output.
+			 */
+			do_action('wp_sms_send', $result);
+		} else {
+			return new WP_Error( 'send-sms',  $response['body']);
+		}
 		
 		// Get data
 		$result = file_get_contents($this->wsdl_link.'SendSMS?APIKey='.$this->has_key.'&senderid='.$this->from.'&channel=2&DCS=0&flashsms=0&number='.$to.'&text='.$msg.'&route=clickhere');
-
-		// Check value
-		if(!$result)
-			return false;
-
-		// Decode json
-		$result = json_decode($result);
-
-		// Check response
-		if($result->ErrorMessage != 'Success')
-			return new WP_Error( 'send-sms', $result );
-		
-		$this->InsertToDB($this->from, $this->msg, $this->to);
-		
-		/**
-		 * Run hook after send sms.
-		 *
-		 * @since 2.4
-		 * @param string $result result output.
-		 */
-		do_action('wp_sms_send', $result);
-
-		return $result;
 	}
 
 	public function GetCredit() {
@@ -83,24 +90,26 @@ class smsgatewayhub extends WP_SMS {
 		if(!$this->username && !$this->password) {
 			return new WP_Error( 'account-credit', __('Username/Password does not set for this gateway', 'wp-sms') );
 		}
-		
-		// Get content
-		$result = file_get_contents($this->wsdl_link.'GetBalance?APIKey='.$this->has_key);
 
-		// Check value
-		if(!$result)
-			return new WP_Error( 'account-credit', $result );
+		$response = wp_remote_get($this->wsdl_link . 'GetBalance?APIKey='.$this->has_key);
 
-		// Decode json
-		$result = json_decode($result);
+		// Check gateway credit
+		if( is_wp_error($response) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
+		}
 
-		// Check response
-		if($result->ErrorMessage != 'Success')
-			return new WP_Error( 'account-credit', $result );
+		$response_code = wp_remote_retrieve_response_code( $response );
 
-		// Get first number from result
-		$match = reset(array_filter(preg_split("/\D+/", $result->Balance)));
+		if( $response_code == '200' ) {
+			$result = json_decode($response['body']);
 
-		return $match;
+			// Check response
+			if($result->ErrorMessage != 'Success')
+				return new WP_Error( 'account-credit', $result );
+
+			return $result->Balance;
+		} else {
+			return new WP_Error( 'account-credit',  $response['body']);
+		}
 	}
 }
