@@ -13,18 +13,34 @@ class WP_SMS_Notifications {
 	public $options;
 
 	/**
+	 * Wordpress Database
+	 *
+	 * @var string
+	 */
+	protected $db;
+
+	/**
+	 * Wordpress Table prefix
+	 *
+	 * @var string
+	 */
+	protected $tb_prefix;
+
+	/**
 	 * WP_SMS_Notifications constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wp_version;
+		global $wpsms_option, $sms, $wp_version, $wpdb, $table_prefix;
 
 		$this->sms = $sms;
 		$this->date = WP_SMS_CURRENT_DATE;
 		$this->options = $wpsms_option;
+		$this->db = $wpdb;
+		$this->tb_prefix = $table_prefix;
 
 		if( isset($this->options['notif_publish_new_post']) ) {
 			add_action('add_meta_boxes', array(&$this, 'notification_meta_box'));
-			add_action('transition_post_status', array(&$this, 'new_post'), 10, 3);
+			add_action('publish_post', array(&$this, 'new_post'), 10, 2);
 		}
 
 		// Wordpress new version
@@ -77,26 +93,24 @@ class WP_SMS_Notifications {
 	}
 
 	/**
-	 * @param null $wp_sms_new_status
-	 * @param null $wp_sms_old_status
-	 * @param null $post
+	 * @param $ID
+	 * @param $post
 	 * @return null
+	 * @internal param $post_id
 	 */
-	public function new_post($wp_sms_new_status = NULL, $wp_sms_old_status = NULL, $post = NULL) {
+	public function new_post($ID, $post) {
 		if($_REQUEST['wps_send_subscribe'] == 'yes') {
-			global $wpdb, $table_prefix;
-			
 			if($_REQUEST['wps_subscribe_group'] == 'all') {
-				$this->sms->to = $wpdb->get_col("SELECT mobile FROM {$table_prefix}sms_subscribes");
+				$this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
 			} else {
-				$this->sms->to = $wpdb->get_col("SELECT mobile FROM {$table_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'");
+				$this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'");
 			}
 
 			$template_vars = array(
-				'%post_title%' => get_the_title($post->ID),
+				'%post_title%' => get_the_title($ID),
 				'%post_content%' => wp_trim_words($post->post_content, 10),
-				'%post_url%' => wp_get_shortlink($post->ID),
-				'%post_date%' => get_post_time('Y-m-d', true, $post->ID, true),
+				'%post_url%' => wp_get_shortlink($ID),
+				'%post_date%' => get_post_time('Y-m-d', true, $ID, true),
 			);
 
 			$message = str_replace(array_keys($template_vars), array_values($template_vars), $_REQUEST['wpsms_text_template']);
@@ -104,8 +118,6 @@ class WP_SMS_Notifications {
 			$this->sms->msg = $message;
 			$this->sms->SendSMS();
 		}
-
-		return $post;
 	}
 
 	/**

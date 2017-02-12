@@ -47,7 +47,6 @@ class parandhost extends WP_SMS {
 		$client = new SoapClient($this->wsdl_link, $options);
 		
 		try {
-			
 			$result = $client->sendToMany($this->to, $this->msg, $this->from);
 
 			$this->InsertToDB($this->from, $this->msg, $this->to);
@@ -60,7 +59,6 @@ class parandhost extends WP_SMS {
 			 */
 			do_action('wp_sms_send', $result);
 			return $result;
-
 		} catch (Exception $e) {
 			return new WP_Error( 'send-sms', $e->getMessage() );
 		}
