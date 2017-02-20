@@ -90,7 +90,7 @@ class websmscy extends WP_SMS {
 
 		try {
 			$credits = $ws->getCredits();
-			print_r($credits);
+			return $credits;
 		} catch (Exception $e) {
 			return new WP_Error( 'account-credit', $e->getMessage() );
 		}

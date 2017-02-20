@@ -59,7 +59,6 @@ class asr3sms extends WP_SMS {
 			$result = json_decode($response['body']);
 
 			if( $result->Code == 100) {
-
 				$this->InsertToDB($this->from, $this->msg, $this->to[0]);
 
 				/**
@@ -71,7 +70,6 @@ class asr3sms extends WP_SMS {
 				do_action('wp_sms_send', $result);
 
 				return $result;
-
 			} else {
 				return new WP_Error( 'send-sms',  $result->MessageIs);
 			}
@@ -86,7 +84,7 @@ class asr3sms extends WP_SMS {
 			return new WP_Error( 'account-credit', __('Username/Password does not set for this gateway', 'wp-sms') );
 		}
 
-		$response = wp_remote_get($this->wsdl_link.'getbalance.php?username='.$this->username.'&password='.$this->password.'&hangedBalance=true&return=json');
+		$response = wp_remote_get($this->wsdl_link.'getbalance.php?username='.$this->username.'&password='.$this->password.'&hangedBalance=true&return=string');
 
 		// Check request
 		if( is_wp_error($response) ) {
@@ -96,13 +94,7 @@ class asr3sms extends WP_SMS {
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if( $response_code == '200' ) {
-			$result = json_decode($response['body']);
-
-			if( $result->Code == 100) {
-				return $result->currentuserpoints;
-			} else {
-				return new WP_Error( 'account-credit',  $result->MessageIs);
-			}
+			return preg_match('/^[0-9]+$/', $response['body']);
 		} else {
 			return new WP_Error( 'account-credit',  $response['body']);
 		}
