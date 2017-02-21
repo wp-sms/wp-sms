@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 4.0.7 =
 * Added websms.com.cy gateway
 * Added smsgatewayhub.com gateway
+* Added africastalking.com gateway
 * Added variable data to EDD message option
 * Fixed duplicate in send sms notification post
 

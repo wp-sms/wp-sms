@@ -166,6 +166,9 @@ class WP_SMS_Gateway {
 			'pakistan' => array(
 				'difaan'		=>	'difaan',
 			),
+			'africa' => array(
+				'africastalking'=>	'africastalking.com',
+			),
 			'cyprus' => array(
 				'websmscy'		=>	'websms.com.cy',
 			),
