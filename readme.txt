@@ -228,6 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added smsgatewayhub.com gateway
 * Added africastalking.com gateway
 * Added variable data to EDD message option
+* Fixed unisender gateway issue
 * Fixed duplicate send sms in the notification post
 
 = 4.0.6 =

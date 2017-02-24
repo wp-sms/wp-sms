@@ -1,6 +1,6 @@
 <?php
 class unisender extends WP_SMS {
-	private $wsdl_link = "http://api.unisender.com/ru/api/";
+	private $wsdl_link = "https://api.unisender.com/en/api/";
 	public $tariff = "http://www.unisender.com/en/prices/";
 	public $unitrial = false;
 	public $unit;
@@ -10,6 +10,7 @@ class unisender extends WP_SMS {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "";
+		$this->has_key = true;
 	}
 	
 	public function SendSMS() {
@@ -43,48 +44,37 @@ class unisender extends WP_SMS {
 		$this->msg = apply_filters('wp_sms_msg', $this->msg);
 		
 		$to = implode($this->to, ",");
-		
-		$sms_text = iconv('cp1251', 'utf-8', $this->msg);
-		
-		$POST = array (
-			'api_key'	=> $this->password,
-			'phone'		=> $to,
-			'sender'	=> $this->from,
-			'text'		=> $sms_text
-		);
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		curl_setopt($ch, CURLOPT_URL, "{$this->wsdl_link}sendSms?format=json");
-		$result = curl_exec($ch);
-		
-		if ($result) {
-			$jsonObj = json_decode($result);
-			
-			if(null===$jsonObj) {
-				return false;
-			} elseif(!empty($jsonObj->error)) {
-				return false;
-			} else {
-				
-				$result = $jsonObj->result[0]->sms_id;
-				$this->InsertToDB($this->from, $this->msg, $this->to);
-				
-				/**
-				 * Run hook after send sms.
-				 *
-				 * @since 2.4
-				 * @param string $result result output.
-				 */
-				do_action('wp_sms_send', $result);
-				
-				return $result;
+		$text = iconv('cp1251', 'utf-8', $this->msg);
+
+		$response = wp_remote_get($this->wsdl_link . "sendSms?format=json&api_key=".$this->has_key."&sender=".$this->from."&text=".$text."&phone=".$to);
+
+		// Check gateway credit
+		if( is_wp_error($response) ) {
+			return new WP_Error( 'send-sms', $response->get_error_message() );
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if( $response_code == '200' ) {
+			$result = json_decode($response['body']);
+
+			if( isset($result->error) ) {
+				return new WP_Error( 'send-sms', $result->code );
 			}
+
+			$this->InsertToDB($this->from, $this->msg, $this->to);
+
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 * @param string $result result output.
+			 */
+			do_action('wp_sms_send', $result);
+
+			return $result;
+
 		} else {
-			return new WP_Error( 'send-sms', $result );
+			return new WP_Error( 'send-sms',  $response['body']);
 		}
 	}
 	
@@ -94,16 +84,13 @@ class unisender extends WP_SMS {
 			return new WP_Error( 'account-credit', __('Username/Password does not set for this gateway', 'wp-sms') );
 		}
 		
-		$json = file_get_contents("{$this->wsdl_link}getUserInfo?format=json&api_key={$this->password}&login={$this->username}");
-		
+		$json = file_get_contents("{$this->wsdl_link}getUserInfo?format=json&api_key=".$this->has_key);
 		$result = json_decode($json, true);
 		
-		if( $result['code'] == 'unspecified' )
-			return new WP_Error( 'account-credit', $result );
-		
-		if( $result['code'] == 'invalid_api_key' )
-			return new WP_Error( 'account-credit', $result );
-		
+		if( isset($result['error']) ) {
+			return new WP_Error( 'account-credit', $result['code'] );
+		}
+
 		return $result['result']['balance'];
 	}
 }
