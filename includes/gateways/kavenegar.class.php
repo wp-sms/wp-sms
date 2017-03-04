@@ -16,32 +16,36 @@ class kavenegar extends WP_SMS {
 		$this->msg = apply_filters('wp_sms_msg', $this->msg);		
 		$to = implode($this->to, ",");
 		$msg = urlencode($this->msg);	
-		$path  = $this->get_path("send");	
-		$result = @file_get_contents($path."?receptor=".$to."&sender=".$this->from."&message=".$msg);
-		if (false !== $result){
-			$result = json_decode($result);
-			if($result){
-				if ($result->return->status == 200) {
+		$path  = $this->get_path("send");
+		$response = wp_remote_get($path, array('body' => array( 'receptor' => $to, 'sender' => $this->from,'message' => $msg)) );	
+		if (is_array( $response ) && ! is_wp_error( $response ) ) {
+			try {
+		        $json = json_decode( $response['body'] );
+				if ($json && $json->return->status == 200) {
 					$this->InsertToDB($this->from, $this->msg, $this->to);
-					do_action('wp_sms_send', $result);	
-					return $result;
-				}
-			}				
-		}	
-		return new WP_Error( 'send-sms', $result );
+					do_action('wp_sms_send', $response);	
+					return $response;
+				}		
+		    } catch (Exception $ex) {
+		        return new WP_Error( 'send-sms', $response );
+		    } 
+		}
+		return new WP_Error( 'send-sms', $response );
 	}	
 	public function GetCredit() {
 		$remaincredit=0;
 		$path = $this->get_path("info", "account");
-		$result = @file_get_contents($path);
-		if (false !== $result){
-			$json_response = json_decode($result);
-			if($json_response){
-				if ($json_response->return->status == 200) {
-					$remaincredit=$json_response->entries->remaincredit;
-				}
-			}				
-		}
+		$response = wp_remote_get($path);
+		if (is_array( $response ) && ! is_wp_error( $response ) ) {
+			try {
+		        $json = json_decode( $response['body'] );
+				if($json){
+					$remaincredit=$json->entries->remaincredit;
+				}		
+		    } catch (Exception $ex) {
+		        $remaincredit = 0;
+		    } 
+		}	
 		return $remaincredit;
 	} 
 }
