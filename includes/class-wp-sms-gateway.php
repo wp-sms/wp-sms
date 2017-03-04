@@ -161,7 +161,8 @@ class WP_SMS_Gateway {
 				'arkapayamak'	=>	'arkapayamak.ir',
 				'smsservice'	=>	'smsservice.ir',
 				'parsgreen'		=>	'api.ir',
-				'firstpayamak'	=>	'firstpayamak.ir',				
+				'firstpayamak'	=>	'firstpayamak.ir',
+				'kavenegar'		=> 'kavenegar.com',				
 			),
 			'pakistan' => array(
 				'difaan'		=>	'difaan',
