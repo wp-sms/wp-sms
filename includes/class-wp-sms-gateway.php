@@ -55,6 +55,7 @@ class WP_SMS_Gateway {
 				'smsgatewaycenter'=>	'smsgatewaycenter.com',
 			),
 			'iran' => array(
+				'kavenegar'		=> 'kavenegar.com',
 				'parandhost'	=> 'parandhost.com',
 				'iransmspanel'	=>	'iransmspanel.ir',
 				'chaparpanel'	=>	'chaparpanel.ir',
