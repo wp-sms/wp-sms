@@ -1,8 +1,9 @@
 <?php
+
 /**
-* Class Deffinition
-*
-*/
+ * Class Deffinition
+ *
+ */
 class WebsmsClient
 {
 	private $soap_client;
@@ -13,24 +14,23 @@ class WebsmsClient
 
 	function __construct($cfg)
 	{
-		$this->soap_client = new SoapClient($cfg['wsdl_file'],array('cache_wsdl'=>WSDL_CACHE_NONE,'trace'=>true));
-		$this->session_path = 25*60;
+		$this->soap_client = new SoapClient($cfg['wsdl_file'], array('cache_wsdl' => WSDL_CACHE_NONE, 'trace' => true));
+		$this->session_path = 25 * 60;
 		$this->username = $cfg['username'];
 		$this->password = $cfg['password'];
-		$this->time_to_live = sys_get_temp_dir()."/websms.com.cy.ses";
+		$this->time_to_live = sys_get_temp_dir() . "/websms.com.cy.ses";
 	}
 
 	function authenticate()
 	{
-		$obj=new stdClass();
-		$obj->username=$this->username;
-		$obj->password=$this->password;
+		$obj = new stdClass();
+		$obj->username = $this->username;
+		$obj->password = $this->password;
 
-		$ret=$this->soap_client->authenticate($obj);
+		$ret = $this->soap_client->authenticate($obj);
 
-		if($ret->success==1)
-		{
-			$session=$ret->session_id;
+		if ($ret->success == 1) {
+			$session = $ret->session_id;
 			$this->setFileSession($session);
 			return $ret->session_id;
 		} else {
@@ -40,11 +40,10 @@ class WebsmsClient
 
 	function getSession()
 	{
-		$session=$this->getFileSession();
+		$session = $this->getFileSession();
 
-		if($session==null)
-		{
-			$session=$this->authenticate();
+		if ($session == null) {
+			$session = $this->authenticate();
 			$this->setFileSession($session);
 		}
 
@@ -53,16 +52,13 @@ class WebsmsClient
 
 	function getFileSession()
 	{
-		if(file_exists($this->session_path))
-		{
-			$tm=filemtime($this->session_path);
+		if (file_exists($this->session_path)) {
+			$tm = filemtime($this->session_path);
 
-			if(time()-$tm<$this->time_to_live)
-			{
-				$session=file_get_contents($this->session_path);
-			}else
-			{
-				$session=null;
+			if (time() - $tm < $this->time_to_live) {
+				$session = file_get_contents($this->session_path);
+			} else {
+				$session = null;
 			}
 			return $session;
 		}
@@ -72,7 +68,7 @@ class WebsmsClient
 
 	function setFileSession($session)
 	{
-		file_put_contents($this->session_path,$session);
+		file_put_contents($this->session_path, $session);
 	}
 
 	function touchFile()
@@ -82,44 +78,43 @@ class WebsmsClient
 
 	function getCredits()
 	{
-		$session=$this->getSession();
-		$res=$this->soap_client->getCredits($session);
+		$session = $this->getSession();
+		$res = $this->soap_client->getCredits($session);
 		$this->touchFile();
 		return $res;
 	}
 
-	function submitSM($from,$to,$message,$encoding="GSM")
+	function submitSM($from, $to, $message, $encoding = "GSM")
 	{
-		$obj=new stdClass();
-		$obj->session_id=$this->getSession();
-		$obj->from=$from;
-		$obj->message=$message;
+		$obj = new stdClass();
+		$obj->session_id = $this->getSession();
+		$obj->from = $from;
+		$obj->message = $message;
 		//$obj->message="A[]{}";
-		$obj->data_coding=$encoding;
-		if(is_array($to))
-			$obj->to=$to;
+		$obj->data_coding = $encoding;
+		if (is_array($to))
+			$obj->to = $to;
 		else
-			$obj->to=array($to);
+			$obj->to = array($to);
 
 		try {
-			$ret=$this->soap_client->sendSM($obj);
+			$ret = $this->soap_client->sendSM($obj);
 			return $ret;
 		} catch (SoapFault $soapFault) {
-			throw new Exception( $this->soap_client->__getLastResponse() );
+			throw new Exception($this->soap_client->__getLastResponse());
 		}
 	}
 
 	function getBatch($batchId)
 	{
-		$obj=new stdClass();
-		$obj->sessionId=$this->getSession();
-		$obj->batchId=$batchId;
+		$obj = new stdClass();
+		$obj->sessionId = $this->getSession();
+		$obj->batchId = $batchId;
 
-		try
-		{
-			$ret=$this->soap_client->getBatchStatus($obj);
+		try {
+			$ret = $this->soap_client->getBatchStatus($obj);
 			return $ret;
-		}catch (SoapFault $soapFault) {
+		} catch (SoapFault $soapFault) {
 			var_dump($c);
 			echo "Request :<br>", $this->soap_client->__getLastRequest(), "<br>";
 			echo "Response :<br>", $this->soap_client->__getLastResponse(), "<br>";

@@ -223,6 +223,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 4.0.* =
+* Added kavenegar.com gateway
+
 = 4.0.7 =
 * Added websms.com.cy gateway
 * Added smsgatewayhub.com gateway
