@@ -12,11 +12,11 @@ function smsLeftChar(txtSms, lblLeft, lblSms, lblMax, txtSign) {
 
     if (isPersian) {
         maxLen = 70;
-        $('#' + txtSms).css({ 'direction': 'rtl' });
+        $('#' + txtSms).css({'direction': 'rtl'});
     }
     else {
         maxLen = 160;
-        $('#' + txtSms).css({ 'direction': 'ltr' });
+        $('#' + txtSms).css({'direction': 'ltr'});
     }
 
     if (currentLen > maxLen) {
@@ -70,7 +70,9 @@ function isUnicode(str) {
     var letters = [];
     for (var i = 1; i <= str.length; i++) {
         letters[i] = str.substring((i - 1), i);
-        if (letters[i].charCodeAt() > 255) { return true; }
+        if (letters[i].charCodeAt() > 255) {
+            return true;
+        }
     }
     return false;
 }
