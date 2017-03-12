@@ -56,7 +56,7 @@ class WP_SMS_Gateway
 				'instantalerts' => 'springedge.com',
 				'smsgatewayhub' => 'smsgatewayhub.com',
 				'smsgatewaycenter' => 'smsgatewaycenter.com',
-				'cheapsms' => 'cheapsms.com',
+				'itfisms' => 'itfisms.com',
 			),
 			'iran' => array(
 				'parandhost' => 'parandhost.com',

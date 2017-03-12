@@ -1,9 +1,9 @@
 <?php
 
-class cheapsms extends WP_SMS
+class itfisms extends WP_SMS
 {
-	private $wsdl_link = "http://198.24.149.4/API";
-	public $tariff = "http://www.cheapsms.com/";
+	private $wsdl_link = "http://sms.itfisms.com/vendorsms/";
+	public $tariff = "http://www.itfisms.com/";
 	public $unitrial = true;
 	public $unit;
 	public $flash = "disable";
@@ -14,7 +14,6 @@ class cheapsms extends WP_SMS
 		parent::__construct();
 		$this->validateNumber = "e.g. 9029963999";
 		$this->help = 'Please enter Route ID in API Key field';
-		$this->has_key = true;
 	}
 
 	public function SendSMS()
@@ -48,7 +47,7 @@ class cheapsms extends WP_SMS
 		 */
 		$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-		$response = wp_remote_get($this->wsdl_link . "/pushsms.aspx?loginID=" . $this->username . "&password=" . $this->password . "&mobile=" . implode(',', $this->to) . "&text=" . urlencode($this->msg) . "&senderid=" . $this->from . "&route_id=" . $this->has_key . "&Unicode=1");
+		$response = wp_remote_get($this->wsdl_link . "pushsms.aspx?user=" . $this->username . "&password=" . $this->password . "&msisdn=" . implode(',', $this->to) . "&sid=" . $this->from . "&msg=" . urlencode($this->msg) . "&fl=0&dc=8");
 
 		// Check gateway credit
 		if (is_wp_error($response)) {
@@ -60,9 +59,9 @@ class cheapsms extends WP_SMS
 
 		// Check response code
 		if ($response_code == '200') {
-			$json = json_decode($response['body']);
+			$response = json_decode($response['body']);
 
-			if ($json->MsgStatus == 'Sent') {
+			if ($response->ErrorMessage == 'Success') {
 				$this->InsertToDB($this->from, $this->msg, $this->to);
 
 				/**
@@ -75,7 +74,7 @@ class cheapsms extends WP_SMS
 
 				return $response;
 			} else {
-				return new WP_Error('send-sms', $json->MsgStatus);
+				return new WP_Error('send-sms', $response->ErrorMessage);
 			}
 
 		} else {
@@ -88,6 +87,25 @@ class cheapsms extends WP_SMS
 		// Check username and password
 		if (!$this->username or !$this->password) {
 			return new WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms-pro'));
+		}
+
+		$response = wp_remote_get($this->wsdl_link . "CheckBalance.aspx?user={$this->username}&password={$this->password}");
+
+		// Check gateway credit
+		if (is_wp_error($response)) {
+			return new WP_Error('account-credit', $response->get_error_message());
+		}
+
+		$response_code = wp_remote_retrieve_response_code($response);
+
+		if ($response_code == '200') {
+			if (strstr($response['body'], 'Success')) {
+				return $response['body'];
+			} else {
+				return new WP_Error('account-credit', $response['body']);
+			}
+		} else {
+			return new WP_Error('account-credit', $response['body']);
 		}
 
 		return true;
