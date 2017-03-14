@@ -225,7 +225,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.* =
 * Added kavenegar.com gateway
-* Added cheapsms.com gateway
+* Added itfisms.com gateway
+* Added pridesms.in gateway
 
 = 4.0.7 =
 * Added websms.com.cy gateway
