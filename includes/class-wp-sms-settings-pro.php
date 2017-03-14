@@ -242,7 +242,7 @@ class WP_SMS_Settings_Pro
 						)
 				);
 
-				if (WP_SMS_Pro_Gravityforms::get_field($form->id)) {
+				if (WP_SMS_Gravityforms::get_field($form->id)) {
 					$gf_forms['gf_notify_enable_field_form_' . $form->id] = array(
 						'id' => 'gf_notify_enable_field_form_' . $form->id,
 						'name' => __('Send SMS to field', 'wp-sms'),
@@ -254,7 +254,7 @@ class WP_SMS_Settings_Pro
 						'id' => 'gf_notify_receiver_field_form_' . $form->id,
 						'name' => __('Field form', 'wp-sms'),
 						'type' => 'select',
-						'options' => WP_SMS_Pro_Gravityforms::get_field($form->id),
+						'options' => WP_SMS_Gravityforms::get_field($form->id),
 						'desc' => __('Please select the field of the form', 'wp-sms')
 					);
 					$gf_forms['gf_notify_message_field_form_' . $form->id] = array(
@@ -332,7 +332,7 @@ class WP_SMS_Settings_Pro
 						'id' => 'qf_notify_receiver_field_form_' . $form['id'],
 						'name' => __('Field form', 'wp-sms'),
 						'type' => 'select',
-						'options' => WP_SMS_Pro_Quform::get_field($form['id']),
+						'options' => WP_SMS_Quform::get_field($form['id']),
 						'desc' => __('Please select the field of the form', 'wp-sms')
 					);
 					$qf_forms['qf_notify_message_field_form_' . $form['id']] = array(
