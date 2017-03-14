@@ -73,9 +73,10 @@ class resalaty extends WP_SMS
 			do_action('wp_sms_send', $response);
 
 			return true;
+		} else {
+			return new WP_Error('send-sms', $response->MessageIs);
 		}
 
-		return new WP_Error('send-sms', $response);
 	}
 
 	public function GetCredit()
