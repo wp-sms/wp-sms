@@ -2,7 +2,7 @@
 
 class itfisms extends WP_SMS
 {
-	private $wsdl_link = "http://sms.itfisms.com/vendorsms/";
+	private $wsdl_link = "http://websms.itfisms.com/vendorsms/";
 	public $tariff = "http://www.itfisms.com/";
 	public $unitrial = true;
 	public $unit;
@@ -47,7 +47,7 @@ class itfisms extends WP_SMS
 		 */
 		$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-		$response = wp_remote_get($this->wsdl_link . "pushsms.aspx?user=" . $this->username . "&password=" . $this->password . "&msisdn=" . implode(',', $this->to) . "&sid=" . $this->from . "&msg=" . urlencode($this->msg) . "&fl=0&dc=8");
+		$response = wp_remote_get($this->wsdl_link . "pushsms.aspx?user=" . $this->username . "&password=" . $this->password . "&msisdn=" . implode(',', $this->to) . "&sid=" . $this->from . "&msg=" . urlencode($this->msg) . "&fl=0&gwid=2");
 
 		// Check gateway credit
 		if (is_wp_error($response)) {
