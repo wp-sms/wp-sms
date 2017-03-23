@@ -228,6 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added kavenegar.com gateway
 * Added itfisms.com gateway
 * Added pridesms.in gateway
+* Added torpedos.top gateway
 * Update resalaty.com gateway
 
 = 4.0.7 =

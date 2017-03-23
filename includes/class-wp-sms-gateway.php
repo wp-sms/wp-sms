@@ -187,6 +187,7 @@ class WP_SMS_Gateway
 				'smss' => 'smss.co.il',
 				'bearsms' => 'bearsms.com',
 				'mtarget' => 'mtarget.fr',
+				'torpedos' => 'torpedos.pro',
 			),
 		);
 
