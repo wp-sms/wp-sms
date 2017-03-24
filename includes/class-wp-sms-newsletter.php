@@ -37,6 +37,13 @@ class WP_SMS_Newsletter
 	 */
 	protected $tb_prefix;
 
+	/**
+	 * WP SMS subscribe object
+	 *
+	 * @var string
+	 */
+	public $subscribe;
+
 	public function __construct()
 	{
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
@@ -45,6 +52,7 @@ class WP_SMS_Newsletter
 		$this->options = $wpsms_option;
 		$this->db = $wpdb;
 		$this->tb_prefix = $table_prefix;
+		$this->subscribe = new WP_SMS_Subscriptions();
 
 		// Load scripts
 		add_action('wp_enqueue_scripts', array(&$this, 'load_script'));
@@ -143,18 +151,7 @@ class WP_SMS_Newsletter
 			}
 		}
 
-		$check_mobile = $this->db->query($this->db->prepare("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE `mobile` = '%s'", $mobile));
-
-		if ($check_mobile and $type == 'subscribe') {
-			// Return response
-			echo json_encode(array('status' => 'error', 'response' => __('Phone number is repeated', 'wp-sms')));
-
-			// Stop executing script
-			die();
-		}
-
 		if ($type == 'subscribe') {
-
 			if ($widget_options['send_activation_code'] and $this->options['gateway_name']) {
 
 				// Check gateway setting
@@ -167,77 +164,72 @@ class WP_SMS_Newsletter
 				}
 
 				$key = rand(1000, 9999);
-
 				$this->sms->to = array($mobile);
 				$this->sms->msg = __('Your activation code', 'wp-sms') . ': ' . $key;
 				$this->sms->SendSMS();
 
-				$check = $this->db->insert("{$this->tb_prefix}sms_subscribes",
-					array(
-						'date' => WP_SMS_CURRENT_DATE,
-						'name' => $name,
-						'mobile' => $mobile,
-						'status' => '0',
-						'activate_key' => $key,
-						'group_ID' => $group
-					)
-				);
+				// Add subscribe to database
+				$result = $this->subscribe->add_subscriber($name, $mobile, $group, '0', $key);
 
-				if ($check) {
+				if ($result['result'] == 'error') {
 					// Return response
-					echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter, Activation code sent to your mobile.', 'wp-sms'), 'action' => 'activation'));
+					echo json_encode(array('status' => 'error', 'response' => $result['message']));
 
 					// Stop executing script
 					die();
 				}
-			} else {
-				$check = $this->db->insert("{$this->tb_prefix}sms_subscribes",
-					array(
-						'date' => WP_SMS_CURRENT_DATE,
-						'name' => $name,
-						'mobile' => $mobile,
-						'status' => '1',
-						'group_ID' => $group
-					)
-				);
 
-				if ($check) {
-					// Send welcome message
-					if ($widget_options['send_welcome_sms']) {
-						$template_vars = array(
-							'%subscribe_name%' => $name,
-							'%subscribe_mobile%' => $mobile,
-						);
-
-						$message = str_replace(array_keys($template_vars), array_values($template_vars), $widget_options['welcome_sms_template']);
-
-						$this->sms->to = array($mobile);
-						$this->sms->msg = $message;
-						$this->sms->SendSMS();
-					}
-
-					// Fire action
-					do_action('wp_sms_add_subscriber', $name, $mobile);
-
-					// Return response
-					echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter', 'wp-sms')));
-
-					// Stop executing script
-					die();
-				}
-			}
-
-		} else if ($type == 'unsubscribe') {
-
-			if (!$check_mobile) {
 				// Return response
-				echo json_encode(array('status' => 'error', 'response' => __('Not found!', 'wp-sms')));
+				echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter, Activation code sent to your mobile.', 'wp-sms'), 'action' => 'activation'));
+
+				// Stop executing script
+				die();
+
+			} else {
+
+				// Add subscribe to database
+				$result = $this->subscribe->add_subscriber($name, $mobile, $group, '1');
+
+				if ($result['result'] == 'error') {
+					// Return response
+					echo json_encode(array('status' => 'error', 'response' => $result['message']));
+
+					// Stop executing script
+					die();
+				}
+
+				// Send welcome message
+				if ($widget_options['send_welcome_sms']) {
+					$template_vars = array(
+						'%subscribe_name%' => $name,
+						'%subscribe_mobile%' => $mobile,
+					);
+
+					$message = str_replace(array_keys($template_vars), array_values($template_vars), $widget_options['welcome_sms_template']);
+
+					$this->sms->to = array($mobile);
+					$this->sms->msg = $message;
+					$this->sms->SendSMS();
+				}
+
+				// Return response
+				echo json_encode(array('status' => 'success', 'response' => __('You will join the newsletter', 'wp-sms')));
 
 				// Stop executing script
 				die();
 			}
+		} else if ($type == 'unsubscribe') {
+			// Delete subscriber
+			$result = $this->subscribe->delete_subscriber_by_number($mobile, $group);
 
-			$this->db->delete("{$this->tb_prefix}sms_subscribes", array('mobile' => $mobile));
+			// Check result
+			if ($result['result'] == 'error') {
+				// Return response
+				echo json_encode(array('status' => 'error', 'response' => $result['message']));
+
+				// Stop executing script
+				die();
+			}
 
 			// Return response
 			echo json_encode(array('status' => 'success', 'response' => __('Your subscription was canceled.', 'wp-sms')));
@@ -307,7 +299,6 @@ class WP_SMS_Newsletter
 		$result = $this->db->update("{$this->tb_prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile));
 
 		if ($result) {
-			do_action('wp_sms_add_subscriber', $check_mobile->name, $mobile);
 			// Return response
 			echo json_encode(array('status' => 'success', 'response' => __('Your subscription was successful!', 'wp-sms')));
 

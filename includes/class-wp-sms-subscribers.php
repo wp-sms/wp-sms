@@ -3,9 +3,6 @@
 /**
  * @category   class
  * @package    WP_SMS
- * @author     Mostafa Soufi <info@mostafa-soufi.ir>
- * @copyright  2015 wp-sms-plugin.com
- * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    1.1
  */
 class WP_SMS_Subscriptions
@@ -46,19 +43,28 @@ class WP_SMS_Subscriptions
 	/**
 	 * Add Subscriber
 	 *
-	 * @param  Not param
+	 * @param $name
+	 * @param $mobile
+	 * @param string $group_id
+	 * @param string $status
+	 * @param $key
 	 * @return array
+	 * @internal param param $Not
 	 */
-	public function add_subscriber($name, $mobile, $group_id = '')
+	public function add_subscriber($name, $mobile, $group_id = '', $status = '1', $key = nul)
 	{
+		if ($this->is_duplicate($mobile, $group_id)) {
+			return array('result' => 'error', 'message' => __('The mobile numbers has been already duplicate.', 'wp-sms'));
+		}
+
 		$result = $this->db->insert(
 			$this->tb_prefix . "sms_subscribes",
 			array(
 				'date' => $this->date,
 				'name' => $name,
 				'mobile' => $mobile,
-				'status' => '1',
-				'activate_key' => '',
+				'status' => $status,
+				'activate_key' => $key,
 				'group_ID' => $group_id,
 			)
 		);
@@ -99,10 +105,6 @@ class WP_SMS_Subscriptions
 	 */
 	public function delete_subscriber($id)
 	{
-
-		if (empty($id))
-			return;
-
 		$result = $this->db->delete(
 			$this->tb_prefix . "sms_subscribes",
 			array(
@@ -111,7 +113,6 @@ class WP_SMS_Subscriptions
 		);
 
 		if ($result) {
-
 			/**
 			 * Run hook after deleting subscribe.
 			 *
@@ -125,16 +126,56 @@ class WP_SMS_Subscriptions
 	}
 
 	/**
+	 * Delete subscribers by number
+	 *
+	 * @param $mobile
+	 * @param null $group_id
+	 * @return false|int
+	 */
+	public function delete_subscriber_by_number($mobile, $group_id = null)
+	{
+		$result = $this->db->delete(
+			$this->tb_prefix . "sms_subscribes",
+			array(
+				'mobile' => $mobile,
+				'group_id' => $group_id,
+			)
+		);
+
+		if (!$result) {
+			return array('result' => 'error', 'message' => __('The subscribe does not exist.', 'wp-sms'));
+		}
+
+		/**
+		 * Run hook after deleting subscribe.
+		 *
+		 * @since 3.0
+		 * @param string $result result query.
+		 */
+		do_action('wp_sms_delete_subscriber', $result);
+
+		return array('result' => 'update', 'message' => __('Subscribe successfully removed.', 'wp-sms'));
+	}
+
+	/**
 	 * Update Subscriber
 	 *
-	 * @param  Not param
+	 * @param $id
+	 * @param $name
+	 * @param $mobile
+	 * @param string $group_id
+	 * @param string $status
 	 * @return array|void
+	 * @internal param param $Not
 	 */
 	public function update_subscriber($id, $name, $mobile, $group_id = '', $status = '1')
 	{
-
 		if (empty($id) or empty($name) or empty($mobile))
 			return;
+
+		if ($this->is_duplicate($mobile, $group_id, $id)) {
+			return array('result' => 'error', 'message' => __('The mobile numbers has been already duplicate.', 'wp-sms'));
+		}
 
 		$result = $this->db->update(
 			$this->tb_prefix . "sms_subscribes",
@@ -199,7 +240,6 @@ class WP_SMS_Subscriptions
 	 */
 	public function add_group($name)
 	{
-
 		if (empty($name))
 			return array('result' => 'error', 'message' => __('Name is empty!', 'wp-sms'));
 
@@ -261,12 +301,13 @@ class WP_SMS_Subscriptions
 	/**
 	 * Update Group
 	 *
-	 * @param  Not param
+	 * @param $id
+	 * @param $name
 	 * @return array|void
+	 * @internal param param $Not
 	 */
 	public function update_group($id, $name)
 	{
-
 		if (empty($id) or empty($name))
 			return;
 
@@ -292,5 +333,29 @@ class WP_SMS_Subscriptions
 
 			return array('result' => 'update', 'message' => __('Group successfully updated.', 'wp-sms'));
 		}
+	}
+
+	/**
+	 * Check the mobile number is duplicate
+	 *
+	 * @param $mobile_number
+	 * @param null $group_id
+	 * @param null $id
+	 * @return array|null|object|void
+	 */
+	private function is_duplicate($mobile_number, $group_id = null, $id = null)
+	{
+		$sql = "SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
+
+		if ($group_id) {
+			$sql .= " AND group_id = '" . $group_id . "'";
+		}
+
+		if ($id) {
+			$sql .= " AND id != '" . $id . "'";
+		}
+
+		$result = $this->db->get_row($sql);
+		return $result;
 	}
 }

@@ -106,9 +106,7 @@ class WP_SMS_Plugin
 
 		$this->includes();
 		$this->sms = $sms;
-
 		$this->init();
-
 		$this->subscribe = new WP_SMS_Subscriptions();
 
 		add_action('admin_enqueue_scripts', array(&$this, 'admin_assets'));
@@ -188,8 +186,8 @@ class WP_SMS_Plugin
 			'includes/class-wp-sms-integrations',
 			'includes/class-wp-sms-gravityforms',
 			'includes/class-wp-sms-quform',
-			'includes/class-wp-sms-newsletter',
 			'includes/class-wp-sms-subscribers',
+			'includes/class-wp-sms-newsletter',
 			'includes/class-wp-sms-widget',
 			'includes/class-wp-sms-rest-api',
 			'includes/class-wp-sms-version',
@@ -300,7 +298,7 @@ class WP_SMS_Plugin
 	 */
 	public function admin_menu()
 	{
-		add_menu_page(__('Wordpress SMS', 'wp-sms'), __('Wordpress SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'), 'dashicons-email-alt');
+		add_menu_page(__('SMS', 'wp-sms'), __('SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'), 'dashicons-email-alt');
 		add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array(&$this, 'send_page'));
 		add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array(&$this, 'outbox_page'));
 		add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array(&$this, 'subscribe_page'));
@@ -536,8 +534,10 @@ class WP_SMS_Plugin
 	/**
 	 * Show message notice in admin
 	 *
-	 * @param  Not param
+	 * @param $result
+	 * @param $message
 	 * @return string|void
+	 * @internal param param $Not
 	 */
 	public function notice_result($result, $message)
 	{

@@ -15,7 +15,7 @@
     <input class="checkbox" id="<?php echo $this->get_field_id('show_group'); ?>"
            name="<?php echo $this->get_field_name('show_group'); ?>" type="checkbox"
            value="1" <?php checked($show_group, 1); ?>>
-    <label for="<?php echo $this->get_field_id('show_group'); ?>"><?php _e('Show Group', 'wp-sms'); ?></label>
+    <label for="<?php echo $this->get_field_id('show_group'); ?>"><?php _e('Show Groups', 'wp-sms'); ?></label>
 </p>
 
 <p>

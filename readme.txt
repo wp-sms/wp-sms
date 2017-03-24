@@ -225,11 +225,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.8 =
 * Fixes undefined error in pro package setting page
-* Added kavenegar.com gateway
-* Added itfisms.com gateway
-* Added pridesms.in gateway
-* Added torpedos.top gateway
-* Update resalaty.com gateway
+* Fixes and improvements newsletter widget
+* Added new feature in sms newsletter. the subscribers can submit their mobile in multi groups
+* Added several gateways (kavenegar.com, itfisms.com, pridesms.in, torpedos.top, resalaty.com)
 
 = 4.0.7 =
 * Added websms.com.cy gateway
