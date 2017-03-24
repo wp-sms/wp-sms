@@ -19,7 +19,7 @@ if (isset($_POST['wps_import'])) {
 				continue;
 			}
 
-			// Count submited items.
+			// Count submitted items.
 			$total_submit[] = $data->sheets[0]['cells'];
 
 			$result = $wpdb->insert("{$table_prefix}sms_subscribes",
