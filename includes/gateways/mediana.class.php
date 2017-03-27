@@ -15,6 +15,10 @@ class mediana extends WP_SMS {
 		parent::__construct();
 		$this->validateNumber = "09xxxxxxxx";
 
+		if ( ! class_exists( 'SoapClient' ) ) {
+			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+		}
+
 		$this->client = new \SoapClient( $this->wsdl_link, [ 'exceptions' => false, 'encoding' => 'UTF-8' ] );
 	}
 
