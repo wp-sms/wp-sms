@@ -21,7 +21,7 @@ class WP_SMS_Gateway
 			'global' => array(
 				'fortytwo' => 'fortytwo.com',
 				'smsglobal' => 'smsglobal.com',
-				'gatewayapi'		=>	'gatewayapi.com'
+				'gatewayapi' => 'gatewayapi.com'
 			),
 			'united kingdom' => array(
 				'_textplode' => 'textplode.com',
@@ -169,6 +169,7 @@ class WP_SMS_Gateway
 				'parsgreen' => 'api.ir',
 				'firstpayamak' => 'firstpayamak.ir',
 				'kavenegar' => 'kavenegar.com',
+				'_18sms' => '18sms.ir',
 			),
 			'pakistan' => array(
 				'difaan' => 'difaan',
