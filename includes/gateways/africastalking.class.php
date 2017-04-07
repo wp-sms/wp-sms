@@ -55,7 +55,7 @@ class africastalking extends WP_SMS
 		$gateway = new AfricasTalkingGateway($this->username, $this->has_key);
 
 		try {
-			$results = $gateway->sendMessage(implode(',', $this->to), $this->msg);
+			$results = $gateway->sendMessage(implode(',', $this->to), $this->msg, $this->from);
 
 			$this->InsertToDB($this->from, $this->msg, $this->to);
 
