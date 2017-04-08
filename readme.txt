@@ -14,15 +14,8 @@ A simple and powerful texting plugin for wordpress
 You can add to wordpress, the ability of sending sms, member of sms newsletter and send to them sms.
 To every changement of position in wordpress, you can send a sms through this plugin.
 
-The usage of this plugin is completely free. You have to just have an account from a service in the gateway listes that we support them. 
-Don't worry , we have tried to add the best and the most gateways to plugin. 
-
-Very easy Send SMS by PHP code:
-
-* `global $sms;`
-* `$sms->to = array('Mobile Number');`
-* `$sms->msg = "Your Message";`
-* `$sms->SendSMS();`
+The usage of this plugin is completely free. You have to just have an account from a service in the gateway list's that we support them.
+Don't worry, we have tried to add the best and the most gateways to plugin.
 
 = Send SMS with WordPress in less than 1 minute! =
 
@@ -46,16 +39,42 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 * Support WP REST API
 * Import/Export Subscribers.
 
-= Some popular sms gateway in free version =
-* Smshosting.it
-* Fortytwo.com
-* Unisender.com
-* Smsglobal.com
-* And [see list all](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways) of gateways
-
 = Professional Package =
 In the Professional pack added many features, most popular gateway and is integrated with another plugins.
 
+[Buy Professional Package](http://wordpresssmsplugin.com/purchases)
+
+= Translations =
+* English
+* Persian
+* Arabic (Thanks Hamad Al-Shammari, Gateway.sa)
+* Portuguese (Thanks Matt Moxx)
+* Spanish (Thanks Yordan Soares)
+* German (Thanks Robert Skiba)
+* Swedish (Thanks Kramfors)
+* French (Thanks Yves Le Bouffant)
+
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](https://translate.wordpress.org/projects/wp-plugins/wp-sms) today!
+
+= Support =
+* [Donate to this plugin](http://mostafa-soufi.ir/donate/)
+* [Github repository](https://github.com/veronalabs/wp-sms)
+
+This plugin is a free product of the [Verona Labs](http://veronalabs.com/) and Thank you [jetbrains](https://www.jetbrains.com) for giving us Intellij IDEA Ultimate licenses for develop this project.
+
+== Installation ==
+1. Upload `wp-sms` to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. To display Subscribe go to Themes -> Widgets, and adding `Subscribe to SMS` into your sidebar.
+
+== Frequently Asked Questions ==
+= What is the gateways supported in the plugin? =
+You can see list all supported gateways [through this link](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
+
+= What is the difference between Free and Pro Pack version? =
+In the Professional pack added many features, most popular gateway and is integrated with another plugins.
+
+= What is the gateways supported in the Pro Pack version? =
 The professional package supported following gateways:
 
 * Twilio.com
@@ -91,9 +110,8 @@ The professional package supported following gateways:
 * textmarketer.co.uk
 * clicksend.com
 * smsapi.com
-	
-Other features:
 
+= What is the features of pro pack version? =
 * Verify user registration by sms verification code
 * Integrate with BuddyPress. You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
 * Integrate with WooCommerce. You can adding mobile number field to checkout page, send sms to users or subscribers when added new product to woocommerce. send SMS to admin when submitted new order in woocommerce and send sms to customers when submit the order.
@@ -101,98 +119,85 @@ when one stock product is load, the plugin can send SMS to admin for notify and 
 * Integrate with Gravity form. Plugin can be send sms to user or admin after submit the form.
 * Integrate with Quform. Plugin can be send sms to user or admin after submit the form.
 * Integrate with Easy Digital Downloads. You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
-* Premium Support
+* Premium Support.
 
-[Buy Professional Package](http://wordpresssmsplugin.com/purchases)
+= How to buy? =
+You can buy pro pack version [through this link](http://wordpresssmsplugin.com/purchases)
 
-= Internationalization =
-* English
-* Persian
-* Arabic (Thanks Hamad Al-Shammari, Gateway.sa)
-* Portuguese (Thanks Matt Moxx)
-* Spanish (Thanks Yordan Soares)
-* German (Thanks Robert Skiba)
-* Swedish (Thanks Kramfors)
-* French (Thanks Yves Le Bouffant)
+= PHP 7 Support? =
+Yes! WP SMS is compatible with PHP 7 and 7.1
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](https://translate.wordpress.org/projects/wp-plugins/wp-sms) today!
+= How sending sms with PHP code? =
 
-= Support =
-* [Donate to this plugin](http://mostafa-soufi.ir/donate/)
-* [Github repository](https://github.com/veronalabs/wp-sms)
+	global $sms;
+	$sms->to = array('Mobile Number');
+	$sms->msg = "Your Message";
+	$sms->SendSMS();
 
-This plugin is a free product of the [Verona Labs](http://veronalabs.com/) and Thank you [jetbrains](https://www.jetbrains.com) for giving us Intellij IDEA Ultimate licenses for develop this project.
-
-== Installation ==
-1. Upload `wp-sms` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display Subscribe goto Themes -> Widgets, and adding `Subscribe to SMS` into your sidebar Or using this functions: `<?php wp_subscribes(); ?>` into theme.
-4. Using this functions for send manual SMS:
-
-* First: `global $sms;`
-* `$sms->to = array('Mobile Number');`
-* `$sms->msg = "Your Message";`
-* Send SMS: `$sms->SendSMS();`
-
-= Actions =
+= How using Actions? =
 Run following action when send sms with this plugin.
 `wp_sms_send`
 
 Example: Send mail when send sms.
-`function send_mail_when_send_sms($message_info) {
-	wp_mail('you@mail.com', 'Send SMS', $message_info);
-}
-add_action('wp_sms_send', 'send_mail_when_send_sms');`
+
+	function send_mail_when_send_sms($message_info) {
+		wp_mail('you@mail.com', 'Send SMS', $message_info);
+	}
+	add_action('wp_sms_send', 'send_mail_when_send_sms');
 
 Run following action when subscribe a new user.
 `wp_sms_add_subscriber`
 
 Example: Send sms to user when register a new subscriber.
-`function send_sms_when_subscribe_new_user($name, $mobile) {
-	global $sms;
-	$sms->to = array($mobile);
-	$sms->msg = "Hi {$name}, Thanks for subscribe.";
-	$sms->SendSMS();
-}
-add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
 
-= Filters =
+	function send_sms_when_subscribe_new_user($name, $mobile) {
+		global $sms;
+		$sms->to = array($mobile);
+		$sms->msg = "Hi {$name}, Thanks for subscribe.";
+		$sms->SendSMS();
+	}
+	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
+
+= How using Hooks? =
 You can use following filter for modify from number.
 `wp_sms_from`
 
 Example: Add 0 to the end sender number.
-`function wp_sms_modify_from($from) {
-	$from = $from . ' 0';
-	
-	return $val;
-}
-add_filter('wp_sms_from', 'wp_sms_modify_from');`
+
+	function wp_sms_modify_from($from) {
+		$from = $from . ' 0';
+		return $val;
+	}
+	add_filter('wp_sms_from', 'wp_sms_modify_from');
 
 You can use following filter for modify receivers number.
 `wp_sms_to`
 
 Example: Add new number to get message.
-`function wp_sms_modify_receiver($numbers) {
-	$numbers[] = '09xxxxxxxx';
-	
-	return $numbers;
-}
-add_filter('wp_sms_to', 'wp_sms_modify_receiver');`
+
+	function wp_sms_modify_receiver($numbers) {
+		$numbers[] = '09xxxxxxxx';
+		return $numbers;
+	}
+	add_filter('wp_sms_to', 'wp_sms_modify_receiver');
 
 You can use following filter for modify text message.
 `wp_sms_msg`
 
 Example: Add signature to messages that are sent.
-`function wp_sms_modify_message($message) {
-	$message = $message . ' /n Powerby: WP-SMS';
-	
-	return $message;
-}
-add_filter('wp_sms_msg', 'wp_sms_modify_message');`
 
-= Rest API Endpoints =
+	function wp_sms_modify_message($message) {
+		$message = $message . ' /n Powerby: WP-SMS';
+		return $message;
+	}
+	add_filter('wp_sms_msg', 'wp_sms_modify_message');
+
+= Support REST API? =
+Yes. At the moment just we registered one endpoint in the plugin.
+
 Add new subscribe to sms newsletter
-`POST /wpsms/v1/subscriber/add`
+
+	POST /wpsms/v1/subscriber/add
 
 == Screenshots ==
 1. Settings Page.
