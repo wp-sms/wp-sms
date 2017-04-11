@@ -61,9 +61,9 @@ class asr3sms extends WP_SMS
 
 		if ($response_code == '200') {
 			$result = json_decode($response['body']);
-
+			
 			if ($result->Code == 100) {
-				$this->InsertToDB($this->from, $this->msg, $this->to[0]);
+				$this->InsertToDB($this->from, $this->msg, $this->to);
 
 				/**
 				 * Run hook after send sms.
