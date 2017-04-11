@@ -13,6 +13,7 @@ class smsapi extends WP_SMS
 	{
 		parent::__construct();
 		$this->validateNumber = "48500500500 or with country code";
+		$this->help = "Please enter your username to username and api pass MD5 to password field.";
 	}
 
 	public function SendSMS()
@@ -46,7 +47,7 @@ class smsapi extends WP_SMS
 		 */
 		$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-		$result = @file_get_contents($this->wsdl_link . 'sms.do?username=' . urlencode($this->username) . '&password=' . md5($this->password) . '&message=' . urlencode($this->msg) . '&to=' . implode($this->to, ",") . '&from=' . urlencode($this->from));
+		$result = @file_get_contents($this->wsdl_link . 'sms.do?username=' . urlencode($this->username) . '&password=' . $this->password . '&message=' . urlencode($this->msg) . '&to=' . implode($this->to, ",") . '&from=' . urlencode($this->from));
 
 		if (strpos($result, 'OK') !== false) {
 			$this->InsertToDB($this->from, $this->msg, $this->to);
@@ -72,7 +73,7 @@ class smsapi extends WP_SMS
 			return new WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
 		}
 
-		$result = @file_get_contents($this->wsdl_link . 'user.do?username=' . urlencode($this->username) . '&credits=1&details=1&password==' . md5($this->password));
+		$result = @file_get_contents($this->wsdl_link . 'user.do?username=' . urlencode($this->username) . '&credits=1&details=1&password=' . $this->password);
 
 		return $result;
 	}
