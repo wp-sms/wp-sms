@@ -26,6 +26,9 @@ class WP_SMS_Gateway
 			'united kingdom' => array(
 				'_textplode' => 'textplode.com',
 			),
+			'french' => array(
+				'primotexto' => 'primotexto.com',
+			),
 			'brazil' => array(
 				'sonoratecnologia' => 'sonoratecnologia.com.br',
 			),
