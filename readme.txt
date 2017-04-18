@@ -228,6 +228,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 4.0.9 =
+* Supported primotexto.com, 18sms.ir gateway
+
 = 4.0.8 =
 * Fixes undefined error in pro package setting page
 * Fixes and improvements newsletter widget
