@@ -49,24 +49,35 @@ class gateway extends WP_SMS
 		$to = implode($this->to, ",");
 		$msg = urlencode($this->msg);
 
-		$result = file_get_contents($this->wsdl_link . "sendsms.php?username=" . $this->username . "&password=" . $this->password . "&message=" . $msg . "&numbers=" . $to . "&sender=" . $this->from . "&unicode=e&Rmduplicated=1&return=json");
-		$result = json_decode($result);
+		$response = wp_remote_get($this->wsdl_link . "sendsms.php?username=" . $this->username . "&password=" . $this->password . "&message=" . $msg . "&numbers=" . $to . "&sender=" . $this->from . "&unicode=e&Rmduplicated=1&return=json");
 
-		if ($result->Code == 100) {
-			$this->InsertToDB($this->from, $this->msg, $this->to);
-
-			/**
-			 * Run hook after send sms.
-			 *
-			 * @since 2.4
-			 * @param string $result result output.
-			 */
-			do_action('wp_sms_send', $result);
-
-			return $result;
+		// Check response error
+		if (is_wp_error($response)) {
+			return new WP_Error('send-sms', $response->get_error_message());
 		}
 
-		return new WP_Error('send-sms', $result);
+		$response_code = wp_remote_retrieve_response_code($response);
+
+		if ($response_code == '200') {
+			$result = json_decode($response['body']);
+
+			if ($result->Code) {
+				$this->InsertToDB($this->from, $this->msg, $this->to);
+
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 * @param string $response ['body'] result output.
+				 */
+				do_action('wp_sms_send', $response['body']);
+			} else {
+				return new WP_Error('send-sms', $result->MessageIs);
+			}
+
+		} else {
+			return new WP_Error('send-sms', $response['body']);
+		}
 	}
 
 	public function GetCredit()
@@ -76,7 +87,14 @@ class gateway extends WP_SMS
 			return new WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
 		}
 
-		$result = file_get_contents($this->wsdl_link . "getbalance.php?username=" . $this->username . "&password=" . $this->password . "&hangedBalance=false");
-		return $result;
+		$response = wp_remote_get($this->wsdl_link . "getbalance.php?username=" . $this->username . "&password=" . $this->password . "&hangedBalance=false");
+
+		$response_code = wp_remote_retrieve_response_code($response);
+
+		if ($response_code == '200') {
+			return $response['body'];
+		} else {
+			return new WP_Error('account-credit', $response['body']);
+		}
 	}
 }
