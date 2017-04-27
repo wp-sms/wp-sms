@@ -49,10 +49,10 @@ class smsgatewayhub extends WP_SMS
 		 */
 		$this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-		// Impload numbers
+		// Implode numbers
 		$to = implode(',', $this->to);
 
-		// Unicide message
+		// Unicode message
 		$msg = urlencode($this->msg);
 
 		$response = wp_remote_get($this->wsdl_link . 'SendSMS?APIKey=' . $this->has_key . '&senderid=' . $this->from . '&channel=2&DCS=0&flashsms=0&number=' . $to . '&text=' . $msg . '&route=clickhere');
