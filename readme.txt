@@ -229,7 +229,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.9 =
-* Supported primotexto.com, 18sms.ir gateway
+* Fixes issues in some gateways
+* Supported gatewayapi.com, primotexto.com, 18sms.ir in the gateways list
 * Removed auto text direction script admin send message
 
 = 4.0.8 =
