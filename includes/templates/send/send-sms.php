@@ -1,12 +1,4 @@
 <script type="text/javascript">
-    var boxId2 = 'wp_get_message';
-    var counter = 'wp_counter';
-    var part = 'wp_part';
-    var max = 'wp_max';
-    function charLeft2() {
-        checkSMSLength(boxId2, counter, part, max);
-    }
-
     jQuery(document).ready(function () {
         jQuery(".wpsms-value").hide();
         jQuery(".wpsms-group").show();
@@ -29,17 +21,6 @@
                 jQuery(".wpsms-numbers").fadeIn();
                 jQuery("#wp_get_number").focus();
             }
-        });
-
-        charLeft2();
-        jQuery("#" + boxId2).bind('keyup', function () {
-            charLeft2();
-        });
-        jQuery("#" + boxId2).bind('keydown', function () {
-            charLeft2();
-        });
-        jQuery("#" + boxId2).bind('paste', function (e) {
-            charLeft2();
         });
     });
 </script>
@@ -98,13 +79,9 @@
 			<?php endif; ?>
 
             <tr>
-                <td><?php _e('SMS', 'wp-sms'); ?>:</td>
+                <td><?php _e('Message', 'wp-sms'); ?>:</td>
                 <td>
-                    <textarea name="wp_get_message" id="wp_get_message"
-                              style="width:600px; height: 250px; direction:ltr;"></textarea><br/>
-					<?php _e('The remaining words', 'wp-sms'); ?>: <span id="wp_counter" class="number"></span>/<span
-                            id="wp_max" class="number"></span><br/>
-                    <span id="wp_part" class="number"></span> <?php _e('SMS', 'wp-sms'); ?><br/>
+                    <textarea dir="auto" cols="80" rows="20" name="wp_get_message" id="wp_get_message"></textarea><br/>
                     <p class="number">
 						<?php echo __('Your account credit', 'wp-sms') . ': ' . WP_SMS_Gateway::credit(); ?>
                     </p>
