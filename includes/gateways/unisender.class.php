@@ -51,7 +51,7 @@ class unisender extends WP_SMS
 		$text = iconv('cp1251', 'utf-8', $this->msg);
 
 		$response = wp_remote_get($this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to);
-
+		
 		// Check gateway credit
 		if (is_wp_error($response)) {
 			return new WP_Error('send-sms', $response->get_error_message());
@@ -62,7 +62,7 @@ class unisender extends WP_SMS
 			$result = json_decode($response['body']);
 
 			if (isset($result->error)) {
-				return new WP_Error('send-sms', $result->code);
+				return new WP_Error('send-sms', $result->error);
 			}
 
 			$this->InsertToDB($this->from, $this->msg, $this->to);
