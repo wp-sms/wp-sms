@@ -4,7 +4,7 @@ class joghataysms extends WP_SMS
 {
 	private $wsdl_link = "http://37.130.202.188/class/sms/wssimple/server.php?wsdl";
 	private $client = null;
-	public $tariff = "http://joghataysms.ir/";
+	public $tariff = "http://051sms.ir/";
 	public $unitrial = true;
 	public $unit;
 	public $flash = "enable";

@@ -102,7 +102,7 @@ class WP_SMS_Gateway
 				'niazpardaz' => 'niazpardaz.com',
 				'niazpardazcom' => 'niazpardaz.com - New',
 				'hisms' => 'hi-sms.ir',
-				'joghataysms' => 'joghataysms.ir',
+				'joghataysms' => '051sms.ir',
 				'mediana' => 'mediana.ir',
 				'aradsms' => 'arad-sms.ir',
 				'asiapayamak' => 'payamak.asia',
