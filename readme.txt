@@ -228,6 +228,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 4.0.10 =
+* Updated unisender gateway
+
 = 4.0.9 =
 * Fixes issues in some gateways
 * Supported gatewayapi.com, primotexto.com, 18sms.ir in the gateways list

@@ -6,14 +6,14 @@ class unisender extends WP_SMS
 	public $tariff = "http://www.unisender.com/en/prices/";
 	public $unitrial = false;
 	public $unit;
-	public $flash = "enable";
+	public $flash = "disable";
 	public $isflash = false;
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->validateNumber = "";
 		$this->has_key = true;
+		$this->validateNumber = "The recipient's phone in international format with the country code (you can omit the leading \"+\").Example: Phone = 79092020303. You can specify multiple  ecipient numbers separated by commas. Example: Phone = 79092020303,79002239878";
 	}
 
 	public function SendSMS()
@@ -50,7 +50,7 @@ class unisender extends WP_SMS
 		$to = implode($this->to, ",");
 		$text = iconv('cp1251', 'utf-8', $this->msg);
 
-		$response = wp_remote_get($this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to);
+		$response = ($this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to);
 
 		// Check gateway credit
 		if (is_wp_error($response)) {
@@ -61,8 +61,8 @@ class unisender extends WP_SMS
 		if ($response_code == '200') {
 			$result = json_decode($response['body']);
 
-			if (isset($result->error)) {
-				return new WP_Error('send-sms', $result->error);
+			if (isset($result->result->error)) {
+				return new WP_Error('send-sms', $result->result->error);
 			}
 
 			$this->InsertToDB($this->from, $this->msg, $this->to);
