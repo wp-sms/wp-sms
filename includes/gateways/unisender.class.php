@@ -50,7 +50,7 @@ class unisender extends WP_SMS {
 		$to   = implode( $this->to, "," );
 		$text = iconv( 'cp1251', 'utf-8', $this->msg );
 
-		$response = ( $this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to );
+		$response = wp_remote_get( $this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
@@ -58,6 +58,7 @@ class unisender extends WP_SMS {
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
+		
 		if ( $response_code == '200' ) {
 			$result = json_decode( $response['body'] );
 
@@ -84,18 +85,24 @@ class unisender extends WP_SMS {
 	}
 
 	public function GetCredit() {
-		// Check username and password
-		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+		$response = wp_remote_get( $this->wsdl_link . "getUserInfo?format=json&api_key={$this->has_key}" );
+
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
-		$json   = file_get_contents( "{$this->wsdl_link}getUserInfo?format=json&api_key=" . $this->has_key );
-		$result = json_decode( $json, true );
+		$response_code = wp_remote_retrieve_response_code( $response );
 
-		if ( isset( $result['error'] ) ) {
-			return new WP_Error( 'account-credit', $result['code'] );
+		if ( $response_code == '200' ) {
+			$result = json_decode( $response['body'], true );
+			if ( isset( $result['error'] ) ) {
+				return new WP_Error( 'account-credit', $result['error'] );
+			} else {
+				return $result['result']['balance'];
+			}
+		} else {
+			return new WP_Error( 'account-credit', $response['body'] );
 		}
-
-		return $result['result']['balance'];
 	}
 }
