@@ -5,8 +5,7 @@
  * @package    WP_SMS
  * @version    1.0
  */
-abstract class WP_SMS
-{
+abstract class WP_SMS {
 
 	/**
 	 * Webservice username
@@ -88,23 +87,21 @@ abstract class WP_SMS
 	/**
 	 * Constructors
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		global $wpdb, $table_prefix;
 
-		$this->db = $wpdb;
+		$this->db        = $wpdb;
 		$this->tb_prefix = $table_prefix;
 	}
 
-	public function InsertToDB($sender, $message, $recipient)
-	{
+	public function InsertToDB( $sender, $message, $recipient ) {
 		return $this->db->insert(
 			$this->tb_prefix . "sms_send",
 			array(
-				'date' => WP_SMS_CURRENT_DATE,
-				'sender' => $sender,
-				'message' => $message,
-				'recipient' => implode(',', $recipient)
+				'date'      => WP_SMS_CURRENT_DATE,
+				'sender'    => $sender,
+				'message'   => $message,
+				'recipient' => implode( ',', $recipient )
 			)
 		);
 	}

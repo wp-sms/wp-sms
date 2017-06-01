@@ -1,7 +1,6 @@
 <?php
 
-class iransmspanel extends WP_SMS
-{
+class iransmspanel extends WP_SMS {
 
 	/**
 	 * Host
@@ -26,8 +25,7 @@ class iransmspanel extends WP_SMS
 	public $port = 0;
 	public $isflash = false;
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "09xxxxxxxx";
 	}
@@ -42,42 +40,54 @@ class iransmspanel extends WP_SMS
 	 * @param   integer     Port Number
 	 * @param   string      Message
 	 * @param   bool        Is Flash SMS?
+	 *
 	 * @return
 	 */
-	private function Send_Via_Socket($username, $password, $number, $recipient, $port, $message, $flash)
-	{
+	private function Send_Via_Socket( $username, $password, $number, $recipient, $port, $message, $flash ) {
 		$result = $response = '';
 		############################# PARAMETERS #############################
-		$params = array(
-			'username' => $username,
-			'password' => $password,
-			'number' => $number,
+		$params     = array(
+			'username'  => $username,
+			'password'  => $password,
+			'number'    => $number,
 			'recipient' => $recipient,
-			'port' => $port,
-			'message' => $message,
-			'flash' => $flash
+			'port'      => $port,
+			'message'   => $message,
+			'flash'     => $flash
 		);
 		$parameters = '';
-		foreach ($params AS $name => $value) $parameters .= ($parameters != '' ? '&' : '') . "$name=" . urlencode($value);
+		foreach ( $params AS $name => $value ) {
+			$parameters .= ( $parameters != '' ? '&' : '' ) . "$name=" . urlencode( $value );
+		}
 		######################################################################
 		$sockerrno = 0;
-		$sockerr = '';
-		$socket = @fsockopen($this->host, 80, $sockerrno, $sockerr, 2);
-		if ($sockerr == '') {
-			@fputs($socket, "POST $this->uri HTTP/1.1\nHost: $this->host\nContent-type: application/x-www-form-urlencoded\nContent-length: " . strlen($parameters) . "\nConnection: close\n\n$parameters");
-			$result = trim(fgets($socket));
-			while (!@feof($socket)) $response .= @fread($socket, 256);
-			@fclose($socket);
-			#################### SPLIT HEADER AND DOCUMENT BODY ##################
-			if ($result == 'HTTP/1.1 200 OK') {
-				$hunks = explode("\r\n\r\n", trim($response));
-				if (!is_array($hunks) OR sizeof($hunks) < 2) return false;
-				else $response = $hunks[count($hunks) - 1];
-				if (preg_match('#(.+)[\r\n](.+)[\r\n](.+)#', $response, $match)) $response = $match[2];
+		$sockerr   = '';
+		$socket    = @fsockopen( $this->host, 80, $sockerrno, $sockerr, 2 );
+		if ( $sockerr == '' ) {
+			@fputs( $socket, "POST $this->uri HTTP/1.1\nHost: $this->host\nContent-type: application/x-www-form-urlencoded\nContent-length: " . strlen( $parameters ) . "\nConnection: close\n\n$parameters" );
+			$result = trim( fgets( $socket ) );
+			while ( ! @feof( $socket ) ) {
+				$response .= @fread( $socket, 256 );
 			}
-		} else return false;
+			@fclose( $socket );
+			#################### SPLIT HEADER AND DOCUMENT BODY ##################
+			if ( $result == 'HTTP/1.1 200 OK' ) {
+				$hunks = explode( "\r\n\r\n", trim( $response ) );
+				if ( ! is_array( $hunks ) OR sizeof( $hunks ) < 2 ) {
+					return false;
+				} else {
+					$response = $hunks[ count( $hunks ) - 1 ];
+				}
+				if ( preg_match( '#(.+)[\r\n](.+)[\r\n](.+)#', $response, $match ) ) {
+					$response = $match[2];
+				}
+			}
+		} else {
+			return false;
+		}
+
 		######################################################################
-		return ($result == 'HTTP/1.1 200 OK') ? $response : false;
+		return ( $result == 'HTTP/1.1 200 OK' ) ? $response : false;
 	}
 
 	/**
@@ -87,9 +97,8 @@ class iransmspanel extends WP_SMS
 	 * @param    array        Options array
 	 *
 	 */
-	private function curl_post_fields(&$options, $fields)
-	{
-		$options[CURLOPT_POSTFIELDS] = $fields;
+	private function curl_post_fields( &$options, $fields ) {
+		$options[ CURLOPT_POSTFIELDS ] = $fields;
 	}
 
 	/**
@@ -102,23 +111,22 @@ class iransmspanel extends WP_SMS
 	 * @return    string
 	 *
 	 */
-	private function curl_execute(&$handle, $url, $options = null)
-	{
-		if (!is_array($options)) {
+	private function curl_execute( &$handle, $url, $options = null ) {
+		if ( ! is_array( $options ) ) {
 			$options = array();
-		} else if (in_array(CURLOPT_POSTFIELDS, $options) AND sizeof($options[CURLOPT_POSTFIELDS]) > 0) {
-			$options[CURLOPT_POST] = true;
+		} else if ( in_array( CURLOPT_POSTFIELDS, $options ) AND sizeof( $options[ CURLOPT_POSTFIELDS ] ) > 0 ) {
+			$options[ CURLOPT_POST ] = true;
 		}
 
-		$options[CURLOPT_USERAGENT] = 'PHP';
-		$options[CURLOPT_RETURNTRANSFER] = true;
-		$options[CURLOPT_URL] = $url;
+		$options[ CURLOPT_USERAGENT ]      = 'PHP';
+		$options[ CURLOPT_RETURNTRANSFER ] = true;
+		$options[ CURLOPT_URL ]            = $url;
 
 		$handle = @curl_init(); // initialize cURL session
-		if ($handle AND @is_resource($handle)) {
-			@curl_setopt_array($handle, $options); // set options for cURL transfer 
-			$result = @curl_exec($handle); // execute cURL session
-			@curl_close($handle); // close cURL session
+		if ( $handle AND @is_resource( $handle ) ) {
+			@curl_setopt_array( $handle, $options ); // set options for cURL transfer
+			$result = @curl_exec( $handle ); // execute cURL session
+			@curl_close( $handle ); // close cURL session
 		} else {
 			$result = false;
 		}
@@ -136,22 +144,23 @@ class iransmspanel extends WP_SMS
 	 * @param   integer     Port Number
 	 * @param   string      Message
 	 * @param   bool        Is Flash SMS?
+	 *
 	 * @return
 	 */
-	private function Send_Via_cURL($username, $password, $number, $recipient, $port, $message, $flash)
-	{
-		$handle = null;
+	private function Send_Via_cURL( $username, $password, $number, $recipient, $port, $message, $flash ) {
+		$handle  = null;
 		$options = array();
-		$this->curl_post_fields($options, array(
-			'username' => $username,
-			'password' => $password,
-			'number' => $number,
+		$this->curl_post_fields( $options, array(
+			'username'  => $username,
+			'password'  => $password,
+			'number'    => $number,
 			'recipient' => $recipient,
-			'port' => $port,
-			'message' => $message,
-			'flash' => $flash
-		));
-		return $this->curl_execute($handle, "http://www.$this->host{$this->uri}", $options);
+			'port'      => $port,
+			'message'   => $message,
+			'flash'     => $flash
+		) );
+
+		return $this->curl_execute( $handle, "http://www.$this->host{$this->uri}", $options );
 	}
 
 	/**
@@ -164,84 +173,87 @@ class iransmspanel extends WP_SMS
 	 * @param   integer     Port Number
 	 * @param   string      Message
 	 * @param   bool        Is Flash SMS?
+	 *
 	 * @return
 	 */
-	public function send_sms()
-	{
+	public function send_sms() {
 		// Check gateway credit
-		if (is_wp_error($this->GetCredit())) {
-			return new WP_Error('account-credit', __('Your account does not credit for sending sms.', 'wp-sms'));
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
 		}
 
 		/**
 		 * Modify sender number
 		 *
 		 * @since 3.4
+		 *
 		 * @param string $this ->from sender number.
 		 */
-		$this->from = apply_filters('wp_sms_from', $this->from);
+		$this->from = apply_filters( 'wp_sms_from', $this->from );
 
 		/**
 		 * Modify Receiver number
 		 *
 		 * @since 3.4
+		 *
 		 * @param array $this ->to receiver number
 		 */
-		$this->to = apply_filters('wp_sms_to', $this->to);
+		$this->to = apply_filters( 'wp_sms_to', $this->to );
 
 		/**
 		 * Modify text message
 		 *
 		 * @since 3.4
+		 *
 		 * @param string $this ->msg text message.
 		 */
-		$this->msg = apply_filters('wp_sms_msg', $this->msg);
+		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		if (@function_exists('curl_init')) {
-			$this->Send_Via_cURL($this->username, $this->password, $this->from, implode(',', $this->to), $this->port, $this->msg, $this->isflash);
+		if ( @function_exists( 'curl_init' ) ) {
+			$this->Send_Via_cURL( $this->username, $this->password, $this->from, implode( ',', $this->to ), $this->port, $this->msg, $this->isflash );
 		}
 
-		$result = $this->Send_Via_Socket($this->username, $this->password, $this->from, implode(',', $this->to), $this->port, $this->msg, $this->isflash);
+		$result = $this->Send_Via_Socket( $this->username, $this->password, $this->from, implode( ',', $this->to ), $this->port, $this->msg, $this->isflash );
 
-		if (!$result) {
-			$this->InsertToDB($this->from, $this->msg, $this->to);
+		if ( ! $result ) {
+			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
 			/**
 			 * Run hook after send sms.
 			 *
 			 * @since 2.4
+			 *
 			 * @param string $result result output.
 			 */
-			do_action('wp_sms_send', $result);
+			do_action( 'wp_sms_send', $result );
 
 			return true;
 		}
 
-		return new WP_Error('send-sms', $result);
+		return new WP_Error( 'send-sms', $result );
 
 	}
 
-	public function GetCredit()
-	{
+	public function GetCredit() {
 		// Check username and password
-		if (!$this->username && !$this->password) {
-			return new WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
+		if ( ! $this->username && ! $this->password ) {
+			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		if (!class_exists('SoapClient')) {
-			return new WP_Error('required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
+		if ( ! class_exists( 'SoapClient' ) ) {
+			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$client = new SoapClient($this->wsdl_link);
-		} catch (Exception $e) {
-			return new WP_Error('account-credit', $e->getMessage());
+			$client = new SoapClient( $this->wsdl_link );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
 		}
 
-		if ($client->Authentication($this->username, $this->password) == '1') {
+		if ( $client->Authentication( $this->username, $this->password ) == '1' ) {
 			return $client->GetCredit();
 		} else {
-			return new WP_Error('account-credit', $result);
+			return new WP_Error( 'account-credit', $result );
 		}
 	}
 }
