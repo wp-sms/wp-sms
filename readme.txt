@@ -3,8 +3,8 @@ Contributors: mostafa.s1990
 Donate link: http://mostafa-soufi.ir/donate/
 Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 4.7
-Stable tag: 4.0.9
+Tested up to: 4.8
+Stable tag: 4.0.10
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.10 =
 * Updated unisender gateway
+* Added smsozone.com gateway
 
 = 4.0.9 =
 * Fixes issues in some gateways

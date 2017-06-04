@@ -60,6 +60,7 @@ class WP_SMS_Gateway {
 				'smsgatewaycenter' => 'smsgatewaycenter.com',
 				'itfisms'          => 'itfisms.com',
 				'pridesms'         => 'pridesms.in',
+				'smsozone'         => 'smsozone.com',
 			),
 			'iran'           => array(
 				'parandhost'     => 'parandhost.com',
