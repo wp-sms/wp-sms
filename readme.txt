@@ -231,6 +231,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 4.0.10 =
 * Updated unisender gateway
 * Added smsozone.com gateway
+* Added Character Count in the send sms page
 
 = 4.0.9 =
 * Fixes issues in some gateways

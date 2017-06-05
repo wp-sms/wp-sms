@@ -22,6 +22,12 @@
                 jQuery("#wp_get_number").focus();
             }
         });
+
+        jQuery("#wp_get_message").counter({
+            count: 'up',
+            goal: 'sky',
+            msg: 'characters'
+        })
     });
 </script>
 

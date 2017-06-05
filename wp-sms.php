@@ -232,6 +232,7 @@ class WP_SMS_Plugin {
 
 		wp_enqueue_style( 'wpsms-chosen-css', plugin_dir_url( __FILE__ ) . 'assets/css/chosen.min.css', true, '1.2.0' );
 		wp_enqueue_script( 'wpsms-chosen-js', plugin_dir_url( __FILE__ ) . 'assets/js/chosen.jquery.min.js', true, '1.2.0' );
+		wp_enqueue_script( 'wpsms-word-and-character-counter-js', plugin_dir_url( __FILE__ ) . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0' );
 		wp_enqueue_script( 'wpsms-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/admin.js', true, '1.2.0' );
 	}
 
