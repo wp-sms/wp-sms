@@ -2,7 +2,7 @@
 
 class smsozone extends WP_SMS {
 	private $wsdl_link = "http://smsozone.com/api/mt/";
-	public $tariff = "http://smsozone.com/";
+	public $tariff = "http://ozonecmc.com/";
 	public $unitrial = true;
 	public $unit;
 	public $flash = "disable";
@@ -48,7 +48,7 @@ class smsozone extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "SendSMS?user=" . $this->username . "&password=" . $this->password . "&senderid=" . $this->from . "&channel=Promo&DCS=0&flashsms=0&number=" . implode( ',', $this->to ) . "&text=" . urlencode( $this->msg ) . "&route=" . $this->has_key );
+		$response = wp_remote_get( $this->wsdl_link . "SendSMS?user=" . $this->username . "&password=" . $this->password . "&senderid=" . $this->from . "&channel=Trans&DCS=0&flashsms=0&number=" . implode( ',', $this->to ) . "&text=" . urlencode( $this->msg ) . "&route=" . $this->has_key );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
