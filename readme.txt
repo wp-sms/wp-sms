@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.10 =
+* WordPress 3.8 compatibility
 * Updated unisender gateway
 * Added smsozone.com gateway
 * Added Character Count in the send sms page
