@@ -3,7 +3,7 @@
     <form action="" method="post">
         <table>
             <tr>
-                <td colspan="2"><h3><?php _e( 'Group Info:', 'wp-sms' ); ?></h4></td>
+                <td colspan="2"><h3><?php _e( 'Group Info:', 'wp-sms' ); ?></h3></td>
             </tr>
             <tr>
                 <td><span class="label_td" for="wp_group_name"><?php _e( 'Name', 'wp-sms' ); ?>:</span></td>

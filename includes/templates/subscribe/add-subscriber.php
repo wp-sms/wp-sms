@@ -3,7 +3,7 @@
     <form action="" method="post">
         <table>
             <tr>
-                <td colspan="2"><h3><?php _e( 'Subscriber Info:', 'wp-sms' ); ?></h4></td>
+                <td colspan="2"><h3><?php _e( 'Subscriber Info:', 'wp-sms' ); ?></h3></td>
             </tr>
             <tr>
                 <td><span class="label_td" for="wp_subscribe_name"><?php _e( 'Name', 'wp-sms' ); ?>:</span></td>
@@ -29,7 +29,7 @@
 			<?php else: ?>
                 <tr>
                     <td><span class="label_td" for="wpsms_group_name"><?php _e( 'Group', 'wp-sms' ); ?>:</span></td>
-                    <td><?php echo sprintf( __( 'There is no group! <a href="%s">Add</a>', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers&action=manage_group' ); ?></td>
+                    <td><?php echo sprintf( __( 'There is no group! <a href="%s">Add</a>', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ); ?></td>
                 </tr>
 			<?php endif; ?>
 
