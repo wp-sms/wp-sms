@@ -1,7 +1,7 @@
 <?php
 
 class afilnet extends WP_SMS {
-	private $wsdl_link = "http://www.afilnet.com/ws/v2/index.php?wsdl";
+	private $wsdl_link = "https://www.afilnet.com/api/http/";
 	public $tariff = "http://www.afilnet.com/";
 	public $unitrial = false;
 	public $unit;
@@ -10,7 +10,8 @@ class afilnet extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "XXXXXXXXXX";
+		$this->validateNumber = "34600000000";
+		$this->bulk_send      = false;
 	}
 
 	public function SendSMS() {
@@ -46,24 +47,42 @@ class afilnet extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$client = new SoapClient( $this->wsdl_link );
-		$result = $client->SendSMSPlusArray( $this->username, $this->password, $this->from, '34', $this->to, $this->msg, 1, 0 );
+		// Implode numbers
+		$to = implode( ',', $this->to );
 
-		if ( $result == 'OK' ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+		// Unicode message
+		$msg = urlencode( $this->msg );
 
-			/**
-			 * Run hook after send sms.
-			 *
-			 * @since 2.4
-			 *
-			 * @param string $result result output.
-			 */
-			do_action( 'wp_sms_send', $result );
+		$response = wp_remote_get( $this->wsdl_link . "?class=sms&method=sendsms&user=" . $this->username . "&password=" . $this->password . "&from=" . $this->from . "&to=" . $this->to[0] . "&sms=" . $this->msg . "&scheduledatetime=&output=", array( 'timeout' => 30 ) );
 
-			return $result;
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( $response_code == '200' ) {
+			$result = json_decode( $response['body'] );
+
+			if ( $result->status == 'SUCCESS' ) {
+				$this->InsertToDB( $this->from, $this->msg, $this->to[0] );
+
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 *
+				 * @param string $result result output.
+				 */
+				do_action( 'wp_sms_send', $result );
+
+				return $result->result;
+			} else {
+				return new WP_Error( 'send-sms', $result->error );
+			}
 		} else {
-			return new WP_Error( 'send-sms', $result );
+			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
@@ -73,18 +92,25 @@ class afilnet extends WP_SMS {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+		$response = wp_remote_get( $this->wsdl_link . "?class=user&method=getbalance&user=" . $this->username . "&password=" . $this->password, array( 'timeout' => 30 ) );
+
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
-		try {
-			$client = new SoapClient( $this->wsdl_link );
-		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( $response_code == '200' ) {
+			$result = json_decode( $response['body'] );
+
+			if ( $result->status == 'SUCCESS' ) {
+				return $result->result;
+			} else {
+				return new WP_Error( 'account-credit', $result->error );
+			}
+		} else {
+			return new WP_Error( 'account-credit', $response['body'] );
 		}
-
-		$result = $client->Credits( $this->username, $this->password );
-
-		return $result;
 	}
 }

@@ -19,7 +19,7 @@ class WP_SMS_Gateway {
 			'global'         => array(
 				'fortytwo'   => 'fortytwo.com',
 				'smsglobal'  => 'smsglobal.com',
-				'gatewayapi' => 'gatewayapi.com'
+				'gatewayapi' => 'gatewayapi.com',
 			),
 			'united kingdom' => array(
 				'_textplode' => 'textplode.com',

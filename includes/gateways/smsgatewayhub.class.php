@@ -86,9 +86,6 @@ class smsgatewayhub extends WP_SMS {
 		} else {
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
-
-		// Get data
-		$result = file_get_contents( $this->wsdl_link . 'SendSMS?APIKey=' . $this->has_key . '&senderid=' . $this->from . '&channel=2&DCS=0&flashsms=0&number=' . $to . '&text=' . $msg . '&route=clickhere' );
 	}
 
 	public function GetCredit() {
