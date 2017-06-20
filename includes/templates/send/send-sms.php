@@ -88,9 +88,11 @@
                 <td><?php _e( 'Message', 'wp-sms' ); ?>:</td>
                 <td>
                     <textarea dir="auto" cols="80" rows="20" name="wp_get_message" id="wp_get_message"></textarea><br/>
-                    <p class="number">
-						<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . WP_SMS_Gateway::credit(); ?>
-                    </p>
+					<?php if ( isset( $wpsms_option['account_credit_in_sendsms'] ) and $wpsms_option['account_credit_in_sendsms'] ) : ?>
+                        <p class="number">
+							<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . WP_SMS_Gateway::credit(); ?>
+                        </p>
+					<?php endif; ?>
                 </td>
             </tr>
 			<?php if ( $this->sms->flash == "enable" ) { ?>

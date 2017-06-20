@@ -216,78 +216,91 @@ class WP_SMS_Settings {
 			// Gateway tab
 			'gateway'       => apply_filters( 'wpsms_gateway_settings', array(
 				// Gateway
-				'gayeway_title'          => array(
+				'gayeway_title'             => array(
 					'id'   => 'gayeway_title',
 					'name' => __( 'Gateway information', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'gateway_name'           => array(
+				'gateway_name'              => array(
 					'id'      => 'gateway_name',
 					'name'    => __( 'Gateway name', 'wp-sms' ),
 					'type'    => 'advancedselect',
 					'options' => WP_SMS_Gateway::gateway(),
 					'desc'    => __( 'Please select your gateway.', 'wp-sms' )
 				),
-				'gateway_help'           => array(
+				'gateway_help'              => array(
 					'id'      => 'gateway_help',
 					'name'    => __( 'Gateway description', 'wp-sms' ),
 					'type'    => 'html',
 					'options' => WP_SMS_Gateway::help(),
 				),
-				'gateway_username'       => array(
+				'gateway_username'          => array(
 					'id'   => 'gateway_username',
 					'name' => __( 'API username', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Enter API username of gateway', 'wp-sms' )
 				),
-				'gateway_password'       => array(
+				'gateway_password'          => array(
 					'id'   => 'gateway_password',
 					'name' => __( 'API password', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Enter API password of gateway', 'wp-sms' )
 				),
-				'gateway_sender_id'      => array(
+				'gateway_sender_id'         => array(
 					'id'   => 'gateway_sender_id',
 					'name' => __( 'Sender number', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Sender number or sender ID', 'wp-sms' )
 				),
-				'gateway_key'            => array(
+				'gateway_key'               => array(
 					'id'   => 'gateway_key',
 					'name' => __( 'API key', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Enter API key of gateway', 'wp-sms' )
 				),
-				// Credit
-				'account_credit_title'   => array(
-					'id'   => 'account_credit_title',
-					'name' => __( 'Account credit', 'wp-sms' ),
+				// Gateway status
+				'gateway_status_title'      => array(
+					'id'   => 'gateway_status_title',
+					'name' => __( 'Gateway status', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'account_credit'         => array(
+				'account_credit'            => array(
 					'id'      => 'account_credit',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'html',
 					'options' => WP_SMS_Gateway::status(),
 				),
-				'account_response'       => array(
+				'account_response'          => array(
 					'id'      => 'account_response',
 					'name'    => __( 'Result request', 'wp-sms' ),
 					'type'    => 'html',
 					'options' => WP_SMS_Gateway::response(),
 				),
-				'bulk_send'              => array(
+				'bulk_send'                 => array(
 					'id'      => 'bulk_send',
 					'name'    => __( 'Bulk send', 'wp-sms' ),
 					'type'    => 'html',
 					'options' => WP_SMS_Gateway::bulk_status(),
 				),
-				'account_credit_in_menu' => array(
+				// Account credit
+				'account_credit_title'      => array(
+					'id'   => 'account_credit_title',
+					'name' => __( 'Account balance', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'account_credit_in_menu'    => array(
 					'id'      => 'account_credit_in_menu',
 					'name'    => __( 'Show in admin menu', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Show your account credit in admin menu.', 'wp-sms' )
+				),
+				'account_credit_in_sendsms' => array(
+					'id'      => 'account_credit_in_sendsms',
+					'name'    => __( 'Show in send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Show your account credit in send SMS page.', 'wp-sms' )
 				),
 			) ),
 			// Feature tab

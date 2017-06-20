@@ -231,6 +231,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 4.0.11 =
 * Update afilnet.com gateway
 * Update smsgatewayhub.com gateway
+* Add option for hide account balance in send SMS page.
 
 = 4.0.10 =
 * WordPress 4.8 compatibility
