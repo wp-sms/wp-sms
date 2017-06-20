@@ -108,7 +108,7 @@ class smsgatewayhub extends WP_SMS {
 
 			// Check response
 			if ( $result->ErrorMessage != 'Success' ) {
-				return new WP_Error( 'account-credit', $result );
+				return new WP_Error( 'account-credit', $result->ErrorMessage );
 			}
 
 			return $result->Balance;

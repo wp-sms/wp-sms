@@ -102,6 +102,10 @@ class afilnet extends WP_SMS {
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $response_code == '200' ) {
+			if ( ! $response['body'] ) {
+				return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
+			}
+
 			$result = json_decode( $response['body'] );
 
 			if ( $result->status == 'SUCCESS' ) {
