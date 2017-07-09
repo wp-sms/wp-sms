@@ -7,6 +7,8 @@ include_once dirname( __FILE__ ) . "/includes/classes/excel-reader.class.php";
 
 global $wpdb, $table_prefix;
 $get_mobile = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" );
+$result     = [];
+$duplicate  = [];
 
 if ( isset( $_POST['wps_import'] ) ) {
 	if ( ! $_FILES['wps-import-file']['error'] ) {
