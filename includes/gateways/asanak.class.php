@@ -48,7 +48,7 @@ class asanak extends WP_SMS {
 
 		$to  = implode( '-', $this->to );
 		$msg = urlencode( trim( $this->msg ) );
-		$url = $this->wsdl_link . '?username=' . $this->username . '&password=' . $this->password . '&source=' . $this->from . '&destination=' . $to . '&message=' . $msg;
+		$url = $this->wsdl_link . '?username=' . $this->username . '&password=' . urlencode( $this->password ) . '&source=' . $this->from . '&destination=' . $to . '&message=' . $msg;
 
 		$headers[] = 'Accept: text/html';
 		$headers[] = 'Connection: Keep-Alive';
@@ -63,22 +63,20 @@ class asanak extends WP_SMS {
 
 		if ( curl_exec( $process ) ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
-
-			$result = $process;
-
+			
 			/**
 			 * Run hook after send sms.
 			 *
 			 * @since 2.4
 			 *
-			 * @param string $result result output.
+			 * @param string $process result output.
 			 */
-			do_action( 'wp_sms_send', $result );
+			do_action( 'wp_sms_send', $process );
 
-			return $result;
+			return $process;
+		} else {
+			return new WP_Error( 'send-sms', $process );
 		}
-
-		return new WP_Error( 'send-sms', $result );
 	}
 
 	function GetCredit() {
