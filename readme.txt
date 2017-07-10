@@ -229,8 +229,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.11 =
-* Update afilnet.com gateway
-* Update smsgatewayhub.com gateway
+* Updated afilnet.com gateway
+* Updated smsgatewayhub.com gateway
+* Updated Asanak gateway
+* Fixed issue in importer library. The split() deprecated and used preg_split().
 * Add option for hide account balance in send SMS page.
 
 = 4.0.10 =

@@ -63,7 +63,7 @@ class asanak extends WP_SMS {
 
 		if ( curl_exec( $process ) ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
-			
+
 			/**
 			 * Run hook after send sms.
 			 *
