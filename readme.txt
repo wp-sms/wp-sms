@@ -229,6 +229,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 4.0.11 =
+* Added EbulkSMS Africa Gateway.
+* Updated UI for send SMS page.
 * Updated afilnet.com gateway
 * Updated smsgatewayhub.com gateway
 * Updated Asanak gateway
