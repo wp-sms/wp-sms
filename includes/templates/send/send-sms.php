@@ -36,9 +36,7 @@
     <form method="post" action="">
         <table class="form-table">
 			<?php wp_nonce_field( 'update-options' ); ?>
-            <tr>
-                <th><h3><?php _e( 'Send SMS', 'wp-sms' ); ?></h3></th>
-            </tr>
+           
             <tr>
                 <td><?php _e( 'Send from', 'wp-sms' ); ?>:</td>
                 <td><?php echo $this->sms->from; ?></td>
@@ -71,9 +69,10 @@
 					</span>
 
                     <span class="wpsms-value wpsms-numbers">
-						<input type="text" style="direction:ltr;" id="wp_get_number" name="wp_get_number" value=""/>
-						<span style="font-size: 10px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
-					</span>
+                        <span style="font-size: 10px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
+                        <div class="clearfix"></div>
+                        <textarea cols="80" rows="2" style="direction:ltr;" id="wp_get_number" name="wp_get_number"></textarea>
+                    </span>
                 </td>
             </tr>
 
@@ -87,12 +86,10 @@
             <tr>
                 <td><?php _e( 'Message', 'wp-sms' ); ?>:</td>
                 <td>
-                    <textarea dir="auto" cols="80" rows="20" name="wp_get_message" id="wp_get_message"></textarea><br/>
-					<?php if ( isset( $wpsms_option['account_credit_in_sendsms'] ) and $wpsms_option['account_credit_in_sendsms'] ) : ?>
-                        <p class="number">
-							<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . WP_SMS_Gateway::credit(); ?>
-                        </p>
-					<?php endif; ?>
+                    <textarea dir="auto" cols="80" rows="5" name="wp_get_message" id="wp_get_message"></textarea><br/>
+                    <p class="number">
+						<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . WP_SMS_Gateway::credit(); ?>
+                    </p>
                 </td>
             </tr>
 			<?php if ( $this->sms->flash == "enable" ) { ?>
