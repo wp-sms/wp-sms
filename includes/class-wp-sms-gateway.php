@@ -20,6 +20,7 @@ class WP_SMS_Gateway {
 				'fortytwo'   => 'fortytwo.com',
 				'smsglobal'  => 'smsglobal.com',
 				'gatewayapi' => 'gatewayapi.com',
+				'spirius'    => 'spirius.com',
 			),
 			'united kingdom' => array(
 				'_textplode' => 'textplode.com',
@@ -177,7 +178,7 @@ class WP_SMS_Gateway {
 				'difaan' => 'difaan',
 			),
 			'africa'         => array(
-				'_ebulksms' => 'ebulksms.com',
+				'_ebulksms'      => 'ebulksms.com',
 				'africastalking' => 'africastalking.com',
 			),
 			'cyprus'         => array(
