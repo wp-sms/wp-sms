@@ -54,7 +54,7 @@ class msgwow extends WP_SMS {
 		// Unicode message
 		$msg = urlencode( $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "sendhttp.php?authkey=" . $this->has_key . "&mobiles=" . $to . "&message=" . $msg . "&sender=" . $this->from . "&route=4", array( 'timeout' => 30 ) );
+		$response = wp_remote_get( $this->wsdl_link . "v2/sendsms?authkey=" . $this->has_key . "&mobiles=" . $to . "&message=" . $msg . "&sender=" . $this->from . "&route=4&country=0", array( 'timeout' => 30 ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
@@ -62,24 +62,28 @@ class msgwow extends WP_SMS {
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
+		$result        = json_decode( $response['body'] );
 
 		if ( $response_code == '200' ) {
+			if ( $result->type == 'success' ) {
+				$this->InsertToDB( $this->from, $this->msg, $this->to );
 
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 *
+				 * @param string $result result output.
+				 */
+				do_action( 'wp_sms_send', $result );
 
-			/**
-			 * Run hook after send sms.
-			 *
-			 * @since 2.4
-			 *
-			 * @param string $result result output.
-			 */
-			do_action( 'wp_sms_send', $response['body'] );
-
-			return $response['body'];
+				return $result;
+			} else {
+				return $result->message;
+			}
 
 		} else {
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new WP_Error( 'send-sms', $result->message );
 		}
 	}
 

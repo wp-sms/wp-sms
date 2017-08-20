@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.12 =
 * Added Spirius.com Gateway.
+* Added Msgwow.com Gateway.
 
 = 4.0.11 =
 * Added EbulkSMS Africa Gateway.
