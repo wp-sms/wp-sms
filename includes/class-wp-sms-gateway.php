@@ -65,9 +65,9 @@ class WP_SMS_Gateway {
 				'msgwow'           => 'msgwow.com',
 			),
 			'iran'           => array(
-				'parandhost'     => 'parandhost.com',
 				'iransmspanel'   => 'iransmspanel.ir',
 				'chaparpanel'    => 'chaparpanel.ir',
+				'markazpayamak'  => 'markazpayamak.ir',
 				'adpdigital'     => 'adpdigital.com',
 				'hostiran'       => 'hostiran.net',
 				'farapayamak'    => 'farapayamak.com',
@@ -75,7 +75,6 @@ class WP_SMS_Gateway {
 				'payamakde'      => 'payamakde.ir',
 				'panizsms'       => 'panizsms.com',
 				'sepehritc'      => 'sepehritc.com',
-				'markazpayamak'  => 'markazpayamak.ir',
 				'payameavval'    => 'payameavval.com',
 				'smsclick'       => 'smsclick.ir',
 				'persiansms'     => 'persiansms.com',
@@ -174,6 +173,7 @@ class WP_SMS_Gateway {
 				'firstpayamak'   => 'firstpayamak.ir',
 				'kavenegar'      => 'kavenegar.com',
 				'_18sms'         => '18sms.ir',
+				'parandhost'     => 'parandhost.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
