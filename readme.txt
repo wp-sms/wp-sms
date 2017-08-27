@@ -231,7 +231,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = Beta =
 * Added Spirius.com Gateway.
 * Added Msgwow.com Gateway.
-* Updated NuSoap library. Compatible with PHP PHP 5.4 - 7.1
+* Updated NuSoap library. Compatible with PHP 5.4 - 7.1
 
 = 4.0.11 =
 * Added EbulkSMS Africa Gateway.
