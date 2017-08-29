@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added Spirius.com Gateway.
 * Added Msgwow.com Gateway.
 * Updated NuSoap library. Compatible with PHP 5.4 - 7.1
+* Removed: local translations and moved to [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
 
 = 4.0.11 =
 * Added EbulkSMS Africa Gateway.
