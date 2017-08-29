@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = Beta =
+* Added Experttexting.com Gateway.
 * Added Spirius.com Gateway.
 * Added Msgwow.com Gateway.
 * Updated NuSoap library. Compatible with PHP 5.4 - 7.1

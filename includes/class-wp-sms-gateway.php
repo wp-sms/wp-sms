@@ -17,10 +17,11 @@ class WP_SMS_Gateway {
 				'default' => __( 'Please select your gateway', 'wp-sms' ),
 			),
 			'global'         => array(
-				'fortytwo'   => 'fortytwo.com',
-				'smsglobal'  => 'smsglobal.com',
-				'gatewayapi' => 'gatewayapi.com',
-				'spirius'    => 'spirius.com',
+				'experttexting' => 'experttexting.com',
+				'fortytwo'      => 'fortytwo.com',
+				'smsglobal'     => 'smsglobal.com',
+				'gatewayapi'    => 'gatewayapi.com',
+				'spirius'       => 'spirius.com',
 			),
 			'united kingdom' => array(
 				'_textplode' => 'textplode.com',
