@@ -33,13 +33,10 @@ Very easy Send SMS by PHP code:
 * Import/Export Subscribers.
 
 # Internationalization
-* English
-* Persian
-* Arabic (Thanks Hamad Al-Shammari, Gateway.sa)
-* Portuguese (Thanks Matt Moxx)
-* Spanish (Thanks Yordan Soares)
-* German (Thanks Robert Skiba)
-* Swedish (Thanks Kramfors)
+WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
+
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wordpresssmsplugin.com/localization/) today!
+
 
 # Installation
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
