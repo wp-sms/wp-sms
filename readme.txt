@@ -44,21 +44,17 @@ In the Professional pack added many features, most popular gateway and is integr
 
 [Buy Professional Package](http://wordpresssmsplugin.com/purchases)
 
-= Translations =
-* English
-* Persian
-* Arabic (Thanks Hamad Al-Shammari, Gateway.sa)
-* Portuguese (Thanks Matt Moxx)
-* Spanish (Thanks Yordan Soares)
-* German (Thanks Robert Skiba)
-* Swedish (Thanks Kramfors)
-* French (Thanks Yves Le Bouffant)
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](https://translate.wordpress.org/projects/wp-plugins/wp-sms) today!
+= Translations =
+WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
+
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wordpresssmsplugin.com/localization/) today!
+
+= Contributing and Reporting Bugs =
+WP-SMS is being developed on GitHub, If you’re interested in contributing to plugin, Please look at [Github page](https://github.com/veronalabs/wp-sms)
 
 = Support =
 * [Donate to this plugin](http://mostafa-soufi.ir/donate/)
-* [Github repository](https://github.com/veronalabs/wp-sms)
 
 This plugin is a free product of the [Verona Labs](http://veronalabs.com/) and Thank you [jetbrains](https://www.jetbrains.com) for giving us Intellij IDEA Ultimate licenses for develop this project.
 
@@ -228,7 +224,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= Beta =
+= Beta version =
 * Added Experttexting.com Gateway.
 * Added Spirius.com Gateway.
 * Added Msgwow.com Gateway.
