@@ -80,15 +80,23 @@ class WP_SMS_Integrations {
 		$cf7_options       = get_option( 'wpcf7_sms_' . $form->id() );
 		$cf7_options_field = get_option( 'wpcf7_sms_form' . $form->id() );
 
+		foreach ( $_POST as $index => $key ) {
+			if ( is_array( $key ) ) {
+				$plain_data[ $index ] = implode( ', ', $key );
+			} else {
+				$plain_data[ $index ] = $key;
+			}
+		}
+
 		if ( $cf7_options['message'] && $cf7_options['phone'] ) {
 			$this->sms->to  = array( $cf7_options['phone'] );
-			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$_POST["$1"]', $cf7_options['message'] );
+			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options['message'] );
 			$this->sms->SendSMS();
 		}
 
 		if ( $cf7_options_field['message'] && $cf7_options_field['phone'] ) {
-			$this->sms->to  = array( @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$_POST["$1"]', $cf7_options_field['phone'] ) );
-			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$_POST["$1"]', $cf7_options_field['message'] );
+			$this->sms->to  = array( @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options_field['phone'] ) );
+			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options_field['message'] );
 			$this->sms->SendSMS();
 		}
 	}
