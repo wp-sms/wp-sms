@@ -383,10 +383,10 @@ class WP_SMS_Settings_Pro {
 				),
 				'register_verify_sms' => array(
 					'id'      => 'register_verify_sms',
-					'name'    => __( 'Register with mobile', 'wp-sms' ),
+					'name'    => __( 'Verify registration', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Register and verify user in wordpress with sms verification', 'wp-sms' ),
+					'desc'    => __( 'Verify user registration in WordPress with SMS. The feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to registration in login form.', 'wp-sms' ),
 				),
 			) ),
 			// Options for BuddyPress tab
