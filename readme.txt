@@ -224,7 +224,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= Beta version =
+= 4.0.12 =
 * Added Experttexting.com Gateway.
 * Added Spirius.com Gateway.
 * Added Msgwow.com Gateway.
