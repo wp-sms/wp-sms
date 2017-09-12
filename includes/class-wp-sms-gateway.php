@@ -175,6 +175,7 @@ class WP_SMS_Gateway {
 				'kavenegar'      => 'kavenegar.com',
 				'_18sms'         => '18sms.ir',
 				'parandhost'     => 'parandhost.com',
+				'eshare'         => 'eshare.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
