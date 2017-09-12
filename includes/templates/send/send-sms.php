@@ -26,7 +26,7 @@
         jQuery("#wp_get_message").counter({
             count: 'up',
             goal: 'sky',
-            msg: 'characters'
+            msg: '<?php _e('characters', 'wp-sms'); ?>'
         })
     });
 </script>
