@@ -1,7 +1,6 @@
 <?php
 
 class iransmspanel extends WP_SMS {
-
 	/**
 	 * Host
 	 *
@@ -33,19 +32,26 @@ class iransmspanel extends WP_SMS {
 	/**
 	 * This function is used to send SMS via socket.
 	 *
-	 * @param   string      Username
-	 * @param   string      Password
-	 * @param   string      Number (From - Example: 100002972)
-	 * @param   string      Recipient Number
-	 * @param   integer     Port Number
-	 * @param   string      Message
-	 * @param   bool        Is Flash SMS?
+	 * @param $username
+	 * @param $password
+	 * @param $number
+	 * @param $recipient
+	 * @param $port
+	 * @param $message
+	 * @param $flash
 	 *
-	 * @return
+	 * @return bool|mixed|string
+	 * @internal param Username $string
+	 * @internal param Password $string
+	 * @internal param Number $string (From - Example: 100002972)
+	 * @internal param Recipient $string Number
+	 * @internal param Port $integer Number
+	 * @internal param Message $string
+	 * @internal param Is $bool Flash SMS?
+	 *
 	 */
 	private function Send_Via_Socket( $username, $password, $number, $recipient, $port, $message, $flash ) {
-		$result = $response = '';
-		############################# PARAMETERS #############################
+		$result     = $response = '';
 		$params     = array(
 			'username'  => $username,
 			'password'  => $password,
@@ -59,7 +65,6 @@ class iransmspanel extends WP_SMS {
 		foreach ( $params AS $name => $value ) {
 			$parameters .= ( $parameters != '' ? '&' : '' ) . "$name=" . urlencode( $value );
 		}
-		######################################################################
 		$sockerrno = 0;
 		$sockerr   = '';
 		$socket    = @fsockopen( $this->host, 80, $sockerrno, $sockerr, 2 );
@@ -137,15 +142,23 @@ class iransmspanel extends WP_SMS {
 	/**
 	 * This function is used to send SMS via cURL.
 	 *
-	 * @param   string      Username
-	 * @param   string      Password
-	 * @param   string      Number (From - Example: 100002972)
-	 * @param   string      Recipient Number
-	 * @param   integer     Port Number
-	 * @param   string      Message
-	 * @param   bool        Is Flash SMS?
+	 * @param $username
+	 * @param $password
+	 * @param $number
+	 * @param $recipient
+	 * @param $port
+	 * @param $message
+	 * @param $flash
 	 *
-	 * @return
+	 * @return string
+	 * @internal param Username $string
+	 * @internal param Password $string
+	 * @internal param Number $string (From - Example: 100002972)
+	 * @internal param Recipient $string Number
+	 * @internal param Port $integer Number
+	 * @internal param Message $string
+	 * @internal param Is $bool Flash SMS?
+	 *
 	 */
 	private function Send_Via_cURL( $username, $password, $number, $recipient, $port, $message, $flash ) {
 		$handle  = null;
@@ -165,16 +178,15 @@ class iransmspanel extends WP_SMS {
 
 	/**
 	 * This function is used to send SMS via http://www.2972.ir
+	 * @return bool|WP_Error
+	 * @internal param Username $string
+	 * @internal param Password $string
+	 * @internal param Number $string (From - Example: 100002972)
+	 * @internal param Recipient $string Number
+	 * @internal param Port $integer Number
+	 * @internal param Message $string
+	 * @internal param Is $bool Flash SMS?
 	 *
-	 * @param   string      Username
-	 * @param   string      Password
-	 * @param   string      Number (From - Example: 100002972)
-	 * @param   string      Recipient Number
-	 * @param   integer     Port Number
-	 * @param   string      Message
-	 * @param   bool        Is Flash SMS?
-	 *
-	 * @return
 	 */
 	public function send_sms() {
 		// Check gateway credit
@@ -250,7 +262,9 @@ class iransmspanel extends WP_SMS {
 			return new WP_Error( 'account-credit', $e->getMessage() );
 		}
 
-		if ( $client->Authentication( $this->username, $this->password ) == '1' ) {
+		$result = $client->Authentication( $this->username, $this->password );
+
+		if ( $result == '1' ) {
 			return $client->GetCredit();
 		} else {
 			return new WP_Error( 'account-credit', $result );
