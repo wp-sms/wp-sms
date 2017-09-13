@@ -10,7 +10,7 @@ class Default_Gateway extends WP_SMS {
 	public $bulk_send = false;
 
 	public function __construct() {
-		$this->validateNumber = "09xxxxxxxx";
+		$this->validateNumber = "1xxxxxxxxxx";
 	}
 
 	public function SendSMS() {

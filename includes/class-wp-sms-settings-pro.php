@@ -112,6 +112,7 @@ class WP_SMS_Settings_Pro {
 			'gf'  => __( 'Gravityforms', 'wp-sms' ),
 			'qf'  => __( 'Quform', 'wp-sms' ),
 			'edd' => __( 'Easy Digital Downloads', 'wp-sms' ),
+			'job' => __( 'WP Job Manager', 'wp-sms' ),
 		);
 
 		return $tabs;
@@ -694,6 +695,63 @@ class WP_SMS_Settings_Pro {
 					          )
 				),
 			) ),
+			// Options for WP Job Manager tab
+			'job' => apply_filters( 'wps_job_settings', array(
+				'job_fields'                => array(
+					'id'   => 'job_fields',
+					'name' => __( 'Mobile field', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'job_mobile_field'          => array(
+					'id'      => 'job_mobile_field',
+					'name'    => __( 'Mobile field', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Add Mobile field to Post a job form', 'wp-sms' )
+				),
+				'job_display_mobile_number' => array(
+					'id'      => 'job_display_mobile_number',
+					'name'    => __( 'Display Mobile', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Display Mobile number on the single job page', 'wp-sms' )
+				),
+				'job_notify_cv'             => array(
+					'id'   => 'job_notify_cv',
+					'name' => __( 'Notify for new CV', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'job_notify_cv_status'      => array(
+					'id'      => 'job_notify_cv_status',
+					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send sms when submit new CV', 'wp-sms' )
+				),
+				'job_notify_cv_receiver'    => array(
+					'id'   => 'job_notify_cv_receiver',
+					'name' => __( 'SMS receiver', 'wp-sms' ),
+					'type' => 'text',
+					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+				),
+				'job_notify_cv_message'     => array(
+					'id'   => 'job_notify_cv_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Job Mobile: %s, Company Name: %s, Company Website: %s', 'wp-sms' ),
+						          '<code>%job_id%</code>',
+						          '<code>%job_title%</code>',
+						          '<code>%job_description%</code>',
+						          '<code>%job_location%</code>',
+						          '<code>%job_type%</code>',
+						          '<code>%job_mobile%</code>',
+						          '<code>%company_name%</code>',
+						          '<code>%website%</code>'
+					          )
+				),
+			) ),
 		) );
 
 		return $settings;
@@ -712,7 +770,6 @@ class WP_SMS_Settings_Pro {
 	}
 
 	public function checkbox_callback( $args ) {
-
 		$checked = isset( $this->options[ $args['id'] ] ) ? checked( 1, $this->options[ $args['id'] ], false ) : '';
 		$html    = '<input type="checkbox" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="1" ' . $checked . '/>';
 		$html    .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . __( 'Active', 'wp-sms' ) . '</label>';
@@ -722,8 +779,6 @@ class WP_SMS_Settings_Pro {
 	}
 
 	public function multicheck_callback( $args ) {
-
-
 		$html = '';
 		foreach ( $args['options'] as $key => $value ) {
 			$option_name = $args['id'] . '-' . $key;

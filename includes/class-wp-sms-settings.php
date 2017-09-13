@@ -250,6 +250,7 @@ class WP_SMS_Settings {
 					'id'   => 'gateway_sender_id',
 					'name' => __( 'Sender number', 'wp-sms' ),
 					'type' => 'text',
+					'std'  => WP_SMS_Gateway::from(),
 					'desc' => __( 'Sender number or sender ID', 'wp-sms' )
 				),
 				'gateway_key'               => array(
@@ -589,7 +590,7 @@ class WP_SMS_Settings {
 
 	public function text_callback( $args ) {
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
+		if ( $this->options[ $args['id'] ] ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
 			$value = isset( $args['std'] ) ? $args['std'] : '';

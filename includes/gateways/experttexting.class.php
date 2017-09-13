@@ -13,6 +13,7 @@ class experttexting extends WP_SMS {
 		$this->validateNumber = "The number you want to send message to. Number should be in international format. Ex: to=17327572923";
 		$this->has_key        = true;
 		$this->help           = "You can find the API Key under \"Account Settings\" in <a href='https://www.experttexting.com/appv2/Dashboard/Profile'>ExpertTexting Profile</a>.";
+		$this->from           = 'DEFAULT';
 	}
 
 	public function SendSMS() {

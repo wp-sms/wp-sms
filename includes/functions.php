@@ -59,7 +59,9 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 		}
 
 		// Set from sender id
-		$sms->from = $wpsms_option['gateway_sender_id'];
+		if ( ! $sms->from ) {
+			$sms->from = $wpsms_option['gateway_sender_id'];
+		}
 
 		// Return gateway object
 		return $sms;
