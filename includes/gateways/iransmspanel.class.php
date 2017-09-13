@@ -188,7 +188,7 @@ class iransmspanel extends WP_SMS {
 	 * @internal param Is $bool Flash SMS?
 	 *
 	 */
-	public function send_sms() {
+	public function SendSMS() {
 		// Check gateway credit
 		if ( is_wp_error( $this->GetCredit() ) ) {
 			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
