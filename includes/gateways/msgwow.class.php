@@ -11,7 +11,7 @@ class msgwow extends WP_SMS {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "919999999999";
-		$this->help           = "Login authentication key (this key is unique for every user)";
+		$this->help           = "Login authentication key (this key is unique for every user).<br>The default route number is 4 and you can set your route number in sender number. e.g. 100000:4 or 100000:2";
 		$this->has_key        = true;
 	}
 
@@ -51,10 +51,17 @@ class msgwow extends WP_SMS {
 		// Implode numbers
 		$to = implode( ',', $this->to );
 
+		$from = explode( ':', $this->from );
+		if ( is_array( $from ) ) {
+			$route = $from[1];
+		} else {
+			$route = 4;
+		}
+
 		// Unicode message
 		$msg = urlencode( $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "v2/sendsms?authkey=" . $this->has_key . "&mobiles=" . $to . "&message=" . $msg . "&sender=" . $this->from . "&route=4&country=0", array( 'timeout' => 30 ) );
+		$response = wp_remote_get( $this->wsdl_link . "v2/sendsms?authkey=" . $this->has_key . "&mobiles=" . $to . "&message=" . $msg . "&sender=" . $this->from . "&route=" . $route . "&country=0", array( 'timeout' => 30 ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
