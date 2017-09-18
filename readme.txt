@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = Beta Version =
 * Added default variable for `sender_id` in the Gateway class.
+* Added textanywhere.net Gateway.
 * Added eshare.com Gateway.
 * Updated Pro Package options. (Added WP-Job-Manager fields).
 

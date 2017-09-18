@@ -30,7 +30,8 @@ class WP_SMS_Gateway {
 				'spirius'       => 'spirius.com',
 			),
 			'united kingdom' => array(
-				'_textplode' => 'textplode.com',
+				'_textplode'   => 'textplode.com',
+				'textanywhere' => 'textanywhere.net',
 			),
 			'french'         => array(
 				'primotexto' => 'primotexto.com',
