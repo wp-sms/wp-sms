@@ -3,7 +3,7 @@
 Plugin Name: WP SMS
 Plugin URI: http://wordpresssmsplugin.com/
 Description: A simple and powerful texting plugin for wordpress
-Version: 4.0.12
+Version: 4.0.13
 Author: Mostafa Soufi
 Author URI: http://mostafa-soufi.ir/
 Text Domain: wp-sms
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin defines
  */
-define( 'WP_SMS_VERSION', '4.0.12' );
+define( 'WP_SMS_VERSION', '4.0.13' );
 define( 'WP_SMS_DIR_PLUGIN', plugin_dir_url( __FILE__ ) );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
 define( 'WP_SMS_SITE', 'http://wordpresssmsplugin.com' );
