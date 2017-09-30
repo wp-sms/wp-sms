@@ -115,6 +115,7 @@ when one stock product is load, the plugin can send SMS to admin for notify and 
 * Integrate with Gravity form. Plugin can be send sms to user or admin after submit the form.
 * Integrate with Quform. Plugin can be send sms to user or admin after submit the form.
 * Integrate with Easy Digital Downloads. You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
+* Integrate with WP Job Manager. You can adding mobile number field to Job form and can be send sms to employer or admin when submitted an job with WP Job Manager.
 * Premium Support.
 
 = How to buy? =
