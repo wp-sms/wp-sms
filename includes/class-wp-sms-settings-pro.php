@@ -716,31 +716,31 @@ class WP_SMS_Settings_Pro {
 					'options' => $options,
 					'desc'    => __( 'Display Mobile number on the single job page', 'wp-sms' )
 				),
-				'job_notify_cv'             => array(
-					'id'   => 'job_notify_cv',
-					'name' => __( 'Notify for new CV', 'wp-sms' ),
+				'job_notify'             => array(
+					'id'   => 'job_notify',
+					'name' => __( 'Notify for new job', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'job_notify_cv_status'      => array(
-					'id'      => 'job_notify_cv_status',
+				'job_notify_status'      => array(
+					'id'      => 'job_notify_status',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when submit new CV', 'wp-sms' )
+					'desc'    => __( 'Send sms when submit new job', 'wp-sms' )
 				),
-				'job_notify_cv_receiver'    => array(
-					'id'   => 'job_notify_cv_receiver',
+				'job_notify_receiver'    => array(
+					'id'   => 'job_notify_receiver',
 					'name' => __( 'SMS receiver', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
 				),
-				'job_notify_cv_message'     => array(
-					'id'   => 'job_notify_cv_message',
+				'job_notify_message'     => array(
+					'id'   => 'job_notify_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Job Mobile: %s, Company Name: %s, Company Website: %s', 'wp-sms' ),
+						          __( 'Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Company Mobile: %s, Company Name: %s, Company Website: %s', 'wp-sms' ),
 						          '<code>%job_id%</code>',
 						          '<code>%job_title%</code>',
 						          '<code>%job_description%</code>',
@@ -751,20 +751,20 @@ class WP_SMS_Settings_Pro {
 						          '<code>%website%</code>'
 					          )
 				),
-				'job_notify_employer_cv'             => array(
-					'id'   => 'job_notify_employer_cv',
+				'job_notify_employer'             => array(
+					'id'   => 'job_notify_employer',
 					'name' => __( 'Notify to Employer', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'job_notify_employer_cv_status'      => array(
-					'id'      => 'job_notify_employer_cv_status',
+				'job_notify_employer_status'      => array(
+					'id'      => 'job_notify_employer_status',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to employer when the CV approved', 'wp-sms' )
+					'desc'    => __( 'Send sms to employer when the job approved', 'wp-sms' )
 				),
-				'job_notify_employer_cv_message'     => array(
-					'id'   => 'job_notify_employer_cv_message',
+				'job_notify_employer_message'     => array(
+					'id'   => 'job_notify_employer_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
