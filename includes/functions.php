@@ -58,7 +58,7 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 			$sms->unit = __( 'SMS', 'wp-sms' );
 		}
 
-		// Set from sender id
+		// Set sender id
 		if ( ! $sms->from ) {
 			$sms->from = $wpsms_option['gateway_sender_id'];
 		}
