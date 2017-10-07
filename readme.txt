@@ -42,7 +42,7 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 = Professional Package =
 In the Professional pack added many features, most popular gateway and is integrated with another plugins.
 
-[Buy Professional Package](http://wordpresssmsplugin.com/purchases)
+[Buy Professional Package](http://wordpresssmsplugin.com/purchase/)
 
 
 = Translations =
@@ -119,7 +119,7 @@ when one stock product is load, the plugin can send SMS to admin for notify and 
 * Premium Support.
 
 = How to buy? =
-You can buy pro pack version [through this link](http://wordpresssmsplugin.com/purchases)
+You can buy pro pack version [through this link](http://wordpresssmsplugin.com/purchase/)
 
 = PHP 7 Support? =
 Yes! WP SMS is compatible with PHP 7 and 7.1
