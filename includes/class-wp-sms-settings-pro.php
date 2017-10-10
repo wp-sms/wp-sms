@@ -25,10 +25,10 @@ class WP_SMS_Settings_Pro {
 	}
 
 	/**
-	 * Add WP SMS Professional Package admin page settings
+	 * Add Professional Package options
 	 * */
 	public function add_settings_menu() {
-		add_submenu_page( 'wp-sms', __( 'Pro Package', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Pro Package', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
+		add_submenu_page( 'wp-sms', __( 'Integrations', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Integrations', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
 			&$this,
 			'render_settings'
 		) );
