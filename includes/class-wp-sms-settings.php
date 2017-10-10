@@ -590,7 +590,7 @@ class WP_SMS_Settings {
 
 	public function text_callback( $args ) {
 
-		if ( $this->options[ $args['id'] ] ) {
+		if ( isset( $this->options[ $args['id'] ] ) and $this->options[ $args['id'] ] ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
 			$value = isset( $args['std'] ) ? $args['std'] : '';

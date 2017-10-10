@@ -697,44 +697,44 @@ class WP_SMS_Settings_Pro {
 			) ),
 			// Options for WP Job Manager tab
 			'job' => apply_filters( 'wps_job_settings', array(
-				'job_fields'                => array(
+				'job_fields'                  => array(
 					'id'   => 'job_fields',
 					'name' => __( 'Mobile field', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'job_mobile_field'          => array(
+				'job_mobile_field'            => array(
 					'id'      => 'job_mobile_field',
 					'name'    => __( 'Mobile field', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Add Mobile field to Post a job form', 'wp-sms' )
 				),
-				'job_display_mobile_number' => array(
+				'job_display_mobile_number'   => array(
 					'id'      => 'job_display_mobile_number',
 					'name'    => __( 'Display Mobile', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Display Mobile number on the single job page', 'wp-sms' )
 				),
-				'job_notify'             => array(
+				'job_notify'                  => array(
 					'id'   => 'job_notify',
 					'name' => __( 'Notify for new job', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'job_notify_status'      => array(
+				'job_notify_status'           => array(
 					'id'      => 'job_notify_status',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send sms when submit new job', 'wp-sms' )
 				),
-				'job_notify_receiver'    => array(
+				'job_notify_receiver'         => array(
 					'id'   => 'job_notify_receiver',
 					'name' => __( 'SMS receiver', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
 				),
-				'job_notify_message'     => array(
+				'job_notify_message'          => array(
 					'id'   => 'job_notify_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -751,19 +751,19 @@ class WP_SMS_Settings_Pro {
 						          '<code>%website%</code>'
 					          )
 				),
-				'job_notify_employer'             => array(
+				'job_notify_employer'         => array(
 					'id'   => 'job_notify_employer',
 					'name' => __( 'Notify to Employer', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'job_notify_employer_status'      => array(
+				'job_notify_employer_status'  => array(
 					'id'      => 'job_notify_employer_status',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send sms to employer when the job approved', 'wp-sms' )
 				),
-				'job_notify_employer_message'     => array(
+				'job_notify_employer_message' => array(
 					'id'   => 'job_notify_employer_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -841,7 +841,7 @@ class WP_SMS_Settings_Pro {
 
 	public function text_callback( $args ) {
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
+		if ( isset( $this->options[ $args['id'] ] ) and $this->options[ $args['id'] ] ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
