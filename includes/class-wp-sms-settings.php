@@ -788,6 +788,7 @@ class WP_SMS_Settings {
                     <li id="wpsms-logo">
                         <img src="<?php echo WP_SMS_DIR_PLUGIN; ?>assets/images/logo-250.png"/>
                         <p><?php echo sprintf( __( 'WP-SMS v%s', 'wp-sms' ), WP_SMS_VERSION ); ?></p>
+	                    <?php do_action( 'wp_sms_after_setting_logo' ); ?>
                     </li>
 					<?php
 					foreach ( $this->get_tabs() as $tab_id => $tab_name ) {

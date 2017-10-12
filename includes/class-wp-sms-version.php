@@ -17,19 +17,36 @@ class WP_SMS_Version {
 		$this->options = $wpsms_option;
 
 		// Check pro pack is enabled
+		if ( $this->pro_is_active() ) {
+			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title' ) );
+		} else {
+			add_filter( 'plugin_row_meta', array( $this, 'pro_meta_links' ), 10, 2 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'pro_admin_script' ) );
+			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title_pro_not_activated' ) );
+			add_action( 'wp_sms_after_setting_logo', array( $this, 'setting_title_pro_not_activated' ) );
+			add_filter( 'wpsms_gateway_list', array( $this, 'pro_gateways' ) );
+		}
+	}
+
+	/**
+	 * Check pro pack is enabled
+	 * @return bool
+	 */
+	private function pro_is_active() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		if ( is_plugin_active( 'wp-sms-pro/wp-sms-pro.php' ) ) {
-			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title' ) );
-		} else {
-			if ( ! is_admin() ) {
-				return;
-			}
+			return true;
+		}
+	}
 
-			add_filter( 'plugin_row_meta', array( $this, 'pro_meta_links' ), 10, 2 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'pro_admin_script' ) );
-			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title_not_activated' ) );
-			add_filter( 'wpsms_gateway_list', array( $this, 'pro_gateways' ) );
+	/**
+	 * Check pro pack is exists
+	 * @return bool
+	 */
+	private function pro_is_exists() {
+		if ( file_exists( WP_PLUGIN_DIR . '/wp-sms-pro/wp-sms-pro.php' ) ) {
+			return true;
 		}
 	}
 
@@ -56,20 +73,26 @@ class WP_SMS_Version {
 	}
 
 	/**
-	 * @param $string
-	 *
 	 * @return string
+	 * @internal param $string
 	 */
-	public function pro_setting_title_not_activated( $string ) {
-		$html = '<p class="wpsms-error-notice">Requires Pro Pack version!</p>';
+	public function pro_setting_title_pro_not_activated() {
+		$html = '<p class="wpsms-error-notice">' . __( 'Requires Pro Pack version!', 'wp-sms' ) . '</p>';
 
-		if ( file_exists( WP_PLUGIN_DIR . '/wp-sms-pro/wp-sms-pro.php' ) ) {
+		if ( $this->pro_is_exists() ) {
 			$html .= '<a style="margin-bottom: 8px; font-weight: normal;" href="plugins.php" class="button button-primary">' . __( 'Active WP-SMS-Pro', 'wp-sms' ) . '</a>';
 		} else {
 			$html .= '<a style="margin-bottom: 8px; font-weight: normal;" target="_blank" href="http://wordpresssmsplugin.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
 		}
 
 		echo $html;
+	}
+
+	public function setting_title_pro_not_activated() {
+		if ( !$this->pro_is_exists() ) {
+			$html = '<a style="margin: 10px 0; font-weight: normal;" target="_blank" href="http://wordpresssmsplugin.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
+			echo $html;
+		}
 	}
 
 	/**
