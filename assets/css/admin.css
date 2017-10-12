@@ -1,3 +1,12 @@
+.wpsms-error-notice {
+    background-color: #ffd5d5;
+    padding: 7px 7px;
+    display: inline-block;
+    border: 1px solid #ffb7b7;
+    border-radius: 2px;
+    color: #e02222;
+}
+
 .wpsms-time {
     clear: both;
     color: #a4a2a2;
@@ -31,7 +40,7 @@
     height: 114px;
 }
 
-#wpsms-custom-text p.description.data, �#wpsms-custom-text code {
+#wpsms-custom-text p.description.data, ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½#wpsms-custom-text code {
     font-size: 11px !important;
 }
 
@@ -51,4 +60,73 @@
 .wpsms-premium-tab {
     color: #F1F1F1;
     background: #21A8D2;
+}
+
+.wpsms-tab-group {
+    border: 1px solid #d8d8d8;
+    display: block;
+    width: 100%;
+    float: left;
+    background-color: #ffffff;
+    margin-top: 18px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.wpsms-tab {
+    width: 180px;
+    float: left;
+}
+
+.wpsms-tab li {
+    margin: 0;
+}
+
+.wpsms-tab #wpsms-logo {
+    text-align: center;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.wpsms-tab #wpsms-logo img {
+    width: 50%;
+}
+
+.wpsms-tab li a {
+    display: block;
+    text-decoration: none;
+    padding: 13px 14px;
+    font-weight: bold;
+    margin: 0 -1px 0px 0;
+}
+
+.wpsms-tab li .active {
+    background-color: #f4f6ff;
+    border-top: 1px solid #d8d8d8;
+    border-bottom: 1px solid #d8d8d8;
+    border-right: 1px solid #f4f6ff;
+}
+
+.wpsms-tab-content {
+    background-color: #f4f6ff;
+    display: grid;
+    padding: 6px 33px;
+    border-left: 1px solid #d8d8d8;
+    min-height: 525px;
+}
+
+.rtl .wpsms-tab {
+    float: right;
+}
+
+.rtl .wpsms-tab-content {
+    border-left: 0px none;
+    border-right: 1px solid #d8d8d8;
+}
+
+.rtl .wpsms-tab li a {
+    margin: 0 0 0 -1px;
+}
+
+.rtl .wpsms-tab li .active {
 }

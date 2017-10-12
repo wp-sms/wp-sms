@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
+* Upadated setting page.
 * Fixed issue in `text_callback` method on the options library. Used `isset` to skip undefined error.
 
 = 4.0.13 =

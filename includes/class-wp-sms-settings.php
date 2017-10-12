@@ -795,36 +795,42 @@ class WP_SMS_Settings {
         <div class="wrap wpsms-settings-wrap">
 			<?php do_action( 'wp_sms_settings_page' ); ?>
             <h2><?php _e( 'Settings', 'wp-sms' ) ?></h2>
-            <h2 class="nav-tab-wrapper">
-				<?php
-				foreach ( $this->get_tabs() as $tab_id => $tab_name ) {
+            <div class="wpsms-tab-group">
+                <ul class="wpsms-tab">
+                    <li id="wpsms-logo">
+                        <img src="<?php echo WP_SMS_DIR_PLUGIN; ?>assets/images/logo-250.png"/>
+                        <p><?php echo sprintf( __( 'WP-SMS v%s', 'wp-sms' ), WP_SMS_VERSION ); ?></p>
+                    </li>
+					<?php
+					foreach ( $this->get_tabs() as $tab_id => $tab_name ) {
 
-					$tab_url = add_query_arg( array(
-						'settings-updated' => false,
-						'tab'              => $tab_id
-					) );
+						$tab_url = add_query_arg( array(
+							'settings-updated' => false,
+							'tab'              => $tab_id
+						) );
 
-					$active = $active_tab == $tab_id ? ' nav-tab-active' : '';
+						$active = $active_tab == $tab_id ? 'active' : '';
 
-					echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">';
-					echo $tab_name;
-					echo '</a>';
-				}
-				?>
-            </h2>
-			<?php echo settings_errors( 'wpsms-notices' ); ?>
-            <div id="tab_container">
-                <form method="post" action="options.php">
-                    <table class="form-table">
-						<?php
-						settings_fields( $this->setting_name );
-						do_settings_fields( 'wpsms_settings_' . $active_tab, 'wpsms_settings_' . $active_tab );
-						?>
-                    </table>
-					<?php submit_button(); ?>
-                </form>
-            </div><!-- #tab_container-->
-        </div><!-- .wrap -->
+						echo '<li><a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="' . $active . '">';
+						echo $tab_name;
+						echo '</a></li>';
+					}
+					?>
+                </ul>
+				<?php echo settings_errors( 'wpsms-notices' ); ?>
+                <div class="wpsms-tab-content">
+                    <form method="post" action="options.php">
+                        <table class="form-table">
+							<?php
+							settings_fields( $this->setting_name );
+							do_settings_fields( 'wpsms_settings_' . $active_tab, 'wpsms_settings_' . $active_tab );
+							?>
+                        </table>
+						<?php submit_button(); ?>
+                    </form>
+                </div>
+            </div>
+        </div>
 		<?php
 		echo ob_get_clean();
 	}
