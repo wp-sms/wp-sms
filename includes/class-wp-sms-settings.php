@@ -545,7 +545,6 @@ class WP_SMS_Settings {
 	}
 
 	public function checkbox_callback( $args ) {
-
 		$checked = isset( $this->options[ $args['id'] ] ) ? checked( 1, $this->options[ $args['id'] ], false ) : '';
 		$html    = '<input type="checkbox" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="1" ' . $checked . '/>';
 		$html    .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . __( 'Active', 'wp-sms' ) . '</label>';
@@ -555,8 +554,6 @@ class WP_SMS_Settings {
 	}
 
 	public function multicheck_callback( $args ) {
-
-
 		$html = '';
 		foreach ( $args['options'] as $key => $value ) {
 			$option_name = $args['id'] . '-' . $key;
@@ -571,7 +568,6 @@ class WP_SMS_Settings {
 	}
 
 	public function radio_callback( $args ) {
-
 		foreach ( $args['options'] as $key => $option ) :
 			$checked = false;
 
@@ -589,7 +585,6 @@ class WP_SMS_Settings {
 	}
 
 	public function text_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) and $this->options[ $args['id'] ] ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -604,7 +599,6 @@ class WP_SMS_Settings {
 	}
 
 	public function number_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -623,7 +617,6 @@ class WP_SMS_Settings {
 	}
 
 	public function textarea_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -638,7 +631,6 @@ class WP_SMS_Settings {
 	}
 
 	public function password_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -660,7 +652,6 @@ class WP_SMS_Settings {
 
 
 	public function select_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -681,7 +672,6 @@ class WP_SMS_Settings {
 	}
 
 	public function advancedselect_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -697,11 +687,12 @@ class WP_SMS_Settings {
 		$html = '<select class="' . $class_name . '" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']"/>';
 
 		foreach ( $args['options'] as $key => $v ) {
-			$html .= '<optgroup label="' . ucfirst( $key ) . '">';
+			$html .= '<optgroup label="' . ucfirst( str_replace( '_', ' ', $key ) ) . '">';
 
 			foreach ( $v as $option => $name ) :
+				$disabled = ( $key == 'pro_pack_gateways' ) ? $disabled = ' disabled' : '';
 				$selected = selected( $option, $value, false );
-				$html     .= '<option value="' . $option . '" ' . $selected . '>' . ucfirst( $name ) . '</option>';
+				$html     .= '<option value="' . $option . '" ' . $selected . ' ' . $disabled . '>' . ucfirst( $name ) . '</option>';
 			endforeach;
 
 			$html .= '</optgroup>';
@@ -714,7 +705,6 @@ class WP_SMS_Settings {
 	}
 
 	public function color_select_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -755,7 +745,6 @@ class WP_SMS_Settings {
 	}
 
 	public function upload_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {
@@ -771,7 +760,6 @@ class WP_SMS_Settings {
 	}
 
 	public function color_callback( $args ) {
-
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
 		} else {

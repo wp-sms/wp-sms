@@ -1,7 +1,6 @@
 <?php
 
-class
-parandhost extends WP_SMS {
+class parandhost extends WP_SMS {
 	private $wsdl_link = "http://sms.parandhost.com/webservice/?WSDL";
 	public $tariff = "http://www.parandhost.com/sms/";
 	public $unitrial = true;

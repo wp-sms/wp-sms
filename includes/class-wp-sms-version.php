@@ -18,6 +18,7 @@ class WP_SMS_Version {
 
 		// Check pro pack is enabled
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
 		if ( is_plugin_active( 'wp-sms-pro/wp-sms-pro.php' ) ) {
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title' ) );
 		} else {
@@ -28,6 +29,7 @@ class WP_SMS_Version {
 			add_filter( 'plugin_row_meta', array( $this, 'pro_meta_links' ), 10, 2 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'pro_admin_script' ) );
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title_not_activated' ) );
+			add_filter( 'wpsms_gateway_list', array( $this, 'pro_gateways' ) );
 		}
 	}
 
@@ -75,6 +77,53 @@ class WP_SMS_Version {
 	 */
 	public function pro_admin_script() {
 		wp_enqueue_script( 'wpsms-pro-admin-js', WP_SMS_DIR_PLUGIN . 'assets/js/pro-pack.js', true, '1.0.0' );
+	}
+
+	/**
+	 * @param $gateways
+	 *
+	 * @return mixed
+	 */
+	public function pro_gateways( $gateways ) {
+		$gateways['pro_pack_gateways'] = array(
+			'twilio'           => 'twilio.com',
+			'plivo'            => 'plivo.com',
+			'clickatell'       => 'clickatell.com',
+			'bulksms'          => 'bulksms.com',
+			'infobip'          => 'infobip.com',
+			'nexmo'            => 'nexmo.com',
+			'clockworksms'     => 'clockworksms.com',
+			'clicksend'        => 'clicksend.com',
+			'smsapicom'        => 'smsapi.com',
+			'dsms'             => 'dsms.in',
+			'esms'             => 'esms.vn',
+			'isms'             => 'isms.com.my',
+			'dot4all'          => 'sms4marketing.it',
+			'magicdeal4u'      => 'magicdeal4u.com',
+			'mobily'           => 'mobily.ws',
+			'moceansms'        => 'moceansms.com',
+			'msg91'            => 'msg91.com',
+			'livesms'          => 'livesms.eu',
+			'ozioma'           => 'ozioma.net',
+			'pswin'            => 'pswin.com',
+			'ra'               => 'ra.sa',
+			'smsfactor'        => 'smsfactor.com',
+			'textmarketer'     => 'textmarketer.co.uk',
+			'smslive247'       => 'smslive247.com',
+			'sendsms247'       => 'sendsms247.com',
+			'ssdindia'         => 'ssdindia.com',
+			'viensms'          => 'viensms.com',
+			'vsms'             => 'vsms.club',
+			'websms'           => 'websms.at',
+			'smstrade'         => 'smstrade.de',
+			'bulksmshyderabad' => 'bulksmshyderabad.co.in',
+			'yamamah'          => 'yamamah.com',
+			'cellsynt'         => 'cellsynt.net',
+			'cmtelecom'        => 'cmtelecom.com',
+			'cpsms'            => 'cpsms.dk',
+		);
+
+		return $gateways;
 	}
 }
 
