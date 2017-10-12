@@ -191,9 +191,9 @@ class WP_SMS_Settings {
 			'disable' => __( 'Disable', 'wp-sms' )
 		);
 
-		$settings = apply_filters( 'wpsms_registered_settings', array(
+		$settings = apply_filters( 'wp_sms_registered_settings', array(
 			// General tab
-			'general'       => apply_filters( 'wpsms_general_settings', array(
+			'general'       => apply_filters( 'wp_sms_general_settings', array(
 				'admin_title'         => array(
 					'id'   => 'admin_title',
 					'name' => __( 'Mobile', 'wp-sms' ),
@@ -214,7 +214,7 @@ class WP_SMS_Settings {
 			) ),
 
 			// Gateway tab
-			'gateway'       => apply_filters( 'wpsms_gateway_settings', array(
+			'gateway'       => apply_filters( 'wp_sms_gateway_settings', array(
 				// Gateway
 				'gayeway_title'             => array(
 					'id'   => 'gayeway_title',
@@ -305,7 +305,7 @@ class WP_SMS_Settings {
 				),
 			) ),
 			// Feature tab
-			'feature'       => apply_filters( 'wpsms_feature_settings', array(
+			'feature'       => apply_filters( 'wp_sms_feature_settings', array(
 				'mobile_field'     => array(
 					'id'   => 'mobile_field',
 					'name' => __( 'Mobile field', 'wp-sms' ),
@@ -332,7 +332,7 @@ class WP_SMS_Settings {
 				),
 			) ),
 			// Notifications tab
-			'notifications' => apply_filters( 'wpsms_notifications_settings', array(
+			'notifications' => apply_filters( 'wp_sms_notifications_settings', array(
 				// Publish new post
 				'notif_publish_new_post_title'           => array(
 					'id'   => 'notif_publish_new_post_title',
@@ -463,7 +463,7 @@ class WP_SMS_Settings {
 				),
 			) ),
 			// Integration  tab
-			'integration'   => apply_filters( 'wpsms_integration_settings', array(
+			'integration'   => apply_filters( 'wp_sms_integration_settings', array(
 				// Contact form 7
 				'cf7_title'                    => array(
 					'id'   => 'cf7_title',

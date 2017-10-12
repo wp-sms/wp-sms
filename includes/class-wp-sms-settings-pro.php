@@ -362,9 +362,9 @@ class WP_SMS_Settings_Pro {
 			);
 		}
 
-		$settings = apply_filters( 'wps_pp_registered_settings', array(
+		$settings = apply_filters( 'wp_sms_pp_registered_settings', array(
 			// Options for wordpress tab
-			'wp'  => apply_filters( 'wps_pp_wp_settings', array(
+			'wp'  => apply_filters( 'wp_sms_pp_wp_settings', array(
 				'login_title'         => array(
 					'id'   => 'login_title',
 					'name' => __( 'Login', 'wp-sms' ),
@@ -391,7 +391,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for BuddyPress tab
-			'bp'  => apply_filters( 'wps_pp_bp_settings', array(
+			'bp'  => apply_filters( 'wp_sms_pp_bp_settings', array(
 				'bp_fields'                 => array(
 					'id'   => 'bp_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -456,7 +456,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for Woocommerce tab
-			'wc'  => apply_filters( 'wps_pp_wc_settings', array(
+			'wc'  => apply_filters( 'wp_sms_pp_wc_settings', array(
 				'wc_fields'                  => array(
 					'id'   => 'wc_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -623,11 +623,11 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for Gravityforms tab
-			'gf'  => apply_filters( 'wps_pp_gf_settings', $gf_forms ),
+			'gf'  => apply_filters( 'wp_sms_pp_gf_settings', $gf_forms ),
 			// Options for Quform tab
-			'qf'  => apply_filters( 'wps_pp_qf_settings', $qf_forms ),
+			'qf'  => apply_filters( 'wp_sms_pp_qf_settings', $qf_forms ),
 			// Options for Easy Digital Downloads tab
-			'edd' => apply_filters( 'wps_pp_edd_settings', array(
+			'edd' => apply_filters( 'wp_sms_pp_edd_settings', array(
 				'edd_fields'                  => array(
 					'id'   => 'edd_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -696,7 +696,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for WP Job Manager tab
-			'job' => apply_filters( 'wps_job_settings', array(
+			'job' => apply_filters( 'wp_sms_job_settings', array(
 				'job_fields'                  => array(
 					'id'   => 'job_fields',
 					'name' => __( 'Mobile field', 'wp-sms' ),
