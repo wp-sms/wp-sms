@@ -226,7 +226,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
-* Upadated setting page.
+* Updated setting page styles.
+* Disabled gateway key field if not available in the current gateway.
 * Fixed issue in `text_callback` method on the options library. Used `isset` to skip undefined error.
 
 = 4.0.13 =
