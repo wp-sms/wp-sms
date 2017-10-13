@@ -197,18 +197,17 @@ Add new subscribe to sms newsletter
 	POST /wpsms/v1/subscriber/add
 
 == Screenshots ==
-1. Settings Page.
-2. Gateway configuration.
-3. Features page.
-4. Notifications page.
-5. Integrations page.
-6. Send SMS Page.
-7. Outbox SMS Page.
-8. Subscribers Page.
-9. At a Glance.
-10. SMS Newsletter widget.
-11. Send post to subscribers.
-12. Contact Form 7 notifications.
+1. Gateway configuration.
+2. Features page.
+3. Notifications page.
+4. Integrations page.
+5. Send SMS Page.
+6. Outbox SMS Page.
+7. Subscribers Page.
+8. At a Glance.
+9. SMS Newsletter widget.
+10. Send post to subscribers.
+11. Contact Form 7 notifications.
 
 == Upgrade Notice ==
 = 4.0.0 =
