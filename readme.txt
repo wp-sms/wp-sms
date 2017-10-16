@@ -1,7 +1,7 @@
 === Wordpress SMS ===
 Contributors: mostafa.s1990
-Donate link: http://mostafa-soufi.ir/donate/
-Tags: sms, wordpress, send, subscribe, sms subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes sms, Easy Digital Downloads, twilio, bulksms, clockworksms, nexmo
+Donate link: http://wordpresssmsplugin.com/donate
+Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.8
 Stable tag: 4.0.14
