@@ -8,11 +8,11 @@ Stable tag: 4.0.14
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-A simple and powerful texting plugin for wordpress
+A powerful texting plugin for WordPress
 
 == Description ==
-You can add to wordpress, the ability of sending sms, member of sms newsletter and send to them sms.
-To every changement of position in wordpress, you can send a sms through this plugin.
+You can add to WordPress, the ability to send SMS, member of SMS newsletter and send the SMS.
+To every happening in WordPress, you can send an SMS through this plugin.
 
 The usage of this plugin is completely free. You have to just have an account from a service in the gateway list's that we support them.
 Don't worry, we have tried to add the best and the most gateways to plugin.
