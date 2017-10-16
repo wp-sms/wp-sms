@@ -227,7 +227,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_assets() {
-		wp_register_style( 'wpsms-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/admin.css', true, '1.1' );
+		wp_register_style( 'wpsms-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/admin.css', true, '1.2' );
 		wp_enqueue_style( 'wpsms-admin-css' );
 
 		wp_enqueue_style( 'wpsms-chosen-css', plugin_dir_url( __FILE__ ) . 'assets/css/chosen.min.css', true, '1.2.0' );
