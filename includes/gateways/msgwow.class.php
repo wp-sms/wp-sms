@@ -52,7 +52,7 @@ class msgwow extends WP_SMS {
 		$to = implode( ',', $this->to );
 
 		$from = explode( ':', $this->from );
-		if ( is_array( $from ) ) {
+		if ( is_array( $from ) and isset($from[1]) ) {
 			$route = $from[1];
 		} else {
 			$route = 4;
