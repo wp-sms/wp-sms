@@ -16,6 +16,9 @@ class WP_SMS_Features {
 	protected $db;
 	protected $tb_prefix;
 
+	/**
+	 * WP_SMS_Features constructor.
+	 */
 	public function __construct() {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
@@ -37,6 +40,12 @@ class WP_SMS_Features {
 		}
 	}
 
+	/**
+	 * @param $mobile_number
+	 * @param null $user_id
+	 *
+	 * @return bool
+	 */
 	private function check_mobile_number( $mobile_number, $user_id = null ) {
 		if ( $user_id ) {
 			$result = $this->db->get_results( "SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobile_number}' AND user_id != '{$user_id}'" );
@@ -51,6 +60,9 @@ class WP_SMS_Features {
 		}
 	}
 
+	/**
+	 * @param $user_id
+	 */
 	private function delete_user_mobile( $user_id ) {
 		$this->db->delete(
 			$this->tb_prefix . "usermeta",
@@ -61,6 +73,9 @@ class WP_SMS_Features {
 		);
 	}
 
+	/**
+	 * @param $user_id
+	 */
 	public function check_admin_duplicate_number( $user_id ) {
 		// Get user mobile
 		$user_mobile = get_user_meta( $user_id, 'mobile', true );
@@ -79,6 +94,11 @@ class WP_SMS_Features {
 		include_once dirname( __FILE__ ) . "/templates/wp-sms-mobile-field.php";
 	}
 
+	/**
+	 * @param $fields
+	 *
+	 * @return mixed
+	 */
 	public function add_mobile_field_to_profile_form( $fields ) {
 		$fields['mobile'] = __( 'Mobile', 'wp-sms' );
 
@@ -90,6 +110,13 @@ class WP_SMS_Features {
 		include_once dirname( __FILE__ ) . "/templates/wp-sms-mobile-field-register.php";
 	}
 
+	/**
+	 * @param $errors
+	 * @param $sanitized_user_login
+	 * @param $user_email
+	 *
+	 * @return mixed
+	 */
 	public function registration_errors( $errors, $sanitized_user_login, $user_email ) {
 		if ( empty( $_POST['mobile'] ) ) {
 			$errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include a mobile number.', 'wp-sms' ) );
@@ -102,6 +129,9 @@ class WP_SMS_Features {
 		return $errors;
 	}
 
+	/**
+	 * @param $user_id
+	 */
 	public function save_register( $user_id ) {
 		if ( isset( $_POST['mobile'] ) ) {
 			update_user_meta( $user_id, 'mobile', $_POST['mobile'] );

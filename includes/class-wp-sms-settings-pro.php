@@ -365,29 +365,24 @@ class WP_SMS_Settings_Pro {
 		$settings = apply_filters( 'wp_sms_pp_registered_settings', array(
 			// Options for wordpress tab
 			'wp'  => apply_filters( 'wp_sms_pp_wp_settings', array(
-				'login_title'         => array(
+				'login_title'          => array(
 					'id'   => 'login_title',
 					'name' => __( 'Login', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'login_sms'           => array(
+				'login_sms'            => array(
 					'id'      => 'login_sms',
 					'name'    => __( 'Login with mobile', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'This option add login with sms in the auth form', 'wp-sms' ),
+					'desc'    => __( 'This option adds login with SMS in the login form.', 'wp-sms' ),
 				),
-				'register_title'      => array(
-					'id'   => 'register_title',
-					'name' => __( 'Register', 'wp-sms' ),
-					'type' => 'header'
-				),
-				'register_verify_sms' => array(
-					'id'      => 'register_verify_sms',
-					'name'    => __( 'Verify registration', 'wp-sms' ),
+				'mobile_verify' => array(
+					'id'      => 'mobile_verify',
+					'name'    => __( 'Verify mobile number', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Verify user registration in WordPress with SMS. The feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the registration form.', 'wp-sms' ),
+					'desc'    => __( 'Verify mobile number in the login form. This feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms' ),
 				),
 			) ),
 			// Options for BuddyPress tab
