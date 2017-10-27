@@ -225,7 +225,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
-* Updated setting fields.
+* Updated option fields.
 
 = 4.0.14 =
 * Updated setting page styles.

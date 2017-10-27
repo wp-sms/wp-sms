@@ -48,7 +48,9 @@ class experttexting extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "json/Message/Send?username=" . $this->username . "&password=" . $this->password . "&api_key=" . $this->has_key . "&from=" . $this->from . "&to=" . implode( ',', $this->to ) . "&text=" . urlencode( $this->msg ) . "&type=text", array( 'timeout' => 30 ) );
+		foreach ( $this->to as $to ) {
+			$response = wp_remote_get( $this->wsdl_link . "json/Message/Send?username=" . $this->username . "&password=" . $this->password . "&api_key=" . $this->has_key . "&from=" . $this->from . "&to=" . $to . "&text=" . urlencode( $this->msg ) . "&type=text", array( 'timeout' => 30 ) );
+		}
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
