@@ -184,6 +184,7 @@ class WP_SMS_Gateway {
 				'parandhost'     => 'parandhost.com',
 				'eshare'         => 'eshare.com',
 				'abrestan'       => 'abrestan.com',
+				'sabanovin'      => 'sabanovin.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
