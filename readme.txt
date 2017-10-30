@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = dev-master =
 * Updated option fields.
+* Added sabanovin.com gateway.
 
 = 4.0.14 =
 * Updated setting page styles.

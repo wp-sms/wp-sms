@@ -78,31 +78,6 @@ class sabanovin extends WP_SMS {
 		} else {
 			return new WP_Error( 'send-sms', $json->status->message );
 		}
-
-		// Check response code
-		if ( $response_code == '200' ) {
-			$json = json_decode( $response['body'] );
-
-			if ( $json->Status == 0 ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
-
-				/**
-				 * Run hook after send sms.
-				 *
-				 * @since 2.4
-				 *
-				 * @param string $response result output.
-				 */
-				do_action( 'wp_sms_send', $json );
-
-				return $json;
-			} else {
-				return new WP_Error( 'send-sms', $json->ErrorMessage );
-			}
-
-		} else {
-			return new WP_Error( 'send-sms', $response['body'] );
-		}
 	}
 
 	public function GetCredit() {
