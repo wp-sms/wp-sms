@@ -12,7 +12,7 @@ class WP_SMS_Gateway {
 	/**
 	 * @var
 	 */
-	static $error_message;
+	static $get_response;
 
 	/**
 	 * @return mixed|void
@@ -223,7 +223,7 @@ class WP_SMS_Gateway {
 
 		if ( is_wp_error( $result ) ) {
 			// Set error message
-			self::$error_message = $result->get_error_message();
+			self::$get_response = $result->get_error_message();
 
 			// Update credit
 			update_option( 'wp_last_credit', 0 );
@@ -234,8 +234,10 @@ class WP_SMS_Gateway {
 			// Update credit
 			update_option( 'wp_last_credit', $result );
 
+			self::$get_response = $result;
+
 			// Return html
-			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . sprintf( __( 'Active!, account balance: %s', 'wp-sms' ), $result ) . '</div>';
+			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Active!', 'wp-sms' ) . '</div>';
 		}
 	}
 
@@ -243,7 +245,7 @@ class WP_SMS_Gateway {
 	 * @return mixed
 	 */
 	public static function response() {
-		return self::$error_message;
+		return self::$get_response;
 	}
 
 	/**
