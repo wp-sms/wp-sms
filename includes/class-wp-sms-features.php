@@ -31,7 +31,7 @@ class WP_SMS_Features {
 		if ( isset( $this->options['add_mobile_field'] ) ) {
 			add_action( 'user_new_form', array( &$this, 'add_mobile_field_to_newuser_form' ) );
 			add_filter( 'user_contactmethods', array( &$this, 'add_mobile_field_to_profile_form' ) );
-			add_action( 'register_form', array( &$this, 'add_mobile_field_to_register_form' ) );
+			add_action( 'signup_extra_fields', array( &$this, 'add_mobile_field_to_register_form' ) );
 			add_filter( 'registration_errors', array( &$this, 'registration_errors' ), 10, 3 );
 			add_action( 'user_register', array( &$this, 'save_register' ) );
 
