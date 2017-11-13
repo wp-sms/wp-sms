@@ -1,13 +1,14 @@
 <?php
-/*
-Plugin Name: WP SMS
-Plugin URI: http://wordpresssmsplugin.com/
-Description: A powerful texting plugin for WordPress
-Version: 4.0.14
-Author: Verona Labs
-Author URI: http://veronalabs.com/
-Text Domain: wp-sms
-*/
+/**
+ * Plugin Name: WP SMS
+ * Plugin URI: http://wordpresssmsplugin.com/
+ * Description: A powerful texting plugin for WordPress
+ * Version: 4.0.14
+ * Author: Verona Labs
+ * Author URI: http://veronalabs.com/
+ * Text Domain: wp-sms
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly

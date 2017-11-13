@@ -1,4 +1,4 @@
-=== Wordpress SMS ===
+=== WP SMS ===
 Contributors: mostafa.s1990
 Donate link: http://wordpresssmsplugin.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo

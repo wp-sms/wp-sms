@@ -87,7 +87,7 @@ class WP_SMS_Integrations {
 				$plain_data[ $index ] = $key;
 			}
 		}
-
+		
 		if ( $cf7_options['message'] && $cf7_options['phone'] ) {
 			$this->sms->to  = array( $cf7_options['phone'] );
 			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options['message'] );
