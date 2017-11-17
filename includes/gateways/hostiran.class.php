@@ -49,11 +49,10 @@ class hostiran extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$options = array( 'login' => $this->username, 'password' => $this->password );
-		$client  = new SoapClient( $this->wsdl_link, $options );
 
-		$result = $client->sendToMany( $this->to, $this->msg, $this->from );
-
-		if ( $result ) {
+		try {
+			$client = new SoapClient( $this->wsdl_link, $options );
+			$result = $client->sendToMany( $this->to, $this->msg, $this->from );
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
 			/**
@@ -66,10 +65,9 @@ class hostiran extends WP_SMS {
 			do_action( 'wp_sms_send', $result );
 
 			return $result;
+		} catch ( Exception $e ) {
+			return new WP_Error( 'send-sms', $e->getMessage() );
 		}
-
-		return new WP_Error( 'send-sms', $result );
-
 	}
 
 	public function GetCredit() {
@@ -86,16 +84,11 @@ class hostiran extends WP_SMS {
 
 		try {
 			$client = new SoapClient( $this->wsdl_link, $options );
-		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
-		}
-
-		try {
 			$credit = $client->accountInfo();
 
 			return $credit->remaining;
-		} catch ( SoapFault $sf ) {
-			return new WP_Error( 'account-credit', $ex->faultstring );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}
 }

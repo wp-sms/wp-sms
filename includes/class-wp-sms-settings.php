@@ -298,7 +298,7 @@ class WP_SMS_Settings {
 				),
 				'account_credit_in_sendsms' => array(
 					'id'      => 'account_credit_in_sendsms',
-					'name'    => __( 'Show in send SMS', 'wp-sms' ),
+					'name'    => __( 'Show in send SMS page', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Show your account credit in send SMS page.', 'wp-sms' )
