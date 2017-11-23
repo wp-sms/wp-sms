@@ -89,7 +89,7 @@ class WP_SMS_Version {
 	}
 
 	public function setting_title_pro_not_activated() {
-		if ( !$this->pro_is_exists() ) {
+		if ( ! $this->pro_is_exists() ) {
 			$html = '<a style="margin: 10px 0; font-weight: normal;" target="_blank" href="http://wordpresssmsplugin.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
 			echo $html;
 		}
@@ -126,6 +126,7 @@ class WP_SMS_Version {
 			'mobily'           => 'mobily.ws',
 			'moceansms'        => 'moceansms.com',
 			'msg91'            => 'msg91.com',
+			'msg360'           => 'msg360.in',
 			'livesms'          => 'livesms.eu',
 			'ozioma'           => 'ozioma.net',
 			'pswin'            => 'pswin.com',

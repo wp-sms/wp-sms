@@ -83,7 +83,12 @@ The professional package supported following gateways:
 * cmtelecom.com
 * viensms.com
 * moceansms.com
+* smsfactor.com
+* textmarketer.co.uk
+* clicksend.com
+* smsapi.com
 * msg91.com
+* msg360.in
 * yamamah.com
 * magicdeal4u.com
 * sendsms247.com
@@ -102,10 +107,6 @@ The professional package supported following gateways:
 * cpsms.dk
 * bulksmshyderabad.co.in
 * ozioma.net
-* smsfactor.com
-* textmarketer.co.uk
-* clicksend.com
-* smsapi.com
 
 = What is the features of pro pack version? =
 * Verify user registration by sms verification code
