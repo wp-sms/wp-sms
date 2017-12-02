@@ -69,20 +69,18 @@ class candoosms extends WP_SMS {
 			if ( $client->getError() ) {
 				return new WP_Error( 'send-sms', $client->getError() );
 			} else {
-				foreach ( $result as $value ) {
-					$this->InsertToDB( $this->from, $this->msg, $this->to );
+				$this->InsertToDB( $this->from, $this->msg, $this->to );
 
-					/**
-					 * Run hook after send sms.
-					 *
-					 * @since 2.4
-					 *
-					 * @param string $result result output.
-					 */
-					do_action( 'wp_sms_send', $result );
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 *
+				 * @param string $result result output.
+				 */
+				do_action( 'wp_sms_send', $result );
 
-					return $result;
-				}
+				return $result;
 			}
 		}
 	}
