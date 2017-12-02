@@ -71,6 +71,7 @@ class WP_SMS_Gateway {
 				'pridesms'         => 'pridesms.in',
 				'smsozone'         => 'ozonesms.com',
 				'msgwow'           => 'msgwow.com',
+				'ozonesmsworld'    => 'ozonesmsworld.com',
 			),
 			'iran'           => array(
 				'iransmspanel'   => 'iransmspanel.ir',
