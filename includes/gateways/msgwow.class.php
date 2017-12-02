@@ -100,7 +100,7 @@ class msgwow extends WP_SMS {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		$response = wp_remote_get( $this->wsdl_link . "balance.php?authkey=" . $this->has_key . "&type=1", array( 'timeout' => 30 ) );
+		$response = wp_remote_get( $this->wsdl_link . "balance.php?authkey=" . $this->has_key . "&type=4", array( 'timeout' => 30 ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {

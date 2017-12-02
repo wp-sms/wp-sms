@@ -185,6 +185,7 @@ class WP_SMS_Gateway {
 				'eshare'         => 'eshare.com',
 				'abrestan'       => 'abrestan.com',
 				'sabanovin'      => 'sabanovin.com',
+				'candoosms'      => 'candoosms.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
