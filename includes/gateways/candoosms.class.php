@@ -59,10 +59,10 @@ class candoosms extends WP_SMS {
 			'password'  => $this->password,
 			'srcNumber' => $this->from,
 			'body'      => $this->msg,
-			'destNo'    => $this->tariff,
-			'flash'     => $this->isflash
+			'destNo'    => $this->to,
+			'flash'     => '0'
 		) );
-
+		
 		if ( $client->fault ) {
 			return new WP_Error( 'send-sms', $result );
 		} else {
