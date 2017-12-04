@@ -50,7 +50,7 @@ class ozonesmsworld extends WP_SMS {
 		$to  = implode( $this->to, "," );
 		$msg = urlencode( $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "/?action=compose&username=" . $this->username . "&api_key=" . $this->has_key . "&sender=" . $this->from . "&to=" . $to . "&message=" . $msg . "&unicode=1" );
+		$response = wp_remote_get( $this->wsdl_link . "/?action=compose&username=" . $this->username . "&api_key=" . $this->has_key . "&sender=" . $this->from . "&to=" . $to . "&message=" . $msg . "&unicode=0" );
 
 		// Check response error
 		if ( is_wp_error( $response ) ) {

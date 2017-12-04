@@ -62,7 +62,7 @@ class candoosms extends WP_SMS {
 			'destNo'    => $this->to,
 			'flash'     => '0'
 		) );
-		
+
 		if ( $client->fault ) {
 			return new WP_Error( 'send-sms', $result );
 		} else {
