@@ -64,6 +64,7 @@ class WP_SMS_Gateway {
 			),
 			'india'          => array(
 				'shreesms'         => 'shreesms.net',
+				'ozonesmsworld'    => 'ozonesmsworld.com',
 				'instantalerts'    => 'springedge.com',
 				'smsgatewayhub'    => 'smsgatewayhub.com',
 				'smsgatewaycenter' => 'smsgatewaycenter.com',
@@ -71,7 +72,6 @@ class WP_SMS_Gateway {
 				'pridesms'         => 'pridesms.in',
 				'smsozone'         => 'ozonesms.com',
 				'msgwow'           => 'msgwow.com',
-				'ozonesmsworld'    => 'ozonesmsworld.com',
 			),
 			'iran'           => array(
 				'iransmspanel'   => 'iransmspanel.ir',
