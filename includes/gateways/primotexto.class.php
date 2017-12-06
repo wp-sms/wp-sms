@@ -13,7 +13,7 @@ class primotexto extends WP_SMS {
 		$this->validateNumber = "Format: 0600000000, +33600000000";
 		$this->help           = 'Vous devez génerer une clé depuis votre <a href="https://www.primotexto.com/webapp/#/developer/keys">interface Primotexto</a> pour pouvoir utiliser l\'API.';
 		$this->has_key        = true;
-		$this->bulk_send      = false;
+		//$this->bulk_send      = false;
 		require_once 'includes/primotexto/baseManager.class.php';
 	}
 
@@ -54,14 +54,16 @@ class primotexto extends WP_SMS {
 		authenticationManager::setApiKey( $this->has_key );
 
 		// New notification SMS
-		$sms          = new Sms;
-		$sms->type    = 'notification';
-		$sms->number  = $this->to[0];
-		$sms->message = urlencode($this->msg);
-		$sms->sender  = $this->from;
+		foreach ( $this->to as $item ) {
+			$sms          = new Sms;
+			$sms->type    = 'notification';
+			$sms->number  = $item;
+			$sms->message = urlencode($this->msg);
+			$sms->sender  = $this->from;
 
-		$result = messagesManager::messagesSend( $sms );
-		$json   = json_decode( $result );
+			$result = messagesManager::messagesSend( $sms );
+			$json   = json_decode( $result );
+		}
 
 		if ( isset( $json->snapshotId ) ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
