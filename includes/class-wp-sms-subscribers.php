@@ -134,7 +134,7 @@ class WP_SMS_Subscriptions {
 	 * @param $mobile
 	 * @param null $group_id
 	 *
-	 * @return false|int
+	 * @return array
 	 */
 	public function delete_subscriber_by_number( $mobile, $group_id = null ) {
 		$result = $this->db->delete(
