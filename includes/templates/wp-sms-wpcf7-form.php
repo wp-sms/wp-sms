@@ -9,6 +9,7 @@
                 <td>
                     <input type="text" value="<?php echo $cf7_options['phone']; ?>" size="70" class="large-text code"
                            name="wpcf7-sms[phone]" id="wpcf7-sms-sender">
+                    <p class="description"><?php _e( '<b>Note:</b> To send more than one number, separate the numbers with a comma. (e.g. 10000000001,10000000002)', 'wp-sms' ); ?></p>
                 </td>
             </tr>
 

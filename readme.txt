@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
+* Added Send SMS to multi numbers in the Contact Form 7.
 * Fixed times issue in the outbox SMS.
 
 = 4.0.15 =
