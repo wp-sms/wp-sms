@@ -228,7 +228,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'gf_notify_receiver_form_' . $form->id,
 					'name' => __( 'Send SMS', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				);
 				$gf_forms[ 'gf_notify_message_form_' . $form->id ]  = array(
 					'id'   => 'gf_notify_message_form_' . $form->id,
@@ -308,7 +308,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'qf_notify_receiver_form_' . $form['id'],
 					'name' => __( 'Send SMS', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				);
 				$qf_forms[ 'qf_notify_message_form_' . $form['id'] ]  = array(
 					'id'   => 'qf_notify_message_form_' . $form['id'],
@@ -365,12 +365,12 @@ class WP_SMS_Settings_Pro {
 		$settings = apply_filters( 'wp_sms_pp_registered_settings', array(
 			// Options for wordpress tab
 			'wp'  => apply_filters( 'wp_sms_pp_wp_settings', array(
-				'login_title'          => array(
+				'login_title'   => array(
 					'id'   => 'login_title',
 					'name' => __( 'Login', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'login_sms'            => array(
+				'login_sms'     => array(
 					'id'      => 'login_sms',
 					'name'    => __( 'Login with mobile', 'wp-sms' ),
 					'type'    => 'checkbox',
@@ -522,7 +522,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'wc_notify_order_receiver',
 					'name' => __( 'SMS receiver', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				),
 				'wc_notify_order_message'    => array(
 					'id'   => 'wc_notify_order_message',
@@ -578,7 +578,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'wc_notify_stock_receiver',
 					'name' => __( 'SMS receiver', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				),
 				'wc_notify_stock_message'    => array(
 					'id'   => 'wc_notify_stock_message',
@@ -651,7 +651,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'edd_notify_order_receiver',
 					'name' => __( 'SMS receiver', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				),
 				'edd_notify_order_message'    => array(
 					'id'   => 'edd_notify_order_message',
@@ -727,7 +727,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'job_notify_receiver',
 					'name' => __( 'SMS receiver', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms', 'wp-sms' )
+					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				),
 				'job_notify_message'          => array(
 					'id'   => 'job_notify_message',
@@ -844,7 +844,7 @@ class WP_SMS_Settings_Pro {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -863,7 +863,7 @@ class WP_SMS_Settings_Pro {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="number" step="' . esc_attr( $step ) . '" max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -878,7 +878,7 @@ class WP_SMS_Settings_Pro {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<textarea class="large-text" cols="50" rows="5" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']">' . esc_textarea( stripslashes( $value ) ) . '</textarea>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -893,7 +893,7 @@ class WP_SMS_Settings_Pro {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="password" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '"/>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -921,7 +921,7 @@ class WP_SMS_Settings_Pro {
 		endforeach;
 
 		$html .= '</select>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -954,7 +954,7 @@ class WP_SMS_Settings_Pro {
 		}
 
 		$html .= '</select>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -975,13 +975,13 @@ class WP_SMS_Settings_Pro {
 		endforeach;
 
 		$html .= '</select>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
 
 	public function rich_editor_callback( $args ) {
-		$wp_version;
+		global $wp_version;
 
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
@@ -995,7 +995,7 @@ class WP_SMS_Settings_Pro {
 			$html = '<textarea class="large-text" rows="10" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']">' . esc_textarea( stripslashes( $value ) ) . '</textarea>';
 		}
 
-		$html .= '<br/><label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -1011,7 +1011,7 @@ class WP_SMS_Settings_Pro {
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="text" class="' . $size . '-text wpsms_upload_field" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
 		$html .= '<span>&nbsp;<input type="button" class="wps_pp_settings_upload_button button-secondary" value="' . __( 'Upload File', 'wpsms' ) . '"/></span>';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -1028,7 +1028,7 @@ class WP_SMS_Settings_Pro {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="text" class="wpsms-color-picker" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '" data-default-color="' . esc_attr( $default ) . '" />';
-		$html .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}

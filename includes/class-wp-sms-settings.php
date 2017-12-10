@@ -548,7 +548,7 @@ class WP_SMS_Settings {
 		$checked = isset( $this->options[ $args['id'] ] ) ? checked( 1, $this->options[ $args['id'] ], false ) : '';
 		$html    = '<input type="checkbox" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="1" ' . $checked . '/>';
 		$html    .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . __( 'Active', 'wp-sms' ) . '</label>';
-		$html    .= '<p class="description">' . $args['desc'] . '</p>';
+		$html    .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -593,7 +593,7 @@ class WP_SMS_Settings {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="text" class="' . $size . '-text" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -611,7 +611,7 @@ class WP_SMS_Settings {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="number" step="' . esc_attr( $step ) . '" max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" class="' . $size . '-text" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -625,7 +625,7 @@ class WP_SMS_Settings {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<textarea class="large-text" cols="50" rows="5" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']">' . esc_textarea( stripslashes( $value ) ) . '</textarea>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -639,7 +639,7 @@ class WP_SMS_Settings {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="password" class="' . $size . '-text" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '"/>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -666,7 +666,7 @@ class WP_SMS_Settings {
 		endforeach;
 
 		$html .= '</select>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -699,7 +699,7 @@ class WP_SMS_Settings {
 		}
 
 		$html .= '</select>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -719,13 +719,13 @@ class WP_SMS_Settings {
 		endforeach;
 
 		$html .= '</select>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
 
 	public function rich_editor_callback( $args ) {
-		$wp_version;
+		global $wp_version;
 
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
@@ -739,7 +739,7 @@ class WP_SMS_Settings {
 			$html = '<textarea class="large-text" rows="10" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']">' . esc_textarea( stripslashes( $value ) ) . '</textarea>';
 		}
 
-		$html .= '<br/><label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -754,7 +754,7 @@ class WP_SMS_Settings {
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="text" class="' . $size . '-text wpsms_upload_field" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
 		$html .= '<span>&nbsp;<input type="button" class="wpsms_settings_upload_button button-secondary" value="' . __( 'Upload File', 'wpsms' ) . '"/></span>';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -770,7 +770,7 @@ class WP_SMS_Settings {
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$html = '<input type="text" class="wpsms-color-picker" id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '" data-default-color="' . esc_attr( $default ) . '" />';
-		$html .= '<label for="wpsms_settings[' . $args['id'] . ']"> ' . $args['desc'] . '</label>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
@@ -788,7 +788,7 @@ class WP_SMS_Settings {
                     <li id="wpsms-logo">
                         <img src="<?php echo WP_SMS_DIR_PLUGIN; ?>assets/images/logo-250.png"/>
                         <p><?php echo sprintf( __( 'WP-SMS v%s', 'wp-sms' ), WP_SMS_VERSION ); ?></p>
-	                    <?php do_action( 'wp_sms_after_setting_logo' ); ?>
+						<?php do_action( 'wp_sms_after_setting_logo' ); ?>
                     </li>
 					<?php
 					foreach ( $this->get_tabs() as $tab_id => $tab_name ) {
