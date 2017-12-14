@@ -200,9 +200,10 @@ class WP_SMS_Gateway {
 				'websmscy' => 'websms.com.cy',
 			),
 			'arabic'         => array(
-				'gateway'  => 'gateway.sa',
-				'resalaty' => 'resalaty.com',
-				'asr3sms'  => 'asr3sms.com',
+				'gateway'    => 'gateway.sa',
+				'resalaty'   => 'resalaty.com',
+				'asr3sms'    => 'asr3sms.com',
+				'infodomain' => 'infodomain.asia',
 			),
 			'other'          => array(
 				'smss'     => 'smss.co.il',
