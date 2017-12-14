@@ -116,6 +116,7 @@ class WP_SMS_Version {
 			'infobip'          => 'infobip.com',
 			'nexmo'            => 'nexmo.com',
 			'clockworksms'     => 'clockworksms.com',
+			'messagebird'      => 'messagebird.com',
 			'clicksend'        => 'clicksend.com',
 			'smsapicom'        => 'smsapi.com',
 			'dsms'             => 'dsms.in',

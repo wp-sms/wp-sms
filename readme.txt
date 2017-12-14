@@ -80,6 +80,7 @@ The professional package supported following gateways:
 * Infobip.com
 * Nexmo.com
 * Clockworksms.com
+* Messagebird.com
 * Clicksend.com
 * Smsapi.com
 * Dsms.in
@@ -233,7 +234,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 = 4.0.15 =
 * Updated option fields.
-* Added sabanovin.com gateway.
+* Added mensatek.com and sabanovin.com gateway.
 
 = 4.0.14 =
 * Updated setting page styles.

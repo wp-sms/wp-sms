@@ -51,7 +51,7 @@ class WP_SMS_Gateway {
 			'spain'          => array(
 				'afilnet'    => 'afilnet.com',
 				'labsmobile' => 'labsmobile.com',
-				'mensatek'   => 'mensatek.com',
+				'mensatek'=>'mensatek.com'
 			),
 			'new zealand'    => array(
 				'unisender' => 'unisender.com',
