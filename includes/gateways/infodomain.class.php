@@ -54,10 +54,23 @@ class infodomain extends WP_SMS {
 
 		// Ger response code
 		$response_code = wp_remote_retrieve_response_code( $response );
-
+		
 		// Check response code
 		if ( $response_code == '200' ) {
-			if ( $response['body'] != '1701' ) {
+			if ( strpos( $response['body'], '1701:' ) !== false ) {
+				$this->InsertToDB( $this->from, $this->msg, $this->to );
+
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 *
+				 * @param string $response result output.
+				 */
+				do_action( 'wp_sms_send', $response['body'] );
+
+				return $response['body'];
+			} else {
 				$error_message = '';
 
 				switch ( $response['body'] ) {
@@ -100,19 +113,6 @@ class infodomain extends WP_SMS {
 
 				return new WP_Error( 'send-sms', $error_message );
 			}
-
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
-
-			/**
-			 * Run hook after send sms.
-			 *
-			 * @since 2.4
-			 *
-			 * @param string $response result output.
-			 */
-			do_action( 'wp_sms_send', $response['data'] );
-
-			return $response['data'];
 
 		} else {
 			return new WP_Error( 'send-sms', $response['body'] );

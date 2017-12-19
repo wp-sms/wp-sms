@@ -54,7 +54,6 @@ class spirius extends WP_SMS {
 
 		$response = wp_remote_get( $this->wsdl_link . "sendsms?User=" . $this->username . "&Pass=" . $this->password . "&To=" . $to . "&From=" . $this->from . "&Msg=" . $this->msg, array( 'timeout' => 30 ) );
 
-
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
 			return new WP_Error( 'account-credit', $response->get_error_message() );
