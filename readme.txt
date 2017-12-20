@@ -231,10 +231,11 @@ In this version, we have made a lot of changes. We tried using the free version 
 = dev-master =
 * Added Send SMS to multi numbers in the Contact Form 7.
 * Fixed times issue in the outbox SMS.
+* Added Several gateways. (Comilio.it, mensatek.com, and infodomain.asia)
 
 = 4.0.15 =
 * Updated option fields.
-* Added mensatek.com, sabanovin.com and infodomain.asia gateways.
+* Added sabanovin.com gateway.
 
 = 4.0.14 =
 * Updated setting page styles.

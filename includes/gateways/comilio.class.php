@@ -48,11 +48,11 @@ class comilio extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$payload = array(
-           'message_type' => 'Smart',
-           'phone_numbers' => $this->to,
-           'text' => $this->msg,
-		   'sender_string' => $this->from
-       );
+			'message_type'  => 'Smart',
+			'phone_numbers' => $this->to,
+			'text'          => $this->msg,
+			'sender_string' => $this->from
+		);
 
 		$to_smsh = curl_init( "{$this->wsdl_link}/message" );
 		curl_setopt( $to_smsh, CURLOPT_POST, true );
@@ -118,11 +118,12 @@ class comilio extends WP_SMS {
 			} elseif ( $this->smsh_response_status != 200 ) {
 				return new WP_Error( 'account-credit', $result );
 			} else {
-				for ($i = 0; $i < count($jsonObj); $i++) {
-					if ($jsonObj[$i]->message_type === 'Smart') {
-						return $jsonObj[$i]->quantity;
+				for ( $i = 0; $i < count( $jsonObj ); $i ++ ) {
+					if ( $jsonObj[ $i ]->message_type === 'Smart' ) {
+						return $jsonObj[ $i ]->quantity;
 					}
 				}
+
 				return new WP_Error( 'account-credit', $result );
 			}
 		} else {
