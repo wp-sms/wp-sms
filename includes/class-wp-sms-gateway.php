@@ -62,6 +62,7 @@ class WP_SMS_Gateway {
 			'italy'          => array(
 				'dot4all'    => 'dot4all.it',
 				'smshosting' => 'smshosting.it',
+				'comilio'    => 'comilio.it',
 			),
 			'india'          => array(
 				'shreesms'         => 'shreesms.net',
