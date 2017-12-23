@@ -200,6 +200,9 @@ class WP_SMS_Gateway {
 			'cyprus'         => array(
 				'websmscy' => 'websms.com.cy',
 			),
+			'ukraine'        => array(
+				'smsc' => 'smsc.ua',
+			),
 			'arabic'         => array(
 				'gateway'    => 'gateway.sa',
 				'resalaty'   => 'resalaty.com',

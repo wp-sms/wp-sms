@@ -54,7 +54,7 @@ class infodomain extends WP_SMS {
 
 		// Ger response code
 		$response_code = wp_remote_retrieve_response_code( $response );
-		
+
 		// Check response code
 		if ( $response_code == '200' ) {
 			if ( strpos( $response['body'], '1701:' ) !== false ) {

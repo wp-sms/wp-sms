@@ -231,7 +231,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = dev-master =
 * Added Send SMS to multi numbers in the Contact Form 7.
 * Fixed times issue in the outbox SMS.
-* Added Several gateways. (Comilio.it, mensatek.com, and infodomain.asia)
+* Added Several gateways. (Comilio.it, Mensatek.com, Infodomain.asia and Smsc.ua)
 
 = 4.0.15 =
 * Updated option fields.
