@@ -56,10 +56,9 @@ class Mobtexting extends WP_SMS {
 			'api_key' => $this->has_key,
 			'sender_id' => $this->from,
 			'message' => $msg,
-			'mobile_no' => $to,
-			'timeout'=> 30
+			'mobile_no' => $to
 		);
-		$response = wp_remote_post( $api_end_point, $api_args );
+		$response = wp_remote_post( $api_end_point, Array('body'=>$api_args, 'timeout'=>30) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
