@@ -15,7 +15,7 @@ Very easy Send SMS by PHP code:
 4. `$sms->SendSMS();`
 
 **Do you like this project? Support it by donating**
-- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wordpresssmsplugin.com/donate)
+- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wp-sms-pro.com/donate)
 - ![btc](https://camo.githubusercontent.com/4bc31b03fc4026aa2f14e09c25c09b81e06d5e71/687474703a2f2f7777772e6d6f6e747265616c626974636f696e2e636f6d2f696d672f66617669636f6e2e69636f) Bitcoin: 1vKe5vWbr18KitxFeFnBfjBWcFGBxTd2N
 
 # Features
@@ -39,7 +39,7 @@ Very easy Send SMS by PHP code:
 # Internationalization
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wordpresssmsplugin.com/localization/) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
 
 
 # Installation
@@ -139,5 +139,5 @@ POST /wpsms/v1/subscriber/add
 # Community Links
 Thank you [jetbrains](https://www.jetbrains.com/) for giving us Intellij IDEA Ultimate licenses for develop this project.
 * [Wordpress plugin page](http://wordpress.org/plugins/wp-sms/)
-* [Plugin website](http://wordpresssmsplugin.com/)
-* [Buy Pro version](http://wordpresssmsplugin.com/purchase/)
+* [Plugin website](http://wp-sms-pro.com/)
+* [Buy Pro version](http://wp-sms-pro.com/purchase/)

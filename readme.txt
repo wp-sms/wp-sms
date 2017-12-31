@@ -1,10 +1,10 @@
 === WP SMS ===
 Contributors: mostafa.s1990
-Donate link: http://wordpresssmsplugin.com/donate
+Donate link: http://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.9
-Stable tag: 4.0.16
+Stable tag: 4.0.17
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -42,13 +42,13 @@ https://www.youtube.com/watch?v=50Sv5t6wTrQ
 = Professional Package =
 In the Professional pack added many features, most popular gateway and is integrated with another plugins.
 
-[Buy Professional Package](http://wordpresssmsplugin.com/purchase/)
+[Buy Professional Package](http://wp-sms-pro.com/purchase/)
 
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wordpresssmsplugin.com/localization/) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
 
 = Contributing and Reporting Bugs =
 WP-SMS is being developed on GitHub, If you’re interested in contributing to plugin, Please look at [Github page](https://github.com/veronalabs/wp-sms)
@@ -123,7 +123,7 @@ when one stock product is load, the plugin can send SMS to admin for notify and 
 * Premium Support.
 
 = How to buy? =
-You can buy pro pack version [through this link](http://wordpresssmsplugin.com/purchase/)
+You can buy pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP 7 Support? =
 Yes! WP SMS is compatible with PHP 7 and 7.1
@@ -228,6 +228,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 4.0.17 =
+* IMPORTANT: Updated the domain name of the Plugin website to wp-sms-pro.com
+
 = 4.0.16 =
 * Added Send SMS to multi numbers in the Contact Form 7.
 * Added Several gateways. (Comilio.it, Mensatek.com, Infodomain.asia and Smsc.ua)

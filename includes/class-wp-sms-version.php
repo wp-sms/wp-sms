@@ -82,7 +82,7 @@ class WP_SMS_Version {
 		if ( $this->pro_is_exists() ) {
 			$html .= '<a style="margin-bottom: 8px; font-weight: normal;" href="plugins.php" class="button button-primary">' . __( 'Active WP-SMS-Pro', 'wp-sms' ) . '</a>';
 		} else {
-			$html .= '<a style="margin-bottom: 8px; font-weight: normal;" target="_blank" href="http://wordpresssmsplugin.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
+			$html .= '<a style="margin-bottom: 8px; font-weight: normal;" target="_blank" href="http://wp-sms-pro.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
 		}
 
 		echo $html;
@@ -90,7 +90,7 @@ class WP_SMS_Version {
 
 	public function setting_title_pro_not_activated() {
 		if ( ! $this->pro_is_exists() ) {
-			$html = '<a style="margin: 10px 0; font-weight: normal;" target="_blank" href="http://wordpresssmsplugin.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
+			$html = '<a style="margin: 10px 0; font-weight: normal;" target="_blank" href="http://wp-sms-pro.com/purchase/" class="button button-primary">' . __( 'Buy Professional Pack', 'wp-sms' ) . '</a>';
 			echo $html;
 		}
 	}
