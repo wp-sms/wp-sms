@@ -49,6 +49,11 @@
     vertical-align: sub;
 }
 
+.wpsms-plugin-meta-link.wp-sms-pro {
+    color: green;
+    font-weight: bold;
+}
+
 .wpsms-has-credit {
     color: #3b9d00;
 }
