@@ -106,13 +106,14 @@ class WP_SMS_Settings_Pro {
 	 */
 	public function get_tabs() {
 		$tabs = array(
-			'wp'  => __( 'Wordpress', 'wp-sms' ),
-			'bp'  => __( 'BuddyPress', 'wp-sms' ),
-			'wc'  => __( 'Woocommerce', 'wp-sms' ),
-			'gf'  => __( 'Gravityforms', 'wp-sms' ),
-			'qf'  => __( 'Quform', 'wp-sms' ),
-			'edd' => __( 'Easy Digital Downloads', 'wp-sms' ),
-			'job' => __( 'WP Job Manager', 'wp-sms' ),
+			'general' => __( 'General', 'wp-sms' ),
+			'wp'      => __( 'Wordpress', 'wp-sms' ),
+			'bp'      => __( 'BuddyPress', 'wp-sms' ),
+			'wc'      => __( 'Woocommerce', 'wp-sms' ),
+			'gf'      => __( 'Gravityforms', 'wp-sms' ),
+			'qf'      => __( 'Quform', 'wp-sms' ),
+			'edd'     => __( 'Easy Digital Downloads', 'wp-sms' ),
+			'job'     => __( 'WP Job Manager', 'wp-sms' ),
 		);
 
 		return $tabs;
@@ -211,7 +212,6 @@ class WP_SMS_Settings_Pro {
 			$forms = RGFormsModel::get_forms( null, 'title' );
 
 			foreach ( $forms as $form ):
-
 				$gf_forms[ 'gf_notify_form_' . $form->id ]          = array(
 					'id'   => 'gf_notify_form_' . $form->id,
 					'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form->title ),
@@ -275,7 +275,6 @@ class WP_SMS_Settings_Pro {
 						          )
 					);
 				}
-
 			endforeach;
 		} else {
 			$gf_forms['gf_notify_form'] = array(
@@ -291,7 +290,6 @@ class WP_SMS_Settings_Pro {
 			$forms = iphorm_get_all_forms();
 
 			foreach ( $forms as $form ):
-
 				$qf_forms[ 'qf_notify_form_' . $form['id'] ]          = array(
 					'id'   => 'qf_notify_form_' . $form['id'],
 					'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form['name'] ),
@@ -351,7 +349,6 @@ class WP_SMS_Settings_Pro {
 						          )
 					);
 				}
-
 			endforeach;
 		} else {
 			$qf_forms['qf_notify_form'] = array(
@@ -363,8 +360,22 @@ class WP_SMS_Settings_Pro {
 		}
 
 		$settings = apply_filters( 'wp_sms_pp_registered_settings', array(
+			// Options for general tab
+			'general' => apply_filters( 'wp_sms_pro_general_settings', array(
+				'licence'     => array(
+					'id'   => 'licence',
+					'name' => __( 'Licence', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'licence_key' => array(
+					'id'   => 'licence_key',
+					'name' => __( 'Licence Key', 'wp-sms' ),
+					'type' => 'text',
+					'desc' => __( 'The license key is used for access to automatic update and support.', 'wp-sms' ),
+				),
+			) ),
 			// Options for wordpress tab
-			'wp'  => apply_filters( 'wp_sms_pp_wp_settings', array(
+			'wp'      => apply_filters( 'wp_sms_pp_wp_settings', array(
 				'login_title'   => array(
 					'id'   => 'login_title',
 					'name' => __( 'Login', 'wp-sms' ),
@@ -386,7 +397,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for BuddyPress tab
-			'bp'  => apply_filters( 'wp_sms_pp_bp_settings', array(
+			'bp'      => apply_filters( 'wp_sms_pp_bp_settings', array(
 				'bp_fields'                 => array(
 					'id'   => 'bp_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -451,7 +462,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for Woocommerce tab
-			'wc'  => apply_filters( 'wp_sms_pp_wc_settings', array(
+			'wc'      => apply_filters( 'wp_sms_pp_wc_settings', array(
 				'wc_fields'                  => array(
 					'id'   => 'wc_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -618,11 +629,11 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for Gravityforms tab
-			'gf'  => apply_filters( 'wp_sms_pp_gf_settings', $gf_forms ),
+			'gf'      => apply_filters( 'wp_sms_pp_gf_settings', $gf_forms ),
 			// Options for Quform tab
-			'qf'  => apply_filters( 'wp_sms_pp_qf_settings', $qf_forms ),
+			'qf'      => apply_filters( 'wp_sms_pp_qf_settings', $qf_forms ),
 			// Options for Easy Digital Downloads tab
-			'edd' => apply_filters( 'wp_sms_pp_edd_settings', array(
+			'edd'     => apply_filters( 'wp_sms_pp_edd_settings', array(
 				'edd_fields'                  => array(
 					'id'   => 'edd_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -691,7 +702,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for WP Job Manager tab
-			'job' => apply_filters( 'wp_sms_job_settings', array(
+			'job'     => apply_filters( 'wp_sms_job_settings', array(
 				'job_fields'                  => array(
 					'id'   => 'job_fields',
 					'name' => __( 'Mobile field', 'wp-sms' ),
@@ -1034,7 +1045,7 @@ class WP_SMS_Settings_Pro {
 	}
 
 	public function render_settings() {
-		$active_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->get_tabs() ) ? $_GET['tab'] : 'wp';
+		$active_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->get_tabs() ) ? $_GET['tab'] : 'general';
 
 		ob_start();
 		?>
