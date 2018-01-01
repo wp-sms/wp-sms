@@ -359,7 +359,7 @@ class WP_SMS_Settings_Pro {
 			);
 		}
 
-		$settings = apply_filters( 'wp_sms_pp_registered_settings', array(
+		$settings = apply_filters( 'wp_sms_pro_registered_settings', array(
 			// Options for general tab
 			'general' => apply_filters( 'wp_sms_pro_general_settings', array(
 				'licence'     => array(
@@ -375,7 +375,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for wordpress tab
-			'wp'      => apply_filters( 'wp_sms_pp_wp_settings', array(
+			'wp'      => apply_filters( 'wp_sms_pro_wp_settings', array(
 				'login_title'   => array(
 					'id'   => 'login_title',
 					'name' => __( 'Login', 'wp-sms' ),
@@ -397,7 +397,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for BuddyPress tab
-			'bp'      => apply_filters( 'wp_sms_pp_bp_settings', array(
+			'bp'      => apply_filters( 'wp_sms_pro_bp_settings', array(
 				'bp_fields'                 => array(
 					'id'   => 'bp_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -462,7 +462,7 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for Woocommerce tab
-			'wc'      => apply_filters( 'wp_sms_pp_wc_settings', array(
+			'wc'      => apply_filters( 'wp_sms_pro_wc_settings', array(
 				'wc_fields'                  => array(
 					'id'   => 'wc_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
@@ -629,11 +629,11 @@ class WP_SMS_Settings_Pro {
 				),
 			) ),
 			// Options for Gravityforms tab
-			'gf'      => apply_filters( 'wp_sms_pp_gf_settings', $gf_forms ),
+			'gf'      => apply_filters( 'wp_sms_pro_gf_settings', $gf_forms ),
 			// Options for Quform tab
-			'qf'      => apply_filters( 'wp_sms_pp_qf_settings', $qf_forms ),
+			'qf'      => apply_filters( 'wp_sms_pro_qf_settings', $qf_forms ),
 			// Options for Easy Digital Downloads tab
-			'edd'     => apply_filters( 'wp_sms_pp_edd_settings', array(
+			'edd'     => apply_filters( 'wp_sms_pro_edd_settings', array(
 				'edd_fields'                  => array(
 					'id'   => 'edd_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
