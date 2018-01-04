@@ -362,14 +362,14 @@ class WP_SMS_Settings_Pro {
 		$settings = apply_filters( 'wp_sms_pro_registered_settings', array(
 			// Options for general tab
 			'general' => apply_filters( 'wp_sms_pro_general_settings', array(
-				'licence'     => array(
-					'id'   => 'licence',
-					'name' => __( 'Licence', 'wp-sms' ),
+				'license'     => array(
+					'id'   => 'license',
+					'name' => __( 'License', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'licence_key' => array(
-					'id'   => 'licence_key',
-					'name' => __( 'Licence Key', 'wp-sms' ),
+				'license_key' => array(
+					'id'   => 'license_key',
+					'name' => __( 'License Key', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'The license key is used for access to automatic update and support.', 'wp-sms' ),
 				),
