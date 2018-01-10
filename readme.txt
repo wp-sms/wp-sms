@@ -233,7 +233,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 = 4.0.16 =
 * Added Send SMS to multi numbers in the Contact Form 7.
-* Added Several gateways. (Comilio.it, Mensatek.com, Infodomain.asia and Smsc.ua)
+* Added Several gateways. (Comilio.it, Mensatek.com, Infodomain.asia, Smsc.ua and Mobtexting.com)
 * Fixed Show time items in the outbox SMS.
 
 = 4.0.15 =
