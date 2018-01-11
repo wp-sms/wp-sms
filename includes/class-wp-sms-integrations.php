@@ -22,19 +22,19 @@ class WP_SMS_Integrations {
 
 		// Contact Form 7
 		if ( isset( $this->options['cf7_metabox'] ) ) {
-			add_filter( 'wpcf7_editor_panels', array( &$this, 'cf7_editor_panels' ) );
-			add_action( 'wpcf7_after_save', array( &$this, 'wpcf7_save_form' ) );
-			add_action( 'wpcf7_before_send_mail', array( &$this, 'wpcf7_sms_handler' ) );
+			add_filter( 'wpcf7_editor_panels', array( $this, 'cf7_editor_panels' ) );
+			add_action( 'wpcf7_after_save', array( $this, 'wpcf7_save_form' ) );
+			add_action( 'wpcf7_before_send_mail', array( $this, 'wpcf7_sms_handler' ) );
 		}
 
 		// Woocommerce
 		if ( isset( $this->options['wc_notif_new_order'] ) ) {
-			add_action( 'woocommerce_new_order', array( &$this, 'wc_new_order' ) );
+			add_action( 'woocommerce_new_order', array( $this, 'wc_new_order' ) );
 		}
 
 		// EDD
 		if ( isset( $this->options['edd_notif_new_order'] ) ) {
-			add_action( 'edd_complete_purchase', array( &$this, 'edd_new_order' ) );
+			add_action( 'edd_complete_purchase', array( $this, 'edd_new_order' ) );
 		}
 	}
 
@@ -42,7 +42,7 @@ class WP_SMS_Integrations {
 		$new_page = array(
 			'wpsms' => array(
 				'title'    => __( 'SMS Notification', 'wp-sms' ),
-				'callback' => array( &$this, 'cf7_setup_form' )
+				'callback' => array( $this, 'cf7_setup_form' )
 			)
 		);
 
