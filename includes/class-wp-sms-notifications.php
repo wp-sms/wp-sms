@@ -40,8 +40,8 @@ class WP_SMS_Notifications {
 		$this->tb_prefix = $table_prefix;
 
 		if ( isset( $this->options['notif_publish_new_post'] ) ) {
-			add_action( 'add_meta_boxes', array( &$this, 'notification_meta_box' ) );
-			add_action( 'publish_post', array( &$this, 'new_post' ), 10, 2 );
+			add_action( 'add_meta_boxes', array( $this, 'notification_meta_box' ) );
+			add_action( 'publish_post', array( $this, 'new_post' ), 10, 2 );
 		}
 
 		// Wordpress new version
@@ -66,21 +66,21 @@ class WP_SMS_Notifications {
 		}
 
 		if ( isset( $this->options['notif_register_new_user'] ) ) {
-			add_action( 'user_register', array( &$this, 'new_user' ), 10, 1 );
+			add_action( 'user_register', array( $this, 'new_user' ), 10, 1 );
 		}
 
 		if ( isset( $this->options['notif_new_comment'] ) ) {
-			add_action( 'wp_insert_comment', array( &$this, 'new_comment' ), 99, 2 );
+			add_action( 'wp_insert_comment', array( $this, 'new_comment' ), 99, 2 );
 		}
 
 		if ( isset( $this->options['notif_user_login'] ) ) {
-			add_action( 'wp_login', array( &$this, 'login_user' ), 99, 2 );
+			add_action( 'wp_login', array( $this, 'login_user' ), 99, 2 );
 		}
 	}
 
 	public function notification_meta_box() {
 		add_meta_box( 'subscribe-meta-box', __( 'SMS', 'wp-sms' ), array(
-			&$this,
+			$this,
 			'notification_meta_box_handler'
 		), 'post', 'normal', 'high' );
 	}
@@ -155,26 +155,26 @@ class WP_SMS_Notifications {
 
 	/**
 	 * @param $comment_id
-	 * @param $comment_smsect
+	 * @param $comment_object
 	 */
-	public function new_comment( $comment_id, $comment_smsect ) {
+	public function new_comment( $comment_id, $comment_object ) {
 
-		if ( $comment_smsect->comment_type == 'order_note' ) {
+		if ( $comment_object->comment_type == 'order_note' ) {
 			return;
 		}
 
-		if ( $comment_smsect->comment_type == 'edd_payment_note' ) {
+		if ( $comment_object->comment_type == 'edd_payment_note' ) {
 			return;
 		}
 
 		$this->sms->to  = array( $this->options['admin_mobile_number'] );
 		$template_vars  = array(
-			'%comment_author%'       => $comment_smsect->comment_author,
-			'%comment_author_email%' => $comment_smsect->comment_author_email,
-			'%comment_author_url%'   => $comment_smsect->comment_author_url,
-			'%comment_author_IP%'    => $comment_smsect->comment_author_IP,
-			'%comment_date%'         => $comment_smsect->comment_date,
-			'%comment_content%'      => $comment_smsect->comment_content
+			'%comment_author%'       => $comment_object->comment_author,
+			'%comment_author_email%' => $comment_object->comment_author_email,
+			'%comment_author_url%'   => $comment_object->comment_author_url,
+			'%comment_author_IP%'    => $comment_object->comment_author_IP,
+			'%comment_date%'         => $comment_object->comment_date,
+			'%comment_content%'      => $comment_object->comment_content
 		);
 		$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_new_comment_template'] );
 		$this->sms->msg = $message;

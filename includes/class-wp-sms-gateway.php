@@ -74,7 +74,7 @@ class WP_SMS_Gateway {
 				'pridesms'         => 'pridesms.in',
 				'smsozone'         => 'ozonesms.com',
 				'msgwow'           => 'msgwow.com',
-				'mobtexting'	   => 'mobtexting.com'
+				'mobtexting'       => 'mobtexting.com'
 			),
 			'iran'           => array(
 				'iransmspanel'   => 'iransmspanel.ir',
@@ -185,7 +185,6 @@ class WP_SMS_Gateway {
 				'firstpayamak'   => 'firstpayamak.ir',
 				'kavenegar'      => 'kavenegar.com',
 				'_18sms'         => '18sms.ir',
-				'parandhost'     => 'parandhost.com',
 				'eshare'         => 'eshare.com',
 				'abrestan'       => 'abrestan.com',
 				'sabanovin'      => 'sabanovin.com',
@@ -197,6 +196,9 @@ class WP_SMS_Gateway {
 			'africa'         => array(
 				'_ebulksms'      => 'ebulksms.com',
 				'africastalking' => 'africastalking.com',
+			),
+			'kenya'          => array(
+				'uwaziimobile' => 'uwaziimobile.com',
 			),
 			'cyprus'         => array(
 				'websmscy' => 'websms.com.cy',

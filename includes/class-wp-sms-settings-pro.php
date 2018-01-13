@@ -656,7 +656,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when submit new order', 'wp-sms' )
+					'desc'    => __( 'Send sms to number when download product is purchased.', 'wp-sms' )
 				),
 				'edd_notify_order_receiver'   => array(
 					'id'   => 'edd_notify_order_receiver',
@@ -686,7 +686,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to customer when submit the order', 'wp-sms' )
+					'desc'    => __( 'Send sms to customer when download product is purchased.', 'wp-sms' )
 				),
 				'edd_notify_customer_message' => array(
 					'id'   => 'edd_notify_customer_message',

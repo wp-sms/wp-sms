@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.17 =
 * IMPORTANT: Updated the domain name of the Plugin website to wp-sms-pro.com
+* Added Uwaziimobile.com Gateway.
 
 = 4.0.16 =
 * Added Send SMS to multi numbers in the Contact Form 7.
