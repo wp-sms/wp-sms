@@ -75,7 +75,7 @@ class uwaziimobile extends WP_SMS {
 
 		// Decode response
 		$response = json_decode( $response['body'] );
-		
+
 		// Check response code
 		if ( $response_code == '200' ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );

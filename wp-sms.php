@@ -100,7 +100,7 @@ class WP_SMS_Plugin {
 		$this->options   = $wpsms_option;
 
 		// Load text domain
-		add_action( 'init', array( &$this, 'load_textdomain' ) );
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 
 		__( 'WP SMS', 'wp-sms' );
 		__( 'A simple and powerful texting plugin for wordpress', 'wp-sms' );
@@ -110,16 +110,16 @@ class WP_SMS_Plugin {
 		$this->init();
 		$this->subscribe = new WP_SMS_Subscriptions();
 
-		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_assets' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'front_assets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'front_assets' ) );
 
-		add_action( 'admin_bar_menu', array( &$this, 'adminbar' ) );
+		add_action( 'admin_bar_menu', array( $this, 'adminbar' ) );
 		add_action( 'dashboard_glance_items', array( $this, 'dashboard_glance' ) );
-		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
-		add_filter( 'plugin_row_meta', array( &$this, 'meta_links' ), 0, 2 );
-		add_action( 'widgets_init', array( &$this, 'register_widget' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
+		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 
-		add_filter( 'wp_sms_to', array( &$this, 'modify_bulk_send' ) );
+		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
 	}
 
 	/**
@@ -208,7 +208,7 @@ class WP_SMS_Plugin {
 		}
 
 		if ( ! get_option( 'wpsms_hide_newsletter' ) ) {
-			add_action( 'wp_sms_settings_page', array( &$this, 'admin_newsletter' ) );
+			add_action( 'wp_sms_settings_page', array( $this, 'admin_newsletter' ) );
 		}
 
 		// Check exists require function
