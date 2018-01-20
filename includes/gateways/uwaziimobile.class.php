@@ -46,6 +46,17 @@ class uwaziimobile extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Reformat number
+		$to = array();
+		foreach ( $this->to as $number ) {
+			if ( substr( $number, 0, 2 ) === "07" ) {
+				$number = substr( $number, 2 );
+				$number = '2547' . $number;
+			}
+
+			$to[] = $number;
+		}
+		
 		$args = array(
 			'headers' => array(
 				'Content-Type'  => 'application/json',
@@ -100,6 +111,8 @@ class uwaziimobile extends WP_SMS {
 		if ( ! $this->username or ! $this->password ) {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
+
+		return true;
 
 		$args     = array(
 			'timeout' => 10,
