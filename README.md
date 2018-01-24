@@ -143,4 +143,3 @@ POST /wpsms/v1/subscriber/add
 Thank you [jetbrains](https://www.jetbrains.com/) for giving us Intellij IDEA Ultimate licenses for develop this project.
 * [Wordpress plugin page](http://wordpress.org/plugins/wp-sms/)
 * [Plugin website](http://wp-sms-pro.com/)
-* [Buy Pro version](http://wp-sms-pro.com/purchase/)
