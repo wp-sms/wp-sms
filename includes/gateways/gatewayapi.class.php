@@ -6,7 +6,7 @@ class gatewayapi extends WP_SMS {
 	public $has_key = true;
 	public $unit;
 	public $unitrial = true;
-	public $flash = "enable";
+	public $flash = "disable";
 	public $isflash = false;
 	protected $accountBalance = null;
 	public $help = 'All you need is the API Token available from the <a href="https://gatewayapi.com/app" target="_blank">GatewayAPI Dashboard &rarr;</a>.<br>Just leave the username and password fields blank.';
