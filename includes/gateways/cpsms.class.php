@@ -2,7 +2,7 @@
 
 class cpsms extends WP_SMS {
 	private $wsdl_link = "https://api.cpsms.dk/";
-	public $tariff = "http://api.cpsms.dk/v2/";
+	public $tariff = "https://api.cpsms.dk/v2/";
 	public $unitrial = false;
 	public $unit;
 	public $flash = "enable";
