@@ -109,7 +109,6 @@ The professional package supported following gateways:
 * Yamamah.com
 * Cellsynt.net
 * Cmtelecom.com
-* Cpsms.dk
 
 = What is the features of pro pack version? =
 * Verify user registration by sms verification code
@@ -228,6 +227,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master=
+* Updated cpsms.dk gateway.
+
 = 4.0.18 =
 * Added Uwaziimobile.com Gateway.
 * Updated settings page fields.

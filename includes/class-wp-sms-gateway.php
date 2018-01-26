@@ -59,6 +59,9 @@ class WP_SMS_Gateway {
 			'polish'         => array(
 				'smsapi' => 'smsapi.pl',
 			),
+            'denmark'         => array(
+				'cpsms' => 'cpsms.dk',
+			),
 			'italy'          => array(
 				'dot4all'    => 'dot4all.it',
 				'smshosting' => 'smshosting.it',

@@ -145,7 +145,6 @@ class WP_SMS_Version {
 			'yamamah'          => 'yamamah.com',
 			'cellsynt'         => 'cellsynt.net',
 			'cmtelecom'        => 'cmtelecom.com',
-			'cpsms'            => 'cpsms.dk',
 		);
 
 		return $gateways;
