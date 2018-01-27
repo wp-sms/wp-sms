@@ -16,7 +16,7 @@ class uwaziimobile extends WP_SMS {
 	public function SendSMS() {
 		// Check gateway credit
 		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
+			//return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
 		}
 
 		/**
@@ -67,7 +67,7 @@ class uwaziimobile extends WP_SMS {
 				'messages' => array(
 					array(
 						'from' => $this->from,
-						'to'   => $this->to,
+						'to'   => $to,
 						'text' => $this->msg,
 					)
 				)
@@ -111,7 +111,7 @@ class uwaziimobile extends WP_SMS {
 		if ( ! $this->username or ! $this->password ) {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
-		
+
 		$args     = array(
 			'timeout' => 10,
 			'headers' => array(
