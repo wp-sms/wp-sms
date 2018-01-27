@@ -16,7 +16,7 @@ class uwaziimobile extends WP_SMS {
 	public function SendSMS() {
 		// Check gateway credit
 		if ( is_wp_error( $this->GetCredit() ) ) {
-			//return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
+			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
 		}
 
 		/**
