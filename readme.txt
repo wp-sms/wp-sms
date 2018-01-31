@@ -227,9 +227,6 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= dev-master=
-* Updated cpsms.dk gateway.
-
 = 4.0.18 =
 * Added Uwaziimobile.com and cpsms.dk Gateway.
 * Updated settings page fields.
