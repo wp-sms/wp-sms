@@ -49,7 +49,7 @@ class smshosting extends WP_SMS {
 
 		$to = implode( $this->to, "," );
 
-		$sms_text = iconv( 'cp1251', 'utf-8', $this->msg );
+		$sms_text = $this->msg;
 
 		$POST = array(
 			'to'   => $to,
