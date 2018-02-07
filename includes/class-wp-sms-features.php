@@ -29,14 +29,14 @@ class WP_SMS_Features {
 		$this->options   = $wpsms_option;
 
 		if ( isset( $this->options['add_mobile_field'] ) ) {
-			add_action( 'user_new_form', array( &$this, 'add_mobile_field_to_newuser_form' ) );
-			add_filter( 'user_contactmethods', array( &$this, 'add_mobile_field_to_profile_form' ) );
-			add_action( 'register_form', array( &$this, 'add_mobile_field_to_register_form' ) );
-			add_filter( 'registration_errors', array( &$this, 'registration_errors' ), 10, 3 );
-			add_action( 'user_register', array( &$this, 'save_register' ) );
+			add_action( 'user_new_form', array( $this, 'add_mobile_field_to_newuser_form' ) );
+			add_filter( 'user_contactmethods', array( $this, 'add_mobile_field_to_profile_form' ) );
+			add_action( 'register_form', array( $this, 'add_mobile_field_to_register_form' ) );
+			add_filter( 'registration_errors', array( $this, 'registration_errors' ), 10, 3 );
+			add_action( 'user_register', array( $this, 'save_register' ) );
 
-			add_action( 'user_register', array( &$this, 'check_admin_duplicate_number' ) );
-			add_action( 'profile_update', array( &$this, 'check_admin_duplicate_number' ) );
+			add_action( 'user_register', array( $this, 'check_admin_duplicate_number' ) );
+			add_action( 'profile_update', array( $this, 'check_admin_duplicate_number' ) );
 		}
 	}
 
