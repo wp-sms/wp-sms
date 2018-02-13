@@ -218,7 +218,7 @@ Add new subscribe to sms newsletter
 
 = 3.0 =
 * CHANGED In this version of the plugin has changed the structure and optimized codes.
-In this version, we have made a lot of changes. We tried using the free version as a core and base. The professional version of plugin is made to a professional parcel that through the free plugin is activated.  
+In this version, we have made a lot of changes. We tried using the free version as a core and base. The professional version of plugin is made to a professional parcel that through the free plugin is activated.
 
 = 2.4 =
 * CHANGED `$obj` variable TO `$sms` IN YOUR SOURCE CODE.
@@ -227,6 +227,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master =
+* Added tripadasmsbox.com gateway.
+
 = 4.0.18 =
 * Added Uwaziimobile.com and cpsms.dk Gateway.
 * Updated settings page fields.
