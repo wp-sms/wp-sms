@@ -46,10 +46,16 @@ class tripadasmsbox extends WP_SMS
          * @param string $this ->msg text message.
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
-        $to = implode($this->to, ";");
+        $to = implode($this->to, ",");
 
-        $response = wp_remote_get($this->wsdl_link . "sendapi.php?auth_key=" . $this->has_key . "&mobiles=" . $to . "&message=" . urlencode($this->msg) . "&sender=" . $this->from . "&route=4");
-        
+        if ($this->username) {
+            $route = $this->username;
+        } else {
+            $route = 'default';
+        }
+
+        $response = wp_remote_get($this->wsdl_link . "sendapi.php?auth_key=" . $this->has_key . "&mobiles=" . $to . "&message=" . urlencode($this->msg) . "&sender=" . $this->from . "&route=" . $route);
+
         // Check response error
         if (is_wp_error($response)) {
             return new WP_Error('send-sms', $response->get_error_message());
@@ -89,7 +95,13 @@ class tripadasmsbox extends WP_SMS
             return new WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
         }
 
-        $response = wp_remote_get($this->wsdl_link . "balance.php?auth_key=" . $this->has_key . "&type=1=");
+        if ($this->username) {
+            $route = $this->username;
+        } else {
+            $route = 'default';
+        }
+
+        $response = wp_remote_get($this->wsdl_link . "balance.php?auth_key=" . $this->has_key . "&type=" . $route);
 
         if (!is_wp_error($response)) {
             $data = json_decode($response['body']);
