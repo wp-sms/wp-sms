@@ -14,6 +14,7 @@ class tripadasmsbox extends WP_SMS
         parent::__construct();
         $this->validateNumber = "";
         $this->has_key = true;
+        $this->help = 'Enter your AUTH Key in the API key field and to define custom route you can set this value in Username field.';
     }
 
     public function SendSMS()
