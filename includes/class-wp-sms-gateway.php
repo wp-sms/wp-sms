@@ -60,7 +60,8 @@ class WP_SMS_Gateway {
 				'smsapi' => 'smsapi.pl',
 			),
             'denmark'         => array(
-				'cpsms' => 'cpsms.dk',
+				'cpsms'     => 'cpsms.dk',
+				'suresms'   => 'suresms.com',
 			),
 			'italy'          => array(
 				'dot4all'    => 'dot4all.it',
