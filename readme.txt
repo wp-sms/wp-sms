@@ -228,7 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
-* Added tripadasmsbox.com gateway.
+* Added tripadasmsbox.com, suresms.com gateway.
 
 = 4.0.18 =
 * Added Uwaziimobile.com and cpsms.dk Gateway.

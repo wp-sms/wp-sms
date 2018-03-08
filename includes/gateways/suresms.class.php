@@ -6,13 +6,13 @@ class suresms extends WP_SMS
     public $tariff = "https://www.suresms.com/";
     public $unitrial = false;
     public $unit;
-    public $flash = "enable";
+    public $flash = "disabled";
     public $isflash = false;
 
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "+xxxxxxxxxxxxx";
+        $this->validateNumber = "+4520202020, The recipient of the message. (remember countrycode)	";
         $this->has_key = true;
     }
 
@@ -50,17 +50,19 @@ class suresms extends WP_SMS
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $to = implode($this->to, ",");
         $msg = urlencode($this->msg);
+        $response = array();
 
-        $response = wp_remote_get($this->wsdl_link . "/?action=compose&username=" . $this->username . "&api_key=" . $this->has_key . "&sender=" . $this->from . "&to=" . $to . "&message=" . $msg . "&unicode=0");
+        foreach ($this->to as $to) {
+            $response = wp_remote_get($this->wsdl_link . "script/SendSMS.aspx?login=" . $this->username . "&password=" . $this->password . "&to=" . $to . "&text=" . $msg);
+        }
 
         // Check response error
         if (is_wp_error($response)) {
             return new WP_Error('send-sms', $response->get_error_message());
         }
 
-        if (isset($response['body'])) {
+        if (strpos($response['body'], 'sent') !== false) {
             $this->InsertToDB($this->from, $this->msg, $this->to);
 
             /**
@@ -89,9 +91,15 @@ class suresms extends WP_SMS
             return new WP_Error('account-credit', $response->get_error_message());
         }
 
-        // TODO API is not valid
-        //$xml = simplexml_load_string($response['body']);
+        $xml = new SimpleXMLElement($response['body']);
 
-        echo '<pre>' . print_r($response['body'], 1) . '</pre>';
+        if (!is_object($xml)) {
+            return new WP_Error('account-credit', 'The XML is not valid, Please contact with gateways administrator.');
+        }
+
+        // Convert to array
+        $arr = json_decode(json_encode($xml), 1);
+
+        return $arr['Balance'];
     }
 }
