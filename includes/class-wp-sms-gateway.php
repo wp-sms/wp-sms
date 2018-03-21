@@ -195,6 +195,9 @@ class WP_SMS_Gateway {
 				'sabanovin'      => 'sabanovin.com',
 				'candoosms'      => 'candoosms.com',
 			),
+			'Malaysia'         => array(
+				'isms' => 'isms.com.my',
+			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
 			),
@@ -245,7 +248,7 @@ class WP_SMS_Gateway {
 			update_option( 'wp_last_credit', 0 );
 
 			// Return html
-			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Deactive!', 'wp-sms' ) . '</div>';
+			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Inactive', 'wp-sms' ) . '</div>';
 		} else {
 			// Update credit
 			update_option( 'wp_last_credit', $result );
@@ -253,7 +256,7 @@ class WP_SMS_Gateway {
 			self::$get_response = $result;
 
 			// Return html
-			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Active!', 'wp-sms' ) . '</div>';
+			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Active', 'wp-sms' ) . '</div>';
 		}
 	}
 
@@ -296,7 +299,7 @@ class WP_SMS_Gateway {
 			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Supported', 'wp-sms' ) . '</div>';
 		} else {
 			// Return html
-			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Does not support!', 'wp-sms' ) . '</div>';
+			return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Not supported', 'wp-sms' ) . '</div>';
 		}
 	}
 
