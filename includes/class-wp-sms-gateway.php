@@ -44,6 +44,7 @@ class WP_SMS_Gateway {
 			),
 			'turkey'         => array(
 				'bulutfon' => 'bulutfon.com',
+				'verimor' => 'verimor.com.tr',
 			),
 			'austria'        => array(
 				'smsgateway' => 'sms-gateway.at',
