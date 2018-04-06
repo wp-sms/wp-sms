@@ -227,6 +227,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master =
+* Added country code to prefix numbers if this option has value on the setting page.
+
 = 4.0.19 =
 * Added tripadasmsbox.com, suresms.com, verimor.com.tr gateway.
 

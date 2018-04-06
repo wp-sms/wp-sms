@@ -209,7 +209,7 @@ class WP_SMS_Settings {
 					'id'   => 'mobile_county_code',
 					'name' => __( 'Mobile country code', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Enter your mobile country code.', 'wp-sms' )
+					'desc' => __( 'Enter your mobile country code for prefix numbers. For example if you enter +1 The final number will be +19999999999', 'wp-sms' )
 				),
 			) ),
 

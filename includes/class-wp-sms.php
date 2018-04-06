@@ -85,13 +85,26 @@ abstract class WP_SMS {
 	protected $tb_prefix;
 
 	/**
+	 * Plugin options
+	 *
+	 * @var string
+	 */
+	protected $options;
+
+	/**
 	 * Constructors
 	 */
 	public function __construct() {
-		global $wpdb, $table_prefix;
+		global $wpdb, $table_prefix, $wpsms_option;
 
 		$this->db        = $wpdb;
 		$this->tb_prefix = $table_prefix;
+		$this->options   = $wpsms_option;
+
+		// Check option for add country code to prefix numbers
+		if ( isset( $this->options['mobile_county_code'] ) and $this->options['mobile_county_code'] ) {
+			add_filter( 'wp_sms_to', array( $this, 'applyCountryCode' ) );
+		}
 	}
 
 	public function InsertToDB( $sender, $message, $recipient ) {
@@ -106,4 +119,25 @@ abstract class WP_SMS {
 		);
 	}
 
+	/**
+	 * Apply Country code to prefix numbers
+	 *
+	 * @param $recipients
+	 *
+	 * @return array
+	 */
+	public function applyCountryCode( $recipients = array() ) {
+		$country_code = $this->options['mobile_county_code'];
+		$numbers      = array();
+
+		foreach ( $recipients as $number ) {
+			// Remove zero from first number
+			$number = ltrim( $number, '0' );
+
+			// Add country code to prefix number
+			$numbers[] = $country_code . $number;
+		}
+
+		return $numbers;
+	}
 }
