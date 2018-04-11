@@ -140,6 +140,7 @@ POST /wpsms/v1/subscriber/add
 ```
 
 # Community Links
-Thank you [jetbrains](https://www.jetbrains.com/) for giving us Intellij IDEA Ultimate licenses for develop this project.
-* [Wordpress plugin page](http://wordpress.org/plugins/wp-sms/)
-* [Plugin website](http://wp-sms-pro.com/)
+* [WordPress plugin page](http://wordpress.org/plugins/wp-sms/)
+* [Plugin Website](http://wp-sms-pro.com/)
+* [Author Website](http://veronalabs.com)
+
