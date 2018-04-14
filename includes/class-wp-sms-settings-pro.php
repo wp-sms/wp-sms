@@ -114,6 +114,7 @@ class WP_SMS_Settings_Pro {
 			'qf'      => __( 'Quform', 'wp-sms' ),
 			'edd'     => __( 'Easy Digital Downloads', 'wp-sms' ),
 			'job'     => __( 'WP Job Manager', 'wp-sms' ),
+			'as'      => __( 'Awesome Support', 'wp-sms' ),
 		);
 
 		return $tabs;
@@ -222,7 +223,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when this form get new message', 'wp-sms' )
+					'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
 				);
 				$gf_forms[ 'gf_notify_receiver_form_' . $form->id ] = array(
 					'id'   => 'gf_notify_receiver_form_' . $form->id,
@@ -234,7 +235,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'gf_notify_message_form_' . $form->id,
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms' ),
 						          '<code>%title%</code>',
@@ -251,7 +252,7 @@ class WP_SMS_Settings_Pro {
 						'name'    => __( 'Send SMS to field', 'wp-sms' ),
 						'type'    => 'checkbox',
 						'options' => $options,
-						'desc'    => __( 'Send sms to field value when this form get new message', 'wp-sms' )
+						'desc'    => __( 'Send SMS to field value when this form get new message', 'wp-sms' )
 					);
 					$gf_forms[ 'gf_notify_receiver_field_form_' . $form->id ] = array(
 						'id'      => 'gf_notify_receiver_field_form_' . $form->id,
@@ -264,7 +265,7 @@ class WP_SMS_Settings_Pro {
 						'id'   => 'gf_notify_message_field_form_' . $form->id,
 						'name' => __( 'Message body', 'wp-sms' ),
 						'type' => 'textarea',
-						'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+						'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 						          sprintf(
 							          __( 'Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms' ),
 							          '<code>%title%</code>',
@@ -300,7 +301,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when this form get new message', 'wp-sms' )
+					'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
 				);
 				$qf_forms[ 'qf_notify_receiver_form_' . $form['id'] ] = array(
 					'id'   => 'qf_notify_receiver_form_' . $form['id'],
@@ -312,7 +313,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'qf_notify_message_form_' . $form['id'],
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Form name: %s, Form url: %s, Referring url: %s', 'wp-sms' ),
 						          '<code>%post_title%</code>',
@@ -327,7 +328,7 @@ class WP_SMS_Settings_Pro {
 						'name'    => __( 'Send SMS to field', 'wp-sms' ),
 						'type'    => 'checkbox',
 						'options' => $options,
-						'desc'    => __( 'Send sms to field value when this form get new message', 'wp-sms' )
+						'desc'    => __( 'Send SMS to field value when this form get new message', 'wp-sms' )
 					);
 					$qf_forms[ 'qf_notify_receiver_field_form_' . $form['id'] ] = array(
 						'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
@@ -340,7 +341,7 @@ class WP_SMS_Settings_Pro {
 						'id'   => 'qf_notify_message_field_form_' . $form['id'],
 						'name' => __( 'Message body', 'wp-sms' ),
 						'type' => 'textarea',
-						'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+						'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 						          sprintf(
 							          __( 'Form name: %s, Form url: %s, Referring url: %s', 'wp-sms' ),
 							          '<code>%post_title%</code>',
@@ -426,7 +427,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'bp_mention_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Posted user display name: %s, User profile permalink: %s, Time: %s, Message: %s, Receiver user display name: %s', 'wp-sms' ),
 						          '<code>%posted_user_display_name%</code>',
@@ -446,13 +447,13 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to user when the user get a reply on comment', 'wp-sms' )
+					'desc'    => __( 'Send SMS to user when the user get a reply on comment', 'wp-sms' )
 				),
 				'bp_comments_reply_message' => array(
 					'id'   => 'bp_comments_reply_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Posted user display name: %s, Comment content: %s, Receiver user display name: %s', 'wp-sms' ),
 						          '<code>%posted_user_display_name%</code>',
@@ -485,7 +486,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when publish new a product', 'wp-sms' )
+					'desc'    => __( 'Send SMS when publish new a product', 'wp-sms' )
 				),
 				'wc_notify_product_receiver' => array(
 					'id'      => 'wc_notify_product_receiver',
@@ -508,7 +509,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'wc_notify_product_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Product title: %s, Product url: %s, Product date: %s, Product price: %s', 'wp-sms' ),
 						          '<code>%product_title%</code>',
@@ -527,7 +528,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when submit new order', 'wp-sms' )
+					'desc'    => __( 'Send SMS when submit new order', 'wp-sms' )
 				),
 				'wc_notify_order_receiver'   => array(
 					'id'   => 'wc_notify_order_receiver',
@@ -539,7 +540,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'wc_notify_order_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Order id: %s, Order number: %s, Order status: %s', 'wp-sms' ),
 						          '<code>%order_id%</code>',
@@ -557,13 +558,13 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to customer when submit the order', 'wp-sms' )
+					'desc'    => __( 'Send SMS to customer when submit the order', 'wp-sms' )
 				),
 				'wc_notify_customer_message' => array(
 					'id'   => 'wc_notify_customer_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Order id: %s, Order number: %s, Order status: %s, Customer name: %s, Customer family: %s', 'wp-sms' ),
 						          '<code>%order_id%</code>',
@@ -583,7 +584,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when stock is low', 'wp-sms' )
+					'desc'    => __( 'Send SMS when stock is low', 'wp-sms' )
 				),
 				'wc_notify_stock_receiver'   => array(
 					'id'   => 'wc_notify_stock_receiver',
@@ -595,7 +596,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'wc_notify_stock_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Product id: %s, Product name: %s', 'wp-sms' ),
 						          '<code>%product_id%</code>',
@@ -612,13 +613,13 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to customer when status is changed', 'wp-sms' )
+					'desc'    => __( 'Send SMS to customer when status is changed', 'wp-sms' )
 				),
 				'wc_notify_status_message'   => array(
 					'id'   => 'wc_notify_status_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s', 'wp-sms' ),
 						          '<code>%status%</code>',
@@ -656,7 +657,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to number when a payment is marked as complete.', 'wp-sms' )
+					'desc'    => __( 'Send SMS to number when a payment is marked as complete.', 'wp-sms' )
 				),
 				'edd_notify_order_receiver'   => array(
 					'id'   => 'edd_notify_order_receiver',
@@ -668,7 +669,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'edd_notify_order_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Email: %s, First name: %s, Last name: %s', 'wp-sms' ),
 						          '<code>%edd_email%</code>',
@@ -686,13 +687,13 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to customer when a payment is marked as complete.', 'wp-sms' )
+					'desc'    => __( 'Send SMS to customer when a payment is marked as complete.', 'wp-sms' )
 				),
 				'edd_notify_customer_message' => array(
 					'id'   => 'edd_notify_customer_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Email: %s, First name: %s, Last name: %s', 'wp-sms' ),
 						          '<code>%edd_email%</code>',
@@ -732,7 +733,7 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms when submit new job', 'wp-sms' )
+					'desc'    => __( 'Send SMS when submit new job', 'wp-sms' )
 				),
 				'job_notify_receiver'         => array(
 					'id'   => 'job_notify_receiver',
@@ -744,7 +745,7 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'job_notify_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Company Mobile: %s, Company Name: %s, Company Website: %s', 'wp-sms' ),
 						          '<code>%job_id%</code>',
@@ -767,13 +768,13 @@ class WP_SMS_Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send sms to employer when the job approved', 'wp-sms' )
+					'desc'    => __( 'Send SMS to employer when the job approved', 'wp-sms' )
 				),
 				'job_notify_employer_message' => array(
 					'id'   => 'job_notify_employer_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Company Name: %s, Company Website: %s', 'wp-sms' ),
 						          '<code>%job_id%</code>',
@@ -784,6 +785,33 @@ class WP_SMS_Settings_Pro {
 						          '<code>%job_mobile%</code>',
 						          '<code>%company_name%</code>',
 						          '<code>%website%</code>'
+					          )
+				),
+			) ),
+			// Options for Awesome Support
+			'as'      => apply_filters( 'wp_sms_as_settings', array(
+				'as_notify_order'               => array(
+					'id'   => 'as_notify_order',
+					'name' => __( 'Notify for new ticket', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'as_notify_open_ticket'         => array(
+					'id'      => 'as_notify_open_ticket',
+					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send SMS to admin when the user opened a new ticket.', 'wp-sms' )
+				),
+				'as_notify_open_ticket_message' => array(
+					'id'   => 'as_notify_open_ticket_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms' ),
+						          '<code>%ticket_content%</code>',
+						          '<code>%ticket_title%</code>',
+						          '<code>%ticket_userid%</code>'
 					          )
 				),
 			) ),
@@ -914,7 +942,6 @@ class WP_SMS_Settings_Pro {
 
 		return false;
 	}
-
 
 	public function select_callback( $args ) {
 
