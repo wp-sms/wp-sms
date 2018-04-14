@@ -17,10 +17,10 @@ class WP_SMS_Settings_Pro {
 			update_option( $this->setting_name, array() );
 		}
 
-		add_action( 'admin_menu', array( &$this, 'add_settings_menu' ), 11 );
+		add_action( 'admin_menu', array( $this, 'add_settings_menu' ), 11 );
 
 		if ( isset( $_GET['page'] ) and $_GET['page'] == 'wp-sms-pro' or isset( $_POST['option_page'] ) and $_POST['option_page'] == 'wps_pp_settings' ) {
-			add_action( 'admin_init', array( &$this, 'register_settings' ) );
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
 		}
 	}
 
@@ -29,7 +29,7 @@ class WP_SMS_Settings_Pro {
 	 * */
 	public function add_settings_menu() {
 		add_submenu_page( 'wp-sms', __( 'Professional Pack', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Professional Pack', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
-			&$this,
+			$this,
 			'render_settings'
 		) );
 	}
@@ -79,7 +79,7 @@ class WP_SMS_Settings_Pro {
 				add_settings_field(
 					'wps_pp_settings[' . $option['id'] . ']',
 					$name,
-					array( &$this, $option['type'] . '_callback' ),
+					array( $this, $option['type'] . '_callback' ),
 					'wps_pp_settings_' . $tab,
 					'wps_pp_settings_' . $tab,
 					array(
@@ -93,7 +93,7 @@ class WP_SMS_Settings_Pro {
 					)
 				);
 
-				register_setting( $this->setting_name, $this->setting_name, array( &$this, 'settings_sanitize' ) );
+				register_setting( $this->setting_name, $this->setting_name, array( $this, 'settings_sanitize' ) );
 			}
 		}
 	}
@@ -790,19 +790,19 @@ class WP_SMS_Settings_Pro {
 			) ),
 			// Options for Awesome Support
 			'as'      => apply_filters( 'wp_sms_as_settings', array(
-				'as_notify_order'               => array(
-					'id'   => 'as_notify_order',
+				'as_notify_new_ticket'                 => array(
+					'id'   => 'as_notify_new_ticket',
 					'name' => __( 'Notify for new ticket', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'as_notify_open_ticket'         => array(
-					'id'      => 'as_notify_open_ticket',
+				'as_notify_open_ticket_status'         => array(
+					'id'      => 'as_notify_open_ticket_status',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send SMS to admin when the user opened a new ticket.', 'wp-sms' )
 				),
-				'as_notify_open_ticket_message' => array(
+				'as_notify_open_ticket_message'        => array(
 					'id'   => 'as_notify_open_ticket_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -811,7 +811,55 @@ class WP_SMS_Settings_Pro {
 						          __( 'Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms' ),
 						          '<code>%ticket_content%</code>',
 						          '<code>%ticket_title%</code>',
-						          '<code>%ticket_userid%</code>'
+						          '<code>%ticket_username%</code>'
+					          )
+				),
+				'as_notify_admin_reply_ticket'         => array(
+					'id'   => 'as_notify_admin_reply_ticket',
+					'name' => __( 'Notify admin for get reply', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'as_notify_admin_reply_ticket_status'  => array(
+					'id'      => 'as_notify_admin_reply_ticket_status',
+					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send SMS to admin when the user replied the ticket.', 'wp-sms' )
+				),
+				'as_notify_admin_reply_ticket_message' => array(
+					'id'   => 'as_notify_admin_reply_ticket_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Ticket Content: %s, Ticket Title: %s, Replied by: %s', 'wp-sms' ),
+						          '<code>%reply_content%</code>',
+						          '<code>%reply_title%</code>',
+						          '<code>%reply_username%</code>'
+					          )
+				),
+				'as_notify_user_reply_ticket'          => array(
+					'id'   => 'as_notify_user_reply_ticket',
+					'name' => __( 'Notify user for get reply', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'as_notify_user_reply_ticket_status'   => array(
+					'id'      => 'as_notify_user_reply_ticket_status',
+					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send SMS to user when the admin replied the ticket. (Please make sure the Mobile number field enabled in the WP-SMS)', 'wp-sms' )
+				),
+				'as_notify_user_reply_ticket_message'  => array(
+					'id'   => 'as_notify_user_reply_ticket_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms' ),
+						          '<code>%reply_content%</code>',
+						          '<code>%reply_title%</code>',
+						          '<code>%reply_username%</code>'
 					          )
 				),
 			) ),
