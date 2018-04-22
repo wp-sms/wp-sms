@@ -227,7 +227,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= dev-master =
+= 4.0.20 =
 * Added country code to prefix numbers if this option has value on the setting page.
 * Updated setting page. Added options for Awesome Support plugin.
 

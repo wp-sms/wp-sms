@@ -3,7 +3,7 @@
  * Plugin Name: WP SMS
  * Plugin URI: http://wp-sms-pro.com/
  * Description: A powerful texting plugin for WordPress
- * Version: 4.0.19
+ * Version: 4.0.20
  * Author: Verona Labs
  * Author URI: http://veronalabs.com/
  * Text Domain: wp-sms
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin defines
  */
-define( 'WP_SMS_VERSION', '4.0.19' );
+define( 'WP_SMS_VERSION', '4.0.20' );
 define( 'WP_SMS_DIR_PLUGIN', plugin_dir_url( __FILE__ ) );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
 define( 'WP_SMS_SITE', 'http://wp-sms-pro.com' );
