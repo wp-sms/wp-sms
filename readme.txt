@@ -229,7 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 4.0.20 =
 * Added country code to prefix numbers if this option has value on the setting page.
-* Updated setting page. Added options for Awesome Support plugin.
+* Updated setting page. Added options for [Awesome Support plugin](https://wordpress.org/plugins/awesome-support/).
 
 = 4.0.19 =
 * Added tripadasmsbox.com, suresms.com, verimor.com.tr gateway.
