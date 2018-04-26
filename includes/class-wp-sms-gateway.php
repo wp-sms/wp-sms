@@ -41,6 +41,7 @@ class WP_SMS_Gateway {
 			),
 			'germany'        => array(
 				'sms77' => 'sms77.de',
+				'engy' => 'engy.solutions',
 			),
 			'turkey'         => array(
 				'bulutfon' => 'bulutfon.com',
