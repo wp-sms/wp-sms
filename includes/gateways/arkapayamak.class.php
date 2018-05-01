@@ -55,16 +55,16 @@ class arkapayamak extends WP_SMS {
 		);
 
 		try {
-			$client = new SoapClient( $this->wsdl_link );
+			$client                 = new SoapClient( $this->wsdl_link );
 			$parameters['username'] = $this->username;
 			$parameters['password'] = $this->password;
-			$parameters['from'] = $this->from;
-			$parameters['to'] = $this->to;
-			$parameters['text'] = $this->msg;
-			$parameters['isflash'] = $this->isflash;
-			$parameters['udh'] = "";
-			$parameters['recId'] = array( 0 );
-			$parameters['status'] = 0x0;
+			$parameters['from']     = $this->from;
+			$parameters['to']       = $this->to;
+			$parameters['text']     = $this->msg;
+			$parameters['isflash']  = $this->isflash;
+			$parameters['udh']      = "";
+			$parameters['recId']    = array( 0 );
+			$parameters['status']   = 0x0;
 
 			$result = $client->SendSms( $parameters )->SendSmsResult;
 

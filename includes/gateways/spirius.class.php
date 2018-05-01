@@ -62,18 +62,18 @@ class spirius extends WP_SMS {
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $response_code == '202' ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
-				/**
-				 * Run hook after send sms.
-				 *
-				 * @since 2.4
-				 *
-				 * @param string $result result output.
-				 */
-				do_action( 'wp_sms_send', $response['body'] );
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 *
+			 * @param string $result result output.
+			 */
+			do_action( 'wp_sms_send', $response['body'] );
 
-				return $response['body'];
+			return $response['body'];
 		} else {
 			return new WP_Error( 'send-sms', $response['body'] );
 		}

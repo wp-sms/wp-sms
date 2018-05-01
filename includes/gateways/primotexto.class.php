@@ -58,7 +58,7 @@ class primotexto extends WP_SMS {
 			$sms          = new Sms;
 			$sms->type    = 'notification';
 			$sms->number  = $item;
-			$sms->message = urlencode($this->msg);
+			$sms->message = urlencode( $this->msg );
 			$sms->sender  = $this->from;
 
 			$result = messagesManager::messagesSend( $sms );

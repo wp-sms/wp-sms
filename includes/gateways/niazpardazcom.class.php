@@ -49,11 +49,12 @@ class niazpardazcom extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$client = new SoapClient( $this->wsdl_link );
-		$result = $client->SendSMS( array( 'userName'       => $this->username,
-		                                   'password'       => $this->password,
-		                                   'fromNumber'     => $this->from,
-		                                   'toNumbers'      => $this->to,
-		                                   'messageContent' => $this->msg,
+		$result = $client->SendSMS( array(
+			'userName'       => $this->username,
+			'password'       => $this->password,
+			'fromNumber'     => $this->from,
+			'toNumbers'      => $this->to,
+			'messageContent' => $this->msg,
 			$this->isflash
 		) );
 

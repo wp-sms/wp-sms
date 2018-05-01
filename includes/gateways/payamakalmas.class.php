@@ -57,12 +57,12 @@ class payamakalmas extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$result = $this->client->call( "SENDSMS", array(
-			'UserName' => $this->username,
-			'Password' => $this->password,
+			'UserName'   => $this->username,
+			'Password'   => $this->password,
 			'LineNumber' => $this->from,
-			'Recivers' => implode( $this->to, ',' ),
-			'SMSSMG' => $this->msg,
-			'MesClass' => '1'
+			'Recivers'   => implode( $this->to, ',' ),
+			'SMSSMG'     => $this->msg,
+			'MesClass'   => '1'
 		) );
 
 		if ( $result ) {

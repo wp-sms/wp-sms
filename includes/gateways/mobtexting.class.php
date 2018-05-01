@@ -49,16 +49,16 @@ class Mobtexting extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		// comma seperated receivers
-		$to = implode( ',', $this->to );
-		$msg = urlencode( $this->msg );
-		$api_end_point = $this->wsdl_link."/smses";
-		$api_args = Array(
-			'api_key' => $this->has_key,
+		$to            = implode( ',', $this->to );
+		$msg           = urlencode( $this->msg );
+		$api_end_point = $this->wsdl_link . "/smses";
+		$api_args      = Array(
+			'api_key'   => $this->has_key,
 			'sender_id' => $this->from,
-			'message' => $msg,
+			'message'   => $msg,
 			'mobile_no' => $to
 		);
-		$response = wp_remote_post( $api_end_point, Array('body'=>$api_args, 'timeout'=>30) );
+		$response      = wp_remote_post( $api_end_point, Array( 'body' => $api_args, 'timeout' => 30 ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
@@ -96,11 +96,11 @@ class Mobtexting extends WP_SMS {
 		if ( ! $this->has_key ) {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
-		$api_end_point = $this->wsdl_link."/credit";
-		$api_args = Array(
-			'timeout'=> 3000
+		$api_end_point = $this->wsdl_link . "/credit";
+		$api_args      = Array(
+			'timeout' => 3000
 		);
-		$response = wp_remote_get( $api_end_point.'?api_key='.$this->has_key, $api_args );
+		$response      = wp_remote_get( $api_end_point . '?api_key=' . $this->has_key, $api_args );
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
 			return new WP_Error( 'account-credit', $response->get_error_message() );

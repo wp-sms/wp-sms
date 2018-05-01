@@ -10,7 +10,7 @@ class tcisms extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "09xxxxxxxx";
+		$this->validateNumber = "xxxxxxxxxx";
 
 		ini_set( "soap.wsdl_cache_enabled", "0" );
 	}

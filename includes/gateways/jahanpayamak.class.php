@@ -60,15 +60,15 @@ class jahanpayamak extends WP_SMS {
 		try {
 			$client = new SoapClient( $this->wsdl_link );
 
-			$parameters['USERNAME'] = $this->username;
-			$parameters['PASSWORD'] = $this->password;
-			$parameters['TO'] = implode( ',', $this->to );
-			$parameters['FROM'] = $this->from;
-			$parameters['TEXT'] = $this->msg;
-			$parameters['API'] = $this->api;
+			$parameters['USERNAME']         = $this->username;
+			$parameters['PASSWORD']         = $this->password;
+			$parameters['TO']               = implode( ',', $this->to );
+			$parameters['FROM']             = $this->from;
+			$parameters['TEXT']             = $this->msg;
+			$parameters['API']              = $this->api;
 			$parameters['API_CHANGE_ALLOW'] = 1;
-			$parameters['FLASH'] = $this->isflash;
-			$parameters['Internation'] = false;
+			$parameters['FLASH']            = $this->isflash;
+			$parameters['Internation']      = false;
 
 			$result = $client->Send_Sms4( $parameters )->Send_Sms4Result;
 

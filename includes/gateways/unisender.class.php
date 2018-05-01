@@ -58,7 +58,7 @@ class unisender extends WP_SMS {
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
-		
+
 		if ( $response_code == '200' ) {
 			$result = json_decode( $response['body'] );
 

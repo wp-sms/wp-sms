@@ -56,12 +56,13 @@ class smsmelli extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$result = $this->client->call( "SendSMS", array( 'user'           => $this->username,
-		                                                 'pass'           => $this->password,
-		                                                 'fromNum'        => $this->from,
-		                                                 'toNum'          => $this->to,
-		                                                 'messageContent' => $this->msg,
-		                                                 'messageType'    => 'normal'
+		$result = $this->client->call( "SendSMS", array(
+			'user'           => $this->username,
+			'pass'           => $this->password,
+			'fromNum'        => $this->from,
+			'toNum'          => $this->to,
+			'messageContent' => $this->msg,
+			'messageType'    => 'normal'
 		) );
 
 		if ( $result ) {

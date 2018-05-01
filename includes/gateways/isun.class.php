@@ -10,7 +10,7 @@ class isun extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "09xxxxxxxx";
+		$this->validateNumber = "xxxxxxxxxx";
 	}
 
 	public function SendSMS() {

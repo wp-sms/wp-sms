@@ -41,11 +41,11 @@ class WP_SMS_Gateway {
 			),
 			'germany'        => array(
 				'sms77' => 'sms77.de',
-				'engy' => 'engy.solutions',
+				'engy'  => 'engy.solutions',
 			),
 			'turkey'         => array(
 				'bulutfon' => 'bulutfon.com',
-				'verimor' => 'verimor.com.tr',
+				'verimor'  => 'verimor.com.tr',
 			),
 			'austria'        => array(
 				'smsgateway' => 'sms-gateway.at',
@@ -61,9 +61,9 @@ class WP_SMS_Gateway {
 			'polish'         => array(
 				'smsapi' => 'smsapi.pl',
 			),
-            'denmark'         => array(
-				'cpsms'     => 'cpsms.dk',
-				'suresms'   => 'suresms.com',
+			'denmark'        => array(
+				'cpsms'   => 'cpsms.dk',
+				'suresms' => 'suresms.com',
 			),
 			'italy'          => array(
 				'dot4all'    => 'dot4all.it',
@@ -220,10 +220,10 @@ class WP_SMS_Gateway {
 				'infodomain' => 'infodomain.asia',
 			),
 			'other'          => array(
-				'smss'     => 'smss.co.il',
-				'bearsms'  => 'bearsms.com',
-				'mtarget'  => 'mtarget.fr',
-				'torpedos' => 'torpedos.pro',
+				'mtarget'  => 'mtarget',
+				'torpedos' => 'torpedos',
+				'smss'     => 'smss.co',
+				'bearsms'  => 'bearsms',
 			),
 		);
 

@@ -10,14 +10,14 @@ class engy extends WP_SMS {
 	public $bulk_send = false;
 
 	public function __construct() {
-		parent::__construct();		
-		$this->validateNumber = "491775156xxx";				
+		parent::__construct();
+		$this->validateNumber = "491775156xxx";
 		$this->has_key        = true;
 	}
 
 	public function SendSMS() {
-        
-        /**
+
+		/**
 		 * Modify sender number
 		 *
 		 * @since 3.4
@@ -44,30 +44,35 @@ class engy extends WP_SMS {
 		 */
 		// $this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 		$args = array(
-			'method' => 'POST',
-			'timeout' => 45,
+			'method'      => 'POST',
+			'timeout'     => 45,
 			'redirection' => 5,
 			'httpversion' => '1.0',
-			'blocking' => true,
-			'headers' => array(),
-			'body' => array( 'apiKey' => $this->has_key, 'from' => $this->from, 'to' => implode(',', $this->to), 'text' => $this->msg , 'receiveDeliveryStatus' => true),
-			'cookies' => array()
+			'blocking'    => true,
+			'headers'     => array(),
+			'body'        => array( 'apiKey'                => $this->has_key,
+			                        'from'                  => $this->from,
+			                        'to'                    => implode( ',', $this->to ),
+			                        'text'                  => $this->msg,
+			                        'receiveDeliveryStatus' => true
+			),
+			'cookies'     => array()
 		);
-		if(!is_numeric ( implode(',', $this->to)) ){
-			return new WP_Error( 'send-sms', 'Please use a valid phone number (eg. '.$this->validateNumber.')' );
+		if ( ! is_numeric( implode( ',', $this->to ) ) ) {
+			return new WP_Error( 'send-sms', 'Please use a valid phone number (eg. ' . $this->validateNumber . ')' );
 		}
-		if( strlen ($this->msg) > 160 ){
+		if ( strlen( $this->msg ) > 160 ) {
 			return new WP_Error( 'send-sms', 'You can only send short messages for testing ( 160 characters max )' );
 		}
-		$response = wp_remote_post( $this->wsdl_link . "outbound/sms/", $args);
+		$response = wp_remote_post( $this->wsdl_link . "outbound/sms/", $args );
 		// Check response error
 		if ( is_wp_error( $response ) ) {
 			return new WP_Error( 'send-sms', $response->get_error_message() );
-        }
-        
+		}
+
 		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( $response_code == '200' || $response_code == '202') {
-			$result = json_decode( $response['body'] );	
+		if ( $response_code == '200' || $response_code == '202' ) {
+			$result = json_decode( $response['body'] );
 			if ( isset( $result->status ) and $result->status == 'ERR' ) {
 				return new WP_Error( 'send-sms', $result->error_string );
 			} else {
@@ -84,9 +89,9 @@ class engy extends WP_SMS {
 
 				return $response['body'];
 			}
-		} else {	
+		} else {
 			return new WP_Error( 'send-sms', $response['body'] );
-		}		
+		}
 
 	}
 

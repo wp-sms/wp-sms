@@ -11,7 +11,7 @@ class cpsms extends WP_SMS {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "The number starting with country code.";
-		$this->has_key = true;
+		$this->has_key        = true;
 	}
 
 	public function SendSMS() {
@@ -48,70 +48,70 @@ class cpsms extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$body = array(
-		    'to' => $this->to,
-		    'message' => $this->msg,
-		    'from' => $this->from,
-        );
+			'to'      => $this->to,
+			'message' => $this->msg,
+			'from'    => $this->from,
+		);
 
-        $response = wp_remote_post( $this->wsdl_link . 'v2/send', [
-            'headers' => array(
-                'Authorization' => 'Basic ' . base64_encode( "$this->username:$this->has_key" ),
-                'Accept'        => 'application/json, text/javascript',
-                'Content-Type'  => 'application/json'
-            ),
-            'body' => json_encode($body)
-        ] );
+		$response = wp_remote_post( $this->wsdl_link . 'v2/send', [
+			'headers' => array(
+				'Authorization' => 'Basic ' . base64_encode( "$this->username:$this->has_key" ),
+				'Accept'        => 'application/json, text/javascript',
+				'Content-Type'  => 'application/json'
+			),
+			'body'    => json_encode( $body )
+		] );
 
-        // Check gateway credit
-        if ( is_wp_error( $response ) ) {
-            return new WP_Error( 'account-credit', $response->get_error_message() );
-        }
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
+		}
 
-        $result = json_decode($response['body']);
-        $response_code = wp_remote_retrieve_response_code( $response );
+		$result        = json_decode( $response['body'] );
+		$response_code = wp_remote_retrieve_response_code( $response );
 
-        if ( $response_code == '200' ) {
-            $this->InsertToDB( $this->from, $this->msg, $this->to );
+		if ( $response_code == '200' ) {
+			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
-            /**
-             * Run hook after send sms.
-             *
-             * @since 2.4
-             */
-            do_action( 'wp_sms_send', $response['body'] );
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 */
+			do_action( 'wp_sms_send', $response['body'] );
 
-            return $result;
-        } else {
-            return new WP_Error( 'send-sms', print_r($result->error, 1) );
-        }
+			return $result;
+		} else {
+			return new WP_Error( 'send-sms', print_r( $result->error, 1 ) );
+		}
 	}
 
 	public function GetCredit() {
-        // Check username and password
-        if ( ! $this->username && ! $this->has_key ) {
-            return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
-        }
+		// Check username and password
+		if ( ! $this->username && ! $this->has_key ) {
+			return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
+		}
 
-        $response = wp_remote_get( $this->wsdl_link . 'v2/creditvalue', [
-            'headers' => array(
-                'Authorization' => 'Basic ' . base64_encode( "$this->username:$this->has_key" ),
-                'Accept'        => 'application/json, text/javascript',
-                'Content-Type'  => 'application/json'
-            )
-        ] );
+		$response = wp_remote_get( $this->wsdl_link . 'v2/creditvalue', [
+			'headers' => array(
+				'Authorization' => 'Basic ' . base64_encode( "$this->username:$this->has_key" ),
+				'Accept'        => 'application/json, text/javascript',
+				'Content-Type'  => 'application/json'
+			)
+		] );
 
-        // Check gateway credit
-        if ( is_wp_error( $response ) ) {
-            return new WP_Error( 'account-credit', $response->get_error_message() );
-        }
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
+		}
 
-        $result = json_decode($response['body']);
-        $response_code = wp_remote_retrieve_response_code( $response );
+		$result        = json_decode( $response['body'] );
+		$response_code = wp_remote_retrieve_response_code( $response );
 
-        if ( $response_code == '200' ) {
-            return $result->credit;
-        } else {
-            return new WP_Error( 'credit', $result->error->message );
-        }
+		if ( $response_code == '200' ) {
+			return $result->credit;
+		} else {
+			return new WP_Error( 'credit', $result->error->message );
+		}
 	}
 }
