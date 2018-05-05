@@ -105,6 +105,10 @@ abstract class WP_SMS {
 		if ( isset( $this->options['mobile_county_code'] ) and $this->options['mobile_county_code'] ) {
 			add_filter( 'wp_sms_to', array( $this, 'applyCountryCode' ) );
 		}
+
+		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
+			add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
+		}
 	}
 
 	public function InsertToDB( $sender, $message, $recipient ) {
@@ -139,5 +143,18 @@ abstract class WP_SMS {
 		}
 
 		return $numbers;
+	}
+
+	/**
+	 * Apply Unicode for non-English characters
+	 *
+	 * @param string $msg
+	 *
+	 * @return string
+	 */
+	public function applyUnicode( $msg = '' ) {
+		$encodedMessage = bin2hex( mb_convert_encoding( $msg, 'utf-16', 'utf-8' ) );
+
+		return $encodedMessage;
 	}
 }

@@ -303,6 +303,19 @@ class WP_SMS_Settings {
 					'options' => $options,
 					'desc'    => __( 'Show your account credit in send SMS page.', 'wp-sms' )
 				),
+				// Message header
+				'message_title'             => array(
+					'id'   => 'message_title',
+					'name' => __( 'Message options', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'send_unicode'              => array(
+					'id'      => 'send_unicode',
+					'name'    => __( 'Send as Unicode', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms' )
+				),
 			) ),
 			// Feature tab
 			'feature'       => apply_filters( 'wp_sms_feature_settings', array(
