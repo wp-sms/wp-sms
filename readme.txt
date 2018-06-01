@@ -228,7 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
-* Added engy.solutions gateway.
+* Added engy.solutions and aruba.it gateway.
 * Added new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).
 
 = 4.0.20 =
