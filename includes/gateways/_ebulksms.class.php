@@ -11,7 +11,7 @@ class _ebulksms extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "2347030000000,2348020000000,23489010000000";
+		$this->validateNumber = "23470XXXXXXXX,23480XXXXXXXX,23490XXXXXXXX,23481XXXXXXXX";
 
 		// Enable api key
 		$this->has_key = true;
@@ -39,7 +39,8 @@ class _ebulksms extends WP_SMS {
 		 *
 		 * @param array $this ->to receiver number
 		 */
-		$this->to = apply_filters( 'wp_sms_to', $this->to );
+		//$this->to = apply_filters( 'wp_sms_to', $this->to );
+		$this->to = $this->formatMobileNumbers( $this->to );
 
 		/**
 		 * Modify text message
@@ -108,4 +109,40 @@ class _ebulksms extends WP_SMS {
 		}
 	}
 
+        private function formatMobileNumbers($strnumbers, $country_code = '234', $separator = ',') {
+            $cleanrecipients = array();
+            if (!empty($strnumbers)) {
+                $validnumbers = array();
+                $strnumbers = is_array($strnumbers)? implode(',', $strnumbers): $strnumbers;
+                $strnumbers = str_replace(array("\r\n", "\r", "\n"), ',', $strnumbers);
+
+                $regExp = "/[0-9]{10,15}/";
+                if (preg_match_all($regExp, $strnumbers, $validnumbers)) {
+                    $validnumbers = $validnumbers[0];
+                    foreach ($validnumbers as $mobilenumber) {
+                        if (substr($mobilenumber, 0, 1) == '0'){
+                            $mobilenumber = $country_code . substr($mobilenumber, 1);
+                        }
+                        elseif (substr($mobilenumber, 0, 4) == '2340'){
+                            $mobilenumber = $country_code . substr($mobilenumber, 4);
+                        }
+                        elseif (strlen($mobilenumber) < 11 && $country_code == '234') {
+                            $mobilenumber = $country_code . $mobilenumber;
+                        }
+                        if (strlen($mobilenumber) < 10 || strlen($mobilenumber) > 15) {
+                            continue;
+                        }
+                        if ((substr($mobilenumber, 0, 3) == "234") && strlen($mobilenumber) != 13) {
+                            continue;
+                        }
+                        $cleanrecipients[] = $mobilenumber;
+                    }
+                    $cleanrecipients = array_merge(array_unique($cleanrecipients));
+                }
+            }
+            else{
+                return '';
+            }
+            return $cleanrecipients;
+        }
 }
