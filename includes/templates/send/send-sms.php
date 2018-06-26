@@ -34,12 +34,13 @@
 <div class="wrap">
     <h2><?php _e( 'Send SMS', 'wp-sms' ); ?></h2>
     <form method="post" action="">
+        <?php wp_nonce_field( 'update-options' ); ?>
         <table class="form-table">
-			<?php wp_nonce_field( 'update-options' ); ?>
-           
             <tr>
                 <td><?php _e( 'Send from', 'wp-sms' ); ?>:</td>
-                <td><?php echo $this->sms->from; ?></td>
+                <td>
+                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $this->sms->from; ?>" maxlength="11"/>
+                </td>
             </tr>
             <tr>
                 <td><?php _e( 'Send to', 'wp-sms' ); ?>:</td>
