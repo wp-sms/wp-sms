@@ -228,7 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
-* Added engy.solutions and aruba.it gateway.
+* Added engy.solutions and aruba.it and hiro-sms.com gateways.
 * Added new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).
 * Added sender ID field. Allow typing of sender ID in Admin Send SMS page.
 
