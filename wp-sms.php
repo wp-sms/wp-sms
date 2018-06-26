@@ -380,6 +380,7 @@ class WP_SMS_Plugin {
 					$this->sms->to = explode( ",", $_POST['wp_get_number'] );
 				}
 
+				$this->sms->from = $_POST['wp_get_sender'];
 				$this->sms->msg = $_POST['wp_get_message'];
 
 				if ( isset( $_POST['wp_flash'] ) ) {
