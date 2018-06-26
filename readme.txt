@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = dev-master =
 * Added engy.solutions and aruba.it gateway.
 * Added new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).
+* Added sender ID field. Allow typing of sender ID in Admin Send SMS page.
 
 = 4.0.20 =
 * Added country code to prefix numbers if this option has value on the setting page.

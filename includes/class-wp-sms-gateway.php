@@ -197,6 +197,7 @@ class WP_SMS_Gateway {
 				'abrestan'       => 'abrestan.com',
 				'sabanovin'      => 'sabanovin.com',
 				'candoosms'      => 'candoosms.com',
+				'hirosms'        => 'hiro-sms.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
