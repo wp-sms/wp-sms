@@ -231,6 +231,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added engy.solutions and aruba.it and hiro-sms.com gateways.
 * Added new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).
 * Added sender ID field. Allow typing of sender ID in Admin Send SMS page.
+* Fixed issue to send SMS through CF7 in PHP v7.0 and v7.1
 
 = 4.0.20 =
 * Added country code to prefix numbers if this option has value on the setting page.

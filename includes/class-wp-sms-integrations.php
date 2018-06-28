@@ -12,6 +12,7 @@ class WP_SMS_Integrations {
 	public $sms;
 	public $date;
 	public $options;
+	public $cf7_data;
 
 	public function __construct() {
 		global $wpsms_option, $sms;
@@ -79,25 +80,53 @@ class WP_SMS_Integrations {
 	public function wpcf7_sms_handler( $form ) {
 		$cf7_options       = get_option( 'wpcf7_sms_' . $form->id() );
 		$cf7_options_field = get_option( 'wpcf7_sms_form' . $form->id() );
-
-		foreach ( $_POST as $index => $key ) {
-			if ( is_array( $key ) ) {
-				$plain_data[ $index ] = implode( ', ', $key );
-			} else {
-				$plain_data[ $index ] = $key;
-			}
-		}
+		$this->set_cf7_data();
 
 		if ( $cf7_options['message'] && $cf7_options['phone'] ) {
-			$this->sms->to  = explode( ',', $cf7_options['phone'] );
-			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options['message'] );
+			$this->sms->to = explode( ',', $cf7_options['phone'] );
+
+			$this->sms->msg = preg_replace_callback( '/%([a-zA-Z0-9._-]+)%/', function ( $matches ) {
+				foreach ( $matches as $item ) {
+					if ( isset( $this->cf7_data[ $item ] ) ) {
+						return $this->cf7_data[ $item ];
+					}
+				}
+			}, $cf7_options['message'] );
+
 			$this->sms->SendSMS();
 		}
 
 		if ( $cf7_options_field['message'] && $cf7_options_field['phone'] ) {
-			$this->sms->to  = array( @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options_field['phone'] ) );
-			$this->sms->msg = @preg_replace( '/%([a-zA-Z0-9._-]+)%/e', '$plain_data["$1"]', $cf7_options_field['message'] );
+
+			$to = preg_replace_callback( '/%([a-zA-Z0-9._-]+)%/', function ( $matches ) {
+				foreach ( $matches as $item ) {
+					if ( isset( $this->cf7_data[ $item ] ) ) {
+						return $this->cf7_data[ $item ];
+					}
+				}
+			}, $cf7_options_field['phone'] );
+
+			$this->sms->to = array( $to );
+
+			$this->sms->msg = preg_replace_callback( '/%([a-zA-Z0-9._-]+)%/', function ( $matches ) {
+				foreach ( $matches as $item ) {
+					if ( isset( $this->cf7_data[ $item ] ) ) {
+						return $this->cf7_data[ $item ];
+					}
+				}
+			}, $cf7_options_field['message'] );
+
 			$this->sms->SendSMS();
+		}
+	}
+
+	private function set_cf7_data() {
+		foreach ( $_POST as $index => $key ) {
+			if ( is_array( $key ) ) {
+				$this->cf7_data[ $index ] = implode( ', ', $key );
+			} else {
+				$this->cf7_data[ $index ] = $key;
+			}
 		}
 	}
 
