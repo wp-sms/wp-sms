@@ -107,10 +107,10 @@ class WP_SMS_Settings_Pro {
 	public function get_tabs() {
 		$tabs = array(
 			'general' => __( 'General', 'wp-sms' ),
-			'wp'      => __( 'Wordpress', 'wp-sms' ),
+			'wp'      => __( 'WordPress', 'wp-sms' ),
 			'bp'      => __( 'BuddyPress', 'wp-sms' ),
-			'wc'      => __( 'Woocommerce', 'wp-sms' ),
-			'gf'      => __( 'Gravityforms', 'wp-sms' ),
+			'wc'      => __( 'WooCommerce', 'wp-sms' ),
+			'gf'      => __( 'Gravity Forms', 'wp-sms' ),
 			'qf'      => __( 'Quform', 'wp-sms' ),
 			'edd'     => __( 'Easy Digital Downloads', 'wp-sms' ),
 			'job'     => __( 'WP Job Manager', 'wp-sms' ),
