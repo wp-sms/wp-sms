@@ -338,7 +338,7 @@ class WP_SMS_Settings {
 				),
 				'rest_api_status'  => array(
 					'id'      => 'rest_api_status',
-					'name'    => __( 'Rest api status', 'wp-sms' ),
+					'name'    => __( 'REST API status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Add WP-SMS endpoints to the WP Rest API', 'wp-sms' )
