@@ -381,7 +381,7 @@ class WP_SMS_Plugin {
 				}
 
 				$this->sms->from = $_POST['wp_get_sender'];
-				$this->sms->msg = $_POST['wp_get_message'];
+				$this->sms->msg  = $_POST['wp_get_message'];
 
 				if ( isset( $_POST['wp_flash'] ) ) {
 					$this->sms->isflash = true;
