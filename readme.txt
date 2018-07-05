@@ -227,6 +227,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master-
+* Updated idehpayam.com gateway
+
 = 4.0.21 =
 * Added engy.solutions and aruba.it and hiro-sms.com gateways.
 * Added new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).

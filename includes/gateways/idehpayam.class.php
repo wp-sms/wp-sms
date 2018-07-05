@@ -1,9 +1,8 @@
 <?php
 
 class idehpayam extends WP_SMS {
-	private $wsdl_link = "http://panel.idehpayam.com/class/sms/wssimple/server.php?wsdl";
-	private $client = null;
-	public $tariff = "http://idehpayam.com/";
+	private $wsdl_link = "http://87.107.124.66/webservice/send.php?wsdl";
+	public $tariff = "https://www.idehpayam.com/";
 	public $unitrial = true;
 	public $unit;
 	public $flash = "enable";
@@ -13,13 +12,7 @@ class idehpayam extends WP_SMS {
 		parent::__construct();
 		$this->validateNumber = "09xxxxxxxx";
 
-		if ( ! class_exists( 'nusoap_client' ) ) {
-			include_once dirname( __FILE__ ) . '/../classes/nusoap.class.php';
-		}
-
-		$this->client                   = new nusoap_client( $this->wsdl_link );
-		$this->client->soap_defencoding = 'UTF-8';
-		$this->client->decode_utf8      = true;
+		ini_set( "soap.wsdl_cache_enabled", "0" );
 	}
 
 	public function SendSMS() {
@@ -55,14 +48,9 @@ class idehpayam extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$result = $this->client->call( "SendSMS", array(
-			'Username'         => $this->username,
-			'Password'         => $this->password,
-			'SenderNumber'     => $this->from,
-			'RecipientNumbers' => $this->to,
-			'Message'          => $this->msg,
-			'Type'             => 'normal'
-		) );
+		$this->client = new SoapClient( $this->wsdl_link );
+
+		$result = $this->client->SendMultiSMS( array( $this->from ), $this->to, array( $this->msg ), array( $this->isflash ), $this->username, $this->password );
 
 		if ( $result ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
@@ -89,11 +77,18 @@ class idehpayam extends WP_SMS {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		$result = $this->client->call( "GetCredit", array(
-			'Username' => $this->username,
-			'Password' => $this->password
-		) );
+		if ( ! class_exists( 'SoapClient' ) ) {
+			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+		}
 
-		return $result;
+		try {
+			$this->client = new SoapClient( $this->wsdl_link );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
+		}
+
+		$results = $this->client->GetCredit( $this->username, $this->password, array( "", "" ) );
+
+		return round( $results );
 	}
 }
