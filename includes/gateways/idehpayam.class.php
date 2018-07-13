@@ -51,6 +51,7 @@ class idehpayam extends WP_SMS {
 		$from    = array();
 		$message = array();
 		$type    = array();
+		$result  = '';
 
 		try {
 			$client = new SoapClient( $this->wsdl_link );
@@ -62,26 +63,22 @@ class idehpayam extends WP_SMS {
 			}
 
 			$result = $client->SendMultiSMS( $from, $this->to, $message, $type, $this->username, $this->password );
-
-			if ( $result ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
-
-				/**
-				 * Run hook after send sms.
-				 *
-				 * @since 2.4
-				 *
-				 * @param string $result result output.
-				 */
-				do_action( 'wp_sms_send', $result );
-
-				return $result;
-			}
-
 		} catch ( Exception $e ) {
-			return new WP_Error( 'send-sms', $e->getMessage() );
+			$error = new WP_Error( 'send-sms', $e->getMessage() );
 		}
 
+		/**
+		 * Run hook after send sms.
+		 *
+		 * @since 2.4
+		 *
+		 * @param string $result result output.
+		 */
+		do_action( 'wp_sms_send', $result );
+
+		$this->InsertToDB( $this->from, $this->msg, $this->to );
+
+		return $result;
 	}
 
 	public function GetCredit() {
