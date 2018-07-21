@@ -228,7 +228,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master-
-* Updated idehpayam.com gateway
+* Updated idehpayam.com and onlinepanel.ir gateways
 
 = 4.0.21 =
 * Added engy.solutions and aruba.it and hiro-sms.com gateways.

@@ -198,6 +198,7 @@ class WP_SMS_Gateway {
 				'sabanovin'      => 'sabanovin.com',
 				'candoosms'      => 'candoosms.com',
 				'hirosms'        => 'hiro-sms.com',
+				'onlinepanel'    => 'onlinepanel.ir',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
