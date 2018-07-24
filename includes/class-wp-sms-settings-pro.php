@@ -208,7 +208,7 @@ class WP_SMS_Settings_Pro {
 		$gf_forms = array();
 		$qf_forms = array();
 
-		// Get gravityforms
+		// Get Gravityforms
 		if ( class_exists( 'RGFormsModel' ) ) {
 			$forms = RGFormsModel::get_forms( null, 'title' );
 
