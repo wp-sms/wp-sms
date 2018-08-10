@@ -61,6 +61,9 @@ class WPSMS_Widget extends WP_Widget {
 		$mobile_field_placeholder = ! empty( $instance['mobile_field_placeholder'] ) ? $instance['mobile_field_placeholder'] : '';
 		$mobile_field_max         = ! empty( $instance['mobile_field_max'] ) ? $instance['mobile_field_max'] : '';
 		$mobile_field_min         = ! empty( $instance['mobile_field_min'] ) ? $instance['mobile_field_min'] : '';
+		$gdpr_compliance          = ! empty( $instance['gdpr_compliance'] ) ? $instance['gdpr_compliance'] : '';
+		$gdpr_confirmation_text   = ! empty( $instance['gdpr_confirmation_text'] ) ? $instance['gdpr_confirmation_text'] : 'GDPR text...';
+		$gdpr_checkbox_status     = ! empty( $instance['gdpr_checkbox_status'] ) ? $instance['gdpr_checkbox_status'] : 'checked';
 
 		// Load template
 		include dirname( __FILE__ ) . "/templates/wp-sms-widget.php";
@@ -88,6 +91,9 @@ class WPSMS_Widget extends WP_Widget {
 		$instance['mobile_field_placeholder'] = ( ! empty( $new_instance['mobile_field_placeholder'] ) ) ? $new_instance['mobile_field_placeholder'] : '';
 		$instance['mobile_field_max']         = ( ! empty( $new_instance['mobile_field_max'] ) ) ? $new_instance['mobile_field_max'] : '';
 		$instance['mobile_field_min']         = ( ! empty( $new_instance['mobile_field_min'] ) ) ? $new_instance['mobile_field_min'] : '';
+		$instance['gdpr_compliance']          = ( ! empty( $new_instance['gdpr_compliance'] ) ) ? $new_instance['gdpr_compliance'] : '';
+		$instance['gdpr_confirmation_text']   = ( ! empty( $new_instance['gdpr_confirmation_text'] ) ) ? $new_instance['gdpr_confirmation_text'] : '';
+		$instance['gdpr_checkbox_status']     = ( ! empty( $new_instance['gdpr_checkbox_status'] ) ) ? $new_instance['gdpr_checkbox_status'] : '';
 
 		return $instance;
 	}

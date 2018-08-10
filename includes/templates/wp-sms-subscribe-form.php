@@ -9,8 +9,7 @@
 
         <div class="wpsms-subscribe-form">
             <label><?php _e( 'Your mobile', 'wp-sms' ); ?>:</label>
-            <input id="wpsms-mobile" type="text" placeholder="<?php echo $instance['mobile_field_placeholder']; ?>"
-                   class="wpsms-input"/>
+            <input id="wpsms-mobile" type="text" placeholder="<?php echo $instance['mobile_field_placeholder']; ?>" class="wpsms-input"/>
         </div>
 
 		<?php if ( $instance['show_group'] ) { ?>
@@ -26,8 +25,7 @@
 
         <div class="wpsms-subscribe-form">
             <label>
-                <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe"
-                       checked="checked"/>
+                <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
 				<?php _e( 'Subscribe', 'wp-sms' ); ?>
             </label>
 
@@ -37,14 +35,19 @@
             </label>
         </div>
 
+		<?php if ( $instance['gdpr_compliance'] ) { ?>
+            <div class="wpsms-subscribe-form">
+                <label><input id="wpsms-gdpr-confirmation" type="checkbox"> <?php echo $instance['gdpr_confirmation_text']; ?></label>
+            </div>
+		<?php } ?>
+
         <button class="wpsms-button" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
     </div>
 
     <div id="wpsms-step-2">
         <div class="wpsms-subscribe-form">
             <label><?php _e( 'Activation code:', 'wp-sms' ); ?></label>
-            <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>"
-                   class="wpsms-input"/>
+            <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>" class="wpsms-input"/>
         </div>
         <button class="wpsms-button" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
     </div>
