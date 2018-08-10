@@ -224,7 +224,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= dev-master =
+= dev-master
+* Fixed issue in get fields from Gravityforms.
 * Updated idehpayam.com and onlinepanel.ir gateways
 
 = 4.0.21 =
