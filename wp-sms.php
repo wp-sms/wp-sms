@@ -308,7 +308,7 @@ class WP_SMS_Plugin {
 			$this,
 			'subscribe_page'
 		) );
-		add_submenu_page( 'wp-sms', __( 'Subscriber Groups', 'wp-sms' ), __( 'Subscriber Groups', 'wp-sms' ), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(
+		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(
 			$this,
 			'groups_page'
 		) );
