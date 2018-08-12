@@ -120,6 +120,8 @@ class WP_SMS_Plugin {
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 
 		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
+
+		add_action( 'admin_init', array( $this, 'register_privacy_policy_template' ) );
 	}
 
 	/**
@@ -575,5 +577,22 @@ class WP_SMS_Plugin {
 	 */
 	public function shortcode( $atts, $content = null ) {
 
+	}
+
+	/**
+	 *
+	 * Register the WP-SMS template for a privacy policy.
+	 *
+	 * Note, this is just a suggestion and should be customized to meet your businesses needs.
+	 *
+	 */
+	public function register_privacy_policy_template() {
+		if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+			return;
+		}
+
+		$content = __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'easy-digital-downloads' ) . "\n";
+
+		wp_add_privacy_policy_content( 'WP SMS', wpautop( $content ) );
 	}
 }
