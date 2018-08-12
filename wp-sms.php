@@ -120,8 +120,6 @@ class WP_SMS_Plugin {
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 
 		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
-
-		add_action( 'admin_init', array( $this, 'register_privacy_policy_template' ) );
 	}
 
 	/**
@@ -166,7 +164,6 @@ class WP_SMS_Plugin {
 		$role->add_cap( 'wpsms_sendsms' );
 		$role->add_cap( 'wpsms_outbox' );
 		$role->add_cap( 'wpsms_subscribers' );
-		$role->add_cap( 'wpsms_subscribe_groups' );
 		$role->add_cap( 'wpsms_setting' );
 	}
 
@@ -190,6 +187,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-widget',
 			'includes/class-wp-sms-rest-api',
 			'includes/class-wp-sms-version',
+			'includes/class-wp-sms-privacy',
 		);
 
 		foreach ( $files as $file ) {
@@ -308,9 +306,13 @@ class WP_SMS_Plugin {
 			$this,
 			'subscribe_page'
 		) );
-		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(
+		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array(
 			$this,
 			'groups_page'
+		) );
+		add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array(
+			$this,
+			'privacy_page'
 		) );
 	}
 
@@ -536,6 +538,15 @@ class WP_SMS_Plugin {
 	}
 
 	/**
+	 * Privacy admin page
+	 *
+	 * @param  Not param
+	 */
+	public function privacy_page() {
+		include_once dirname( __FILE__ ) . "/includes/templates/privacy/form.php";
+	}
+
+	/**
 	 * Show message notice in admin
 	 *
 	 * @param $result
@@ -577,22 +588,5 @@ class WP_SMS_Plugin {
 	 */
 	public function shortcode( $atts, $content = null ) {
 
-	}
-
-	/**
-	 *
-	 * Register the WP-SMS template for a privacy policy.
-	 *
-	 * Note, this is just a suggestion and should be customized to meet your businesses needs.
-	 *
-	 */
-	public function register_privacy_policy_template() {
-		if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
-			return;
-		}
-
-		$content = __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'easy-digital-downloads' ) . "\n";
-
-		wp_add_privacy_policy_content( 'WP SMS', wpautop( $content ) );
 	}
 }
