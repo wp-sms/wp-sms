@@ -164,7 +164,6 @@ class WP_SMS_Plugin {
 		$role->add_cap( 'wpsms_sendsms' );
 		$role->add_cap( 'wpsms_outbox' );
 		$role->add_cap( 'wpsms_subscribers' );
-		$role->add_cap( 'wpsms_subscribe_groups' );
 		$role->add_cap( 'wpsms_setting' );
 	}
 
@@ -188,6 +187,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-widget',
 			'includes/class-wp-sms-rest-api',
 			'includes/class-wp-sms-version',
+			'includes/class-wp-sms-privacy',
 		);
 
 		foreach ( $files as $file ) {
@@ -306,9 +306,13 @@ class WP_SMS_Plugin {
 			$this,
 			'subscribe_page'
 		) );
-		add_submenu_page( 'wp-sms', __( 'Subscriber Groups', 'wp-sms' ), __( 'Subscriber Groups', 'wp-sms' ), 'wpsms_subscribe_groups', 'wp-sms-subscribers-group', array(
+		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array(
 			$this,
 			'groups_page'
+		) );
+		add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array(
+			$this,
+			'privacy_page'
 		) );
 	}
 
@@ -531,6 +535,15 @@ class WP_SMS_Plugin {
 		$list_table->prepare_items();
 
 		include_once dirname( __FILE__ ) . "/includes/templates/subscribe/groups.php";
+	}
+
+	/**
+	 * Privacy admin page
+	 *
+	 * @param  Not param
+	 */
+	public function privacy_page() {
+		include_once dirname( __FILE__ ) . "/includes/templates/privacy/form.php";
 	}
 
 	/**
