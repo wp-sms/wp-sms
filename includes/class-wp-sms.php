@@ -89,7 +89,7 @@ abstract class WP_SMS {
 	 *
 	 * @var string
 	 */
-	protected $options;
+	public $options;
 
 	/**
 	 * Constructors
