@@ -224,7 +224,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= dev-master-
+= dev-master
+* Added a new checkbox in the SMS subscription form for GDPR compliance.
+* Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance.
 * Updated the setting page.
 * Updated idehpayam.com and onlinepanel.ir gateways
 * Fixed issue in get fields from Gravityforms.
