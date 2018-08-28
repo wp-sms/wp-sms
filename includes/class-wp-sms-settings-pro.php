@@ -466,16 +466,20 @@ class WP_SMS_Settings_Pro {
 			'wc'      => apply_filters( 'wp_sms_pro_wc_settings', array(
 				'wc_fields'                  => array(
 					'id'   => 'wc_fields',
-					'name' => __( 'Fields', 'wp-sms' ),
+					'name' => __( 'General', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'wc_mobile_field'            => array(
-					'id'      => 'wc_mobile_field',
-					'name'    => __( 'Mobile field', 'wp-sms' ),
-					'type'    => 'checkbox',
-					'options' => $options,
-					'desc'    => __( 'Add mobile field to checkout page', 'wp-sms' )
-				),
+                'wc_mobile_field' => array(
+                    'id'      => 'wc_mobile_field',
+                    'name'    => __( 'Choose the field', 'wp-sms' ),
+                    'type'    => 'select',
+                    'options' => array(
+                        'disable' => __( 'Disable (No field)', 'wp-sms' ),
+                        'add_new_field'      => __( 'Add a new field in the checkout form', 'wp-sms' ),
+                        'used_current_field'      => __( 'Use the current phone field in the bill', 'wp-sms' ),
+                    ),
+                    'desc'    => __( 'Choose from which field you get numbers for sending SMS.', 'wp-sms' )
+                ),
 				'wc_notify_product'          => array(
 					'id'   => 'wc_notify_product',
 					'name' => __( 'Notify for new product', 'wp-sms' ),

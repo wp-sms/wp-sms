@@ -5,7 +5,7 @@
  * Description: A powerful texting plugin for WordPress
  * Version: 4.0.21
  * Author: Verona Labs
- * Author URI: http://veronalabs.com/
+ * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
  */
 

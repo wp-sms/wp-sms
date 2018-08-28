@@ -228,8 +228,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master-
-* Fixed issue in get fields from Gravityforms.
+* Updated the setting page.
 * Updated idehpayam.com and onlinepanel.ir gateways
+* Fixed issue in get fields from Gravityforms.
 
 = 4.0.21 =
 * Added engy.solutions and aruba.it and hiro-sms.com gateways.
