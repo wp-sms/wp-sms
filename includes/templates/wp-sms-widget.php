@@ -72,3 +72,27 @@
                value="<?php echo esc_attr( $mobile_field_min ); ?>">
     </p>
 <?php endif; ?>
+
+<p>
+    <input class="checkbox" id="<?php echo $this->get_field_id( 'gdpr_compliance' ); ?>"
+           name="<?php echo $this->get_field_name( 'gdpr_compliance' ); ?>" type="checkbox"
+           value="1" <?php checked( $gdpr_compliance, 1 ); ?>>
+    <label for="<?php echo $this->get_field_id( 'gdpr_compliance' ); ?>"><?php _e( 'GDPR Compliance', 'wp-sms' ); ?></label>
+</p>
+
+<?php if ( $gdpr_compliance ) : ?>
+    <p>
+        <label for="<?php echo $this->get_field_id( 'gdpr_confirmation_text' ); ?>"><?php _e( 'Confirmation Text:', 'wp-sms' ); ?></label>
+        <textarea class="widefat" id="<?php echo $this->get_field_id( 'gdpr_confirmation_text' ); ?>"
+                  name="<?php echo $this->get_field_name( 'gdpr_confirmation_text' ); ?>" rows="4"><?php echo esc_attr( $gdpr_confirmation_text ); ?></textarea>
+    </p>
+
+    <p>
+        <label for="<?php echo $this->get_field_id( 'gdpr_checkbox_status' ); ?>"><?php _e( 'Confirmation Checkbox status:', 'wp-sms' ); ?></label>
+        <select class="tiny-text" id="<?php echo $this->get_field_id( 'gdpr_checkbox_status' ); ?>"
+                name="<?php echo $this->get_field_name( 'gdpr_checkbox_status' ); ?>">
+            <option value="checked"<?php selected( $gdpr_checkbox_status, 'checked' ); ?>><?php _e( 'Checked', 'wp-sms' ); ?></option>
+            <option value="unchecked"<?php selected( $gdpr_checkbox_status, 'unchecked' ); ?>><?php _e( 'Unchecked', 'wp-sms' ); ?></option>
+        </select>
+    </p>
+<?php endif; ?>

@@ -1,6 +1,6 @@
 === WP SMS ===
 Contributors: mostafa.s1990
-Donate link: http://wp-sms-pro.com/donate
+Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 4.9
@@ -11,38 +11,44 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 A powerful texting plugin for WordPress
 
 == Description ==
-You can add to WordPress, the ability to send SMS, member of SMS newsletter and send the SMS.
-To every happening in WordPress, you can send an SMS through this plugin.
+By WP SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS to your newsletter subscribers or your users and get their attentions to your site and products.
 
-The usage of this plugin is completely free. You have to just have an account from a service in the gateway list's that we support them.
-Don't worry, we have tried to add the best and the most gateways to plugin.
+Using WP SMS you can enjoy many features, You can
 
-= Send SMS with WordPress in less than 1 minute! =
+* Send SMS to either your users’ numbers or specific numbers
+* Get your users’ mobile numbers when they subscribe to your newsletters
+* Send SMS automatically to users and admins in different situations
+* Increase the security by two step verification
+* Login with your mobile number in case that you forget your password
+* And many more!
+
+This plugin is completely free. You just need to have an account from one of the services in the list of gateways we support.
+Don’t worry, we have tried to cover the best and the most well-known gateways for the plugin. Also, the Pro version is available too.
+
+Watch How You Can Send SMS With WordPress!
 
 https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
+* Supporting more than 150 SMS gateways
+* Sending SMS to the mobile number(s), your subscribers and WordPress users
+* Subscribing for newsletters by SMS
+* Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
+* Sending Notification SMS to admins
+ * To inform new releases of WordPress
+ * When a new user is registered
+ * When new comments are posted
+ * When users are logged into the WordPress
+ * When users are registered to subscribe in forms
+* Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
+* Supporting Widget for showing SMS newsletters to subscribers
+* Supporting WordPress Hooks
+* Supporting WP REST API
+* Importing/Exporting Subscribers.
 
-* Supported +150 sms gateways.
-* Send SMS to number(s), subscribers and wordpress users.
-* Subscribe newsletter SMS.
-* Send activation code to subscribe for complete subscription.
-* Notification SMS when published new post to subscribers.
-* Notification SMS when the new release of WordPress.
-* Notification SMS when registering a new User.
-* Notification SMS when get new comment.
-* Notification SMS when user logged into wordpress.
-* Notification SMS when user registered to subscription form.
-* Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
-* Supported WP Widget for newsletter subscribers.
-* Support Wordpress Hooks.
-* Support WP REST API
-* Import/Export Subscribers.
-
-= Professional Package =
-In the Professional pack added many features, most popular gateway and is integrated with another plugins.
-
-[Buy Professional Package](http://wp-sms-pro.com/purchase/)
+= PRO PACKAGE =
+In the Pro version, more features are added and most of popular gateways are supported. The pro version can also be integrated with many other plugins. User registration verification is possible through sending verification codes to subscribers, too. The list of supported gateways and integrated plugins are available in FAQ.
+[Buy Pro Package](http://wp-sms-pro.com/purchase/)
 
 
 = Translations =
@@ -51,27 +57,18 @@ WP SMS has been translated in to many languages, for the current list and contri
 Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
 
 = Contributing and Reporting Bugs =
-WP-SMS is being developed on GitHub, If you’re interested in contributing to plugin, Please look at [Github page](https://github.com/veronalabs/wp-sms)
+WP SMS is being developed on GitHub. If you’re interested in contributing to the plugin, please look at [Github page](https://github.com/veronalabs/wp-sms).
+[Donate to this plugin](http://wp-sms-pro.com/donate)
 
-= Support =
-* [Donate to this plugin](http://mostafa-soufi.ir/donate/)
-
-This plugin is a free product of the [Verona Labs](http://veronalabs.com/) and Thank you [jetbrains](https://www.jetbrains.com) for giving us Intellij IDEA Ultimate licenses for develop this project.
 
 == Installation ==
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display Subscribe go to Themes -> Widgets, and adding `Subscribe to SMS` into your sidebar.
+3. To display the SMS newsletter form, go to Themes > Widgets, and add a Subscribe form.
 
 == Frequently Asked Questions ==
-= What is the gateways supported in the plugin? =
-You can see list all supported gateways [through this link](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
-
-= What is the difference between Free and Pro Pack version? =
-In the Professional pack added many features, most popular gateway and is integrated with another plugins.
-
-= What is the gateways supported in the Pro Pack version? =
-The professional package supported following gateways:
+= What gateways are supported in the plugin? =
+You can see the list of all supported gateways [through this link](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways). More gateways are supported in the Pro. The followings are the supported gateways for the Pro version:
 
 * Twilio.com
 * Plivo.com
@@ -110,45 +107,45 @@ The professional package supported following gateways:
 * Cellsynt.net
 * Cmtelecom.com
 
-= What is the features of pro pack version? =
-* Verify user registration by sms verification code
-* Integrate with BuddyPress. You can adding mobile number field to profile page, send SMS to user when mentioned in the post and sending SMS to user when posted a comment on the post.
-* Integrate with WooCommerce. You can adding mobile number field to checkout page, send sms to users or subscribers when added new product to woocommerce. send SMS to admin when submitted new order in woocommerce and send sms to customers when submit the order.
-when one stock product is load, the plugin can send SMS to admin for notify and you can send sms to customers when the orders have been changed.
-* Integrate with Gravity form. Plugin can be send sms to user or admin after submit the form.
-* Integrate with Quform. Plugin can be send sms to user or admin after submit the form.
-* Integrate with Easy Digital Downloads. You can adding mobile number field to profile page. can be send sms to user or admin when submitted an order with EDD.
-* Integrate with WP Job Manager. You can adding mobile number field to Job form and can be send sms to employer or admin when submitted an job with WP Job Manager.
-* Premium Support.
+= What are the differences between Free and Pro Pack versions? =
+* User Verification Registration through SMS
+* Professional support & ticketing
+* More supported gateways (listed above)
+* Integrations with more plugins as listed below:
+ * Integration with BuddyPress: You can add mobile number fields to the profile page, send SMS to users when they’re mentioned in a post, and send SMS to users when they comment on a post.
+ * Integration with WooCommerce: You can add mobile number fields to the checkout page, send sms to users or subscribers when a new product is added to WooCommerce, send SMS to Admin when a new order is submitted in WooCommerce. When the stock is low, the plugin can send SMS to notify Admin. Also, you can send SMS to customers when the orders are changed.
+ * Integration with Gravity forms: The plugin can send SMS to users and Admin after the form is submitted.
+ * Integration with Quform: The plugin can send SMS to users or Admin after the form is submitted.
+ * Integration with Easy Digital Downloads: You can add mobile number fields to the profile page, and send SMS to users or Admin when an order is submitted with EDD.
+ * Integration with WP Job Manager: You can add mobile number fields to Job forms and send SMS to employers or Admin when a job is requested with WP Job Manager.
 
 = How to buy? =
-You can buy pro pack version [through this link](http://wp-sms-pro.com/purchase/)
+You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP 7 Support? =
 Yes! WP SMS is compatible with PHP 7 and 7.1
 
-= How sending sms with PHP code? =
-
+= How to send SMS with PHP codes? =
 	global $sms;
 	$sms->to = array('Mobile Number');
 	$sms->msg = "Your Message";
 	$sms->SendSMS();
 
 = How using Actions? =
-Run following action when send sms with this plugin.
+Run the following action when sending SMS with this plugin:
 `wp_sms_send`
 
-Example: Send mail when send sms.
+Example: Send emails when sending SMS
 
 	function send_mail_when_send_sms($message_info) {
 		wp_mail('you@mail.com', 'Send SMS', $message_info);
 	}
 	add_action('wp_sms_send', 'send_mail_when_send_sms');
 
-Run following action when subscribe a new user.
+Run the following action when subscribing a new user.
 `wp_sms_add_subscriber`
 
-Example: Send sms to user when register a new subscriber.
+Example: Send Welcome SMS to users when they are registered.
 
 	function send_sms_when_subscribe_new_user($name, $mobile) {
 		global $sms;
@@ -159,10 +156,10 @@ Example: Send sms to user when register a new subscriber.
 	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
 
 = How using Hooks? =
-You can use following filter for modify from number.
+You can use the following filter to modify numbers.
 `wp_sms_from`
 
-Example: Add 0 to the end sender number.
+Example: Add 0 to the end of the sender number
 
 	function wp_sms_modify_from($from) {
 		$from = $from . ' 0';
@@ -170,10 +167,10 @@ Example: Add 0 to the end sender number.
 	}
 	add_filter('wp_sms_from', 'wp_sms_modify_from');
 
-You can use following filter for modify receivers number.
+You can use the following filter to modify the receivers’ numbers.
 `wp_sms_to`
 
-Example: Add new number to get message.
+Example: Add new numbers to your numbers
 
 	function wp_sms_modify_receiver($numbers) {
 		$numbers[] = '09xxxxxxxx';
@@ -181,10 +178,10 @@ Example: Add new number to get message.
 	}
 	add_filter('wp_sms_to', 'wp_sms_modify_receiver');
 
-You can use following filter for modify text message.
+You can use the following filter to modify text messages
 `wp_sms_msg`
 
-Example: Add signature to messages that are sent.
+Example: Add signatures to messages that are sent
 
 	function wp_sms_modify_message($message) {
 		$message = $message . ' /n Powerby: WP-SMS';
@@ -192,10 +189,10 @@ Example: Add signature to messages that are sent.
 	}
 	add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
-= Support REST API? =
-Yes. At the moment just we registered one endpoint in the plugin.
+= Is REST API supported? =
+Yes. Up to now, we’ve just registered one endpoint in the plugin.
 
-Add new subscribe to sms newsletter
+Add new subscribes to SMS newsletters.
 
 	POST /wpsms/v1/subscriber/add
 

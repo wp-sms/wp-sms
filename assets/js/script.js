@@ -1,4 +1,18 @@
 jQuery(document).ready(function ($) {
+    // Check the GDPR enabled.
+    if ($('#wpsms-gdpr-confirmation').length) {
+        $("#wpsms-submit").attr('disabled', 'disabled');
+
+        $("#wpsms-gdpr-confirmation").click(function () {
+            if (this.checked) {
+                $("#wpsms-submit").removeAttr('disabled');
+            } else {
+                $("#wpsms-submit").attr('disabled', 'disabled');
+            }
+        });
+
+    }
+
     $("#wpsms-subscribe #wpsms-submit").click(function () {
         $("#wpsms-result").hide();
 
