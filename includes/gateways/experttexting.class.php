@@ -48,8 +48,17 @@ class experttexting extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check unicode option if enabled.
+        if( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
+            $text = $this->msg;
+            $type = "unicode";
+        } else {
+            $text = urlencode( $this->msg );
+            $type = "text";
+        }
+
 		foreach ( $this->to as $to ) {
-			$response = wp_remote_get( $this->wsdl_link . "json/Message/Send?username=" . $this->username . "&password=" . $this->password . "&api_key=" . $this->has_key . "&from=" . $this->from . "&to=" . $to . "&text=" . urlencode( $this->msg ) . "&type=text", array( 'timeout' => 30 ) );
+			$response = wp_remote_get( $this->wsdl_link . "json/Message/Send?username=" . $this->username . "&password=" . $this->password . "&api_key=" . $this->has_key . "&from=" . $this->from . "&to=" . $to . "&text=" . $text . "&type=" . $type, array( 'timeout' => 30 ) );
 		}
 
 		// Check gateway credit
