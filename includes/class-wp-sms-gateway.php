@@ -221,6 +221,7 @@ class WP_SMS_Gateway {
 				'resalaty'   => 'resalaty.com',
 				'asr3sms'    => 'asr3sms.com',
 				'infodomain' => 'infodomain.asia',
+				'mobiledotnet' => 'mobiledot.net.sa',
 			),
 			'other'          => array(
 				'mtarget'  => 'mtarget',
