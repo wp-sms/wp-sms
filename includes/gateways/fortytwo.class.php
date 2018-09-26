@@ -1,7 +1,7 @@
 <?php
 
 class fortytwo extends WP_SMS {
-	private $wsdl_link = "http://imghttp.fortytwotele.com/api/current";
+	private $wsdl_link = "https://rest.fortytwo.com/1/";
 	public $tariff = "http://fortytwo.com/";
 	public $unitrial = false;
 	public $unit;
@@ -10,7 +10,9 @@ class fortytwo extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "46731111111";
+		$this->validateNumber = "Number must be in international format and can only be between 7-20 digits long. First digit cannot be a 0";
+		$this->has_key        = true;
+		$this->help           = 'The API token is generated through the Client Control Panel (https://controlpanel.fortytwo.com/), in the tokens section, under the IM tab.';
 	}
 
 	public function SendSMS() {
@@ -46,14 +48,43 @@ class fortytwo extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$msg   = urlencode( $this->msg );
-		$route = "G1";
-
+		// Reformat number
+		$to = array();
 		foreach ( $this->to as $number ) {
-			$result[] = file_get_contents( $this->wsdl_link . "/send/message.php?username=" . $this->username . "&password=" . $this->password . "&to=" . $number . "&from=" . $this->from . "&message=" . $msg . "&route=" . $route );
+			$to[] = array( 'number' => $number );
 		}
 
-		if ( $result ) {
+		$args = array(
+			'headers' => array(
+				'Authorization' => 'Token ' . $this->has_key,
+				'Content-Type'  => 'application/json',
+			),
+			'body'    => json_encode( array(
+				array(
+					'destinations' => $to,
+					'sms_content'  => array(
+						'sender_id' => $this->from,
+						'message'   => $this->msg,
+					)
+				)
+			) )
+		);
+
+		$response = wp_remote_post( $this->wsdl_link . "im", $args );
+
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'send-sms', $response->get_error_message() );
+		}
+
+		// Ger response code
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		// Decode response
+		$response = json_decode( $response['body'] );
+
+		// Check response code
+		if ( $response_code == '200' ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
 			/**
@@ -61,17 +92,19 @@ class fortytwo extends WP_SMS {
 			 *
 			 * @since 2.4
 			 *
-			 * @param string $result result output.
+			 * @param string $response result output.
 			 */
-			do_action( 'wp_sms_send', $result );
-		}
+			do_action( 'wp_sms_send', $response );
 
-		return new WP_Error( 'send-sms', $result );
+			return $response;
+		} else {
+			return new WP_Error( 'account-credit', $response->result_info->description );
+		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
-		if ( ! $this->username && ! $this->password ) {
+		if ( ! $this->has_key ) {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
