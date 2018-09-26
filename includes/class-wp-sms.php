@@ -107,7 +107,7 @@ abstract class WP_SMS {
 		}
 
 		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
-			add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
+			//add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
 		}
 	}
 
