@@ -47,7 +47,7 @@ class mobiledotnet extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "?userName=" . $this->username . "&userPassword=" . $this->username . "&numbers=" . implode( ',', $this->to ) . "&userSender=" . $this->from . "&msg=" . urlencode( $this->msg ) . "&By=standard" );
+		$response = wp_remote_get( $this->wsdl_link . "?userName=" . $this->username . "&userPassword=" . $this->password . "&numbers=" . implode( ',', $this->to ) . "&userSender=" . $this->from . "&msg=" . urlencode( $this->msg ) . "&By=standard" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {

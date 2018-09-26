@@ -217,11 +217,11 @@ class WP_SMS_Gateway {
 				'smsc' => 'smsc.ua',
 			),
 			'arabic'         => array(
-				'gateway'    => 'gateway.sa',
-				'resalaty'   => 'resalaty.com',
-				'asr3sms'    => 'asr3sms.com',
-				'infodomain' => 'infodomain.asia',
-				'mobiledotnet' => 'mobiledot.net.sa',
+				'gateway'      => 'gateway.sa',
+				'resalaty'     => 'resalaty.com',
+				'asr3sms'      => 'asr3sms.com',
+				'infodomain'   => 'infodomain.asia',
+				'mobiledotnet' => 'mobile.net.sa',
 			),
 			'other'          => array(
 				'mtarget'  => 'mtarget',
