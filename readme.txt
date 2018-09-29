@@ -227,8 +227,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 = dev-master
 * Added a new checkbox in the SMS subscription form for GDPR compliance.
 * Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance.
-* Updated the setting page.
+* Added mobiledot.net.sa gateway.
 * Updated fortytwo.com, idehpayam.com, onlinepanel.ir and mobile.net.sa gateways
+* Updated the setting page.
 * Disabled `applyUnicode` hood by default
 * Fixed issue in get fields from Gravityforms.
 
