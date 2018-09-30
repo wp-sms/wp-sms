@@ -393,7 +393,7 @@ class WP_SMS_Plugin {
                    foreach($list as $user) {
                         $to[] = get_user_meta($user, "mobile", true);
                     }
-                    $this->sms->to = explode( ",", $to );
+                    $this->sms->to = $to;
                 }
 
 				$this->sms->from = $_POST['wp_get_sender'];
