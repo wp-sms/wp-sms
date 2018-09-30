@@ -48,17 +48,12 @@ class smsnation extends WP_SMS {
         $this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
         // Reformat number
-        $to = '';
-        foreach ( $this->to as $number ) {
-            $to .= $number;
-            if( next( $this->to ) ) {
-                $to .=",";
-            }
-        }
+        $to  = implode( $this->to, "," );
+        $msg = urlencode( $this->msg );
 
         $args = array(
             'originator' => $this->from,
-            'text' => $this->msg,
+            'text' => $msg,
             'request_delivery' => 'true',
             'mobile_number' => $to,
         );
@@ -114,6 +109,6 @@ class smsnation extends WP_SMS {
         }
 
 
-        return true;
+        return $response['body'];
     }
 }
