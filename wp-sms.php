@@ -361,6 +361,11 @@ class WP_SMS_Plugin {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`" );
 		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->tb_prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
+		//Get User Mobile List by Role
+        foreach ( wp_roles()->role_names as $key_item => $val_item ) {
+            $get_users_mobile_{"$key_item"} = count( get_users( array('meta_key' => 'mobile', 'meta_value'   => '', 'meta_compare' => '!=', 'role' => $key_item, 'fields' => 'ID')) );
+        }
+
 		if ( $wpsms_option['gateway_name'] && ! $this->sms->GetCredit() ) {
 			$get_bloginfo_url = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
 			echo '<br><div class="update-nag">' . sprintf( __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ), $get_bloginfo_url ) . '</div>';
@@ -382,7 +387,14 @@ class WP_SMS_Plugin {
 					$this->sms->to = $get_users_mobile;
 				} else if ( $_POST['wp_send_to'] == "wp_tellephone" ) {
 					$this->sms->to = explode( ",", $_POST['wp_get_number'] );
-				}
+				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
+				   $to = array();
+				   $list = get_users( array('meta_key' => 'mobile', 'meta_value' => '', 'meta_compare' => '!=', 'role' => $_POST['wpsms_group_role'], 'fields' => 'ID'));
+                   foreach($list as $user) {
+                        $to[] = get_user_meta($user, "mobile", true);
+                    }
+                    $this->sms->to = explode( ",", $to );
+                }
 
 				$this->sms->from = $_POST['wp_get_sender'];
 				$this->sms->msg  = $_POST['wp_get_message'];
