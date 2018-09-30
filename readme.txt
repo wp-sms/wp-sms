@@ -227,6 +227,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = dev-master
 * Added a new checkbox in the SMS subscription form for GDPR compliance.
 * Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance.
+* Added roles to get receivers in send SMS page.
 * Added mobiledot.net.sa and smsnation.co.rw gateways.
 * Updated fortytwo.com, idehpayam.com, onlinepanel.ir and mobile.net.sa gateways
 * Updated the setting page.
