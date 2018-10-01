@@ -400,6 +400,16 @@ class WP_SMS_Plugin {
 		return $to;
 	}
 
+    /**
+     * Custom Query for Get All User Mobile in special Role
+     */
+    public function get_query_user_mobile($user_query){
+        global $wpdb;
+        $user_query->query_fields .= ', m1.meta_value AS mobile ';
+        $user_query->query_from .= " JOIN {$wpdb->usermeta} m1 ON (m1.user_id = {$wpdb->users}.ID AND m1.meta_key = 'mobile') ";
+        return $user_query;
+    }
+
 	/**
 	 * Sending sms admin page
 	 *
@@ -411,7 +421,7 @@ class WP_SMS_Plugin {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`" );
 		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->tb_prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
-		//Get User Mobile List by Role}
+        //Get User Mobile List by Role
         if(!empty($wpsms_option['add_mobile_field']) and $wpsms_option['add_mobile_field'] ==1) {
             $wpsms_list_of_role = array();
             foreach ( wp_roles()->role_names as $key_item => $val_item ) {
@@ -445,9 +455,11 @@ class WP_SMS_Plugin {
 					$this->sms->to = explode( ",", $_POST['wp_get_number'] );
 				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
 				   $to = array();
-				   $list = get_users( array('meta_key' => 'mobile', 'meta_value' => '', 'meta_compare' => '!=', 'role' => $_POST['wpsms_group_role'], 'fields' => 'ID'));
-                   foreach($list as $user) {
-                        $to[] = get_user_meta($user, "mobile", true);
+                   add_action('pre_user_query', array($this, 'get_query_user_mobile'));
+				   $list = get_users( array('meta_key' => 'mobile', 'meta_value' => '', 'meta_compare' => '!=', 'role' => $_POST['wpsms_group_role'], 'fields' => 'all'));
+                   remove_action('pre_user_query', array($this, 'get_query_user_mobile'));
+				   foreach($list as $user) {
+                        $to[] = $user->mobile;
                     }
                     $this->sms->to = $to;
                 }
