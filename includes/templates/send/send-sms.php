@@ -61,7 +61,7 @@
                         <?php
                         foreach ( $wpsms_list_of_role as $key_item => $val_item ):
                         ?>
-                            <option value="<?php echo $key_item; ?>"><?php _e( $val_item['name'] , 'wp-sms' ); ?> (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), $val_item['count'] ); ?>)</option>
+                            <option value="<?php echo $key_item; ?>"<?php if($val_item['count'] <1) { echo " disabled"; } ?>><?php _e( $val_item['name'] , 'wp-sms' ); ?> (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), $val_item['count'] ); ?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <?php } ?>
