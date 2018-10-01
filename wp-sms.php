@@ -278,13 +278,15 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_assets() {
-		wp_register_style( 'wpsms-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/admin.css', true, '1.3' );
-		wp_enqueue_style( 'wpsms-admin-css' );
+       if (stristr(get_current_screen()->id, "wp-sms")) {
+           wp_register_style('wpsms-admin-css', plugin_dir_url(__FILE__) . 'assets/css/admin.css', true, '1.3');
+           wp_enqueue_style('wpsms-admin-css');
 
-		wp_enqueue_style( 'wpsms-chosen-css', plugin_dir_url( __FILE__ ) . 'assets/css/chosen.min.css', true, '1.2.0' );
-		wp_enqueue_script( 'wpsms-chosen-js', plugin_dir_url( __FILE__ ) . 'assets/js/chosen.jquery.min.js', true, '1.2.0' );
-		wp_enqueue_script( 'wpsms-word-and-character-counter-js', plugin_dir_url( __FILE__ ) . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0' );
-		wp_enqueue_script( 'wpsms-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/admin.js', true, '1.2.0' );
+           wp_enqueue_style('wpsms-chosen-css', plugin_dir_url(__FILE__) . 'assets/css/chosen.min.css', true, '1.2.0');
+           wp_enqueue_script('wpsms-chosen-js', plugin_dir_url(__FILE__) . 'assets/js/chosen.jquery.min.js', true, '1.2.0');
+           wp_enqueue_script('wpsms-word-and-character-counter-js', plugin_dir_url(__FILE__) . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0');
+           wp_enqueue_script('wpsms-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', true, '1.2.0');
+       }
 	}
 
 	/**
@@ -432,13 +434,15 @@ class WP_SMS_Plugin {
             }
         }
 
-		if ( $wpsms_option['gateway_name'] && ! $this->sms->GetCredit() ) {
+        if ( $wpsms_option['gateway_name'] && ! $this->sms->GetCredit() ) {
 			$get_bloginfo_url = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
 			echo '<br><div class="update-nag">' . sprintf( __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ), $get_bloginfo_url ) . '</div>';
 
 			return;
 		} else if ( ! $wpsms_option['gateway_name'] ) {
-			return;
+            echo '<br><div class="update-nag">' . __( 'You should choose and configuration your gateway in the Setting page', 'wp-sms' ) . '</div>';
+
+            return;
 		}
 
 		if ( isset( $_POST['SendSMS'] ) ) {
