@@ -411,9 +411,15 @@ class WP_SMS_Plugin {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`" );
 		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->tb_prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
-		//Get User Mobile List by Role
-        foreach ( wp_roles()->role_names as $key_item => $val_item ) {
-            $get_users_mobile_{"$key_item"} = count( get_users( array('meta_key' => 'mobile', 'meta_value'   => '', 'meta_compare' => '!=', 'role' => $key_item, 'fields' => 'ID')) );
+		//Get User Mobile List by Role}
+        if(!empty($wpsms_option['add_mobile_field']) and $wpsms_option['add_mobile_field'] ==1) {
+            $wpsms_list_of_role = array();
+            foreach ( wp_roles()->role_names as $key_item => $val_item ) {
+                $wpsms_list_of_role[$key_item] = array(
+                    "name" => $val_item,
+                    "count" => count( get_users( array('meta_key' => 'mobile', 'meta_value'   => '', 'meta_compare' => '!=', 'role' => $key_item, 'fields' => 'ID')) )
+                );
+            }
         }
 
 		if ( $wpsms_option['gateway_name'] && ! $this->sms->GetCredit() ) {
