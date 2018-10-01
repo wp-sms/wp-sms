@@ -34,7 +34,10 @@ $wpsms_option = get_option( 'wpsms_settings' );
 include_once dirname( __FILE__ ) . '/includes/functions.php';
 $sms = initial_gateway();
 
-$WP_SMS_Plugin = new WP_SMS_Plugin;
+/*
+ * Plugin Loaded Action
+ */
+add_action('plugins_loaded', array(WP_SMS_Plugin::get_instance(), 'plugin_setup'));
 
 /**
  * Install plugin
@@ -45,6 +48,15 @@ register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
  * Class WP_SMS_Plugin
  */
 class WP_SMS_Plugin {
+
+    /**
+     * Plugin instance.
+     *
+     * @see get_instance()
+     * @type object
+     */
+    protected static $instance = NULL;
+
 	/**
 	 * Wordpress Admin url
 	 *
@@ -87,12 +99,25 @@ class WP_SMS_Plugin {
 	 */
 	protected $options;
 
+    /**
+     * Access this plugin’s working instance
+     *
+     * @wp-hook plugins_loaded
+     * @return  object of this class
+     */
+    public static function get_instance()
+    {
+        if ( NULL === self::$instance )
+            self::$instance = new self;
+        return self::$instance;
+    }
+
 	/**
-	 * Constructors plugin
+	 * Constructors plugin Setup
 	 *
 	 * @param  Not param
 	 */
-	public function __construct() {
+	public function plugin_setup() {
 		global $wpdb, $table_prefix, $wpsms_option, $sms;
 
 		$this->db        = $wpdb;
@@ -105,10 +130,10 @@ class WP_SMS_Plugin {
 		__( 'WP SMS', 'wp-sms' );
 		__( 'A simple and powerful texting plugin for wordpress', 'wp-sms' );
 
-		$this->includes();
-		$this->sms = $sms;
-		$this->init();
-		$this->subscribe = new WP_SMS_Subscriptions();
+        $this->includes();
+        $this->sms = $sms;
+        $this->init();
+        $this->subscribe = new WP_SMS_Subscriptions();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_assets' ) );
@@ -118,6 +143,10 @@ class WP_SMS_Plugin {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+
+		//WordPress Multisite
+        add_action( 'wpmu_new_blog', array( $this, 'add_table_on_create_blog'), 10, 1 );
+        add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog') );
 
 		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
 	}
@@ -136,21 +165,42 @@ class WP_SMS_Plugin {
 	 *
 	 * @param  Not param
 	 */
-	static function install() {
+	static function install( $network_wide ) {
 		global $wp_sms_db_version;
 
-		include_once dirname( __FILE__ ) . '/install.php';
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-		dbDelta( $create_sms_subscribes );
-		dbDelta( $create_sms_subscribes_group );
-		dbDelta( $create_sms_send );
+        include_once dirname( __FILE__ ) . '/install.php';
+        $install = new WP_SMS_INSTALL;
+        $install->create_table( $network_wide );
 
 		add_option( 'wp_sms_db_version', WP_SMS_VERSION );
 
 		// Delete notification new wp_version option
 		delete_option( 'wp_notification_new_wp_version' );
 	}
+
+    /**
+     * Creating Table for New Blog in wordpress
+     */
+    public function add_table_on_create_blog($blog_id)
+    {
+        if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
+            switch_to_blog( $blog_id );
+            include_once dirname( __FILE__ ) . '/install.php';
+            $install = new WP_SMS_INSTALL;
+            $install->table_sql();
+            restore_current_blog();
+        }
+	}
+
+    /**
+     * Remove Table On Delete Blog Wordpress
+     */
+    public function remove_table_on_delete_blog($tables)
+    {
+        global $wpdb;
+        foreach(array('sms_subscribes', 'sms_subscribes_group', 'sms_send') as $tbl){ $tables[] = $wpdb->prefix . $tbl; }
+        return $tables;
+    }
 
 	/**
 	 * Adding new capability in the plugin
