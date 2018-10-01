@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance.
 * Added roles to get receivers in send SMS page.
 * Added mobiledot.net.sa and smsnation.co.rw gateways.
+* Added multi-site support in WordPress Network.
 * Updated fortytwo.com, idehpayam.com, onlinepanel.ir and mobile.net.sa gateways
 * Updated the setting page.
 * Disabled `applyUnicode` hood by default
