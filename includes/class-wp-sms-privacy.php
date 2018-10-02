@@ -3,7 +3,7 @@
 /**
  * Class Privacy
  */
-class Privacy {
+class WP_SMS_Privacy {
 
 	public $options;
 
@@ -61,31 +61,32 @@ class Privacy {
     public function process_form()
     {
         global $pagenow;
-        if($pagenow =="admin.php" and $_GET['page'] =="wp-sms-subscribers-privacy" and wp_verify_nonce( $_POST['wp_sms_nonce_privacy'], 'wp_sms_nonce_privacy' ) and isset($_POST['submit']) ) {
+        if($pagenow =="admin.php" and $_GET['page'] =="wp-sms-subscribers-privacy" and isset($_POST['wp_sms_nonce_privacy']) and isset($_POST['submit']) ) {
+            if( wp_verify_nonce( $_POST['wp_sms_nonce_privacy'], 'wp_sms_nonce_privacy' ) ) {
 
-            $mobile = ($_POST['submit'] ==__('Export') ? sanitize_text_field($_POST['mobile-number-export']) : sanitize_text_field($_POST['mobile-number-delete']));
+                $mobile = ($_POST['submit'] == __('Export') ? sanitize_text_field($_POST['mobile-number-export']) : sanitize_text_field($_POST['mobile-number-delete']));
 
-            //Is Empty Mobile Number
-            $this->check_empty_mobile($mobile);
+                //Is Empty Mobile Number
+                $this->check_empty_mobile($mobile);
 
-            //Check User Not Exist
-            $user_data = $this->check_user_exist_mobile($mobile);
+                //Check User Not Exist
+                $user_data = $this->check_user_exist_mobile($mobile);
 
-            /*
-             * Export Area
-             */
-            if($_POST['submit'] ==__('Export')) {
-                $this->create_csv($user_data, "wp-sms-report-".$mobile);
+                /*
+                 * Export Area
+                 */
+                if ($_POST['submit'] == __('Export')) {
+                    $this->create_csv($user_data, "wp-sms-report-" . $mobile);
+                }
+
+                /*
+                 * Delete Area
+                 */
+                if ($_POST['submit'] == __('Delete')) {
+                    wp_redirect(admin_url(add_query_arg(array('page' => 'wp-sms-subscribers-privacy', 'delete_mobile' => $mobile), 'admin.php')));
+                    exit;
+                }
             }
-
-            /*
-             * Delete Area
-             */
-            if($_POST['submit'] ==__('Delete')) {
-                wp_redirect( admin_url(add_query_arg( array('page' => 'wp-sms-subscribers-privacy', 'delete_mobile' => $mobile), 'admin.php' )) );
-                exit;
-            }
-
         }
     }
 
@@ -179,4 +180,4 @@ class Privacy {
 
 }
 
-new Privacy();
+new WP_SMS_Privacy();
