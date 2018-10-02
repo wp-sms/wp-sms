@@ -57,15 +57,13 @@ class fortytwo extends WP_SMS {
 		$args = array(
 			'headers' => array(
 				'Authorization' => 'Token ' . $this->has_key,
-				'Content-Type'  => 'application/json',
+				'Content-Type'  => 'application/json; charset=utf-8',
 			),
 			'body'    => json_encode( array(
-				array(
-					'destinations' => $to,
-					'sms_content'  => array(
-						'sender_id' => $this->from,
-						'message'   => $this->msg,
-					)
+				'destinations' => $to,
+				'sms_content'  => array(
+					'sender_id' => $this->from,
+					'message'   => $this->msg,
 				)
 			) )
 		);
