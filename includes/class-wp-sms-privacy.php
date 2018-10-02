@@ -3,7 +3,7 @@
 /**
  * Class Privacy
  */
-class Privacy {
+class WP_SMS_Privacy {
 
 	public $options;
 
@@ -180,4 +180,4 @@ class Privacy {
 
 }
 
-new Privacy();
+new WP_SMS_Privacy();
