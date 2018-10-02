@@ -455,12 +455,11 @@ class WP_SMS_Plugin {
             }
         }
 
-        if ( $wpsms_option['gateway_name'] && ! $this->sms->GetCredit() ) {
-			$get_bloginfo_url = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
-			echo '<br><div class="update-nag">' . sprintf( __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ), $get_bloginfo_url ) . '</div>';
+        if ( isset($wpsms_option['gateway_name']) && ! $this->sms->GetCredit() ) {
+			echo '<br><div class="update-nag">' . __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ) . '</div>';
 
 			return;
-		} else if ( ! $wpsms_option['gateway_name'] ) {
+		} else if ( ! isset($wpsms_option['gateway_name']) ) {
             echo '<br><div class="update-nag">' . __( 'You should choose and configuration your gateway in the Setting page', 'wp-sms' ) . '</div>';
 
             return;
