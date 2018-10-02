@@ -20,7 +20,7 @@
                 </p>
             </div><!-- #universal-message-container -->
 
-			<?php submit_button( __('Export', 'wp-sms') ); ?>
+			<?php submit_button( __('Export') ); ?>
         </div>
 
         <div id="universal-message-container">
@@ -34,7 +34,7 @@
                 </p>
             </div><!-- #universal-message-container -->
 
-			<?php submit_button( __('Delete', 'wp-sms') ); ?>
+			<?php submit_button( __('Delete') ); ?>
         </div>
 
         <input type="hidden" name="wp_sms_nonce_privacy" value="<?php echo wp_create_nonce( 'wp_sms_nonce_privacy' ); ?>">

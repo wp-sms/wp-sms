@@ -63,7 +63,7 @@ class Privacy {
         global $pagenow;
         if($pagenow =="admin.php" and $_GET['page'] =="wp-sms-subscribers-privacy" and wp_verify_nonce( $_POST['wp_sms_nonce_privacy'], 'wp_sms_nonce_privacy' ) and isset($_POST['submit']) ) {
 
-            $mobile = ($_POST['submit'] =="Export" ? sanitize_text_field($_POST['mobile-number-export']) : sanitize_text_field($_POST['mobile-number-delete']));
+            $mobile = ($_POST['submit'] ==__('Export') ? sanitize_text_field($_POST['mobile-number-export']) : sanitize_text_field($_POST['mobile-number-delete']));
 
             //Is Empty Mobile Number
             $this->check_empty_mobile($mobile);
@@ -74,14 +74,14 @@ class Privacy {
             /*
              * Export Area
              */
-            if($_POST['submit'] =="Export") {
+            if($_POST['submit'] ==__('Export')) {
                 $this->create_csv($user_data, "wp-sms-report-".$mobile);
             }
 
             /*
              * Delete Area
              */
-            if($_POST['submit'] =="Delete") {
+            if($_POST['submit'] ==__('Delete')) {
                 wp_redirect( admin_url(add_query_arg( array('page' => 'wp-sms-subscribers-privacy', 'delete_mobile' => $mobile), 'admin.php' )) );
                 exit;
             }
@@ -122,7 +122,7 @@ class Privacy {
                 $result[] = array("FullName" => $user->first_name." ".$user->last_name, "Mobile" => $user->mobile, "RegisterDate" => $user->user_registered );
 
                 //Remove User data if Delete Request
-                if($_POST['submit'] =="Delete") delete_user_meta( $user->ID, 'mobile' );
+                if($_POST['submit'] ==__('Delete')) delete_user_meta( $user->ID, 'mobile' );
             }
         }
 
@@ -136,7 +136,7 @@ class Privacy {
                 $result[] = array("FullName" => $user['name'], "Mobile" => $user['mobile'], "RegisterDate" => $user['date']);
 
                 //Remove User data if Delete Request
-                if($_POST['submit'] =="Delete") $wpdb->delete( $wpdb->prefix.'sms_subscribes', array( 'ID' => $user['ID'] ), array( '%d' ) );;
+                if($_POST['submit'] ==__('Delete')) $wpdb->delete( $wpdb->prefix.'sms_subscribes', array( 'ID' => $user['ID'] ), array( '%d' ) );;
             }
         }
 
