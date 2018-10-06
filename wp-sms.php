@@ -363,6 +363,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_menu() {
+        global $wpsms_option;
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array(
 			$this,
 			'send_page'
@@ -383,10 +384,12 @@ class WP_SMS_Plugin {
 			$this,
 			'groups_page'
 		) );
-		add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array(
-			$this,
-			'privacy_page'
-		) );
+		if (isset($wpsms_option['gdpr_compliance']) and $wpsms_option['gdpr_compliance'] ==1) {
+            add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array(
+                $this,
+                'privacy_page'
+            ) );
+        }
 	}
 
 	public function meta_links( $links, $file ) {
