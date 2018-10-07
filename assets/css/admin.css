@@ -87,6 +87,8 @@
     margin: 0;
 }
 
+.wpsms-tab li a:focus { outline:0 !important; box-shadow: none !important; }
+
 .wpsms-tab #wpsms-logo {
     text-align: center;
     padding-bottom: 7px;
