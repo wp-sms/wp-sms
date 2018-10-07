@@ -389,6 +389,20 @@ class WP_SMS_Settings_Pro {
 					'options' => $options,
 					'desc'    => __( 'This option adds login with SMS in the login form.', 'wp-sms' ),
 				),
+                'login_sms_message'  => array(
+                    'id'   => 'login_sms_message',
+                    'name' => __( 'Message body', 'wp-sms' ),
+                    'type' => 'textarea',
+                    'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+                        sprintf(
+                            __( 'Mobile code: %s, User name: %s, Full Name: %s, Site Name: %s, Site Url: %s', 'wp-sms' ),
+                            '<code>%code%</code>',
+                            '<code>%user_name%</code>',
+                            '<code>%full_name%</code>',
+                            '<code>%site_name%</code>',
+                            '<code>%site_url%</code>'
+                        )
+                ),
 				'mobile_verify' => array(
 					'id'      => 'mobile_verify',
 					'name'    => __( 'Verify mobile number', 'wp-sms' ),
