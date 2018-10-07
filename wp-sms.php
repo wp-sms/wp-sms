@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WP_SMS_VERSION', '4.0.21' );
 define( 'WP_SMS_DIR_PLUGIN', plugin_dir_url( __FILE__ ) );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
-define( 'WP_SMS_SITE', 'http://wp-sms-pro.com' );
+define( 'WP_SMS_SITE', 'https://wp-sms-pro.com' );
 define( 'WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/' );
 define( 'WP_SMS_CURRENT_DATE', date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
 
