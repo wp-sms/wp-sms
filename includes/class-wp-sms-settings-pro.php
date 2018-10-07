@@ -588,10 +588,11 @@ class WP_SMS_Settings_Pro {
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Order id: %s, Order number: %s, Order status: %s, Customer name: %s, Customer family: %s', 'wp-sms' ),
+						          __( 'Order id: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s', 'wp-sms' ),
 						          '<code>%order_id%</code>',
 						          '<code>%order_number%</code>',
 						          '<code>%status%</code>',
+						          '<code>%order_total%</code>',
 						          '<code>%billing_first_name%</code>',
 						          '<code>%billing_last_name%</code>'
 					          )
