@@ -21,7 +21,14 @@ class WP_SMS_Settings_Pro {
 
 		if ( isset( $_GET['page'] ) and $_GET['page'] == 'wp-sms-pro' or isset( $_POST['option_page'] ) and $_POST['option_page'] == 'wps_pp_settings' ) {
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
+
+			//Check License Code
+			if(isset($_POST['submit'])) {
+                add_filter( 'pre_update_option_'.$this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
+            }
 		}
+
+
 	}
 
 	/**
@@ -86,6 +93,7 @@ class WP_SMS_Settings_Pro {
 						'id'      => isset( $option['id'] ) ? $option['id'] : null,
 						'desc'    => ! empty( $option['desc'] ) ? $option['desc'] : '',
 						'name'    => isset( $option['name'] ) ? $option['name'] : null,
+						'after_input'    => isset( $option['after_input'] ) ? $option['after_input'] : null,
 						'section' => $tab,
 						'size'    => isset( $option['size'] ) ? $option['size'] : null,
 						'options' => isset( $option['options'] ) ? $option['options'] : '',
@@ -182,6 +190,56 @@ class WP_SMS_Settings_Pro {
 		return $output;
 
 	}
+	
+	/*
+	 * Activate Icon
+	 */
+    public function activate_icon()
+    {
+        if( isset($this->options['license_key_status']) ) {
+            $item = ['icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000'];
+
+            if( $this->options['license_key_status'] =="yes") {
+                $item = ['icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514'];
+            }
+
+            return '<span style="color: '.$item['color'].'">&nbsp;&nbsp;<span class="dashicons dashicons-'.$item['icon'].'" style="vertical-align: -4px;"></span>'.__($item['text'], 'wp-sms' ).'</span>';
+        }
+
+        return null;
+	}
+	
+	/*
+	 * Check license key
+	 */
+    public function check_license_key($new_value, $old_value)
+    {
+        if(isset($_POST['wps_pp_settings']['license_key'])) {
+
+            $default_option = 'no';
+
+            /*
+             * Check License
+             */
+            $response = wp_remote_get( add_query_arg(array(
+                'plugin-name' => 'wp-sms-pro',
+                'license_key' => sanitize_text_field($_POST['wps_pp_settings']['license_key'])
+                ),
+                'https://wp-sms-pro.com/wp-json/plugins/v1/validate'
+            ));
+            if ( is_wp_error( $response ) ===false ) {
+                $result = json_decode($response['body'], true);
+                if(isset($result['status']) and $result['status'] ==200) {
+                    $default_option = 'yes';
+                }
+            }
+
+            $new_value['license_key_status'] = $default_option;
+            return $new_value;
+        }
+	}
+
+	
 
 	/**
 	 * Get settings fields
@@ -372,7 +430,12 @@ class WP_SMS_Settings_Pro {
 					'id'   => 'license_key',
 					'name' => __( 'License Key', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'The license key is used for access to automatic update and support.', 'wp-sms' ),
+					'after_input' => $this->activate_icon(),
+					'desc' => sprintf(
+                        __( 'The license key is used for access to automatic update and support, to get the license, please go to %1$syour account%2$s', 'wp-sms' ),
+                        '<a href="' . esc_url( 'https://wp-sms-pro.com/checkout/purchase-history/' ) . '" target="_blank">',
+                        '</a>'
+                    ),
 				),
 			) ),
 			// Options for wordpress tab
@@ -953,7 +1016,9 @@ class WP_SMS_Settings_Pro {
 		}
 
 		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
+		$after_input = ( isset( $args['after_input'] ) && ! is_null( $args['after_input'] ) ) ? $args['after_input'] : '';
 		$html = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
+		$html .= $after_input;
 		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
