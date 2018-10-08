@@ -648,7 +648,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function privacy_page() {
-		include_once dirname( __FILE__ ) . "/includes/templates/privacy/form.php";
+		WP_SMS_Privacy::get()->show_page_privacy();
 	}
 
 	/**
