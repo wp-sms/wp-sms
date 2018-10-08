@@ -433,7 +433,7 @@ class WP_SMS_Settings_Pro {
 					'after_input' => $this->activate_icon(),
 					'desc' => sprintf(
                         __( 'The license key is used for access to automatic update and support, to get the license, please go to %1$syour account%2$s', 'wp-sms' ),
-                        '<a href="' . esc_url( 'https://wp-sms-pro.com/checkout/purchase-history/' ) . '" target="_blank">',
+                        '<a href="' . esc_url( WP_SMS_SITE.'/checkout/purchase-history/' ) . '" target="_blank">',
                         '</a>'
                     ),
 				),
