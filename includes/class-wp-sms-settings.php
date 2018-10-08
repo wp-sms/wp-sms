@@ -218,10 +218,10 @@ class WP_SMS_Settings {
 				),
 				'gdpr_compliance'     => array(
 					'id'      => 'gdpr_compliance',
-					'name'    => __( 'GDPR Compliance', 'wp-sms' ),
+					'name'    => __( 'GDPR Enhancements', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Lorem ipsum', 'wp-sms' ),
+					'desc'    => __( 'Enable GDPR related features in this page. Read our GDPR documentation to learn more.', 'wp-sms' ),
 				),
 			) ),
 
