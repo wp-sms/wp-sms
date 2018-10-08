@@ -224,16 +224,16 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= dev-master
+= 4.1.0 =
 * Added a new checkbox in the SMS subscription form for GDPR compliance.
-* Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance.
-* Added roles to get receivers in send SMS page.
+* Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
+* Added SMS Sending feature to different roles in Send SMS Page.
 * Added mobiledot.net.sa and smsnation.co.rw gateways.
 * Added multi-site support in WordPress Network.
 * Updated fortytwo.com, idehpayam.com, onlinepanel.ir and mobile.net.sa gateways
 * Updated the setting page.
 * Disabled `applyUnicode` hood by default
-* Fixed issue in get fields from Gravityforms.
+* Fixed the issue of receiving fields from Gravityforms.
 
 = 4.0.21 =
 * Added engy.solutions and aruba.it and hiro-sms.com gateways.
