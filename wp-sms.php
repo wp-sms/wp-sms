@@ -7,6 +7,7 @@
  * Author: Verona Labs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
+ * Domain Path: /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -126,9 +127,6 @@ class WP_SMS_Plugin {
 
 		// Load text domain
 		add_action( 'init', array( $this, 'load_textdomain' ) );
-
-		__( 'WP SMS', 'wp-sms' );
-		__( 'A simple and powerful texting plugin for wordpress', 'wp-sms' );
 
         $this->includes();
         $this->sms = $sms;
