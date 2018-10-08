@@ -197,10 +197,10 @@ class WP_SMS_Settings_Pro {
     public function activate_icon()
     {
         if( isset($this->options['license_key_status']) ) {
-            $item = ['icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000'];
+            $item = array('icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000');
 
             if( $this->options['license_key_status'] =="yes") {
-                $item = ['icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514'];
+                $item = array('icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514');
             }
 
             return '<span style="color: '.$item['color'].'">&nbsp;&nbsp;<span class="dashicons dashicons-'.$item['icon'].'" style="vertical-align: -4px;"></span>'.__($item['text'], 'wp-sms' ).'</span>';
