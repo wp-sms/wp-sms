@@ -34,11 +34,12 @@
 				<?php _e( 'Unsubscribe', 'wp-sms' ); ?>
             </label>
         </div>
-
+        <?php if (isset($wpsms_option['gdpr_compliance']) and $wpsms_option['gdpr_compliance'] ==1) { ?>
 		<?php if ( $instance['gdpr_compliance'] ) { ?>
             <div class="wpsms-subscribe-form">
                 <label><input id="wpsms-gdpr-confirmation" type="checkbox"> <?php echo $instance['gdpr_confirmation_text']; ?></label>
             </div>
+		<?php } ?>
 		<?php } ?>
 
         <button class="wpsms-button" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>

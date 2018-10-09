@@ -3,10 +3,11 @@
  * Plugin Name: WP SMS
  * Plugin URI: http://wp-sms-pro.com/
  * Description: A powerful texting plugin for WordPress
- * Version: 4.0.21
+ * Version: 4.1.0
  * Author: Verona Labs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
+ * Domain Path: /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,10 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin defines
  */
-define( 'WP_SMS_VERSION', '4.0.21' );
+define( 'WP_SMS_VERSION', '4.1.0' );
 define( 'WP_SMS_DIR_PLUGIN', plugin_dir_url( __FILE__ ) );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
-define( 'WP_SMS_SITE', 'http://wp-sms-pro.com' );
+define( 'WP_SMS_SITE', 'https://wp-sms-pro.com' );
 define( 'WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/' );
 define( 'WP_SMS_CURRENT_DATE', date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
 
@@ -34,7 +35,10 @@ $wpsms_option = get_option( 'wpsms_settings' );
 include_once dirname( __FILE__ ) . '/includes/functions.php';
 $sms = initial_gateway();
 
-$WP_SMS_Plugin = new WP_SMS_Plugin;
+/*
+ * Plugin Loaded Action
+ */
+add_action('plugins_loaded', array(WP_SMS_Plugin::get_instance(), 'plugin_setup'));
 
 /**
  * Install plugin
@@ -45,6 +49,15 @@ register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
  * Class WP_SMS_Plugin
  */
 class WP_SMS_Plugin {
+
+    /**
+     * Plugin instance.
+     *
+     * @see get_instance()
+     * @type object
+     */
+    protected static $instance = NULL;
+
 	/**
 	 * Wordpress Admin url
 	 *
@@ -87,12 +100,25 @@ class WP_SMS_Plugin {
 	 */
 	protected $options;
 
+    /**
+     * Access this plugin’s working instance
+     *
+     * @wp-hook plugins_loaded
+     * @return  object of this class
+     */
+    public static function get_instance()
+    {
+        if ( NULL === self::$instance )
+            self::$instance = new self;
+        return self::$instance;
+    }
+
 	/**
-	 * Constructors plugin
+	 * Constructors plugin Setup
 	 *
 	 * @param  Not param
 	 */
-	public function __construct() {
+	public function plugin_setup() {
 		global $wpdb, $table_prefix, $wpsms_option, $sms;
 
 		$this->db        = $wpdb;
@@ -102,13 +128,10 @@ class WP_SMS_Plugin {
 		// Load text domain
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		__( 'WP SMS', 'wp-sms' );
-		__( 'A simple and powerful texting plugin for wordpress', 'wp-sms' );
-
-		$this->includes();
-		$this->sms = $sms;
-		$this->init();
-		$this->subscribe = new WP_SMS_Subscriptions();
+        $this->includes();
+        $this->sms = $sms;
+        $this->init();
+        $this->subscribe = new WP_SMS_Subscriptions();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_assets' ) );
@@ -118,6 +141,10 @@ class WP_SMS_Plugin {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+
+		//WordPress Multisite
+        add_action( 'wpmu_new_blog', array( $this, 'add_table_on_create_blog'), 10, 1 );
+        add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog') );
 
 		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
 	}
@@ -136,21 +163,42 @@ class WP_SMS_Plugin {
 	 *
 	 * @param  Not param
 	 */
-	static function install() {
+	static function install( $network_wide ) {
 		global $wp_sms_db_version;
 
-		include_once dirname( __FILE__ ) . '/install.php';
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-		dbDelta( $create_sms_subscribes );
-		dbDelta( $create_sms_subscribes_group );
-		dbDelta( $create_sms_send );
+        include_once dirname( __FILE__ ) . '/install.php';
+        $install = new WP_SMS_INSTALL;
+        $install->create_table( $network_wide );
 
 		add_option( 'wp_sms_db_version', WP_SMS_VERSION );
 
 		// Delete notification new wp_version option
 		delete_option( 'wp_notification_new_wp_version' );
 	}
+
+    /**
+     * Creating Table for New Blog in wordpress
+     */
+    public function add_table_on_create_blog($blog_id)
+    {
+        if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
+            switch_to_blog( $blog_id );
+            include_once dirname( __FILE__ ) . '/install.php';
+            $install = new WP_SMS_INSTALL;
+            $install->table_sql();
+            restore_current_blog();
+        }
+	}
+
+    /**
+     * Remove Table On Delete Blog Wordpress
+     */
+    public function remove_table_on_delete_blog($tables)
+    {
+        global $wpdb;
+        foreach(array('sms_subscribes', 'sms_subscribes_group', 'sms_send') as $tbl){ $tables[] = $wpdb->prefix . $tbl; }
+        return $tables;
+    }
 
 	/**
 	 * Adding new capability in the plugin
@@ -228,13 +276,15 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_assets() {
-		wp_register_style( 'wpsms-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/admin.css', true, '1.3' );
-		wp_enqueue_style( 'wpsms-admin-css' );
+       if (stristr(get_current_screen()->id, "wp-sms")) {
+           wp_register_style('wpsms-admin-css', plugin_dir_url(__FILE__) . 'assets/css/admin.css', true, '1.3');
+           wp_enqueue_style('wpsms-admin-css');
 
-		wp_enqueue_style( 'wpsms-chosen-css', plugin_dir_url( __FILE__ ) . 'assets/css/chosen.min.css', true, '1.2.0' );
-		wp_enqueue_script( 'wpsms-chosen-js', plugin_dir_url( __FILE__ ) . 'assets/js/chosen.jquery.min.js', true, '1.2.0' );
-		wp_enqueue_script( 'wpsms-word-and-character-counter-js', plugin_dir_url( __FILE__ ) . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0' );
-		wp_enqueue_script( 'wpsms-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/admin.js', true, '1.2.0' );
+           wp_enqueue_style('wpsms-chosen-css', plugin_dir_url(__FILE__) . 'assets/css/chosen.min.css', true, '1.2.0');
+           wp_enqueue_script('wpsms-chosen-js', plugin_dir_url(__FILE__) . 'assets/js/chosen.jquery.min.js', true, '1.2.0');
+           wp_enqueue_script('wpsms-word-and-character-counter-js', plugin_dir_url(__FILE__) . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0');
+           wp_enqueue_script('wpsms-admin-js', plugin_dir_url(__FILE__) . 'assets/js/admin.js', true, '1.2.0');
+       }
 	}
 
 	/**
@@ -246,6 +296,27 @@ class WP_SMS_Plugin {
 		wp_register_style( 'wpsms-subscribe', plugin_dir_url( __FILE__ ) . 'assets/css/subscribe.css', true, '1.1' );
 		wp_enqueue_style( 'wpsms-subscribe' );
 	}
+
+    /**
+     * Show Admin Wordpress Ui Notice
+     *
+     * @param string   $text  where Show Text Notification
+     * @param string  $model  Type Of Model from list : error / warning / success / info
+     * @param boolean  $close_button  Check Show close Button Or false for not
+     * @param  boolean $echo  Check Echo or return in function
+     * @param string  $style_extra  add extra Css Style To Code
+     *
+     * @author Mehrshad Darzi
+     * @return string Wordpress html Notice code
+     */
+    public static function wp_admin_notice( $text, $model ="info" , $close_button = true, $echo = true, $style_extra = 'padding:12px;' ) {
+        $text = '
+        <div class="notice notice-'.$model.''.($close_button ===true ? " is-dismissible" : "").'">
+           <div style="'.$style_extra.'">'.$text.'</div>
+        </div>
+        ';
+        if($echo)  { echo $text; } else { return $text; }
+    }
 
 	/**
 	 * Admin bar plugin
@@ -290,6 +361,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_menu() {
+        global $wpsms_option;
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array(
 			$this,
 			'send_page'
@@ -310,10 +382,12 @@ class WP_SMS_Plugin {
 			$this,
 			'groups_page'
 		) );
-		add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array(
-			$this,
-			'privacy_page'
-		) );
+		if (isset($wpsms_option['gdpr_compliance']) and $wpsms_option['gdpr_compliance'] ==1) {
+            add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array(
+                $this,
+                'privacy_page'
+            ) );
+        }
 	}
 
 	public function meta_links( $links, $file ) {
@@ -350,6 +424,16 @@ class WP_SMS_Plugin {
 		return $to;
 	}
 
+    /**
+     * Custom Query for Get All User Mobile in special Role
+     */
+    public function get_query_user_mobile($user_query){
+        global $wpdb;
+        $user_query->query_fields .= ', m1.meta_value AS mobile ';
+        $user_query->query_from .= " JOIN {$wpdb->usermeta} m1 ON (m1.user_id = {$wpdb->users}.ID AND m1.meta_key = 'mobile') ";
+        return $user_query;
+    }
+
 	/**
 	 * Sending sms admin page
 	 *
@@ -361,13 +445,25 @@ class WP_SMS_Plugin {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`" );
 		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->tb_prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
-		if ( $wpsms_option['gateway_name'] && ! $this->sms->GetCredit() ) {
-			$get_bloginfo_url = WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service";
-			echo '<br><div class="update-nag">' . sprintf( __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ), $get_bloginfo_url ) . '</div>';
+        //Get User Mobile List by Role
+        if(!empty($wpsms_option['add_mobile_field']) and $wpsms_option['add_mobile_field'] ==1) {
+            $wpsms_list_of_role = array();
+            foreach ( wp_roles()->role_names as $key_item => $val_item ) {
+                $wpsms_list_of_role[$key_item] = array(
+                    "name" => $val_item,
+                    "count" => count( get_users( array('meta_key' => 'mobile', 'meta_value'   => '', 'meta_compare' => '!=', 'role' => $key_item, 'fields' => 'ID')) )
+                );
+            }
+        }
+
+        if ( isset($wpsms_option['gateway_name']) && ! $this->sms->GetCredit() ) {
+			echo '<br><div class="update-nag">' . __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ) . '</div>';
 
 			return;
-		} else if ( ! $wpsms_option['gateway_name'] ) {
-			return;
+		} else if ( ! isset($wpsms_option['gateway_name']) ) {
+            echo '<br><div class="update-nag">' . __( 'You should choose and configuration your gateway in the Setting page', 'wp-sms' ) . '</div>';
+
+            return;
 		}
 
 		if ( isset( $_POST['SendSMS'] ) ) {
@@ -382,7 +478,16 @@ class WP_SMS_Plugin {
 					$this->sms->to = $get_users_mobile;
 				} else if ( $_POST['wp_send_to'] == "wp_tellephone" ) {
 					$this->sms->to = explode( ",", $_POST['wp_get_number'] );
-				}
+				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
+				   $to = array();
+                   add_action('pre_user_query', array($this, 'get_query_user_mobile'));
+				   $list = get_users( array('meta_key' => 'mobile', 'meta_value' => '', 'meta_compare' => '!=', 'role' => $_POST['wpsms_group_role'], 'fields' => 'all'));
+                   remove_action('pre_user_query', array($this, 'get_query_user_mobile'));
+				   foreach($list as $user) {
+                        $to[] = $user->mobile;
+                    }
+                    $this->sms->to = $to;
+                }
 
 				$this->sms->from = $_POST['wp_get_sender'];
 				$this->sms->msg  = $_POST['wp_get_message'];
@@ -543,7 +648,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function privacy_page() {
-		include_once dirname( __FILE__ ) . "/includes/templates/privacy/form.php";
+		WP_SMS_Privacy::get()->show_page_privacy();
 	}
 
 	/**

@@ -31,7 +31,7 @@ class WPSMS_Widget extends WP_Widget {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
 
-		global $wpdb, $table_prefix;
+		global $wpdb, $table_prefix, $wpsms_option;
 
 		$widget_id = $this->get_numerics( $args['widget_id'] );
 		$get_group = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
@@ -51,6 +51,8 @@ class WPSMS_Widget extends WP_Widget {
 	 * @return string|void
 	 */
 	public function form( $instance ) {
+        global $wpsms_option;
+
 		$title                    = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Subscribe SMS', 'wp-sms' );
 		$description              = ! empty( $instance['description'] ) ? $instance['description'] : '';
 		$show_group               = ! empty( $instance['show_group'] ) ? $instance['show_group'] : '';

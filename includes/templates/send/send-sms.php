@@ -20,6 +20,9 @@
                 jQuery(".wpsms-value").hide();
                 jQuery(".wpsms-numbers").fadeIn();
                 jQuery("#wp_get_number").focus();
+            } else if (get_method == 'wp_role') {
+                jQuery(".wpsms-value").hide();
+                jQuery(".wprole-group").fadeIn();
             }
         });
 
@@ -49,8 +52,19 @@
                         <option value="wp_subscribe_username"
                                 id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
                         <option value="wp_users" id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
+                        <option value="wp_role" id="wp_role"<?php if(empty($wpsms_option['add_mobile_field']) or $wpsms_option['add_mobile_field'] !=1) { echo 'disabled title="'.__( 'To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms' ).'"';   } ?>><?php _e( 'Role', 'wp-sms' ); ?></option>
                         <option value="wp_tellephone" id="wp_tellephone"><?php _e( 'Number(s)', 'wp-sms' ); ?></option>
                     </select>
+
+                    <?php if(!empty($wpsms_option['add_mobile_field']) or $wpsms_option['add_mobile_field'] ==1) { ?>
+                    <select name="wpsms_group_role" class="wpsms-value wprole-group">
+                        <?php
+                        foreach ( $wpsms_list_of_role as $key_item => $val_item ):
+                        ?>
+                            <option value="<?php echo $key_item; ?>"<?php if($val_item['count'] <1) { echo " disabled"; } ?>><?php _e( $val_item['name'] , 'wp-sms' ); ?> (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), $val_item['count'] ); ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php } ?>
 
                     <select name="wpsms_group_name" class="wpsms-value wpsms-group">
                         <option value="all">

@@ -206,6 +206,7 @@ class WP_SMS_Gateway {
 			'africa'         => array(
 				'_ebulksms'      => 'ebulksms.com',
 				'africastalking' => 'africastalking.com',
+                'smsnation' => 'smsnation.co.rw',
 			),
 			'kenya'          => array(
 				'uwaziimobile' => 'uwaziimobile.com',

@@ -73,6 +73,7 @@
     </p>
 <?php endif; ?>
 
+<?php if (isset($wpsms_option['gdpr_compliance']) and $wpsms_option['gdpr_compliance'] ==1) { ?>
 <p>
     <input class="checkbox" id="<?php echo $this->get_field_id( 'gdpr_compliance' ); ?>"
            name="<?php echo $this->get_field_name( 'gdpr_compliance' ); ?>" type="checkbox"
@@ -96,3 +97,5 @@
         </select>
     </p>
 <?php endif; ?>
+
+<?php } ?>

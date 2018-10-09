@@ -211,6 +211,18 @@ class WP_SMS_Settings {
 					'type' => 'text',
 					'desc' => __( 'Enter your mobile country code for prefix numbers. For example if you enter +1 The final number will be +19999999999', 'wp-sms' )
 				),
+				'admin_title_privacy' => array(
+					'id'   => 'admin_title_privacy',
+					'name' => __( 'Privacy', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'gdpr_compliance'     => array(
+					'id'      => 'gdpr_compliance',
+					'name'    => __( 'GDPR Enhancements', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Enable GDPR related features in this page. Read our GDPR documentation to learn more.', 'wp-sms' ),
+				),
 			) ),
 
 			// Gateway tab
