@@ -214,9 +214,10 @@ class WP_SMS_Settings_Pro {
 	 */
     public function check_license_key($new_value, $old_value)
     {
-        if(isset($_POST['wps_pp_settings']['license_key'])) {
+        //Set Default Option
+        $default_option = 'no';
 
-            $default_option = 'no';
+        if(isset($_POST['wps_pp_settings']['license_key'])) {
 
             /*
              * Check License
@@ -235,8 +236,21 @@ class WP_SMS_Settings_Pro {
             }
 
             $new_value['license_key_status'] = $default_option;
-            return $new_value;
+
+        } else {
+
+            /*
+             * Set Old license
+             */
+            if( isset($old_value['license_key_status']) and $old_value['license_key_status'] !="" ) {
+                $new_value['license_key_status'] = $old_value['license_key_status'];
+            } else {
+                $new_value['license_key_status'] = $default_option;
+            }
+
         }
+
+        return $new_value;
 	}
 
 	
