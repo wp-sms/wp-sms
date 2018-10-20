@@ -127,6 +127,7 @@ class WP_SMS_Gateway {
 				'aradsms'        => 'arad-sms.ir',
 				'asiapayamak'    => 'payamak.asia',
 				'sharifpardazan' => '2345.ir',
+                'aradpayamak'    => 'aradpayamak.net',
 				'sarabsms'       => 'sarabsms.ir',
 				'ponishasms'     => 'ponishasms.ir',
 				'payamakalmas'   => 'payamakalmas.ir',
