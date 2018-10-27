@@ -224,6 +224,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master =
+* Added aradpayamak.net gateway.
+
 = 4.1.0 =
 * Added a new checkbox in the SMS subscription form for GDPR compliance.
 * Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
