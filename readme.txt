@@ -224,6 +224,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master =
+* Added aradpayamak.net gateway.
+
 = 4.1.1 =
 * Fixed issue to saving options.
 
