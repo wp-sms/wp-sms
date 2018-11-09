@@ -5,14 +5,14 @@ class aradpayamak extends WP_SMS {
 	public $tariff = "http://aradpayamak.net/";
 	public $unitrial = true;
 	public $unit;
-	public $flash = "enable";
+	public $flash = "disabled";
 	public $isflash = false;
 
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "09xxxxxxxx";
-        $this->has_key        = true;
-        $this->help           = 'Please Enter Your Domain Name in API Key';
+		$this->has_key        = true;
+		$this->help           = 'Please Enter Your Domain Name in API Key';
 
 		ini_set( "soap.wsdl_cache_enabled", "0" );
 	}
@@ -50,22 +50,14 @@ class aradpayamak extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-        // Reformat number
-        $to = array();
-        foreach ( $this->to as $number ) {
-            $to[] = $number;
-        }
+		// Reformat number
+		$to = array();
+		foreach ( $this->to as $number ) {
+			$to[] = $number;
+		}
 
 		$client = new SoapClient( $this->wsdl_link );
-		$result = $client->sendSMS(
-            $this->has_key,
-            $this->username,
-            $this->password,
-            $this->from,
-            implode( $to , ";" ),
-            $this->msg,
-            ($this->isflash ===true ? 1 : 2)
-        );
+		$result = $client->sendSMS( $this->has_key, $this->username, $this->password, $this->from, implode( $to, ";" ), $this->msg, 1 );
 		if ( $result ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
