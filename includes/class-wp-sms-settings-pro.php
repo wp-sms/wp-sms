@@ -22,13 +22,11 @@ class WP_SMS_Settings_Pro {
 		if ( isset( $_GET['page'] ) and $_GET['page'] == 'wp-sms-pro' or isset( $_POST['option_page'] ) and $_POST['option_page'] == 'wps_pp_settings' ) {
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 
-			//Check License Code
-			if ( isset( $_POST['submit'] ) AND $_REQUEST['option_page'] == 'wps_pp_settings' ) {
-                add_filter( 'pre_update_option_'.$this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
-            }
+			// Check License Code
+			if ( isset( $_POST['submit'] ) AND ( isset( $_REQUEST['option_page'] ) and $_REQUEST['option_page'] == 'wps_pp_settings' ) ) {
+				add_filter( 'pre_update_option_' . $this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
+			}
 		}
-
-
 	}
 
 	/**
@@ -90,14 +88,14 @@ class WP_SMS_Settings_Pro {
 					'wps_pp_settings_' . $tab,
 					'wps_pp_settings_' . $tab,
 					array(
-						'id'      => isset( $option['id'] ) ? $option['id'] : null,
-						'desc'    => ! empty( $option['desc'] ) ? $option['desc'] : '',
-						'name'    => isset( $option['name'] ) ? $option['name'] : null,
-						'after_input'    => isset( $option['after_input'] ) ? $option['after_input'] : null,
-						'section' => $tab,
-						'size'    => isset( $option['size'] ) ? $option['size'] : null,
-						'options' => isset( $option['options'] ) ? $option['options'] : '',
-						'std'     => isset( $option['std'] ) ? $option['std'] : ''
+						'id'          => isset( $option['id'] ) ? $option['id'] : null,
+						'desc'        => ! empty( $option['desc'] ) ? $option['desc'] : '',
+						'name'        => isset( $option['name'] ) ? $option['name'] : null,
+						'after_input' => isset( $option['after_input'] ) ? $option['after_input'] : null,
+						'section'     => $tab,
+						'size'        => isset( $option['size'] ) ? $option['size'] : null,
+						'options'     => isset( $option['options'] ) ? $option['options'] : '',
+						'std'         => isset( $option['std'] ) ? $option['std'] : ''
 					)
 				);
 
@@ -190,70 +188,67 @@ class WP_SMS_Settings_Pro {
 		return $output;
 
 	}
-	
+
 	/*
 	 * Activate Icon
 	 */
-    public function activate_icon()
-    {
-        if( isset($this->options['license_key_status']) ) {
-            $item = array('icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000');
+	public function activate_icon() {
+		if ( isset( $this->options['license_key_status'] ) ) {
+			$item = array( 'icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000' );
 
-            if( $this->options['license_key_status'] =="yes") {
-                $item = array('icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514');
-            }
+			if ( $this->options['license_key_status'] == "yes" ) {
+				$item = array( 'icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514' );
+			}
 
-            return '<span style="color: '.$item['color'].'">&nbsp;&nbsp;<span class="dashicons dashicons-'.$item['icon'].'" style="vertical-align: -4px;"></span>'.__($item['text'], 'wp-sms' ).'</span>';
-        }
+			return '<span style="color: ' . $item['color'] . '">&nbsp;&nbsp;<span class="dashicons dashicons-' . $item['icon'] . '" style="vertical-align: -4px;"></span>' . __( $item['text'], 'wp-sms' ) . '</span>';
+		}
 
-        return null;
+		return null;
 	}
-	
+
 	/*
 	 * Check license key
 	 */
-    public function check_license_key($new_value, $old_value)
-    {
-        //Set Default Option
-        $default_option = 'no';
+	public function check_license_key( $new_value, $old_value ) {
+		//Set Default Option
+		$default_option = 'no';
 
-        if(isset($_POST['wps_pp_settings']['license_key'])) {
+		if ( isset( $_POST['wps_pp_settings']['license_key'] ) ) {
 
-            /*
-             * Check License
-             */
-            $response = wp_remote_get( add_query_arg(array(
-                'plugin-name' => 'wp-sms-pro',
-                'license_key' => sanitize_text_field($_POST['wps_pp_settings']['license_key'])
-                ),
-	            WP_SMS_SITE .'/wp-json/plugins/v1/validate'
-            ));
-            if ( is_wp_error( $response ) ===false ) {
-                $result = json_decode($response['body'], true);
-                if(isset($result['status']) and $result['status'] ==200) {
-                    $default_option = 'yes';
-                }
-            }
+			/*
+			 * Check License
+			 */
+			$response = wp_remote_get( add_query_arg( array(
+				'plugin-name' => 'wp-sms-pro',
+				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] )
+			),
+				WP_SMS_SITE . '/wp-json/plugins/v1/validate'
+			) );
+			if ( is_wp_error( $response ) === false ) {
+				$result = json_decode( $response['body'], true );
+				if ( isset( $result['status'] ) and $result['status'] == 200 ) {
+					$default_option = 'yes';
+				}
+			}
 
-            $new_value['license_key_status'] = $default_option;
+			$new_value['license_key_status'] = $default_option;
 
-        } else {
+		} else {
 
-            /*
-             * Set Old license
-             */
-            if( isset($old_value['license_key_status']) and $old_value['license_key_status'] !="" ) {
-                $new_value['license_key_status'] = $old_value['license_key_status'];
-            } else {
-                $new_value['license_key_status'] = $default_option;
-            }
+			/*
+			 * Set Old license
+			 */
+			if ( isset( $old_value['license_key_status'] ) and $old_value['license_key_status'] != "" ) {
+				$new_value['license_key_status'] = $old_value['license_key_status'];
+			} else {
+				$new_value['license_key_status'] = $default_option;
+			}
 
-        }
+		}
 
-        return $new_value;
+		return $new_value;
 	}
 
-	
 
 	/**
 	 * Get settings fields
@@ -441,46 +436,46 @@ class WP_SMS_Settings_Pro {
 					'type' => 'header'
 				),
 				'license_key' => array(
-					'id'   => 'license_key',
-					'name' => __( 'License Key', 'wp-sms' ),
-					'type' => 'text',
+					'id'          => 'license_key',
+					'name'        => __( 'License Key', 'wp-sms' ),
+					'type'        => 'text',
 					'after_input' => $this->activate_icon(),
-					'desc' => sprintf(
-                        __( 'The license key is used for access to automatic update and support, to get the license, please go to %1$syour account%2$s', 'wp-sms' ),
-                        '<a href="' . esc_url( WP_SMS_SITE.'/checkout/purchase-history/' ) . '" target="_blank">',
-                        '</a>'
-                    ),
+					'desc'        => sprintf(
+						__( 'The license key is used for access to automatic update and support, to get the license, please go to %1$syour account%2$s', 'wp-sms' ),
+						'<a href="' . esc_url( WP_SMS_SITE . '/checkout/purchase-history/' ) . '" target="_blank">',
+						'</a>'
+					),
 				),
 			) ),
 			// Options for wordpress tab
 			'wp'      => apply_filters( 'wp_sms_pro_wp_settings', array(
-				'login_title'   => array(
+				'login_title'       => array(
 					'id'   => 'login_title',
 					'name' => __( 'Login', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'login_sms'     => array(
+				'login_sms'         => array(
 					'id'      => 'login_sms',
 					'name'    => __( 'Login with mobile', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'This option adds login with SMS in the login form.', 'wp-sms' ),
 				),
-                'login_sms_message'  => array(
-                    'id'   => 'login_sms_message',
-                    'name' => __( 'Message body', 'wp-sms' ),
-                    'type' => 'textarea',
-                    'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
-                        sprintf(
-                            __( 'Mobile code: %s, User name: %s, Full Name: %s, Site Name: %s, Site Url: %s', 'wp-sms' ),
-                            '<code>%code%</code>',
-                            '<code>%user_name%</code>',
-                            '<code>%full_name%</code>',
-                            '<code>%site_name%</code>',
-                            '<code>%site_url%</code>'
-                        )
-                ),
-				'mobile_verify' => array(
+				'login_sms_message' => array(
+					'id'   => 'login_sms_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Mobile code: %s, User name: %s, Full Name: %s, Site Name: %s, Site Url: %s', 'wp-sms' ),
+						          '<code>%code%</code>',
+						          '<code>%user_name%</code>',
+						          '<code>%full_name%</code>',
+						          '<code>%site_name%</code>',
+						          '<code>%site_url%</code>'
+					          )
+				),
+				'mobile_verify'     => array(
 					'id'      => 'mobile_verify',
 					'name'    => __( 'Verify mobile number', 'wp-sms' ),
 					'type'    => 'checkbox',
@@ -560,17 +555,17 @@ class WP_SMS_Settings_Pro {
 					'name' => __( 'General', 'wp-sms' ),
 					'type' => 'header'
 				),
-                'wc_mobile_field' => array(
-                    'id'      => 'wc_mobile_field',
-                    'name'    => __( 'Choose the field', 'wp-sms' ),
-                    'type'    => 'select',
-                    'options' => array(
-                        'disable' => __( 'Disable (No field)', 'wp-sms' ),
-                        'add_new_field'      => __( 'Add a new field in the checkout form', 'wp-sms' ),
-                        'used_current_field'      => __( 'Use the current phone field in the bill', 'wp-sms' ),
-                    ),
-                    'desc'    => __( 'Choose from which field you get numbers for sending SMS.', 'wp-sms' )
-                ),
+				'wc_mobile_field'            => array(
+					'id'      => 'wc_mobile_field',
+					'name'    => __( 'Choose the field', 'wp-sms' ),
+					'type'    => 'select',
+					'options' => array(
+						'disable'            => __( 'Disable (No field)', 'wp-sms' ),
+						'add_new_field'      => __( 'Add a new field in the checkout form', 'wp-sms' ),
+						'used_current_field' => __( 'Use the current phone field in the bill', 'wp-sms' ),
+					),
+					'desc'    => __( 'Choose from which field you get numbers for sending SMS.', 'wp-sms' )
+				),
 				'wc_notify_product'          => array(
 					'id'   => 'wc_notify_product',
 					'name' => __( 'Notify for new product', 'wp-sms' ),
@@ -643,7 +638,7 @@ class WP_SMS_Settings_Pro {
 						          '<code>%billing_address%</code>',
 						          '<code>%order_id%</code>',
 						          '<code>%order_number%</code>',
-                                  '<code>%order_total%</code>',
+						          '<code>%order_total%</code>',
 						          '<code>%status%</code>'
 					          )
 				),
@@ -1029,11 +1024,11 @@ class WP_SMS_Settings_Pro {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
+		$size        = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$after_input = ( isset( $args['after_input'] ) && ! is_null( $args['after_input'] ) ) ? $args['after_input'] : '';
-		$html = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= $after_input;
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+		$html        = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
+		$html        .= $after_input;
+		$html        .= '<p class="description"> ' . $args['desc'] . '</p>';
 
 		echo $html;
 	}
