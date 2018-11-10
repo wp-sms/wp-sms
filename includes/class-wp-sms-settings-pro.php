@@ -23,7 +23,7 @@ class WP_SMS_Settings_Pro {
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 			//Check License Code
-			if(isset($_POST['submit'])) {
+			if ( isset( $_POST['submit'] ) AND $_REQUEST['option_page'] == 'wps_pp_settings' ) {
                 add_filter( 'pre_update_option_'.$this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
             }
 		}
