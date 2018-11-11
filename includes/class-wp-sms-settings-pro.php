@@ -21,12 +21,13 @@ class WP_SMS_Settings_Pro {
 
 		if ( isset( $_GET['page'] ) and $_GET['page'] == 'wp-sms-pro' or isset( $_POST['option_page'] ) and $_POST['option_page'] == 'wps_pp_settings' ) {
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
-
-			// Check License Code
-			if ( isset( $_POST['submit'] ) AND ( isset( $_REQUEST['option_page'] ) and $_REQUEST['option_page'] == 'wps_pp_settings' ) ) {
-				add_filter( 'pre_update_option_' . $this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
-			}
 		}
+
+		// Check License Code
+		if ( isset( $_POST['submit'] ) AND isset( $_REQUEST['option_page'] ) AND $_REQUEST['option_page'] == 'wps_pp_settings' ) {
+			add_filter( 'pre_update_option_' . $this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
+		}
+
 	}
 
 	/**
