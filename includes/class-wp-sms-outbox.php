@@ -4,10 +4,44 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 class WP_SMS_Outbox_List_Table extends WP_List_Table {
+
+	/**
+	 * Wordpress Database
+	 *
+	 * @var string
+	 */
+	protected $db;
+
+	/**
+	 * Wordpress Table prefix
+	 *
+	 * @var string
+	 */
+	protected $tb_prefix;
+
+	/**
+	 * Limits per page
+	 *
+	 * @var int
+	 */
+	protected $limit;
+
+	/**
+	 * Count all Records 1 time
+	 *
+	 * @var int
+	 */
+	protected $count;
+
+	/**
+	 * Store Queries Data
+	 *
+	 * @var array
+	 */
 	var $data;
 
 	function __construct() {
-		global $status, $page, $wpdb, $table_prefix;
+		global $wpdb, $table_prefix;
 
 		//Set parent defaults
 		parent::__construct( array(
@@ -15,8 +49,11 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 			'plural'   => 'ID',    //plural name of the listed records
 			'ajax'     => false        //does this table support ajax?
 		) );
-
-		$this->data = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_send`", ARRAY_A );
+		$this->db        = $wpdb;
+		$this->tb_prefix = $table_prefix;
+		$this->count     = $this->get_total();
+		$this->limit     = 50;
+		$this->data      = $this->get_data();
 	}
 
 	function column_default( $item, $column_name ) {
@@ -95,52 +132,53 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 	}
 
 	function process_bulk_action() {
-		global $wpdb, $table_prefix;
 
 		//Detect when a bulk action is being triggered...
 		// Search action
 		if ( isset( $_GET['s'] ) ) {
-			$this->data = $wpdb->get_results( $wpdb->prepare( "SELECT * from `{$table_prefix}sms_send` WHERE message LIKE %s OR recipient LIKE %s;", '%' . $wpdb->esc_like( $_GET['s'] ) . '%', '%' . $wpdb->esc_like( $_GET['s'] ) . '%' ), ARRAY_A );
+			$prepare     = $this->db->prepare( "SELECT * from `{$this->tb_prefix}sms_send` WHERE message LIKE %s OR recipient LIKE %s", '%' . $this->db->esc_like( $_GET['s'] ) . '%', '%' . $this->db->esc_like( $_GET['s'] ) . '%' );
+			$this->data  = $this->get_data( $prepare );
+			$this->count = $this->get_total( $prepare );
 		}
 
 		// Bulk delete action
 		if ( 'bulk_delete' == $this->current_action() ) {
 			foreach ( $_GET['id'] as $id ) {
-				$wpdb->delete( $table_prefix . "sms_send", array( 'ID' => $id ) );
+				$this->db->delete( $this->tb_prefix . "sms_send", array( 'ID' => $id ) );
 			}
-
-			$this->data = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_send`", ARRAY_A );
-			echo '<div class="updated notice is-dismissible below-h2"><p>' . __( 'Items removed.', 'wp-sms' ) . '</p></div>';
+			$this->data  = $this->get_data();
+			$this->count = $this->get_total();
+			echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Items removed.', 'wp-sms' ) . '</p></div>';
 		}
 
 		// Single delete action
 		if ( 'delete' == $this->current_action() ) {
-			$wpdb->delete( $table_prefix . "sms_send", array( 'ID' => $_GET['ID'] ) );
-			$this->data = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_send`", ARRAY_A );
-			echo '<div class="updated notice is-dismissible below-h2"><p>' . __( 'Item removed.', 'wp-sms' ) . '</p></div>';
+			$this->db->delete( $this->tb_prefix . "sms_send", array( 'ID' => $_GET['ID'] ) );
+			$this->data  = $this->get_data();
+			$this->count = $this->get_total();
+			echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Item removed.', 'wp-sms' ) . '</p></div>';
 		}
 
 		// Resend sms
 		if ( 'resend' == $this->current_action() ) {
 			global $sms;
 
-			$result   = $wpdb->get_row( $wpdb->prepare( "SELECT * from `{$table_prefix}sms_send` WHERE ID =%s;", $_GET['ID'] ) );
+			$result   = $this->db->get_row( $this->db->prepare( "SELECT * from `{$this->tb_prefix}sms_send` WHERE ID =%s;", $_GET['ID'] ) );
 			$sms->to  = array( $result->recipient );
 			$sms->msg = $result->message;
 			$sms->SendSMS();
-
-			echo '<div class="updated notice is-dismissible below-h2"><p>' . __( 'SMS Sended.', 'wp-sms' ) . '</p></div>';
+			$this->data  = $this->get_data();
+			$this->count = $this->get_total();
+			echo '<div class="notice notice-success is-dismissible"><p>' . __( 'The SMS sent successfully.', 'wp-sms' ) . '</p></div>';
 		}
 
 	}
 
 	function prepare_items() {
-		global $wpdb; //This is used only if making any database queries
-
 		/**
 		 * First, lets decide how many records per page to show
 		 */
-		$per_page = 50;
+		$per_page = $this->limit;
 
 		/**
 		 * REQUIRED. Now we need to define our column headers. This includes a complete
@@ -197,26 +235,12 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 		usort( $data, 'usort_reorder' );
 
 		/**
-		 * REQUIRED for pagination. Let's figure out what page the user is currently
-		 * looking at. We'll need this later, so you should always include it in
-		 * your own package classes.
-		 */
-		$current_page = $this->get_pagenum();
-
-		/**
 		 * REQUIRED for pagination. Let's check how many items are in our data array.
 		 * In real-world use, this would be the total number of items in your database,
 		 * without filtering. We'll need this later, so you should always include it
 		 * in your own package classes.
 		 */
-		$total_items = count( $data );
-
-		/**
-		 * The WP_List_Table class does not handle pagination for us, so we need
-		 * to ensure that the data is trimmed to only the current page. We can use
-		 * array_slice() to
-		 */
-		$data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+		$total_items = $this->count;
 
 		/**
 		 * REQUIRED. Now we can add our *sorted* data to the items property, where
@@ -232,6 +256,30 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 			'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
 			'total_pages' => ceil( $total_items / $per_page )   //WE have to calculate the total number of pages
 		) );
+	}
+
+	//set $per_page item as int number
+	function get_data( $query = '' ) {
+		$page_number = ( $this->get_pagenum() - 1 ) * $this->limit;
+		if ( ! $query ) {
+			$query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_send` LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+		} else {
+			$query .= ' LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+		}
+		$result = $this->db->get_results( $query, ARRAY_A );
+
+		return $result;
+	}
+
+	//get total items on different Queries
+	function get_total( $query = '' ) {
+		if ( ! $query ) {
+			$query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_send`';
+		}
+		$result = $this->db->get_results( $query, ARRAY_A );
+		$result = count( $result );
+
+		return $result;
 	}
 
 }
