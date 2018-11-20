@@ -128,7 +128,7 @@ abstract class WP_SMS {
 				'sender'    => $sender,
 				'message'   => $message,
 				'recipient' => implode( ',', $to ),
-				'response'  => $response,
+				'response'  => var_export( $response, true ),
 				'status'    => $status,
 			)
 		);

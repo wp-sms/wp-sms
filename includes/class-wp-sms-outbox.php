@@ -62,10 +62,16 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );
 
 			case 'message':
-			case 'status':
 			case 'recipient':
 				return $item[ $column_name ];
-
+			case 'response':
+				return $item[ $column_name ];
+			case 'status':
+				if ( $item[ $column_name ] == 'success' ) {
+					return '<span class="wp_sms_status_success">' . __( 'Success', 'wp-sms' ) . '</span>';
+				} else {
+					return '<span class="wp_sms_status_fail">' . __( 'Fail', 'wp-sms' ) . '</span>';
+				}
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
@@ -107,6 +113,7 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 			'date'      => __( 'Date', 'wp-sms' ),
 			'message'   => __( 'Message', 'wp-sms' ),
 			'recipient' => __( 'Recipient', 'wp-sms' ),
+			'response'  => __( 'Response', 'wp-sms' ),
 			'status'    => __( 'Status', 'wp-sms' ),
 		);
 
