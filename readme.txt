@@ -1,5 +1,5 @@
 === WP SMS ===
-Contributors: mostafa.s1990
+Contributors: mostafa.s1990, mehrshaddarzi, ghasemi71ir
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
@@ -224,110 +224,113 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= dev-master =
+* Improved: Some queries to get data.
+
 = 4.1.1 =
-* Fixed issue to saving options.
-* Added aradpayamak.net gateway.
+* Fixed: issue to saving options.
+* Added: aradpayamak.net gateway.
 
 = 4.1.0 =
-* Added a new checkbox in the SMS subscription form for GDPR compliance.
-* Added Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
-* Added SMS Sending feature to different roles in Send SMS Page.
-* Added mobiledot.net.sa and smsnation.co.rw gateways.
-* Added multi-site support in WordPress Network.
-* Updated fortytwo.com, idehpayam.com, onlinepanel.ir and mobile.net.sa gateways
-* Updated the setting page.
+* Added: a new checkbox in the SMS subscription form for GDPR compliance.
+* Added: Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
+* Added: SMS Sending feature to different roles in Send SMS Page.
+* Added: mobiledot.net.sa and smsnation.co.rw gateways.
+* Added: multi-site support in WordPress Network.
+* Updated: fortytwo.com, idehpayam.com, onlinepanel.ir and mobile.net.sa gateways
+* Updated: the setting page.
 * Disabled `applyUnicode` hood by default
-* Fixed the issue of receiving fields from Gravityforms.
+* Fixed: the issue of receiving fields from Gravityforms.
 
 = 4.0.21 =
-* Added engy.solutions and aruba.it and hiro-sms.com gateways.
-* Added new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).
-* Added sender ID field. Allow typing of sender ID in Admin Send SMS page.
-* Fixed issue to send SMS through CF7 in PHP v7.0 and v7.1
+* Added: engy.solutions and aruba.it and hiro-sms.com gateways.
+* Added: new option for sending Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).
+* Added: sender ID field. Allow typing of sender ID in Admin Send SMS page.
+* Fixed: issue to send SMS through CF7 in PHP v7.0 and v7.1
 
 = 4.0.20 =
-* Added country code to prefix numbers if this option has value on the setting page.
-* Updated setting page. Added options for [Awesome Support plugin](https://wordpress.org/plugins/awesome-support/).
+* Added: country code to prefix numbers if this option has value on the setting page.
+* Updated: setting page. Added options for [Awesome Support plugin](https://wordpress.org/plugins/awesome-support/).
 
 = 4.0.19 =
-* Added tripadasmsbox.com, suresms.com, verimor.com.tr gateway.
+* Added: tripadasmsbox.com, suresms.com, verimor.com.tr gateway.
 
 = 4.0.18 =
-* Added Uwaziimobile.com and cpsms.dk Gateway.
-* Updated settings page fields.
+* Added: Uwaziimobile.com and cpsms.dk Gateway.
+* Updated: settings page fields.
 
 = 4.0.17 =
 * IMPORTANT: Updated the domain name of the Plugin website to wp-sms-pro.com
 
 = 4.0.16 =
-* Added Send SMS to multi numbers in the Contact Form 7.
-* Added Several gateways. (Comilio.it, Mensatek.com, Infodomain.asia, Smsc.ua and Mobtexting.com)
-* Fixed Show time items in the outbox SMS.
+* Added: Send SMS to multi numbers in the Contact Form 7.
+* Added: Several gateways. (Comilio.it, Mensatek.com, Infodomain.asia, Smsc.ua and Mobtexting.com)
+* Fixed: Show time items in the outbox SMS.
 
 = 4.0.15 =
-* Updated option fields.
-* Added sabanovin.com gateway.
+* Updated: option fields.
+* Added: sabanovin.com gateway.
 
 = 4.0.14 =
-* Updated setting page styles.
+* Updated: setting page styles.
 * Disabled gateway key field if not available in the current gateway.
-* Fixed issue in `text_callback` method on the options library. Used `isset` to skip undefined error.
+* Fixed: issue in `text_callback` method on the options library. Used `isset` to skip undefined error.
 
 = 4.0.13 =
-* Added default variable for `sender_id` in the Gateway class.
-* Added textanywhere.net, abrestan.com and eshare.com Gateway.
-* Updated Pro Package options. (Added WP-Job-Manager fields).
+* Added: default variable for `sender_id` in the Gateway class.
+* Added: textanywhere.net, abrestan.com and eshare.com Gateway.
+* Updated: Pro Package options. (Added WP-Job-Manager fields).
 
 = 4.0.12 =
-* Added Experttexting.com Gateway.
-* Added Spirius.com Gateway.
-* Added Msgwow.com Gateway.
-* Updated NuSoap library. Compatible with PHP 5.4 - 7.1
-* Removed local translations and moved to [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
-* Fixed issue in cf7 form when the fields has array data.
+* Added: Experttexting.com Gateway.
+* Added: Spirius.com Gateway.
+* Added: Msgwow.com Gateway.
+* Updated: NuSoap library. Compatible with PHP 5.4 - 7.1
+* Removed: local translations and moved to [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
+* Fixed: issue in cf7 form when the fields has array data.
 
 = 4.0.11 =
-* Added EbulkSMS Africa Gateway.
+* Added: EbulkSMS Africa Gateway.
 * Add option for hide account balance in send SMS page.
-* Updated UI for send SMS page.
-* Updated afilnet.com gateway
-* Updated smsgatewayhub.com gateway
-* Updated Asanak gateway
-* Fixed issue in importer library. The split() deprecated and used preg_split().
+* Updated: UI for send SMS page.
+* Updated: afilnet.com gateway
+* Updated: smsgatewayhub.com gateway
+* Updated: Asanak gateway
+* Fixed: issue in importer library. The split() deprecated and used preg_split().
 
 = 4.0.10 =
 * WordPress 4.8 compatibility
-* Updated unisender gateway
-* Added smsozone.com gateway
-* Added Character Count in the send sms page
+* Updated: unisender gateway
+* Added: smsozone.com gateway
+* Added: Character Count in the send sms page
 
 = 4.0.9 =
 * Fixes issues in some gateways
 * Supported gatewayapi.com, primotexto.com, 18sms.ir in the gateways list
-* Removed auto text direction script admin send message
+* Removed: auto text direction script admin send message
 
 = 4.0.8 =
 * Fixes undefined error in pro package setting page
 * Fixes and improvements newsletter widget
-* Added new feature in sms newsletter. the subscribers can submit their mobile in multi groups
-* Added several gateways (kavenegar.com, itfisms.com, pridesms.in, torpedos.top, resalaty.com)
+* Added: new feature in sms newsletter. the subscribers can submit their mobile in multi groups
+* Added: several gateways (kavenegar.com, itfisms.com, pridesms.in, torpedos.top, resalaty.com)
 
 = 4.0.7 =
-* Added websms.com.cy gateway
-* Added smsgatewayhub.com gateway
-* Added africastalking.com gateway
-* Added variable data to EDD message option
-* Fixed unisender gateway issue
-* Fixed duplicate send sms in the notification post
+* Added: websms.com.cy gateway
+* Added: smsgatewayhub.com gateway
+* Added: africastalking.com gateway
+* Added: variable data to EDD message option
+* Fixed: unisender gateway issue
+* Fixed: duplicate send sms in the notification post
 
 = 4.0.6 =
-* Improvement plugin to initial the gateways
-* Updated German translations. [Thanks Robert Skiba](skibamedia.de)
-* Added asr3sms.com gateway
+* Improvement: plugin to initial the gateways
+* Updated: German translations. [Thanks Robert Skiba](skibamedia.de)
+* Added: asr3sms.com gateway
 
 = 4.0.5 =
-* Fixed path to the nusoap class on some gateways [Thanks nekofar](https://github.com/nekofar)
-* Fixed send sms time in database
+* Fixed: path to the nusoap class on some gateways [Thanks nekofar](https://github.com/nekofar)
+* Fixed: send sms time in database
 * Fixes including gateways class error when the class was not in the plugin
 
 = 4.0.4 =
@@ -336,76 +339,76 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 4.0.3 =
 * Supported WP REST API
 * Improvements settings page and used main plugin for settings handler
-* Updated arabic translations. (Thanks Hammad)
+* Updated: arabic translations. (Thanks Hammad)
 
 = 4.0.2 =
 * PHP 7.1 compatibility
-* Added mobile number checker in register and update profile page for avoid to duplicate mobile numbers
-* Added `post_content` to the post notification input data. (Supported until 10 words due for restrictions in some gateways)
+* Added: mobile number checker in register and update profile page for avoid to duplicate mobile numbers
+* Added: `post_content` to the post notification input data. (Supported until 10 words due for restrictions in some gateways)
 * Changed `title_post`, `url_post`, `date_post` to `post_title`, `post_url`, `post_date` on post notification input data.
-* Fixed Spelling mistakes in language file.
+* Fixed: Spelling mistakes in language file.
 
 = 4.0.1 =
-* Fixed default gateway issue.
-* Fixed Illegal error in cf7 sms meta box.
+* Fixed: default gateway issue.
+* Fixed: Illegal error in cf7 sms meta box.
 
 = 4.0.0 =
 * Important! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
-* Added setting class for all options in the plugin for better settings performance.
-* Added new classes for doing any proccess.
-* Added `resalaty.com` gateway.
-* Added return request in the gateway tab on the option page for get any message of the request.
-* Added `WP_Error` in the all gateway classes.
-* Added ‌Bulk send status in the gateway tabs on the setting page.
-* Added response gateway message after sending sms on the sending page.
-* Removed newsletter tabs from option page and moved all option on the newsletter widget.
-* Improvement options page and removed all notice errors in setting page.
-* Improvement all syntax for notice errors.
-* Improvement main class.
-* Fixed load template widget in admin.
-* Fixed widget plugin name (Important! after update, re-add `SMS newsletter form` widget in your theme)
-* Fixed notice error in `cf7` editor panel, used `id()` method instead.
-* Removed function: `wp_subscribes`.
+* Added: setting class for all options in the plugin for better settings performance.
+* Added: new classes for doing any proccess.
+* Added: `resalaty.com` gateway.
+* Added: return request in the gateway tab on the option page for get any message of the request.
+* Added: `WP_Error` in the all gateway classes.
+* Added: ‌Bulk send status in the gateway tabs on the setting page.
+* Added: response gateway message after sending sms on the sending page.
+* Removed: newsletter tabs from option page and moved all option on the newsletter widget.
+* Improvement: options page and removed all notice errors in setting page.
+* Improvement: all syntax for notice errors.
+* Improvement: main class.
+* Fixed: load template widget in admin.
+* Fixed: widget plugin name (Important! after update, re-add `SMS newsletter form` widget in your theme)
+* Fixed: notice error in `cf7` editor panel, used `id()` method instead.
+* Removed: function: `wp_subscribes`.
 
 = 3.2.4 =
 * Compatible with WP 4.7
 * Fixes issue when enable plugin to add new cap.
 * Fixes issue (Missing `$this->validateNumber` on the default gateway class)
 * Fixes issue (Missing `$user->ID` in mobile field when create new user)
-* Improvement structure files, folders and cleaning codes.
+* Improvement: structure files, folders and cleaning codes.
 
 = 3.2.3 =
 * Language french added. thanks `yves.le.bouffant@libertysurf.fr`
 
 = 3.2.3 =
-* Added fortytwo.com gateway.
-* Added parsgreen (api.ir) gateway.
+* Added: fortytwo.com gateway.
+* Added: parsgreen (api.ir) gateway.
 * Compatible up to wordpress 4.6
 * Fixes Undefined index error in plugin pages
-* Updated textplode gateway.
+* Updated: textplode gateway.
 
 = 3.2.2 =
-* Added new gateway (springedge.com)
-* Added new gateway (textplode.com)
-* Added new gateway (textplode.com)
+* Added: new gateway (springedge.com)
+* Added: new gateway (textplode.com)
+* Added: new gateway (textplode.com)
 * Language (Brazil) updated.
 
 = 3.2.1 =
-* Added New gateway (sonoratecnologia.com.br).
-* Removed dashicons from `WP_List_Table`.
+* Added: New gateway (sonoratecnologia.com.br).
+* Removed: dashicons from `WP_List_Table`.
 
 = 3.2 =
-* Added New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
-* Added New filters `wp_sms_from`, `wp_sms_to`, `wp_sms_msg` in the plugin.
-* Added New gateway (bulutfon.com).
-* Added New gateway (iransms.co).
-* Added New gateway (arkapayamak.ir).
-* Added New gateway (chaparpanel.ir).
-* Fixed issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.
-* Fixed `Undefined index` errors in ths plugin when wordpress debug is enable.
-* Fixed Issue in outbox, subscribe and group page after bulk edit.
-* Updated `http` to `https` link in gateway.sa gateway.
-* Updated Language file and any string in the plugin.
+* Added: New capabilities: `wpsms_sendsms`, `wpsms_outbox`, `wpsms_subscribers`, `wpsms_subscribe_groups` and `wpsms_setting` to user roles for manage page access.
+* Added: New filters `wp_sms_from`, `wp_sms_to`, `wp_sms_msg` in the plugin.
+* Added: New gateway (bulutfon.com).
+* Added: New gateway (iransms.co).
+* Added: New gateway (arkapayamak.ir).
+* Added: New gateway (chaparpanel.ir).
+* Fixed: issue when you rename `wp-content` folder. now plugin it's work if the folder name does not `wp-content`.
+* Fixed: `Undefined index` errors in ths plugin when wordpress debug is enable.
+* Fixed: Issue in outbox, subscribe and group page after bulk edit.
+* Updated: `http` to `https` link in gateway.sa gateway.
+* Updated: Language file and any string in the plugin.
 * Renamed `wp_after_sms_gateway` action to `wp_sms_after_gateway`.
 * Renamed `wps_add_subscriber` action to `wp_sms_add_subscriber`.
 * Renamed `wps_delete_subscriber` action to `wp_sms_delete_subscriber`.
@@ -413,10 +416,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Renamed `wps_add_group` action to `wp_sms_add_group`.
 * Renamed `wps_delete_group` action to `wp_sms_delete_group`.
 * Renamed `wps_update_group` action to `wp_sms_update_group`.
-* Removed select access option in settig page.
-* Removed `Hook` method from `WP_SMS` class and used `do_action` for gateways class.
-* Removed gateway message in `wp-admin`.
-* Removed Suggestion sms from plugin (Because of the inefficiency).
+* Removed: select access option in settig page.
+* Removed: `Hook` method from `WP_SMS` class and used `do_action` for gateways class.
+* Removed: gateway message in `wp-admin`.
+* Removed: Suggestion sms from plugin (Because of the inefficiency).
 
 = 3.1.3 =
 * Compatible with wordpress 4.5
@@ -425,13 +428,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 3.1.2 =
 * Gateway gateway.sa Added.
 * Gateway modiranweb.net Added.
-* Fixed empty value in cf7 option.
-* Fixed Subscribe url and credit url in dashboard glance.
+* Fixed: empty value in cf7 option.
+* Fixed: Subscribe url and credit url in dashboard glance.
 
 = 3.1.1 =
 * Language `German` updated. (Thanks Robert Skiba Medientechnik)
-* Fixed activation code for SMS newsletter.
-* Fixed Showing SMS tab in CF7 Meta box.
+* Fixed: activation code for SMS newsletter.
+* Fixed: Showing SMS tab in CF7 Meta box.
 * Gateway `esms24.ir` Added.
 * Gateway `payamakaria.ir` Added.
 * Gateway `tgfsms.ir` Added.
@@ -446,42 +449,42 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Gateway `Adspanel.ir` Added.
 * Gateway `Adspanel.ir` Added.
 * Gateway `Mydnspanel.com` Added.
-* Fixed Update option on notification page.
+* Fixed: Update option on notification page.
 * Language `Arabic` updated. (Thanks Hammad)
 
 = 3.0.2 =
 * Gateway `LabsMobile` updated.
 * Gateway `Mtarget` updated.
 * Gateway `Razpayamak` Added.
-* Added select status in edit subscribe page.
-* Fixed send to subscribes in Send SMS page.
-* Fixed send notification new post to subscribers.
-* Fixed custom text for notifications new post.
+* Added: select status in edit subscribe page.
+* Fixed: send to subscribes in Send SMS page.
+* Fixed: send notification new post to subscribers.
+* Fixed: custom text for notifications new post.
 
 = 3.0.1 =
-* Fixed show group page and subscribe page on admin.
+* Fixed: show group page and subscribe page on admin.
 * Language: Swedish added. (Thanks Kramfors)
 
 = 3.0 =
-* Added `WP_SMS_Subscriptions` class for processing subscribers (just in admin).
-* Added `Default_Gateway` class for use it if webservice not active in the plugin.
-* Added check sms credit in `SendSMS` method.
-* Added subscribers hook to plugin hooks collactions.
-* Added user to newsletter when the user register in the wordpress.
-* Added send message to form field on `Contact Form 7`.
-* Added manage subscribe group in the plugin menu.
-* Added access level for view send page sms.
-* Added show/hide group in subscribe form.
-* Added resend sms on outbox message.
-* Added custom message for sms post suggestion.
-* Added css file for sms post suggestion form.
-* Added select group in sms meta box for sending the sms to subscribers when publish new post.
-* Added note for gateways after web services list.
-* Added `smsapi.pl` polish gateway.
-* Added `wifisms.ir` iranian gateway.
-* Improvement list table in for subscriber and outbox page (use `WP_List_Table` library).
-* Improvement notifications page.
-* Fixed notification new comment conflict with woocommerce.
+* Added: `WP_SMS_Subscriptions` class for processing subscribers (just in admin).
+* Added: `Default_Gateway` class for use it if webservice not active in the plugin.
+* Added: check sms credit in `SendSMS` method.
+* Added: subscribers hook to plugin hooks collactions.
+* Added: user to newsletter when the user register in the wordpress.
+* Added: send message to form field on `Contact Form 7`.
+* Added: manage subscribe group in the plugin menu.
+* Added: access level for view send page sms.
+* Added: show/hide group in subscribe form.
+* Added: resend sms on outbox message.
+* Added: custom message for sms post suggestion.
+* Added: css file for sms post suggestion form.
+* Added: select group in sms meta box for sending the sms to subscribers when publish new post.
+* Added: note for gateways after web services list.
+* Added: `smsapi.pl` polish gateway.
+* Added: `wifisms.ir` iranian gateway.
+* Improvement: list table in for subscriber and outbox page (use `WP_List_Table` library).
+* Improvement: notifications page.
+* Fixed: notification new comment conflict with woocommerce.
 * Compatible with wordpress 4.3.
 * Language: updated.
 * Reseted all notifications option.
@@ -490,107 +493,107 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Remove admin stylesheet old version.
 
 = 2.8.1 =
-* Added Sarinapayamak.com webservice
-* Added mtarget.fr webservice
-* Added bearsms.com webservice
-* Added smss.co.il webservice
-* Added sms77.de webservice
-* Added isms.ir webservice
-* Fixed Notification sms after enable plugin
-* Fixed Integration with new ver of CF7
+* Added: Sarinapayamak.com webservice
+* Added: mtarget.fr webservice
+* Added: bearsms.com webservice
+* Added: smss.co.il webservice
+* Added: sms77.de webservice
+* Added: isms.ir webservice
+* Fixed: Notification sms after enable plugin
+* Fixed: Integration with new ver of CF7
 * Update Arabic translation.
-* Added German translation. [Thanks Robert Skiba](http://skibamedia.de/)
+* Added: German translation. [Thanks Robert Skiba](http://skibamedia.de/)
 
 = 2.8 =
-* Added rules on mobile field number for subscribe form. (maximum and minimum number)
-* Added place holder on mobile filed number for subscribe form for help to user.
-* Added Chinese translator. (Thanks Jack Chen)
-* Added Addons page in plugin.
-* Added payamgah.net webservice.
-* Added sabasms.biz webservice.
-* Added chapargah.ir webservice.
-* Added farapayamak.com webservice.
-* Added yashil-sms.ir webservice.
+* Added: rules on mobile field number for subscribe form. (maximum and minimum number)
+* Added: place holder on mobile filed number for subscribe form for help to user.
+* Added: Chinese translator. (Thanks Jack Chen)
+* Added: Addons page in plugin.
+* Added: payamgah.net webservice.
+* Added: sabasms.biz webservice.
+* Added: chapargah.ir webservice.
+* Added: farapayamak.com webservice.
+* Added: yashil-sms.ir webservice.
 * Improved subscribe ajax form.
 * Improved subscribe form and changed the form design.
-* Fixed a problem in send post to subscribers.
+* Fixed: a problem in send post to subscribers.
 
 = 2.7.4 =
-* Fixed Contact form 7 shortcode. currently supported.
+* Fixed: Contact form 7 shortcode. currently supported.
 
 = 2.7.3 =
-* Added smshosting.it webservice.
-* Added afilnet.com webservice.
-* Added faraed.com webservice.
-* Added spadsms.ir webservice.
-* Added niazpardaz.com (New webservice).
-* Added bandarsms.ir webservice.
+* Added: smshosting.it webservice.
+* Added: afilnet.com webservice.
+* Added: faraed.com webservice.
+* Added: spadsms.ir webservice.
+* Added: niazpardaz.com (New webservice).
+* Added: bandarsms.ir webservice.
 
 = 2.7.2 =
-* Added MarkazPayamak.ir webservice.
-* Added payamak-panel.com webservice.
-* Added barmanpayamak.ir webservice.
-* Added farazpayam.com webservice.
-* Added 0098sms.com webservice.
-* Added amansoft.ir webservice.
+* Added: MarkazPayamak.ir webservice.
+* Added: payamak-panel.com webservice.
+* Added: barmanpayamak.ir webservice.
+* Added: farazpayam.com webservice.
+* Added: 0098sms.com webservice.
+* Added: amansoft.ir webservice.
 * Change webservice in asanak.ir webservice.
 
 = 2.7.1 =
-* Added Variables %status% and %order_name% for woocommerce new order.
-* Added smsservice.ir webservice.
-* Added asanak.ir webservice.
-* Updated idehpayam Webservice.
-* Added Mobile field number in create a new user from admin.
+* Added: Variables %status% and %order_name% for woocommerce new order.
+* Added: smsservice.ir webservice.
+* Added: asanak.ir webservice.
+* Updated: idehpayam Webservice.
+* Added: Mobile field number in create a new user from admin.
 - Fixed notification sms when create a new user.
-* Fixed return credit in smsglobal webservice.
+* Fixed: return credit in smsglobal webservice.
 
 = 2.7 =
-* Added Numbers of Wordpress Users to send sms page.
-* Added Mobile validate number to class plugin.
-* Added Option for Disable/Enable credit account in admin menu.
-* Added afe.ir webservice.
-* Added smshooshmand.com webservice.
-* Added Description field optino for subscribe form widget.
+* Added: Numbers of Wordpress Users to send sms page.
+* Added: Mobile validate number to class plugin.
+* Added: Option for Disable/Enable credit account in admin menu.
+* Added: afe.ir webservice.
+* Added: smshooshmand.com webservice.
+* Added: Description field optino for subscribe form widget.
 * Included username & password field for reset button in webservice tab.
 * Updated: Widget code now adhears to WordPress standards.
 
 = 2.6.7 =
-* Added navid-soft web service.
+* Added: navid-soft web service.
 * Remove number_format in show credit sms.
 
 = 2.6.6 =
-* Fixed problem in include files.
+* Fixed: problem in include files.
 
 = 2.6.5 =
-* Added smsroo.ir web service.
-* Added smsban.ir web service.
+* Added: smsroo.ir web service.
+* Added: smsban.ir web service.
 
 = 2.6.4 =
-* Fixed nusoap_client issue when include this class with other plugins.
+* Fixed: nusoap_client issue when include this class with other plugins.
 * Remove mobile country code from tell friend section.
 * Change folder and files structure plugin.
 
 = 2.6.3 =
-* Added SMS.ir (new version) web service.
-* Added Smsmelli.com (new version) web service.
-* Fixed sms items in posted sms page.
-* Fixed subscribe items in subscribe page.
-* Fixed Mobile validation number.
-* Fixed Warning error when export subscribers.
+* Added: SMS.ir (new version) web service.
+* Added: Smsmelli.com (new version) web service.
+* Fixed: sms items in posted sms page.
+* Fixed: subscribe items in subscribe page.
+* Fixed: Mobile validation number.
+* Fixed: Warning error when export subscribers.
 * Changed rial unit to credit.
 
 = 2.6.2 =
-* Fixed Notifications sms to subscribes.
-* Added Rayanbit.net web service.
-* Added Danish language.
+* Fixed: Notifications sms to subscribes.
+* Added: Rayanbit.net web service.
+* Added: Danish language.
 
 = 2.6.1 =
-* Fixed Mobile validation in subscribe form.
-* Added Reset button for remove web service data.
-* Added Melipayaamak web service.
-* Added Postgah web service.
-* Added Smsfa web service.
-* Added Turkish language.
+* Fixed: Mobile validation in subscribe form.
+* Added: Reset button for remove web service data.
+* Added: Melipayaamak web service.
+* Added: Postgah web service.
+* Added: Smsfa web service.
+* Added: Turkish language.
 
 = 2.6 =
 * Fixed: database error for exists table.
@@ -829,7 +832,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fix a problem Active/Deactive all subscribe.
 
 = 1.6 =
-* Added Enable/Disable username in subscribe page.
+* Added: Enable/Disable username in subscribe page.
 * Fix a problem in show credit.
 * Fix a problem in menu link.
 * Fix a problem in word counter.
@@ -838,7 +841,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added: Hostiran Web Service.
 * Added: Iran SMS Panel Web Service.
 * Remove Orangesms Service.
-* Added Activation subscribe.
+* Added: Activation subscribe.
 * Optimize plugin.
 * Update jquery to 1.7.2
 

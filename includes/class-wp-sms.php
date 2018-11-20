@@ -111,23 +111,41 @@ abstract class WP_SMS {
 		}
 	}
 
-	public function InsertToDB( $sender, $message, $recipient, $status) {
-		if ( $status ) {
-			$status = '<span class="wp_sms_status_fail">' . $status->get_error_message() . '</span>';
-		} else {
-			$status = '<span class="wp_sms_status_success">' . __( "Sent", "wp-sms" ) . '</span>';
-		}
-
+	/**
+	 * @param $sender
+	 * @param $message
+	 * @param $to
+	 * @param $response
+	 * @param string $status
+	 *
+	 * @return false|int
+	 */
+	public function log( $sender, $message, $to, $response, $status = 'success' ) {
 		return $this->db->insert(
 			$this->tb_prefix . "sms_send",
 			array(
 				'date'      => WP_SMS_CURRENT_DATE,
 				'sender'    => $sender,
 				'message'   => $message,
-				'recipient' => implode( ',', $recipient ),
+				'recipient' => implode( ',', $to ),
+				'response'  => $response,
 				'status'    => $status,
 			)
 		);
+	}
+
+	/**
+	 * This method required for old version of wp-sms-pro
+	 *
+	 * @param $sender
+	 * @param $message
+	 * @param $to
+	 * @param $response
+	 *
+	 * @return false|int
+	 */
+	public function InsertToDB( $sender, $message, $to, $response ) {
+		return $this->log( $sender, $message, $to, $response, $status = 'success' );
 	}
 
 	/**
