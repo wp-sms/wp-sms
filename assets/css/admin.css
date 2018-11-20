@@ -87,7 +87,10 @@
     margin: 0;
 }
 
-.wpsms-tab li a:focus { outline:0 !important; box-shadow: none !important; }
+.wpsms-tab li a:focus {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
 
 .wpsms-tab #wpsms-logo {
     text-align: center;
@@ -144,10 +147,26 @@
     height: 35px;
     min-width: 250px;
 }
+
 .privacy_page #universal-message-container {
     padding: 2px 0px 17px 0px;
 }
+
 .privacy_page .text-lead {
     line-height: 26px;
     text-align: justify;
+}
+
+.wp_sms_status_success {
+    background: #04ca15;
+    color: #ffffff;
+    padding: 3px 5px;
+    border-radius: 3px;
+}
+
+.wp_sms_status_fail {
+    background: #ca0404;
+    color: #ffffff;
+    padding: 3px 5px;
+    border-radius: 3px;
 }

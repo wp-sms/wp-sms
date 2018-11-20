@@ -111,14 +111,21 @@ abstract class WP_SMS {
 		}
 	}
 
-	public function InsertToDB( $sender, $message, $recipient ) {
+	public function InsertToDB( $sender, $message, $recipient, $status) {
+		if ( $status ) {
+			$status = '<span class="wp_sms_status_fail">' . $status->get_error_message() . '</span>';
+		} else {
+			$status = '<span class="wp_sms_status_success">' . __( "Sent", "wp-sms" ) . '</span>';
+		}
+
 		return $this->db->insert(
 			$this->tb_prefix . "sms_send",
 			array(
 				'date'      => WP_SMS_CURRENT_DATE,
 				'sender'    => $sender,
 				'message'   => $message,
-				'recipient' => implode( ',', $recipient )
+				'recipient' => implode( ',', $recipient ),
+				'status'    => $status,
 			)
 		);
 	}

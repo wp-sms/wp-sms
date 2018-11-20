@@ -62,6 +62,7 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );
 
 			case 'message':
+			case 'status':
 			case 'recipient':
 				return $item[ $column_name ];
 
@@ -106,6 +107,7 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 			'date'      => __( 'Date', 'wp-sms' ),
 			'message'   => __( 'Message', 'wp-sms' ),
 			'recipient' => __( 'Recipient', 'wp-sms' ),
+			'status'    => __( 'Status', 'wp-sms' ),
 		);
 
 		return $columns;
@@ -115,9 +117,11 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 		$sortable_columns = array(
 			'ID'        => array( 'ID', true ),     //true means it's already sorted
 			'sender'    => array( 'sender', false ),     //true means it's already sorted
-			'date'      => array( 'date', false ),
-			'message'   => array( 'message', false ),
-			'recipient' => array( 'recipient', false )
+			'date'      => array( 'date', false ),  //true means it's already sorted
+			'message'   => array( 'message', false ),   //true means it's already sorted
+			'recipient' => array( 'recipient', false ), //true means it's already sorted
+			'status'    => array( 'status', false ) //true means it's already sorted
+
 		);
 
 		return $sortable_columns;
@@ -162,14 +166,19 @@ class WP_SMS_Outbox_List_Table extends WP_List_Table {
 		// Resend sms
 		if ( 'resend' == $this->current_action() ) {
 			global $sms;
-
+			$error    = null;
 			$result   = $this->db->get_row( $this->db->prepare( "SELECT * from `{$this->tb_prefix}sms_send` WHERE ID =%s;", $_GET['ID'] ) );
 			$sms->to  = array( $result->recipient );
 			$sms->msg = $result->message;
-			$sms->SendSMS();
+			$error    = $sms->SendSMS();
+			if ( is_wp_error( $error ) ) {
+				echo '<div class="notice notice-error  is-dismissible"><p>' . $error->get_error_message() . '</p></div>';
+			} else {
+				echo '<div class="notice notice-success is-dismissible"><p>' . __( 'The SMS sent successfully.', 'wp-sms' ) . '</p></div>';
+			}
 			$this->data  = $this->get_data();
 			$this->count = $this->get_total();
-			echo '<div class="notice notice-success is-dismissible"><p>' . __( 'The SMS sent successfully.', 'wp-sms' ) . '</p></div>';
+
 		}
 
 	}

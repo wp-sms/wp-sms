@@ -7,6 +7,7 @@ class hostiran extends WP_SMS {
 	public $unit;
 	public $flash = "disable";
 	public $isflash = false;
+	private $status;
 
 	public function __construct() {
 		parent::__construct();
@@ -16,10 +17,7 @@ class hostiran extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
+
 
 		/**
 		 * Modify sender number
@@ -50,10 +48,17 @@ class hostiran extends WP_SMS {
 		
 		$options = array( 'login' => $this->username, 'password' => $this->password );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			$this->status = new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
+			$this->InsertToDB( $this->from, $this->msg, $this->to , $this->status );
+			return $this->status;
+		}
+
 		try {
 			$client = new SoapClient( $this->wsdl_link, $options );
 			$result = $client->sendToMany( $this->to, $this->msg, $this->from );
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			$this->InsertToDB( $this->from, $this->msg, $this->to , $this->status );
 
 			/**
 			 * Run hook after send sms.
@@ -66,7 +71,9 @@ class hostiran extends WP_SMS {
 
 			return $result;
 		} catch ( Exception $e ) {
-			return new WP_Error( 'send-sms', $e->getMessage() );
+			$this->status = new WP_Error( 'send-sms', $e->getMessage() );
+			$this->InsertToDB( $this->from, $this->msg, $this->to , $this->status );
+			return $this->status;
 		}
 	}
 

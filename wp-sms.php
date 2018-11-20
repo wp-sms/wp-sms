@@ -147,6 +147,9 @@ class WP_SMS_Plugin {
         add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog') );
 
 		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
+
+		//Upgrade Plugin if needed
+		include_once dirname( __FILE__ ) . '/upgrade.php';
 	}
 
 	/**
