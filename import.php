@@ -6,9 +6,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 include_once dirname( __FILE__ ) . "/includes/classes/excel-reader.class.php";
 
 global $wpdb, $table_prefix;
-$get_mobile = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" );
-$result     = [];
-$duplicate  = [];
+
+$get_mobile      = array();
+$get_mobile_dups = array();
+
+if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
+	$get_mobile      = WP_SMS_Subscriptions::getSubscribers( $_POST['wpsms_group_name'] );
+	$get_mobile_dups = WP_SMS_Subscriptions::getSubscribers();
+} else {
+	$get_mobile = WP_SMS_Subscriptions::getSubscribers();
+}
+
+$result          = [];
+$duplicate       = [];
+$count_duplicate = [];
+$total_submit    = [];
 
 if ( isset( $_POST['wps_import'] ) ) {
 	if ( ! $_FILES['wps-import-file']['error'] ) {
@@ -22,31 +34,34 @@ if ( isset( $_POST['wps_import'] ) ) {
 				$duplicate[] = $items[2];
 				continue;
 			}
+			if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
+				//Count only imported Duplicate items
+				if ( in_array( $items[2], $get_mobile_dups ) ) {
+					$count_duplicate[] = $items[2];
+					continue;
+				}
+			}
 
 			// Count submitted items.
 			$total_submit[] = $data->sheets[0]['cells'];
 
-			$result = $wpdb->insert( "{$table_prefix}sms_subscribes",
-				array(
-					'date'     => WP_SMS_CURRENT_DATE,
-					'name'     => $items[1],
-					'mobile'   => $items[2],
-					'status'   => '1',
-					'group_ID' => $_POST['wpsms_group_name']
-				)
-			);
+			$result = WP_SMS_Subscriptions::insertSubscriber( WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $_POST['wpsms_group_name'] );
 
 		}
 
 		if ( $result ) {
-			echo "<div class='updated'><p>" . sprintf( __( '<strong>%s</strong> items was successfully added.', 'wp-sms' ), count( $total_submit ) ) . "</div></p>";
+			if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
+				echo " <div class='updated'><p > " . sprintf( __( '<strong>%s</strong> items was successfully added And There was <strong>%s/strong> duplicate numbers.', 'wp-sms' ), count( $total_submit ), count( $count_duplicate ) ) . "</div ></p > ";
+			} else {
+				echo " <div class='updated' ><p >" . sprintf( __( '<strong>%s</strong> items was successfully added.', 'wp-sms' ), count( $total_submit ) ) . "</div ></p>";
+			}
 		}
 
 		if ( $duplicate ) {
-			echo "<div class='error'><p>" . sprintf( __( '<strong>%s</strong> Mobile numbers Was repeated.', 'wp-sms' ), count( $duplicate ) ) . "</div></p>";
+			echo "<div class='error'><p>" . sprintf( __( '<strong>%s</strong> Mobile numbers Was repeated.', 'wp-sms' ), count( $duplicate ) ) . "</div ></p>";
 		}
 
 	} else {
-		echo "<div class='error'><p>" . __( 'Please complete all fields', 'wp-sms' ) . "</div></p>";
+		echo "<div class='error'><p> " . __( 'Please complete all fields', 'wp-sms' ) . "</div ></p>";
 	}
 }

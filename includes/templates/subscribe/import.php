@@ -16,6 +16,9 @@
                 </select>
             </p>
 
+            <p id="async-upload-wrap">
+                <input type="checkbox" name="ignore_duplicate" value="ignore" /> <?php _e( 'Ignore Duplicate Subscribers, Working only for groups that haven\'t the subscribes', 'wp-sms' ); ?>
+            </p>
             <a href="admin.php?page=wp-sms-subscribers" class="button"><?php _e( 'Back', 'wp-sms' ); ?></a>
             <input type="submit" class="button-primary" name="wps_import" value="<?php _e( 'Upload', 'wp-sms' ); ?>"/>
         </div>

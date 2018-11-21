@@ -52,8 +52,9 @@ class WP_SMS_Subscriptions {
 	 */
 	public function add_subscriber( $name, $mobile, $group_id = '', $status = '1', $key = nul ) {
 		if ( $this->is_duplicate( $mobile, $group_id ) ) {
-			return array( 'result'  => 'error',
-			              'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
+			return array(
+				'result'  => 'error',
+				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
 			);
 		}
 
@@ -179,8 +180,9 @@ class WP_SMS_Subscriptions {
 		}
 
 		if ( $this->is_duplicate( $mobile, $group_id, $id ) ) {
-			return array( 'result'  => 'error',
-			              'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
+			return array(
+				'result'  => 'error',
+				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
 			);
 		}
 
@@ -373,6 +375,51 @@ class WP_SMS_Subscriptions {
 
 		$result = $this->db->get_row( $sql );
 
+		return $result;
+	}
+
+
+	/**
+	 * @param string $group_id
+	 *
+	 * @return array
+	 */
+	public static function getSubscribers( $group_id = '' ) {
+		global $wpdb, $table_prefix;
+
+		if ( $group_id ) {
+			$result = $wpdb->get_col( "SELECT `mobile` FROM " . $table_prefix . "sms_subscribes WHERE group_ID = " . $group_id );
+		} else {
+			$result = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" );
+		}
+		wp_reset_query();
+		return $result;
+
+	}
+
+
+	/**
+	 * @param $date
+	 * @param $name
+	 * @param $mobile
+	 * @param $status
+	 * @param $group_id
+	 *
+	 * @return mixed
+	 */
+	public static function insertSubscriber( $date, $name, $mobile, $status, $group_id ) {
+		global $wpdb, $table_prefix;
+
+		$result = $wpdb->insert( "
+			{$table_prefix}sms_subscribes",
+			array(
+				'date'     => $date,
+				'name'     => $name,
+				'mobile'   => $mobile,
+				'status'   => $status,
+				'group_ID' => $group_id
+			)
+		);
 		return $result;
 	}
 }
