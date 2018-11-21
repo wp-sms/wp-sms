@@ -34,11 +34,11 @@ if ( isset( $_POST['wps_import'] ) ) {
 				$duplicate[] = $items[2];
 				continue;
 			}
+
 			if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
 				//Count only imported Duplicate items
 				if ( in_array( $items[2], $get_mobile_dups ) ) {
 					$count_duplicate[] = $items[2];
-					continue;
 				}
 			}
 
@@ -51,7 +51,7 @@ if ( isset( $_POST['wps_import'] ) ) {
 
 		if ( $result ) {
 			if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
-				echo " <div class='updated'><p > " . sprintf( __( '<strong>%s</strong> items was successfully added And There was <strong>%s/strong> duplicate numbers.', 'wp-sms' ), count( $total_submit ), count( $count_duplicate ) ) . "</div ></p > ";
+				echo " <div class='updated'><p > " . sprintf( __( '<strong>%s</strong> items was successfully added and There was <strong>%s</strong> duplicated numbers.', 'wp-sms' ), count( $total_submit ), count( $count_duplicate ) ) . "</div ></p > ";
 			} else {
 				echo " <div class='updated' ><p >" . sprintf( __( '<strong>%s</strong> items was successfully added.', 'wp-sms' ), count( $total_submit ) ) . "</div ></p>";
 			}

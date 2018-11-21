@@ -387,12 +387,14 @@ class WP_SMS_Subscriptions {
 	public static function getSubscribers( $group_id = '' ) {
 		global $wpdb, $table_prefix;
 
+		$where = '';
+
 		if ( $group_id ) {
-			$result = $wpdb->get_col( "SELECT `mobile` FROM " . $table_prefix . "sms_subscribes WHERE group_ID = " . $group_id );
-		} else {
-			$result = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" );
+			$where = $wpdb->prepare( ' WHERE group_ID = %d', $group_id );
 		}
-		wp_reset_query();
+
+		$result = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" . $where );
+
 		return $result;
 
 	}
@@ -410,8 +412,7 @@ class WP_SMS_Subscriptions {
 	public static function insertSubscriber( $date, $name, $mobile, $status, $group_id ) {
 		global $wpdb, $table_prefix;
 
-		$result = $wpdb->insert( "
-			{$table_prefix}sms_subscribes",
+		$result = $wpdb->insert( "{$table_prefix}sms_subscribes",
 			array(
 				'date'     => $date,
 				'name'     => $name,
@@ -420,6 +421,7 @@ class WP_SMS_Subscriptions {
 				'group_ID' => $group_id
 			)
 		);
+
 		return $result;
 	}
 }
