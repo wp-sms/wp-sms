@@ -226,6 +226,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = dev-master =
 * Improved: Some queries to get data.
+* Improved: The export subscriber issue.
 
 = 4.1.1 =
 * Fixed: issue to saving options.
