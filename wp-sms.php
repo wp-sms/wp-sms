@@ -513,7 +513,7 @@ class WP_SMS_Plugin {
 
 					echo "<div class='error'><p>" . sprintf( __( '<strong>SMS was not delivered! results received:</strong> %s', 'wp-sms' ), $response ) . "</p></div>";
 				} else {
-					echo "<div class='updated'><p>" . __( 'SMS was sent with success', 'wp-sms' ) . "</p></div>";
+					echo "<div class='updated'><p>" . __( 'The SMS sent successfully', 'wp-sms' ) . "</p></div>";
 					update_option( 'wp_last_credit', $this->sms->GetCredit() );
 				}
 			} else {

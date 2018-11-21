@@ -15,7 +15,7 @@ if ( $type ) {
 
 	$file_name = date( 'Y-m-d_H-i' );
 
-	$result = $wpdb->get_results( "SELECT `ID`,`date`,`name`,`mobile`,`status`,`group_ID` FROM {$table_prefix}sms_subscribes" );
+	$result = $wpdb->get_results( "SELECT `ID`,`date`,`name`,`mobile`,`status`,`group_ID` FROM {$table_prefix}sms_subscribes", ARRAY_A );
 
 	switch ( $type ) {
 		case 'excel':

@@ -50,7 +50,7 @@ class hostiran extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
 
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
+			return $this->GetCredit();
 		}
 
 		try {
