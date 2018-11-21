@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 = 4.1.1 =
 * Fixed: issue to saving options.
+* Added: Ignore duplicate subscribers if that exist to another group in the import page.
 * Added: aradpayamak.net gateway.
 
 = 4.1.0 =
