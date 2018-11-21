@@ -1,5 +1,14 @@
+<style>
+    body {
+        background-color: #fff;
+    }
+
+    #wpadminbar {
+        display: none;
+    }
+</style>
 <div class="wrap">
-    <h2><?php _e( 'Add Group', 'wp-sms' ); ?></h2>
+    <h2><?php _e( 'Edit Group', 'wp-sms' ); ?></h2>
     <form action="" method="post">
         <table>
             <tr>
@@ -13,9 +22,10 @@
 
             <tr>
                 <td colspan="2">
-                    <a href="admin.php?page=wp-sms-subscribers-group" class="button"><?php _e( 'Back', 'wp-sms' ); ?></a>
+                    <a href="admin.php?page=wp-sms-subscribers-group"
+                       class="button"><?php _e( 'Back', 'wp-sms' ); ?></a>
                     <input type="submit" class="button-primary" name="wp_update_group"
-                           value="<?php _e( 'Add', 'wp-sms' ); ?>"/>
+                           value="<?php _e( 'Edit', 'wp-sms' ); ?>"/>
                 </td>
             </tr>
         </table>
