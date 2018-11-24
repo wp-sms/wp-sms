@@ -1,7 +1,7 @@
 <?php
 
 class sms_new extends WP_SMS {
-	private $wsdl_link = "http://n.sms.ir/SendMessage.ashx";
+	private $wsdl_link = "https://ip.sms.ir/SendMessage.ashx";
 	public $tariff = "http://sms.ir/";
 	public $unitrial = false;
 	public $unit;
