@@ -245,41 +245,6 @@ class WP_SMS_Subscriptions {
 	}
 
 	/**
-	 * Add Group
-	 *
-	 * @param  Not param
-	 *
-	 * @return array
-	 */
-	public function add_group( $name ) {
-		if ( empty( $name ) ) {
-			return array( 'result' => 'error', 'message' => __( 'Name is empty!', 'wp-sms' ) );
-		}
-
-		$result = $this->db->insert(
-			$this->tb_prefix . "sms_subscribes_group",
-			array(
-				'name' => $name,
-			)
-		);
-
-		if ( $result ) {
-
-			/**
-			 * Run hook after adding group.
-			 *
-			 * @since 3.0
-			 *
-			 * @param string $result result query.
-			 */
-			do_action( 'wp_sms_add_group', $result );
-
-			return array( 'result' => 'update', 'message' => __( 'Group successfully added.', 'wp-sms' ) );
-		}
-
-	}
-
-	/**
 	 * Delete Group
 	 *
 	 * @param  Not param
@@ -315,6 +280,52 @@ class WP_SMS_Subscriptions {
 	}
 
 	/**
+	 * Add Group
+	 *
+	 * @param  Not param
+	 *
+	 * @return array
+	 */
+	public function add_group( $name ) {
+		if ( empty( $name ) ) {
+			return array( 'result' => 'error', 'message' => __( 'Name is empty!', 'wp-sms' ) );
+		}
+
+		$table   = $this->tb_prefix . 'sms_subscribes_group';
+		$prepare = $this->db->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
+		$count   = $this->db->get_var( $prepare );
+		if ( $count ) {
+			return array(
+				'result'  => 'error',
+				'message' => sprintf( __( 'Group Name "%s" exists!', 'wp-sms' ), $name )
+			);
+		} else {
+
+			$result = $this->db->insert(
+				$this->tb_prefix . "sms_subscribes_group",
+				array(
+					'name' => $name,
+				)
+			);
+
+			if ( $result ) {
+
+				/**
+				 * Run hook after adding group.
+				 *
+				 * @since 3.0
+				 *
+				 * @param string $result result query.
+				 */
+				do_action( 'wp_sms_add_group', $result );
+
+				return array( 'result' => 'update', 'message' => __( 'Group successfully added.', 'wp-sms' ) );
+			}
+		}
+
+	}
+
+	/**
 	 * Update Group
 	 *
 	 * @param $id
@@ -328,29 +339,48 @@ class WP_SMS_Subscriptions {
 			return;
 		}
 
-		$result = $this->db->update(
-			$this->tb_prefix . "sms_subscribes_group",
-			array(
-				'name' => $name,
-			),
-			array(
-				'ID' => $id
-			)
-		);
+		$table   = $this->tb_prefix . 'sms_subscribes_group';
+		$prepare = $this->db->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
+		$count   = $this->db->get_var( $prepare );
 
-		if ( $result ) {
+		if ( $count ) {
+			return array(
+				'result'  => 'error',
+				'message' => sprintf( __( 'Group Name "%s" exists!', 'wp-sms' ), $name )
+			);
+		} else {
 
-			/**
-			 * Run hook after updating group.
-			 *
-			 * @since 3.0
-			 *
-			 * @param string $result result query.
-			 */
-			do_action( 'wp_sms_update_group', $result );
+			$result = $this->db->update(
+				$this->tb_prefix . "sms_subscribes_group",
+				array(
+					'name' => $name,
+				),
+				array(
+					'ID' => $id
+				)
+			);
 
-			return array( 'result' => 'update', 'message' => __( 'Group successfully updated.', 'wp-sms' ) );
+			if ( $result ) {
+
+				/**
+				 * Run hook after updating group.
+				 *
+				 * @since 3.0
+				 *
+				 * @param string $result result query.
+				 */
+				do_action( 'wp_sms_update_group', $result );
+
+				return array( 'result' => 'update', 'message' => __( 'Group successfully updated.', 'wp-sms' ) );
+			} else {
+				return array(
+					'result'  => 'error',
+					'message' => sprintf( __( 'Group Name "%s" exists!', 'wp-sms' ), $name )
+				);
+			}
 		}
+
+
 	}
 
 	/**

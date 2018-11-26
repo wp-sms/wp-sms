@@ -241,6 +241,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-rest-api',
 			'includes/class-wp-sms-version',
 			'includes/class-wp-sms-privacy',
+			'includes/class-wp-sms-groups-table-edit',
 		);
 
 		foreach ( $files as $file ) {
@@ -627,23 +628,17 @@ class WP_SMS_Plugin {
 	 */
 	public function groups_page() {
 
-		//include_once dirname( __FILE__ ) . "/includes/templates/subscribe/add-group.php";
 		//Add groups
 		if ( isset( $_POST['wp_add_group'] ) ) {
 			$result = $this->subscribe->add_group( $_POST['wp_group_name'] );
 			echo $this->notice_result( $result['result'], $result['message'] );
 		}
-		if ( isset( $_GET['action'] ) == 'edit' ) {
-			// Manage groups
-			if ( isset( $_POST['wp_update_group'] ) ) {
-				$result = $this->subscribe->update_group( $_GET['ID'], $_POST['wp_group_name'] );
-				echo $this->notice_result( $result['result'], $result['message'] );
-			}
-
-			$get_group = isset( $_GET['ID'] ) ? $this->subscribe->get_group( $_GET['ID'] ) : null;
-			include_once dirname( __FILE__ ) . "/includes/templates/subscribe/edit-group.php";
-			return;
+		// Manage groups
+		if ( isset( $_POST['wp_update_group'] ) ) {
+			$result = $this->subscribe->update_group( $_POST['group_id'], $_POST['wp_group_name'] );
+			echo $this->notice_result( $result['result'], $result['message'] );
 		}
+
 		include_once dirname( __FILE__ ) . '/includes/class-wp-sms-groups-table.php';
 
 		//Create an instance of our package class...
@@ -707,4 +702,6 @@ class WP_SMS_Plugin {
 	public function shortcode( $atts, $content = null ) {
 
 	}
+
+
 }

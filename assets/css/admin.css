@@ -170,3 +170,19 @@
     padding: 3px 5px;
     border-radius: 3px;
 }
+
+.wp_sms_subscribers_label {
+    line-height: 19px;
+    left: 0px;
+    top: 6px;
+    width: 81px;
+    height: 19px;
+    display: inline-block;
+}
+
+.wp_sms_subscribers_input_text {
+    left: 81px;
+    top: 0px;
+    width: 379px;
+    height: 28px;
+}

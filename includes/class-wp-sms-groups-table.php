@@ -79,7 +79,7 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 
 		//Build row actions
 		$actions = array(
-			'edit'   => sprintf( '<a href="?page=%s&action=%s&ID=%s&TB_iframe=true&width=600&height=550" class="thickbox">' . __( 'Edit', 'wp-sms' ) . '</a>', $_REQUEST['page'], 'edit', $item['ID'] ),
+			'edit'   => sprintf( '<a href="#" onclick="wp_sms_edit_group(%s, \'%s\')" />' . __( 'Edit', 'wp-sms' ) . '</a>', $item['ID'], $item['name'] ),
 			'delete' => sprintf( '<a href="?page=%s&action=%s&ID=%s">' . __( 'Delete', 'wp-sms' ) . '</a>', $_REQUEST['page'], 'delete', $item['ID'] ),
 		);
 
@@ -90,7 +90,7 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 			/*$1%s*/
 			$item['ID'],
 			/*$2%s*/
-			$this->row_actions( $actions )
+			$this->row_actions( $actions ) . $this->edit_thickbox( $item['ID'], $item['name'] )
 		);
 	}
 
@@ -116,8 +116,8 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 
 	function get_sortable_columns() {
 		$sortable_columns = array(
-			'ID'                => array( 'ID', true ),     //true means it's already sorted
-			'name'              => array( 'name', false ),     //true means it's already sorted
+			'ID'   => array( 'ID', true ),     //true means it's already sorted
+			'name' => array( 'name', false ),     //true means it's already sorted
 		);
 
 		return $sortable_columns;
@@ -136,7 +136,7 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 		//Detect when a bulk action is being triggered...
 		// Search action
 		if ( isset( $_GET['s'] ) ) {
-			$prepare  = $this->db->prepare( "SELECT * from `{$this->tb_prefix}sms_subscribes_group` WHERE name LIKE %s", '%' . $this->db->esc_like( $_GET['s'] ) . '%' );
+			$prepare     = $this->db->prepare( "SELECT * from `{$this->tb_prefix}sms_subscribes_group` WHERE name LIKE %s", '%' . $this->db->esc_like( $_GET['s'] ) . '%' );
 			$this->data  = $this->get_data( $prepare );
 			$this->count = $this->get_total( $prepare );
 		}
@@ -267,6 +267,36 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 		$result = count( $result );
 
 		return $result;
+	}
+
+	//Set Thickbox for Edit
+	function edit_thickbox( $group_id, $group_name ) {
+		$html = '<div id="edit-group-' . $group_id . '" style="display:none;">
+			<div class="form">
+            <form action="" method="post">
+                <table>
+                    <tr>
+                        <td style="padding-top: 10px;">
+                            <label for="wp_group_name"
+                                   class="wp_sms_subscribers_label">' . __( 'Name', 'wp-sms' ) . '</label>
+                            <input type="text" id="wp_group_name" name="wp_group_name" value="' . $group_name . '"
+                                   class="wp_sms_subscribers_input_text"/>
+                                   <input type="hidden"  name="group_id" value="' . $group_id . '"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="padding-top: 20px;">
+                            <input type="submit" class="button-primary" name="wp_update_group"
+                                   value="' . __( 'Edit', 'wp-sms' ) . '"/>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            </div>
+        </div>';
+
+		return $html;
 	}
 
 }
