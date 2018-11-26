@@ -50,7 +50,7 @@ class WP_SMS_Subscriptions {
 	 * @return array
 	 * @internal param param $Not
 	 */
-	public function add_subscriber( $name, $mobile, $group_id = '', $status = '1', $key = nul ) {
+	public function add_subscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
 		if ( $this->is_duplicate( $mobile, $group_id ) ) {
 			return array(
 				'result'  => 'error',
@@ -221,8 +221,9 @@ class WP_SMS_Subscriptions {
 	 *
 	 * @return array|null|object
 	 */
-	public function get_groups() {
-		$result = $this->db->get_results( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`" );
+	public static function get_groups() {
+		global $wpdb, $table_prefix;
+		$result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
 
 		if ( $result ) {
 			return $result;

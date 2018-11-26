@@ -90,7 +90,7 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 			/*$1%s*/
 			$item['ID'],
 			/*$2%s*/
-			$this->row_actions( $actions ) . $this->edit_thickbox( $item['ID'], $item['name'] )
+			$this->row_actions( $actions )
 		);
 	}
 
@@ -267,36 +267,6 @@ class WP_SMS_Subscribers_Groups_List_Table extends WP_List_Table {
 		$result = count( $result );
 
 		return $result;
-	}
-
-	//Set Thickbox for Edit
-	function edit_thickbox( $group_id, $group_name ) {
-		$html = '<div id="edit-group-' . $group_id . '" style="display:none;">
-			<div class="form">
-            <form action="" method="post">
-                <table>
-                    <tr>
-                        <td style="padding-top: 10px;">
-                            <label for="wp_group_name"
-                                   class="wp_sms_subscribers_label">' . __( 'Name', 'wp-sms' ) . '</label>
-                            <input type="text" id="wp_group_name" name="wp_group_name" value="' . $group_name . '"
-                                   class="wp_sms_subscribers_input_text"/>
-                                   <input type="hidden"  name="group_id" value="' . $group_id . '"/>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2" style="padding-top: 20px;">
-                            <input type="submit" class="button-primary" name="wp_update_group"
-                                   value="' . __( 'Edit', 'wp-sms' ) . '"/>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-            </div>
-        </div>';
-
-		return $html;
 	}
 
 }

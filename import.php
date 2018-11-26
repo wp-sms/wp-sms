@@ -23,7 +23,7 @@ $count_duplicate = [];
 $total_submit    = [];
 
 if ( isset( $_POST['wps_import'] ) ) {
-	if ( ! $_FILES['wps-import-file']['error'] ) {
+	if ( isset($_FILES['wps-import-file']) AND ! $_FILES['wps-import-file']['error'] ) {
 
 		$data = new Spreadsheet_Excel_Reader( $_FILES["wps-import-file"]["tmp_name"] );
 

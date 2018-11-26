@@ -264,7 +264,7 @@ class WP_SMS_Settings_Pro {
 		);
 
 		$subscriber          = new WP_SMS_Subscriptions;
-		$groups              = $subscriber->get_groups();
+		$groups              = $subscriber::get_groups();
 		$subscribe_groups[0] = __( 'All', 'wp-sms' );
 
 		if ( $groups ) {

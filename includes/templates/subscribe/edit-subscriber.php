@@ -17,12 +17,12 @@
                            value="<?php echo $get_subscribe->mobile; ?>" class="code"/></td>
             </tr>
 
-			<?php if ( $this->subscribe->get_groups() ): ?>
+			<?php if ( WP_SMS_Subscriptions::get_groups() ): ?>
                 <tr>
                     <td><span class="label_td" for="wpsms_group_name"><?php _e( 'Group', 'wp-sms' ); ?>:</span></td>
                     <td>
                         <select name="wpsms_group_name" id="wpsms_group_name">
-							<?php foreach ( $this->subscribe->get_groups() as $items ): ?>
+							<?php foreach ( WP_SMS_Subscriptions::get_groups() as $items ): ?>
                                 <option value="<?php echo $items->ID; ?>" <?php selected( $get_subscribe->group_ID, $items->ID ); ?>><?php echo $items->name; ?></option>
 							<?php endforeach; ?>
                         </select>
