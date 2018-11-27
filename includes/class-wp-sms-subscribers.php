@@ -92,8 +92,9 @@ class WP_SMS_Subscriptions {
 	 *
 	 * @return array|null|object|void
 	 */
-	public function get_subscriber( $id ) {
-		$result = $this->db->get_row( "SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE ID = '" . $id . "'" );
+	public static function get_subscriber( $id ) {
+		global $wpdb, $table_prefix;
+		$result = $wpdb->get_row( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE ID = '" . $id . "'" );
 
 		if ( $result ) {
 			return $result;

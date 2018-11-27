@@ -1,7 +1,7 @@
 <?php
 
 //Edit Groups Class
-class WP_SMS_Subscribers_Groups_Edit {
+class WP_SMS_Subscribers_Groups_Table_Edit {
 
 	/**
 	 * Wordpress Database
@@ -67,9 +67,9 @@ class WP_SMS_Subscribers_Groups_Edit {
 			'jquery'
 		), null, true );
 
-//Set Values
+		//Set Values
 		if ( 'sms_page_wp-sms-subscribers-group' != $hook ) {
-// Only applies to WPS-Ar-Log page
+			// Only applies to WPS-Ar-Log page
 			return;
 		}
 		wp_enqueue_script( 'wp-sms-edit-group' );
@@ -92,4 +92,4 @@ class WP_SMS_Subscribers_Groups_Edit {
 
 }
 
-new WP_SMS_Subscribers_Groups_Edit();
+new WP_SMS_Subscribers_Groups_Table_Edit();

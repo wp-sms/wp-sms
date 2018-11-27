@@ -84,7 +84,7 @@ class WP_SMS_Subscribers_List_Table extends WP_List_Table {
 
 		//Build row actions
 		$actions = array(
-			'edit'   => sprintf( '<a href="?page=%s&action=%s&ID=%s">' . __( 'Edit', 'wp-sms' ) . '</a>', $_REQUEST['page'], 'edit', $item['ID'] ),
+			'edit'   => sprintf( '<a href="#" onclick="wp_sms_edit_subscriber(%s)">' . __( 'Edit', 'wp-sms' ) . '</a>', $item['ID'] ),
 			'delete' => sprintf( '<a href="?page=%s&action=%s&ID=%s">' . __( 'Delete', 'wp-sms' ) . '</a>', $_REQUEST['page'], 'delete', $item['ID'] ),
 		);
 

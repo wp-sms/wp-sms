@@ -242,6 +242,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-version',
 			'includes/class-wp-sms-privacy',
 			'includes/class-wp-sms-groups-table-edit',
+			'includes/class-wp-sms-subscribers-table-edit',
 		);
 
 		foreach ( $files as $file ) {
@@ -569,7 +570,6 @@ class WP_SMS_Plugin {
 	public function subscribe_page() {
 
 		// Add subscriber page
-		//include_once dirname( __FILE__ ) . "/includes/templates/subscribe/add-subscriber.php";
 
 		if ( isset( $_POST['wp_add_subscribe'] ) ) {
 			$result = $this->subscribe->add_subscriber( $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'] );
@@ -578,13 +578,9 @@ class WP_SMS_Plugin {
 
 		// Edit subscriber page
 		if ( isset( $_POST['wp_update_subscribe'] ) ) {
-			$result = $this->subscribe->update_subscriber( $_GET['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'], $_POST['wpsms_subscribe_status'] );
+			$result = $this->subscribe->update_subscriber( $_POST['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'], $_POST['wpsms_subscribe_status'] );
 			echo $this->notice_result( $result['result'], $result['message'] );
 		}
-
-		//$get_subscribe = $this->subscribe->get_subscriber( $_GET['ID'] );
-		//include_once dirname( __FILE__ ) . "/includes/templates/subscribe/edit-subscriber.php";
-
 
 		// Import subscriber page
 		if ( isset( $_POST['wps_import'] ) ) {
