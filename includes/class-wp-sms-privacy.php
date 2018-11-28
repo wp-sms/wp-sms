@@ -294,7 +294,7 @@ class WP_SMS_Privacy {
                 $result[] = array("FullName" => $user['name'], "Mobile" => $user['mobile'], "RegisterDate" => $user['date']);
 
                 //Remove User data if Delete Request
-                if($_POST['submit'] ==__('Delete')) $wpdb->delete( $wpdb->prefix.'sms_subscribes', array( 'ID' => $user['ID'] ), array( '%d' ) );;
+                if($_POST['submit'] ==__('Delete')) $wpdb->delete( $wpdb->prefix.'sms_subscribes', array( 'ID' => $user['ID'] ), array( '%d' ) );
             }
         }
 
