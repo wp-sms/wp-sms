@@ -1,8 +1,8 @@
 <?php
 
 class smsglobal extends WP_SMS {
-	private $wsdl_link = "http://www.smsglobal.com/mobileworks/soapserver.php?wsdl";
-	public $tariff = "http://www.smsglobal.com/global/en/sms/pricing.php";
+	private $wsdl_link = "https://api.smsglobal.com/";
+	public $tariff = "https://api.smsglobal.com/v2/";
 	public $unitrial = false;
 	public $unit;
 	public $flash = "enable";
@@ -10,14 +10,14 @@ class smsglobal extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "61xxxxxxxxx";
-		ini_set( "soap.wsdl_cache_enabled", "0" );
+		$this->validateNumber = "The number starting with country code.";
+		$this->has_key        = true;
 	}
 
 	public function SendSMS() {
 		// Check gateway credit
 		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
+			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
 		}
 
 		/**
@@ -47,56 +47,71 @@ class smsglobal extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		$client           = new SoapClient( $this->wsdl_link );
-		$validation_login = $client->apiValidateLogin( $this->username, $this->password );
-		$xml_praser       = xml_parser_create();
-		xml_parse_into_struct( $xml_praser, $validation_login, $xml_data, $xml_index );
-		xml_parser_free( $xml_praser );
-		$ticket_id = $xml_data[ $xml_index['TICKET'][0] ]['value'];
-		$result    = $client->apiSendSms( $ticket_id, $this->from, implode( ',', $this->to ), $this->msg, 'text', '0', '0' );
+		$body = array(
+			'destination'      => $this->to,
+			'message' => $this->msg,
+			'origin'    => $this->from,
+		);
 
-		if ( $result ) {
+		$response = wp_remote_post( $this->wsdl_link . 'v2/sms', [
+			'headers' => array(
+				'Authorization' => 'MAC id="' . $this->has_key . ', ts="' . time() . '", nonce="' . base64_encode( "$this->username:$this->has_key" ) . '", mac="base64-encoded-hash"',
+				'Accept'        => 'application/json',
+				'Content-Type'  => 'application/json'
+			),
+			'body'    => json_encode( $body )
+		] );
+
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
+		}
+
+		$result        = json_decode( $response['body'] );
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( $response_code == '200' ) {
 			$this->InsertToDB( $this->from, $this->msg, $this->to );
 
 			/**
 			 * Run hook after send sms.
 			 *
 			 * @since 2.4
-			 *
-			 * @param string $result result output.
 			 */
-			do_action( 'wp_sms_send', $result );
+			do_action( 'wp_sms_send', $response['body'] );
 
 			return $result;
+		} else {
+			return new WP_Error( 'send-sms', print_r( $result->error, 1 ) );
 		}
-
-		return new WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
-		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+		if ( ! $this->username && ! $this->has_key ) {
+			return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
-		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+		$response = wp_remote_get( $this->wsdl_link . 'v2/user/credit-balance', [
+			'headers' => array(
+				'Authorization' => 'MAC id="' . $this->has_key . ', ts="' . time() . '", nonce="' . base64_encode( "$this->username:$this->has_key" ) . '", mac="base64-encoded-hash"',
+				'Accept'        => 'application/json',
+				'Content-Type'  => 'application/json'
+			)
+		] );
+
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
-		try {
-			$client = new SoapClient( $this->wsdl_link );
-		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+		$result        = json_decode( $response['body'] );
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( $response_code == '200' ) {
+			return $result->balance;
+		} else {
+			return new WP_Error( 'credit', $result->error->message );
 		}
-
-		$validation_login = $client->apiValidateLogin( $this->username, $this->password );
-		$xml_praser       = xml_parser_create();
-		xml_parse_into_struct( $xml_praser, $validation_login, $xml_data, $xml_index );
-		xml_parser_free( $xml_praser );
-		$ticket_id  = $xml_data[ $xml_index['TICKET'][0] ]['value'];
-		$credit     = $client->apiBalanceCheck( $ticket_id, 'IR' );
-		$xml_credit = simplexml_load_string( $credit );
-
-		return (string) $xml_credit->credit;
 	}
 }
