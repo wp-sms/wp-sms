@@ -564,17 +564,4 @@ class WP_SMS_Plugin {
 		include_once dirname( __FILE__ ) . '/includes/templates/wp-sms-admin-newsletter.php';
 	}
 
-	/**
-	 * Shortcodes plugin
-	 *
-	 * @param $atts
-	 * @param null $content
-	 *
-	 * @internal param param $Not
-	 */
-	public function shortcode( $atts, $content = null ) {
-
-	}
-
-
 }
