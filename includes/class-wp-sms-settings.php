@@ -111,6 +111,7 @@ class WP_SMS_Settings {
 			'feature'       => __( 'Features', 'wp-sms' ),
 			'notifications' => __( 'Notifications', 'wp-sms' ),
 			'integration'   => __( 'Integration', 'wp-sms' ),
+			'style'         => __( 'Style', 'wp-sms' ),
 		);
 
 		return $tabs;
@@ -550,6 +551,20 @@ class WP_SMS_Settings {
 						          '<code>%edd_first%</code>',
 						          '<code>%edd_last%</code>'
 					          )
+				),
+			) ),
+			// Integration  tab
+			'style'   => apply_filters( 'wp_sms_style_settings', array(
+				'style'                     => array(
+					'id'   => 'style',
+					'name' => __( 'Style', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'disable_style_in_front'                      => array(
+					'id'      => 'disable_style_in_front',
+					'name'    => __( 'Disable Frontend Style', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'desc'    => __( 'Disable loading Style from Frontend.', 'wp-sms' )
 				),
 			) ),
 		) );

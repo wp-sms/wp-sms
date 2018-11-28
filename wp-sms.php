@@ -302,7 +302,10 @@ class WP_SMS_Plugin {
 	 */
 	public function front_assets() {
 		wp_register_style( 'wpsms-subscribe', plugin_dir_url( __FILE__ ) . 'assets/css/subscribe.css', true, '1.1' );
-		wp_enqueue_style( 'wpsms-subscribe' );
+		//Check if Disable Style in frontend is active or not
+		if ( ! isset( get_option( 'wpsms_settings' )['disable_style_in_front'] ) ) {
+			wp_enqueue_style( 'wpsms-subscribe' );
+		}
 	}
 
 	/**
