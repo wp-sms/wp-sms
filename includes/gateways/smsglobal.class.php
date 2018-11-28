@@ -48,9 +48,9 @@ class smsglobal extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$body = array(
-			'destination'      => $this->to,
-			'message' => $this->msg,
-			'origin'    => $this->from,
+			'destination' => $this->to,
+			'message'     => $this->msg,
+			'origin'      => $this->from,
 		);
 
 		$response = wp_remote_post( $this->wsdl_link . 'v2/sms', [
