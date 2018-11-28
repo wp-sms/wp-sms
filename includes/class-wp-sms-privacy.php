@@ -134,10 +134,6 @@ class WP_SMS_Privacy {
      * Show MetaBox System
      */
     public function show_page_privacy() {
-        global $hook_suffix;
-
-        /* enable add_meta_boxes function in this page. */
-        do_action( 'add_meta_boxes', $hook_suffix );
         ?>
         <div id="<?php echo $this->metabox; ?>" class="wrap privacy_page">
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
