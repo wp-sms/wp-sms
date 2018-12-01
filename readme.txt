@@ -225,13 +225,17 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
+* Added: The new option for disabling the WP-SMS CSS in the theme.
+* Improved: Admin form styles, we used the ThickBox for managing forms and metabox style for send SMS form.
 * Improved: Some queries to get data.
 * Improved: The export subscriber issue.
+* Updated: The SMS Global gateway to latest version of API.
 
 = 4.1.1 =
-* Fixed: issue to saving options.
+* Fixed: Issue to saving options.
 * Added: Ignore duplicate subscribers if that exist to another group in the import page.
-* Added: aradpayamak.net gateway.
+* Added: Aradpayamak.net gateway.
+* Updated: The styles of admin forms.
 
 = 4.1.0 =
 * Added: a new checkbox in the SMS subscription form for GDPR compliance.
