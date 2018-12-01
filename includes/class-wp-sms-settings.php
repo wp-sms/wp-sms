@@ -194,32 +194,6 @@ class WP_SMS_Settings {
 			'disable' => __( 'Disable', 'wp-sms' )
 		);
 
-		$newsletter_gdpr        = array();
-
-		// Get GDPR Options
-		if ( empty( $wpsms_option['gdpr_compliance'] ) or ( isset( $wpsms_option['gdpr_compliance'] ) and ! $wpsms_option['gdpr_compliance'] ) ) {
-			$newsletter_gdpr = array(
-				'id'   => 'gdpr_notify',
-				'name' => __( 'Not active', 'wp-sms' ),
-				'type' => 'notice',
-				'desc' => __( 'GDPR should be enable to run this tab', 'wp-sms' ),
-			);
-		} else {
-			$newsletter_gdpr['newsletter_form_gdpr_text']             = array(
-				'id'   => 'newsletter_form_gdpr_text',
-				'name' => __( 'Confirmation text', 'wp-sms' ),
-				'type' => 'textarea'
-			);
-			$newsletter_gdpr['newsletter_form_gdpr_confirm_checkbox'] = array(
-				'id'      => 'newsletter_form_gdpr_confirm_checkbox',
-				'name'    => __( 'Confirmation Checkbox status', 'wp-sms' ),
-				'type'    => 'select',
-				'options' => array( 'checked' => 'Checked', 'unchecked' => 'Unchecked' ),
-				'desc'    => __( 'Checked or Unchecked GDPR checkbox as default form load.', 'wp-sms' )
-			);
-		}
-
-
 		$settings = apply_filters( 'wp_sms_registered_settings', array(
 			// General tab
 			'general'       => apply_filters( 'wp_sms_general_settings', array(
@@ -416,12 +390,6 @@ class WP_SMS_Settings {
 					'name' => __( 'Maximum number', 'wp-sms' ),
 					'type' => 'number'
 				),
-				'gdpr'                            => array(
-					'id'   => 'gdpr',
-					'name' => __( 'GDPR Compliance', 'wp-sms' ),
-					'type' => 'header'
-				),
-				$newsletter_gdpr,
 				//Style Setting
 				'style'                           => array(
 					'id'   => 'style',
@@ -659,6 +627,36 @@ class WP_SMS_Settings {
 				),
 			) ),
 		) );
+
+		// Check the GDPR is enabled.
+		if ( isset( $wpsms_option['gdpr_compliance'] ) and $wpsms_option['gdpr_compliance'] ) {
+			$settings['newsletter']['newsletter_gdpr'] = array(
+				'id'   => 'newsletter_gdpr',
+				'name' => __( 'GDPR Compliance', 'wp-sms' ),
+				'type' => 'header'
+			);
+
+			$settings['newsletter']['newsletter_form_gdpr_text'] = array(
+				'id'   => 'newsletter_form_gdpr_text',
+				'name' => __( 'Confirmation text', 'wp-sms' ),
+				'type' => 'textarea'
+			);
+
+			$settings['newsletter']['newsletter_form_gdpr_confirm_checkbox'] = array(
+				'id'      => 'newsletter_form_gdpr_confirm_checkbox',
+				'name'    => __( 'Confirmation Checkbox status', 'wp-sms' ),
+				'type'    => 'select',
+				'options' => array( 'checked' => 'Checked', 'unchecked' => 'Unchecked' ),
+				'desc'    => __( 'Checked or Unchecked GDPR checkbox as default form load.', 'wp-sms' )
+			);
+		} else {
+			$settings['newsletter']['newsletter_gdpr'] = array(
+				'id'   => 'gdpr_notify',
+				'name' => __( 'GDPR Compliance', 'wp-sms' ),
+				'type' => 'notice',
+				'desc' => __( 'To get more option for GDPR, you should enable that in the general tab.', 'wp-sms' ),
+			);
+		}
 
 		return $settings;
 	}
