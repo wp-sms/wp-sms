@@ -9,7 +9,8 @@
 
         <div class="wpsms-subscribe-form">
             <label><?php _e( 'Your mobile', 'wp-sms' ); ?>:</label>
-            <input id="wpsms-mobile" type="text" placeholder="<?php echo $instance['mobile_field_placeholder']; ?>" class="wpsms-input"/>
+            <input id="wpsms-mobile" type="text" placeholder="<?php echo $instance['mobile_field_placeholder']; ?>"
+                   class="wpsms-input"/>
         </div>
 
 		<?php if ( $instance['show_group'] ) { ?>
@@ -25,7 +26,8 @@
 
         <div class="wpsms-subscribe-form">
             <label>
-                <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
+                <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe"
+                       checked="checked"/>
 				<?php _e( 'Subscribe', 'wp-sms' ); ?>
             </label>
 
@@ -34,23 +36,29 @@
 				<?php _e( 'Unsubscribe', 'wp-sms' ); ?>
             </label>
         </div>
-        <?php if (isset($wpsms_option['gdpr_compliance']) and $wpsms_option['gdpr_compliance'] ==1) { ?>
-		<?php if ( $instance['gdpr_compliance'] ) { ?>
-            <div class="wpsms-subscribe-form">
-                <label><input id="wpsms-gdpr-confirmation" type="checkbox"> <?php echo $instance['gdpr_confirmation_text']; ?></label>
-            </div>
-		<?php } ?>
+		<?php if ( isset( $wpsms_option['gdpr_compliance'] ) and $wpsms_option['gdpr_compliance'] == 1 ) { ?>
+			<?php if ( $instance['gdpr_compliance'] ) { ?>
+                <div class="wpsms-subscribe-form">
+                    <label><input id="wpsms-gdpr-confirmation"
+                                  type="checkbox"> <?php echo $instance['gdpr_confirmation_text']; ?></label>
+                </div>
+			<?php } ?>
 		<?php } ?>
 
         <button class="wpsms-button" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
     </div>
-
+	<?php if ( empty( $wpsms_option['disable_style_in_front'] ) or ( isset( $wpsms_option['disable_style_in_front'] ) and ! $wpsms_option['disable_style_in_front'] ) ): ?>
     <div id="wpsms-step-2">
-        <div class="wpsms-subscribe-form">
-            <label><?php _e( 'Activation code:', 'wp-sms' ); ?></label>
-            <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>" class="wpsms-input"/>
+		<?php else: ?>
+        <div id="wpsms-step-2" style="display: none;">
+			<?php endif; ?>
+
+            <div class="wpsms-subscribe-form">
+                <label><?php _e( 'Activation code:', 'wp-sms' ); ?></label>
+                <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>"
+                       class="wpsms-input"/>
+            </div>
+            <button class="wpsms-button" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
         </div>
-        <button class="wpsms-button" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
+        <input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
     </div>
-    <input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
-</div>
