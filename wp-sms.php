@@ -244,6 +244,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-groups-table-edit',
 			'includes/class-wp-sms-subscribers-table-edit',
 			'includes/class-wp-sms-send',
+			'includes/class-wp-sms-shortcode',
 		);
 
 		foreach ( $files as $file ) {

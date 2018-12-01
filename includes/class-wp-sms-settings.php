@@ -108,10 +108,10 @@ class WP_SMS_Settings {
 		$tabs = array(
 			'general'       => __( 'General', 'wp-sms' ),
 			'gateway'       => __( 'Gateway', 'wp-sms' ),
+			'newsletter'    => __( 'SMS Newsletter', 'wp-sms' ),
 			'feature'       => __( 'Features', 'wp-sms' ),
 			'notifications' => __( 'Notifications', 'wp-sms' ),
 			'integration'   => __( 'Integration', 'wp-sms' ),
-			'style'         => __( 'Style', 'wp-sms' ),
 		);
 
 		return $tabs;
@@ -187,10 +187,38 @@ class WP_SMS_Settings {
 	 * @return          array Fields
 	 */
 	public function get_registered_settings() {
+		global $wpsms_option;
+
 		$options = array(
 			'enable'  => __( 'Enable', 'wp-sms' ),
 			'disable' => __( 'Disable', 'wp-sms' )
 		);
+
+		$newsletter_gdpr        = array();
+
+		// Get GDPR Options
+		if ( empty( $wpsms_option['gdpr_compliance'] ) or ( isset( $wpsms_option['gdpr_compliance'] ) and ! $wpsms_option['gdpr_compliance'] ) ) {
+			$newsletter_gdpr = array(
+				'id'   => 'gdpr_notify',
+				'name' => __( 'Not active', 'wp-sms' ),
+				'type' => 'notice',
+				'desc' => __( 'GDPR should be enable to run this tab', 'wp-sms' ),
+			);
+		} else {
+			$newsletter_gdpr['newsletter_form_gdpr_text']             = array(
+				'id'   => 'newsletter_form_gdpr_text',
+				'name' => __( 'Confirmation text', 'wp-sms' ),
+				'type' => 'textarea'
+			);
+			$newsletter_gdpr['newsletter_form_gdpr_confirm_checkbox'] = array(
+				'id'      => 'newsletter_form_gdpr_confirm_checkbox',
+				'name'    => __( 'Confirmation Checkbox status', 'wp-sms' ),
+				'type'    => 'select',
+				'options' => array( 'checked' => 'Checked', 'unchecked' => 'Unchecked' ),
+				'desc'    => __( 'Checked or Unchecked GDPR checkbox as default form load.', 'wp-sms' )
+			);
+		}
+
 
 		$settings = apply_filters( 'wp_sms_registered_settings', array(
 			// General tab
@@ -328,6 +356,83 @@ class WP_SMS_Settings {
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms' )
+				),
+			) ),
+
+			// SMS Newsletter tab
+			'newsletter'    => apply_filters( 'wp_sms_gateway_settings', array(
+				// SMS Newsletter
+				'newsletter_title'                => array(
+					'id'   => 'newsletter_title',
+					'name' => __( 'SMS Newsletter', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'newsletter_form_groups'          => array(
+					'id'   => 'newsletter_form_groups',
+					'name' => __( 'Show Groups', 'wp-sms' ),
+					'type' => 'checkbox',
+					'desc' => __( 'Enable showing Groups on Form.', 'wp-sms' )
+				),
+				'newsletter_form_verify'          => array(
+					'id'   => 'newsletter_form_verify',
+					'name' => __( 'Verify Subscriber', 'wp-sms' ),
+					'type' => 'checkbox',
+					'desc' => __( 'Verified subscribe with the activation code', 'wp-sms' )
+				),
+				'welcome'                         => array(
+					'id'   => 'welcome',
+					'name' => __( 'Welcome SMS', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'newsletter_form_welcome'         => array(
+					'id'   => 'newsletter_form_welcome',
+					'name' => __( 'Status', 'wp-sms' ),
+					'type' => 'checkbox',
+					'desc' => __( 'Enable or Disable welcome SMS.', 'wp-sms' )
+				),
+				'newsletter_form_welcome_text'    => array(
+					'id'   => 'newsletter_form_welcome_text',
+					'name' => __( 'SMS text', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => sprintf( __( 'Subscribe name: %s, Subscribe mobile: %s', 'wp-sms' ), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>' )
+				),
+				'mobile_terms'                    => array(
+					'id'   => 'mobile_terms',
+					'name' => __( 'Mobile Number Terms', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'mobile_terms_field_place_holder' => array(
+					'id'   => 'mobile_terms_field_place_holder',
+					'name' => __( 'Field Placeholder', 'wp-sms' ),
+					'type' => 'text'
+				),
+				'mobile_terms_minimum'            => array(
+					'id'   => 'mobile_terms_minimum',
+					'name' => __( 'Minimum number', 'wp-sms' ),
+					'type' => 'number'
+				),
+				'mobile_terms_maximum'            => array(
+					'id'   => 'mobile_terms_maximum',
+					'name' => __( 'Maximum number', 'wp-sms' ),
+					'type' => 'number'
+				),
+				'gdpr'                            => array(
+					'id'   => 'gdpr',
+					'name' => __( 'GDPR Compliance', 'wp-sms' ),
+					'type' => 'header'
+				),
+				$newsletter_gdpr,
+				//Style Setting
+				'style'                           => array(
+					'id'   => 'style',
+					'name' => __( 'Style', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'disable_style_in_front'          => array(
+					'id'   => 'disable_style_in_front',
+					'name' => __( 'Disable Frontend Style', 'wp-sms' ),
+					'type' => 'checkbox',
+					'desc' => __( 'Disable loading Style from Frontend.', 'wp-sms' )
 				),
 			) ),
 			// Feature tab
@@ -551,20 +656,6 @@ class WP_SMS_Settings {
 						          '<code>%edd_first%</code>',
 						          '<code>%edd_last%</code>'
 					          )
-				),
-			) ),
-			// Integration  tab
-			'style'   => apply_filters( 'wp_sms_style_settings', array(
-				'style'                     => array(
-					'id'   => 'style',
-					'name' => __( 'Style', 'wp-sms' ),
-					'type' => 'header'
-				),
-				'disable_style_in_front'                      => array(
-					'id'      => 'disable_style_in_front',
-					'name'    => __( 'Disable Frontend Style', 'wp-sms' ),
-					'type'    => 'checkbox',
-					'desc'    => __( 'Disable loading Style from Frontend.', 'wp-sms' )
 				),
 			) ),
 		) );
