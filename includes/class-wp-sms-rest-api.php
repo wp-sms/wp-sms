@@ -73,6 +73,38 @@ class WP_SMS_RestApi {
 				),
 			),
 		) );
+
+		//SMS Newsletter
+		register_rest_route( $this->namespace . '/v1', '/newsletter', array(
+			array(
+				'methods'  => WP_REST_Server::CREATABLE,
+				'callback' => array( &$this, 'subscribe' ),
+				'args'     => array(
+					'name'     => array(
+						'required' => true,
+					),
+					'mobile'   => array(
+						'required' => true,
+					),
+					'group_id' => array(
+						'required' => false,
+					),
+				),
+			),
+			array(
+				'methods'  => WP_REST_Server::DELETABLE,
+				'callback' => array( &$this, 'unsubscribe' ),
+				'args'     => array(
+					'name'   => array(
+						'required' => true,
+					),
+					'mobile' => array(
+						'required' => true,
+					),
+				),
+			)
+		) );
+
 	}
 
 	public function add_subscriber( WP_REST_Request $request ) {
@@ -81,6 +113,31 @@ class WP_SMS_RestApi {
 
 		$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
 
+		if ( $data ) {
+			return new WP_REST_Response( $data, 200 );
+		} else {
+			return new WP_Error( 'subscriber', __( 'Could not be added', 'wp-sms' ) );
+		}
+	}
+
+
+	public function subscribe( WP_REST_Request $request ) {
+		//get parameters from request
+		$params = $request->get_params();
+
+		//$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
+		if ( $data ) {
+			return new WP_REST_Response( $data, 200 );
+		} else {
+			return new WP_Error( 'subscriber', __( 'Could not be added', 'wp-sms' ) );
+		}
+	}
+
+	public function unsubscribe( WP_REST_Request $request ) {
+		//get parameters from request
+		$params = $request->get_params();
+
+		//$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
 		if ( $data ) {
 			return new WP_REST_Response( $data, 200 );
 		} else {

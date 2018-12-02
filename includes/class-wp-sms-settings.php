@@ -10,7 +10,7 @@ class WP_SMS_Settings {
 
 	public function __construct() {
 		$this->setting_name = 'wpsms_settings';
-
+		$this->get_settings();
 		$this->options = get_option( $this->setting_name );
 
 		if ( empty( $this->options ) ) {
@@ -42,8 +42,9 @@ class WP_SMS_Settings {
 	 */
 	public function get_settings() {
 		$settings = get_option( $this->setting_name );
-		if ( empty( $settings ) ) {
-			update_option( $this->setting_name, array(//'admin_lang'	=>  'enable',
+		if ( ! $settings ) {
+			update_option( $this->setting_name, array(
+				'rest_api_status' => 1,
 			) );
 		}
 

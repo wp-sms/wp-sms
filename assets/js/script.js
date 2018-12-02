@@ -1,8 +1,12 @@
 jQuery(document).ready(function ($) {
     // Check the GDPR enabled.
-    if ($('#wpsms-gdpr-confirmation').length) {
-        $("#wpsms-submit").attr('disabled', 'disabled');
 
+    if ($('#wpsms-gdpr-confirmation').length) {
+        if ($('#wpsms-gdpr-confirmation').attr('checked')) {
+            $("#wpsms-submit").removeAttr('disabled');
+        } else {
+            $("#wpsms-submit").attr('disabled', 'disabled');
+        }
         $("#wpsms-gdpr-confirmation").click(function () {
             if (this.checked) {
                 $("#wpsms-submit").removeAttr('disabled');
@@ -10,7 +14,6 @@ jQuery(document).ready(function ($) {
                 $("#wpsms-submit").attr('disabled', 'disabled');
             }
         });
-
     }
 
     $("#wpsms-subscribe #wpsms-submit").click(function () {
@@ -80,6 +83,7 @@ jQuery(document).ready(function ($) {
         $.post(ajax_object.ajaxurl, {
             widget_id: $('#wpsms-widget-id').attr('value'),
             action: 'activation_ajax_action',
+            name: subscriber['name'],
             mobile: subscriber['mobile'],
             activation: subscriber['activation'],
             nonce: ajax_object.nonce

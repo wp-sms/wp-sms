@@ -16,12 +16,10 @@ class WP_SMS_Shortcode {
 	 * WP_SMS_Features constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wpdb, $table_prefix;
+		global $wpsms_option, $wpdb, $table_prefix;
 
-		$this->sms       = $sms;
 		$this->db        = $wpdb;
 		$this->tb_prefix = $table_prefix;
-		$this->date      = WP_SMS_CURRENT_DATE;
 		$this->options   = $wpsms_option;
 
 		//add the shortcode [wp-sms-subscriber-form]
@@ -38,9 +36,7 @@ class WP_SMS_Shortcode {
 	 */
 	public function register_shortcode( $atts ) {
 
-		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`" );
-
-		include_once dirname( __FILE__ ) . "/templates/wp-sms-subscribe-form.php";
+		WP_SMS_Plugin::loadNewsLetter();
 	}
 }
 

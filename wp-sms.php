@@ -17,7 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin defines
  */
-define( 'WP_SMS_VERSION', '4.1.1' );
+if ( ! function_exists( 'get_plugin_data' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+$plugin_data = get_plugin_data( __FILE__ );
+
+define( 'WP_SMS_VERSION', $plugin_data['Version'] );
 define( 'WP_SMS_DIR_PLUGIN', plugin_dir_url( __FILE__ ) );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
 define( 'WP_SMS_SITE', 'https://wp-sms-pro.com' );
@@ -564,6 +569,13 @@ class WP_SMS_Plugin {
 	 */
 	public function admin_newsletter() {
 		include_once dirname( __FILE__ ) . '/includes/templates/wp-sms-admin-newsletter.php';
+	}
+
+	public static function loadNewsLetter( $widget_id = null, $instance = null ) {
+		global $wpdb, $table_prefix, $wpsms_option;
+		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
+
+		include_once dirname( __FILE__ ) . "/includes/templates/wp-sms-subscribe-form.php";
 	}
 
 }
