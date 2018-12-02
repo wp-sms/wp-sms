@@ -54,6 +54,8 @@ class WP_SMS_RestApi {
 		$this->tb_prefix     = $table_prefix;
 		$this->namespace     = 'wpsms';
 		$this->subscriptions = new WP_SMS_Subscriptions();
+
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
 	/**
@@ -107,6 +109,24 @@ class WP_SMS_RestApi {
 			)
 		) );
 
+		register_rest_route( $this->namespace . '/v1', '/newsletter/verify', array(
+			array(
+				'methods'  => WP_REST_Server::CREATABLE,
+				'callback' => array( $this, 'verify_subscriber' ),
+				'args'     => array(
+					'name'     => array(
+						'required' => true,
+					),
+					'mobile'   => array(
+						'required' => true,
+					),
+					'group_id' => array(
+						'required' => false,
+					),
+				),
+			)
+		) );
+
 	}
 
 	/**
@@ -136,11 +156,11 @@ class WP_SMS_RestApi {
 		//get parameters from request
 		$params = $request->get_params();
 
-		//$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
-		if ( $data ) { // TODO
+		$data = WP_SMS_Newsletter::Subscribe( $this->subscriptions, $params['name'], $params['mobile'], $params['group_id'] );
+		if ( $data['result'] == 'success' ) {
 			return new WP_REST_Response( $data, 200 );
 		} else {
-			return new WP_Error( 'subscriber', __( 'Could not be added', 'wp-sms' ) );
+			return new WP_Error( 'subscribe', $data['message'] );
 		}
 	}
 
@@ -153,11 +173,28 @@ class WP_SMS_RestApi {
 		//get parameters from request
 		$params = $request->get_params();
 
-		//$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
-		if ( $data ) { // TODO
+		$data = WP_SMS_Newsletter::unSubscribe( $this->subscriptions, $params['name'], $params['mobile'], $params['group_id'] );
+		if ( $data['result'] == 'success' ) {
 			return new WP_REST_Response( $data, 200 );
 		} else {
-			return new WP_Error( 'subscriber', __( 'Could not be added', 'wp-sms' ) );
+			return new WP_Error( 'unsubscribe', $data['message'] );
+		}
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function verify_subscriber( WP_REST_Request $request ) {
+		//get parameters from request
+		$params = $request->get_params();
+
+		$data = WP_SMS_Newsletter::verifySubscriber( $params['name'], $params['mobile'], $params['activation'] );
+		if ( $data['result'] == 'success' ) {
+			return new WP_REST_Response( $data, 200 );
+		} else {
+			return new WP_Error( 'verify_subscriber', $data['message'] );
 		}
 	}
 }
