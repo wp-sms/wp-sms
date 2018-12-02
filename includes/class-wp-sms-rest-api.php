@@ -42,6 +42,9 @@ class WP_SMS_RestApi {
 	 */
 	private $namespace;
 
+	/**
+	 * WP_SMS_RestApi constructor.
+	 */
 	public function __construct() {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
@@ -51,16 +54,15 @@ class WP_SMS_RestApi {
 		$this->tb_prefix     = $table_prefix;
 		$this->namespace     = 'wpsms';
 		$this->subscriptions = new WP_SMS_Subscriptions();
-
-		if ( isset( $this->options['rest_api_status'] ) ) {
-			add_action( 'rest_api_init', array( &$this, 'register_routes' ) );
-		}
 	}
 
+	/**
+	 * Register routes
+	 */
 	public function register_routes() {
 		register_rest_route( $this->namespace . '/v1', '/subscriber/add', array(
 			'methods'  => WP_REST_Server::CREATABLE,
-			'callback' => array( &$this, 'add_subscriber' ),
+			'callback' => array( $this, 'add_subscriber' ),
 			'args'     => array(
 				'name'     => array(
 					'required' => true,
@@ -78,7 +80,7 @@ class WP_SMS_RestApi {
 		register_rest_route( $this->namespace . '/v1', '/newsletter', array(
 			array(
 				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( &$this, 'subscribe' ),
+				'callback' => array( $this, 'subscribe' ),
 				'args'     => array(
 					'name'     => array(
 						'required' => true,
@@ -93,7 +95,7 @@ class WP_SMS_RestApi {
 			),
 			array(
 				'methods'  => WP_REST_Server::DELETABLE,
-				'callback' => array( &$this, 'unsubscribe' ),
+				'callback' => array( $this, 'unsubscribe' ),
 				'args'     => array(
 					'name'   => array(
 						'required' => true,
@@ -107,6 +109,11 @@ class WP_SMS_RestApi {
 
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function add_subscriber( WP_REST_Request $request ) {
 		//get parameters from request
 		$params = $request->get_params();
@@ -120,25 +127,34 @@ class WP_SMS_RestApi {
 		}
 	}
 
-
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function subscribe( WP_REST_Request $request ) {
 		//get parameters from request
 		$params = $request->get_params();
 
 		//$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
-		if ( $data ) {
+		if ( $data ) { // TODO
 			return new WP_REST_Response( $data, 200 );
 		} else {
 			return new WP_Error( 'subscriber', __( 'Could not be added', 'wp-sms' ) );
 		}
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function unsubscribe( WP_REST_Request $request ) {
 		//get parameters from request
 		$params = $request->get_params();
 
 		//$data = $this->subscriptions->add_subscriber( $params['name'], $params['mobile'], $params['group_id'] );
-		if ( $data ) {
+		if ( $data ) { // TODO
 			return new WP_REST_Response( $data, 200 );
 		} else {
 			return new WP_Error( 'subscriber', __( 'Could not be added', 'wp-sms' ) );
