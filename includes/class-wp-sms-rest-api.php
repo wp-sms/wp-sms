@@ -56,104 +56,210 @@ class WP_SMS_RestApi {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function subscribe_api( WP_REST_Request $request ) {
-		// Get parameters from request
-		$params = $request->get_params();
-
-		if ( empty( $params['name'] ) ) {
-			return self::response( new WP_Error( 'subscribe', __( 'Name must be valued!', 'wp-sms' ) ), 400 );
-		}
-
-		if ( empty( $params['mobile'] ) ) {
-			return self::response( new WP_Error( 'subscribe', __( 'Mobile number must be valued!', 'wp-sms' ), 400 ) );
-		}
-
-		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-
-
-		$result = WP_SMS_Api_Newsletter_V1::Subscribe( $params['name'], $params['mobile'], $group_id );
-
-		if ( is_wp_error( $result ) ) {
-			return self::response( $result, 400 );
-		}
-
-		return self::response( $result );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function unsubscribe_api( WP_REST_Request $request ) {
-		// Get parameters from request
-		$params = $request->get_params();
-
-		if ( empty( $params['name'] ) ) {
-			return self::response( new WP_Error( 'unsubscribe', __( 'Name must be valued!', 'wp-sms' ) ), 400 );
-		}
-
-		if ( empty( $params['mobile'] ) ) {
-			return self::response( new WP_Error( 'unsubscribe', __( 'Mobile number must be valued!', 'wp-sms' ), 400 ) );
-		}
-
-		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-
-		$result = WP_SMS_Api_Newsletter_V1::unSubscribe( $params['name'], $params['mobile'], $group_id );
-
-		if ( is_wp_error( $result ) ) {
-			return self::response( $result, 400 );
-		}
-
-		return self::response( $result );
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function verify_subscriber_api( WP_REST_Request $request ) {
-		// Get parameters from request
-		$params = $request->get_params();
-
-		if ( empty( $params['name'] ) ) {
-			return self::response( new WP_Error( 'verify_subscriber', __( 'Name must be valued!', 'wp-sms' ) ), 400 );
-		}
-
-		if ( empty( $params['mobile'] ) ) {
-			return self::response( new WP_Error( 'verify_subscriber', __( 'Mobile number must be valued!', 'wp-sms' ), 400 ) );
-		}
-
-		if ( empty( $params['activation'] ) ) {
-			return self::response( new WP_Error( 'verify_subscriber', __( 'Activation must be valued!', 'wp-sms' ), 400 ) );
-		}
-
-		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-
-		$result = WP_SMS_Api_Newsletter_V1::verifySubscriber( $params['name'], $params['mobile'], $params['activation'], $group_id );
-
-		if ( is_wp_error( $result ) ) {
-			return self::response( $result, 400 );
-		}
-
-		return self::response( $result );
-	}
-
-	/**
 	 * @param $message
 	 * @param int $status
 	 *
 	 * @return WP_REST_Response
 	 */
 	public static function response( $message, $status = 200 ) {
-		return new WP_REST_Response( $message, $status );
+		if ( $status == 200 ) {
+			$output = array(
+				'message' => $message,
+				'error'   => array(),
+			);
+		} else {
+			$output = array(
+				'error' => array(
+					'code'    => $status,
+					'message' => $message,
+				),
+			);
+		}
+
+		return new WP_REST_Response( $output, $status );
 	}
 
+	/**
+	 * @param $name
+	 * @param $mobile
+	 * @param null $group
+	 *
+	 * @return array|string
+	 */
+	public static function subscribe( $name, $mobile, $group ) {
+
+		global $wpdb, $wpsms_option, $sms;
+
+		// TODO Start - this line should be moved to newsletter class.
+		$db_prepare  = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group );
+		$check_group = $wpdb->get_row( $db_prepare );
+		// TODO End
+
+		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
+			return new WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
+		}
+
+		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
+			// Return response
+			return new WP_Error( 'subscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
+		}
+
+		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
+			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
+				// Return response
+				return new WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
+			}
+		}
+
+		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
+			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
+				// Return response
+				return new WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
+			}
+		}
+
+		if ( isset( $wpsms_option['newsletter_form_verify'] ) AND $wpsms_option['newsletter_form_verify'] AND $wpsms_option['gateway_name'] ) {
+			// Check gateway setting
+			if ( ! $wpsms_option['gateway_name'] ) {
+				// Return response
+				return new WP_Error( 'subscribe', __( 'Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms' ) );
+			}
+
+			$key = rand( 1000, 9999 );
+
+			// Add subscribe to database
+			$result = WP_SMS_Newsletter::addSubscriber( $name, $mobile, $group, '0', $key );
+
+			if ( $result['result'] == 'error' ) {
+				// Return response
+				return new WP_Error( 'subscribe', $result['message'] );
+			} else {
+
+				$sms->to  = array( $mobile );
+				$sms->msg = __( 'Your activation code', 'wp-sms' ) . ': ' . $key;
+				$sms->SendSMS();
+			}
+
+			// Return response
+			return __( 'You will join the newsletter, Activation code sent to your mobile.', 'wp-sms' );
+
+		} else {
+
+			// Add subscribe to database
+			$result = WP_SMS_Newsletter::addSubscriber( $name, $mobile, $group, '1' );
+
+			if ( $result['result'] == 'error' ) {
+				// Return response
+				return new WP_Error( 'subscribe', $result['message'] );
+			}
+
+			return true;
+		}
+	}
+
+	/**
+	 * @param $name
+	 * @param $mobile
+	 * @param null $group
+	 *
+	 * @return array|string
+	 */
+	public static function unSubscribe( $name, $mobile, $group ) {
+		global $wpdb, $table_prefix, $wpsms_option;
+
+		$db_prepare  = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes_group` WHERE `ID` = %d", $group );
+		$check_group = $wpdb->get_row( $db_prepare );
+
+		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
+			return new WP_Error( 'unsubscribe', __( 'The group number is not valid!', 'wp-sms' ) );
+		}
+
+		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
+			// Return response
+			return new WP_Error( 'unsubscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
+		}
+
+		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
+			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
+				// Return response
+				return new WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
+
+			}
+		}
+
+		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
+			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
+				// Return response
+				return new WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
+			}
+		}
+		// Delete subscriber
+		$result = WP_SMS_Newsletter::deleteSubscriberByNumber( $mobile, $group );
+
+		// Check result
+		if ( $result['result'] == 'error' ) {
+			// Return response
+			return new WP_Error( 'unsubscribe', $result['message'] );
+		}
+
+		return __( 'Your subscription was canceled.', 'wp-sms' );
+	}
+
+	/**
+	 * @param $mobile
+	 * @param $name
+	 * @param $activation
+	 *
+	 * @return array|string
+	 */
+	public static function verifySubscriber( $name, $mobile, $activation, $group ) {
+		global $wpsms_option, $sms, $wpdb, $table_prefix;
+
+		// Check the mobile number is string or integer
+		if ( strpos( $mobile, '+' ) !== false ) {
+			$db_prepare = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $group );
+		} else {
+			$db_prepare = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $group );
+		}
+
+		$check_mobile = $wpdb->get_row( $db_prepare );
+
+		if ( isset( $check_mobile ) ) {
+
+			if ( $activation != $check_mobile->activate_key ) {
+				// Return response
+				return new WP_Error( 'verify_subscriber', __( 'Activation code is wrong!', 'wp-sms' ) );
+			}
+
+			// Check the mobile number is string or integer
+			if ( strpos( $mobile, '+' ) !== false ) {
+				$result = $wpdb->update( "{$table_prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile, 'group_ID' => $group ), array( '%d', '%d' ), array( '%s' ) );
+			} else {
+				$result = $wpdb->update( "{$table_prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile, 'group_ID' => $group ), array( '%d', '%d' ), array( '%d' ) );
+			}
+
+			if ( $result ) {
+				// Send welcome message
+				if ( isset( $wpsms_option['newsletter_form_welcome'] ) AND $wpsms_option['newsletter_form_welcome'] ) {
+					$template_vars = array(
+						'%subscribe_name%'   => $name,
+						'%subscribe_mobile%' => $mobile,
+					);
+					$text          = isset( $wpsms_option['newsletter_form_welcome_text'] ) ? $wpsms_option['newsletter_form_welcome_text'] : '';
+					$message       = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $text );
+
+					$sms->to  = array( $mobile );
+					$sms->msg = $message;
+					$sms->SendSMS();
+				}
+
+				// Return response
+				return __( 'Your subscription was successful!', 'wp-sms' );
+			}
+		}
+
+		return new WP_Error( 'verify_subscriber', __( 'Not found the number!', 'wp-sms' ) );
+	}
 }
 
 new WP_SMS_RestApi();
