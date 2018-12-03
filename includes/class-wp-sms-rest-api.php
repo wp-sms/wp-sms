@@ -114,14 +114,14 @@ class WP_SMS_RestApi {
 				'methods'  => WP_REST_Server::CREATABLE,
 				'callback' => array( $this, 'verify_subscriber' ),
 				'args'     => array(
-					'name'     => array(
+					'name'       => array(
 						'required' => true,
 					),
-					'mobile'   => array(
+					'mobile'     => array(
 						'required' => true,
 					),
-					'group_id' => array(
-						'required' => false,
+					'activation' => array(
+						'required' => true,
 					),
 				),
 			)
@@ -158,9 +158,9 @@ class WP_SMS_RestApi {
 
 		$data = WP_SMS_Newsletter::Subscribe( $this->subscriptions, $params['name'], $params['mobile'], $params['group_id'] );
 		if ( $data['result'] == 'success' ) {
-			return new WP_REST_Response( $data, 200 );
+			return new WP_REST_Response( $data, $data['status'] );
 		} else {
-			return new WP_Error( 'subscribe', $data['message'] );
+			return new WP_REST_Response( $data, $data['status'] );
 		}
 	}
 
@@ -175,9 +175,9 @@ class WP_SMS_RestApi {
 
 		$data = WP_SMS_Newsletter::unSubscribe( $this->subscriptions, $params['name'], $params['mobile'], $params['group_id'] );
 		if ( $data['result'] == 'success' ) {
-			return new WP_REST_Response( $data, 200 );
+			return new WP_REST_Response( $data, $data['status'] );
 		} else {
-			return new WP_Error( 'unsubscribe', $data['message'] );
+			return new WP_REST_Response( $data, $data['status'] );
 		}
 	}
 
@@ -192,9 +192,9 @@ class WP_SMS_RestApi {
 
 		$data = WP_SMS_Newsletter::verifySubscriber( $params['name'], $params['mobile'], $params['activation'] );
 		if ( $data['result'] == 'success' ) {
-			return new WP_REST_Response( $data, 200 );
+			return new WP_REST_Response( $data, $data['status'] );
 		} else {
-			return new WP_Error( 'verify_subscriber', $data['message'] );
+			return new WP_REST_Response( $data, $data['status'] );
 		}
 	}
 }

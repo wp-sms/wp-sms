@@ -37,17 +37,13 @@ class WP_SMS_Newsletter {
 	protected $tb_prefix;
 
 
+	/**
+	 * WP_SMS_Newsletter constructor.
+	 */
 	public function __construct() {
-
 
 		// Load scripts
 		add_action( 'wp_enqueue_scripts', array( &$this, 'load_script' ) );
-
-		// Subscribe ajax action
-		add_action( 'wp_ajax_subscribe_ajax_action', array( &$this, 'subscribe_ajax_action_handler' ) );
-
-		// Subscribe activation action
-		add_action( 'wp_ajax_activation_ajax_action', array( &$this, 'activation_ajax_action_handler' ) );
 	}
 
 	/**
@@ -69,7 +65,6 @@ class WP_SMS_Newsletter {
 
 	/**
 	 * @param WP_SMS_Subscriptions $subscriptions
-	 * @param $nonce
 	 * @param $name
 	 * @param $mobile
 	 * @param null $group
@@ -183,7 +178,6 @@ class WP_SMS_Newsletter {
 
 	/**
 	 * @param WP_SMS_Subscriptions $subscriptions
-	 * @param $nonce
 	 * @param $name
 	 * @param $mobile
 	 * @param null $group
@@ -193,8 +187,8 @@ class WP_SMS_Newsletter {
 	public static function unSubscribe( WP_SMS_Subscriptions $subscriptions, $name, $mobile, $group = null ) {
 		global $wpsms_option;
 
-		$errors = array();
-		$errors = array();
+		$errors  = array();
+		$success = array();
 
 		if ( ! $name or ! $mobile ) {
 			// Return response
@@ -257,6 +251,13 @@ class WP_SMS_Newsletter {
 	}
 
 
+	/**
+	 * @param $mobile
+	 * @param $name
+	 * @param $activation
+	 *
+	 * @return array
+	 */
 	public static function verifySubscriber( $mobile, $name, $activation ) {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
