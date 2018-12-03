@@ -53,8 +53,7 @@ class WP_SMS_Newsletter {
 
 		// Ajax params
 		wp_localize_script( 'ajax-script', 'ajax_object', array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			'nonce'   => wp_create_nonce( 'wpsms-nonce' )
+			'ajaxurl' => get_rest_url( null, 'wpsms/v1/newsletter' )
 		) );
 	}
 
@@ -115,7 +114,7 @@ class WP_SMS_Newsletter {
 	 * @return array
 	 */
 	public static function addSubscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
-		global $wpdb, $tabel_prefix;
+		global $wpdb, $table_prefix;
 
 		if ( self::isDuplicate( $mobile, $group_id ) ) {
 			return array(
@@ -125,7 +124,7 @@ class WP_SMS_Newsletter {
 		}
 
 		$result = $wpdb->insert(
-			$tabel_prefix . "sms_subscribes",
+			$table_prefix . "sms_subscribes",
 			array(
 				'date'         => WP_SMS_CURRENT_DATE,
 				'name'         => $name,
@@ -207,6 +206,38 @@ class WP_SMS_Newsletter {
 	public function delete_subscriber_by_number( $mobile, $group_id = null ) {
 		$result = $this->db->delete(
 			$this->tb_prefix . "sms_subscribes",
+			array(
+				'mobile'   => $mobile,
+				'group_id' => $group_id,
+			)
+		);
+
+		if ( ! $result ) {
+			return array( 'result' => 'error', 'message' => __( 'The subscribe does not exist.', 'wp-sms' ) );
+		}
+
+		/**
+		 * Run hook after deleting subscribe.
+		 *
+		 * @since 3.0
+		 *
+		 * @param string $result result query.
+		 */
+		do_action( 'wp_sms_delete_subscriber', $result );
+
+		return array( 'result' => 'update', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
+	}
+
+	/**
+	 * @param $mobile
+	 * @param null $group_id
+	 *
+	 * @return array
+	 */
+	public static function deleteSubscriberByNumber( $mobile, $group_id = null ) {
+		global $wpdb, $table_prefix;
+		$result = $wpdb->delete(
+			$table_prefix . "sms_subscribes",
 			array(
 				'mobile'   => $mobile,
 				'group_id' => $group_id,
@@ -484,8 +515,8 @@ class WP_SMS_Newsletter {
 	 * @return mixed
 	 */
 	public static function isDuplicate( $mobile_number, $group_id = null, $id = null ) {
-		global $wpdb, $tabel_prefix;
-		$sql = "SELECT * FROM `{$tabel_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
+		global $wpdb, $table_prefix;
+		$sql = "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
 
 		if ( $group_id ) {
 			$sql .= " AND group_id = '" . $group_id . "'";
