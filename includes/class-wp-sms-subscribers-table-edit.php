@@ -36,8 +36,8 @@ class WP_SMS_Subscribers_Subscribers_Table_Edit {
 		$subscriber_id = isset( $_GET['subscriber_id'] ) ? $_GET['subscriber_id'] : null;
 
 		//Load subscriber
-		$subscriber = WP_SMS_Subscriptions::get_subscriber( $subscriber_id );
-		$groups     = WP_SMS_Subscriptions::get_groups();
+		$subscriber = WP_SMS_Newsletter::get_subscriber( $subscriber_id );
+		$groups     = WP_SMS_Newsletter::get_groups();
 
 		$html = '<form action="" method="post">
 					<input type="hidden" name="ID" value="' . $subscriber_id . '" />

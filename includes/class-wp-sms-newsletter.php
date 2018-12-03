@@ -10,17 +10,11 @@
 class WP_SMS_Newsletter {
 
 	/**
-	 * SMS object
-	 * @var object
-	 */
-	public $sms;
-
-	/**
-	 * Options
+	 * Wordpress Dates
 	 *
 	 * @var string
 	 */
-	protected $option;
+	public $date;
 
 	/**
 	 * Wordpress Database
@@ -36,14 +30,16 @@ class WP_SMS_Newsletter {
 	 */
 	protected $tb_prefix;
 
-
 	/**
-	 * WP_SMS_Newsletter constructor.
+	 * Constructors
 	 */
 	public function __construct() {
+		global $wpdb, $table_prefix;
 
-		// Load scripts
-		add_action( 'wp_enqueue_scripts', array( &$this, 'load_script' ) );
+		$this->date      = WP_SMS_CURRENT_DATE;
+		$this->db        = $wpdb;
+		$this->tb_prefix = $table_prefix;
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_script' ) );
 	}
 
 	/**
@@ -62,261 +58,492 @@ class WP_SMS_Newsletter {
 		) );
 	}
 
-
 	/**
-	 * @param WP_SMS_Subscriptions $subscriptions
+	 * Add Subscriber
+	 *
 	 * @param $name
 	 * @param $mobile
-	 * @param null $group
+	 * @param string $group_id
+	 * @param string $status
+	 * @param $key
 	 *
 	 * @return array
+	 * @internal param param $Not
 	 */
-	public static function Subscribe( WP_SMS_Subscriptions $subscriptions, $name, $mobile, $group = null ) {
-		global $wpsms_option, $sms;
-
-		$errors  = array();
-		$success = array();
-
-		if ( ! $name or ! $mobile ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Please complete all fields', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
+	public function add_subscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
+		if ( $this->is_duplicate( $mobile, $group_id ) ) {
+			return array(
+				'result'  => 'error',
+				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
+			);
 		}
 
-		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Please enter a valid mobile number', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
-			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] );
-				$errors['status']  = 400;
-
-				return $errors;
-			}
-		}
-
-		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
-			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] );
-				$errors['status']  = 400;
-
-				return $errors;
-			}
-		}
-
-		if ( isset( $wpsms_option['newsletter_form_verify'] ) AND $wpsms_option['newsletter_form_verify'] AND $wpsms_option['gateway_name'] ) {
-
-			// Check gateway setting
-			if ( ! $wpsms_option['gateway_name'] ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = __( 'Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms' );
-				$errors['status']  = 400;
-
-				return $errors;
-			}
-			$key = rand( 1000, 9999 );
-			// Add subscribe to database
-			$result = $subscriptions->add_subscriber( $name, $mobile, $group, '0', $key );
-
-			if ( $result['result'] == 'error' ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = $result['message'];
-				$errors['status']  = 400;
-
-				return $errors;
-			} else {
-
-				$sms->to  = array( $mobile );
-				$sms->msg = __( 'Your activation code', 'wp-sms' ) . ': ' . $key;
-				$sms->SendSMS();
-			}
-
-			// Return response
-			$success['result']  = 'success';
-			$success['message'] = __( 'You will join the newsletter, Activation code sent to your mobile.', 'wp-sms' );
-			$success['action']  = 'activation';
-			$success['status']  = 400;
-
-			return $success;
-
-		} else {
-
-			// Add subscribe to database
-			$result = $subscriptions->add_subscriber( $name, $mobile, $group, '1' );
-
-			if ( $result['result'] == 'error' ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = $result['message'];
-				$errors['status']  = 400;
-
-				return $errors;
-			} else {
-				$success['result']  = 'success';
-				$success['message'] = $result['message'];
-				$success['status']  = 400;
-
-				return $success;
-			}
-		}
-	}
-
-	/**
-	 * @param WP_SMS_Subscriptions $subscriptions
-	 * @param $name
-	 * @param $mobile
-	 * @param null $group
-	 *
-	 * @return array
-	 */
-	public static function unSubscribe( WP_SMS_Subscriptions $subscriptions, $name, $mobile, $group = null ) {
-		global $wpsms_option;
-
-		$errors  = array();
-		$success = array();
-
-		if ( ! $name or ! $mobile ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Please complete all fields', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Please enter a valid mobile number', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
-			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] );
-				$errors['status']  = 400;
-
-				return $errors;
-			}
-		}
-
-		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
-			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
-				// Return response
-				$errors['result']  = 'error';
-				$errors['message'] = sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] );
-				$errors['status']  = 400;
-
-				return $errors;
-			}
-		}
-		// Delete subscriber
-		$result = $subscriptions->delete_subscriber_by_number( $mobile, $group );
-
-		// Check result
-		if ( $result['result'] == 'error' ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = $result['message'];
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		// Return response
-		$success['result']  = 'success';
-		$success['message'] = __( 'Your subscription was canceled.', 'wp-sms' );
-		$success['status']  = 400;
-
-		return $success;
-	}
-
-
-	/**
-	 * @param $mobile
-	 * @param $name
-	 * @param $activation
-	 *
-	 * @return array
-	 */
-	public static function verifySubscriber( $mobile, $name, $activation ) {
-		global $wpsms_option, $sms, $wpdb, $table_prefix;
-
-		$errors  = array();
-		$success = array();
-
-		if ( ! $mobile ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Mobile number is missing!', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		if ( ! $activation ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Please enter the activation code!', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		$check_mobile = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE `mobile` = '%s'", $mobile ) );
-
-		if ( $activation != $check_mobile->activate_key ) {
-			// Return response
-			$errors['result']  = 'error';
-			$errors['message'] = __( 'Activation code is wrong!', 'wp-sms' );
-			$errors['status']  = 400;
-
-			return $errors;
-		}
-
-		$result = $wpdb->update( "{$table_prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile ) );
+		$result = $this->db->insert(
+			$this->tb_prefix . "sms_subscribes",
+			array(
+				'date'         => $this->date,
+				'name'         => $name,
+				'mobile'       => $mobile,
+				'status'       => $status,
+				'activate_key' => $key,
+				'group_ID'     => $group_id,
+			)
+		);
 
 		if ( $result ) {
-			// Send welcome message
-			if ( isset( $wpsms_option['newsletter_form_welcome'] ) AND $wpsms_option['newsletter_form_welcome'] ) {
-				$template_vars = array(
-					'%subscribe_name%'   => $name,
-					'%subscribe_mobile%' => $mobile,
-				);
-				$text          = isset( $wpsms_option['newsletter_form_welcome_text'] ) ? $wpsms_option['newsletter_form_welcome_text'] : '';
-				$message       = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $text );
+			/**
+			 * Run hook after adding subscribe.
+			 *
+			 * @since 3.0
+			 *
+			 * @param string $name name.
+			 * @param string $mobile mobile.
+			 */
+			do_action( 'wp_sms_add_subscriber', $name, $mobile );
 
-				$sms->to  = array( $mobile );
-				$sms->msg = $message;
-				$sms->SendSMS();
-			}
-
-			// Return response
-			$success['result']  = 'success';
-			$success['message'] = __( 'Your subscription was successful!', 'wp-sms' );
-			$success['status']  = 400;
-
-			return $success;
+			return array( 'result' => 'update', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
 		}
+	}
+
+	/**
+	 * @param $name
+	 * @param $mobile
+	 * @param string $group_id
+	 * @param string $status
+	 * @param null $key
+	 *
+	 * @return array
+	 */
+	public static function addSubscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
+		global $wpdb, $tabel_prefix;
+		if ( self::isDuplicate( $mobile, $group_id ) ) {
+			return array(
+				'result'  => 'error',
+				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
+			);
+		}
+
+		$result = $wpdb->insert(
+			$tabel_prefix . "sms_subscribes",
+			array(
+				'date'         => WP_SMS_CURRENT_DATE,
+				'name'         => $name,
+				'mobile'       => $mobile,
+				'status'       => $status,
+				'activate_key' => $key,
+				'group_ID'     => $group_id,
+			)
+		);
+
+		if ( $result ) {
+			/**
+			 * Run hook after adding subscribe.
+			 *
+			 * @since 3.0
+			 *
+			 * @param string $name name.
+			 * @param string $mobile mobile.
+			 */
+			do_action( 'wp_sms_add_subscriber', $name, $mobile );
+
+			return array( 'result' => 'update', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
+		}
+	}
+
+	/**
+	 * Get Subscriber
+	 *
+	 * @param  Not param
+	 *
+	 * @return array|null|object|void
+	 */
+	public static function get_subscriber( $id ) {
+		global $wpdb, $table_prefix;
+		$result = $wpdb->get_row( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE ID = '" . $id . "'" );
+
+		if ( $result ) {
+			return $result;
+		}
+	}
+
+	/**
+	 * Delete Subscriber
+	 *
+	 * @param  Not param
+	 *
+	 * @return false|int|void
+	 */
+	public function delete_subscriber( $id ) {
+		$result = $this->db->delete(
+			$this->tb_prefix . "sms_subscribes",
+			array(
+				'ID' => $id,
+			)
+		);
+
+		if ( $result ) {
+			/**
+			 * Run hook after deleting subscribe.
+			 *
+			 * @since 3.0
+			 *
+			 * @param string $result result query.
+			 */
+			do_action( 'wp_sms_delete_subscriber', $result );
+
+			return $result;
+		}
+	}
+
+	/**
+	 * Delete subscribers by number
+	 *
+	 * @param $mobile
+	 * @param null $group_id
+	 *
+	 * @return array
+	 */
+	public function delete_subscriber_by_number( $mobile, $group_id = null ) {
+		$result = $this->db->delete(
+			$this->tb_prefix . "sms_subscribes",
+			array(
+				'mobile'   => $mobile,
+				'group_id' => $group_id,
+			)
+		);
+
+		if ( ! $result ) {
+			return array( 'result' => 'error', 'message' => __( 'The subscribe does not exist.', 'wp-sms' ) );
+		}
+
+		/**
+		 * Run hook after deleting subscribe.
+		 *
+		 * @since 3.0
+		 *
+		 * @param string $result result query.
+		 */
+		do_action( 'wp_sms_delete_subscriber', $result );
+
+		return array( 'result' => 'update', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
+	}
+
+	/**
+	 * Update Subscriber
+	 *
+	 * @param $id
+	 * @param $name
+	 * @param $mobile
+	 * @param string $group_id
+	 * @param string $status
+	 *
+	 * @return array|void
+	 * @internal param param $Not
+	 */
+	public function update_subscriber( $id, $name, $mobile, $group_id = '', $status = '1' ) {
+		if ( empty( $id ) or empty( $name ) or empty( $mobile ) ) {
+			return;
+		}
+
+		if ( $this->is_duplicate( $mobile, $group_id, $id ) ) {
+			return array(
+				'result'  => 'error',
+				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
+			);
+		}
+
+		$result = $this->db->update(
+			$this->tb_prefix . "sms_subscribes",
+			array(
+				'name'     => $name,
+				'mobile'   => $mobile,
+				'group_ID' => $group_id,
+				'status'   => $status,
+			),
+			array(
+				'ID' => $id
+			)
+		);
+
+		if ( $result ) {
+
+			/**
+			 * Run hook after updating subscribe.
+			 *
+			 * @since 3.0
+			 *
+			 * @param string $result result query.
+			 */
+			do_action( 'wp_sms_update_subscriber', $result );
+
+			return array( 'result' => 'update', 'message' => __( 'Subscriber successfully updated.', 'wp-sms' ) );
+		}
+	}
+
+	/**
+	 * Get Subscriber
+	 *
+	 * @param  Not param
+	 *
+	 * @return array|null|object
+	 */
+	public static function get_groups() {
+		global $wpdb, $table_prefix;
+		$result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
+
+		if ( $result ) {
+			return $result;
+		}
+	}
+
+	/**
+	 * Get Group
+	 *
+	 * @param  Not param
+	 *
+	 * @return array|null|object|void
+	 */
+	public function get_group( $group_id ) {
+		$result = $this->db->get_row( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group` WHERE ID = '" . $group_id . "'" );
+
+		if ( $result ) {
+			return $result;
+		}
+	}
+
+	/**
+	 * Delete Group
+	 *
+	 * @param  Not param
+	 *
+	 * @return false|int|void
+	 */
+	public function delete_group( $id ) {
+
+		if ( empty( $id ) ) {
+			return;
+		}
+
+		$result = $this->db->delete(
+			$this->tb_prefix . "sms_subscribes_group",
+			array(
+				'ID' => $id,
+			)
+		);
+
+		if ( $result ) {
+
+			/**
+			 * Run hook after deleting group.
+			 *
+			 * @since 3.0
+			 *
+			 * @param string $result result query.
+			 */
+			do_action( 'wp_sms_delete_group', $result );
+
+			return $result;
+		}
+	}
+
+	/**
+	 * Add Group
+	 *
+	 * @param  Not param
+	 *
+	 * @return array
+	 */
+	public function add_group( $name ) {
+		if ( empty( $name ) ) {
+			return array( 'result' => 'error', 'message' => __( 'Name is empty!', 'wp-sms' ) );
+		}
+
+		$table   = $this->tb_prefix . 'sms_subscribes_group';
+		$prepare = $this->db->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
+		$count   = $this->db->get_var( $prepare );
+		if ( $count ) {
+			return array(
+				'result'  => 'error',
+				'message' => sprintf( __( 'Group Name "%s" exists!', 'wp-sms' ), $name )
+			);
+		} else {
+
+			$result = $this->db->insert(
+				$this->tb_prefix . "sms_subscribes_group",
+				array(
+					'name' => $name,
+				)
+			);
+
+			if ( $result ) {
+
+				/**
+				 * Run hook after adding group.
+				 *
+				 * @since 3.0
+				 *
+				 * @param string $result result query.
+				 */
+				do_action( 'wp_sms_add_group', $result );
+
+				return array( 'result' => 'update', 'message' => __( 'Group successfully added.', 'wp-sms' ) );
+			}
+		}
+
+	}
+
+	/**
+	 * Update Group
+	 *
+	 * @param $id
+	 * @param $name
+	 *
+	 * @return array|void
+	 * @internal param param $Not
+	 */
+	public function update_group( $id, $name ) {
+		if ( empty( $id ) or empty( $name ) ) {
+			return;
+		}
+
+		$table   = $this->tb_prefix . 'sms_subscribes_group';
+		$prepare = $this->db->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
+		$count   = $this->db->get_var( $prepare );
+
+		if ( $count ) {
+			return array(
+				'result'  => 'error',
+				'message' => sprintf( __( 'Group Name "%s" exists!', 'wp-sms' ), $name )
+			);
+		} else {
+
+			$result = $this->db->update(
+				$this->tb_prefix . "sms_subscribes_group",
+				array(
+					'name' => $name,
+				),
+				array(
+					'ID' => $id
+				)
+			);
+
+			if ( $result ) {
+
+				/**
+				 * Run hook after updating group.
+				 *
+				 * @since 3.0
+				 *
+				 * @param string $result result query.
+				 */
+				do_action( 'wp_sms_update_group', $result );
+
+				return array( 'result' => 'update', 'message' => __( 'Group successfully updated.', 'wp-sms' ) );
+			} else {
+				return array(
+					'result'  => 'error',
+					'message' => sprintf( __( 'Group Name "%s" exists!', 'wp-sms' ), $name )
+				);
+			}
+		}
+
+
+	}
+
+	/**
+	 * Check the mobile number is duplicate
+	 *
+	 * @param $mobile_number
+	 * @param null $group_id
+	 * @param null $id
+	 *
+	 * @return array|null|object|void
+	 */
+	private function is_duplicate( $mobile_number, $group_id = null, $id = null ) {
+		$sql = "SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
+
+		if ( $group_id ) {
+			$sql .= " AND group_id = '" . $group_id . "'";
+		}
+
+		if ( $id ) {
+			$sql .= " AND id != '" . $id . "'";
+		}
+
+		$result = $this->db->get_row( $sql );
+
+		return $result;
+	}
+
+	/**
+	 * @param $mobile_number
+	 * @param null $group_id
+	 * @param null $id
+	 *
+	 * @return mixed
+	 */
+	public static function isDuplicate( $mobile_number, $group_id = null, $id = null ) {
+		global $wpdb, $tabel_prefix;
+		$sql = "SELECT * FROM `{$tabel_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
+
+		if ( $group_id ) {
+			$sql .= " AND group_id = '" . $group_id . "'";
+		}
+
+		if ( $id ) {
+			$sql .= " AND id != '" . $id . "'";
+		}
+
+		$result = $wpdb->get_row( $sql );
+
+		return $result;
+	}
+
+
+	/**
+	 * @param string $group_id
+	 *
+	 * @return array
+	 */
+	public static function getSubscribers( $group_id = '' ) {
+		global $wpdb, $table_prefix;
+
+		$where = '';
+
+		if ( $group_id ) {
+			$where = $wpdb->prepare( ' WHERE group_ID = %d', $group_id );
+		}
+
+		$result = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" . $where );
+
+		return $result;
+
+	}
+
+
+	/**
+	 * @param $date
+	 * @param $name
+	 * @param $mobile
+	 * @param $status
+	 * @param $group_id
+	 *
+	 * @return mixed
+	 */
+	public static function insertSubscriber( $date, $name, $mobile, $status, $group_id ) {
+		global $wpdb, $table_prefix;
+
+		$result = $wpdb->insert( "{$table_prefix}sms_subscribes",
+			array(
+				'date'     => $date,
+				'name'     => $name,
+				'mobile'   => $mobile,
+				'status'   => $status,
+				'group_ID' => $group_id
+			)
+		);
+
+		return $result;
 	}
 }
 

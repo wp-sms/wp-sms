@@ -11,10 +11,10 @@ $get_mobile      = array();
 $get_mobile_dups = array();
 
 if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
-	$get_mobile      = WP_SMS_Subscriptions::getSubscribers( $_POST['wpsms_group_name'] );
-	$get_mobile_dups = WP_SMS_Subscriptions::getSubscribers();
+	$get_mobile      = WP_SMS_Newsletter::getSubscribers( $_POST['wpsms_group_name'] );
+	$get_mobile_dups = WP_SMS_Newsletter::getSubscribers();
 } else {
-	$get_mobile = WP_SMS_Subscriptions::getSubscribers();
+	$get_mobile = WP_SMS_Newsletter::getSubscribers();
 }
 
 $result          = [];
@@ -45,7 +45,7 @@ if ( isset( $_POST['wps_import'] ) ) {
 			// Count submitted items.
 			$total_submit[] = $data->sheets[0]['cells'];
 
-			$result = WP_SMS_Subscriptions::insertSubscriber( WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $_POST['wpsms_group_name'] );
+			$result = WP_SMS_Newsletter::insertSubscriber( WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $_POST['wpsms_group_name'] );
 
 		}
 

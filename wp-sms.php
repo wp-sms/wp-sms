@@ -137,7 +137,7 @@ class WP_SMS_Plugin {
 		$this->includes();
 		$this->sms = $sms;
 		$this->init();
-		$this->subscribe = new WP_SMS_Subscriptions();
+		$this->subscribe = new WP_SMS_Newsletter();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_assets' ) );
@@ -240,7 +240,6 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-integrations',
 			'includes/class-wp-sms-gravityforms',
 			'includes/class-wp-sms-quform',
-			'includes/class-wp-sms-subscribers',
 			'includes/class-wp-sms-newsletter',
 			'includes/class-wp-sms-widget',
 			'includes/class-wp-sms-rest-api',
@@ -250,6 +249,7 @@ class WP_SMS_Plugin {
 			'includes/class-wp-sms-subscribers-table-edit',
 			'includes/class-wp-sms-send',
 			'includes/class-wp-sms-shortcode',
+			'includes/api/v1/class-wp-sms-api-newsletter',
 		);
 
 		foreach ( $files as $file ) {
