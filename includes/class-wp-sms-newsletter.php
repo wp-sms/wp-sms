@@ -116,6 +116,7 @@ class WP_SMS_Newsletter {
 	 */
 	public static function addSubscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
 		global $wpdb, $tabel_prefix;
+
 		if ( self::isDuplicate( $mobile, $group_id ) ) {
 			return array(
 				'result'  => 'error',

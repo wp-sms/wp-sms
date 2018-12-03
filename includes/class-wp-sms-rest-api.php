@@ -55,6 +55,12 @@ class WP_SMS_RestApi {
 		$this->namespace = 'wpsms';
 	}
 
+	/**
+	 * @param $message
+	 * @param int $status
+	 *
+	 * @return WP_REST_Response
+	 */
 	public static function response( $message, $status = 200 ) {
 		return new WP_REST_Response( $message, $status );
 	}

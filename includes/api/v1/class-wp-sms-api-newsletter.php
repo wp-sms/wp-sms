@@ -6,8 +6,9 @@
  * @version    1.0
  */
 class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
-
-
+	/**
+	 * WP_SMS_Api_Newsletter_V1 constructor.
+	 */
 	public function __construct() {
 
 		// Register routes
@@ -78,12 +79,13 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		// Get parameters from request
 		$params = $request->get_params();
 
-		$result = self::Subscribe( $params['name'], $params['mobile'], $params['group_id'] );
+		$result = self::Subscribe( $params['name'], $params['mobile'], 1 );
+
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result, 400 );
-		} else {
-			return self::response( $result, 200 );
 		}
+
+		return self::response( $result );
 	}
 
 	/**
@@ -96,11 +98,12 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$result = self::unSubscribe( $params['name'], $params['mobile'], $params['group_id'] );
+
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result, 400 );
-		} else {
-			return self::response( $result, 200 );
 		}
+
+		return self::response( $result );
 	}
 
 	/**
@@ -113,11 +116,12 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$result = self::verifySubscriber( $params['name'], $params['mobile'], $params['activation'] );
+
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result, 400 );
-		} else {
-			return self::response( $result, 200 );
 		}
+
+		return self::response( $result );
 	}
 
 	/**
@@ -129,11 +133,6 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 	 */
 	public static function Subscribe( $name, $mobile, $group = null ) {
 		global $wpsms_option, $sms;
-
-		if ( ! $name or ! $mobile ) {
-			// Return response
-			return new WP_Error( 'subscribe', __( 'Please complete all fields', 'wp-sms' ) );
-		}
 
 		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
 			// Return response
@@ -201,11 +200,6 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 	 */
 	public static function unSubscribe( $name, $mobile, $group = null ) {
 		global $wpsms_option;
-
-		if ( ! $name or ! $mobile ) {
-			// Return response
-			return new WP_Error( 'unsubscribe', __( 'Please complete all fields', 'wp-sms' ) );
-		}
 
 		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
 			// Return response
