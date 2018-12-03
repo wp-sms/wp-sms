@@ -97,7 +97,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result = WP_SMS_Api_Newsletter_V1::unSubscribe( $params['name'], $params['mobile'], $group_id );
+		$result = self::unSubscribe( $params['name'], $params['mobile'], $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
@@ -116,7 +116,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result = WP_SMS_Api_Newsletter_V1::verifySubscriber( $params['name'], $params['mobile'], $params['activation'], $group_id );
+		$result = self::verifySubscriber( $params['name'], $params['mobile'], $params['activation'], $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
