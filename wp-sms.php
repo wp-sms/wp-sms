@@ -51,6 +51,11 @@ add_action( 'plugins_loaded', array( WP_SMS_Plugin::get_instance(), 'plugin_setu
 register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'install' ) );
 
 /**
+ * Upgrade plugin
+ */
+register_activation_hook( __FILE__, array( 'WP_SMS_Plugin', 'upgrade' ) );
+
+/**
  * Class WP_SMS_Plugin
  */
 class WP_SMS_Plugin {
@@ -148,14 +153,12 @@ class WP_SMS_Plugin {
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 
-		//WordPress Multisite
+		// WordPress Multisite
 		add_action( 'wpmu_new_blog', array( $this, 'add_table_on_create_blog' ), 10, 1 );
 		add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog' ) );
 
 		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
 
-		//Upgrade Plugin if needed
-		include_once dirname( __FILE__ ) . '/upgrade.php';
 	}
 
 	/**
@@ -183,6 +186,14 @@ class WP_SMS_Plugin {
 
 		// Delete notification new wp_version option
 		delete_option( 'wp_notification_new_wp_version' );
+	}
+
+
+	/**
+	 * Upgrade plugin requirements if needed
+	 */
+	static function upgrade() {
+		include_once dirname( __FILE__ ) . '/upgrade.php';
 	}
 
 	/**
@@ -216,7 +227,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function add_cap() {
-		// get administrator role
+		// Get administrator role
 		$role = get_role( 'administrator' );
 
 		$role->add_cap( 'wpsms_sendsms' );
