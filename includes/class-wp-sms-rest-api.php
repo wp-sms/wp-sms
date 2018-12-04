@@ -87,13 +87,13 @@ class WP_SMS_RestApi {
 	 * @return array|string
 	 */
 	public static function subscribe( $name, $mobile, $group ) {
+		global $wpsms_option, $sms;
 
-		global $wpdb, $wpsms_option, $sms;
+		if ( empty( $name ) OR empty( $mobile ) ) {
+			return new WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
+		}
 
-		// TODO Start - this line should be moved to newsletter class.
-		$db_prepare  = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group );
-		$check_group = $wpdb->get_row( $db_prepare );
-		// TODO End
+		$check_group = WP_SMS_Newsletter::getGroup( $group );
 
 		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
 			return new WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
@@ -153,7 +153,7 @@ class WP_SMS_RestApi {
 				return new WP_Error( 'subscribe', $result['message'] );
 			}
 
-			return true;
+			return __( 'Your number has been successfully subscribed.', 'wp-sms' );
 		}
 	}
 
@@ -165,10 +165,13 @@ class WP_SMS_RestApi {
 	 * @return array|string
 	 */
 	public static function unSubscribe( $name, $mobile, $group ) {
-		global $wpdb, $table_prefix, $wpsms_option;
+		global $wpsms_option;
 
-		$db_prepare  = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes_group` WHERE `ID` = %d", $group );
-		$check_group = $wpdb->get_row( $db_prepare );
+		if ( empty( $name ) OR empty( $mobile ) ) {
+			return new WP_Error( 'unsubscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
+		}
+
+		$check_group = WP_SMS_Newsletter::getGroup( $group );
 
 		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
 			return new WP_Error( 'unsubscribe', __( 'The group number is not valid!', 'wp-sms' ) );
@@ -214,6 +217,10 @@ class WP_SMS_RestApi {
 	 */
 	public static function verifySubscriber( $name, $mobile, $activation, $group ) {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
+
+		if ( empty( $name ) OR empty( $mobile ) OR empty( $activation ) ) {
+			return new WP_Error( 'unsubscribe', __( 'The required parameters must be valued!', 'wp-sms' ) );
+		}
 
 		// Check the mobile number is string or integer
 		if ( strpos( $mobile, '+' ) !== false ) {

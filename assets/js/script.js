@@ -1,6 +1,5 @@
 jQuery(document).ready(function ($) {
     // Check the GDPR enabled.
-
     if ($('#wpsms-gdpr-confirmation').length) {
         if ($('#wpsms-gdpr-confirmation').attr('checked')) {
             $("#wpsms-submit").removeAttr('disabled');
@@ -19,10 +18,10 @@ jQuery(document).ready(function ($) {
     $("#wpsms-subscribe #wpsms-submit").click(function () {
         $("#wpsms-result").hide();
 
-        subscriber = [];
+        subscriber = Array();
         subscriber['name'] = $("#wpsms-name").val();
         subscriber['mobile'] = $("#wpsms-mobile").val();
-        subscriber['groups'] = $("#wpsms-groups").val();
+        subscriber['group_id'] = $("#wpsms-groups").val();
         subscriber['type'] = $('input[name=subscribe_type]:checked').val();
 
         $("#wpsms-subscribe").ajaxStart(function () {
@@ -39,40 +38,38 @@ jQuery(document).ready(function ($) {
         } else {
             var method = 'DELETE';
         }
-        var data_obj = { name: subscriber['name'], mobile: subscriber['mobile'], grpup_id: subscriber['groups'] };
-        console.log(data_obj);
+        var data_obj = Object.assign({}, subscriber);
         var ajax = $.ajax({
             type: method,
-            widget_id: $('#wpsms-widget-id').attr('value'),
             url: ajax_object.ajaxurl,
             data: data_obj
         });
         ajax.fail(function (data) {
             var response = $.parseJSON(data.responseText);
-            var error = null;
+            var message = null;
 
-            if (typeof (response.message) != "undefined" && response.message !== null) {
-                error = response.message;
+            if (typeof (response.error) != "undefined" && response.error !== null) {
+                message = response.error.message;
             } else {
-                if (subscriber['type'] === 'subscribe') {
-                    error = response.errors.subscribe;
-                } else {
-                    error = response.errors.unsubscribe;
-                }
+                message = 'Unknown Error! Check your connection and try again.';
             }
 
             $("#wpsms-result").fadeIn();
-            $("#wpsms-result").html('<span class="wpsms-message-error">' + error + '</div>');
-            data_obj= null;
+            $("#wpsms-result").html('<span class="wpsms-message-error">' + message + '</div>');
         });
         ajax.done(function (data) {
+            var response = data;
+            var message = response.message;
+
             $("#wpsms-result").fadeIn();
             $("#wpsms-step-1").hide();
-            $("#wpsms-result").html('<span class="wpsms-message-success">' + data.responseText + '</div>');
-            $("#wpsms-step-2").show();
+            $("#wpsms-result").html('<span class="wpsms-message-success">' + message + '</div>');
+            if (subscriber['type'] === 'subscribe') {
+                $("#wpsms-step-2").show();
+            }
         });
     });
-//TODO
+
     $("#wpsms-subscribe #activation").on('click', function () {
         $("#wpsms-result").hide();
         subscriber['activation'] = $("#wpsms-ativation-code").val();
@@ -87,25 +84,32 @@ jQuery(document).ready(function ($) {
             $("#activation").text('Activation');
         });
 
-        $.post(ajax_object.ajaxurl, {
-            widget_id: $('#wpsms-widget-id').attr('value'),
-            action: 'activation_ajax_action',
-            name: subscriber['name'],
-            mobile: subscriber['mobile'],
-            activation: subscriber['activation'],
-        }, function (data, status) {
-            var response = $.parseJSON(data);
+        var data_obj = Object.assign({}, subscriber);
+        var ajax = $.ajax({
+            type: 'PUT',
+            url: ajax_object.ajaxurl,
+            data: data_obj
+        });
+        ajax.fail(function (data) {
+            var response = $.parseJSON(data.responseText);
+            var message = null;
 
-            if (response.status == 'error') {
-                $("#wpsms-result").fadeIn();
-                $("#wpsms-result").html('<span class="wpsms-message-error">' + response.response + '</div>');
+            if (typeof (response.error) != "undefined" && response.error !== null) {
+                message = response.error.message;
+            } else {
+                message = 'Unknown Error! Check your connection and try again.';
             }
 
-            if (response.status == 'success') {
-                $("#wpsms-result").fadeIn();
-                $("#wpsms-step-2").hide();
-                $("#wpsms-result").html('<span class="wpsms-message-success">' + response.response + '</div>');
-            }
+            $("#wpsms-result").fadeIn();
+            $("#wpsms-result").html('<span class="wpsms-message-error">' + message + '</div>');
+        });
+        ajax.done(function (data) {
+            var response = data;
+            var message = response.message;
+
+            $("#wpsms-result").fadeIn();
+            $("#wpsms-step-2").hide();
+            $("#wpsms-result").html('<span class="wpsms-message-success">' + message + '</div>');
         });
     });
 });

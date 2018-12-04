@@ -78,13 +78,13 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result = self::subscribe($params['name'], $params['mobile'], $group_id);
+		$result   = self::subscribe( $params['name'], $params['mobile'], $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
 		}
 
-		return self::response( __('Your number has been successfully subscribed.', 'wp-sms') );
+		return self::response( $result );
 	}
 
 	/**
@@ -97,13 +97,13 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result = self::unSubscribe( $params['name'], $params['mobile'], $group_id );
+		$result   = self::unSubscribe( $params['name'], $params['mobile'], $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
 		}
 
-		return self::response( __('Your number has been successfully unsubscribed.', 'wp-sms') );
+		return self::response( __( 'Your number has been successfully unsubscribed.', 'wp-sms' ) );
 	}
 
 	/**
@@ -116,13 +116,13 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		$params = $request->get_params();
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result = self::verifySubscriber( $params['name'], $params['mobile'], $params['activation'], $group_id );
+		$result   = self::verifySubscriber( $params['name'], $params['mobile'], $params['activation'], $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
 		}
 
-		return self::response( __('Your number has been successfully unsubscribed.', 'wp-sms') );
+		return self::response( __( 'Your number has been successfully subscribed.', 'wp-sms' ) );
 	}
 }
 

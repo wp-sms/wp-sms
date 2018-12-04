@@ -577,6 +577,24 @@ class WP_SMS_Newsletter {
 
 		return $result;
 	}
+
+	/**
+	 * @param $group_id
+	 *
+	 * @return object|null
+	 */
+	public static function getGroup( $group_id ) {
+		global $wpdb, $table_prefix;
+
+		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
+		$result     = $wpdb->get_row( $db_prepare );
+
+		if ( $result ) {
+			return $result;
+		}
+
+		return null;
+	}
 }
 
 new WP_SMS_Newsletter();

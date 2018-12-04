@@ -51,9 +51,7 @@
                                     <label for="wp_get_sender"><?php _e( 'Send from', 'wp-sms' ); ?>:</label>
                                 </th>
                                 <td>
-                                    <input type="text" name="wp_get_sender" id="wp_get_sender"
-                                           value="<?php echo $sms->from; ?>"
-                                           maxlength="11"/>
+                                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $sms->from; ?>" maxlength="11"/>
                                 </td>
                             </tr>
                             <tr valign="top">
@@ -62,16 +60,12 @@
                                 </th>
                                 <td>
                                     <select name="wp_send_to" id="select_sender">
-                                        <option value="wp_subscribe_username"
-                                                id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
-                                        <option value="wp_users"
-                                                id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
-                                        <option value="wp_role"
-                                                id="wp_role"<?php if ( empty( $wpsms_option['add_mobile_field'] ) or $wpsms_option['add_mobile_field'] != 1 ) {
+                                        <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
+                                        <option value="wp_users" id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
+                                        <option value="wp_role" id="wp_role"<?php if ( empty( $wpsms_option['add_mobile_field'] ) or $wpsms_option['add_mobile_field'] != 1 ) {
 											echo 'disabled title="' . __( 'To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms' ) . '"';
 										} ?>><?php _e( 'Role', 'wp-sms' ); ?></option>
-                                        <option value="wp_tellephone"
-                                                id="wp_tellephone"><?php _e( 'Number(s)', 'wp-sms' ); ?></option>
+                                        <option value="wp_tellephone" id="wp_tellephone"><?php _e( 'Number(s)', 'wp-sms' ); ?></option>
                                     </select>
 
 									<?php if ( isset( $wpsms_option['add_mobile_field'] ) AND ! empty( $wpsms_option['add_mobile_field'] ) or isset( $wpsms_option['add_mobile_field'] ) AND $wpsms_option['add_mobile_field'] == 1 ) { ?>
@@ -109,8 +103,7 @@
                                     <span class="wpsms-value wpsms-numbers">
                         <span style="font-size: 10px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $sms->validateNumber ); ?></span>
                         <div class="clearfix"></div>
-                        <textarea cols="80" rows="2" style="direction:ltr;" id="wp_get_number"
-                                  name="wp_get_number"></textarea>
+                        <textarea cols="80" rows="2" style="direction:ltr;" id="wp_get_number" name="wp_get_number"></textarea>
                     </span>
                                 </td>
                             </tr>
@@ -127,8 +120,7 @@
                                     <label for="wp_get_message"><?php _e( 'Message', 'wp-sms' ); ?>:</label>
                                 </th>
                                 <td>
-                                    <textarea dir="auto" cols="80" rows="5" name="wp_get_message"
-                                              id="wp_get_message"></textarea><br/>
+                                    <textarea dir="auto" cols="80" rows="5" name="wp_get_message" id="wp_get_message"></textarea><br/>
                                     <p class="number">
 										<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . WP_SMS_Gateway::credit(); ?>
                                     </p>
@@ -140,8 +132,7 @@
                                     <td>
                                         <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
                                         <label for="flash_yes"><?php _e( 'Yes', 'wp-sms' ); ?></label>
-                                        <input type="radio" id="flash_no" name="wp_flash" value="false"
-                                               checked="checked"/>
+                                        <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
                                         <label for="flash_no"><?php _e( 'No', 'wp-sms' ); ?></label>
                                         <br/>
                                         <p class="description"><?php _e( 'Flash is possible to send messages without being asked, opens', 'wp-sms' ); ?></p>
@@ -151,8 +142,7 @@
                             <tr>
                                 <td>
                                     <p class="submit">
-                                        <input type="submit" class="button-primary" name="SendSMS"
-                                               value="<?php _e( 'Send SMS', 'wp-sms' ); ?>"/>
+                                        <input type="submit" class="button-primary" name="SendSMS" value="<?php _e( 'Send SMS', 'wp-sms' ); ?>"/>
                                     </p>
                                 </td>
                             </tr>
