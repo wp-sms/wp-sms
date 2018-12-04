@@ -227,6 +227,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = dev-master =
 * Added: The new option for disabling the WP-SMS CSS in the theme.
 * Added: The SMS Newsletter tab in the option page for manage that, that options in the widgets removed.
+* Added: New `[wp-sms-subscriber-form]` shortcode for show SMS newsletter form.
 * Added: Response column to SMS outbox page.
 * Improved: The SMS newsletter requests. We using the WP REST API instead Admin Ajax.
 * Improved: The styles of forms, we used the ThickBox for managing forms and metabox style for send SMS form.

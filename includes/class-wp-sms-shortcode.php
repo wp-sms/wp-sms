@@ -22,20 +22,18 @@ class WP_SMS_Shortcode {
 		$this->tb_prefix = $table_prefix;
 		$this->options   = $wpsms_option;
 
-		//add the shortcode [wp-sms-subscriber-form]
+		// Add the shortcode [wp-sms-subscriber-form]
 		add_shortcode( 'wp-sms-subscriber-form', array( $this, 'register_shortcode' ) );
 	}
 
 	/**
-	 * Shortcodes plugin
+	 * Shortcode plugin
 	 *
 	 * @param $atts
-	 * @param null $content
 	 *
 	 * @internal param param $Not
 	 */
 	public function register_shortcode( $atts ) {
-
 		WP_SMS_Plugin::loadNewsLetter();
 	}
 }
