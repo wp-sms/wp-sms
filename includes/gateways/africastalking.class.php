@@ -20,10 +20,6 @@ class africastalking extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -52,12 +48,21 @@ class africastalking extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$gateway = new AfricasTalkingGateway( $this->username, $this->has_key );
 
 		try {
 			$results = $gateway->sendMessage( implode( ',', $this->to ), $this->msg, $this->from );
 
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
 
 			/**
 			 * Run hook after send sms.
@@ -70,6 +75,9 @@ class africastalking extends WP_SMS {
 
 			return $result;
 		} catch ( AfricasTalkingGatewayException $e ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
+
 			return new WP_Error( 'send-sms', $e->getMessage() );
 		}
 	}

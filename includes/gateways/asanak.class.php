@@ -14,10 +14,6 @@ class asanak extends WP_SMS {
 	}
 
 	function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -46,6 +42,14 @@ class asanak extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$to  = implode( '-', $this->to );
 		$msg = urlencode( trim( $this->msg ) );
 		$url = $this->wsdl_link . '?username=' . $this->username . '&password=' . urlencode( $this->password ) . '&source=' . $this->from . '&destination=' . $to . '&message=' . $msg;
@@ -62,7 +66,8 @@ class asanak extends WP_SMS {
 		curl_setopt( $process, CURLOPT_FOLLOWLOCATION, 1 );
 
 		if ( curl_exec( $process ) ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $process );
 
 			/**
 			 * Run hook after send sms.
@@ -75,6 +80,9 @@ class asanak extends WP_SMS {
 
 			return $process;
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $process, 'error' );
+
 			return new WP_Error( 'send-sms', $process );
 		}
 	}

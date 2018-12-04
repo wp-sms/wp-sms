@@ -15,10 +15,6 @@ class pridesms extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -47,10 +43,20 @@ class pridesms extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$response = wp_remote_get( $this->wsdl_link . "sendSMS.php?user=" . $this->username . "&password=" . $this->password . "&senderid=" . $this->from . "&number=" . implode( ',', $this->to ) . "&text=" . urlencode( $this->msg ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -62,7 +68,8 @@ class pridesms extends WP_SMS {
 			$response = json_decode( $response['body'] );
 
 			if ( $response->ErrorCode == '000' ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response );
 
 				/**
 				 * Run hook after send sms.
@@ -75,10 +82,14 @@ class pridesms extends WP_SMS {
 
 				return $response;
 			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response->ErrorMessage, 'error' );
 				return new WP_Error( 'send-sms', $response->ErrorMessage );
 			}
 
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}

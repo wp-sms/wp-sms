@@ -18,10 +18,6 @@ class primotexto extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -50,6 +46,14 @@ class primotexto extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		// Authentication
 		authenticationManager::setApiKey( $this->has_key );
 
@@ -66,7 +70,8 @@ class primotexto extends WP_SMS {
 		}
 
 		if ( isset( $json->snapshotId ) ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $json );
 
 			/**
 			 * Run hook after send sms.
@@ -79,6 +84,8 @@ class primotexto extends WP_SMS {
 
 			return $json;
 		}
+		// Log the result
+		$this->log( $this->from, $this->msg, $this->to, $json->code, 'error' );
 
 		return new WP_Error( 'credit', $json->code );
 	}

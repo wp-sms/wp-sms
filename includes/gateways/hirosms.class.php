@@ -1,104 +1,112 @@
 <?php
 
 class hirosms extends WP_SMS {
-    private $wsdl_link = "http://87.107.124.66/webservice/send.php?wsdl";
-    public $tariff = "https://www.hiro-sms.com/";
-    public $unitrial = true;
-    public $unit;
-    public $flash = "enable";
-    public $isflash = false;
+	private $wsdl_link = "http://87.107.124.66/webservice/send.php?wsdl";
+	public $tariff = "https://www.hiro-sms.com/";
+	public $unitrial = true;
+	public $unit;
+	public $flash = "enable";
+	public $isflash = false;
 
-    public function __construct() {
-        parent::__construct();
-        $this->validateNumber = "09xxxxxxxx";
+	public function __construct() {
+		parent::__construct();
+		$this->validateNumber = "09xxxxxxxx";
 
-        ini_set( "soap.wsdl_cache_enabled", "0" );
-    }
+		ini_set( "soap.wsdl_cache_enabled", "0" );
+	}
 
-    public function SendSMS() {
-        // Check gateway credit
-        if ( is_wp_error( $this->GetCredit() ) ) {
-            return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-        }
+	public function SendSMS() {
 
-        /**
-         * Modify sender number
-         *
-         * @since 3.4
-         *
-         * @param string $this ->from sender number.
-         */
-        $this->from = apply_filters( 'wp_sms_from', $this->from );
+		/**
+		 * Modify sender number
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->from sender number.
+		 */
+		$this->from = apply_filters( 'wp_sms_from', $this->from );
 
-        /**
-         * Modify Receiver number
-         *
-         * @since 3.4
-         *
-         * @param array $this ->to receiver number
-         */
-        $this->to = apply_filters( 'wp_sms_to', $this->to );
+		/**
+		 * Modify Receiver number
+		 *
+		 * @since 3.4
+		 *
+		 * @param array $this ->to receiver number
+		 */
+		$this->to = apply_filters( 'wp_sms_to', $this->to );
 
-        /**
-         * Modify text message
-         *
-         * @since 3.4
-         *
-         * @param string $this ->msg text message.
-         */
-        $this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+		/**
+		 * Modify text message
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->msg text message.
+		 */
+		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-        $from    = array();
-        $message = array();
-        $type    = array();
-        $result  = '';
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
 
-        try {
-            $client = new SoapClient( $this->wsdl_link );
+			return $this->GetCredit();
+		}
 
-            foreach ( $this->to as $to ) {
-                $from[]    = $this->from;
-                $message[] = $this->msg;
-                $type[]    = $this->isflash;
-            }
+		$from    = array();
+		$message = array();
+		$type    = array();
+		$result  = '';
 
-            $result = $client->SendMultiSMS( $from, $this->to, $message, $type, $this->username, $this->password );
-        } catch ( Exception $e ) {
-            $error = new WP_Error( 'send-sms', $e->getMessage() );
-        }
+		try {
+			$client = new SoapClient( $this->wsdl_link );
 
-        /**
-         * Run hook after send sms.
-         *
-         * @since 2.4
-         *
-         * @param string $result result output.
-         */
-        do_action( 'wp_sms_send', $result );
+			foreach ( $this->to as $to ) {
+				$from[]    = $this->from;
+				$message[] = $this->msg;
+				$type[]    = $this->isflash;
+			}
 
-        $this->InsertToDB( $this->from, $this->msg, $this->to );
+			$result = $client->SendMultiSMS( $from, $this->to, $message, $type, $this->username, $this->password );
+		} catch ( Exception $e ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
-        return $result;
-    }
+			return new WP_Error( 'send-sms', $e->getMessage() );
+		}
 
-    public function GetCredit() {
-        // Check username and password
-        if ( ! $this->username && ! $this->password ) {
-            return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
-        }
+		/**
+		 * Run hook after send sms.
+		 *
+		 * @since 2.4
+		 *
+		 * @param string $result result output.
+		 */
+		do_action( 'wp_sms_send', $result );
 
-        if ( ! class_exists( 'SoapClient' ) ) {
-            return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
-        }
+		// Log the result
+		$this->log( $this->from, $this->msg, $this->to, $result );
 
-        try {
-            $client = new SoapClient( $this->wsdl_link );
-        } catch ( Exception $e ) {
-            return new WP_Error( 'account-credit', $e->getMessage() );
-        }
+		return $result;
+	}
 
-        $results = $client->GetCredit( $this->username, $this->password, array( "", "" ) );
+	public function GetCredit() {
+		// Check username and password
+		if ( ! $this->username && ! $this->password ) {
+			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+		}
 
-        return round( $results );
-    }
+		if ( ! class_exists( 'SoapClient' ) ) {
+			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+		}
+
+		try {
+			$client = new SoapClient( $this->wsdl_link );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'account-credit', $e->getMessage() );
+		}
+
+		$results = $client->GetCredit( $this->username, $this->password, array( "", "" ) );
+
+		return round( $results );
+	}
 }

@@ -18,10 +18,6 @@ class candoosms extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -50,6 +46,14 @@ class candoosms extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$client                   = new nusoap_client( $this->wsdl_link, true );
 		$client->soap_defencoding = 'UTF-8';
 		$client->decode_utf8      = false;
@@ -64,12 +68,19 @@ class candoosms extends WP_SMS {
 		) );
 
 		if ( $client->fault ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
+
 			return new WP_Error( 'send-sms', $result );
 		} else {
 			if ( $client->getError() ) {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $client->getError(), 'error' );
+
 				return new WP_Error( 'send-sms', $client->getError() );
 			} else {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result );
 
 				/**
 				 * Run hook after send sms.

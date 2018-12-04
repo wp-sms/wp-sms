@@ -42,6 +42,23 @@ class engy extends WP_SMS {
 		 *
 		 * @param string $this ->msg text message.
 		 */
+		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
+		/**
+		 * Modify text message
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->msg text message.
+		 */
 		// $this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 		$args = array(
 			'method'      => 'POST',
@@ -59,14 +76,23 @@ class engy extends WP_SMS {
 			'cookies'     => array()
 		);
 		if ( ! is_numeric( implode( ',', $this->to ) ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, 'Please use a valid phone number (eg. ' . $this->validateNumber . ')', 'error' );
+
 			return new WP_Error( 'send-sms', 'Please use a valid phone number (eg. ' . $this->validateNumber . ')' );
 		}
 		if ( strlen( $this->msg ) > 160 ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, 'You can only send short messages for testing ( 160 characters max )', 'error' );
+
 			return new WP_Error( 'send-sms', 'You can only send short messages for testing ( 160 characters max )' );
 		}
 		$response = wp_remote_post( $this->wsdl_link . "outbound/sms/", $args );
 		// Check response error
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -74,9 +100,13 @@ class engy extends WP_SMS {
 		if ( $response_code == '200' || $response_code == '202' ) {
 			$result = json_decode( $response['body'] );
 			if ( isset( $result->status ) and $result->status == 'ERR' ) {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result->error_string, 'error' );
+
 				return new WP_Error( 'send-sms', $result->error_string );
 			} else {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result );
 
 				/**
 				 * Run hook after send sms.
@@ -90,6 +120,9 @@ class engy extends WP_SMS {
 				return $response['body'];
 			}
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 

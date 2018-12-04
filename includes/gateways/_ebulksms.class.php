@@ -18,10 +18,6 @@ class _ebulksms extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account has no credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -51,10 +47,21 @@ class _ebulksms extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$response = wp_remote_get( $this->wsdl_link . "/sendsms?username=" . $this->username . "&apikey=" . $this->has_key . "&sender=" . $this->from . "&messagetext=" . urlencode( $this->msg ) . "&flash=0&recipients=" . implode( ',', $this->to ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -64,7 +71,8 @@ class _ebulksms extends WP_SMS {
 		// Check response code
 		if ( $response_code == '200' ) {
 			if ( strpos( $response['body'], 'SUCCESS' ) !== false ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response );
 
 				/**
 				 * Run hook after send sms.
@@ -77,10 +85,16 @@ class _ebulksms extends WP_SMS {
 
 				return $response;
 			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 				return new WP_Error( 'send-sms', $response['body'] );
 			}
 
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}
@@ -109,40 +123,38 @@ class _ebulksms extends WP_SMS {
 		}
 	}
 
-        private function formatMobileNumbers($strnumbers, $country_code = '234', $separator = ',') {
-            $cleanrecipients = array();
-            if (!empty($strnumbers)) {
-                $validnumbers = array();
-                $strnumbers = is_array($strnumbers)? implode(',', $strnumbers): $strnumbers;
-                $strnumbers = str_replace(array("\r\n", "\r", "\n"), ',', $strnumbers);
+	private function formatMobileNumbers( $strnumbers, $country_code = '234', $separator = ',' ) {
+		$cleanrecipients = array();
+		if ( ! empty( $strnumbers ) ) {
+			$validnumbers = array();
+			$strnumbers   = is_array( $strnumbers ) ? implode( ',', $strnumbers ) : $strnumbers;
+			$strnumbers   = str_replace( array( "\r\n", "\r", "\n" ), ',', $strnumbers );
 
-                $regExp = "/[0-9]{10,15}/";
-                if (preg_match_all($regExp, $strnumbers, $validnumbers)) {
-                    $validnumbers = $validnumbers[0];
-                    foreach ($validnumbers as $mobilenumber) {
-                        if (substr($mobilenumber, 0, 1) == '0'){
-                            $mobilenumber = $country_code . substr($mobilenumber, 1);
-                        }
-                        elseif (substr($mobilenumber, 0, 4) == '2340'){
-                            $mobilenumber = $country_code . substr($mobilenumber, 4);
-                        }
-                        elseif (strlen($mobilenumber) < 11 && $country_code == '234') {
-                            $mobilenumber = $country_code . $mobilenumber;
-                        }
-                        if (strlen($mobilenumber) < 10 || strlen($mobilenumber) > 15) {
-                            continue;
-                        }
-                        if ((substr($mobilenumber, 0, 3) == "234") && strlen($mobilenumber) != 13) {
-                            continue;
-                        }
-                        $cleanrecipients[] = $mobilenumber;
-                    }
-                    $cleanrecipients = array_merge(array_unique($cleanrecipients));
-                }
-            }
-            else{
-                return '';
-            }
-            return $cleanrecipients;
-        }
+			$regExp = "/[0-9]{10,15}/";
+			if ( preg_match_all( $regExp, $strnumbers, $validnumbers ) ) {
+				$validnumbers = $validnumbers[0];
+				foreach ( $validnumbers as $mobilenumber ) {
+					if ( substr( $mobilenumber, 0, 1 ) == '0' ) {
+						$mobilenumber = $country_code . substr( $mobilenumber, 1 );
+					} elseif ( substr( $mobilenumber, 0, 4 ) == '2340' ) {
+						$mobilenumber = $country_code . substr( $mobilenumber, 4 );
+					} elseif ( strlen( $mobilenumber ) < 11 && $country_code == '234' ) {
+						$mobilenumber = $country_code . $mobilenumber;
+					}
+					if ( strlen( $mobilenumber ) < 10 || strlen( $mobilenumber ) > 15 ) {
+						continue;
+					}
+					if ( ( substr( $mobilenumber, 0, 3 ) == "234" ) && strlen( $mobilenumber ) != 13 ) {
+						continue;
+					}
+					$cleanrecipients[] = $mobilenumber;
+				}
+				$cleanrecipients = array_merge( array_unique( $cleanrecipients ) );
+			}
+		} else {
+			return '';
+		}
+
+		return $cleanrecipients;
+	}
 }

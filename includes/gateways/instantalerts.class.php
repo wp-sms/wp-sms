@@ -15,9 +15,40 @@ class instantalerts extends WP_SMS {
 	}
 
 	public function SendSMS() {
+
+		/**
+		 * Modify sender number
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->from sender number.
+		 */
+		$this->from = apply_filters( 'wp_sms_from', $this->from );
+
+		/**
+		 * Modify Receiver number
+		 *
+		 * @since 3.4
+		 *
+		 * @param array $this ->to receiver number
+		 */
+		$this->to = apply_filters( 'wp_sms_to', $this->to );
+
+		/**
+		 * Modify text message
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->msg text message.
+		 */
+		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+
 		// Check gateway credit
 		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
 		}
 
 		// Encode message
@@ -28,7 +59,8 @@ class instantalerts extends WP_SMS {
 		}
 
 		if ( isset( $result['MessageIDs'] ) ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
 
 			/**
 			 * Run hook after send sms.
@@ -41,6 +73,8 @@ class instantalerts extends WP_SMS {
 
 			return $result;
 		}
+		// Log the result
+		$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
 
 		return new WP_Error( 'send-sms', $result );
 	}
@@ -56,7 +90,7 @@ class instantalerts extends WP_SMS {
 
 		// Check enable simplexml function in the php
 		if ( ! function_exists( 'simplexml_load_string' ) ) {
-			return new WP_Error( 'account-credit', $result );
+			return new WP_Error( 'account-credit', 'simplexml_load_string PHP Function disabled!' );
 		}
 
 		// Load xml

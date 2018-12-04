@@ -14,10 +14,6 @@ class opilo extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -46,6 +42,14 @@ class opilo extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$to_numbers = null;
 
 		foreach ( $this->to as $number ) {
@@ -57,10 +61,9 @@ class opilo extends WP_SMS {
 		}
 
 		if ( empty( $to_numbers ) ) {
+			$this->log( $this->from, $this->msg, $this->to, 'Number is an empty!', 'error' );
 
-			echo "Error";
-
-			return;
+			return new WP_Error( 'send-sms', 'Number is an empty!' );
 		}
 
 		$url = $this->wsdl_link .
@@ -74,19 +77,21 @@ class opilo extends WP_SMS {
 		$response = file( $url );
 
 		if ( $response[0] ) {
-			return true;
+			$this->log( $this->from, $this->msg, $this->to, $response[0], 'error' );
+
+			return new WP_Error( 'send-sms', $response[0] );
 		}
 
 		if ( ! is_numeric( $response[1] ) ) {
-			echo "Error";
+			$this->log( $this->from, $this->msg, $this->to, $response[1], 'error' );
 
-			return;
-
+			return new WP_Error( 'send-sms', $response[1] );
 		}
 
 		if ( strlen( $response[1] ) > 2 ) {
 
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response[1] );
 
 			/**
 			 * Run hook after send sms.
@@ -100,7 +105,9 @@ class opilo extends WP_SMS {
 			return $response[1];
 
 		} else {
-			return new WP_Error( 'send-sms', $result );
+			$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
+
+			return new WP_Error( 'send-sms', $response );
 		}
 	}
 

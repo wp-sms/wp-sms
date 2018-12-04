@@ -14,10 +14,7 @@ class infodomain extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
+
 		/**
 		 * Modify sender number
 		 *
@@ -43,12 +40,23 @@ class infodomain extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$to       = implode( $this->to, "," );
 		$msg      = urlencode( $this->msg );
 		$response = wp_remote_get( $this->wsdl_link . "/ISendSMSNoDR.aspx?username=" . $this->username . "&password=" . $this->password . "&message=" . $msg . "&mobile=" . $to . "&Sender=" . $this->from . "&type=1" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -58,7 +66,8 @@ class infodomain extends WP_SMS {
 		// Check response code
 		if ( $response_code == '200' ) {
 			if ( strpos( $response['body'], '1701:' ) !== false ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response['body'] );
 
 				/**
 				 * Run hook after send sms.
@@ -110,11 +119,16 @@ class infodomain extends WP_SMS {
 						$error_message = 'Duplicate record received';
 						break;
 				}
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $error_message, 'error' );
 
 				return new WP_Error( 'send-sms', $error_message );
 			}
 
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}

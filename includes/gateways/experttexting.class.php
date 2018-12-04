@@ -16,10 +16,6 @@ class experttexting extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -48,14 +44,22 @@ class experttexting extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		// Check unicode option if enabled.
-        if( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
-            $text = $this->msg;
-            $type = "unicode";
-        } else {
-            $text = urlencode( $this->msg );
-            $type = "text";
-        }
+		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
+			$text = $this->msg;
+			$type = "unicode";
+		} else {
+			$text = urlencode( $this->msg );
+			$type = "text";
+		}
 
 		foreach ( $this->to as $to ) {
 			$response = wp_remote_get( $this->wsdl_link . "json/Message/Send?username=" . $this->username . "&password=" . $this->password . "&api_key=" . $this->has_key . "&from=" . $this->from . "&to=" . $to . "&text=" . $text . "&type=" . $type, array( 'timeout' => 30 ) );
@@ -63,6 +67,9 @@ class experttexting extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -74,7 +81,8 @@ class experttexting extends WP_SMS {
 			$json = json_decode( $response['body'] );
 
 			if ( $json->Status == 0 ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response['body'] );
 
 				/**
 				 * Run hook after send sms.
@@ -87,10 +95,16 @@ class experttexting extends WP_SMS {
 
 				return $json;
 			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $json->ErrorMessage, 'error' );
+
 				return new WP_Error( 'send-sms', $json->ErrorMessage );
 			}
 
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}

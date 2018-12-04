@@ -17,10 +17,6 @@ class gatewayapi extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( ! is_string( $this->has_key ) ) {
-			return new WP_Error( 'account-credit', __( 'Invalid API token provided in the settings. Please get your token from the <a href="https://gatewayapi.com/app" target="_blank">GatewayAPI Dashboard &rarr;</a>', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -49,6 +45,13 @@ class gatewayapi extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
 
 		/**
 		 * Construct recipients array
@@ -85,6 +88,9 @@ class gatewayapi extends WP_SMS {
 		] );
 
 		if ( is_wp_error( $res ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $res, 'error' );
+
 			return $res;
 		}
 
@@ -93,7 +99,8 @@ class gatewayapi extends WP_SMS {
 
 		// Check of send was successful
 		if ( $res['response']['code'] === 200 ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $responseBody );
 
 			/**
 			 * Run hook after send sms.
@@ -102,12 +109,17 @@ class gatewayapi extends WP_SMS {
 			 *
 			 * @param string $result result output.
 			 */
-			do_action( 'wp_sms_send', $result );
+			do_action( 'wp_sms_send', $responseBody );
 
 			return 200; // 200 OK
 		} else if ( $res['response']['code'] >= 500 ) {
-			return new WP_Error( 'send-sms', $res['body'] ?: 'An unexpected error occured.' );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $res['body'] ?: 'An unexpected error occurred.', 'error' );
+
+			return new WP_Error( 'send-sms', $res['body'] ?: 'An unexpected error occurred.' );
 		}
+		// Log the result
+		$this->log( $this->from, $this->msg, $this->to, $this->formatErrorMessage( $responseBody ), 'error' );
 
 		// Return error and format error message from the API to the client
 		return new WP_Error( 'send-sms', $this->formatErrorMessage( $responseBody ) );

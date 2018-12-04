@@ -15,10 +15,6 @@ class mobiledotnet extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			//return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -47,17 +43,29 @@ class mobiledotnet extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$response = wp_remote_get( $this->wsdl_link . "?userName=" . $this->username . "&userPassword=" . $this->password . "&numbers=" . implode( ',', $this->to ) . "&userSender=" . $this->from . "&msg=" . urlencode( $this->msg ) . "&By=standard" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
 		if ( wp_remote_retrieve_response_code( $response ) == '200' ) {
 			if ( $response['body'] == '1' ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $response );
 
 				/**
 				 * Run hook after send sms.
@@ -70,9 +78,15 @@ class mobiledotnet extends WP_SMS {
 
 				return $response;
 			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $this->get_message_by_code( $response['body'] ), 'error' );
+
 				return new WP_Error( 'send-sms', $this->get_message_by_code( $response['body'] ) );
 			}
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}

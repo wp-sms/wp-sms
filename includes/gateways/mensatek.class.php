@@ -14,10 +14,7 @@ class mensatek extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
+
 		/**
 		 * Modify sender number
 		 *
@@ -42,20 +39,33 @@ class mensatek extends WP_SMS {
 		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
-		$to        = implode( $this->to, ";" );
-		$sms_text  = iconv( 'utf-8', 'ISO-8859-1//TRANSLIT', $this->msg );
+
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
+		$to       = implode( $this->to, ";" );
+		$sms_text = iconv( 'utf-8', 'ISO-8859-1//TRANSLIT', $this->msg );
 
 		$response = wp_remote_get( $this->wsdl_link . "/enviar.php?Correo=" . $this->username . "&Passwd=" . $this->password . "&Destinatarios=" . $to . "&Remitente=" . $this->from . "&Mensaje=" . $sms_text . "&Report=0&Resp=JSON" );
 
 		// Check response error
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$result = json_decode( $response['body'] );
 
 		if ( $result->Res != '-1' ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
 
 			/**
 			 * Run hook after send sms.
@@ -66,6 +76,9 @@ class mensatek extends WP_SMS {
 
 			return $result;
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result->Msgid, 'error' );
+
 			return new WP_Error( 'send-sms', $result->Msgid );
 		}
 	}

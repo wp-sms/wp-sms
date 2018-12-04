@@ -48,6 +48,14 @@ class melipayamak extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		try {
 			$client                 = new SoapClient( $this->wsdl_link );
 			$parameters['username'] = $this->username;
@@ -62,7 +70,8 @@ class melipayamak extends WP_SMS {
 
 			$result = $client->SendSms( $parameters )->SendSmsResult;
 
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
 
 			/**
 			 * Run hook after send sms.
@@ -75,6 +84,9 @@ class melipayamak extends WP_SMS {
 
 			return $result;
 		} catch ( SoapFault $ex ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
+
 			return new WP_Error( 'send-sms', $ex->faultstring );
 		}
 	}

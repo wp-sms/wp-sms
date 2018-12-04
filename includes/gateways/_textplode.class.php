@@ -20,10 +20,6 @@ class _textplode extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -42,6 +38,14 @@ class _textplode extends WP_SMS {
 		 * @param array $this ->to receiver number
 		 */
 		$this->to = apply_filters( 'wp_sms_to', $this->to );
+
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
 
 		/**
 		 * Modify text message
@@ -71,10 +75,14 @@ class _textplode extends WP_SMS {
 
 		// Check result
 		if ( ! $result ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
+
 			return new WP_Error( 'send-sms', $result );
 		}
 
-		$this->InsertToDB( $this->from, $this->msg, $this->to );
+		// Log the result
+		$this->log( $this->from, $this->msg, $this->to, $result );
 
 		/**
 		 * Run hook after send sms.

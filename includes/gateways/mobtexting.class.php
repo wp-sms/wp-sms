@@ -16,10 +16,6 @@ class Mobtexting extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -48,22 +44,33 @@ class Mobtexting extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		// comma seperated receivers
 		$to            = implode( ',', $this->to );
 		$msg           = urlencode( $this->msg );
 		$api_end_point = $this->wsdl_link . "/sms/send";
 		$api_args      = Array(
-			'access_token'   => $this->has_key,
-			'sender' => $this->from,
-			'message'   => $msg,
-			'to' => $to,
-			'service' => 'T'
+			'access_token' => $this->has_key,
+			'sender'       => $this->from,
+			'message'      => $msg,
+			'to'           => $to,
+			'service'      => 'T'
 		);
 
-		$response      = wp_remote_post( $api_end_point, Array( 'body' => $api_args, 'timeout' => 30 ) );
+		$response = wp_remote_post( $api_end_point, Array( 'body' => $api_args, 'timeout' => 30 ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
@@ -72,7 +79,8 @@ class Mobtexting extends WP_SMS {
 
 		if ( $response_code == '201' ) {
 			if ( $result->status == 'success' ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result );
 
 				/**
 				 * Run hook after send sms.
@@ -85,10 +93,16 @@ class Mobtexting extends WP_SMS {
 
 				return $result;
 			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result->message, 'error' );
+
 				return $result->message;
 			}
 
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result->message, 'error' );
+
 			return new WP_Error( 'send-sms', $result->message );
 		}
 	}
@@ -116,11 +130,11 @@ class Mobtexting extends WP_SMS {
 			}
 
 			$result = json_decode( $response['body'] );
-			$result = (array) ($result);
-			foreach ($result['data'] as $key => $value) {
-				$value = (array) ($value);
+			$result = (array) ( $result );
+			foreach ( $result['data'] as $key => $value ) {
+				$value = (array) ( $value );
 
-				if ($value['service'] == "T") {
+				if ( $value['service'] == "T" ) {
 					$credits = $value['credits'];
 				}
 
