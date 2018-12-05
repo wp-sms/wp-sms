@@ -23,8 +23,8 @@ if ( ! function_exists( 'get_plugin_data' ) ) {
 $plugin_data = get_plugin_data( __FILE__ );
 
 define( 'WP_SMS_VERSION', $plugin_data['Version'] );
-define( 'WP_SMS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'WP_SMS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'WP_SMS_URL', plugin_dir_url( __FILE__ ) );
+define( 'WP_SMS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
 define( 'WP_SMS_SITE', 'https://wp-sms-pro.com' );
 define( 'WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/' );
@@ -38,7 +38,7 @@ $wpsms_option = get_option( 'wpsms_settings' );
 /**
  * Initial gateway
  */
-include_once WP_SMS_PLUGIN_DIR . 'includes/functions.php';
+include_once WP_SMS_DIR . 'includes/functions.php';
 $sms = initial_gateway();
 
 /*
@@ -179,7 +179,7 @@ class WP_SMS_Plugin {
 	static function install( $network_wide ) {
 		global $wp_sms_db_version;
 
-		include_once WP_SMS_PLUGIN_DIR . '/install.php';
+		include_once WP_SMS_DIR . '/install.php';
 		$install = new WP_SMS_INSTALL;
 		$install->create_table( $network_wide );
 
@@ -194,7 +194,7 @@ class WP_SMS_Plugin {
 	 * Upgrade plugin requirements if needed
 	 */
 	static function upgrade() {
-		include_once WP_SMS_PLUGIN_DIR . '/upgrade.php';
+		include_once WP_SMS_DIR . '/upgrade.php';
 	}
 
 	/**
@@ -203,7 +203,7 @@ class WP_SMS_Plugin {
 	public function add_table_on_create_blog( $blog_id ) {
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
 			switch_to_blog( $blog_id );
-			include_once WP_SMS_PLUGIN_DIR . '/install.php';
+			include_once WP_SMS_DIR . '/install.php';
 			$install = new WP_SMS_INSTALL;
 			$install->table_sql();
 			restore_current_blog();
@@ -246,36 +246,36 @@ class WP_SMS_Plugin {
 
 		if ( is_admin() ) {
 			// Admin Classes
-			require_once WP_SMS_PLUGIN_DIR . 'includes/admin/class-wpsms-privacy.php';
-			require_once WP_SMS_PLUGIN_DIR . 'includes/admin/class-wpsms-version.php';
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 
 			// Admin Classes - Groups
-			require_once WP_SMS_PLUGIN_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
+			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
 
 			// Admin Classes - Send
-			require_once WP_SMS_PLUGIN_DIR . 'includes/admin/send/class-wpsms-send.php';
+			require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
 
 			// Admin Classes - Settings
-			require_once WP_SMS_PLUGIN_DIR . 'includes/admin/settings/class-wpsms-settings.php';
-			require_once WP_SMS_PLUGIN_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
+			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
+			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
 
 		// Admin Classes - Subscribers
-		require_once WP_SMS_PLUGIN_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
+		require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
 		}
 
 		// Multi Classes
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-gateway.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-features.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-notifications.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-integrations.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-gravityforms.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-quform.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-newsletter.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-widget.php';
-		require_once WP_SMS_PLUGIN_DIR . 'includes/class-wpsms-rest-api.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-gravityforms.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-quform.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-newsletter.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 
 		// Api Classes
-		require_once WP_SMS_PLUGIN_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
+		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
 
 	}
 
@@ -313,13 +313,13 @@ class WP_SMS_Plugin {
 	 */
 	public function admin_assets() {
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
-			wp_register_style( 'wpsms-admin-css', WP_SMS_PLUGIN_URL . 'assets/css/admin.css', true, '1.3' );
+			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, '1.3' );
 			wp_enqueue_style( 'wpsms-admin-css' );
 
-			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_PLUGIN_URL . 'assets/css/chosen.min.css', true, '1.2.0' );
-			wp_enqueue_script( 'wpsms-chosen-js', WP_SMS_PLUGIN_URL . 'assets/js/chosen.jquery.min.js', true, '1.2.0' );
-			wp_enqueue_script( 'wpsms-word-and-character-counter-js', WP_SMS_PLUGIN_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0' );
-			wp_enqueue_script( 'wpsms-admin-js', WP_SMS_PLUGIN_URL . 'assets/js/admin.js', true, '1.2.0' );
+			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, '1.2.0' );
+			wp_enqueue_script( 'wpsms-chosen-js', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, '1.2.0' );
+			wp_enqueue_script( 'wpsms-word-and-character-counter-js', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0' );
+			wp_enqueue_script( 'wpsms-admin-js', WP_SMS_URL . 'assets/js/admin.js', true, '1.2.0' );
 		}
 	}
 
@@ -333,7 +333,7 @@ class WP_SMS_Plugin {
 
 		// Check if Disable Style in frontend is active or not
 		if ( empty( $wpsms_option['disable_style_in_front'] ) or ( isset( $wpsms_option['disable_style_in_front'] ) and ! $wpsms_option['disable_style_in_front'] ) ) {
-			wp_register_style( 'wpsms-subscribe', WP_SMS_PLUGIN_URL . 'assets/css/subscribe.css', true, '1.1' );
+			wp_register_style( 'wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, '1.1' );
 			wp_enqueue_style( 'wpsms-subscribe' );
 		}
 	}
@@ -476,7 +476,7 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function outbox_page() {
-		include_once WP_SMS_PLUGIN_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+		include_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
 
 		//Create an instance of our package class...
 		$list_table = new WP_SMS_Outbox_List_Table();
@@ -484,7 +484,7 @@ class WP_SMS_Plugin {
 		//Fetch, prepare, sort, and filter our data...
 		$list_table->prepare_items();
 
-		include_once WP_SMS_PLUGIN_DIR . "includes/admin/outbox/outbox.php";
+		include_once WP_SMS_DIR . "includes/admin/outbox/outbox.php";
 	}
 
 	/**
@@ -509,10 +509,10 @@ class WP_SMS_Plugin {
 
 		// Import subscriber page
 		if ( isset( $_POST['wps_import'] ) ) {
-			include_once WP_SMS_PLUGIN_DIR . "includes/admin/import.php";
+			include_once WP_SMS_DIR . "includes/admin/import.php";
 		}
 
-		include_once WP_SMS_PLUGIN_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';
+		include_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';
 
 		//Create an instance of our package class...
 		$list_table = new WP_SMS_Subscribers_List_Table();
@@ -520,7 +520,7 @@ class WP_SMS_Plugin {
 		//Fetch, prepare, sort, and filter our data...
 		$list_table->prepare_items();
 
-		include_once WP_SMS_PLUGIN_DIR . "includes/admin/subscribers/subscribers.php";
+		include_once WP_SMS_DIR . "includes/admin/subscribers/subscribers.php";
 	}
 
 	/**
@@ -541,7 +541,7 @@ class WP_SMS_Plugin {
 			echo $this->notice_result( $result['result'], $result['message'] );
 		}
 
-		include_once WP_SMS_PLUGIN_DIR . '/includes/admin/groups/class-wpsms-groups-table.php';
+		include_once WP_SMS_DIR . '/includes/admin/groups/class-wpsms-groups-table.php';
 
 		//Create an instance of our package class...
 		$list_table = new WP_SMS_Subscribers_Groups_List_Table();
@@ -549,7 +549,7 @@ class WP_SMS_Plugin {
 		//Fetch, prepare, sort, and filter our data...
 		$list_table->prepare_items();
 
-		include_once WP_SMS_PLUGIN_DIR . "includes/admin/subscribers/groups.php";
+		include_once WP_SMS_DIR . "includes/admin/subscribers/groups.php";
 	}
 
 	/**
@@ -590,14 +590,14 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_newsletter() {
-		include_once WP_SMS_PLUGIN_DIR . 'includes/templates/wp-sms-admin-newsletter.php';
+		include_once WP_SMS_DIR . 'includes/templates/wp-sms-admin-newsletter.php';
 	}
 
 	public static function loadNewsLetter( $widget_id = null, $instance = null ) {
 		global $wpdb, $table_prefix, $wpsms_option;
 		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
 
-		include_once WP_SMS_PLUGIN_DIR . "includes/templates/wp-sms-subscribe-form.php";
+		include_once WP_SMS_DIR . "includes/templates/wp-sms-subscribe-form.php";
 	}
 
 }

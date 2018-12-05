@@ -11,7 +11,7 @@ if ( $type ) {
 
 	global $wpdb, $table_prefix;
 
-	require( WP_SMS_PLUGIN_DIR . 'includes/libraries/php-export-data.class.php' );
+	require( WP_SMS_DIR . 'includes/libraries/php-export-data.class.php' );
 
 	$file_name = date( 'Y-m-d_H-i' );
 

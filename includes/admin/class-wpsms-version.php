@@ -99,7 +99,7 @@ class WP_SMS_Version {
 	 * Load script
 	 */
 	public function pro_admin_script() {
-		wp_enqueue_script( 'wpsms-pro-admin-js', WP_SMS_PLUGIN_URL . 'assets/js/pro-pack.js', true, '1.0.0' );
+		wp_enqueue_script( 'wpsms-pro-admin-js', WP_SMS_URL . 'assets/js/pro-pack.js', true, '1.0.0' );
 	}
 
 	/**

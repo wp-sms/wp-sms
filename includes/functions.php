@@ -12,16 +12,16 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 		global $wpsms_option;
 
 		// Include default gateway
-		include_once WP_SMS_PLUGIN_DIR . '/includes/class-wpsms.php';
-		include_once WP_SMS_PLUGIN_DIR . '/includes/gateways/default.class.php';
+		include_once WP_SMS_DIR . '/includes/class-wpsms.php';
+		include_once WP_SMS_DIR . '/includes/gateways/default.class.php';
 
 		// Using default gateway if does not set gateway in the setting
 		if ( empty( $wpsms_option['gateway_name'] ) ) {
 			return new Default_Gateway;
 		}
 
-		if ( is_file( WP_SMS_PLUGIN_DIR . 'includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
-			include_once WP_SMS_PLUGIN_DIR . 'includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php';
+		if ( is_file( WP_SMS_DIR . 'includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
+			include_once WP_SMS_DIR . 'includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php';
 		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
 			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' );
 		} else {

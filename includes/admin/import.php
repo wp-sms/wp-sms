@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-include_once WP_SMS_PLUGIN_DIR . "includes/libraries/excel-reader.class.php";
+include_once WP_SMS_DIR . "includes/libraries/excel-reader.class.php";
 
 global $wpdb, $table_prefix;
 

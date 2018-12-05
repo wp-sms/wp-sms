@@ -93,7 +93,7 @@ class WP_SMS_Notifications {
 
 		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
 		$username_active  = $wpdb->query( "SELECT * FROM {$table_prefix}sms_subscribes WHERE status = '1'" );
-		include_once WP_SMS_PLUGIN_DIR . "includes/templates/wp-sms-meta-box.php";
+		include_once WP_SMS_DIR . "includes/templates/wp-sms-meta-box.php";
 	}
 
 	/**
