@@ -14,7 +14,7 @@ class joghataysms extends WP_SMS {
 		$this->validateNumber = "09xxxxxxxx";
 
 		if ( ! class_exists( 'nusoap_client' ) ) {
-			include_once dirname( __FILE__ ) . '/../classes/nusoap.class.php';
+			include_once dirname( __FILE__ ) . '/../libraries/nusoap.class.php';
 		}
 
 		$this->client = new nusoap_client( $this->wsdl_link );

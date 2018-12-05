@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-include_once dirname( __FILE__ ) . "/includes/classes/excel-reader.class.php";
+include_once dirname( __FILE__ ) . "/includes/libraries/excel-reader.class.php";
 
 global $wpdb, $table_prefix;
 

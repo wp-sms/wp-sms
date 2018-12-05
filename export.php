@@ -11,7 +11,7 @@ if ( $type ) {
 
 	global $wpdb, $table_prefix;
 
-	require( 'includes/classes/php-export-data.class.php' );
+	require( 'includes/libraries/php-export-data.class.php' );
 
 	$file_name = date( 'Y-m-d_H-i' );
 
