@@ -203,9 +203,12 @@ class WP_SMS_Plugin {
 	public function add_table_on_create_blog( $blog_id ) {
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
 			switch_to_blog( $blog_id );
+
 			include_once WP_SMS_DIR . '/install.php';
+
 			$install = new WP_SMS_INSTALL;
 			$install->table_sql();
+
 			restore_current_blog();
 		}
 	}
@@ -243,27 +246,26 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function includes() {
-
 		if ( is_admin() ) {
-			// Admin Classes
+			// Admin classes.
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 
-			// Admin Classes - Groups
+			// Groups class.
 			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
 
-			// Admin Classes - Send
+			// Send class.
 			require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
 
-			// Admin Classes - Settings
+			// Settings classes.
 			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
 			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
 
-		// Admin Classes - Subscribers
-		require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
+			// Subscribers class.
+			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
 		}
 
-		// Multi Classes
+		// Utility classes.
 		require_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
@@ -274,9 +276,8 @@ class WP_SMS_Plugin {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 
-		// Api Classes
+		// API Class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
-
 	}
 
 	/**

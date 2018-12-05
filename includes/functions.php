@@ -13,7 +13,7 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 
 		// Include default gateway
 		include_once WP_SMS_DIR . '/includes/class-wpsms.php';
-		include_once WP_SMS_DIR . '/includes/gateways/default.class.php';
+		include_once WP_SMS_DIR . '/includes/gateways/class-wpsms-gateway-default.php';
 
 		// Using default gateway if does not set gateway in the setting
 		if ( empty( $wpsms_option['gateway_name'] ) ) {
