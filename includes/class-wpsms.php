@@ -5,7 +5,7 @@
  * @package    WP_SMS
  * @version    1.0
  */
-abstract class WP_SMS {
+class WP_SMS {
 
 	/**
 	 * Webservice username

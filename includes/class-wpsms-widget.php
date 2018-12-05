@@ -53,7 +53,7 @@ class WPSMS_Widget extends WP_Widget {
 		$description = ! empty( $instance['description'] ) ? $instance['description'] : '';
 
 		// Load template
-		include dirname( __FILE__ ) . "/templates/wp-sms-widget.php";
+		include WP_SMS_PLUGIN_DIR . "includes/templates/wp-sms-widget.php";
 	}
 
 	/**

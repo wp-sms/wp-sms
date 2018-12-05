@@ -91,7 +91,7 @@ class WP_SMS_Features {
 	}
 
 	public function add_mobile_field_to_newuser_form() {
-		include_once dirname( __FILE__ ) . "/templates/wp-sms-mobile-field.php";
+		include_once WP_SMS_PLUGIN_DIR . "includes/templates/wp-sms-mobile-field.php";
 	}
 
 	/**
@@ -107,7 +107,7 @@ class WP_SMS_Features {
 
 	public function add_mobile_field_to_register_form() {
 		$mobile = ( isset( $_POST['mobile'] ) ) ? $_POST['mobile'] : '';
-		include_once dirname( __FILE__ ) . "/templates/wp-sms-mobile-field-register.php";
+		include_once WP_SMS_PLUGIN_DIR . "includes/templates/wp-sms-mobile-field-register.php";
 	}
 
 	/**

@@ -11,8 +11,8 @@ class websmscy extends WP_SMS {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "Phone numbers must be in the 9XXXXXXX format beginning with 99, 96 or 97";
-		ini_set( "soap.wsdl_cache_enabled", "0" );
-		include_once( 'includes/websmscy/soapClient.class.php' );
+		@ini_set( "soap.wsdl_cache_enabled", "0" );
+		include_once( 'libraries/websmscy/soapClient.class.php' );
 	}
 
 	public function SendSMS() {

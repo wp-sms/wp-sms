@@ -1,0 +1,125 @@
+<div class="wrap">
+    <h2><?php _e( 'Subscribers', 'wp-sms' ); ?></h2>
+	<?php add_thickbox(); ?>
+    <div class="wpsms-button-group">
+        <a name="<?php _e( 'Add Subscribe', 'wp-sms' ); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=250&inlineId=add-subscriber" class="thickbox button"><span class="dashicons dashicons-admin-users"></span> <?php _e( 'Add Subscribe', 'wp-sms' ); ?>
+        </a>
+        <a href="admin.php?page=wp-sms-subscribers-group" class="button"><span class="dashicons dashicons-category"></span> <?php _e( 'Manage Group', 'wp-sms' ); ?>
+        </a>
+        <a name="<?php _e( 'Import', 'wp-sms' ); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=270&inlineId=import-subscriber" class="thickbox button"><span class="dashicons dashicons-undo"></span> <?php _e( 'Import', 'wp-sms' ); ?>
+        </a>
+        <a name="<?php _e( 'Export', 'wp-sms' ); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=150&inlineId=export-subscriber" class="thickbox button"><span class="dashicons dashicons-redo"></span> <?php _e( 'Export', 'wp-sms' ); ?>
+        </a>
+    </div>
+    <div id="add-subscriber" style="display:none;">
+        <form action="" method="post">
+            <table>
+                <tr>
+                    <td style="padding-top: 10px;">
+                        <label for="wp_subscribe_name" class="wp_sms_subscribers_label"><?php _e( 'Name', 'wp-sms' ); ?></label>
+                        <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" class="wp_sms_subscribers_input_text" required/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 10px;">
+                        <label for="wp_subscribe_mobile" class="wp_sms_subscribers_label"><?php _e( 'Mobile', 'wp-sms' ); ?></label>
+                        <input type="text" id="wp_subscribe_mobile" name="wp_subscribe_mobile" class="wp_sms_subscribers_input_text" required/>
+                    </td>
+                </tr>
+				<?php
+				$groups = WP_SMS_Newsletter::get_groups();
+				if ( $groups ): ?>
+                    <tr>
+                        <td style="padding-top: 10px;">
+                            <label class="wp_sms_subscribers_label" for="wpsms_group_name"><?php _e( 'Group', 'wp-sms' ); ?>
+                                :</label>
+                            <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text">
+								<?php foreach ( $groups as $items ): ?>
+                                    <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
+								<?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+				<?php else: ?>
+                    <tr>
+                        <td><span class="wp_sms_subscribers_label" for="wpsms_group_name"><?php _e( 'Group', 'wp-sms' ); ?>:</span>
+                        </td>
+                        <td><?php echo sprintf( __( 'There is no group! <a href="%s">Add</a>', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ); ?></td>
+                    </tr>
+				<?php endif; ?>
+
+                <tr>
+                    <td colspan="2" style="padding-top: 20px;">
+                        <input type="submit" class="button-primary" name="wp_add_subscribe" value="<?php _e( 'Add', 'wp-sms' ); ?>"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="import-subscriber" style="display:none;">
+        <form action="" method="post" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td style="padding-top: 10px;">
+                        <input id="async-upload" type="file" name="wps-import-file"/>
+                        <p class="upload-html-bypass"><?php echo sprintf( __( '<code>Excel 97-2003 Workbook (*.xls)</code> is the only acceptable format. Please see <a href="%s">this image</a> to show a standard xls import file.', 'wp-sms' ), plugins_url( 'wp-sms/assets/images/standard-xml-file.png' ) ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php _e( 'Group', 'wp-sms' ); ?></label>
+                        <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text">
+							<?php foreach ( WP_SMS_Newsletter::get_groups() as $items ): ?>
+                                <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
+							<?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 10px;">
+                        <input type="checkbox" name="ignore_duplicate" value="ignore"/> <?php _e( 'Ignore duplicate subscribers if exist to other group.', 'wp-sms' ); ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding-top: 20px;">
+                        <input type="submit" class="button-primary" name="wps_import" value="<?php _e( 'Upload', 'wp-sms' ); ?>"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="export-subscriber" style="display:none;">
+        <form action="<?php echo plugins_url( 'wp-sms/includes/admin/export.php' ); ?>" method="post">
+            <table>
+                <tr>
+                    <td style="padding-top: 10px;">
+                        <label for="export-file-type" class="wp_sms_subscribers_label"><?php _e( 'Export To', 'wp-sms' ); ?></label>
+                        <select id="export-file-type" name="export-file-type" class="wp_sms_subscribers_input_text">
+                            <option value="0"><?php _e( 'Please select.', 'wp-sms' ); ?></option>
+                            <option value="excel">Excel</option>
+                            <option value="xml">XML</option>
+                            <option value="csv">CSV</option>
+                            <option value="tsv">TSV</option>
+                        </select>
+                        <p class="description"><?php _e( 'Select the output file type.', 'wp-sms' ); ?></p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding-top: 10px;">
+                        <input type="submit" class="button-primary" name="wps_export_subscribe" value="<?php _e( 'Export', 'wp-sms' ); ?>"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <form id="subscribers-filter" method="get">
+        <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+		<?php $list_table->search_box( __( 'Search', 'wp-sms' ), 'search_id' ); ?>
+		<?php $list_table->display(); ?>
+    </form>
+</div>

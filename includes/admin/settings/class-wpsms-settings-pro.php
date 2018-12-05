@@ -1228,7 +1228,7 @@ class WP_SMS_Settings_Pro {
             <div class="wpsms-tab-group">
                 <ul class="wpsms-tab">
                     <li id="wpsms-logo">
-                        <img src="<?php echo WP_SMS_DIR_PLUGIN; ?>assets/images/logo-250.png"/>
+                        <img src="<?php echo WP_SMS_PLUGIN_URL; ?>assets/images/logo-250.png"/>
 						<?php do_action( 'wp_sms_pro_after_setting_logo' ); ?>
                     </li>
 					<?php

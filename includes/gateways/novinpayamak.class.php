@@ -13,7 +13,7 @@ class novinpayamak extends WP_SMS {
 		$this->validateNumber = "09xxxxxxxx";
 		$this->has_key        = true;
 
-		ini_set( "soap.wsdl_cache_enabled", "0" );
+		@ini_set( "soap.wsdl_cache_enabled", "0" );
 	}
 
 	public function SendSMS() {

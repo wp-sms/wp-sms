@@ -63,7 +63,7 @@ class WP_SMS_Subscribers_Groups_Table_Edit {
 
 	public function admin_assets( $hook ) {
 
-		wp_register_script( 'wp-sms-edit-group', plugin_dir_url( __DIR__ ) . 'assets/js/edit-group.js', array(
+		wp_register_script( 'wp-sms-edit-group', WP_SMS_PLUGIN_URL . 'assets/js/edit-group.js', array(
 			'jquery'
 		), null, true );
 

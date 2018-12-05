@@ -14,7 +14,7 @@ class primotexto extends WP_SMS {
 		$this->help           = 'Vous devez génerer une clé depuis votre <a href="https://www.primotexto.com/webapp/#/developer/keys">interface Primotexto</a> pour pouvoir utiliser l\'API.';
 		$this->has_key        = true;
 		//$this->bulk_send      = false;
-		require_once 'includes/primotexto/baseManager.class.php';
+		require_once 'libraries/primotexto/baseManager.class.php';
 	}
 
 	public function SendSMS() {

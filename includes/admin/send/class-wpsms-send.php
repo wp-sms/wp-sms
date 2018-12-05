@@ -104,7 +104,7 @@ class WP_SMS_Send {
 			}
 		}
 
-		include_once dirname( __FILE__ ) . "/templates/send/send-sms.php";
+		include_once WP_SMS_PLUGIN_DIR . "includes/admin/send/send-sms.php";
 	}
 
 	/**

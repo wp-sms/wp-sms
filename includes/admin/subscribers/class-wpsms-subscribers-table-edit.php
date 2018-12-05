@@ -112,7 +112,7 @@ class WP_SMS_Subscribers_Subscribers_Table_Edit {
 
 	public function admin_assets( $hook ) {
 
-		wp_register_script( 'wp-sms-edit-subscriber', plugin_dir_url( __DIR__ ) . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
+		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_PLUGIN_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
 
 		//Set Values
 		if ( 'sms_page_wp-sms-subscribers' != $hook ) {

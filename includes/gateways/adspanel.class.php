@@ -15,7 +15,7 @@ class adspanel extends WP_SMS {
 		$this->has_key        = true;
 
 		if ( ! class_exists( 'nusoap_client' ) ) {
-			include_once dirname( __FILE__ ) . '/../libraries/nusoap.class.php';
+			include_once WP_SMS_PLUGIN_DIR . 'includes/libraries/nusoap.class.php';
 		}
 
 		$this->client              = new nusoap_client( $this->wsdl_link );

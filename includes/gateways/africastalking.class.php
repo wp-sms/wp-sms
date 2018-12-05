@@ -12,7 +12,7 @@ class africastalking extends WP_SMS {
 
 	public function __construct() {
 		parent::__construct();
-		include_once( 'includes/africastalking/AfricasTalkingGateway.php' );
+		include_once( 'libraries/africastalking/AfricasTalkingGateway.php' );
 
 		$this->validateNumber = "+254711XXXYYY";
 		$this->help           = "API key generated from your account settings";

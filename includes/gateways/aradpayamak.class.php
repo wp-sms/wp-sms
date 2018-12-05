@@ -14,7 +14,7 @@ class aradpayamak extends WP_SMS {
 		$this->has_key        = true;
 		$this->help           = 'Please Enter Your Domain Name in API Key';
 
-		ini_set( "soap.wsdl_cache_enabled", "0" );
+		@ini_set( "soap.wsdl_cache_enabled", "0" );
 	}
 
 	public function SendSMS() {

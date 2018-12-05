@@ -15,8 +15,8 @@ class _textplode extends WP_SMS {
 		// Enable api key
 		$this->has_key = true;
 
-		// includes library
-		include( 'includes/textplode/textplode.class.php' );
+		// Include library
+		include( 'libraries/textplode/textplode.class.php' );
 	}
 
 	public function SendSMS() {
