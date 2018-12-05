@@ -14,10 +14,6 @@ class spirius extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -46,6 +42,14 @@ class spirius extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		// Implode numbers
 		$to = implode( ',', $this->to );
 
@@ -56,13 +60,17 @@ class spirius extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $response_code == '202' ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'] );
 
 			/**
 			 * Run hook after send sms.
@@ -75,6 +83,9 @@ class spirius extends WP_SMS {
 
 			return $response['body'];
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
+
 			return new WP_Error( 'send-sms', $response['body'] );
 		}
 	}

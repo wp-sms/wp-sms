@@ -14,10 +14,6 @@ class resalaty extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -46,6 +42,14 @@ class resalaty extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$to = implode( ',', $this->to );
 
 		$msg = urlencode( $this->msg );
@@ -55,6 +59,9 @@ class resalaty extends WP_SMS {
 
 		// Check response
 		if ( $response['response']['message'] != 'OK' ) {
+			// Log th result
+			$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
+
 			return;
 		}
 
@@ -62,7 +69,8 @@ class resalaty extends WP_SMS {
 		$response = json_decode( $response['body'] );
 
 		if ( $response->Code == 100 ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response );
 
 			/**
 			 * Run hook after send sms.
@@ -75,6 +83,9 @@ class resalaty extends WP_SMS {
 
 			return true;
 		} else {
+			// Log th result
+			$this->log( $this->from, $this->msg, $this->to, $response->MessageIs, 'error' );
+
 			return new WP_Error( 'send-sms', $response->MessageIs );
 		}
 

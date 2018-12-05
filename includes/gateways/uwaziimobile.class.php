@@ -14,10 +14,6 @@ class uwaziimobile extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms-pro' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -45,6 +41,14 @@ class uwaziimobile extends WP_SMS {
 		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
 
 		// Reformat number
 		$to = array();
@@ -78,6 +82,9 @@ class uwaziimobile extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -89,7 +96,8 @@ class uwaziimobile extends WP_SMS {
 
 		// Check response code
 		if ( $response_code == '200' ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response );
 
 			/**
 			 * Run hook after send sms.
@@ -102,6 +110,9 @@ class uwaziimobile extends WP_SMS {
 
 			return $response;
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->requestError->serviceException->text, 'error' );
+
 			return new WP_Error( 'account-credit', $response->requestError->serviceException->text );
 		}
 	}

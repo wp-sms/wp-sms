@@ -14,10 +14,6 @@ class sms77 extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -46,10 +42,19 @@ class sms77 extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$result = @file_get_contents( $this->wsdl_link . '?u=' . urlencode( $this->username ) . '&p=' . urlencode( $this->password ) . '&text=' . urlencode( $this->msg ) . '&to=' . implode( $this->to, "," ) . '&type=quality&from=' . urlencode( $this->from ) );
 
 		if ( $result == '100' ) {
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
 
 			/**
 			 * Run hook after send sms.
@@ -62,6 +67,8 @@ class sms77 extends WP_SMS {
 
 			return $result;
 		}
+		// Log the result
+		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
 		return new WP_Error( 'send-sms', $result );
 	}

@@ -16,10 +16,6 @@ class sonoratecnologia extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -47,6 +43,15 @@ class sonoratecnologia extends WP_SMS {
 		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 
 		// Implode numbers
 		$to = implode( $this->to, "," );
@@ -83,13 +88,16 @@ class sonoratecnologia extends WP_SMS {
 		curl_close( $curl );
 
 		if ( $err ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $err, 'error' );
+
 			return false;
 		}
 
 		if ( strstr( $response, 'success' ) ) {
 
-			// Insert to DB
-			$this->InsertToDB( $this->from, $this->msg, $this->to );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response );
 
 			/**
 			 * Run hook after send sms.
@@ -103,7 +111,10 @@ class sonoratecnologia extends WP_SMS {
 			return true;
 
 		} else {
-			return new WP_Error( 'send-sms', $result );
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
+
+			return new WP_Error( 'send-sms', $response );
 		}
 
 

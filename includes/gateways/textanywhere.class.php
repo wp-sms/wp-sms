@@ -16,10 +16,6 @@ class textanywhere extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -48,6 +44,14 @@ class textanywhere extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$to      = implode( $this->to, "," );
 		$message = urlencode( $this->msg );
 
@@ -55,6 +59,9 @@ class textanywhere extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+
 			return new WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
@@ -63,7 +70,8 @@ class textanywhere extends WP_SMS {
 		if ( isset( $result['Transaction']['Code'] ) and $result['Transaction']['Code'] == '1' ) {
 
 			if ( isset( $result['Destinations']['Destination']['Code'] ) and $result['Destinations']['Destination']['Code'] == '1' ) {
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result );
 
 				/**
 				 * Run hook after send sms.
@@ -76,9 +84,15 @@ class textanywhere extends WP_SMS {
 
 				return $result;
 			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $this->get_error_message( $result['Destinations']['Destination']['Code'] ), 'error' );
+
 				return new WP_Error( 'send-sms', $this->get_error_message( $result['Destinations']['Destination']['Code'] ) );
 			}
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result['Transaction']['Description'], 'error' );
+
 			return new WP_Error( 'send-sms', $result['Transaction']['Description'] );
 		}
 	}

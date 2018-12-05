@@ -20,10 +20,6 @@ class smsmaster extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -52,6 +48,14 @@ class smsmaster extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$result = $this->client->call( 'sending_sms', array(
 			$this->username,
 			$this->password,
@@ -61,18 +65,25 @@ class smsmaster extends WP_SMS {
 			0,
 			$this->from
 		) );
+		if ( $result ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 *
+			 * @param string $result result output.
+			 */
+			do_action( 'wp_sms_send', $result );
 
+			return $result;
+		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		/**
-		 * Run hook after send sms.
-		 *
-		 * @since 2.4
-		 *
-		 * @param string $result result output.
-		 */
-		do_action( 'wp_sms_send', $result );
-
-		return $result;
+			return new WP_Error( 'send-sms', $result );
+		}
 	}
 
 	public function GetCredit() {

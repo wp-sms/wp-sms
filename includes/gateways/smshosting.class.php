@@ -15,10 +15,6 @@ class smshosting extends WP_SMS {
 	}
 
 	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
 
 		/**
 		 * Modify sender number
@@ -47,6 +43,14 @@ class smshosting extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+
+			return $this->GetCredit();
+		}
+
 		$to = implode( $this->to, "," );
 
 		$sms_text = $this->msg;
@@ -73,13 +77,20 @@ class smshosting extends WP_SMS {
 			$jsonObj = json_decode( $result );
 
 			if ( null === $jsonObj ) {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $jsonObj, 'error' );
+
 				return false;
 			} elseif ( $this->smsh_response_status != 200 ) {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $jsonObj, 'error' );
+
 				return false;
 			} else {
 				$result = $jsonObj->transactionId;
 
-				$this->InsertToDB( $this->from, $this->msg, $this->to );
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result );
 
 				/**
 				 * Run hook after send sms.
@@ -93,6 +104,9 @@ class smshosting extends WP_SMS {
 				return $result;
 			}
 		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
+
 			return new WP_Error( 'send-sms', $result );
 		}
 	}

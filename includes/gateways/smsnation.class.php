@@ -1,114 +1,125 @@
 <?php
 
 class smsnation extends WP_SMS {
-    private $wsdl_link = "sms-api.smsnation.co:37777/smsp-in";
-    public $tariff = "http://smsnation.co.rw/";
-    public $unitrial = false;
-    public $unit;
-    public $flash = "enable";
-    public $isflash = false;
+	private $wsdl_link = "sms-api.smsnation.co:37777/smsp-in";
+	public $tariff = "http://smsnation.co.rw/";
+	public $unitrial = false;
+	public $unit;
+	public $flash = "enable";
+	public $isflash = false;
 
-    public function __construct() {
-        parent::__construct();
-        $this->validateNumber = "The Destination number must not be longer than 20 characters and it must be written in international format ( without the leading + or 00)";
-        $this->help           = "Please enter Originator in Sender Number field";
-    }
+	public function __construct() {
+		parent::__construct();
+		$this->validateNumber = "The Destination number must not be longer than 20 characters and it must be written in international format ( without the leading + or 00)";
+		$this->help           = "Please enter Originator in Sender Number field";
+	}
 
-    public function SendSMS() {
-        // Check gateway credit
-        if ( is_wp_error( $this->GetCredit() ) ) {
-            return new WP_Error( 'account-credit', __( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-        }
+	public function SendSMS() {
 
-        /**
-         * Modify sender number
-         *
-         * @since 3.4
-         *
-         * @param string $this ->from sender number.
-         */
-        $this->from = apply_filters( 'wp_sms_from', $this->from );
+		/**
+		 * Modify sender number
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->from sender number.
+		 */
+		$this->from = apply_filters( 'wp_sms_from', $this->from );
 
-        /**
-         * Modify Receiver number
-         *
-         * @since 3.4
-         *
-         * @param array $this ->to receiver number
-         */
-        $this->to = apply_filters( 'wp_sms_to', $this->to );
+		/**
+		 * Modify Receiver number
+		 *
+		 * @since 3.4
+		 *
+		 * @param array $this ->to receiver number
+		 */
+		$this->to = apply_filters( 'wp_sms_to', $this->to );
 
-        /**
-         * Modify text message
-         *
-         * @since 3.4
-         *
-         * @param string $this ->msg text message.
-         */
-        $this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+		/**
+		 * Modify text message
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->msg text message.
+		 */
+		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-        // Reformat number
-        $to  = implode( $this->to, "," );
-        $msg = urlencode( $this->msg );
+		// Check gateway credit
+		if ( is_wp_error( $this->GetCredit() ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
 
-        $args = array(
-            'originator' => $this->from,
-            'text' => $msg,
-            'request_delivery' => 'true',
-            'mobile_number' => $to,
-        );
+			return $this->GetCredit();
+		}
 
-        $response = wp_remote_get( add_query_arg($args, 'http://'.$this->username.':'.$this->password.'@'.$this->wsdl_link) );
+		// Reformat number
+		$to  = implode( $this->to, "," );
+		$msg = urlencode( $this->msg );
 
-        // Check gateway credit
-        if ( is_wp_error( $response ) ) {
-            return new WP_Error( 'send-sms', $response->get_error_message() );
-        }
+		$args = array(
+			'originator'       => $this->from,
+			'text'             => $msg,
+			'request_delivery' => 'true',
+			'mobile_number'    => $to,
+		);
 
-        // Ger response code
-        $response_code = wp_remote_retrieve_response_code( $response );
+		$response = wp_remote_get( add_query_arg( $args, 'http://' . $this->username . ':' . $this->password . '@' . $this->wsdl_link ) );
 
-        // Decode response
-        $response = json_decode( $response['body'] );
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-        // Check response code
-        if ( $response_code == '200' ) {
-            $this->InsertToDB( $this->from, $this->msg, $this->to );
+			return new WP_Error( 'send-sms', $response->get_error_message() );
+		}
 
-            /**
-             * Run hook after send sms.
-             *
-             * @since 2.4
-             *
-             * @param string $response result output.
-             */
-            do_action( 'wp_sms_send', $response );
+		// Ger response code
+		$response_code = wp_remote_retrieve_response_code( $response );
 
-            return $response;
-        } else {
-            return new WP_Error( 'account-credit', $response->result_info->description );
-        }
-    }
+		// Decode response
+		$response = json_decode( $response['body'] );
 
-    public function GetCredit() {
-        // Check username and password
-        if ( ! $this->username && ! $this->password ) {
-            return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
-        }
+		// Check response code
+		if ( $response_code == '200' ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response );
 
-        // Check Connect To Service
-        $response = wp_remote_get( add_query_arg('get_balance', 'true', 'http://'.$this->username.':'.$this->password.'@'.$this->wsdl_link) );
-        if ( is_wp_error( $response ) ) {
-            return new WP_Error( 'send-sms', $response->get_error_message() );
-        }
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 *
+			 * @param string $response result output.
+			 */
+			do_action( 'wp_sms_send', $response );
 
-        //Check Username and Password
-        $response_code = wp_remote_retrieve_response_code( $response );
-        if($response_code !=200) {
-            return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
-        }
+			return $response;
+		} else {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $response->result_info->description, 'error' );
+
+			return new WP_Error( 'account-credit', $response->result_info->description );
+		}
+	}
+
+	public function GetCredit() {
+		// Check username and password
+		if ( ! $this->username && ! $this->password ) {
+			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+		}
+
+		// Check Connect To Service
+		$response = wp_remote_get( add_query_arg( 'get_balance', 'true', 'http://' . $this->username . ':' . $this->password . '@' . $this->wsdl_link ) );
+		if ( is_wp_error( $response ) ) {
+			return new WP_Error( 'send-sms', $response->get_error_message() );
+		}
+
+		//Check Username and Password
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( $response_code != 200 ) {
+			return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
+		}
 
 
-        return $response['body'];
-    }
+		return $response['body'];
+	}
 }
