@@ -45,12 +45,15 @@ class hostiran extends WP_SMS {
 
 		$options = array( 'login' => $this->username, 'password' => $this->password );
 
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+		// Get the credit.
+		$credit = $this->GetCredit();
 
-			return $this->GetCredit();
+		// Check gateway credit
+		if ( is_wp_error( $credit ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $credit->get_error_message(), 'error' );
+
+			return $credit;
 		}
 
 		try {

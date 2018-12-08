@@ -44,12 +44,15 @@ class smsozone extends WP_SMS {
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+		// Get the credit.
+		$credit = $this->GetCredit();
 
-			return $this->GetCredit();
+		// Check gateway credit
+		if ( is_wp_error( $credit ) ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $credit->get_error_message(), 'error' );
+
+			return $credit;
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "SendSMS?user=" . $this->username . "&password=" . $this->password . "&senderid=" . $this->from . "&channel=Trans&DCS=0&flashsms=0&number=" . implode( ',', $this->to ) . "&text=" . urlencode( $this->msg ) . "&route=" . $this->has_key );

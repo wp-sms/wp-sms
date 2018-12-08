@@ -179,7 +179,7 @@ class WP_SMS_Plugin {
 	static function install( $network_wide ) {
 		global $wp_sms_db_version;
 
-		include_once WP_SMS_DIR . '/install.php';
+		include_once WP_SMS_DIR . 'includes/install.php';
 		$install = new WP_SMS_INSTALL;
 		$install->create_table( $network_wide );
 
@@ -194,7 +194,7 @@ class WP_SMS_Plugin {
 	 * Upgrade plugin requirements if needed
 	 */
 	static function upgrade() {
-		include_once WP_SMS_DIR . '/upgrade.php';
+		include_once WP_SMS_DIR . 'includes/upgrade.php';
 	}
 
 	/**
@@ -204,7 +204,7 @@ class WP_SMS_Plugin {
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
 			switch_to_blog( $blog_id );
 
-			include_once WP_SMS_DIR . '/install.php';
+			include_once WP_SMS_DIR . 'includes/install.php';
 
 			$install = new WP_SMS_INSTALL;
 			$install->table_sql();
@@ -276,7 +276,7 @@ class WP_SMS_Plugin {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 
-		// API Class.
+		// API class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
 	}
 
@@ -591,14 +591,14 @@ class WP_SMS_Plugin {
 	 * @param  Not param
 	 */
 	public function admin_newsletter() {
-		include_once WP_SMS_DIR . 'includes/templates/wp-sms-admin-newsletter.php';
+		include_once WP_SMS_DIR . 'includes/templates/admin-newsletter.php';
 	}
 
 	public static function loadNewsLetter( $widget_id = null, $instance = null ) {
 		global $wpdb, $table_prefix, $wpsms_option;
 		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
 
-		include_once WP_SMS_DIR . "includes/templates/wp-sms-subscribe-form.php";
+		include_once WP_SMS_DIR . "includes/templates/subscribe-form.php";
 	}
 
 }
