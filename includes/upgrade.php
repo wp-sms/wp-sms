@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 if ( is_admin() ) {
 
 	$installer_wpsms_ver = get_option( 'wp_sms_db_version' );

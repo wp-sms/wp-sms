@@ -1,6 +1,9 @@
 <?php
 
-class bestit extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class bestit extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://panelsms.bestit.co/WsSms.asmx?wsdl";
 	public $tariff = "http://panelsms.bestit.co/";
 	public $unitrial = false;
@@ -56,7 +59,7 @@ class bestit extends WP_SMS {
 			return $credit;
 		}
 
-		$client = new SoapClient( $this->wsdl_link );
+		$client = new \SoapClient( $this->wsdl_link );
 
 		$result = $client->sendsms(
 			array(
@@ -85,7 +88,7 @@ class bestit extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $result );
+			return new \WP_Error( 'send-sms', $result );
 		}
 
 		// Log the result
@@ -106,17 +109,17 @@ class bestit extends WP_SMS {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$client = new SoapClient( $this->wsdl_link );
+			$client = new \SoapClient( $this->wsdl_link );
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 
 		$result = $client->Credites( array( 'username' => $this->username, 'password' => $this->password ) );

@@ -1,6 +1,9 @@
 <?php
 
-class mensatek extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class mensatek extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.mensatek.com/v5";
 	public $tariff = "https://www.mensatek.com/precios-sms.php";
 	public $unitrial = false;
@@ -61,7 +64,7 @@ class mensatek extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$result = json_decode( $response['body'] );
@@ -82,14 +85,14 @@ class mensatek extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result->Msgid, 'error' );
 
-			return new WP_Error( 'send-sms', $result->Msgid );
+			return new \WP_Error( 'send-sms', $result->Msgid );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "/creditos.php?Correo=" . $this->username . "&Passwd=" . $this->password . "&Resp=JSON" );
@@ -99,7 +102,7 @@ class mensatek extends WP_SMS {
 
 			return $data->Cred;
 		} else {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 	}
 }

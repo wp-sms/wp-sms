@@ -1,6 +1,9 @@
 <?php
 
-class bulutfon extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class bulutfon extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.bulutfon.com/messages";
 	public $tariff = "http://bulutfon.com/";
 	public $unitrial = false;
@@ -63,13 +66,13 @@ class bulutfon extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result     = file_get_contents( 'https://api.bulutfon.com/me' . '?email=' . $this->username . '&password=' . $this->password );

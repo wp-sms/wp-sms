@@ -1,7 +1,8 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
+} // Exit if accessed directly
 
 include_once WP_SMS_DIR . "includes/libraries/excel-reader.class.php";
 
@@ -11,10 +12,10 @@ $get_mobile      = array();
 $get_mobile_dups = array();
 
 if ( isset( $_POST['ignore_duplicate'] ) AND $_POST['ignore_duplicate'] == 'ignore' ) {
-	$get_mobile      = WP_SMS_Newsletter::getSubscribers( $_POST['wpsms_group_name'] );
-	$get_mobile_dups = WP_SMS_Newsletter::getSubscribers();
+	$get_mobile      = \WP_SMS\Newsletter::getSubscribers( $_POST['wpsms_group_name'] );
+	$get_mobile_dups = \WP_SMS\Newsletter::getSubscribers();
 } else {
-	$get_mobile = WP_SMS_Newsletter::getSubscribers();
+	$get_mobile = \WP_SMS\Newsletter::getSubscribers();
 }
 
 $result          = [];
@@ -23,7 +24,7 @@ $count_duplicate = [];
 $total_submit    = [];
 
 if ( isset( $_POST['wps_import'] ) ) {
-	if ( isset($_FILES['wps-import-file']) AND ! $_FILES['wps-import-file']['error'] ) {
+	if ( isset( $_FILES['wps-import-file'] ) AND ! $_FILES['wps-import-file']['error'] ) {
 
 		$data = new Spreadsheet_Excel_Reader( $_FILES["wps-import-file"]["tmp_name"] );
 
@@ -45,7 +46,7 @@ if ( isset( $_POST['wps_import'] ) ) {
 			// Count submitted items.
 			$total_submit[] = $data->sheets[0]['cells'];
 
-			$result = WP_SMS_Newsletter::insertSubscriber( WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $_POST['wpsms_group_name'] );
+			$result = \WP_SMS\Newsletter::insertSubscriber( WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $_POST['wpsms_group_name'] );
 
 		}
 

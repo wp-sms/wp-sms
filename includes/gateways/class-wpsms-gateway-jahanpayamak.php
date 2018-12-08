@@ -1,6 +1,9 @@
 <?php
 
-class jahanpayamak extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class jahanpayamak extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://jahanpayamak.ir/API/SendSMS.asmx?WSDL";
 	public $tariff = "http://www.jahanpayamak.info/";
 	public $unitrial = false;
@@ -65,7 +68,7 @@ class jahanpayamak extends WP_SMS {
 		}
 
 		try {
-			$client = new SoapClient( $this->wsdl_link );
+			$client = new \SoapClient( $this->wsdl_link );
 
 			$parameters['USERNAME']         = $this->username;
 			$parameters['PASSWORD']         = $this->password;
@@ -97,29 +100,29 @@ class jahanpayamak extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
-			return new WP_Error( 'send-sms', $ex->faultstring );
+			return new \WP_Error( 'send-sms', $ex->faultstring );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$client = new SoapClient( $this->wsdl_link );
+			$client = new \SoapClient( $this->wsdl_link );
 
 			return $client->CHECK_CREDIT( array(
 				"USERNAME" => $this->username,
 				"PASSWORD" => $this->password
 			) )->CHECK_CREDITResult;
 		} catch ( SoapFault $ex ) {
-			return new WP_Error( 'account-credit', $ex->faultstring );
+			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 
 	}

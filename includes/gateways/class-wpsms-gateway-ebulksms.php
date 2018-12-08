@@ -1,6 +1,9 @@
 <?php
 
-class _ebulksms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class _ebulksms extends \WP_SMS\Gateway {
 
 	public $wsdl_link = "http://api.ebulksms.com";
 	public $tariff = "http://ebulksms.com/";
@@ -65,7 +68,7 @@ class _ebulksms extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -91,21 +94,21 @@ class _ebulksms extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-				return new WP_Error( 'send-sms', $response['body'] );
+				return new \WP_Error( 'send-sms', $response['body'] );
 			}
 
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password was not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password was not set for this gateway', 'wp-sms' ) );
 		}
 
 		// Get response
@@ -113,7 +116,7 @@ class _ebulksms extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -122,7 +125,7 @@ class _ebulksms extends WP_SMS {
 			return $response['body'];
 
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 

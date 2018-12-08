@@ -1,6 +1,9 @@
 <?php
 
-class smss extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smss extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://api.smss.co.il/";
 	public $tariff = "";
 	public $unitrial = false;
@@ -94,13 +97,13 @@ class smss extends WP_SMS {
 		// Log th result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', print_r( $result ) );
+		return new \WP_Error( 'send-sms', print_r( $result ) );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = file_get_contents( $this->wsdl_link . 'MultiSendAPI/balance&user=' . $this->username . '&password=' . $this->password . '&country_phone_code=' . $this->options['mobile_county_code'] );
@@ -110,6 +113,6 @@ class smss extends WP_SMS {
 			return $result->sms;
 		}
 
-		return new WP_Error( 'account-credit', print_r( $result ) );
+		return new \WP_Error( 'account-credit', print_r( $result ) );
 	}
 }

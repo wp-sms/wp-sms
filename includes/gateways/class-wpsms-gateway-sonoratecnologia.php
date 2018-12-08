@@ -1,6 +1,9 @@
 <?php
 
-class sonoratecnologia extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class sonoratecnologia extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://sonoratecnologia.ddns.net:1002/";
 	public $tariff = "http://www.sonoratecnologia.com.br/";
 	public $unitrial = false;
@@ -117,7 +120,7 @@ class sonoratecnologia extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
 
-			return new WP_Error( 'send-sms', $response );
+			return new \WP_Error( 'send-sms', $response );
 		}
 
 
@@ -126,7 +129,7 @@ class sonoratecnologia extends WP_SMS {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return true;

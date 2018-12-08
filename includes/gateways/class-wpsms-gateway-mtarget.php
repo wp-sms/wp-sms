@@ -1,6 +1,9 @@
 <?php
 
-class mtarget extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class mtarget extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://smswebservices.public.mtarget.fr/SmsWebServices/ServletSms";
 	public $tariff = "http://mtarget.fr/";
 	public $unitrial = false;
@@ -84,13 +87,13 @@ class mtarget extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return true;

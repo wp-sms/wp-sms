@@ -1,6 +1,9 @@
 <?php
 
-class primotexto extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class primotexto extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.primotexto.com/v2/";
 	public $tariff = "http://www.primotexto.com/";
 	public $unitrial = true;
@@ -90,7 +93,7 @@ class primotexto extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $json->code, 'error' );
 
-		return new WP_Error( 'credit', $json->code );
+		return new \WP_Error( 'credit', $json->code );
 	}
 
 	public function GetCredit() {
@@ -102,7 +105,7 @@ class primotexto extends WP_SMS {
 		$json   = json_decode( $result );
 
 		if ( isset( $json->error ) ) {
-			return new WP_Error( 'credit', $json->error );
+			return new \WP_Error( 'credit', $json->error );
 		}
 
 		return $json->credits;

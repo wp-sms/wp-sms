@@ -1,6 +1,9 @@
 <?php
 
-class tripadasmsbox extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class tripadasmsbox extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://tripadasmsbox.com/api/";
 	public $tariff = "http://tripadasmsbox.com";
 	public $unitrial = false;
@@ -68,7 +71,7 @@ class tripadasmsbox extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -80,7 +83,7 @@ class tripadasmsbox extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-				return new WP_Error( 'send-sms', $response['body'] );
+				return new \WP_Error( 'send-sms', $response['body'] );
 			}
 
 			// Log the result
@@ -101,14 +104,14 @@ class tripadasmsbox extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( $this->username ) {
@@ -123,12 +126,12 @@ class tripadasmsbox extends WP_SMS {
 			$data = json_decode( $response['body'] );
 
 			if ( isset( $data->error ) ) {
-				return new WP_Error( 'account-credit', $data->error );
+				return new \WP_Error( 'account-credit', $data->error );
 			}
 
 			return $data->balence;
 		} else {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 	}
 }

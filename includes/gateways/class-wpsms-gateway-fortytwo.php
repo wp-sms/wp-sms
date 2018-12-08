@@ -1,6 +1,9 @@
 <?php
 
-class fortytwo extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class fortytwo extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://rest.fortytwo.com/1/";
 	public $tariff = "http://fortytwo.com/";
 	public $unitrial = false;
@@ -82,7 +85,7 @@ class fortytwo extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -110,14 +113,14 @@ class fortytwo extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->result_info->description, 'error' );
 
-			return new WP_Error( 'account-credit', $response->result_info->description );
+			return new \WP_Error( 'account-credit', $response->result_info->description );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return true;

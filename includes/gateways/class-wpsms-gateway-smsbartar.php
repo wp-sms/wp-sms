@@ -1,6 +1,9 @@
 <?php
 
-class smsbartar extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsbartar extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://sms.sms-bartar.com/webservice/?WSDL";
 	public $tariff = "http://www.sms-bartar.com/%D9%BE%D9%86%D9%84-%D8%A7%D8%B3-%D8%A7%D9%85-%D8%A7%D8%B3-%D8%AB%D8%A7%D8%A8%D8%AA";
 	public $unitrial = true;
@@ -56,7 +59,7 @@ class smsbartar extends WP_SMS {
 		}
 
 		$options = array( 'login' => $this->username, 'password' => $this->password );
-		$client  = new SoapClient( $this->wsdl_link, $options );
+		$client  = new \SoapClient( $this->wsdl_link, $options );
 
 		$result = $client->sendToMany( $this->to, $this->msg, $this->from );
 
@@ -78,25 +81,25 @@ class smsbartar extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		$options = array( 'login' => $this->username, 'password' => $this->password );
 
 		try {
-			$client = new SoapClient( $this->wsdl_link, $options );
+			$client = new \SoapClient( $this->wsdl_link, $options );
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 
 		try {
@@ -104,7 +107,7 @@ class smsbartar extends WP_SMS {
 
 			return $credit->remaining;
 		} catch ( SoapFault $ex ) {
-			return new WP_Error( 'account-credit', $ex->faultstring );
+			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 	}
 }

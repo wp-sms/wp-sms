@@ -1,6 +1,9 @@
 <?php
 
-class mdpanel extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class mdpanel extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://37.130.202.188/class/sms/wssimple/server.php?wsdl";
 	private $client = null;
 	public $tariff = "http://ippanel.com/";
@@ -90,14 +93,14 @@ class mdpanel extends WP_SMS {
 		// Log th result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = $this->client->call( "GetCredit", array(

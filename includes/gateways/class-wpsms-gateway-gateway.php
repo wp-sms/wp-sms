@@ -1,6 +1,9 @@
 <?php
 
-class gateway extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class gateway extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://apps.gateway.sa/vendorsms/";
 	public $tariff = "http://sms.gateway.sa/";
 	public $unitrial = false;
@@ -63,7 +66,7 @@ class gateway extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$result = json_decode( $response['body'] );
@@ -84,14 +87,14 @@ class gateway extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result->ErrorMessage, 'error' );
 
-			return new WP_Error( 'send-sms', $result->ErrorMessage );
+			return new \WP_Error( 'send-sms', $result->ErrorMessage );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "CheckBalance.aspx?user=" . $this->username . "&password=" . $this->password );
@@ -100,10 +103,10 @@ class gateway extends WP_SMS {
 			if ( strpos( $response['body'], 'Success' ) !== false ) {
 				return trim( $response['body'], 'Success#' );
 			} else {
-				return new WP_Error( 'account-credit', $response['body'] );
+				return new \WP_Error( 'account-credit', $response['body'] );
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 	}
 }

@@ -1,5 +1,12 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * WP SMS quform
  *
@@ -7,7 +14,7 @@
  * @package    WP_SMS
  * @version    1.0
  */
-class WP_SMS_Quform {
+class Quform {
 	static function get_field( $form_id ) {
 		if ( ! $form_id ) {
 			return;
@@ -39,4 +46,4 @@ class WP_SMS_Quform {
 	}
 }
 
-new WP_SMS_Quform();
+new Quform();

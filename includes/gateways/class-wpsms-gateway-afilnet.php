@@ -1,6 +1,9 @@
 <?php
 
-class afilnet extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class afilnet extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://www.afilnet.com/api/http/";
 	public $tariff = "http://www.afilnet.com/";
 	public $unitrial = false;
@@ -67,7 +70,7 @@ class afilnet extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -93,34 +96,34 @@ class afilnet extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result->error, 'error' );
 
-				return new WP_Error( 'send-sms', $result->error );
+				return new \WP_Error( 'send-sms', $result->error );
 			}
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "?class=user&method=getbalance&user=" . $this->username . "&password=" . $this->password, array( 'timeout' => 30 ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $response_code == '200' ) {
 			if ( ! $response['body'] ) {
-				return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
+				return new \WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
 			}
 
 			$result = json_decode( $response['body'] );
@@ -128,10 +131,10 @@ class afilnet extends WP_SMS {
 			if ( $result->status == 'SUCCESS' ) {
 				return $result->result;
 			} else {
-				return new WP_Error( 'account-credit', $result->error );
+				return new \WP_Error( 'account-credit', $result->error );
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 }

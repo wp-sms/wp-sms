@@ -1,6 +1,9 @@
 <?php
 
-class smsgatewaycenter extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsgatewaycenter extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://www.smsgatewaycenter.com/library/";
 	public $tariff = "https://www.smsgatewaycenter.com/";
 	public $unitrial = false;
@@ -82,19 +85,19 @@ class smsgatewaycenter extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = file_get_contents( $this->wsdl_link . "checkbalance.php?Username=" . $this->username . "&Password=" . $this->password );
 
 		if ( strpos( $result, 'error' ) !== false ) {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		}
 
 		return true;

@@ -1,6 +1,9 @@
 <?php
 
-class smsnation extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsnation extends \WP_SMS\Gateway {
 	private $wsdl_link = "sms-api.smsnation.co:37777/smsp-in";
 	public $tariff = "http://smsnation.co.rw/";
 	public $unitrial = false;
@@ -72,7 +75,7 @@ class smsnation extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -100,26 +103,26 @@ class smsnation extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->result_info->description, 'error' );
 
-			return new WP_Error( 'account-credit', $response->result_info->description );
+			return new \WP_Error( 'account-credit', $response->result_info->description );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		// Check Connect To Service
 		$response = wp_remote_get( add_query_arg( 'get_balance', 'true', 'http://' . $this->username . ':' . $this->password . '@' . $this->wsdl_link ) );
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		//Check Username and Password
 		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( $response_code != 200 ) {
-			return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
 		}
 
 

@@ -1,6 +1,9 @@
 <?php
 
-class gatewayapi extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class gatewayapi extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://gatewayapi.com/rest";
 	public $tariff = "https://gatewayapi.com";
 	public $has_key = true;
@@ -119,13 +122,13 @@ class gatewayapi extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $res['body'] ?: 'An unexpected error occurred.', 'error' );
 
-			return new WP_Error( 'send-sms', $res['body'] ?: 'An unexpected error occurred.' );
+			return new \WP_Error( 'send-sms', $res['body'] ?: 'An unexpected error occurred.' );
 		}
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $this->formatErrorMessage( $responseBody ), 'error' );
 
 		// Return error and format error message from the API to the client
-		return new WP_Error( 'send-sms', $this->formatErrorMessage( $responseBody ) );
+		return new \WP_Error( 'send-sms', $this->formatErrorMessage( $responseBody ) );
 	}
 
 	/**

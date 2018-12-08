@@ -1,6 +1,9 @@
 <?php
 
-class dot4all extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class dot4all extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://sms.dot4all.it/sms/";
 	public $tariff = "http://sms.dot4all.it/";
 	public $unitrial = false;
@@ -76,14 +79,14 @@ class dot4all extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = file_get_contents( "{$this->wsdl_link}credit.php?user={$this->username}&pass={$this->password}" );
@@ -91,7 +94,7 @@ class dot4all extends WP_SMS {
 		if ( strchr( $result, 'OK' ) ) {
 			return preg_replace( '/[^0-9]+/', '', $result );
 		} else {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		}
 	}
 }

@@ -1,6 +1,9 @@
 <?php
 
-class africastalking extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class africastalking extends \WP_SMS\Gateway {
 	private $wsdl_link = '';
 	private $client = null;
 	private $http;
@@ -81,18 +84,18 @@ class africastalking extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
-			return new WP_Error( 'send-sms', $e->getMessage() );
+			return new \WP_Error( 'send-sms', $e->getMessage() );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		if ( ! function_exists( 'curl_version' ) ) {
-			return new WP_Error( 'required-function', __( 'CURL extension not found in your server. please enable curl extension.', 'wp-sms' ) );
+			return new \WP_Error( 'required-function', __( 'CURL extension not found in your server. please enable curl extension.', 'wp-sms' ) );
 		}
 
 		$gateway = new AfricasTalkingGateway( $this->username, $this->has_key );
@@ -103,7 +106,7 @@ class africastalking extends WP_SMS {
 
 			return $matches[0];
 		} catch ( AfricasTalkingGatewayException $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}
 }

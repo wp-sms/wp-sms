@@ -1,6 +1,9 @@
 <?php
 
-class asr3sms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class asr3sms extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://www.asr3sms.com/sms/api/";
 	public $tariff = "https://www.asr3sms.com/";
 	public $unitrial = false;
@@ -61,7 +64,7 @@ class asr3sms extends WP_SMS {
 
 		// Check request
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -87,27 +90,27 @@ class asr3sms extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result->MessageIs, 'error' );
 
-				return new WP_Error( 'send-sms', $result->MessageIs );
+				return new \WP_Error( 'send-sms', $result->MessageIs );
 			}
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . 'getbalance.php?username=' . $this->username . '&password=' . $this->password . '&return=json' );
 
 		// Check request
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -117,7 +120,7 @@ class asr3sms extends WP_SMS {
 
 			return $result->currentuserpoints;
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 }

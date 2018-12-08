@@ -1,9 +1,13 @@
 <?php
+
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // No direct access allowed ;)
 
-class WP_SMS_Settings {
+class Settings {
 
 	public $setting_name;
 	public $options = array();
@@ -241,14 +245,14 @@ class WP_SMS_Settings {
 					'id'      => 'gateway_name',
 					'name'    => __( 'Gateway name', 'wp-sms' ),
 					'type'    => 'advancedselect',
-					'options' => WP_SMS_Gateway::gateway(),
+					'options' => Gateway::gateway(),
 					'desc'    => __( 'Please select your gateway.', 'wp-sms' )
 				),
 				'gateway_help'              => array(
 					'id'      => 'gateway_help',
 					'name'    => __( 'Gateway description', 'wp-sms' ),
 					'type'    => 'html',
-					'options' => WP_SMS_Gateway::help(),
+					'options' => Gateway::help(),
 				),
 				'gateway_username'          => array(
 					'id'   => 'gateway_username',
@@ -266,7 +270,7 @@ class WP_SMS_Settings {
 					'id'   => 'gateway_sender_id',
 					'name' => __( 'Sender number', 'wp-sms' ),
 					'type' => 'text',
-					'std'  => WP_SMS_Gateway::from(),
+					'std'  => Gateway::from(),
 					'desc' => __( 'Sender number or sender ID', 'wp-sms' )
 				),
 				'gateway_key'               => array(
@@ -285,19 +289,19 @@ class WP_SMS_Settings {
 					'id'      => 'account_credit',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'html',
-					'options' => WP_SMS_Gateway::status(),
+					'options' => Gateway::status(),
 				),
 				'account_response'          => array(
 					'id'      => 'account_response',
 					'name'    => __( 'Result request', 'wp-sms' ),
 					'type'    => 'html',
-					'options' => WP_SMS_Gateway::response(),
+					'options' => Gateway::response(),
 				),
 				'bulk_send'                 => array(
 					'id'      => 'bulk_send',
 					'name'    => __( 'Bulk send', 'wp-sms' ),
 					'type'    => 'html',
-					'options' => WP_SMS_Gateway::bulk_status(),
+					'options' => Gateway::bulk_status(),
 				),
 				// Account credit
 				'account_credit_title'      => array(
@@ -955,4 +959,4 @@ class WP_SMS_Settings {
 	}
 }
 
-new WP_SMS_Settings();
+new Settings();

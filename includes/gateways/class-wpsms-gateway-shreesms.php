@@ -1,6 +1,9 @@
 <?php
 
-class shreesms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class shreesms extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://ip.shreesms.net/";
 	public $tariff = "http://www.shreesms.net";
 	public $unitrial = false;
@@ -76,13 +79,13 @@ class shreesms extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = file_get_contents( "{$this->wsdl_link}SMSServer/SMSCnt.asp?ID={$this->username}&pw={$this->password}" );
@@ -90,7 +93,7 @@ class shreesms extends WP_SMS {
 		if ( preg_replace( '/[^0-9]/', '', $result ) ) {
 			return $result;
 		} else {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		}
 	}
 }

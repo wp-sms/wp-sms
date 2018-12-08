@@ -1,6 +1,9 @@
 <?php
 
-class uwaziimobile extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class uwaziimobile extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://107.20.199.106/";
 	public $tariff = "http://uwaziimobile.com/";
 	public $unitrial = true;
@@ -88,7 +91,7 @@ class uwaziimobile extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -116,14 +119,14 @@ class uwaziimobile extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->requestError->serviceException->text, 'error' );
 
-			return new WP_Error( 'account-credit', $response->requestError->serviceException->text );
+			return new \WP_Error( 'account-credit', $response->requestError->serviceException->text );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		$args     = array(
@@ -137,7 +140,7 @@ class uwaziimobile extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -150,7 +153,7 @@ class uwaziimobile extends WP_SMS {
 		if ( $response_code == '200' ) {
 			return $response->balance;
 		} else {
-			return new WP_Error( 'account-credit', $response->requestError->serviceException->text );
+			return new \WP_Error( 'account-credit', $response->requestError->serviceException->text );
 		}
 
 		return true;

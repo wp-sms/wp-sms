@@ -1,6 +1,9 @@
 <?php
 
-class ismsie extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class ismsie extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://ws3584.isms.ir/sendWS";
 	public $tariff = "http://isms.ir/";
 	public $unitrial = true;
@@ -82,13 +85,13 @@ class ismsie extends WP_SMS {
 		// Log th result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return true;

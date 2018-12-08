@@ -1,6 +1,9 @@
 <?php
 
-class engy extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class engy extends \WP_SMS\Gateway {
 	private $wsdl_link = 'http://api.engy.solutions/';
 	public $tariff = '';
 	public $unitrial = true;
@@ -82,13 +85,13 @@ class engy extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, 'Please use a valid phone number (eg. ' . $this->validateNumber . ')', 'error' );
 
-			return new WP_Error( 'send-sms', 'Please use a valid phone number (eg. ' . $this->validateNumber . ')' );
+			return new \WP_Error( 'send-sms', 'Please use a valid phone number (eg. ' . $this->validateNumber . ')' );
 		}
 		if ( strlen( $this->msg ) > 160 ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, 'You can only send short messages for testing ( 160 characters max )', 'error' );
 
-			return new WP_Error( 'send-sms', 'You can only send short messages for testing ( 160 characters max )' );
+			return new \WP_Error( 'send-sms', 'You can only send short messages for testing ( 160 characters max )' );
 		}
 		$response = wp_remote_post( $this->wsdl_link . "outbound/sms/", $args );
 		// Check response error
@@ -96,7 +99,7 @@ class engy extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -106,7 +109,7 @@ class engy extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result->error_string, 'error' );
 
-				return new WP_Error( 'send-sms', $result->error_string );
+				return new \WP_Error( 'send-sms', $result->error_string );
 			} else {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result );
@@ -126,7 +129,7 @@ class engy extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 
 	}

@@ -1,6 +1,9 @@
 <?php
 
-class smsgatewayhub extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsgatewayhub extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://login.smsgatewayhub.com/api/mt/";
 	public $tariff = "https://www.smsgatewayhub.com/";
 	public $unitrial = true;
@@ -69,7 +72,7 @@ class smsgatewayhub extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -83,7 +86,7 @@ class smsgatewayhub extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result->ErrorMessage, 'error' );
 
-				return new WP_Error( 'send-sms', $result->ErrorMessage );
+				return new \WP_Error( 'send-sms', $result->ErrorMessage );
 			}
 
 			// Log the result
@@ -101,21 +104,21 @@ class smsgatewayhub extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . 'GetBalance?APIKey=' . $this->has_key );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -125,12 +128,12 @@ class smsgatewayhub extends WP_SMS {
 
 			// Check response
 			if ( $result->ErrorMessage != 'Success' ) {
-				return new WP_Error( 'account-credit', $result->ErrorMessage );
+				return new \WP_Error( 'account-credit', $result->ErrorMessage );
 			}
 
 			return $result->Balance;
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 }

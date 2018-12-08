@@ -1,6 +1,9 @@
 <?php
 
-class asanak extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class asanak extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://panel.asanak.ir/webservice/v1rest/sendsms";
 	public $tariff = "http://asanak.ir/";
 	public $unitrial = false;
@@ -86,14 +89,14 @@ class asanak extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $process, 'error' );
 
-			return new WP_Error( 'send-sms', $process );
+			return new \WP_Error( 'send-sms', $process );
 		}
 	}
 
 	function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return true;

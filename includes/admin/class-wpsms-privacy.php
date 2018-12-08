@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * Class Privacy
  */
@@ -191,14 +195,14 @@ class WP_SMS_Privacy {
                 *  Empty Mobile Number
                 */
                if($_GET['error'] =="empty_number") {
-                   WP_SMS_Plugin::wp_admin_notice( __( 'Please enter the mobile number', 'wp-sms' ), "error");
+                   WP_SMS::wp_admin_notice( __( 'Please enter the mobile number', 'wp-sms' ), "error");
                }
 
                /*
                *  Not found User
                 */
                if($_GET['error'] =="not_found") {
-                   WP_SMS_Plugin::wp_admin_notice( __( 'User with this mobile number was not found', 'wp-sms' ), "error");
+                   WP_SMS::wp_admin_notice( __( 'User with this mobile number was not found', 'wp-sms' ), "error");
                }
            }
 
@@ -206,7 +210,7 @@ class WP_SMS_Privacy {
             * Success Mobile Number
             */
            if( isset($_GET['delete_mobile']) ) {
-               WP_SMS_Plugin::wp_admin_notice( sprintf(__('User with %s mobile number is removed completely', 'wp-sms'), trim($_GET['delete_mobile']) ) , "success");
+               WP_SMS::wp_admin_notice( sprintf(__('User with %s mobile number is removed completely', 'wp-sms'), trim($_GET['delete_mobile']) ) , "success");
            }
 
         }

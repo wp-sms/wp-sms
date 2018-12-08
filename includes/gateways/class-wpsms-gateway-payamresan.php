@@ -1,6 +1,9 @@
 <?php
 
-class payamresan extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class payamresan extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://www.payam-resan.com/";
 	public $tariff = "http://www.payam-resan.com/CMS/";
 	public $unitrial = false;
@@ -77,19 +80,19 @@ class payamresan extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $client, 'error' );
 
-		return new WP_Error( 'send-sms', $client );
+		return new \WP_Error( 'send-sms', $client );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$client = file_get_contents( "{$this->wsdl_link}Credit.aspx?Username={$this->username}&Password={$this->password}" );
 
 		if ( $client == 'ERR' ) {
-			return new WP_Error( 'account-credit', $client );
+			return new \WP_Error( 'account-credit', $client );
 		}
 
 		return $client;

@@ -1,6 +1,9 @@
 <?php
 
-class aruba extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class aruba extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://adminsms.aruba.it/";
 	public $tariff = "http://adminsms.aruba.it/";
 	public $unitrial = true;
@@ -63,7 +66,7 @@ class aruba extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -88,21 +91,21 @@ class aruba extends WP_SMS {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "Aruba/CREDITS?login=" . $this->username . "&password=" . $this->password );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -112,7 +115,7 @@ class aruba extends WP_SMS {
 		if ( $response_code == '200' and substr( $response['body'], 0, 2 ) == 'OK' ) {
 			return $response['body'];
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 }

@@ -12,7 +12,7 @@ class WebsmsClient {
 	private $time_to_live;
 
 	function __construct( $cfg ) {
-		$this->soap_client  = new SoapClient( $cfg['wsdl_file'], array(
+		$this->soap_client  = new \SoapClient( $cfg['wsdl_file'], array(
 			'cache_wsdl' => WSDL_CACHE_NONE,
 			'trace'      => true
 		) );

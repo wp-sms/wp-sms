@@ -1,6 +1,9 @@
 <?php
 
-class _500sms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class _500sms extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://500sms.ir/webservice/smsService.php?wsdl";
 	public $tariff = "http://500sms.ir";
 	public $unitrial = true;
@@ -59,7 +62,7 @@ class _500sms extends WP_SMS {
 		foreach ( $this->to as $number ) {
 			$receiver[] = "$number";
 		}
-		$client = new SoapClient( $this->wsdl_link );
+		$client = new \SoapClient( $this->wsdl_link );
 		$result = $client->send_sms( $this->username, $this->password, $this->from, implode( $receiver, "," ), $this->msg );
 
 		if ( $result ) {
@@ -80,24 +83,24 @@ class _500sms extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$client = new SoapClient( $this->wsdl_link );
+			$client = new \SoapClient( $this->wsdl_link );
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 
 		return $client->sms_credit( $this->username, $this->password );

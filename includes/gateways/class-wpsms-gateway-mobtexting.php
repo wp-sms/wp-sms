@@ -1,6 +1,9 @@
 <?php
 
-class Mobtexting extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class Mobtexting extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://portal.mobtexting.com/api/v2";
 	public $tariff = "https://www.mobtexting.com/pricing.php";
 	public $unitrial = false;
@@ -74,7 +77,7 @@ class Mobtexting extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -106,14 +109,14 @@ class Mobtexting extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result->message, 'error' );
 
-			return new WP_Error( 'send-sms', $result->message );
+			return new \WP_Error( 'send-sms', $result->message );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 		$api_end_point = $this->wsdl_link . "/account/balance";
 		$api_args      = Array(
@@ -122,14 +125,14 @@ class Mobtexting extends WP_SMS {
 		$response      = wp_remote_get( $api_end_point . '?access_token=' . $this->has_key, $api_args );
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $response_code == '200' ) {
 			if ( ! $response['body'] ) {
-				return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
+				return new \WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
 			}
 
 			$result = json_decode( $response['body'] );
@@ -143,12 +146,12 @@ class Mobtexting extends WP_SMS {
 
 			}
 			if ( isset( $result->status ) and $result->status != 'success' ) {
-				return new WP_Error( 'account-credit', $result->msg . $result->description );
+				return new \WP_Error( 'account-credit', $result->msg . $result->description );
 			} else {
 				return $credits;
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 }

@@ -1,6 +1,9 @@
 <?php
 
-class novinpayamak extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class novinpayamak extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://www.novinpayamak.com/services/SMSBox/wsdl";
 	public $tariff = "http://www.smscall.ir/?page_id=63";
 	public $unitrial = true;
@@ -56,7 +59,7 @@ class novinpayamak extends WP_SMS {
 			return $credit;
 		}
 
-		$client = new SoapClient( $this->wsdl_link, array( 'encoding' => 'UTF-8' ) );
+		$client = new \SoapClient( $this->wsdl_link, array( 'encoding' => 'UTF-8' ) );
 
 		$result = $client->Send(
 			array(
@@ -89,23 +92,23 @@ class novinpayamak extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$client = new SoapClient( 'http://www.novinpayamak.com/services/CISGate/wsdl', array( 'encoding' => 'UTF-8' ) );
+			$client = new \SoapClient( 'http://www.novinpayamak.com/services/CISGate/wsdl', array( 'encoding' => 'UTF-8' ) );
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 
 		$result = $client->CheckRealCredit( array(
@@ -116,7 +119,7 @@ class novinpayamak extends WP_SMS {
 		) );
 
 		if ( $result->Status != 1000 ) {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		}
 
 		return $result->Credit;

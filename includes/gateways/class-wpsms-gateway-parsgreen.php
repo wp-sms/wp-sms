@@ -1,6 +1,9 @@
 <?php
 
-class parsgreen extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class parsgreen extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://login.parsgreen.com/Api/SendSMS.asmx?WSDL";
 	private $wsdl_link_credit = "http://login.parsgreen.com/Api/ProfileService.asmx?WSDL";
 	public $tariff = "http://www.parsgreen.com/";
@@ -57,7 +60,7 @@ class parsgreen extends WP_SMS {
 		}
 
 		try {
-			$client                  = new SoapClient( $this->wsdl_link );
+			$client                  = new \SoapClient( $this->wsdl_link );
 			$parameters['signature'] = $this->username;
 			$parameters['from']      = $this->from;
 			$parameters['to']        = $this->to;
@@ -93,34 +96,34 @@ class parsgreen extends WP_SMS {
 			} else {
 				$this->log( $this->from, $this->msg, $this->to, 'مشکلی در ارسال پیام بوجود امد', 'error' );
 
-				return new WP_Error( 'send-sms', 'مشکلی در ارسال پیام بوجود امد' );
+				return new \WP_Error( 'send-sms', 'مشکلی در ارسال پیام بوجود امد' );
 			}
 		} catch ( SoapFault $ex ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
-			return new WP_Error( 'send-sms', $ex->faultstring );
+			return new \WP_Error( 'send-sms', $ex->faultstring );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$client      = new SoapClient( $this->wsdl_link_credit );
+			$client      = new \SoapClient( $this->wsdl_link_credit );
 			$parameters  = array( 'signature' => $this->username );
 			$responseSTD = (array) $client->GetCredit( $parameters );
 
 			return $responseSTD['GetCreditResult'];
 		} catch ( SoapFault $ex ) {
-			return new WP_Error( 'account-credit', $ex->faultstring );
+			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 	}
 }

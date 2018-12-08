@@ -1,9 +1,16 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * WP SMS Widget widget.
  */
-class WPSMS_Widget extends WP_Widget {
+class Widget extends \WP_Widget {
 
 	/**
 	 * Register widget with WordPress.
@@ -32,7 +39,7 @@ class WPSMS_Widget extends WP_Widget {
 		}
 		$widget_id = $this->get_numerics( $args['widget_id'] );
 
-		WP_SMS_Plugin::loadNewsLetter( $widget_id, $instance);
+		\WP_SMS::loadNewsLetter( $widget_id, $instance);
 
 		echo $args['after_widget'];
 	}

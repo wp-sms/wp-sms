@@ -1,6 +1,9 @@
 <?php
 
-class verimor extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class verimor extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://sms.verimor.com.tr/v2/";
 	public $tariff = "https://www.verimor.com.tr/";
 	public $unitrial = false;
@@ -63,7 +66,7 @@ class verimor extends WP_SMS {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -86,14 +89,14 @@ class verimor extends WP_SMS {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return 1;

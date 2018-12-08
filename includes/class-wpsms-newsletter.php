@@ -1,5 +1,12 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * WP SMS newsletter class
  *
@@ -7,7 +14,7 @@
  * @package    WP_SMS
  * @version    1.0
  */
-class WP_SMS_Newsletter {
+class Newsletter {
 
 	/**
 	 * Wordpress Dates
@@ -597,4 +604,4 @@ class WP_SMS_Newsletter {
 	}
 }
 
-new WP_SMS_Newsletter();
+new Newsletter();

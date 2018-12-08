@@ -1,5 +1,12 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * WP SMS RestApi class
  *
@@ -7,7 +14,7 @@
  * @package    WP_SMS
  * @version    4.0
  */
-class WP_SMS_RestApi {
+class RestApi {
 
 	/**
 	 * SMS object
@@ -76,7 +83,7 @@ class WP_SMS_RestApi {
 			);
 		}
 
-		return new WP_REST_Response( $output, $status );
+		return new \WP_REST_Response( $output, $status );
 	}
 
 	/**
@@ -90,31 +97,31 @@ class WP_SMS_RestApi {
 		global $wpsms_option, $sms;
 
 		if ( empty( $name ) OR empty( $mobile ) ) {
-			return new WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
+			return new \WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
-		$check_group = WP_SMS_Newsletter::getGroup( $group );
+		$check_group = \WP_SMS\Newsletter::getGroup( $group );
 
 		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
-			return new WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
+			return new \WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
 		}
 
 		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
 			// Return response
-			return new WP_Error( 'subscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
+			return new \WP_Error( 'subscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 		}
 
 		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
 			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
 				// Return response
-				return new WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
+				return new \WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
 			}
 		}
 
 		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
 			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
 				// Return response
-				return new WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
+				return new \WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
 			}
 		}
 
@@ -122,17 +129,17 @@ class WP_SMS_RestApi {
 			// Check gateway setting
 			if ( ! $wpsms_option['gateway_name'] ) {
 				// Return response
-				return new WP_Error( 'subscribe', __( 'Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms' ) );
+				return new \WP_Error( 'subscribe', __( 'Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms' ) );
 			}
 
 			$key = rand( 1000, 9999 );
 
 			// Add subscribe to database
-			$result = WP_SMS_Newsletter::addSubscriber( $name, $mobile, $group, '0', $key );
+			$result = \WP_SMS\Newsletter::addSubscriber( $name, $mobile, $group, '0', $key );
 
 			if ( $result['result'] == 'error' ) {
 				// Return response
-				return new WP_Error( 'subscribe', $result['message'] );
+				return new \WP_Error( 'subscribe', $result['message'] );
 			} else {
 
 				$sms->to  = array( $mobile );
@@ -146,11 +153,11 @@ class WP_SMS_RestApi {
 		} else {
 
 			// Add subscribe to database
-			$result = WP_SMS_Newsletter::addSubscriber( $name, $mobile, $group, '1' );
+			$result = \WP_SMS\Newsletter::addSubscriber( $name, $mobile, $group, '1' );
 
 			if ( $result['result'] == 'error' ) {
 				// Return response
-				return new WP_Error( 'subscribe', $result['message'] );
+				return new \WP_Error( 'subscribe', $result['message'] );
 			}
 
 			return __( 'Your number has been successfully subscribed.', 'wp-sms' );
@@ -168,24 +175,24 @@ class WP_SMS_RestApi {
 		global $wpsms_option;
 
 		if ( empty( $name ) OR empty( $mobile ) ) {
-			return new WP_Error( 'unsubscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
+			return new \WP_Error( 'unsubscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
-		$check_group = WP_SMS_Newsletter::getGroup( $group );
+		$check_group = \WP_SMS\Newsletter::getGroup( $group );
 
 		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
-			return new WP_Error( 'unsubscribe', __( 'The group number is not valid!', 'wp-sms' ) );
+			return new \WP_Error( 'unsubscribe', __( 'The group number is not valid!', 'wp-sms' ) );
 		}
 
 		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
 			// Return response
-			return new WP_Error( 'unsubscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
+			return new \WP_Error( 'unsubscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 		}
 
 		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
 			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
 				// Return response
-				return new WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
+				return new \WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
 
 			}
 		}
@@ -193,16 +200,16 @@ class WP_SMS_RestApi {
 		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
 			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
 				// Return response
-				return new WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
+				return new \WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
 			}
 		}
 		// Delete subscriber
-		$result = WP_SMS_Newsletter::deleteSubscriberByNumber( $mobile, $group );
+		$result = \WP_SMS\Newsletter::deleteSubscriberByNumber( $mobile, $group );
 
 		// Check result
 		if ( $result['result'] == 'error' ) {
 			// Return response
-			return new WP_Error( 'unsubscribe', $result['message'] );
+			return new \WP_Error( 'unsubscribe', $result['message'] );
 		}
 
 		return __( 'Your subscription was canceled.', 'wp-sms' );
@@ -219,7 +226,7 @@ class WP_SMS_RestApi {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
 		if ( empty( $name ) OR empty( $mobile ) OR empty( $activation ) ) {
-			return new WP_Error( 'unsubscribe', __( 'The required parameters must be valued!', 'wp-sms' ) );
+			return new \WP_Error( 'unsubscribe', __( 'The required parameters must be valued!', 'wp-sms' ) );
 		}
 
 		// Check the mobile number is string or integer
@@ -235,7 +242,7 @@ class WP_SMS_RestApi {
 
 			if ( $activation != $check_mobile->activate_key ) {
 				// Return response
-				return new WP_Error( 'verify_subscriber', __( 'Activation code is wrong!', 'wp-sms' ) );
+				return new \WP_Error( 'verify_subscriber', __( 'Activation code is wrong!', 'wp-sms' ) );
 			}
 
 			// Check the mobile number is string or integer
@@ -265,8 +272,8 @@ class WP_SMS_RestApi {
 			}
 		}
 
-		return new WP_Error( 'verify_subscriber', __( 'Not found the number!', 'wp-sms' ) );
+		return new \WP_Error( 'verify_subscriber', __( 'Not found the number!', 'wp-sms' ) );
 	}
 }
 
-new WP_SMS_RestApi();
+new RestApi();

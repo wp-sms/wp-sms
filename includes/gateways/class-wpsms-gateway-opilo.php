@@ -1,6 +1,9 @@
 <?php
 
-class opilo extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class opilo extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://webservice.opilo.com/WS/";
 	public $tariff = "http://cms.opilo.com/?p=179";
 	public $unitrial = false;
@@ -66,7 +69,7 @@ class opilo extends WP_SMS {
 		if ( empty( $to_numbers ) ) {
 			$this->log( $this->from, $this->msg, $this->to, 'Number is an empty!', 'error' );
 
-			return new WP_Error( 'send-sms', 'Number is an empty!' );
+			return new \WP_Error( 'send-sms', 'Number is an empty!' );
 		}
 
 		$url = $this->wsdl_link .
@@ -82,13 +85,13 @@ class opilo extends WP_SMS {
 		if ( $response[0] ) {
 			$this->log( $this->from, $this->msg, $this->to, $response[0], 'error' );
 
-			return new WP_Error( 'send-sms', $response[0] );
+			return new \WP_Error( 'send-sms', $response[0] );
 		}
 
 		if ( ! is_numeric( $response[1] ) ) {
 			$this->log( $this->from, $this->msg, $this->to, $response[1], 'error' );
 
-			return new WP_Error( 'send-sms', $response[1] );
+			return new \WP_Error( 'send-sms', $response[1] );
 		}
 
 		if ( strlen( $response[1] ) > 2 ) {
@@ -110,14 +113,14 @@ class opilo extends WP_SMS {
 		} else {
 			$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
 
-			return new WP_Error( 'send-sms', $response );
+			return new \WP_Error( 'send-sms', $response );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$url      = $this->wsdl_link . "getCredit/?username=" . $this->username
@@ -127,7 +130,7 @@ class opilo extends WP_SMS {
 		return $response[0];
 
 		if ( strstr( $response[1], "Error" ) ) {
-			return new WP_Error( 'account-credit', $response );
+			return new \WP_Error( 'account-credit', $response );
 		}
 
 		return $response[1];

@@ -1,6 +1,9 @@
 <?php
 
-class mobiledotnet extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class mobiledotnet extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://mobile.net.sa/sms/gw/";
 	public $tariff = "https://mobile.net.sa/";
 	public $unitrial = true;
@@ -61,7 +64,7 @@ class mobiledotnet extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -84,27 +87,27 @@ class mobiledotnet extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $this->get_message_by_code( $response['body'] ), 'error' );
 
-				return new WP_Error( 'send-sms', $this->get_message_by_code( $response['body'] ) );
+				return new \WP_Error( 'send-sms', $this->get_message_by_code( $response['body'] ) );
 			}
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "Credits.php?userName={$this->username}&userPassword={$this->password}&By=standard" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		if ( wp_remote_retrieve_response_code( $response ) == '200' ) {
@@ -114,7 +117,7 @@ class mobiledotnet extends WP_SMS {
 				return $this->get_message_by_code( $response['body'] );
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 

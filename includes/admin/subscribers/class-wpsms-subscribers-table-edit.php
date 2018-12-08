@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 //Edit Groups Class
 class WP_SMS_Subscribers_Subscribers_Table_Edit {
 
@@ -18,7 +22,7 @@ class WP_SMS_Subscribers_Subscribers_Table_Edit {
 	protected $tb_prefix;
 
 	/**
-	 * WP_Statistics_Advanced_Reporting_PreviewMail constructor.
+	 * WP_SMS_Subscribers_Subscribers_Table_Edit constructor.
 	 */
 	public function __construct() {
 		global $wpdb, $table_prefix;
@@ -36,8 +40,8 @@ class WP_SMS_Subscribers_Subscribers_Table_Edit {
 		$subscriber_id = isset( $_GET['subscriber_id'] ) ? $_GET['subscriber_id'] : null;
 
 		//Load subscriber
-		$subscriber = WP_SMS_Newsletter::get_subscriber( $subscriber_id );
-		$groups     = WP_SMS_Newsletter::get_groups();
+		$subscriber = \WP_SMS\Newsletter::get_subscriber( $subscriber_id );
+		$groups     = \WP_SMS\Newsletter::get_groups();
 
 		$html = '<form action="" method="post">
 					<input type="hidden" name="ID" value="' . $subscriber_id . '" />

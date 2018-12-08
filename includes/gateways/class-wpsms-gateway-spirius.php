@@ -1,6 +1,9 @@
 <?php
 
-class spirius extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class spirius extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://get.spiricom.spirius.com:55001/cgi-bin/";
 	public $tariff = "http://www.spirius.com/";
 	public $unitrial = false;
@@ -66,7 +69,7 @@ class spirius extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -89,14 +92,14 @@ class spirius extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		return 1;

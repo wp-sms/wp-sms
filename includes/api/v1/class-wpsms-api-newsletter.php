@@ -1,11 +1,18 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS\Api\V1;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * @category   class
  * @package    WP_SMS_Api
  * @version    1.0
  */
-class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
+class Newsletter extends \WP_SMS\RestApi {
 	/**
 	 * WP_SMS_Api_Newsletter_V1 constructor.
 	 */
@@ -24,7 +31,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 		// SMS Newsletter
 		register_rest_route( $this->namespace . '/v1', '/newsletter', array(
 			array(
-				'methods'  => WP_REST_Server::CREATABLE,
+				'methods'  => \WP_REST_Server::CREATABLE,
 				'callback' => array( $this, 'subscribe_callback' ),
 				'args'     => array(
 					'name'     => array(
@@ -39,7 +46,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 				),
 			),
 			array(
-				'methods'  => WP_REST_Server::DELETABLE,
+				'methods'  => \WP_REST_Server::DELETABLE,
 				'callback' => array( $this, 'unsubscribe_callback' ),
 				'args'     => array(
 					'name'   => array(
@@ -51,7 +58,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 				),
 			),
 			array(
-				'methods'  => WP_REST_Server::EDITABLE,
+				'methods'  => \WP_REST_Server::EDITABLE,
 				'callback' => array( $this, 'verify_subscriber_callback' ),
 				'args'     => array(
 					'name'       => array(
@@ -73,7 +80,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function subscribe_callback( WP_REST_Request $request ) {
+	public function subscribe_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
 
@@ -92,7 +99,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function unsubscribe_callback( WP_REST_Request $request ) {
+	public function unsubscribe_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
 
@@ -111,7 +118,7 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function verify_subscriber_callback( WP_REST_Request $request ) {
+	public function verify_subscriber_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
 
@@ -126,4 +133,4 @@ class WP_SMS_Api_Newsletter_V1 extends WP_SMS_RestApi {
 	}
 }
 
-new WP_SMS_Api_Newsletter_V1();
+new Newsletter();

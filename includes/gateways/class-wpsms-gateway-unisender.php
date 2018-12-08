@@ -1,6 +1,9 @@
 <?php
 
-class unisender extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class unisender extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.unisender.com/en/api/";
 	public $tariff = "http://www.unisender.com/en/prices/";
 	public $unitrial = false;
@@ -64,7 +67,7 @@ class unisender extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -76,7 +79,7 @@ class unisender extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result->result->error, 'error' );
 
-				return new WP_Error( 'send-sms', $result->result->error );
+				return new \WP_Error( 'send-sms', $result->result->error );
 			}
 
 			// Log the result
@@ -97,21 +100,21 @@ class unisender extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check api key
 		if ( ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "getUserInfo?format=json&api_key={$this->has_key}" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -119,12 +122,12 @@ class unisender extends WP_SMS {
 		if ( $response_code == '200' ) {
 			$result = json_decode( $response['body'], true );
 			if ( isset( $result['error'] ) ) {
-				return new WP_Error( 'account-credit', $result['error'] );
+				return new \WP_Error( 'account-credit', $result['error'] );
 			} else {
 				return $result['result']['balance'];
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 	}
 }

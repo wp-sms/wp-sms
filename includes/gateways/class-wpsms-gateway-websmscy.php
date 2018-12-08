@@ -1,6 +1,9 @@
 <?php
 
-class websmscy extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class websmscy extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://www.websms.com.cy/webservices/websms.wsdl";
 	public $tariff = "https://www.websms.com.cy/";
 	public $unitrial = true;
@@ -83,18 +86,18 @@ class websmscy extends WP_SMS {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
-			return new WP_Error( 'send-sms', $e->getMessage() );
+			return new \WP_Error( 'send-sms', $e->getMessage() );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		$cfg = array(
@@ -103,14 +106,14 @@ class websmscy extends WP_SMS {
 			'password'  => $this->password,
 		);
 
-		$ws = new WebsmsClient( $cfg );
+		$ws = new \WebsmsClient( $cfg );
 
 		try {
 			$credits = $ws->getCredits();
 
 			return $credits;
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}
 }

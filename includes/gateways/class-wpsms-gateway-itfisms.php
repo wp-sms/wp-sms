@@ -1,6 +1,9 @@
 <?php
 
-class itfisms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class itfisms extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://websms.itfisms.com/vendorsms/";
 	public $tariff = "http://www.itfisms.com/";
 	public $unitrial = true;
@@ -62,7 +65,7 @@ class itfisms extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -90,28 +93,28 @@ class itfisms extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $response->ErrorMessage, 'error' );
 
-				return new WP_Error( 'send-sms', $response->ErrorMessage );
+				return new \WP_Error( 'send-sms', $response->ErrorMessage );
 			}
 
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "CheckBalance.aspx?user={$this->username}&password={$this->password}" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -120,10 +123,10 @@ class itfisms extends WP_SMS {
 			if ( strstr( $response['body'], 'Success' ) ) {
 				return $response['body'];
 			} else {
-				return new WP_Error( 'account-credit', $response['body'] );
+				return new \WP_Error( 'account-credit', $response['body'] );
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 
 		return true;

@@ -1,6 +1,9 @@
 <?php
 
-class kavenegar extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class kavenegar extends \WP_SMS\Gateway {
 	const APIPATH = "http://api.kavenegar.com/v1/%s/%s/%s.json/";
 
 	private function get_path( $method, $base = 'sms' ) {
@@ -77,13 +80,13 @@ class kavenegar extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
 
-				return new WP_Error( 'send-sms', $response );
+				return new \WP_Error( 'send-sms', $response );
 			}
 		}
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
 
-		return new WP_Error( 'send-sms', $response );
+		return new \WP_Error( 'send-sms', $response );
 	}
 
 	public function GetCredit() {

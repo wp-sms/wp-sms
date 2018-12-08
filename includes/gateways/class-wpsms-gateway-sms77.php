@@ -1,6 +1,9 @@
 <?php
 
-class sms77 extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class sms77 extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://gateway.sms77.de/";
 	public $tariff = "http://www.sms77.de";
 	public $unitrial = false;
@@ -73,13 +76,13 @@ class sms77 extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = @file_get_contents( $this->wsdl_link . 'balance.php?u=' . urlencode( $this->username ) . '&p=' . urlencode( $this->password ) );

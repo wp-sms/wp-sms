@@ -1,6 +1,9 @@
 <?php
 
-class smsservice extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsservice extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://mihansmscenter.com/webservice/?wsdl";
 	public $tariff = "http://smsservice.ir/";
 	public $unitrial = false;
@@ -85,13 +88,13 @@ class smsservice extends WP_SMS {
 		// Log th result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$client = new nusoap_client( $this->wsdl_link, 'wsdl' );

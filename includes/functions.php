@@ -1,7 +1,8 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
+} // Exit if accessed directly
 
 if ( ! function_exists( 'initial_gateway' ) ) {
 	/**
@@ -10,29 +11,30 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 	 */
 	function initial_gateway() {
 		global $wpsms_option;
-
+		$class_name = '\\WP_SMS\\Gateway\\Default_Gateway';
 		// Include default gateway
-		include_once WP_SMS_DIR . '/includes/class-wpsms.php';
-		include_once WP_SMS_DIR . '/includes/gateways/class-wpsms-gateway-default.php';
+		include_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
+		include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-default.php';
 
 		// Using default gateway if does not set gateway in the setting
 		if ( empty( $wpsms_option['gateway_name'] ) ) {
-			return new Default_Gateway;
+			return new $class_name;
 		}
-
-		if ( is_file( WP_SMS_DIR . 'includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
-			include_once WP_SMS_DIR . 'includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php';
+		// TODO : need to change Class names on WP-SMS-PRO
+		if ( is_file( WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $wpsms_option['gateway_name'] . '.php' ) ) {
+			include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $wpsms_option['gateway_name'] . '.php';
 		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
 			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' );
 		} else {
-			return new Default_Gateway;
+			return new $class_name;
 		}
 
 		// Create object from the gateway class
 		if ( $wpsms_option['gateway_name'] == 'default' ) {
-			$sms = new Default_Gateway();
+			$sms = new $class_name;
 		} else {
-			$sms = new $wpsms_option['gateway_name'];
+			$class_name = '\\WP_SMS\\Gateway\\' . $wpsms_option['gateway_name'];
+			$sms        = new $class_name;
 		}
 
 		// Set username and password
@@ -47,15 +49,15 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 		// Show gateway help configuration in gateway page
 		if ( $sms->help ) {
 			add_action( 'wp_sms_after_gateway', function () {
-				echo '<p class="description">' . $sms->help . '</p>';
+				echo ' < p class="description" > ' . $sms->help . '</p > ';
 			} );
 		}
 
 		// Check unit credit gateway
 		if ( $sms->unitrial == true ) {
-			$sms->unit = __( 'Credit', 'wp-sms' );
+			$sms->unit = __( 'Credit', 'wp - sms' );
 		} else {
-			$sms->unit = __( 'SMS', 'wp-sms' );
+			$sms->unit = __( 'SMS', 'wp - sms' );
 		}
 
 		// Set sender id
@@ -81,7 +83,7 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 
 if ( ! function_exists( 'wp_subscribes' ) ) {
 	function wp_subscribes() {
-		_e( 'This function is deprecated and will be added in future.', 'wp-sms' );
+		_e( 'This function is deprecated and will be added in future . ', 'wp - sms' );
 	}
 }
 

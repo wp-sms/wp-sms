@@ -1,6 +1,9 @@
 <?php
 
-class _0098sms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class _0098sms extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://webservice.0098sms.com/service.asmx?wsdl";
 	public $tariff = "http://www.0098sms.com/";
 	public $unitrial = false;
@@ -56,7 +59,7 @@ class _0098sms extends WP_SMS {
 		}
 
 		try {
-			$sms_client = new SoapClient( $this->wsdl_link, array( 'encoding' => 'UTF-8' ) );
+			$sms_client = new \SoapClient( $this->wsdl_link, array( 'encoding' => 'UTF-8' ) );
 
 			$parameters['username'] = $this->username;
 			$parameters['password'] = $this->password;
@@ -80,29 +83,29 @@ class _0098sms extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $this->get_error_message( $result ), 'error' );
 
-				return new WP_Error( 'send-sms', $this->get_error_message( $result ) );
+				return new \WP_Error( 'send-sms', $this->get_error_message( $result ) );
 			}
 		} catch ( Exception $e ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
-			return new WP_Error( 'send-sms', $e->getMessage() );
+			return new \WP_Error( 'send-sms', $e->getMessage() );
 		}
 
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		try {
-			$sms_client = new SoapClient( $this->wsdl_link, array( 'encoding' => 'UTF-8' ) );
+			$sms_client = new \SoapClient( $this->wsdl_link, array( 'encoding' => 'UTF-8' ) );
 
 			$parameters['username'] = $this->username;
 			$parameters['password'] = $this->password;
@@ -111,10 +114,10 @@ class _0098sms extends WP_SMS {
 			if ( ! $this->get_error_message( $result ) ) {
 				return $result;
 			} else {
-				return new WP_Error( 'account-credit', $this->get_error_message( $result ) );
+				return new \WP_Error( 'account-credit', $this->get_error_message( $result ) );
 			}
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}
 

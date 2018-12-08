@@ -1,6 +1,9 @@
 <?php
 
-class textanywhere extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class textanywhere extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://www.textapp.net/webservice/httpservice.aspx";
 	public $tariff = "http://www.textanywhere.net/";
 	public $unitrial = false;
@@ -65,7 +68,7 @@ class textanywhere extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		$result = $this->XML2Array( $response['body'] );
@@ -90,31 +93,31 @@ class textanywhere extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $this->get_error_message( $result['Destinations']['Destination']['Code'] ), 'error' );
 
-				return new WP_Error( 'send-sms', $this->get_error_message( $result['Destinations']['Destination']['Code'] ) );
+				return new \WP_Error( 'send-sms', $this->get_error_message( $result['Destinations']['Destination']['Code'] ) );
 			}
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result['Transaction']['Description'], 'error' );
 
-			return new WP_Error( 'send-sms', $result['Transaction']['Description'] );
+			return new \WP_Error( 'send-sms', $result['Transaction']['Description'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check api key and password
 		if ( ! $this->has_key && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "?method=GetCreditsLeft&externallogin=" . $this->username . "&password=" . $this->password );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		if ( ! function_exists( 'simplexml_load_string' ) ) {
-			return new WP_Error( 'account-credit', sprintf( __( 'The <code>%s</code> function is not active in your server.', 'wp-sms' ), 'simplexml_load_string' ) );
+			return new \WP_Error( 'account-credit', sprintf( __( 'The <code>%s</code> function is not active in your server.', 'wp-sms' ), 'simplexml_load_string' ) );
 		}
 
 		$result = $this->XML2Array( $response['body'] );
@@ -122,7 +125,7 @@ class textanywhere extends WP_SMS {
 		if ( isset( $result['Transaction']['Code'] ) and $result['Transaction']['Code'] == '1' ) {
 			return $result['CreditLeft'];
 		} else {
-			return new WP_Error( 'account-credit', $result['Transaction']['Description'] );
+			return new \WP_Error( 'account-credit', $result['Transaction']['Description'] );
 		}
 	}
 

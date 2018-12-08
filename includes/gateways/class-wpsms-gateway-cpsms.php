@@ -1,6 +1,9 @@
 <?php
 
-class cpsms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class cpsms extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.cpsms.dk/";
 	public $tariff = "https://api.cpsms.dk/v2/";
 	public $unitrial = false;
@@ -74,7 +77,7 @@ class cpsms extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$result        = json_decode( $response['body'] );
@@ -96,14 +99,14 @@ class cpsms extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result->error, 'error' );
 
-			return new WP_Error( 'send-sms', print_r( $result->error, 1 ) );
+			return new \WP_Error( 'send-sms', print_r( $result->error, 1 ) );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . 'v2/creditvalue', [
@@ -116,7 +119,7 @@ class cpsms extends WP_SMS {
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$result        = json_decode( $response['body'] );
@@ -125,7 +128,7 @@ class cpsms extends WP_SMS {
 		if ( $response_code == '200' ) {
 			return $result->credit;
 		} else {
-			return new WP_Error( 'credit', $result->error->message );
+			return new \WP_Error( 'credit', $result->error->message );
 		}
 	}
 }

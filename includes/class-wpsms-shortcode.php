@@ -1,9 +1,16 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * WP SMS Shortcode Class
  */
-class WP_SMS_Shortcode {
+class Shortcode {
 
 	public $sms;
 	public $date;
@@ -13,7 +20,7 @@ class WP_SMS_Shortcode {
 	protected $tb_prefix;
 
 	/**
-	 * WP_SMS_Features constructor.
+	 * WP_SMS\Shortcode constructor.
 	 */
 	public function __construct() {
 		global $wpsms_option, $wpdb, $table_prefix;
@@ -34,8 +41,8 @@ class WP_SMS_Shortcode {
 	 * @internal param param $Not
 	 */
 	public function register_shortcode( $atts ) {
-		WP_SMS_Plugin::loadNewsLetter();
+		\WP_SMS::loadNewsLetter();
 	}
 }
 
-new WP_SMS_Shortcode();
+new Shortcode();

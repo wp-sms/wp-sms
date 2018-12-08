@@ -1,6 +1,9 @@
 <?php
 
-class modiranweb extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class modiranweb extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://sms.modiranweb.net/webservice/send.php?wsdl";
 	public $tariff = "http://www.modiranweb.net/";
 	public $unitrial = true;
@@ -55,7 +58,7 @@ class modiranweb extends WP_SMS {
 			return $credit;
 		}
 
-		$this->client = new SoapClient( $this->wsdl_link );
+		$this->client = new \SoapClient( $this->wsdl_link );
 
 		$result = $this->client->SendMultiSMS( array( $this->from ), $this->to, array( $this->msg ), array( $this->isflash ), $this->username, $this->password );
 
@@ -77,24 +80,24 @@ class modiranweb extends WP_SMS {
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		if ( ! class_exists( 'SoapClient' ) ) {
-			return new WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
+			return new \WP_Error( 'required-class', __( 'Class SoapClient not found. please enable php_soap in your php.', 'wp-sms' ) );
 		}
 
 		try {
-			$this->client = new SoapClient( $this->wsdl_link );
+			$this->client = new \SoapClient( $this->wsdl_link );
 		} catch ( Exception $e ) {
-			return new WP_Error( 'account-credit', $e->getMessage() );
+			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 
 		$results = $this->client->GetCredit( $this->username, $this->password, array( "", "" ) );

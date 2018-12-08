@@ -1,6 +1,9 @@
 <?php
 
-class smsapi extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsapi extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.smsapi.pl/";
 	public $tariff = "https://smsapi.pl/";
 	public $unitrial = false;
@@ -61,7 +64,7 @@ class smsapi extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -86,14 +89,14 @@ class smsapi extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = @file_get_contents( $this->wsdl_link . 'user.do?username=' . urlencode( $this->username ) . '&credits=1&details=1&password=' . $this->password );

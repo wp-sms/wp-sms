@@ -1,6 +1,9 @@
 <?php
 
-class smsozone extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smsozone extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://smsozone.com/api/mt/";
 	public $tariff = "http://ozonecmc.com/";
 	public $unitrial = true;
@@ -62,7 +65,7 @@ class smsozone extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		// Ger response code
@@ -88,28 +91,28 @@ class smsozone extends WP_SMS {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $json->ErrorMessage, 'error' );
 
-				return new WP_Error( 'send-sms', $json->ErrorMessage );
+				return new \WP_Error( 'send-sms', $json->ErrorMessage );
 			}
 
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $json->ExceptionMessage, 'error' );
 
-			return new WP_Error( 'send-sms', $json->ExceptionMessage );
+			return new \WP_Error( 'send-sms', $json->ExceptionMessage );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "GetBalance?User={$this->username}&Password={$this->password}" );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -120,11 +123,11 @@ class smsozone extends WP_SMS {
 			if ( $json->ErrorCode == 0 ) {
 				return $json->Balance;
 			} else {
-				return new WP_Error( 'account-credit', $json->ErrorMessage );
+				return new \WP_Error( 'account-credit', $json->ErrorMessage );
 			}
 
 		} else {
-			return new WP_Error( 'account-credit', $response['body'] );
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
 
 		return true;

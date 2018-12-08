@@ -1,6 +1,9 @@
 ﻿<?php
 
-class mydnspanel extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class mydnspanel extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://mydnspanel.com/webservice/server.asmx?wsdl";
 	private $client = null;
 	public $tariff = "http://mydnspanel.com/";
@@ -94,19 +97,19 @@ class mydnspanel extends WP_SMS {
 		// Log th result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', $result );
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = $this->client->call( "Credit", array( 2, $this->username, $this->password ) );
 
 		if ( $result == '301' or $result == '302' ) {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		}
 
 		return $result;

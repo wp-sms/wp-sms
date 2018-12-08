@@ -1,6 +1,9 @@
 <?php
 
-class smshosting extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class smshosting extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.smshosting.it/rest/api";
 	public $tariff = "https://www.smshosting.it/en/pricing";
 	public $unitrial = false;
@@ -110,14 +113,14 @@ class smshosting extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-			return new WP_Error( 'send-sms', $result );
+			return new \WP_Error( 'send-sms', $result );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$to_smsh = curl_init( "{$this->wsdl_link}/user" );
@@ -134,14 +137,14 @@ class smshosting extends WP_SMS {
 			$jsonObj = json_decode( $result );
 
 			if ( null === $jsonObj ) {
-				return new WP_Error( 'account-credit', $result );
+				return new \WP_Error( 'account-credit', $result );
 			} elseif ( $this->smsh_response_status != 200 ) {
-				return new WP_Error( 'account-credit', $result );
+				return new \WP_Error( 'account-credit', $result );
 			} else {
 				return $jsonObj->italysms;
 			}
 		} else {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		}
 	}
 }

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 //Edit Groups Class
 class WP_SMS_Subscribers_Groups_Table_Edit {
 
@@ -18,7 +22,7 @@ class WP_SMS_Subscribers_Groups_Table_Edit {
 	protected $tb_prefix;
 
 	/**
-	 * WP_Statistics_Advanced_Reporting_PreviewMail constructor.
+	 * WP_SMS_Subscribers_Groups_Table_Edit constructor.
 	 */
 	public function __construct() {
 		global $wpdb, $table_prefix;

@@ -1,6 +1,9 @@
 <?php
 
-class ozonesmsworld extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class ozonesmsworld extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://login.ozonesmsworld.com/API";
 	public $tariff = "http://login.ozonesmsworld.com";
 	public $unitrial = false;
@@ -64,7 +67,7 @@ class ozonesmsworld extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		if ( isset( $response['body'] ) ) {
@@ -83,14 +86,14 @@ class ozonesmsworld extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "/?action=balance&username=" . $this->username . "&api_key=" . $this->has_key );
@@ -99,10 +102,10 @@ class ozonesmsworld extends WP_SMS {
 			if ( strpos( trim( $response['body'] ), 'Balance' ) !== false ) {
 				return trim( $response['body'] );
 			} else {
-				return new WP_Error( 'account-credit', trim( $response['body'] ) );
+				return new \WP_Error( 'account-credit', trim( $response['body'] ) );
 			}
 		} else {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 	}
 }

@@ -1,6 +1,9 @@
 <?php
 
-class resalaty extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class resalaty extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://www.resalaty.com/api/";
 	public $tariff = "https://resalaty.com/";
 	public $unitrial = false;
@@ -89,7 +92,7 @@ class resalaty extends WP_SMS {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $response->MessageIs, 'error' );
 
-			return new WP_Error( 'send-sms', $response->MessageIs );
+			return new \WP_Error( 'send-sms', $response->MessageIs );
 		}
 
 	}
@@ -97,7 +100,7 @@ class resalaty extends WP_SMS {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		// Get response
@@ -105,7 +108,7 @@ class resalaty extends WP_SMS {
 
 		// Check response
 		if ( $response['response']['message'] != 'OK' ) {
-			return new WP_Error( 'account-credit', $response );
+			return new \WP_Error( 'account-credit', $response );
 		}
 
 		// Decode response

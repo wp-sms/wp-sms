@@ -1,6 +1,9 @@
 <?php
 
-class adpdigital extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class adpdigital extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://ws.adpdigital.com/url/";
 	public $tariff = "http://adpdigital.com/services/";
 	public $unitrial = true;
@@ -64,7 +67,7 @@ class adpdigital extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-			return new WP_Error( 'send-sms', $result );
+			return new \WP_Error( 'send-sms', $result );
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result );
@@ -85,13 +88,13 @@ class adpdigital extends WP_SMS {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$result = file_get_contents( "{$this->wsdl_link}balance?username={$this->username}&password={$this->password}&facility=send" );
 
 		if ( strstr( $result, 'ERR' ) ) {
-			return new WP_Error( 'account-credit', $result );
+			return new \WP_Error( 'account-credit', $result );
 		} else {
 			return preg_replace( '/[^0-9]/', '', $result );
 		}

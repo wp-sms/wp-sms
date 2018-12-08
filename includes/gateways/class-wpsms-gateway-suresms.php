@@ -1,6 +1,9 @@
 <?php
 
-class suresms extends WP_SMS {
+// Set namespace class
+namespace WP_SMS\Gateway;
+
+class suresms extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://api.suresms.com/";
 	public $tariff = "https://www.suresms.com/";
 	public $unitrial = false;
@@ -66,7 +69,7 @@ class suresms extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
 
-			return new WP_Error( 'send-sms', $response->get_error_message() );
+			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
 		if ( strpos( $response['body'], 'sent' ) !== false ) {
@@ -85,26 +88,26 @@ class suresms extends WP_SMS {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new WP_Error( 'send-sms', $response['body'] );
+			return new \WP_Error( 'send-sms', $response['body'] );
 		}
 	}
 
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->has_key ) {
-			return new WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "script/GetUserBalance.aspx?login=" . $this->username . "&password=" . $this->password );
 
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'account-credit', $response->get_error_message() );
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$xml = new SimpleXMLElement( $response['body'] );
 
 		if ( ! is_object( $xml ) ) {
-			return new WP_Error( 'account-credit', 'The XML is not valid, Please contact with gateways administrator.' );
+			return new \WP_Error( 'account-credit', 'The XML is not valid, Please contact with gateways administrator.' );
 		}
 
 		// Convert to array

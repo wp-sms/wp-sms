@@ -1,5 +1,12 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * WP SMS gravityforms
  *
@@ -7,7 +14,7 @@
  * @package    WP_SMS
  * @version    1.0
  */
-class WP_SMS_Gravityforms
+class Gravityforms
 {
     static function get_field($form_id)
     {
@@ -37,4 +44,4 @@ class WP_SMS_Gravityforms
     }
 }
 
-new WP_SMS_Gravityforms();
+new Gravityforms();
