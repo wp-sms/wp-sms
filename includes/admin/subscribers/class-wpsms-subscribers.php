@@ -8,7 +8,7 @@ class Subscribers {
 	/**
 	 * Subscribe admin page
 	 */
-	public static function subscribe_page() {
+	public function render_page() {
 		$subscriber = new Newsletter();
 		// Add subscriber page
 
@@ -39,5 +39,3 @@ class Subscribers {
 		include_once WP_SMS_DIR . "includes/admin/subscribers/subscribers.php";
 	}
 }
-
-new Subscribers();

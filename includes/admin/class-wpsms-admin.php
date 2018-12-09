@@ -52,6 +52,7 @@ class Admin {
 		// Add Filters
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
 		add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog' ) );
+
 	}
 
 	/**
@@ -110,13 +111,13 @@ class Admin {
 	public function admin_menu() {
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
-		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( Outbox::class, 'outbox_page' ) );
-		add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( Subscribers::class, 'subscribe_page' ) );
-		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array( Groups::class, 'groups_page' ) );
+		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( $this, 'outbox_callback' ) );
+		add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( $this, 'subscribers_callback' ) );
+		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array( $this, 'groups_callback' ) );
 
 		// Check GDPR compliance for Privacy menu
 		if ( isset( $this->options['gdpr_compliance'] ) and $this->options['gdpr_compliance'] == 1 ) {
-			add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( Privacy::class, 'privacy_page' ) );
+			add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
 		}
 	}
 
@@ -125,6 +126,42 @@ class Admin {
 	 */
 	public function send_sms_callback() {
 		$page = new SMS_Send();
+
+		$page->render_page();
+	}
+
+	/**
+	 * Callback outbox page.
+	 */
+	public function outbox_callback() {
+		$page = new Outbox();
+
+		$page->render_page();
+	}
+
+	/**
+	 * Callback subscribers page.
+	 */
+	public function subscribers_callback() {
+		$page = new Subscribers();
+
+		$page->render_page();
+	}
+
+	/**
+	 * Callback subscribers page.
+	 */
+	public function groups_callback() {
+		$page = new Groups();
+
+		$page->render_page();
+	}
+
+	/**
+	 * Callback subscribers page.
+	 */
+	public function privacy_callback() {
+		$page = new Privacy();
 
 		$page->render_page();
 	}

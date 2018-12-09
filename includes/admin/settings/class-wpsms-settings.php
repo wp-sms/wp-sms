@@ -20,7 +20,7 @@ class Settings {
 			update_option( $this->setting_name, array() );
 		}
 
-		add_action( 'admin_menu', array( &$this, 'add_settings_menu' ), 11 );
+		add_action( 'admin_menu', array( $this, 'add_settings_menu' ), 11 );
 
 		if ( isset( $_GET['page'] ) and $_GET['page'] == 'wp-sms-settings' or isset( $_POST['option_page'] ) and $_POST['option_page'] == 'wpsms_settings' ) {
 			add_action( 'admin_init', array( &$this, 'register_settings' ) );
@@ -32,7 +32,7 @@ class Settings {
 	 * */
 	public function add_settings_menu() {
 		add_submenu_page( 'wp-sms', __( 'Settings', 'wp-sms' ), __( 'Settings', 'wp-sms' ), 'wpsms_setting', 'wp-sms-settings', array(
-			&$this,
+			$this,
 			'render_settings'
 		) );
 	}

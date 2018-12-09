@@ -138,7 +138,7 @@ class Privacy {
 	/*
 	 * Show MetaBox System
 	 */
-	public function show_page_privacy() {
+	public function render_page() {
 		?>
         <div id="<?php echo $this->metabox; ?>" class="wrap privacy_page">
             <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
@@ -337,15 +337,6 @@ class Privacy {
 		echo file_get_contents( $filepath );
 		exit;
 	}
-
-	/**
-	 * Privacy admin page
-	 */
-	public static function privacy_page() {
-		$privacy = new Privacy();
-		$privacy->show_page_privacy();
-	}
-
 
 }
 

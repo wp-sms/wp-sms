@@ -321,7 +321,7 @@ class Outbox {
 	/**
 	 * Outbox sms admin page
 	 */
-	public static function outbox_page() {
+	public function render_page() {
 		include_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
 
 		//Create an instance of our package class...
@@ -333,5 +333,3 @@ class Outbox {
 		include_once WP_SMS_DIR . "includes/admin/outbox/outbox.php";
 	}
 }
-
-New Outbox();

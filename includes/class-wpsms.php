@@ -5,6 +5,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 /**
+ * Plugin defines
+ */
+if ( ! function_exists( 'get_plugin_data' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+
+$plugin_data = get_plugin_data( plugin_dir_path( dirname( __FILE__ ) ) . 'wp-sms.php' );
+
+define( 'WP_SMS_VERSION', $plugin_data['Version'] );
+define( 'WP_SMS_URL', plugin_dir_url( dirname( __FILE__ ) ) );
+define( 'WP_SMS_DIR', plugin_dir_path( dirname( __FILE__ ) ) );
+define( 'WP_SMS_ADMIN_URL', get_admin_url() );
+define( 'WP_SMS_SITE', 'https://wp-sms-pro.com' );
+define( 'WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/' );
+define( 'WP_SMS_CURRENT_DATE', date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
+
+/**
  * Get plugin options
  */
 $wpsms_option = get_option( 'wpsms_settings' );
@@ -27,12 +44,16 @@ class WP_SMS {
 		/**
 		 * Install plugin
 		 */
-		register_activation_hook( __FILE__, array( $this, 'install' ) );
+		//TODO: Working on Install and Upgrade
+		//include_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
+		//register_activation_hook( __FILE__, array( '\WP_SMS\Admin', 'install' ) );
 
 		/**
 		 * Upgrade plugin
 		 */
-		register_activation_hook( __FILE__, array( $this, 'upgrade' ) );
+		//include_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
+		//register_activation_hook( __FILE__, array( '\WP_SMS\Admin', 'upgrade' ) );
+
 	}
 
 	/**
