@@ -28,5 +28,8 @@ class Helper {
 			return $text;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> bb6e9c7961aaf9df95e2937536124ade80a63f33
 }

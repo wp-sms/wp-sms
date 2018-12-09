@@ -52,7 +52,6 @@ class Admin {
 		// Add Filters
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
 		add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog' ) );
-
 	}
 
 	/**
@@ -95,7 +94,6 @@ class Admin {
 		) );
 	}
 
-
 	/**
 	 * Dashboard glance plugin
 	 */
@@ -110,9 +108,13 @@ class Admin {
 	 * Administrator admin_menu
 	 */
 	public function admin_menu() {
+<<<<<<< HEAD
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( '\WP_SMS\SMS_Send', 'send_page' ), 'dashicons-email-alt' );
 		//TODO: convert to non-static method all menus
 		// add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ), 'dashicons-email-alt' );
+=======
+		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ), 'dashicons-email-alt' );
+>>>>>>> bb6e9c7961aaf9df95e2937536124ade80a63f33
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( Outbox::class, 'outbox_page' ) );
 		add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( Subscribers::class, 'subscribe_page' ) );
@@ -133,7 +135,10 @@ class Admin {
 	 * @return array
 	 */
 	public function meta_links( $links, $file ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> bb6e9c7961aaf9df95e2937536124ade80a63f33
 		if ( $file == 'wp-sms/wp-sms.php' ) {
 			$rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
 			$links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . __( 'Click here to rate and review this plugin on WordPress.org', 'wp-sms' ) . '">' . __( 'Rate this plugin', 'wp-sms' ) . '</a>';
@@ -149,7 +154,10 @@ class Admin {
 	 * Adding new capability in the plugin
 	 */
 	public function add_cap() {
+<<<<<<< HEAD
 
+=======
+>>>>>>> bb6e9c7961aaf9df95e2937536124ade80a63f33
 		// Get administrator role
 		$role = get_role( 'administrator' );
 
@@ -219,8 +227,14 @@ class Admin {
 	/**
 	 * Creating Table for New Blog in wordpress
 	 */
+<<<<<<< HEAD
 	public function add_table_on_create_blog( $blog_id ) {
 
+=======
+	public function add_table_on_create_blog(
+		$blog_id
+	) {
+>>>>>>> bb6e9c7961aaf9df95e2937536124ade80a63f33
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
 			switch_to_blog( $blog_id );
 
