@@ -46,7 +46,6 @@ class WP_SMS {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
 		$this->includes();
-
 	}
 
 	/**
@@ -66,7 +65,6 @@ class WP_SMS {
 	public function includes() {
 
 		if ( is_admin() ) {
-
 			// Admin classes.
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
@@ -91,7 +89,6 @@ class WP_SMS {
 			// Subscribers class.
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers.php';
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
-
 		}
 
 		// Utility classes.
@@ -110,7 +107,6 @@ class WP_SMS {
 			// Front Class.
 			require_once WP_SMS_DIR . 'includes/class-front-assets.php';
 		}
-
 
 		// API class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';

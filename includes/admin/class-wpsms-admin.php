@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS;
 
 class Admin {
@@ -53,7 +52,6 @@ class Admin {
 		// Add Filters
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
 		add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog' ) );
-
 	}
 
 	/**
@@ -94,7 +92,6 @@ class Admin {
 		) );
 	}
 
-
 	/**
 	 * Dashboard glance plugin
 	 */
@@ -108,8 +105,7 @@ class Admin {
 	/**
 	 * Administrator admin_menu
 	 */
-	public
-	function admin_menu() {
+	public function admin_menu() {
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( Outbox::class, 'outbox_page' ) );
@@ -130,10 +126,7 @@ class Admin {
 	 *
 	 * @return array
 	 */
-	public
-	function meta_links(
-		$links, $file
-	) {
+	public function meta_links( $links, $file ) {
 		if ( $file == 'wp-sms/wp-sms.php' ) {
 			$rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
 			$links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . __( 'Click here to rate and review this plugin on WordPress.org', 'wp-sms' ) . '">' . __( 'Rate this plugin', 'wp-sms' ) . '</a>';
@@ -148,8 +141,7 @@ class Admin {
 	/**
 	 * Adding new capability in the plugin
 	 */
-	public
-	function add_cap() {
+	public function add_cap() {
 		// Get administrator role
 		$role = get_role( 'administrator' );
 
@@ -218,8 +210,7 @@ class Admin {
 	/**
 	 * Creating Table for New Blog in wordpress
 	 */
-	public
-	function add_table_on_create_blog(
+	public function add_table_on_create_blog(
 		$blog_id
 	) {
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
