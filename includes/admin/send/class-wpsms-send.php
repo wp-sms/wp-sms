@@ -54,7 +54,7 @@ class SMS_Send {
 	 *
 	 * @param  Not param
 	 */
-	public function send_page() {
+	public function render_page() {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
 		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
