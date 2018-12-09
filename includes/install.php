@@ -1,5 +1,8 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -7,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_SMS_INSTALL
  */
-class WP_SMS_INSTALL {
+class Install {
 
 	/**
 	 * Table SQL

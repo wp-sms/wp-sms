@@ -114,6 +114,9 @@ class Gateway {
 		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
 			//add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
 		}
+
+		// Add Filters
+		add_filter( 'wp_sms_to', array( $this, 'modify_bulk_send' ) );
 	}
 
 	/**
@@ -500,6 +503,21 @@ class Gateway {
 		} else {
 			return $result;
 		}
+	}
+
+	/**
+	 * Modify destination number
+	 *
+	 * @param  array $to
+	 *
+	 * @return array/string
+	 */
+	public function modify_bulk_send( $to ) {
+		if ( ! $this->sms->bulk_send ) {
+			return array( $to[0] );
+		}
+
+		return $to;
 	}
 
 }

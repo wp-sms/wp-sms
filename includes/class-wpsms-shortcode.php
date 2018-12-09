@@ -41,7 +41,7 @@ class Shortcode {
 	 * @internal param param $Not
 	 */
 	public function register_shortcode( $atts ) {
-		\WP_SMS::loadNewsLetter();
+		Newsletter::loadNewsLetter();
 	}
 }
 

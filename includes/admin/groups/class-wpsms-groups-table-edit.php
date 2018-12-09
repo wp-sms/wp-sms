@@ -1,11 +1,14 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
 //Edit Groups Class
-class WP_SMS_Subscribers_Groups_Table_Edit {
+class Subscribers_Groups_Table_Edit {
 
 	/**
 	 * Wordpress Database
@@ -22,7 +25,7 @@ class WP_SMS_Subscribers_Groups_Table_Edit {
 	protected $tb_prefix;
 
 	/**
-	 * WP_SMS_Subscribers_Groups_Table_Edit constructor.
+	 * Subscribers_Groups_Table_Edit constructor.
 	 */
 	public function __construct() {
 		global $wpdb, $table_prefix;
@@ -96,4 +99,4 @@ class WP_SMS_Subscribers_Groups_Table_Edit {
 
 }
 
-new WP_SMS_Subscribers_Groups_Table_Edit();
+new Subscribers_Groups_Table_Edit();

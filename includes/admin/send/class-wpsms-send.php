@@ -1,5 +1,8 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -7,9 +10,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Send SMS Page
  */
-class WP_SMS_Send {
+class SMS_Send {
+
+	/**
+	 * WP SMS gateway object
+	 *
+	 * @var string
+	 */
+	public $sms;
+
+	/**
+	 * Wordpress Database
+	 *
+	 * @var string
+	 */
+	protected $db;
+
+	/**
+	 * Wordpress Table prefix
+	 *
+	 * @var string
+	 */
+	protected $tb_prefix;
+
+	/**
+	 * Options
+	 *
+	 * @var string
+	 */
+	protected $options;
 
 	public function __construct() {
+
+		global $wpdb, $wpsms_option, $sms;
+
+		$this->db        = $wpdb;
+		$this->tb_prefix = $wpdb->prefix;
+		$this->sms       = $sms;
+		$this->options   = $wpsms_option;
 	}
 
 	/**
@@ -64,7 +102,7 @@ class WP_SMS_Send {
 					$sms->to = explode( ",", $_POST['wp_get_number'] );
 				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
 					$to = array();
-					add_action( 'pre_user_query', array( WP_SMS_Send::class, 'get_query_user_mobile' ) );
+					add_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
 					$list = get_users( array(
 						'meta_key'     => 'mobile',
 						'meta_value'   => '',
@@ -72,7 +110,7 @@ class WP_SMS_Send {
 						'role'         => $_POST['wpsms_group_role'],
 						'fields'       => 'all'
 					) );
-					remove_action( 'pre_user_query', array( WP_SMS_Send::class, 'get_query_user_mobile' ) );
+					remove_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
 					foreach ( $list as $user ) {
 						$to[] = $user->mobile;
 					}
@@ -122,7 +160,6 @@ class WP_SMS_Send {
 		return $user_query;
 	}
 
-
 }
 
-new WP_SMS_Send();
+new SMS_Send();

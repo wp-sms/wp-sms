@@ -1,5 +1,8 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -10,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @category   class
  * @package    WP_SMS
  */
-class WP_SMS_Version {
+class Version {
 	public $options;
 
 	/**
@@ -155,4 +158,4 @@ class WP_SMS_Version {
 	}
 }
 
-new WP_SMS_Version();
+new Version();

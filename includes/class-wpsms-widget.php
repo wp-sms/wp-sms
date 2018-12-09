@@ -21,6 +21,9 @@ class Widget extends \WP_Widget {
 			'description' => __( 'SMS newsletter form', 'wp-sms' ),
 		);
 
+		// Add Actions
+		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+
 		parent::__construct( 'wpsms_widget', __( 'SMS newsletter', 'wp-sms' ), $widget_options );
 	}
 
@@ -39,7 +42,7 @@ class Widget extends \WP_Widget {
 		}
 		$widget_id = $this->get_numerics( $args['widget_id'] );
 
-		\WP_SMS::loadNewsLetter( $widget_id, $instance);
+		Newsletter::loadNewsLetter( $widget_id, $instance);
 
 		echo $args['after_widget'];
 	}
@@ -87,4 +90,13 @@ class Widget extends \WP_Widget {
 		return $matches[0];
 	}
 
+	/**
+	 * Register widget
+	 */
+	public function register_widget() {
+		register_widget( '\WP_SMS\Widget' );
+	}
+
 }
+
+new Widget();

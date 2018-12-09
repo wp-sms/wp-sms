@@ -1,5 +1,8 @@
 <?php
 
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -8,7 +11,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class WP_SMS_Subscribers_List_Table extends WP_List_Table {
+class Subscribers_List_Table extends \WP_List_Table {
 
 	/**
 	 * Wordpress Database
@@ -229,15 +232,8 @@ class WP_SMS_Subscribers_List_Table extends WP_List_Table {
 		 * to a custom query. The returned data will be pre-sorted, and this array
 		 * sorting technique would be unnecessary.
 		 */
-		function usort_reorder( $a, $b ) {
-			$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to sender
-			$order   = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
-			$result  = strcmp( $a[ $orderby ], $b[ $orderby ] ); //Determine sort order
 
-			return ( $order === 'asc' ) ? $result : - $result; //Send final sort direction to usort
-		}
-
-		usort( $data, 'usort_reorder' );
+		usort( $data, '\WP_SMS\Subscribers_List_Table::usort_reorder' );
 
 		/**
 		 * REQUIRED for pagination. Let's check how many items are in our data array.
@@ -261,6 +257,22 @@ class WP_SMS_Subscribers_List_Table extends WP_List_Table {
 			'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
 			'total_pages' => ceil( $total_items / $per_page )   //WE have to calculate the total number of pages
 		) );
+	}
+
+	/**
+	 * Usort Function
+	 *
+	 * @param $a
+	 * @param $b
+	 *
+	 * @return array
+	 */
+	function usort_reorder( $a, $b ) {
+		$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to sender
+		$order   = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
+		$result  = strcmp( $a[ $orderby ], $b[ $orderby ] ); //Determine sort order
+
+		return ( $order === 'asc' ) ? $result : - $result; //Send final sort direction to usort
 	}
 
 	//set $per_page item as int number

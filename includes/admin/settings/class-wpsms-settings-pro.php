@@ -1,9 +1,13 @@
 <?php
+
+// Set namespace class
+namespace WP_SMS;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // No direct access allowed ;)
 
-class WP_SMS_Settings_Pro {
+class Settings_Pro {
 
 	public $setting_name;
 	public $options = array();
@@ -1266,4 +1270,4 @@ class WP_SMS_Settings_Pro {
 	}
 }
 
-new WP_SMS_Settings_Pro();
+new Settings_Pro();

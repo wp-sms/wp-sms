@@ -18,7 +18,7 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 
 		// Using default gateway if does not set gateway in the setting
 		if ( empty( $wpsms_option['gateway_name'] ) ) {
-			return new $class_name;
+			return new $class_name();
 		}
 		// TODO : need to change Class names on WP-SMS-PRO
 		if ( is_file( WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $wpsms_option['gateway_name'] . '.php' ) ) {
@@ -26,15 +26,15 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
 			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' );
 		} else {
-			return new $class_name;
+			return new $class_name();
 		}
 
 		// Create object from the gateway class
 		if ( $wpsms_option['gateway_name'] == 'default' ) {
-			$sms = new $class_name;
+			$sms = new $class_name();
 		} else {
 			$class_name = '\\WP_SMS\\Gateway\\' . $wpsms_option['gateway_name'];
-			$sms        = new $class_name;
+			$sms        = new $class_name();
 		}
 
 		// Set username and password
