@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS\Gateway;
 
 class sabasms extends \WP_SMS\Gateway {

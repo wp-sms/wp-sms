@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS\Gateway;
 
 class niazpardazcom extends \WP_SMS\Gateway {

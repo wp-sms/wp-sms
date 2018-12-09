@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS\Gateway;
 
 use WP_SMS\Gateway;

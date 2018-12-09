@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS\Api\V1;
 
 if ( ! defined( 'ABSPATH' ) ) {

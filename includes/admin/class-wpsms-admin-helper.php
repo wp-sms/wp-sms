@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS\Admin;
 
 class Helper {
@@ -31,5 +30,3 @@ class Helper {
 	}
 
 }
-
-new Helper();

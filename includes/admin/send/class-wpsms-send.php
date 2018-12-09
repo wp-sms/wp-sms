@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -55,7 +54,7 @@ class SMS_Send {
 	 *
 	 * @param  Not param
 	 */
-	public static function send_page() {
+	public function send_page() {
 		global $wpsms_option, $sms, $wpdb, $table_prefix;
 
 		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );

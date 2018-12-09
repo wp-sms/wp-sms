@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS\Gateway;
 
 class sonoratecnologia extends \WP_SMS\Gateway {

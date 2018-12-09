@@ -1,6 +1,5 @@
 <?php
 
-// Set namespace class
 namespace WP_SMS;
 
 class Admin {
@@ -60,6 +59,7 @@ class Admin {
 	 * Include admin assets
 	 */
 	public function admin_assets() {
+
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
 			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, '1.3' );
 			wp_enqueue_style( 'wpsms-admin-css' );
@@ -76,6 +76,7 @@ class Admin {
 	 */
 	public function admin_bar() {
 		global $wp_admin_bar;
+
 		/* TODO: Not working!
 		if ( is_super_admin() && is_admin_bar_showing() ) {
 			if ( get_option( 'wp_last_credit' ) && isset( $this->options['account_credit_in_menu'] ) ) {
@@ -108,9 +109,10 @@ class Admin {
 	/**
 	 * Administrator admin_menu
 	 */
-	public
-	function admin_menu() {
-		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ), 'dashicons-email-alt' );
+	public function admin_menu() {
+		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( '\WP_SMS\SMS_Send', 'send_page' ), 'dashicons-email-alt' );
+		//TODO: convert to non-static method all menus
+		// add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( SMS_Send::class, 'send_page' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( Outbox::class, 'outbox_page' ) );
 		add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( Subscribers::class, 'subscribe_page' ) );
@@ -130,10 +132,8 @@ class Admin {
 	 *
 	 * @return array
 	 */
-	public
-	function meta_links(
-		$links, $file
-	) {
+	public function meta_links( $links, $file ) {
+
 		if ( $file == 'wp-sms/wp-sms.php' ) {
 			$rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
 			$links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . __( 'Click here to rate and review this plugin on WordPress.org', 'wp-sms' ) . '">' . __( 'Rate this plugin', 'wp-sms' ) . '</a>';
@@ -148,8 +148,8 @@ class Admin {
 	/**
 	 * Adding new capability in the plugin
 	 */
-	public
-	function add_cap() {
+	public function add_cap() {
+
 		// Get administrator role
 		$role = get_role( 'administrator' );
 
@@ -163,6 +163,7 @@ class Admin {
 	 * Initial plugin
 	 */
 	private function init() {
+
 		if ( isset( $_GET['action'] ) ) {
 			if ( $_GET['action'] == 'wpsms-hide-newsletter' ) {
 				update_option( 'wpsms_hide_newsletter', true );
@@ -218,10 +219,8 @@ class Admin {
 	/**
 	 * Creating Table for New Blog in wordpress
 	 */
-	public
-	function add_table_on_create_blog(
-		$blog_id
-	) {
+	public function add_table_on_create_blog( $blog_id ) {
+
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
 			switch_to_blog( $blog_id );
 
@@ -238,6 +237,7 @@ class Admin {
 	 * Remove Table On Delete Blog Wordpress
 	 */
 	public function remove_table_on_delete_blog( $tables ) {
+
 		foreach ( array( 'sms_subscribes', 'sms_subscribes_group', 'sms_send' ) as $tbl ) {
 			$tables[] = $this->tb_prefix . $tbl;
 		}
