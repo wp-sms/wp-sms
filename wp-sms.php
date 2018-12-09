@@ -4,7 +4,7 @@
  * Plugin URI: http://wp-sms-pro.com/
  * Description: A powerful texting plugin for WordPress
  * Version: 4.1.2
- * Author: Verona Labs
+ * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
  * Domain Path: /languages
