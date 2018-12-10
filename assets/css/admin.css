@@ -187,6 +187,7 @@
     height: 28px;
 }
 
+/*TODO: Need to Add this style to the whole admin area*/
 .wp-admin #wpadminbar #wp-admin-bar-wp-credit-sms > .ab-item:before {
     content: "\f466";
     margin: 2px 0 0 0;

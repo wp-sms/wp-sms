@@ -97,8 +97,7 @@ class Admin {
 	/**
 	 * Dashboard glance plugin
 	 */
-	public
-	function dashboard_glance() {
+	public function dashboard_glance() {
 
 		$subscribe = $this->db->get_var( "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes" );
 		echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf( __( '%s Subscriber', 'wp-sms' ), $subscribe ) . "</a></li>";
@@ -108,8 +107,7 @@ class Admin {
 	/**
 	 * Administrator admin_menu
 	 */
-	public
-	function admin_menu() {
+	public function admin_menu() {
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( $this, 'outbox_callback' ) );
@@ -125,8 +123,7 @@ class Admin {
 	/**
 	 * Callback send sms page.
 	 */
-	public
-	function send_sms_callback() {
+	public function send_sms_callback() {
 		$page = new SMS_Send();
 
 		$page->render_page();
@@ -135,8 +132,7 @@ class Admin {
 	/**
 	 * Callback outbox page.
 	 */
-	public
-	function outbox_callback() {
+	public function outbox_callback() {
 		$page = new Outbox();
 
 		$page->render_page();
@@ -145,8 +141,7 @@ class Admin {
 	/**
 	 * Callback subscribers page.
 	 */
-	public
-	function subscribers_callback() {
+	public function subscribers_callback() {
 		$page = new Subscribers();
 
 		$page->render_page();
@@ -155,8 +150,7 @@ class Admin {
 	/**
 	 * Callback subscribers page.
 	 */
-	public
-	function groups_callback() {
+	public function groups_callback() {
 		$page = new Groups();
 
 		$page->render_page();
@@ -165,8 +159,7 @@ class Admin {
 	/**
 	 * Callback subscribers page.
 	 */
-	public
-	function privacy_callback() {
+	public function privacy_callback() {
 		$page = new Privacy();
 
 		$page->render_page();
@@ -180,10 +173,7 @@ class Admin {
 	 *
 	 * @return array
 	 */
-	public
-	function meta_links(
-		$links, $file
-	) {
+	public function meta_links( $links, $file ) {
 
 		if ( $file == 'wp-sms/wp-sms.php' ) {
 			$rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
@@ -199,8 +189,7 @@ class Admin {
 	/**
 	 * Adding new capability in the plugin
 	 */
-	public
-	function add_cap() {
+	public function add_cap() {
 		// Get administrator role
 		$role = get_role( 'administrator' );
 
@@ -213,8 +202,7 @@ class Admin {
 	/**
 	 * Initial plugin
 	 */
-	private
-	function init() {
+	private function init() {
 
 		if ( isset( $_GET['action'] ) ) {
 			if ( $_GET['action'] == 'wpsms-hide-newsletter' ) {
@@ -240,8 +228,7 @@ class Admin {
 	/**
 	 * Admin newsletter
 	 */
-	public
-	function admin_newsletter() {
+	public function admin_newsletter() {
 		include_once WP_SMS_DIR . 'includes/templates/admin-newsletter.php';
 	}
 
@@ -272,8 +259,7 @@ class Admin {
 	/**
 	 * Creating Table for New Blog in wordpress
 	 */
-	public
-	function add_table_on_create_blog(
+	public function add_table_on_create_blog(
 		$blog_id
 	) {
 		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
@@ -291,10 +277,7 @@ class Admin {
 	/**
 	 * Remove Table On Delete Blog Wordpress
 	 */
-	public
-	function remove_table_on_delete_blog(
-		$tables
-	) {
+	public function remove_table_on_delete_blog( $tables ) {
 
 		foreach ( array( 'sms_subscribes', 'sms_subscribes_group', 'sms_send' ) as $tbl ) {
 			$tables[] = $this->tb_prefix . $tbl;
