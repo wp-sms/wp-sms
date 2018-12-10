@@ -5,7 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 class WP_SMS {
-
+	/**
+	 * WP_SMS constructor.
+	 */
 	public function __construct() {
 		/*
 		 * Plugin Loaded Action
@@ -18,9 +20,9 @@ class WP_SMS {
 		if ( is_admin() ) {
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
 		}
+
 		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Admin', 'install' ) );
 		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Admin', 'upgrade' ) );
-
 	}
 
 	/**
@@ -29,7 +31,6 @@ class WP_SMS {
 	 * @param  Not param
 	 */
 	public function plugin_setup() {
-
 		// Load text domain
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
@@ -51,9 +52,7 @@ class WP_SMS {
 	 * @param  Not param
 	 */
 	public function includes() {
-
 		if ( is_admin() ) {
-
 			// Admin classes.
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
@@ -100,5 +99,4 @@ class WP_SMS {
 		// API class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
 	}
-
 }
