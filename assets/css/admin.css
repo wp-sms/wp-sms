@@ -186,3 +186,8 @@
     width: 379px;
     height: 28px;
 }
+
+.wp-admin #wpadminbar #wp-admin-bar-wp-credit-sms > .ab-item:before {
+    content: "\f466";
+    margin: 2px 0 0 0;
+}

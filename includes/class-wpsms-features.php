@@ -26,11 +26,11 @@ class Features {
 	 * WP_SMS_Features constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wpdb, $table_prefix;
+		global $wpsms_option, $sms, $wpdb;
 
 		$this->sms       = $sms;
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		$this->date      = WP_SMS_CURRENT_DATE;
 		$this->options   = $wpsms_option;
 

@@ -434,7 +434,7 @@ class AfricasTalkingGateway {
 
 			$this->_responseBody = $responseBody;
 			curl_close( $curlHandle_ );
-		} catch ( Exeption $e ) {
+		} catch ( \Exeption $e ) {
 			curl_close( $curlHandle_ );
 			throw $e;
 		}

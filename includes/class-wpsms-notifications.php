@@ -37,13 +37,13 @@ class Notifications {
 	 * WP_SMS_Notifications constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wp_version, $wpdb, $table_prefix;
+		global $wpsms_option, $sms, $wp_version, $wpdb;
 
 		$this->sms       = $sms;
 		$this->date      = WP_SMS_CURRENT_DATE;
 		$this->options   = $wpsms_option;
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 
 		if ( isset( $this->options['notif_publish_new_post'] ) ) {
 			add_action( 'add_meta_boxes', array( $this, 'notification_meta_box' ) );
@@ -95,10 +95,10 @@ class Notifications {
 	 * @param $post
 	 */
 	public function notification_meta_box_handler( $post ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
-		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
-		$username_active  = $wpdb->query( "SELECT * FROM {$table_prefix}sms_subscribes WHERE status = '1'" );
+		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
+		$username_active  = $wpdb->query( "SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'" );
 		include_once WP_SMS_DIR . "includes/templates/meta-box.php";
 	}
 

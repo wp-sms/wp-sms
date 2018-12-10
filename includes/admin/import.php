@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 include_once WP_SMS_DIR . "includes/libraries/excel-reader.class.php";
 
-global $wpdb, $table_prefix;
+global $wpdb;
 
 $get_mobile      = array();
 $get_mobile_dups = array();

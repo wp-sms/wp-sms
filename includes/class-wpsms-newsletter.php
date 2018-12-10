@@ -40,11 +40,11 @@ class Newsletter {
 	 * Constructors
 	 */
 	public function __construct() {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		$this->date      = WP_SMS_CURRENT_DATE;
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_script' ) );
 	}
 
@@ -120,7 +120,7 @@ class Newsletter {
 	 * @return array
 	 */
 	public static function addSubscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		if ( self::isDuplicate( $mobile, $group_id ) ) {
 			return array(
@@ -130,7 +130,7 @@ class Newsletter {
 		}
 
 		$result = $wpdb->insert(
-			$table_prefix . "sms_subscribes",
+			$wpdb->prefix . "sms_subscribes",
 			array(
 				'date'         => WP_SMS_CURRENT_DATE,
 				'name'         => $name,
@@ -164,8 +164,8 @@ class Newsletter {
 	 * @return array|null|object|void
 	 */
 	public static function get_subscriber( $id ) {
-		global $wpdb, $table_prefix;
-		$result = $wpdb->get_row( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE ID = '" . $id . "'" );
+		global $wpdb;
+		$result = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE ID = '" . $id . "'" );
 
 		if ( $result ) {
 			return $result;
@@ -241,9 +241,9 @@ class Newsletter {
 	 * @return array
 	 */
 	public static function deleteSubscriberByNumber( $mobile, $group_id = null ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 		$result = $wpdb->delete(
-			$table_prefix . "sms_subscribes",
+			$wpdb->prefix . "sms_subscribes",
 			array(
 				'mobile'   => $mobile,
 				'group_id' => $group_id,
@@ -326,8 +326,8 @@ class Newsletter {
 	 * @return array|null|object
 	 */
 	public static function get_groups() {
-		global $wpdb, $table_prefix;
-		$result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
+		global $wpdb;
+		$result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
 
 		if ( $result ) {
 			return $result;
@@ -521,8 +521,8 @@ class Newsletter {
 	 * @return mixed
 	 */
 	public static function isDuplicate( $mobile_number, $group_id = null, $id = null ) {
-		global $wpdb, $table_prefix;
-		$sql = "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
+		global $wpdb;
+		$sql = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
 
 		if ( $group_id ) {
 			$sql .= " AND group_id = '" . $group_id . "'";
@@ -544,7 +544,7 @@ class Newsletter {
 	 * @return array
 	 */
 	public static function getSubscribers( $group_id = '' ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		$where = '';
 
@@ -552,7 +552,7 @@ class Newsletter {
 			$where = $wpdb->prepare( ' WHERE group_ID = %d', $group_id );
 		}
 
-		$result = $wpdb->get_col( "SELECT `mobile` FROM {$table_prefix}sms_subscribes" . $where );
+		$result = $wpdb->get_col( "SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where );
 
 		return $result;
 
@@ -569,9 +569,9 @@ class Newsletter {
 	 * @return mixed
 	 */
 	public static function insertSubscriber( $date, $name, $mobile, $status, $group_id ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
-		$result = $wpdb->insert( "{$table_prefix}sms_subscribes",
+		$result = $wpdb->insert( "{$wpdb->prefix}sms_subscribes",
 			array(
 				'date'     => $date,
 				'name'     => $name,
@@ -590,9 +590,9 @@ class Newsletter {
 	 * @return object|null
 	 */
 	public static function getGroup( $group_id ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
-		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
+		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
 		$result     = $wpdb->get_row( $db_prepare );
 
 		if ( $result ) {
@@ -609,8 +609,8 @@ class Newsletter {
 	 * @param null $instance
 	 */
 	public static function loadNewsLetter( $widget_id = null, $instance = null ) {
-		global $wpdb, $table_prefix, $wpsms_option;
-		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
+		global $wpdb, $wpsms_option;
+		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
 
 		include_once WP_SMS_DIR . "includes/templates/subscribe-form.php";
 	}

@@ -108,7 +108,7 @@ class sabasms extends \WP_SMS\Gateway {
 
 		try {
 			$client = new \SoapClient( 'http://www.sabasms.biz/services/CISGate/wsdl', array( 'encoding' => 'UTF-8' ) );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 

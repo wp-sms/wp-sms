@@ -51,7 +51,7 @@
                                     <label for="wp_get_sender"><?php _e( 'Send from', 'wp-sms' ); ?>:</label>
                                 </th>
                                 <td>
-                                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $sms->from; ?>" maxlength="11"/>
+                                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $sms->from; ?>" maxlength="18"/>
                                 </td>
                             </tr>
                             <tr valign="top">
@@ -86,8 +86,8 @@
                                     <select name="wpsms_group_name" class="wpsms-value wpsms-group">
                                         <option value="all">
 											<?php
-											global $wpdb, $table_prefix;
-											$username_active = $wpdb->query( "SELECT * FROM {$table_prefix}sms_subscribes WHERE status = '1'" );
+											global $wpdb;
+											$username_active = $wpdb->query( "SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'" );
 											echo sprintf( __( 'All (%s subscribers active)', 'wp-sms' ), $username_active );
 											?>
                                         </option>

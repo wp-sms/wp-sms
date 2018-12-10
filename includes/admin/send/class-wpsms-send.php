@@ -55,10 +55,10 @@ class SMS_Send {
 	 * @param  Not param
 	 */
 	public function render_page() {
-		global $wpsms_option, $sms, $wpdb, $table_prefix;
+		global $wpsms_option, $sms, $wpdb;
 
-		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$table_prefix}sms_subscribes_group`" );
-		$get_users_mobile = $wpdb->get_col( "SELECT `meta_value` FROM `{$table_prefix}usermeta` WHERE `meta_key` = 'mobile'" );
+		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
+		$get_users_mobile = $wpdb->get_col( "SELECT `meta_value` FROM `{$wpdb->prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
 		//Get User Mobile List by Role
 		if ( ! empty( $wpsms_option['add_mobile_field'] ) and $wpsms_option['add_mobile_field'] == 1 ) {
@@ -91,9 +91,9 @@ class SMS_Send {
 			if ( $_POST['wp_get_message'] ) {
 				if ( $_POST['wp_send_to'] == "wp_subscribe_username" ) {
 					if ( $_POST['wpsms_group_name'] == 'all' ) {
-						$sms->to = $wpdb->get_col( "SELECT mobile FROM {$table_prefix}sms_subscribes WHERE `status` = '1'" );
+						$sms->to = $wpdb->get_col( "SELECT mobile FROM {$wpdb->prefix}sms_subscribes WHERE `status` = '1'" );
 					} else {
-						$sms->to = $wpdb->get_col( "SELECT mobile FROM {$table_prefix}sms_subscribes WHERE `status` = '1' AND `group_ID` = '" . $_POST['wpsms_group_name'] . "'" );
+						$sms->to = $wpdb->get_col( "SELECT mobile FROM {$wpdb->prefix}sms_subscribes WHERE `status` = '1' AND `group_ID` = '" . $_POST['wpsms_group_name'] . "'" );
 					}
 				} else if ( $_POST['wp_send_to'] == "wp_users" ) {
 					$sms->to = $get_users_mobile;

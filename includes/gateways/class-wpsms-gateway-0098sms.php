@@ -84,7 +84,7 @@ class _0098sms extends \WP_SMS\Gateway {
 
 				return new \WP_Error( 'send-sms', $this->get_error_message( $result ) );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
@@ -115,7 +115,7 @@ class _0098sms extends \WP_SMS\Gateway {
 			} else {
 				return new \WP_Error( 'account-credit', $this->get_error_message( $result ) );
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}

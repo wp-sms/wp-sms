@@ -48,7 +48,7 @@ class Outbox_List_Table extends \WP_List_Table {
 	var $data;
 
 	function __construct() {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		//Set parent defaults
 		parent::__construct( array(
@@ -57,7 +57,7 @@ class Outbox_List_Table extends \WP_List_Table {
 			'ajax'     => false        //does this table support ajax?
 		) );
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		$this->count     = $this->get_total();
 		$this->limit     = 50;
 		$this->data      = $this->get_data();

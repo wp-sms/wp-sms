@@ -72,7 +72,7 @@ class hirosms extends \WP_SMS\Gateway {
 			}
 
 			$result = $client->SendMultiSMS( $from, $this->to, $message, $type, $this->username, $this->password );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
@@ -106,7 +106,7 @@ class hirosms extends \WP_SMS\Gateway {
 
 		try {
 			$client = new \SoapClient( $this->wsdl_link );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 

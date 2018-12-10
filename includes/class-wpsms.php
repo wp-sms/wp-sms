@@ -5,21 +5,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 /**
- * Plugin defines
+ * Check get_plugin_data function exist
  */
 if ( ! function_exists( 'get_plugin_data' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
 
-$plugin_data = get_plugin_data( plugin_dir_path( dirname( __FILE__ ) ) . 'wp-sms.php' );
-
-define( 'WP_SMS_VERSION', $plugin_data['Version'] );
+// Set Plugin path and url defines.
 define( 'WP_SMS_URL', plugin_dir_url( dirname( __FILE__ ) ) );
 define( 'WP_SMS_DIR', plugin_dir_path( dirname( __FILE__ ) ) );
+
+// Get plugin Data.
+$plugin_data = get_plugin_data( WP_SMS_DIR . 'wp-sms.php' );
+
+// Set another useful Plugin defines.
+define( 'WP_SMS_VERSION', $plugin_data['Version'] );
 define( 'WP_SMS_ADMIN_URL', get_admin_url() );
 define( 'WP_SMS_SITE', 'https://wp-sms-pro.com' );
 define( 'WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/' );
 define( 'WP_SMS_CURRENT_DATE', date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
+
+/**
+ * Load plugin Special Functions
+ */
+require_once WP_SMS_DIR . 'includes/functions.php';
 
 /**
  * Get plugin options
@@ -29,9 +38,8 @@ $wpsms_option = get_option( 'wpsms_settings' );
 /**
  * Initial gateway
  */
-include_once WP_SMS_DIR . 'includes/functions.php';
-$sms = initial_gateway();
-
+require_once WP_SMS_DIR . 'includes/class-wpsms-initial-gateway.php';
+$sms = \WP_SMS\Initial\Gateway::initial();
 
 class WP_SMS {
 
@@ -42,17 +50,13 @@ class WP_SMS {
 		add_action( 'plugins_loaded', array( $this, 'plugin_setup' ) );
 
 		/**
-		 * Install plugin
+		 * Install And Upgrade plugin
 		 */
-		//TODO: Working on Install and Upgrade
-		//include_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-		//register_activation_hook( __FILE__, array( '\WP_SMS\Admin', 'install' ) );
-
-		/**
-		 * Upgrade plugin
-		 */
-		//include_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-		//register_activation_hook( __FILE__, array( '\WP_SMS\Admin', 'upgrade' ) );
+		if ( is_admin() ) {
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
+		}
+		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Admin', 'install' ) );
+		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Admin', 'upgrade' ) );
 
 	}
 
@@ -86,12 +90,12 @@ class WP_SMS {
 	public function includes() {
 
 		if ( is_admin() ) {
+
 			// Admin classes.
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-
 
 			// Groups class.
 			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups.php';
@@ -123,6 +127,7 @@ class WP_SMS {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
 
 		if ( ! is_admin() ) {
 			// Front Class.

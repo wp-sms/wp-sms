@@ -52,12 +52,12 @@ class RestApi {
 	 * WP_SMS_RestApi constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wpdb, $table_prefix;
+		global $wpsms_option, $sms, $wpdb;
 
 		$this->sms       = $sms;
 		$this->options   = $wpsms_option;
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		$this->namespace = 'wpsms';
 	}
 
@@ -222,7 +222,7 @@ class RestApi {
 	 * @return array|string
 	 */
 	public static function verifySubscriber( $name, $mobile, $activation, $group ) {
-		global $wpsms_option, $sms, $wpdb, $table_prefix;
+		global $wpsms_option, $sms, $wpdb;
 
 		if ( empty( $name ) OR empty( $mobile ) OR empty( $activation ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The required parameters must be valued!', 'wp-sms' ) );
@@ -230,9 +230,9 @@ class RestApi {
 
 		// Check the mobile number is string or integer
 		if ( strpos( $mobile, '+' ) !== false ) {
-			$db_prepare = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $group );
+			$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $group );
 		} else {
-			$db_prepare = $wpdb->prepare( "SELECT * FROM `{$table_prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $group );
+			$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $group );
 		}
 
 		$check_mobile = $wpdb->get_row( $db_prepare );
@@ -246,9 +246,9 @@ class RestApi {
 
 			// Check the mobile number is string or integer
 			if ( strpos( $mobile, '+' ) !== false ) {
-				$result = $wpdb->update( "{$table_prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile, 'group_ID' => $group ), array( '%d', '%d' ), array( '%s' ) );
+				$result = $wpdb->update( "{$wpdb->prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile, 'group_ID' => $group ), array( '%d', '%d' ), array( '%s' ) );
 			} else {
-				$result = $wpdb->update( "{$table_prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile, 'group_ID' => $group ), array( '%d', '%d' ), array( '%d' ) );
+				$result = $wpdb->update( "{$wpdb->prefix}sms_subscribes", array( 'status' => '1' ), array( 'mobile' => $mobile, 'group_ID' => $group ), array( '%d', '%d' ), array( '%d' ) );
 			}
 
 			if ( $result ) {

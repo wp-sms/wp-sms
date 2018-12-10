@@ -85,7 +85,7 @@ class smsmart extends \WP_SMS\Gateway {
 			do_action( 'wp_sms_send', $return );
 
 			return $return;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
@@ -110,7 +110,7 @@ class smsmart extends \WP_SMS\Gateway {
 				"username" => $this->username,
 				"password" => $this->password
 			) )->GetCreditResult;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 	}

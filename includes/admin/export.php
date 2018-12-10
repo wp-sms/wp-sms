@@ -9,13 +9,13 @@ $type = $_POST['export-file-type'];
 
 if ( $type ) {
 
-	global $wpdb, $table_prefix;
+	global $wpdb;
 
 	require( WP_SMS_DIR . 'includes/libraries/php-export-data.class.php' );
 
 	$file_name = date( 'Y-m-d_H-i' );
 
-	$result = $wpdb->get_results( "SELECT `ID`,`date`,`name`,`mobile`,`status`,`group_ID` FROM {$table_prefix}sms_subscribes", ARRAY_A );
+	$result = $wpdb->get_results( "SELECT `ID`,`date`,`name`,`mobile`,`status`,`group_ID` FROM {$wpdb->prefix}sms_subscribes", ARRAY_A );
 
 	switch ( $type ) {
 		case 'excel':

@@ -98,7 +98,7 @@ class _500sms extends \WP_SMS\Gateway {
 
 		try {
 			$client = new \SoapClient( $this->wsdl_link );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 

@@ -99,7 +99,7 @@ class WebsmsClient {
 			$ret = $this->soap_client->sendSM( $obj );
 
 			return $ret;
-		} catch ( SoapFault $soapFault ) {
+		} catch ( \SoapFault $soapFault ) {
 			throw new Exception( $this->soap_client->__getLastResponse() );
 		}
 	}
@@ -113,7 +113,7 @@ class WebsmsClient {
 			$ret = $this->soap_client->getBatchStatus( $obj );
 
 			return $ret;
-		} catch ( SoapFault $soapFault ) {
+		} catch ( \SoapFault $soapFault ) {
 			var_dump( $c );
 			echo "Request :<br>", $this->soap_client->__getLastRequest(), "<br>";
 			echo "Response :<br>", $this->soap_client->__getLastResponse(), "<br>";

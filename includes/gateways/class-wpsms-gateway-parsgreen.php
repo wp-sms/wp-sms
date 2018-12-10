@@ -97,7 +97,7 @@ class parsgreen extends \WP_SMS\Gateway {
 
 				return new \WP_Error( 'send-sms', 'مشکلی در ارسال پیام بوجود امد' );
 			}
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
@@ -121,7 +121,7 @@ class parsgreen extends \WP_SMS\Gateway {
 			$responseSTD = (array) $client->GetCredit( $parameters );
 
 			return $responseSTD['GetCreditResult'];
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 	}

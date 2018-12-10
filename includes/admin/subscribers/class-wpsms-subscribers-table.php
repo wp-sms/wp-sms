@@ -48,7 +48,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 	var $data;
 
 	function __construct() {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		//Set parent defaults
 		parent::__construct( array(
@@ -58,7 +58,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 		) );
 
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		$this->count     = $this->get_total();
 		$this->limit     = 50;
 		$this->data      = $this->get_data();
@@ -71,7 +71,9 @@ class Subscribers_List_Table extends \WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'group_ID':
-				return wps_get_group_by_id( $item[ $column_name ] );
+				$group = Groups::getGroup( $item[ $column_name ] );
+
+				return $group->name;
 
 			case 'date':
 				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );

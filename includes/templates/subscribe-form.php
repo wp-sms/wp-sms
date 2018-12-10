@@ -14,8 +14,11 @@
 
         <div class="wpsms-subscribe-form">
             <label><?php _e( 'Your mobile', 'wp-sms' ); ?>:</label>
+            <!-- TODO: This is the original line and we replaced it with \WP_SMS\Option::getOption() Method.
             <input id="wpsms-mobile" type="text"
-                   placeholder="<?php echo isset( $wpsms_option['mobile_terms_field_place_holder'] ) ? $wpsms_option['mobile_terms_field_place_holder'] : ''; ?>"
+                   placeholder="<?php echo isset( $wpsms_option['mobile_terms_field_place_holder'] ) ? $wpsms_option['mobile_terms_field_place_holder'] : ''; ?>"-->
+            <input id="wpsms-mobile" type="text"
+                   placeholder="<?php echo \WP_SMS\Option::getOption('mobile_terms_field_place_holder') ? \WP_SMS\Option::getOption('mobile_terms_field_place_holder') : ''; ?>"
                    class="wpsms-input"/>
         </div>
 

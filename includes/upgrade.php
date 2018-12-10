@@ -10,8 +10,8 @@ if ( is_admin() ) {
 
 	if ( $installer_wpsms_ver < WP_SMS_VERSION ) {
 
-		global $wpdb, $table_prefix;
-		$wpdb->query( "ALTER TABLE {$table_prefix}sms_send
+		global $wpdb;
+		$wpdb->query( "ALTER TABLE {$wpdb->prefix}sms_send
 			 ADD status varchar(10) NOT NULL AFTER recipient,
 			 ADD response TEXT NOT NULL AFTER recipient" );
 

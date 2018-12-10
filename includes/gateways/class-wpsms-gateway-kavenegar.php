@@ -75,7 +75,7 @@ class kavenegar extends \WP_SMS\Gateway {
 
 					return $response;
 				}
-			} catch ( Exception $ex ) {
+			} catch ( \Exception $ex ) {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
 
@@ -98,7 +98,7 @@ class kavenegar extends \WP_SMS\Gateway {
 				if ( $json ) {
 					$remaincredit = $json->entries->remaincredit;
 				}
-			} catch ( Exception $ex ) {
+			} catch ( \Exception $ex ) {
 				$remaincredit = 0;
 			}
 		}

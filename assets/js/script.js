@@ -1,3 +1,4 @@
+//TODO: Need to add an action when "newsletter_form_verify" not set ! even if not set, the form going to show Activition area too after submit first form.
 jQuery(document).ready(function ($) {
     // Check the GDPR enabled.
     if ($('#wpsms-gdpr-confirmation').length) {

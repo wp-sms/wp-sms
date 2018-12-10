@@ -95,7 +95,7 @@ class jahanpayamak extends \WP_SMS\Gateway {
 
 			return $result;
 
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
@@ -120,7 +120,7 @@ class jahanpayamak extends \WP_SMS\Gateway {
 				"USERNAME" => $this->username,
 				"PASSWORD" => $this->password
 			) )->CHECK_CREDITResult;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 

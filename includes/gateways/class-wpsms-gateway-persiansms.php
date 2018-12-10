@@ -85,7 +85,7 @@ class persianSMS extends \WP_SMS\Gateway {
 			do_action( 'wp_sms_send', $result );
 
 			return $result;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
@@ -110,7 +110,7 @@ class persianSMS extends \WP_SMS\Gateway {
 				"USERNAME" => $this->username,
 				"PASSWORD" => $this->password
 			) )->CHECK_CREDITResult;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 

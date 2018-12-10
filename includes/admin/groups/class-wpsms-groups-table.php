@@ -48,7 +48,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table {
 	var $data;
 
 	function __construct() {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		//Set parent defaults
 		parent::__construct( array(
@@ -58,7 +58,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table {
 		) );
 
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		$this->count     = $this->get_total();
 		$this->limit     = 50;
 		$this->data      = $this->get_data();
@@ -70,9 +70,9 @@ class Subscribers_Groups_List_Table extends \WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'total_subscribers':
-				$value = wps_get_total_subscribe( $item['ID'] );
-				if ( $value ) {
-					return $value;
+				$total = Subscribers::getTotal( $item['ID'] );
+				if ( $total ) {
+					return $total;
 				} else {
 					return '0';
 				}

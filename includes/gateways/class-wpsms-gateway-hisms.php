@@ -85,7 +85,7 @@ class hisms extends \WP_SMS\Gateway {
 			do_action( 'wp_sms_send', $result );
 
 			return $result;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
@@ -110,7 +110,7 @@ class hisms extends \WP_SMS\Gateway {
 				"username" => $this->username,
 				"password" => $this->password
 			) )->GetCreditResult;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 	}

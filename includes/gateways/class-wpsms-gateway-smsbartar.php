@@ -97,7 +97,7 @@ class smsbartar extends \WP_SMS\Gateway {
 
 		try {
 			$client = new \SoapClient( $this->wsdl_link, $options );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 
@@ -105,7 +105,7 @@ class smsbartar extends \WP_SMS\Gateway {
 			$credit = $client->accountInfo();
 
 			return $credit->remaining;
-		} catch ( SoapFault $ex ) {
+		} catch ( \SoapFault $ex ) {
 			return new \WP_Error( 'account-credit', $ex->faultstring );
 		}
 	}

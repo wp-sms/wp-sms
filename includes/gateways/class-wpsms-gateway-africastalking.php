@@ -104,7 +104,7 @@ class africastalking extends \WP_SMS\Gateway {
 			preg_match( '!\d+!', $data->balance, $matches );
 
 			return $matches[0];
-		} catch ( AfricasTalkingGatewayException $e ) {
+		} catch ( \AfricasTalkingGatewayException $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}

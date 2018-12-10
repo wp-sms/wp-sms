@@ -106,7 +106,7 @@ class novinpayamak extends \WP_SMS\Gateway {
 
 		try {
 			$client = new \SoapClient( 'http://www.novinpayamak.com/services/CISGate/wsdl', array( 'encoding' => 'UTF-8' ) );
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 

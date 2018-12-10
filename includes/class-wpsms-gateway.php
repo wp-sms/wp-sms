@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 /**
- * WP SMS gateway class
+ * WP_SMS gateway class
  */
 class Gateway {
 
@@ -99,10 +99,10 @@ class Gateway {
 	 * Constructors
 	 */
 	public function __construct() {
-		global $wpdb, $table_prefix, $wpsms_option;
+		global $wpdb, $wpsms_option;
 
 		$this->db        = $wpdb;
-		$this->tb_prefix = $table_prefix;
+		$this->tb_prefix = $wpdb->prefix;
 		$this->options   = $wpsms_option;
 
 		// Check option for add country code to prefix numbers
@@ -139,20 +139,6 @@ class Gateway {
 				'status'    => $status,
 			)
 		);
-	}
-
-	/**
-	 * This method required for old version of wp-sms-pro
-	 *
-	 * @param $sender
-	 * @param $message
-	 * @param $to
-	 * @param $response
-	 *
-	 * @return false|int
-	 */
-	public function InsertToDB( $sender, $message, $to, $response ) {
-		return $this->log( $sender, $message, $to, $response, $status = 'success' );
 	}
 
 	/**
@@ -389,6 +375,7 @@ class Gateway {
 				'_ebulksms'      => 'ebulksms.com',
 				'africastalking' => 'africastalking.com',
 				'smsnation'      => 'smsnation.co.rw',
+				'jusibe'         => 'jusibe.com',
 			),
 			'kenya'          => array(
 				'uwaziimobile' => 'uwaziimobile.com',
@@ -512,7 +499,8 @@ class Gateway {
 	 * @return array/string
 	 */
 	public function modify_bulk_send( $to ) {
-		if ( ! $this->sms->bulk_send ) {
+		global $sms;
+		if ( ! $sms->bulk_send ) {
 			return array( $to[0] );
 		}
 

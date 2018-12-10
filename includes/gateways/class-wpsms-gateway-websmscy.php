@@ -81,7 +81,7 @@ class websmscy extends \WP_SMS\Gateway {
 			do_action( 'wp_sms_send', $result );
 
 			return $result;
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			// Log th result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
@@ -111,7 +111,7 @@ class websmscy extends \WP_SMS\Gateway {
 			$credits = $ws->getCredits();
 
 			return $credits;
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return new \WP_Error( 'account-credit', $e->getMessage() );
 		}
 	}
