@@ -61,17 +61,17 @@ class Admin {
 	public function admin_assets() {
 
 		//Register admin-bar.css for whole admin area
-		wp_register_style( 'wpsms-admin-bar-css', WP_SMS_URL . 'assets/css/admin-bar.css', true, '1.3' );
+		wp_register_style( 'wpsms-admin-bar-css', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
 		wp_enqueue_style( 'wpsms-admin-bar-css' );
 
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
-			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, '1.3' );
+			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
 			wp_enqueue_style( 'wpsms-admin-css' );
 
-			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, '1.2.0' );
-			wp_enqueue_script( 'wpsms-chosen-js', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, '1.2.0' );
-			wp_enqueue_script( 'wpsms-word-and-character-counter-js', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, '2.5.0' );
-			wp_enqueue_script( 'wpsms-admin-js', WP_SMS_URL . 'assets/js/admin.js', true, '1.2.0' );
+			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-chosen-js', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-word-and-character-counter-js', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-admin-js', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION );
 		}
 	}
 

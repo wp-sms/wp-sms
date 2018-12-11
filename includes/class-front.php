@@ -20,12 +20,12 @@ class Front {
 	public function front_assets() {
 
 		//Register admin-bar.css for whole admin area
-		wp_register_style( 'wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, '1.3' );
+		wp_register_style( 'wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
 		wp_enqueue_style( 'wpsms-admin-bar' );
 
 		// Check if "Disable Style" in frontend is active or not
 		if ( empty( $this->options['disable_style_in_front'] ) or ( isset( $this->options['disable_style_in_front'] ) and ! $this->options['disable_style_in_front'] ) ) {
-			wp_register_style( 'wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, '1.1' );
+			wp_register_style( 'wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, WP_SMS_VERSION );
 			wp_enqueue_style( 'wpsms-subscribe' );
 		}
 	}
