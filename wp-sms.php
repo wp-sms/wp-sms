@@ -24,7 +24,6 @@ require_once 'includes/defines.php';
  */
 require_once WP_SMS_DIR . 'includes/functions.php';
 
-
 /**
  * Get plugin options
  */
