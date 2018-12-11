@@ -24,10 +24,16 @@ require_once 'includes/defines.php';
  */
 require_once WP_SMS_DIR . 'includes/functions.php';
 
+
 /**
  * Get plugin options
  */
 $wpsms_option = get_option( 'wpsms_settings' );
+
+/**
+ * Load plugin Database Options
+ */
+require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
 
 /**
  * Initial gateway

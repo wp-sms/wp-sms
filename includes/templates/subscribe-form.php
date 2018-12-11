@@ -14,15 +14,10 @@
 
         <div class="wpsms-subscribe-form">
             <label><?php _e( 'Your mobile', 'wp-sms' ); ?>:</label>
-            <!-- TODO: This is the original line and we replaced it with \WP_SMS\Option::getOption() Method.
-            <input id="wpsms-mobile" type="text"
-                   placeholder="<?php echo isset( $wpsms_option['mobile_terms_field_place_holder'] ) ? $wpsms_option['mobile_terms_field_place_holder'] : ''; ?>"-->
-            <input id="wpsms-mobile" type="text"
-                   placeholder="<?php echo \WP_SMS\Option::getOption('mobile_terms_field_place_holder') ? \WP_SMS\Option::getOption('mobile_terms_field_place_holder') : ''; ?>"
-                   class="wpsms-input"/>
+            <input id="wpsms-mobile" type="text" placeholder="<?php echo \WP_SMS\Option::getOption( 'mobile_terms_field_place_holder' ); ?>" class="wpsms-input"/>
         </div>
 
-		<?php if ( isset( $wpsms_option['newsletter_form_groups'] ) AND $wpsms_option['newsletter_form_groups'] ) { ?>
+		<?php if ( \WP_SMS\Option::getOption( 'newsletter_form_groups' ) ) { ?>
             <div class="wpsms-subscribe-form">
                 <label><?php _e( 'Group', 'wp-sms' ); ?>:</label>
                 <select id="wpsms-groups" class="wpsms-input">
@@ -35,8 +30,7 @@
 
         <div class="wpsms-subscribe-form">
             <label>
-                <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe"
-                       checked="checked"/>
+                <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
 				<?php _e( 'Subscribe', 'wp-sms' ); ?>
             </label>
 
@@ -45,18 +39,17 @@
 				<?php _e( 'Unsubscribe', 'wp-sms' ); ?>
             </label>
         </div>
-		<?php if ( isset( $wpsms_option['gdpr_compliance'] ) and $wpsms_option['gdpr_compliance'] == 1 ) { ?>
+		<?php if ( \WP_SMS\Option::getOption( 'gdpr_compliance' ) == 1 ) { ?>
             <div class="wpsms-subscribe-form">
-                <label><input id="wpsms-gdpr-confirmation"
-                              type="checkbox" <?php echo isset( $wpsms_option['newsletter_form_gdpr_confirm_checkbox'] ) && $wpsms_option['newsletter_form_gdpr_confirm_checkbox'] == 'checked' ? 'checked="checked"' : ''; ?>>
-					<?php echo isset( $wpsms_option['newsletter_form_gdpr_text'] ) && $wpsms_option['newsletter_form_gdpr_text'] ? $wpsms_option['newsletter_form_gdpr_text'] : 'GDPR text...'; ?>
+                <label><input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo \WP_SMS\Option::getOption( 'newsletter_form_gdpr_confirm_checkbox' ) == 'checked' ? 'checked="checked"' : ''; ?>>
+					<?php echo \WP_SMS\Option::getOption( 'newsletter_form_gdpr_text' ) ? \WP_SMS\Option::getOption( 'newsletter_form_gdpr_text' ) : 'GDPR text...'; ?>
                 </label>
             </div>
 		<?php } ?>
 
         <button class="wpsms-button" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
     </div>
-	<?php if ( empty( $wpsms_option['disable_style_in_front'] ) or ( isset( $wpsms_option['disable_style_in_front'] ) and ! $wpsms_option['disable_style_in_front'] ) ): ?>
+	<?php $disable_style = \WP_SMS\Option::getOption( 'disable_style_in_front' ); if ( empty( $disable_style ) AND ! $disable_style ): ?>
     <div id="wpsms-step-2">
 		<?php else: ?>
         <div id="wpsms-step-2" style="display: none;">
@@ -64,10 +57,10 @@
 
             <div class="wpsms-subscribe-form">
                 <label><?php _e( 'Activation code:', 'wp-sms' ); ?></label>
-                <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>"
-                       class="wpsms-input"/>
+                <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>" class="wpsms-input"/>
             </div>
             <button class="wpsms-button" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
         </div>
         <input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
+        <input type="hidden" id="newsletter-form-verify" value="<?php echo \WP_SMS\Option::getOption('newsletter_form_verify');?>">
     </div>

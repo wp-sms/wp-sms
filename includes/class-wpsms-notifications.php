@@ -37,11 +37,11 @@ class Notifications {
 	 * WP_SMS_Notifications constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wp_version, $wpdb;
+		global $sms, $wp_version, $wpdb;
 
 		$this->sms       = $sms;
 		$this->date      = WP_SMS_CURRENT_DATE;
-		$this->options   = $wpsms_option;
+		$this->options   = Option::getOptions();
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 

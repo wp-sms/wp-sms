@@ -79,7 +79,6 @@ class WP_SMS {
 		}
 
 		// Utility classes.
-		require_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
@@ -89,11 +88,10 @@ class WP_SMS {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
 
 		if ( ! is_admin() ) {
 			// Front Class.
-			require_once WP_SMS_DIR . 'includes/class-front-assets.php';
+			require_once WP_SMS_DIR . 'includes/class-front.php';
 		}
 
 		// API class.

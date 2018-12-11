@@ -21,11 +21,11 @@ class Integrations {
 	public $cf7_data;
 
 	public function __construct() {
-		global $wpsms_option, $sms;
+		global $sms;
 
 		$this->sms     = $sms;
 		$this->date    = WP_SMS_CURRENT_DATE;
-		$this->options = $wpsms_option;
+		$this->options = Option::getOptions();
 
 		// Contact Form 7
 		if ( isset( $this->options['cf7_metabox'] ) ) {

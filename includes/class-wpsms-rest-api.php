@@ -52,10 +52,10 @@ class RestApi {
 	 * WP_SMS_RestApi constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wpdb;
+		global $sms, $wpdb;
 
 		$this->sms       = $sms;
-		$this->options   = $wpsms_option;
+		$this->options   = Option::getOptions();
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 		$this->namespace = 'wpsms';
@@ -93,7 +93,7 @@ class RestApi {
 	 * @return array|string
 	 */
 	public static function subscribe( $name, $mobile, $group ) {
-		global $wpsms_option, $sms;
+		global $sms;
 
 		if ( empty( $name ) OR empty( $mobile ) ) {
 			return new \WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
@@ -110,23 +110,27 @@ class RestApi {
 			return new \WP_Error( 'subscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 		}
 
-		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
-			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
+		$max_number = Option::getOption( 'mobile_terms_maximum' );
+
+		if ( $max_number ) {
+			if ( strlen( $mobile ) > $max_number ) {
 				// Return response
-				return new \WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
+				return new \WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $max_number ) );
+			}
+		}
+		$min_number = Option::getOption( 'mobile_terms_minimum' );
+		if ( $min_number ) {
+			if ( strlen( $mobile ) < $min_number ) {
+				// Return response
+				return new \WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $min_number ) );
 			}
 		}
 
-		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
-			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
-				// Return response
-				return new \WP_Error( 'subscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
-			}
-		}
+		$gateway_name = Option::getOption( 'gateway_name' );
 
-		if ( isset( $wpsms_option['newsletter_form_verify'] ) AND $wpsms_option['newsletter_form_verify'] AND $wpsms_option['gateway_name'] ) {
+		if ( Option::getOption( 'newsletter_form_verify' ) AND $gateway_name ) {
 			// Check gateway setting
-			if ( ! $wpsms_option['gateway_name'] ) {
+			if ( ! $gateway_name ) {
 				// Return response
 				return new \WP_Error( 'subscribe', __( 'Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms' ) );
 			}
@@ -171,7 +175,6 @@ class RestApi {
 	 * @return array|string
 	 */
 	public static function unSubscribe( $name, $mobile, $group ) {
-		global $wpsms_option;
 
 		if ( empty( $name ) OR empty( $mobile ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
@@ -188,18 +191,22 @@ class RestApi {
 			return new \WP_Error( 'unsubscribe', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 		}
 
-		if ( isset( $wpsms_option['mobile_terms_maximum'] ) AND $wpsms_option['mobile_terms_maximum'] ) {
-			if ( strlen( $mobile ) > $wpsms_option['mobile_terms_maximum'] ) {
+		$max_number = Option::getOption( 'mobile_terms_maximum' );
+
+		if ( $max_number ) {
+			if ( strlen( $mobile ) > $max_number ) {
 				// Return response
-				return new \WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_maximum'] ) );
+				return new \WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be less than %s digits', 'wp-sms' ), $max_number ) );
 
 			}
 		}
 
-		if ( isset( $wpsms_option['mobile_terms_minimum'] ) AND $wpsms_option['mobile_terms_minimum'] ) {
-			if ( strlen( $mobile ) < $wpsms_option['mobile_terms_minimum'] ) {
+		$max_number = Option::getOption( 'mobile_terms_minimum' );
+
+		if ( $max_number ) {
+			if ( strlen( $mobile ) < $max_number ) {
 				// Return response
-				return new \WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $wpsms_option['mobile_terms_minimum'] ) );
+				return new \WP_Error( 'unsubscribe', sprintf( __( 'Your mobile number should be greater than %s digits', 'wp-sms' ), $max_number ) );
 			}
 		}
 		// Delete subscriber
@@ -222,7 +229,7 @@ class RestApi {
 	 * @return array|string
 	 */
 	public static function verifySubscriber( $name, $mobile, $activation, $group ) {
-		global $wpsms_option, $sms, $wpdb;
+		global $sms, $wpdb;
 
 		if ( empty( $name ) OR empty( $mobile ) OR empty( $activation ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The required parameters must be valued!', 'wp-sms' ) );
@@ -253,12 +260,12 @@ class RestApi {
 
 			if ( $result ) {
 				// Send welcome message
-				if ( isset( $wpsms_option['newsletter_form_welcome'] ) AND $wpsms_option['newsletter_form_welcome'] ) {
+				if ( Option::getOption( 'newsletter_form_welcome' ) ) {
 					$template_vars = array(
 						'%subscribe_name%'   => $name,
 						'%subscribe_mobile%' => $mobile,
 					);
-					$text          = isset( $wpsms_option['newsletter_form_welcome_text'] ) ? $wpsms_option['newsletter_form_welcome_text'] : '';
+					$text          = Option::getOption( 'newsletter_form_welcome_text' );
 					$message       = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $text );
 
 					$sms->to  = array( $mobile );

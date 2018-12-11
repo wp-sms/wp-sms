@@ -62,13 +62,14 @@
                                     <select name="wp_send_to" id="select_sender">
                                         <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
                                         <option value="wp_users" id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
-                                        <option value="wp_role" id="wp_role"<?php if ( empty( $wpsms_option['add_mobile_field'] ) or $wpsms_option['add_mobile_field'] != 1 ) {
+                                        <option value="wp_role" id="wp_role"<?php $mobile_field = \WP_SMS\Option::getOption( 'add_mobile_field' );
+										if ( empty( $mobile_field ) OR $mobile_field != 1 ) {
 											echo 'disabled title="' . __( 'To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms' ) . '"';
 										} ?>><?php _e( 'Role', 'wp-sms' ); ?></option>
                                         <option value="wp_tellephone" id="wp_tellephone"><?php _e( 'Number(s)', 'wp-sms' ); ?></option>
                                     </select>
 
-									<?php if ( isset( $wpsms_option['add_mobile_field'] ) AND ! empty( $wpsms_option['add_mobile_field'] ) or isset( $wpsms_option['add_mobile_field'] ) AND $wpsms_option['add_mobile_field'] == 1 ) { ?>
+									<?php if ( ! empty( $mobile_field ) OR $mobile_field == 1 ) { ?>
                                         <select name="wpsms_group_role" class="wpsms-value wprole-group">
 											<?php
 											foreach ( $wpsms_list_of_role as $key_item => $val_item ):

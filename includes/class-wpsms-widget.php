@@ -56,7 +56,6 @@ class Widget extends \WP_Widget {
 	 * @return string|void
 	 */
 	public function form( $instance ) {
-		global $wpsms_option;
 
 		$title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Subscribe SMS', 'wp-sms' );
 		$description = ! empty( $instance['description'] ) ? $instance['description'] : '';

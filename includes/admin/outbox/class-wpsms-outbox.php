@@ -69,8 +69,14 @@ class Outbox_List_Table extends \WP_List_Table {
 				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );
 
 			case 'message':
-			case 'recipient':
 				return $item[ $column_name ];
+			case 'recipient':
+				$html = '<details>
+						  <summary>' . __( 'Click to View details...', 'wp-sms' ) . '</summary>
+						  <p>' . $item[ $column_name ] . '</p>
+						</details>';
+
+				return $html;
 			case 'response':
 				return $item[ $column_name ];
 			case 'status':

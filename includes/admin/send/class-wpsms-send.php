@@ -41,12 +41,12 @@ class SMS_Send {
 
 	public function __construct() {
 
-		global $wpdb, $wpsms_option, $sms;
+		global $wpdb, $sms;
 
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 		$this->sms       = $sms;
-		$this->options   = $wpsms_option;
+		$this->options   = Option::getOptions();
 	}
 
 	/**
@@ -55,13 +55,14 @@ class SMS_Send {
 	 * @param  Not param
 	 */
 	public function render_page() {
-		global $wpsms_option, $sms, $wpdb;
+		global $sms, $wpdb;
 
 		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
 		$get_users_mobile = $wpdb->get_col( "SELECT `meta_value` FROM `{$wpdb->prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
+		$mobile_field = Option::getOption( 'add_mobile_field' );
 		//Get User Mobile List by Role
-		if ( ! empty( $wpsms_option['add_mobile_field'] ) and $wpsms_option['add_mobile_field'] == 1 ) {
+		if ( ! empty( $mobile_field ) AND $mobile_field == 1 ) {
 			$wpsms_list_of_role = array();
 			foreach ( wp_roles()->role_names as $key_item => $val_item ) {
 				$wpsms_list_of_role[ $key_item ] = array(
@@ -76,12 +77,12 @@ class SMS_Send {
 				);
 			}
 		}
-
-		if ( isset( $wpsms_option['gateway_name'] ) && ! $sms->GetCredit() ) {
+		$gateway_name = Option::getOption( 'gateway_name' );
+		if ( $gateway_name && ! $sms->GetCredit() ) {
 			echo '<br><div class="update-nag">' . __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ) . '</div>';
 
 			return;
-		} else if ( ! isset( $wpsms_option['gateway_name'] ) ) {
+		} else if ( ! $gateway_name ) {
 			echo '<br><div class="update-nag">' . __( 'You should choose and configuration your gateway in the Setting page', 'wp-sms' ) . '</div>';
 
 			return;

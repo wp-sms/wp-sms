@@ -43,8 +43,8 @@
 <div id="wpsms-custom-text">
     <label>
 		<?php _e( 'Text template', 'wp-sms' ); ?><br/>
-        <textarea id="wpsms-text-template" name="wpsms_text_template"><?php global $wpsms_option;
-			echo $wpsms_option['notif_publish_new_post_template']; ?></textarea>
+        <textarea id="wpsms-text-template" name="wpsms_text_template"><?php
+			echo \WP_SMS\Option::getOption( 'notif_publish_new_post_template' ); ?></textarea>
         <p class="description data">
 			<?php _e( 'Input data:', 'wp-sms' ); ?>
             <br/><?php _e( 'Post title', 'wp-sms' ); ?>: <code>%post_title%</code>

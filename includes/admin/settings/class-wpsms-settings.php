@@ -191,7 +191,6 @@ class Settings {
 	 * @return          array Fields
 	 */
 	public function get_registered_settings() {
-		global $wpsms_option;
 
 		$options = array(
 			'enable'  => __( 'Enable', 'wp-sms' ),
@@ -633,7 +632,7 @@ class Settings {
 		) );
 
 		// Check the GDPR is enabled.
-		if ( isset( $wpsms_option['gdpr_compliance'] ) and $wpsms_option['gdpr_compliance'] ) {
+		if ( Option::getOption( 'gdpr_compliance' ) ) {
 			$settings['newsletter']['newsletter_gdpr'] = array(
 				'id'   => 'newsletter_gdpr',
 				'name' => __( 'GDPR Compliance', 'wp-sms' ),

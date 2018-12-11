@@ -99,11 +99,11 @@ class Gateway {
 	 * Constructors
 	 */
 	public function __construct() {
-		global $wpdb, $wpsms_option;
+		global $wpdb;
 
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
-		$this->options   = $wpsms_option;
+		$this->options   = Option::getOptions();
 
 		// Check option for add country code to prefix numbers
 		if ( isset( $this->options['mobile_county_code'] ) and $this->options['mobile_county_code'] ) {
@@ -124,7 +124,6 @@ class Gateway {
 	 * @return mixed
 	 */
 	public static function initial() {
-		global $wpsms_option;
 
 		// Set the default_gateway class
 		$class_name = '\\WP_SMS\\Gateway\\Default_Gateway';
@@ -132,35 +131,39 @@ class Gateway {
 		include_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
 		include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-default.php';
 
+		$gateway_name = Option::getOption( 'gateway_name' );
 		// Using default gateway if does not set gateway in the setting
-		if ( empty( $wpsms_option['gateway_name'] ) ) {
+		if ( empty( $gateway_name ) ) {
 			return new $class_name();
 		}
 
 		// TODO : need to change Class names on WP-SMS-PRO
-		if ( is_file( WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $wpsms_option['gateway_name'] . '.php' ) ) {
-			include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $wpsms_option['gateway_name'] . '.php';
-		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' ) ) {
-			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $wpsms_option['gateway_name'] . '.class.php' );
+		if ( is_file( WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php' ) ) {
+			include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php';
+		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $gateway_name . '.class.php' ) ) {
+			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $gateway_name . '.class.php' );
 		} else {
 			return new $class_name();
 		}
 
 		// Create object from the gateway class
-		if ( $wpsms_option['gateway_name'] == 'default' ) {
+		if ( $gateway_name == 'default' ) {
 			$sms = new $class_name();
 		} else {
-			$class_name = '\\WP_SMS\\Gateway\\' . $wpsms_option['gateway_name'];
+			$class_name = '\\WP_SMS\\Gateway\\' . $gateway_name;
 			$sms        = new $class_name();
 		}
 
 		// Set username and password
-		$sms->username = $wpsms_option['gateway_username'];
-		$sms->password = $wpsms_option['gateway_password'];
+		$sms->username = Option::getOption( 'gateway_username' );
+		$sms->password = Option::getOption( 'gateway_password' );
+
+
+		$gateway_key = Option::getOption( 'gateway_key' );
 
 		// Set api key
-		if ( $sms->has_key && $wpsms_option['gateway_key'] ) {
-			$sms->has_key = $wpsms_option['gateway_key'];
+		if ( $sms->has_key && $gateway_key ) {
+			$sms->has_key = $gateway_key;
 		}
 
 		// Show gateway help configuration in gateway page
@@ -179,7 +182,7 @@ class Gateway {
 
 		// Set sender id
 		if ( ! $sms->from ) {
-			$sms->from = $wpsms_option['gateway_sender_id'];
+			$sms->from = Option::getOption( 'gateway_sender_id' );
 		}
 
 		// Unset gateway key field if not available in the current gateway class.

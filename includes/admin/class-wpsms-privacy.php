@@ -19,7 +19,6 @@ class Privacy {
 	protected static $instance = null;
 
 	public function __construct() {
-		global $wpsms_option;
 
 		$this->wp_nounce = wp_create_nonce( 'wp_sms_nonce_privacy' );
 		add_filter( 'screen_layout_columns', array( $this, 'on_screen_layout_columns' ), 10, 2 );

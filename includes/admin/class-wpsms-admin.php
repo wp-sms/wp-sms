@@ -34,11 +34,11 @@ class Admin {
 
 	public function __construct() {
 
-		global $wpdb, $wpsms_option, $sms;
+		global $wpdb, $sms;
 
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
-		$this->options   = $wpsms_option;
+		$this->options   = Option::getOptions();
 		$this->sms       = $sms;
 		$this->init();
 
@@ -59,6 +59,10 @@ class Admin {
 	 * Include admin assets
 	 */
 	public function admin_assets() {
+
+		//Register admin-bar.css for whole admin area
+		wp_register_style( 'wpsms-admin-bar-css', WP_SMS_URL . 'assets/css/admin-bar.css', true, '1.3' );
+		wp_enqueue_style( 'wpsms-admin-bar-css' );
 
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
 			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, '1.3' );

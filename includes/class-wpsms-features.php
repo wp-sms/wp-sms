@@ -26,13 +26,13 @@ class Features {
 	 * WP_SMS_Features constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option, $sms, $wpdb;
+		global $sms, $wpdb;
 
 		$this->sms       = $sms;
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 		$this->date      = WP_SMS_CURRENT_DATE;
-		$this->options   = $wpsms_option;
+		$this->options   = Option::getOptions();
 
 		if ( isset( $this->options['add_mobile_field'] ) ) {
 			add_action( 'user_new_form', array( $this, 'add_mobile_field_to_newuser_form' ) );

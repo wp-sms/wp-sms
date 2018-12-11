@@ -19,8 +19,8 @@ class Version {
 	 * WP_SMS_Version constructor.
 	 */
 	public function __construct() {
-		global $wpsms_option;
-		$this->options = $wpsms_option;
+
+		$this->options = Option::getOptions();
 
 		// Check pro pack is enabled
 		if ( $this->pro_is_active() ) {
