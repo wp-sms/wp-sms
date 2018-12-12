@@ -2,7 +2,7 @@
 
 class comilio extends WP_SMS {
 	private $wsdl_link = "https://api.comilio.it/rest/v1";
-	public $tariff = "https://www.comilio.it/tariffe.php";
+	public $tariff = "https://www.comilio.it/tariffe";
 	public $unitrial = false;
 	public $unit;
 	public $flash = "disable";
@@ -48,7 +48,7 @@ class comilio extends WP_SMS {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		$payload = array(
-			'message_type'  => 'Smart',
+			'message_type'  => 'SmartPro',
 			'phone_numbers' => $this->to,
 			'text'          => $this->msg,
 			'sender_string' => $this->from
@@ -119,7 +119,7 @@ class comilio extends WP_SMS {
 				return new WP_Error( 'account-credit', $result );
 			} else {
 				for ( $i = 0; $i < count( $jsonObj ); $i ++ ) {
-					if ( $jsonObj[ $i ]->message_type === 'Smart' ) {
+					if ( $jsonObj[ $i ]->message_type === 'SmartPro' ) {
 						return $jsonObj[ $i ]->quantity;
 					}
 				}
