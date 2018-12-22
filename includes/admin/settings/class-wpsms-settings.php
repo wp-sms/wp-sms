@@ -23,7 +23,7 @@ class Settings {
 		add_action( 'admin_menu', array( $this, 'add_settings_menu' ), 11 );
 
 		if ( isset( $_GET['page'] ) and $_GET['page'] == 'wp-sms-settings' or isset( $_POST['option_page'] ) and $_POST['option_page'] == 'wpsms_settings' ) {
-			add_action( 'admin_init', array( &$this, 'register_settings' ) );
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
 		}
 	}
 
@@ -83,7 +83,7 @@ class Settings {
 				add_settings_field(
 					'wpsms_settings[' . $option['id'] . ']',
 					$name,
-					array( &$this, $option['type'] . '_callback' ),
+					array( $this, $option['type'] . '_callback' ),
 					'wpsms_settings_' . $tab,
 					'wpsms_settings_' . $tab,
 					array(
@@ -97,7 +97,7 @@ class Settings {
 					)
 				);
 
-				register_setting( $this->setting_name, $this->setting_name, array( &$this, 'settings_sanitize' ) );
+				register_setting( $this->setting_name, $this->setting_name, array( $this, 'settings_sanitize' ) );
 			}
 		}
 	}

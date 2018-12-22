@@ -32,7 +32,7 @@ class Subscribers_Groups_Table_Edit {
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 
-		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_assets' ), 11 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ), 11 );
 		add_action( 'wp_ajax_wp_sms_edit_group', array( $this, 'wp_sms_edit_group' ) );
 
 	}
