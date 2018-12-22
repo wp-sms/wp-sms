@@ -127,6 +127,13 @@ class Settings_Pro {
 			'as'      => __( 'Awesome Support', 'wp-sms' ),
 		);
 
+		// Check what version of WP-Pro using? if not new version, don't show tabs
+		$version = (int) str_replace( '.', '', WP_SMS_PRO_VERSION );
+
+		if ( $version AND $version <= 242 ) {
+			return array();
+		}
+
 		return $tabs;
 	}
 

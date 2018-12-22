@@ -124,7 +124,6 @@ class Gateway {
 	 * @return mixed
 	 */
 	public static function initial() {
-
 		// Set the default_gateway class
 		$class_name = '\\WP_SMS\\Gateway\\Default_Gateway';
 		// Include default gateway
@@ -137,11 +136,10 @@ class Gateway {
 			return new $class_name();
 		}
 
-		// TODO : need to change Class names on WP-SMS-PRO
 		if ( is_file( WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php' ) ) {
 			include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php';
-		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $gateway_name . '.class.php' ) ) {
-			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/' . $gateway_name . '.class.php' );
+		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.class.php' ) ) {
+			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.class.php' );
 		} else {
 			return new $class_name();
 		}
