@@ -26,10 +26,8 @@ class WP_SMS {
 
 		if ( is_admin() ) {
 
-			// Check what version of WP-Pro using? if not new version, don't show tabs
-			$version = (int) str_replace( '.', '', WP_SMS_PRO_VERSION );
-
-			if ( $version AND $version <= 242 ) {
+			// Check what version of WP-Pro using? if not new version, َShow the notice in admin area
+			if ( version_compare(WP_SMS_PRO_VERSION, "2.4.2", "<=") ) {
 				require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
 				WP_SMS\Admin\Helper::notice( sprintf( __( 'Your "<a href="%s" target="_blank">WP-SMS-Pro</a>" Plugin Version is out of date and not compatible anymore, Please update your plugin to latest version.', 'wp-sms' ), WP_SMS_SITE ), 'error' );
 			}

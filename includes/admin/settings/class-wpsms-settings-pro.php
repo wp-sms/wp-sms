@@ -128,9 +128,7 @@ class Settings_Pro {
 		);
 
 		// Check what version of WP-Pro using? if not new version, don't show tabs
-		$version = (int) str_replace( '.', '', WP_SMS_PRO_VERSION );
-
-		if ( $version AND $version <= 242 ) {
+		if ( version_compare(WP_SMS_PRO_VERSION, "2.4.2", "<=") ) {
 			return array();
 		}
 
