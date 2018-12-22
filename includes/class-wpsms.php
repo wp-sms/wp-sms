@@ -27,9 +27,8 @@ class WP_SMS {
 		if ( is_admin() ) {
 
 			// Check what version of WP-Pro using? if not new version, َShow the notice in admin area
-			if ( version_compare(WP_SMS_PRO_VERSION, "2.4.2", "<=") ) {
-				require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-				WP_SMS\Admin\Helper::notice( sprintf( __( 'Your "<a href="%s" target="_blank">WP-SMS-Pro</a>" Plugin Version is out of date and not compatible anymore, Please update your plugin to latest version.', 'wp-sms' ), WP_SMS_SITE ), 'error' );
+			if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
+				add_action( 'admin_notices', array( $this, 'version_notice' ) );
 			}
 		}
 	}
@@ -105,5 +104,14 @@ class WP_SMS {
 
 		// API class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
+	}
+
+
+	/**
+	 * Version notice
+	 */
+	public function version_notice() {
+		require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
+		WP_SMS\Admin\Helper::notice( sprintf( __( 'Your "<a href="%s" target="_blank">WP-SMS-Pro</a>" Plugin Version is out of date and not compatible anymore, Please update your plugin to latest version.', 'wp-sms' ), WP_SMS_SITE ), 'error' );
 	}
 }
