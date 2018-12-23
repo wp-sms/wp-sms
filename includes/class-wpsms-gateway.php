@@ -138,8 +138,8 @@ class Gateway {
 
 		if ( is_file( WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php' ) ) {
 			include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php';
-		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.class.php' ) ) {
-			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.class.php' );
+		} else if ( is_file( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php' ) ) {
+			include_once( WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php' );
 		} else {
 			return new $class_name();
 		}
