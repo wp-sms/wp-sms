@@ -151,6 +151,10 @@ class Version {
 			'yamamah'          => 'yamamah.com',
 			'cellsynt'         => 'cellsynt.net',
 			'cmtelecom'        => 'cmtelecom.com',
+			'textlocal'        => 'textlocal.in',
+			'ismartsms'        => 'ismartsms.net',
+			'bulksmsgateway'   => 'bulksmsgateway.in',
+			'ooredoosms'       => 'ooredoo-sms.com',
 		);
 
 		return $gateways;
