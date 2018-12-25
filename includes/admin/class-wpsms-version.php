@@ -155,6 +155,9 @@ class Version {
 			'ismartsms'        => 'ismartsms.net',
 			'bulksmsgateway'   => 'bulksmsgateway.in',
 			'ooredoosms'       => 'ooredoo-sms.com',
+			'txtlocal'         => 'txtlocal - textlocal.com',
+			'qsms'             => 'qsms.com.au',
+			'hoiio'            => 'hoiio.com',
 		);
 
 		return $gateways;
