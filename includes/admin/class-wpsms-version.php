@@ -158,6 +158,7 @@ class Version {
 			'txtlocal'         => 'txtlocal - textlocal.com',
 			'qsms'             => 'qsms.com.au',
 			'hoiio'            => 'hoiio.com',
+			'textmagic'        => 'textmagic.com',
 		);
 
 		return $gateways;
