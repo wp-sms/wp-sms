@@ -159,6 +159,7 @@ class Version {
 			'qsms'             => 'qsms.com.au',
 			'hoiio'            => 'hoiio.com',
 			'textmagic'        => 'textmagic.com',
+			'onewaysms'        => 'onewaysms.com',
 		);
 
 		return $gateways;
