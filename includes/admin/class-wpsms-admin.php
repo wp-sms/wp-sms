@@ -47,12 +47,9 @@ class Admin {
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar' ) );
 		add_action( 'dashboard_glance_items', array( $this, 'dashboard_glance' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( 'wpmu_new_blog', array( $this, 'add_table_on_create_blog' ), 10, 1 );
 
 		// Add Filters
 		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
-		add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog' ) );
-
 	}
 
 	/**
@@ -234,60 +231,6 @@ class Admin {
 	 */
 	public function admin_newsletter() {
 		include_once WP_SMS_DIR . 'includes/templates/admin-newsletter.php';
-	}
-
-	/**
-	 * Creating plugin tables
-	 */
-	static function install( $network_wide ) {
-		global $wp_sms_db_version;
-
-		include_once WP_SMS_DIR . 'includes/install.php';
-		$install = new Install();
-		$install->create_table( $network_wide );
-
-		add_option( 'wp_sms_db_version', WP_SMS_VERSION );
-
-		// Delete notification new wp_version option
-		delete_option( 'wp_notification_new_wp_version' );
-	}
-
-
-	/**
-	 * Upgrade plugin requirements if needed
-	 */
-	static function upgrade() {
-		include_once WP_SMS_DIR . 'includes/upgrade.php';
-	}
-
-	/**
-	 * Creating Table for New Blog in wordpress
-	 */
-	public function add_table_on_create_blog(
-		$blog_id
-	) {
-		if ( is_plugin_active_for_network( 'wp-sms/wp-sms.php' ) ) {
-			switch_to_blog( $blog_id );
-
-			include_once WP_SMS_DIR . 'includes/install.php';
-
-			$install = new Install();
-			$install->table_sql();
-
-			restore_current_blog();
-		}
-	}
-
-	/**
-	 * Remove Table On Delete Blog Wordpress
-	 */
-	public function remove_table_on_delete_blog( $tables ) {
-
-		foreach ( array( 'sms_subscribes', 'sms_subscribes_group', 'sms_send' ) as $tbl ) {
-			$tables[] = $this->tb_prefix . $tbl;
-		}
-
-		return $tables;
 	}
 }
 

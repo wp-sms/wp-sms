@@ -14,15 +14,7 @@ class WP_SMS {
 		 */
 		add_action( 'plugins_loaded', array( $this, 'plugin_setup' ) );
 
-		/**
-		 * Install And Upgrade plugin
-		 */
-		if ( is_admin() ) {
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-		}
-
-		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Admin', 'install' ) );
-		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Admin', 'upgrade' ) );
+		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Install', 'install' ) );
 	}
 
 	/**
@@ -54,6 +46,7 @@ class WP_SMS {
 	public function includes() {
 		if ( is_admin() ) {
 			// Admin classes.
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
@@ -79,6 +72,7 @@ class WP_SMS {
 		}
 
 		// Utility classes.
+		require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
