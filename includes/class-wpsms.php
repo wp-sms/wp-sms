@@ -14,7 +14,13 @@ class WP_SMS {
 		 */
 		add_action( 'plugins_loaded', array( $this, 'plugin_setup' ) );
 
+		/**
+		 * Install And Upgrade plugin
+		 */
+		require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
+
 		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Install', 'install' ) );
+		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Install', 'upgrade' ) );
 	}
 
 	/**

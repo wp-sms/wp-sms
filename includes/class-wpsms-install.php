@@ -156,3 +156,5 @@ class Install {
 		return $tables;
 	}
 }
+
+new Install();
