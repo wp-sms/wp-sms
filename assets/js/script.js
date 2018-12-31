@@ -18,6 +18,8 @@ jQuery(document).ready(function ($) {
     $("#wpsms-subscribe #wpsms-submit").click(function () {
         $("#wpsms-result").hide();
 
+        var verify = $("#newsletter-form-verify").val();
+
         subscriber = Array();
         subscriber['name'] = $("#wpsms-name").val();
         subscriber['mobile'] = $("#wpsms-mobile").val();
@@ -64,7 +66,7 @@ jQuery(document).ready(function ($) {
             $("#wpsms-result").fadeIn();
             $("#wpsms-step-1").hide();
             $("#wpsms-result").html('<span class="wpsms-message-success">' + message + '</div>');
-            if (subscriber['type'] === 'subscribe') {
+            if (subscriber['type'] === 'subscribe' && verify === '1') {
                 $("#wpsms-step-2").show();
             }
         });
