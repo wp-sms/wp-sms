@@ -20,7 +20,6 @@ class WP_SMS {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
 
 		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Install', 'install' ) );
-		register_activation_hook( WP_SMS_DIR . 'wp-sms.php', array( '\WP_SMS\Install', 'upgrade' ) );
 	}
 
 	/**
@@ -78,7 +77,6 @@ class WP_SMS {
 		}
 
 		// Utility classes.
-		require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
