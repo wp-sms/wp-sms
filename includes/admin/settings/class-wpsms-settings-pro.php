@@ -585,7 +585,7 @@ class Settings_Pro {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Enable OTP Verification on Orders.<br>*Note: U must choose the mobile field first if disable OTP will not working  too.', 'wp-sms' )
+					'desc'    => __( 'Enable OTP Verification on Orders.<br>*Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms' )
 				),
 				'wc_otp_max_retry'           => array(
 					'id'   => 'wc_otp_max_retry',
