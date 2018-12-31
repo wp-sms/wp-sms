@@ -128,7 +128,7 @@ class Settings_Pro {
 		);
 
 		// Check what version of WP-Pro using? if not new version, don't show tabs
-		if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare(WP_SMS_PRO_VERSION, "2.4.2", "<=") ) {
+		if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
 			return array();
 		}
 
@@ -574,6 +574,36 @@ class Settings_Pro {
 						'used_current_field' => __( 'Use the current phone field in the bill', 'wp-sms' ),
 					),
 					'desc'    => __( 'Choose from which field you get numbers for sending SMS.', 'wp-sms' )
+				),
+				'wc_otp'                     => array(
+					'id'   => 'wc_otp',
+					'name' => __( 'OTP Verification', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'wc_otp_enable'              => array(
+					'id'      => 'wc_otp_enable',
+					'name'    => __( 'Status', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Enable OTP Verification on Orders.<br>*Note: U must choose the mobile field first if disable OTP will not working  too.', 'wp-sms' )
+				),
+				'wc_otp_max_retry'           => array(
+					'id'   => 'wc_otp_max_retry',
+					'name' => __( 'Max SMS Retries', 'wp-sms' ),
+					'type' => 'text',
+					'desc' => __( 'For no limits, set it to : 0', 'wp-sms' )
+				),
+				'wc_otp_max_time_limit'      => array(
+					'id'   => 'wc_otp_max_time_limit',
+					'name' => __( 'Retries Period Time in Hours', 'wp-sms' ),
+					'type' => 'text',
+					'desc' => __( 'This option working when a user reached max retries and need a period time for start again retry cycle.<br>For no limits, set it to : 0', 'wp-sms' )
+				),
+				'wc_otp_text'                => array(
+					'id'   => 'wc_otp_text',
+					'name' => __( 'SMS text', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => sprintf( __( 'e.g: Your Verification Code: %s', 'wp-sms' ), '<code>%otp_code%</code>' )
 				),
 				'wc_notify_product'          => array(
 					'id'   => 'wc_notify_product',
