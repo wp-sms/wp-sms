@@ -472,6 +472,7 @@ class Gateway {
 				'asr3sms'      => 'asr3sms.com',
 				'infodomain'   => 'infodomain.asia',
 				'mobiledotnet' => 'mobile.net.sa',
+				'zain'         => 'zain.im',
 			),
 			'other'          => array(
 				'mtarget'  => 'mtarget',
