@@ -225,12 +225,14 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = dev-master =
-* Added: The new option for disabling the WP-SMS CSS in the theme.
-* Added: The SMS Newsletter tab in the option page for manage that, that options in the widgets removed.
-* Added: New `[wp-sms-subscriber-form]` shortcode for show SMS newsletter form.
-* Added: Response column to SMS outbox page.
+* Added: The new option for disabling CSS loading the theme.
+* Added: A new tan in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
+* Added: A new shortcode for show SMS newsletter form. enjoy with this shortcode `[wp-sms-subscriber-form]`.
+* Added: A new option for sending an SMS to the Author of the post when that post publish.
+* Added: Status column in outbox page.
+* Optimized: The main structure of the plugin and split process to increase performance and load.
 * Improved: The SMS newsletter requests. We using the WP REST API instead Admin Ajax.
-* Improved: The styles of forms, we used the ThickBox for managing forms and metabox style for send SMS form.
+* Improved: The styles of admin forms, we used the ThickBox for managing forms and metabox style for send SMS form.
 * Improved: Some queries to get data.
 * Improved: The export subscriber issue.
 * Updated: The SMS Global gateway to latest version of API.

@@ -446,7 +446,7 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to subscribers When published new posts.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to subscribers When published new posts.', 'wp-sms' )
 				),
 				'notif_publish_new_post_template'         => array(
 					'id'   => 'notif_publish_new_post_template',
@@ -472,13 +472,13 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to Author of the post when published.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to the author of the post when that post publish.<br>Make sure the mobile field number is enabled.', 'wp-sms' )
 				),
 				'notif_publish_new_post_author_post_type' => array(
 					'id'      => 'notif_publish_new_post_author_post_type',
 					'name'    => __( 'Post Types', 'wp-sms' ),
 					'type'    => 'multiselect',
-					'options' => self::get_list_post_type( array( 'show_ui' => 1 ) ),
+					'options' => $this->get_list_post_type( array( 'show_ui' => 1 ) ),
 					'desc'    => __( 'Select post types that u want to use this option.', 'wp-sms' )
 				),
 				'notif_publish_new_post_author_template'  => array(
@@ -506,7 +506,7 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to you When the new release of WordPress.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to you When the new release of WordPress.', 'wp-sms' )
 				),
 				// Register new user
 				'notif_register_new_user_title'           => array(
@@ -519,7 +519,7 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to you and user when register on wordpress.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to you and user when register on wordpress.', 'wp-sms' )
 				),
 				'notif_register_new_user_admin_template'  => array(
 					'id'   => 'notif_register_new_user_admin_template',
@@ -556,7 +556,7 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to you When get a new comment.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to you When get a new comment.', 'wp-sms' )
 				),
 				'notif_new_comment_template'              => array(
 					'id'   => 'notif_new_comment_template',
@@ -584,7 +584,7 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to you When user is login.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to you When user is login.', 'wp-sms' )
 				),
 				'notif_user_login_template'               => array(
 					'id'   => 'notif_user_login_template',
@@ -624,7 +624,7 @@ class Settings {
 					'name'    => __( 'New order', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to you When get new order.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to you When get new order.', 'wp-sms' )
 				),
 				'wc_notif_new_order_template'  => array(
 					'id'   => 'wc_notif_new_order_template',
@@ -648,7 +648,7 @@ class Settings {
 					'name'    => __( 'New order', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send a sms to you When get new order.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to you When get new order.', 'wp-sms' )
 				),
 				'edd_notif_new_order_template' => array(
 					'id'   => 'edd_notif_new_order_template',
@@ -1014,7 +1014,7 @@ class Settings {
 	/*
 	 * Get list Post Type
 	 */
-	public static function get_list_post_type( $args = array() ) {
+	public function get_list_post_type( $args = array() ) {
 
 		// vars
 		$post_types = array();
