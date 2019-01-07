@@ -436,19 +436,19 @@ class Settings {
 			// Notifications tab
 			'notifications' => apply_filters( 'wp_sms_notifications_settings', array(
 				// Publish new post
-				'notif_publish_new_post_title'           => array(
+				'notif_publish_new_post_title'            => array(
 					'id'   => 'notif_publish_new_post_title',
 					'name' => __( 'Published new posts', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'notif_publish_new_post'                 => array(
+				'notif_publish_new_post'                  => array(
 					'id'      => 'notif_publish_new_post',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send a sms to subscribers When published new posts.', 'wp-sms' )
 				),
-				'notif_publish_new_post_template'        => array(
+				'notif_publish_new_post_template'         => array(
 					'id'   => 'notif_publish_new_post_template',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -461,13 +461,47 @@ class Settings {
 						          '<code>%post_date%</code>'
 					          )
 				),
+				// Publish new post
+				'notif_publish_new_post_author_title'     => array(
+					'id'   => 'notif_publish_new_post_author_title',
+					'name' => __( 'Author of the post', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'notif_publish_new_post_author'           => array(
+					'id'      => 'notif_publish_new_post_author',
+					'name'    => __( 'Status', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send a sms to Author of the post when published.', 'wp-sms' )
+				),
+				'notif_publish_new_post_author_post_type' => array(
+					'id'      => 'notif_publish_new_post_author_post_type',
+					'name'    => __( 'Post Types', 'wp-sms' ),
+					'type'    => 'multiselect',
+					'options' => self::get_list_post_type( array( 'show_ui' => 1 ) ),
+					'desc'    => __( 'Select post types that u want to use this option.', 'wp-sms' )
+				),
+				'notif_publish_new_post_author_template'  => array(
+					'id'   => 'notif_publish_new_post_author_template',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Post title: %s, Post content: %s, Post url: %s, Post date: %s, Post tiny url: %s', 'wp-sms' ),
+						          '<code>%post_title%</code>',
+						          '<code>%post_content%</code>',
+						          '<code>%post_url%</code>',
+						          '<code>%post_date%</code>',
+						          '<code>%post_tiny_url%</code>'
+					          )
+				),
 				// Publish new wp version
-				'notif_publish_new_wpversion_title'      => array(
+				'notif_publish_new_wpversion_title'       => array(
 					'id'   => 'notif_publish_new_wpversion_title',
 					'name' => __( 'The new release of WordPress', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'notif_publish_new_wpversion'            => array(
+				'notif_publish_new_wpversion'             => array(
 					'id'      => 'notif_publish_new_wpversion',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
@@ -475,19 +509,19 @@ class Settings {
 					'desc'    => __( 'Send a sms to you When the new release of WordPress.', 'wp-sms' )
 				),
 				// Register new user
-				'notif_register_new_user_title'          => array(
+				'notif_register_new_user_title'           => array(
 					'id'   => 'notif_register_new_user_title',
 					'name' => __( 'Register a new user', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'notif_register_new_user'                => array(
+				'notif_register_new_user'                 => array(
 					'id'      => 'notif_register_new_user',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send a sms to you and user when register on wordpress.', 'wp-sms' )
 				),
-				'notif_register_new_user_admin_template' => array(
+				'notif_register_new_user_admin_template'  => array(
 					'id'   => 'notif_register_new_user_admin_template',
 					'name' => __( 'Message body for admin', 'wp-sms' ),
 					'type' => 'textarea',
@@ -499,7 +533,7 @@ class Settings {
 						          '<code>%date_register%</code>'
 					          )
 				),
-				'notif_register_new_user_template'       => array(
+				'notif_register_new_user_template'        => array(
 					'id'   => 'notif_register_new_user_template',
 					'name' => __( 'Message body for user', 'wp-sms' ),
 					'type' => 'textarea',
@@ -512,19 +546,19 @@ class Settings {
 					          )
 				),
 				// New comment
-				'notif_new_comment_title'                => array(
+				'notif_new_comment_title'                 => array(
 					'id'   => 'notif_new_comment_title',
 					'name' => __( 'New comment', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'notif_new_comment'                      => array(
+				'notif_new_comment'                       => array(
 					'id'      => 'notif_new_comment',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send a sms to you When get a new comment.', 'wp-sms' )
 				),
-				'notif_new_comment_template'             => array(
+				'notif_new_comment_template'              => array(
 					'id'   => 'notif_new_comment_template',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -540,19 +574,19 @@ class Settings {
 					          )
 				),
 				// User login
-				'notif_user_login_title'                 => array(
+				'notif_user_login_title'                  => array(
 					'id'   => 'notif_user_login_title',
 					'name' => __( 'User login', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'notif_user_login'                       => array(
+				'notif_user_login'                        => array(
 					'id'      => 'notif_user_login',
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send a sms to you When user is login.', 'wp-sms' )
 				),
-				'notif_user_login_template'              => array(
+				'notif_user_login_template'               => array(
 					'id'   => 'notif_user_login_template',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -803,6 +837,27 @@ class Settings {
 		echo $html;
 	}
 
+	public function multiselect_callback( $args ) {
+		if ( isset( $this->options[ $args['id'] ] ) ) {
+			$value = $this->options[ $args['id'] ];
+		} else {
+			$value = isset( $args['std'] ) ? $args['std'] : '';
+		}
+
+		$html = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" multiple/>';
+
+		foreach ( $args['options'] as $option => $name ) :
+			$selected = selected( $option, $value, false );
+			$html     .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
+		endforeach;
+
+		$html .= '</select>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+
+		echo $html;
+	}
+
+
 	public function advancedselect_callback( $args ) {
 		if ( isset( $this->options[ $args['id'] ] ) ) {
 			$value = $this->options[ $args['id'] ];
@@ -954,6 +1009,42 @@ class Settings {
         </div>
 		<?php
 		echo ob_get_clean();
+	}
+
+	/*
+	 * Get list Post Type
+	 */
+	public static function get_list_post_type( $args = array() ) {
+
+		// vars
+		$post_types = array();
+
+		// extract special arg
+		$exclude   = array();
+		$exclude[] = 'attachment';
+		$exclude[] = 'acf-field'; //Advance custom field
+		$exclude[] = 'acf-field-group'; //Advance custom field Group
+		$exclude[] = 'vc4_templates'; //Visual composer
+		$exclude[] = 'vc_grid_item'; //Visual composer Grid
+		$exclude[] = 'acf'; //Advance custom field Basic
+		$exclude[] = 'wpcf7_contact_form'; //contact 7 Post Type
+		$exclude[] = 'shop_order'; //WooCommerce Shop Order
+		$exclude[] = 'shop_coupon'; //WooCommerce Shop coupon
+
+		// get post type objects
+		$objects = get_post_types( $args, 'objects' );
+		foreach ( $objects as $k => $object ) {
+			if ( in_array( $k, $exclude ) ) {
+				continue;
+			}
+			if ( $object->_builtin && ! $object->public ) {
+				continue;
+			}
+			$post_types[ $object->cap->publish_posts ] = $k;
+		}
+
+		// return
+		return $post_types;
 	}
 }
 
