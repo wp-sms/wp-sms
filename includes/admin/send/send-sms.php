@@ -100,12 +100,12 @@
                                     <span class="wpsms-value wpsms-users">
 						<span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), count( $get_users_mobile ) ); ?></span>
 					</span>
-
                                     <span class="wpsms-value wpsms-numbers">
-                        <span style="font-size: 10px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $sms->validateNumber ); ?></span>
-                        <div class="clearfix"></div>
-                        <textarea cols="80" rows="2" style="direction:ltr;" id="wp_get_number" name="wp_get_number"></textarea>
-                    </span>
+                                        <div class="clearfix"></div>
+                                        <textarea cols="80" rows="5" style="direction:ltr;margin-top 5px;" id="wp_get_number" name="wp_get_number"></textarea>
+                                        <div class="clearfix"></div>
+                                        <span style="font-size: 14px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $sms->validateNumber ); ?></span>
+                                    </span>
                                 </td>
                             </tr>
 
@@ -142,7 +142,7 @@
 							<?php } ?>
                             <tr>
                                 <td>
-                                    <p class="submit">
+                                    <p class="submit" style="padding: 0;">
                                         <input type="submit" class="button-primary" name="SendSMS" value="<?php _e( 'Send SMS', 'wp-sms' ); ?>"/>
                                     </p>
                                 </td>

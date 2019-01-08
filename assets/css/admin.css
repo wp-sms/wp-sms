@@ -186,3 +186,13 @@
     width: 379px;
     height: 28px;
 }
+
+.wpsms-value.wpsms-numbers code {
+    font-family: inherit;
+}
+
+@media screen and (min-width: 1440px) {
+    .postbox-container {
+        max-width: 60%;
+    }
+}

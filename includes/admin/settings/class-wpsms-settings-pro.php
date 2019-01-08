@@ -589,13 +589,13 @@ class Settings_Pro {
 				),
 				'wc_otp_max_retry'           => array(
 					'id'   => 'wc_otp_max_retry',
-					'name' => __( 'Max SMS Retries', 'wp-sms' ),
+					'name' => __( 'Max SMS retries', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'For no limits, set it to : 0', 'wp-sms' )
 				),
 				'wc_otp_max_time_limit'      => array(
 					'id'   => 'wc_otp_max_time_limit',
-					'name' => __( 'Retries Period Time in Hours', 'wp-sms' ),
+					'name' => __( 'Retries expire time in Hours', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'This option working when a user reached max retries and need a period time for start again retry cycle.<br>For no limits, set it to : 0', 'wp-sms' )
 				),
