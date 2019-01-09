@@ -227,14 +227,16 @@ class Settings_Pro {
 			/*
 			 * Check License
 			 */
-			$response = wp_remote_get( add_query_arg( array(
+			$response = wp_remote_get( add_query_arg(array(
 				'plugin-name' => 'wp-sms-pro',
 				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] )
 			),
 				WP_SMS_SITE . '/wp-json/plugins/v1/validate'
 			) );
+
 			if ( is_wp_error( $response ) === false ) {
 				$result = json_decode( $response['body'], true );
+
 				if ( isset( $result['status'] ) and $result['status'] == 200 ) {
 					$default_option = 'yes';
 				}

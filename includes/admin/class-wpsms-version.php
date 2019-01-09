@@ -15,15 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package    WP_SMS
  */
 class Version {
-	public $options;
-
 	/**
 	 * WP_SMS_Version constructor.
 	 */
 	public function __construct() {
-
-		$this->options = Option::getOptions();
-
 		// Check pro pack is enabled
 		if ( $this->pro_is_active() ) {
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title' ) );
@@ -31,6 +26,11 @@ class Version {
 			// Check what version of WP-Pro using? if not new version, َShow the notice in admin area
 			if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
 				add_action( 'admin_notices', array( $this, 'version_notice' ) );
+			}
+
+			// Check license key.
+			if ( Option::getOptionPro( 'license_key_status' ) == 'no' ) {
+				add_action( 'admin_notices', array( $this, 'license_notice' ) );
 			}
 		} else {
 			add_filter( 'plugin_row_meta', array( $this, 'pro_meta_links' ), 10, 2 );
@@ -176,8 +176,15 @@ class Version {
 	 * Version notice
 	 */
 	public function version_notice() {
-		require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-		Helper::notice( sprintf( __( 'The "<a href="%s" target="_blank">WP-SMS-Pro</a>" is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms' ), WP_SMS_SITE, 'https://wp-sms-pro.com/checkout/purchase-history/' ), 'error' );
+		Helper::notice( sprintf( __( 'The <a href="%s" target="_blank">WP-SMS-Pro</a> is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms' ), WP_SMS_SITE, 'https://wp-sms-pro.com/checkout/purchase-history/' ), 'error' );
+	}
+
+	/**
+	 * License notice
+	 */
+	public function license_notice() {
+		$url = admin_url('admin.php?page=wp-sms-pro');
+		Helper::notice( sprintf( __( 'Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable automatic updates.', 'wp-sms' ), $url ), 'error' );
 	}
 }
 
