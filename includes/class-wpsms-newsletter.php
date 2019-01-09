@@ -106,7 +106,7 @@ class Newsletter {
 			 */
 			do_action( 'wp_sms_add_subscriber', $name, $mobile );
 
-			return array( 'result' => 'update', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
+			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
 		}
 	}
 
@@ -152,7 +152,7 @@ class Newsletter {
 			 */
 			do_action( 'wp_sms_add_subscriber', $name, $mobile );
 
-			return array( 'result' => 'update', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
+			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
 		}
 	}
 
@@ -231,7 +231,7 @@ class Newsletter {
 		 */
 		do_action( 'wp_sms_delete_subscriber', $result );
 
-		return array( 'result' => 'update', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
+		return array( 'result' => 'success', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
 	}
 
 	/**
@@ -263,7 +263,7 @@ class Newsletter {
 		 */
 		do_action( 'wp_sms_delete_subscriber', $result );
 
-		return array( 'result' => 'update', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
+		return array( 'result' => 'success', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
 	}
 
 	/**
@@ -314,7 +314,7 @@ class Newsletter {
 			 */
 			do_action( 'wp_sms_update_subscriber', $result );
 
-			return array( 'result' => 'update', 'message' => __( 'Subscriber successfully updated.', 'wp-sms' ) );
+			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully updated.', 'wp-sms' ) );
 		}
 	}
 
@@ -424,7 +424,7 @@ class Newsletter {
 				 */
 				do_action( 'wp_sms_add_group', $result );
 
-				return array( 'result' => 'update', 'message' => __( 'Group successfully added.', 'wp-sms' ) );
+				return array( 'result' => 'success', 'message' => __( 'Group successfully added.', 'wp-sms' ) );
 			}
 		}
 
@@ -476,7 +476,7 @@ class Newsletter {
 				 */
 				do_action( 'wp_sms_update_group', $result );
 
-				return array( 'result' => 'update', 'message' => __( 'Group successfully updated.', 'wp-sms' ) );
+				return array( 'result' => 'success', 'message' => __( 'Group successfully updated.', 'wp-sms' ) );
 			} else {
 				return array(
 					'result'  => 'error',

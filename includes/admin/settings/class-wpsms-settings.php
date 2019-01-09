@@ -844,7 +844,7 @@ class Settings {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
-		$html = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" multiple/>';
+		$html = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" multiple class="chosen-select"/>';
 
 		foreach ( $args['options'] as $option => $name ) :
 			$selected = selected( $option, $value, false );

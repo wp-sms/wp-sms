@@ -72,8 +72,11 @@ class Subscribers_List_Table extends \WP_List_Table {
 
 			case 'group_ID':
 				$group = Groups::getGroup( $item[ $column_name ] );
-
-				return $group->name;
+				if ( $group ) {
+					return $group->name;
+				} else {
+					return '-';
+				}
 
 			case 'date':
 				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );
