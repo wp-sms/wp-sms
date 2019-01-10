@@ -1,7 +1,7 @@
 <?php
 
 class Mobtexting extends WP_SMS {
-	private $wsdl_link = "http://api.mobtexting.com/v1";
+	private $wsdl_link = "http://portal.mobtexting.com/api/v2";
 	public $tariff = "https://www.mobtexting.com/pricing.php";
 	public $unitrial = false;
 	public $unit;
@@ -51,13 +51,15 @@ class Mobtexting extends WP_SMS {
 		// comma seperated receivers
 		$to            = implode( ',', $this->to );
 		$msg           = urlencode( $this->msg );
-		$api_end_point = $this->wsdl_link . "/smses";
+		$api_end_point = $this->wsdl_link . "/sms/send";
 		$api_args      = Array(
-			'api_key'   => $this->has_key,
-			'sender_id' => $this->from,
+			'access_token'   => $this->has_key,
+			'sender' => $this->from,
 			'message'   => $msg,
-			'mobile_no' => $to
+			'to' => $to,
+			'service' => 'T'
 		);
+
 		$response      = wp_remote_post( $api_end_point, Array( 'body' => $api_args, 'timeout' => 30 ) );
 
 		// Check gateway credit
@@ -68,7 +70,7 @@ class Mobtexting extends WP_SMS {
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$result        = json_decode( $response['body'] );
 
-		if ( $response_code == '201' ) {
+ 		if ( $response_code == '201' ) {
 			if ( $result->status == 'success' ) {
 				$this->InsertToDB( $this->from, $this->msg, $this->to );
 
@@ -96,29 +98,37 @@ class Mobtexting extends WP_SMS {
 		if ( ! $this->has_key ) {
 			return new WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
-		$api_end_point = $this->wsdl_link . "/credit";
+		$api_end_point = $this->wsdl_link . "/account/balance";
 		$api_args      = Array(
-			'timeout' => 3000
+			'timeout' => 18000
 		);
-		$response      = wp_remote_get( $api_end_point . '?api_key=' . $this->has_key, $api_args );
+		$response      = wp_remote_get( $api_end_point . '?access_token=' . $this->has_key, $api_args );
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
 			return new WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
-
+		
 		if ( $response_code == '200' ) {
 			if ( ! $response['body'] ) {
 				return new WP_Error( 'account-credit', __( 'Server API Unavailable', 'wp-sms' ) );
 			}
 
 			$result = json_decode( $response['body'] );
-
+			$result = (array) ($result);
+			foreach ($result['data'] as $key => $value) {
+				$value = (array) ($value);
+				
+				if ($value['service'] == "T") {
+					$credits = $value['credits'];
+				}
+				
+			}
 			if ( isset( $result->status ) and $result->status != 'success' ) {
 				return new WP_Error( 'account-credit', $result->msg . $result->description );
 			} else {
-				return $result->balance;
+				return $credits;
 			}
 		} else {
 			return new WP_Error( 'account-credit', $response['body'] );
