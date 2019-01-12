@@ -60,7 +60,7 @@ class primotexto extends \WP_SMS\Gateway {
 		}
 
 		// Authentication
-		authenticationManager::setApiKey( $this->has_key );
+		\authenticationManager::setApiKey( $this->has_key );
 
 		// New notification SMS
 		foreach ( $this->to as $item ) {
@@ -70,7 +70,7 @@ class primotexto extends \WP_SMS\Gateway {
 			$sms->message = urlencode( $this->msg );
 			$sms->sender  = $this->from;
 
-			$result = messagesManager::messagesSend( $sms );
+			$result = \messagesManager::messagesSend( $sms );
 			$json   = json_decode( $result );
 		}
 
@@ -97,10 +97,10 @@ class primotexto extends \WP_SMS\Gateway {
 
 	public function GetCredit() {
 		// Authentication
-		authenticationManager::setApiKey( $this->has_key );
+		\authenticationManager::setApiKey( $this->has_key );
 
 		// Account Stats
-		$result = accountManager::accountStats();
+		$result = \accountManager::accountStats();
 		$json   = json_decode( $result );
 
 		if ( isset( $json->error ) ) {
