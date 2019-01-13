@@ -29,7 +29,7 @@ class Version {
 			}
 
 			// Check license key.
-			if ( Option::getOptionPro( 'license_key_status' ) == 'no' ) {
+			if ( Option::getOption( 'license_key_status', true ) == 'no' ) {
 				add_action( 'admin_notices', array( $this, 'license_notice' ) );
 			}
 		} else {
