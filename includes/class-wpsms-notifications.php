@@ -82,8 +82,18 @@ class Notifications {
 		if ( isset( $this->options['notif_user_login'] ) ) {
 			add_action( 'wp_login', array( $this, 'login_user' ), 99, 2 );
 		}
+
+		if ( isset( $this->options['notif_publish_new_post_author'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
+			foreach ( $this->options['notif_publish_new_post_author_post_type'] as $post_publish_type ) {
+				add_action( $post_publish_type, array( $this, 'new_post_published' ), 10, 2 );
+			}
+		}
+
 	}
 
+	/**
+	 * Add subscribe meta box to the post
+	 */
 	public function notification_meta_box() {
 		add_meta_box( 'subscribe-meta-box', __( 'SMS', 'wp-sms' ), array(
 			$this,
@@ -201,6 +211,13 @@ class Notifications {
 		$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_user_login_template'] );
 		$this->sms->msg = $message;
 		$this->sms->SendSMS();
+	}
+
+	/**
+	 * Send sms to author of the post
+	 */
+	public function new_post_published() {
+
 	}
 
 }

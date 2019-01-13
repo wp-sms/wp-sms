@@ -844,11 +844,17 @@ class Settings {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
-		$html = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . ']" multiple class="chosen-select"/>';
-
+		$html     = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple class="chosen-select"/>';
+		$selected = '';
 		foreach ( $args['options'] as $option => $name ) :
-			$selected = selected( $option, $value, false );
-			$html     .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
+			if ( isset( $value ) AND is_array( $value ) ) {
+				if ( in_array( $option, $value ) ) {
+					$selected = " selected='selected'";
+				} else {
+					$selected = '';
+				}
+			}
+			$html .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
 		endforeach;
 
 		$html .= '</select>';
@@ -1040,7 +1046,8 @@ class Settings {
 			if ( $object->_builtin && ! $object->public ) {
 				continue;
 			}
-			$post_types[ $object->cap->publish_posts ] = $k;
+
+			$post_types[ $object->cap->publish_posts ] = $object->label;
 		}
 
 		// return
