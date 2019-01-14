@@ -83,12 +83,8 @@ class Notifications {
 			add_action( 'wp_login', array( $this, 'login_user' ), 99, 2 );
 		}
 
-		if ( isset( $this->options['notif_publish_new_post_author_post_type'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
-			foreach ( $this->options['notif_publish_new_post_author_post_type'] as $post_publish_type ) {
-				add_action( 'publish_' . $post_publish_type, array( $this, 'new_post_published' ), 10, 2 );
-			}
-		}
-
+		// Add transition publish post
+		add_action( 'transition_post_status', array( $this, 'transition_publish' ), 10, 3 );
 	}
 
 	/**
@@ -121,6 +117,7 @@ class Notifications {
 	 */
 	public function new_post( $ID, $post ) {
 		if ( $_REQUEST['wps_send_subscribe'] == 'yes' ) {
+			die();
 			if ( $_REQUEST['wps_subscribe_group'] == 'all' ) {
 				$this->sms->to = $this->db->get_col( "SELECT mobile FROM {$this->tb_prefix}sms_subscribes" );
 			} else {
@@ -235,6 +232,23 @@ class Notifications {
 		$this->sms->to  = array( get_user_meta( $post->post_author, 'mobile', true ) );
 		$this->sms->msg = $message;
 		$this->sms->SendSMS();
+	}
+
+	/**
+	 * Add only on publish transition actions
+	 *
+	 * @param $new_status
+	 * @param $old_status
+	 * @param $post
+	 */
+	function transition_publish( $new_status, $old_status, $post ) {
+		if ( ( 'publish' === $new_status && 'publish' !== $old_status ) ) {
+			if ( isset( $this->options['notif_publish_new_post_author_post_type'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
+				foreach ( $this->options['notif_publish_new_post_author_post_type'] as $post_publish_type ) {
+					add_action( 'publish_' . $post_publish_type, array( $this, 'new_post_published' ), 10, 2 );
+				}
+			}
+		}
 	}
 
 }
