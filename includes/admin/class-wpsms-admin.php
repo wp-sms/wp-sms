@@ -34,12 +34,11 @@ class Admin {
 
 	public function __construct() {
 
-		global $wpdb, $sms;
+		global $wpdb;
 
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 		$this->options   = Option::getOptions();
-		$this->sms       = $sms;
 		$this->init();
 
 		// Add Actions

@@ -472,7 +472,7 @@ class Settings {
 					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send an SMS to the author of the post when that post publish.<br>Make sure the mobile field number is enabled.', 'wp-sms' )
+					'desc'    => __( 'Send an SMS to the author of the post when that post publish.<br>Make sure "Add Mobile number field" enabled in "Features" settings.', 'wp-sms' )
 				),
 				'notif_publish_new_post_author_post_type' => array(
 					'id'      => 'notif_publish_new_post_author_post_type',
@@ -487,12 +487,11 @@ class Settings {
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the sms message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Post title: %s, Post content: %s, Post url: %s, Post date: %s, Post tiny url: %s', 'wp-sms' ),
+						          __( 'Post title: %s, Post content: %s, Post url: %s, Post date: %s', 'wp-sms' ),
 						          '<code>%post_title%</code>',
 						          '<code>%post_content%</code>',
 						          '<code>%post_url%</code>',
-						          '<code>%post_date%</code>',
-						          '<code>%post_tiny_url%</code>'
+						          '<code>%post_date%</code>'
 					          )
 				),
 				// Publish new wp version
@@ -1047,7 +1046,7 @@ class Settings {
 				continue;
 			}
 
-			$post_types[ $object->cap->publish_posts ] = $object->label;
+			$post_types[ $k ] = $object->label;
 		}
 
 		// return

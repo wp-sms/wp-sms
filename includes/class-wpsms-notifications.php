@@ -83,9 +83,9 @@ class Notifications {
 			add_action( 'wp_login', array( $this, 'login_user' ), 99, 2 );
 		}
 
-		if ( isset( $this->options['notif_publish_new_post_author'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
+		if ( isset( $this->options['notif_publish_new_post_author_post_type'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
 			foreach ( $this->options['notif_publish_new_post_author_post_type'] as $post_publish_type ) {
-				add_action( $post_publish_type, array( $this, 'new_post_published' ), 10, 2 );
+				add_action( 'publish_' . $post_publish_type, array( $this, 'new_post_published' ), 10, 2 );
 			}
 		}
 
@@ -131,7 +131,7 @@ class Notifications {
 				'%post_title%'   => get_the_title( $ID ),
 				'%post_content%' => wp_trim_words( $post->post_content, 10 ),
 				'%post_url%'     => wp_get_shortlink( $ID ),
-				'%post_date%'    => get_post_time( 'Y-m-d', true, $ID, true ),
+				'%post_date%'    => get_post_time( 'Y-m-d H:i:s', false, $ID, true ),
 			);
 
 			$message = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $_REQUEST['wpsms_text_template'] );
@@ -213,11 +213,28 @@ class Notifications {
 		$this->sms->SendSMS();
 	}
 
+
 	/**
 	 * Send sms to author of the post
+	 *
+	 * @param $ID
+	 * @param $post
 	 */
-	public function new_post_published() {
-
+	public function new_post_published( $ID, $post ) {
+		$message       = '';
+		$template_vars = array(
+			'%post_title%'   => get_the_title( $ID ),
+			'%post_content%' => wp_trim_words( $post->post_content, 10 ),
+			'%post_url%'     => wp_get_shortlink( $ID ),
+			'%post_date%'    => get_post_time( 'Y-m-d H:i:s', false, $ID, true ),
+		);
+		$template      = isset( $this->options['notif_publish_new_post_author_template'] ) ? $this->options['notif_publish_new_post_author_template'] : '';
+		if ( $template ) {
+			$message = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $template );
+		}
+		$this->sms->to  = array( get_user_meta( $post->post_author, 'mobile', true ) );
+		$this->sms->msg = $message;
+		$this->sms->SendSMS();
 	}
 
 }
