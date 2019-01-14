@@ -408,24 +408,69 @@ class Settings {
 			) ),
 			// Feature tab
 			'feature'       => apply_filters( 'wp_sms_feature_settings', array(
-				'mobile_field'     => array(
+				'mobile_field'                     => array(
 					'id'   => 'mobile_field',
 					'name' => __( 'Mobile field', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'add_mobile_field' => array(
+				'add_mobile_field'                 => array(
 					'id'      => 'add_mobile_field',
 					'name'    => __( 'Add Mobile number field', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Add Mobile number to user profile and register form.', 'wp-sms' )
 				),
-				'rest_api'         => array(
+				'intel_mobile_title'               => array(
+					'id'   => 'intel_mobile_title',
+					'name' => __( 'Intel Tel Input', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'intel_mobile'                     => array(
+					'id'      => 'intel_mobile',
+					'name'    => __( 'Enable for mobile fields', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Make mobile input fields in whole plugin to intel tel input.', 'wp-sms' )
+				),
+				'intel_mobile_only_countries'      => array(
+					'id'   => 'intel_mobile_only_countries',
+					'name' => __( 'Only Countries', 'wp-sms' ),
+					'type' => 'text',
+					'desc' => sprintf( __( 'Select what only countries want to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://intl-tel-input.com/node_modules/intl-tel-input/examples/gen/only-countries-europe.html' )
+				),
+				'intel_mobile_preferred_countries' => array(
+					'id'   => 'intel_mobile_preferred_countries',
+					'name' => __( 'Preferred Countries', 'wp-sms' ),
+					'type' => 'text',
+					'desc' => sprintf( __( 'Select what preferred countries want to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options' )
+				),
+				'intel_mobile_auto_hide'                     => array(
+					'id'      => 'intel_mobile_auto_hide',
+					'name'    => __( 'Auto hide dial code', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => sprintf(__( 'Enable or Disable "autoHideDialCode" option.<br>More information: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options')
+				),
+				'intel_mobile_national_mode'                     => array(
+					'id'      => 'intel_mobile_national_mode',
+					'name'    => __( 'National mode', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => sprintf(__( 'Enable or Disable "nationalMode" option.<br>More information: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options')
+				),
+				'intel_mobile_separate_dial_code'                     => array(
+					'id'      => 'intel_mobile_separate_dial_code',
+					'name'    => __( 'Separate dial code', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => sprintf(__( 'Enable or Disable "separateDialCode" option.<br>More information: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options')
+				),
+				'rest_api'                         => array(
 					'id'   => 'rest_api',
 					'name' => __( 'REST API', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'rest_api_status'  => array(
+				'rest_api_status'                  => array(
 					'id'      => 'rest_api_status',
 					'name'    => __( 'REST API status', 'wp-sms' ),
 					'type'    => 'checkbox',

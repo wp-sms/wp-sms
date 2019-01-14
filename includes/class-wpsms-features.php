@@ -44,6 +44,9 @@ class Features {
 			add_action( 'user_register', array( $this, 'check_admin_duplicate_number' ) );
 			add_action( 'profile_update', array( $this, 'check_admin_duplicate_number' ) );
 		}
+		if ( isset( $this->options['intel_mobile'] ) ) {
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+		}
 	}
 
 	/**
@@ -143,6 +146,48 @@ class Features {
 			update_user_meta( $user_id, 'mobile', $_POST['mobile'] );
 		}
 	}
+
+	/**
+	 * Register the JavaScript for the admin area.
+	 *
+	 * @since    1.2.0
+	 */
+	public function load_scripts() {
+
+		//Register IntelTelInput Assets
+		wp_register_style( 'wpsms-intel-tel-input-css', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, WP_SMS_VERSION );
+		wp_enqueue_style( 'wpsms-intel-tel-input-css' );
+		wp_enqueue_script( 'wpsms-intel-tel-input-js', WP_SMS_URL . 'assets/js/intlTelInput.min.js', array( 'jquery' ), WP_SMS_VERSION, true );
+		wp_enqueue_script( 'wpsms-intel-script', WP_SMS_URL . 'assets/js/intel-script.js', true, WP_SMS_VERSION );
+
+		// Localize the IntelTelInput
+		$tel_intel_vars = array();
+		if ( isset( $this->options['intel_mobile_only_countries'] ) ) {
+			$countries = explode( ',', $this->options['intel_mobile_only_countries'] );
+
+			// Make Countries data for localize
+			$i   = 0;
+			$len = count( $countries );
+
+			foreach ( $countries as $cn ) {
+				if ( $i == 0 AND $len == 1 ) {
+					$tel_intel_vars['only_countries'] = "'" . $cn . "'";
+				} else if ( $i == 0 AND $len > 1 ) {
+					$tel_intel_vars['only_countries'] = "'" . $cn . "', ";
+				} else if ( $i == $len - 1 AND $len > 1 ) {
+					$tel_intel_vars['only_countries'] .= "'" . $cn . "'";
+				} else {
+					$tel_intel_vars['only_countries'] .= "'" . $cn . "', ";
+				}
+				$i ++;
+			}
+		} else {
+			$tel_intel_vars['only_countries'] = '';
+		}
+
+		wp_localize_script( 'wpsms-intel-script', 'wp_sms_intel_tel_input', $tel_intel_vars );
+	}
+
 
 }
 
