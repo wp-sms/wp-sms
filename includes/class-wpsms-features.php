@@ -155,35 +155,48 @@ class Features {
 	public function load_scripts() {
 
 		//Register IntelTelInput Assets
-		wp_register_style( 'wpsms-intel-tel-input-css', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, WP_SMS_VERSION );
-		wp_enqueue_style( 'wpsms-intel-tel-input-css' );
-		wp_enqueue_script( 'wpsms-intel-tel-input-js', WP_SMS_URL . 'assets/js/intlTelInput.min.js', array( 'jquery' ), WP_SMS_VERSION, true );
-		wp_enqueue_script( 'wpsms-intel-script', WP_SMS_URL . 'assets/js/intel-script.js', true, WP_SMS_VERSION );
+		wp_enqueue_style( 'wpsms-intel-tel-input-css', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, WP_SMS_VERSION );
+		wp_enqueue_script( 'wpsms-intel-tel-input-js', WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js', false, WP_SMS_VERSION );
+		wp_enqueue_script( 'wpsms-intel-script', WP_SMS_URL . 'assets/js/intel/intel-script.js', true, WP_SMS_VERSION );
 
 		// Localize the IntelTelInput
-		$tel_intel_vars = array();
-		if ( isset( $this->options['intel_mobile_only_countries'] ) ) {
-			$countries = explode( ',', $this->options['intel_mobile_only_countries'] );
+		$tel_intel_vars             = array();
+		$only_countries_option      = Option::getOption( 'intel_mobile_only_countries' );
+		$preferred_countries_option = Option::getOption( 'intel_mobile_preferred_countries' );
 
-			// Make Countries data for localize
-			$i   = 0;
-			$len = count( $countries );
-
-			foreach ( $countries as $cn ) {
-				if ( $i == 0 AND $len == 1 ) {
-					$tel_intel_vars['only_countries'] = "'" . $cn . "'";
-				} else if ( $i == 0 AND $len > 1 ) {
-					$tel_intel_vars['only_countries'] = "'" . $cn . "', ";
-				} else if ( $i == $len - 1 AND $len > 1 ) {
-					$tel_intel_vars['only_countries'] .= "'" . $cn . "'";
-				} else {
-					$tel_intel_vars['only_countries'] .= "'" . $cn . "', ";
-				}
-				$i ++;
-			}
+		if ( $only_countries_option ) {
+			$countries                        = explode( ',', $only_countries_option );
+			$tel_intel_vars['only_countries'] = $countries;
 		} else {
 			$tel_intel_vars['only_countries'] = '';
 		}
+
+		if ( $preferred_countries_option ) {
+			$countries                             = explode( ',', $preferred_countries_option );
+			$tel_intel_vars['preferred_countries'] = $countries;
+		} else {
+			$tel_intel_vars['preferred_countries'] = '';
+		}
+
+		if ( Option::getOption( 'intel_mobile_auto_hide' ) ) {
+			$tel_intel_vars['auto_hide'] = true;
+		} else {
+			$tel_intel_vars['auto_hide'] = false;
+		}
+
+		if ( Option::getOption( 'intel_mobile_national_mode' ) ) {
+			$tel_intel_vars['national_mode'] = true;
+		} else {
+			$tel_intel_vars['national_mode'] = false;
+		}
+
+		if ( Option::getOption( 'intel_mobile_separate_dial_code' ) ) {
+			$tel_intel_vars['separate_dial'] = true;
+		} else {
+			$tel_intel_vars['separate_dial'] = false;
+		}
+
+		$tel_intel_vars['util_js'] = WP_SMS_URL . 'assets/js/intel/utils.js';
 
 		wp_localize_script( 'wpsms-intel-script', 'wp_sms_intel_tel_input', $tel_intel_vars );
 	}

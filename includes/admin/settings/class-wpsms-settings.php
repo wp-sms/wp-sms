@@ -436,13 +436,13 @@ class Settings {
 					'id'   => 'intel_mobile_only_countries',
 					'name' => __( 'Only Countries', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => sprintf( __( 'Select what only countries want to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://intl-tel-input.com/node_modules/intl-tel-input/examples/gen/only-countries-europe.html' )
+					'desc' => sprintf( __( 'Select what only countries wants to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://intl-tel-input.com/node_modules/intl-tel-input/examples/gen/only-countries-europe.html' )
 				),
 				'intel_mobile_preferred_countries' => array(
 					'id'   => 'intel_mobile_preferred_countries',
 					'name' => __( 'Preferred Countries', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => sprintf( __( 'Select what preferred countries want to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options' )
+					'desc' => sprintf( __( 'Select what preferred countries wants to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options' )
 				),
 				'intel_mobile_auto_hide'                     => array(
 					'id'      => 'intel_mobile_auto_hide',
