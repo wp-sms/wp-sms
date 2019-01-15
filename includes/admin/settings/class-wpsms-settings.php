@@ -422,7 +422,7 @@ class Settings {
 				),
 				'intel_mobile_title'               => array(
 					'id'   => 'intel_mobile_title',
-					'name' => __( 'Intel Tel Input', 'wp-sms' ),
+					'name' => __( 'International Telephone Input', 'wp-sms' ),
 					'type' => 'header'
 				),
 				'intel_mobile'                     => array(
@@ -433,37 +433,39 @@ class Settings {
 					'desc'    => __( 'Make mobile input fields in whole plugin to intel tel input.', 'wp-sms' )
 				),
 				'intel_mobile_only_countries'      => array(
-					'id'   => 'intel_mobile_only_countries',
-					'name' => __( 'Only Countries', 'wp-sms' ),
-					'type' => 'text',
-					'desc' => sprintf( __( 'Select what only countries wants to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://intl-tel-input.com/node_modules/intl-tel-input/examples/gen/only-countries-europe.html' )
+					'id'      => 'intel_mobile_only_countries',
+					'name'    => __( 'Only Countries', 'wp-sms' ),
+					'type'    => 'countryselect',
+					'options' => $this->get_countries_list(),
+					'desc'    => __( 'In the dropdown, display only the countries you specify.', 'wp-sms' )
 				),
 				'intel_mobile_preferred_countries' => array(
-					'id'   => 'intel_mobile_preferred_countries',
-					'name' => __( 'Preferred Countries', 'wp-sms' ),
-					'type' => 'text',
-					'desc' => sprintf( __( 'Select what preferred countries wants to show on fields and separate them with comma delimiter, E.g: US,EN,CA<br>For more information check this document: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options' )
+					'id'      => 'intel_mobile_preferred_countries',
+					'name'    => __( 'Preferred Countries', 'wp-sms' ),
+					'type'    => 'countryselect',
+					'options' => $this->get_countries_list(),
+					'desc'    => __( 'Specify the countries to appear at the top of the list.', 'wp-sms' )
 				),
-				'intel_mobile_auto_hide'                     => array(
+				'intel_mobile_auto_hide'           => array(
 					'id'      => 'intel_mobile_auto_hide',
 					'name'    => __( 'Auto hide dial code', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => sprintf(__( 'Enable or Disable "autoHideDialCode" option.<br>More information: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options')
+					'desc'    => __( 'If there is just a dial code in the input: remove it on blur or submit, and re-add it on focus.<br>Requires National mode to be deactivate', 'wp-sms' )
 				),
-				'intel_mobile_national_mode'                     => array(
+				'intel_mobile_national_mode'       => array(
 					'id'      => 'intel_mobile_national_mode',
 					'name'    => __( 'National mode', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => sprintf(__( 'Enable or Disable "nationalMode" option.<br>More information: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options')
+					'desc'    => __( 'Allow users to enter national numbers (and not have to think about international dial codes).', 'wp-sms' )
 				),
-				'intel_mobile_separate_dial_code'                     => array(
+				'intel_mobile_separate_dial_code'  => array(
 					'id'      => 'intel_mobile_separate_dial_code',
 					'name'    => __( 'Separate dial code', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => sprintf(__( 'Enable or Disable "separateDialCode" option.<br>More information: <a href="%s" target="_blank">Click Here</a>', 'wp-sms' ), 'https://github.com/jackocnr/intl-tel-input#options')
+					'desc'    => __( 'Display the country dial code next to the selected flag so it\'s not part of the typed number.<br>Note: this will disable National mode because technically we are dealing with international numbers, but with the dial code separated.', 'wp-sms' )
 				),
 				'rest_api'                         => array(
 					'id'   => 'rest_api',
@@ -888,8 +890,9 @@ class Settings {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
-		$html     = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple class="chosen-select"/>';
+		$html     = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
 		$selected = '';
+
 		foreach ( $args['options'] as $option => $name ) :
 			if ( isset( $value ) AND is_array( $value ) ) {
 				if ( in_array( $option, $value ) ) {
@@ -899,6 +902,33 @@ class Settings {
 				}
 			}
 			$html .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
+		endforeach;
+
+		$html .= '</select>';
+		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+
+		echo $html;
+	}
+
+	public function countryselect_callback( $args ) {
+		if ( isset( $this->options[ $args['id'] ] ) ) {
+			$value = $this->options[ $args['id'] ];
+		} else {
+			$value = isset( $args['std'] ) ? $args['std'] : '';
+		}
+
+		$html     = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
+		$selected = '';
+
+		foreach ( $args['options'] as $option => $country ) :
+			if ( isset( $value ) AND is_array( $value ) ) {
+				if ( in_array( $country['code'], $value ) ) {
+					$selected = " selected='selected'";
+				} else {
+					$selected = '';
+				}
+			}
+			$html .= '<option value="' . $country['code'] . '" ' . $selected . '>' . $country['name'] . '</option>';
 		endforeach;
 
 		$html .= '</select>';
@@ -1096,6 +1126,20 @@ class Settings {
 
 		// return
 		return $post_types;
+	}
+
+	/**
+	 * Get countries list
+	 *
+	 * @return array|mixed|object
+	 */
+	public function get_countries_list() {
+		// Load countries list file
+		$file   = WP_SMS_DIR . 'assets/countries.json';
+		$file   = file_get_contents( $file );
+		$result = json_decode( $file, true );
+
+		return $result;
 	}
 }
 

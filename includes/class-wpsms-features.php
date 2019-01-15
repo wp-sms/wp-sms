@@ -45,7 +45,9 @@ class Features {
 			add_action( 'profile_update', array( $this, 'check_admin_duplicate_number' ) );
 		}
 		if ( isset( $this->options['intel_mobile'] ) ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_international_input' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_international_input' ) );
+			add_action( 'login_enqueue_scripts', array( $this, 'load_international_input' ) );
 		}
 	}
 
@@ -152,7 +154,7 @@ class Features {
 	 *
 	 * @since    1.2.0
 	 */
-	public function load_scripts() {
+	public function load_international_input() {
 
 		//Register IntelTelInput Assets
 		wp_enqueue_style( 'wpsms-intel-tel-input-css', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, WP_SMS_VERSION );
@@ -165,15 +167,13 @@ class Features {
 		$preferred_countries_option = Option::getOption( 'intel_mobile_preferred_countries' );
 
 		if ( $only_countries_option ) {
-			$countries                        = explode( ',', $only_countries_option );
-			$tel_intel_vars['only_countries'] = $countries;
+			$tel_intel_vars['only_countries'] = $only_countries_option;
 		} else {
 			$tel_intel_vars['only_countries'] = '';
 		}
 
 		if ( $preferred_countries_option ) {
-			$countries                             = explode( ',', $preferred_countries_option );
-			$tel_intel_vars['preferred_countries'] = $countries;
+			$tel_intel_vars['preferred_countries'] = $preferred_countries_option;
 		} else {
 			$tel_intel_vars['preferred_countries'] = '';
 		}

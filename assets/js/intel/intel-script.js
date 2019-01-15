@@ -1,5 +1,5 @@
 jQuery(document).ready(function () {
-    var input = document.querySelector(".wp-sms-intel-mobile");
+    var input = document.querySelector(".wp-sms-input-mobile");
     if(input) {
         window.intlTelInput(input, {
             onlyCountries: wp_sms_intel_tel_input.only_countries,
