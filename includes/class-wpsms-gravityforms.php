@@ -27,7 +27,7 @@ class Gravityforms
             return $option_field;
         }
 
-        $fields = RGFormsModel::get_form_meta($form_id);
+        $fields = \RGFormsModel::get_form_meta($form_id);
 
         if ($fields) {
             foreach ($fields['fields'] as $field) {

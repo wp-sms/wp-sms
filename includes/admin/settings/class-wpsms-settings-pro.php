@@ -288,7 +288,7 @@ class Settings_Pro {
 
 		// Get Gravityforms
 		if ( class_exists( 'RGFormsModel' ) ) {
-			$forms = RGFormsModel::get_forms( null, 'title' );
+			$forms = \RGFormsModel::get_forms( null, 'title' );
 
 			foreach ( $forms as $form ):
 				$gf_forms[ 'gf_notify_form_' . $form->id ]          = array(
@@ -324,7 +324,7 @@ class Settings_Pro {
 					          )
 				);
 
-				if ( \WP_SMS\Gravityforms::get_field( $form->id ) ) {
+				if ( Gravityforms::get_field( $form->id ) ) {
 					$gf_forms[ 'gf_notify_enable_field_form_' . $form->id ]   = array(
 						'id'      => 'gf_notify_enable_field_form_' . $form->id,
 						'name'    => __( 'Send SMS to field', 'wp-sms' ),
@@ -336,7 +336,7 @@ class Settings_Pro {
 						'id'      => 'gf_notify_receiver_field_form_' . $form->id,
 						'name'    => __( 'Field form', 'wp-sms' ),
 						'type'    => 'select',
-						'options' => \WP_SMS\Gravityforms::get_field( $form->id ),
+						'options' => Gravityforms::get_field( $form->id ),
 						'desc'    => __( 'Please select the field of the form', 'wp-sms' )
 					);
 					$gf_forms[ 'gf_notify_message_field_form_' . $form->id ]  = array(
@@ -412,7 +412,7 @@ class Settings_Pro {
 						'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
 						'name'    => __( 'Field form', 'wp-sms' ),
 						'type'    => 'select',
-						'options' => \WP_SMS\Quform::get_field( $form['id'] ),
+						'options' => Quform::get_field( $form['id'] ),
 						'desc'    => __( 'Please select the field of the form', 'wp-sms' )
 					);
 					$qf_forms[ 'qf_notify_message_field_form_' . $form['id'] ]  = array(
