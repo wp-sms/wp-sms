@@ -30,20 +30,15 @@ require_once WP_SMS_DIR . 'includes/functions.php';
 $wpsms_option = get_option( 'wpsms_settings' );
 
 /**
- * Load plugin Database Options
- */
-require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
-
-/**
  * Initial gateway
  */
 require_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
 
-$sms = \WP_SMS\Gateway::initial();
+$sms = wp_sms_initial_gateway();
 
 /**
  * Load Plugin
  */
 require WP_SMS_DIR . 'includes/class-wpsms.php';
 
-$WP_SMS = new WP_SMS();
+new WP_SMS();

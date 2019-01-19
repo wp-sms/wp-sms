@@ -1,11 +1,12 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-} // Exit if accessed directly
+use WP_SMS\Gateway;
 
-if ( ! function_exists( 'wp_subscribes' ) ) {
-	function wp_subscribes() {
-		Newsletter::loadNewsLetter();
-	}
+/**
+ * @return mixed
+ */
+function wp_sms_initial_gateway() {
+	require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
+
+	return Gateway::initial();
 }

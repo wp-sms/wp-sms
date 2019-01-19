@@ -94,5 +94,8 @@ class WP_SMS {
 
 		// API class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
+
+		// Template functions.
+		require_once WP_SMS_DIR . 'includes/template-functions.php';
 	}
 }

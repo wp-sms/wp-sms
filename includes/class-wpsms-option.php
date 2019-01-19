@@ -7,8 +7,6 @@ namespace WP_SMS;
  * @package WP_SMS
  */
 class Option {
-
-
 	/**
 	 * Get the whole Plugin Options
 	 *
