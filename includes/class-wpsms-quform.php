@@ -14,16 +14,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @version    1.0
  */
 class Quform {
-	static function get_field( $form_id ) {
+
+	/**
+	 * Get each form Fields
+	 *
+	 * @param $form_id
+	 */
+	static function get_fields( $form_id ) {
 		if ( ! $form_id ) {
 			return;
 		}
 
-		if ( ! function_exists( 'iphorm_get_all_forms' ) ) {
+		if ( ! class_exists( 'Quform_Repository' ) ) {
 			return;
 		}
-
-		$fields = iphorm_get_all_forms();
+		$quform = new \Quform_Repository();
+		$fields = $quform->allForms();
 
 		if ( ! $fields ) {
 			return;
@@ -31,9 +37,12 @@ class Quform {
 
 		foreach ( $fields as $field ) {
 			if ( $field['id'] == $form_id ) {
+
 				if ( $field['elements'] ) {
-					foreach ( $field['elements'] as $element ) {
-						$option_field[ $element['id'] ] = $element['label'];
+					foreach ( $field['elements'] as $elements ) {
+						foreach ( $elements['elements'] as $element ) {
+							$option_field[ $element['id'] ] = $element['label'];
+						}
 					}
 
 					return $option_field;

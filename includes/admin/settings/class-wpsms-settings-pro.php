@@ -227,7 +227,7 @@ class Settings_Pro {
 			/*
 			 * Check License
 			 */
-			$response = wp_remote_get( add_query_arg(array(
+			$response = wp_remote_get( add_query_arg( array(
 				'plugin-name' => 'wp-sms-pro',
 				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] )
 			),
@@ -365,58 +365,32 @@ class Settings_Pro {
 		}
 
 		// Get quforms
-		if ( function_exists( 'iphorm_get_all_forms' ) ) {
-			$forms = iphorm_get_all_forms();
+		if ( class_exists( 'Quform_Repository' ) ) {
+			$quform = new \Quform_Repository();
+			$forms  = $quform->allForms();
 
-			foreach ( $forms as $form ):
-				$qf_forms[ 'qf_notify_form_' . $form['id'] ]          = array(
-					'id'   => 'qf_notify_form_' . $form['id'],
-					'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form['name'] ),
-					'type' => 'header'
-				);
-				$qf_forms[ 'qf_notify_enable_form_' . $form['id'] ]   = array(
-					'id'      => 'qf_notify_enable_form_' . $form['id'],
-					'name'    => __( 'Send SMS', 'wp-sms' ),
-					'type'    => 'checkbox',
-					'options' => $options,
-					'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
-				);
-				$qf_forms[ 'qf_notify_receiver_form_' . $form['id'] ] = array(
-					'id'   => 'qf_notify_receiver_form_' . $form['id'],
-					'name' => __( 'Send SMS', 'wp-sms' ),
-					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
-				);
-				$qf_forms[ 'qf_notify_message_form_' . $form['id'] ]  = array(
-					'id'   => 'qf_notify_message_form_' . $form['id'],
-					'name' => __( 'Message body', 'wp-sms' ),
-					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
-					          sprintf(
-						          __( 'Form name: %s, Form url: %s, Referring url: %s', 'wp-sms' ),
-						          '<code>%post_title%</code>',
-						          '<code>%form_url%</code>',
-						          '<code>%referring_url%</code>'
-					          )
-				);
-
-				if ( $form['elements'] ) {
-					$qf_forms[ 'qf_notify_enable_field_form_' . $form['id'] ]   = array(
-						'id'      => 'qf_notify_enable_field_form_' . $form['id'],
-						'name'    => __( 'Send SMS to field', 'wp-sms' ),
+			if ( $forms ) {
+				foreach ( $forms as $form ):
+					$qf_forms[ 'qf_notify_form_' . $form['id'] ]          = array(
+						'id'   => 'qf_notify_form_' . $form['id'],
+						'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form['name'] ),
+						'type' => 'header'
+					);
+					$qf_forms[ 'qf_notify_enable_form_' . $form['id'] ]   = array(
+						'id'      => 'qf_notify_enable_form_' . $form['id'],
+						'name'    => __( 'Send SMS', 'wp-sms' ),
 						'type'    => 'checkbox',
 						'options' => $options,
-						'desc'    => __( 'Send SMS to field value when this form get new message', 'wp-sms' )
+						'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
 					);
-					$qf_forms[ 'qf_notify_receiver_field_form_' . $form['id'] ] = array(
-						'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
-						'name'    => __( 'Field form', 'wp-sms' ),
-						'type'    => 'select',
-						'options' => Quform::get_field( $form['id'] ),
-						'desc'    => __( 'Please select the field of the form', 'wp-sms' )
+					$qf_forms[ 'qf_notify_receiver_form_' . $form['id'] ] = array(
+						'id'   => 'qf_notify_receiver_form_' . $form['id'],
+						'name' => __( 'Send SMS', 'wp-sms' ),
+						'type' => 'text',
+						'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 					);
-					$qf_forms[ 'qf_notify_message_field_form_' . $form['id'] ]  = array(
-						'id'   => 'qf_notify_message_field_form_' . $form['id'],
+					$qf_forms[ 'qf_notify_message_form_' . $form['id'] ]  = array(
+						'id'   => 'qf_notify_message_form_' . $form['id'],
 						'name' => __( 'Message body', 'wp-sms' ),
 						'type' => 'textarea',
 						'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
@@ -427,8 +401,44 @@ class Settings_Pro {
 							          '<code>%referring_url%</code>'
 						          )
 					);
-				}
-			endforeach;
+
+					if ( $form['elements'] ) {
+						$qf_forms[ 'qf_notify_enable_field_form_' . $form['id'] ]   = array(
+							'id'      => 'qf_notify_enable_field_form_' . $form['id'],
+							'name'    => __( 'Send SMS to field', 'wp-sms' ),
+							'type'    => 'checkbox',
+							'options' => $options,
+							'desc'    => __( 'Send SMS to field value when this form get new message', 'wp-sms' )
+						);
+						$qf_forms[ 'qf_notify_receiver_field_form_' . $form['id'] ] = array(
+							'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
+							'name'    => __( 'Field form', 'wp-sms' ),
+							'type'    => 'select',
+							'options' => Quform::get_fields( $form['id'] ),
+							'desc'    => __( 'Please select the field of the form', 'wp-sms' )
+						);
+						$qf_forms[ 'qf_notify_message_field_form_' . $form['id'] ]  = array(
+							'id'   => 'qf_notify_message_field_form_' . $form['id'],
+							'name' => __( 'Message body', 'wp-sms' ),
+							'type' => 'textarea',
+							'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+							          sprintf(
+								          __( 'Form name: %s, Form url: %s, Referring url: %s', 'wp-sms' ),
+								          '<code>%post_title%</code>',
+								          '<code>%form_url%</code>',
+								          '<code>%referring_url%</code>'
+							          )
+						);
+					}
+				endforeach;
+			} else {
+				$qf_forms['qf_notify_form'] = array(
+					'id'   => 'qf_notify_form',
+					'name' => __( 'No data', 'wp-sms' ),
+					'type' => 'notice',
+					'desc' => __( 'There is no form available on Quform plugin, please first add your forms.', 'wp-sms' ),
+				);
+			}
 		} else {
 			$qf_forms['qf_notify_form'] = array(
 				'id'   => 'qf_notify_form',

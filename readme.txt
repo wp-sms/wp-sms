@@ -224,7 +224,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= dev-master =
+= 5.0 =
 * Added: The new option for disabling CSS loading the theme.
 * Added: A new tab in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
 * Added: A new shortcode for show SMS newsletter form. enjoy with this shortcode `[wp-sms-subscriber-form]`.
