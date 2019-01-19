@@ -244,7 +244,7 @@ class Notifications {
 		if ( ( 'publish' === $new_status && 'publish' !== $old_status ) ) {
 			if ( isset( $this->options['notif_publish_new_post_author_post_type'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
 				foreach ( $this->options['notif_publish_new_post_author_post_type'] as $post_publish_type ) {
-					add_action( 'publish_' . $post_publish_type, array( $this, 'new_post_published' ), 10, 2 );
+					$this->new_post_published('ID', 'Post Object');
 				}
 			}
 		}

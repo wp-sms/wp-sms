@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\Newsletter;
 use WP_SMS\Option;
 
 if ( ! defined( 'ABSPATH' ) ) {
