@@ -226,16 +226,22 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = dev-master =
 * Added: The new option for disabling CSS loading the theme.
-* Added: A new tan in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
+* Added: A new tab in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
 * Added: A new shortcode for show SMS newsletter form. enjoy with this shortcode `[wp-sms-subscriber-form]`.
-* Added: A new option for sending an SMS to the Author of the post when that post publish.
-* Added: Status column in outbox page.
+* Added: A new option for sending an SMS to the Author of the post when that post publish and the author have not the publish capability.
+* Added: Status and Response columns in outbox page and get the full log on sending SMS actions.
+* Added: Support mobile fields with International Telephone Input optional.
+* Added: Zain.im Gateway.
+* Added: Textmagic.com Gateway.
 * Optimized: The main structure of the plugin and split process to increase performance and load.
-* Improved: The SMS newsletter requests. We using the WP REST API instead Admin Ajax.
-* Improved: The styles of admin forms, we used the ThickBox for managing forms and metabox style for send SMS form.
+* Improved: The SMS newsletter requests. We've used the WP REST API instead Admin Ajax.
+* Improved: Now you can allow to importing the same number into two different groups.
+* Improved: The styles of admin forms, We've used the ThickBox for managing forms and metabox style for send SMS form.
 * Improved: Some queries to get data.
 * Improved: The export subscriber issue.
-* Updated: The SMS Global gateway to latest version of API.
+* Updated: The SMS Global gateway to the latest version of API.
+* Updated: Primotexto gateway.
+* Updated: Message type for gateway Comilio.it.
 
 = 4.1.1 =
 * Fixed: Issue to saving options.
