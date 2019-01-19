@@ -12,7 +12,7 @@
             <input id="wpsms-name" type="text" placeholder="<?php _e( 'Your name', 'wp-sms' ); ?>" class="wpsms-input"/>
         </div>
 		<?php
-		if ( \WP_SMS\Option::getOption( 'intel_mobile' ) ) {
+		if ( wp_sms_get_option( 'international_mobile' ) ) {
 			$wp_sms_input_mobile = " wp-sms-input-mobile";
 		} else {
 			$wp_sms_input_mobile = "";
@@ -20,10 +20,10 @@
 		?>
         <div class="wpsms-subscribe-form">
             <label><?php _e( 'Your mobile', 'wp-sms' ); ?>:</label>
-            <input id="wpsms-mobile" type="text" placeholder="<?php echo \WP_SMS\Option::getOption( 'mobile_terms_field_place_holder' ); ?>" class="wpsms-input<?php echo $wp_sms_input_mobile ?>"/>
+            <input id="wpsms-mobile" type="text" placeholder="<?php echo wp_sms_get_option( 'mobile_terms_field_place_holder' ); ?>" class="wpsms-input<?php echo $wp_sms_input_mobile ?>"/>
         </div>
 
-		<?php if ( \WP_SMS\Option::getOption( 'newsletter_form_groups' ) ) { ?>
+		<?php if ( wp_sms_get_option( 'newsletter_form_groups' ) ) { ?>
             <div class="wpsms-subscribe-form">
                 <label><?php _e( 'Group', 'wp-sms' ); ?>:</label>
                 <select id="wpsms-groups" class="wpsms-input">
@@ -45,17 +45,17 @@
 				<?php _e( 'Unsubscribe', 'wp-sms' ); ?>
             </label>
         </div>
-		<?php if ( \WP_SMS\Option::getOption( 'gdpr_compliance' ) == 1 ) { ?>
+		<?php if ( wp_sms_get_option( 'gdpr_compliance' ) == 1 ) { ?>
             <div class="wpsms-subscribe-form">
-                <label><input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo \WP_SMS\Option::getOption( 'newsletter_form_gdpr_confirm_checkbox' ) == 'checked' ? 'checked="checked"' : ''; ?>>
-					<?php echo \WP_SMS\Option::getOption( 'newsletter_form_gdpr_text' ) ? \WP_SMS\Option::getOption( 'newsletter_form_gdpr_text' ) : 'GDPR text...'; ?>
+                <label><input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo wp_sms_get_option( 'newsletter_form_gdpr_confirm_checkbox' ) == 'checked' ? 'checked="checked"' : ''; ?>>
+					<?php echo wp_sms_get_option( 'newsletter_form_gdpr_text' ) ? wp_sms_get_option( 'newsletter_form_gdpr_text' ) : 'GDPR text...'; ?>
                 </label>
             </div>
 		<?php } ?>
 
         <button class="wpsms-button" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
     </div>
-	<?php $disable_style = \WP_SMS\Option::getOption( 'disable_style_in_front' );
+	<?php $disable_style = wp_sms_get_option( 'disable_style_in_front' );
 	if ( empty( $disable_style ) AND ! $disable_style ): ?>
     <div id="wpsms-step-2">
 		<?php else: ?>
@@ -69,5 +69,5 @@
             <button class="wpsms-button" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
         </div>
         <input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
-        <input type="hidden" id="newsletter-form-verify" value="<?php echo \WP_SMS\Option::getOption( 'newsletter_form_verify' ); ?>">
+        <input type="hidden" id="newsletter-form-verify" value="<?php echo wp_sms_get_option( 'newsletter_form_verify' ); ?>">
     </div>

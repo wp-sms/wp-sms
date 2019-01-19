@@ -1,5 +1,5 @@
 <?php
-if ( wp_sms_get_option( 'intel_mobile' ) ) {
+if ( wp_sms_get_option( 'international_mobile' ) ) {
 	$wp_sms_input_mobile = " wp-sms-input-mobile";
 } else {
 	$wp_sms_input_mobile = "";

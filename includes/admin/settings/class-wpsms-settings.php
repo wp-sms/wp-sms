@@ -420,13 +420,13 @@ class Settings {
 					'options' => $options,
 					'desc'    => __( 'Add Mobile number to user profile and register form.', 'wp-sms' )
 				),
-				'intel_mobile_title'               => array(
-					'id'   => 'intel_mobile_title',
+				'international_mobile_title'       => array(
+					'id'   => 'international_mobile_title',
 					'name' => __( 'International Telephone Input', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'intel_mobile'                     => array(
-					'id'      => 'intel_mobile',
+				'international_mobile'             => array(
+					'id'      => 'international_mobile',
 					'name'    => __( 'Enable for mobile fields', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
@@ -893,15 +893,17 @@ class Settings {
 		$html     = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
 		$selected = '';
 
-		foreach ( $args['options'] as $option => $name ) :
-			if ( isset( $value ) AND is_array( $value ) ) {
-				if ( in_array( $option, $value ) ) {
-					$selected = " selected='selected'";
-				} else {
-					$selected = '';
+		foreach ( $args['options'] as $k => $name ) :
+			foreach ( $name as $option => $name ):
+				if ( isset( $value ) AND is_array( $value ) ) {
+					if ( in_array( $option, $value ) ) {
+						$selected = " selected='selected'";
+					} else {
+						$selected = '';
+					}
 				}
-			}
-			$html .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
+				$html .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
+			endforeach;
 		endforeach;
 
 		$html .= '</select>';
@@ -1120,8 +1122,7 @@ class Settings {
 			if ( $object->_builtin && ! $object->public ) {
 				continue;
 			}
-
-			$post_types[ $k ] = $object->label;
+			$post_types[] = array( $object->cap->publish_posts . '|' . $object->name => $object->label );
 		}
 
 		// return

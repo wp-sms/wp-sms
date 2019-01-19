@@ -83,8 +83,11 @@ class Notifications {
 			add_action( 'wp_login', array( $this, 'login_user' ), 99, 2 );
 		}
 
-		// Add transition publish post
-		add_action( 'transition_post_status', array( $this, 'transition_publish' ), 10, 3 );
+		// Check the send to author of the post is enabled or not
+		if ( Option::getOption( 'notif_publish_new_post_author' ) ) {
+			// Add transition publish post
+			add_action( 'transition_post_status', array( $this, 'transition_publish' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -211,12 +214,12 @@ class Notifications {
 
 
 	/**
-	 * Send sms to author of the post
+	 * Send sms to author of the post if published
 	 *
 	 * @param $ID
 	 * @param $post
 	 */
-	public function new_post_published( $ID, $post ) {
+	public function new_post_published( $ID, \WP_Post $post ) {
 		$message       = '';
 		$template_vars = array(
 			'%post_title%'   => get_the_title( $ID ),
@@ -241,10 +244,19 @@ class Notifications {
 	 * @param $post
 	 */
 	function transition_publish( $new_status, $old_status, $post ) {
-		if ( ( 'publish' === $new_status && 'publish' !== $old_status ) ) {
-			if ( isset( $this->options['notif_publish_new_post_author_post_type'] ) AND is_array( $this->options['notif_publish_new_post_author_post_type'] ) ) {
-				foreach ( $this->options['notif_publish_new_post_author_post_type'] as $post_publish_type ) {
-					$this->new_post_published('ID', 'Post Object');
+		if ( 'publish' === $new_status && 'publish' !== $old_status ) {
+			$post_types_option = Option::getOption( 'notif_publish_new_post_author_post_type' );
+
+			// Check selected post types or not?
+			if ( $post_types_option AND is_array( $post_types_option ) ) {
+				// Initialize values
+				$post_types = array();
+				foreach ( $post_types_option as $post_publish_type ) {
+					$value                   = explode( '|', $post_publish_type );
+					$post_types[ $value[1] ] = $value[0];
+				}
+				if ( array_key_exists( $post->post_type, $post_types ) AND ! user_can( $post->post_author, $post_types[ $post->post_type ] ) ) {
+					$this->new_post_published( $post->ID, $post );
 				}
 			}
 		}

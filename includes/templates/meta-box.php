@@ -49,7 +49,7 @@
         </th>
         <td>
             <textarea cols="80" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php
-	            echo \WP_SMS\Option::getOption( 'notif_publish_new_post_template' ); ?></textarea>
+	            echo wp_sms_get_option( 'notif_publish_new_post_template' ); ?></textarea>
             <p class="description data">
 		        <?php _e( 'Input data:', 'wp-sms' ); ?>
                 <br/><?php _e( 'Post title', 'wp-sms' ); ?>: <code>%post_title%</code>

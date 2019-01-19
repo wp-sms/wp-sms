@@ -44,7 +44,7 @@ class Features {
 			add_action( 'user_register', array( $this, 'check_admin_duplicate_number' ) );
 			add_action( 'profile_update', array( $this, 'check_admin_duplicate_number' ) );
 		}
-		if ( isset( $this->options['intel_mobile'] ) ) {
+		if ( isset( $this->options['international_mobile'] ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_international_input' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_international_input' ) );
 			add_action( 'login_enqueue_scripts', array( $this, 'load_international_input' ) );
@@ -163,8 +163,8 @@ class Features {
 
 		// Localize the IntelTelInput
 		$tel_intel_vars             = array();
-		$only_countries_option      = Option::getOption( 'intel_mobile_only_countries' );
-		$preferred_countries_option = Option::getOption( 'intel_mobile_preferred_countries' );
+		$only_countries_option      = Option::getOption( 'international_mobile_only_countries' );
+		$preferred_countries_option = Option::getOption( 'international_mobile_preferred_countries' );
 
 		if ( $only_countries_option ) {
 			$tel_intel_vars['only_countries'] = $only_countries_option;
@@ -178,19 +178,19 @@ class Features {
 			$tel_intel_vars['preferred_countries'] = '';
 		}
 
-		if ( Option::getOption( 'intel_mobile_auto_hide' ) ) {
+		if ( Option::getOption( 'international_mobile_auto_hide' ) ) {
 			$tel_intel_vars['auto_hide'] = true;
 		} else {
 			$tel_intel_vars['auto_hide'] = false;
 		}
 
-		if ( Option::getOption( 'intel_mobile_national_mode' ) ) {
+		if ( Option::getOption( 'international_mobile_national_mode' ) ) {
 			$tel_intel_vars['national_mode'] = true;
 		} else {
 			$tel_intel_vars['national_mode'] = false;
 		}
 
-		if ( Option::getOption( 'intel_mobile_separate_dial_code' ) ) {
+		if ( Option::getOption( 'international_mobile_separate_dial_code' ) ) {
 			$tel_intel_vars['separate_dial'] = true;
 		} else {
 			$tel_intel_vars['separate_dial'] = false;
