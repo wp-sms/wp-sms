@@ -432,36 +432,36 @@ class Settings {
 					'options' => $options,
 					'desc'    => __( 'Make mobile input fields in whole plugin to intel tel input.', 'wp-sms' )
 				),
-				'intel_mobile_only_countries'      => array(
-					'id'      => 'intel_mobile_only_countries',
+				'international_mobile_only_countries'      => array(
+					'id'      => 'international_mobile_only_countries',
 					'name'    => __( 'Only Countries', 'wp-sms' ),
 					'type'    => 'countryselect',
 					'options' => $this->get_countries_list(),
 					'desc'    => __( 'In the dropdown, display only the countries you specify.', 'wp-sms' )
 				),
-				'intel_mobile_preferred_countries' => array(
-					'id'      => 'intel_mobile_preferred_countries',
+				'international_mobile_preferred_countries' => array(
+					'id'      => 'international_mobile_preferred_countries',
 					'name'    => __( 'Preferred Countries', 'wp-sms' ),
 					'type'    => 'countryselect',
 					'options' => $this->get_countries_list(),
 					'desc'    => __( 'Specify the countries to appear at the top of the list.', 'wp-sms' )
 				),
-				'intel_mobile_auto_hide'           => array(
-					'id'      => 'intel_mobile_auto_hide',
+				'international_mobile_auto_hide'           => array(
+					'id'      => 'international_mobile_auto_hide',
 					'name'    => __( 'Auto hide dial code', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'If there is just a dial code in the input: remove it on blur or submit, and re-add it on focus.<br>Requires National mode to be deactivate', 'wp-sms' )
 				),
-				'intel_mobile_national_mode'       => array(
-					'id'      => 'intel_mobile_national_mode',
+				'international_mobile_national_mode'       => array(
+					'id'      => 'international_mobile_national_mode',
 					'name'    => __( 'National mode', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Allow users to enter national numbers (and not have to think about international dial codes).', 'wp-sms' )
 				),
-				'intel_mobile_separate_dial_code'  => array(
-					'id'      => 'intel_mobile_separate_dial_code',
+				'international_mobile_separate_dial_code'  => array(
+					'id'      => 'international_mobile_separate_dial_code',
 					'name'    => __( 'Separate dial code', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
