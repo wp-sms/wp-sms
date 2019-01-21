@@ -1,5 +1,4 @@
 <?php
-
 namespace WP_SMS\Gateway;
 
 class tcisms extends \WP_SMS\Gateway {

@@ -1,5 +1,4 @@
 <?php
-
 namespace WP_SMS\Gateway;
 
 class textsms extends \WP_SMS\Gateway {

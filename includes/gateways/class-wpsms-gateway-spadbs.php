@@ -1,5 +1,4 @@
 <?php
-
 namespace WP_SMS\Gateway;
 
 class spadbs extends \WP_SMS\Gateway {

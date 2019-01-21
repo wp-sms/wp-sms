@@ -1,5 +1,4 @@
 <?php
-
 namespace WP_SMS\Gateway;
 
 class uwaziimobile extends \WP_SMS\Gateway {
