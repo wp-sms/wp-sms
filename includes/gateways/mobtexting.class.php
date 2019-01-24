@@ -121,7 +121,7 @@ class Mobtexting extends WP_SMS {
 			foreach ($result['data'] as $key => $value) {
 				$value = (array) ($value);
 				
-				if ($value['service'] == $this->has_service) {
+				if ($value['service'] == $this->service) {
 					$credits = $value['credits'];
 				}
 				
