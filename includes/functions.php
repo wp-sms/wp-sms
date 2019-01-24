@@ -44,6 +44,12 @@ if ( ! function_exists( 'initial_gateway' ) ) {
 			$sms->has_key = $wpsms_option['gateway_key'];
 		}
 
+		if ($wpsms_option['gateway_service'] ) {
+			$sms->service = $wpsms_option['gateway_service'];
+		} else {
+			$sms->service = '';
+		}
+
 		// Show gateway help configuration in gateway page
 		if ( $sms->help ) {
 			add_action( 'wp_sms_after_gateway', function () {

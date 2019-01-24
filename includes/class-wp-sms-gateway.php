@@ -324,4 +324,20 @@ class WP_SMS_Gateway {
 		}
 	}
 
+	public static function service() {
+		$services = array(
+			''               => array(
+				'default' => __( 'Please select service', 'wp-sms' ),
+			),
+			'services'         => array(
+				'T' => 'Transactional',
+				'P' => 'Promotional',
+				'S' => 'Transscrub',
+				'G' => 'Global',
+			)
+		);
+
+		return  $services;
+	}
+
 }

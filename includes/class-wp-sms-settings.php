@@ -258,6 +258,13 @@ class WP_SMS_Settings {
 					'type' => 'text',
 					'desc' => __( 'Enter API password of gateway', 'wp-sms' )
 				),
+				'gateway_service'          => array(
+					'id'   => 'gateway_service',
+					'name' => __( 'service', 'wp-sms' ),
+					'type'    => 'advancedselect',
+					'options' => WP_SMS_Gateway::service(),
+					'desc' => __( 'Select Service', 'wp-sms' )
+				),
 				'gateway_sender_id'         => array(
 					'id'   => 'gateway_sender_id',
 					'name' => __( 'Sender number', 'wp-sms' ),

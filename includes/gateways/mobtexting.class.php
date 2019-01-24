@@ -47,6 +47,7 @@ class Mobtexting extends WP_SMS {
 		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+		$this->service   = apply_filters( 'wp_sms_service', $this->service );
 
 		// comma seperated receivers
 		$to            = implode( ',', $this->to );
@@ -57,7 +58,7 @@ class Mobtexting extends WP_SMS {
 			'sender' => $this->from,
 			'message'   => $msg,
 			'to' => $to,
-			'service' => 'T'
+			'service' => $this->service
 		);
 
 		$response      = wp_remote_post( $api_end_point, Array( 'body' => $api_args, 'timeout' => 30 ) );
@@ -120,7 +121,7 @@ class Mobtexting extends WP_SMS {
 			foreach ($result['data'] as $key => $value) {
 				$value = (array) ($value);
 				
-				if ($value['service'] == "T") {
+				if ($value['service'] == $this->has_service) {
 					$credits = $value['credits'];
 				}
 				
