@@ -1,4 +1,4 @@
-=== WP SMS ===
+﻿=== WP SMS ===
 Contributors: mostafa.s1990, mehrshaddarzi, ghasemi71ir
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
@@ -106,6 +106,7 @@ You can see the list of all supported gateways [through this link](https://githu
 * Yamamah.com
 * Cellsynt.net
 * Cmtelecom.com
+* Zain.im
 
 = What are the differences between Free and Pro Pack versions? =
 * User Verification Registration through SMS
