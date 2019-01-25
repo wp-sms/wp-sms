@@ -65,7 +65,7 @@ class primotexto extends \WP_SMS\Gateway {
 		$args = array(
 			'headers' => array(
 				'X-Primotexto-ApiKey' => $api,
-				'Content-Type'        => 'application/json',
+				'Content-Type'        => 'application/json; charset=UTF-8',
 			),
 			'body'    => json_encode(
 				array(
