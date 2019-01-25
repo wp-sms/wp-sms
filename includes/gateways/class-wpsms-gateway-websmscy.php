@@ -1,5 +1,4 @@
 <?php
-
 namespace WP_SMS\Gateway;
 
 class websmscy extends \WP_SMS\Gateway {
@@ -12,7 +11,7 @@ class websmscy extends \WP_SMS\Gateway {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "PhoneÂ numbersÂ mustÂ beÂ inÂ theÂ 9XXXXXXXÂ formatÂ beginningÂ withÂ 99,Â 96Â orÂ 97";
+		$this->validateNumber = "Phone numbers must be in the 9XXXXXXX format beginning with 99, 96 or 97";
 		@ini_set( "soap.wsdl_cache_enabled", "0" );
 		include_once( 'libraries/websmscy/soapClient.class.php' );
 	}

@@ -244,6 +244,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Updated: Primotexto gateway.
 * Updated: Message type for gateway Comilio.it.
 
+= 4.1.2 =
+* Compatible with v5.0
+
 = 4.1.1 =
 * Fixed: Issue to saving options.
 * Added: Ignore duplicate subscribers if that exist to another group in the import page.

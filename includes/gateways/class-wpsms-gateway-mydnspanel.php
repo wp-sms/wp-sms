@@ -1,5 +1,4 @@
-﻿<?php
-
+<?php
 namespace WP_SMS\Gateway;
 
 class mydnspanel extends \WP_SMS\Gateway {
