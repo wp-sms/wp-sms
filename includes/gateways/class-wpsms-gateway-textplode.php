@@ -61,7 +61,7 @@ class _textplode extends \WP_SMS\Gateway {
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
 		// Init class
-		$textplode = new Textplode( $this->has_key );
+		$textplode = new \Textplode( $this->has_key );
 
 		// Add recipient
 		foreach ( $this->to as $to ) {
@@ -107,7 +107,7 @@ class _textplode extends \WP_SMS\Gateway {
 		}
 
 		// Init class
-		$textplode = new Textplode( $this->has_key );
+		$textplode = new \Textplode( $this->has_key );
 
 		// Get credit
 		$credits = $textplode->account->get_credits();
