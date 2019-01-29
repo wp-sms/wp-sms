@@ -4,7 +4,7 @@ namespace WP_SMS\Gateway;
 
 class markazpayamak extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?WSDL";
-	public $tariff = "http://www.markazpayamak.ir/";
+	public $tariff = "https://www.markazpayamak.ir/";
 	public $unitrial = true;
 	public $unit;
 	public $flash = "disable";
