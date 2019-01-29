@@ -127,10 +127,10 @@ You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purch
 Yes! WP SMS is compatible with PHP 7 and 7.1
 
 = How to send SMS with PHP codes? =
-	global $sms;
-	$sms->to = array('Mobile Number');
-	$sms->msg = "Your Message";
-	$sms->SendSMS();
+	$to = array('Mobile Number');
+    $msg = "Your Message";
+    $isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+    wp_sms_send( $to, $msg, $isflash )
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
