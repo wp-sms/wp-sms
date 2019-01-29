@@ -78,7 +78,12 @@ class Outbox_List_Table extends \WP_List_Table {
 
 				return $html;
 			case 'response':
-				return $item[ $column_name ];
+				$html = '<details>
+						  <summary>' . __( 'Click to View more...', 'wp-sms' ) . '</summary>
+						  <p>' . $item[ $column_name ] . '</p>
+						</details>';
+
+				return $html;
 			case 'status':
 				if ( $item[ $column_name ] == 'success' ) {
 					return '<span class="wp_sms_status_success">' . __( 'Success', 'wp-sms' ) . '</span>';
