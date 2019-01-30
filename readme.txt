@@ -128,9 +128,10 @@ Yes! WP SMS is compatible with PHP 7 and 7.1
 
 = How to send SMS with PHP codes? =
 	$to = array('Mobile Number');
-    $msg = "Your Message";
-    $isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
-    wp_sms_send( $to, $msg, $isflash )
+	$msg = "Your Message";
+	$isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+	
+	wp_sms_send( $to, $msg, $is_flash );
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
