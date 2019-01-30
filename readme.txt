@@ -4,7 +4,7 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
-Stable tag: 5.0
+Stable tag: 5.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -225,15 +225,15 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= 5.0 =
+= 5.1.0 =
 * Added: The new option for disabling CSS loading the theme.
-* Added: A new tab in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
-* Added: A new shortcode for show SMS newsletter form. enjoy with this shortcode `[wp-sms-subscriber-form]`.
-* Added: A new option for sending an SMS to the Author of the post when that post publish and the author have not the publish capability.
-* Added: Status and Response columns in outbox page and get the full log on sending SMS actions.
-* Added: Support mobile fields with International Telephone Input optional.
-* Added: Zain.im Gateway.
-* Added: Textmagic.com Gateway.
+* Added: <details> tag for response column on Outbox table.
+* Improved: Primotexto.com gateway.
+* Fixed: Textplode.com gateway.
+* Fixed: WooCommerce user report sending SMS.
+
+= 5.0 =
+* Added: Global SMS send function: wp_sms_send( $to, $msg, $isflash = false ).
 * Optimized: The main structure of the plugin and split process to increase performance and load.
 * Improved: The SMS newsletter requests. We've used the WP REST API instead Admin Ajax.
 * Improved: Now you can allow to importing the same number into two different groups.
