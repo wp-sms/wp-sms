@@ -227,6 +227,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 5.1 =
 * Added: Collapse for toggle the visibility of response column on Outbox table.
+* Added: A new template function for sending SMS `wp_sms_send( $to, $msg, $isflash = false )`.
 * Improved: Primotexto.com gateway.
 * Fixed: Issue in Textplode.com gateway.
 * Fixed: Issue in WooCommerce class for sending SMS.
@@ -380,7 +381,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed: default gateway issue.
 * Fixed: Illegal error in cf7 sms meta box.
 
-= 4.0.0 =
+= 4.0 =
 * Important! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 * Added: setting class for all options in the plugin for better settings performance.
 * Added: new classes for doing any proccess.
