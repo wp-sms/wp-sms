@@ -137,7 +137,7 @@ class Integrations {
 	}
 
 	public function wc_new_order( $order_id ) {
-		$order          = new WC_Order( $order_id );
+		$order          = new \WC_Order( $order_id );
 		$this->sms->to  = array( $this->options['admin_mobile_number'] );
 		$template_vars  = array(
 			'%order_id%'     => $order_id,

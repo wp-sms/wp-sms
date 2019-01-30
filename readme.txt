@@ -1,10 +1,10 @@
-=== WP SMS ===
+﻿=== WP SMS ===
 Contributors: mostafa.s1990, mehrshaddarzi, ghasemi71ir
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
-Stable tag: 5.0
+Stable tag: 5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -106,6 +106,7 @@ You can see the list of all supported gateways [through this link](https://githu
 * Yamamah.com
 * Cellsynt.net
 * Cmtelecom.com
+* Zain.im
 
 = What are the differences between Free and Pro Pack versions? =
 * User Verification Registration through SMS
@@ -126,10 +127,10 @@ You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purch
 Yes! WP SMS is compatible with PHP 7 and 7.1
 
 = How to send SMS with PHP codes? =
-	global $sms;
-	$sms->to = array('Mobile Number');
-	$sms->msg = "Your Message";
-	$sms->SendSMS();
+	$to = array('Mobile Number');
+    $msg = "Your Message";
+    $isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+    wp_sms_send( $to, $msg, $isflash )
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
@@ -210,7 +211,7 @@ Add new subscribes to SMS newsletters.
 11. Contact Form 7 notifications.
 
 == Upgrade Notice ==
-= 4.0.0 =
+= 4.0 =
 * IMPORTANT! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 
 = 3.0 =
@@ -224,6 +225,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1 =
+* Added: Collapse for toggle the visibility of response column on Outbox table.
+* Added: A new template function for sending SMS `wp_sms_send( $to, $msg, $is_flash = false )`.
+* Improved: Primotexto.com gateway.
+* Fixed: Issue in Textplode.com gateway.
+* Fixed: Issue in WooCommerce class for sending SMS.
+
 = 5.0 =
 * Added: The new option for disabling CSS loading the theme.
 * Added: A new tab in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
@@ -252,7 +260,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added: Aradpayamak.net gateway.
 * Updated: The styles of admin forms.
 
-= 4.1.0 =
+= 4.1 =
 * Added: a new checkbox in the SMS subscription form for GDPR compliance.
 * Added: Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
 * Added: SMS Sending feature to different roles in Send SMS Page.
@@ -373,7 +381,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed: default gateway issue.
 * Fixed: Illegal error in cf7 sms meta box.
 
-= 4.0.0 =
+= 4.0 =
 * Important! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 * Added: setting class for all options in the plugin for better settings performance.
 * Added: new classes for doing any proccess.
