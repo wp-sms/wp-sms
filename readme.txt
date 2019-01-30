@@ -4,7 +4,7 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
-Stable tag: 5.1.0
+Stable tag: 5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -211,7 +211,7 @@ Add new subscribes to SMS newsletters.
 11. Contact Form 7 notifications.
 
 == Upgrade Notice ==
-= 4.0.0 =
+= 4.0 =
 * IMPORTANT! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 
 = 3.0 =
@@ -225,15 +225,21 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
-= 5.1.0 =
-* Added: The new option for disabling CSS loading the theme.
-* Added: <details> tag for response column on Outbox table.
+= 5.1 =
+* Added: Collapse for toggle the visibility of response column on Outbox table.
 * Improved: Primotexto.com gateway.
-* Fixed: Textplode.com gateway.
-* Fixed: WooCommerce user report sending SMS.
+* Fixed: Issue in Textplode.com gateway.
+* Fixed: Issue in WooCommerce class for sending SMS.
 
 = 5.0 =
-* Added: Global SMS send function: wp_sms_send( $to, $msg, $isflash = false ).
+* Added: The new option for disabling CSS loading the theme.
+* Added: A new tab in Settings that for manage SMS Newsletter, the options removed from SMS newsletter widget.
+* Added: A new shortcode for show SMS newsletter form. enjoy with this shortcode `[wp-sms-subscriber-form]`.
+* Added: A new option for sending an SMS to the Author of the post when that post publish and the author have not the publish capability.
+* Added: Status and Response columns in outbox page and get the full log on sending SMS actions.
+* Added: Support mobile fields with International Telephone Input optional.
+* Added: Zain.im Gateway.
+* Added: Textmagic.com Gateway.
 * Optimized: The main structure of the plugin and split process to increase performance and load.
 * Improved: The SMS newsletter requests. We've used the WP REST API instead Admin Ajax.
 * Improved: Now you can allow to importing the same number into two different groups.
@@ -253,7 +259,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added: Aradpayamak.net gateway.
 * Updated: The styles of admin forms.
 
-= 4.1.0 =
+= 4.1 =
 * Added: a new checkbox in the SMS subscription form for GDPR compliance.
 * Added: Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
 * Added: SMS Sending feature to different roles in Send SMS Page.
