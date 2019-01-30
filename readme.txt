@@ -4,6 +4,7 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
+Requires PHP: 5.4
 Stable tag: 5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -127,11 +128,11 @@ You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purch
 Yes! WP SMS is compatible with PHP 7 and 7.1
 
 = How to send SMS with PHP codes? =
-	$to = array('Mobile Number');
-	$msg = "Your Message";
-	$isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
-	
-	wp_sms_send( $to, $msg, $is_flash );
+
+    $to = array('Mobile Number');
+    $msg = "Your Message";
+    $is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+    wp_sms_send( $to, $msg, $is_flash );
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
@@ -155,7 +156,7 @@ Example: Send Welcome SMS to users when they are registered.
 		$sms->msg = "Hi {$name}, Thanks for subscribe.";
 		$sms->SendSMS();
 	}
-	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
+	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
 
 = How using Hooks? =
 You can use the following filter to modify numbers.
