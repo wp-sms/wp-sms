@@ -104,13 +104,13 @@ class Subscribers_Subscribers_Table_Edit {
 
 	public function admin_assets( $hook ) {
 
-		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
-
-		//Set Values
+		// Check if page is equal subscribers then load this assets
 		if ( ! stristr( get_current_screen()->id, "wp-sms-subscribers" ) ) {
 			// Only applies to WPS-Ar-Log page
 			return;
 		}
+
+		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
 		wp_enqueue_script( 'wp-sms-edit-subscriber' );
 
 		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';

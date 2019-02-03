@@ -55,15 +55,13 @@ class Subscribers_Groups_Table_Edit {
 
 	public function admin_assets() {
 
-		wp_register_script( 'wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array(
-			'jquery'
-		), null, true );
-
-		//Set Values
+		// Check if page is equal groups then load this assets
 		if ( ! stristr( get_current_screen()->id, "wp-sms-subscribers-group" ) ) {
 			// Only applies to WPS-Ar-Log page
 			return;
 		}
+
+		wp_register_script( 'wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array( 'jquery' ), null, true );
 		wp_enqueue_script( 'wp-sms-edit-group' );
 
 		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';
