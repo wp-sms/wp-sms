@@ -2,7 +2,8 @@
 
 namespace WP_SMS;
 
-// Subscribers page class
+use WP_SMS\Admin\Helper;
+
 class Subscribers {
 
 
@@ -36,13 +37,13 @@ class Subscribers {
 		// Add subscriber
 		if ( isset( $_POST['wp_add_subscribe'] ) ) {
 			$result = Newsletter::addSubscriber( $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'] );
-			echo Admin\Helper::notice( $result['message'], $result['result'] );
+			echo Helper::notice( $result['message'], $result['result'] );
 		}
 
 		// Edit subscriber page
 		if ( isset( $_POST['wp_update_subscribe'] ) ) {
 			$result = Newsletter::updateSubscriber( $_POST['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'], $_POST['wpsms_subscribe_status'] );
-			echo Admin\Helper::notice( $result['message'], $result['result'] );
+			echo Helper::notice( $result['message'], $result['result'] );
 		}
 
 		// Import subscriber page

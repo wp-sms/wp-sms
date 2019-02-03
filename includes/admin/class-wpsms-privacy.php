@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Admin\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -193,14 +195,14 @@ class Privacy {
 				 *  Empty Mobile Number
 				 */
 				if ( $_GET['error'] == "empty_number" ) {
-					Admin\Helper::notice( __( 'Please enter the mobile number', 'wp-sms' ), "error" );
+					Helper::notice( __( 'Please enter the mobile number', 'wp-sms' ), "error" );
 				}
 
 				/*
 				*  Not found User
 				 */
 				if ( $_GET['error'] == "not_found" ) {
-					Admin\Helper::notice( __( 'User with this mobile number was not found', 'wp-sms' ), "error" );
+					Helper::notice( __( 'User with this mobile number was not found', 'wp-sms' ), "error" );
 				}
 			}
 
@@ -208,7 +210,7 @@ class Privacy {
 			 * Success Mobile Number
 			 */
 			if ( isset( $_GET['delete_mobile'] ) ) {
-				Admin\Helper::notice( sprintf( __( 'User with %s mobile number is removed completely', 'wp-sms' ), trim( $_GET['delete_mobile'] ) ), "success" );
+				Helper::notice( sprintf( __( 'User with %s mobile number is removed completely', 'wp-sms' ), trim( $_GET['delete_mobile'] ) ), "success" );
 			}
 
 		}

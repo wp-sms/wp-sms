@@ -2,7 +2,8 @@
 
 namespace WP_SMS;
 
-// Groups page class
+use WP_SMS\Admin\Helper;
+
 class Groups {
 
 
@@ -33,13 +34,13 @@ class Groups {
 		//Add groups
 		if ( isset( $_POST['wp_add_group'] ) ) {
 			$result = Newsletter::addGroup( $_POST['wp_group_name'] );
-			echo Admin\Helper::notice( $result['message'], $result['result'] );
+			echo Helper::notice( $result['message'], $result['result'] );
 		}
 
 		// Manage groups
 		if ( isset( $_POST['wp_update_group'] ) ) {
 			$result = Newsletter::updateGroup( $_POST['group_id'], $_POST['wp_group_name'] );
-			echo Admin\Helper::notice( $result['message'], $result['result'] );
+			echo Helper::notice( $result['message'], $result['result'] );
 		}
 
 		include_once WP_SMS_DIR . '/includes/admin/groups/class-wpsms-groups-table.php';
