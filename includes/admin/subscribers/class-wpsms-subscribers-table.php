@@ -42,7 +42,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'group_ID':
-				$group = Groups::getGroup( $item[ $column_name ] );
+				$group = Newsletter::getGroup( $item[ $column_name ] );
 				if ( $group ) {
 					return $group->name;
 				} else {

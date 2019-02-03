@@ -50,16 +50,17 @@ class WP_SMS {
 		if ( is_admin() ) {
 			// Admin classes.
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
 
 			// Groups class.
-			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups.php';
 			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
 
 			// Outbox class.
 			require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+
+			// Privacy class.
+			require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy-actions.php';
 
 			// Send class.
 			require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
@@ -69,7 +70,6 @@ class WP_SMS {
 			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
 
 			// Subscribers class.
-			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers.php';
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
 		}
 

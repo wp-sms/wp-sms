@@ -18,9 +18,7 @@ class Subscribers_Subscribers_Table_Edit {
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ), 11 );
 		add_action( 'wp_ajax_wp_sms_edit_subscriber', array( $this, 'wp_sms_edit_subscriber' ) );
-
 	}
 
 	function wp_sms_edit_subscriber() {
@@ -99,34 +97,6 @@ class Subscribers_Subscribers_Table_Edit {
 
 		echo $html;
 		wp_die(); // this is required to terminate immediately and return a proper response
-	}
-
-
-	public function admin_assets( $hook ) {
-
-		// Check if page is equal subscribers then load this assets
-		if ( ! stristr( get_current_screen()->id, "wp-sms-subscribers" ) ) {
-			// Only applies to WPS-Ar-Log page
-			return;
-		}
-
-		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
-		wp_enqueue_script( 'wp-sms-edit-subscriber' );
-
-		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';
-
-		$tb_show_url = add_query_arg(
-			array(
-				'action' => 'wp_sms_edit_subscriber'
-			),
-			admin_url( 'admin-ajax.php', $protocol )
-		);
-
-		$ajax_vars = array(
-			'tb_show_url' => $tb_show_url,
-			'tb_show_tag' => __( 'Edit Subscriber', 'wp-sms' )
-		);
-		wp_localize_script( 'wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', $ajax_vars );
 	}
 
 }

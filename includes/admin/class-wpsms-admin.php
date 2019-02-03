@@ -85,16 +85,24 @@ class Admin {
 	 * Administrator admin_menu
 	 */
 	public function admin_menu() {
+
+		$hook_suffix = array();
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( $this, 'outbox_callback' ) );
-		add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( $this, 'subscribers_callback' ) );
-		add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array( $this, 'groups_callback' ) );
+		$hook_suffix['subscribers'] = add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( $this, 'subscribers_callback' ) );
+		$hook_suffix['groups']      = add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array( $this, 'groups_callback' ) );
 
 		// Check GDPR compliance for Privacy menu
 		if ( isset( $this->options['gdpr_compliance'] ) and $this->options['gdpr_compliance'] == 1 ) {
-			add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
+			$hook_suffix['privacy'] = add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
 		}
+
+		// Add styles to menu pages
+		foreach ( $hook_suffix as $menu => $hook ) {
+			add_action( "load-{$hook}", array( $this, $menu . '_assets' ) );
+		}
+
 	}
 
 	/**
@@ -102,7 +110,6 @@ class Admin {
 	 */
 	public function send_sms_callback() {
 		$page = new SMS_Send();
-
 		$page->render_page();
 	}
 
@@ -111,7 +118,6 @@ class Admin {
 	 */
 	public function outbox_callback() {
 		$page = new Outbox();
-
 		$page->render_page();
 	}
 
@@ -119,8 +125,11 @@ class Admin {
 	 * Callback subscribers page.
 	 */
 	public function subscribers_callback() {
-		$page = new Subscribers();
 
+		// Subscribers class.
+		require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers.php';
+
+		$page = new Subscribers();
 		$page->render_page();
 	}
 
@@ -128,8 +137,11 @@ class Admin {
 	 * Callback subscribers page.
 	 */
 	public function groups_callback() {
-		$page = new Groups();
 
+		// Groups class.
+		require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups.php';
+
+		$page = new Groups();
 		$page->render_page();
 	}
 
@@ -137,9 +149,75 @@ class Admin {
 	 * Callback subscribers page.
 	 */
 	public function privacy_callback() {
-		$page = new Privacy();
 
+		// Privacy class.
+		require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy.php';
+
+		$page           = new Privacy();
+		$page->pagehook = get_current_screen()->id;
 		$page->render_page();
+	}
+
+
+	/**
+	 * Load subscribers page assets
+	 */
+	public function subscribers_assets() {
+		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
+		wp_enqueue_script( 'wp-sms-edit-subscriber' );
+
+		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';
+
+		$tb_show_url = add_query_arg(
+			array(
+				'action' => 'wp_sms_edit_subscriber'
+			),
+			admin_url( 'admin-ajax.php', $protocol )
+		);
+
+		$ajax_vars = array(
+			'tb_show_url' => $tb_show_url,
+			'tb_show_tag' => __( 'Edit Subscriber', 'wp-sms' )
+		);
+		wp_localize_script( 'wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', $ajax_vars );
+	}
+
+	/**
+	 * Load groups page assets
+	 */
+	public function groups_assets() {
+		wp_register_script( 'wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array( 'jquery' ), null, true );
+		wp_enqueue_script( 'wp-sms-edit-group' );
+
+		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';
+
+		$tb_show_url = add_query_arg(
+			array(
+				'action' => 'wp_sms_edit_group'
+			),
+			admin_url( 'admin-ajax.php', $protocol )
+		);
+
+		$ajax_vars = array(
+			'tb_show_url' => $tb_show_url,
+			'tb_show_tag' => __( 'Edit Group', 'wp-sms' )
+		);
+		wp_localize_script( 'wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', $ajax_vars );
+	}
+
+	/**
+	 * Load privacy page assets
+	 */
+	public function privacy_assets() {
+		$pagehook = get_current_screen()->id;
+
+		wp_enqueue_script( 'common' );
+		wp_enqueue_script( 'wp-lists' );
+		wp_enqueue_script( 'postbox' );
+
+		add_meta_box( 'privacy-meta-1', esc_html( get_admin_page_title() ), array( Privacy::class, 'privacy_meta_html_gdpr' ), $pagehook, 'side', 'core' );
+		add_meta_box( 'privacy-meta-2', __( 'Export User’s Data related to WP-SMS', 'wp-sms' ), array( Privacy::class, 'privacy_meta_html_export' ), $pagehook, 'normal', 'core' );
+		add_meta_box( 'privacy-meta-3', __( 'Erase User’s Data related to WP-SMS', 'wp-sms' ), array( Privacy::class, 'privacy_meta_html_delete' ), $pagehook, 'normal', 'core' );
 	}
 
 	/**

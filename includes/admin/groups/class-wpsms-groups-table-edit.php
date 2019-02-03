@@ -18,9 +18,7 @@ class Subscribers_Groups_Table_Edit {
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ), 11 );
 		add_action( 'wp_ajax_wp_sms_edit_group', array( $this, 'wp_sms_edit_group' ) );
-
 	}
 
 	function wp_sms_edit_group() {
@@ -50,34 +48,6 @@ class Subscribers_Groups_Table_Edit {
 						</form>';
 		echo $html;
 		wp_die(); // this is required to terminate immediately and return a proper response
-	}
-
-
-	public function admin_assets() {
-
-		// Check if page is equal groups then load this assets
-		if ( ! stristr( get_current_screen()->id, "wp-sms-subscribers-group" ) ) {
-			// Only applies to WPS-Ar-Log page
-			return;
-		}
-
-		wp_register_script( 'wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array( 'jquery' ), null, true );
-		wp_enqueue_script( 'wp-sms-edit-group' );
-
-		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';
-
-		$tb_show_url = add_query_arg(
-			array(
-				'action' => 'wp_sms_edit_group'
-			),
-			admin_url( 'admin-ajax.php', $protocol )
-		);
-
-		$ajax_vars = array(
-			'tb_show_url' => $tb_show_url,
-			'tb_show_tag' => __( 'Edit Group', 'wp-sms' )
-		);
-		wp_localize_script( 'wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', $ajax_vars );
 	}
 
 }

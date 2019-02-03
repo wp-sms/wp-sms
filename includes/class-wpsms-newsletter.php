@@ -185,6 +185,25 @@ class Newsletter {
 		}
 	}
 
+	/**
+	 * Get Group by group ID
+	 *
+	 * @param $group_id
+	 *
+	 * @return object|null
+	 */
+	public static function getGroup( $group_id ) {
+		global $wpdb;
+
+		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
+		$result     = $wpdb->get_row( $db_prepare );
+
+		if ( $result ) {
+			return $result;
+		}
+
+		return null;
+	}
 
 	/**
 	 * Get Groups
@@ -415,22 +434,24 @@ class Newsletter {
 	}
 
 	/**
-	 * Get Group by group ID
+	 * Get Total Subscribers with Group ID
 	 *
-	 * @param $group_id
+	 * @param null $group_id
 	 *
-	 * @return object|null
+	 * @return Object|null
 	 */
-	public static function getGroup( $group_id ) {
+	public static function getTotal( $group_id = null ) {
 		global $wpdb;
 
-		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
-		$result     = $wpdb->get_row( $db_prepare );
+		if ( $group_id ) {
+			$result = $wpdb->query( $wpdb->prepare( "SELECT name FROM {$wpdb->prefix}sms_subscribes WHERE group_ID = %d", $group_id ) );
+		} else {
+			$result = $wpdb->query( "SELECT name FROM {$wpdb->prefix}sms_subscribes" );
+		}
 
 		if ( $result ) {
 			return $result;
 		}
-
 		return null;
 	}
 

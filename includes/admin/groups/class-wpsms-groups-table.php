@@ -41,7 +41,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'total_subscribers':
-				$total = Subscribers::getTotal( $item['ID'] );
+				$total = Newsletter::getTotal( $item['ID'] );
 				if ( $total ) {
 					return $total;
 				} else {

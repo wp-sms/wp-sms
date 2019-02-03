@@ -6,26 +6,6 @@ use WP_SMS\Admin\Helper;
 
 class Groups {
 
-
-	/**
-	 * Get Group By ID
-	 *
-	 * @param $group_id
-	 *
-	 * @return Object|null
-	 */
-	public static function getGroup( $group_id ) {
-		global $wpdb;
-
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT name FROM {$wpdb->prefix}sms_subscribes_group WHERE ID = %d", $group_id ) );
-
-		if ( $result ) {
-			return $result;
-		}
-
-		return null;
-	}
-
 	/**
 	 * Subscribe groups admin page
 	 */
