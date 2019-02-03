@@ -107,7 +107,7 @@ class Subscribers_Subscribers_Table_Edit {
 		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
 
 		//Set Values
-		if ( 'sms_page_wp-sms-subscribers' != $hook ) {
+		if ( ! stristr( get_current_screen()->id, "wp-sms-subscribers" ) ) {
 			// Only applies to WPS-Ar-Log page
 			return;
 		}

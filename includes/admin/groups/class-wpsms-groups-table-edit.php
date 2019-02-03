@@ -53,14 +53,14 @@ class Subscribers_Groups_Table_Edit {
 	}
 
 
-	public function admin_assets( $hook ) {
+	public function admin_assets() {
 
 		wp_register_script( 'wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array(
 			'jquery'
 		), null, true );
 
 		//Set Values
-		if ( 'sms_page_wp-sms-subscribers-group' != $hook ) {
+		if ( ! stristr( get_current_screen()->id, "wp-sms-subscribers-group" ) ) {
 			// Only applies to WPS-Ar-Log page
 			return;
 		}
