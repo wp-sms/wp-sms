@@ -225,6 +225,19 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.1 =
+* Optimized: The main structure of the plugin and split process to increase performance and load.
+* Updated: primotexto.com to allow multiple number sending.
+* Fixed: loading menu pages content on different languages.
+* Fixed: send SMS form style with some other plugins.
+* Fixed: websms.com.cy gateway.
+* Fixed: 0098sms.com loading gateway.
+* Fixed: 18sms.ir loading gateway.
+* Fixed: 500sms.ir loading gateway.
+* Fixed: ebulksms.com loading gateway.
+* Fixed: textplode.com loading gateway.
+* Fixed: 0098sms.com loading gateway.
+
 = 5.1 =
 * Added: Collapse for toggle the visibility of response column on Outbox table.
 * Added: A new template function for sending SMS `wp_sms_send( $to, $msg, $is_flash = false )`.
