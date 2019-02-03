@@ -12,39 +12,10 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Subscribers_List_Table extends \WP_List_Table {
 
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	protected $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
-
-	/**
-	 * Limits per page
-	 *
-	 * @var int
-	 */
 	protected $limit;
-
-	/**
-	 * Count all Records 1 time
-	 *
-	 * @var int
-	 */
 	protected $count;
-
-	/**
-	 * Store Queries Data
-	 *
-	 * @var array
-	 */
 	var $data;
 
 	function __construct() {

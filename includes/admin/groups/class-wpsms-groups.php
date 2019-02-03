@@ -29,17 +29,16 @@ class Groups {
 	 * Subscribe groups admin page
 	 */
 	public function render_page() {
-		$subscriber = new Newsletter();
 
 		//Add groups
 		if ( isset( $_POST['wp_add_group'] ) ) {
-			$result = $subscriber->add_group( $_POST['wp_group_name'] );
+			$result = Newsletter::addGroup( $_POST['wp_group_name'] );
 			echo Admin\Helper::notice( $result['message'], $result['result'] );
 		}
 
 		// Manage groups
 		if ( isset( $_POST['wp_update_group'] ) ) {
-			$result = $subscriber->update_group( $_POST['group_id'], $_POST['wp_group_name'] );
+			$result = Newsletter::updateGroup( $_POST['group_id'], $_POST['wp_group_name'] );
 			echo Admin\Helper::notice( $result['message'], $result['result'] );
 		}
 
@@ -51,6 +50,6 @@ class Groups {
 		//Fetch, prepare, sort, and filter our data...
 		$list_table->prepare_items();
 
-		include_once WP_SMS_DIR . "includes/admin/subscribers/groups.php";
+		include_once WP_SMS_DIR . "includes/admin/groups/groups.php";
 	}
 }

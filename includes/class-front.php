@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 class Front {
+
 	public function __construct() {
 
 		$this->options = Option::getOptions();

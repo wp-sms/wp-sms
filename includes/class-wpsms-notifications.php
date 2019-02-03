@@ -6,13 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS notifications class
- *
- * @category   class
- * @package    WP_SMS
- * @version    1.0
- */
 class Notifications {
 
 	public $sms;

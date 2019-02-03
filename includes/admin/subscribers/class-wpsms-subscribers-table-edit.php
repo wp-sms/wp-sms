@@ -6,26 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-//Edit Groups Class
+
 class Subscribers_Subscribers_Table_Edit {
 
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	public $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
 
-	/**
-	 * Subscribers_Subscribers_Table_Edit constructor.
-	 */
 	public function __construct() {
 		global $wpdb;
 
@@ -42,8 +28,8 @@ class Subscribers_Subscribers_Table_Edit {
 		$subscriber_id = isset( $_GET['subscriber_id'] ) ? $_GET['subscriber_id'] : null;
 
 		//Load subscriber
-		$subscriber = \WP_SMS\Newsletter::get_subscriber( $subscriber_id );
-		$groups     = \WP_SMS\Newsletter::get_groups();
+		$subscriber = Newsletter::getSubscriber( $subscriber_id );
+		$groups     = Newsletter::getGroups();
 
 		$html = '<form action="" method="post">
 					<input type="hidden" name="ID" value="' . $subscriber_id . '" />

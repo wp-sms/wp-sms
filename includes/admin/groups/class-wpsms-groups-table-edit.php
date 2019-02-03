@@ -9,23 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 //Edit Groups Class
 class Subscribers_Groups_Table_Edit {
 
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	public $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
 
-	/**
-	 * Subscribers_Groups_Table_Edit constructor.
-	 */
 	public function __construct() {
 		global $wpdb;
 

@@ -273,8 +273,7 @@ class Settings_Pro {
 			'disable' => __( 'Disable', 'wp-sms' )
 		);
 
-		$subscriber          = new \WP_SMS\Newsletter;
-		$groups              = $subscriber::get_groups();
+		$groups              = Newsletter::getGroups();
 		$subscribe_groups[0] = __( 'All', 'wp-sms' );
 
 		if ( $groups ) {

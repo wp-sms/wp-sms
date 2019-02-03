@@ -61,7 +61,7 @@ class africastalking extends \WP_SMS\Gateway {
 			return $credit;
 		}
 
-		$gateway = new AfricasTalkingGateway( $this->username, $this->has_key );
+		$gateway = new \AfricasTalkingGateway( $this->username, $this->has_key );
 
 		try {
 			$results = $gateway->sendMessage( implode( ',', $this->to ), $this->msg, $this->from );
@@ -79,7 +79,7 @@ class africastalking extends \WP_SMS\Gateway {
 			do_action( 'wp_sms_send', $result );
 
 			return $result;
-		} catch ( AfricasTalkingGatewayException $e ) {
+		} catch ( \AfricasTalkingGatewayException $e ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
 
@@ -97,7 +97,7 @@ class africastalking extends \WP_SMS\Gateway {
 			return new \WP_Error( 'required-function', __( 'CURL extension not found in your server. please enable curl extension.', 'wp-sms' ) );
 		}
 
-		$gateway = new AfricasTalkingGateway( $this->username, $this->has_key );
+		$gateway = new \AfricasTalkingGateway( $this->username, $this->has_key );
 
 		try {
 			$data = $gateway->getUserData();

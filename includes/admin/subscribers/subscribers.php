@@ -27,7 +27,7 @@
                     </td>
                 </tr>
 				<?php
-				$groups = \WP_SMS\Newsletter::get_groups();
+				$groups = \WP_SMS\Newsletter::getGroups();
 				if ( $groups ): ?>
                     <tr>
                         <td style="padding-top: 10px;">
@@ -70,7 +70,7 @@
                     <td>
                         <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php _e( 'Group', 'wp-sms' ); ?></label>
                         <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text">
-							<?php foreach ( \WP_SMS\Newsletter::get_groups() as $items ): ?>
+							<?php foreach ( \WP_SMS\Newsletter::getGroups() as $items ): ?>
                                 <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
 							<?php endforeach; ?>
                         </select>

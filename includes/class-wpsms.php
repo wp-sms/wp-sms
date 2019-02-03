@@ -5,9 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 class WP_SMS {
-	/**
-	 * WP_SMS constructor.
-	 */
+
 	public function __construct() {
 		/*
 		 * Plugin Loaded Action
@@ -54,7 +52,6 @@ class WP_SMS {
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
 
 			// Groups class.

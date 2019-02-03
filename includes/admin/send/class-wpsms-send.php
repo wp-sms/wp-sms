@@ -11,32 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SMS_Send {
 
-	/**
-	 * WP SMS gateway object
-	 *
-	 * @var string
-	 */
 	public $sms;
-
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	protected $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
-
-	/**
-	 * Options
-	 *
-	 * @var string
-	 */
 	protected $options;
 
 	public function __construct() {
