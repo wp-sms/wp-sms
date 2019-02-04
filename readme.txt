@@ -28,7 +28,7 @@ Don’t worry, we have tried to cover the best and the most well-known gateways 
 
 Watch How You Can Send SMS With WordPress!
 
-https://www.youtube.com/watch?v=50Sv5t6wTrQ
+https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
 * Supporting more than 180 SMS gateways
