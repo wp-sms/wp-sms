@@ -6,10 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * Class WP_SMS_INSTALL
- */
 class Install {
+
 	public function __construct() {
 		add_action( 'wpmu_new_blog', array( $this, 'add_table_on_create_blog' ), 10, 1 );
 		add_filter( 'wpmu_drop_tables', array( $this, 'remove_table_on_delete_blog' ) );

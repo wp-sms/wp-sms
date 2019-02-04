@@ -6,9 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS Shortcode Class
- */
 class Shortcode {
 
 	public function __construct() {

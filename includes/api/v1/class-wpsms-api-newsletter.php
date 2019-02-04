@@ -12,9 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @version    1.0
  */
 class Newsletter extends \WP_SMS\RestApi {
-	/**
-	 * WP_SMS_Api_Newsletter_V1 constructor.
-	 */
+
 	public function __construct() {
 		// Register routes
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );

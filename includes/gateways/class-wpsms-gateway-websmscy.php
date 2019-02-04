@@ -11,7 +11,7 @@ class websmscy extends \WP_SMS\Gateway {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "Phone numbers must be in the 9XXXXXXX format beginning with 99, 96 or 97";
+		$this->validateNumber = "Phone numbers must be in the 9XXXXXXX format beginning with 99, 96 or 97";
 		@ini_set( "soap.wsdl_cache_enabled", "0" );
 		include_once( 'libraries/websmscy/soapClient.class.php' );
 	}
@@ -62,7 +62,7 @@ class websmscy extends \WP_SMS\Gateway {
 			'password'  => $this->password,
 		);
 
-		$ws = new WebsmsClient( $cfg );
+		$ws = new \WebsmsClient( $cfg );
 
 		try {
 			$result = $ws->submitSM( $this->from, $this->to, $this->msg, "GSM" );

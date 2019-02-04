@@ -27,7 +27,7 @@
                     </td>
                 </tr>
 				<?php
-				$groups = \WP_SMS\Newsletter::get_groups();
+				$groups = \WP_SMS\Newsletter::getGroups();
 				if ( $groups ): ?>
                     <tr>
                         <td style="padding-top: 10px;">
@@ -42,9 +42,10 @@
                     </tr>
 				<?php else: ?>
                     <tr>
-                        <td><span class="wp_sms_subscribers_label" for="wpsms_group_name"><?php _e( 'Group', 'wp-sms' ); ?>:</span>
+                        <td>
+                            <span class="wp_sms_subscribers_label" for="wpsms_group_name"><?php _e( 'Group', 'wp-sms' ); ?>:</span>
+	                        <?php echo sprintf( __( 'There is no group! <a href="%s">Add</a>', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ); ?>
                         </td>
-                        <td><?php echo sprintf( __( 'There is no group! <a href="%s">Add</a>', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ); ?></td>
                     </tr>
 				<?php endif; ?>
 
@@ -69,11 +70,17 @@
                 <tr>
                     <td>
                         <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php _e( 'Group', 'wp-sms' ); ?></label>
+						<?php if ( $groups ): ?>
                         <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text">
-							<?php foreach ( \WP_SMS\Newsletter::get_groups() as $items ): ?>
+							<?php
+							foreach ( $groups as $items ):
+								?>
                                 <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
-							<?php endforeach; ?>
-                        </select>
+							<?php endforeach;
+							else: ?>
+                    <?php echo sprintf( __( 'There is no group! <a href="%s">Add</a>', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ); ?>
+					<?php endif; ?>
+                    </select>
                     </td>
                 </tr>
                 <tr>

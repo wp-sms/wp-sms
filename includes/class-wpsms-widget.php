@@ -6,9 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS Widget widget.
- */
 class Widget extends \WP_Widget {
 
 	/**

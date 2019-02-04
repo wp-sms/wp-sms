@@ -11,93 +11,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Gateway {
 
-	/**
-	 * Webservice username
-	 *
-	 * @var string
-	 */
 	public $username;
-
-	/**
-	 * Webservice password
-	 *
-	 * @var string
-	 */
 	public $password;
-
-	/**
-	 * Webservice API/Key
-	 *
-	 * @var string
-	 */
 	public $has_key = false;
-
-	/**
-	 * Validation mobile number
-	 *
-	 * @var string
-	 */
 	public $validateNumber = "";
-
-	/**
-	 * Help to gateway
-	 *
-	 * @var string
-	 */
 	public $help = false;
-
-	/**
-	 * Bulk send
-	 *
-	 * @var boolean
-	 */
 	public $bulk_send = true;
-
-	/**
-	 * SMsS send from number
-	 *
-	 * @var string
-	 */
 	public $from;
-
-	/**
-	 * Send SMS to number
-	 *
-	 * @var string
-	 */
 	public $to;
-
-	/**
-	 * SMS text
-	 *
-	 * @var string
-	 */
 	public $msg;
-
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	protected $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
-
-	/**
-	 * Plugin options
-	 *
-	 * @var string
-	 */
 	public $options;
 
-	/**
-	 * Constructors
-	 */
 	public function __construct() {
 		global $wpdb;
 

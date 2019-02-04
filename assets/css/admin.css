@@ -195,4 +195,8 @@
     .postbox-container {
         max-width: 60%;
     }
+
+    .rtl .postbox-container {
+        max-width: unset;
+    }
 }

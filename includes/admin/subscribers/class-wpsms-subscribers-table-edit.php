@@ -6,35 +6,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-//Edit Groups Class
+
 class Subscribers_Subscribers_Table_Edit {
 
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	public $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
 
-	/**
-	 * Subscribers_Subscribers_Table_Edit constructor.
-	 */
 	public function __construct() {
 		global $wpdb;
 
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ), 11 );
 		add_action( 'wp_ajax_wp_sms_edit_subscriber', array( $this, 'wp_sms_edit_subscriber' ) );
-
 	}
 
 	function wp_sms_edit_subscriber() {
@@ -42,8 +26,8 @@ class Subscribers_Subscribers_Table_Edit {
 		$subscriber_id = isset( $_GET['subscriber_id'] ) ? $_GET['subscriber_id'] : null;
 
 		//Load subscriber
-		$subscriber = \WP_SMS\Newsletter::get_subscriber( $subscriber_id );
-		$groups     = \WP_SMS\Newsletter::get_groups();
+		$subscriber = Newsletter::getSubscriber( $subscriber_id );
+		$groups     = Newsletter::getGroups();
 
 		$html = '<form action="" method="post">
 					<input type="hidden" name="ID" value="' . $subscriber_id . '" />
@@ -82,7 +66,11 @@ class Subscribers_Subscribers_Table_Edit {
 	                    </tr>';
 		} else {
 			$html .= '<tr>
-                      <td>' . sprintf( __( 'There is no group! <a href = "%s" > Add</a > ', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ) . '</td>
+                      <td style="padding-top: 10px;">
+                      <label for="wpsms_group_name"
+					                       class="wp_sms_subscribers_label">' . __( 'Group', 'wp-sms' ) . '</label>
+                      ' . sprintf( __( 'There is no group! <a href = "%s" > Add</a > ', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ) . '
+                      </td>
                       </tr>';
 		}
 
@@ -113,34 +101,6 @@ class Subscribers_Subscribers_Table_Edit {
 
 		echo $html;
 		wp_die(); // this is required to terminate immediately and return a proper response
-	}
-
-
-	public function admin_assets( $hook ) {
-
-		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
-
-		//Set Values
-		if ( 'sms_page_wp-sms-subscribers' != $hook ) {
-			// Only applies to WPS-Ar-Log page
-			return;
-		}
-		wp_enqueue_script( 'wp-sms-edit-subscriber' );
-
-		$protocol = isset( $_SERVER["HTTPS"] ) ? 'https://' : 'http://';
-
-		$tb_show_url = add_query_arg(
-			array(
-				'action' => 'wp_sms_edit_subscriber'
-			),
-			admin_url( 'admin-ajax.php', $protocol )
-		);
-
-		$ajax_vars = array(
-			'tb_show_url' => $tb_show_url,
-			'tb_show_tag' => __( 'Edit Subscriber', 'wp-sms' )
-		);
-		wp_localize_script( 'wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', $ajax_vars );
 	}
 
 }

@@ -5,9 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 class WP_SMS {
-	/**
-	 * WP_SMS constructor.
-	 */
+
 	public function __construct() {
 		/*
 		 * Plugin Loaded Action
@@ -49,32 +47,6 @@ class WP_SMS {
 	 * @param  Not param
 	 */
 	public function includes() {
-		if ( is_admin() ) {
-			// Admin classes.
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-privacy.php';
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-
-			// Groups class.
-			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups.php';
-			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
-
-			// Outbox class.
-			require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
-
-			// Send class.
-			require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
-
-			// Settings classes.
-			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
-			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
-
-			// Subscribers class.
-			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers.php';
-			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
-		}
 
 		// Utility classes.
 		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
@@ -86,6 +58,32 @@ class WP_SMS {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
+
+		if ( is_admin() ) {
+			// Admin classes.
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
+			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
+
+			// Groups class.
+			require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
+
+			// Outbox class.
+			require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+
+			// Privacy class.
+			require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy-actions.php';
+
+			// Send class.
+			require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
+
+			// Settings classes.
+			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
+			require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
+
+			// Subscribers class.
+			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
+		}
 
 		if ( ! is_admin() ) {
 			// Front Class.

@@ -15,9 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package    WP_SMS
  */
 class Version {
-	/**
-	 * WP_SMS_Version constructor.
-	 */
+
 	public function __construct() {
 		// Check pro pack is enabled
 		if ( $this->pro_is_active() ) {

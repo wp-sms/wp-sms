@@ -4,8 +4,12 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
+<<<<<<< HEAD
 Requires PHP: 5.4
 Stable tag: 5.1
+=======
+Stable tag: 5.1.1
+>>>>>>> development
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,7 +35,7 @@ Watch How You Can Send SMS With WordPress!
 https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
-* Supporting more than 150 SMS gateways
+* Supporting more than 180 SMS gateways
 * Sending SMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing for newsletters by SMS
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
@@ -151,10 +155,9 @@ Run the following action when subscribing a new user.
 Example: Send Welcome SMS to users when they are registered.
 
 	function send_sms_when_subscribe_new_user($name, $mobile) {
-		global $sms;
-		$sms->to = array($mobile);
-		$sms->msg = "Hi {$name}, Thanks for subscribe.";
-		$sms->SendSMS();
+		$to = array($mobile);
+        $msg = "Hi {$name}, Thanks for subscribe.";
+        wp_sms_send( $to, $msg )
 	}
 	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
 
@@ -211,6 +214,8 @@ Add new subscribes to SMS newsletters.
 9. SMS Newsletter widget.
 10. Send post to subscribers.
 11. Contact Form 7 notifications.
+12. SMS Newsletter Page.
+13. Privacy Page.
 
 == Upgrade Notice ==
 = 4.0 =
@@ -227,6 +232,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.1 =
+* Optimized: The main structure of the plugin and split process to increase performance and load.
+* Updated: primotexto.com to allow multiple number sending.
+* Fixed: loading menu pages content on different languages.
+* Fixed: send SMS form style with some other plugins.
+* Fixed: websms.com.cy, textplode.com, 0098sms.com, 18sms.ir, 500sms.ir, ebulksms.com gateways.
+
 = 5.1 =
 * Added: Collapse for toggle the visibility of response column on Outbox table.
 * Added: A new template function for sending SMS `wp_sms_send( $to, $msg, $is_flash = false )`.

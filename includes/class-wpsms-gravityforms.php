@@ -6,13 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS gravityforms
- *
- * @category   class
- * @package    WP_SMS
- * @version    1.0
- */
+
 class Gravityforms
 {
     static function get_field($form_id)

@@ -6,51 +6,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS RestApi class
- *
- * @category   class
- * @package    WP_SMS
- * @version    4.0
- */
 class RestApi {
 
-	/**
-	 * SMS object
-	 * @var object
-	 */
 	public $sms;
-
-	/**
-	 * Options
-	 *
-	 * @var string
-	 */
 	protected $option;
-
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	protected $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
-
-	/**
-	 * Name space
-	 * @var string
-	 */
 	public $namespace;
 
-	/**
-	 * WP_SMS_RestApi constructor.
-	 */
 	public function __construct() {
 		global $sms, $wpdb;
 
@@ -62,10 +25,11 @@ class RestApi {
 	}
 
 	/**
+	 * Handle Response
 	 * @param $message
 	 * @param int $status
 	 *
-	 * @return WP_REST_Response
+	 * @return \WP_REST_Response
 	 */
 	public static function response( $message, $status = 200 ) {
 		if ( $status == 200 ) {
@@ -86,6 +50,8 @@ class RestApi {
 	}
 
 	/**
+	 * Subscribe User
+	 *
 	 * @param $name
 	 * @param $mobile
 	 * @param null $group
@@ -99,7 +65,7 @@ class RestApi {
 			return new \WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
-		$check_group = \WP_SMS\Newsletter::getGroup( $group );
+		$check_group = Newsletter::getGroup( $group );
 
 		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
 			return new \WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
@@ -138,7 +104,7 @@ class RestApi {
 			$key = rand( 1000, 9999 );
 
 			// Add subscribe to database
-			$result = \WP_SMS\Newsletter::addSubscriber( $name, $mobile, $group, '0', $key );
+			$result = Newsletter::addSubscriber( $name, $mobile, $group, '0', $key );
 
 			if ( $result['result'] == 'error' ) {
 				// Return response
@@ -156,7 +122,7 @@ class RestApi {
 		} else {
 
 			// Add subscribe to database
-			$result = \WP_SMS\Newsletter::addSubscriber( $name, $mobile, $group, '1' );
+			$result = Newsletter::addSubscriber( $name, $mobile, $group, '1' );
 
 			if ( $result['result'] == 'error' ) {
 				// Return response
@@ -168,6 +134,8 @@ class RestApi {
 	}
 
 	/**
+	 * Unsubscribe user
+	 *
 	 * @param $name
 	 * @param $mobile
 	 * @param null $group
@@ -180,7 +148,7 @@ class RestApi {
 			return new \WP_Error( 'unsubscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
-		$check_group = \WP_SMS\Newsletter::getGroup( $group );
+		$check_group = Newsletter::getGroup( $group );
 
 		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The group number is not valid!', 'wp-sms' ) );
@@ -210,7 +178,7 @@ class RestApi {
 			}
 		}
 		// Delete subscriber
-		$result = \WP_SMS\Newsletter::deleteSubscriberByNumber( $mobile, $group );
+		$result = Newsletter::deleteSubscriberByNumber( $mobile, $group );
 
 		// Check result
 		if ( $result['result'] == 'error' ) {
@@ -222,6 +190,8 @@ class RestApi {
 	}
 
 	/**
+	 * Verify Subscriber
+	 *
 	 * @param $mobile
 	 * @param $name
 	 * @param $activation

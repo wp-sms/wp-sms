@@ -12,39 +12,10 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Subscribers_List_Table extends \WP_List_Table {
 
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	protected $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
-
-	/**
-	 * Limits per page
-	 *
-	 * @var int
-	 */
 	protected $limit;
-
-	/**
-	 * Count all Records 1 time
-	 *
-	 * @var int
-	 */
 	protected $count;
-
-	/**
-	 * Store Queries Data
-	 *
-	 * @var array
-	 */
 	var $data;
 
 	function __construct() {
@@ -71,7 +42,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 				return $item[ $column_name ];
 
 			case 'group_ID':
-				$group = Groups::getGroup( $item[ $column_name ] );
+				$group = Newsletter::getGroup( $item[ $column_name ] );
 				if ( $group ) {
 					return $group->name;
 				} else {

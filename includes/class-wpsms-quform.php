@@ -6,13 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS quform
- *
- * @category   class
- * @package    WP_SMS
- * @version    1.0
- */
 class Quform {
 
 	/**

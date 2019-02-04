@@ -6,39 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-/**
- * WP SMS newsletter class
- *
- * @category   class
- * @package    WP_SMS
- * @version    1.0
- */
 class Newsletter {
 
-	/**
-	 * Wordpress Dates
-	 *
-	 * @var string
-	 */
 	public $date;
-
-	/**
-	 * Wordpress Database
-	 *
-	 * @var string
-	 */
 	protected $db;
-
-	/**
-	 * Wordpress Table prefix
-	 *
-	 * @var string
-	 */
 	protected $tb_prefix;
 
-	/**
-	 * Constructors
-	 */
 	public function __construct() {
 		global $wpdb;
 
@@ -50,8 +23,6 @@ class Newsletter {
 
 	/**
 	 * Include front table
-	 *
-	 * @param  Not param
 	 */
 	public function load_script() {
 		// jQuery will be included automatically
@@ -70,51 +41,6 @@ class Newsletter {
 	 * @param $mobile
 	 * @param string $group_id
 	 * @param string $status
-	 * @param $key
-	 *
-	 * @return array
-	 * @internal param param $Not
-	 */
-	public function add_subscriber( $name, $mobile, $group_id = '', $status = '1', $key = null ) {
-		if ( $this->is_duplicate( $mobile, $group_id ) ) {
-			return array(
-				'result'  => 'error',
-				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
-			);
-		}
-
-		$result = $this->db->insert(
-			$this->tb_prefix . "sms_subscribes",
-			array(
-				'date'         => $this->date,
-				'name'         => $name,
-				'mobile'       => $mobile,
-				'status'       => $status,
-				'activate_key' => $key,
-				'group_ID'     => $group_id,
-			)
-		);
-
-		if ( $result ) {
-			/**
-			 * Run hook after adding subscribe.
-			 *
-			 * @since 3.0
-			 *
-			 * @param string $name name.
-			 * @param string $mobile mobile.
-			 */
-			do_action( 'wp_sms_add_subscriber', $name, $mobile );
-
-			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
-		}
-	}
-
-	/**
-	 * @param $name
-	 * @param $mobile
-	 * @param string $group_id
-	 * @param string $status
 	 * @param null $key
 	 *
 	 * @return array
@@ -123,10 +49,7 @@ class Newsletter {
 		global $wpdb;
 
 		if ( self::isDuplicate( $mobile, $group_id ) ) {
-			return array(
-				'result'  => 'error',
-				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
-			);
+			return array( 'result' => 'error', 'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' ) );
 		}
 
 		$result = $wpdb->insert(
@@ -153,17 +76,20 @@ class Newsletter {
 			do_action( 'wp_sms_add_subscriber', $name, $mobile );
 
 			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully added.', 'wp-sms' ) );
+		} else {
+			return array( 'result' => 'error', 'message' => __( 'Having problem with add subscriber, please try again later.', 'wp-sms' ) );
 		}
 	}
+
 
 	/**
 	 * Get Subscriber
 	 *
-	 * @param  Not param
+	 * @param $id
 	 *
-	 * @return array|null|object|void
+	 * @return array|object|void|null
 	 */
-	public static function get_subscriber( $id ) {
+	public static function getSubscriber( $id ) {
 		global $wpdb;
 		$result = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE ID = '" . $id . "'" );
 
@@ -173,68 +99,8 @@ class Newsletter {
 	}
 
 	/**
-	 * Delete Subscriber
+	 * Delete subscriber by number
 	 *
-	 * @param  Not param
-	 *
-	 * @return false|int|void
-	 */
-	public function delete_subscriber( $id ) {
-		$result = $this->db->delete(
-			$this->tb_prefix . "sms_subscribes",
-			array(
-				'ID' => $id,
-			)
-		);
-
-		if ( $result ) {
-			/**
-			 * Run hook after deleting subscribe.
-			 *
-			 * @since 3.0
-			 *
-			 * @param string $result result query.
-			 */
-			do_action( 'wp_sms_delete_subscriber', $result );
-
-			return $result;
-		}
-	}
-
-	/**
-	 * Delete subscribers by number
-	 *
-	 * @param $mobile
-	 * @param null $group_id
-	 *
-	 * @return array
-	 */
-	public function delete_subscriber_by_number( $mobile, $group_id = null ) {
-		$result = $this->db->delete(
-			$this->tb_prefix . "sms_subscribes",
-			array(
-				'mobile'   => $mobile,
-				'group_id' => $group_id,
-			)
-		);
-
-		if ( ! $result ) {
-			return array( 'result' => 'error', 'message' => __( 'The subscribe does not exist.', 'wp-sms' ) );
-		}
-
-		/**
-		 * Run hook after deleting subscribe.
-		 *
-		 * @since 3.0
-		 *
-		 * @param string $result result query.
-		 */
-		do_action( 'wp_sms_delete_subscriber', $result );
-
-		return array( 'result' => 'success', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
-	}
-
-	/**
 	 * @param $mobile
 	 * @param null $group_id
 	 *
@@ -266,6 +132,7 @@ class Newsletter {
 		return array( 'result' => 'success', 'message' => __( 'Subscribe successfully removed.', 'wp-sms' ) );
 	}
 
+
 	/**
 	 * Update Subscriber
 	 *
@@ -275,23 +142,21 @@ class Newsletter {
 	 * @param string $group_id
 	 * @param string $status
 	 *
-	 * @return array|void
-	 * @internal param param $Not
+	 * @return array
 	 */
-	public function update_subscriber( $id, $name, $mobile, $group_id = '', $status = '1' ) {
+	public static function updateSubscriber( $id, $name, $mobile, $group_id = '', $status = '1' ) {
+		global $wpdb;
+
 		if ( empty( $id ) or empty( $name ) or empty( $mobile ) ) {
-			return;
+			return array( 'result' => 'error', 'message' => __( 'The fields must be valued.', 'wp-sms' ) );
 		}
 
-		if ( $this->is_duplicate( $mobile, $group_id, $id ) ) {
-			return array(
-				'result'  => 'error',
-				'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' )
-			);
+		if ( self::isDuplicate( $mobile, $group_id, $id ) ) {
+			return array( 'result' => 'error', 'message' => __( 'The mobile numbers has been already duplicate.', 'wp-sms' ) );
 		}
 
-		$result = $this->db->update(
-			$this->tb_prefix . "sms_subscribes",
+		$result = $wpdb->update(
+			$wpdb->prefix . "sms_subscribes",
 			array(
 				'name'     => $name,
 				'mobile'   => $mobile,
@@ -315,34 +180,39 @@ class Newsletter {
 			do_action( 'wp_sms_update_subscriber', $result );
 
 			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully updated.', 'wp-sms' ) );
+		} else {
+			return array( 'result' => 'error', 'message' => __( 'Having problem with update subscriber, Duplicate entries or subscriber not found! please try again.', 'wp-sms' ) );
 		}
 	}
 
 	/**
-	 * Get Subscriber
+	 * Get Group by group ID
 	 *
-	 * @param  Not param
+	 * @param $group_id
 	 *
-	 * @return array|null|object
+	 * @return object|null
 	 */
-	public static function get_groups() {
+	public static function getGroup( $group_id ) {
 		global $wpdb;
-		$result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
+
+		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
+		$result     = $wpdb->get_row( $db_prepare );
 
 		if ( $result ) {
 			return $result;
 		}
+
+		return null;
 	}
 
 	/**
-	 * Get Group
+	 * Get Groups
 	 *
-	 * @param  Not param
-	 *
-	 * @return array|null|object|void
+	 * @return array|object|null
 	 */
-	public function get_group( $group_id ) {
-		$result = $this->db->get_row( "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group` WHERE ID = '" . $group_id . "'" );
+	public static function getGroups() {
+		global $wpdb;
+		$result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
 
 		if ( $result ) {
 			return $result;
@@ -356,14 +226,15 @@ class Newsletter {
 	 *
 	 * @return false|int|void
 	 */
-	public function delete_group( $id ) {
+	public static function deleteGroup( $id ) {
+		global $wpdb;
 
 		if ( empty( $id ) ) {
 			return;
 		}
 
-		$result = $this->db->delete(
-			$this->tb_prefix . "sms_subscribes_group",
+		$result = $wpdb->delete(
+			$wpdb->prefix . "sms_subscribes_group",
 			array(
 				'ID' => $id,
 			)
@@ -391,14 +262,15 @@ class Newsletter {
 	 *
 	 * @return array
 	 */
-	public function add_group( $name ) {
+	public static function addGroup( $name ) {
+		global $wpdb;
 		if ( empty( $name ) ) {
 			return array( 'result' => 'error', 'message' => __( 'Name is empty!', 'wp-sms' ) );
 		}
 
-		$table   = $this->tb_prefix . 'sms_subscribes_group';
-		$prepare = $this->db->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
-		$count   = $this->db->get_var( $prepare );
+		$table   = $wpdb->prefix . 'sms_subscribes_group';
+		$prepare = $wpdb->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
+		$count   = $wpdb->get_var( $prepare );
 		if ( $count ) {
 			return array(
 				'result'  => 'error',
@@ -406,8 +278,8 @@ class Newsletter {
 			);
 		} else {
 
-			$result = $this->db->insert(
-				$this->tb_prefix . "sms_subscribes_group",
+			$result = $wpdb->insert(
+				$wpdb->prefix . "sms_subscribes_group",
 				array(
 					'name' => $name,
 				)
@@ -439,14 +311,16 @@ class Newsletter {
 	 * @return array|void
 	 * @internal param param $Not
 	 */
-	public function update_group( $id, $name ) {
+	public static function updateGroup( $id, $name ) {
+		global $wpdb;
+
 		if ( empty( $id ) or empty( $name ) ) {
 			return;
 		}
 
-		$table   = $this->tb_prefix . 'sms_subscribes_group';
-		$prepare = $this->db->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
-		$count   = $this->db->get_var( $prepare );
+		$table   = $wpdb->prefix . 'sms_subscribes_group';
+		$prepare = $wpdb->prepare( "SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name );
+		$count   = $wpdb->get_var( $prepare );
 
 		if ( $count ) {
 			return array(
@@ -455,8 +329,8 @@ class Newsletter {
 			);
 		} else {
 
-			$result = $this->db->update(
-				$this->tb_prefix . "sms_subscribes_group",
+			$result = $wpdb->update(
+				$wpdb->prefix . "sms_subscribes_group",
 				array(
 					'name' => $name,
 				),
@@ -484,36 +358,11 @@ class Newsletter {
 				);
 			}
 		}
-
-
 	}
 
 	/**
 	 * Check the mobile number is duplicate
 	 *
-	 * @param $mobile_number
-	 * @param null $group_id
-	 * @param null $id
-	 *
-	 * @return array|null|object|void
-	 */
-	private function is_duplicate( $mobile_number, $group_id = null, $id = null ) {
-		$sql = "SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
-
-		if ( $group_id ) {
-			$sql .= " AND group_id = '" . $group_id . "'";
-		}
-
-		if ( $id ) {
-			$sql .= " AND id != '" . $id . "'";
-		}
-
-		$result = $this->db->get_row( $sql );
-
-		return $result;
-	}
-
-	/**
 	 * @param $mobile_number
 	 * @param null $group_id
 	 * @param null $id
@@ -585,20 +434,24 @@ class Newsletter {
 	}
 
 	/**
-	 * @param $group_id
+	 * Get Total Subscribers with Group ID
 	 *
-	 * @return object|null
+	 * @param null $group_id
+	 *
+	 * @return Object|null
 	 */
-	public static function getGroup( $group_id ) {
+	public static function getTotal( $group_id = null ) {
 		global $wpdb;
 
-		$db_prepare = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id );
-		$result     = $wpdb->get_row( $db_prepare );
+		if ( $group_id ) {
+			$result = $wpdb->query( $wpdb->prepare( "SELECT name FROM {$wpdb->prefix}sms_subscribes WHERE group_ID = %d", $group_id ) );
+		} else {
+			$result = $wpdb->query( "SELECT name FROM {$wpdb->prefix}sms_subscribes" );
+		}
 
 		if ( $result ) {
 			return $result;
 		}
-
 		return null;
 	}
 

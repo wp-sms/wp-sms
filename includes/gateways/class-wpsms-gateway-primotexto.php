@@ -57,67 +57,86 @@ class primotexto extends \WP_SMS\Gateway {
 			return $credit;
 		}
 
-		$api  = $this->has_key;
-		$to   = implode( ',', $this->to );
-		$msg  = $this->msg;
-		$from = $this->from;
-		// Authentication
-		$args = array(
-			'headers' => array(
-				'X-Primotexto-ApiKey' => $api,
-				'Content-Type'        => 'application/json; charset=UTF-8',
-			),
-			'body'    => json_encode(
-				array(
-					'number'  => $to,
-					'message' => $msg,
-					'sender'  => $from
-				) )
-		);
+		$api    = $this->has_key;
+		$msg    = $this->msg;
+		$from   = $this->from;
+		$result = array();
+		$error  = 0;
 
-		$response = wp_remote_post( $this->wsdl_link . "notification/messages/send", $args );
+		try {
+			foreach ( $this->to as $number ) {
 
-		// check response have error or not
-		if ( is_wp_error( $response ) ) {
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
+				try {
+					$args = array(
+						'headers' => array(
+							'X-Primotexto-ApiKey' => $api,
+							'Content-Type'        => 'application/json; charset=UTF-8',
+						),
+						'body'    => json_encode(
+							array(
+								'number'  => trim( $number ),
+								'message' => $msg,
+								'sender'  => $from
+							) )
+					);
+					// Authentication
+					$response = wp_remote_post( $this->wsdl_link . "notification/messages/send", $args );
 
-			return new \WP_Error( 'send-sms', $response->get_error_message() );
-		}
+					// check response have error or not
+					if ( is_wp_error( $response ) ) {
+						$result[ $number ] = $response->get_error_message();
+					}
+					// Ger response code
+					$response_code = wp_remote_retrieve_response_code( $response );
 
-		// Ger response code
-		$response_code = wp_remote_retrieve_response_code( $response );
+					// Decode response
+					$response = json_decode( $response['body'] );
 
-		// Decode response
-		$response = json_decode( $response['body'] );
-
-		// Check response code
-		if ( $response_code == '200' ) {
-			if ( isset( $response->snapshotId ) ) {
-
-				// Log the result
-				$this->log( $this->from, $this->msg, $this->to, $response );
-
-				/**
-				 * Run hook after send sms.
-				 *
-				 * @since 2.4
-				 *
-				 * @param string $result result output.
-				 */
-				do_action( 'wp_sms_send', $response );
-
-				return $response;
+					// Check response code
+					if ( $response_code == '200' ) {
+						if ( isset( $response->snapshotId ) ) {
+							$result[ $number ] = $response;
+						} else {
+							$result[ $number ] = array( 'code' => $response->code, 'error' => $response->error );
+							$error ++;
+						}
+					} else {
+						$result[ $number ] = array( 'code' => $response->code, 'error' => $response->error );
+						$error ++;
+					}
+				} catch ( \Exception $e ) {
+					// Log the result
+					$result[ $number ] = $e->getMessage();
+					$error ++;
+				}
 			}
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $response->code, 'error' );
 
-			return new \WP_Error( 'credit', $response->code );
-		} else {
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $response->code, 'error' );
+			// Check if results have error or not
+			if ( $error > 0 ) {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-			return new \WP_Error( 'credit', $response->code );
+				return new \WP_Error( 'send-sms', $result );
+			}
+
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $result );
+
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 *
+			 * @param string $result result output.
+			 */
+			do_action( 'wp_sms_send', $result );
+
+			return $result;
+		} catch ( \Exception $e ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $e->getMessage(), 'error' );
+
+			return new \WP_Error( 'send-sms', $e->getMessage() );
 		}
 	}
 
