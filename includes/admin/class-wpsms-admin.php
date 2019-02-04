@@ -10,7 +10,6 @@ class Admin {
 	protected $options;
 
 	public function __construct() {
-
 		global $wpdb;
 
 		$this->db        = $wpdb;
@@ -32,8 +31,7 @@ class Admin {
 	 * Include admin assets
 	 */
 	public function admin_assets() {
-
-		//Register admin-bar.css for whole admin area
+		// Register admin-bar.css for whole admin area
 		wp_register_style( 'wpsms-admin-bar-css', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
 		wp_enqueue_style( 'wpsms-admin-bar-css' );
 
@@ -75,8 +73,8 @@ class Admin {
 	 * Dashboard glance plugin
 	 */
 	public function dashboard_glance() {
-
 		$subscribe = $this->db->get_var( "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes" );
+
 		echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf( __( '%s Subscriber', 'wp-sms' ), $subscribe ) . "</a></li>";
 		echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf( __( '%s SMS Credit', 'wp-sms' ), get_option( 'wp_last_credit' ) ) . "</a></li>";
 	}
@@ -85,7 +83,6 @@ class Admin {
 	 * Administrator admin_menu
 	 */
 	public function admin_menu() {
-
 		$hook_suffix = array();
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
@@ -102,7 +99,6 @@ class Admin {
 		foreach ( $hook_suffix as $menu => $hook ) {
 			add_action( "load-{$hook}", array( $this, $menu . '_assets' ) );
 		}
-
 	}
 
 	/**
@@ -137,7 +133,6 @@ class Admin {
 	 * Callback subscribers page.
 	 */
 	public function groups_callback() {
-
 		// Groups class.
 		require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups.php';
 
@@ -149,7 +144,6 @@ class Admin {
 	 * Callback subscribers page.
 	 */
 	public function privacy_callback() {
-
 		// Privacy class.
 		require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy.php';
 
@@ -157,7 +151,6 @@ class Admin {
 		$page->pagehook = get_current_screen()->id;
 		$page->render_page();
 	}
-
 
 	/**
 	 * Load subscribers page assets
@@ -229,7 +222,6 @@ class Admin {
 	 * @return array
 	 */
 	public function meta_links( $links, $file ) {
-
 		if ( $file == 'wp-sms/wp-sms.php' ) {
 			$rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
 			$links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . __( 'Click here to rate and review this plugin on WordPress.org', 'wp-sms' ) . '">' . __( 'Rate this plugin', 'wp-sms' ) . '</a>';
@@ -258,7 +250,6 @@ class Admin {
 	 * Initial plugin
 	 */
 	private function init() {
-
 		if ( isset( $_GET['action'] ) ) {
 			if ( $_GET['action'] == 'wpsms-hide-newsletter' ) {
 				update_option( 'wpsms_hide_newsletter', true );
