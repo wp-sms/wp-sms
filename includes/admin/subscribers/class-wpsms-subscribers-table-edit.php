@@ -66,7 +66,11 @@ class Subscribers_Subscribers_Table_Edit {
 	                    </tr>';
 		} else {
 			$html .= '<tr>
-                      <td>' . sprintf( __( 'There is no group! <a href = "%s" > Add</a > ', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ) . '</td>
+                      <td style="padding-top: 10px;">
+                      <label for="wpsms_group_name"
+					                       class="wp_sms_subscribers_label">' . __( 'Group', 'wp-sms' ) . '</label>
+                      ' . sprintf( __( 'There is no group! <a href = "%s" > Add</a > ', 'wp-sms' ), 'admin.php?page=wp-sms-subscribers-group' ) . '
+                      </td>
                       </tr>';
 		}
 

@@ -181,7 +181,7 @@ class Newsletter {
 
 			return array( 'result' => 'success', 'message' => __( 'Subscriber successfully updated.', 'wp-sms' ) );
 		} else {
-			return array( 'result' => 'error', 'message' => __( 'Having problem with update subscriber, please try again later.', 'wp-sms' ) );
+			return array( 'result' => 'error', 'message' => __( 'Having problem with update subscriber, Duplicate entries or subscriber not found! please try again.', 'wp-sms' ) );
 		}
 	}
 

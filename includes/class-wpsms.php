@@ -47,6 +47,18 @@ class WP_SMS {
 	 * @param  Not param
 	 */
 	public function includes() {
+
+		// Utility classes.
+		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-gravityforms.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-quform.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-newsletter.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
+		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
+
 		if ( is_admin() ) {
 			// Admin classes.
 			require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
@@ -72,17 +84,6 @@ class WP_SMS {
 			// Subscribers class.
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
 		}
-
-		// Utility classes.
-		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-gravityforms.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-quform.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-newsletter.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
 
 		if ( ! is_admin() ) {
 			// Front Class.
