@@ -13,13 +13,20 @@ class Subscribers {
 
 		// Add subscriber
 		if ( isset( $_POST['wp_add_subscribe'] ) ) {
-			$result = Newsletter::addSubscriber( $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'] );
+			$group = isset( $_POST['wpsms_group_name'] ) ? $_POST['wpsms_group_name'] : '';
+			if ( $group ) {
+				$result = Newsletter::addSubscriber( $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $group );
+			} else {
+				$result = Newsletter::addSubscriber( $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'] );
+			}
+
 			echo Helper::notice( $result['message'], $result['result'] );
 		}
 
 		// Edit subscriber page
 		if ( isset( $_POST['wp_update_subscribe'] ) ) {
-			$result = Newsletter::updateSubscriber( $_POST['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $_POST['wpsms_group_name'], $_POST['wpsms_subscribe_status'] );
+			$group  = isset( $_POST['wpsms_group_name'] ) ? $_POST['wpsms_group_name'] : '';
+			$result = Newsletter::updateSubscriber( $_POST['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $group, $_POST['wpsms_subscribe_status'] );
 			echo Helper::notice( $result['message'], $result['result'] );
 		}
 
