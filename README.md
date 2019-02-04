@@ -17,7 +17,7 @@ Very easy Send SMS by PHP code:
 ```sh
 $to = array('01000000000');
 $msg = "Hello World!";
-wp_sms_send( $to, $msg )
+wp_sms_send( $to, $msg );
 ```
 
 **Do you like this project? Support it by donating**
