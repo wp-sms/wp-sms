@@ -4,7 +4,7 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
-Stable tag: 5.1
+Stable tag: 5.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -231,13 +231,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Updated: primotexto.com to allow multiple number sending.
 * Fixed: loading menu pages content on different languages.
 * Fixed: send SMS form style with some other plugins.
-* Fixed: websms.com.cy gateway.
-* Fixed: 0098sms.com loading gateway.
-* Fixed: 18sms.ir loading gateway.
-* Fixed: 500sms.ir loading gateway.
-* Fixed: ebulksms.com loading gateway.
-* Fixed: textplode.com loading gateway.
-* Fixed: 0098sms.com loading gateway.
+* Fixed: websms.com.cy, textplode.com, 0098sms.com, 18sms.ir, 500sms.ir, ebulksms.com gateways.
 
 = 5.1 =
 * Added: Collapse for toggle the visibility of response column on Outbox table.
