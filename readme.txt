@@ -30,7 +30,7 @@ Watch How You Can Send SMS With WordPress!
 https://www.youtube.com/watch?v=50Sv5t6wTrQ
 
 = Features =
-* Supporting more than 150 SMS gateways
+* Supporting more than 180 SMS gateways
 * Sending SMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing for newsletters by SMS
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
@@ -149,10 +149,9 @@ Run the following action when subscribing a new user.
 Example: Send Welcome SMS to users when they are registered.
 
 	function send_sms_when_subscribe_new_user($name, $mobile) {
-		global $sms;
-		$sms->to = array($mobile);
-		$sms->msg = "Hi {$name}, Thanks for subscribe.";
-		$sms->SendSMS();
+		$to = array($mobile);
+        $msg = "Hi {$name}, Thanks for subscribe.";
+        wp_sms_send( $to, $msg )
 	}
 	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);`
 
@@ -209,6 +208,8 @@ Add new subscribes to SMS newsletters.
 9. SMS Newsletter widget.
 10. Send post to subscribers.
 11. Contact Form 7 notifications.
+12. SMS Newsletter Page.
+13. Privacy Page.
 
 == Upgrade Notice ==
 = 4.0 =

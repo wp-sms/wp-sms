@@ -11,11 +11,11 @@ The usage of this plugin is completely free. You have to just have an account fr
 Don't worry , we have tried to add the best and the most gateways to plugin. 
 
 Very easy Send SMS by PHP code:
-
-1. `global $sms;`
-2. `$sms->to = array('01000000000');`
-3. `$sms->msg = "Hello World!";`
-4. `$sms->SendSMS();`
+    
+    
+1. `$to = array('01000000000');`
+2. `$msg = "Hello World!";`
+3. `wp_sms_send( $to, $msg )`
 
 **Do you like this project? Support it by donating**
 - ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wp-sms-pro.com/donate)
@@ -23,7 +23,7 @@ Very easy Send SMS by PHP code:
 
 # Features
 
-* Supported +150 sms gateways. [(List all gateways)](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
+* Supported +180 sms gateways. [(List all gateways)](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
 * Send SMS to number(s), subscribers and wordpress users.
 * Subscribe newsletter SMS.
 * Send activation code to subscribe for complete subscription.
@@ -48,14 +48,14 @@ Translations are done by people just like you, help make WP SMS available to mor
 # Installation
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display Subscribe goto Themes -> Widgets, and adding `Subscribe to SMS` into your sidebar Or using this functions: `<?php wp_subscribes(); ?>` into theme.
-or using this Shortcode `[subscribe]` in Posts pages or Widget.
+3. To display Subscribe goto Themes -> Widgets, and adding `SMS newsletter form` into your sidebar Or using this functions: `<?php wp_sms_subscribes(); ?>` into theme.
+or using this Shortcode `[wp-sms-subscriber-form]` in Posts pages or Widget.
 4. Using this functions for send manual SMS:
 
-* First: `global $sms;`
-* `$sms->to = array('MobileNumber');`
-* `$sms->msg = "YourMessage";`
-* Send SMS: `$sms->SendSMS();`
+* First:`$to = array('Mobile Number');`
+* `$msg = "Your Message";`
+* `$isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.`
+* Send SMS: `wp_sms_send( $to, $msg, $isflash )`
 
 # Actions
 Run following action when send sms with this plugin.
@@ -79,10 +79,9 @@ wp_sms_add_subscriber
 Example: Send sms to user when register a new subscriber.
 ```sh
 function send_sms_when_subscribe_new_user($name, $mobile) {
-	global $sms;
-	$sms->to = array($mobile);
-	$sms->msg = "Hi {$name}, Thanks for subscribe.";
-	$sms->SendSMS();
+    $to = array($mobile);
+    $msg = "Hi {$name}, Thanks for subscribe.";
+    wp_sms_send( $to, $msg )
 }
 add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
 ```
