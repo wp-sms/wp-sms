@@ -59,7 +59,7 @@ class candoosms extends \WP_SMS\Gateway {
 			return $credit;
 		}
 
-		$client                   = new nusoap_client( $this->wsdl_link, true );
+		$client                   = new \nusoap_client( $this->wsdl_link, true );
 		$client->soap_defencoding = 'UTF-8';
 		$client->decode_utf8      = false;
 
@@ -107,7 +107,7 @@ class candoosms extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		$client = new nusoap_client( $this->wsdl_link, true );
+		$client = new \nusoap_client( $this->wsdl_link, true );
 
 		if ( $client->getError() ) {
 			return new \WP_Error( 'account-credit', $client->getError() );

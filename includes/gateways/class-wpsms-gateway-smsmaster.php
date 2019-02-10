@@ -18,7 +18,7 @@ class smsmaster extends \WP_SMS\Gateway {
 			include_once WP_SMS_DIR . 'includes/libraries/nusoap.class.php';
 		}
 
-		$this->client = new nusoap_client( $this->wsdl_link );
+		$this->client = new \nusoap_client( $this->wsdl_link );
 	}
 
 	public function SendSMS() {

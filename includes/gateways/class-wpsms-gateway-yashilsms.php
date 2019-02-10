@@ -18,7 +18,7 @@ class yashilsms extends \WP_SMS\Gateway {
 			include_once WP_SMS_DIR . 'includes/libraries/nusoap.class.php';
 		}
 
-		$this->client = new nusoap_client( $this->wsdl_link );
+		$this->client = new \nusoap_client( $this->wsdl_link );
 
 		$this->client->soap_defencoding = 'UTF-8';
 		$this->client->decode_utf8      = true;

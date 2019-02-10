@@ -239,8 +239,8 @@ class Gateway {
 				'suresms' => 'suresms.com',
 			),
 			'italy'          => array(
-				'dot4all'    => 'dot4all.it',
 				'smshosting' => 'smshosting.it',
+				'dot4all'    => 'sms4marketing.it',
 				'comilio'    => 'comilio.it',
 				'aruba'      => 'aruba.it',
 			),

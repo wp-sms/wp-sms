@@ -133,7 +133,6 @@ class Version {
 			'dsms'             => 'dsms.in',
 			'esms'             => 'esms.vn',
 			'isms'             => 'isms.com.my',
-			'dot4all'          => 'sms4marketing.it',
 			'magicdeal4u'      => 'magicdeal4u.com',
 			'mobily'           => 'mobily.ws',
 			'moceansms'        => 'moceansms.com',

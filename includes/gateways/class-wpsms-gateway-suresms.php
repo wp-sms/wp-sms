@@ -102,7 +102,7 @@ class suresms extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
-		$xml = new SimpleXMLElement( $response['body'] );
+		$xml = new \SimpleXMLElement( $response['body'] );
 
 		if ( ! is_object( $xml ) ) {
 			return new \WP_Error( 'account-credit', 'The XML is not valid, Please contact with gateways administrator.' );

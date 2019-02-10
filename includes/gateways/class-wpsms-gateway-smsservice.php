@@ -59,7 +59,7 @@ class smsservice extends \WP_SMS\Gateway {
 			return $credit;
 		}
 
-		$client = new nusoap_client( $this->wsdl_link, 'wsdl' );
+		$client = new \nusoap_client( $this->wsdl_link, 'wsdl' );
 		$client->decodeUTF8( false );
 		$result = $client->call( 'multiSend', array(
 			'username' => $this->username,
@@ -96,7 +96,7 @@ class smsservice extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		$client = new nusoap_client( $this->wsdl_link, 'wsdl' );
+		$client = new \nusoap_client( $this->wsdl_link, 'wsdl' );
 		$client->decodeUTF8( false );
 		$result = $client->call( 'accountInfo', array(
 			'username' => $this->username,

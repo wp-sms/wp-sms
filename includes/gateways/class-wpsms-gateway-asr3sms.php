@@ -17,7 +17,7 @@ class asr3sms extends \WP_SMS\Gateway {
 	}
 
 	/**
-	 * @return array|mixed|object|WP_Error
+	 * @return array|mixed|object|\WP_Error
 	 */
 	public function SendSMS() {
 
