@@ -228,6 +228,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.2 =
+* Update: dot4all.it gateway now available on free version.
+* Fixed & Improvement: Gateways: 18sms, abrestan ,adspanel, asr3sms, avalpayam, bandarsms, candoosms, iransmspanel, joghataysms, mdpanel, mydnspanel, nasrpayam, payamakalmas, ponishasms, sadat24, smsde, smshooshmand, smsmaster, smsmelli, smsservice, suresms, torpedos, yashilsms
+
 = 5.1.1 =
 * Optimized: The main structure of the plugin and split process to increase performance and load.
 * Updated: primotexto.com to allow multiple number sending.
