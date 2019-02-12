@@ -543,9 +543,33 @@ class Settings_Pro {
 						          '<code>%receiver_user_display_name%</code>'
 					          )
 				),
+				'comments_activity'                  => array(
+					'id'   => 'comments_activity',
+					'name' => __( 'User activity comments', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'bp_comments_activity_enable'  => array(
+					'id'      => 'bp_comments_activity_enable',
+					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send SMS to user when the user get a reply on activity', 'wp-sms' )
+				),
+				'bp_comments_activity_message' => array(
+					'id'   => 'bp_comments_activity_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Posted user display name: %s, Comment content: %s, Receiver user display name: %s', 'wp-sms' ),
+						          '<code>%posted_user_display_name%</code>',
+						          '<code>%comment%</code>',
+						          '<code>%receiver_user_display_name%</code>'
+					          )
+				),
 				'comments'                  => array(
 					'id'   => 'comments',
-					'name' => __( 'Comments', 'wp-sms' ),
+					'name' => __( 'User reply comments', 'wp-sms' ),
 					'type' => 'header'
 				),
 				'bp_comments_reply_enable'  => array(
@@ -566,7 +590,7 @@ class Settings_Pro {
 						          '<code>%comment%</code>',
 						          '<code>%receiver_user_display_name%</code>'
 					          )
-				),
+				)
 			) ),
 			// Options for Woocommerce tab
 			'wc'      => apply_filters( 'wp_sms_pro_wc_settings', array(
