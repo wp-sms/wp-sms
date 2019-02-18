@@ -82,23 +82,30 @@ class smsglobal extends \WP_SMS\Gateway {
 		$result        = json_decode( $response['body'] );
 		$response_code = wp_remote_retrieve_response_code( $response );
 
-		if ( $response_code == '200' ) {
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $result );
+		if ( is_object( $result ) ) {
+			if ( $response_code == '200' ) {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result );
 
-			/**
-			 * Run hook after send sms.
-			 *
-			 * @since 2.4
-			 */
-			do_action( 'wp_sms_send', $response['body'] );
+				/**
+				 * Run hook after send sms.
+				 *
+				 * @since 2.4
+				 */
+				do_action( 'wp_sms_send', $response['body'] );
 
-			return $result;
+				return $result;
+			} else {
+				// Log the result
+				$this->log( $this->from, $this->msg, $this->to, $result->error, 'error' );
+
+				return new \WP_Error( 'send-sms', print_r( $result->error, 1 ) );
+			}
 		} else {
 			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $result->error, 'error' );
+			$this->log( $this->from, $this->msg, $this->to, $response['body'], 'error' );
 
-			return new \WP_Error( 'send-sms', print_r( $result->error, 1 ) );
+			return new \WP_Error( 'send-sms', print_r( $response['body'], 1 ) );
 		}
 	}
 
@@ -121,13 +128,17 @@ class smsglobal extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
-		$result        = json_decode( $response['body'] );
-		$response_code = wp_remote_retrieve_response_code( $response );
+		$result = json_decode( $response['body'] );
 
-		if ( $response_code == '200' ) {
-			return $result->balance;
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( is_object( $result ) ) {
+			if ( $response_code == '200' ) {
+				return $result->balance;
+			} else {
+				return new \WP_Error( 'credit', $result->error->message );
+			}
 		} else {
-			return new \WP_Error( 'credit', $result->error->message );
+			return new \WP_Error( 'credit', $response['body'] );
 		}
 	}
 }
