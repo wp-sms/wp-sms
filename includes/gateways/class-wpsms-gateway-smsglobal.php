@@ -130,7 +130,7 @@ class smsglobal extends \WP_SMS\Gateway {
 
 	public function GetCredit() {
 		// Check username and password
-		if ( ! $this->username && ! $this->has_key ) {
+		if ( ! $this->password && ! $this->has_key ) {
 			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
