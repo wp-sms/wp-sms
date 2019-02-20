@@ -71,7 +71,7 @@ class smsglobal extends \WP_SMS\Gateway {
 		);
 
 		$mac  = sprintf( "%s\n", implode( "\n", $mac ) );
-		$hash = hash_hmac( 'sha256', $mac, $this->username, true );
+		$hash = hash_hmac( 'sha256', $mac, $this->password, true );
 		$mac  = base64_encode( $hash );
 
 		$headers = array(
@@ -148,7 +148,7 @@ class smsglobal extends \WP_SMS\Gateway {
 		);
 
 		$mac  = sprintf( "%s\n", implode( "\n", $mac ) );
-		$hash = hash_hmac( 'sha256', $mac, $this->username, true );
+		$hash = hash_hmac( 'sha256', $mac, $this->password, true );
 		$mac  = base64_encode( $hash );
 
 		$headers = array(
