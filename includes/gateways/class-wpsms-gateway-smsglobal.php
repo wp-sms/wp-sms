@@ -80,7 +80,7 @@ class smsglobal extends \WP_SMS\Gateway {
 		);
 
 		$body = array(
-			'destination' => $this->to,
+			'destinations' => explode( ',', implode( ',', $this->to ) ),
 			'message'     => $this->msg,
 			'origin'      => $this->from,
 		);
@@ -111,9 +111,9 @@ class smsglobal extends \WP_SMS\Gateway {
 				 *
 				 * @since 2.4
 				 */
-				do_action( 'wp_sms_send', $response['body'] );
+				do_action( 'wp_sms_send', $result );
 
-				return $response['body'];
+				return $result;
 			} else {
 				// Log the result
 				$this->log( $this->from, $this->msg, $this->to, $result->errors, 'error' );
@@ -175,7 +175,7 @@ class smsglobal extends \WP_SMS\Gateway {
 				return new \WP_Error( 'credit', $result->error->message );
 			}
 		} else {
-			return new \WP_Error( 'credit', $response['body'] );
+			return new \WP_Error( 'credit', $result );
 		}
 	}
 }
