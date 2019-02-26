@@ -160,12 +160,15 @@ class Notifications {
 			$this->sms->SendSMS();
 		}
 
+		// Ultimate Members integration filter
+		$ultimate_members = apply_filters( 'notify_user_register_request', $_REQUEST );
+
 		// Send SMS to user register, We are using $_REQUEST for Ultimate Members integration
-		if ( isset( $user->mobile ) OR isset( $_REQUEST[ 'mobile_number-' . $_REQUEST['form_id'] ] ) ) {
+		if ( isset( $user->mobile ) OR $ultimate_members AND ! is_array( $ultimate_members ) ) {
 			if ( isset( $user->mobile ) ) {
 				$this->sms->to = array( $user->mobile );
-			} else if ( isset( $_REQUEST[ 'mobile_number-' . $_REQUEST['form_id'] ] ) ) {
-				$this->sms->to = array( $_REQUEST[ 'mobile_number-' . $_REQUEST['form_id'] ] );
+			} else if ( $ultimate_members ) {
+				$this->sms->to = array( $ultimate_members );
 			}
 			$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_register_new_user_template'] );
 			$this->sms->msg = $message;
