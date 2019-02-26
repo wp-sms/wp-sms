@@ -94,6 +94,8 @@ class Notifications {
 	}
 
 	/**
+	 * New post manual send SMS
+	 *
 	 * @param $post
 	 */
 	public function notification_meta_box_handler( $post ) {
@@ -105,6 +107,8 @@ class Notifications {
 	}
 
 	/**
+	 * Send SMS when a new post add
+	 *
 	 * @param $ID
 	 * @param $post
 	 *
@@ -134,6 +138,8 @@ class Notifications {
 	}
 
 	/**
+	 * Send SMS when a new user registered
+	 *
 	 * @param $user_id
 	 */
 	public function new_user( $user_id ) {
@@ -146,15 +152,21 @@ class Notifications {
 			'%date_register%' => $this->date,
 		);
 
-		// Send SMS to admin
-		$this->sms->to  = array( $this->options['admin_mobile_number'] );
-		$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_register_new_user_admin_template'] );
-		$this->sms->msg = $message;
-		$this->sms->SendSMS();
+		if ( Option::getOption( 'admin_mobile_number' ) ) {
+			// Send SMS to admin
+			$this->sms->to  = array( $this->options['admin_mobile_number'] );
+			$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_register_new_user_admin_template'] );
+			$this->sms->msg = $message;
+			$this->sms->SendSMS();
+		}
 
-		// Send SMS to user register
-		if ( isset( $user->mobile ) ) {
-			$this->sms->to  = array( $user->mobile );
+		// Send SMS to user register, We are using $_REQUEST for Ultimate Members integration
+		if ( isset( $user->mobile ) OR isset( $_REQUEST[ 'mobile_number-' . $_REQUEST['form_id'] ] ) ) {
+			if ( isset( $user->mobile ) ) {
+				$this->sms->to = array( $user->mobile );
+			} else if ( isset( $_REQUEST[ 'mobile_number-' . $_REQUEST['form_id'] ] ) ) {
+				$this->sms->to = array( $_REQUEST[ 'mobile_number-' . $_REQUEST['form_id'] ] );
+			}
 			$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_register_new_user_template'] );
 			$this->sms->msg = $message;
 			$this->sms->SendSMS();
@@ -162,6 +174,8 @@ class Notifications {
 	}
 
 	/**
+	 * Send SMS when new comment add
+	 *
 	 * @param $comment_id
 	 * @param $comment_object
 	 */
@@ -190,19 +204,24 @@ class Notifications {
 	}
 
 	/**
+	 * Send SMS when user logged in
+	 *
 	 * @param $username_login
 	 * @param $username
 	 */
 	public function login_user( $username_login, $username ) {
-		$this->sms->to = array( $this->options['admin_mobile_number'] );
 
-		$template_vars  = array(
-			'%username_login%' => $username->user_login,
-			'%display_name%'   => $username->display_name
-		);
-		$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_user_login_template'] );
-		$this->sms->msg = $message;
-		$this->sms->SendSMS();
+		if ( Option::getOption( 'admin_mobile_number' ) ) {
+			$this->sms->to = array( $this->options['admin_mobile_number'] );
+
+			$template_vars  = array(
+				'%username_login%' => $username->user_login,
+				'%display_name%'   => $username->display_name
+			);
+			$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_user_login_template'] );
+			$this->sms->msg = $message;
+			$this->sms->SendSMS();
+		}
 	}
 
 

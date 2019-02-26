@@ -371,7 +371,7 @@ class Settings_Pro {
 				'id'   => 'um_field',
 				'name' => __( 'Mobile number field', 'wp-sms' ),
 				'type' => 'checkbox',
-				'desc' => __( 'Add Mobile number to Ultimate Members forms.', 'wp-sms' ),
+				'desc' => __( 'Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms' ),
 			);
 		} else {
 			$um_options['um_notify_form'] = array(
