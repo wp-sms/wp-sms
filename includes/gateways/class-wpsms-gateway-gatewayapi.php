@@ -69,11 +69,22 @@ class gatewayapi extends \WP_SMS\Gateway {
 			$recipients[] = array( 'msisdn' => $number );
 		}
 
+
 		$payload = array(
 			'sender'     => $this->from,
 			'message'    => $this->msg,
 			'recipients' => $recipients
 		);
+
+		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
+			$this->msg = bin2hex( mb_convert_encoding( $this->msg, 'UCS-2', 'auto' ) );
+			$payload = array(
+				'sender'     => $this->from,
+				'message'    => $this->msg,
+				'recipients' => $recipients,
+				'encoding' => 'UTF-16-BE'
+			);
+		}
 
 		if ( $this->isflash ) {
 			$payload['destaddr'] = 'DISPLAY';
