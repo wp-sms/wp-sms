@@ -425,7 +425,7 @@ class Gateway {
 
 			if ( is_wp_error( $result ) ) {
 				// Set error message
-				self::$get_response = $result->get_error_message();
+				self::$get_response = var_export( $result->get_error_message(), true );
 
 				// Update credit
 				update_option( 'wp_last_credit', 0 );
@@ -434,9 +434,10 @@ class Gateway {
 				return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Deactive!', 'wp-sms' ) . '</div>';
 			} else {
 				// Update credit
-				update_option( 'wp_last_credit', $result );
-
-				self::$get_response = $result;
+				if ( ! is_object( $sms->GetCredit() ) ) {
+					update_option( 'wp_last_credit', $result );
+				}
+				self::$get_response = var_export( $result, true );
 
 				// Return html
 				return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Active!', 'wp-sms' ) . '</div>';
