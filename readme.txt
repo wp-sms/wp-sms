@@ -230,6 +230,8 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 5.1.2 =
 * Update: dot4all.it gateway now available on free version.
+* Update: gatewayapi.com to support Unicode.
+* Improved: Response status and Credits to do not save result if is object.
 * Fixed & Improvement: Gateways: 18sms, abrestan ,adspanel, asr3sms, avalpayam, bandarsms, candoosms, iransmspanel, joghataysms, mdpanel, mydnspanel, nasrpayam, payamakalmas, ponishasms, sadat24, smsde, smshooshmand, smsmaster, smsmelli, smsservice, suresms, torpedos, yashilsms, smsglobal
 
 = 5.1.1 =
