@@ -37,10 +37,11 @@ class Front {
 	public function admin_bar() {
 		global $wp_admin_bar;
 		if ( is_super_admin() && is_admin_bar_showing() ) {
-			if ( get_option( 'wp_last_credit' ) && isset( $this->options['account_credit_in_menu'] ) ) {
+			$credit = get_option( 'wp_last_credit' );
+			if ( $credit AND isset( $this->options['account_credit_in_menu'] ) AND ! is_object( $credit ) ) {
 				$wp_admin_bar->add_menu( array(
 					'id'    => 'wp-credit-sms',
-					'title' => '<span class="ab-icon"></span>' . get_option( 'wp_last_credit' ),
+					'title' => '<span class="ab-icon"></span>' . $credit,
 					'href'  => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms-settings'
 				) );
 			}
