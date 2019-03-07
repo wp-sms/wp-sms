@@ -31,7 +31,7 @@
                 <div class="left">
                     <div class="content-padding">
                         <h2><?php _e( 'New Integration!', 'wp-sms' ); ?></h2>
-                        <p><?php _e( 'Now Ultimate Members plugin supporting for integration.', 'wp-sms' ); ?></p>
+                        <p><?php _e( 'Now Ultimate Members plugin supporting.', 'wp-sms' ); ?></p>
                     </div>
                 </div>
 
@@ -72,7 +72,8 @@
         </div>
 
         <div data-content="pro" class="tab-content">
-            <section class="center-section">
+            <section>
+                <h2>Comparing versions</h2>
                 <table class="wp-list-table widefat">
                     <thead>
                     <tr>
@@ -180,7 +181,7 @@
                         <td><span class="dashicons dashicons-yes"></span></td>
                     </tr>
                     <tr class="bold">
-                        <td colspan="3">Pricing</td>
+                        <td colspan="3"><strong>Pricing</strong></td>
                     </tr>
                     <tr>
                         <td></td>
