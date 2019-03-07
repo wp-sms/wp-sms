@@ -37,7 +37,7 @@ class Settings_Pro {
 	 * Add Professional Package options
 	 * */
 	public function add_settings_menu() {
-		add_submenu_page( 'wp-sms', __( 'Professional Pack', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Professional Pack', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
+		add_submenu_page( 'wp-sms', __( 'Professional', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Professional', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
 			$this,
 			'render_settings'
 		) );

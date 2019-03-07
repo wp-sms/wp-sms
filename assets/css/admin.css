@@ -302,3 +302,29 @@
 .wp-sms-welcome .plugin-card {
     text-align: left;
 }
+
+.wp-sms-welcome .wp-list-table.widefat {
+    width: 40%;
+    margin: 0 auto;
+}
+
+.wp-sms-welcome .widefat td .dashicons.dashicons-yes {
+    color: green;
+}
+
+.wp-sms-welcome .widefat td .dashicons.dashicons-no-alt {
+    color: red;
+}
+
+.wp-sms-welcome .widefat td, .widefat th {
+    border-bottom: 1px solid #eaeaea;
+    text-align: center;
+}
+
+.wp-sms-welcome .widefat td:first-child {
+    text-align: left;
+}
+
+.wp-sms-welcome .widefat .bold {
+    background: #f5f5f5;
+}
