@@ -175,7 +175,7 @@ class smsglobal extends \WP_SMS\Gateway {
 				return new \WP_Error( 'credit', $result->error->message );
 			}
 		} else {
-			return new \WP_Error( 'credit', $result );
+			return new \WP_Error( 'credit', $response['body'] );
 		}
 	}
 }
