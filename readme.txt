@@ -229,6 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 5.1.2 =
+* Add: Alchemymarketinggm.com - Gambia gateway.
 * Update: dot4all.it gateway now available on free version.
 * Update: gatewayapi.com to support Unicode.
 * Improved: Response status and Credits to do not save result if is object.
