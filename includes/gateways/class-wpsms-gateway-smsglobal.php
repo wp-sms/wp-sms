@@ -13,7 +13,7 @@ class smsglobal extends \WP_SMS\Gateway {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "The number starting with country code.";
-		$this->help           = "Fill Api key as your API and use API Password as API Secret and leave empty the Username.";
+		$this->help           = "Fill Api key as your API and use API Password as API Secret and leave empty the API username.";
 		$this->has_key        = true;
 	}
 
