@@ -216,6 +216,9 @@ class Gateway {
 				'sms77' => 'sms77.de',
 				'engy'  => 'engy.solutions',
 			),
+			'gambia'        => array(
+				'alchemymarketinggm' => 'alchemymarketinggm.com',
+			),
 			'turkey'         => array(
 				'bulutfon' => 'bulutfon.com',
 				'verimor'  => 'verimor.com.tr',
