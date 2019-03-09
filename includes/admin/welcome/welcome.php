@@ -62,7 +62,7 @@
 
                 <div class="right">
                     <ul>
-                        <li>Add: Alchemymarketinggm.com - Gambia gateway.</li>
+                        <li>Add: Alchemymarketinggm.com - Africa gateway.</li>
                         <li>Update: dot4all.it gateway now available on free version.</li>
                         <li>Update: gatewayapi.com to support Unicode.</li>
                         <li>Improved: Response status and Credits to do not save result if is object.</li>

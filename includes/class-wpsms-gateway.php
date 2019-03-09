@@ -216,9 +216,6 @@ class Gateway {
 				'sms77' => 'sms77.de',
 				'engy'  => 'engy.solutions',
 			),
-			'gambia'        => array(
-				'alchemymarketinggm' => 'alchemymarketinggm.com',
-			),
 			'turkey'         => array(
 				'bulutfon' => 'bulutfon.com',
 				'verimor'  => 'verimor.com.tr',
@@ -381,10 +378,11 @@ class Gateway {
 				'difaan' => 'difaan',
 			),
 			'africa'         => array(
-				'_ebulksms'      => 'ebulksms.com',
-				'africastalking' => 'africastalking.com',
-				'smsnation'      => 'smsnation.co.rw',
-				'jusibe'         => 'jusibe.com',
+				'_ebulksms'          => 'ebulksms.com',
+				'africastalking'     => 'africastalking.com',
+				'smsnation'          => 'smsnation.co.rw',
+				'jusibe'             => 'jusibe.com',
+				'alchemymarketinggm' => 'alchemymarketinggm.com',
 			),
 			'kenya'          => array(
 				'uwaziimobile' => 'uwaziimobile.com',
