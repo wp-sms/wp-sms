@@ -11,3 +11,7 @@
 .wp-sms-welcome .normal-section .right {
     float: left;
 }
+
+.wp-sms-welcome .widefat td:first-child {
+    text-align: right;
+}
