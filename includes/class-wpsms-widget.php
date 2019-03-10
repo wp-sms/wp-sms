@@ -20,7 +20,7 @@ class Widget extends \WP_Widget {
 		// Add Actions
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 
-		parent::__construct( 'wpsms_widget', __( 'SMS newsletter', 'wp-sms' ), $widget_options );
+		parent::__construct( 'wpsms_widget', __( 'SMS Newsletter', 'wp-sms' ), $widget_options );
 	}
 
 	/**
