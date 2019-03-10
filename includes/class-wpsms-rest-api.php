@@ -26,6 +26,7 @@ class RestApi {
 
 	/**
 	 * Handle Response
+	 *
 	 * @param $message
 	 * @param int $status
 	 *
@@ -249,6 +250,30 @@ class RestApi {
 		}
 
 		return new \WP_Error( 'verify_subscriber', __( 'Not found the number!', 'wp-sms' ) );
+	}
+
+	public static function getSubscribers( $page = '', $group_id = '', $mobile = '', $search = '' ) {
+		// TODO: need to complete this section and test
+		global $wpdb;
+
+		$where = '';
+		/*
+		if ( $page ) {
+			//$where .= $wpdb->prepare( ' WHERE group_ID = %d', $group_id );
+		}
+		if ( $mobile ) {
+			$where .= $wpdb->prepare( 'AND mobile = %s', $mobile );
+		}
+		if ( $search ) {
+			$where .= $wpdb->prepare( 'AND name = %s', $search );
+		}
+		if ( $group_id ) {
+			$where .= $wpdb->prepare( 'AND group_ID = %d', $group_id );
+		}
+		*/
+		$result = $wpdb->get_col( "SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where );
+
+		return $result;
 	}
 }
 

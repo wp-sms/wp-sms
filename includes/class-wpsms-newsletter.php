@@ -452,6 +452,7 @@ class Newsletter {
 		if ( $result ) {
 			return $result;
 		}
+
 		return null;
 	}
 
