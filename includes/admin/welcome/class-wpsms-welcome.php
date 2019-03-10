@@ -80,7 +80,10 @@ class Welcome {
 
 		if ( $response_code == '200' ) {
 			$data      = json_decode( $response['body'] );
-			$Parsedown = new Parsedown();
+			if ( ! class_exists( '\Parsedown' ) ) {
+				include_once WP_SMS_DIR . 'includes/libraries/parsedown.class.php';
+			}
+			$Parsedown = new \Parsedown();
 
 			echo $Parsedown->text( nl2br( $data->body ) );
 		}
