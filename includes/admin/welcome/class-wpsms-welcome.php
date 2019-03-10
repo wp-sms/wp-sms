@@ -57,9 +57,6 @@ class Welcome {
 
 					// Enable welcome page in database
 					update_option( 'wpsms_show_welcome_page', true );
-
-					// Run the upgrader
-					Install::upgrade();
 				}
 			}
 		}
@@ -79,7 +76,7 @@ class Welcome {
 		$response_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $response_code == '200' ) {
-			$data      = json_decode( $response['body'] );
+			$data = json_decode( $response['body'] );
 			if ( ! class_exists( '\Parsedown' ) ) {
 				include_once WP_SMS_DIR . 'includes/libraries/parsedown.class.php';
 			}
