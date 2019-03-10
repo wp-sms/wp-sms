@@ -80,7 +80,7 @@ class Welcome {
 
 		if ( $response_code == '200' ) {
 			$data      = json_decode( $response['body'] );
-			$Parsedown = new \Parsedown();
+			$Parsedown = new Parsedown();
 
 			echo $Parsedown->text( nl2br( $data->body ) );
 		}
