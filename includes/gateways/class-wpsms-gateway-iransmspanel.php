@@ -180,7 +180,7 @@ class iransmspanel extends \WP_SMS\Gateway {
 
 	/**
 	 * This function is used to send SMS via http://www.2972.ir
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 * @internal param Username $string
 	 * @internal param Password $string
 	 * @internal param Number $string (From - Example: 100002972)

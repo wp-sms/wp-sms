@@ -69,17 +69,23 @@ class Option {
 	/**
 	 * Update Option
 	 *
-	 * @param $setting_name
-	 * @param $option_values
-	 * @param bool $autoload
+	 * @param $key
+	 * @param $value
+	 * @param bool $pro
 	 */
-	public static function updateOption( $setting_name, $option_values, $autoload = true ) {
-		if ( $autoload ) {
-			update_option( $setting_name, $option_values );
+	public static function updateOption( $key, $value, $pro = false ) {
+		if ( $pro ) {
+			$setting_name = 'wps_pp_settings';
 		} else {
-			update_option( $setting_name, $option_values, false );
+			$setting_name = 'wpsms_settings';
 		}
+
+		$options         = self::getOptions( $pro );
+		$options[ $key ] = $value;
+
+		update_option( $setting_name, $options );
 	}
+
 }
 
 new Option();

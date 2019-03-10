@@ -38,6 +38,9 @@ class Admin {
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
 			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
 			wp_enqueue_style( 'wpsms-admin-css' );
+			if ( is_rtl() ) {
+				wp_enqueue_style( 'wpsms-rtl-css',  WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
+			}
 
 			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );
 			wp_enqueue_script( 'wpsms-chosen-js', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, WP_SMS_VERSION );
@@ -52,10 +55,11 @@ class Admin {
 	public function admin_bar() {
 		global $wp_admin_bar;
 		if ( is_super_admin() && is_admin_bar_showing() ) {
-			if ( get_option( 'wp_last_credit' ) && isset( $this->options['account_credit_in_menu'] ) ) {
+			$credit = get_option( 'wp_last_credit' );
+			if ( $credit AND isset( $this->options['account_credit_in_menu'] ) AND ! is_object( $credit ) ) {
 				$wp_admin_bar->add_menu( array(
 					'id'    => 'wp-credit-sms',
-					'title' => '<span class="ab-icon"></span>' . get_option( 'wp_last_credit' ),
+					'title' => '<span class="ab-icon"></span>' . $credit,
 					'href'  => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms-settings'
 				) );
 			}
@@ -74,9 +78,13 @@ class Admin {
 	 */
 	public function dashboard_glance() {
 		$subscribe = $this->db->get_var( "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes" );
+		$credit    = get_option( 'wp_last_credit' );
 
 		echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf( __( '%s Subscriber', 'wp-sms' ), $subscribe ) . "</a></li>";
-		echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf( __( '%s SMS Credit', 'wp-sms' ), get_option( 'wp_last_credit' ) ) . "</a></li>";
+		if ( ! is_object( $credit ) ) {
+			echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf( __( '%s SMS Credit', 'wp-sms' ), $credit ) . "</a></li>";
+
+		}
 	}
 
 	/**

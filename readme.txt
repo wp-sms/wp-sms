@@ -1,11 +1,11 @@
 ﻿=== WP SMS ===
-Contributors: mostafa.s1990, mehrshaddarzi, ghasemi71ir
+Contributors: mostafa.s1990, ghasemi71ir, mehrshaddarzi
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.0.3
 Requires PHP: 5.4
-Stable tag: 5.1.1
+Stable tag: 5.1.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -228,6 +228,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.2 =
+* Add: Alchemymarketinggm.com - Africa gateway.
+* Update: dot4all.it gateway now available on free version.
+* Update: gatewayapi.com to support Unicode.
+* Improved: Response status and Credits to do not save result if is object.
+* Fixed & Improvement: Gateways: 18sms, abrestan ,adspanel, asr3sms, avalpayam, bandarsms, candoosms, iransmspanel, joghataysms, mdpanel, mydnspanel, nasrpayam, payamakalmas, ponishasms, sadat24, smsde, smshooshmand, smsmaster, smsmelli, smsservice, suresms, torpedos, yashilsms, smsglobal
+
 = 5.1.1 =
 * Optimized: The main structure of the plugin and split process to increase performance and load.
 * Updated: primotexto.com to allow multiple number sending.

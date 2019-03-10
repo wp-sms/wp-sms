@@ -37,7 +37,7 @@ class Settings_Pro {
 	 * Add Professional Package options
 	 * */
 	public function add_settings_menu() {
-		add_submenu_page( 'wp-sms', __( 'Professional Pack', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Professional Pack', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
+		add_submenu_page( 'wp-sms', __( 'Professional', 'wp-sms' ), '<span style="color:#FF7600">' . __( 'Professional', 'wp-sms' ) . '</span>', 'wpsms_setting', 'wp-sms-pro', array(
 			$this,
 			'render_settings'
 		) );
@@ -125,6 +125,7 @@ class Settings_Pro {
 			'edd'     => __( 'Easy Digital Downloads', 'wp-sms' ),
 			'job'     => __( 'WP Job Manager', 'wp-sms' ),
 			'as'      => __( 'Awesome Support', 'wp-sms' ),
+			'um'      => __( 'Ultimate Members', 'wp-sms' ),
 		);
 
 		// Check what version of WP-Pro using? if not new version, don't show tabs
@@ -282,8 +283,9 @@ class Settings_Pro {
 			}
 		}
 
-		$gf_forms = array();
-		$qf_forms = array();
+		$gf_forms   = array();
+		$qf_forms   = array();
+		$um_options = array();
 
 		// Get Gravityforms
 		if ( class_exists( 'RGFormsModel' ) ) {
@@ -360,6 +362,23 @@ class Settings_Pro {
 				'name' => __( 'Not active', 'wp-sms' ),
 				'type' => 'notice',
 				'desc' => __( 'Gravityforms should be enable to run this tab', 'wp-sms' ),
+			);
+		}
+
+		// Get Ultimate Members
+		if ( class_exists( 'um\Config' ) ) {
+			$um_options['um_field'] = array(
+				'id'   => 'um_field',
+				'name' => __( 'Mobile number field', 'wp-sms' ),
+				'type' => 'checkbox',
+				'desc' => __( 'Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms' ),
+			);
+		} else {
+			$um_options['um_notify_form'] = array(
+				'id'   => 'um_notify_form',
+				'name' => __( 'Not active', 'wp-sms' ),
+				'type' => 'notice',
+				'desc' => __( 'Ultimate Members should be enable to run this tab', 'wp-sms' ),
 			);
 		}
 
@@ -505,31 +524,31 @@ class Settings_Pro {
 			) ),
 			// Options for BuddyPress tab
 			'bp'      => apply_filters( 'wp_sms_pro_bp_settings', array(
-				'bp_fields'                 => array(
+				'bp_fields'                    => array(
 					'id'   => 'bp_fields',
 					'name' => __( 'Fields', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'bp_mobile_field'           => array(
+				'bp_mobile_field'              => array(
 					'id'      => 'bp_mobile_field',
 					'name'    => __( 'Mobile field', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Add mobile field to profile page', 'wp-sms' )
 				),
-				'mentions'                  => array(
+				'mentions'                     => array(
 					'id'   => 'mentions',
 					'name' => __( 'Mentions', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'bp_mention_enable'         => array(
+				'bp_mention_enable'            => array(
 					'id'      => 'bp_mention_enable',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send SMS to user when someone mentioned. for example @admin', 'wp-sms' )
 				),
-				'bp_mention_message'        => array(
+				'bp_mention_message'           => array(
 					'id'   => 'bp_mention_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
@@ -543,20 +562,20 @@ class Settings_Pro {
 						          '<code>%receiver_user_display_name%</code>'
 					          )
 				),
-				'comments'                  => array(
-					'id'   => 'comments',
-					'name' => __( 'Comments', 'wp-sms' ),
+				'comments_activity'            => array(
+					'id'   => 'comments_activity',
+					'name' => __( 'User activity comments', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'bp_comments_reply_enable'  => array(
-					'id'      => 'bp_comments_reply_enable',
+				'bp_comments_activity_enable'  => array(
+					'id'      => 'bp_comments_activity_enable',
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send SMS to user when the user get a reply on comment', 'wp-sms' )
+					'desc'    => __( 'Send SMS to user when the user get a reply on activity', 'wp-sms' )
 				),
-				'bp_comments_reply_message' => array(
-					'id'   => 'bp_comments_reply_message',
+				'bp_comments_activity_message' => array(
+					'id'   => 'bp_comments_activity_message',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
@@ -567,6 +586,30 @@ class Settings_Pro {
 						          '<code>%receiver_user_display_name%</code>'
 					          )
 				),
+				'comments'                     => array(
+					'id'   => 'comments',
+					'name' => __( 'User reply comments', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'bp_comments_reply_enable'     => array(
+					'id'      => 'bp_comments_reply_enable',
+					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Send SMS to user when the user get a reply on comment', 'wp-sms' )
+				),
+				'bp_comments_reply_message'    => array(
+					'id'   => 'bp_comments_reply_message',
+					'name' => __( 'Message body', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Posted user display name: %s, Comment content: %s, Receiver user display name: %s', 'wp-sms' ),
+						          '<code>%posted_user_display_name%</code>',
+						          '<code>%comment%</code>',
+						          '<code>%receiver_user_display_name%</code>'
+					          )
+				)
 			) ),
 			// Options for Woocommerce tab
 			'wc'      => apply_filters( 'wp_sms_pro_wc_settings', array(
@@ -1008,6 +1051,7 @@ class Settings_Pro {
 					          )
 				),
 			) ),
+			'um'      => apply_filters( 'wp_sms_pro_um_settings', $um_options ),
 		) );
 
 		return $settings;

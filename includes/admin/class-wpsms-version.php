@@ -133,7 +133,6 @@ class Version {
 			'dsms'             => 'dsms.in',
 			'esms'             => 'esms.vn',
 			'isms'             => 'isms.com.my',
-			'dot4all'          => 'sms4marketing.it',
 			'magicdeal4u'      => 'magicdeal4u.com',
 			'mobily'           => 'mobily.ws',
 			'moceansms'        => 'moceansms.com',
@@ -165,6 +164,7 @@ class Version {
 			'hoiio'            => 'hoiio.com',
 			'textmagic'        => 'textmagic.com',
 			'onewaysms'        => 'onewaysms.com',
+			'smsmisr'          => 'smsmisr.com',
 		);
 
 		return $gateways;
@@ -181,7 +181,7 @@ class Version {
 	 * License notice
 	 */
 	public function license_notice() {
-		$url = admin_url('admin.php?page=wp-sms-pro');
+		$url = admin_url( 'admin.php?page=wp-sms-pro' );
 		Helper::notice( sprintf( __( 'Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable automatic updates.', 'wp-sms' ), $url ), 'error' );
 	}
 }
