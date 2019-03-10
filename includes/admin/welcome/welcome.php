@@ -215,6 +215,10 @@
                         <span class="title"><?php _e( 'Core Contributor', 'wp-sms' ); ?></span>
                     </li>
                     <li class="wp-person">
+                        <a href="https://profiles.wordpress.org/kamrankhorsandi" class="web"><?php echo get_avatar( 'kamran.khorsandi@gmail.com', 62, '', '', array( 'class' => 'gravatar' ) ); ?><?php _e( 'Kamran Khorsandi', 'wp-sms' ); ?></a>
+                        <span class="title"><?php _e( 'Core Contributor', 'wp-sms' ); ?></span>
+                    </li>
+                    <li class="wp-person">
                         <a href="https://profiles.wordpress.org/pedromendonca" class="web"><?php echo get_avatar( 'ped.gaspar@gmail.com', 62, '', '', array( 'class' => 'gravatar' ) ); ?><?php _e( 'Pedro Mendonça', 'wp-sms' ); ?></a>
                         <span class="title"><?php _e( 'Language Contributor', 'wp-sms' ); ?></span>
                     </li>
@@ -227,10 +231,8 @@
                     <a target="_blank" href="http://code.google.com/p/php-excel-reader/">Excel Reader</a>,
                     <a target="_blank" href="http://github.com/elidickinson/php-export-data/">Export Data</a>,
                     <a target="_blank" href="https://harvesthq.github.io/chosen/">Chosen</a>,
-                    <a target="_blank" href="https://github.com/jackocnr/intl-tel-input/">International Telephone
-                        Input</a>,
-                    <a target="_blank" href="https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin/">jQuery
-                        Word and character counter</a>,
+                    <a target="_blank" href="https://github.com/jackocnr/intl-tel-input/">International Telephone Input</a>,
+                    <a target="_blank" href="https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin/">jQuery Word and character counter</a>,
                     <a target="_blank" href="https://craftpip.github.io/jquery-confirm/">jQuery Confirm</a>.</p>
             </div>
         </div>
