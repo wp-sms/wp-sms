@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package    WP_SMS_Api
  * @version    1.0
  */
-class Subscribers extends \WP_SMS\RestApi {
+class Credit extends \WP_SMS\RestApi {
 
 	public function __construct() {
 		// Register routes
@@ -26,24 +26,10 @@ class Subscribers extends \WP_SMS\RestApi {
 	public function register_routes() {
 
 		// SMS Newsletter
-		register_rest_route( $this->namespace . '/v1', '/subscribers', array(
+		register_rest_route( $this->namespace . '/v1', '/credit', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'subscribers_callback' ),
-				'args'                => array(
-					'page'     => array(
-						'required' => false,
-					),
-					'group_id' => array(
-						'required' => false,
-					),
-					'number'   => array(
-						'required' => false,
-					),
-					'search'   => array(
-						'required' => false,
-					)
-				),
 				'permission_callback' => array( $this, 'get_item_permissions_check' ),
 			)
 		) );
@@ -58,11 +44,7 @@ class Subscribers extends \WP_SMS\RestApi {
 		// Get parameters from request
 		$params = $request->get_params();
 
-		$page     = isset ( $params['page'] ) ? $params['page'] : '';
-		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : '';
-		$mobile   = isset ( $params['mobile'] ) ? $params['mobile'] : '';
-		$search   = isset ( $params['search'] ) ? $params['search'] : '';
-		$result   = self::getSubscribers( $page, $group_id, $mobile, $search );
+		$result   = self::getCredit();
 
 		return self::response( $result );
 	}
@@ -75,8 +57,8 @@ class Subscribers extends \WP_SMS\RestApi {
 	 * @return bool
 	 */
 	public function get_item_permissions_check( $request ) {
-		return current_user_can( 'wpsms_subscribers' );
+		return current_user_can( 'wpsms_setting' );
 	}
 }
 
-new Subscribers();
+new Credit();

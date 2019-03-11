@@ -252,6 +252,16 @@ class RestApi {
 		return new \WP_Error( 'verify_subscriber', __( 'Not found the number!', 'wp-sms' ) );
 	}
 
+	/**
+	 * Get Subscribers
+	 *
+	 * @param string $page
+	 * @param string $group_id
+	 * @param string $mobile
+	 * @param string $search
+	 *
+	 * @return array|object|null
+	 */
 	public static function getSubscribers( $page = '', $group_id = '', $mobile = '', $search = '' ) {
 		global $wpdb;
 
@@ -284,6 +294,19 @@ class RestApi {
 
 		return $result;
 	}
+
+	/**
+	 * Get Subscribers
+	 *
+	 * @return array|object|null
+	 */
+	public static function getCredit() {
+		$result = get_option( 'wp_last_credit' );
+
+		return $result;
+	}
+
+
 }
 
 new RestApi();
