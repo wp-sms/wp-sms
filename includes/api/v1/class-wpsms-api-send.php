@@ -41,7 +41,7 @@ class Send extends \WP_SMS\RestApi {
 						'required' => false,
 					)
 				),
-				//'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				'permission_callback' => array( $this, 'get_item_permissions_check' ),
 			)
 		) );
 	}
