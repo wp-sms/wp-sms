@@ -29,24 +29,23 @@ class Credit extends \WP_SMS\RestApi {
 		register_rest_route( $this->namespace . '/v1', '/credit', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'subscribers_callback' ),
+				'callback'            => array( $this, 'credit_callback' ),
 				'permission_callback' => array( $this, 'get_item_permissions_check' ),
 			)
 		) );
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_REST_Response
 	 */
-	public function subscribers_callback( \WP_REST_Request $request ) {
-		// Get parameters from request
-		$params = $request->get_params();
+	public function credit_callback( \WP_REST_Request $request ) {
+		$output = array(
+			'credit' => get_option( 'wp_last_credit' ),
+		);
 
-		$result   = self::getCredit();
-
-		return self::response( $result );
+		return new \WP_REST_Response( $output );
 	}
 
 	/**

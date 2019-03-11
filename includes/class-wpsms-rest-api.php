@@ -296,16 +296,25 @@ class RestApi {
 	}
 
 	/**
-	 * Get Subscribers
+	 * Send SMS
 	 *
-	 * @return array|object|null
+	 * @param $to
+	 * @param $msg
+	 * @param bool $isflash
+	 *
+	 * @return string|\WP_Error
 	 */
-	public static function getCredit() {
-		$result = get_option( 'wp_last_credit' );
+	public static function sendSMS( $to, $msg, $isflash = false ) {
+		// Check if valued required parameters or not
+		if ( empty( $to ) OR empty( $msg ) ) {
+			return new \WP_Error( 'send_sms', __( 'The required parameters must be valued!', 'wp-sms' ) );
+		}
+
+		// Get the result
+		$result = wp_sms_send($to, $msg, $isflash);
 
 		return $result;
 	}
-
 
 }
 
