@@ -253,25 +253,34 @@ class RestApi {
 	}
 
 	public static function getSubscribers( $page = '', $group_id = '', $mobile = '', $search = '' ) {
-		// TODO: need to complete this section and test
 		global $wpdb;
 
-		$where = '';
-		/*
+		$result_limit = 50;
+		$where        = '';
+		$limit        = $wpdb->prepare( ' LIMIT %d', $result_limit );
+
 		if ( $page ) {
-			//$where .= $wpdb->prepare( ' WHERE group_ID = %d', $group_id );
+			$limit = $limit . $wpdb->prepare( ' OFFSET %d', $result_limit * $page - $result_limit );
 		}
-		if ( $mobile ) {
-			$where .= $wpdb->prepare( 'AND mobile = %s', $mobile );
+		if ( $group_id AND $where ) {
+			$where .= $wpdb->prepare( ' AND group_ID = %d', $group_id );
+		} elseif ( $group_id AND ! $where ) {
+			$where = $wpdb->prepare( 'WHERE group_ID = %d', $group_id );
 		}
-		if ( $search ) {
-			$where .= $wpdb->prepare( 'AND name = %s', $search );
+
+		if ( $mobile AND $where ) {
+			$where .= $wpdb->prepare( ' AND mobile = %s', $mobile );
+		} elseif ( $mobile AND ! $where ) {
+			$where = $wpdb->prepare( 'WHERE mobile = %s', $mobile );
 		}
-		if ( $group_id ) {
-			$where .= $wpdb->prepare( 'AND group_ID = %d', $group_id );
+
+		if ( $search AND $where ) {
+			$where .= $wpdb->prepare( ' AND name LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' );
+		} elseif ( $search AND ! $where ) {
+			$where = $wpdb->prepare( 'WHERE name LIKE "%s"', '%' . $wpdb->esc_like( $search ) . '%' );
 		}
-		*/
-		$result = $wpdb->get_col( "SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where );
+
+		$result = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}sms_subscribes {$where}{$limit}" );
 
 		return $result;
 	}

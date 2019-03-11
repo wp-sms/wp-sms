@@ -29,7 +29,7 @@ class Subscribers extends \WP_SMS\RestApi {
 		register_rest_route( $this->namespace . '/v1', '/subscribers', array(
 			array(
 				'methods'  => \WP_REST_Server::READABLE,
-				'callback' => array( $this, 'subscribers' ),
+				'callback' => array( $this, 'subscribers_callback' ),
 				'args'     => array(
 					'page'     => array(
 						'required' => false,
@@ -55,7 +55,7 @@ class Subscribers extends \WP_SMS\RestApi {
 	 */
 	public function subscribers_callback( \WP_REST_Request $request ) {
 		if ( ! current_user_can( 'wpsms_subscribers' ) ) {
-			return self::response( new \WP_Error( 'permission_denied', __( 'Activation code is wrong!', 'wp-sms' ) ), 400 );
+			return self::response( new \WP_Error( 'permission_denied', __( 'You don\'t have \'wpsms_subscribers\' capability', 'wp-sms' ) ), 400 );
 		}
 		// Get parameters from request
 		$params = $request->get_params();
@@ -74,4 +74,4 @@ class Subscribers extends \WP_SMS\RestApi {
 	}
 }
 
-new Newsletter();
+new Subscribers();
