@@ -147,7 +147,7 @@ class Version {
 			'smslive247'       => 'smslive247.com',
 			'sendsms247'       => 'sendsms247.com',
 			'ssdindia'         => 'ssdindia.com',
-			'viensms'          => 'viensms.com',
+			'viensms'          => 'viensms.com - jolis.net',
 			'vsms'             => 'vsms.club',
 			'websms'           => 'websms.at',
 			'smstrade'         => 'smstrade.de',
