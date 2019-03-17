@@ -311,7 +311,10 @@ class RestApi {
 		}
 
 		// Get the result
-		$result = wp_sms_send($to, $msg, $isflash);
+		global $sms;
+		$sms->to    = array( $to );
+		$sms->msg   = $msg;
+		$result = $sms->SendSMS();
 
 		return $result;
 	}
