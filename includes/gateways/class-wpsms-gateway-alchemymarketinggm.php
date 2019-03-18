@@ -54,6 +54,7 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 			$this->log( $this->from, $this->msg, $this->to, $credit->get_error_message(), 'error' );
 
 			return $credit;
+
 		}
 
 		// Encode message
@@ -111,7 +112,9 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 		if ( isset( $xml['action'] ) AND $xml['action'] == 'getcredits' ) {
 			return (int) $xml['data']->account->balance;
 		} else {
-			return new \WP_Error( 'account-credit', $xml['data']->errormessage );
+			$error = (array) $xml['data']->errormessage;
+
+			return new \WP_Error( 'account-credit', $error[0] );
 		}
 	}
 }
