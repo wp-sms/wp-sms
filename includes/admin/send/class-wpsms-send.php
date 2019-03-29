@@ -121,7 +121,7 @@ class SMS_Send {
 					}
 				}
 			} else {
-				echo "<div class='error'><p>" . __( 'Please enter a message', 'wp-sms' ) . "</p></div>";
+				echo "<div class='error'><p>" . __( 'Please enter your SMS message.', 'wp-sms' ) . "</p></div>";
 			}
 		}
 
