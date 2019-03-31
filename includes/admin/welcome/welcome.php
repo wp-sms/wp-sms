@@ -22,7 +22,7 @@
             <section class="center-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'Great update for WP-SMS', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'ImprovementOther changes update for WP-SMS', 'wp-sms' ); ?></h2>
                     </div>
                 </div>
             </section>
@@ -30,43 +30,41 @@
             <section class="normal-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'New Integration!', 'wp-sms' ); ?></h2>
-                        <p><?php _e( 'Now Ultimate Members plugin supporting.', 'wp-sms' ); ?></p>
+                        <h2><?php _e( 'SMS box in WooCommerce orders', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'You can send SMS to customer orders.', 'wp-sms' ); ?></p>
                     </div>
                 </div>
 
                 <div class="right text-center">
-                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/ultimate-members.png' ); ?>"/>
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wc-order-box.png' ); ?>"/>
                 </div>
             </section>
 
             <section class="normal-section">
                 <div class="right">
                     <div class="content-padding">
-                        <h2><?php _e( 'WooCommerce OTP', 'wp-sms' ); ?></h2>
-                        <p><?php _e( 'Mobile verification for submit a new orders with limitation and period time on retries.', 'wp-sms' ); ?></p>
+                        <h2><?php _e( 'SMS option in WooCommerce order notes', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'Send your notes with SMS!', 'wp-sms' ); ?></p>
                     </div>
                 </div>
 
                 <div class="left text-center">
-                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/otp.png' ); ?>"/>
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wc-order-box-note.png' ); ?>"/>
                 </div>
             </section>
 
             <section class="normal-section" style="border-bottom: 0px none;">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'Other changes', 'wp-sms' ); ?></h2>
+                        <h2 style="margin-top: 10px;"><?php _e( 'Other changes', 'wp-sms' ); ?></h2>
                     </div>
                 </div>
 
                 <div class="right">
                     <ul>
-                        <li>Add: Alchemymarketinggm.com - Africa gateway.</li>
-                        <li>Update: dot4all.it gateway now available on free version.</li>
-                        <li>Update: gatewayapi.com to support Unicode.</li>
-                        <li>Improved: Response status and Credits to do not save result if is object.</li>
-                        <li>Improvments some gateways class.</li>
+                        <li>Added Smsgateway.me and bandwidth.com gateways.</li>
+                        <li>Improvement Moceansms, Pswin, Viensms and Clickatell gateways.</li>
+                        <li>Minor improvements.</li>
                     </ul>
                 </div>
             </section>
