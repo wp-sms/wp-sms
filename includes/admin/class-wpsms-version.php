@@ -166,6 +166,7 @@ class Version {
 			'onewaysms'        => 'onewaysms.com',
 			'smsmisr'          => 'smsmisr.com',
 			'smsgateway'       => 'smsgateway.me',
+			'bandwidth'        => 'bandwidth.com',
 		);
 
 		return $gateways;
