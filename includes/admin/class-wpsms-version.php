@@ -147,7 +147,7 @@ class Version {
 			'smslive247'       => 'smslive247.com',
 			'sendsms247'       => 'sendsms247.com',
 			'ssdindia'         => 'ssdindia.com',
-			'jolis'          => 'jolis.net',
+			'jolis'            => 'jolis.net',
 			'vsms'             => 'vsms.club',
 			'websms'           => 'websms.at',
 			'smstrade'         => 'smstrade.de',
@@ -165,6 +165,7 @@ class Version {
 			'textmagic'        => 'textmagic.com',
 			'onewaysms'        => 'onewaysms.com',
 			'smsmisr'          => 'smsmisr.com',
+			'smsgateway'       => 'smsgateway.me',
 		);
 
 		return $gateways;
