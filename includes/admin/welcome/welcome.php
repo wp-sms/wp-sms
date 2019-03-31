@@ -22,7 +22,7 @@
             <section class="center-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'ImprovementOther changes update for WP-SMS', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'Improvement update for WP-SMS', 'wp-sms' ); ?></h2>
                     </div>
                 </div>
             </section>
