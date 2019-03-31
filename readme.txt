@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.1
 Requires PHP: 5.4
-Stable tag: 5.1.2
+Stable tag: 5.1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -228,6 +228,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.3 =
+* Minor improvements.
+
 = 5.1.2 =
 * Add: Alchemymarketinggm.com - Africa gateway.
 * Update: dot4all.it gateway now available on free version.
