@@ -93,6 +93,9 @@ class WP_SMS {
 
 		// API class.
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
+		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-subscribers.php';
+		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-send.php';
+		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-credit.php';
 
 		// Template functions.
 		require_once WP_SMS_DIR . 'includes/template-functions.php';

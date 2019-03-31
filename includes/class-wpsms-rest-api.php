@@ -26,6 +26,7 @@ class RestApi {
 
 	/**
 	 * Handle Response
+	 *
 	 * @param $message
 	 * @param int $status
 	 *
@@ -250,6 +251,74 @@ class RestApi {
 
 		return new \WP_Error( 'verify_subscriber', __( 'Not found the number!', 'wp-sms' ) );
 	}
+
+	/**
+	 * Get Subscribers
+	 *
+	 * @param string $page
+	 * @param string $group_id
+	 * @param string $mobile
+	 * @param string $search
+	 *
+	 * @return array|object|null
+	 */
+	public static function getSubscribers( $page = '', $group_id = '', $mobile = '', $search = '' ) {
+		global $wpdb;
+
+		$result_limit = 50;
+		$where        = '';
+		$limit        = $wpdb->prepare( ' LIMIT %d', $result_limit );
+
+		if ( $page ) {
+			$limit = $limit . $wpdb->prepare( ' OFFSET %d', $result_limit * $page - $result_limit );
+		}
+		if ( $group_id AND $where ) {
+			$where .= $wpdb->prepare( ' AND group_ID = %d', $group_id );
+		} elseif ( $group_id AND ! $where ) {
+			$where = $wpdb->prepare( 'WHERE group_ID = %d', $group_id );
+		}
+
+		if ( $mobile AND $where ) {
+			$where .= $wpdb->prepare( ' AND mobile = %s', $mobile );
+		} elseif ( $mobile AND ! $where ) {
+			$where = $wpdb->prepare( 'WHERE mobile = %s', $mobile );
+		}
+
+		if ( $search AND $where ) {
+			$where .= $wpdb->prepare( ' AND name LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' );
+		} elseif ( $search AND ! $where ) {
+			$where = $wpdb->prepare( 'WHERE name LIKE "%s"', '%' . $wpdb->esc_like( $search ) . '%' );
+		}
+
+		$result = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}sms_subscribes {$where}{$limit}" );
+
+		return $result;
+	}
+
+	/**
+	 * Send SMS
+	 *
+	 * @param $to
+	 * @param $msg
+	 * @param bool $isflash
+	 *
+	 * @return string|\WP_Error
+	 */
+	public static function sendSMS( $to, $msg, $isflash = false ) {
+		// Check if valued required parameters or not
+		if ( empty( $to ) OR empty( $msg ) ) {
+			return new \WP_Error( 'send_sms', __( 'The required parameters must be valued!', 'wp-sms' ) );
+		}
+
+		// Get the result
+		global $sms;
+		$sms->to    = array( $to );
+		$sms->msg   = $msg;
+		$result = $sms->SendSMS();
+
+		return $result;
+	}
+
 }
 
 new RestApi();

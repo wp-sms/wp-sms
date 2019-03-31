@@ -31,6 +31,7 @@ class Privacy_Actions {
 		if ( $screen == $pagehook ) {
 			$columns[ $pagehook ] = 2;
 		}
+
 		return $columns;
 	}
 
@@ -57,7 +58,7 @@ class Privacy_Actions {
 		/*
 		 * privacy Page
 		 */
-		if ( $pagenow == "admin.php" and $_GET['page'] == "wp-sms-subscribers-privacy" ) {
+		if ( $pagenow == "admin.php" and isset( $_GET['page'] ) AND $_GET['page'] == "wp-sms-subscribers-privacy" ) {
 
 			if ( isset( $_GET['error'] ) ) {
 				/*

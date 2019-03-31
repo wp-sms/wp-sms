@@ -629,6 +629,18 @@ class Settings_Pro {
 					),
 					'desc'    => __( 'Choose from which field you get numbers for sending SMS.', 'wp-sms' )
 				),
+				'wc_meta_box'                     => array(
+					'id'   => 'wc_meta_box',
+					'name' => __( 'Order Meta Box', 'wp-sms' ),
+					'type' => 'header'
+				),
+				'wc_meta_box_enable'              => array(
+					'id'      => 'wc_meta_box_enable',
+					'name'    => __( 'Status', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'Enable send SMS meta box on Orders.<br>Note: You must choose the mobile field first if disable Meta Box will not appear too.', 'wp-sms' )
+				),
 				'wc_otp'                     => array(
 					'id'   => 'wc_otp',
 					'name' => __( 'OTP Verification', 'wp-sms' ),
