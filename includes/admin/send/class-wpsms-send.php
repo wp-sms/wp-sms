@@ -17,7 +17,6 @@ class SMS_Send {
 	protected $options;
 
 	public function __construct() {
-
 		global $wpdb, $sms;
 
 		$this->db        = $wpdb;
@@ -32,12 +31,11 @@ class SMS_Send {
 	 * @param  Not param
 	 */
 	public function render_page() {
-		global $sms, $wpdb;
-
-		$get_group_result = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" );
-		$get_users_mobile = $wpdb->get_col( "SELECT `meta_value` FROM `{$wpdb->prefix}usermeta` WHERE `meta_key` = 'mobile'" );
+		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->db->prefix}sms_subscribes_group`" );
+		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile'" );
 
 		$mobile_field = Option::getOption( 'add_mobile_field' );
+
 		//Get User Mobile List by Role
 		if ( ! empty( $mobile_field ) AND $mobile_field == 1 ) {
 			$wpsms_list_of_role = array();
@@ -54,8 +52,11 @@ class SMS_Send {
 				);
 			}
 		}
+
 		$gateway_name = Option::getOption( 'gateway_name' );
-		if ( $gateway_name && ! $sms->GetCredit() ) {
+		$credit = $this->sms->GetCredit();
+
+		if ( $gateway_name && ! $credit ) {
 			echo '<br><div class="update-nag">' . __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ) . '</div>';
 
 			return;
@@ -69,14 +70,14 @@ class SMS_Send {
 			if ( $_POST['wp_get_message'] ) {
 				if ( $_POST['wp_send_to'] == "wp_subscribe_username" ) {
 					if ( $_POST['wpsms_group_name'] == 'all' ) {
-						$sms->to = $wpdb->get_col( "SELECT mobile FROM {$wpdb->prefix}sms_subscribes WHERE `status` = '1'" );
+						$this->sms->to = $this->db->get_col( "SELECT mobile FROM {$this->db->prefix}sms_subscribes WHERE `status` = '1'" );
 					} else {
-						$sms->to = $wpdb->get_col( "SELECT mobile FROM {$wpdb->prefix}sms_subscribes WHERE `status` = '1' AND `group_ID` = '" . $_POST['wpsms_group_name'] . "'" );
+						$this->sms->to = $this->db->get_col( "SELECT mobile FROM {$this->db->prefix}sms_subscribes WHERE `status` = '1' AND `group_ID` = '" . $_POST['wpsms_group_name'] . "'" );
 					}
 				} else if ( $_POST['wp_send_to'] == "wp_users" ) {
-					$sms->to = $get_users_mobile;
+					$this->sms->to = $get_users_mobile;
 				} else if ( $_POST['wp_send_to'] == "wp_tellephone" ) {
-					$sms->to = explode( ",", $_POST['wp_get_number'] );
+					$this->sms->to = explode( ",", $_POST['wp_get_number'] );
 				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
 					$to = array();
 					add_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
@@ -91,20 +92,20 @@ class SMS_Send {
 					foreach ( $list as $user ) {
 						$to[] = $user->mobile;
 					}
-					$sms->to = $to;
+					$this->sms->to = $to;
 				}
 
-				$sms->from = $_POST['wp_get_sender'];
-				$sms->msg  = $_POST['wp_get_message'];
+				$this->sms->from = $_POST['wp_get_sender'];
+				$this->sms->msg  = $_POST['wp_get_message'];
 
 				if ( isset( $_POST['wp_flash'] ) ) {
-					$sms->isflash = true;
+					$this->sms->isflash = true;
 				} else {
-					$sms->isflash = false;
+					$this->sms->isflash = false;
 				}
 
 				// Send sms
-				$response = $sms->SendSMS();
+				$response = $this->sms->SendSMS();
 
 				if ( is_wp_error( $response ) ) {
 					if ( is_array( $response->get_error_message() ) ) {
@@ -116,8 +117,8 @@ class SMS_Send {
 					echo "<div class='error'><p>" . sprintf( __( '<strong>SMS was not delivered! results received:</strong> %s', 'wp-sms' ), $response ) . "</p></div>";
 				} else {
 					echo "<div class='updated'><p>" . __( 'The SMS sent successfully', 'wp-sms' ) . "</p></div>";
-					if ( ! is_object( $sms->GetCredit() ) ) {
-						update_option( 'wp_last_credit', $sms->GetCredit() );
+					if ( ! is_object( $credit ) ) {
+						update_option( 'wp_last_credit', $credit );
 					}
 				}
 			} else {
@@ -133,6 +134,7 @@ class SMS_Send {
 	 */
 	public static function get_query_user_mobile( $user_query ) {
 		global $wpdb;
+
 		$user_query->query_fields .= ', m1.meta_value AS mobile ';
 		$user_query->query_from   .= " JOIN {$wpdb->usermeta} m1 ON (m1.user_id = {$wpdb->users}.ID AND m1.meta_key = 'mobile') ";
 
