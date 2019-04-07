@@ -39,7 +39,7 @@ class Admin {
 			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
 			wp_enqueue_style( 'wpsms-admin-css' );
 			if ( is_rtl() ) {
-				wp_enqueue_style( 'wpsms-rtl-css',  WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
+				wp_enqueue_style( 'wpsms-rtl-css', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
 			}
 
 			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );

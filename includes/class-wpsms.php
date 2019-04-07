@@ -23,7 +23,7 @@ class WP_SMS {
 	/**
 	 * Constructors plugin Setup
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 */
 	public function plugin_setup() {
 		// Load text domain
@@ -44,7 +44,7 @@ class WP_SMS {
 	/**
 	 * Includes plugin files
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 */
 	public function includes() {
 
@@ -84,6 +84,9 @@ class WP_SMS {
 
 			// Subscribers class.
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
+
+			// System info class.
+			require_once WP_SMS_DIR . 'includes/admin/system-info/class-wpsms-system-info.php';
 		}
 
 		if ( ! is_admin() ) {
