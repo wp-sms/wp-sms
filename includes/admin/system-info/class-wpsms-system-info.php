@@ -11,7 +11,7 @@ class SystemInfo {
 		include_once "system-info.php";
 		// Export log file
 		if ( isset( $_POST['wpsms_download_info'] ) ) {
-			$style="
+			$style = "
 				<style>
 				#adminmenumain {display: none;}
 				#wpadminbar {display: none;}
@@ -25,14 +25,6 @@ class SystemInfo {
 			header( "Expires: 0" );
 			exit;
 		}
-	}
-
-	/**
-	 * Load system info page assets
-	 */
-	public function system_info_assets() {
-		wp_enqueue_style( 'wpsms-system-info-css', WP_SMS_URL . 'assets/css/system-info.css', true, WP_SMS_VERSION );
-
 	}
 
 	/**
@@ -128,5 +120,3 @@ class SystemInfo {
 		return $information;
 	}
 }
-
-new SystemInfo();

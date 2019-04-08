@@ -11,11 +11,12 @@
                         <div class="wrap wps-wrap">
                             <table class="form-table">
                                 <tr valign="top">
-                                    <th scope="row" colspan="2"><h3><?php _e( 'Download information', 'wp-sms' ); ?></h3>
-                                        <form  method="POST">
-                                            <input type="submit" class="button action" name="wpsms_download_info" value="<?php _e( 'Download', 'wp-sms' ); ?>" />
+                                    <th scope="row" colspan="2">
+                                        <h3><?php _e( 'Download information', 'wp-sms' ); ?></h3>
+                                        <form method="POST">
+                                            <input type="submit" class="button action" name="wpsms_download_info" value="<?php _e( 'Download', 'wp-sms' ); ?>"/>
                                         </form>
-                                        <?php ?>
+										<?php ?>
                                     </th>
                                 </tr>
                                 <tr valign="top">
