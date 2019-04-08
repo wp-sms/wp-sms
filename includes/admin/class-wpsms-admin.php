@@ -95,6 +95,7 @@ class Admin {
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( $this, 'outbox_callback' ) );
+
 		$hook_suffix['subscribers'] = add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( $this, 'subscribers_callback' ) );
 		$hook_suffix['groups']      = add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array( $this, 'groups_callback' ) );
 
@@ -102,6 +103,8 @@ class Admin {
 		if ( isset( $this->options['gdpr_compliance'] ) and $this->options['gdpr_compliance'] == 1 ) {
 			$hook_suffix['privacy'] = add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
 		}
+
+		add_submenu_page( 'wp-sms', __( 'System Info', 'wp-sms' ), __( 'System Info', 'wp-sms' ), 'manage_options', 'wp-sms-system-info', array( $this, 'render_page' ) );
 
 		// Add styles to menu pages
 		foreach ( $hook_suffix as $menu => $hook ) {

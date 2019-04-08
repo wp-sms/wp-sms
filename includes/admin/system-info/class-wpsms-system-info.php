@@ -4,11 +4,6 @@ namespace WP_SMS;
 
 class SystemInfo {
 
-	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'add_system_info_menu' ), 11 );
-
-	}
-
 	/**
 	 * System info admin page
 	 */
@@ -30,17 +25,6 @@ class SystemInfo {
 			header( "Expires: 0" );
 			exit;
 		}
-	}
-
-	/**
-	 * Add WP SMS Professional Package admin page settings
-	 * */
-	public function add_system_info_menu() {
-		$hook = add_submenu_page( 'wp-sms', __( 'System Info', 'wp-sms' ), __( 'System Info', 'wp-sms' ), 'manage_options', 'wp-sms-system-info', array(
-			$this,
-			'render_page'
-		) );
-		add_action( "load-{$hook}", array( $this, 'system_info_assets' ) );
 	}
 
 	/**
