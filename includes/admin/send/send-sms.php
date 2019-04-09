@@ -51,7 +51,7 @@
                                     <label for="wp_get_sender"><?php _e( 'Send from', 'wp-sms' ); ?>:</label>
                                 </th>
                                 <td>
-                                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $sms->from; ?>" maxlength="18"/>
+                                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $this->sms->from; ?>" maxlength="18"/>
                                 </td>
                             </tr>
                             <tr valign="top">
@@ -104,12 +104,12 @@
                                         <div class="clearfix"></div>
                                         <textarea cols="80" rows="5" style="direction:ltr;margin-top 5px;" id="wp_get_number" name="wp_get_number"></textarea>
                                         <div class="clearfix"></div>
-                                        <span style="font-size: 14px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $sms->validateNumber ); ?></span>
+                                        <span style="font-size: 14px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
                                     </span>
                                 </td>
                             </tr>
 
-							<?php if ( ! $sms->bulk_send ) : ?>
+							<?php if ( ! $this->sms->bulk_send ) : ?>
                                 <tr>
                                     <td></td>
                                     <td><?php _e( 'This gateway does not support sending bulk message and used first number to sending sms.', 'wp-sms' ); ?></td>
@@ -127,7 +127,7 @@
                                     </p>
                                 </td>
                             </tr>
-							<?php if ( $sms->flash == "enable" ) { ?>
+							<?php if ( $this->sms->flash == "enable" ) { ?>
                                 <tr>
                                     <td><?php _e( 'Send a Flash', 'wp-sms' ); ?>:</td>
                                     <td>
