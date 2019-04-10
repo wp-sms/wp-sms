@@ -433,16 +433,15 @@ class Gateway {
 
 				// Return html
 				return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Deactive!', 'wp-sms' ) . '</div>';
-			} else {
-				// Update credit
-				if ( ! is_object( $sms->GetCredit() ) ) {
-					update_option( 'wpsms_gateway_credit', $result );
-				}
-				self::$get_response = var_export( $result, true );
-
-				// Return html
-				return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Active!', 'wp-sms' ) . '</div>';
 			}
+			// Update credit
+			if ( ! is_object( $result ) ) {
+				update_option( 'wpsms_gateway_credit', $result );
+			}
+			self::$get_response = var_export( $result, true );
+
+			// Return html
+			return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __( 'Active!', 'wp-sms' ) . '</div>';
 		}
 	}
 
@@ -494,20 +493,27 @@ class Gateway {
 	 */
 	public static function credit() {
 		global $sms;
+
 		// Get credit
 		$result = $sms->GetCredit();
 
 		if ( is_wp_error( $result ) ) {
+			update_option( 'wpsms_gateway_credit', 0 );
+
 			return 0;
-		} else {
-			return $result;
 		}
+
+		if ( ! is_object( $result ) ) {
+			update_option( 'wpsms_gateway_credit', $result );
+		}
+
+		return $result;
 	}
 
 	/**
 	 * Modify destination number
 	 *
-	 * @param  array $to
+	 * @param array $to
 	 *
 	 * @return array/string
 	 */

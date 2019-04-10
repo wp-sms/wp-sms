@@ -123,7 +123,7 @@
                                 <td>
                                     <textarea dir="auto" cols="80" rows="5" name="wp_get_message" id="wp_get_message"></textarea><br/>
                                     <p class="number">
-										<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . \WP_SMS\Gateway::credit(); ?>
+										<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . $credit; ?>
                                     </p>
                                 </td>
                             </tr>

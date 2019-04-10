@@ -28,7 +28,7 @@ class SMS_Send {
 	/**
 	 * Sending sms admin page
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 */
 	public function render_page() {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->db->prefix}sms_subscribes_group`" );
@@ -54,7 +54,7 @@ class SMS_Send {
 		}
 
 		$gateway_name = Option::getOption( 'gateway_name' );
-		$credit = $this->sms->GetCredit();
+		$credit       = get_option( 'wpsms_gateway_credit' );
 
 		if ( $gateway_name && ! $credit ) {
 			echo '<br><div class="update-nag">' . __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ) . '</div>';
@@ -117,9 +117,7 @@ class SMS_Send {
 					echo "<div class='error'><p>" . sprintf( __( '<strong>SMS was not delivered! results received:</strong> %s', 'wp-sms' ), $response ) . "</p></div>";
 				} else {
 					echo "<div class='updated'><p>" . __( 'The SMS sent successfully', 'wp-sms' ) . "</p></div>";
-					if ( ! is_object( $credit ) ) {
-						update_option( 'wpsms_gateway_credit', $credit );
-					}
+					$credit = Gateway::credit();
 				}
 			} else {
 				echo "<div class='error'><p>" . __( 'Please enter your SMS message.', 'wp-sms' ) . "</p></div>";
