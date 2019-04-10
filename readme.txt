@@ -230,6 +230,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 5.1.4 =
 * Added: System info page to get more information for debugging.
+* Improved: Check credits.
 
 = 5.1.3 =
 * Minor improvements.
