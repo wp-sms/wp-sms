@@ -120,6 +120,9 @@ class Install {
 			 ADD response TEXT NOT NULL AFTER recipient" );
 
 			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
+
+			// Delete old last credit option
+			delete_option('wp_last_credit');
 		}
 	}
 

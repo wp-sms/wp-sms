@@ -429,14 +429,14 @@ class Gateway {
 				self::$get_response = var_export( $result->get_error_message(), true );
 
 				// Update credit
-				update_option( 'wp_last_credit', 0 );
+				update_option( 'wpsms_gateway_credit', 0 );
 
 				// Return html
 				return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __( 'Deactive!', 'wp-sms' ) . '</div>';
 			} else {
 				// Update credit
 				if ( ! is_object( $sms->GetCredit() ) ) {
-					update_option( 'wp_last_credit', $result );
+					update_option( 'wpsms_gateway_credit', $result );
 				}
 				self::$get_response = var_export( $result, true );
 

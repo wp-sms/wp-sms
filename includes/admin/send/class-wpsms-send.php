@@ -118,7 +118,7 @@ class SMS_Send {
 				} else {
 					echo "<div class='updated'><p>" . __( 'The SMS sent successfully', 'wp-sms' ) . "</p></div>";
 					if ( ! is_object( $credit ) ) {
-						update_option( 'wp_last_credit', $credit );
+						update_option( 'wpsms_gateway_credit', $credit );
 					}
 				}
 			} else {

@@ -37,7 +37,7 @@ class Front {
 	public function admin_bar() {
 		global $wp_admin_bar;
 		if ( is_super_admin() && is_admin_bar_showing() ) {
-			$credit = get_option( 'wp_last_credit' );
+			$credit = get_option( 'wpsms_gateway_credit' );
 			if ( $credit AND isset( $this->options['account_credit_in_menu'] ) AND ! is_object( $credit ) ) {
 				$wp_admin_bar->add_menu( array(
 					'id'    => 'wp-credit-sms',
