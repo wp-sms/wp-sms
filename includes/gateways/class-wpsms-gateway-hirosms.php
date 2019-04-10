@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class hirosms extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://87.107.124.66/webservice/send.php?wsdl";
+	private $wsdl_link = "http://my.hiro-sms.com/webservice/send.php?wsdl";
 	public $tariff = "https://www.hiro-sms.com/";
 	public $unitrial = true;
 	public $unit;

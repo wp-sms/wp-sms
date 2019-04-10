@@ -39,7 +39,7 @@ class Admin {
 			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
 			wp_enqueue_style( 'wpsms-admin-css' );
 			if ( is_rtl() ) {
-				wp_enqueue_style( 'wpsms-rtl-css',  WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
+				wp_enqueue_style( 'wpsms-rtl-css', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
 			}
 
 			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );
@@ -55,7 +55,7 @@ class Admin {
 	public function admin_bar() {
 		global $wp_admin_bar;
 		if ( is_super_admin() && is_admin_bar_showing() ) {
-			$credit = get_option( 'wp_last_credit' );
+			$credit = get_option( 'wpsms_gateway_credit' );
 			if ( $credit AND isset( $this->options['account_credit_in_menu'] ) AND ! is_object( $credit ) ) {
 				$wp_admin_bar->add_menu( array(
 					'id'    => 'wp-credit-sms',
@@ -78,7 +78,7 @@ class Admin {
 	 */
 	public function dashboard_glance() {
 		$subscribe = $this->db->get_var( "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes" );
-		$credit    = get_option( 'wp_last_credit' );
+		$credit    = get_option( 'wpsms_gateway_credit' );
 
 		echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf( __( '%s Subscriber', 'wp-sms' ), $subscribe ) . "</a></li>";
 		if ( ! is_object( $credit ) ) {
@@ -95,6 +95,7 @@ class Admin {
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
 		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( $this, 'outbox_callback' ) );
+
 		$hook_suffix['subscribers'] = add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( $this, 'subscribers_callback' ) );
 		$hook_suffix['groups']      = add_submenu_page( 'wp-sms', __( 'Groups', 'wp-sms' ), __( 'Groups', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers-group', array( $this, 'groups_callback' ) );
 
@@ -102,6 +103,8 @@ class Admin {
 		if ( isset( $this->options['gdpr_compliance'] ) and $this->options['gdpr_compliance'] == 1 ) {
 			$hook_suffix['privacy'] = add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
 		}
+
+		$hook_suffix['system_info'] = add_submenu_page( 'wp-sms', __( 'System Info', 'wp-sms' ), __( 'System Info', 'wp-sms' ), 'manage_options', 'wp-sms-system-info', array( $this, 'system_info_callback' ) );
 
 		// Add styles to menu pages
 		foreach ( $hook_suffix as $menu => $hook ) {
@@ -157,6 +160,14 @@ class Admin {
 
 		$page           = new Privacy();
 		$page->pagehook = get_current_screen()->id;
+		$page->render_page();
+	}
+
+	/**
+	 * System info page.
+	 */
+	public function system_info_callback() {
+		$page = new SystemInfo();
 		$page->render_page();
 	}
 
@@ -219,6 +230,14 @@ class Admin {
 		add_meta_box( 'privacy-meta-1', esc_html( get_admin_page_title() ), array( Privacy::class, 'privacy_meta_html_gdpr' ), $pagehook, 'side', 'core' );
 		add_meta_box( 'privacy-meta-2', __( 'Export User’s Data related to WP-SMS', 'wp-sms' ), array( Privacy::class, 'privacy_meta_html_export' ), $pagehook, 'normal', 'core' );
 		add_meta_box( 'privacy-meta-3', __( 'Erase User’s Data related to WP-SMS', 'wp-sms' ), array( Privacy::class, 'privacy_meta_html_delete' ), $pagehook, 'normal', 'core' );
+	}
+
+	/**
+	 * Load system info page assets
+	 */
+	public function system_info_assets() {
+		wp_enqueue_style( 'wpsms-system-info-css', WP_SMS_URL . 'assets/css/system-info.css', true, WP_SMS_VERSION );
+
 	}
 
 	/**

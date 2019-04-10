@@ -99,7 +99,11 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 		}
 
 		// Get data
-		$get_data = file_get_contents( $this->wsdl_link . '?action=getcredits&username=' . $this->username . '&password=' . $this->password );
+		$response = wp_remote_get( $this->wsdl_link . '?action=getcredits&username=' . $this->username . '&password=' . $this->password );
+
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
+		}
 
 		// Check enable simplexml function in the php
 		if ( ! function_exists( 'simplexml_load_string' ) ) {
@@ -107,7 +111,7 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 		}
 
 		// Load xml
-		$xml = (array) simplexml_load_string( $get_data );
+		$xml = (array) simplexml_load_string( $response['body'] );
 
 		if ( isset( $xml['action'] ) AND $xml['action'] == 'getcredits' ) {
 			return (int) $xml['data']->account->balance;

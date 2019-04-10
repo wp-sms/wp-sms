@@ -22,7 +22,7 @@
             <section class="center-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'ImprovementOther changes update for WP-SMS', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'Improvement feature for WP-SMS', 'wp-sms' ); ?></h2>
                     </div>
                 </div>
             </section>
@@ -56,15 +56,14 @@
             <section class="normal-section" style="border-bottom: 0px none;">
                 <div class="left">
                     <div class="content-padding">
-                        <h2 style="margin-top: 10px;"><?php _e( 'Other changes', 'wp-sms' ); ?></h2>
+                        <h2 style="margin-top: 10px;"><?php _e( 'New changes', 'wp-sms' ); ?></h2>
                     </div>
                 </div>
 
                 <div class="right">
                     <ul>
-                        <li>Added Smsgateway.me and bandwidth.com gateways.</li>
-                        <li>Improvement Moceansms, Pswin, Viensms and Clickatell gateways.</li>
-                        <li>Minor improvements.</li>
+                        <li>Added: System info page to get more information for debugging.</li>
+                        <li>Improved: Check credits.</li>
                     </ul>
                 </div>
             </section>

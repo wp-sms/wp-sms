@@ -42,7 +42,7 @@ class Credit extends \WP_SMS\RestApi {
 	 */
 	public function credit_callback( \WP_REST_Request $request ) {
 		$output = array(
-			'credit' => get_option( 'wp_last_credit' ),
+			'credit' => get_option( 'wpsms_gateway_credit' ),
 		);
 
 		return new \WP_REST_Response( $output );

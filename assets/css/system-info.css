@@ -1,0 +1,88 @@
+/** System info page **/
+
+.wps_title {
+    display: inline;
+    font-size: 1.6em;
+}
+
+.wp-sms-settings .widefat {
+    float: left;
+
+}
+
+.widefat th {
+    text-align: left !important;
+    border: none !important;
+}
+
+.wp-sms-settings .postbox-container {
+    margin-top: 51px;
+}
+
+.wp-sms-container {
+    margin: 0 auto;
+}
+
+.wp-sms-settings ul.tabs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wp-sms-settings ul.tabs li {
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 8px;
+    cursor: pointer;
+    border: 1px solid #f1f1f1;
+    margin: 0;
+}
+
+.wp-sms-settings ul.tabs li.current {
+    background: #ffffff;
+    color: #222;
+    border-right-color: #e5e5e5;
+    border-left-color: #e5e5e5;
+    border-bottom-color: #ffffff;
+    border-top-color: #e5e5e5;
+    padding-bottom: 11px;
+}
+
+.wp-sms-settings .tab-content {
+    display: none;
+    background: #ffffff;
+    padding: 15px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    margin: -1px 0 0 0;
+}
+
+.wp-sms-settings .tab-content.current {
+    display: inherit;
+}
+
+.rtl .wp-sms-settings .widefat {
+    float: right;
+
+}
+
+.rtl .widefat th {
+    text-align: right !important;
+    border: none !important;
+}
+
+.wp-sms-settings #update_geoip {
+    margin-left: 5px;
+    margin-top: -5px;
+    line-height: 19px;
+    font-size: 12px;
+    height: 25px;
+}
+
+@media only screen and (max-width: 1327px) {
+    .wp-sms-settings ul.tabs li {
+        padding: 10px 5px;
+    }
+}
