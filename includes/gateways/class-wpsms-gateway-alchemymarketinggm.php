@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class alchemymarketinggm extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://alchemymarketinggm.com:9501/api";
+	private $wsdl_link = "http://alchemymarketinggm.com:port/api";
 	public $tariff = "http://www.alchemymarketinggm.com";
 	public $unitrial = false;
 	public $unit;
@@ -13,7 +13,8 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "90xxxxxxxxxx";
-		$this->has_key        = false;
+		$this->help           = "Use API key as Alchemy server port, like: 9443, you must ask them for it.";
+		$this->has_key        = true;
 	}
 
 	public function SendSMS() {
@@ -21,27 +22,30 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 		/**
 		 * Modify sender number
 		 *
+		 * @param string $this ->from sender number.
+		 *
 		 * @since 3.4
 		 *
-		 * @param string $this ->from sender number.
 		 */
 		$this->from = apply_filters( 'wp_sms_from', $this->from );
 
 		/**
 		 * Modify Receiver number
 		 *
+		 * @param array $this ->to receiver number
+		 *
 		 * @since 3.4
 		 *
-		 * @param array $this ->to receiver number
 		 */
 		$this->to = apply_filters( 'wp_sms_to', $this->to );
 
 		/**
 		 * Modify text message
 		 *
+		 * @param string $this ->msg text message.
+		 *
 		 * @since 3.4
 		 *
-		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
@@ -63,9 +67,10 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 			$this->to[ $k ] = trim( $number );
 		}
 
-		$to  = implode( ',', $this->to );
-		$to  = urlencode( $to );
-		$msg = urlencode( $this->msg );
+		$this->wsdl_link = str_replace( 'port', $this->has_key, $this->wsdl_link );
+		$to              = implode( ',', $this->to );
+		$to              = urlencode( $to );
+		$msg             = urlencode( $this->msg );
 
 		$result = file_get_contents( $this->wsdl_link . '?username=' . $this->username . '&password=' . $this->password . '&action=sendmessage&messagetype=SMS:TEXT&recipient=' . $to . '&messagedata=' . $msg );
 
@@ -78,9 +83,10 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 			/**
 			 * Run hook after send sms.
 			 *
+			 * @param string $result result output.
+			 *
 			 * @since 2.4
 			 *
-			 * @param string $result result output.
 			 */
 			do_action( 'wp_sms_send', $result['data'] );
 
@@ -93,10 +99,18 @@ class alchemymarketinggm extends \WP_SMS\Gateway {
 	}
 
 	public function GetCredit() {
+
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
+
+		// Check api key
+		if ( ! $this->has_key ) {
+			return new \WP_Error( 'account-credit', __( 'API/Key does not set for this gateway', 'wp-sms-pro' ) );
+		}
+
+		$this->wsdl_link = str_replace( 'port', $this->has_key, $this->wsdl_link );
 
 		// Get data
 		$response = wp_remote_get( $this->wsdl_link . '?action=getcredits&username=' . $this->username . '&password=' . $this->password );
