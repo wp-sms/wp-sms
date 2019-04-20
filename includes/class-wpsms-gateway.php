@@ -201,6 +201,7 @@ class Gateway {
 				'smsglobal'     => 'smsglobal.com',
 				'gatewayapi'    => 'gatewayapi.com',
 				'spirius'       => 'spirius.com',
+				'eztexting'     => 'eztexting.com'
 			),
 			'united kingdom' => array(
 				'_textplode'   => 'textplode.com',
