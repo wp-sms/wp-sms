@@ -68,10 +68,11 @@ class Newsletter {
 			/**
 			 * Run hook after adding subscribe.
 			 *
-			 * @since 3.0
-			 *
 			 * @param string $name name.
 			 * @param string $mobile mobile.
+			 *
+			 * @since 3.0
+			 *
 			 */
 			do_action( 'wp_sms_add_subscriber', $name, $mobile );
 
@@ -123,9 +124,10 @@ class Newsletter {
 		/**
 		 * Run hook after deleting subscribe.
 		 *
+		 * @param string $result result query.
+		 *
 		 * @since 3.0
 		 *
-		 * @param string $result result query.
 		 */
 		do_action( 'wp_sms_delete_subscriber', $result );
 
@@ -173,9 +175,10 @@ class Newsletter {
 			/**
 			 * Run hook after updating subscribe.
 			 *
+			 * @param string $result result query.
+			 *
 			 * @since 3.0
 			 *
-			 * @param string $result result query.
 			 */
 			do_action( 'wp_sms_update_subscriber', $result );
 
@@ -222,7 +225,7 @@ class Newsletter {
 	/**
 	 * Delete Group
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 *
 	 * @return false|int|void
 	 */
@@ -245,9 +248,10 @@ class Newsletter {
 			/**
 			 * Run hook after deleting group.
 			 *
+			 * @param string $result result query.
+			 *
 			 * @since 3.0
 			 *
-			 * @param string $result result query.
 			 */
 			do_action( 'wp_sms_delete_group', $result );
 
@@ -258,7 +262,7 @@ class Newsletter {
 	/**
 	 * Add Group
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 *
 	 * @return array
 	 */
@@ -290,9 +294,10 @@ class Newsletter {
 				/**
 				 * Run hook after adding group.
 				 *
+				 * @param string $result result query.
+				 *
 				 * @since 3.0
 				 *
-				 * @param string $result result query.
 				 */
 				do_action( 'wp_sms_add_group', $result );
 
@@ -344,9 +349,10 @@ class Newsletter {
 				/**
 				 * Run hook after updating group.
 				 *
+				 * @param string $result result query.
+				 *
 				 * @since 3.0
 				 *
-				 * @param string $result result query.
 				 */
 				do_action( 'wp_sms_update_group', $result );
 

@@ -4,6 +4,10 @@ namespace WP_SMS;
 
 use WP_SMS\Admin\Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 class Subscribers {
 
 	/**

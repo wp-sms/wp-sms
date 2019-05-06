@@ -2,6 +2,10 @@
 
 use WP_SMS\Gateway;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * @return mixed
  */

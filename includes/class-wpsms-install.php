@@ -16,7 +16,7 @@ class Install {
 	/**
 	 * Adding new MYSQL Table in Activation Plugin
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 */
 	public static function create_table( $network_wide ) {
 		global $wpdb;
@@ -39,7 +39,7 @@ class Install {
 	/**
 	 * Table SQL
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 */
 	public static function table_sql() {
 		global $wpdb;
@@ -122,7 +122,7 @@ class Install {
 			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
 
 			// Delete old last credit option
-			delete_option('wp_last_credit');
+			delete_option( 'wp_last_credit' );
 		}
 	}
 
