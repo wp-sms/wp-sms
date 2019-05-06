@@ -32,20 +32,20 @@ class Admin {
 	 */
 	public function admin_assets() {
 		// Register admin-bar.css for whole admin area
-		wp_register_style( 'wpsms-admin-bar-css', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
-		wp_enqueue_style( 'wpsms-admin-bar-css' );
+		wp_register_style( 'wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
+		wp_enqueue_style( 'wpsms-admin-bar' );
 
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
-			wp_register_style( 'wpsms-admin-css', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
-			wp_enqueue_style( 'wpsms-admin-css' );
+			wp_register_style( 'wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
+			wp_enqueue_style( 'wpsms-admin' );
 			if ( is_rtl() ) {
-				wp_enqueue_style( 'wpsms-rtl-css', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
+				wp_enqueue_style( 'wpsms-rtl', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION );
 			}
 
-			wp_enqueue_style( 'wpsms-chosen-css', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );
-			wp_enqueue_script( 'wpsms-chosen-js', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, WP_SMS_VERSION );
-			wp_enqueue_script( 'wpsms-word-and-character-counter-js', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION );
-			wp_enqueue_script( 'wpsms-admin-js', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION );
+			wp_enqueue_style( 'wpsms-chosen', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-chosen', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION );
 		}
 	}
 
@@ -236,7 +236,7 @@ class Admin {
 	 * Load system info page assets
 	 */
 	public function system_info_assets() {
-		wp_enqueue_style( 'wpsms-system-info-css', WP_SMS_URL . 'assets/css/system-info.css', true, WP_SMS_VERSION );
+		wp_enqueue_style( 'wpsms-system-info', WP_SMS_URL . 'assets/css/system-info.css', true, WP_SMS_VERSION );
 
 	}
 
