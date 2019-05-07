@@ -50,7 +50,7 @@ class Install {
 			$create_sms_subscribes = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
             ID int(10) NOT NULL auto_increment,
             date DATETIME,
-            name VARCHAR(20),
+            name VARCHAR(250),
             mobile VARCHAR(20) NOT NULL,
             status tinyint(1),
             activate_key INT(11),
@@ -115,9 +115,26 @@ class Install {
 		if ( $installer_wpsms_ver < WP_SMS_VERSION ) {
 
 			global $wpdb;
-			$wpdb->query( "ALTER TABLE {$wpdb->prefix}sms_send
+
+			// Add response and status for outbox
+			$table_name = $wpdb->prefix . 'sms_send';
+			$column     = $wpdb->get_results( $wpdb->prepare(
+				"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
+				DB_NAME, $table_name, 'response'
+			) );
+			if ( empty( $column ) ) {
+
+				$wpdb->query( "ALTER TABLE {$table_name}
 			 ADD status varchar(10) NOT NULL AFTER recipient,
 			 ADD response TEXT NOT NULL AFTER recipient" );
+			}
+
+			// Fix columns length issue
+			$table_name = $wpdb->prefix . 'sms_subscribes';
+			$wpdb->query( $wpdb->prepare(
+				"ALTER TABLE {$table_name} MODIFY name VARCHAR(%d)", 250
+			) );
+
 
 			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
 
