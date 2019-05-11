@@ -200,7 +200,7 @@ class Gateway {
 				'fortytwo'      => 'fortytwo.com',
 				'smsglobal'     => 'smsglobal.com',
 				'gatewayapi'    => 'gatewayapi.com',
-				'spirius'       => 'spirius.com',
+				'spirius'       => 'spirius.com'
 			),
 			'united kingdom' => array(
 				'_textplode'   => 'textplode.com',

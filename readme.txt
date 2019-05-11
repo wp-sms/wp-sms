@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.1
 Requires PHP: 5.4
-Stable tag: 5.1.4
+Stable tag: 5.1.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -228,6 +228,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.5 =
+* Fixed: Enqueue styles prefix and suffix.
+* Improved: Fix the edit group problem with space in group name.
+* Updated: Database tables field.
+* Updated: Experttexting gateway.
+* Minor improvements.
+
 = 5.1.4 =
 * Added: System info page to get more information for debugging.
 * Improved: Check credits.

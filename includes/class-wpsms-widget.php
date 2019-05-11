@@ -26,10 +26,11 @@ class Widget extends \WP_Widget {
 	/**
 	 * Front-end display of widget.
 	 *
-	 * @see WP_Widget::widget()
-	 *
 	 * @param array $args Widget arguments.
 	 * @param array $instance Saved values from database.
+	 *
+	 * @see WP_Widget::widget()
+	 *
 	 */
 	public function widget( $args, $instance ) {
 		echo $args['before_widget'];
@@ -38,7 +39,7 @@ class Widget extends \WP_Widget {
 		}
 		$widget_id = $this->get_numerics( $args['widget_id'] );
 
-		Newsletter::loadNewsLetter( $widget_id, $instance);
+		Newsletter::loadNewsLetter( $widget_id, $instance );
 
 		echo $args['after_widget'];
 	}
@@ -46,11 +47,11 @@ class Widget extends \WP_Widget {
 	/**
 	 * Back-end widget form.
 	 *
-	 * @see WP_Widget::form()
-	 *
 	 * @param array $instance Previously saved values from database.
 	 *
 	 * @return string|void
+	 * @see WP_Widget::form()
+	 *
 	 */
 	public function form( $instance ) {
 
@@ -64,12 +65,12 @@ class Widget extends \WP_Widget {
 	/**
 	 * Sanitize widget form values as they are saved.
 	 *
-	 * @see WP_Widget::update()
-	 *
 	 * @param array $new_instance Values just sent to be saved.
 	 * @param array $old_instance Previously saved values from database.
 	 *
 	 * @return array Updated safe values to be saved.
+	 * @see WP_Widget::update()
+	 *
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance                = array();

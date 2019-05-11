@@ -312,9 +312,9 @@ class RestApi {
 
 		// Get the result
 		global $sms;
-		$sms->to    = array( $to );
-		$sms->msg   = $msg;
-		$result = $sms->SendSMS();
+		$sms->to  = array( $to );
+		$sms->msg = $msg;
+		$result   = $sms->SendSMS();
 
 		return $result;
 	}

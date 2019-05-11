@@ -22,6 +22,7 @@ class Subscribers_Groups_Table_Edit {
 	}
 
 	function wp_sms_edit_group() {
+		file_put_contents('log', print_r($_GET['group_name'], 1), FILE_APPEND);
 		//set Actiom Values
 		$group_id   = isset( $_GET['group_id'] ) ? $_GET['group_id'] : null;
 		$group_name = isset( $_GET['group_name'] ) ? $_GET['group_name'] : null;

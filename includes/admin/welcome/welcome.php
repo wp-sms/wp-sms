@@ -62,8 +62,11 @@
 
                 <div class="right">
                     <ul>
-                        <li>Added: System info page to get more information for debugging.</li>
-                        <li>Improved: Check credits.</li>
+                        <li>Fixed: Enqueue styles prefix and suffix.</li>
+                        <li>Improved: Fix the edit group problem with space in group name.</li>
+                        <li>Updated: Database tables field.</li>
+                        <li>Updated: Experttexting gateway.</li>
+                        <li>Minor improvements.</li>
                     </ul>
                 </div>
             </section>
@@ -82,7 +85,9 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td><a target="_blank" title="See All SMS gateways that support in WP-SMS and WP-SMS-Pro" href="https://wp-sms-pro.com/gateways">Gateways</a></td>
+                        <td>
+                            <a target="_blank" title="See All SMS gateways that support in WP-SMS and WP-SMS-Pro" href="https://wp-sms-pro.com/gateways">Gateways</a>
+                        </td>
                         <td>170</td>
                         <td>215</td>
                     </tr>
@@ -184,7 +189,8 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        <td><a href="https://wp-sms-pro.com/purchase/" target="_blank" class="button button-primary">$15 - Buy!</a></td>
+                        <td><a href="https://wp-sms-pro.com/purchase/" target="_blank" class="button button-primary">$15
+                                - Buy!</a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -228,8 +234,10 @@
                     <a target="_blank" href="http://code.google.com/p/php-excel-reader/">Excel Reader</a>,
                     <a target="_blank" href="http://github.com/elidickinson/php-export-data/">Export Data</a>,
                     <a target="_blank" href="https://harvesthq.github.io/chosen/">Chosen</a>,
-                    <a target="_blank" href="https://github.com/jackocnr/intl-tel-input/">International Telephone Input</a>,
-                    <a target="_blank" href="https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin/">jQuery Word and character counter</a>,
+                    <a target="_blank" href="https://github.com/jackocnr/intl-tel-input/">International Telephone
+                        Input</a>,
+                    <a target="_blank" href="https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin/">jQuery
+                        Word and character counter</a>,
                     <a target="_blank" href="https://craftpip.github.io/jquery-confirm/">jQuery Confirm</a>.</p>
             </div>
         </div>

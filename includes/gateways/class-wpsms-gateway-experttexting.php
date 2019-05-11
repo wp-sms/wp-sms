@@ -120,7 +120,11 @@ class experttexting extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
-		$response = wp_remote_get( $this->wsdl_link . "json/Account/Balance?username={$this->username}&password={$this->password}&api_key={$this->has_key}", array( 'timeout' => 30 ) );
+		if ( false === ( $response = get_transient( 'wp_sms_gateway_experttexting' ) ) ) {
+			$response = wp_remote_get( $this->wsdl_link . "json/Account/Balance?username={$this->username}&password={$this->password}&api_key={$this->has_key}", array( 'timeout' => 30 ) );
+
+			set_transient( 'wp_sms_gateway_experttexting', $response, 12 * HOUR_IN_SECONDS );
+		}
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {

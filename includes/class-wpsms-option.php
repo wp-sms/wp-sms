@@ -2,6 +2,10 @@
 
 namespace WP_SMS;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 class Option {
 
 	/**
@@ -87,5 +91,3 @@ class Option {
 	}
 
 }
-
-new Option();
