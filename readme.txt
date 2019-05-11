@@ -3,8 +3,8 @@ Contributors: mostafa.s1990, ghasemi71ir, mehrshaddarzi
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.1
-Requires PHP: 5.4
+Tested up to: 5.2
+Requires PHP: 5.6
 Stable tag: 5.1.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
