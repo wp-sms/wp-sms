@@ -228,6 +228,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.5 =
+* Fixed: Enqueue styles prefix and suffix.
+* Improved: Fix the edit group problem with space in group name.
+* Updated: Database tables field.
+* Updated: Experttexting gateway.
+* Minor improvements.
+
 = 5.1.4 =
 * Added: System info page to get more information for debugging.
 * Improved: Check credits.

@@ -122,19 +122,14 @@ class Install {
 				"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
 				DB_NAME, $table_name, 'response'
 			) );
-			if ( empty( $column ) ) {
 
-				$wpdb->query( "ALTER TABLE {$table_name}
-			 ADD status varchar(10) NOT NULL AFTER recipient,
-			 ADD response TEXT NOT NULL AFTER recipient" );
+			if ( empty( $column ) ) {
+				$wpdb->query( "ALTER TABLE {$table_name} ADD status varchar(10) NOT NULL AFTER recipient, ADD response TEXT NOT NULL AFTER recipient" );
 			}
 
 			// Fix columns length issue
 			$table_name = $wpdb->prefix . 'sms_subscribes';
-			$wpdb->query( $wpdb->prepare(
-				"ALTER TABLE {$table_name} MODIFY name VARCHAR(%d)", 250
-			) );
-
+			$wpdb->query( "ALTER TABLE {$table_name} MODIFY name VARCHAR(250)" );
 
 			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
 
