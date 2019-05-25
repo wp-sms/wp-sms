@@ -134,7 +134,7 @@ class Version {
 			'esms'             => 'esms.vn',
 			'isms'             => 'isms.com.my',
 			'magicdeal4u'      => 'magicdeal4u.com',
-			'mobily'           => 'mobily.ws',
+			'alfacell'         => 'alfa-cell.com',
 			'moceansms'        => 'moceansms.com',
 			'msg91'            => 'msg91.com',
 			'msg360'           => 'msg360.in',
