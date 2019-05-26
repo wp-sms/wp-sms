@@ -46,7 +46,11 @@ class Notifications {
 		// Wordpress new version
 		if ( isset( $this->options['notif_publish_new_wpversion'] ) ) {
 			$update = get_site_transient( 'update_core' );
-			$update = $update->updates;
+			if(is_object($update) AND isset($update->updates)) {
+				$update = $update->updates;
+			}else{
+				$update = array();
+			}
 
 			if ( isset( $update[1] ) ) {
 				if ( $update[1]->current > $wp_version and $this->sms->GetCredit() ) {
