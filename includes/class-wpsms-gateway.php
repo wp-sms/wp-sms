@@ -394,6 +394,7 @@ class Gateway {
 				'smsc' => 'smsc.ua',
 			),
 			'arabic'         => array(
+				'oursms'       => 'oursms.net',
 				'gateway'      => 'gateway.sa',
 				'resalaty'     => 'resalaty.com',
 				'asr3sms'      => 'asr3sms.com',
