@@ -62,14 +62,6 @@ class resalaty extends \WP_SMS\Gateway {
 		// Get response
 		$response = wp_remote_get( $this->wsdl_link . 'sendsms.php?username=' . $this->username . '&password=' . $this->password . '&message=' . $msg . '&numbers=' . $to . '&sender=' . $this->from . '&unicode=e&Rmduplicated=1&return=json' );
 
-		// Check response
-		if ( $response['response']['message'] != 'OK' ) {
-			// Log th result
-			$this->log( $this->from, $this->msg, $this->to, $response, 'error' );
-
-			return;
-		}
-
 		// Decode response
 		$response = json_decode( $response['body'] );
 
@@ -105,15 +97,14 @@ class resalaty extends \WP_SMS\Gateway {
 		// Get response
 		$response = wp_remote_get( $this->wsdl_link . 'getbalance.php?username=' . $this->username . '&password=' . $this->password . '&return=json' );
 
-		// Check response
-		if ( $response['response']['message'] != 'OK' ) {
-			return new \WP_Error( 'account-credit', $response );
-		}
-
 		// Decode response
 		$response = json_decode( $response['body'] );
 
-		// Return blance
-		return $response->currentuserpoints;
+		if ( $response->Code == 117 ) {
+			// Return blance
+			return $response->currentuserpoints;
+		} else {
+			return new \WP_Error( 'account-credit', $response->MessageIs );
+		}
 	}
 }
