@@ -189,6 +189,7 @@
 
 .wpsms-value.wpsms-numbers code {
     font-family: inherit;
+    white-space: pre-line;
 }
 
 @media screen and (min-width: 1440px) {
