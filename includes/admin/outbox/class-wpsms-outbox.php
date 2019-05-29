@@ -276,7 +276,7 @@ class Outbox_List_Table extends \WP_List_Table {
 	function get_data( $query = '' ) {
 		$page_number = ( $this->get_pagenum() - 1 ) * $this->limit;
 		if ( ! $query ) {
-			$query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_send` LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+			$query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_send` ORDER BY date DESC LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
 		} else {
 			$query .= ' LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
 		}
