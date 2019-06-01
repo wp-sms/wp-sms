@@ -1,6 +1,6 @@
-<?php if ( ! isset( $instance['description'] ) ) { ?>
-    <h2 class="widget-title">Subscribe SMS</h2>
-<?php } ?>
+<?php if ( isset( $instance['title'] ) AND empty( $instance['title'] ) OR ! isset( $instance['title'] )) : ?>
+    <h2 class="widget-title"><?php _e( 'Subscribe SMS', 'wp-sms' ); ?></h2>
+<?php endif; ?>
 <div id="wpsms-subscribe">
     <div id="wpsms-result"></div>
     <div id="wpsms-step-1">
@@ -34,7 +34,7 @@
             </div>
 		<?php } ?>
 
-        <div class="wpsms-subscribe-form">
+        <div class="wpsms-subscribe-form radio-inputs">
             <label>
                 <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
 				<?php _e( 'Subscribe', 'wp-sms' ); ?>
