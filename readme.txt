@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.2
 Requires PHP: 5.6
-Stable tag: 5.1.5
+Stable tag: 5.1.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -125,7 +125,7 @@ You can see the list of all supported gateways [through this link](https://githu
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP 7 Support? =
-Yes! WP SMS is compatible with PHP 7 and 7.1
+Yes! WP SMS is compatible till PHP version 7.3
 
 = How to send SMS with PHP codes? =
 
@@ -228,6 +228,15 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.6 =
+* Fixed: Wordpress core update notification notice.
+* Fixed: Screen options columns for only Privacy Page.
+* Fixed: Outbox orderby showing records.
+* Added: Oursms.net Gateway.
+* Added: Eurosms.com gateway.
+* Improved: Newsletter Widget/Shortcode.
+* Minor improvements.
+
 = 5.1.5 =
 * Fixed: Enqueue styles prefix and suffix.
 * Improved: Fix the edit group problem with space in group name.
