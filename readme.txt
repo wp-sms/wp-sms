@@ -125,7 +125,7 @@ You can see the list of all supported gateways [through this link](https://githu
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP 7 Support? =
-Yes! WP SMS is compatible till PHP version 7.3
+Yes! WP SMS is compatible with PHP version 7.3
 
 = How to send SMS with PHP codes? =
 
