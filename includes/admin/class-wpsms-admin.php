@@ -104,8 +104,6 @@ class Admin {
 			$hook_suffix['privacy'] = add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
 		}
 
-		$hook_suffix['system_info'] = add_submenu_page( 'wp-sms', __( 'System Info', 'wp-sms' ), __( 'System Info', 'wp-sms' ), 'manage_options', 'wp-sms-system-info', array( $this, 'system_info_callback' ) );
-
 		// Add styles to menu pages
 		foreach ( $hook_suffix as $menu => $hook ) {
 			add_action( "load-{$hook}", array( $this, $menu . '_assets' ) );
@@ -160,14 +158,6 @@ class Admin {
 
 		$page           = new Privacy();
 		$page->pagehook = get_current_screen()->id;
-		$page->render_page();
-	}
-
-	/**
-	 * System info page.
-	 */
-	public function system_info_callback() {
-		$page = new SystemInfo();
 		$page->render_page();
 	}
 
@@ -230,14 +220,6 @@ class Admin {
 		add_meta_box( 'privacy-meta-1', esc_html( get_admin_page_title() ), array( Privacy::class, 'privacy_meta_html_gdpr' ), $pagehook, 'side', 'core' );
 		add_meta_box( 'privacy-meta-2', __( 'Export User’s Data related to WP-SMS', 'wp-sms' ), array( Privacy::class, 'privacy_meta_html_export' ), $pagehook, 'normal', 'core' );
 		add_meta_box( 'privacy-meta-3', __( 'Erase User’s Data related to WP-SMS', 'wp-sms' ), array( Privacy::class, 'privacy_meta_html_delete' ), $pagehook, 'normal', 'core' );
-	}
-
-	/**
-	 * Load system info page assets
-	 */
-	public function system_info_assets() {
-		wp_enqueue_style( 'wpsms-system-info', WP_SMS_URL . 'assets/css/system-info.css', true, WP_SMS_VERSION );
-
 	}
 
 	/**

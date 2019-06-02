@@ -84,9 +84,6 @@ class WP_SMS {
 
 			// Subscribers class.
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
-
-			// System info class.
-			require_once WP_SMS_DIR . 'includes/admin/system-info/class-wpsms-system-info.php';
 		}
 
 		if ( ! is_admin() ) {
