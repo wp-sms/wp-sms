@@ -229,7 +229,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 5.1.6 =
-* Fixed: Wordpress core update notification notice.
+* Fixed: WordPress core update notification notice.
 * Fixed: Screen options columns for only Privacy Page.
 * Fixed: Outbox orderby showing records.
 * Added: Oursms.net Gateway.
