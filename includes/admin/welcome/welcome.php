@@ -11,7 +11,7 @@
         <div class="wp-badge"><?php printf( __( 'Version %s', 'wp-sms' ), WP_SMS_VERSION ); ?></div>
 
         <h2 class="nav-tab-wrapper wp-clearfix">
-            <a href="#" class="nav-tab nav-tab-active" data-tab="whats-news"><?php _e( 'New Product!', 'wp-sms' ); ?></a>
+            <a href="#" class="nav-tab nav-tab-active" data-tab="whats-news"><?php _e( 'New Product', 'wp-sms' ); ?></a>
             <a href="#" class="nav-tab" data-tab="pro"><?php _e( 'WP-SMS Pro', 'wp-sms' ); ?></a>
             <a href="#" class="nav-tab" data-tab="credit"><?php _e( 'Credits', 'wp-sms' ); ?></a>
             <a href="#" class="nav-tab" data-tab="changelog"><?php _e( 'Changelog', 'wp-sms' ); ?></a>
@@ -22,7 +22,7 @@
             <section class="center-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'WP-Telegram Notification!', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'WP-Telegram Notification', 'wp-sms' ); ?></h2>
                         <h4><?php _e( 'A new plugin from VeronaLabs', 'wp-sms' ); ?></h4>
 
                         <a href="https://wp-telegram.com/purchase/" target="_blank">
