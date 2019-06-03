@@ -11,8 +11,8 @@
         <div class="wp-badge"><?php printf( __( 'Version %s', 'wp-sms' ), WP_SMS_VERSION ); ?></div>
 
         <h2 class="nav-tab-wrapper wp-clearfix">
-            <a href="#" class="nav-tab nav-tab-active" data-tab="whats-news"><?php _e( 'What&#8217;s New', 'wp-sms' ); ?></a>
-            <a href="#" class="nav-tab" data-tab="pro"><?php _e( 'Get Pro!', 'wp-sms' ); ?></a>
+            <a href="#" class="nav-tab nav-tab-active" data-tab="whats-news"><?php _e( 'New Product!', 'wp-sms' ); ?></a>
+            <a href="#" class="nav-tab" data-tab="pro"><?php _e( 'WP-SMS Pro', 'wp-sms' ); ?></a>
             <a href="#" class="nav-tab" data-tab="credit"><?php _e( 'Credits', 'wp-sms' ); ?></a>
             <a href="#" class="nav-tab" data-tab="changelog"><?php _e( 'Changelog', 'wp-sms' ); ?></a>
             <a href="https://wp-sms-pro.com/donate/" class="nav-tab donate" data-tab="link" target="_blank"><?php _e( 'Donate', 'wp-sms' ); ?></a>
@@ -22,7 +22,12 @@
             <section class="center-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'Improvement feature for WP-SMS', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'WP-Telegram Notification!', 'wp-sms' ); ?></h2>
+                        <h4><?php _e( 'A new plugin from VeronaLabs', 'wp-sms' ); ?></h4>
+
+                        <a href="https://wp-telegram.com/purchase/" target="_blank">
+                            <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/coupon-code.png' ); ?>"/>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -30,42 +35,89 @@
             <section class="normal-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'SMS box in WooCommerce orders', 'wp-sms' ); ?></h2>
-                        <p><?php _e( 'You can send SMS to customer orders.', 'wp-sms' ); ?></p>
+                        <h2><?php _e( 'Connect with customers', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'Your customers can easily send their message using the box placed on your website.', 'wp-sms' ); ?></p>
                     </div>
                 </div>
 
-                <div class="right text-center">
-                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wc-order-box.png' ); ?>"/>
+                <style>
+                    div#wp-telegram-chatbox img {
+                        width: 290px;
+                        display: inline-block;
+                    }
+                </style>
+
+                <div class="right text-center" id="wp-telegram-chatbox">
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wp-telegram-chatbox.gif' ); ?>"/>
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wp-telegram-iphone-2.png' ); ?>"/>
                 </div>
             </section>
 
             <section class="normal-section">
                 <div class="right">
                     <div class="content-padding">
-                        <h2><?php _e( 'SMS option in WooCommerce order notes', 'wp-sms' ); ?></h2>
-                        <p><?php _e( 'Send your notes with SMS!', 'wp-sms' ); ?></p>
+                        <h2><?php _e( 'Send messages to your channels/Groups', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'Simply send any message through the WordPress admin panel to your channels or groups on the telegram. No need to add a person as an admin to the channel/group to add send messages.', 'wp-sms' ); ?></p>
                     </div>
                 </div>
 
                 <div class="left text-center">
-                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wc-order-box-note.png' ); ?>"/>
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wp-telegram-send.png' ); ?>"/>
+                </div>
+            </section>
+
+            <section class="normal-section">
+                <div class="left">
+                    <div class="content-padding">
+                        <h2><?php _e( 'Integrate with famous plugins such as ...', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'For example: Receive the text of the messages sent in a form created with GravityForm on a particular channel or group. ', 'wp-sms' ); ?></p>
+                    </div>
+                </div>
+
+                <div class="right text-center">
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wp-telegram-settings.png' ); ?>"/>
+                </div>
+            </section>
+
+            <section class="normal-section">
+                <div class="right">
+                    <div class="content-padding">
+                        <h2><?php _e( 'Supports multiple channels or groups', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'You can add as many channels/groups as you want to the panel and arrange different tasks in different channels/groups.', 'wp-sms' ); ?></p>
+                        <p><?php _e( 'For example, different groups for sales, marketing, support or technical team.', 'wp-sms' ); ?></p>
+                    </div>
+                </div>
+
+                <div class="left text-center">
+                    <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/wp-telegram-channels.png' ); ?>"/>
+                </div>
+            </section>
+
+            <section class="center-section">
+                <div class="left">
+                    <div class="content-padding">
+                        <a href="https://wp-telegram.com/purchase/" target="_blank">
+                            <img src="<?php echo plugins_url( 'wp-sms/assets/images/welcome/what-is-new/coupon-code.png' ); ?>"/>
+                        </a>
+                    </div>
                 </div>
             </section>
 
             <section class="normal-section" style="border-bottom: 0px none;">
                 <div class="left">
                     <div class="content-padding">
-                        <h2 style="margin-top: 10px;"><?php _e( 'New changes', 'wp-sms' ); ?></h2>
+                        <h2 style="margin-top: 10px;"><?php _e( 'WP-SMS Change Log', 'wp-sms' ); ?></h2>
                     </div>
                 </div>
 
                 <div class="right">
                     <ul>
-                        <li>Fixed: Enqueue styles prefix and suffix.</li>
-                        <li>Improved: Fix the edit group problem with space in group name.</li>
-                        <li>Updated: Database tables field.</li>
-                        <li>Updated: Experttexting gateway.</li>
+                        <li>Fixed: WordPress core update notification notice.</li>
+                        <li>Fixed: Screen options columns for only Privacy Page.</li>
+                        <li>Fixed: Outbox orderby showing records.</li>
+                        <li>Added: Oursms.net Gateway.</li>
+                        <li>Added: Eurosms.com gateway.</li>
+                        <li>Improved: Newsletter Widget/Shortcode.</li>
                         <li>Minor improvements.</li>
                     </ul>
                 </div>
