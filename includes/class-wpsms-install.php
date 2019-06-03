@@ -45,6 +45,8 @@ class Install {
 		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
+		$charset_collate = $wpdb->get_charset_collate();
+
 		$table_name = $wpdb->prefix . 'sms_subscribes';
 		if ( $wpdb->get_var( "show tables like '{$table_name}'" ) != $table_name ) {
 			$create_sms_subscribes = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
@@ -55,7 +57,7 @@ class Install {
             status tinyint(1),
             activate_key INT(11),
             group_ID int(5),
-            PRIMARY KEY(ID)) CHARSET=utf8" );
+            PRIMARY KEY(ID)) $charset_collate;" );
 
 			dbDelta( $create_sms_subscribes );
 		}
@@ -65,7 +67,7 @@ class Install {
 			$create_sms_subscribes_group = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
             ID int(10) NOT NULL auto_increment,
             name VARCHAR(250),
-            PRIMARY KEY(ID)) CHARSET=utf8" );
+            PRIMARY KEY(ID)) $charset_collate" );
 
 			dbDelta( $create_sms_subscribes_group );
 		}
@@ -80,7 +82,7 @@ class Install {
             recipient TEXT NOT NULL,
   			response TEXT NOT NULL,
   			status varchar(10) NOT NULL,
-            PRIMARY KEY(ID)) CHARSET=utf8" );
+            PRIMARY KEY(ID)) $charset_collate" );
 
 			dbDelta( $create_sms_send );
 		}
@@ -135,6 +137,41 @@ class Install {
 
 			// Delete old last credit option
 			delete_option( 'wp_last_credit' );
+
+
+			$table_name = $wpdb->prefix . 'sms_send';
+			// Change charset sms_send table to utf8mb4 if not
+			$result = $wpdb->get_row( $wpdb->prepare(
+				"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
+				DB_NAME, $table_name, 'message'
+			) );
+
+			if ( $result->COLLATION_NAME != $wpdb->collate ) {
+				$wpdb->query( "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}" );
+			}
+
+			$table_name = $wpdb->prefix . 'sms_subscribes';
+			// Change charset sms_subscribes table to utf8mb4 if not
+			$result = $wpdb->get_row( $wpdb->prepare(
+				"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
+				DB_NAME, $table_name, 'name'
+			) );
+
+			if ( $result->COLLATION_NAME != $wpdb->collate ) {
+				$wpdb->query( "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}" );
+			}
+
+			$table_name = $wpdb->prefix . 'sms_subscribes_group';
+			// Change charset sms_subscribes_group table to utf8mb4 if not
+			$result = $wpdb->get_row( $wpdb->prepare(
+				"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
+				DB_NAME, $table_name, 'name'
+			) );
+
+			if ( $result->COLLATION_NAME != $wpdb->collate ) {
+				$wpdb->query( "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}" );
+			}
+
 		}
 	}
 

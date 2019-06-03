@@ -30,7 +30,11 @@ class Newsletter {
 
 		// Ajax params
 		wp_localize_script( 'ajax-script', 'ajax_object', array(
-			'ajaxurl' => get_rest_url( null, 'wpsms/v1/newsletter' )
+			'ajaxurl'         => get_rest_url( null, 'wpsms/v1/newsletter' ),
+			'unknown_error'   => __( 'Unknown Error! Check your connection and try again.', 'wp-sms' ),
+			'loading_text'    => __( 'Loading...', 'wp-sms' ),
+			'subscribe_text'  => __( 'Subscribe', 'wp-sms' ),
+			'activation_text' => __( 'Activation', 'wp-sms' )
 		) );
 	}
 

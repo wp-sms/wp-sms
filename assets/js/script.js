@@ -28,12 +28,12 @@ jQuery(document).ready(function ($) {
 
         $("#wpsms-subscribe").ajaxStart(function () {
             $("#wpsms-submit").attr('disabled', 'disabled');
-            $("#wpsms-submit").text("Loading...");
+            $("#wpsms-submit").text(ajax_object.loading_text);
         });
 
         $("#wpsms-subscribe").ajaxComplete(function () {
             $("#wpsms-submit").removeAttr('disabled');
-            $("#wpsms-submit").text("Subscribe");
+            $("#wpsms-submit").text(ajax_object.subscribe_text);
         });
         if (subscriber['type'] === 'subscribe') {
             var method = 'POST';
@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
             } else {
-                message = 'Unknown Error! Check your connection and try again.';
+                message = ajax_object.unknown_error;
             }
 
             $("#wpsms-result").fadeIn();
@@ -78,12 +78,12 @@ jQuery(document).ready(function ($) {
 
         $("#wpsms-subscribe").ajaxStart(function () {
             $("#activation").attr('disabled', 'disabled');
-            $("#activation").text('Loading...');
+            $("#activation").text(ajax_object.loading_text);
         });
 
         $("#wpsms-subscribe").ajaxComplete(function () {
             $("#activation").removeAttr('disabled');
-            $("#activation").text('Activation');
+            $("#activation").text(ajax_object.activation_text);
         });
 
         var data_obj = Object.assign({}, subscriber);
@@ -99,7 +99,7 @@ jQuery(document).ready(function ($) {
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
             } else {
-                message = 'Unknown Error! Check your connection and try again.';
+                message = ajax_object.unknown_error;
             }
 
             $("#wpsms-result").fadeIn();

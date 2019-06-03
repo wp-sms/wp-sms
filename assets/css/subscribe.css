@@ -83,7 +83,7 @@
 }
 
 #wpsms-result {
-    display: inline-flex;
+    display: block;
     margin: 0 0 7px;
     width: 100%;
 }
@@ -104,4 +104,17 @@
     font-size: 12px;
     padding: 5px;
     width: 100%;
+}
+
+.wpsms-subscribe-form.radio-inputs label {
+    display: inline-block;
+}
+
+.wpsms-subscribe-form.radio-inputs input{
+    margin-right: 0px;
+
+}
+
+input#wpsms-type-unsubscribe {
+    margin-left: 10px;
 }

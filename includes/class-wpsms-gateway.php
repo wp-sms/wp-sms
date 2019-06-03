@@ -216,6 +216,9 @@ class Gateway {
 				'sms77' => 'sms77.de',
 				'engy'  => 'engy.solutions',
 			),
+			'slovakia'        => array(
+				'eurosms' => 'eurosms.com',
+			),
 			'turkey'         => array(
 				'bulutfon' => 'bulutfon.com',
 				'verimor'  => 'verimor.com.tr',
@@ -394,6 +397,7 @@ class Gateway {
 				'smsc' => 'smsc.ua',
 			),
 			'arabic'         => array(
+				'oursms'       => 'oursms.net',
 				'gateway'      => 'gateway.sa',
 				'resalaty'     => 'resalaty.com',
 				'asr3sms'      => 'asr3sms.com',

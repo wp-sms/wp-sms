@@ -27,9 +27,8 @@ class Privacy_Actions {
 	 * Set Screen layout columns
 	 */
 	function on_screen_layout_columns( $columns, $screen ) {
-		$pagehook = get_current_screen()->id;
-		if ( $screen == $pagehook ) {
-			$columns[ $pagehook ] = 2;
+		if ( strpos( $screen, 'wp-sms-subscribers-privacy' ) !== false ) {
+			$columns[ $screen ] = 2;
 		}
 
 		return $columns;
@@ -50,7 +49,7 @@ class Privacy_Actions {
 	/**
 	 * Show Admin Notification
 	 *
-	 * @param  Not param
+	 * @param Not param
 	 */
 	public function admin_notification() {
 		global $pagenow;

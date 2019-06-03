@@ -80,9 +80,10 @@ class Newsletter extends \WP_SMS\RestApi {
 	public function subscribe_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
+		$number = self::convertNumber( $params['mobile'] );
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result   = self::subscribe( $params['name'], $params['mobile'], $group_id );
+		$result   = self::subscribe( $params['name'], $number, $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
@@ -99,9 +100,10 @@ class Newsletter extends \WP_SMS\RestApi {
 	public function unsubscribe_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
+		$number = self::convertNumber( $params['mobile'] );
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result   = self::unSubscribe( $params['name'], $params['mobile'], $group_id );
+		$result   = self::unSubscribe( $params['name'], $number, $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
@@ -118,9 +120,10 @@ class Newsletter extends \WP_SMS\RestApi {
 	public function verify_subscriber_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
+		$number = self::convertNumber( $params['mobile'] );
 
 		$group_id = isset ( $params['group_id'] ) ? $params['group_id'] : 1;
-		$result   = self::verifySubscriber( $params['name'], $params['mobile'], $params['activation'], $group_id );
+		$result   = self::verifySubscriber( $params['name'], $number, $params['activation'], $group_id );
 
 		if ( is_wp_error( $result ) ) {
 			return self::response( $result->get_error_message(), 400 );
