@@ -20,27 +20,30 @@ class aruba extends \WP_SMS\Gateway {
 		/**
 		 * Modify sender number
 		 *
+		 * @param string $this ->from sender number.
+		 *
 		 * @since 3.4
 		 *
-		 * @param string $this ->from sender number.
 		 */
 		$this->from = apply_filters( 'wp_sms_from', $this->from );
 
 		/**
 		 * Modify Receiver number
 		 *
+		 * @param array $this ->to receiver number
+		 *
 		 * @since 3.4
 		 *
-		 * @param array $this ->to receiver number
 		 */
 		$this->to = apply_filters( 'wp_sms_to', $this->to );
 
 		/**
 		 * Modify text message
 		 *
+		 * @param string $this ->msg text message.
+		 *
 		 * @since 3.4
 		 *
-		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
@@ -58,7 +61,7 @@ class aruba extends \WP_SMS\Gateway {
 		$to  = implode( $this->to, "," );
 		$msg = urlencode( $this->msg );
 
-		$response = wp_remote_post( $this->wsdl_link . "Aruba/SENDSMS?login=" . $this->username . "&password=" . $this->password . "&message=" . $msg . "&message_type=N&order_id=999FFF111&sender=" . $this->from . "&recipient=" . $to );
+		$response = wp_remote_post( $this->wsdl_link . "Aruba/SENDSMS?login=" . urlencode( $this->username ) . "&password=" . urlencode( $this->password ) . "&message=" . $msg . "&message_type=N&order_id=999FFF111&sender=" . $this->from . "&recipient=" . $to );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
@@ -74,16 +77,17 @@ class aruba extends \WP_SMS\Gateway {
 		// Check response code
 		if ( $response_code == '200' and substr( $response['body'], 0, 2 ) == 'OK' ) {
 			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $result );
+			$this->log( $this->from, $this->msg, $this->to, $response['body'] );
 
 			/**
 			 * Run hook after send sms.
 			 *
+			 * @param string $response result output.
+			 *
 			 * @since 2.4
 			 *
-			 * @param string $response result output.
 			 */
-			do_action( 'wp_sms_send', $response );
+			do_action( 'wp_sms_send', $response['body'] );
 
 			return $response;
 		} else {
@@ -100,7 +104,7 @@ class aruba extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
-		$response = wp_remote_get( $this->wsdl_link . "Aruba/CREDITS?login=" . $this->username . "&password=" . $this->password );
+		$response = wp_remote_get( $this->wsdl_link . "Aruba/CREDITS?login=" . urlencode( $this->username ) . "&password=" . urlencode( $this->password ) );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
