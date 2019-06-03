@@ -22,7 +22,7 @@
             <section class="center-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'WP-Telegram Notification', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'WP-Telegram Notifications', 'wp-sms' ); ?></h2>
                         <h4><?php _e( 'A new plugin from VeronaLabs', 'wp-sms' ); ?></h4>
 
                         <a href="https://wp-telegram.com/purchase/" target="_blank">
