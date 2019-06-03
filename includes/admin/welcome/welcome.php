@@ -69,7 +69,8 @@
             <section class="normal-section">
                 <div class="left">
                     <div class="content-padding">
-                        <h2><?php _e( 'Integrate with famous plugins such as ...', 'wp-sms' ); ?></h2>
+                        <h2><?php _e( 'Integrations & Notifications', 'wp-sms' ); ?></h2>
+                        <p><?php _e( 'Integrate with famous plugins such as WooCommerce, CF7, GravityForms, Quforms and EDD.', 'wp-sms' ); ?></p>
                         <p><?php _e( 'For example: Receive the text of the messages sent in a form created with GravityForm on a particular channel or group. ', 'wp-sms' ); ?></p>
                     </div>
                 </div>
