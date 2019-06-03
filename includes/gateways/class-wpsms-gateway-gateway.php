@@ -12,7 +12,7 @@ class gateway extends \WP_SMS\Gateway {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "+xxxxxxxxxxxxx";
+		$this->validateNumber = "+966556xxxxxx";
 	}
 
 	public function SendSMS() {
@@ -20,27 +20,30 @@ class gateway extends \WP_SMS\Gateway {
 		/**
 		 * Modify sender number
 		 *
+		 * @param string $this ->from sender number.
+		 *
 		 * @since 3.4
 		 *
-		 * @param string $this ->from sender number.
 		 */
 		$this->from = apply_filters( 'wp_sms_from', $this->from );
 
 		/**
 		 * Modify Receiver number
 		 *
+		 * @param array $this ->to receiver number
+		 *
 		 * @since 3.4
 		 *
-		 * @param array $this ->to receiver number
 		 */
 		$this->to = apply_filters( 'wp_sms_to', $this->to );
 
 		/**
 		 * Modify text message
 		 *
+		 * @param string $this ->msg text message.
+		 *
 		 * @since 3.4
 		 *
-		 * @param string $this ->msg text message.
 		 */
 		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
 
@@ -58,7 +61,18 @@ class gateway extends \WP_SMS\Gateway {
 		$to  = implode( $this->to, "," );
 		$msg = urlencode( $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "pushsms.aspx?user=" . $this->username . "&password=" . $this->password . "&msisdn=" . $to . "&sid=" . $this->from . "&msg=" . $msg . "&fl=0" );
+		if ( $this->isflash ) {
+			$flash = 1;
+		} else {
+			$flash = 0;
+		}
+
+		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
+			$response = wp_remote_get( $this->wsdl_link . "pushsms.aspx?user=" . $this->username . "&password=" . $this->password . "&msisdn=" . $to . "&sid=" . $this->from . "&msg=" . $msg . "&fl=" . $flash . "&dc=8" );
+		} else {
+			$response = wp_remote_get( $this->wsdl_link . "pushsms.aspx?user=" . $this->username . "&password=" . $this->password . "&msisdn=" . $to . "&sid=" . $this->from . "&msg=" . $msg . "&fl=" . $flash );
+		}
+
 
 		// Check response error
 		if ( is_wp_error( $response ) ) {
