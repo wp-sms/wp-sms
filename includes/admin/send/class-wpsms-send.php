@@ -104,8 +104,13 @@ class SMS_Send {
 					$this->sms->isflash = false;
 				}
 
-				// Send sms
-				$response = $this->sms->SendSMS();
+				if ( isset( $_POST['wpsms_scheduled'] ) AND isset( $_POST['schedule_status'] ) AND $_POST['schedule_status'] AND $_POST['wpsms_scheduled'] ) {
+					$response = Scheduled::addSchedule( $_POST['wpsms_scheduled'], $this->sms->from, $this->sms->msg, $this->sms->to );
+				} else {
+
+					// Send sms
+					$response = $this->sms->SendSMS();
+				}
 
 				if ( is_wp_error( $response ) ) {
 					if ( is_array( $response->get_error_message() ) ) {

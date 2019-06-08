@@ -30,7 +30,26 @@
             count: 'up',
             goal: 'sky',
             msg: '<?php _e( 'characters', 'wp-sms' ); ?>'
-        })
+        });
+
+        jQuery("#datepicker").flatpickr({
+            enableTime: true,
+            dateFormat: "Y-m-d H:i:00",
+            time_24hr: true,
+            minuteIncrement: "10",
+            minDate: "today",
+            disableMobile: true,
+            defaultDate: new Date()
+        });
+
+        jQuery("#schedule_status").change(function () {
+            if(jQuery(this).is(":checked")) {
+                jQuery('#schedule_date').show();
+            }else{
+                jQuery('#schedule_date').hide();
+            }
+        });
+
     });
 </script>
 
@@ -125,6 +144,23 @@
                                     <p class="number">
 										<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . $credit; ?>
                                     </p>
+                                </td>
+                            </tr>
+
+                            <tr id="schedule" valign="top">
+                                <th scope="row">
+                                    <label for="datepicker"><?php _e( 'Scheduled message?', 'wp-sms' ); ?></label>
+                                </th>
+                                <td>
+                                    <input type="checkbox" id="schedule_status" name="schedule_status"/>
+                                </td>
+                            </tr>
+                            <tr id="schedule_date" valign="top" style="display: none;">
+                                <th scope="row">
+                                    <label for="datepicker"><?php _e( 'Set date', 'wp-sms' ); ?>:</label>
+                                </th>
+                                <td>
+                                    <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
                                 </td>
                             </tr>
 							<?php if ( $this->sms->flash == "enable" ) { ?>
