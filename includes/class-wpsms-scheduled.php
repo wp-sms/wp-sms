@@ -16,7 +16,14 @@ class Scheduled {
 
 	function __construct() {
 
-		add_filter( 'cron_schedules', array($this, 'wp_sms_cron') );
+		if ( ! wp_next_scheduled( 'wpsms_send_schedule_sms', array() ) ) {
+			add_action( 'init', array( $this, 'schedule_wpsms_cron' ) );
+		}
+
+		add_filter( 'cron_schedules', array( $this, 'wp_sms_cron' ) );
+		add_action( 'wpsms_send_schedule_sms', array( $this, 'send_sms_scheduled' ) );
+
+
 	}
 
 	/**
@@ -30,7 +37,7 @@ class Scheduled {
 	 *
 	 * @return false|int
 	 */
-	public static function addSchedule( $date, $sender, $message, $recipient, $status = 1 ) {
+	public static function add( $date, $sender, $message, $recipient, $status = 1 ) {
 		global $wpdb;
 
 		return $wpdb->insert(
@@ -56,7 +63,7 @@ class Scheduled {
 	 *
 	 * @return false|int
 	 */
-	public static function updateSchedule( $schedule_id, $date, $message, $sender, $status ) {
+	public static function update( $schedule_id, $date, $message, $sender, $status ) {
 		global $wpdb;
 
 		return $wpdb->update(
@@ -81,6 +88,23 @@ class Scheduled {
 		}
 
 		return $schedules;
+	}
+
+	/**
+	 * Add cron event
+	 */
+	public function schedule_wpsms_cron() {
+		wp_schedule_event( time(), '5min_wpsms', 'wpsms_send_schedule_sms', array() );
+	}
+
+	/**
+	 * Send messages
+	 */
+	public function send_sms_scheduled() {
+		/*
+		 * TODO: Get DB rows and send Messages here.
+		*/
+		file_put_contents( 'log', print_r( $_REQUEST, 1 ), FILE_APPEND );
 	}
 }
 

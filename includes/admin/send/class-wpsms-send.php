@@ -105,7 +105,7 @@ class SMS_Send {
 				}
 
 				if ( isset( $_POST['wpsms_scheduled'] ) AND isset( $_POST['schedule_status'] ) AND $_POST['schedule_status'] AND $_POST['wpsms_scheduled'] ) {
-					$response = Scheduled::addSchedule( $_POST['wpsms_scheduled'], $this->sms->from, $this->sms->msg, $this->sms->to );
+					$response = Scheduled::add( $_POST['wpsms_scheduled'], $this->sms->from, $this->sms->msg, $this->sms->to );
 				} else {
 
 					// Send sms
