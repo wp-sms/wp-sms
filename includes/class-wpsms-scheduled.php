@@ -2,8 +2,6 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Admin;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -14,16 +12,13 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Scheduled {
 
-	function __construct() {
-
+	public function __construct() {
 		if ( ! wp_next_scheduled( 'wpsms_send_schedule_sms', array() ) ) {
 			add_action( 'init', array( $this, 'schedule_wpsms_cron' ) );
 		}
 
 		add_filter( 'cron_schedules', array( $this, 'wp_sms_cron' ) );
 		add_action( 'wpsms_send_schedule_sms', array( $this, 'send_sms_scheduled' ) );
-
-
 	}
 
 	/**
