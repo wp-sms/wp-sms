@@ -20,7 +20,7 @@ class Scheduled {
 			add_action( 'init', array( $this, 'schedule_wpsms_cron' ) );
 		}
 
-		add_filter( 'cron_schedules', array( $this, 'wp_sms_cron' ) );
+		add_filter( 'cron_schedules', array( $this, 'check_cron' ) );
 		add_action( 'wpsms_send_schedule_sms', array( $this, 'send_sms_scheduled' ) );
 
 
@@ -80,7 +80,14 @@ class Scheduled {
 		);
 	}
 
-	public function wp_sms_cron( $schedules ) {
+	/**
+	 * Check cron and add if not available
+	 *
+	 * @param $schedules
+	 *
+	 * @return mixed
+	 */
+	public function check_cron( $schedules ) {
 		if ( ! isset( $schedules["5min_wpsms"] ) ) {
 			$schedules["5min_wpsms"] = array(
 				'interval' => 5 * 60,
