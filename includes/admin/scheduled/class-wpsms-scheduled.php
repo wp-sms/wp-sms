@@ -40,7 +40,8 @@ class Scheduled_List_Table extends \WP_List_Table {
 		switch ( $column_name ) {
 			case 'date':
 				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );
-
+			case 'sender':
+				return $item[ $column_name ];
 			case 'message':
 				return $item[ $column_name ];
 			case 'recipient':
@@ -61,18 +62,18 @@ class Scheduled_List_Table extends \WP_List_Table {
 		}
 	}
 
-	function column_sender( $item ) {
+	function column_date( $item ) {
 
 		//Build row actions
 		$actions = array(
-			'resend' => sprintf( '<a href="?page=%s&action=%s&ID=%s">' . __( 'Resend', 'wp-sms' ) . '</a>', $_REQUEST['page'], 'resend', $item['ID'] ),
+			'edit'   => sprintf( '<a href="#">' . __( 'Edit', 'wp-sms' ) . '</a>' ),
 			'delete' => sprintf( '<a href="?page=%s&action=%s&ID=%s">' . __( 'Delete', 'wp-sms' ) . '</a>', $_REQUEST['page'], 'delete', $item['ID'] ),
 		);
 
 		//Return the title contents
 		return sprintf( '%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
 			/*$1%s*/
-			$item['sender'],
+			$item['date'],
 			/*$2%s*/
 			$item['ID'],
 			/*$3%s*/
@@ -106,8 +107,8 @@ class Scheduled_List_Table extends \WP_List_Table {
 	function get_sortable_columns() {
 		$sortable_columns = array(
 			'ID'        => array( 'ID', true ),     //true means it's already sorted
-			'sender'    => array( 'sender', false ),     //true means it's already sorted
 			'date'      => array( 'date', false ),  //true means it's already sorted
+			'sender'    => array( 'sender', false ),     //true means it's already sorted
 			'message'   => array( 'message', false ),   //true means it's already sorted
 			'recipient' => array( 'recipient', false ), //true means it's already sorted
 			'status'    => array( 'status', false ) //true means it's already sorted

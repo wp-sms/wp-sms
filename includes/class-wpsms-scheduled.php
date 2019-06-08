@@ -77,7 +77,7 @@ class Scheduled {
 		if ( ! isset( $schedules["5min_wpsms"] ) ) {
 			$schedules["5min_wpsms"] = array(
 				'interval' => 5 * 60,
-				'display'  => __( 'Once every 5 minutes' ) );
+				'display'  => __( 'WP-SMS Scheduled SMS cron', 'wp-sms' ) );
 		}
 
 		return $schedules;

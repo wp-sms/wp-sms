@@ -86,6 +86,20 @@ class Install {
 
 			dbDelta( $create_sms_send );
 		}
+
+		$table_name = $wpdb->prefix . 'sms_scheduled';
+		if ( $wpdb->get_var( "show tables like '{$table_name}'" ) != $table_name ) {
+			$create_sms_scheduled = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
+            ID int(10) NOT NULL auto_increment,
+            date DATETIME,
+            sender VARCHAR(20) NOT NULL,
+            message TEXT NOT NULL,
+            recipient TEXT NOT NULL,
+  			status int(10) NOT NULL,
+            PRIMARY KEY(ID)) $charset_collate" );
+
+			dbDelta( $create_sms_scheduled );
+		}
 	}
 
 	/**
@@ -112,11 +126,14 @@ class Install {
 	 * Upgrade plugin requirements if needed
 	 */
 	static function upgrade() {
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
 		$installer_wpsms_ver = get_option( 'wp_sms_db_version' );
 
 		if ( $installer_wpsms_ver < WP_SMS_VERSION ) {
 
 			global $wpdb;
+			$charset_collate = $wpdb->get_charset_collate();
 
 			// Add response and status for outbox
 			$table_name = $wpdb->prefix . 'sms_send';
@@ -170,6 +187,20 @@ class Install {
 
 			if ( $result->COLLATION_NAME != $wpdb->collate ) {
 				$wpdb->query( "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}" );
+			}
+
+			$table_name = $wpdb->prefix . 'sms_scheduled';
+			if ( $wpdb->get_var( "show tables like '{$table_name}'" ) != $table_name ) {
+				$create_sms_scheduled = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
+	            ID int(10) NOT NULL auto_increment,
+	            date DATETIME,
+	            sender VARCHAR(20) NOT NULL,
+	            message TEXT NOT NULL,
+	            recipient TEXT NOT NULL,
+	            status int(10) NOT NULL,
+	            PRIMARY KEY(ID)) $charset_collate" );
+
+				dbDelta( $create_sms_scheduled );
 			}
 
 		}
