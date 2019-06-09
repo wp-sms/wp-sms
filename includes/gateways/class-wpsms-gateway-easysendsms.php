@@ -2,9 +2,9 @@
 
 namespace WP_SMS\Gateway;
 
-class _1s2u extends \WP_SMS\Gateway {
-	private $wsdl_link = "https://api.1s2u.io/";
-	public $tariff = "https://1s2u.com/";
+class easysendsms extends \WP_SMS\Gateway {
+	private $wsdl_link = "https://www.easysendsms.com/sms/";
+	public $tariff = "https://easysendsms.com/";
 	public $unitrial = false;
 	public $unit;
 	public $flash = "enable";
@@ -12,7 +12,7 @@ class _1s2u extends \WP_SMS\Gateway {
 
 	public function __construct() {
 		parent::__construct();
-		$this->validateNumber = "The phone number must contain only digits together with the country code. It should not contain any other symbols such as (+) sign.  Instead  of  plus  sign,  please  put  (00)" . PHP_EOL . "e.g seperate numbers with comma: 12345678900, 11222338844";
+		$this->validateNumber = "Eg: 61409317436, 61409317435, 61409317434 (Do not use + before the country code)";
 	}
 
 	public function SendSMS() {
@@ -58,14 +58,13 @@ class _1s2u extends \WP_SMS\Gateway {
 			return $credit;
 		}
 
-		$mt = 0;
-		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
-			$mt = 1;
-		}
-
-		$fl = 0;
-		if ( $this->isflash == true ) {
-			$fl = 1;
+		$type = 0;
+		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] AND $this->isflash == true ) {
+			$type = 3;
+		} else if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] AND $this->isflash == false ) {
+			$type = 1;
+		} else if ( $this->isflash == true ) {
+			$type = 2;
 		}
 
 		$numbers = array();
@@ -77,7 +76,7 @@ class _1s2u extends \WP_SMS\Gateway {
 		$to  = implode( ',', $numbers );
 		$msg = urlencode( $this->msg );
 
-		$response = wp_remote_get( $this->wsdl_link . "bulksms?username=" . $this->username . "&password=" . $this->password . "&mno=" . $to . "&id=" . $this->from . "&msg=" . $msg . "&mt=" . $mt . "&fl=" . $fl );
+		$response = wp_remote_get( $this->wsdl_link . "bulksms-api/bulksms-api?username=" . $this->username . "&password=" . $this->password . "&from=" . $this->from . "&to=" . $to . "&text=" . $msg . "&type=" . $type );
 
 		// Check response error
 		if ( is_wp_error( $response ) ) {
@@ -115,19 +114,7 @@ class _1s2u extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
 		}
 
-		$response = wp_remote_get( $this->wsdl_link . "checkbalance?user=" . $this->username . "&pass=" . $this->password );
-
-		if ( is_wp_error( $response ) ) {
-			return new \WP_Error( 'account-credit', $response->get_error_message() );
-		}
-
-		$result = json_decode( $response['body'] );
-
-		if ( $result AND is_int( $result ) AND $result != 00 ) {
-			return $result;
-		} else {
-			return new \WP_Error( 'account-credit', 'Invalid username or password' );
-		}
+		return 1;
 
 	}
 
@@ -139,7 +126,7 @@ class _1s2u extends \WP_SMS\Gateway {
 	 * @return bool|string
 	 */
 	private function clean_number( $number ) {
-		$number = str_replace( '+', '00', $number );
+		$number = str_replace( '+', '', $number );
 		$number = trim( $number );
 
 		return $number;
@@ -153,50 +140,32 @@ class _1s2u extends \WP_SMS\Gateway {
 	private function send_error_check( $result ) {
 
 		switch ( $result ) {
-			case $result == '0000':
-				return new \WP_Error( 'send-sms', 'Service Not Available or Down Temporary.' );
+			case $result == '1001':
+				return new \WP_Error( 'send-sms', 'Invalid URL. This means that one of the parameters was not provided or left blank.' );
 				break;
-			case $result == '0005':
-				return new \WP_Error( 'send-sms', 'Invalid server.' );
+			case $result == '1002':
+				return new \WP_Error( 'send-sms', 'Invalid username or password parameter.' );
 				break;
-			case $result == '0010':
-				return new \WP_Error( 'send-sms', 'Username not provided.' );
+			case $result == '1003':
+				return new \WP_Error( 'send-sms', 'Invalid type parameter.' );
 				break;
-			case $result == '0011':
-				return new \WP_Error( 'send-sms', 'Password not provided.' );
-				break;
-			case $result == '00':
-				return new \WP_Error( 'send-sms', 'Invalid username/password.' );
-				break;
-			case $result == '0020 / 0':
-				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
-				break;
-			case $result == '0020':
-				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
-				break;
-			case $result == '0':
-				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
-				break;
-			case $result == '0030':
-				return new \WP_Error( 'send-sms', 'Invalid Sender ID' );
-				break;
-			case $result == '0040':
-				return new \WP_Error( 'send-sms', 'Mobile number not provided.' );
-				break;
-			case $result == '0041':
-				return new \WP_Error( 'send-sms', 'Invalid mobile number.' );
-				break;
-			case $result == '0042':
-				return new \WP_Error( 'send-sms', 'Network not supported.' );
-				break;
-			case $result == '0050':
+			case $result == '1004':
 				return new \WP_Error( 'send-sms', 'Invalid message.' );
 				break;
-			case $result == '0060':
-				return new \WP_Error( 'send-sms', 'Invalid quantity specified.' );
+			case $result == '1005':
+				return new \WP_Error( 'send-sms', 'Invalid mobile number.' );
 				break;
-			case $result == '0066':
-				return new \WP_Error( 'send-sms', 'Network not supported.' );
+			case $result == '1006':
+				return new \WP_Error( 'send-sms', 'Invalid sender name.' );
+				break;
+			case $result == '1007':
+				return new \WP_Error( 'send-sms', 'Insufficient credit.' );
+				break;
+			case $result == '1008':
+				return new \WP_Error( 'send-sms', 'Internal error (do NOT re-submit the same message again).' );
+				break;
+			case $result == '1009':
+				return new \WP_Error( 'send-sms', 'Service not available (do NOT re-submit the same message again).' );
 				break;
 			case strpos( $result, 'OK' ) !== false:
 				return $result;
