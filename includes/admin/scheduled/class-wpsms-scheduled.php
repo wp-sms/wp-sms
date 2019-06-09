@@ -52,10 +52,12 @@ class Scheduled_List_Table extends \WP_List_Table {
 
 				return $html;
 			case 'status':
-				if ( $item[ $column_name ] == 'success' ) {
+				if ( $item[ $column_name ] == 1 ) {
+					return '<span class="wp_sms_status_on-queue">' . __( 'On Queue', 'wp-sms' ) . '</span>';
+				} else if ( $item[ $column_name ] == 2 ) {
 					return '<span class="wp_sms_status_success">' . __( 'Success', 'wp-sms' ) . '</span>';
 				} else {
-					return '<span class="wp_sms_status_fail">' . __( 'Fail', 'wp-sms' ) . '</span>';
+					return '<span class="wp_sms_status_fail">' . __( 'Uknown', 'wp-sms' ) . '</span>';
 				}
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes

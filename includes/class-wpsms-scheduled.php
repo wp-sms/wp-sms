@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Gateway\qsms;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -12,7 +14,15 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Scheduled {
 
+	public $sms;
+	public $db;
+
 	public function __construct() {
+		global $wpdb, $sms;
+
+		$this->db  = $wpdb;
+		$this->sms = $sms;
+
 		if ( ! wp_next_scheduled( 'wpsms_send_schedule_sms', array() ) ) {
 			add_action( 'init', array( $this, 'schedule_wpsms_cron' ) );
 		}
@@ -54,7 +64,7 @@ class Scheduled {
 	 * @param $date
 	 * @param $message
 	 * @param $sender
-	 * @param $status
+	 * @param int $status | 1 = on queue, 2 = sent
 	 *
 	 * @return false|int
 	 */
@@ -68,6 +78,28 @@ class Scheduled {
 				'sender'  => $sender,
 				'message' => $message,
 				'status'  => $status,
+			),
+			array(
+				'ID' => $schedule_id
+			)
+		);
+	}
+
+	/**
+	 * Update only Status of an scheduled item
+	 *
+	 * @param $schedule_id
+	 * @param int $status | 1 = on queue, 2 = sent
+	 *
+	 * @return false|int
+	 */
+	public static function updateStatus( $schedule_id, $status ) {
+		global $wpdb;
+
+		return $wpdb->update(
+			$wpdb->prefix . "sms_scheduled",
+			array(
+				'status' => $status,
 			),
 			array(
 				'ID' => $schedule_id
@@ -103,10 +135,18 @@ class Scheduled {
 	 * Send messages
 	 */
 	public function send_sms_scheduled() {
-		/*
-		 * TODO: Get DB rows and send Messages here.
-		*/
-		file_put_contents( 'log', print_r( $_REQUEST, 1 ), FILE_APPEND );
+		$table_name      = $this->db->prefix . 'sms_scheduled';
+		$scheduled_items = $this->db->get_results( "SELECT * FROM {$table_name} WHERE date <= CURDATE() AND status = 1", ARRAY_A );
+
+		if ( $scheduled_items ) {
+			foreach ( $scheduled_items as $item ) {
+				$this->sms->to   = explode( ',', $item['recipient'] );
+				$this->sms->from = $item['sender'];
+				$this->sms->msg  = $item['message'];
+				$this->sms->SendSMS();
+				self::updateStatus( $item['ID'], 2 );
+			}
+		}
 	}
 }
 

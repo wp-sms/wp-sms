@@ -171,6 +171,13 @@
     border-radius: 3px;
 }
 
+.wp_sms_status_on-queue {
+    background: #045cca;
+    color: #ffffff;
+    padding: 3px 5px;
+    border-radius: 3px;
+}
+
 .wp_sms_subscribers_label {
     line-height: 19px;
     left: 0px;
