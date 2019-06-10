@@ -86,20 +86,6 @@ class Install {
 
 			dbDelta( $create_sms_send );
 		}
-
-		$table_name = $wpdb->prefix . 'sms_scheduled';
-		if ( $wpdb->get_var( "show tables like '{$table_name}'" ) != $table_name ) {
-			$create_sms_scheduled = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
-            ID int(10) NOT NULL auto_increment,
-            date DATETIME,
-            sender VARCHAR(20) NOT NULL,
-            message TEXT NOT NULL,
-            recipient TEXT NOT NULL,
-  			status int(10) NOT NULL,
-            PRIMARY KEY(ID)) $charset_collate" );
-
-			dbDelta( $create_sms_scheduled );
-		}
 	}
 
 	/**
@@ -150,8 +136,6 @@ class Install {
 			$table_name = $wpdb->prefix . 'sms_subscribes';
 			$wpdb->query( "ALTER TABLE {$table_name} MODIFY name VARCHAR(250)" );
 
-			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
-
 			// Delete old last credit option
 			delete_option( 'wp_last_credit' );
 
@@ -189,20 +173,7 @@ class Install {
 				$wpdb->query( "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}" );
 			}
 
-			$table_name = $wpdb->prefix . 'sms_scheduled';
-			if ( $wpdb->get_var( "show tables like '{$table_name}'" ) != $table_name ) {
-				$create_sms_scheduled = ( "CREATE TABLE IF NOT EXISTS {$table_name}(
-	            ID int(10) NOT NULL auto_increment,
-	            date DATETIME,
-	            sender VARCHAR(20) NOT NULL,
-	            message TEXT NOT NULL,
-	            recipient TEXT NOT NULL,
-	            status int(10) NOT NULL,
-	            PRIMARY KEY(ID)) $charset_collate" );
-
-				dbDelta( $create_sms_scheduled );
-			}
-
+			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
 		}
 	}
 
