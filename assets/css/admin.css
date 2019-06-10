@@ -122,7 +122,7 @@
     display: grid;
     padding: 6px 33px;
     border-left: 1px solid #d8d8d8;
-    min-height: 610px;
+    min-height: 680px;
 }
 
 .rtl .wpsms-tab {

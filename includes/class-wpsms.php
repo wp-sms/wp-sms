@@ -58,7 +58,6 @@ class WP_SMS {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-scheduled.php';
 
 		if ( is_admin() ) {
 			// Admin classes.
@@ -85,9 +84,6 @@ class WP_SMS {
 
 			// Subscribers class.
 			require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
-
-			// Scheduled class.
-			require_once WP_SMS_DIR . 'includes/admin/scheduled/class-wpsms-scheduled.php';
 		}
 
 		if ( ! is_admin() ) {

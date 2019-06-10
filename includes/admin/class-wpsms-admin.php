@@ -104,8 +104,6 @@ class Admin {
 			$hook_suffix['privacy'] = add_submenu_page( 'wp-sms', __( 'Privacy', 'wp-sms' ), __( 'Privacy', 'wp-sms' ), 'manage_options', 'wp-sms-subscribers-privacy', array( $this, 'privacy_callback' ) );
 		}
 
-		add_submenu_page( 'wp-sms', __( 'Scheduled', 'wp-sms' ), __( 'Scheduled', 'wp-sms' ), 'manage_options', 'wp-sms-scheduled', array( $this, 'scheduled_callback' ) );
-
 		// Add styles to menu pages
 		foreach ( $hook_suffix as $menu => $hook ) {
 			add_action( "load-{$hook}", array( $this, $menu . '_assets' ) );
@@ -164,20 +162,13 @@ class Admin {
 	}
 
 	/**
-	 * Scheduled page.
-	 */
-	public function scheduled_callback() {
-		$page = new Admin\Scheduled();
-		$page->render_page();
-	}
-
-	/**
 	 * Load send SMS page assets
 	 */
 	public function send_sms_assets() {
-		wp_enqueue_style( 'jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION );
-		wp_enqueue_script( 'jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array( 'jquery' ), WP_SMS_VERSION );
-
+		if ( \WP_SMS\Version::pro_is_active() ) {
+			wp_enqueue_style( 'jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array( 'jquery' ), WP_SMS_VERSION );
+		}
 	}
 
 	/**
