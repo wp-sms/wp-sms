@@ -93,7 +93,7 @@ class Admin {
 	public function admin_menu() {
 		$hook_suffix = array();
 		add_menu_page( __( 'SMS', 'wp-sms' ), __( 'SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ), 'dashicons-email-alt' );
-		add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
+		$hook_suffix['send_sms'] = add_submenu_page( 'wp-sms', __( 'Send SMS', 'wp-sms' ), __( 'Send SMS', 'wp-sms' ), 'wpsms_sendsms', 'wp-sms', array( $this, 'send_sms_callback' ) );
 		add_submenu_page( 'wp-sms', __( 'Outbox', 'wp-sms' ), __( 'Outbox', 'wp-sms' ), 'wpsms_outbox', 'wp-sms-outbox', array( $this, 'outbox_callback' ) );
 
 		$hook_suffix['subscribers'] = add_submenu_page( 'wp-sms', __( 'Subscribers', 'wp-sms' ), __( 'Subscribers', 'wp-sms' ), 'wpsms_subscribers', 'wp-sms-subscribers', array( $this, 'subscribers_callback' ) );
@@ -159,6 +159,16 @@ class Admin {
 		$page           = new Privacy();
 		$page->pagehook = get_current_screen()->id;
 		$page->render_page();
+	}
+
+	/**
+	 * Load send SMS page assets
+	 */
+	public function send_sms_assets() {
+		if ( \WP_SMS\Version::pro_is_active() ) {
+			wp_enqueue_style( 'jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array( 'jquery' ), WP_SMS_VERSION );
+		}
 	}
 
 	/**
