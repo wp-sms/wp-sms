@@ -98,7 +98,7 @@ class SMS_Send {
 				$this->sms->from = $_POST['wp_get_sender'];
 				$this->sms->msg  = $_POST['wp_get_message'];
 
-				if ( isset( $_POST['wp_flash'] ) ) {
+				if ( isset( $_POST['wp_flash'] ) AND $_POST['wp_flash'] == 'true') {
 					$this->sms->isflash = true;
 				} else {
 					$this->sms->isflash = false;
