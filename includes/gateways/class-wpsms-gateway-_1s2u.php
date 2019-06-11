@@ -153,49 +153,49 @@ class _1s2u extends \WP_SMS\Gateway {
 	private function send_error_check( $result ) {
 
 		switch ( $result ) {
-			case $result == '0000':
+			case '0000':
 				return new \WP_Error( 'send-sms', 'Service Not Available or Down Temporary.' );
 				break;
-			case $result == '0005':
+			case '0005':
 				return new \WP_Error( 'send-sms', 'Invalid server.' );
 				break;
-			case $result == '0010':
+			case '0010':
 				return new \WP_Error( 'send-sms', 'Username not provided.' );
 				break;
-			case $result == '0011':
+			case '0011':
 				return new \WP_Error( 'send-sms', 'Password not provided.' );
 				break;
-			case $result == '00':
+			case '00':
 				return new \WP_Error( 'send-sms', 'Invalid username/password.' );
 				break;
-			case $result == '0020 / 0':
+			case '0020 / 0':
 				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
 				break;
-			case $result == '0020':
+			case '0020':
 				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
 				break;
-			case $result == '0':
+			case '0':
 				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
 				break;
-			case $result == '0030':
+			case '0030':
 				return new \WP_Error( 'send-sms', 'Invalid Sender ID' );
 				break;
-			case $result == '0040':
+			case '0040':
 				return new \WP_Error( 'send-sms', 'Mobile number not provided.' );
 				break;
-			case $result == '0041':
+			case '0041':
 				return new \WP_Error( 'send-sms', 'Invalid mobile number.' );
 				break;
-			case $result == '0042':
+			case '0042':
 				return new \WP_Error( 'send-sms', 'Network not supported.' );
 				break;
-			case $result == '0050':
+			case '0050':
 				return new \WP_Error( 'send-sms', 'Invalid message.' );
 				break;
-			case $result == '0060':
+			case '0060':
 				return new \WP_Error( 'send-sms', 'Invalid quantity specified.' );
 				break;
-			case $result == '0066':
+			case '0066':
 				return new \WP_Error( 'send-sms', 'Network not supported.' );
 				break;
 			case strpos( $result, 'OK' ) !== false:
