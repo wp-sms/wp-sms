@@ -167,7 +167,8 @@ class Version {
 			'smsmisr'          => 'smsmisr.com',
 			'smsgateway'       => 'smsgateway.me',
 			'bandwidth'        => 'bandwidth.com',
-			'_4jawaly'       => '4jawaly.net',
+			'_4jawaly'         => '4jawaly.net',
+			'tyntec'           => 'tyntec.com',
 		);
 
 		return $gateways;
