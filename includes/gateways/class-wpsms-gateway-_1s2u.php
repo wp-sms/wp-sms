@@ -111,8 +111,8 @@ class _1s2u extends \WP_SMS\Gateway {
 
 	public function GetCredit() {
 		// Check username and password
-		if ( ! $this->username && ! $this->has_key ) {
-			return new \WP_Error( 'account-credit', __( 'Username/API-Key does not set for this gateway', 'wp-sms' ) );
+		if ( ! $this->username && ! $this->password ) {
+			return new \WP_Error( 'account-credit', __( 'Username/Password was not set for this gateway', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "checkbalance?user=" . $this->username . "&pass=" . $this->password );
