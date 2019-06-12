@@ -153,58 +153,64 @@ class _1s2u extends \WP_SMS\Gateway {
 	private function send_error_check( $result ) {
 
 		switch ( $result ) {
+			case strpos( $result, 'OK' ) !== false:
+				$error = '';
+				break;
 			case '0000':
-				return new \WP_Error( 'send-sms', 'Service Not Available or Down Temporary.' );
+				$error = 'Service Not Available or Down Temporary.';
 				break;
 			case '0005':
-				return new \WP_Error( 'send-sms', 'Invalid server.' );
+				$error = 'Invalid server.';
 				break;
 			case '0010':
-				return new \WP_Error( 'send-sms', 'Username not provided.' );
+				$error = 'Username not provided.';
 				break;
 			case '0011':
-				return new \WP_Error( 'send-sms', 'Password not provided.' );
+				$error = 'Password not provided.';
 				break;
 			case '00':
-				return new \WP_Error( 'send-sms', 'Invalid username/password.' );
+				$error = 'Invalid username/password.';
 				break;
 			case '0020 / 0':
-				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
+				$error = 'Insufficient Credits.';
 				break;
 			case '0020':
-				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
+				$error = 'Insufficient Credits.';
 				break;
 			case '0':
-				return new \WP_Error( 'send-sms', 'Insufficient Credits.' );
+				$error = 'Insufficient Credits.';
 				break;
 			case '0030':
-				return new \WP_Error( 'send-sms', 'Invalid Sender ID' );
+				$error = 'Invalid Sender ID.';
 				break;
 			case '0040':
-				return new \WP_Error( 'send-sms', 'Mobile number not provided.' );
+				$error = 'Mobile number not provided.';
 				break;
 			case '0041':
-				return new \WP_Error( 'send-sms', 'Invalid mobile number.' );
+				$error = 'Invalid mobile number.';
 				break;
 			case '0042':
-				return new \WP_Error( 'send-sms', 'Network not supported.' );
+				$error = 'Network not supported.';
 				break;
 			case '0050':
-				return new \WP_Error( 'send-sms', 'Invalid message.' );
+				$error = 'Invalid message.';
 				break;
 			case '0060':
-				return new \WP_Error( 'send-sms', 'Invalid quantity specified.' );
+				$error = 'Invalid quantity specified.';
 				break;
 			case '0066':
-				return new \WP_Error( 'send-sms', 'Network not supported.' );
-				break;
-			case strpos( $result, 'OK' ) !== false:
-				return $result;
+				$error = 'Network not supported.';
 				break;
 			default:
-				return new \WP_Error( 'send-sms', $result );
+				$error = sprintf( 'Unknow error: %s', $result );
 				break;
 		}
+
+		if ( $error ) {
+			return new \WP_Error( 'send-sms', $error );
+		}
+
+		return $result;
 	}
 
 }

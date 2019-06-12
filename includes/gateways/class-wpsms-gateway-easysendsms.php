@@ -140,40 +140,46 @@ class easysendsms extends \WP_SMS\Gateway {
 	private function send_error_check( $result ) {
 
 		switch ( $result ) {
+			case strpos( $result, 'OK' ) !== false:
+				$error = '';
+				break;
 			case '1001':
-				return new \WP_Error( 'send-sms', 'Invalid URL. This means that one of the parameters was not provided or left blank.' );
+				$error = 'Invalid URL. This means that one of the parameters was not provided or left blank.';
 				break;
 			case '1002':
-				return new \WP_Error( 'send-sms', 'Invalid username or password parameter.' );
+				$error = 'Invalid username or password parameter.';
 				break;
 			case '1003':
-				return new \WP_Error( 'send-sms', 'Invalid type parameter.' );
+				$error = 'Invalid type parameter.';
 				break;
 			case '1004':
-				return new \WP_Error( 'send-sms', 'Invalid message.' );
+				$error = 'Invalid message.';
 				break;
 			case '1005':
-				return new \WP_Error( 'send-sms', 'Invalid mobile number.' );
+				$error = 'Invalid mobile number.';
 				break;
 			case '1006':
-				return new \WP_Error( 'send-sms', 'Invalid sender name.' );
+				$error = 'Invalid sender name.';
 				break;
 			case '1007':
-				return new \WP_Error( 'send-sms', 'Insufficient credit.' );
+				$error = 'Insufficient credit.';
 				break;
 			case '1008':
-				return new \WP_Error( 'send-sms', 'Internal error (do NOT re-submit the same message again).' );
+				$error = 'Internal error (do NOT re-submit the same message again).';
 				break;
 			case '1009':
-				return new \WP_Error( 'send-sms', 'Service not available (do NOT re-submit the same message again).' );
-				break;
-			case strpos( $result, 'OK' ) !== false:
-				return $result;
+				$error = 'Service not available (do NOT re-submit the same message again).';
 				break;
 			default:
-				return new \WP_Error( 'send-sms', $result );
+				$error = sprintf( 'Unknow error: %s', $result );
 				break;
 		}
+
+		if ( $error ) {
+			return new \WP_Error( 'send-sms', $error );
+		}
+
+		return $result;
 	}
 
 }
