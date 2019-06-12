@@ -169,6 +169,7 @@ class Version {
 			'bandwidth'        => 'bandwidth.com',
 			'_4jawaly'         => '4jawaly.net',
 			'tyntec'           => 'tyntec.com',
+			'smscountry'       => 'smscountry.com',
 		);
 
 		return $gateways;
