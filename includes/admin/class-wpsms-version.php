@@ -170,6 +170,7 @@ class Version {
 			'_4jawaly'         => '4jawaly.net',
 			'tyntec'           => 'tyntec.com',
 			'smscountry'       => 'smscountry.com',
+			'routesms'         => 'routesms.com',
 		);
 
 		return $gateways;
