@@ -205,8 +205,6 @@ class _1s2u extends \WP_SMS\Gateway {
 				return new \WP_Error( 'send-sms', $result );
 				break;
 		}
-
-		return $result;
 	}
 
 }
