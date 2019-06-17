@@ -23,7 +23,6 @@
                 <div class="left">
 	                <?php if ( get_locale() == 'fa_IR' OR get_option('timezone_string') == 'Asia/Tehran' ) : ?>
                     <div class="content-padding">
-                        <h2><?php _e( 'Announcement', 'wp-sms' ); ?></h2>
 		                <?php echo \WP_SMS\Welcome::getNews(); ?>
                     </div><hr />
 	                <?php endif; ?>
