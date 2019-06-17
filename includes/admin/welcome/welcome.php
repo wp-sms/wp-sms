@@ -147,8 +147,8 @@
                         <td>
                             <a target="_blank" title="See All SMS gateways that support in WP-SMS and WP-SMS-Pro" href="https://wp-sms-pro.com/gateways">Gateways</a>
                         </td>
-                        <td>170</td>
-                        <td>215</td>
+                        <td>174</td>
+                        <td>223</td>
                     </tr>
                     <tr class="bold">
                         <td colspan="3"><strong>Features</strong></td>
