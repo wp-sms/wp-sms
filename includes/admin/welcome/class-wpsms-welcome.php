@@ -41,7 +41,7 @@ class Welcome {
 	 * Welcome page
 	 */
 	public static function page_callback() {
-			include( WP_SMS_DIR . "includes/admin/welcome/welcome.php" );
+		include( WP_SMS_DIR . "includes/admin/welcome/welcome.php" );
 	}
 
 	/**
@@ -85,6 +85,26 @@ class Welcome {
 			$Parsedown = new \Parsedown();
 
 			echo $Parsedown->text( nl2br( $data->body ) );
+		}
+	}
+
+	/**
+	 * @return string|void
+	 */
+	public static function getNews() {
+		$response = wp_remote_get( "https://wp-sms-pro.com/wp-json/wp/v2/pages/8247" );
+
+		// Check response
+		if ( is_wp_error( $response ) ) {
+			return;
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( $response_code == '200' ) {
+			$data = json_decode( $response['body'] );
+
+			return $data->content->rendered;
 		}
 	}
 }

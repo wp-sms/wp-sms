@@ -21,21 +21,14 @@
         <div data-content="whats-news" class="tab-content current">
             <section class="center-section">
                 <div class="left">
+	                <?php if ( get_locale() == 'fa_IR' ) : ?>
                     <div class="content-padding">
-						<?php if ( get_locale() == 'fa_IR' ) {
-							$response      = wp_remote_get( "https://wp-sms-pro.com/wp-json/wp/v2/pages/8247" );
-							$response_code = wp_remote_retrieve_response_code( $response );
-							if ( isset( $response['body'] ) AND $response_code == 200 ) {
-								$result       = json_decode( $response['body'] );
-								$page_title   = $result->title->rendered;
-								$page_content = strip_tags( $result->content->rendered );
-							} else {
-								$page_title   = '';
-								$page_content = '';
-							} ?>
-                            <h2><?php echo $page_title; ?></h2>
-                            <p><?php echo $page_content; ?></p>
-						<?php } ?>
+                        <h2><?php _e( 'Announcement', 'wp-sms' ); ?></h2>
+		                <?php echo \WP_SMS\Welcome::getNews(); ?>
+                    </div><hr />
+	                <?php endif; ?>
+
+                    <div class="content-padding">
                         <h2><?php _e( 'WP-Telegram Notifications', 'wp-sms' ); ?></h2>
                         <h4><?php _e( 'A new plugin from VeronaLabs', 'wp-sms' ); ?></h4>
 
