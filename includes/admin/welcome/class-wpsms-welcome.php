@@ -41,7 +41,20 @@ class Welcome {
 	 * Welcome page
 	 */
 	public static function page_callback() {
-		include( WP_SMS_DIR . "includes/admin/welcome/welcome.php" );
+		if ( get_locale() == 'fa_IR' ) {
+			$response = wp_remote_get( "https://wp-sms-pro.com/wp-json/wp/v2/pages/8247" );
+			if ( isset( $response['body'] ) ) {
+				$result       = json_decode( $response['body'] );
+				$page_title   = $result->title->rendered;
+				$page_content = strip_tags( $result->content->rendered );
+			} else {
+				$page_title   = '';
+				$page_content = '';
+			}
+			include( WP_SMS_DIR . "includes/admin/welcome/fa-welcome.php" );
+		} else {
+			include( WP_SMS_DIR . "includes/admin/welcome/welcome.php" );
+		}
 	}
 
 	/**
