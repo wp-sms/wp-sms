@@ -18,7 +18,7 @@ class Version {
 
 	public function __construct() {
 		// Check pro pack is enabled
-		if ( $this->pro_is_active() ) {
+		if ( self::pro_is_active() ) {
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title' ) );
 
 			// Check what version of WP-Pro using? if not new version, َShow the notice in admin area
@@ -43,7 +43,7 @@ class Version {
 	 * Check pro pack is enabled
 	 * @return bool
 	 */
-	private function pro_is_active() {
+	public static function pro_is_active() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		if ( is_plugin_active( 'wp-sms-pro/wp-sms-pro.php' ) ) {
@@ -88,7 +88,7 @@ class Version {
 	 * @internal param $string
 	 */
 	public function pro_setting_title_pro_not_activated() {
-		$html = '<p class="wpsms-error-notice">' . __( 'Requires Pro Pack version!', 'wp-sms' ) . '</p>';
+		$html = '<p class="wpsms-error-notice">' . __( 'Requires Pro Pack version.', 'wp-sms' ) . '</p>';
 
 		if ( $this->pro_is_exists() ) {
 			$html .= '<a style="margin-bottom: 8px; font-weight: normal;" href="plugins.php" class="button button-primary">' . __( 'Active WP-SMS-Pro', 'wp-sms' ) . '</a>';
@@ -167,7 +167,11 @@ class Version {
 			'smsmisr'          => 'smsmisr.com',
 			'smsgateway'       => 'smsgateway.me',
 			'bandwidth'        => 'bandwidth.com',
-			'_4jawaly'       => '4jawaly.net',
+			'_4jawaly'         => '4jawaly.net',
+			'tyntec'           => 'tyntec.com',
+			'smscountry'       => 'smscountry.com',
+			'routesms'         => 'routesms.com',
+			'zipwhip'          => 'zipwhip.com',
 		);
 
 		return $gateways;

@@ -21,8 +21,14 @@
         <div data-content="whats-news" class="tab-content current">
             <section class="center-section">
                 <div class="left">
+	                <?php if ( get_locale() == 'fa_IR' OR get_option('timezone_string') == 'Asia/Tehran' ) : ?>
                     <div class="content-padding">
-                        <h2><?php _e( 'WP-Telegram Notification', 'wp-sms' ); ?></h2>
+		                <?php echo \WP_SMS\Welcome::getNews(); ?>
+                    </div><hr />
+	                <?php endif; ?>
+
+                    <div class="content-padding">
+                        <h2><?php _e( 'WP-Telegram Notifications', 'wp-sms' ); ?></h2>
                         <h4><?php _e( 'A new plugin from VeronaLabs', 'wp-sms' ); ?></h4>
 
                         <a href="https://wp-telegram.com/purchase/" target="_blank">
@@ -141,8 +147,8 @@
                         <td>
                             <a target="_blank" title="See All SMS gateways that support in WP-SMS and WP-SMS-Pro" href="https://wp-sms-pro.com/gateways">Gateways</a>
                         </td>
-                        <td>170</td>
-                        <td>215</td>
+                        <td>174</td>
+                        <td>223</td>
                     </tr>
                     <tr class="bold">
                         <td colspan="3"><strong>Features</strong></td>

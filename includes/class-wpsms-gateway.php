@@ -200,7 +200,9 @@ class Gateway {
 				'fortytwo'      => 'fortytwo.com',
 				'smsglobal'     => 'smsglobal.com',
 				'gatewayapi'    => 'gatewayapi.com',
-				'spirius'       => 'spirius.com'
+				'spirius'       => 'spirius.com',
+				'_1s2u'         => '1s2u.com',
+				'easysendsms'   => 'easysendsms.com'
 			),
 			'united kingdom' => array(
 				'_textplode'   => 'textplode.com',
@@ -216,7 +218,7 @@ class Gateway {
 				'sms77' => 'sms77.de',
 				'engy'  => 'engy.solutions',
 			),
-			'slovakia'        => array(
+			'slovakia'       => array(
 				'eurosms' => 'eurosms.com',
 			),
 			'turkey'         => array(

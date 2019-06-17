@@ -98,14 +98,19 @@ class SMS_Send {
 				$this->sms->from = $_POST['wp_get_sender'];
 				$this->sms->msg  = $_POST['wp_get_message'];
 
-				if ( isset( $_POST['wp_flash'] ) ) {
+				if ( isset( $_POST['wp_flash'] ) AND $_POST['wp_flash'] == 'true') {
 					$this->sms->isflash = true;
 				} else {
 					$this->sms->isflash = false;
 				}
 
-				// Send sms
-				$response = $this->sms->SendSMS();
+				if ( isset( $_POST['wpsms_scheduled'] ) AND isset( $_POST['schedule_status'] ) AND $_POST['schedule_status'] AND $_POST['wpsms_scheduled'] ) {
+					$response = Scheduled::add( $_POST['wpsms_scheduled'], $this->sms->from, $this->sms->msg, $this->sms->to );
+				} else {
+
+					// Send sms
+					$response = $this->sms->SendSMS();
+				}
 
 				if ( is_wp_error( $response ) ) {
 					if ( is_array( $response->get_error_message() ) ) {

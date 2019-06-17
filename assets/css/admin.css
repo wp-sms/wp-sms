@@ -122,7 +122,7 @@
     display: grid;
     padding: 6px 33px;
     border-left: 1px solid #d8d8d8;
-    min-height: 610px;
+    min-height: 680px;
 }
 
 .rtl .wpsms-tab {
@@ -166,6 +166,13 @@
 
 .wp_sms_status_fail {
     background: #ca0404;
+    color: #ffffff;
+    padding: 3px 5px;
+    border-radius: 3px;
+}
+
+.wp_sms_status_on-queue {
+    background: #045cca;
     color: #ffffff;
     padding: 3px 5px;
     border-radius: 3px;

@@ -112,11 +112,14 @@ class Install {
 	 * Upgrade plugin requirements if needed
 	 */
 	static function upgrade() {
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
 		$installer_wpsms_ver = get_option( 'wp_sms_db_version' );
 
 		if ( $installer_wpsms_ver < WP_SMS_VERSION ) {
 
 			global $wpdb;
+			$charset_collate = $wpdb->get_charset_collate();
 
 			// Add response and status for outbox
 			$table_name = $wpdb->prefix . 'sms_send';
@@ -132,8 +135,6 @@ class Install {
 			// Fix columns length issue
 			$table_name = $wpdb->prefix . 'sms_subscribes';
 			$wpdb->query( "ALTER TABLE {$table_name} MODIFY name VARCHAR(250)" );
-
-			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
 
 			// Delete old last credit option
 			delete_option( 'wp_last_credit' );
@@ -172,6 +173,7 @@ class Install {
 				$wpdb->query( "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}" );
 			}
 
+			update_option( 'wp_sms_db_version', WP_SMS_VERSION );
 		}
 	}
 
