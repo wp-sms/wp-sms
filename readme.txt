@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, ghasemi71ir, mehrshaddarzi
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.2
+Tested up to: 5.2.1
 Requires PHP: 5.6
-Stable tag: 5.1.6
+Stable tag: 5.1.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -86,7 +86,7 @@ You can see the list of all supported gateways [through this link](https://githu
 * Isms.com.my
 * Sms4marketing.it
 * Magicdeal4u.com
-* Mobily.ws
+* Alfa-cell.com
 * Moceansms.com
 * Msg91.com
 * Msg360.in
@@ -228,6 +228,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.1.7 =
+* Added: easysendsms.com gateway.
+* Added: 1s2u.com gateway.
+
 = 5.1.6 =
 * Fixed: WordPress core update notification notice.
 * Fixed: Screen options columns for only Privacy Page.
