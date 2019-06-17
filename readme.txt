@@ -69,7 +69,7 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
-You can see the list of all supported gateways [through this link](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways). More gateways are supported in the Pro. The followings are the supported gateways for the Pro version:
+You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are the supported gateways for the Pro version:
 
 * Twilio.com
 * Plivo.com
@@ -111,6 +111,7 @@ You can see the list of all supported gateways [through this link](https://githu
 
 = What are the differences between Free and Pro Pack versions? =
 * User Verification Registration through SMS
+* Scheduled SMS feature (To schedule SMS sending).
 * Professional support & ticketing
 * More supported gateways (listed above)
 * Integrations with more plugins as listed below:
@@ -120,6 +121,7 @@ You can see the list of all supported gateways [through this link](https://githu
  * Integration with Quform: The plugin can send SMS to users or Admin after the form is submitted.
  * Integration with Easy Digital Downloads: You can add mobile number fields to the profile page, and send SMS to users or Admin when an order is submitted with EDD.
  * Integration with WP Job Manager: You can add mobile number fields to Job forms and send SMS to employers or Admin when a job is requested with WP Job Manager.
+ * Integration with Ultimate Members plugin.
 
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
@@ -198,6 +200,9 @@ Add new subscribes to SMS newsletters.
 
 	POST /wpsms/v1/subscriber/add
 
+= How to customize WP-SMS? =
+We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
+
 == Screenshots ==
 1. Gateway configuration.
 2. Features page.
@@ -231,6 +236,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 5.1.7 =
 * Added: easysendsms.com gateway.
 * Added: 1s2u.com gateway.
+* Minor improvements.
 
 = 5.1.6 =
 * Fixed: WordPress core update notification notice.
