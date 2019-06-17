@@ -171,6 +171,7 @@ class Version {
 			'tyntec'           => 'tyntec.com',
 			'smscountry'       => 'smscountry.com',
 			'routesms'         => 'routesms.com',
+			'zipwhip'          => 'zipwhip.com',
 		);
 
 		return $gateways;
