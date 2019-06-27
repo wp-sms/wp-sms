@@ -174,6 +174,7 @@ class Version {
 			'skebby'           => 'skebby.it',
 			'tropo'            => 'tropo.it',
 			'sendhub'          => 'sendhub.com',
+			'upsidewireless'   => 'upsidewireless.com',
 		);
 
 		return $gateways;
