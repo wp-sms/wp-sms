@@ -175,6 +175,7 @@ class Version {
 			'tropo'            => 'tropo.it',
 			'sendhub'          => 'sendhub.com',
 			'upsidewireless'   => 'upsidewireless.com',
+			'orange'           => 'orange.com',
 		);
 
 		return $gateways;
