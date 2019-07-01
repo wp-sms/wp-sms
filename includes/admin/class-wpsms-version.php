@@ -176,6 +176,7 @@ class Version {
 			'sendhub'          => 'sendhub.com',
 			'upsidewireless'   => 'upsidewireless.com',
 			'orange'           => 'orange.com',
+			'proovl'           => 'proovl.com',
 		);
 
 		return $gateways;
