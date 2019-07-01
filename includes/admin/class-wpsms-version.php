@@ -177,6 +177,7 @@ class Version {
 			'upsidewireless'   => 'upsidewireless.com',
 			'orange'           => 'orange.com',
 			'proovl'           => 'proovl.com',
+			'messente'         => 'messente.com'
 		);
 
 		return $gateways;
