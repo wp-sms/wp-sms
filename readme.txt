@@ -234,7 +234,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 
 == Changelog ==
 = 5.1.8 =
-* Added: cheapsmsglobalsms.com gateway.
+* Added: cheapglobalsms.com gateway.
 * Minor improvements.
 
 = 5.1.7 =
