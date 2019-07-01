@@ -407,11 +407,12 @@ class Gateway {
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
 			),
-			'other'          => array(
-				'mtarget'  => 'mtarget',
-				'torpedos' => 'torpedos',
-				'smss'     => 'smss.co',
-				'bearsms'  => 'bearsms',
+			'global'         => array(
+				'mtarget'        => 'mtarget',
+				'torpedos'       => 'torpedos',
+				'smss'           => 'smss.co',
+				'bearsms'        => 'bearsms',
+				'cheapglobalsms' => 'cheapglobalsms.com',
 			),
 		);
 

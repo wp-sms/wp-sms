@@ -171,7 +171,14 @@ class Version {
 			'tyntec'           => 'tyntec.com',
 			'smscountry'       => 'smscountry.com',
 			'routesms'         => 'routesms.com',
-			'zipwhip'          => 'zipwhip.com',
+			'skebby'           => 'skebby.it',
+			'tropo'            => 'tropo.it',
+			'sendhub'          => 'sendhub.com',
+			'upsidewireless'   => 'upsidewireless.com',
+			'orange'           => 'orange.com',
+			'proovl'           => 'proovl.com',
+			'messente'         => 'messente.com',
+			'springedge'       => 'springedge.com'
 		);
 
 		return $gateways;
