@@ -77,9 +77,21 @@ class cheapglobalsms extends \WP_SMS\Gateway {
 			}
 
 			$to  = implode( ',', $numbers );
-			$msg = urlencode( $this->msg );
+			$msg = $this->msg;
 
-			$response = wp_remote_get( $this->wsdl_link . "?sub_account=" . $this->username . "&sub_account_pass=" . $this->password . "&action=send_sms&sender_id=" . $this->from . "&message=" . $msg . "&recipients=" . $to . "&type=" . $type . "&unicode=" . $unicode );
+			$args     = array(
+				'body' => array(
+					'sub_account'      => $this->username,
+					'sub_account_pass' => $this->password,
+					'action'           => 'send_sms',
+					'sender_id'        => $this->from,
+					'message'          => $msg,
+					'recipients'       => $to,
+					'type'             => $type,
+					'unicode'          => $unicode
+				),
+			);
+			$response = wp_remote_post( $this->wsdl_link, $args );
 
 			// Check response error
 			if ( is_wp_error( $response ) ) {
