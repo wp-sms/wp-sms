@@ -230,7 +230,8 @@ class Settings_Pro {
 			 */
 			$response = wp_remote_get( add_query_arg( array(
 				'plugin-name' => 'wp-sms-pro',
-				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] )
+				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] ),
+				'website'     => get_bloginfo( 'url' ),
 			),
 				WP_SMS_SITE . '/wp-json/plugins/v1/validate'
 			) );
