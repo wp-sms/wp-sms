@@ -178,7 +178,8 @@ class Version {
 			'orange'           => 'orange.com',
 			'proovl'           => 'proovl.com',
 			'messente'         => 'messente.com',
-			'springedge'       => 'springedge.com'
+			'springedge'       => 'springedge.com',
+			'bulksmsnigeria'   => 'bulksmsnigeria.com'
 		);
 
 		return $gateways;
