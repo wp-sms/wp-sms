@@ -29,6 +29,15 @@ class Version {
 			// Check license key.
 			if ( Option::getOption( 'license_key_status', true ) == 'no' ) {
 				add_action( 'admin_notices', array( $this, 'license_notice' ) );
+				add_filter( 'wp_sms_pro_wp_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_pro_bp_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_pro_wc_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_pro_gf_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_pro_qf_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_pro_edd_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_job_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_as_settings', array( $this, 'license_option' ) );
+				add_filter( 'wp_sms_pro_um_settings', array( $this, 'license_option' ) );
 			}
 		} else {
 			add_filter( 'plugin_row_meta', array( $this, 'pro_meta_links' ), 10, 2 );
@@ -198,6 +207,24 @@ class Version {
 	public function license_notice() {
 		$url = admin_url( 'admin.php?page=wp-sms-pro' );
 		Helper::notice( sprintf( __( 'Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable automatic updates.', 'wp-sms' ), $url ), 'error' );
+	}
+
+	/**
+	 * Default options.
+	 *
+	 * @return array
+	 */
+	public function license_option( $option ) {
+		$url = admin_url( 'admin.php?page=wp-sms-pro' );
+
+		return array(
+			'license_option' => array(
+				'id'   => 'license_notice',
+				'name' => __( 'License Key', 'wp-sms' ),
+				'type' => 'notice',
+				'desc' => sprintf( __( 'Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable options.', 'wp-sms' ), $url ),
+			)
+		);
 	}
 }
 

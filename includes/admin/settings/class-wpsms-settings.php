@@ -700,9 +700,9 @@ class Settings {
 					'id'   => 'edd_notif_new_order_template',
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the message.', 'wp-telegram-notifications' ) . '<br>' .
+					'desc' => __( 'Enter the contents of the message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Customer email: %s, Customer name: %s, Customer last name: %s', 'wp-telegram-notifications' ),
+						          __( 'Customer email: %s, Customer name: %s, Customer last name: %s', 'wp-sms' ),
 						          '<code>%edd_email%</code>',
 						          '<code>%edd_first%</code>',
 						          '<code>%edd_last%</code>'
