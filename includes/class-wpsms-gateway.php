@@ -202,7 +202,12 @@ class Gateway {
 				'gatewayapi'    => 'gatewayapi.com',
 				'spirius'       => 'spirius.com',
 				'_1s2u'         => '1s2u.com',
-				'easysendsms'   => 'easysendsms.com'
+				'easysendsms'   => 'easysendsms.com',
+				'mtarget'        => 'mtarget',
+				'torpedos'       => 'torpedos',
+				'smss'           => 'smss.co',
+				'bearsms'        => 'bearsms',
+				'cheapglobalsms' => 'cheapglobalsms.com'
 			),
 			'united kingdom' => array(
 				'_textplode'   => 'textplode.com',
@@ -406,14 +411,7 @@ class Gateway {
 				'infodomain'   => 'infodomain.asia',
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
-			),
-			'global'         => array(
-				'mtarget'        => 'mtarget',
-				'torpedos'       => 'torpedos',
-				'smss'           => 'smss.co',
-				'bearsms'        => 'bearsms',
-				'cheapglobalsms' => 'cheapglobalsms.com',
-			),
+			)
 		);
 
 		return apply_filters( 'wpsms_gateway_list', $gateways );

@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Pro\Scheduled;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly

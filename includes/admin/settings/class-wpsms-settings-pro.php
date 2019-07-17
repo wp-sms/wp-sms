@@ -230,7 +230,8 @@ class Settings_Pro {
 			 */
 			$response = wp_remote_get( add_query_arg( array(
 				'plugin-name' => 'wp-sms-pro',
-				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] )
+				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] ),
+				'website'     => get_bloginfo( 'url' ),
 			),
 				WP_SMS_SITE . '/wp-json/plugins/v1/validate'
 			) );
@@ -381,9 +382,9 @@ class Settings_Pro {
 			$buddypress_settings = array(
 				'bp_fields' => array(
 					'id'   => 'bp_fields',
-					'name' => __( 'Not active', 'wp-telegram-notifications' ),
+					'name' => __( 'Not active', 'wp-sms' ),
 					'type' => 'notice',
-					'desc' => __( 'BuddyPress should be enable to run this tab.', 'wp-telegram-notifications' ),
+					'desc' => __( 'BuddyPress should be enable to run this tab.', 'wp-sms' ),
 				) );
 		}
 
@@ -610,9 +611,9 @@ class Settings_Pro {
 			$wc_settings = array(
 				'wc_fields' => array(
 					'id'   => 'wc_fields',
-					'name' => __( 'Not active', 'wp-telegram-notifications' ),
+					'name' => __( 'Not active', 'wp-sms' ),
 					'type' => 'notice',
-					'desc' => __( 'WooCommerce should be enable to run this tab.', 'wp-telegram-notifications' ),
+					'desc' => __( 'WooCommerce should be enable to run this tab.', 'wp-sms' ),
 				) );
 		}
 
@@ -690,9 +691,9 @@ class Settings_Pro {
 			$edd_settings = array(
 				'edd_fields' => array(
 					'id'   => 'edd_fields',
-					'name' => __( 'Not active', 'wp-telegram-notifications' ),
+					'name' => __( 'Not active', 'wp-sms' ),
 					'type' => 'notice',
-					'desc' => __( 'Easy Digital Downloads should be enable to run this tab.', 'wp-telegram-notifications' ),
+					'desc' => __( 'Easy Digital Downloads should be enable to run this tab.', 'wp-sms' ),
 				) );
 		}
 
@@ -787,9 +788,9 @@ class Settings_Pro {
 			$job_settings = array(
 				'job_fields' => array(
 					'id'   => 'job_fields',
-					'name' => __( 'Not active', 'wp-telegram-notifications' ),
+					'name' => __( 'Not active', 'wp-sms' ),
 					'type' => 'notice',
-					'desc' => __( 'Job Manager should be enable to run this tab.', 'wp-telegram-notifications' ),
+					'desc' => __( 'Job Manager should be enable to run this tab.', 'wp-sms' ),
 				) );
 		}
 
@@ -873,9 +874,9 @@ class Settings_Pro {
 			$as_settings = array(
 				'as_notify_new_ticket' => array(
 					'id'   => 'as_notify_new_ticket',
-					'name' => __( 'Not active', 'wp-telegram-notifications' ),
+					'name' => __( 'Not active', 'wp-sms' ),
 					'type' => 'notice',
-					'desc' => __( 'Awesome Support should be enable to run this tab.', 'wp-telegram-notifications' ),
+					'desc' => __( 'Awesome Support should be enable to run this tab.', 'wp-sms' ),
 				) );
 		}
 

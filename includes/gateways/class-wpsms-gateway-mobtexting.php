@@ -59,7 +59,7 @@ class Mobtexting extends \WP_SMS\Gateway {
 
 		// comma seperated receivers
 		$to            = implode( ',', $this->to );
-		$msg           = urlencode( $this->msg );
+		$msg           = $this->msg;
 		$api_end_point = $this->wsdl_link . "/sms/send";
 		$api_args      = Array(
 			'access_token' => $this->has_key,
