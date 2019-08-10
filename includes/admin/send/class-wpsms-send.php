@@ -58,7 +58,7 @@ class SMS_Send {
 		$gateway_name = Option::getOption( 'gateway_name' );
 		$credit       = get_option( 'wpsms_gateway_credit' );
 
-		if ( $gateway_name && ! $credit ) {
+		/*if ( $gateway_name && ! $credit ) {
 			echo '<br><div class="update-nag">' . __( 'You should have sufficient funds for sending sms in the account', 'wp-sms' ) . '</div>';
 
 			return;
@@ -66,7 +66,7 @@ class SMS_Send {
 			echo '<br><div class="update-nag">' . __( 'You should choose and configuration your gateway in the Setting page', 'wp-sms' ) . '</div>';
 
 			return;
-		}
+		}*/
 
 		if ( isset( $_POST['SendSMS'] ) ) {
 			if ( $_POST['wp_get_message'] ) {

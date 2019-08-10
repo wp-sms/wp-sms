@@ -3,8 +3,8 @@
 namespace WP_SMS\Gateway;
 
 class smsgatewaycenter extends \WP_SMS\Gateway {
-	private $wsdl_link = "https://www.smsgatewaycenter.com/library/";
-	public $tariff = "https://www.smsgatewaycenter.com/";
+	private $wsdl_link = "https://www.smsgateway.center/SMSApi/rest/";
+	public $tariff = "https://www.smsgateway.center/";
 	public $unitrial = false;
 	public $unit;
 	public $flash = "enable";
@@ -57,16 +57,18 @@ class smsgatewaycenter extends \WP_SMS\Gateway {
 
 		$msg = urlencode( $this->msg );
 
-		$result = file_get_contents( $this->wsdl_link . "send_sms_2.php?UserName=" . $this->username . "&Password=" . $this->password . "&Type=Bulk&To=" . implode( ',', $this->to ) . "&Mask=" . $this->from . "&Message=" . $msg );
-
-		if ( strpos( $result, 'error' ) !== false ) {
+		$result = file_get_contents( $this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode( ',', $this->to ) . "&senderId=" . $this->from . "&msg=" . $msg ."&format=json");
+		
+		$jsonDecode = json_decode($result);
+		error_log($this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode( ',', str_replace('+', '', $this->to) ) . "&senderId=" . $this->from . "&msg=" . $msg ."&format=json");
+		error_log(print_r($jsonDecode, true));
+		if ( $jsonDecode->status == 'error' ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
-
 			return false;
 		}
 
-		if ( $result ) {
+		if ( $jsonDecode->status == 'success' ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result );
 
@@ -77,28 +79,30 @@ class smsgatewaycenter extends \WP_SMS\Gateway {
 			 *
 			 * @param string $result result output.
 			 */
-			do_action( 'wp_sms_send', $result );
+			do_action( 'wp_sms_send', lcfirst($jsonDecode->status) . ' | ' . $jsonDecode->transactionId );
 
-			return $result;
+			return lcfirst($jsonDecode->status) . ' | ' . $jsonDecode->transactionId;
 		}
 		// Log the result
 		$this->log( $this->from, $this->msg, $this->to, $result, 'error' );
 
-		return new \WP_Error( 'send-sms', $result );
+		return new \WP_Error( 'send-sms', lcfirst($jsonDecode->status) . ' | ' . $jsonDecode->transactionId );
 	}
-
+	
+	/**
+	 * Get Balance
+	 * @return \WP_Error|boolean
+	 */
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
-
-		$result = file_get_contents( $this->wsdl_link . "checkbalance.php?Username=" . $this->username . "&Password=" . $this->password );
-
-		if ( strpos( $result, 'error' ) !== false ) {
-			return new \WP_Error( 'account-credit', $result );
+		$result = file_get_contents( $this->wsdl_link . "balanceValidityCheck?userId=" . $this->username . "&password=" . $this->password . "&format=json");
+		$jsonDecode = json_decode($result);
+		if ( $jsonDecode->status !== 'success' ) {
+			return new \WP_Error( 'account-credit', "$jsonDecode->status | $jsonDecode->errorCode | $jsonDecode->reason");
 		}
-
-		return true;
+		return $jsonDecode->smsBalance;
 	}
 }
