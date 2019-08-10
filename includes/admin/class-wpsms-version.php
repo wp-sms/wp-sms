@@ -188,7 +188,9 @@ class Version {
 			'proovl'           => 'proovl.com',
 			'messente'         => 'messente.com',
 			'springedge'       => 'springedge.com',
-			'bulksmsnigeria'   => 'bulksmsnigeria.com'
+			'bulksmsnigeria'   => 'bulksmsnigeria.com',
+			'smsru'            => 'sms.ru',
+			'aspsms'           => 'aspsms.com'
 		);
 
 		return $gateways;
