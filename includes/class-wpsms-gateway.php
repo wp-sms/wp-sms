@@ -308,7 +308,7 @@ class Gateway {
 				'joghataysms'    => '051sms.ir',
 				'mediana'        => 'mediana.ir',
 				'aradsms'        => 'arad-sms.ir',
-				'asiapayamak'    => 'payamak.asia',
+				'asiapayamak'    => 'webdade.com',
 				'sharifpardazan' => '2345.ir',
 				'aradpayamak'    => 'aradpayamak.net',
 				'sarabsms'       => 'sarabsms.ir',
