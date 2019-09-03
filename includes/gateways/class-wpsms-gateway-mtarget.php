@@ -3,11 +3,11 @@
 namespace WP_SMS\Gateway;
 
 class mtarget extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://smswebservices.public.mtarget.fr/SmsWebServices/ServletSms";
+	private $wsdl_link = "https://api-public.mtarget.fr/api-sms.json";
 	public $tariff = "http://mtarget.fr/";
-	public $unitrial = false;
+	public $unitrial = true;
 	public $unit;
-	public $flash = "enable";
+	public $flash = "disable";
 	public $isflash = false;
 
 	public function __construct() {
@@ -16,8 +16,6 @@ class mtarget extends \WP_SMS\Gateway {
 	}
 
 	public function SendSMS() {
-
-		$msg = urlencode( $this->msg );
 
 		/**
 		 * Modify sender number
@@ -56,22 +54,46 @@ class mtarget extends \WP_SMS\Gateway {
 
 			return $credit;
 		}
+		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
+			$allowunicode = 'true';
+		} else {
+			$allowunicode = 'false';
+		}
 
-		foreach ( $this->to as $to ) {
+		$success = true;
+
+		// We want to send as few requests as we can
+		$msisdns_sublists = array_chunk($this->to, 500);
+		foreach ( $msisdns_sublists as $sublist) {
+			$to_list = '';
+			foreach ( $sublist as $to ) {
+				$to_list .= $to . ',';
+			}
 			// Check credit for the gateway
 			if ( ! $this->GetCredit() ) {
-				$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+				$this->log( $this->from, $this->msg, $this->to, $this->GetCredit(), 'error' );
 
 				return;
 			}
 
-			$result = file_get_contents( $this->wsdl_link . '?method=sendText&username=' . $this->username . '&password=' . $this->password . '&serviceid=' . $this->from . '&destinationAddress=' . $to . '&originatingAddress=00000&operatorid=0&paycode=0&msgtext=' . $msg );
+			$resultJSON = file_get_contents( $this->wsdl_link . '?username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&sender=' . urlencode($this->from) . '&msisdn=' . urlencode($to_list) . '&msg=' . urlencode($this->msg) . '&allowunicode=' . $allowunicode );
+
+			try {
+				$result = json_decode($resultJSON);
+				foreach ($result->results as $message) {
+					if ($message->reason !== 'ACCEPTED') {
+						$success = false;
+					}
+				}
+			} catch (Exception $e) {
+				$success = false;
+			}
+
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $resultJSON );
 		}
 
-		if ( $result == '0' ) {
-			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $result );
-
+		if ( $success ) {
 			/**
 			 * Run hook after send sms.
 			 *
@@ -84,7 +106,7 @@ class mtarget extends \WP_SMS\Gateway {
 			return $result;
 		}
 		// Log the result
-		$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+		$this->log( $this->from, $this->msg, $this->to, $this->GetCredit(), 'error' );
 
 		return new \WP_Error( 'send-sms', $result );
 	}
@@ -95,6 +117,12 @@ class mtarget extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
-		return true;
+		// Using a legacy endpoint to check the remaining credit
+		$result = file_get_contents("https://smswebservices.mtarget.fr/SmsWebServices/ServletSms?method=getAccountInformation&username=" . $this->username . "&password=" . $this->password);
+		preg_match('/<CREDIT>([^<]+)<\/CREDIT>/', $result, $regex_match);
+
+		$credit = (int) $regex_match[1];
+
+		return $credit;
 	}
 }
