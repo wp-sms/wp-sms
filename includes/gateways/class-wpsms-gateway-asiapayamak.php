@@ -3,8 +3,8 @@
 namespace WP_SMS\Gateway;
 
 class asiapayamak extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://panel.payamak.asia/post/send.asmx?wsdl";
-	public $tariff = "http://www.payamak.asia/";
+	private $wsdl_link = "http://sms.webdade.com/post/send.asmx?wsdl";
+	public $tariff = "http://webdade.com/";
 	public $unitrial = true;
 	public $unit;
 	public $flash = "disable";
