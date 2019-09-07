@@ -44,7 +44,7 @@ function wp_sms_get_option( $option_name, $pro = false, $setting_name = '' ) {
 /**
  * Send SMS.
  *
- * @param $to
+ * @param array $to
  * @param $msg $pro
  * @param bool $is_flash
  *
@@ -54,7 +54,7 @@ function wp_sms_send( $to, $msg, $is_flash = false ) {
 	global $sms;
 
 	$sms->isflash = $is_flash;
-	$sms->to      = array( $to );
+	$sms->to      = $to;
 	$sms->msg     = $msg;
 
 	return $sms->SendSMS();
