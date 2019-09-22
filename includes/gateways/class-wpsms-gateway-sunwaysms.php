@@ -7,7 +7,7 @@ class sunwaysms extends \WP_SMS\Gateway {
 	public $tariff = "http://sunwaysms.com";
 	public $unitrial = true;
 	public $unit;
-	public $flash = "enable";
+	public $flash = "disabled";
 	public $isflash = false;
 
 	public function __construct() {
