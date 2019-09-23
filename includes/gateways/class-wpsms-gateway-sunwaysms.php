@@ -125,7 +125,7 @@ class sunwaysms extends \WP_SMS\Gateway {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
-		$response = wp_remote_get( $this->wsdl_link . "HttpService.ashx?service=GetCredit&username={$this->username}&passwor=" . $this->password );
+		$response = wp_remote_get( $this->wsdl_link . "HttpService.ashx?service=GetCredit&username={$this->username}&password=" . $this->password );
 
 		// Check gateway credit
 		if ( is_wp_error( $response ) ) {
