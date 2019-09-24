@@ -190,7 +190,9 @@ class Version {
 			'springedge'       => 'springedge.com',
 			'bulksmsnigeria'   => 'bulksmsnigeria.com',
 			'smsru'            => 'sms.ru',
-			'aspsms'           => 'aspsms.com'
+			'aspsms'           => 'aspsms.com',
+            'kaleyra'          => 'kaleyra.com',
+            'gtxmessaging'     => 'gtx-messaging.com',
 		);
 
 		return $gateways;
