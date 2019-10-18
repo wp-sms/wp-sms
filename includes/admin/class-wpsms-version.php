@@ -193,6 +193,7 @@ class Version {
 			'aspsms'           => 'aspsms.com',
             'kaleyra'          => 'kaleyra.com',
             'gtxmessaging'     => 'gtx-messaging.com',
+            'kwtsms'     	   => 'kwtsms.com',
 		);
 
 		return $gateways;
