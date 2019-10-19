@@ -194,6 +194,7 @@ class Version {
             'kaleyra'          => 'kaleyra.com',
             'gtxmessaging'     => 'gtx-messaging.com',
             'kwtsms'     	   => 'kwtsms.com',
+            'dianahost'        => 'dianahost.com',
 		);
 
 		return $gateways;
