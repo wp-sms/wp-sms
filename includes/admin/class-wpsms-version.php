@@ -195,6 +195,7 @@ class Version {
             'gtxmessaging'     => 'gtx-messaging.com',
             'kwtsms'     	   => 'kwtsms.com',
             'dianahost'        => 'dianahost.com',
+            'sendpulse'        => 'sendpulse.com',
 		);
 
 		return $gateways;
