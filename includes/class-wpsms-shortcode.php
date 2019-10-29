@@ -19,10 +19,14 @@ class Shortcode {
 	 *
 	 * @param $atts
 	 *
+	 * @return false|string
 	 * @internal param param $Not
 	 */
 	public function register_shortcode( $atts ) {
+		ob_start();
 		Newsletter::loadNewsLetter();
+
+		return ob_get_clean();
 	}
 }
 
