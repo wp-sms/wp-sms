@@ -89,7 +89,7 @@ class sms77 extends \WP_SMS\Gateway {
 
 	public function GetCredit() {
 		// Check username and password
-		if ( ! $this->username && ! $this->password ) {
+		if ( ! $this->has_key ) {
 			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
 		}
 
