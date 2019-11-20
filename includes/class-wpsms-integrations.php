@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Gateway\loginpanel;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -96,25 +98,36 @@ class Integrations {
 		}
 
 		if ( $cf7_options_field['message'] && $cf7_options_field['phone'] ) {
-
-			$to = preg_replace_callback( '/%([a-zA-Z0-9._-]+)%/', function ( $matches ) {
-				foreach ( $matches as $item ) {
+		    $to = preg_replace_callback( '/%([a-zA-Z0-9._-]+)%/', function ( $matches ) {
+		        foreach ( $matches as $item ) {
 					if ( isset( $this->cf7_data[ $item ] ) ) {
 						return $this->cf7_data[ $item ];
 					}
 				}
 			}, $cf7_options_field['phone'] );
 
-			$this->sms->to = array( $to );
+            // Check the type of field is select.
+            foreach ($form->scan_form_tags() as $scan_form_tag) {
+                if($scan_form_tag['basetype'] == 'select') {
+                    foreach ($scan_form_tag['raw_values'] as $raw_value) {
+                        $option = explode('|', $raw_value);
+
+                        if(isset($option[0]) and $option[0] == $to) {
+                            $to = $option[1];
+                        }
+                    }
+                }
+            }
+
+            $this->sms->to = array( $to );
 
 			$this->sms->msg = preg_replace_callback( '/%([a-zA-Z0-9._-]+)%/', function ( $matches ) {
-				foreach ( $matches as $item ) {
+			    foreach ( $matches as $item ) {
 					if ( isset( $this->cf7_data[ $item ] ) ) {
 						return $this->cf7_data[ $item ];
 					}
 				}
 			}, $cf7_options_field['message'] );
-
 			$this->sms->SendSMS();
 		}
 	}

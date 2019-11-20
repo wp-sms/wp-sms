@@ -28,12 +28,12 @@ jQuery(document).ready(function ($) {
 
         $("#wpsms-subscribe").ajaxStart(function () {
             $("#wpsms-submit").attr('disabled', 'disabled');
-            $("#wpsms-submit").text(ajax_object.loading_text);
+            $("#wpsms-submit").text(wpsms_ajax_object.loading_text);
         });
 
         $("#wpsms-subscribe").ajaxComplete(function () {
             $("#wpsms-submit").removeAttr('disabled');
-            $("#wpsms-submit").text(ajax_object.subscribe_text);
+            $("#wpsms-submit").text(wpsms_ajax_object.subscribe_text);
         });
         if (subscriber['type'] === 'subscribe') {
             var method = 'POST';
@@ -43,7 +43,7 @@ jQuery(document).ready(function ($) {
         var data_obj = Object.assign({}, subscriber);
         var ajax = $.ajax({
             type: method,
-            url: ajax_object.ajaxurl,
+            url: wpsms_ajax_object.ajaxurl,
             data: data_obj
         });
         ajax.fail(function (data) {
@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
             } else {
-                message = ajax_object.unknown_error;
+                message = wpsms_ajax_object.unknown_error;
             }
 
             $("#wpsms-result").fadeIn();
@@ -78,18 +78,18 @@ jQuery(document).ready(function ($) {
 
         $("#wpsms-subscribe").ajaxStart(function () {
             $("#activation").attr('disabled', 'disabled');
-            $("#activation").text(ajax_object.loading_text);
+            $("#activation").text(wpsms_ajax_object.loading_text);
         });
 
         $("#wpsms-subscribe").ajaxComplete(function () {
             $("#activation").removeAttr('disabled');
-            $("#activation").text(ajax_object.activation_text);
+            $("#activation").text(wpsms_ajax_object.activation_text);
         });
 
         var data_obj = Object.assign({}, subscriber);
         var ajax = $.ajax({
             type: 'PUT',
-            url: ajax_object.ajaxurl,
+            url: wpsms_ajax_object.ajaxurl,
             data: data_obj
         });
         ajax.fail(function (data) {
@@ -99,7 +99,7 @@ jQuery(document).ready(function ($) {
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
             } else {
-                message = ajax_object.unknown_error;
+                message = wpsms_ajax_object.unknown_error;
             }
 
             $("#wpsms-result").fadeIn();

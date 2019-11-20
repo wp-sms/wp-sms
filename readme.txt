@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, mehrshaddarzi, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.2.2
+Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 5.2
+Stable tag: 5.2.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -233,6 +233,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.2.1 =
+* Improvement: CF7 integration, now the dropdown field is supported.
+* Updated: ms77.de gateway.
+
 = 5.2 =
 * Added: The from parameter in `wp_sms_send()`.
 * Added: Sunwaysms.com gateway.
