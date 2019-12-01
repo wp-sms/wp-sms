@@ -126,6 +126,25 @@ class Features {
 			$errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include a mobile number.', 'wp-sms' ) );
 		}
 
+		if (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches) == false) {
+			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+			$error = true;
+		}
+
+		if (!$error && !isset($matches[0])) {
+			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+			$error = true;
+		}
+
+		if (!$error && isset($matches[0]) && strlen($matches[0]) < 10) {
+			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+			$error = true;
+		}
+
+		if (!$error && isset($matches[0]) && strlen($matches[0]) > 14) {
+			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+		}
+
 		if ( $this->check_mobile_number( $_POST['mobile'] ) ) {
 			$errors->add( 'duplicate_mobile_number', __( '<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms' ) );
 		}
