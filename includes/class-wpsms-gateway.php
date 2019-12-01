@@ -412,7 +412,10 @@ class Gateway {
 				'infodomain'   => 'infodomain.asia',
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
-			)
+			),
+			'ghana'          => array(
+				'eazismspro' => 'eazismspro.com',
+			),
 		);
 
 		return apply_filters( 'wpsms_gateway_list', $gateways );
