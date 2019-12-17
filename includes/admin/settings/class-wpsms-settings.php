@@ -495,6 +495,12 @@ class Settings {
 					'options' => $options,
 					'desc'    => __( 'Send an SMS to subscribers When published new posts.', 'wp-sms' )
 				),
+				'notif_publish_new_post_words_count'     => array(
+					'id'      => 'notif_publish_new_post_words_count',
+					'name'    => __( 'Post content words count', 'wp-sms' ),
+					'type'    => 'number',
+					'desc'    => __( 'The number of word for cropping in send post notification. Default : 10', 'wp-sms' )
+				),
 				'notif_publish_new_post_template'         => array(
 					'id'   => 'notif_publish_new_post_template',
 					'name' => __( 'Message body', 'wp-sms' ),
