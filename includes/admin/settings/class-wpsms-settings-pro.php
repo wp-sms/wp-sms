@@ -887,6 +887,14 @@ class Settings_Pro {
 			$forms = \RGFormsModel::get_forms( null, 'title' );
 
 			foreach ( $forms as $form ):
+				$more_fields = '';
+				$form_fields = Gravityforms::get_field( $form->id );
+				if(is_array($form_fields) && count($form_fields)){
+					$more_fields = ', '.__('Fields', 'wp-sms').' : ';
+					foreach ( $form_fields as $key => $value ) {
+						$more_fields .= "<code>%{$value}%</code>, ";
+					}
+				}
 				$gf_forms[ 'gf_notify_form_' . $form->id ]          = array(
 					'id'   => 'gf_notify_form_' . $form->id,
 					'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form->title ),
@@ -917,7 +925,7 @@ class Settings_Pro {
 						          '<code>%source_url%</code>',
 						          '<code>%user_agent%</code>',
 						          '<code>%content%</code>'
-					          )
+					          ). $more_fields
 				);
 
 				if ( Gravityforms::get_field( $form->id ) ) {
@@ -947,7 +955,7 @@ class Settings_Pro {
 							          '<code>%source_url%</code>',
 							          '<code>%user_agent%</code>',
 							          '<code>%content%</code>'
-						          )
+						          ). $more_fields
 					);
 				}
 			endforeach;
