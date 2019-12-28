@@ -196,6 +196,8 @@ class Version {
             'kwtsms'     	   => 'kwtsms.com',
             'dianahost'        => 'dianahost.com',
             'sendpulse'        => 'sendpulse.com',
+            'htd'			   => 'htd.ps',
+            'telnyx'		   => 'telnyx.com',
 		);
 
 		return $gateways;
