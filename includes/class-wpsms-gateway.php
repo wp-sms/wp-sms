@@ -384,6 +384,7 @@ class Gateway {
 				'candoosms'      => 'candoosms.com',
 				'hirosms'        => 'hiro-sms.com',
 				'onlinepanel'    => 'onlinepanel.ir',
+				'rayansmspanel'  => 'rayansmspanel.ir',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
