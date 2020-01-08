@@ -198,6 +198,7 @@ class Version {
             'sendpulse'        => 'sendpulse.com',
             'htd'			   => 'htd.ps',
             'telnyx'		   => 'telnyx.com',
+            'makolar'		   => 'makolar.com',
 		);
 
 		return $gateways;
