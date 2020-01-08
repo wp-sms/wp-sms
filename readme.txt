@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 5.2.1
+Stable tag: 5.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -233,6 +233,12 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.2.2 =
+* Added: Eazismspro.com gateway
+* Improvement: Mobile field number is required in the registration form
+* Updated: Dynamic the number of the word for cropping in send post notification
+* Updated: Display gravity form fields tags in settings
+
 = 5.2.1 =
 * Improvement: CF7 integration, now the dropdown field is supported.
 * Updated: ms77.de gateway.
