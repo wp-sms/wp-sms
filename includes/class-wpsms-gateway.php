@@ -384,6 +384,7 @@ class Gateway {
 				'candoosms'      => 'candoosms.com',
 				'hirosms'        => 'hiro-sms.com',
 				'onlinepanel'    => 'onlinepanel.ir',
+				'rayansmspanel'  => 'rayansmspanel.ir',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
@@ -412,7 +413,10 @@ class Gateway {
 				'infodomain'   => 'infodomain.asia',
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
-			)
+			),
+			'ghana'          => array(
+				'eazismspro' => 'eazismspro.com',
+			),
 		);
 
 		return apply_filters( 'wpsms_gateway_list', $gateways );

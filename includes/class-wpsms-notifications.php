@@ -127,9 +127,11 @@ class Notifications {
 				$this->sms->to = $this->db->get_col( "SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'" );
 			}
 
+			$notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
+			$words_limit = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
 			$template_vars = array(
 				'%post_title%'   => get_the_title( $ID ),
-				'%post_content%' => wp_trim_words( $post->post_content, 10 ),
+				'%post_content%' => wp_trim_words( $post->post_content, $words_limit ),
 				'%post_url%'     => wp_get_shortlink( $ID ),
 				'%post_date%'    => get_post_time( 'Y-m-d H:i:s', false, $ID, true ),
 			);
