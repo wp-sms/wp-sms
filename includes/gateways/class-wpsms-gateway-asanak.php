@@ -83,7 +83,7 @@ class asanak extends \WP_SMS\Gateway {
 			 */
 			do_action( 'wp_sms_send', $process );
 
-			return $process;
+			return curl_error($process);
 		} else {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $process, 'error' );
