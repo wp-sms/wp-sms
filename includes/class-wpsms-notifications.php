@@ -94,7 +94,7 @@ class Notifications {
 		add_meta_box( 'subscribe-meta-box', __( 'SMS', 'wp-sms' ), array(
 			$this,
 			'notification_meta_box_handler'
-		), 'post', 'normal', 'high' );
+		), get_post_types(['public' => true]), 'normal', 'high' );
 	}
 
 	/**
