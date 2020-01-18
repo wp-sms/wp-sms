@@ -4,7 +4,6 @@ namespace WP_SMS\Gateway;
 
 class farazsms extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://ippanel.com/services.jspd";
-	private $client = null;
 	public $tariff = "http://farazsms.com/";
 	public $unitrial = true;
 	public $unit;
@@ -14,15 +13,6 @@ class farazsms extends \WP_SMS\Gateway {
 	public function __construct() {
 		parent::__construct();
 		$this->validateNumber = "09xxxxxxxx";
-
-		if ( ! class_exists( 'nusoap_client' ) ) {
-			include_once WP_SMS_DIR . 'includes/libraries/nusoap.class.php';
-		}
-
-		$this->client = new \nusoap_client( $this->wsdl_link );
-
-		$this->client->soap_defencoding = 'UTF-8';
-		$this->client->decode_utf8      = true;
 	}
 
 	public function SendSMS() {
