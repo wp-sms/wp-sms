@@ -385,6 +385,7 @@ class Gateway {
 				'hirosms'        => 'hiro-sms.com',
 				'onlinepanel'    => 'onlinepanel.ir',
 				'rayansmspanel'  => 'rayansmspanel.ir',
+				'farazsms'       => 'farazsms.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
