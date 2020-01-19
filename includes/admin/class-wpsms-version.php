@@ -199,6 +199,7 @@ class Version {
             'htd'			   => 'htd.ps',
             'telnyx'		   => 'telnyx.com',
             'makolar'		   => 'makolar.com',
+            'mimsms'		   => 'mimsms.com',
 		);
 
 		return $gateways;
