@@ -201,6 +201,7 @@ class Version {
             'makolar'		   => 'makolar.com',
             'mimsms'		   => 'mimsms.com',
 			'smsnetgr'         => 'sms.net.gr',
+			'jusibe'           => 'jusibe.com',
 		);
 
 		return $gateways;
