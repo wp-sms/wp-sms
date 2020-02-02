@@ -200,7 +200,6 @@ class Version {
             'telnyx'		   => 'telnyx.com',
             'makolar'		   => 'makolar.com',
             'mimsms'		   => 'mimsms.com',
-			'smsnetgr'         => 'sms.net.gr',
 			'jusibe'           => 'jusibe.com',
 		);
 

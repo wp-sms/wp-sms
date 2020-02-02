@@ -418,6 +418,9 @@ class Gateway {
 			'ghana'          => array(
 				'eazismspro' => 'eazismspro.com',
 			),
+			'greece'          => array(
+				'smsnetgr'		=> 'sms.net.gr',
+			),
 		);
 
 		return apply_filters( 'wpsms_gateway_list', $gateways );
