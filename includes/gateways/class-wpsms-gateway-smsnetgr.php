@@ -4,7 +4,7 @@ namespace WP_SMS\Gateway;
 
 class smsnetgr extends \WP_SMS\Gateway
 {
-	private $wsdl_link = "https://gw10.smpp.net.gr/";
+	private $wsdl_link = "https://sms.net.gr/index.php/api/";
 	public $tariff = "https://sms.net.gr/";
 	public $unitrial = false;
 	public $unit;
@@ -14,6 +14,7 @@ class smsnetgr extends \WP_SMS\Gateway
 	public function __construct()
 	{
 		parent::__construct();
+		$this->has_key = true;
 		$this->bulk_send = true;
 		$this->validateNumber = "e.g. 306989921111";
 	}
@@ -59,19 +60,19 @@ class smsnetgr extends \WP_SMS\Gateway
 			return $credit;
 		}
 
-		$response = wp_remote_post($this->wsdl_link.'send.php', [
-			'headers' => [
-				'Content-Type' => 'application/json'
-			],
-			'body' => json_encode([
-				'from' => $this->from,
-				'to' => implode(',', $this->to),
-				'username' => $this->username,
-				'password' => $this->password,
-				'content' => $this->msg,
-				'dlr-url' => 'no',
-			]),
-		]);
+		$bulklist = [];
+		foreach ($this->to as $key => $value) {
+			$number = str_replace('+', '', $value);
+			$bulklist[] = $number;
+		}
+
+		$response = wp_remote_get(add_query_arg([
+			'username' => $this->username,
+			'api_password' => $this->password,
+			'api_token' => $this->has_key,
+			'bulklist' => implode(',', $bulklist),
+			'message' => $this->msg,
+		], $this->wsdl_link.'do'));
 
 		// Check gateway credit
 		if (is_wp_error($response)) {
@@ -115,15 +116,10 @@ class smsnetgr extends \WP_SMS\Gateway
 			return new \WP_Error('account-credit', __('API Key does not set for this gateway', 'wp-sms-pro'));
 		}
 
-		$response = wp_remote_post($this->wsdl_link.'balance.php', [
-			'headers' => [
-				'Content-Type' => 'application/json'
-			],
-			'body' => json_encode([
-				'username' => $this->username,
-				'password' => $this->password,
-			]),
-		]);
+		$response = wp_remote_get(add_query_arg([
+			'username' => $this->username,
+			'api_password' => $this->password,
+		], $this->wsdl_link.'credits'));
 
 		if (is_wp_error($response)) {
 			return new \WP_Error('account-credit', $response->get_error_message());
