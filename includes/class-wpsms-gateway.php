@@ -386,6 +386,7 @@ class Gateway {
 				'onlinepanel'    => 'onlinepanel.ir',
 				'rayansmspanel'  => 'rayansmspanel.ir',
 				'farazsms'       => 'farazsms.com',
+				'raygansms'      => 'raygansms.com',
 			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
