@@ -27,3 +27,6 @@ Temporary Items
 
 #Netbeans project
 nbproject
+
+#Phpstorm project
+.idea

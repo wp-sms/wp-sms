@@ -45,6 +45,7 @@ class Admin {
 			wp_enqueue_style( 'wpsms-chosen', WP_SMS_URL . 'assets/css/chosen.min.css', true, WP_SMS_VERSION );
 			wp_enqueue_script( 'wpsms-chosen', WP_SMS_URL . 'assets/js/chosen.jquery.min.js', true, WP_SMS_VERSION );
 			wp_enqueue_script( 'wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION );
+			wp_enqueue_script( 'wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION );
 			wp_enqueue_script( 'wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION );
 		}
 	}

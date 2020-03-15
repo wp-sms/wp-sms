@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class abrestan extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://37.130.202.188/class/sms/wssimple/server.php?wsdl";
+	private $wsdl_link = "http://188.0.240.110/class/sms/wssimple/server.php?wsdl";
 	private $client = null;
 	public $tariff = "http://abrestan.com/";
 	public $unitrial = true;

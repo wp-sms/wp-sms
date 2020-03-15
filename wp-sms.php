@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: WP SMS
- * Plugin URI: http://wp-sms-pro.com/
+ * Plugin URI: https://wp-sms-pro.com/
  * Description: A powerful texting plugin for WordPress
- * Version: 5.2.2
+ * Version: 5.3
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms

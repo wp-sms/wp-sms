@@ -18,4 +18,19 @@
             return false;
         });
     }
+
+    if (jQuery('.repeater').length) {
+        jQuery('.repeater').repeater({
+            initEmpty: false,
+            show: function () {
+                jQuery(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                if (confirm('Are you sure you want to delete this item?')) {
+                    jQuery(this).slideUp(deleteElement);
+                }
+            },
+            isFirstItemUndeletable: true
+        });
+    }
 });
