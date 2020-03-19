@@ -415,6 +415,7 @@ class Gateway {
 				'infodomain'   => 'infodomain.asia',
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
+				'malath'       => 'malath.net.sa',
 			),
 			'ghana'          => array(
 				'eazismspro' => 'eazismspro.com',
