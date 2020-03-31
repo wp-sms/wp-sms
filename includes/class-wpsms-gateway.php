@@ -403,6 +403,7 @@ class Gateway {
 			),
 			'cyprus'         => array(
 				'websmscy' => 'websms.com.cy',
+				'smsnetgr' => 'sms.net.gr',
 			),
 			'ukraine'        => array(
 				'smsc' => 'smsc.ua',
@@ -421,9 +422,6 @@ class Gateway {
 				'eazismspro' => 'eazismspro.com',
 			),
 			'greece'          => array(
-				'smsnetgr'		=> 'sms.net.gr',
-			),
-			'cyprus'          => array(
 				'smsnetgr'		=> 'sms.net.gr',
 			),
 		);
