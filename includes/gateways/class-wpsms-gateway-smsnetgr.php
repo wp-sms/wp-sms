@@ -68,6 +68,7 @@ class smsnetgr extends \WP_SMS\Gateway
 
 		$response = wp_remote_get(add_query_arg([
 			'username' => $this->username,
+			'from' => $this->from,
 			'api_password' => $this->password,
 			'api_token' => $this->has_key,
 			'bulklist' => implode(',', $bulklist),
