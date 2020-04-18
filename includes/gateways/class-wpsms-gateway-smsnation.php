@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class smsnation extends \WP_SMS\Gateway {
-	private $wsdl_link = "sms-api.smsnation.co:37777/smsp-in";
+	private $wsdl_link = " https://sms-api.smsnation.co/smsp-in";
 	public $tariff = "http://smsnation.co.rw/";
 	public $unitrial = false;
 	public $unit;
