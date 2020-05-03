@@ -417,6 +417,7 @@ class Gateway {
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
 				'malath'       => 'malath.net.sa',
+				'safasms'      => 'safa-sms.com',
 			),
 			'ghana'          => array(
 				'eazismspro' => 'eazismspro.com',
