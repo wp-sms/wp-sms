@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class melipayamak extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://melipayamak.ir/post/send.asmx?wsdl";
+	private $wsdl_link = "http://api.payamak-panel.com/post/Send.asmx?wsdl";
 	public $tariff = "http://melipayamak.ir/";
 	public $unitrial = true;
 	public $unit;
