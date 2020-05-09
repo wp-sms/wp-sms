@@ -2,8 +2,8 @@
 /**
  * Plugin Name: WP SMS
  * Plugin URI: https://wp-sms-pro.com/
- * Description: A powerful texting plugin for WordPress
- * Version: 5.3
+ * Description: A powerful SMS Messaging/Texting plugin for WordPress
+ * Version: 5.3.1
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
