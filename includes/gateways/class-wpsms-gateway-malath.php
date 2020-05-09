@@ -2,25 +2,20 @@
 
 namespace WP_SMS\Gateway;
 
-class smsnetgr extends \WP_SMS\Gateway
-{
-	private $wsdl_link = "https://sms.net.gr/index.php/api/";
-	public $tariff = "https://sms.net.gr/";
+class malath extends \WP_SMS\Gateway {
+	private $wsdl_link = "https://sms.malath.net.sa/";
+	public $tariff = "https://sms.malath.net.sa/";
 	public $unitrial = false;
 	public $unit;
 	public $flash = "false";
 	public $isflash = false;
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
-		$this->has_key = true;
-		$this->bulk_send = true;
-		$this->validateNumber = "e.g. 306989921111";
+		$this->validateNumber = "e.g. 9665xxxxxx";
 	}
 
-	public function SendSMS()
-	{
+	public function SendSMS() {
 
 		/**
 		 * Modify sender number
@@ -60,20 +55,14 @@ class smsnetgr extends \WP_SMS\Gateway
 			return $credit;
 		}
 
-		$bulklist = [];
-		foreach ($this->to as $key => $value) {
-			$number = str_replace('+', '', $value);
-			$bulklist[] = $number;
-		}
-
 		$response = wp_remote_get(add_query_arg([
 			'username' => $this->username,
-			'from' => $this->from,
-			'api_password' => $this->password,
-			'api_token' => $this->has_key,
-			'bulklist' => implode(',', $bulklist),
-			'message' => $this->msg,
-		], $this->wsdl_link.'do'));
+			'password' => $this->password,
+			'mobile' => implode(',', $this->to),
+			'message ' => $this->msg,
+			'sender' => $this->from,
+			'unicode' => 'U',
+		], $this->wsdl_link.'httpSmsProvider.aspx'));
 
 		// Check gateway credit
 		if (is_wp_error($response)) {
@@ -110,28 +99,33 @@ class smsnetgr extends \WP_SMS\Gateway
 		}
 	}
 
-	public function GetCredit()
-	{
+	public function GetCredit() {
 		// Check username and password
-		if (!$this->username or !$this->password) {
-			return new \WP_Error('account-credit', __('API Key does not set for this gateway', 'wp-sms-pro'));
+		if ( ! $this->username or ! $this->password ) {
+			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
 		}
 
 		$response = wp_remote_get(add_query_arg([
 			'username' => $this->username,
-			'api_password' => $this->password,
-		], $this->wsdl_link.'credits'));
+			'password' => $this->password,
+		], $this->wsdl_link.'api/getBalance.aspx'));
 
-		if (is_wp_error($response)) {
-			return new \WP_Error('account-credit', $response->get_error_message());
+		// Check gateway credit
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error( 'account-credit', $response->get_error_message() );
 		}
 
-		$response_code = wp_remote_retrieve_response_code($response);
+		$response_code = wp_remote_retrieve_response_code( $response );
 
-		if ($response_code == '200') {
+		if ( $response_code == '200' ) {
+			if ( strstr( $response['body'], 'Error' ) ) {
+				return new \WP_Error( 'account-credit', $response['body'] );
+			}
 			return $response['body'];
 		} else {
-			return new \WP_Error('account-credit', $response['body']);
+			return new \WP_Error( 'account-credit', $response['body'] );
 		}
+
+		return true;
 	}
 }

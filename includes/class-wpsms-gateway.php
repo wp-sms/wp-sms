@@ -403,6 +403,7 @@ class Gateway {
 			),
 			'cyprus'         => array(
 				'websmscy' => 'websms.com.cy',
+				'smsnetgr' => 'sms.net.gr',
 			),
 			'ukraine'        => array(
 				'smsc' => 'smsc.ua',
@@ -415,14 +416,13 @@ class Gateway {
 				'infodomain'   => 'infodomain.asia',
 				'mobiledotnet' => 'mobile.net.sa',
 				'zain'         => 'zain.im',
+				'malath'       => 'malath.net.sa',
+				'safasms'      => 'safa-sms.com',
 			),
 			'ghana'          => array(
 				'eazismspro' => 'eazismspro.com',
 			),
 			'greece'          => array(
-				'smsnetgr'		=> 'sms.net.gr',
-			),
-			'cyprus'          => array(
 				'smsnetgr'		=> 'sms.net.gr',
 			),
 		);
