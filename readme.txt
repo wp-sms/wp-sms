@@ -5,11 +5,11 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 5.3
+Stable tag: 5.3.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-A powerful texting plugin for WordPress
+A powerful SMS Messaging/Texting plugin for WordPress
 
 == Description ==
 By WP SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS to your newsletter subscribers or your users and get their attentions to your site and products.
@@ -69,7 +69,7 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
-You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are the supported gateways for the Pro version:
+You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are some of popular gateways that supported in the Pro version:
 
 * Twilio.com
 * Plivo.com
@@ -233,6 +233,11 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.3.1 =
+* Added: malath.net.sa gateway.
+* Added: safa-sms.com gateway.
+* َUpdated: some old gateways.
+
 = 5.3 =
 * Added: eazismspro.com gateway.
 * Added: sms.net.gr gateway.
