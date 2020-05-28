@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class smsmelli extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://82.99.218.146/class/sms/webservice3/server.php?wsdl";
+	private $wsdl_link = "http://smsmelli.com/class/sms/webservice3/server.php?wsdl";
 	private $client = null;
 	public $tariff = "http://smsmelli.com/";
 	public $unitrial = true;
