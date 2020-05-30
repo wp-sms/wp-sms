@@ -24,6 +24,11 @@ class Gateway {
 	protected $tb_prefix;
 	public $options;
 
+	/**
+	 * @var
+	 */
+	static $get_response;
+
 	public function __construct() {
 		global $wpdb;
 
@@ -38,6 +43,10 @@ class Gateway {
 
 		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
 			//add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
+		}
+
+		if ( isset( $this->options['clean_numbers'] ) and $this->options['clean_numbers'] ) {
+			add_filter( 'wp_sms_to', array( $this, 'cleanNumbers' ) );
 		}
 
 		// Add Filters
@@ -177,15 +186,23 @@ class Gateway {
 	 * @return string
 	 */
 	public function applyUnicode( $msg = '' ) {
-		$encodedMessage = bin2hex( mb_convert_encoding( $msg, 'utf-16', 'utf-8' ) );
-
-		return $encodedMessage;
+        return bin2hex( mb_convert_encoding( $msg, 'utf-16', 'utf-8' ) );
 	}
 
-	/**
-	 * @var
-	 */
-	static $get_response;
+    /**
+     * Clean the before sending them to API.
+     * @param array $recipients
+     * @return array
+     */
+    public function cleanNumbers($recipients = array())
+    {
+        $numbers = array();
+        foreach ($recipients as $recipient) {
+            $numbers[] = str_replace(' ', '', $recipient);
+        }
+
+        return $numbers;
+    }
 
 	/**
 	 * @return mixed|void
