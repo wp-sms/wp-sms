@@ -405,6 +405,18 @@ class Gateway {
 				'farazsms'       => 'farazsms.com',
 				'raygansms'      => 'raygansms.com',
 			),
+			'arabic'         => array(
+				'oursms'       => 'oursms.net',
+				'gateway'      => 'gateway.sa',
+				'resalaty'     => 'resalaty.com',
+				'unifonic'     => 'unifonic.com',
+				'asr3sms'      => 'asr3sms.com',
+				'infodomain'   => 'infodomain.asia',
+				'mobiledotnet' => 'mobile.net.sa',
+				'zain'         => 'zain.im',
+				'malath'       => 'malath.net.sa',
+				'safasms'      => 'safa-sms.com',
+			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
 			),
@@ -424,17 +436,6 @@ class Gateway {
 			),
 			'ukraine'        => array(
 				'smsc' => 'smsc.ua',
-			),
-			'arabic'         => array(
-				'oursms'       => 'oursms.net',
-				'gateway'      => 'gateway.sa',
-				'resalaty'     => 'resalaty.com',
-				'asr3sms'      => 'asr3sms.com',
-				'infodomain'   => 'infodomain.asia',
-				'mobiledotnet' => 'mobile.net.sa',
-				'zain'         => 'zain.im',
-				'malath'       => 'malath.net.sa',
-				'safasms'      => 'safa-sms.com',
 			),
 			'ghana'          => array(
 				'eazismspro' => 'eazismspro.com',

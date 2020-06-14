@@ -189,7 +189,6 @@ class Version {
 			'messente'         => 'messente.com',
 			'springedge'       => 'springedge.com',
 			'bulksmsnigeria'   => 'bulksmsnigeria.com',
-			'unifonic'         => 'unifonic.com',
 			'smsru'            => 'sms.ru',
 			'aspsms'           => 'aspsms.com',
             'kaleyra'          => 'kaleyra.com',
