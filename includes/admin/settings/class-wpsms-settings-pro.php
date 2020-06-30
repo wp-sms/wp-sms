@@ -987,7 +987,7 @@ class Settings_Pro {
 		}
 
 		// Get Ultimate Members
-		if ( class_exists( 'um\Config' ) ) {
+		if ( function_exists('um_user') ) {
 			$um_options['um_field'] = array(
 				'id'   => 'um_field',
 				'name' => __( 'Mobile number field', 'wp-sms' ),
