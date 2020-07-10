@@ -16,7 +16,7 @@ class altiria extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "346xxxxxxxx (international format without + or 00)";
+        $this->validateNumber = "International format without + or 00 (346xxxxxxxx for Spain, 52xxxxxxxxx por Mexico, 57xxxxxxxxx for Colombia etc))";
     }
 
     public function SendSMS()
@@ -63,9 +63,13 @@ class altiria extends \WP_SMS\Gateway
             'cmd'      => 'sendsms',
             'login'    => $this->username,
             'passwd'   => $this->password,
-            'msg'      => $this->msg,
+            'msg'      => wp_slash($this->msg),
             'senderId' => $this->from,
         );
+
+        if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
+            $body['unicode'] = 1;
+        }
 
         $destination = '';
         foreach ($this->to as $number) {
@@ -132,6 +136,12 @@ class altiria extends \WP_SMS\Gateway
 
         if (strstr($response['body'], 'ERROR')) {
             return new WP_Error('account-credit', $this->getErrorMessage($response['body']));
+        }
+
+        preg_match('/.*OK credit\(0\):(.*?)$/', $response['body'], $match);
+
+        if (isset($match[1])) {
+            return $match[1];
         }
 
         return $response['body'];
