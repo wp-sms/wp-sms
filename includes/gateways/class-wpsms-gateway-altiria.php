@@ -95,7 +95,7 @@ class altiria extends \WP_SMS\Gateway
         $arrayResponse = explode("\n", $response['body']);
         foreach ($arrayResponse as $item) {
             if ($item == '') continue;
-            
+
             $to = [$this->getDestinationFromString($item)];
 
             if (strstr($item, 'ERROR')) {
@@ -144,7 +144,8 @@ class altiria extends \WP_SMS\Gateway
         }
 
         if (strstr($response['body'], 'ERROR')) {
-            return new WP_Error('account-credit', $this->getErrorMessage($response['body']));
+            $errorMessage = $this->getErrorNumberFromString($response['body']);
+            return new WP_Error('account-credit', $this->getErrorMessage($errorMessage));
         }
 
         preg_match('/.*OK credit\(0\):(.*?)$/', $response['body'], $match);
