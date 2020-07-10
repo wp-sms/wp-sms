@@ -92,21 +92,30 @@ class altiria extends \WP_SMS\Gateway
             return new WP_Error('account-credit', $response['body']);
         }
 
-        if (strstr($response['body'], 'ERROR')) {
-            return new WP_Error('account-credit', $this->getErrorMessage($response['body']));
+        $arrayResponse = explode("\n", $response['body']);
+        foreach ($arrayResponse as $item) {
+            if ($item == '') continue;
+            
+            $to = [$this->getDestinationFromString($item)];
+
+            if (strstr($item, 'ERROR')) {
+                $errorNumber  = $this->getErrorNumberFromString($item);
+                $errorMessage = $this->getErrorMessage($errorNumber);
+
+                $this->log($this->from, $this->msg, $to, $errorMessage, 'error');
+            } else {
+                $this->log($this->from, $this->msg, $to, $item);
+
+                /**
+                 * Run hook after send sms.
+                 *
+                 * @param string $result result output.
+                 * @since 2.4
+                 *
+                 */
+                do_action('wp_sms_send', $response['body']);
+            }
         }
-
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $response['body']);
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param string $result result output.
-         * @since 2.4
-         *
-         */
-        do_action('wp_sms_send', $response['body']);
 
         return $response['body'];
     }
@@ -147,12 +156,21 @@ class altiria extends \WP_SMS\Gateway
         return $response['body'];
     }
 
+    private function getErrorNumberFromString($string)
+    {
+        preg_match('/errNum:([\d]+)/', $string, $matches);
+        return isset($matches[1]) ? $matches[1] : null;
+    }
+
+    private function getDestinationFromString($string)
+    {
+        preg_match('/dest:([a-zA-Z0-9_.-]+)/', $string, $matches);
+        return isset($matches[1]) ? $matches[1] : null;
+    }
+
     private function getErrorMessage($responseError)
     {
-        preg_match('/\d+/', $responseError, $errorCode);
-        $errorCode = isset($errorCode[0]) ? $errorCode[0] : null;
-
-        switch ($errorCode) {
+        switch ($responseError) {
             case '001':
                 $message = 'Internal error. Please contact technical support';
                 break;
