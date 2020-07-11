@@ -277,6 +277,9 @@ class Gateway
             'polish'         => array(
                 'smsapi' => 'smsapi.pl',
             ),
+            'france'         => array(
+                'oxemis' => 'oxemis.com',
+            ),
             'denmark'        => array(
                 'cpsms'   => 'cpsms.dk',
                 'suresms' => 'suresms.com',
