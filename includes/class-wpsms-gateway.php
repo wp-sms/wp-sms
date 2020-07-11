@@ -169,15 +169,11 @@ class Gateway
      */
     public function applyCountryCode($recipients = array())
     {
-        $country_code = $this->options['mobile_county_code'];
-        $numbers      = array();
+        $countryCode = $this->options['mobile_county_code'];
 
+        $numbers = array();
         foreach ($recipients as $number) {
-            // Remove zero from first number
-            $number = ltrim($number, '0');
-
-            // Add country code to prefix number
-            $numbers[] = $country_code . $number;
+            $numbers[] = preg_replace('/^(?:\\' . $countryCode . '|0)?/', $countryCode, ($number));
         }
 
         return $numbers;
@@ -272,7 +268,7 @@ class Gateway
             'peru'           => array(
                 'altiria' => 'altiria.com',
             ),
-            'chile'       => array(
+            'chile'          => array(
                 'altiria' => 'altiria.com',
             ),
             'new zealand'    => array(
