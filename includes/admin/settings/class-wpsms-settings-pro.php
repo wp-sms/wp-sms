@@ -27,7 +27,7 @@ class Settings_Pro {
 		}
 
 		// Check License Code
-		if ( isset( $_POST['submit'] ) AND isset( $_REQUEST['option_page'] ) AND $_REQUEST['option_page'] == 'wps_pp_settings' ) {
+		if ( isset( $_POST['submit'] ) and isset( $_REQUEST['option_page'] ) and $_REQUEST['option_page'] == 'wps_pp_settings' ) {
 			add_filter( 'pre_update_option_' . $this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
 		}
 
@@ -129,7 +129,7 @@ class Settings_Pro {
 		);
 
 		// Check what version of WP-Pro using? if not new version, don't show tabs
-		if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
+		if ( defined( 'WP_SMS_PRO_VERSION' ) and version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
 			return array();
 		}
 
@@ -431,6 +431,13 @@ class Settings_Pro {
 					'options' => $options,
 					'desc'    => __( 'Enable OTP Verification on Orders.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms' )
 				),
+                'wc_otp_countries_whitelist' => array(
+                    'id' => 'wc_otp_countries_whitelist',
+                    'name' => __('Countries Whitelist', 'wp-sms'),
+                    'type' => 'countryselect',
+                    'options' => $this->get_countries_list(),
+                    'desc' => __('Specify the countries to enable OTP.', 'wp-sms')
+                ),
 				'wc_otp_max_retry'           => array(
 					'id'   => 'wc_otp_max_retry',
 					'name' => __( 'Max SMS retries', 'wp-sms' ),
@@ -1505,6 +1512,35 @@ class Settings_Pro {
 		echo ob_get_clean();
 	}
 
+	   public function countryselect_callback($args) {
+
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
+
+        $html = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
+        $selected = '';
+
+        foreach ($args['options'] as $option => $country) :
+            if (isset($value) and is_array($value)) {
+                if (in_array($country['code'], $value)) {
+                    $selected = " selected='selected'";
+                } else {
+                    $selected = '';
+                }
+            }
+            $html .= '<option value="' . $country['code'] . '" ' . $selected . '>' . $country['name'] . '</option>';
+        endforeach;
+
+        $html .= '</select>';
+        $html .= '<p class="description"> ' . $args['desc'] . '</p>';
+
+        echo $html;
+    }
+
+
 	public function render_settings() {
 		$active_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->get_tabs() ) ? $_GET['tab'] : 'general';
 
@@ -1552,6 +1588,21 @@ class Settings_Pro {
 		<?php
 		echo ob_get_clean();
 	}
+
+	/**
+     * Get countries list
+     *
+     * @return array|mixed|object
+     */
+    public function get_countries_list()
+    {
+        // Load countries list file
+        $file = WP_SMS_DIR . 'assets/countries.json';
+        $file = file_get_contents($file);
+        $result = json_decode($file, true);
+
+        return $result;
+    }
 }
 
 new Settings_Pro();
