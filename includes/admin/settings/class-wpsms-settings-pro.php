@@ -435,7 +435,7 @@ class Settings_Pro {
                     'id' => 'wc_otp_countries_whitelist',
                     'name' => __('Countries Whitelist', 'wp-sms'),
                     'type' => 'countryselect',
-                    'options' => $this->get_countries_list(),
+                    'options' => $this->getCountriesList(),
                     'desc' => __('Specify the countries to enable OTP.', 'wp-sms')
                 ),
 				'wc_otp_max_retry'           => array(
@@ -1594,7 +1594,7 @@ class Settings_Pro {
      *
      * @return array|mixed|object
      */
-    public function get_countries_list()
+    public function getCountriesList()
     {
         // Load countries list file
         $file = WP_SMS_DIR . 'assets/countries.json';
