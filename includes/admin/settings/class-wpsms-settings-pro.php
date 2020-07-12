@@ -1520,7 +1520,7 @@ class Settings_Pro {
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = '<select id="wpsms_settings[' . $args['id'] . ']" name="wpsms_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
+        $html = '<select id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
