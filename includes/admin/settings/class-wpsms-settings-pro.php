@@ -1144,10 +1144,43 @@ class Settings_Pro {
 				),
 				'mobile_verify'     => array(
 					'id'      => 'mobile_verify',
-					'name'    => __( 'Verify mobile number', 'wp-sms' ),
+					'name'    => __( 'Login with OTP status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Verify mobile number in the login form. This feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms' ),
+				),
+				'mobile_verify_method'  => array(
+					'id'      => 'mobile_verify_method',
+					'name'    => __( 'OTP Method', 'wp-sms' ),
+					'type'    => 'select',
+					'options' => array(
+                        'optional'       => __( 'Optional - Users can enable/disable it in their profile', 'wp-sms' ),
+						'force_all'      => __( 'Enable for All Users', 'wp-sms' )
+					),
+					'desc'    => __( 'Choose from which what OTP method you want to use.', 'wp-sms' )
+				),
+				'mobile_verify_runtime'            => array(
+					'id'      => 'mobile_verify_runtime',
+					'name'    => __( 'OTP run-time', 'wp-sms' ),
+					'type'    => 'select',
+					'options' => array(
+                        'once_time'       => __( 'Just once', 'wp-sms' ),
+						'every_time'      => __( 'Everytime', 'wp-sms' )
+					),
+					'desc'    => __( 'Choose from which what OTP run-time you want to use.', 'wp-sms' )
+				),
+				'mobile_verify_message' => array(
+					'id'   => 'mobile_verify_message',
+					'name' => __( 'Message content', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the OTP SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Mobile code: %s, User name: %s, First Name: %s, Last Name: %s', 'wp-sms' ),
+						          '<code>%otp%</code>',
+						          '<code>%user_name%</code>',
+						          '<code>%first_name%</code>',
+						          '<code>%last_name%</code>'
+					          )
 				),
 			) ),
 			// Options for BuddyPress tab
