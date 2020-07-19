@@ -63,12 +63,12 @@ class altiria extends \WP_SMS\Gateway
             'cmd'      => 'sendsms',
             'login'    => $this->username,
             'passwd'   => $this->password,
-            'msg'      => wp_slash($this->msg),
+            'msg'      => stripslashes($this->msg),
             'senderId' => $this->from,
         );
 
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
-            $body['unicode'] = 1;
+            $body['unicode'] = true;
         }
 
         $destination = '';
