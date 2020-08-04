@@ -31,7 +31,7 @@
             goal: 'sky',
             msg: '<?php _e( 'characters', 'wp-sms' ); ?>'
         });
-        <?php if(\WP_SMS\Version::pro_is_active()) :?>
+		<?php if(\WP_SMS\Version::pro_is_active()) :?>
         jQuery("#datepicker").flatpickr({
             enableTime: true,
             dateFormat: "Y-m-d H:i:00",
@@ -49,11 +49,10 @@
                 jQuery('#schedule_date').hide();
             }
         });
-	    <?php endif; ?>
+		<?php endif; ?>
 
     });
 </script>
-
 <div class="wrap">
     <h2><?php _e( 'Send SMS', 'wp-sms' ); ?></h2>
     <div class="postbox-container" style="padding-top: 20px;">
@@ -61,7 +60,6 @@
             <div class="postbox">
                 <h2 class="hndle" style="cursor: default;padding: 0 10px 10px 10px;font-size: 13px;">
                     <span><?php _e( 'Send SMS form', 'wp-sms' ); ?></span></h2>
-
                 <div class="inside">
                     <form method="post" action="">
 						<?php wp_nonce_field( 'update-options' ); ?>
@@ -83,13 +81,12 @@
                                         <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
                                         <option value="wp_users" id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
                                         <option value="wp_role" id="wp_role"<?php $mobile_field = \WP_SMS\Option::getOption( 'add_mobile_field' );
-										if ( empty( $mobile_field ) OR $mobile_field != 1 ) {
+										if ( empty( $mobile_field ) or $mobile_field != 1 ) {
 											echo 'disabled title="' . __( 'To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms' ) . '"';
 										} ?>><?php _e( 'Role', 'wp-sms' ); ?></option>
                                         <option value="wp_tellephone" id="wp_tellephone"><?php _e( 'Number(s)', 'wp-sms' ); ?></option>
                                     </select>
-
-									<?php if ( ! empty( $mobile_field ) OR $mobile_field == 1 ) { ?>
+									<?php if ( ! empty( $mobile_field ) or $mobile_field == 1 ) { ?>
                                         <select name="wpsms_group_role" class="wpsms-value wprole-group">
 											<?php
 											foreach ( $wpsms_list_of_role as $key_item => $val_item ):
@@ -103,7 +100,6 @@
 											<?php endforeach; ?>
                                         </select>
 									<?php } ?>
-
                                     <select name="wpsms_group_name" class="wpsms-value wpsms-group">
                                         <option value="all">
 											<?php
@@ -115,27 +111,27 @@
 										<?php foreach ( $get_group_result as $items ): ?>
                                             <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
 										<?php endforeach; ?>
-                                    </select>
-
-                                    <span class="wpsms-value wpsms-users">
+                                    </select> <span class="wpsms-value wpsms-users">
 						<span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), count( $get_users_mobile ) ); ?></span>
-					</span>
-                                    <span class="wpsms-value wpsms-numbers">
+					</span> <span class="wpsms-value wpsms-numbers">
                                         <div class="clearfix"></div>
                                         <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                         <div class="clearfix"></div>
-                                        <span style="font-size: 14px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
+                                        <span style="font-size: 14px"><?php echo sprintf( __( 'You can import numbers with these two formats:</br>Separate them with ","<code style="padding: 0">+1111111111,+122222222,+13333333</code></br> or use them as each line
+                                            <code style="padding: 0">
+                                            +1111111111 
+                                            +1222222222 
+                                            +1333333333
+                                            </code></br> Gateway Notice: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
                                     </span>
                                 </td>
                             </tr>
-
 							<?php if ( ! $this->sms->bulk_send ) : ?>
                                 <tr>
                                     <td></td>
                                     <td><?php _e( 'This gateway does not support sending bulk message and used first number to sending sms.', 'wp-sms' ); ?></td>
                                 </tr>
 							<?php endif; ?>
-
                             <tr valign="top">
                                 <th scope="row">
                                     <label for="wp_get_message"><?php _e( 'Message', 'wp-sms' ); ?>:</label>
@@ -170,11 +166,11 @@
                                         <label for="datepicker"><?php _e( 'Scheduled message?', 'wp-sms' ); ?></label>
                                     </th>
                                     <td style="padding-top: 10px;">
-                                        <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled" />
+                                        <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled"/>
                                         <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e( 'Requires Pro Pack version.', 'wp-sms' ); ?></p>
                                     </td>
                                 </tr>
-                            <?php endif; ?>
+							<?php endif; ?>
 							<?php if ( $this->sms->flash == "enable" ) { ?>
                                 <tr>
                                     <td><?php _e( 'Send a Flash', 'wp-sms' ); ?>:</td>
@@ -182,8 +178,7 @@
                                         <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
                                         <label for="flash_yes"><?php _e( 'Yes', 'wp-sms' ); ?></label>
                                         <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
-                                        <label for="flash_no"><?php _e( 'No', 'wp-sms' ); ?></label>
-                                        <br/>
+                                        <label for="flash_no"><?php _e( 'No', 'wp-sms' ); ?></label> <br/>
                                         <p class="description"><?php _e( 'Flash is possible to send messages without being asked, opens', 'wp-sms' ); ?></p>
                                     </td>
                                 </tr>

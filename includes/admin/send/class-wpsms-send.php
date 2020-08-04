@@ -39,7 +39,7 @@ class SMS_Send {
 		$mobile_field = Option::getOption( 'add_mobile_field' );
 
 		//Get User Mobile List by Role
-		if ( ! empty( $mobile_field ) AND $mobile_field == 1 ) {
+		if ( ! empty( $mobile_field ) and $mobile_field == 1 ) {
 			$wpsms_list_of_role = array();
 			foreach ( wp_roles()->role_names as $key_item => $val_item ) {
 				$wpsms_list_of_role[ $key_item ] = array(
@@ -79,7 +79,12 @@ class SMS_Send {
 				} else if ( $_POST['wp_send_to'] == "wp_users" ) {
 					$this->sms->to = $get_users_mobile;
 				} else if ( $_POST['wp_send_to'] == "wp_tellephone" ) {
-					$this->sms->to = explode( ",", $_POST['wp_get_number'] );
+					$numbers = $_POST['wp_get_number'];
+					if ( strpos( $numbers, ',' ) !== false ) {
+						$this->sms->to = explode( ",", $_POST['wp_get_number'] );
+					} else {
+						$this->sms->to = explode( "\n", str_replace( "\r", "", $numbers ) );
+					}
 				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
 					$to = array();
 					add_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
@@ -100,13 +105,13 @@ class SMS_Send {
 				$this->sms->from = $_POST['wp_get_sender'];
 				$this->sms->msg  = $_POST['wp_get_message'];
 
-				if ( isset( $_POST['wp_flash'] ) AND $_POST['wp_flash'] == 'true') {
+				if ( isset( $_POST['wp_flash'] ) and $_POST['wp_flash'] == 'true' ) {
 					$this->sms->isflash = true;
 				} else {
 					$this->sms->isflash = false;
 				}
 
-				if ( isset( $_POST['wpsms_scheduled'] ) AND isset( $_POST['schedule_status'] ) AND $_POST['schedule_status'] AND $_POST['wpsms_scheduled'] ) {
+				if ( isset( $_POST['wpsms_scheduled'] ) and isset( $_POST['schedule_status'] ) and $_POST['schedule_status'] and $_POST['wpsms_scheduled'] ) {
 					$response = Scheduled::add( $_POST['wpsms_scheduled'], $this->sms->from, $this->sms->msg, $this->sms->to );
 				} else {
 
