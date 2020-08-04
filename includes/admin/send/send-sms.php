@@ -122,7 +122,7 @@
 					</span>
                                     <span class="wpsms-value wpsms-numbers">
                                         <div class="clearfix"></div>
-                                        <textarea cols="80" rows="5" style="direction:ltr;margin-top 5px;" id="wp_get_number" name="wp_get_number"></textarea>
+                                        <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                         <div class="clearfix"></div>
                                         <span style="font-size: 14px"><?php echo sprintf( __( 'For example: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
                                     </span>
