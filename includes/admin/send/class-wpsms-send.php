@@ -36,7 +36,12 @@ class SMS_Send {
 	public function render_page() {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->db->prefix}sms_subscribes_group`" );
 		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' " );
-		$getTotalWcUsers  = $this->getUsersList( 'customer', true );
+		// Check if WooCommerce & Pro version enabled
+		$wcSendEnable = false;
+		if ( Version::pro_is_active() and class_exists( 'woocommerce' ) ) {
+			$getTotalWcUsers = $this->getUsersList( 'customer', true );
+			$wcSendEnable = true;
+		}
 
 		$mobile_field = Option::getOption( 'add_mobile_field' );
 
@@ -183,8 +188,6 @@ class SMS_Send {
 
 		return $customers;
 	}
-
-
 }
 
 new SMS_Send();

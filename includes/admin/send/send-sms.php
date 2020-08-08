@@ -83,7 +83,9 @@
                                     <select name="wp_send_to" id="select_sender">
                                         <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
                                         <option value="wp_users" id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
-                                        <option value="wc_users" id="wc_users"><?php _e( 'WooCommerce Customers', 'wp-sms' ); ?></option>
+										<?php if ( $wcSendEnable ) : ?>
+                                            <option value="wc_users" id="wc_users"><?php _e( 'WooCommerce Customers', 'wp-sms' ); ?></option>
+										<?php endif; ?>
                                         <option value="wp_role" id="wp_role"<?php $mobile_field = \WP_SMS\Option::getOption( 'add_mobile_field' );
 										if ( empty( $mobile_field ) or $mobile_field != 1 ) {
 											echo 'disabled title="' . __( 'To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms' ) . '"';
