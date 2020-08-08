@@ -2,6 +2,7 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Admin\Helper;
 use WP_SMS\Pro\Scheduled;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,7 +35,8 @@ class SMS_Send {
 	 */
 	public function render_page() {
 		$get_group_result = $this->db->get_results( "SELECT * FROM `{$this->db->prefix}sms_subscribes_group`" );
-		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile'" );
+		$get_users_mobile = $this->db->get_col( "SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' " );
+		$getTotalWcUsers  = $this->getUsersList( 'customer', true );
 
 		$mobile_field = Option::getOption( 'add_mobile_field' );
 
@@ -44,13 +46,7 @@ class SMS_Send {
 			foreach ( wp_roles()->role_names as $key_item => $val_item ) {
 				$wpsms_list_of_role[ $key_item ] = array(
 					"name"  => $val_item,
-					"count" => count( get_users( array(
-						'meta_key'     => 'mobile',
-						'meta_value'   => '',
-						'meta_compare' => '!=',
-						'role'         => $key_item,
-						'fields'       => 'ID'
-					) ) )
+					"count" => $this->getUsersList( $key_item, true )
 				);
 			}
 		}
@@ -86,16 +82,15 @@ class SMS_Send {
 						$this->sms->to = explode( "\n", str_replace( "\r", "", $numbers ) );
 					}
 				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
-					$to = array();
-					add_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
-					$list = get_users( array(
-						'meta_key'     => 'mobile',
-						'meta_value'   => '',
-						'meta_compare' => '!=',
-						'role'         => $_POST['wpsms_group_role'],
-						'fields'       => 'all'
-					) );
-					remove_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
+					$to   = array();
+					$list = $this->getUsersList( $_POST['wpsms_group_role'] );
+					foreach ( $list as $user ) {
+						$to[] = $user->mobile;
+					}
+					$this->sms->to = $to;
+				} else if ( $_POST['wp_send_to'] == "wc_users" ) {
+					$to   = array();
+					$list = $this->getUsersList( 'customer' );
 					foreach ( $list as $user ) {
 						$to[] = $user->mobile;
 					}
@@ -116,7 +111,11 @@ class SMS_Send {
 				} else {
 
 					// Send sms
-					$response = $this->sms->SendSMS();
+					if ( empty( $this->sms->to ) ) {
+						$response = new \WP_Error( 'error', __( 'The selected user list is empty, please select another valid users list from send to option.', 'wp-sms' ) );
+					} else {
+						$response = $this->sms->SendSMS();
+					}
 				}
 
 				if ( is_wp_error( $response ) ) {
@@ -150,6 +149,41 @@ class SMS_Send {
 
 		return $user_query;
 	}
+
+	/**
+	 * Get WooCommerce customers
+	 *
+	 * @param string $role
+	 * @param bool $count
+	 *
+	 * @return array|int
+	 */
+	public function getUsersList( $role, $count = false ) {
+		add_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
+
+		$args = array(
+			'meta_query' => array(
+				array(
+					'key'     => 'mobile',
+					'value'   => '',
+					'compare' => '!=',
+				),
+			),
+			'role'       => $role,
+			'fields'     => $count ? 'ID' : 'all'
+		);
+
+		$customers = get_users( $args );
+
+		remove_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
+
+		if ( $count ) {
+			return count( $customers );
+		}
+
+		return $customers;
+	}
+
 
 }
 

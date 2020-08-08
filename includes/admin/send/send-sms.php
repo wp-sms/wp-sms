@@ -16,6 +16,9 @@
             } else if (get_method == 'wp_users') {
                 jQuery(".wpsms-value").hide();
                 jQuery(".wpsms-users").fadeIn();
+            } else if (get_method == 'wc_users') {
+                jQuery(".wpsms-value").hide();
+                jQuery(".wpsms-wc-users").fadeIn();
             } else if (get_method == 'wp_tellephone') {
                 jQuery(".wpsms-value").hide();
                 jQuery(".wpsms-numbers").fadeIn();
@@ -80,6 +83,7 @@
                                     <select name="wp_send_to" id="select_sender">
                                         <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e( 'Subscribe users', 'wp-sms' ); ?></option>
                                         <option value="wp_users" id="wp_users"><?php _e( 'Wordpress Users', 'wp-sms' ); ?></option>
+                                        <option value="wc_users" id="wc_users"><?php _e( 'WooCommerce Customers', 'wp-sms' ); ?></option>
                                         <option value="wp_role" id="wp_role"<?php $mobile_field = \WP_SMS\Option::getOption( 'add_mobile_field' );
 										if ( empty( $mobile_field ) or $mobile_field != 1 ) {
 											echo 'disabled title="' . __( 'To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms' ) . '"';
@@ -111,9 +115,14 @@
 										<?php foreach ( $get_group_result as $items ): ?>
                                             <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
 										<?php endforeach; ?>
-                                    </select> <span class="wpsms-value wpsms-users">
-						<span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), count( $get_users_mobile ) ); ?></span>
-					</span> <span class="wpsms-value wpsms-numbers">
+                                    </select>
+                                    <span class="wpsms-value wpsms-users" style="display: none;">
+                                        <span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), count( $get_users_mobile ) ); ?></span>
+                                    </span>
+                                    <span class="wpsms-value wpsms-wc-users" style="display: none;">
+                                        <span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), $getTotalWcUsers ); ?></span>
+                                    </span>
+                                    <span class="wpsms-value wpsms-numbers">
                                         <div class="clearfix"></div>
                                         <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                         <div class="clearfix"></div>
