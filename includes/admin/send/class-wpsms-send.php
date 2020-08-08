@@ -146,7 +146,7 @@ class SMS_Send {
 	/**
 	 * Custom Query for Get All User Mobile in special Role
 	 */
-	public static function get_query_user_mobile( $user_query ) {
+	public static function getQueryUserMobile( $user_query ) {
 		global $wpdb;
 
 		$user_query->query_fields .= ', m1.meta_value AS mobile ';
@@ -164,7 +164,7 @@ class SMS_Send {
 	 * @return array|int
 	 */
 	public function getUsersList( $role, $count = false ) {
-		add_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
+		add_action( 'pre_user_query', array( SMS_Send::class, 'getQueryUserMobile' ) );
 
 		$args = array(
 			'meta_query' => array(
@@ -180,7 +180,7 @@ class SMS_Send {
 
 		$customers = get_users( $args );
 
-		remove_action( 'pre_user_query', array( SMS_Send::class, 'get_query_user_mobile' ) );
+		remove_action( 'pre_user_query', array( SMS_Send::class, 'getQueryUserMobile' ) );
 
 		if ( $count ) {
 			return count( $customers );
