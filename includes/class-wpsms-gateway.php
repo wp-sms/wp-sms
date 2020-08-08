@@ -90,7 +90,7 @@ class Gateway {
 	public $username;
 	public $password;
 	public $has_key = false;
-	public $validateNumber = "";
+	public $validateNumber = false;
 	public $help = false;
 	public $bulk_send = true;
 	public $from;

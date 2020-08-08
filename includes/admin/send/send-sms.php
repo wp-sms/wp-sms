@@ -124,17 +124,16 @@
                                     <span class="wpsms-value wpsms-wc-users" style="display: none;">
                                         <span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), $getTotalWcUsers ); ?></span>
                                     </span>
+
                                     <span class="wpsms-value wpsms-numbers">
                                         <div class="clearfix"></div>
                                         <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                         <div class="clearfix"></div>
-                                        <span style="font-size: 14px"><?php echo sprintf( __( 'You can import numbers with these two formats:</br>Separate them with ","<code style="padding: 0">+1111111111,+122222222,+13333333</code></br> or use them as each line
-                                            <code style="padding: 0">
-                                            +1111111111 
-                                            +1222222222 
-                                            +1333333333
-                                            </code></br> Gateway Notice: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></span>
-                                    </span>
+                                        <div style="font-size: 14px"><?php _e( 'Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?></div>
+                                        <?php if ($this->sms->validateNumber) : ?>
+                                            <div style="margin-top: 10px"><?php echo sprintf( __( 'Gateway description: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></div>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
 							<?php if ( ! $this->sms->bulk_send ) : ?>

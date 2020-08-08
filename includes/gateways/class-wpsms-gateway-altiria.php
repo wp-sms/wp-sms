@@ -16,7 +16,7 @@ class altiria extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "International format without + or 00 (346xxxxxxxx for Spain, 52xxxxxxxxx por Mexico, 57xxxxxxxxx for Colombia etc))";
+        $this->validateNumber = '“346xxxxxxxx (international format without + or 00)” for "International format without + or 00 (346xxxxxxxx for Spain, 52xxxxxxxxx por Mexico, 57xxxxxxxxx for Colombia etc)”';
     }
 
     public function SendSMS()
