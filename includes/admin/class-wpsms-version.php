@@ -22,7 +22,7 @@ class Version {
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title' ) );
 
 			// Check what version of WP-Pro using? if not new version, َShow the notice in admin area
-			if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
+			if ( defined( 'WP_SMS_PRO_VERSION' ) and version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
 				add_action( 'admin_notices', array( $this, 'version_notice' ) );
 			}
 
@@ -44,7 +44,7 @@ class Version {
 			add_action( 'admin_enqueue_scripts', array( $this, 'pro_admin_script' ) );
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title_pro_not_activated' ) );
 			add_action( 'wp_sms_after_setting_logo', array( $this, 'setting_title_pro_not_activated' ) );
-			add_filter( 'wpsms_gateway_list', array( $this, 'pro_gateways' ) );
+			add_filter( 'wpsms_gateway_list', array( $this, 'addProGateways' ) );
 		}
 	}
 
@@ -127,81 +127,10 @@ class Version {
 	 *
 	 * @return mixed
 	 */
-	public function pro_gateways( $gateways ) {
-		$gateways['pro_pack_gateways'] = array(
-			'twilio'           => 'twilio.com',
-			'plivo'            => 'plivo.com',
-			'clickatell'       => 'clickatell.com',
-			'bulksms'          => 'bulksms.com',
-			'infobip'          => 'infobip.com',
-			'nexmo'            => 'nexmo.com',
-			'clockworksms'     => 'clockworksms.com',
-			'messagebird'      => 'messagebird.com',
-			'clicksend'        => 'clicksend.com',
-			'smsapicom'        => 'smsapi.com',
-			'dsms'             => 'dsms.in',
-			'esms'             => 'esms.vn',
-			'isms'             => 'isms.com.my',
-			'magicdeal4u'      => 'magicdeal4u.com',
-			'alfacell'         => 'alfa-cell.com',
-			'moceansms'        => 'moceansms.com',
-			'msg91'            => 'msg91.com',
-			'msg360'           => 'msg360.in',
-			'livesms'          => 'livesms.eu',
-			'ozioma'           => 'ozioma.net',
-			'pswin'            => 'pswin.com',
-			'ra'               => 'ra.sa',
-			'smsfactor'        => 'smsfactor.com',
-			'textmarketer'     => 'textmarketer.co.uk',
-			'smslive247'       => 'smslive247.com',
-			'sendsms247'       => 'sendsms247.com',
-			'ssdindia'         => 'ssdindia.com',
-			'jolis'            => 'jolis.net',
-			'vsms'             => 'vsms.club',
-			'websms'           => 'websms.at',
-			'smstrade'         => 'smstrade.de',
-			'bulksmshyderabad' => 'bulksmshyderabad.co.in',
-			'yamamah'          => 'yamamah.com',
-			'cellsynt'         => 'cellsynt.net',
-			'cmtelecom'        => 'cmtelecom.com',
-			'textlocal'        => 'textlocal.in',
-			'ismartsms'        => 'ismartsms.net',
-			'bulksmsgateway'   => 'bulksmsgateway.in',
-			'ooredoosms'       => 'ooredoo-sms.com',
-			'txtlocal'         => 'txtlocal - textlocal.com',
-			'qsms'             => 'qsms.com.au',
-			'hoiio'            => 'hoiio.com',
-			'textmagic'        => 'textmagic.com',
-			'onewaysms'        => 'onewaysms.com',
-			'smsmisr'          => 'smsmisr.com',
-			'smsgateway'       => 'smsgateway.me',
-			'bandwidth'        => 'bandwidth.com',
-			'_4jawaly'         => '4jawaly.net',
-			'tyntec'           => 'tyntec.com',
-			'smscountry'       => 'smscountry.com',
-			'routesms'         => 'routesms.com',
-			'skebby'           => 'skebby.it',
-			'tropo'            => 'tropo.it',
-			'sendhub'          => 'sendhub.com',
-			'upsidewireless'   => 'upsidewireless.com',
-			'orange'           => 'orange.com',
-			'proovl'           => 'proovl.com',
-			'messente'         => 'messente.com',
-			'springedge'       => 'springedge.com',
-			'bulksmsnigeria'   => 'bulksmsnigeria.com',
-			'smsru'            => 'sms.ru',
-			'aspsms'           => 'aspsms.com',
-            'kaleyra'          => 'kaleyra.com',
-            'gtxmessaging'     => 'gtx-messaging.com',
-            'kwtsms'     	   => 'kwtsms.com',
-            'dianahost'        => 'dianahost.com',
-            'sendpulse'        => 'sendpulse.com',
-            'htd'			   => 'htd.ps',
-            'telnyx'		   => 'telnyx.com',
-            'makolar'		   => 'makolar.com',
-            'mimsms'		   => 'mimsms.com',
-			'jusibe'           => 'jusibe.com',
-		);
+	public function addProGateways( $gateways ) {
+
+		// Set pro gateways to load in the list as Global.
+		$gateways = array_merge_recursive( $gateways, Gateway::$proGateways );
 
 		return $gateways;
 	}
