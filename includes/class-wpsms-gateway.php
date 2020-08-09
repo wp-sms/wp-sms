@@ -85,6 +85,7 @@ class Gateway {
 			'makolar'          => 'makolar.com',
 			'mimsms'           => 'mimsms.com',
 			'jusibe'           => 'jusibe.com',
+			'smsto'            => 'sms.to',
 		)
 	);
 	public $username;
