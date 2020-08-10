@@ -4,6 +4,7 @@ namespace WP_SMS;
 
 use WP_SMS\Admin\Helper;
 use WP_SMS\Pro\Scheduled;
+use WP_SMS\Pro\WooCommerce\Helper as WcHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -39,7 +40,7 @@ class SMS_Send {
 		// Check if WooCommerce & Pro version enabled
 		$wcSendEnable = false;
 		if ( Version::pro_is_active() and class_exists( 'woocommerce' ) ) {
-			$getTotalWcUsers = $this->getUsersList( 'customer', true );
+			$getTotalWcUsers = WcHelper::getUsersList( 'customer', true );
 			$wcSendEnable = true;
 		}
 
@@ -51,7 +52,7 @@ class SMS_Send {
 			foreach ( wp_roles()->role_names as $key_item => $val_item ) {
 				$wpsms_list_of_role[ $key_item ] = array(
 					"name"  => $val_item,
-					"count" => $this->getUsersList( $key_item, true )
+					"count" => Helper::getUsersList( $key_item, true )
 				);
 			}
 		}
@@ -88,14 +89,14 @@ class SMS_Send {
 					}
 				} else if ( $_POST['wp_send_to'] == "wp_role" ) {
 					$to   = array();
-					$list = $this->getUsersList( $_POST['wpsms_group_role'] );
+					$list = Helper::getUsersList( $_POST['wpsms_group_role'] );
 					foreach ( $list as $user ) {
 						$to[] = $user->mobile;
 					}
 					$this->sms->to = $to;
 				} else if ( $_POST['wp_send_to'] == "wc_users" ) {
 					$to   = array();
-					$list = $this->getUsersList( 'customer' );
+					$list = WcHelper::getUsersList( 'customer' );
 					foreach ( $list as $user ) {
 						$to[] = $user->mobile;
 					}
@@ -141,52 +142,6 @@ class SMS_Send {
 		}
 
 		include_once WP_SMS_DIR . "includes/admin/send/send-sms.php";
-	}
-
-	/**
-	 * Custom Query for Get All User Mobile in special Role
-	 */
-	public static function getQueryUserMobile( $user_query ) {
-		global $wpdb;
-
-		$user_query->query_fields .= ', m1.meta_value AS mobile ';
-		$user_query->query_from   .= " JOIN {$wpdb->usermeta} m1 ON (m1.user_id = {$wpdb->users}.ID AND m1.meta_key = 'mobile') ";
-
-		return $user_query;
-	}
-
-	/**
-	 * Get WooCommerce customers
-	 *
-	 * @param string $role
-	 * @param bool $count
-	 *
-	 * @return array|int
-	 */
-	public function getUsersList( $role, $count = false ) {
-		add_action( 'pre_user_query', array( SMS_Send::class, 'getQueryUserMobile' ) );
-
-		$args = array(
-			'meta_query' => array(
-				array(
-					'key'     => 'mobile',
-					'value'   => '',
-					'compare' => '!=',
-				),
-			),
-			'role'       => $role,
-			'fields'     => $count ? 'ID' : 'all'
-		);
-
-		$customers = get_users( $args );
-
-		remove_action( 'pre_user_query', array( SMS_Send::class, 'getQueryUserMobile' ) );
-
-		if ( $count ) {
-			return count( $customers );
-		}
-
-		return $customers;
 	}
 }
 
