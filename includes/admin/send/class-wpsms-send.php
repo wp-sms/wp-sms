@@ -41,7 +41,7 @@ class SMS_Send {
 		$wcSendEnable = false;
 		if ( Version::pro_is_active() and class_exists( 'woocommerce' ) ) {
 			$getTotalWcUsers = WcHelper::getUsersList( 'customer', true );
-			$wcSendEnable = true;
+			$wcSendEnable    = true;
 		}
 
 		$mobile_field = Option::getOption( 'add_mobile_field' );
