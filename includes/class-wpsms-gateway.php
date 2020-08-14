@@ -334,7 +334,7 @@ class Gateway {
 				'verimor'  => 'verimor.com.tr',
 			),
 			'austria'        => array(
-				'smsgateway' => 'sms-gateway.at',
+				'smsgatewayat' => 'sms-gateway.at',
 			),
 			'spain'          => array(
 				'altiria'    => 'altiria.com',
