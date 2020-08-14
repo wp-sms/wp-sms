@@ -44,7 +44,7 @@ class Version {
 			add_action( 'admin_enqueue_scripts', array( $this, 'pro_admin_script' ) );
 			add_action( 'wp_sms_pro_after_setting_logo', array( $this, 'pro_setting_title_pro_not_activated' ) );
 			add_action( 'wp_sms_after_setting_logo', array( $this, 'setting_title_pro_not_activated' ) );
-			add_filter( 'wpsms_gateway_list', array( $this, 'addProGateways' ) );
+			add_filter( 'wpsms_gateway_list', array( self::class, 'addProGateways' ) );
 		}
 	}
 
@@ -127,10 +127,20 @@ class Version {
 	 *
 	 * @return mixed
 	 */
-	public function addProGateways( $gateways ) {
+	public static function addProGateways( $gateways ) {
 
 		// Set pro gateways to load in the list as Global.
-		$gateways = array_merge_recursive( $gateways, Gateway::$proGateways );
+		$gateways = array_merge_recursive( Gateway::$proGateways, $gateways );
+
+		// Fix the first array key value
+		unset( $gateways[''] );
+		$gateways = array_merge( array( '' => array( 'default' => __( 'Please select your gateway', 'wp-sms' ) ) ), $gateways );
+
+		// Sort gateways by countries and merge them with global at first
+		$gateways_countries = array_splice( $gateways, 2 );
+		ksort( $gateways_countries );
+
+		$gateways = array_replace_recursive( $gateways, $gateways_countries );
 
 		return $gateways;
 	}

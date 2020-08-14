@@ -972,7 +972,12 @@ class Settings {
 			$html .= '<optgroup label="' . ucfirst( str_replace( '_', ' ', $key ) ) . '">';
 
 			foreach ( $v as $option => $name ) :
-				$disabled = ( ! defined( 'WP_SMS_PRO_VERSION' ) && array_column( Gateway::$proGateways, $option ) ) ? $disabled = ' disabled' : '';
+
+				$disabled = '';
+				if ( ! defined( 'WP_SMS_PRO_VERSION' ) && array_column( Gateway::$proGateways, $option ) ) {
+					$disabled = ' disabled';
+					$name     .= '<span> ' . __( '- Available in Pro Pack' ) . '</span>';
+				}
 				$selected = selected( $option, $value, false );
 				$html     .= '<option value="' . $option . '" ' . $selected . ' ' . $disabled . '>' . ucfirst( $name ) . '</option>';
 			endforeach;

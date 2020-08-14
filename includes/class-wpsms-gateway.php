@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Gateway {
 	// Set pro gateways
 	public static $proGateways = array(
-		'global' => array(
+		'global'        => array(
 			'twilio'           => 'twilio.com',
 			'plivo'            => 'plivo.com',
 			'clickatell'       => 'clickatell.com',
@@ -76,17 +76,29 @@ class Gateway {
 			'smsru'            => 'sms.ru',
 			'aspsms'           => 'aspsms.com',
 			'kaleyra'          => 'kaleyra.com',
-			'gtxmessaging'     => 'gtx-messaging.com',
-			'kwtsms'           => 'kwtsms.com',
-			'dianahost'        => 'dianahost.com',
 			'sendpulse'        => 'sendpulse.com',
-			'htd'              => 'htd.ps',
-			'telnyx'           => 'telnyx.com',
 			'makolar'          => 'makolar.com',
 			'mimsms'           => 'mimsms.com',
-			'jusibe'           => 'jusibe.com',
 			'smsto'            => 'sms.to',
-		)
+		),
+		'united states' => array(
+			'telnyx' => 'telnyx.com',
+		),
+		'germany'       => array(
+			'gtxmessaging' => 'gtx-messaging.com',
+		),
+		'africa'        => array(
+			'jusibe' => 'jusibe.com',
+		),
+		'arabic'        => array(
+			'kwtsms' => 'kwtsms.com',
+		),
+		'bangladesh'    => array(
+			'dianahost' => 'dianahost.com',
+		),
+		'palestine'     => array(
+			'htd' => 'htd.ps',
+		),
 	);
 	public $username;
 	public $password;
@@ -514,7 +526,6 @@ class Gateway {
 				'_ebulksms'          => 'ebulksms.com',
 				'africastalking'     => 'africastalking.com',
 				'smsnation'          => 'smsnation.co.rw',
-				'jusibe'             => 'jusibe.com',
 				'alchemymarketinggm' => 'alchemymarketinggm.com',
 			),
 			'kenya'          => array(
