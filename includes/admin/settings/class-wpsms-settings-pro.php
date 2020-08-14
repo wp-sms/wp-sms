@@ -203,6 +203,23 @@ class Settings_Pro {
 	 * Activate Icon
 	 */
 	public function activate_icon() {
+
+	    // Run check and set license if defined license with WP_SMS_LICENSE
+	    if( defined('WP_SMS_LICENSE') && ( ! isset($this->options['license_key']) || (isset($this->options['license_key']) &&  $this->options['license_key'] != WP_SMS_LICENSE))){
+	        $result = $this->check_license_key(array(), array());
+	        if(!empty($result['license_key_status'])){
+	            $this->options['license_key_status'] = $result['license_key_status'];
+	            $this->options['license_key'] = WP_SMS_LICENSE;
+	            $this->options['WP_SMS_LICENSE'] = true;
+	            update_option( $this->setting_name, $this->options);
+	        }
+	    }else if(! defined('WP_SMS_LICENSE') && isset($this->options['WP_SMS_LICENSE'])){
+	            unset($this->options['license_key_status']);
+	            unset($this->options['license_key']);
+	            unset($this->options['WP_SMS_LICENSE']);
+	            update_option( $this->setting_name, $this->options);
+	    }
+
 		if ( isset( $this->options['license_key_status'] ) ) {
 			$item = array( 'icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000' );
 
@@ -223,14 +240,18 @@ class Settings_Pro {
 		//Set Default Option
 		$default_option = 'no';
 
-		if ( isset( $_POST['wps_pp_settings']['license_key'] ) ) {
+		if ( isset( $_POST['wps_pp_settings']['license_key'] ) or defined('WP_SMS_LICENSE') ) {
+
+		    // Check what type license in use
+		    $definedLicenseKey = defined('WP_SMS_LICENSE') ? WP_SMS_LICENSE : '';
+		    $licenseKey = isset($_POST['wps_pp_settings']['license_key']) ? sanitize_text_field( $_POST['wps_pp_settings']['license_key'] ) : $definedLicenseKey;
 
 			/*
 			 * Check License
 			 */
 			$response = wp_remote_get( add_query_arg( array(
 				'plugin-name' => 'wp-sms-pro',
-				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] ),
+				'license_key' => $licenseKey,
 				'website'     => get_bloginfo( 'url' ),
 			),
 				WP_SMS_SITE . '/wp-json/plugins/v1/validate'
@@ -1263,8 +1284,14 @@ class Settings_Pro {
 
 	public function text_callback( $args ) {
 
-		if ( isset( $this->options[ $args['id'] ] ) and $this->options[ $args['id'] ] ) {
-			$value = $this->options[ $args['id'] ];
+	    $id = $args['id'];
+
+		if (  !empty($this->options[ $id ]) ) {
+			$value = $this->options[ $id ];
+
+			if($id == 'license_key' && defined('WP_SMS_LICENSE')){
+		       $value = '**********************';
+		    }
 		} else {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
@@ -1618,7 +1645,7 @@ class Settings_Pro {
 							do_settings_fields( 'wps_pp_settings_' . $active_tab, 'wps_pp_settings_' . $active_tab );
 							?>
                         </table>
-						<?php submit_button(); ?>
+						<?php ($active_tab == 'general' && defined('WP_SMS_LICENSE')) ? '' : submit_button(); ?>
                     </form>
                 </div>
             </div>
