@@ -205,20 +205,24 @@ class Settings_Pro {
 	public function activate_icon() {
 
 	    // Run check and set license if defined license with WP_SMS_LICENSE
-	    if( defined('WP_SMS_LICENSE') && ( ! isset($this->options['license_key']) || (isset($this->options['license_key']) &&  $this->options['license_key'] != WP_SMS_LICENSE))){
-	        $result = $this->check_license_key(array(), array());
-	        if(!empty($result['license_key_status'])){
-	            $this->options['license_key_status'] = $result['license_key_status'];
-	            $this->options['license_key'] = WP_SMS_LICENSE;
-	            $this->options['WP_SMS_LICENSE'] = true;
-	            update_option( $this->setting_name, $this->options);
-	        }
+	    if(defined('WP_SMS_LICENSE') ){
+	        $this->options['WP_SMS_LICENSE'] = true;
+	        update_option( $this->setting_name, $this->options);
+            if( ! isset($this->options['license_key']) || (isset($this->options['license_key']) &&  $this->options['license_key'] != WP_SMS_LICENSE)){
+                $result = $this->check_license_key(array(), array());
+                if(!empty($result['license_key_status'])){
+                    $this->options['license_key_status'] = $result['license_key_status'];
+                    $this->options['license_key'] = WP_SMS_LICENSE;
+
+                    update_option( $this->setting_name, $this->options);
+                }
+            }
 	    }else if(! defined('WP_SMS_LICENSE') && isset($this->options['WP_SMS_LICENSE'])){
-	            unset($this->options['license_key_status']);
-	            unset($this->options['license_key']);
-	            unset($this->options['WP_SMS_LICENSE']);
-	            update_option( $this->setting_name, $this->options);
-	    }
+            unset($this->options['license_key_status']);
+            unset($this->options['license_key']);
+            unset($this->options['WP_SMS_LICENSE']);
+            update_option( $this->setting_name, $this->options);
+       }
 
 		if ( isset( $this->options['license_key_status'] ) ) {
 			$item = array( 'icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000' );
