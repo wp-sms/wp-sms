@@ -1,33 +1,39 @@
-﻿jQuery(document).ready(function () {
-    jQuery(".chosen-select").chosen({width: "25em"});
+﻿jQuery(document).ready(function ($) {
+    // Set Chosen
+    $(".chosen-select").chosen({width: "25em"});
+
+    $('.chosen-select').on('change', function () {
+        $( 'input[name="submit"]' ).click();
+    });
+
     // Check about page
-    if (jQuery('.wp-sms-welcome').length) {
-        jQuery('.nav-tab-wrapper a').click(function () {
-            var tab_id = jQuery(this).attr('data-tab');
+    if ($('.wp-sms-welcome').length) {
+        $('.nav-tab-wrapper a').click(function () {
+            var tab_id = $(this).attr('data-tab');
 
             if (tab_id == 'link') {
                 return true;
             }
 
-            jQuery('.nav-tab-wrapper a').removeClass('nav-tab-active');
-            jQuery('.tab-content').removeClass('current');
+            $('.nav-tab-wrapper a').removeClass('nav-tab-active');
+            $('.tab-content').removeClass('current');
 
-            jQuery("[data-tab=" + tab_id + "]").addClass('nav-tab-active');
-            jQuery("[data-content=" + tab_id + "]").addClass('current');
+            $("[data-tab=" + tab_id + "]").addClass('nav-tab-active');
+            $("[data-content=" + tab_id + "]").addClass('current');
 
             return false;
         });
     }
 
-    if (jQuery('.repeater').length) {
-        jQuery('.repeater').repeater({
+    if ($('.repeater').length) {
+        $('.repeater').repeater({
             initEmpty: false,
             show: function () {
-                jQuery(this).slideDown();
+                $(this).slideDown();
             },
             hide: function (deleteElement) {
                 if (confirm('Are you sure you want to delete this item?')) {
-                    jQuery(this).slideUp(deleteElement);
+                    $(this).slideUp(deleteElement);
                 }
             },
             isFirstItemUndeletable: true
