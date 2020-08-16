@@ -121,89 +121,90 @@
                                     <span class="wpsms-value wpsms-users" style="display: none;">
                                         <span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), count( $get_users_mobile ) ); ?></span>
                                     </span>
-                                    <span class="wpsms-value wpsms-wc-users" style="display: none;">
+									<?php if ( isset( $getTotalWcUsers ) ): ?>
+                                        <span class="wpsms-value wpsms-wc-users" style="display: none;">
                                         <span><?php echo sprintf( __( '<b>%s</b> Users have mobile number.', 'wp-sms' ), $getTotalWcUsers ); ?></span>
                                     </span>
-
+									<?php endif; ?>
                                     <span class="wpsms-value wpsms-numbers">
                                         <div class="clearfix"></div>
                                         <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                         <div class="clearfix"></div>
-                                        <div style="font-size: 14px"><?php _e( 'Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?></div>
-                                        <?php if ($this->sms->validateNumber) : ?>
+                                        <div style="font-size: 14px"><?php _e( 'Separate the numbers with comma (,) or enter in each lines.', 'wp-sms' ); ?></div>
+                                        <?php if ( $this->sms->validateNumber ) : ?>
                                             <div style="margin-top: 10px"><?php echo sprintf( __( 'Gateway description: <code>%s</code>', 'wp-sms' ), $this->sms->validateNumber ); ?></div>
                                         <?php endif; ?>
-                                    </div>
-                                </td>
-                            </tr>
-							<?php if ( ! $this->sms->bulk_send ) : ?>
-                                <tr>
-                                    <td></td>
-                                    <td><?php _e( 'This gateway does not support sending bulk message and used first number to sending sms.', 'wp-sms' ); ?></td>
-                                </tr>
-							<?php endif; ?>
-                            <tr valign="top">
-                                <th scope="row">
-                                    <label for="wp_get_message"><?php _e( 'Message', 'wp-sms' ); ?>:</label>
-                                </th>
-                                <td>
-                                    <textarea dir="auto" cols="80" rows="5" name="wp_get_message" id="wp_get_message"></textarea><br/>
-                                    <p class="number">
-										<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . $credit; ?>
-                                    </p>
-                                </td>
-                            </tr>
-							<?php if ( \WP_SMS\Version::pro_is_active() ): ?>
-                                <tr id="schedule" valign="top">
-                                    <th scope="row">
-                                        <label for="datepicker"><?php _e( 'Scheduled message?', 'wp-sms' ); ?></label>
-                                    </th>
-                                    <td>
-                                        <input type="checkbox" id="schedule_status" name="schedule_status"/>
-                                    </td>
-                                </tr>
-                                <tr id="schedule_date" valign="top" style="display: none;">
-                                    <th scope="row">
-                                        <label for="datepicker"><?php _e( 'Set date', 'wp-sms' ); ?>:</label>
-                                    </th>
-                                    <td>
-                                        <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
-                                    </td>
-                                </tr>
-							<?php else: ?>
-                                <tr id="schedule" valign="top">
-                                    <th scope="row">
-                                        <label for="datepicker"><?php _e( 'Scheduled message?', 'wp-sms' ); ?></label>
-                                    </th>
-                                    <td style="padding-top: 10px;">
-                                        <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled"/>
-                                        <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e( 'Requires Pro Pack version.', 'wp-sms' ); ?></p>
-                                    </td>
-                                </tr>
-							<?php endif; ?>
-							<?php if ( $this->sms->flash == "enable" ) { ?>
-                                <tr>
-                                    <td><?php _e( 'Send a Flash', 'wp-sms' ); ?>:</td>
-                                    <td>
-                                        <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
-                                        <label for="flash_yes"><?php _e( 'Yes', 'wp-sms' ); ?></label>
-                                        <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
-                                        <label for="flash_no"><?php _e( 'No', 'wp-sms' ); ?></label> <br/>
-                                        <p class="description"><?php _e( 'Flash is possible to send messages without being asked, opens', 'wp-sms' ); ?></p>
-                                    </td>
-                                </tr>
-							<?php } ?>
-                            <tr>
-                                <td>
-                                    <p class="submit" style="padding: 0;">
-                                        <input type="submit" class="button-primary" name="SendSMS" value="<?php _e( 'Send SMS', 'wp-sms' ); ?>"/>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </form>
                 </div>
+                </td>
+                </tr>
+				<?php if ( ! $this->sms->bulk_send ) : ?>
+                    <tr>
+                        <td></td>
+                        <td><?php _e( 'This gateway does not support sending bulk message and used first number to sending sms.', 'wp-sms' ); ?></td>
+                    </tr>
+				<?php endif; ?>
+                <tr valign="top">
+                    <th scope="row">
+                        <label for="wp_get_message"><?php _e( 'Message', 'wp-sms' ); ?>:</label>
+                    </th>
+                    <td>
+                        <textarea dir="auto" cols="80" rows="5" name="wp_get_message" id="wp_get_message"></textarea><br/>
+                        <p class="number">
+							<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . $credit; ?>
+                        </p>
+                    </td>
+                </tr>
+				<?php if ( \WP_SMS\Version::pro_is_active() ): ?>
+                    <tr id="schedule" valign="top">
+                        <th scope="row">
+                            <label for="datepicker"><?php _e( 'Scheduled message?', 'wp-sms' ); ?></label>
+                        </th>
+                        <td>
+                            <input type="checkbox" id="schedule_status" name="schedule_status"/>
+                        </td>
+                    </tr>
+                    <tr id="schedule_date" valign="top" style="display: none;">
+                        <th scope="row">
+                            <label for="datepicker"><?php _e( 'Set date', 'wp-sms' ); ?>:</label>
+                        </th>
+                        <td>
+                            <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
+                        </td>
+                    </tr>
+				<?php else: ?>
+                    <tr id="schedule" valign="top">
+                        <th scope="row">
+                            <label for="datepicker"><?php _e( 'Scheduled message?', 'wp-sms' ); ?></label>
+                        </th>
+                        <td style="padding-top: 10px;">
+                            <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled"/>
+                            <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e( 'Requires Pro Pack version.', 'wp-sms' ); ?></p>
+                        </td>
+                    </tr>
+				<?php endif; ?>
+				<?php if ( $this->sms->flash == "enable" ) { ?>
+                    <tr>
+                        <td><?php _e( 'Send a Flash', 'wp-sms' ); ?>:</td>
+                        <td>
+                            <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
+                            <label for="flash_yes"><?php _e( 'Yes', 'wp-sms' ); ?></label>
+                            <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
+                            <label for="flash_no"><?php _e( 'No', 'wp-sms' ); ?></label> <br/>
+                            <p class="description"><?php _e( 'Flash is possible to send messages without being asked, opens', 'wp-sms' ); ?></p>
+                        </td>
+                    </tr>
+				<?php } ?>
+                <tr>
+                    <td>
+                        <p class="submit" style="padding: 0;">
+                            <input type="submit" class="button-primary" name="SendSMS" value="<?php _e( 'Send SMS', 'wp-sms' ); ?>"/>
+                        </p>
+                    </td>
+                </tr>
+                </table>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
