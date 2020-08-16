@@ -27,7 +27,7 @@ class Version {
 			}
 
 			// Check license key.
-			if ( Option::getOption( 'license_key_status', true ) == 'no' ) {
+			if ( ! Option::getOption( 'license_key_status', true ) || Option::getOption( 'license_key_status', true ) == 'no' ) {
 				add_action( 'admin_notices', array( $this, 'license_notice' ) );
 				add_filter( 'wp_sms_pro_wp_settings', array( $this, 'license_option' ) );
 				add_filter( 'wp_sms_pro_bp_settings', array( $this, 'license_option' ) );

@@ -27,7 +27,7 @@ class Settings_Pro {
 		}
 
 		// Check License Code
-		if ( isset( $_POST['submit'] ) and isset( $_REQUEST['option_page'] ) and $_REQUEST['option_page'] == 'wps_pp_settings' ) {
+		if ( ! defined('WP_SMS_LICENSE') and isset( $_POST['submit'] ) and isset( $_REQUEST['option_page'] ) and $_REQUEST['option_page'] == 'wps_pp_settings' ) {
 			add_filter( 'pre_update_option_' . $this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
 		}
 
@@ -205,7 +205,7 @@ class Settings_Pro {
 	public function activate_icon() {
 
 	    // Run check and set license if defined license with WP_SMS_LICENSE
-	    if(defined('WP_SMS_LICENSE') ){
+	    if(defined('WP_SMS_LICENSE') && ! isset($this->options['WP_SMS_LICENSE'])){
 	        $this->options['WP_SMS_LICENSE'] = true;
 	        update_option( $this->setting_name, $this->options);
             if( ! isset($this->options['license_key']) || (isset($this->options['license_key']) &&  $this->options['license_key'] != WP_SMS_LICENSE)){
