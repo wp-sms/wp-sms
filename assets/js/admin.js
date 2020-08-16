@@ -2,7 +2,8 @@
     // Set Chosen
     $(".chosen-select").chosen({width: "25em"});
 
-    $('.chosen-select').on('change', function () {
+    // Auto submit the gateways form, after changing chosen value
+    $("#wpsms_settings\\[gateway_name\\]").on('change', function () {
         $( 'input[name="submit"]' ).click();
     });
 
