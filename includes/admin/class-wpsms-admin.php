@@ -32,8 +32,10 @@ class Admin {
 	 */
 	public function admin_assets() {
 		// Register admin-bar.css for whole admin area
-		wp_register_style( 'wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
-		wp_enqueue_style( 'wpsms-admin-bar' );
+		if ( is_admin_bar_showing() ) {
+			wp_register_style( 'wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION );
+			wp_enqueue_style( 'wpsms-admin-bar' );
+		}
 
 		if ( stristr( get_current_screen()->id, "wp-sms" ) ) {
 			wp_register_style( 'wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION );
@@ -57,7 +59,7 @@ class Admin {
 		global $wp_admin_bar;
 		if ( is_super_admin() && is_admin_bar_showing() ) {
 			$credit = get_option( 'wpsms_gateway_credit' );
-			if ( $credit AND isset( $this->options['account_credit_in_menu'] ) AND ! is_object( $credit ) ) {
+			if ( $credit and isset( $this->options['account_credit_in_menu'] ) and ! is_object( $credit ) ) {
 				$wp_admin_bar->add_menu( array(
 					'id'    => 'wp-credit-sms',
 					'title' => '<span class="ab-icon"></span>' . $credit,
