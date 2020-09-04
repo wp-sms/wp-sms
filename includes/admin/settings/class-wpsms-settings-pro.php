@@ -1292,17 +1292,15 @@ class Settings_Pro {
 
 		if (  !empty($this->options[ $id ]) ) {
 			$value = $this->options[ $id ];
-
-			if($id == 'license_key' && defined('WP_SMS_LICENSE')){
-		       $value = '**********************';
-		    }
 		} else {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
+		$disabled = $this->checkDefiendLicenseActive($id, $value) ? 'disabled' : '';
+
 		$size        = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$after_input = ( isset( $args['after_input'] ) && ! is_null( $args['after_input'] ) ) ? $args['after_input'] : '';
-		$html        = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
+		$html        = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"'.$disabled.'/>';
 		$html        .= $after_input;
 		$html        .= '<p class="description"> ' . $args['desc'] . '</p>';
 
@@ -1671,6 +1669,23 @@ class Settings_Pro {
         $result = json_decode($file, true);
 
         return $result;
+    }
+
+    /**
+    * @param $field
+    * @param $value
+    *
+    * @return bool
+    */
+    private function checkDefiendLicenseActive($field, &$value){
+
+			if($field == 'license_key' && defined('WP_SMS_LICENSE')){
+
+		      $value = '';
+		      return true;
+		    }
+
+			return false;
     }
 }
 
