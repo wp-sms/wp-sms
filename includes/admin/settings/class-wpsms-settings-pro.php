@@ -1300,7 +1300,7 @@ class Settings_Pro {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
-		$disabled = $this->checkDefiendLicenseActive($id, $value) ? 'disabled' : '';
+		$disabled = $this->checkDefinedLicenseActive($id, $value) ? 'disabled' : '';
 
 		$size        = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$after_input = ( isset( $args['after_input'] ) && ! is_null( $args['after_input'] ) ) ? $args['after_input'] : '';
@@ -1681,15 +1681,12 @@ class Settings_Pro {
     *
     * @return bool
     */
-    private function checkDefiendLicenseActive($field, &$value){
-
-			if($field == 'license_key' && defined('WP_SMS_LICENSE')){
-
-		      $value = '';
-		      return true;
-		    }
-
-			return false;
+    private function checkDefinedLicenseActive($field, &$value){
+        if($field == 'license_key' && defined('WP_SMS_LICENSE')){
+            $value = '';
+            return true;
+        }
+        return false;
     }
 }
 

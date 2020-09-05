@@ -971,7 +971,7 @@ class Settings {
 		foreach ( $args['options'] as $key => $v ) {
 			$html .= '<optgroup label="' . ucfirst( str_replace( '_', ' ', $key ) ) . '">';
 
-			foreach ( $v as $option => $name ) :
+            foreach ($v as $option => $name) :
 
 				$disabled = '';
 				if ( ! defined( 'WP_SMS_PRO_VERSION' ) && array_column( Gateway::$proGateways, $option ) ) {
