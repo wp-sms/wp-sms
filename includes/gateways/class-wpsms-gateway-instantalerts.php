@@ -59,6 +59,7 @@ class instantalerts extends \WP_SMS\Gateway {
 		// Encode message
 		$msg = urlencode( $this->msg );
 
+		$result = '';
 		foreach ( $this->to as $to ) {
 			$result = file_get_contents( $this->wsdl_link . 'web/send/?apikey=' . $this->has_key . '&sender=' . $this->from . '&to=' . $to . '&message=' . $msg . '&format=json' );
 		}
@@ -78,8 +79,9 @@ class instantalerts extends \WP_SMS\Gateway {
 
 			return $result;
 		}
+
 		// Log the result
-		$this->log( $this->from, $this->msg, $this->to, $this->GetCredit()->get_error_message(), 'error' );
+		$this->log( $this->from, $this->msg, $this->to, print_r($result, 1), 'error' );
 
 		return new \WP_Error( 'send-sms', $result );
 	}
