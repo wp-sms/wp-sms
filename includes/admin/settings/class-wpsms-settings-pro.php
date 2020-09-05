@@ -645,7 +645,7 @@ class Settings_Pro {
 						          '<code>%customer_first_name%</code>',
 						          '<code>%customer_last_name%</code>',
 						          '<code>%order_view_url%</code>',
-						          '<code>%order_pay_url%</code>',
+						          '<code>%order_pay_url%</code>'
 					          )
 				),
 				'wc_notify_by_status'           => array(
