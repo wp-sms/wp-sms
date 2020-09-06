@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Admin\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -34,9 +36,12 @@ class Features {
 			add_filter( 'registration_errors', array( $this, 'registration_errors' ), 10, 3 );
 			add_action( 'user_register', array( $this, 'save_register' ) );
 
-			add_action( 'user_register', array( $this, 'check_admin_duplicate_number' ) );
-			add_action( 'profile_update', array( $this, 'check_admin_duplicate_number' ) );
+			add_action( 'user_register', array( $this, 'checkAdminDuplicateNumber' ) );
+			add_action( 'profile_update', array( $this, 'checkAdminDuplicateNumber' ) );
+
+			add_action( 'user_profile_update_errors', array( $this, 'MobileFieldErrors' ), 10, 3 );
 		}
+
 		if ( isset( $this->options['international_mobile'] ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_international_input' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_international_input' ) );
@@ -50,7 +55,7 @@ class Features {
 	 *
 	 * @return bool
 	 */
-	private function check_mobile_number( $mobile_number, $user_id = null ) {
+	private function checkMobileNumber( $mobile_number, $user_id = null ) {
 		if ( $user_id ) {
 			$result = $this->db->get_results( "SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobile_number}' AND user_id != '{$user_id}'" );
 		} else {
@@ -78,9 +83,28 @@ class Features {
 	}
 
 	/**
+	 * Handle the mobile field update errors
+	 *
+	 * @param $errors
+	 * @param $update
+	 * @param $user Object
+	 */
+	public function MobileFieldErrors( $errors, $update, $user ) {
+
+		// Check mobile duplicate value
+		if ( ! empty( $_POST['mobile'] ) ) {
+
+			if ( $this->checkMobileNumber( $_POST['mobile'], $user->ID ) ) {
+				$errors->add( 'mobile_error', __( 'This mobile is already registered, please choose another one.', 'wp-sms' ) );
+			}
+		}
+	}
+
+	/**
 	 * @param $user_id
 	 */
-	public function check_admin_duplicate_number( $user_id ) {
+	public function checkAdminDuplicateNumber( $user_id ) {
+
 		// Get user mobile
 		$user_mobile = get_user_meta( $user_id, 'mobile', true );
 
@@ -89,7 +113,7 @@ class Features {
 		}
 
 		// Delete user mobile
-		if ( $this->check_mobile_number( $user_mobile, $user_id ) ) {
+		if ( $this->checkMobileNumber( $user_mobile, $user_id ) ) {
 			$this->delete_user_mobile( $user_id );
 		}
 	}
@@ -126,26 +150,26 @@ class Features {
 			$errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include a mobile number.', 'wp-sms' ) );
 		}
 
-		if (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches) == false) {
-			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+		if ( preg_match( '/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches ) == false ) {
+			$errors->add( 'invalid_mobile_number', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 			$error = true;
 		}
 
-		if (!$error && !isset($matches[0])) {
-			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+		if ( ! $error && ! isset( $matches[0] ) ) {
+			$errors->add( 'invalid_mobile_number', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 			$error = true;
 		}
 
-		if (!$error && isset($matches[0]) && strlen($matches[0]) < 10) {
-			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+		if ( ! $error && isset( $matches[0] ) && strlen( $matches[0] ) < 10 ) {
+			$errors->add( 'invalid_mobile_number', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 			$error = true;
 		}
 
-		if (!$error && isset($matches[0]) && strlen($matches[0]) > 14) {
-			$errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+		if ( ! $error && isset( $matches[0] ) && strlen( $matches[0] ) > 14 ) {
+			$errors->add( 'invalid_mobile_number', __( 'Please enter a valid mobile number', 'wp-sms' ) );
 		}
 
-		if ( $this->check_mobile_number( $_POST['mobile'] ) ) {
+		if ( $this->checkMobileNumber( $_POST['mobile'] ) ) {
 			$errors->add( 'duplicate_mobile_number', __( '<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms' ) );
 		}
 

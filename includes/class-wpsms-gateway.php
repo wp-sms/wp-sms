@@ -10,11 +10,100 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WP_SMS gateway class
  */
 class Gateway {
-
+	// Set pro gateways
+	public static $proGateways = array(
+		'global'        => array(
+			'twilio'           => 'twilio.com',
+			'plivo'            => 'plivo.com',
+			'clickatell'       => 'clickatell.com',
+			'bulksms'          => 'bulksms.com',
+			'infobip'          => 'infobip.com',
+			'nexmo'            => 'nexmo.com',
+			'clockworksms'     => 'clockworksms.com',
+			'messagebird'      => 'messagebird.com',
+			'clicksend'        => 'clicksend.com',
+			'smsapicom'        => 'smsapi.com',
+			'dsms'             => 'dsms.in',
+			'esms'             => 'esms.vn',
+			'isms'             => 'isms.com.my',
+			'magicdeal4u'      => 'magicdeal4u.com',
+			'alfacell'         => 'alfa-cell.com',
+			'moceansms'        => 'moceansms.com',
+			'msg91'            => 'msg91.com',
+			'msg360'           => 'msg360.in',
+			'livesms'          => 'livesms.eu',
+			'ozioma'           => 'ozioma.net',
+			'pswin'            => 'pswin.com',
+			'ra'               => 'ra.sa',
+			'smsfactor'        => 'smsfactor.com',
+			'textmarketer'     => 'textmarketer.co.uk',
+			'smslive247'       => 'smslive247.com',
+			'sendsms247'       => 'sendsms247.com',
+			'ssdindia'         => 'ssdindia.com',
+			'jolis'            => 'jolis.net',
+			'vsms'             => 'vsms.club',
+			'websms'           => 'websms.at',
+			'smstrade'         => 'smstrade.de',
+			'bulksmshyderabad' => 'bulksmshyderabad.co.in',
+			'yamamah'          => 'yamamah.com',
+			'cellsynt'         => 'cellsynt.net',
+			'cmtelecom'        => 'cmtelecom.com',
+			'textlocal'        => 'textlocal.in',
+			'ismartsms'        => 'ismartsms.net',
+			'bulksmsgateway'   => 'bulksmsgateway.in',
+			'ooredoosms'       => 'ooredoo-sms.com',
+			'txtlocal'         => 'txtlocal - textlocal.com',
+			'qsms'             => 'qsms.com.au',
+			'hoiio'            => 'hoiio.com',
+			'textmagic'        => 'textmagic.com',
+			'onewaysms'        => 'onewaysms.com',
+			'smsmisr'          => 'smsmisr.com',
+			'smsgateway'       => 'smsgateway.me',
+			'bandwidth'        => 'bandwidth.com',
+			'_4jawaly'         => '4jawaly.net',
+			'tyntec'           => 'tyntec.com',
+			'smscountry'       => 'smscountry.com',
+			'routesms'         => 'routesms.com',
+			'skebby'           => 'skebby.it',
+			'tropo'            => 'tropo.it',
+			'sendhub'          => 'sendhub.com',
+			'upsidewireless'   => 'upsidewireless.com',
+			'orange'           => 'orange.com',
+			'proovl'           => 'proovl.com',
+			'messente'         => 'messente.com',
+			'springedge'       => 'springedge.com',
+			'bulksmsnigeria'   => 'bulksmsnigeria.com',
+			'smsru'            => 'sms.ru',
+			'aspsms'           => 'aspsms.com',
+			'kaleyra'          => 'kaleyra.com',
+			'sendpulse'        => 'sendpulse.com',
+			'makolar'          => 'makolar.com',
+			'mimsms'           => 'mimsms.com',
+			'smsto'            => 'sms.to',
+		),
+		'united states' => array(
+			'telnyx' => 'telnyx.com',
+		),
+		'germany'       => array(
+			'gtxmessaging' => 'gtx-messaging.com',
+		),
+		'africa'        => array(
+			'jusibe' => 'jusibe.com',
+		),
+		'arabic'        => array(
+			'kwtsms' => 'kwtsms.com',
+		),
+		'bangladesh'    => array(
+			'dianahost' => 'dianahost.com',
+		),
+		'palestine'     => array(
+			'htd' => 'htd.ps',
+		),
+	);
 	public $username;
 	public $password;
 	public $has_key = false;
-	public $validateNumber = "";
+	public $validateNumber = false;
 	public $help = false;
 	public $bulk_send = true;
 	public $from;
@@ -23,6 +112,11 @@ class Gateway {
 	protected $db;
 	protected $tb_prefix;
 	public $options;
+
+	/**
+	 * @var
+	 */
+	static $get_response;
 
 	public function __construct() {
 		global $wpdb;
@@ -38,6 +132,10 @@ class Gateway {
 
 		if ( isset( $this->options['send_unicode'] ) and $this->options['send_unicode'] ) {
 			//add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
+		}
+
+		if ( isset( $this->options['clean_numbers'] ) and $this->options['clean_numbers'] ) {
+			add_filter( 'wp_sms_to', array( $this, 'cleanNumbers' ) );
 		}
 
 		// Add Filters
@@ -155,15 +253,11 @@ class Gateway {
 	 * @return array
 	 */
 	public function applyCountryCode( $recipients = array() ) {
-		$country_code = $this->options['mobile_county_code'];
-		$numbers      = array();
+		$countryCode = $this->options['mobile_county_code'];
 
+		$numbers = array();
 		foreach ( $recipients as $number ) {
-			// Remove zero from first number
-			$number = ltrim( $number, '0' );
-
-			// Add country code to prefix number
-			$numbers[] = $country_code . $number;
+			$numbers[] = preg_replace( '/^(?:\\' . $countryCode . '|0)?/', $countryCode, ( $number ) );
 		}
 
 		return $numbers;
@@ -177,15 +271,24 @@ class Gateway {
 	 * @return string
 	 */
 	public function applyUnicode( $msg = '' ) {
-		$encodedMessage = bin2hex( mb_convert_encoding( $msg, 'utf-16', 'utf-8' ) );
-
-		return $encodedMessage;
+		return bin2hex( mb_convert_encoding( $msg, 'utf-16', 'utf-8' ) );
 	}
 
 	/**
-	 * @var
+	 * Clean the before sending them to API.
+	 *
+	 * @param array $recipients
+	 *
+	 * @return array
 	 */
-	static $get_response;
+	public function cleanNumbers( $recipients = array() ) {
+		$numbers = array();
+		foreach ( $recipients as $recipient ) {
+			$numbers[] = str_replace( ' ', '', $recipient );
+		}
+
+		return $numbers;
+	}
 
 	/**
 	 * @return mixed|void
@@ -231,18 +334,34 @@ class Gateway {
 				'verimor'  => 'verimor.com.tr',
 			),
 			'austria'        => array(
-				'smsgateway' => 'sms-gateway.at',
+				'smsgatewayat' => 'sms-gateway.at',
 			),
 			'spain'          => array(
+				'altiria'    => 'altiria.com',
 				'afilnet'    => 'afilnet.com',
 				'labsmobile' => 'labsmobile.com',
 				'mensatek'   => 'mensatek.com',
+			),
+			'mexico'         => array(
+				'altiria' => 'altiria.com',
+			),
+			'colombia'       => array(
+				'altiria' => 'altiria.com',
+			),
+			'peru'           => array(
+				'altiria' => 'altiria.com',
+			),
+			'chile'          => array(
+				'altiria' => 'altiria.com',
 			),
 			'new zealand'    => array(
 				'unisender' => 'unisender.com',
 			),
 			'polish'         => array(
 				'smsapi' => 'smsapi.pl',
+			),
+			'france'         => array(
+				'oxemis' => 'oxemis.com',
 			),
 			'denmark'        => array(
 				'cpsms'   => 'cpsms.dk',
@@ -388,6 +507,18 @@ class Gateway {
 				'farazsms'       => 'farazsms.com',
 				'raygansms'      => 'raygansms.com',
 			),
+			'arabic'         => array(
+				'oursms'       => 'oursms.net',
+				'gateway'      => 'gateway.sa',
+				'resalaty'     => 'resalaty.com',
+				'unifonic'     => 'unifonic.com',
+				'asr3sms'      => 'asr3sms.com',
+				'infodomain'   => 'infodomain.asia',
+				'mobiledotnet' => 'mobile.net.sa',
+				'zain'         => 'zain.im',
+				'malath'       => 'malath.net.sa',
+				'safasms'      => 'safa-sms.com',
+			),
 			'pakistan'       => array(
 				'difaan' => 'difaan',
 			),
@@ -395,7 +526,6 @@ class Gateway {
 				'_ebulksms'          => 'ebulksms.com',
 				'africastalking'     => 'africastalking.com',
 				'smsnation'          => 'smsnation.co.rw',
-				'jusibe'             => 'jusibe.com',
 				'alchemymarketinggm' => 'alchemymarketinggm.com',
 			),
 			'kenya'          => array(
@@ -408,22 +538,11 @@ class Gateway {
 			'ukraine'        => array(
 				'smsc' => 'smsc.ua',
 			),
-			'arabic'         => array(
-				'oursms'       => 'oursms.net',
-				'gateway'      => 'gateway.sa',
-				'resalaty'     => 'resalaty.com',
-				'asr3sms'      => 'asr3sms.com',
-				'infodomain'   => 'infodomain.asia',
-				'mobiledotnet' => 'mobile.net.sa',
-				'zain'         => 'zain.im',
-				'malath'       => 'malath.net.sa',
-				'safasms'      => 'safa-sms.com',
-			),
 			'ghana'          => array(
 				'eazismspro' => 'eazismspro.com',
 			),
-			'greece'          => array(
-				'smsnetgr'		=> 'sms.net.gr',
+			'greece'         => array(
+				'smsnetgr' => 'sms.net.gr',
 			),
 		);
 
@@ -437,7 +556,7 @@ class Gateway {
 		global $sms;
 
 		//Check that, Are we in the Gateway WP_SMS tab setting page or not?
-		if ( is_admin() AND isset( $_REQUEST['page'] ) AND isset( $_REQUEST['tab'] ) AND $_REQUEST['page'] == 'wp-sms-settings' AND $_REQUEST['tab'] == 'gateway' ) {
+		if ( is_admin() and isset( $_REQUEST['page'] ) and isset( $_REQUEST['tab'] ) and $_REQUEST['page'] == 'wp-sms-settings' and $_REQUEST['tab'] == 'gateway' ) {
 
 			// Get credit
 			$result = $sms->GetCredit();

@@ -26,10 +26,10 @@ class Newsletter {
 	 */
 	public function load_script() {
 		// jQuery will be included automatically
-		wp_enqueue_script( 'ajax-script', WP_SMS_URL . 'assets/js/script.js', array( 'jquery' ), WP_SMS_VERSION );
+		wp_enqueue_script( 'wpsms-ajax-script', WP_SMS_URL . 'assets/js/script.js', array( 'jquery' ), WP_SMS_VERSION );
 
 		// Ajax params
-		wp_localize_script( 'ajax-script', 'wpsms_ajax_object', array(
+		wp_localize_script( 'wpsms-ajax-script', 'wpsms_ajax_object', array(
 			'ajaxurl'         => get_rest_url( null, 'wpsms/v1/newsletter' ),
 			'unknown_error'   => __( 'Unknown Error! Check your connection and try again.', 'wp-sms' ),
 			'loading_text'    => __( 'Loading...', 'wp-sms' ),

@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, mehrshaddarzi, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 5.3.1
+Stable tag: 5.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -66,10 +66,11 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. To display the SMS newsletter form, go to Themes > Widgets, and add a Subscribe form.
+4. If you're using the wp-sms-pro as well, don't forgot to enter your license code on Pro Pack > General
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
-You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are some of popular gateways that supported in the Pro version:
+You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are some of popular gateways:
 
 * Twilio.com
 * Plivo.com
@@ -200,6 +201,13 @@ Add new subscribes to SMS newsletters.
 
 	POST /wpsms/v1/subscriber/add
 
+= How to get the Pro Pack updates? =
+If you've already the pro pack version, you have to enter your license key in the setting page to get the updates.
+
+Anyway the plugin support registering the license key through `wp-config.php`
+
+	define('WP_SMS_LICENSE', 'your-license-key');
+
 = How to customize WP-SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
 
@@ -219,6 +227,9 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 13. Privacy Page.
 
 == Upgrade Notice ==
+= 5.4 =
+* Please disable the wp-sms-pro before the update just for avoiding unsuspected issues.
+
 = 4.0 =
 * IMPORTANT! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
 
@@ -233,6 +244,15 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4 =
+* Added New SMS gateways in the plugin (unifonic.com, comilio.it, malath.net.sa, altiria.net, and oxemis.com)
+* Added A new option in the setting page for cleaning the numbers.
+* Added Newline support for numbers in sending SMS page.
+* Added Auto-submit the gateway while changing the gateway dropdown.
+* Improvement Appending country code to numbers.
+* Improvement Gateways and setting pages.
+* Improvement CSS and admin notice with the new version of WordPress.
+
 = 5.3.1 =
 * Added: malath.net.sa gateway.
 * Added: safa-sms.com gateway.

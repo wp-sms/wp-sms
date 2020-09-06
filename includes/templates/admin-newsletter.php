@@ -1,5 +1,5 @@
 <br>
-<div class="update-nag">
+<div class="notice notice-warning" style="padding: 11px;">
     <form action="//wp-sms-plugin.us7.list-manage.com/subscribe/post?u=628dc1468c7c7db0ba42f0137&amp;id=a3914329f1"
           method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate"
           target="_blank" novalidate>

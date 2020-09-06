@@ -28,9 +28,9 @@ class Newsletter extends \WP_SMS\RestApi {
 		// SMS Newsletter
 		register_rest_route( $this->namespace . '/v1', '/newsletter', array(
 			array(
-				'methods'  => \WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'subscribe_callback' ),
-				'args'     => array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'subscribe_callback' ),
+				'args'                => array(
 					'name'     => array(
 						'required' => true,
 					),
@@ -41,11 +41,12 @@ class Newsletter extends \WP_SMS\RestApi {
 						'required' => false,
 					),
 				),
+				'permission_callback' => '__return_true'
 			),
 			array(
-				'methods'  => \WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'unsubscribe_callback' ),
-				'args'     => array(
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'unsubscribe_callback' ),
+				'args'                => array(
 					'name'   => array(
 						'required' => true,
 					),
@@ -53,11 +54,12 @@ class Newsletter extends \WP_SMS\RestApi {
 						'required' => true,
 					),
 				),
+				'permission_callback' => '__return_true'
 			),
 			array(
-				'methods'  => \WP_REST_Server::EDITABLE,
-				'callback' => array( $this, 'verify_subscriber_callback' ),
-				'args'     => array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'verify_subscriber_callback' ),
+				'args'                => array(
 					'name'       => array(
 						'required' => true,
 					),
@@ -68,6 +70,7 @@ class Newsletter extends \WP_SMS\RestApi {
 						'required' => true,
 					),
 				),
+				'permission_callback' => '__return_true'
 			)
 		) );
 	}

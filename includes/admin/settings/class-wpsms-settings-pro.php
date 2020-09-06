@@ -27,7 +27,7 @@ class Settings_Pro {
 		}
 
 		// Check License Code
-		if ( isset( $_POST['submit'] ) AND isset( $_REQUEST['option_page'] ) AND $_REQUEST['option_page'] == 'wps_pp_settings' ) {
+		if ( ! defined('WP_SMS_LICENSE') and isset( $_POST['submit'] ) and isset( $_REQUEST['option_page'] ) and $_REQUEST['option_page'] == 'wps_pp_settings' ) {
 			add_filter( 'pre_update_option_' . $this->setting_name, array( $this, 'check_license_key' ), 10, 2 );
 		}
 
@@ -129,7 +129,7 @@ class Settings_Pro {
 		);
 
 		// Check what version of WP-Pro using? if not new version, don't show tabs
-		if ( defined( 'WP_SMS_PRO_VERSION' ) AND version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
+		if ( defined( 'WP_SMS_PRO_VERSION' ) and version_compare( WP_SMS_PRO_VERSION, "2.4.2", "<=" ) ) {
 			return array();
 		}
 
@@ -203,6 +203,31 @@ class Settings_Pro {
 	 * Activate Icon
 	 */
 	public function activate_icon() {
+
+	    // Run check and set license if defined license with WP_SMS_LICENSE
+	    if ( defined('WP_SMS_LICENSE') && ( !isset($this->options['license_key'] ) ||  $this->options['license_key'] != WP_SMS_LICENSE )){
+
+	        if(! isset($this->options['WP_SMS_LICENSE'] )){
+                $this->options['WP_SMS_LICENSE'] = true;
+                update_option( $this->setting_name, $this->options);
+	        }
+
+            if( ! isset($this->options['license_key']) || (isset($this->options['license_key']) &&  $this->options['license_key'] != WP_SMS_LICENSE)){
+                $result = $this->check_license_key(array(), array());
+                if(!empty($result['license_key_status'])){
+                    $this->options['license_key_status'] = $result['license_key_status'];
+                    $this->options['license_key'] = WP_SMS_LICENSE;
+
+                    update_option( $this->setting_name, $this->options);
+                }
+            }
+	    }else if(! defined('WP_SMS_LICENSE') && isset($this->options['WP_SMS_LICENSE'])){
+            unset($this->options['license_key_status']);
+            unset($this->options['license_key']);
+            unset($this->options['WP_SMS_LICENSE']);
+            update_option( $this->setting_name, $this->options);
+       }
+
 		if ( isset( $this->options['license_key_status'] ) ) {
 			$item = array( 'icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000' );
 
@@ -223,14 +248,18 @@ class Settings_Pro {
 		//Set Default Option
 		$default_option = 'no';
 
-		if ( isset( $_POST['wps_pp_settings']['license_key'] ) ) {
+		if ( isset( $_POST['wps_pp_settings']['license_key'] ) or defined('WP_SMS_LICENSE') ) {
+
+		    // Check what type license in use
+		    $definedLicenseKey = defined('WP_SMS_LICENSE') ? WP_SMS_LICENSE : '';
+		    $licenseKey = isset($_POST['wps_pp_settings']['license_key']) ? sanitize_text_field( $_POST['wps_pp_settings']['license_key'] ) : $definedLicenseKey;
 
 			/*
 			 * Check License
 			 */
 			$response = wp_remote_get( add_query_arg( array(
 				'plugin-name' => 'wp-sms-pro',
-				'license_key' => sanitize_text_field( $_POST['wps_pp_settings']['license_key'] ),
+				'license_key' => $licenseKey,
 				'website'     => get_bloginfo( 'url' ),
 			),
 				WP_SMS_SITE . '/wp-json/plugins/v1/validate'
@@ -431,6 +460,13 @@ class Settings_Pro {
 					'options' => $options,
 					'desc'    => __( 'Enable OTP Verification on Orders.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms' )
 				),
+                'wc_otp_countries_whitelist' => array(
+                    'id' => 'wc_otp_countries_whitelist',
+                    'name' => __('Countries Whitelist', 'wp-sms'),
+                    'type' => 'countryselect',
+                    'options' => $this->getCountriesList(),
+                    'desc' => __('Specify the countries to enable OTP.', 'wp-sms')
+                ),
 				'wc_otp_max_retry'           => array(
 					'id'   => 'wc_otp_max_retry',
 					'name' => __( 'Max SMS retries', 'wp-sms' ),
@@ -515,7 +551,7 @@ class Settings_Pro {
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order id: %s, Order number: %s, Order Total: %s, Order status: %s', 'wp-sms' ),
+						          __( 'Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order id: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms' ),
 						          '<code>%billing_first_name%</code>',
 						          '<code>%billing_company%</code>',
 						          '<code>%billing_address%</code>',
@@ -523,6 +559,7 @@ class Settings_Pro {
 						          '<code>%order_id%</code>',
 						          '<code>%order_number%</code>',
 						          '<code>%order_total%</code>',
+						          '<code>%order_edit_url%</code>',
 						          '<code>%status%</code>'
 					          )
 				),
@@ -544,13 +581,15 @@ class Settings_Pro {
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Order id: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s', 'wp-sms' ),
+						          __( 'Order id: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms' ),
 						          '<code>%order_id%</code>',
 						          '<code>%order_number%</code>',
 						          '<code>%status%</code>',
 						          '<code>%order_total%</code>',
 						          '<code>%billing_first_name%</code>',
-						          '<code>%billing_last_name%</code>'
+						          '<code>%billing_last_name%</code>',
+						          '<code>%order_view_url%</code>',
+						          '<code>%order_pay_url%</code>'
 					          )
 				),
 				'wc_notify_stock'            => array(
@@ -600,11 +639,13 @@ class Settings_Pro {
 					'type' => 'textarea',
 					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
 					          sprintf(
-						          __( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s', 'wp-sms' ),
+						          __( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms' ),
 						          '<code>%status%</code>',
 						          '<code>%order_number%</code>',
 						          '<code>%customer_first_name%</code>',
-						          '<code>%customer_last_name%</code>'
+						          '<code>%customer_last_name%</code>',
+						          '<code>%order_view_url%</code>',
+						          '<code>%order_pay_url%</code>'
 					          )
 				),
 				'wc_notify_by_status'           => array(
@@ -987,7 +1028,7 @@ class Settings_Pro {
 		}
 
 		// Get Ultimate Members
-		if ( class_exists( 'um\Config' ) ) {
+		if ( function_exists('um_user') ) {
 			$um_options['um_field'] = array(
 				'id'   => 'um_field',
 				'name' => __( 'Mobile number field', 'wp-sms' ),
@@ -1137,10 +1178,43 @@ class Settings_Pro {
 				),
 				'mobile_verify'     => array(
 					'id'      => 'mobile_verify',
-					'name'    => __( 'Verify mobile number', 'wp-sms' ),
+					'name'    => __( 'Login with OTP status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Verify mobile number in the login form. This feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms' ),
+				),
+				'mobile_verify_method'  => array(
+					'id'      => 'mobile_verify_method',
+					'name'    => __( 'OTP Method', 'wp-sms' ),
+					'type'    => 'select',
+					'options' => array(
+                        'optional'       => __( 'Optional - Users can enable/disable it in their profile', 'wp-sms' ),
+						'force_all'      => __( 'Enable for All Users', 'wp-sms' )
+					),
+					'desc'    => __( 'Choose from which what OTP method you want to use.', 'wp-sms' )
+				),
+				'mobile_verify_runtime'            => array(
+					'id'      => 'mobile_verify_runtime',
+					'name'    => __( 'OTP run-time', 'wp-sms' ),
+					'type'    => 'select',
+					'options' => array(
+                        'once_time'       => __( 'Just once', 'wp-sms' ),
+						'every_time'      => __( 'Everytime', 'wp-sms' )
+					),
+					'desc'    => __( 'Choose from which what OTP run-time you want to use.', 'wp-sms' )
+				),
+				'mobile_verify_message' => array(
+					'id'   => 'mobile_verify_message',
+					'name' => __( 'Message content', 'wp-sms' ),
+					'type' => 'textarea',
+					'desc' => __( 'Enter the contents of the OTP SMS message.', 'wp-sms' ) . '<br>' .
+					          sprintf(
+						          __( 'Mobile code: %s, User name: %s, First Name: %s, Last Name: %s', 'wp-sms' ),
+						          '<code>%otp%</code>',
+						          '<code>%user_name%</code>',
+						          '<code>%first_name%</code>',
+						          '<code>%last_name%</code>'
+					          )
 				),
 			) ),
 			// Options for BuddyPress tab
@@ -1218,15 +1292,19 @@ class Settings_Pro {
 
 	public function text_callback( $args ) {
 
-		if ( isset( $this->options[ $args['id'] ] ) and $this->options[ $args['id'] ] ) {
-			$value = $this->options[ $args['id'] ];
+	    $id = $args['id'];
+
+		if (  !empty($this->options[ $id ]) ) {
+			$value = $this->options[ $id ];
 		} else {
 			$value = isset( $args['std'] ) ? $args['std'] : '';
 		}
 
+		$disabled = $this->checkDefinedLicenseActive($id, $value) ? 'disabled' : '';
+
 		$size        = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
 		$after_input = ( isset( $args['after_input'] ) && ! is_null( $args['after_input'] ) ) ? $args['after_input'] : '';
-		$html        = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
+		$html        = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"'.$disabled.'/>';
 		$html        .= $after_input;
 		$html        .= '<p class="description"> ' . $args['desc'] . '</p>';
 
@@ -1456,7 +1534,7 @@ class Settings_Pro {
 								<div style="display: block; width: 100%; margin-bottom: 15px;">
 									<textarea name="message" rows="3" style="display: block; width: 100%;"><?php echo $message ?></textarea>
 									<p class="description">Enter the contents of the SMS message.</p>
-									<p class="description"><?php echo sprintf(__( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s', 'wp-sms' ), '<code>%status%</code>', '<code>%order_number%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>') ?></p>
+									<p class="description"><?php echo sprintf(__( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms' ), '<code>%status%</code>', '<code>%order_number%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
 								</div>
 								<div>
 									<input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete />
@@ -1488,7 +1566,7 @@ class Settings_Pro {
 							<div style="display: block; width: 100%; margin-bottom: 15px;">
 								<textarea name="message" rows="3" style="display: block; width: 100%;"></textarea>
 								<p class="description">Enter the contents of the SMS message.</p>
-								<p class="description"><?php echo sprintf(__( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s', 'wp-sms' ), '<code>%status%</code>', '<code>%order_number%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>') ?></p>
+								<p class="description"><?php echo sprintf(__( 'Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms' ), '<code>%status%</code>', '<code>%order_number%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
 							</div>
 							<div>
 								<input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete />
@@ -1504,6 +1582,35 @@ class Settings_Pro {
 		<?php
 		echo ob_get_clean();
 	}
+
+	   public function countryselect_callback($args) {
+
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
+
+        $html = '<select id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
+        $selected = '';
+
+        foreach ($args['options'] as $option => $country) :
+            if (isset($value) and is_array($value)) {
+                if (in_array($country['code'], $value)) {
+                    $selected = " selected='selected'";
+                } else {
+                    $selected = '';
+                }
+            }
+            $html .= '<option value="' . $country['code'] . '" ' . $selected . '>' . $country['name'] . '</option>';
+        endforeach;
+
+        $html .= '</select>';
+        $html .= '<p class="description"> ' . $args['desc'] . '</p>';
+
+        echo $html;
+    }
+
 
 	public function render_settings() {
 		$active_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->get_tabs() ) ? $_GET['tab'] : 'general';
@@ -1544,7 +1651,7 @@ class Settings_Pro {
 							do_settings_fields( 'wps_pp_settings_' . $active_tab, 'wps_pp_settings_' . $active_tab );
 							?>
                         </table>
-						<?php submit_button(); ?>
+						<?php ($active_tab == 'general' && defined('WP_SMS_LICENSE')) ? '' : submit_button(); ?>
                     </form>
                 </div>
             </div>
@@ -1552,6 +1659,35 @@ class Settings_Pro {
 		<?php
 		echo ob_get_clean();
 	}
+
+	/**
+     * Get countries list
+     *
+     * @return array|mixed|object
+     */
+    public function getCountriesList()
+    {
+        // Load countries list file
+        $file = WP_SMS_DIR . 'assets/countries.json';
+        $file = file_get_contents($file);
+        $result = json_decode($file, true);
+
+        return $result;
+    }
+
+    /**
+    * @param $field
+    * @param $value
+    *
+    * @return bool
+    */
+    private function checkDefinedLicenseActive($field, &$value){
+        if($field == 'license_key' && defined('WP_SMS_LICENSE')){
+            $value = '';
+            return true;
+        }
+        return false;
+    }
 }
 
 new Settings_Pro();

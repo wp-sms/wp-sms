@@ -40,8 +40,8 @@ class Settings {
 	/**
 	 * Gets saved settings from WP core
 	 *
-	 * @since           2.0
 	 * @return          array
+	 * @since           2.0
 	 */
 	public function get_settings() {
 		$settings = get_option( $this->setting_name );
@@ -57,8 +57,8 @@ class Settings {
 	/**
 	 * Registers settings in WP core
 	 *
-	 * @since           2.0
 	 * @return          void
+	 * @since           2.0
 	 */
 	public function register_settings() {
 		if ( false == get_option( $this->setting_name ) ) {
@@ -105,8 +105,8 @@ class Settings {
 	/**
 	 * Gets settings tabs
 	 *
-	 * @since               2.0
 	 * @return              array Tabs list
+	 * @since               2.0
 	 */
 	public function get_tabs() {
 		$tabs = array(
@@ -124,11 +124,11 @@ class Settings {
 	/**
 	 * Sanitizes and saves settings after submit
 	 *
-	 * @since               2.0
-	 *
-	 * @param               array $input Settings input
+	 * @param array $input Settings input
 	 *
 	 * @return              array New settings
+	 * @since               2.0
+	 *
 	 */
 	public function settings_sanitize( $input = array() ) {
 
@@ -187,8 +187,8 @@ class Settings {
 	/**
 	 * Get settings fields
 	 *
-	 * @since           2.0
 	 * @return          array Fields
+	 * @since           2.0
 	 */
 	public function get_registered_settings() {
 
@@ -334,6 +334,13 @@ class Settings {
 					'options' => $options,
 					'desc'    => __( 'You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms' )
 				),
+				'clean_numbers'             => array(
+					'id'      => 'clean_numbers',
+					'name'    => __( 'Clean Numbers', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'If you would like to remove space before sending to API, just enable this option.', 'wp-sms' )
+				),
 			) ),
 
 			// SMS Newsletter tab
@@ -408,24 +415,24 @@ class Settings {
 			) ),
 			// Feature tab
 			'feature'       => apply_filters( 'wp_sms_feature_settings', array(
-				'mobile_field'                     => array(
+				'mobile_field'                             => array(
 					'id'   => 'mobile_field',
 					'name' => __( 'Mobile field', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'add_mobile_field'                 => array(
+				'add_mobile_field'                         => array(
 					'id'      => 'add_mobile_field',
 					'name'    => __( 'Add Mobile number field', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Add Mobile number to user profile and register form.', 'wp-sms' )
 				),
-				'international_mobile_title'       => array(
+				'international_mobile_title'               => array(
 					'id'   => 'international_mobile_title',
 					'name' => __( 'International Telephone Input', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'international_mobile'             => array(
+				'international_mobile'                     => array(
 					'id'      => 'international_mobile',
 					'name'    => __( 'Enable for mobile fields', 'wp-sms' ),
 					'type'    => 'checkbox',
@@ -467,12 +474,12 @@ class Settings {
 					'options' => $options,
 					'desc'    => __( 'Display the country dial code next to the selected flag so it\'s not part of the typed number.<br>Note: this will disable National mode because technically we are dealing with international numbers, but with the dial code separated.', 'wp-sms' )
 				),
-				'rest_api'                         => array(
+				'rest_api'                                 => array(
 					'id'   => 'rest_api',
 					'name' => __( 'REST API', 'wp-sms' ),
 					'type' => 'header'
 				),
-				'rest_api_status'                  => array(
+				'rest_api_status'                          => array(
 					'id'      => 'rest_api_status',
 					'name'    => __( 'REST API status', 'wp-sms' ),
 					'type'    => 'checkbox',
@@ -495,11 +502,11 @@ class Settings {
 					'options' => $options,
 					'desc'    => __( 'Send an SMS to subscribers When published new posts.', 'wp-sms' )
 				),
-				'notif_publish_new_post_words_count'     => array(
-					'id'      => 'notif_publish_new_post_words_count',
-					'name'    => __( 'Post content words count', 'wp-sms' ),
-					'type'    => 'number',
-					'desc'    => __( 'The number of word for cropping in send post notification. Default : 10', 'wp-sms' )
+				'notif_publish_new_post_words_count'      => array(
+					'id'   => 'notif_publish_new_post_words_count',
+					'name' => __( 'Post content words count', 'wp-sms' ),
+					'type' => 'number',
+					'desc' => __( 'The number of word for cropping in send post notification. Default : 10', 'wp-sms' )
 				),
 				'notif_publish_new_post_template'         => array(
 					'id'   => 'notif_publish_new_post_template',
@@ -901,7 +908,7 @@ class Settings {
 
 		foreach ( $args['options'] as $k => $name ) :
 			foreach ( $name as $option => $name ):
-				if ( isset( $value ) AND is_array( $value ) ) {
+				if ( isset( $value ) and is_array( $value ) ) {
 					if ( in_array( $option, $value ) ) {
 						$selected = " selected='selected'";
 					} else {
@@ -929,7 +936,7 @@ class Settings {
 		$selected = '';
 
 		foreach ( $args['options'] as $option => $country ) :
-			if ( isset( $value ) AND is_array( $value ) ) {
+			if ( isset( $value ) and is_array( $value ) ) {
 				if ( in_array( $country['code'], $value ) ) {
 					$selected = " selected='selected'";
 				} else {
@@ -964,8 +971,13 @@ class Settings {
 		foreach ( $args['options'] as $key => $v ) {
 			$html .= '<optgroup label="' . ucfirst( str_replace( '_', ' ', $key ) ) . '">';
 
-			foreach ( $v as $option => $name ) :
-				$disabled = ( $key == 'pro_pack_gateways' ) ? $disabled = ' disabled' : '';
+            foreach ($v as $option => $name) :
+
+				$disabled = '';
+				if ( ! defined( 'WP_SMS_PRO_VERSION' ) && array_column( Gateway::$proGateways, $option ) ) {
+					$disabled = ' disabled';
+					$name     .= '<span> ' . __( '- (Pro Pack)' ) . '</span>';
+				}
 				$selected = selected( $option, $value, false );
 				$html     .= '<option value="' . $option . '" ' . $selected . ' ' . $disabled . '>' . ucfirst( $name ) . '</option>';
 			endforeach;

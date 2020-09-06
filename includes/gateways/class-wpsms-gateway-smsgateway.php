@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Gateway;
 
-class smsgateway extends \WP_SMS\Gateway {
+class smsgatewayat extends \WP_SMS\Gateway {
 	private $wsdl_link = "https://www.sms-gateway.at/sms/";
 	public $tariff = "https://www.sms-gateway.at/";
 	public $unitrial = false;

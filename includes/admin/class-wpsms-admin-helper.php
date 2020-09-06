@@ -28,4 +28,37 @@ class Helper {
 			return $text;
 		}
 	}
+
+	/**
+	 * Get WP users by role
+	 *
+	 * @param string $role
+	 * @param bool $count
+	 *
+	 * @return array|int
+	 */
+	public static function getUsersList( $role, $count = false ) {
+		// Check the WC mobile enabled or not
+		$args = array(
+			'meta_query'  => array(
+				array(
+					'key'     => 'mobile',
+					'value'   => '',
+					'compare' => '!=',
+				),
+			),
+			'count_total' => 'false',
+			'role'        => $role,
+			'fields'      => $count ? 'ID' : 'all'
+		);
+
+		$customers = get_users( $args );
+
+		if ( $count ) {
+			return count( $customers );
+		}
+
+		return $customers;
+	}
+
 }
