@@ -81,6 +81,7 @@ class Gateway {
 			'mimsms'           => 'mimsms.com',
 			'smsto'            => 'sms.to',
 			'tiniyo'           => 'tiniyo.com',
+			'vatansms'         => 'vatansms.com',
 		),
 		'united states' => array(
 			'telnyx' => 'telnyx.com',
