@@ -80,6 +80,9 @@ class Gateway {
 			'makolar'          => 'makolar.com',
 			'mimsms'           => 'mimsms.com',
 			'smsto'            => 'sms.to',
+			'tiniyo'           => 'tiniyo.com',
+			'vatansms'         => 'vatansms.com',
+			'smsmessenger'     => 'smsmessenger.co.za',
 			'vfirst'            => 'vfirst.com',
 		),
 		'united states' => array(
