@@ -80,6 +80,7 @@ class Gateway {
 			'makolar'          => 'makolar.com',
 			'mimsms'           => 'mimsms.com',
 			'smsto'            => 'sms.to',
+			'vfirst'            => 'vfirst.com',
 		),
 		'united states' => array(
 			'telnyx' => 'telnyx.com',
