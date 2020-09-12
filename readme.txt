@@ -31,7 +31,7 @@ Watch How You Can Send SMS With WordPress!
 https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
-* Supporting more than 180 SMS gateways
+* Supporting more than 200 SMS gateways - [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 * Sending SMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing for newsletters by SMS
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
@@ -128,25 +128,25 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP 7 Support? =
-Yes! WP SMS is compatible with PHP version 7.3
+Yes! WP SMS is compatible with PHP version +7.3
 
 = How to send SMS with PHP codes? =
 
-    $to = array('Mobile Number');
-    $msg = "Your Message";
-    $is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
-    wp_sms_send( $to, $msg, $is_flash );
+	$to = array('Mobile Number');
+	$msg = "Your Message";
+	$is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+	wp_sms_send( $to, $msg, $is_flash );
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
 `wp_sms_send`
 
-Example: Send emails when sending SMS
+Example: Send emails after sending SMS
 
-	function send_mail_when_send_sms($message_info) {
+	function send_mail_after_sending_sms($message_info) {
 		wp_mail('you@mail.com', 'Send SMS', $message_info);
 	}
-	add_action('wp_sms_send', 'send_mail_when_send_sms');
+	add_action('wp_sms_send', 'send_mail_after_sending_sms');
 
 Run the following action when subscribing a new user.
 `wp_sms_add_subscriber`
@@ -204,7 +204,7 @@ Add new subscribes to SMS newsletters.
 = How to get the Pro Pack updates? =
 If you've already the pro pack version, you have to enter your license key in the setting page to get the updates.
 
-Anyway the plugin support registering the license key through `wp-config.php`
+Anyway the plugin supports registering the license key through `wp-config.php`
 
 	define('WP_SMS_LICENSE', 'your-license-key');
 
