@@ -91,11 +91,12 @@ class WP_SMS {
 			require_once WP_SMS_DIR . 'includes/class-front.php';
 		}
 
-		// API class.
-		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
+		// API router manager.
+		/*require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-subscribers.php';
 		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-send.php';
-		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-credit.php';
+		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-credit.php';*/
+		require_once WP_SMS_DIR . 'includes/api/class-wpsms-router-manager.php';
 
 		// Template functions.
 		require_once WP_SMS_DIR . 'includes/template-functions.php';
