@@ -2,8 +2,6 @@
 
 namespace WP_SMS\Api\V1;
 
-use WP_SMS\RestApi;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -13,21 +11,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package    WP_SMS_Api
  * @version    1.0
  */
-class Send {
+class Send extends \WP_SMS\RestApi {
+
+	public function __construct() {
+		// Register routes
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+		parent::__construct();
+	}
 
 	/**
-	 * Register API class route
-	 *
-	 * @param $nameSpace
-	 * @param $route
+	 * Register routes
 	 */
-	public static function registerRoute( $nameSpace, $route ) {
+	public function register_routes() {
 
 		// SMS Newsletter
-		register_rest_route( $nameSpace, $route, array(
+		register_rest_route( $this->namespace . '/v1', '/send', array(
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
-				'callback'            => array( self::class, 'send_callback' ),
+				'callback'            => array( $this, 'send_callback' ),
 				'args'                => array(
 					'to'      => array(
 						'required' => true,
@@ -39,7 +41,7 @@ class Send {
 						'required' => false,
 					)
 				),
-				'permission_callback' => array( self::class, 'get_item_permissions_check' ),
+				'permission_callback' => array( $this, 'get_item_permissions_check' ),
 			)
 		) );
 	}
@@ -49,20 +51,20 @@ class Send {
 	 *
 	 * @return \WP_REST_Response
 	 */
-	static function send_callback( \WP_REST_Request $request ) {
+	public function send_callback( \WP_REST_Request $request ) {
 		// Get parameters from request
 		$params = $request->get_params();
 
 		$to      = isset ( $params['to'] ) ? $params['to'] : '';
 		$msg     = isset ( $params['msg'] ) ? $params['msg'] : '';
 		$isflash = isset ( $params['isflash'] ) ? $params['isflash'] : '';
-		$result  = RestApi::sendSMS( $to, $msg, $isflash );
+		$result  = self::sendSMS( $to, $msg, $isflash );
 
 		if ( is_wp_error( $result ) ) {
-			return RestApi::response( $result->get_error_message(), 400 );
+			return self::response( $result->get_error_message(), 400 );
 		}
 
-		return RestApi::response( $result );
+		return self::response( $result );
 	}
 
 	/**
@@ -72,7 +74,9 @@ class Send {
 	 *
 	 * @return bool
 	 */
-	static function get_item_permissions_check( $request ) {
+	public function get_item_permissions_check( $request ) {
 		return current_user_can( 'wpsms_sendsms' );
 	}
 }
+
+new Send();
