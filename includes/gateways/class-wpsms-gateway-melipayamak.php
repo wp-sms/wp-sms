@@ -60,8 +60,41 @@ class melipayamak extends \WP_SMS\Gateway {
 
 			return $credit;
 		}
+        	$textarray_wp = explode("##",$this->msg);
+        	$key = array_pop($textarray_wp);
+		if(trim($key)=="shared"){
+		    try{
+		        $text_wp1 = implode(" ",$textarray_wp);
+		        $textarray_wp2 = explode("-",$text_wp1);
+		        $bodyid = array_shift($textarray_wp2);
+		        $client = new \SoapClient( $this->wsdl_link );
+		        for($i=0;$i<count($this->to);$i++){
+		            $data = [
+		            "username" => $this->username,
+		            "password" => $this->password,
+		            "text" => $textarray_wp2[0],
+		            "to" => $this->to[$i],
+		            "bodyId" => $bodyid
+		            ];
+	            $result = $client->SendByBaseNumber2($data)->SendByBaseNumber2Result;
+	            if($result>1000){
+	                $result=1;
+	            }
+	            $this->log( $this->from, $textarray_wp2p[0] , $this->to[$i], $result );
+	            do_action( 'wp_sms_send', $result );
 
-		try {
+			    return $result;
+		        }
+		    
+		    }
+		    catch ( \SoapFault $ex ) {
+			// Log the result
+			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
+
+			return new \WP_Error( 'send-sms', $ex->faultstring );
+		}
+		}else{
+		    try {
 			$client                 = new \SoapClient( $this->wsdl_link );
 			$parameters['username'] = $this->username;
 			$parameters['password'] = $this->password;
@@ -74,6 +107,8 @@ class melipayamak extends \WP_SMS\Gateway {
 			$parameters['status']   = 0x0;
 
 			$result = $client->SendSms( $parameters )->SendSmsResult;
+			
+			
 
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $result );
@@ -93,6 +128,7 @@ class melipayamak extends \WP_SMS\Gateway {
 			$this->log( $this->from, $this->msg, $this->to, $ex->faultstring, 'error' );
 
 			return new \WP_Error( 'send-sms', $ex->faultstring );
+		}
 		}
 	}
 
