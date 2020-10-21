@@ -94,7 +94,6 @@ class Gateway {
 		),
 		'arabic'        => array(
 			'kwtsms' => 'kwtsms.com',
-			'msegat' => 'msegat.com',
 		),
 		'bangladesh'    => array(
 			'dianahost' => 'dianahost.com',
@@ -514,6 +513,7 @@ class Gateway {
 				'raygansms'      => 'raygansms.com',
 			),
 			'arabic'         => array(
+			    'msegat'       => 'msegat.com',
 				'oursms'       => 'oursms.net',
 				'gateway'      => 'gateway.sa',
 				'resalaty'     => 'resalaty.com',
