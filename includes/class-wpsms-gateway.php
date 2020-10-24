@@ -97,6 +97,7 @@ class Gateway {
 		),
 		'bangladesh'    => array(
 			'dianahost' => 'dianahost.com',
+			'bulksmsbd' => 'bulksmsbd.com',
 		),
 		'palestine'     => array(
 			'htd' => 'htd.ps',
