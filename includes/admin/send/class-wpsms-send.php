@@ -120,7 +120,7 @@ class SMS_Send
                         $response = $response->get_error_message();
                     }
 
-                    echo "<div class='error'><p>" . sprintf(__('<strong>SMS was not delivered! results received:</strong> %s', 'wp-sms'), $response) . "</p></div>";
+                    echo "<div class='error'><p>" . sprintf(__('<strong>SMS was not delivered, gateway Response:</strong> %s', 'wp-sms'), $response) . "</p></div>";
                 } else {
                     echo "<div class='updated'><p>" . __('The SMS sent successfully', 'wp-sms') . "</p></div>";
                     $credit = Gateway::credit();

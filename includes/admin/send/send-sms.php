@@ -140,7 +140,7 @@
                 <?php if (!$this->sms->bulk_send) : ?>
                     <tr>
                         <td></td>
-                        <td><?php _e('This gateway does not support sending bulk message and used first number to sending sms.', 'wp-sms'); ?></td>
+                        <td><?php _e('This gateway doesn\'t support the bulk SMS and will use the first number while sending a group of numbers.', 'wp-sms'); ?></td>
                     </tr>
                 <?php endif; ?>
                 <tr valign="top">

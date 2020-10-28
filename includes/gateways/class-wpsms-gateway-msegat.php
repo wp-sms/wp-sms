@@ -12,15 +12,12 @@ class msegat extends \WP_SMS\Gateway {
 
 	public function __construct() {
 		parent::__construct();
-		$this->bulk_send      = false;
 		$this->has_key        = true;
 		$this->help           = "Use username as your username and use the API/Key as your API.";
 		$this->validateNumber = "The phone number(s) the message should be sent to (must be in international format, like 966xxxxxxxxx). ";
-
 	}
 
 	public function SendSMS() {
-
 
 		/**
 		 * Modify sender number
@@ -68,10 +65,6 @@ class msegat extends \WP_SMS\Gateway {
 			$encoding = 'UNICODE';
 		}
 
-		foreach ( $this->to as $number ) {
-			$numbers[] = $this->cleanNumber( $number );
-		}
-
 		$args = array(
 			'headers' => array(
 				'Content-Type' => 'application/json'
@@ -81,7 +74,7 @@ class msegat extends \WP_SMS\Gateway {
 				'apiKey'       => $this->has_key,
 				'msgEncoding ' => $encoding,
 				'userSender'   => $this->from,
-				'numbers'      => $this->to,
+				'numbers'      => implode(',', $this->to),
 				'msg'          => $this->msg
 			) )
 		);
@@ -92,15 +85,15 @@ class msegat extends \WP_SMS\Gateway {
 		if ( is_wp_error( $response ) ) {
 			// Log the result
 			$this->log( $this->from, $this->msg, $this->to, $response->get_error_message(), 'error' );
-
 			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
-		$result = $this->ErrorCheck( $response['body'] );
+		$responseObject = json_decode($response['body']);
 
-		if ( ! is_wp_error( $this->ErrorCheck( $result ) ) ) {
+		if ( $responseObject->code == 1 and wp_remote_retrieve_response_code( $response ) == 200 ) {
+
 			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $response );
+			$this->log( $this->from, $this->msg, $this->to, $responseObject );
 
 			/**
 			 * Run hook after send sms.
@@ -110,15 +103,16 @@ class msegat extends \WP_SMS\Gateway {
 			 * @since 2.4
 			 *
 			 */
-			do_action( 'wp_sms_send', $response );
+			do_action( 'wp_sms_send', $responseObject );
 
-			return true;
+			return $responseObject;
+
 		} else {
 
 			// Log the result
-			$this->log( $this->from, $this->msg, $this->to, $result->get_error_message(), 'error' );
+			$this->log( $this->from, $this->msg, $this->to, $responseObject->message, 'error' );
 
-			return new \WP_Error( 'send-sms', $result );
+			return new \WP_Error( 'send-sms', $responseObject->message );
 		}
 	}
 
@@ -134,14 +128,11 @@ class msegat extends \WP_SMS\Gateway {
 		}
 
 		$args = array(
-			'headers' => array(
-				'Content-Type' => 'application/json'
-			),
-			'body'    => json_encode( array(
+			'body'    =>  array(
 				'userName'     => $this->username,
 				'apiKey'       => $this->has_key,
 				'msgEncoding ' => 'UTF8'
-			) )
+			)
 		);
 
 		$response = wp_remote_post( $this->wsdl_link . "Credits.php", $args );
@@ -151,27 +142,13 @@ class msegat extends \WP_SMS\Gateway {
 			return new \WP_Error( 'send-sms', $response->get_error_message() );
 		}
 
-		$result = $this->ErrorCheck( $response['body'] );
+		$errorMessage = $this->getErrorMessage($response['body']);
 
-		if ( ! is_wp_error( $result ) ) {
-			return $result->userBalance;
+		if ( false == $errorMessage and wp_remote_retrieve_response_code( $response ) == 200 ) {
+			return $response['body'];
 		} else {
-			return new \WP_Error( 'account-credit', $result->get_error_message() );
+			return new \WP_Error( 'account-credit', $errorMessage );
 		}
-	}
-
-	/**
-	 * Clean number
-	 *
-	 * @param $number
-	 *
-	 * @return bool|string
-	 */
-	private function cleanNumber( $number ) {
-		$number = str_replace( '+', '', $number );
-		$number = trim( $number );
-
-		return $number;
 	}
 
 	/**
@@ -179,14 +156,10 @@ class msegat extends \WP_SMS\Gateway {
 	 *
 	 * @return string|\WP_Error
 	 */
-	private function ErrorCheck( $result ) {
+	private function getErrorMessage( $result ) {
 
 		switch ( $result ) {
-			case '1':
-			case 'M0000':
-				$error = '';
-				break;
-			case 'M0001':
+            case 'M0001':
 				$error = ' Variables missing.';
 				break;
 			case '1020':
@@ -256,15 +229,12 @@ class msegat extends \WP_SMS\Gateway {
 			case '1140':
 				$error = 'MSG length is too long.';
 				break;
-			default:
-				$error = sprintf( 'Unknow error: %s', $result );
+            case 'M0000':
+            default:
+				$error = false;
 				break;
 		}
 
-		if ( $error ) {
-			return new \WP_Error( 'send-sms', 'Error: ' . $error );
-		}
-
-		return $result;
+		return $error;
 	}
 }
