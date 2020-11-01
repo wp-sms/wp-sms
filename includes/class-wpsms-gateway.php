@@ -313,7 +313,7 @@ class Gateway {
 				'spirius'        => 'spirius.com',
 				'_1s2u'          => '1s2u.com',
 				'easysendsms'    => 'easysendsms.com',
-				'torpedos'       => 'torpedos',
+				'torpedos'       => 'torpedos, smsplus.com.br',
 				'smss'           => 'smss.co',
 				'bearsms'        => 'bearsms',
 				'cheapglobalsms' => 'cheapglobalsms.com',
