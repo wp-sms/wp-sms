@@ -386,7 +386,6 @@ class Gateway {
 				'ozonesmsworld'    => 'ozonesmsworld.com',
 				'smsgatewayhub'    => 'smsgatewayhub.com',
 				'smsgatewaycenter' => 'smsgatewaycenter.com',
-				'itfisms'          => 'itfisms.com',
 				'pridesms'         => 'pridesms.in',
 				'smsozone'         => 'ozonesms.com',
 				'msgwow'           => 'msgwow.com',
