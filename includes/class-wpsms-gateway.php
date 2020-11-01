@@ -524,9 +524,6 @@ class Gateway {
 				'malath'       => 'malath.net.sa',
 				'safasms'      => 'safa-sms.com',
 			),
-			'pakistan'       => array(
-				'difaan' => 'difaan',
-			),
 			'africa'         => array(
 				'_ebulksms'          => 'ebulksms.com',
 				'africastalking'     => 'africastalking.com',
