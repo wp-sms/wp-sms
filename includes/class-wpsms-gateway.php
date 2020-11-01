@@ -73,7 +73,6 @@ class Gateway {
 			'aspsms'         => 'aspsms.com',
 			'kaleyra'        => 'kaleyra.com',
 			'sendpulse'      => 'sendpulse.com',
-			'makolar'        => 'makolar.com',
 			'mimsms'         => 'mimsms.com',
 			'smsto'          => 'sms.to',
 			'tiniyo'         => 'tiniyo.com',
