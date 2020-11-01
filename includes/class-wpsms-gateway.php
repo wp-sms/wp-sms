@@ -26,7 +26,6 @@ class Gateway {
 			'dsms'           => 'dsms.in',
 			'esms'           => 'esms.vn',
 			'isms'           => 'isms.com.my',
-			'magicdeal4u'    => 'magicdeal4u.com',
 			'alfacell'       => 'alfa-cell.com',
 			'moceansms'      => 'moceansms.com',
 			'msg91'          => 'msg91.com',
