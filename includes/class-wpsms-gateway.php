@@ -62,7 +62,6 @@ class Gateway {
 			'smscountry'     => 'smscountry.com',
 			'routesms'       => 'routesms.com',
 			'skebby'         => 'skebby.it',
-			'tropo'          => 'tropo.it',
 			'sendhub'        => 'sendhub.com',
 			'upsidewireless' => 'upsidewireless.com',
 			'orange'         => 'orange.com',
