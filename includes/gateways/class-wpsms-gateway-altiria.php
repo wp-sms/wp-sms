@@ -65,6 +65,7 @@ class altiria extends \WP_SMS\Gateway
             'passwd'   => $this->password,
             'msg'      => stripslashes($this->msg),
             'senderId' => $this->from,
+            'source'   => 'wpsms'
         );
 
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
