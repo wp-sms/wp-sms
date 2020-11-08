@@ -321,8 +321,9 @@ class Gateway {
 				'uwaziimobile'   => 'uwaziimobile.com',
 			),
 			'united kingdom' => array(
-				'_textplode'   => 'textplode.com',
-				'textanywhere' => 'textanywhere.net',
+				'_textplode'       => 'textplode.com',
+				'textanywhere'     => 'textanywhere.net',
+				'reachinteractive' => 'reach-interactive.com',
 			),
 			'french'         => array(
 				'primotexto' => 'primotexto.com',
@@ -510,7 +511,7 @@ class Gateway {
 				'raygansms'      => 'raygansms.com',
 			),
 			'arabic'         => array(
-			    'msegat'       => 'msegat.com',
+				'msegat'       => 'msegat.com',
 				'oursms'       => 'oursms.net',
 				'gateway'      => 'gateway.sa',
 				'resalaty'     => 'resalaty.com',
