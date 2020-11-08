@@ -631,13 +631,14 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Comment author: %s, Author email: %s, Author url: %s, Author IP: %s, Comment date: %s, Comment content: %s', 'wp-sms'),
+                            __('Comment author: %s, Author email: %s, Author url: %s, Author IP: %s, Comment date: %s, Comment content: %s, Comment URL: %s', 'wp-sms'),
                             '<code>%comment_author%</code>',
                             '<code>%comment_author_email%</code>',
                             '<code>%comment_author_url%</code>',
                             '<code>%comment_author_IP%</code>',
                             '<code>%comment_date%</code>',
-                            '<code>%comment_content%</code>'
+                            '<code>%comment_content%</code>',
+                            '<code>%comment_url%</code>'
                         )
                 ),
                 // User login

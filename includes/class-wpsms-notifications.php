@@ -46,9 +46,9 @@ class Notifications {
 		// Wordpress new version
 		if ( isset( $this->options['notif_publish_new_wpversion'] ) ) {
 			$update = get_site_transient( 'update_core' );
-			if(is_object($update) AND isset($update->updates)) {
+			if ( is_object( $update ) and isset( $update->updates ) ) {
 				$update = $update->updates;
-			}else{
+			} else {
 				$update = array();
 			}
 
@@ -94,7 +94,7 @@ class Notifications {
 		add_meta_box( 'subscribe-meta-box', __( 'SMS', 'wp-sms' ), array(
 			$this,
 			'notification_meta_box_handler'
-		), get_post_types(['public' => true]), 'normal', 'high' );
+		), get_post_types( [ 'public' => true ] ), 'normal', 'high' );
 	}
 
 	/**
@@ -127,9 +127,9 @@ class Notifications {
 				$this->sms->to = $this->db->get_col( "SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'" );
 			}
 
-			$notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
-			$words_limit = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
-			$template_vars = array(
+			$notif_publish_new_post_words_count = isset( $this->options['notif_publish_new_post_words_count'] ) ? intval( $this->options['notif_publish_new_post_words_count'] ) : false;
+			$words_limit                        = ( $notif_publish_new_post_words_count === false ) ? 10 : $notif_publish_new_post_words_count;
+			$template_vars                      = array(
 				'%post_title%'   => get_the_title( $ID ),
 				'%post_content%' => wp_trim_words( $post->post_content, $words_limit ),
 				'%post_url%'     => wp_get_shortlink( $ID ),
@@ -170,7 +170,7 @@ class Notifications {
 		$request = apply_filters( 'wp_sms_from_notify_user_register', $_REQUEST );
 
 		// Send SMS to user register.
-		if ( isset( $user->mobile ) OR $request AND ! is_array( $request ) ) {
+		if ( isset( $user->mobile ) or $request and ! is_array( $request ) ) {
 			if ( isset( $user->mobile ) ) {
 				$this->sms->to = array( $user->mobile );
 			} else if ( $request ) {
@@ -205,7 +205,8 @@ class Notifications {
 			'%comment_author_url%'   => $comment_object->comment_author_url,
 			'%comment_author_IP%'    => $comment_object->comment_author_IP,
 			'%comment_date%'         => $comment_object->comment_date,
-			'%comment_content%'      => $comment_object->comment_content
+			'%comment_content%'      => $comment_object->comment_content,
+			'%comment_url%'          => get_comment_link( $comment_object ),
 		);
 		$message        = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $this->options['notif_new_comment_template'] );
 		$this->sms->msg = $message;
@@ -269,14 +270,14 @@ class Notifications {
 			$post_types_option = Option::getOption( 'notif_publish_new_post_author_post_type' );
 
 			// Check selected post types or not?
-			if ( $post_types_option AND is_array( $post_types_option ) ) {
+			if ( $post_types_option and is_array( $post_types_option ) ) {
 				// Initialize values
 				$post_types = array();
 				foreach ( $post_types_option as $post_publish_type ) {
 					$value                   = explode( '|', $post_publish_type );
 					$post_types[ $value[1] ] = $value[0];
 				}
-				if ( array_key_exists( $post->post_type, $post_types ) AND ! user_can( $post->post_author, $post_types[ $post->post_type ] ) ) {
+				if ( array_key_exists( $post->post_type, $post_types ) and ! user_can( $post->post_author, $post_types[ $post->post_type ] ) ) {
 					$this->new_post_published( $post->ID, $post );
 				}
 			}
