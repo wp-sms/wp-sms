@@ -4,6 +4,7 @@ namespace WP_SMS\Gateway;
 
 class reachinteractive extends \WP_SMS\Gateway {
 	private $wsdl_link = "http://http-1-uat.reach-interactive.com/sms";
+	private $totalPerRequest = 80;
 	public $tariff = "https://reach-interactive.com/";
 	public $unitrial = false;
 	public $unit;
@@ -12,7 +13,6 @@ class reachinteractive extends \WP_SMS\Gateway {
 
 	public function __construct() {
 		parent::__construct();
-		define( 'TOTAL_PER_SECOND', 2 );
 		$this->validateNumber = "The phone number(s) the message should be sent to (must be in international format, like 447xxxxxxxxx).";
 	}
 
@@ -62,11 +62,11 @@ class reachinteractive extends \WP_SMS\Gateway {
 		$numbersCount   = count( $this->to );
 		$endNumbersList = $this->to;
 
-		if ( $numbersCount > TOTAL_PER_SECOND ) {
-			$numbers        = array_chunk( $this->to, TOTAL_PER_SECOND );
+		if ( $numbersCount > $this->totalPerRequest ) {
+			$numbers        = array_chunk( $this->to, $this->totalPerRequest );
 			$endNumbersList = end( $numbers );
 			// Remove end numbers list from the array and ready to send others
-			unset( $numbers[ array_key_last( $numbers ) ] );
+			unset( $numbers[ key( $numbers ) ] );
 
 			foreach ( $numbers as $k => $number ) {
 				$response = $this->sendStaticSMS( $number );
@@ -209,6 +209,7 @@ class reachinteractive extends \WP_SMS\Gateway {
 				return new \WP_Error( 'send-sms', $result );
 			}
 		}
+
 		return new \WP_Error( 'send-sms', $response->get_error_message() );
 	}
 }
