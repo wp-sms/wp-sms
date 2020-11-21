@@ -1,11 +1,11 @@
 ﻿=== WP SMS ===
-Contributors: mostafa.s1990, kashani, mehrshaddarzi, alifallahrn
+Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 5.4
+Stable tag: 5.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,7 +31,7 @@ Watch How You Can Send SMS With WordPress!
 https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
-* Supporting more than 180 SMS gateways
+* Supporting more than 200 SMS gateways - [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 * Sending SMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing for newsletters by SMS
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
@@ -66,7 +66,7 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. To display the SMS newsletter form, go to Themes > Widgets, and add a Subscribe form.
-4. If you're using the wp-sms-pro as well, don't forgot to enter your license code on Pro Pack > General
+4. If you're using the wp-sms-pro as well, don't forget to enter your license code on Pro Pack > General
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
@@ -128,25 +128,25 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP 7 Support? =
-Yes! WP SMS is compatible with PHP version 7.3
+Yes! WP SMS is compatible with PHP version +7.3
 
 = How to send SMS with PHP codes? =
 
-    $to = array('Mobile Number');
-    $msg = "Your Message";
-    $is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
-    wp_sms_send( $to, $msg, $is_flash );
+	$to = array('Mobile Number');
+	$msg = "Your Message";
+	$is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+	wp_sms_send( $to, $msg, $is_flash );
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
 `wp_sms_send`
 
-Example: Send emails when sending SMS
+Example: Send emails after sending SMS
 
-	function send_mail_when_send_sms($message_info) {
+	function send_mail_after_sending_sms($message_info) {
 		wp_mail('you@mail.com', 'Send SMS', $message_info);
 	}
-	add_action('wp_sms_send', 'send_mail_when_send_sms');
+	add_action('wp_sms_send', 'send_mail_after_sending_sms');
 
 Run the following action when subscribing a new user.
 `wp_sms_add_subscriber`
@@ -204,7 +204,7 @@ Add new subscribes to SMS newsletters.
 = How to get the Pro Pack updates? =
 If you've already the pro pack version, you have to enter your license key in the setting page to get the updates.
 
-Anyway the plugin support registering the license key through `wp-config.php`
+Anyway the plugin supports registering the license key through `wp-config.php`
 
 	define('WP_SMS_LICENSE', 'your-license-key');
 
@@ -244,6 +244,14 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.1 =
+* Added Reach-Interactive gateway
+* Added Msegat gateway
+* Fixed encoding issue in Altiria gateway
+* Removed The welcome page
+* Improvement gateways' countries list.
+* Improvement Minor
+
 = 5.4 =
 * Added New SMS gateways in the plugin (unifonic.com, comilio.it, malath.net.sa, altiria.net, and oxemis.com)
 * Added A new option in the setting page for cleaning the numbers.

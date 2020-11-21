@@ -50,16 +50,16 @@ class Features {
 	}
 
 	/**
-	 * @param $mobile_number
-	 * @param null $user_id
+	 * @param $mobileNumber
+	 * @param null $userID
 	 *
 	 * @return bool
 	 */
-	private function checkMobileNumber( $mobile_number, $user_id = null ) {
-		if ( $user_id ) {
-			$result = $this->db->get_results( "SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobile_number}' AND user_id != '{$user_id}'" );
+	private function checkMobileNumber( $mobileNumber, $userID = null ) {
+		if ( $userID ) {
+			$result = $this->db->get_results( "SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobileNumber}' AND user_id != '{$userID}'" );
 		} else {
-			$result = $this->db->get_results( "SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobile_number}'" );
+			$result = $this->db->get_results( "SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobileNumber}'" );
 		}
 
 		if ( $result ) {
@@ -101,20 +101,20 @@ class Features {
 	}
 
 	/**
-	 * @param $user_id
+	 * @param $userID
 	 */
-	public function checkAdminDuplicateNumber( $user_id ) {
+	public function checkAdminDuplicateNumber( $userID ) {
 
 		// Get user mobile
-		$user_mobile = get_user_meta( $user_id, 'mobile', true );
+		$user_mobile = get_user_meta( $userID, 'mobile', true );
 
 		if ( empty( $user_mobile ) ) {
 			return;
 		}
 
 		// Delete user mobile
-		if ( $this->checkMobileNumber( $user_mobile, $user_id ) ) {
-			$this->delete_user_mobile( $user_id );
+		if ( $this->checkMobileNumber( $user_mobile, $userID ) ) {
+			$this->delete_user_mobile( $userID );
 		}
 	}
 

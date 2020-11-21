@@ -59,7 +59,7 @@ class Admin {
 		global $wp_admin_bar;
 		if ( is_super_admin() && is_admin_bar_showing() ) {
 			$credit = get_option( 'wpsms_gateway_credit' );
-			if ( $credit and isset( $this->options['account_credit_in_menu'] ) and ! is_object( $credit ) ) {
+			if ( isset( $this->options['account_credit_in_menu'] ) and ! is_object( $credit ) ) {
 				$wp_admin_bar->add_menu( array(
 					'id'    => 'wp-credit-sms',
 					'title' => '<span class="ab-icon"></span>' . $credit,
