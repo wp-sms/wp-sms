@@ -43,14 +43,14 @@ class Outbox_List_Table extends \WP_List_Table {
 				return $item[ $column_name ];
 			case 'recipient':
 				$html = '<details>
-						  <summary>' . __( 'Click to View more...', 'wp-sms' ) . '</summary>
+						  <summary>' . __( 'View more...', 'wp-sms' ) . '</summary>
 						  <p>' . $item[ $column_name ] . '</p>
 						</details>';
 
 				return $html;
 			case 'response':
 				$html = '<details>
-						  <summary>' . __( 'Click to View more...', 'wp-sms' ) . '</summary>
+						  <summary>' . __( 'View more...', 'wp-sms' ) . '</summary>
 						  <p>' . $item[ $column_name ] . '</p>
 						</details>';
 
