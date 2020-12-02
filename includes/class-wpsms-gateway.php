@@ -54,7 +54,6 @@ class Gateway
             'qsms'             => 'qsms.com.au',
             'hoiio'            => 'hoiio.com',
             'textmagic'        => 'textmagic.com',
-            'onewaysms'        => 'onewaysms.com',
             'smsmisr'          => 'smsmisr.com',
             'smsgateway'       => 'smsgateway.me',
             'bandwidth'        => 'bandwidth.com',
@@ -328,6 +327,7 @@ class Gateway
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
+                'onewaysms'        => 'onewaysms.com',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
