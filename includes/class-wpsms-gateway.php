@@ -327,7 +327,6 @@ class Gateway
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
-                'onewaysms'        => 'onewaysms.com',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -550,6 +549,9 @@ class Gateway
             ),
             'greece'         => array(
                 'smsnetgr' => 'sms.net.gr',
+            ),
+            'malaysia'       => array(
+                'onewaysms' => 'onewaysms.com',
             ),
         );
 
