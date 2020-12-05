@@ -11,13 +11,16 @@ class onewaysms extends \WP_SMS\Gateway
     public $flash = "disable";
     public $isflash = false;
 
+    private $sendSmsMethod = '';
+    private $getCreditMethod = 'bulkcredit.aspx';
+
     public function __construct()
     {
         parent::__construct();
         $this->has_key        = true;
         $this->bulk_send      = true;
         $this->validateNumber = "Support only 10 numbers, e.g. 6019xxxxxxx,6012xxxxxxx";
-        $this->help           = "Please enter your API URL in the API Key field, e.g: <b>http://gateway.onewaysms.com.my:10001</b>";
+        $this->help           = "Please enter your API URL in the API Key field, for example it should be one of the below URL:<ul><li>http://gateway.onewaysms.com.my:10001/api.aspx</li><li>http://gateway.onewaysms.com.my/api2.aspx</li><li>http://sgateway.onewaysms.com/apis10.aspx</li></ul>";
     }
 
     public function SendSMS()
@@ -78,8 +81,8 @@ class onewaysms extends \WP_SMS\Gateway
         $to         = urlencode($to);
         $this->from = urlencode($this->from);
 
-        $response = wp_remote_get($this->getGeneratedApiUrl() . "/api.aspx?apiusername=" . $this->username . "&apipassword=" . $this->password . "&message=" . $text . "&mobileno=" . $to . "&senderid=" . $this->from . "&languagetype=" . $type);
-        
+        $response = wp_remote_get("{$this->getSendSmsApiUrl()}?apiusername=" . $this->username . "&apipassword=" . $this->password . "&message=" . $text . "&mobileno=" . $to . "&senderid=" . $this->from . "&languagetype=" . $type);
+
         // Check gateway credit
         if (is_wp_error($response)) {
             // Log the result
@@ -122,11 +125,6 @@ class onewaysms extends \WP_SMS\Gateway
         }
     }
 
-    private function getGeneratedApiUrl()
-    {
-        return $this->has_key ? trim($this->has_key, '/') : $this->wsdl_link;
-    }
-
     public function GetCredit()
     {
         // Check username and password
@@ -134,7 +132,12 @@ class onewaysms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('Username/Password was not set for this gateway', 'wp-sms'));
         }
 
-        $response = wp_remote_get($this->getGeneratedApiUrl() . "/bulkcredit.aspx?apiusername={$this->username}&apipassword={$this->password}");
+        $generatedApiUrl = $this->generateApiUrl($this->has_key);
+        if (is_wp_error($generatedApiUrl)) {
+            return $generatedApiUrl;
+        }
+
+        $response = wp_remote_get("{$this->getCreditApiUrl()}?apiusername={$this->username}&apipassword={$this->password}");
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -155,7 +158,34 @@ class onewaysms extends \WP_SMS\Gateway
         }
     }
 
-    function _convertToUnicode($message)
+    private function generateApiUrl($url)
+    {
+        $parsedUrl = parse_url($url);
+
+        if (!is_array($parsedUrl)) {
+            return new \WP_Error('send-sms', 'API URL is not valid.');
+        }
+
+        $port         = isset($parsedUrl['port']) ? ":{$parsedUrl['port']}" : '';
+        $generatedUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}{$port}";
+
+        $this->sendSmsMethod   = $generatedUrl . $parsedUrl['path'];
+        $this->getCreditMethod = $generatedUrl . '/' . $this->getCreditMethod;
+
+        return $this;
+    }
+
+    private function getSendSmsApiUrl()
+    {
+        return $this->sendSmsMethod;
+    }
+
+    private function getCreditApiUrl()
+    {
+        return $this->getCreditMethod;
+    }
+
+    private function _convertToUnicode($message)
     {
         $chrArray[0]       = "�";
         $unicodeArray[0]   = "060C";
