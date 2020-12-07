@@ -12,7 +12,7 @@ class onewaysms extends \WP_SMS\Gateway
     public $isflash = false;
 
     private $sendSmsMethod = '';
-    private $getCreditMethod = 'bulkcredit.aspx';
+    private $getCreditMethod = '';
 
     public function __construct()
     {
@@ -20,12 +20,11 @@ class onewaysms extends \WP_SMS\Gateway
         $this->has_key        = true;
         $this->bulk_send      = true;
         $this->validateNumber = "Support only 10 numbers, e.g. 6019xxxxxxx,6012xxxxxxx";
-        $this->help           = "Please enter your API URL in the API Key field, for example it should be one of the below URL:<ul><li>http://gateway.onewaysms.com.my:10001/api.aspx</li><li>http://gateway.onewaysms.com.my/api2.aspx</li><li>http://sgateway.onewaysms.com/apis10.aspx</li></ul>";
+        $this->help           = "Please enter your API URLs in the API Key field and separated them by a comma<br>The pattern is <code>http://api-send,http://api-credit</code><p style='margin-top: 20px;'><b>Examples:</b></p><ul><li>http://gateway.onewaysms.com.my:10001/api.aspx,http://gateway.onewaysms.com.my:10001/bulkcredit.aspx</li><li>http://gateway.onewaysms.com.my/api2.aspx,http://gateway.onewaysms.com.my/bulkcredits2.aspx</li><li>http://sgateway.onewaysms.com/apis10.aspx,https://sgateway.onewaysms.com/bulkcredits10.aspx</li></ul>";
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -67,21 +66,18 @@ class onewaysms extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $this->wsdl_link = $this->has_key;
-        $type            = 1;
-        $text            = $this->msg;
-
         // Check unicode option if enabled.
+        $type = 1;
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
-            $type = 2;
-            $text = $this->convertToUnicode($this->msg);
+            $type      = 2;
+            $this->msg = $this->convertToUnicode($this->msg);
         }
 
         $to         = implode($this->to, ",");
         $to         = urlencode($to);
         $this->from = urlencode($this->from);
 
-        $response = wp_remote_get("{$this->getSendSmsApiUrl()}?apiusername=" . $this->username . "&apipassword=" . $this->password . "&message=" . $text . "&mobileno=" . $to . "&senderid=" . $this->from . "&languagetype=" . $type);
+        $response = wp_remote_get("{$this->getSendSmsApiUrl()}?apiusername=" . $this->username . "&apipassword=" . $this->password . "&message=" . $this->msg . "&mobileno=" . $to . "&senderid=" . $this->from . "&languagetype=" . $type);
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -132,7 +128,7 @@ class onewaysms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('Username/Password was not set for this gateway', 'wp-sms'));
         }
 
-        $generatedApiUrl = $this->generateApiUrl($this->has_key);
+        $generatedApiUrl = $this->generateApiUrl();
         if (is_wp_error($generatedApiUrl)) {
             return $generatedApiUrl;
         }
@@ -158,19 +154,16 @@ class onewaysms extends \WP_SMS\Gateway
         }
     }
 
-    private function generateApiUrl($url)
+    private function generateApiUrl()
     {
-        $parsedUrl = parse_url($url);
+        $apiUrls = explode(',', $this->has_key);
 
-        if (!is_array($parsedUrl)) {
-            return new \WP_Error('send-sms', 'API URL is not valid.');
+        if (count($apiUrls) != 2) {
+            return new \WP_Error('send-sms', 'API URLs is not valid.');
         }
 
-        $port         = isset($parsedUrl['port']) ? ":{$parsedUrl['port']}" : '';
-        $generatedUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}{$port}";
-
-        $this->sendSmsMethod   = $generatedUrl . $parsedUrl['path'];
-        $this->getCreditMethod = $generatedUrl . '/' . $this->getCreditMethod;
+        $this->sendSmsMethod   = $apiUrls[0];
+        $this->getCreditMethod = $apiUrls[1];
 
         return $this;
     }
@@ -185,7 +178,7 @@ class onewaysms extends \WP_SMS\Gateway
         return $this->getCreditMethod;
     }
 
-    private function _convertToUnicode($message)
+    private function convertToUnicode($message)
     {
         $chrArray[0]       = "�";
         $unicodeArray[0]   = "060C";
