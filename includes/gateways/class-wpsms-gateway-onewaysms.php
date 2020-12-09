@@ -20,7 +20,7 @@ class onewaysms extends \WP_SMS\Gateway
         $this->has_key        = true;
         $this->bulk_send      = true;
         $this->validateNumber = "Support only 10 numbers, e.g. 6019xxxxxxx,6012xxxxxxx";
-        $this->help           = "Please enter your API URLs in the API Key field and separated them by a comma<br>The pattern is <code>http://api-send,http://api-credit</code><p style='margin-top: 20px;'><b>Examples:</b></p><ul><li>http://gateway.onewaysms.com.my:10001/api.aspx,http://gateway.onewaysms.com.my:10001/bulkcredit.aspx</li><li>http://gateway.onewaysms.com.my/api2.aspx,http://gateway.onewaysms.com.my/bulkcredits2.aspx</li><li>http://sgateway.onewaysms.com/apis10.aspx,https://sgateway.onewaysms.com/bulkcredits10.aspx</li></ul>";
+        $this->help           = "Please enter your API URLs in the API Key field and separated them by a comma<br>The pattern is <code>http://api-send,http://api-credit</code><p style='margin-top: 20px;'>";
     }
 
     public function SendSMS()
