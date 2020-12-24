@@ -54,7 +54,6 @@ class Gateway
             'qsms'             => 'qsms.com.au',
             'hoiio'            => 'hoiio.com',
             'textmagic'        => 'textmagic.com',
-            'onewaysms'        => 'onewaysms.com',
             'smsmisr'          => 'smsmisr.com',
             'smsgateway'       => 'smsgateway.me',
             'bandwidth'        => 'bandwidth.com',
@@ -550,6 +549,9 @@ class Gateway
             ),
             'greece'         => array(
                 'smsnetgr' => 'sms.net.gr',
+            ),
+            'malaysia'       => array(
+                'onewaysms' => 'onewaysms.com',
             ),
         );
 

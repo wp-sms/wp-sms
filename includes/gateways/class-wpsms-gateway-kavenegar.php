@@ -5,6 +5,13 @@ namespace WP_SMS\Gateway;
 class kavenegar extends \WP_SMS\Gateway {
 	const APIPATH = "http://api.kavenegar.com/v1/%s/%s/%s.json/";
 
+	private $wsdl_link = "";
+    public $tariff = "";
+    public $unitrial = false;
+    public $unit;
+    public $flash = false;
+    public $isflash = false;
+
 	private function get_path( $method, $base = 'sms' ) {
 		return sprintf( self::APIPATH, trim( $this->has_key ), $base, $method );
 	}
