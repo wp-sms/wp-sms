@@ -343,6 +343,9 @@ class Gateway
             'germany'        => array(
                 'engy' => 'engy.solutions',
             ),
+            'asia pacific'       => array(
+                'onewaysms' => 'onewaysms.com',
+            ),
             'slovakia'       => array(
                 'eurosms' => 'eurosms.com',
             ),
@@ -549,9 +552,6 @@ class Gateway
             ),
             'greece'         => array(
                 'smsnetgr' => 'sms.net.gr',
-            ),
-            'malaysia'       => array(
-                'onewaysms' => 'onewaysms.com',
             ),
         );
 
