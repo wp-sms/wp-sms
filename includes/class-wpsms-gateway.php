@@ -322,7 +322,7 @@ class Gateway
                 'smss'             => 'smss.co',
                 'bearsms'          => 'bearsms',
                 'cheapglobalsms'   => 'cheapglobalsms.com',
-                'instantalerts'    => 'springedge.com',
+                'instantalerts'    => 'instantalerts.co',
                 'mobtexting'       => 'mobtexting.com',
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
