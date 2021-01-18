@@ -431,10 +431,10 @@ class Settings_Pro {
 					'type'    => 'select',
 					'options' => array(
 						'disable'            => __( 'Disable (No field)', 'wp-sms' ),
-						'add_new_field'      => __( 'Add mobile field number', 'wp-sms' ),
-						'used_current_field' => __( 'Use the billing phone number field', 'wp-sms' ),
+						'add_new_field'      => __( 'Add a new field in the checkout form', 'wp-sms' ),
+						'used_current_field' => __( 'Use the current phone field in the bill', 'wp-sms' ),
 					),
-					'desc'    => __( 'Choose from which field you would like the plugin gets from the checkout page for sending SMS.', 'wp-sms' )
+					'desc'    => __( 'Choose from which field you get numbers for sending SMS.', 'wp-sms' )
 				),
 				'wc_meta_box'                => array(
 					'id'   => 'wc_meta_box',
@@ -658,7 +658,7 @@ class Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send SMS to customer by changing the order status', 'wp-sms' )
+					'desc'    => __( 'Send SMS to customer by order status', 'wp-sms' )
 				),
 				'wc_notify_by_status_content'    => array(
 					'id'      => 'wc_notify_by_status_content',
