@@ -117,7 +117,7 @@ class experttexting extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms-pro' ) );
 		}
 
 		if ( false === ( $response = get_transient( 'wp_sms_gateway_experttexting' ) ) ) {

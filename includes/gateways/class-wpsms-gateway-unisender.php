@@ -105,7 +105,7 @@ class unisender extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check api key
 		if ( ! $this->has_key ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "getUserInfo?format=json&api_key={$this->has_key}" );

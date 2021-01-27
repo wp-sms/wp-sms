@@ -101,7 +101,7 @@ class aruba extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username or ! $this->password ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms-pro' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms-pro' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "Aruba/CREDITS?login=" . urlencode( $this->username ) . "&password=" . urlencode( $this->password ) );

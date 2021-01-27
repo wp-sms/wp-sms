@@ -115,7 +115,7 @@ class Mobtexting extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->has_key ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms' ) );
 		}
 		$api_end_point = $this->wsdl_link . "/account/balance";
 		$api_args      = Array(
