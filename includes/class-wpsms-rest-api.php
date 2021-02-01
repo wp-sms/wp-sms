@@ -139,25 +139,7 @@ class RestApi {
 			if ( $result['result'] == 'error' ) {
 				// Return response
 				return new \WP_Error( 'subscribe', $result['message'] );
-			} else {
-
-                // Send welcome message
-                if ( Option::getOption( 'newsletter_form_welcome' ) ) {
-                    $template_vars = array(
-                        '%subscribe_name%'   => $name,
-                        '%subscribe_mobile%' => $mobile,
-                    );
-                    $text          = Option::getOption( 'newsletter_form_welcome_text' );
-                    $message       = str_replace( array_keys( $template_vars ), array_values( $template_vars ), $text );
-
-                    $sms->to  = array( $mobile );
-                    $sms->msg = $message;
-                    $sms->SendSMS();
-                }
-
-                // Return response
-                return __( 'Your subscription was successful!', 'wp-sms' );
-            }
+			}
 
 			return __( 'Your number has been successfully subscribed.', 'wp-sms' );
 		}
