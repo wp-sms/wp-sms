@@ -312,6 +312,7 @@ class Gateway
             ),
             'global'         => array(
                 'reachinteractive' => 'reach-interactive.com',
+                'octopush'         => 'octopush.com',
                 'experttexting'    => 'experttexting.com',
                 'fortytwo'         => 'fortytwo.com',
                 'smsglobal'        => 'smsglobal.com',
@@ -377,7 +378,6 @@ class Gateway
             ),
             'france' => array(
                 'oxemis'   => 'oxemis.com',
-                'octopush' => 'octopush.com',
             ),
             'denmark'        => array(
                 'cpsms'   => 'cpsms.dk',
