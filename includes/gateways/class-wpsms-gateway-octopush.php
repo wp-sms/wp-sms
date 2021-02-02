@@ -15,7 +15,7 @@ class octopush extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->validateNumber = "List of numbers in international format + XXZZZZZ separated by commas.";
-        $this->help           = 'Enter your API key, user login (email address) in the <b>API password</b> field and leave blank the <b>API password</b> field.';
+        $this->help           = 'Enter your <b>API Login / Username (email address)</b> to the <b>API username</b> field, and your <b>API Key</b> to the <b>API password</b> field and the <b>SMS type code (XXX = Lowcost, FR = Premium and WWW = world.)</b> to the <b>API key</b> field.';
         $this->has_key        = true;
     }
 
@@ -61,10 +61,10 @@ class octopush extends \WP_SMS\Gateway
         $response   = wp_remote_get("{$this->wsdl_link}/sms/json", [
             'body' => [
                 'user_login'     => $this->username,
-                'api_key'        => $this->has_key,
+                'api_key'        => $this->password,
                 'sms_recipients' => $recipients,
                 'sms_text'       => $this->msg,
-                'sms_type'       => 'XXX', // todo should get from setting
+                'sms_type'       => $this->has_key ? $this->has_key : 'XXX',
                 'sms_sender'     => $this->from,
             ]
         ]);
@@ -104,14 +104,14 @@ class octopush extends \WP_SMS\Gateway
     public function GetCredit()
     {
         // Check username and password
-        if (!$this->username or !$this->has_key) {
+        if (!$this->username or !$this->password) {
             return new \WP_Error('account-credit', __('API username or API Key is not entered.', 'wp-sms-pro'));
         }
 
         $response = wp_remote_get("{$this->wsdl_link}/credit/json", [
             'body' => [
                 'user_login' => $this->username,
-                'api_key'    => $this->has_key,
+                'api_key'    => $this->password,
             ]
         ]);
 
