@@ -553,9 +553,6 @@ class Gateway
             'greece'         => array(
                 'smsnetgr' => 'sms.net.gr',
             ),
-            'malaysia'       => array(
-                'onewaysms' => 'onewaysms.com',
-            ),
         );
 
         return apply_filters('wpsms_gateway_list', $gateways);
