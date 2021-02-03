@@ -353,6 +353,7 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'austria'        => array(
+                'smsmessenger' => 'smsmessenger.com.au',
                 'smsgatewayat' => 'sms-gateway.at',
             ),
             'spain'          => array(
@@ -551,6 +552,9 @@ class Gateway
             ),
             'greece'         => array(
                 'smsnetgr' => 'sms.net.gr',
+            ),
+            'malaysia'       => array(
+                'onewaysms' => 'onewaysms.com',
             ),
         );
 
