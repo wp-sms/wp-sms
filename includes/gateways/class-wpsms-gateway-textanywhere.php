@@ -104,7 +104,7 @@ class textanywhere extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check api key and password
 		if ( ! $this->has_key && ! $this->password ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms' ) );
 		}
 
 		$response = wp_remote_get( $this->wsdl_link . "?method=GetCreditsLeft&externallogin=" . $this->username . "&password=" . $this->password );

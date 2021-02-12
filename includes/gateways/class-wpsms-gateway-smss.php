@@ -102,7 +102,7 @@ class smss extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms' ) );
 		}
 
 		$response = file_get_contents( $this->wsdl_link . 'MultiSendAPI/balance&user=' . $this->username . '&password=' . $this->password . '&country_phone_code=' . $this->options['mobile_county_code'] );

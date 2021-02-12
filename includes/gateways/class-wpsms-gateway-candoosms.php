@@ -104,7 +104,7 @@ class candoosms extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms' ) );
 		}
 
 		$client = new \nusoap_client( $this->wsdl_link, true );

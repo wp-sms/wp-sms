@@ -32,6 +32,7 @@ class Gateway
             'msg91'            => 'msg91.com',
             'msg360'           => 'msg360.in',
             'livesms'          => 'livesms.eu',
+            'thesmsworld'      => 'thesmsworld.com',
             'ozioma'           => 'ozioma.net',
             'pswin'            => 'pswin.com',
             'ra'               => 'ra.sa',
@@ -311,6 +312,7 @@ class Gateway
             ),
             'global'         => array(
                 'reachinteractive' => 'reach-interactive.com',
+                'octopush'         => 'octopush.com',
                 'experttexting'    => 'experttexting.com',
                 'fortytwo'         => 'fortytwo.com',
                 'smsglobal'        => 'smsglobal.com',
@@ -322,7 +324,7 @@ class Gateway
                 'smss'             => 'smss.co',
                 'bearsms'          => 'bearsms',
                 'cheapglobalsms'   => 'cheapglobalsms.com',
-                'instantalerts'    => 'springedge.com',
+                'instantalerts'    => 'instantalerts.co',
                 'mobtexting'       => 'mobtexting.com',
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
@@ -351,6 +353,7 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'austria'        => array(
+                'smsmessenger' => 'smsmessenger.com.au',
                 'smsgatewayat' => 'sms-gateway.at',
             ),
             'spain'          => array(
@@ -374,8 +377,8 @@ class Gateway
             'polish'         => array(
                 'smsapi' => 'smsapi.pl',
             ),
-            'france'         => array(
-                'oxemis' => 'oxemis.com',
+            'france' => array(
+                'oxemis'   => 'oxemis.com',
             ),
             'denmark'        => array(
                 'cpsms'   => 'cpsms.dk',

@@ -85,7 +85,7 @@ class dot4all extends \WP_SMS\Gateway {
 	public function GetCredit() {
 		// Check username and password
 		if ( ! $this->username && ! $this->password ) {
-			return new \WP_Error( 'account-credit', __( 'Username/Password does not set for this gateway', 'wp-sms' ) );
+			return new \WP_Error( 'account-credit', __( 'API username or API password is not entered.', 'wp-sms' ) );
 		}
 
 		$result = file_get_contents( "{$this->wsdl_link}credit.php?user={$this->username}&pass={$this->password}" );
