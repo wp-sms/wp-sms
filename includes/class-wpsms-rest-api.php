@@ -70,18 +70,22 @@ class RestApi {
 	 *
 	 * @return array|string
 	 */
-	public static function subscribe( $name, $mobile, $group ) {
+	public static function subscribe( $name, $mobile, $group = false ) {
 		global $sms;
 
 		if ( empty( $name ) OR empty( $mobile ) ) {
 			return new \WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
-		$check_group = Newsletter::getGroup( $group );
+        if (Option::getOption('newsletter_form_groups')) {
+            if (!$group) {
+                return new \WP_Error('subscribe', __('Please select the group!', 'wp-sms'));
+            }
 
-		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
-			return new \WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
-		}
+            if (!Newsletter::getGroup($group)) {
+                return new \WP_Error('subscribe', __('Group id not valid!', 'wp-sms'));
+            }
+        }
 
 		if ( preg_match( WP_SMS_MOBILE_REGEX, $mobile ) == false ) {
 			// Return response
