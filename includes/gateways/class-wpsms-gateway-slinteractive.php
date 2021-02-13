@@ -2,10 +2,10 @@
 
 namespace WP_SMS\Gateway;
 
-class smsmessenger extends \WP_SMS\Gateway
+class slinteractive extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://www.slinteractive.com.au/api";
-    public $tariff = "https://smsmessenger.com.au";
+    public $tariff = "https://slinteractive.com.au";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";

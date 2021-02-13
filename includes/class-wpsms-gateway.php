@@ -353,8 +353,8 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'austria'        => array(
-                'smsmessenger' => 'smsmessenger.com.au',
-                'smsgatewayat' => 'sms-gateway.at',
+                'slinteractive' => 'slinteractive.com.au',
+                'smsgatewayat'  => 'sms-gateway.at',
             ),
             'spain'          => array(
                 'altiria'    => 'altiria.com',

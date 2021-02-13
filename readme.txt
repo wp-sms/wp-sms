@@ -247,7 +247,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 = 5.4.3 =
 * Updated the gateways list and fixed some wrong names.
 * Added Octopush.com gateway
-* Added SmsMessenger.com.au gateway
+* Added SlinterActive.com.au gateway
 * Fixed sending the welcome message for new SMS subscriber.
 
 = 5.4.2 =
