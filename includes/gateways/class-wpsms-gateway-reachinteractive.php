@@ -3,7 +3,7 @@
 namespace WP_SMS\Gateway;
 
 class reachinteractive extends \WP_SMS\Gateway {
-	private $wsdl_link = "http://http-1-uat.reach-interactive.com/sms";
+	private $wsdl_link = "http://api.reach-interactive.com/sms";
 	public $tariff = "https://reach-interactive.com/";
 	public $unitrial = false;
 	public $unit;
