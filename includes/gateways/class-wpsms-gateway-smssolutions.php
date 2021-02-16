@@ -1,0 +1,182 @@
+<?php
+
+namespace WP_SMS\Gateway;
+
+class smssolutions extends \WP_SMS\Gateway
+{
+	private $wsdl_link = "https://eziapi.com/v3/";
+	public $tariff = "https://www.smssolutionsaustralia.com.au/";
+	public $unitrial = false;
+	public $unit;
+	public $flash = "disable";
+	public $isflash = false;
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->bulk_send = false;
+		$this->has_key = true;
+	}
+
+	public function SendSMS()
+	{
+
+		/**
+		 * Modify sender number
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->from sender number.
+		 */
+		$this->from = apply_filters('wp_sms_from', $this->from);
+
+		/**
+		 * Modify Receiver number
+		 *
+		 * @since 3.4
+		 *
+		 * @param array $this ->to receiver number
+		 */
+		$this->to = apply_filters('wp_sms_to', $this->to);
+
+		/**
+		 * Modify text message
+		 *
+		 * @since 3.4
+		 *
+		 * @param string $this ->msg text message.
+		 */
+		$this->msg = apply_filters('wp_sms_msg', $this->msg);
+
+		// Get the credit.
+		$credit = $this->GetCredit();
+
+		// Check gateway credit
+		if (is_wp_error($credit)) {
+			// Log the result
+			$this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+
+			return $credit;
+		}
+
+		$text = $this->msg;
+        $country_code = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
+
+		foreach ($this->to as $number) {
+			$to = $this->clean_number($number, $country_code);
+			$response = wp_remote_post($this->wsdl_link . 'sms', [
+				'headers' => [
+					'key' => $this->has_key,
+					'Content-Type' => 'application/json; charset=UTF-8'
+				],
+				'body' => json_encode([
+					'recipient' => $to,
+					'content' => $text
+				])
+			]);
+		}
+
+		// Check gateway credit
+		if (is_wp_error($response)) {
+			// Log the result
+			$this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+
+			return new \WP_Error('send-sms', $response->get_error_message());
+		}
+
+		$response_code = wp_remote_retrieve_response_code($response);
+
+		if ($response_code == '200') {
+			$result = json_decode($response['body']);
+
+			if (isset($result['error'])) {
+				// Log the result
+				$this->log($this->from, $this->msg, $this->to, $result['error'], 'error');
+
+				return new \WP_Error('send-sms', $result['error']);
+			}
+
+			// Log the result
+			$this->log($this->from, $this->msg, $this->to, $result);
+
+			/**
+			 * Run hook after send sms.
+			 *
+			 * @since 2.4
+			 *
+			 * @param string $result result output.
+			 */
+			do_action('wp_sms_send', $result);
+
+			return $result;
+		} else {
+			// Log the result
+			$this->log($this->from, $this->msg, $this->to, $response['body'], 'error');
+
+			return new \WP_Error('send-sms', $response['body']);
+		}
+	}
+
+	public function GetCredit()
+	{
+		// Check api key
+		if (!$this->has_key) {
+			return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+		}
+
+		$response = wp_remote_get($this->wsdl_link . 'settings', [
+			'headers' => [
+				'key' => $this->has_key,
+			]
+		]);
+
+		// Check gateway credit
+		if (is_wp_error($response)) {
+			return new \WP_Error('account-credit', $response->get_error_message());
+		}
+
+		$response_code = wp_remote_retrieve_response_code($response);
+
+		if ($response_code == '200') {
+			$result = json_decode($response['body'], true);
+			if (isset($result['balance'])) {
+				return $result['balance'];
+			} else {
+				return new \WP_Error('account-credit', $result['body']);
+			}
+		} else {
+			return new \WP_Error('account-credit', $response['body']);
+		}
+	}
+
+	private function clean_number($number, $country_code)
+    {
+        //Clean Country Code from + or 00
+        $country_code = str_replace('+', '', $country_code);
+
+        if (substr($country_code, 0, 2) == "00") {
+            $country_code = substr($country_code, 2, strlen($country_code));
+        }
+
+        //Remove +
+		$number = str_replace('+', '', $number);
+
+		if (substr($number, 0, strlen($country_code) * 2) == $country_code . $country_code) {
+            $number = substr($number, strlen($country_code) * 2);
+		} else {
+			$number = substr($number, strlen($country_code));
+		}
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 2) == "00") {
+            $number = substr($number, 2, strlen($number));
+		}
+		
+		//Remove 00 in the begining
+		if (substr($number, 0, 1) == "0") {
+			$number = substr($number, 1, strlen($number));
+		}
+
+        return $number;
+    }
+}

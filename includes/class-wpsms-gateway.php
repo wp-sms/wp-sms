@@ -352,8 +352,11 @@ class Gateway
                 'bulutfon' => 'bulutfon.com',
                 'verimor'  => 'verimor.com.tr',
             ),
-            'austria'        => array(
+            'australia'      => array(
                 'slinteractive' => 'slinteractive.com.au',
+                'smssolutions'     => 'smssolutionsaustralia.com.au',
+            ),
+            'austria'        => array(
                 'smsgatewayat'  => 'sms-gateway.at',
             ),
             'spain'          => array(
