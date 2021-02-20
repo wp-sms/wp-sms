@@ -87,7 +87,7 @@ class smssolutions extends \WP_SMS\Gateway
 		$response_code = wp_remote_retrieve_response_code($response);
 
 		if ($response_code == '200') {
-			$result = json_decode($response['body']);
+			$result = json_decode($response['body'], true);
 
 			if (isset($result['error'])) {
 				// Log the result
