@@ -92,6 +92,7 @@ class Gateway
         ),
         'arabic'        => array(
             'kwtsms' => 'kwtsms.com',
+            'taqnyat' => 'taqnyat.sa',
         ),
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
