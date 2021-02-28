@@ -14,7 +14,7 @@ class smssolutions extends \WP_SMS\Gateway
 	public function __construct()
 	{
 		parent::__construct();
-		$this->bulk_send = false;
+		$this->bulk_send = true;
 		$this->has_key = true;
 		$this->help = 'Please go to <b>your account > Settings > Accounts Details</b> and use your API key in the this current field and leave blank API username, API password and Sender number.';
 	}
