@@ -3,8 +3,8 @@
 use WP_SMS\Newsletter;
 use WP_SMS\Option;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 } // Exit if accessed directly
 
 /**
@@ -14,18 +14,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see wp_sms_subscribes()
  *
  */
-function wp_subscribes() {
-	_deprecated_function( __FUNCTION__, '4.0', 'wp_sms_subscribes()' );
+function wp_subscribes()
+{
+    _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscribes()');
 
-	wp_sms_subscribes();
+    wp_sms_subscribes();
 }
 
 /**
  * Show SMS newsletter form.
  *
  */
-function wp_sms_subscribes() {
-	Newsletter::loadNewsLetter();
+function wp_sms_subscribes()
+{
+    Newsletter::loadNewsLetter();
 }
 
 /**
@@ -37,8 +39,9 @@ function wp_sms_subscribes() {
  *
  * @return string
  */
-function wp_sms_get_option( $option_name, $pro = false, $setting_name = '' ) {
-	return Option::getOption( $option_name, $pro, $setting_name );
+function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
+{
+    return Option::getOption($option_name, $pro, $setting_name);
 }
 
 /**
@@ -52,16 +55,17 @@ function wp_sms_get_option( $option_name, $pro = false, $setting_name = '' ) {
  *
  * @return string | WP_Error
  */
-function wp_sms_send( $to, $msg, $is_flash = false, $from = null ) {
-	global $sms;
+function wp_sms_send($to, $msg, $is_flash = false, $from = null)
+{
+    global $sms;
 
-	$sms->isflash = $is_flash;
-	$sms->to      = $to;
-	$sms->msg     = $msg;
+    $sms->isflash = $is_flash;
+    $sms->to      = $to;
+    $sms->msg     = $msg;
 
-	if ( $from ) {
-		$sms->from = $from;
-	}
+    if ($from) {
+        $sms->from = $from;
+    }
 
-	return $sms->SendSMS();
+    return $sms->SendSMS();
 }

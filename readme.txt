@@ -246,9 +246,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 == Changelog ==
 = 5.4.4 =
 * Added smssolutionsaustralia.com.au SMS gateway
-* Added a new option in the admin > subscriber to change number of items per page
+* Added a new option in the Admin > Subscribers to change the number of items per page
 * Fixed group issue on SMS subscribe form
-* Updated reach-interactive API url
+* Updated reach-interactive API URL
+* Improvement minor tweak
 
 = 5.4.3 =
 * Updated the gateways list and fixed some wrong names.
