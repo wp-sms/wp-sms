@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 5.4.3
+Stable tag: 5.4.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,12 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.4 =
+* Added smssolutionsaustralia.com.au SMS gateway
+* Added a new option in the admin > subscriber to change number of items per page
+* Fixed group issue on SMS subscribe form
+* Updated reach-interactive API url
+
 = 5.4.3 =
 * Updated the gateways list and fixed some wrong names.
 * Added Octopush.com gateway

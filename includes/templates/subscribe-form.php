@@ -47,8 +47,9 @@
         </div>
 		<?php if ( wp_sms_get_option( 'gdpr_compliance' ) == 1 ) { ?>
             <div class="wpsms-subscribe-form">
-                <label><input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo wp_sms_get_option( 'newsletter_form_gdpr_confirm_checkbox' ) == 'checked' ? 'checked="checked"' : ''; ?>>
-					<?php echo wp_sms_get_option( 'newsletter_form_gdpr_text' ) ? wp_sms_get_option( 'newsletter_form_gdpr_text' ) : 'GDPR text...'; ?>
+                <label>
+                    <input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo wp_sms_get_option( 'newsletter_form_gdpr_confirm_checkbox' ) == 'checked' ? 'checked="checked"' : ''; ?>>
+					<?php echo wp_sms_get_option( 'newsletter_form_gdpr_text' ) ? wp_sms_get_option( 'newsletter_form_gdpr_text' ) : 'I agree to receive SMS based on my data'; ?>
                 </label>
             </div>
 		<?php } ?>

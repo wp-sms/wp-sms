@@ -18,7 +18,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 	protected $count;
 	var $data;
 
-	function __construct() {
+	public function __construct() {
 		global $wpdb;
 
 		//Set parent defaults
@@ -31,14 +31,15 @@ class Subscribers_List_Table extends \WP_List_Table {
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
 		$this->count     = $this->get_total();
-		$this->limit     = 50;
+		$this->limit     = $this->get_items_per_page('wp_sms_subscriber_per_page');
 		$this->data      = $this->get_data();
 	}
 
-	function column_default( $item, $column_name ) {
+	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 			case 'name':
 			case 'mobile':
+			case 'activate_key':
 				return $item[ $column_name ];
 
 			case 'group_ID':
@@ -50,20 +51,17 @@ class Subscribers_List_Table extends \WP_List_Table {
 				}
 
 			case 'date':
-				return sprintf( __( '%s <span class="wpsms-time">Time: %s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i:s', strtotime( $item[ $column_name ] ) ) );
+				return sprintf( __( '%s <span class="wpsms-time">%s</span>', 'wp-sms' ), date_i18n( 'Y-m-d', strtotime( $item[ $column_name ] ) ), date_i18n( 'H:i', strtotime( $item[ $column_name ] ) ) );
 
 			case 'status':
 				return ( $item[ $column_name ] == '1' ? '<span class="dashicons dashicons-yes wpsms-color-green"></span>' : '<span class="dashicons dashicons-no-alt wpsms-color-red"></span>' );
-
-			case 'activate_key':
-				return '<code>' . $item[ $column_name ] . '</code>';
 
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
 	}
 
-	function column_name( $item ) {
+	public function column_name( $item ) {
 
 		//Build row actions
 		$actions = array(
@@ -82,7 +80,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 		);
 	}
 
-	function column_cb( $item ) {
+	public function column_cb( $item ) {
 		return sprintf(
 			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
 			/*$1%s*/
@@ -92,7 +90,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 		);
 	}
 
-	function get_columns() {
+	public function get_columns() {
 		$columns = array(
 			'cb'           => '<input type="checkbox" />', //Render a checkbox instead of text
 			'name'         => __( 'Name', 'wp-sms' ),
@@ -100,13 +98,16 @@ class Subscribers_List_Table extends \WP_List_Table {
 			'group_ID'     => __( 'Group', 'wp-sms' ),
 			'date'         => __( 'Date', 'wp-sms' ),
 			'status'       => __( 'Status', 'wp-sms' ),
-			'activate_key' => __( 'Activate code', 'wp-sms' ),
 		);
+
+        if (Option::getOption('newsletter_form_verify')) {
+            $columns['activate_key'] = __('Activate code', 'wp-sms');
+        }
 
 		return $columns;
 	}
 
-	function get_sortable_columns() {
+	public function get_sortable_columns() {
 		$sortable_columns = array(
 			'ID'           => array( 'ID', true ),     //true means it's already sorted
 			'name'         => array( 'name', false ),     //true means it's already sorted
@@ -114,22 +115,22 @@ class Subscribers_List_Table extends \WP_List_Table {
 			'group_ID'     => array( 'group_ID', false ),     //true means it's already sorted
 			'date'         => array( 'date', false ),   //true means it's already sorted
 			'status'       => array( 'status', false ), //true means it's already sorted
-			'activate_key' => array( 'activate_key', false )    //true means it's already sorted
 		);
+
+        if (Option::getOption('newsletter_form_verify')) {
+            $sortable_columns['activate_key'] = array('activate_key', false);
+        }
 
 		return $sortable_columns;
 	}
 
-	function get_bulk_actions() {
-		$actions = array(
-			'bulk_delete' => __( 'Delete', 'wp-sms' )
-		);
-
-		return $actions;
+	public function get_bulk_actions() {
+        return array(
+            'bulk_delete' => __( 'Delete', 'wp-sms' )
+        );
 	}
 
-	function process_bulk_action() {
-
+	public function process_bulk_action() {
 		//Detect when a bulk action is being triggered...
 		// Search action
 		if ( isset( $_GET['s'] ) ) {
@@ -157,7 +158,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 		}
 	}
 
-	function prepare_items() {
+	public function prepare_items() {
 		/**
 		 * First, lets decide how many records per page to show
 		 */
@@ -242,7 +243,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 	 *
 	 * @return array
 	 */
-	function usort_reorder( $a, $b ) {
+	public function usort_reorder( $a, $b ) {
 		$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to sender
 		$order   = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
 		$result  = strcmp( $a[ $orderby ], $b[ $orderby ] ); //Determine sort order
@@ -251,7 +252,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 	}
 
 	//set $per_page item as int number
-	function get_data( $query = '' ) {
+	public function get_data( $query = '' ) {
 		$page_number = ( $this->get_pagenum() - 1 ) * $this->limit;
 		if ( ! $query ) {
 			$query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_subscribes` LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
@@ -264,7 +265,7 @@ class Subscribers_List_Table extends \WP_List_Table {
 	}
 
 	//get total items on different Queries
-	function get_total( $query = '' ) {
+	public function get_total( $query = '' ) {
 		if ( ! $query ) {
 			$query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_subscribes`';
 		}

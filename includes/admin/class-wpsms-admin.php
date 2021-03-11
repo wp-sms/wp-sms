@@ -23,9 +23,15 @@ class Admin {
 		add_action( 'dashboard_glance_items', array( $this, 'dashboard_glance' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
-		// Add Filters
-		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 0, 2 );
-	}
+        // Add Filters
+        add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
+        add_filter('set-screen-option', array($this, 'setScreen'), 10, 3);
+    }
+
+	public function setScreen($status, $option, $value)
+    {
+        return $value;
+    }
 
 	/**
 	 * Include admin assets
@@ -133,7 +139,6 @@ class Admin {
 	 * Callback subscribers page.
 	 */
 	public function subscribers_callback() {
-
 		// Subscribers class.
 		require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers.php';
 
@@ -178,6 +183,16 @@ class Admin {
 	 * Load subscribers page assets
 	 */
 	public function subscribers_assets() {
+
+        /**
+         * Add per page option.
+         */
+        add_screen_option('per_page', array(
+            'label'   => __('Number of items per page', 'wp-sms'),
+            'default' => 20,
+            'option'  => 'wp_sms_subscriber_per_page',
+        ));
+
 		wp_register_script( 'wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array( 'jquery' ), null, true );
 		wp_enqueue_script( 'wp-sms-edit-subscriber' );
 
