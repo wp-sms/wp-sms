@@ -27,12 +27,7 @@ class Admin
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
-        add_filter('set-screen-option', array($this, 'setScreen'), 10, 3);
-    }
-
-    public function setScreen($status, $option, $value)
-    {
-        return $value;
+        add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
     }
 
     /**
@@ -332,6 +327,23 @@ class Admin
     public function admin_newsletter()
     {
         include_once WP_SMS_DIR . 'includes/templates/admin-newsletter.php';
+    }
+
+    /**
+     * Validate screen options on update.
+     *
+     * @param $status Screen option value. Default false to skip.
+     * @param $option The option name.
+     * @param $value The number of rows to use.
+     * @return bool|int
+     */
+    public function set_screen_option($status, $option, $value)
+    {
+        if (in_array($option, array('wp_sms_subscriber_per_page'), true)) {
+            return $value;
+        }
+
+        return $status;
     }
 }
 
