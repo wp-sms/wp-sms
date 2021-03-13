@@ -14,7 +14,7 @@ class safasms extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->has_key = false;
+        $this->has_key        = false;
         $this->validateNumber = "Separate each numbers with ',' ,Only support Arabic & English messages.";
     }
 
@@ -63,7 +63,7 @@ class safasms extends \WP_SMS\Gateway
         }
 
         // Clean numbers
-        $numbers = array();
+        $numbers      = array();
         $country_code = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
 
         foreach ($this->to as $number) {
@@ -74,50 +74,50 @@ class safasms extends \WP_SMS\Gateway
 
         $args = array(
             'body' => array(
-                'username' => $this->username,
-                'password' => $this->password,
-                'message' => $this->msg,
-                'sender' => $this->from,
-                'numbers' => $numbers,
-                'return' => 'json',
+                'username'     => $this->username,
+                'password'     => $this->password,
+                'message'      => $this->msg,
+                'sender'       => $this->from,
+                'numbers'      => $numbers,
+                'return'       => 'json',
                 'Rmduplicated' => 1,
             ),
         );
 
         $response = wp_remote_post($this->wsdl_link . "sendsms.php", $args);
 
-		if (is_wp_error($response)) {
-			// Log the result
-			$this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+        if (is_wp_error($response)) {
+            // Log the result
+            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
 
-			return new \WP_Error('send-sms', $response->get_error_message());
-		}
+            return new \WP_Error('send-sms', $response->get_error_message());
+        }
 
-		$response_code = wp_remote_retrieve_response_code($response);
+        $response_code = wp_remote_retrieve_response_code($response);
 
-		if ($response_code == '200') {
+        if ($response_code == '200') {
 
-			$result = $response['body'];
+            $result = $response['body'];
 
-			// Log the result
-			$this->log($this->from, $this->msg, $this->to, $result);
+            // Log the result
+            $this->log($this->from, $this->msg, $this->to, $result);
 
-			/**
-			 * Run hook after send sms.
-			 *
-			 * @since 2.4
-			 *
-			 * @param string $result result output.
-			 */
-			do_action('wp_sms_send', $result);
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $result);
 
-			return $result;
-		} else {
-			// Log the result
-			$this->log($this->from, $this->msg, $this->to, $response['body'], 'error');
+            return $result;
+        } else {
+            // Log the result
+            $this->log($this->from, $this->msg, $this->to, $response['body'], 'error');
 
-			return new \WP_Error('send-sms', $response['body']);
-		}
+            return new \WP_Error('send-sms', $response['body']);
+        }
     }
 
     public function GetCredit()
@@ -129,9 +129,9 @@ class safasms extends \WP_SMS\Gateway
 
         $args = array(
             'body' => array(
-                'username' => $this->username,
-                'password' => $this->password,
-                'return' => 'json',
+                'username'      => $this->username,
+                'password'      => $this->password,
+                'return'        => 'json',
                 'hangedBalance' => true,
             ),
         );
@@ -144,7 +144,7 @@ class safasms extends \WP_SMS\Gateway
 
         $result = json_decode($result['body'], true);
 
-        if($result['Code'] == '117'){
+        if ($result['Code'] == '117') {
             return $result['currentuserpoints'];
         }
 

@@ -2,10 +2,10 @@
 
 namespace WP_SMS\Gateway;
 
-class unisender extends \WP_SMS\Gateway
+class smssolutions extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.unisender.com/en/api/";
-    public $tariff = "http://www.unisender.com/en/prices/";
+    private $wsdl_link = "https://eziapi.com/v3/";
+    public $tariff = "https://www.smssolutionsaustralia.com.au/";
     public $unitrial = false;
     public $unit;
     public $flash = "disable";
@@ -14,8 +14,9 @@ class unisender extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->has_key        = true;
-        $this->validateNumber = "The recipient's phone in international format with the country code (you can omit the leading \"+\").Example: Phone = 79092020303. You can specify multiple  ecipient numbers separated by commas. Example: Phone = 79092020303,79002239878";
+        $this->bulk_send = true;
+        $this->has_key   = true;
+        $this->help      = 'Please go to <b>your account > Settings > Accounts Details</b> and use your API key in the this current field and leave blank API username, API password and Sender number.';
     }
 
     public function SendSMS()
@@ -59,10 +60,22 @@ class unisender extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to   = implode($this->to, ",");
-        $text = iconv('cp1251', 'utf-8', $this->msg);
+        $text         = $this->msg;
+        $country_code = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
 
-        $response = wp_remote_get($this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to);
+        foreach ($this->to as $number) {
+            $to       = $this->clean_number($number, $country_code);
+            $response = wp_remote_post($this->wsdl_link . 'sms', [
+                'headers' => [
+                    'key'          => $this->has_key,
+                    'Content-Type' => 'application/json; charset=UTF-8'
+                ],
+                'body'    => json_encode([
+                    'recipient' => $to,
+                    'content'   => $text
+                ])
+            ]);
+        }
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -75,13 +88,13 @@ class unisender extends \WP_SMS\Gateway
         $response_code = wp_remote_retrieve_response_code($response);
 
         if ($response_code == '200') {
-            $result = json_decode($response['body']);
+            $result = json_decode($response['body'], true);
 
-            if (isset($result->result->error)) {
+            if (isset($result['error'])) {
                 // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result->result->error, 'error');
+                $this->log($this->from, $this->msg, $this->to, $result['error'], 'error');
 
-                return new \WP_Error('send-sms', $result->result->error);
+                return new \WP_Error('send-sms', $result['error']);
             }
 
             // Log the result
@@ -97,7 +110,6 @@ class unisender extends \WP_SMS\Gateway
             do_action('wp_sms_send', $result);
 
             return $result;
-
         } else {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $response['body'], 'error');
@@ -113,7 +125,11 @@ class unisender extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $response = wp_remote_get($this->wsdl_link . "getUserInfo?format=json&api_key={$this->has_key}");
+        $response = wp_remote_get($this->wsdl_link . 'settings', [
+            'headers' => [
+                'key' => $this->has_key,
+            ]
+        ]);
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -124,13 +140,44 @@ class unisender extends \WP_SMS\Gateway
 
         if ($response_code == '200') {
             $result = json_decode($response['body'], true);
-            if (isset($result['error'])) {
-                return new \WP_Error('account-credit', $result['error']);
+            if (isset($result['balance'])) {
+                return $result['balance'];
             } else {
-                return $result['result']['balance'];
+                return new \WP_Error('account-credit', $result['body']);
             }
         } else {
             return new \WP_Error('account-credit', $response['body']);
         }
+    }
+
+    private function clean_number($number, $country_code)
+    {
+        //Clean Country Code from + or 00
+        $country_code = str_replace('+', '', $country_code);
+
+        if (substr($country_code, 0, 2) == "00") {
+            $country_code = substr($country_code, 2, strlen($country_code));
+        }
+
+        //Remove +
+        $number = str_replace('+', '', $number);
+
+        if (substr($number, 0, strlen($country_code) * 2) == $country_code . $country_code) {
+            $number = substr($number, strlen($country_code) * 2);
+        } else {
+            $number = substr($number, strlen($country_code));
+        }
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 2) == "00") {
+            $number = substr($number, 2, strlen($number));
+        }
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 1) == "0") {
+            $number = substr($number, 1, strlen($number));
+        }
+
+        return $number;
     }
 }

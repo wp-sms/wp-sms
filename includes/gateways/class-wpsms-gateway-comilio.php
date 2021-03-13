@@ -60,9 +60,9 @@ class comilio extends \WP_SMS\Gateway
         }
 
         $payload = array(
-            'message_type' => 'SmartPro',
+            'message_type'  => 'SmartPro',
             'phone_numbers' => $this->to,
-            'text' => $this->msg,
+            'text'          => $this->msg,
             'sender_string' => $this->from
         );
 
