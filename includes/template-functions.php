@@ -17,7 +17,6 @@ if (!defined('ABSPATH')) {
 function wp_subscribes()
 {
     _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscribes()');
-
     wp_sms_subscribes();
 }
 
