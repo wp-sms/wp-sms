@@ -614,7 +614,9 @@ class Gateway
         global $sms;
 
         // Get gateway help
-        return $sms->help;
+        $help = $sms->help;
+        $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
+        return $document ? sprintf(__('%s &nbsp; <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
 
     /**

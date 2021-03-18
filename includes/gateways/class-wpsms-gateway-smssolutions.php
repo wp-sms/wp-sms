@@ -6,6 +6,7 @@ class smssolutions extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://eziapi.com/v3/";
     public $tariff = "https://www.smssolutionsaustralia.com.au/";
+    public $documentUrl = 'https://wp-sms-pro.com/resources/sms-solutions-gateway-configuration/';
     public $unitrial = false;
     public $unit;
     public $flash = "disable";

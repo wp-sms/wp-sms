@@ -6,6 +6,7 @@ class octopush extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://www.octopush-dm.com/api";
     public $tariff = "https://www.octopush-dm.com/";
+    public $documentUrl = 'https://wp-sms-pro.com/resources/octopush-gateway-configuration/';
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
