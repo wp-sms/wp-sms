@@ -15,7 +15,6 @@ class slinteractive extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->help = 'test';
         $this->validateNumber = "Example: 61408000111, 61408000112, 614080001113";
     }
 
