@@ -1142,8 +1142,12 @@ class Settings_Pro {
 					'type'        => 'text',
 					'after_input' => $this->activate_icon(),
 					'desc'        => sprintf(
-						__( 'The license key is used for access to automatic update and support, to get the license, please go to %1$syour account%2$s', 'wp-sms' ),
-						'<a href="' . esc_url( WP_SMS_SITE . '/checkout/purchase-history/' ) . '" target="_blank">',
+						__( 'The license key is used for access to automatic update and support, to get the license, please go to %1$syour account%2$s<br /><br />- Need help to enter your license? %3$sClick here%4$s to get information.<br />- Having a problem with your license? %5$sClick here%6$s for troubleshooting.', 'wp-sms' ),
+						'<a href="' . esc_url( WP_SMS_SITE . '/my-account/orders/' ) . '" target="_blank">',
+						'</a>',
+						'<a href="' . esc_url( WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/' ) . '" target="_blank">',
+						'</a>',
+						'<a href="' . esc_url( WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/' ) . '" target="_blank">',
 						'</a>'
 					),
 				),
