@@ -133,13 +133,20 @@ class Subscribers_List_Table extends \WP_List_Table
 
     public function get_bulk_actions()
     {
-        return array(
-            'bulk_delete' => __('Delete', 'wp-sms')
-        );
+        $actions = ['bulk_delete' => __('Delete', 'wp-sms')];
+
+        $groups = $this->db->get_results("SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`", ARRAY_A);
+        if(count($groups)){
+            foreach ($groups as $value) {
+                $actions['move_to_' . $value['ID']] = sprintf(__('Move to «%s»', 'wp-sms'), $value['name']);
+            }
+        }
+        return $actions;
     }
 
     public function process_bulk_action()
     {
+        $current_action = $this->current_action();
         //Detect when a bulk action is being triggered...
         // Search action
         if (isset($_GET['s'])) {
@@ -149,7 +156,7 @@ class Subscribers_List_Table extends \WP_List_Table
         }
 
         // Bulk delete action
-        if ('bulk_delete' == $this->current_action()) {
+        if ('bulk_delete' == $current_action) {
             foreach ($_GET['id'] as $id) {
                 $this->db->delete($this->tb_prefix . "sms_subscribes", array('ID' => $id));
             }
@@ -159,11 +166,24 @@ class Subscribers_List_Table extends \WP_List_Table
         }
 
         // Single delete action
-        if ('delete' == $this->current_action()) {
+        if ('delete' == $current_action) {
             $this->db->delete($this->tb_prefix . "sms_subscribes", array('ID' => $_GET['ID']));
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
             echo '<div class="notice notice-success is-dismissible"><p>' . __('Item removed.', 'wp-sms') . '</p></div>';
+        }
+
+        if (false !== strpos($current_action, 'move_to_')) {
+            $new_group_id = substr($current_action, 8);
+            $new_group = Newsletter::getGroup($new_group_id);
+            if($new_group){
+                foreach ($_GET['id'] as $id) {
+                    $this->db->update($this->tb_prefix . "sms_subscribes",['group_ID' => $new_group->ID], ['ID' => $id]);
+                }
+                $this->data  = $this->get_data();
+                $this->count = $this->get_total();
+                echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(__('Items moved to «%s» group.', 'wp-sms'), $new_group->name) . '</p></div>';
+            }
         }
     }
 
