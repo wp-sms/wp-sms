@@ -250,7 +250,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Added some useful document link in the setting page
 * Added functionality in the subscriber's list to update multi subscribers group
 * Added group id column in the groups' table
-* Added Singleton functionality to initial the plugin and added `WPSms();` function to get instance of plugin
+* Added Singleton functionality to initial the plugin and added `WPSms();` function to get an instance of the plugin
 
 = 5.4.4 =
 * Added smssolutionsaustralia.com.au SMS gateway
