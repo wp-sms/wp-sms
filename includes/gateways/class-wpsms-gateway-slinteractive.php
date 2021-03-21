@@ -6,6 +6,7 @@ class slinteractive extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://www.slinteractive.com.au/api";
     public $tariff = "https://slinteractive.com.au";
+    public $documentUrl = 'https://wp-sms-pro.com/resources/sl-interactive-gateway-configuration/';
     public $unitrial = true;
     public $unit;
     public $flash = "disable";

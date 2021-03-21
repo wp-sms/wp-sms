@@ -6,6 +6,7 @@ class onewaysms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://gateway.onewaysms.com.my:10001/";
     public $tariff = "https://onewaysms.com/";
+    public $documentUrl = 'https://wp-sms-pro.com/resources/onewaysms-gateway-configuration/';
     public $unitrial = false;
     public $unit;
     public $flash = "disable";
@@ -20,7 +21,7 @@ class onewaysms extends \WP_SMS\Gateway
         $this->has_key        = true;
         $this->bulk_send      = true;
         $this->validateNumber = "Support only 10 numbers, e.g. 6019xxxxxxx,6012xxxxxxx";
-        $this->help           = "Please enter your API URLs in the API Key field and separated them by a comma<br>The pattern is <code>http://api-send,http://api-credit</code><p style='margin-top: 20px;'>";
+        $this->help           = "Please enter your API URLs in the API Key field and separated them by a comma<br>The pattern is <code>http://api-send,http://api-credit</code>";
     }
 
     public function SendSMS()

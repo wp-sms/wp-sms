@@ -155,33 +155,37 @@ class Notifications
      */
     public function new_user($user_id)
     {
-
-        $user = get_userdata($user_id);
-
+        $user          = get_userdata($user_id);
         $template_vars = array(
             '%user_login%'    => $user->user_login,
             '%user_email%'    => $user->user_email,
             '%date_register%' => $this->date,
         );
 
+        /**
+         * Send SMS to admin
+         */
         if (Option::getOption('admin_mobile_number')) {
-            // Send SMS to admin
-            $this->sms->to  = array($this->options['admin_mobile_number']);
+            $this->sms->to  = apply_filters('wp_sms_admin_notify_registration', array($this->options['admin_mobile_number']));
             $message        = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_register_new_user_admin_template']);
             $this->sms->msg = $message;
             $this->sms->SendSMS();
         }
 
         // Modify request value.
-        $request = apply_filters('wp_sms_from_notify_user_register', $_REQUEST);
+        $request = apply_filters('wp_sms_user_notify_registration', $_REQUEST);
 
-        // Send SMS to user register.
+        /**
+         * Send SMS to user register.
+         */
         if (isset($user->mobile) or $request and !is_array($request)) {
+
             if (isset($user->mobile)) {
                 $this->sms->to = array($user->mobile);
             } else if ($request) {
                 $this->sms->to = array($request);
             }
+
             $message        = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_register_new_user_template']);
             $this->sms->msg = $message;
             $this->sms->SendSMS();

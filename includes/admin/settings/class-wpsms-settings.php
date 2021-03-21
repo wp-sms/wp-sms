@@ -244,7 +244,7 @@ class Settings
                 // Gateway
                 'gayeway_title'             => array(
                     'id'   => 'gayeway_title',
-                    'name' => __('Gateway information', 'wp-sms'),
+                    'name' => __('Gateway configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'gateway_name'              => array(

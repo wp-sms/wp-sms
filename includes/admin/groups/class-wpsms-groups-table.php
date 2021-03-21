@@ -40,6 +40,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
     function column_default($item, $column_name)
     {
         switch ($column_name) {
+            case 'ID':
             case 'name':
                 return $item[$column_name];
 
@@ -58,7 +59,6 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
     function column_name($item)
     {
-
         //Build row actions
         $actions = array(
             'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . __('Edit', 'wp-sms') . '</a>', $item['ID'], $item['name']),
@@ -91,6 +91,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
     {
         $columns = array(
             'cb'                => '<input type="checkbox" />', //Render a checkbox instead of text
+            'ID'              => __('Group ID', 'wp-sms'),
             'name'              => __('Name', 'wp-sms'),
             'total_subscribers' => __('Total subscribers', 'wp-sms'),
         );
