@@ -41,4 +41,12 @@ $sms = wp_sms_initial_gateway();
  */
 require WP_SMS_DIR . 'includes/class-wpsms.php';
 
-new WP_SMS();
+/**
+ * @return object|WP_SMS|null
+ */
+function WPSms()
+{
+    return WP_SMS::get_instance();
+}
+
+WPSms();

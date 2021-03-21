@@ -6,6 +6,13 @@ if (!defined('ABSPATH')) {
 
 class WP_SMS
 {
+    /**
+	 * Plugin instance.
+	 *
+	 * @see get_instance()
+	 * @type object
+	 */
+	protected static $instance = null;
 
     public function __construct()
     {
@@ -21,6 +28,19 @@ class WP_SMS
 
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array('\WP_SMS\Install', 'install'));
     }
+
+    /**
+	 * Access this plugin’s working instance
+	 *
+	 * @wp-hook plugins_loaded
+	 * @return  object of this class
+	 * @since   2.2.0
+	 */
+	public static function get_instance() {
+		null === self::$instance and self::$instance = new self;
+
+		return self::$instance;
+	}
 
     /**
      * Constructors plugin Setup
@@ -103,5 +123,13 @@ class WP_SMS
 
         // Template functions.
         require_once WP_SMS_DIR . 'includes/template-functions.php';
+    }
+
+    /**
+     * @return Scheduled
+     */
+    public function scheduled()
+    {
+        return new \WP_SMS\Pro\Scheduled();
     }
 }
