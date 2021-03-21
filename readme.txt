@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 5.4.4
+Stable tag: 5.4.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,14 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.5 =
+* Added a new filter `wp_sms_admin_notify_registration` for admin receivers mobile numbers in registration new user
+* Added a new property `$documentUrl` in gateways' class
+* Added some useful document link in the setting page
+* Added functionality in the subscriber's list to update multi subscribers group
+* Added group id column in the groups' table
+* Added Singleton functionality to initial the plugin and added `WPSms();` function to get instance of plugin
+
 = 5.4.4 =
 * Added smssolutionsaustralia.com.au SMS gateway
 * Added a new option in the Admin > Subscribers to change the number of items per page
