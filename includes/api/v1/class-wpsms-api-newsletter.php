@@ -131,7 +131,7 @@ class Newsletter extends \WP_SMS\RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_id = isset ($params['group_id']) ? $params['group_id'] : 1;
+        $group_id = isset ($params['group_id']) ? $params['group_id'] : 0;
         $result   = self::verifySubscriber($params['name'], $number, $params['activation'], $group_id);
 
         if (is_wp_error($result)) {
