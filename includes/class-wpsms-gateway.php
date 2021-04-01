@@ -104,6 +104,7 @@ class Gateway
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
+            'smsbharti'        => 'smsbharti.com'
         ),
     );
     public $username;
