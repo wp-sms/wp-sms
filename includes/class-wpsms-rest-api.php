@@ -138,7 +138,7 @@ class RestApi
             }
 
             // Return response
-            return __('You will join the newsletter, Activation code sent to your mobile.', 'wp-sms');
+            return __('You shall join to the SMS newsletter, Activation code has been sent to your mobile.', 'wp-sms');
 
         } else {
 
@@ -232,13 +232,13 @@ class RestApi
     /**
      * Verify Subscriber
      *
-     * @param $mobile
      * @param $name
+     * @param $mobile
      * @param $activation
-     *
+     * @param $groupId
      * @return array|string
      */
-    public static function verifySubscriber($name, $mobile, $activation, $group)
+    public static function verifySubscriber($name, $mobile, $activation, $groupId = 0)
     {
         global $sms, $wpdb;
 
@@ -248,14 +248,14 @@ class RestApi
 
         // Check the mobile number is string or integer
         if (strpos($mobile, '+') !== false) {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $group);
+            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $groupId);
         } else {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $group);
+            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $groupId);
         }
 
         $check_mobile = $wpdb->get_row($db_prepare);
 
-        if (isset($check_mobile)) {
+        if ($check_mobile) {
 
             if ($activation != $check_mobile->activate_key) {
                 // Return response
@@ -264,9 +264,9 @@ class RestApi
 
             // Check the mobile number is string or integer
             if (strpos($mobile, '+') !== false) {
-                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $group), array('%d', '%d'), array('%s'));
+                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $groupId), array('%d', '%d'), array('%s'));
             } else {
-                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $group), array('%d', '%d'), array('%d'));
+                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $groupId), array('%d', '%d'), array('%d'));
             }
 
             if ($result) {
@@ -285,7 +285,7 @@ class RestApi
                 }
 
                 // Return response
-                return __('Your subscription was successful!', 'wp-sms');
+                return __('Your subscription done successfully!', 'wp-sms');
             }
         }
 

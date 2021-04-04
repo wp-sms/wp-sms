@@ -160,7 +160,7 @@ class Version
      */
     public function version_notice()
     {
-        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP-SMS-Pro</a> is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/checkout/purchase-history/'), 'error');
+        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP-SMS-Pro</a> is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
     }
 
     /**

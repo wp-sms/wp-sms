@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 5.4.5
+Stable tag: 5.4.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,9 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.6 =
+* Fixed an issue to verify the subscriber in the SMS newsletter widget.
+
 = 5.4.5 =
 * Added a new filter `wp_sms_admin_notify_registration` for admin receivers mobile numbers in registration new user
 * Added a new property `$documentUrl` in gateways' class
