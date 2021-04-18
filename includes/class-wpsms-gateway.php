@@ -265,6 +265,10 @@ class Gateway
     {
         $countryCode = $this->options['mobile_county_code'];
 
+        if (!$countryCode) {
+            return $recipients;
+        }
+
         $numbers = array();
         foreach ($recipients as $number) {
             $numbers[] = preg_replace('/^(?:\\' . $countryCode . '|0)?/', $countryCode, ($number));
