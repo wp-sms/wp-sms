@@ -155,9 +155,10 @@ class Features
     public function registration_errors($errors, $sanitized_user_login, $user_email)
     {
         if (empty($_POST['mobile'])) {
-            $errors->add('first_name_error', __('<strong>ERROR</strong>: You must include a mobile number.', 'wp-sms'));
+            $errors->add('first_name_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
+        $error = false;
         if (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches) == false) {
             $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
             $error = true;
