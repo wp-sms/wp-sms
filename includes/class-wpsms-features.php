@@ -154,32 +154,30 @@ class Features
      */
     public function registration_errors($errors, $sanitized_user_login, $user_email)
     {
-        if (empty($_POST['mobile'])) {
+        if (!Option::getOption('mobile_verify_optional', true) and empty($_POST['mobile'])) {
             $errors->add('first_name_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
-        $error = false;
-        if (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches) == false) {
-            $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-            $error = true;
-        }
+        if (isset($_POST['mobile']) and $_POST['mobile']) {
+            $error = false;
 
-        if (!$error && !isset($matches[0])) {
-            $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-            $error = true;
-        }
+            if (isset($_POST['mobile']) && preg_match('/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches) == false) {
+                $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+                $error = true;
+            }
 
-        if (!$error && isset($matches[0]) && strlen($matches[0]) < 10) {
-            $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-            $error = true;
-        }
+            if (!$error && isset($matches[0]) && strlen($matches[0]) < 10) {
+                $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+                $error = true;
+            }
 
-        if (!$error && isset($matches[0]) && strlen($matches[0]) > 14) {
-            $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-        }
+            if (!$error && isset($matches[0]) && strlen($matches[0]) > 14) {
+                $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
+            }
 
-        if ($this->checkMobileNumber($_POST['mobile'])) {
-            $errors->add('duplicate_mobile_number', __('<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms'));
+            if ($this->checkMobileNumber($_POST['mobile'])) {
+                $errors->add('duplicate_mobile_number', __('<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms'));
+            }
         }
 
         return $errors;
