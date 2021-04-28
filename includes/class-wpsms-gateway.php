@@ -91,7 +91,7 @@ class Gateway
             'jusibe' => 'jusibe.com',
         ),
         'arabic'        => array(
-            'kwtsms' => 'kwtsms.com',
+            'kwtsms'  => 'kwtsms.com',
             'taqnyat' => 'taqnyat.sa',
         ),
         'bangladesh'    => array(
@@ -104,6 +104,7 @@ class Gateway
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
+            'waapi'            => 'waapi.co',
         ),
     );
     public $username;
@@ -619,7 +620,7 @@ class Gateway
         global $sms;
 
         // Get gateway help
-        $help = $sms->help;
+        $help     = $sms->help;
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
         return $document ? sprintf(__('%s <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
