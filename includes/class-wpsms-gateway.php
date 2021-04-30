@@ -104,7 +104,6 @@ class Gateway
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
-            'waapi'            => 'waapi.co',
         ),
     );
     public $username;
@@ -407,7 +406,8 @@ class Gateway
                 'pridesms'         => 'pridesms.in',
                 'smsozone'         => 'ozonesms.com',
                 'msgwow'           => 'msgwow.com',
-                'tripadasmsbox'    => 'tripadasmsbox.com'
+                'tripadasmsbox'    => 'tripadasmsbox.com',
+                'waapi'            => 'waapi.co',
             ),
             'iran'           => array(
                 'iransmspanel'   => 'iransmspanel.ir',
