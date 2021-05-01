@@ -334,6 +334,7 @@ class Gateway
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
+                'waapi'            => 'waapi.co',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -407,7 +408,6 @@ class Gateway
                 'smsozone'         => 'ozonesms.com',
                 'msgwow'           => 'msgwow.com',
                 'tripadasmsbox'    => 'tripadasmsbox.com',
-                'waapi'            => 'waapi.co',
             ),
             'iran'           => array(
                 'iransmspanel'   => 'iransmspanel.ir',

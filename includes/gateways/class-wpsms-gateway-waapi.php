@@ -6,7 +6,7 @@ use WP_Error;
 
 class waapi extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://apiv3.waapi.co/api";
+    private $wsdl_link = "https://apiv3.waapi.co";
     public $tariff = "https://www.waapi.co/pricing";
     public $unitrial = true;
     public $unit;
@@ -16,6 +16,8 @@ class waapi extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
+        $this->has_key        = true;
+        $this->help           = "Please enter The <b>Client ID » API username</b>, <b>Instance ID » API password</b> and <b>API Domain » API key</b> field.<br/>An example of API domain: https://apiv3.waapi.co";
         $this->validateNumber = "Example: 919374512345";
     }
 
@@ -66,9 +68,9 @@ class waapi extends \WP_SMS\Gateway
                 'type'      => 'text',
                 'message'   => $this->msg,
                 'number'    => $number,
-            ], $this->wsdl_link . '/send.php');
-
-            $response = wp_remote_get($argument, ['timeout' => 10]);
+            ], $this->getApiDomain() . '/api/send.php');
+            
+            $response = wp_remote_get($argument, ['timeout' => 15]);
 
             if (is_wp_error($response)) {
                 $errors[$number] = $response->get_error_message();
@@ -113,7 +115,7 @@ class waapi extends \WP_SMS\Gateway
         $argument = add_query_arg([
             'client_id' => $this->username,
             'instance'  => $this->password,
-        ], $this->wsdl_link . '/checkconnection.php');
+        ], $this->getApiDomain() . '/api/checkconnection.php');
 
         $response = wp_remote_get($argument);
 
@@ -132,5 +134,10 @@ class waapi extends \WP_SMS\Gateway
         }
 
         return $body->message;
+    }
+
+    private function getApiDomain()
+    {
+        return $this->has_key ? $this->has_key : $this->wsdl_link;
     }
 }
