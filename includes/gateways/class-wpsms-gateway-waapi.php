@@ -17,7 +17,7 @@ class waapi extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->has_key        = true;
-        $this->help           = "Please enter The <b>Client ID » API username</b>, <b>Instance ID » API password</b> and <b>API Domain » API key</b> field.<br/>An example of API domain: https://apiv3.waapi.co";
+        $this->help           = "Please enter The <b>Client ID » API username</b>, <b>Instance ID » API password</b> and <b>API Domain » API key</b> field.";
         $this->validateNumber = "Example: 919374512345";
     }
 
@@ -69,7 +69,7 @@ class waapi extends \WP_SMS\Gateway
                 'message'   => $this->msg,
                 'number'    => $number,
             ], $this->getApiDomain() . '/api/send.php');
-            
+
             $response = wp_remote_get($argument, ['timeout' => 15]);
 
             if (is_wp_error($response)) {

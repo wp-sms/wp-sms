@@ -334,7 +334,7 @@ class Gateway
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
-                'waapi'            => 'waapi.co',
+                'waapi'            => 'whatsappmessagesbywaapi.co',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
