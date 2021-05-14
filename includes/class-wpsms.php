@@ -126,10 +126,18 @@ class WP_SMS
     }
 
     /**
-     * @return Scheduled
+     * @return \WP_SMS\Pro\Scheduled
      */
     public function scheduled()
     {
         return new \WP_SMS\Pro\Scheduled();
+    }
+
+    /**
+     * @return \WP_SMS\Newsletter
+     */
+    public function newsletter()
+    {
+        return new \WP_SMS\Newsletter();
     }
 }

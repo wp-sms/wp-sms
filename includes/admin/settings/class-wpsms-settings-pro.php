@@ -1187,6 +1187,13 @@ class Settings_Pro {
 					'options' => $options,
 					'desc'    => __( 'Verify mobile number in the login form. This feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms' ),
 				),
+				'mobile_verify_optional'     => array(
+					'id'      => 'mobile_verify_optional',
+					'name'    => __( 'Should be optional?', 'wp-sms' ),
+					'type'    => 'checkbox',
+					'options' => $options,
+					'desc'    => __( 'If you would like to make the mobile number field option, please enable the option.', 'wp-sms' ),
+				),
 				'mobile_verify_method'  => array(
 					'id'      => 'mobile_verify_method',
 					'name'    => __( 'OTP Method', 'wp-sms' ),

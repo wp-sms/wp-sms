@@ -91,7 +91,7 @@ class Gateway
             'jusibe' => 'jusibe.com',
         ),
         'arabic'        => array(
-            'kwtsms' => 'kwtsms.com',
+            'kwtsms'  => 'kwtsms.com',
             'taqnyat' => 'taqnyat.sa',
         ),
         'bangladesh'    => array(
@@ -265,6 +265,10 @@ class Gateway
     {
         $countryCode = $this->options['mobile_county_code'];
 
+        if (!$countryCode) {
+            return $recipients;
+        }
+
         $numbers = array();
         foreach ($recipients as $number) {
             $numbers[] = preg_replace('/^(?:\\' . $countryCode . '|0)?/', $countryCode, ($number));
@@ -330,6 +334,7 @@ class Gateway
                 'sms77'            => 'sms77.de',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
+                'waapi'            => 'whatsappmessagesbywaapi.co',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -402,7 +407,7 @@ class Gateway
                 'pridesms'         => 'pridesms.in',
                 'smsozone'         => 'ozonesms.com',
                 'msgwow'           => 'msgwow.com',
-                'tripadasmsbox'    => 'tripadasmsbox.com'
+                'tripadasmsbox'    => 'tripadasmsbox.com',
             ),
             'iran'           => array(
                 'iransmspanel'   => 'iransmspanel.ir',
@@ -615,7 +620,7 @@ class Gateway
         global $sms;
 
         // Get gateway help
-        $help = $sms->help;
+        $help     = $sms->help;
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
         return $document ? sprintf(__('%s <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
