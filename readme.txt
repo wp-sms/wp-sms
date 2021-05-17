@@ -248,7 +248,7 @@ In this version, we have made a lot of changes. We tried using the free version 
 * Fixed some tweak issues in applying country code and user registration functionality.
 * Added a new option to make verify_mobile field optional
 * Added WaApi gateway
-* Added newsletter method in the main class to accessible from by WPSms()->newsletter();`
+* Added newsletter method in the main class to accessible from by `WPSms()->newsletter();`
 
 = 5.4.6 =
 * Fixed an issue to verify the subscriber in the SMS newsletter widget.

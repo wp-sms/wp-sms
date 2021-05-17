@@ -90,6 +90,9 @@ class Gateway
         'africa'        => array(
             'jusibe' => 'jusibe.com',
         ),
+        'romania'       => array(
+            'sendsms' => 'sendsms.ro',
+        ),
         'arabic'        => array(
             'kwtsms'  => 'kwtsms.com',
             'taqnyat' => 'taqnyat.sa',
@@ -100,6 +103,9 @@ class Gateway
         ),
         'palestine'     => array(
             'htd' => 'htd.ps',
+        ),
+        'pakistan'      => array(
+            'sendpk' => 'sendpk.com',
         ),
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
