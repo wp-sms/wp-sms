@@ -357,6 +357,9 @@ class Gateway
             'germany'        => array(
                 'engy' => 'engy.solutions',
             ),
+            'estonia'        => array(
+                'dexatel' => 'dexatel.com',
+            ),
             'slovakia'       => array(
                 'eurosms' => 'eurosms.com',
             ),
