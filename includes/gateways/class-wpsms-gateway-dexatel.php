@@ -70,19 +70,21 @@ class dexatel extends \WP_SMS\Gateway
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING       => '',
             CURLOPT_MAXREDIRS      => 10,
-            CURLOPT_TIMEOUT        => 0,
+            CURLOPT_TIMEOUT        => 5,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST  => 'GET',
         ));
 
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $response = curl_exec($curl);
+        $httpCode     = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $response     = curl_exec($curl);
+        $errorMessage = curl_error($curl);
+
         curl_close($curl);
 
         if ($httpCode != 200) {
-            $this->log($this->from, $this->msg, $this->to, $response, 'error');
-            return new \WP_Error('send-sms', $response);
+            $this->log($this->from, $this->msg, $this->to, $errorMessage, 'error');
+            return new \WP_Error('send-sms', $errorMessage);
         }
 
         $responseBody = json_decode($response);
