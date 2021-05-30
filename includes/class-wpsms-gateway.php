@@ -111,6 +111,9 @@ class Gateway
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
         ),
+        'belgium'       => array(
+            'smsbox' => 'smsbox.be'
+        )
     );
     public $username;
     public $password;
