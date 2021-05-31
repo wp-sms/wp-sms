@@ -4,7 +4,7 @@ namespace WP_SMS\Gateway;
 
 class dexatel extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://sms.dexatel.com:8002/api";
+    private $wsdl_link = "https://sms.dexatel.com:8001/api";
     public $tariff = "https://dexatel.com";
     public $unitrial = true;
     public $unit;
