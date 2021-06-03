@@ -4,7 +4,7 @@ namespace WP_SMS\Gateway;
 
 class dexatel extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://sms.dexatel.com:8001/api";
+    private $wsdl_link = "https://sms.dexatel.com:8002/api";
     public $tariff = "https://dexatel.com";
     public $unitrial = true;
     public $unit;
@@ -79,8 +79,13 @@ class dexatel extends \WP_SMS\Gateway
         $httpCode     = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $response     = curl_exec($curl);
         $errorMessage = curl_error($curl);
-
+        
         curl_close($curl);
+
+        if ($httpCode == 0) {
+            $this->log($this->from, $this->msg, $this->to, $response, 'error');
+            return new \WP_Error('send-sms', $response);
+        }
 
         if ($httpCode != 200) {
             $this->log($this->from, $this->msg, $this->to, $errorMessage, 'error');
