@@ -79,17 +79,14 @@ class dexatel extends \WP_SMS\Gateway
         $httpCode     = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $response     = curl_exec($curl);
         $errorMessage = curl_error($curl);
-        
+
         curl_close($curl);
 
-        if ($httpCode == 0) {
+        if ($httpCode == 0 or $httpCode != 200) {
+            $response = $response ?: $errorMessage;
             $this->log($this->from, $this->msg, $this->to, $response, 'error');
-            return new \WP_Error('send-sms', $response);
-        }
 
-        if ($httpCode != 200) {
-            $this->log($this->from, $this->msg, $this->to, $errorMessage, 'error');
-            return new \WP_Error('send-sms', $errorMessage);
+            return new \WP_Error('send-sms', $response);
         }
 
         $responseBody = json_decode($response);
