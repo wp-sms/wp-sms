@@ -73,7 +73,8 @@ class smssolutions extends \WP_SMS\Gateway
                 ],
                 'body'    => json_encode([
                     'recipient' => $to,
-                    'content'   => $text
+                    'content'   => $text,
+                    'mask'      => $this->from,
                 ])
             ]);
         }
