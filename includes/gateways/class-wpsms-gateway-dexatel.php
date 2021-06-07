@@ -15,7 +15,7 @@ class dexatel extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = 'Must be sent in international E.164 format (up to 15 digits allowed)';
+        $this->validateNumber = 'Must be sent in international E.164 format (up to 15 digits allowed), e.g: 12025550150';
         $this->help           = 'Please fill out your TOKEN in the API key field.';
     }
 
@@ -54,7 +54,12 @@ class dexatel extends \WP_SMS\Gateway
         // Check gateway credit
         if (is_wp_error($credit)) {
             $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-            //return $credit;
+            return $credit;
+        }
+
+        $messages = [];
+        foreach ($this->to as $item) {
+            $messages[] = ['phone' => $item, 'sender_name' => $this->from, 'message' => $this->msg];
         }
 
         $args = [
@@ -63,11 +68,7 @@ class dexatel extends \WP_SMS\Gateway
                 'Content-Type' => 'application/json'
             ],
             'body'    => json_encode([
-                'messages' => [
-                    'phone'       => $this->to,
-                    'sender_name' => $this->from,
-                    'message'     => $this->msg
-                ]
+                'messages' => $messages,
             ])
         ];
 
