@@ -74,7 +74,7 @@ class dexatel extends \WP_SMS\Gateway
         $response      = wp_remote_post($this->wsdl_link . '/send/sms/bulk', $args);
         $response_code = wp_remote_retrieve_response_code($response);
         $response      = json_decode($response['body']);
-        
+
         if ($response_code != '200') {
             return new \WP_Error('send-sms', $response->message);
         }
@@ -97,8 +97,8 @@ class dexatel extends \WP_SMS\Gateway
     public function GetCredit()
     {
         // Check username and password
-        if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms-pro'));
+        if (!$this->has_key) {
+            return new \WP_Error('account-credit', __('API key is not entered.', 'wp-sms-pro'));
         }
 
         $response = wp_remote_get($this->wsdl_link . '/get_balance', [
