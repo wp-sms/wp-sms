@@ -90,6 +90,9 @@ class Gateway
         'africa'        => array(
             'jusibe' => 'jusibe.com',
         ),
+        'romania'       => array(
+            'sendsms' => 'sendsms.ro',
+        ),
         'arabic'        => array(
             'kwtsms'  => 'kwtsms.com',
             'taqnyat' => 'taqnyat.sa',
@@ -101,10 +104,16 @@ class Gateway
         'palestine'     => array(
             'htd' => 'htd.ps',
         ),
+        'pakistan'      => array(
+            'sendpk' => 'sendpk.com',
+        ),
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
         ),
+        'belgium'       => array(
+            'smsbox' => 'smsbox.be'
+        )
     );
     public $username;
     public $password;
@@ -350,6 +359,9 @@ class Gateway
             ),
             'germany'        => array(
                 'engy' => 'engy.solutions',
+            ),
+            'estonia'        => array(
+                'dexatel' => 'dexatel.com',
             ),
             'slovakia'       => array(
                 'eurosms' => 'eurosms.com',
