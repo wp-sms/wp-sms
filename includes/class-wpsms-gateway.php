@@ -92,6 +92,7 @@ class Gateway
         ),
         'romania'       => array(
             'sendsms' => 'sendsms.ro',
+            'smschef' => 'smschef.com',
         ),
         'arabic'        => array(
             'kwtsms'  => 'kwtsms.com',
@@ -704,5 +705,4 @@ class Gateway
 
         return $to;
     }
-
 }
