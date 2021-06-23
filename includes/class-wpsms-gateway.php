@@ -604,6 +604,7 @@ class Gateway
                 'msegat'       => 'msegat.com',
                 'oursms'       => 'oursms.net',
                 'gateway'      => 'gateway.sa',
+                'jawalbsms'    => 'jawalbsms.ws',
                 'resalaty'     => 'resalaty.com',
                 'unifonic'     => 'unifonic.com',
                 'asr3sms'      => 'asr3sms.com',
@@ -612,7 +613,6 @@ class Gateway
                 'zain'         => 'zain.im',
                 'malath'       => 'malath.net.sa',
                 'safasms'      => 'safa-sms.com',
-                'jawalbsms'    => 'jawalbsms.ws',
             ),
             'africa'         => array(
                 '_ebulksms'          => 'ebulksms.com',
