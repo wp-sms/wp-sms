@@ -402,6 +402,7 @@ class Gateway
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
                 'waapi'            => 'whatsappmessagesbywaapi.co',
+                'dexatel'          => 'dexatel.com',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -417,6 +418,9 @@ class Gateway
             ),
             'germany'        => array(
                 'engy' => 'engy.solutions',
+            ),
+            'romania'        => array(
+                'globalvoice' => 'global-voice.net',
             ),
             'estonia'        => array(
                 'dexatel' => 'dexatel.com',
