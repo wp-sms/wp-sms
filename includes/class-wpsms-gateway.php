@@ -119,22 +119,22 @@ class Gateway
 
     public $gatewayFields = [
         'username' => [
-            'id' => 'gateway_username',
+            'id'   => 'gateway_username',
             'name' => 'API username',
             'desc' => 'Enter API username of gateway',
         ],
         'password' => [
-            'id' => 'gateway_password',
+            'id'   => 'gateway_password',
             'name' => 'API password',
             'desc' => 'Enter API password of gateway',
         ],
-        'from' => [
-            'id' => 'gateway_sender_id',
+        'from'     => [
+            'id'   => 'gateway_sender_id',
             'name' => 'Sender number',
             'desc' => 'Sender number or sender ID',
         ],
-        'has_key' => [
-            'id' => 'gateway_key',
+        'has_key'  => [
+            'id'   => 'gateway_key',
             'name' => 'API key',
             'desc' => 'Enter API key of gateway'
         ]
@@ -192,11 +192,13 @@ class Gateway
     {
         // Set the default_gateway class
         $class_name = '\\WP_SMS\\Gateway\\Default_Gateway';
+
         // Include default gateway
         include_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
         include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-default.php';
 
         $gateway_name = Option::getOption('gateway_name');
+
         // Using default gateway if does not set gateway in the setting
         if (empty($gateway_name)) {
             return new $class_name();
@@ -218,17 +220,17 @@ class Gateway
             $sms        = new $class_name();
         }
 
-        if(!empty($sms->gatewayFields)){
-            foreach ($sms->gatewayFields as $key => $value){
-                $sms->{$key} = Option::getOption($value['id']);
+        if (!empty($sms->gatewayFields)) {
+            foreach ($sms->gatewayFields as $key => $value) {
+                if ($sms->{$key} !== false) {
+                    $sms->{$key} = Option::getOption($value['id']);
+                }
             }
         } else {
             // Set username and password
             $sms->username = Option::getOption('gateway_username');
             $sms->password = Option::getOption('gateway_password');
-
-
-            $gateway_key = Option::getOption('gateway_key');
+            $gateway_key   = Option::getOption('gateway_key');
 
             // Set api key
             if ($sms->has_key && $gateway_key) {
@@ -259,20 +261,22 @@ class Gateway
         add_filter('wp_sms_gateway_settings', function ($filter) {
             global $sms;
 
-            if(!empty($sms->gatewayFields)) {
+            if (!empty($sms->gatewayFields)) {
                 unset($filter['gateway_username']);
                 unset($filter['gateway_password']);
                 unset($filter['gateway_sender_id']);
                 unset($filter['gateway_key']);
 
                 $gatewayFields = [];
-                foreach ($sms->gatewayFields as $key => $value){
-                    $gatewayFields[$value['id']] = [
-                        'id' => $value['id'],
-                        'name' => __($value['name'], 'wp-sms'),
-                        'type' => 'text',
-                        'desc' => __($value['desc'], 'wp-sms'),
-                    ];
+                foreach ($sms->gatewayFields as $key => $value) {
+                    if ($sms->{$key} !== false) {
+                        $gatewayFields[$value['id']] = [
+                            'id'   => $value['id'],
+                            'name' => __($value['name'], 'wp-sms'),
+                            'type' => 'text',
+                            'desc' => __($value['desc'], 'wp-sms'),
+                        ];
+                    }
                 }
 
                 $filter = array_merge(
