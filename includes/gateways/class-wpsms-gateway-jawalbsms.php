@@ -65,9 +65,9 @@ class jawalbsms extends \WP_SMS\Gateway
             $to[] = $this->clean_number($value, $country_code);
         }
 
-        $to       = implode(',', $to);
-        $msg      = urlencode($this->msg);
-        $sender   = urlencode($this->from);
+        $to     = implode(',', $to);
+        $msg    = urlencode($this->msg);
+        $sender = urlencode($this->from);
 
         $response = wp_remote_get("{$this->wsdl_link}sendsms?user={$this->username}&pass={$this->password}&to={$to}&message={$msg}&sender={$sender}");
 
@@ -94,9 +94,9 @@ class jawalbsms extends \WP_SMS\Gateway
 
             return $result;
         } else {
-            $this->log($this->from, $this->msg, $this->to, $result, 'error');
+            $this->log($this->from, $this->msg, $this->to, $this->getErrorByCode($result), 'error');
 
-            return new \WP_Error('send-sms', $result);
+            return new \WP_Error('send-sms', $this->getErrorByCode($result));
         }
     }
 
@@ -116,7 +116,7 @@ class jawalbsms extends \WP_SMS\Gateway
         $result = wp_remote_retrieve_body($response);
 
         if (intval($result) < 1) {
-            return new \WP_Error('account-credit', $this->_getBalanceError($result));
+            return new \WP_Error('account-credit', $this->getErrorByCode($result));
         }
 
         return $result;
@@ -150,22 +150,26 @@ class jawalbsms extends \WP_SMS\Gateway
             $number = substr($number, 1, strlen($number));
         }
 
-        $number = $country_code . $number;
-
-        return $number;
+        return $country_code . $number;
     }
 
-    private function _getBalanceError($code)
+    private function getErrorByCode($code)
     {
+        // Remove non-ascii characters from string
+        $code   = preg_replace('/[[:^print:]]/', '', $code);
+
         $errors = [
             '-100' => 'Missing parameters (not exist or empty) Username +password',
             '-110' => 'Account not exist (wrong username or password)',
             '-111' => 'The account not activated',
             '-112' => 'Blocked account',
-            '-114' => 'The service not available for now'
+            '-114' => 'The service not available for now',
+            '-120' => 'No destination addresses, or all destinations are incorrect',
+            '-116' => 'Invalid sender name',
+            '-130' => 'Error in MsgID (used with cancel schedule message)',
         ];
 
-        if(isset($errors[$code])){
+        if (isset($errors[$code])) {
             return $errors[$code];
         }
 
