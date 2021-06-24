@@ -23,6 +23,7 @@ class Gateway
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
             'clicksend'      => 'clicksend.com',
+            'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
             'dsms'           => 'dsms.in',
             'esms'           => 'esms.vn',
