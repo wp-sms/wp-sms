@@ -71,11 +71,15 @@ class Outbox_List_Table extends \WP_List_Table
 
     function column_sender($item)
     {
+        /**
+         * Sanitize the input
+         */
+        $page = esc_attr($_REQUEST['page']);
 
         //Build row actions
         $actions = array(
-            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Resend', 'wp-sms') . '</a>', $_REQUEST['page'], 'resend', $item['ID']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $_REQUEST['page'], 'delete', $item['ID']),
+            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Resend', 'wp-sms') . '</a>', $page, 'resend', $item['ID']),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
         );
 
         //Return the title contents

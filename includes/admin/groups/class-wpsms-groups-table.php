@@ -59,10 +59,15 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
     function column_name($item)
     {
+        /**
+         * Sanitize the input
+         */
+        $page = esc_attr($_REQUEST['page']);
+
         //Build row actions
         $actions = array(
             'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . __('Edit', 'wp-sms') . '</a>', $item['ID'], $item['name']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $_REQUEST['page'], 'delete', $item['ID']),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
         );
 
         //Return the title contents
