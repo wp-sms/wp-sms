@@ -23,6 +23,7 @@ class Gateway
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
             'clicksend'      => 'clicksend.com',
+            'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
             'dsms'           => 'dsms.in',
             'esms'           => 'esms.vn',
@@ -92,6 +93,7 @@ class Gateway
         ),
         'romania'       => array(
             'sendsms' => 'sendsms.ro',
+            'smschef' => 'smschef.com',
         ),
         'arabic'        => array(
             'kwtsms'  => 'kwtsms.com',
@@ -115,6 +117,30 @@ class Gateway
             'smsbox' => 'smsbox.be'
         )
     );
+
+    public $gatewayFields = [
+        'username' => [
+            'id'   => 'gateway_username',
+            'name' => 'API username',
+            'desc' => 'Enter API username of gateway',
+        ],
+        'password' => [
+            'id'   => 'gateway_password',
+            'name' => 'API password',
+            'desc' => 'Enter API password of gateway',
+        ],
+        'from'     => [
+            'id'   => 'gateway_sender_id',
+            'name' => 'Sender number',
+            'desc' => 'Sender number or sender ID',
+        ],
+        'has_key'  => [
+            'id'   => 'gateway_key',
+            'name' => 'API key',
+            'desc' => 'Enter API key of gateway'
+        ]
+    ];
+
     public $username;
     public $password;
     public $has_key = false;
@@ -167,11 +193,13 @@ class Gateway
     {
         // Set the default_gateway class
         $class_name = '\\WP_SMS\\Gateway\\Default_Gateway';
+
         // Include default gateway
         include_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
         include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-default.php';
 
         $gateway_name = Option::getOption('gateway_name');
+
         // Using default gateway if does not set gateway in the setting
         if (empty($gateway_name)) {
             return new $class_name();
@@ -193,16 +221,27 @@ class Gateway
             $sms        = new $class_name();
         }
 
-        // Set username and password
-        $sms->username = Option::getOption('gateway_username');
-        $sms->password = Option::getOption('gateway_password');
+        if (!empty($sms->gatewayFields)) {
+            foreach ($sms->gatewayFields as $key => $value) {
+                if ($sms->{$key} !== false) {
+                    $sms->{$key} = Option::getOption($value['id']);
+                }
+            }
+        } else {
+            // Set username and password
+            $sms->username = Option::getOption('gateway_username');
+            $sms->password = Option::getOption('gateway_password');
+            $gateway_key   = Option::getOption('gateway_key');
 
+            // Set api key
+            if ($sms->has_key && $gateway_key) {
+                $sms->has_key = $gateway_key;
+            }
 
-        $gateway_key = Option::getOption('gateway_key');
-
-        // Set api key
-        if ($sms->has_key && $gateway_key) {
-            $sms->has_key = $gateway_key;
+            // Set sender id
+            if (!$sms->from) {
+                $sms->from = Option::getOption('gateway_sender_id');
+            }
         }
 
         // Show gateway help configuration in gateway page
@@ -219,17 +258,37 @@ class Gateway
             $sms->unit = __('SMS', 'wp - sms');
         }
 
-        // Set sender id
-        if (!$sms->from) {
-            $sms->from = Option::getOption('gateway_sender_id');
-        }
-
         // Unset gateway key field if not available in the current gateway class.
         add_filter('wp_sms_gateway_settings', function ($filter) {
             global $sms;
 
-            if (!$sms->has_key) {
+            if (!empty($sms->gatewayFields)) {
+                unset($filter['gateway_username']);
+                unset($filter['gateway_password']);
+                unset($filter['gateway_sender_id']);
                 unset($filter['gateway_key']);
+
+                $gatewayFields = [];
+                foreach ($sms->gatewayFields as $key => $value) {
+                    if ($sms->{$key} !== false) {
+                        $gatewayFields[$value['id']] = [
+                            'id'   => $value['id'],
+                            'name' => __($value['name'], 'wp-sms'),
+                            'type' => 'text',
+                            'desc' => __($value['desc'], 'wp-sms'),
+                        ];
+                    }
+                }
+
+                $filter = array_merge(
+                    array_slice($filter, 0, 3, true),
+                    $gatewayFields,
+                    array_slice($filter, 3, null, true)
+                );
+            } else {
+                if (!$sms->has_key) {
+                    unset($filter['gateway_key']);
+                }
             }
 
             return $filter;
@@ -344,6 +403,7 @@ class Gateway
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
                 'waapi'            => 'whatsappmessagesbywaapi.co',
+                'dexatel'          => 'dexatel.com',
             ),
             'united kingdom' => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -359,6 +419,9 @@ class Gateway
             ),
             'germany'        => array(
                 'engy' => 'engy.solutions',
+            ),
+            'romania'        => array(
+                'globalvoice' => 'global-voice.net',
             ),
             'estonia'        => array(
                 'dexatel' => 'dexatel.com',
@@ -546,6 +609,7 @@ class Gateway
                 'msegat'       => 'msegat.com',
                 'oursms'       => 'oursms.net',
                 'gateway'      => 'gateway.sa',
+                'jawalbsms'    => 'jawalbsms.ws',
                 'resalaty'     => 'resalaty.com',
                 'unifonic'     => 'unifonic.com',
                 'asr3sms'      => 'asr3sms.com',
@@ -704,5 +768,4 @@ class Gateway
 
         return $to;
     }
-
 }

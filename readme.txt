@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 5.4.8
+Stable tag: 5.4.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,11 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.9 =
+* Implemented dynamic gateway setting fields based on the current gateway's class.
+* Added global-voice.net gateway.
+* Added jawalbsms.ws gateway.
+
 = 5.4.8 =
 * Added dexatel.com
 * Fixed an issue in smssolutionsaustralia.com.au
