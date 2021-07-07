@@ -49,6 +49,7 @@ function wp_sms_export_subscribers()
             }
 
             $exporter->finalize();
+            exit;
         } else {
             wp_die(__('Please select the desired items.', 'wp-sms'), false, array('back_link' => true));
         }
