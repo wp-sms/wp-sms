@@ -97,7 +97,7 @@
     </div>
 
     <div id="export-subscriber" style="display:none;">
-        <form action="<?php echo plugins_url('wp-sms/includes/admin/export.php'); ?>" method="post">
+        <form action="<?php echo admin_url('admin.php?page=wp-sms-subscribers') ?>" method="post">
             <table>
                 <tr>
                     <td style="padding-top: 10px;">

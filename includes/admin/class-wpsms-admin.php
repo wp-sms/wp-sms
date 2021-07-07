@@ -315,6 +315,8 @@ class Admin
             include(ABSPATH . "wp-includes/pluggable.php");
         }
 
+        include_once WP_SMS_DIR . "includes/admin/export.php";
+
         // Add plugin caps to admin role
         if (is_admin() and is_super_admin()) {
             $this->add_cap();
