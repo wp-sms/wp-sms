@@ -22,7 +22,7 @@ class TP_Account {
 
 	public function get_credits() {
 		$result  = $this->parent->request( 'account/get/credits' );
-		$credits = $result[0];
+		$credits = !empty($result[0]) ? $result[0] : false;
 
 		return $result ? (int) $credits['credits'] : null;
 	}

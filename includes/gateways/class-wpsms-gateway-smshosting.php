@@ -10,7 +10,6 @@ class smshosting extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
-    private $smsh_response_status = 0;
 
     public function __construct()
     {
@@ -59,29 +58,31 @@ class smshosting extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to = implode($this->to, ",");
+        $to = implode(",", $this->to);
 
-        $sms_text = $this->msg;
+        $response = wp_remote_post($this->wsdl_link . '/sms/send', [
+            'timeout' => 10,
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'body' => [
+                'to'   => $to,
+                'from' => $this->from,
+                'text' => $this->msg
+            ]
+        ]);
 
-        $POST = array(
-            'to'   => $to,
-            'from' => $this->from,
-            'text' => $sms_text
-        );
+        $result = wp_remote_retrieve_body($response);
 
-        $to_smsh = curl_init("{$this->wsdl_link}/sms/send");
-        curl_setopt($to_smsh, CURLOPT_POST, true);
-        curl_setopt($to_smsh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($to_smsh, CURLOPT_USERPWD, $this->username . ":" . $this->password);
-        curl_setopt($to_smsh, CURLOPT_POSTFIELDS, http_build_query($POST));
-        curl_setopt($to_smsh, CURLOPT_TIMEOUT, 10);
-        curl_setopt($to_smsh, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        $status = wp_remote_retrieve_response_code($response);
 
-        $result = curl_exec($to_smsh);
+        if (is_wp_error($response)) {
+            // Log the result
+            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
 
-        $this->smsh_response_status = curl_getinfo($to_smsh, CURLINFO_HTTP_CODE);
-
-        if ($result) {
+            return new \WP_Error('send-sms', $response->get_error_message());
+        } else {
             $jsonObj = json_decode($result);
 
             if (null === $jsonObj) {
@@ -89,7 +90,7 @@ class smshosting extends \WP_SMS\Gateway
                 $this->log($this->from, $this->msg, $this->to, $jsonObj, 'error');
 
                 return false;
-            } elseif ($this->smsh_response_status != 200) {
+            } elseif ($status != 200) {
                 // Log the result
                 $this->log($this->from, $this->msg, $this->to, $jsonObj, 'error');
 
@@ -111,11 +112,6 @@ class smshosting extends \WP_SMS\Gateway
 
                 return $result;
             }
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result, 'error');
-
-            return new \WP_Error('send-sms', $result);
         }
     }
 
@@ -126,28 +122,33 @@ class smshosting extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
         }
 
-        $to_smsh = curl_init("{$this->wsdl_link}/user");
+        $response = wp_remote_get($this->wsdl_link . '/user', [
+            'timeout' => 10,
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+            ]
+        ]);
 
-        curl_setopt($to_smsh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($to_smsh, CURLOPT_USERPWD, $this->username . ":" . $this->password);
-        curl_setopt($to_smsh, CURLOPT_TIMEOUT, 10);
+        $result = wp_remote_retrieve_body($response);
 
-        $result = curl_exec($to_smsh);
+        $status = wp_remote_retrieve_response_code($response);
 
-        $this->smsh_response_status = curl_getinfo($to_smsh, CURLINFO_HTTP_CODE);
-
-        if ($result) {
-            $jsonObj = json_decode($result);
-
-            if (null === $jsonObj) {
-                return new \WP_Error('account-credit', $result);
-            } elseif ($this->smsh_response_status != 200) {
-                return new \WP_Error('account-credit', $result);
-            } else {
-                return $jsonObj->italysms;
-            }
+        if (is_wp_error($response)) {
+            return new \WP_Error('account-credit', $response->get_error_message());
         } else {
-            return new \WP_Error('account-credit', $result);
+            if ($result) {
+                $jsonObj = json_decode($result);
+
+                if (null === $jsonObj) {
+                    return new \WP_Error('account-credit', $result);
+                } elseif ($status != 200) {
+                    return new \WP_Error('account-credit', $result);
+                } else {
+                    return $jsonObj->italysms;
+                }
+            } else {
+                return new \WP_Error('account-credit', $result);
+            }
         }
     }
 }

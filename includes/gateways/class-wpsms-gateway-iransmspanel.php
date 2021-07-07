@@ -100,88 +100,22 @@ class iransmspanel extends \WP_SMS\Gateway
         return ($result == 'HTTP/1.1 200 OK') ? $response : false;
     }
 
-    /**
-     * This function allows class to set post values.
-     *
-     * @param string        Reference to options variable
-     * @param array        Options array
-     *
-     */
-    private function curl_post_fields(&$options, $fields)
-    {
-        $options[CURLOPT_POSTFIELDS] = $fields;
-    }
-
-    /**
-     * This function allows class to execute the given url and return result
-     *
-     * @param string        Reference to cURL handle
-     * @param string        URL
-     * @param array        Options for cURL transfer
-     *
-     * @return    string
-     *
-     */
-    private function curl_execute(&$handle, $url, $options = null)
-    {
-        if (!is_array($options)) {
-            $options = array();
-        } else if (in_array(CURLOPT_POSTFIELDS, $options) and sizeof($options[CURLOPT_POSTFIELDS]) > 0) {
-            $options[CURLOPT_POST] = true;
-        }
-
-        $options[CURLOPT_USERAGENT]      = 'PHP';
-        $options[CURLOPT_RETURNTRANSFER] = true;
-        $options[CURLOPT_URL]            = $url;
-
-        $handle = @curl_init(); // initialize cURL session
-        if ($handle and @is_resource($handle)) {
-            @curl_setopt_array($handle, $options); // set options for cURL transfer
-            $result = @curl_exec($handle); // execute cURL session
-            @curl_close($handle); // close cURL session
-        } else {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * This function is used to send SMS via cURL.
-     *
-     * @param $username
-     * @param $password
-     * @param $number
-     * @param $recipient
-     * @param $port
-     * @param $message
-     * @param $flash
-     *
-     * @return string
-     * @internal param Username $string
-     * @internal param Password $string
-     * @internal param Number $string (From - Example: 100002972)
-     * @internal param Recipient $string Number
-     * @internal param Port $integer Number
-     * @internal param Message $string
-     * @internal param Is $bool Flash SMS?
-     *
-     */
     private function Send_Via_cURL($username, $password, $number, $recipient, $port, $message, $flash)
     {
-        $handle  = null;
-        $options = array();
-        $this->curl_post_fields($options, array(
-            'username'  => $username,
-            'password'  => $password,
-            'number'    => $number,
-            'recipient' => $recipient,
-            'port'      => $port,
-            'message'   => $message,
-            'flash'     => $flash
-        ));
+        $response = wp_remote_post('http://www.2972.ir/api', [
+            'body' => [
+                'username'  => $username,
+                'password'  => $password,
+                'number'    => $number,
+                'recipient' => $recipient,
+                'port'      => $port,
+                'message'   => $message,
+                'flash'     => $flash
+            ]
+        ]);
 
-        return $this->curl_execute($handle, "http://www.$this->host{$this->uri}", $options);
+        $result = wp_remote_retrieve_body($response);
+        return $result;
     }
 
     /**
@@ -262,7 +196,6 @@ class iransmspanel extends \WP_SMS\Gateway
         $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
         return new \WP_Error('send-sms', $result);
-
     }
 
     public function GetCredit()
