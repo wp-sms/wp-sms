@@ -7,7 +7,7 @@ function wp_sms_export_subscribers()
             wp_die(__('Access denied!', 'wp-sms'));
         }
 
-        $type = $_POST['export-file-type'];
+        $type = sanitize_text_field($_POST['export-file-type']);
 
         if ($type) {
 

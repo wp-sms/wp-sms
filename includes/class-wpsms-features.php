@@ -189,7 +189,8 @@ class Features
     public function save_register($user_id)
     {
         if (isset($_POST['mobile'])) {
-            update_user_meta($user_id, 'mobile', $_POST['mobile']);
+            $mobile = sanitize_text_field($_POST['mobile']);
+            update_user_meta($user_id, 'mobile', $mobile);
         }
     }
 

@@ -161,8 +161,9 @@ class Subscribers_List_Table extends \WP_List_Table
 
         // Bulk delete action
         if ('bulk_delete' == $current_action) {
-            foreach ($_GET['id'] as $id) {
-                $this->db->delete($this->tb_prefix . "sms_subscribes", array('ID' => $id));
+            $get_ids = array_map('sanitize_text_field', $_GET['id']);
+            foreach ($get_ids as $id) {
+                $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($id)], ['%d']);
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
@@ -171,7 +172,8 @@ class Subscribers_List_Table extends \WP_List_Table
 
         // Single delete action
         if ('delete' == $current_action) {
-            $this->db->delete($this->tb_prefix . "sms_subscribes", array('ID' => $_GET['ID']));
+            $get_id = sanitize_text_field($_GET['ID']);
+            $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
             echo '<div class="notice notice-success is-dismissible"><p>' . __('Item removed.', 'wp-sms') . '</p></div>';
@@ -181,8 +183,9 @@ class Subscribers_List_Table extends \WP_List_Table
             $new_group_id = substr($current_action, 8);
             $new_group = Newsletter::getGroup($new_group_id);
             if($new_group){
-                foreach ($_GET['id'] as $id) {
-                    $this->db->update($this->tb_prefix . "sms_subscribes",['group_ID' => $new_group->ID], ['ID' => $id]);
+                $get_ids = array_map('sanitize_text_field', $_GET['id']);
+                foreach ($get_ids as $id) {
+                    $this->db->update($this->tb_prefix . "sms_subscribes",['group_ID' => $new_group->ID], ['ID' => intval($id)], ['%d']);
                 }
                 $this->data  = $this->get_data();
                 $this->count = $this->get_total();
@@ -279,8 +282,8 @@ class Subscribers_List_Table extends \WP_List_Table
      */
     public function usort_reorder($a, $b)
     {
-        $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to sender
-        $order   = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
+        $orderby = (!empty($_REQUEST['orderby'])) ? sanitize_text_field($_REQUEST['orderby']) : 'date'; //If no sort, default to sender
+        $order   = (!empty($_REQUEST['order'])) ? sanitize_text_field($_REQUEST['order']) : 'desc'; //If no order, default to asc
         $result  = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
 
         return ($order === 'asc') ? $result : -$result; //Send final sort direction to usort

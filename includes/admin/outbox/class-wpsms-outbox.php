@@ -83,7 +83,8 @@ class Outbox_List_Table extends \WP_List_Table
         );
 
         //Return the title contents
-        return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
+        return sprintf(
+            '%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
             /*$1%s*/
             $item['sender'],
             /*$2%s*/
@@ -156,8 +157,9 @@ class Outbox_List_Table extends \WP_List_Table
 
         // Bulk delete action
         if ('bulk_delete' == $this->current_action()) {
-            foreach ($_GET['id'] as $id) {
-                $this->db->delete($this->tb_prefix . "sms_send", array('ID' => $id));
+            $get_ids = array_map('sanitize_text_field', $_GET['id']);
+            foreach ($get_ids as $id) {
+                $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($id)], ['%d']);
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
@@ -166,7 +168,8 @@ class Outbox_List_Table extends \WP_List_Table
 
         // Single delete action
         if ('delete' == $this->current_action()) {
-            $this->db->delete($this->tb_prefix . "sms_send", array('ID' => $_GET['ID']));
+            $get_id = sanitize_text_field($_GET['ID']);
+            $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
             echo '<div class="notice notice-success is-dismissible"><p>' . __('Item removed.', 'wp-sms') . '</p></div>';
@@ -176,7 +179,8 @@ class Outbox_List_Table extends \WP_List_Table
         if ('resend' == $this->current_action()) {
             global $sms;
             $error    = null;
-            $result   = $this->db->get_row($this->db->prepare("SELECT * from `{$this->tb_prefix}sms_send` WHERE ID =%s;", $_GET['ID']));
+            $get_id = sanitize_text_field($_GET['ID']);
+            $result   = $this->db->get_row($this->db->prepare("SELECT * from `{$this->tb_prefix}sms_send` WHERE ID =%d", intval($get_id)));
             $sms->to  = array($result->recipient);
             $sms->msg = $result->message;
             $error    = $sms->SendSMS();
@@ -187,9 +191,7 @@ class Outbox_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-
         }
-
     }
 
     function prepare_items()
@@ -280,8 +282,8 @@ class Outbox_List_Table extends \WP_List_Table
      */
     function usort_reorder($a, $b)
     {
-        $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to sender
-        $order   = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
+        $orderby = (!empty($_REQUEST['orderby'])) ? sanitize_text_field($_REQUEST['orderby']) : 'date'; //If no sort, default to sender
+        $order   = (!empty($_REQUEST['order'])) ? sanitize_text_field($_REQUEST['order']) : 'desc'; //If no order, default to asc
         $result  = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
 
         return ($order === 'asc') ? $result : -$result; //Send final sort direction to usort
@@ -312,7 +314,6 @@ class Outbox_List_Table extends \WP_List_Table
 
         return $result;
     }
-
 }
 
 // Outbox page class
