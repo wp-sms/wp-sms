@@ -10,7 +10,6 @@ class comilio extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
-    private $smsh_response_status = 0;
 
     public function __construct()
     {
@@ -66,16 +65,17 @@ class comilio extends \WP_SMS\Gateway
             'sender_string' => $this->from
         );
 
-        $to_smsh = curl_init("{$this->wsdl_link}/message");
-        curl_setopt($to_smsh, CURLOPT_POST, true);
-        curl_setopt($to_smsh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($to_smsh, CURLOPT_USERPWD, $this->username . ":" . $this->password);
-        curl_setopt($to_smsh, CURLOPT_POSTFIELDS, json_encode($payload));
-        curl_setopt($to_smsh, CURLOPT_TIMEOUT, 10);
-        curl_setopt($to_smsh, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        $response = wp_remote_post($this->wsdl_link . '/message', [
+            'timeout' => 10,
+            'body'    => json_encode($payload),
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+                'Content-Type'  => 'application/json',
+            ]
+        ]);
 
-        $result  = curl_exec($to_smsh);
-        $status  = curl_getinfo($to_smsh, CURLINFO_HTTP_CODE);
+        $status  = wp_remote_retrieve_response_code($response);
+        $result  = wp_remote_retrieve_body($response);
         $jsonObj = json_decode($result);
 
         if (isset($jsonObj->error) or $status != 200) {
@@ -109,22 +109,22 @@ class comilio extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
         }
 
-        $to_smsh = curl_init("{$this->wsdl_link}/credits");
+        $response = wp_remote_get($this->wsdl_link . '/credits', [
+            'timeout' => 10,
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+            ]
+        ]);
 
-        curl_setopt($to_smsh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($to_smsh, CURLOPT_USERPWD, $this->username . ":" . $this->password);
-        curl_setopt($to_smsh, CURLOPT_TIMEOUT, 10);
-
-        $result = curl_exec($to_smsh);
-
-        $this->smsh_response_status = curl_getinfo($to_smsh, CURLINFO_HTTP_CODE);
+        $status = wp_remote_retrieve_response_code($response);
+        $result = wp_remote_retrieve_body($response);
 
         if ($result) {
             $jsonObj = json_decode($result);
 
             if (null === $jsonObj) {
                 return new \WP_Error('account-credit', $result);
-            } elseif ($this->smsh_response_status != 200) {
+            } elseif ($status != 200) {
                 return new \WP_Error('account-credit', $result);
             } else {
                 for ($i = 0; $i < count($jsonObj); $i++) {

@@ -59,28 +59,24 @@ class ismsie extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $data = array(
+        $data = [
             'username' => $this->username,
             'password' => $this->password,
             'mobiles'  => $this->to,
             'body'     => $this->msg,
-        );
+        ];
 
-        $data = http_build_query($data);
+        $response = wp_remote_post($this->wsdl_link, [
+            'body' => $data
+        ]);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->wsdl_link);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-        $result = curl_exec($ch);
+        $result = wp_remote_retrieve_body($response);
         $json   = json_decode($result, true);
 
         if ($result) {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
-            $this->Hook('wp_sms_send', $json);
+            do_action('wp_sms_send', $json);
 
             return $json;
         }

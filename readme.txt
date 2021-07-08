@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.7
 Requires PHP: 5.6
-Stable tag: 5.4.9.1
+Stable tag: 5.4.10
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,11 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.10 =
+* Updated ExpertTexting gateway, the API call to correspond to the current API for ExpertTexting. Needed to use api_secret instead of api_password and the from= should not be an empty string.
+* Improvement: Replaced all CURL with WordPress HTTP API functions
+* Fixed a couple of issues on loading the files, sanitizing things and etc.
+
 = 5.4.9.1 =
 * Fixed Sanitize some input data in admin screens
 

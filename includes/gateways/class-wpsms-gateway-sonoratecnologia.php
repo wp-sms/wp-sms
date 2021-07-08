@@ -62,7 +62,7 @@ class sonoratecnologia extends \WP_SMS\Gateway
 
 
         // Implode numbers
-        $to = implode($this->to, ",");
+        $to = implode(",", $this->to);
 
         // Encode message
         $msg = urlencode($this->msg);
@@ -74,38 +74,23 @@ class sonoratecnologia extends \WP_SMS\Gateway
             $port = '';
         }
 
-        $curl = curl_init();
+        $response = wp_remote_get($this->wsdl_link . "sendsms?username=" . $this->username . "&password=" . $this->password . "&phonenumber=" . $to . "&message=" . $msg . $port . "&report=1&timeout=0", [
+            'timeout' => 30
+        ]);
 
-        curl_setopt_array($curl, array(
-            CURLOPT_PORT           => "1002",
-            CURLOPT_URL            => $this->wsdl_link . "sendsms?username=" . $this->username . "&password=" . $this->password . "&phonenumber=" . $to . "&message=" . $msg . $port . "&report=1&timeout=0",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING       => "",
-            CURLOPT_MAXREDIRS      => 10,
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST  => "GET",
-            CURLOPT_HTTPHEADER     => array(
-                "cache-control: no-cache",
-                "postman-token: 4f6990c5-c293-1dba-1ef5-c77cef7fee3d"
-            ),
-        ));
+        $result = wp_remote_retrieve_body($response);
 
-        $response = curl_exec($curl);
-        $err      = curl_error($curl);
-        curl_close($curl);
-
-        if ($err) {
+        if (is_wp_error($response)) {
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $err, 'error');
+            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
 
-            return false;
+            return new \WP_Error('send-sms', $response->get_error_message());
         }
 
-        if (strstr($response, 'success')) {
+        if (strstr($result, 'success')) {
 
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $result);
 
             /**
              * Run hook after send sms.
@@ -114,18 +99,15 @@ class sonoratecnologia extends \WP_SMS\Gateway
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', $response);
+            do_action('wp_sms_send', $result);
 
             return true;
-
         } else {
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response, 'error');
+            $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
-            return new \WP_Error('send-sms', $response);
+            return new \WP_Error('send-sms', $result);
         }
-
-
     }
 
     public function GetCredit()

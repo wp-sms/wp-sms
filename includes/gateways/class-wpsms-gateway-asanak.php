@@ -62,20 +62,23 @@ class asanak extends \WP_SMS\Gateway
         $msg = urlencode(trim($this->msg));
         $url = $this->wsdl_link . '?username=' . $this->username . '&password=' . urlencode($this->password) . '&source=' . $this->from . '&destination=' . $to . '&message=' . $msg;
 
-        $headers[] = 'Accept: text/html';
-        $headers[] = 'Connection: Keep-Alive';
-        $headers[] = 'Content-type: application/x-www-form-urlencoded;charset=UTF-8';
+        $response = wp_remote_get($url, [
+            'timeout' => 30,
+            'headers' => [
+                'Accept'       => 'text/html',
+                'Connection'   => 'Keep-Alive',
+                'Content-Type' => 'application/x-www-form-urlencoded;charset=UTF-8'
+            ]
+        ]);
 
-        $process = curl_init($url);
-        curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($process, CURLOPT_HEADER, 0);
-        curl_setopt($process, CURLOPT_TIMEOUT, 30);
-        curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);
-
-        if (curl_exec($process)) {
+        if (is_wp_error($response)) {
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $process);
+            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+
+            return new \WP_Error('send-sms', $response->get_error_message());
+        } else {
+            // Log the result
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
@@ -84,14 +87,9 @@ class asanak extends \WP_SMS\Gateway
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', $process);
+            do_action('wp_sms_send', $response);
 
-            return curl_error($process);
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $process, 'error');
-
-            return new \WP_Error('send-sms', $process);
+            return $response;
         }
     }
 

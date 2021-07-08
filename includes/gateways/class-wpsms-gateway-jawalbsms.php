@@ -156,7 +156,7 @@ class jawalbsms extends \WP_SMS\Gateway
     private function getErrorByCode($code)
     {
         // Remove non-ascii characters from string
-        $code   = preg_replace('/[[:^print:]]/', '', $code);
+        $code = preg_replace('/[[:^print:]]/', '', $code);
 
         $errors = [
             '-100' => 'Missing parameters (not exist or empty) Username +password',

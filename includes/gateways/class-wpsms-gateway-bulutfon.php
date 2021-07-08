@@ -4,7 +4,7 @@ namespace WP_SMS\Gateway;
 
 class bulutfon extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.bulutfon.com/messages";
+    private $wsdl_link = "https://api.bulutfon.com/";
     public $tariff = "http://bulutfon.com/";
     public $unitrial = false;
     public $unit;
@@ -30,45 +30,41 @@ class bulutfon extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $msg = urlencode($this->msg);
-
-        $data = array(
+        $data = [
             'title'     => $this->from,
             'email'     => $this->username,
             'password'  => $this->password,
             'receivers' => implode(',', $this->to),
             'content'   => $this->msg,
-        );
+        ];
 
-        $data = http_build_query($data);
-        $ch   = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->wsdl_link);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $response = wp_remote_post($this->wsdl_link . 'messages', ['body' => $data]);
 
-        $result = curl_exec($ch);
-        $json   = json_decode($result, true);
-
-        if ($result) {
+        if (is_wp_error($response)) {
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result);
+            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
 
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $result result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $result);
+            return new \WP_Error('send-sms', $response->get_error_message());
+        } else {
+            $result = wp_remote_retrieve_body($response);
+            $json   = json_decode($result, true);
 
-            return $json;
+            if ($result) {
+                // Log the result
+                $this->log($this->from, $this->msg, $this->to, $result);
+
+                /**
+                 * Run hook after send sms.
+                 *
+                 * @param string $result result output.
+                 * @since 2.4
+                 *
+                 */
+                do_action('wp_sms_send', $result);
+
+                return $json;
+            }
         }
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $result, 'error');
-
-        return new \WP_Error('send-sms', $result);
     }
 
     public function GetCredit()
@@ -78,9 +74,19 @@ class bulutfon extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
         }
 
-        $result     = file_get_contents('https://api.bulutfon.com/me' . '?email=' . $this->username . '&password=' . $this->password);
-        $result_arr = json_decode($result);
+        $response = wp_remote_get($this->wsdl_link . 'me' . '?email=' . $this->username . '&password=' . $this->password);
 
-        return $result_arr->credit->sms_credit;
+        if (is_wp_error($response)) {
+            return new \WP_Error('account-credit', $response->get_error_message());
+        } else {
+            $result     = wp_remote_retrieve_body($response);
+            $result_arr = json_decode($result);
+
+            if (!empty($result_arr->credit->sms_credit)) {
+                return $result_arr->credit->sms_credit;
+            } else {
+                return new \WP_Error('account-credit', $result);
+            }
+        }
     }
 }
