@@ -15,6 +15,7 @@ class jawalbsms extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->validateNumber = "966XXXXXXXXX";
+        $this->help = '<a href="https://jawalbsms.ws">إرسال رسائل نصية جماعية  باللغتين العربية والإنجليزية إلى المملكة العربية السعودية ، دبي ، منطقة الخليج ، تركيا ، مصر ، إفريقيا ، الولايات المتحدة الأمريكية ، المملكة المتحدة ، كندا ، الهند ، 150 دولة أخرى (Send Arabic/English  Bulk  Sms to Saudi Arabia, Dubai, Gulf Region, Turkey,  Egypt,  Africa, USA, UK, Canada, Europe, India, other150 countries)</a> ';
     }
 
     public function SendSMS()
