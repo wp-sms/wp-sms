@@ -782,7 +782,7 @@ class Settings
     public function checkbox_callback($args)
     {
         $checked = isset($this->options[$args['id']]) ? checked(1, $this->options[$args['id']], false) : '';
-        $html = sprintf('<input type="checkbox" id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s]" value="1" %2$s /><label for="wpsms_settings[%1$s]"> ' . __('Active', 'wp-sms') . '</label><p class="description">%3$s</p>', esc_attr($args['id']), esc_attr($checked), $args['desc']);
+        $html    = sprintf('<input type="checkbox" id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s]" value="1" %2$s /><label for="wpsms_settings[%1$s]"> ' . __('Active', 'wp-sms') . '</label><p class="description">%3$s</p>', esc_attr($args['id']), esc_attr($checked), $args['desc']);
         echo $html;
     }
 
@@ -895,10 +895,10 @@ class Settings
 
         foreach ($args['options'] as $option => $name) {
             $selected = selected($option, $value, false);
-            $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
+            $html     .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
         }
 
-        $html .= sprintf('</select><p class="description"> %1$s</p>',  $args['desc']);
+        $html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
 
         echo $html;
     }
@@ -1072,14 +1072,14 @@ class Settings
         $active_tab = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? $_GET['tab'] : 'general';
 
         ob_start();
-?>
+        ?>
         <div class="wrap wpsms-settings-wrap">
             <?php do_action('wp_sms_settings_page'); ?>
             <h2><?php _e('Settings', 'wp-sms') ?></h2>
             <div class="wpsms-tab-group">
                 <ul class="wpsms-tab">
                     <li id="wpsms-logo">
-                        <img src="<?php echo WP_SMS_URL; ?>assets/images/logo-250.png" />
+                        <img src="<?php echo WP_SMS_URL; ?>assets/images/logo-250.png"/>
                         <p><?php echo sprintf(__('WP-SMS v%s', 'wp-sms'), WP_SMS_VERSION); ?></p>
                         <?php do_action('wp_sms_after_setting_logo'); ?>
                     </li>
@@ -1113,7 +1113,7 @@ class Settings
                 </div>
             </div>
         </div>
-<?php
+        <?php
         echo ob_get_clean();
     }
 

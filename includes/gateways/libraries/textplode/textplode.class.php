@@ -10,103 +10,103 @@ require_once('messages.class.php');
 class Textplode
 {
 
-	private $version;
-	private $base_url;
-	private $api_key;
+    private $version;
+    private $base_url;
+    private $api_key;
 
-	private $error_code;
-	private $error_message;
+    private $error_code;
+    private $error_message;
 
-	public $account;
-	public $activity;
-	public $blacklist;
-	public $contacts;
-	public $groups;
-	public $messages;
+    public $account;
+    public $activity;
+    public $blacklist;
+    public $contacts;
+    public $groups;
+    public $messages;
 
-	public function __construct($api_key = null)
-	{
-		$this->api_key  = $api_key;
-		$this->version  = 'v3';
-		$this->base_url = 'http://api.textplode.com/' . $this->version . '/';
+    public function __construct($api_key = null)
+    {
+        $this->api_key  = $api_key;
+        $this->version  = 'v3';
+        $this->base_url = 'http://api.textplode.com/' . $this->version . '/';
 
-		$this->account   = new TP_Account($this);
-		$this->activity  = new TP_Activity($this);
-		$this->blacklist = new TP_Blacklist($this);
-		$this->contacts  = new TP_Contacts($this);
-		$this->groups    = new TP_Groups($this);
-		$this->messages  = new TP_Messages($this);
-	}
+        $this->account   = new TP_Account($this);
+        $this->activity  = new TP_Activity($this);
+        $this->blacklist = new TP_Blacklist($this);
+        $this->contacts  = new TP_Contacts($this);
+        $this->groups    = new TP_Groups($this);
+        $this->messages  = new TP_Messages($this);
+    }
 
-	public function get_version()
-	{
-		return $this->version;
-	}
+    public function get_version()
+    {
+        return $this->version;
+    }
 
-	private function set_last_error($code, $message)
-	{
-		$this->error_code    = $code;
-		$this->error_message = $message;
-	}
+    private function set_last_error($code, $message)
+    {
+        $this->error_code    = $code;
+        $this->error_message = $message;
+    }
 
-	public function get_last_error()
-	{
-		return array('code' => $this->error_code, 'message' => $this->error_message);
-	}
+    public function get_last_error()
+    {
+        return array('code' => $this->error_code, 'message' => $this->error_message);
+    }
 
-	public function toString($array)
-	{
-		while (true) {
-			if (is_array($array)) {
-				$values = array_values($array);
-				$values = $values[0];
-			} else {
-				break;
-			}
-		}
+    public function toString($array)
+    {
+        while (true) {
+            if (is_array($array)) {
+                $values = array_values($array);
+                $values = $values[0];
+            } else {
+                break;
+            }
+        }
 
-		return $array;
-	}
+        return $array;
+    }
 
-	public function request($method, $data = array())
-	{
-		$data = array_merge($data, array('api_key' => $this->api_key));
+    public function request($method, $data = array())
+    {
+        $data = array_merge($data, array('api_key' => $this->api_key));
 
-		$response = wp_remote_post($this->base_url . $method, [
-			'timeout' => 30,
-			'body' => $data,
-			'sslverify' => false
-		]);
+        $response = wp_remote_post($this->base_url . $method, [
+            'timeout'   => 30,
+            'body'      => $data,
+            'sslverify' => false
+        ]);
 
-		$result = wp_remote_retrieve_body($response);
+        $result = wp_remote_retrieve_body($response);
 
-		return $this->output($result);
-	}
+        return $this->output($result);
+    }
 
-	public function get_service_status()
-	{
-		$result = $this->request('/service/status');
+    public function get_service_status()
+    {
+        $result = $this->request('/service/status');
 
-		return $result ? $result : null;
-	}
+        return $result ? $result : null;
+    }
 
-	public function get_service_messages($data)
-	{
-		$result = $this->request('/service/messages', $data);
+    public function get_service_messages($data)
+    {
+        $result = $this->request('/service/messages', $data);
 
-		return $result ? $result : null;
-	}
+        return $result ? $result : null;
+    }
 
-	private function output($data)
-	{
-		$data = json_decode($data, true);
+    private function output($data)
+    {
+        $data = json_decode($data, true);
 
-		if ($data['errors']['errorCode'] != 200) {
-			$this->set_last_error($data['errors']['errorCode'], $data['errors']['errorMessage']);
+        if ($data['errors']['errorCode'] != 200) {
+            $this->set_last_error($data['errors']['errorCode'], $data['errors']['errorMessage']);
 
-			return '';
-		} else {
-			return $data['data'];
-		}
-	}
+            return '';
+        } else {
+            return $data['data'];
+        }
+    }
 }

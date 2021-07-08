@@ -79,7 +79,7 @@ class bulutfon extends \WP_SMS\Gateway
         if (is_wp_error($response)) {
             return new \WP_Error('account-credit', $response->get_error_message());
         } else {
-            $result = wp_remote_retrieve_body($response);
+            $result     = wp_remote_retrieve_body($response);
             $result_arr = json_decode($result);
 
             if (!empty($result_arr->credit->sms_credit)) {

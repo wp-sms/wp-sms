@@ -96,7 +96,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
     {
         $columns = array(
             'cb'                => '<input type="checkbox" />', //Render a checkbox instead of text
-            'ID'              => __('Group ID', 'wp-sms'),
+            'ID'                => __('Group ID', 'wp-sms'),
             'name'              => __('Name', 'wp-sms'),
             'total_subscribers' => __('Total subscribers', 'wp-sms'),
         );

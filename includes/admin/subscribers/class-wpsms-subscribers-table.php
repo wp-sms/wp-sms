@@ -140,7 +140,7 @@ class Subscribers_List_Table extends \WP_List_Table
         $actions = ['bulk_delete' => __('Delete', 'wp-sms')];
 
         $groups = $this->db->get_results("SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`", ARRAY_A);
-        if(count($groups)){
+        if (count($groups)) {
             foreach ($groups as $value) {
                 $actions['move_to_' . $value['ID']] = sprintf(__('Move to «%s»', 'wp-sms'), $value['name']);
             }
@@ -181,11 +181,11 @@ class Subscribers_List_Table extends \WP_List_Table
 
         if (false !== strpos($current_action, 'move_to_')) {
             $new_group_id = substr($current_action, 8);
-            $new_group = Newsletter::getGroup($new_group_id);
-            if($new_group){
+            $new_group    = Newsletter::getGroup($new_group_id);
+            if ($new_group) {
                 $get_ids = array_map('sanitize_text_field', $_GET['id']);
                 foreach ($get_ids as $id) {
-                    $this->db->update($this->tb_prefix . "sms_subscribes",['group_ID' => $new_group->ID], ['ID' => intval($id)], ['%d']);
+                    $this->db->update($this->tb_prefix . "sms_subscribes", ['group_ID' => $new_group->ID], ['ID' => intval($id)], ['%d']);
                 }
                 $this->data  = $this->get_data();
                 $this->count = $this->get_total();

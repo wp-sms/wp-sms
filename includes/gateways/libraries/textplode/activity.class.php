@@ -1,17 +1,20 @@
 <?php
 
-class TP_Activity {
+class TP_Activity
+{
 
-	private $parent;
+    private $parent;
 
-	public function __construct( $parent ) {
-		$this->parent = $parent;
-	}
+    public function __construct($parent)
+    {
+        $this->parent = $parent;
+    }
 
-	public function get_all() {
-		$result = $this->parent->request( 'activity/get/all' );
+    public function get_all()
+    {
+        $result = $this->parent->request('activity/get/all');
 
-		return $result ? $result : null;
-	}
+        return $result ? $result : null;
+    }
 
 }

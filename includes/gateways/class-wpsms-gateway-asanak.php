@@ -65,8 +65,8 @@ class asanak extends \WP_SMS\Gateway
         $response = wp_remote_get($url, [
             'timeout' => 30,
             'headers' => [
-                'Accept' => 'text/html',
-                'Connection' => 'Keep-Alive',
+                'Accept'       => 'text/html',
+                'Connection'   => 'Keep-Alive',
                 'Content-Type' => 'application/x-www-form-urlencoded;charset=UTF-8'
             ]
         ]);

@@ -64,9 +64,9 @@ class smshosting extends \WP_SMS\Gateway
             'timeout' => 10,
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
-                'Content-Type' => 'application/x-www-form-urlencoded'
+                'Content-Type'  => 'application/x-www-form-urlencoded'
             ],
-            'body' => [
+            'body'    => [
                 'to'   => $to,
                 'from' => $this->from,
                 'text' => $this->msg

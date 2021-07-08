@@ -67,15 +67,15 @@ class comilio extends \WP_SMS\Gateway
 
         $response = wp_remote_post($this->wsdl_link . '/message', [
             'timeout' => 10,
-            'body' => json_encode($payload),
+            'body'    => json_encode($payload),
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
-                'Content-Type' => 'application/json',
+                'Content-Type'  => 'application/json',
             ]
         ]);
 
-        $status = wp_remote_retrieve_response_code($response);
-        $result = wp_remote_retrieve_body($response);
+        $status  = wp_remote_retrieve_response_code($response);
+        $result  = wp_remote_retrieve_body($response);
         $jsonObj = json_decode($result);
 
         if (isset($jsonObj->error) or $status != 200) {
