@@ -10,6 +10,20 @@ class smsbox extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disabled";
     public $isflash = false;
+    public $documentUrl = 'http://test.com';
+    public $gatewayFields = [
+        'from'    => [
+            'id'   => 'gateway_sender_id',
+            'name' => 'Sender number',
+            'desc' => 'Sender number or sender ID',
+        ],
+        'has_key' => [
+            'id'   => 'gateway_key',
+            'name' => 'API Token',
+            'desc' => 'SMSBOX apikey, you can create this apikey by logging into your <a href="https://www.jaan.be/smsbox/sms-gateway-api">SMSBOX account</a>.'
+        ]
+    ];
+    public $validateNumber = 'mobiele nummers gescheiden door een komma (countrycode+nummer)';
 
     public function __construct()
     {
