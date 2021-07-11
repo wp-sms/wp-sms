@@ -26,7 +26,7 @@ class Subscribers_Subscribers_Table_Edit
     function wp_sms_edit_subscriber()
     {
         //set Actiom Values
-        $subscriber_id = isset($_GET['subscriber_id']) ? $_GET['subscriber_id'] : null;
+        $subscriber_id = isset($_GET['subscriber_id']) ? sanitize_text_field($_GET['subscriber_id']) : null;
 
         //Load subscriber
         $subscriber = Newsletter::getSubscriber($subscriber_id);

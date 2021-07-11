@@ -74,7 +74,7 @@ class Outbox_List_Table extends \WP_List_Table
         /**
          * Sanitize the input
          */
-        $page = esc_attr($_REQUEST['page']);
+        $page = sanitize_text_field($_REQUEST['page']);
 
         //Build row actions
         $actions = array(

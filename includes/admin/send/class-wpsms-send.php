@@ -75,9 +75,9 @@ class SMS_Send
                 } else if ($_POST['wp_send_to'] == "wp_users") {
                     $this->sms->to = $get_users_mobile;
                 } else if ($_POST['wp_send_to'] == "wp_tellephone") {
-                    $numbers = $_POST['wp_get_number'];
+                    $numbers = sanitize_text_field($_POST['wp_get_number']);
                     if (strpos($numbers, ',') !== false) {
-                        $this->sms->to = explode(",", $_POST['wp_get_number']);
+                        $this->sms->to = explode(",", $numbers);
                     } else {
                         $this->sms->to = explode("\n", str_replace("\r", "", $numbers));
                     }
@@ -92,8 +92,8 @@ class SMS_Send
                     $this->sms->to = $woocommerceCustomers;
                 }
 
-                $this->sms->from = $_POST['wp_get_sender'];
-                $this->sms->msg  = $_POST['wp_get_message'];
+                $this->sms->from = sanitize_text_field($_POST['wp_get_sender']);
+                $this->sms->msg  = sanitize_text_field($_POST['wp_get_message']);
 
                 if (isset($_POST['wp_flash']) and $_POST['wp_flash'] == 'true') {
                     $this->sms->isflash = true;
@@ -102,7 +102,8 @@ class SMS_Send
                 }
 
                 if (isset($_POST['wpsms_scheduled']) and isset($_POST['schedule_status']) and $_POST['schedule_status'] and $_POST['wpsms_scheduled']) {
-                    $response = Scheduled::add($_POST['wpsms_scheduled'], $this->sms->from, $this->sms->msg, $this->sms->to);
+                    $wpsms_scheduled = sanitize_text_field($_POST['wpsms_scheduled']);
+                    $response        = Scheduled::add($wpsms_scheduled, $this->sms->from, $this->sms->msg, $this->sms->to);
                 } else {
 
                     // Send sms

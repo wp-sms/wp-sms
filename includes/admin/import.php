@@ -46,7 +46,8 @@ if (isset($_POST['wps_import'])) {
             // Count submitted items.
             $total_submit[] = $data->sheets[0]['cells'];
 
-            $result = \WP_SMS\Newsletter::insertSubscriber(WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $_POST['wpsms_group_name']);
+            $wpsms_group_name = sanitize_text_field($_POST['wpsms_group_name']);
+            $result           = \WP_SMS\Newsletter::insertSubscriber(WP_SMS_CURRENT_DATE, $items[1], $items[2], 1, $wpsms_group_name);
 
         }
 
