@@ -77,8 +77,8 @@ class Integrations
 
     public function wpcf7_save_form($form)
     {
-        update_option('wpcf7_sms_' . $form->id(), $_POST['wpcf7-sms']);
-        update_option('wpcf7_sms_form' . $form->id(), $_POST['wpcf7-sms-form']);
+        update_option('wpcf7_sms_' . $form->id(), sanitize_text_field($_POST['wpcf7-sms']));
+        update_option('wpcf7_sms_form' . $form->id(), sanitize_text_field($_POST['wpcf7-sms-form']));
     }
 
     public function wpcf7_sms_handler($form)

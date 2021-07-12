@@ -1252,57 +1252,57 @@ class Settings_Pro {
 		echo '<hr/>';
 	}
 
-	public function html_callback( $args ) {
-		echo $args['options'];
-	}
+    public function html_callback($args)
+    {
+        echo sprintf('%s', $args['options']);
+    }
 
-	public function notice_callback( $args ) {
-		echo $args['desc'];
-	}
+    public function notice_callback($args)
+    {
+        echo sprintf('%s', $args['desc']);
+    }
 
-	public function checkbox_callback( $args ) {
-		$checked = isset( $this->options[ $args['id'] ] ) ? checked( 1, $this->options[ $args['id'] ], false ) : '';
-		$html    = '<input type="checkbox" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="1" ' . $checked . '/>';
-		$html    .= '<label for="wps_pp_settings[' . $args['id'] . ']"> ' . __( 'Active', 'wp-sms' ) . '</label>';
-		$html    .= '<p class="description">' . $args['desc'] . '</p>';
+    public function checkbox_callback($args)
+    {
+        $checked = isset($this->options[$args['id']]) ? checked(1, $this->options[$args['id']], false) : '';
+        $html    = sprintf('<input type="checkbox" id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s]" value="1" %2$s /><label for="wps_pp_settings[%1$s]"> ' . __('Active', 'wp-sms') . '</label><p class="description">%3$s</p>', esc_attr($args['id']), esc_attr($checked), $args['desc']);
+        echo $html;
+    }
 
-		echo $html;
-	}
+    public function multicheck_callback($args)
+    {
+        $html = '';
+        foreach ($args['options'] as $key => $value) {
+            $option_name = $args['id'] . '-' . $key;
+            $this->checkbox_callback([
+                'id'   => $option_name,
+                'desc' => $value
+            ]);
+            echo '<br>';
+        }
 
-	public function multicheck_callback( $args ) {
-		$html = '';
-		foreach ( $args['options'] as $key => $value ) {
-			$option_name = $args['id'] . '-' . $key;
-			$this->checkbox_callback( array(
-				'id'   => $option_name,
-				'desc' => $value
-			) );
-			echo '<br>';
-		}
+        echo $html;
+    }
 
-		echo $html;
-	}
+    public function radio_callback($args)
+    {
+        $html = '';
+        foreach ($args['options'] as $key => $option) :
+            $checked = false;
 
-	public function radio_callback( $args ) {
+            if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
+                $checked = true;
+            } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
+                $checked = true;
+            }
+            $html .= sprintf('<input name="wps_pp_settings[%1$s]"" id="wps_pp_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="wps_pp_settings[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
+        endforeach;
+        $html .= sprintf('<p class="description">%1$s</p>', $args['desc']);
+        echo $html;
+    }
 
-		foreach ( $args['options'] as $key => $option ) :
-			$checked = false;
-
-			if ( isset( $this->options[ $args['id'] ] ) && $this->options[ $args['id'] ] == $key ) {
-				$checked = true;
-			} elseif ( isset( $args['std'] ) && $args['std'] == $key && ! isset( $this->options[ $args['id'] ] ) ) {
-				$checked = true;
-			}
-
-			echo '<input name="wps_pp_settings[' . $args['id'] . ']"" id="wps_pp_settings[' . $args['id'] . '][' . $key . ']" type="radio" value="' . $key . '" ' . checked( true, $checked, false ) . '/>';
-			echo '<label for="wps_pp_settings[' . $args['id'] . '][' . $key . ']">' . $option . '</label>&nbsp;&nbsp;';
-		endforeach;
-
-		echo '<p class="description">' . $args['desc'] . '</p>';
-	}
-
-	public function text_callback( $args ) {
-
+    public function text_callback($args)
+    {
 	    $id = $args['id'];
 
 		if (  !empty($this->options[ $id ]) ) {
@@ -1313,63 +1313,55 @@ class Settings_Pro {
 
 		$disabled = $this->checkDefinedLicenseActive($id, $value) ? 'disabled' : '';
 
-		$size        = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
+        $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
 		$after_input = ( isset( $args['after_input'] ) && ! is_null( $args['after_input'] ) ) ? $args['after_input'] : '';
-		$html        = '<input type="text" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"'.$disabled.'/>';
-		$html        .= $after_input;
-		$html        .= '<p class="description"> ' . $args['desc'] . '</p>';
+        $html = sprintf('<input type="text" class="%1$s-text" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]" value="%3$s" %4$s />%5$s<p class="description"> %6$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $disabled, $after_input, $args['desc']);
+        echo $html;
+    }
 
-		echo $html;
-	}
+    public function number_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-	public function number_callback( $args ) {
+        $max  = isset($args['max']) ? $args['max'] : 999999;
+        $min  = isset($args['min']) ? $args['min'] : 0;
+        $step = isset($args['step']) ? $args['step'] : 1;
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
+        $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
+        $html = sprintf('<input type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s-text" id="wps_pp_settings[%5$s]" name="wps_pp_settings[%5$s]" value="%6$s"/><p class="description"> %7$s</p>', esc_attr($step), esc_attr($max), esc_attr($min), esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $args['desc']);
+        echo $html;
+    }
 
-		$max  = isset( $args['max'] ) ? $args['max'] : 999999;
-		$min  = isset( $args['min'] ) ? $args['min'] : 0;
-		$step = isset( $args['step'] ) ? $args['step'] : 1;
+    public function textarea_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
-		$html = '<input type="number" step="' . esc_attr( $step ) . '" max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+        $html = sprintf('<textarea class="large-text" cols="50" rows="5" id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s]">%2$s</textarea><p class="description"> %3$s</p>', esc_attr($args['id']), esc_textarea(stripslashes($value)), $args['desc']);
+        echo $html;
+    }
 
-		echo $html;
-	}
+    public function password_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-	public function textarea_callback( $args ) {
+        $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
+        $html = sprintf('<input type="password" class="%1$s-text" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]" value="%3$s"/><p class="description"> %4$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr($value), $args['desc']);
 
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
-		$html = '<textarea class="large-text" cols="50" rows="5" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']">' . esc_textarea( stripslashes( $value ) ) . '</textarea>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
-
-		echo $html;
-	}
-
-	public function password_callback( $args ) {
-
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
-
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
-		$html = '<input type="password" class="' . $size . '-text" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '"/>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
-
-		echo $html;
-	}
+        echo $html;
+    }
 
 	public function missing_callback( $args ) {
 		echo '&ndash;';
@@ -1377,26 +1369,25 @@ class Settings_Pro {
 		return false;
 	}
 
-	public function select_callback( $args ) {
+    public function select_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
+        $html = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s]">', esc_attr($args['id']));
 
-		$html = '<select id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']"/>';
+        foreach ($args['options'] as $option => $name) {
+            $selected = selected($option, $value, false);
+            $html     .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
+        }
 
-		foreach ( $args['options'] as $option => $name ) :
-			$selected = selected( $option, $value, false );
-			$html     .= '<option value="' . $option . '" ' . $selected . '>' . $name . '</option>';
-		endforeach;
+        $html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
 
-		$html .= '</select>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
-
-		echo $html;
-	}
+        echo $html;
+    }
 
 	public function advancedselect_callback( $args ) {
 
@@ -1412,98 +1403,93 @@ class Settings_Pro {
 			$class_name = 'chosen-select';
 		}
 
-		$html = '<select class="' . $class_name . '" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']"/>';
+		$html = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
 
 		foreach ( $args['options'] as $key => $v ) {
-			$html .= '<optgroup label="' . ucfirst( $key ) . '">';
+			$html .= sprintf('<optgroup label="%1$s">', ucfirst( $key ));
 
 			foreach ( $v as $option => $name ) :
 				$selected = selected( $option, $value, false );
-				$html     .= '<option value="' . $option . '" ' . $selected . '>' . ucfirst( $name ) . '</option>';
+				$html     .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), ucfirst( $name ));
 			endforeach;
 
 			$html .= '</optgroup>';
 		}
 
-		$html .= '</select>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+		$html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
 
 		echo $html;
 	}
 
-	public function color_select_callback( $args ) {
+    public function color_select_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
+        $html = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s]">', esc_attr($args['id']));
 
-		$html = '<select id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']"/>';
+        foreach ($args['options'] as $option => $color) :
+            $selected = selected($option, $value, false);
+            $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
+        endforeach;
 
-		foreach ( $args['options'] as $option => $color ) :
-			$selected = selected( $option, $value, false );
-			$html     .= '<option value="' . $option . '" ' . $selected . '>' . $color['label'] . '</option>';
-		endforeach;
+        $html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
 
-		$html .= '</select>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+        echo $html;
+    }
 
-		echo $html;
-	}
+    public function rich_editor_callback($args)
+    {
+        global $wp_version;
 
-	public function rich_editor_callback( $args ) {
-		global $wp_version;
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
+        if ($wp_version >= 3.3 && function_exists('wp_editor')) {
+            $html = wp_editor(stripslashes($value), 'wps_pp_settings[' . $args['id'] . ']', array('textarea_name' => 'wps_pp_settings[' . $args['id'] . ']'));
+        } else {
+            $html = sprintf('<textarea class="large-text" rows="10" id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
+        }
 
-		if ( $wp_version >= 3.3 && function_exists( 'wp_editor' ) ) {
-			$html = wp_editor( stripslashes( $value ), 'wps_pp_settings[' . $args['id'] . ']', array( 'textarea_name' => 'wps_pp_settings[' . $args['id'] . ']' ) );
-		} else {
-			$html = '<textarea class="large-text" rows="10" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']">' . esc_textarea( stripslashes( $value ) ) . '</textarea>';
-		}
+        $html .= sprintf('<p class="description"> %1$s</p>', $args['desc']);
 
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+        echo $html;
+    }
 
-		echo $html;
-	}
+    public function upload_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-	public function upload_callback( $args ) {
+        $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
+        $html = sprintf('<input type="text" class="%1$s-text wpsms_upload_field" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="wps_pp_settings_upload_button button-secondary" value="%4$s"/></span><p class="description"> %5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), __('Upload File', 'wpsms'), $args['desc']);
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
+        echo $html;
+    }
 
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
-		$html = '<input type="text" class="' . $size . '-text wpsms_upload_field" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( stripslashes( $value ) ) . '"/>';
-		$html .= '<span>&nbsp;<input type="button" class="wps_pp_settings_upload_button button-secondary" value="' . __( 'Upload File', 'wpsms' ) . '"/></span>';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
+    public function color_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
 
-		echo $html;
-	}
+        $default = isset($args['std']) ? $args['std'] : '';
 
-	public function color_callback( $args ) {
+        $html = sprintf('<input type="text" class="wpsms-color-picker" id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), $args['desc']);
 
-		if ( isset( $this->options[ $args['id'] ] ) ) {
-			$value = $this->options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
-
-		$default = isset( $args['std'] ) ? $args['std'] : '';
-
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
-		$html = '<input type="text" class="wpsms-color-picker" id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '" data-default-color="' . esc_attr( $default ) . '" />';
-		$html .= '<p class="description"> ' . $args['desc'] . '</p>';
-
-		echo $html;
-	}
+        echo $html;
+    }
 
 	public function repeater_callback($args)
 	{
@@ -1529,7 +1515,7 @@ class Settings_Pro {
 										<option value="">- Please Choose -</option>
 										<?php foreach ($order_statuses as $status_key => $status_name) { ?>
 											<?php $key = str_replace('wc-', '', $status_key) ?>
-											<option value="<?= $key ?>" <?= ($order_status == $key) ? 'selected' : '' ?>><?= $status_name ?></option>
+											<option value="<?php echo $key ?>" <?php echo ($order_status == $key) ? 'selected' : '' ?>><?php echo $status_name ?></option>
 										<?php } ?>
 									</select>
 									<p class="description">Please choose an order status</p>
@@ -1537,8 +1523,8 @@ class Settings_Pro {
 								<div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
 									<select name="notify_status" style="display: block; width: 100%;">
 										<option value="">- Please Choose -</option>
-										<option value="1" <?= ($notify_status == '1') ? 'selected' : '' ?>>Enable</option>
-										<option value="2" <?= ($notify_status == '2') ? 'selected' : '' ?>>Disable</option>
+										<option value="1" <?php echo ($notify_status == '1') ? 'selected' : '' ?>>Enable</option>
+										<option value="2" <?php echo ($notify_status == '2') ? 'selected' : '' ?>>Disable</option>
 									</select>
 									<p class="description">Please select notify status</p>
 								</div>
@@ -1561,7 +1547,7 @@ class Settings_Pro {
 									<option value="">- Please Choose -</option>
 									<?php foreach ($order_statuses as $status_key => $status_name) { ?>
 										<?php $key = str_replace('wc-', '', $status_key) ?>
-										<option value="<?= $key ?>"><?= $status_name ?></option>
+										<option value="<?php echo $key ?>"><?php echo $status_name ?></option>
 									<?php } ?>
 								</select>
 								<p class="description">Please choose an order status</p>
@@ -1594,15 +1580,15 @@ class Settings_Pro {
 		echo ob_get_clean();
 	}
 
-	   public function countryselect_callback($args) {
-
+	public function countryselect_callback($args)
+    {
         if (isset($this->options[$args['id']])) {
             $value = $this->options[$args['id']];
         } else {
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = '<select id="wps_pp_settings[' . $args['id'] . ']" name="wps_pp_settings[' . $args['id'] . '][]" multiple="true" class="chosen-select"/>';
+        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
@@ -1613,18 +1599,17 @@ class Settings_Pro {
                     $selected = '';
                 }
             }
-            $html .= '<option value="' . $country['code'] . '" ' . $selected . '>' . $country['name'] . '</option>';
+            $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
         endforeach;
 
-        $html .= '</select>';
-        $html .= '<p class="description"> ' . $args['desc'] . '</p>';
+        $html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
 
         echo $html;
     }
 
 
 	public function render_settings() {
-		$active_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->get_tabs() ) ? $_GET['tab'] : 'general';
+		$active_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->get_tabs() ) ? sanitize_text_field($_GET['tab']) : 'general';
 
 		ob_start();
 		?>

@@ -19,11 +19,13 @@ class Subscribers
 
         // Add subscriber
         if (isset($_POST['wp_add_subscribe'])) {
-            $group = isset($_POST['wpsms_group_name']) ? $_POST['wpsms_group_name'] : '';
+            $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
+            $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
+            $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
             if ($group) {
-                $result = Newsletter::addSubscriber($_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $group);
+                $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
             } else {
-                $result = Newsletter::addSubscriber($_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile']);
+                $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
             }
 
             echo Helper::notice($result['message'], $result['result']);
@@ -31,8 +33,12 @@ class Subscribers
 
         // Edit subscriber page
         if (isset($_POST['wp_update_subscribe'])) {
-            $group  = isset($_POST['wpsms_group_name']) ? $_POST['wpsms_group_name'] : '';
-            $result = Newsletter::updateSubscriber($_POST['ID'], $_POST['wp_subscribe_name'], $_POST['wp_subscribe_mobile'], $group, $_POST['wpsms_subscribe_status']);
+            $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
+            $ID                  = isset($_POST['ID']) ? sanitize_text_field($_POST['ID']) : '';
+            $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
+            $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
+            $subscribe_status    = isset($_POST['wpsms_subscribe_status']) ? sanitize_text_field($_POST['wpsms_subscribe_status']) : '';
+            $result              = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
             echo Helper::notice($result['message'], $result['result']);
         }
 

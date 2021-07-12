@@ -7,12 +7,12 @@ if (!defined('ABSPATH')) {
 class WP_SMS
 {
     /**
-	 * Plugin instance.
-	 *
-	 * @see get_instance()
-	 * @type object
-	 */
-	protected static $instance = null;
+     * Plugin instance.
+     *
+     * @see get_instance()
+     * @type object
+     */
+    protected static $instance = null;
 
     public function __construct()
     {
@@ -30,17 +30,18 @@ class WP_SMS
     }
 
     /**
-	 * Access this plugin’s working instance
-	 *
-	 * @wp-hook plugins_loaded
-	 * @return  object of this class
-	 * @since   2.2.0
-	 */
-	public static function get_instance() {
-		null === self::$instance and self::$instance = new self;
+     * Access this plugin’s working instance
+     *
+     * @wp-hook plugins_loaded
+     * @return  object of this class
+     * @since   2.2.0
+     */
+    public static function get_instance()
+    {
+        null === self::$instance and self::$instance = new self;
 
-		return self::$instance;
-	}
+        return self::$instance;
+    }
 
     /**
      * Constructors plugin Setup

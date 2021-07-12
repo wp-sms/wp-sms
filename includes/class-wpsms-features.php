@@ -141,7 +141,7 @@ class Features
 
     public function add_mobile_field_to_register_form()
     {
-        $mobile = (isset($_POST['mobile'])) ? $_POST['mobile'] : '';
+        $mobile = (isset($_POST['mobile'])) ? sanitize_text_field($_POST['mobile']) : '';
         include_once WP_SMS_DIR . "includes/templates/mobile-field-register.php";
     }
 
@@ -158,10 +158,12 @@ class Features
             $errors->add('first_name_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
-        if (isset($_POST['mobile']) and $_POST['mobile']) {
+        if (isset($_POST['mobile']) and !empty($_POST['mobile'])) {
             $error = false;
 
-            if (isset($_POST['mobile']) && preg_match('/^[0-9\-\(\)\/\+\s]*$/', $_POST['mobile'], $matches) == false) {
+            $mobile = sanitize_text_field($_POST['mobile']);
+
+            if (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $mobile, $matches) == false) {
                 $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
                 $error = true;
             }
@@ -175,7 +177,7 @@ class Features
                 $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
             }
 
-            if ($this->checkMobileNumber($_POST['mobile'])) {
+            if ($this->checkMobileNumber($mobile)) {
                 $errors->add('duplicate_mobile_number', __('<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms'));
             }
         }

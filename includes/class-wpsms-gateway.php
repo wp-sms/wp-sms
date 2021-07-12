@@ -114,9 +114,6 @@ class Gateway
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
             'smsbharti'        => 'smsbharti.com'
         ),
-        'belgium'       => array(
-            'smsbox' => 'smsbox.be'
-        )
     );
 
     public $gatewayFields = [
@@ -474,6 +471,9 @@ class Gateway
                 'dot4all'    => 'sms4marketing.it',
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
+            ),
+            'belgium'        => array(
+                'smsbox' => 'smsbox.be'
             ),
             'india'          => array(
                 'shreesms'         => 'shreesms.net',

@@ -26,7 +26,9 @@ class Groups
 
         // Manage groups
         if (isset($_POST['wp_update_group'])) {
-            $result = Newsletter::updateGroup($_POST['group_id'], $_POST['wp_group_name']);
+            $group_id      = sanitize_text_field($_POST['group_id']);
+            $wp_group_name = sanitize_text_field($_POST['wp_group_name']);
+            $result        = Newsletter::updateGroup($group_id, $wp_group_name);
             echo Helper::notice($result['message'], $result['result']);
         }
 
