@@ -184,11 +184,13 @@ class Outbox_List_Table extends \WP_List_Table
             $sms->to  = array($result->recipient);
             $sms->msg = $result->message;
             $error    = $sms->SendSMS();
+
             if (is_wp_error($error)) {
-                echo '<div class="notice notice-error  is-dismissible"><p>' . $error->get_error_message() . '</p></div>';
+                echo '<div class="notice notice-error  is-dismissible"><p>' . esc_html($error->get_error_message()) . '</p></div>';
             } else {
                 echo '<div class="notice notice-success is-dismissible"><p>' . __('The SMS sent successfully.', 'wp-sms') . '</p></div>';
             }
+
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
         }

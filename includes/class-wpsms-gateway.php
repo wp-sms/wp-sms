@@ -245,7 +245,7 @@ class Gateway
         // Show gateway help configuration in gateway page
         if ($sms->help) {
             add_action('wp_sms_after_gateway', function () {
-                echo ' < p class="description" > ' . $sms->help . '</p > ';
+                echo '<p class="description">' . esc_html($sms->help) . '</p>';
             });
         }
 
