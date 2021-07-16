@@ -244,6 +244,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.4.12 =
+* Fixed wrong sanitize data type on CF7 functionality.
+* Minor improvements
+
 = 5.4.11 =
 * Compatibility with WordPress v5.8
 * Updated SMSBox.be, moved to free version
