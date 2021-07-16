@@ -59,26 +59,13 @@ class Integrations
         $cf7_options       = get_option('wpcf7_sms_' . $form->id());
         $cf7_options_field = get_option('wpcf7_sms_form' . $form->id());
 
-        if (!isset($cf7_options['phone'])) {
-            $cf7_options['phone'] = '';
-        }
-        if (!isset($cf7_options['message'])) {
-            $cf7_options['message'] = '';
-        }
-        if (!isset($cf7_options_field['phone'])) {
-            $cf7_options_field['phone'] = '';
-        }
-        if (!isset($cf7_options_field['message'])) {
-            $cf7_options_field['message'] = '';
-        }
-
         include_once WP_SMS_DIR . "includes/templates/wpcf7-form.php";
     }
 
     public function wpcf7_save_form($form)
     {
-        update_option('wpcf7_sms_' . $form->id(), sanitize_text_field($_POST['wpcf7-sms']));
-        update_option('wpcf7_sms_form' . $form->id(), sanitize_text_field($_POST['wpcf7-sms-form']));
+        update_option('wpcf7_sms_' . $form->id(), wp_sms_sanitize_array($_POST['wpcf7-sms']));
+        update_option('wpcf7_sms_form' . $form->id(), wp_sms_sanitize_array($_POST['wpcf7-sms-form']));
     }
 
     public function wpcf7_sms_handler($form)
