@@ -1071,7 +1071,7 @@ class Settings
 
         ob_start();
         ?>
-        <div class="wrap wpsms-settings-wrap">
+        <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php do_action('wp_sms_settings_page'); ?>
             <h2><?php _e('Settings', 'wp-sms') ?></h2>
             <div class="wpsms-tab-group">

@@ -1,4 +1,4 @@
-<div class="wrap">
+<div class="wrap wpsms-wrap">
     <h2><?php _e('Subscribers', 'wp-sms'); ?></h2>
     <?php add_thickbox(); ?>
     <div class="wpsms-button-group">

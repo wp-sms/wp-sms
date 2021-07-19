@@ -56,7 +56,8 @@
 
     });
 </script>
-<div class="wrap">
+<div class="wrap wpsms-wrap">
+    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
     <h2><?php _e('Send SMS', 'wp-sms'); ?></h2>
     <div class="postbox-container" style="padding-top: 20px;">
         <div class="meta-box-sortables">
