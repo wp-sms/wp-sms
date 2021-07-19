@@ -1,4 +1,4 @@
-<div class="wrap">
+<div class="wrap wpsms-wrap">
     <h2><?php _e('Outbox SMS', 'wp-sms'); ?></h2>
 
     <form id="outbox-filter" method="get">

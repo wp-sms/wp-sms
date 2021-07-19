@@ -1613,7 +1613,7 @@ class Settings_Pro {
 
 		ob_start();
 		?>
-        <div class="wrap wpsms-pro-settings-wrap">
+        <div class="wrap wpsms-wrap wpsms-pro-settings-wrap">
 			<?php do_action( 'wp_sms_pro_settings_page' ); ?>
             <h2><?php _e( 'Settings', 'wp-sms' ) ?></h2>
             <div class="wpsms-tab-group">

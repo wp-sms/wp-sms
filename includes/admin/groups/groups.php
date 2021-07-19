@@ -1,4 +1,4 @@
-<div class="wrap">
+<div class="wrap wpsms-wrap">
     <h2><?php _e('Groups', 'wp-sms'); ?></h2>
 
     <div class="wpsms-button-group">
