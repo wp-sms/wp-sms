@@ -656,12 +656,34 @@
 }
 
 .wpsms-header-banner {
-    background: url('../../assets/images/page-header.png') center center/100% no-repeat;
-    min-height: 163px;
+    background: url('../../assets/images/page-header.png') left center/cover no-repeat;
+    min-height: 123px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     padding: 20px;
+}
+
+@media screen and  (max-width: 900px) {
+    .wpsms-header-banner {
+        background: url('../../assets/images/page-header.png') left center/cover no-repeat;
+        min-height: 90px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 14px;
+    }
+}
+
+@media screen and  (max-width: 570px) {
+    .wpsms-header-banner .license-status {
+        transform: translateY(-200%);
+        transition: 0.2s;
+    }
+
+    .wpsms-header-banner:hover .license-status {
+        transform: translateY(0);
+    }
 }
 
 .rtl .wpsms-header-banner {
