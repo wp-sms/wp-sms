@@ -17,18 +17,20 @@ class Groups
      */
     public function render_page()
     {
-
         //Add groups
         if (isset($_POST['wp_add_group'])) {
-            $result = Newsletter::addGroup($_POST['wp_group_name']);
+            $group_name = sanitize_text_field($_POST['wp_group_name']);
+            $result     = Newsletter::addGroup($group_name);
+
             echo Helper::notice($result['message'], $result['result']);
         }
 
         // Manage groups
         if (isset($_POST['wp_update_group'])) {
-            $group_id      = sanitize_text_field($_POST['group_id']);
-            $wp_group_name = sanitize_text_field($_POST['wp_group_name']);
-            $result        = Newsletter::updateGroup($group_id, $wp_group_name);
+            $group_id   = sanitize_text_field($_POST['group_id']);
+            $group_name = sanitize_text_field($_POST['wp_group_name']);
+            $result     = Newsletter::updateGroup($group_id, $group_name);
+
             echo Helper::notice($result['message'], $result['result']);
         }
 
