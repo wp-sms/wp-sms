@@ -4,8 +4,8 @@ namespace WP_SMS\Gateway;
 
 class unifonic extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.unifonic.com/rest/";
-    public $tariff = "https://api.unifonic.com/";
+    private $wsdl_link = "https://basic.unifonic.com/rest/";
+    public $tariff = "https://www.unifonic.com/";
     public $unitrial = false;
     public $unit;
     public $flash = "disable";
@@ -14,9 +14,30 @@ class unifonic extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->has_key        = true;
-        $this->bulk_send      = true;
-        $this->help           = "Just fill the API/Key field with the AppSid token from your app. Check link:<a href='https://software.unifonic.com/en/devtools/restApp' target='_blank' >Click Here</a>";
+        $this->bulk_send = true;
+        $this->has_key   = true;
+        $this->gatewayFields = [
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'API username',
+                'desc' => 'Enter API username of gateway',
+            ],
+            'password' => [
+                'id'   => 'gateway_password',
+                'name' => 'API password',
+                'desc' => 'Enter API password of gateway',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender number',
+                'desc' => 'Sender number or sender ID',
+            ],
+            'has_key' => [
+                'id'   => 'gateway_key',
+                'name' => 'AppSid',
+                'desc' => 'Enter AppSid token of gateway. Check link: <a href="https://software.unifonic.com/en/devtools/restApp" target="_blank">Click Here</a>'
+            ]
+        ];
         $this->validateNumber = "e.g. 96655xxxxxxx, 96655xxxxxxx";
     }
 
@@ -64,22 +85,23 @@ class unifonic extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $numbers = array();
+        $country_code = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
 
         foreach ($this->to as $number) {
-            $numbers[] = $this->clean_number($number);
+            $to = $this->clean_number($number, $country_code);
+            $response = wp_remote_post($this->wsdl_link . 'SMS/messages', [
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+                    'Accept' => 'application/json',
+                ],
+                'body' => [
+                    'AppSid'    => $this->has_key,
+                    'SenderID'  => $this->from,
+                    'Recipient' => $to,
+                    'Body'      => $this->msg,
+                ]
+            ]);
         }
-
-        $args = array(
-            'body' => array(
-                'AppSid'    => $this->has_key,
-                'Recipient' => $numbers,
-                'Body'      => $this->msg,
-                'SenderID'  => $this->from,
-            ),
-        );
-
-        $response = wp_remote_post($this->wsdl_link . "Messages/SendBulk", $args);
 
         // Check gateway response
         if (is_wp_error($response)) {
@@ -93,7 +115,6 @@ class unifonic extends \WP_SMS\Gateway
 
         if ($response_code == '200') {
             $result = json_decode($response['body']);
-            var_dump($result);
             if (isset($result['success']) and $result['success'] == 'true') {
 
                 // Log the result
@@ -127,37 +148,7 @@ class unifonic extends \WP_SMS\Gateway
 
     public function GetCredit()
     {
-        // Check api key
-        if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('API/Key does not set for this gateway', 'wp-sms-pro'));
-        }
-
-        $args = array(
-            'body' => array(
-                'AppSid' => $this->has_key,
-            ),
-        );
-
-        $response = wp_remote_post($this->wsdl_link . "Account/GetBalance", $args);
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-
-        if ($response_code == '200') {
-            $result = json_decode($response['body'], true);
-
-            if (isset($result['success']) and $result['success'] == 'true') {
-                return 'B:' . $result['data']['Balance'] . '|P:' . $result['data']['remainingPoints']['points_count'];
-            } else {
-                return new \WP_Error('account-credit', $response['body']);
-            }
-        } else {
-            return new \WP_Error('account-credit', $response['body']);
-        }
+        return true;
     }
 
     /**
@@ -167,11 +158,34 @@ class unifonic extends \WP_SMS\Gateway
      *
      * @return bool|string
      */
-    private function clean_number($number)
+    private function clean_number($number, $country_code)
     {
-        $number = str_replace('+', '', $number);
-        $number = trim($number);
+        //Clean Country Code from + or 00
+        $country_code = str_replace('+', '', $country_code);
 
-        return $number;
+        if (substr($country_code, 0, 2) == "00") {
+            $country_code = substr($country_code, 2, strlen($country_code));
+        }
+
+        //Remove +
+        $number = str_replace('+', '', $number);
+
+        if (substr($number, 0, strlen($country_code) * 2) == $country_code . $country_code) {
+            $number = substr($number, strlen($country_code) * 2);
+        } else {
+            $number = substr($number, strlen($country_code));
+        }
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 2) == "00") {
+            $number = substr($number, 2, strlen($number));
+        }
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 1) == "0") {
+            $number = substr($number, 1, strlen($number));
+        }
+
+        return $country_code . $number;
     }
 }
