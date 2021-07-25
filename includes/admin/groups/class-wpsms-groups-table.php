@@ -152,7 +152,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_subscribes_group", array('ID' => intval($get_id)), ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Item removed.', 'wp-sms') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p style="padding: 10px 0">' . __('Item removed.', 'wp-sms') . '</p></div>';
         }
     }
 
