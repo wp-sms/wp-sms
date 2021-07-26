@@ -63,7 +63,7 @@
         <div class="postbox-container" style="padding-top: 20px;">
             <div class="meta-box-sortables">
                 <div class="postbox">
-                    <h2 class="hndle" style="cursor: default;padding: 0 10px 10px 10px;font-size: 13px;">
+                    <h2 class="hndle" style="cursor: default;padding: 25px 18px 12px 18px; font-size: 20px;">
                         <span><?php _e('Send SMS form', 'wp-sms'); ?></span></h2>
                     <div class="inside">
                         <form method="post" action="">

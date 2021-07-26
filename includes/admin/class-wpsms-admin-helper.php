@@ -17,7 +17,7 @@ class Helper
      * @return string Wordpress html Notice code
      * @author Mehrshad Darzi
      */
-    public static function notice($text, $model = "info", $close_button = true, $echo = true, $style_extra = '')
+    public static function notice($text, $model = "info", $close_button = true, $echo = true, $style_extra = 'padding:10px 0')
     {
         $text = '
         <div class="notice notice-' . $model . '' . ($close_button === true ? " is-dismissible" : "") . '">
