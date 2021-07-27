@@ -74,6 +74,9 @@ class Integrations
         $cf7_options_field = get_option('wpcf7_sms_form' . $form->id());
         $this->set_cf7_data();
 
+        /**
+         * Send SMS to the specific number
+         */
         if ($cf7_options['message'] && $cf7_options['phone']) {
             $this->sms->to = explode(',', $cf7_options['phone']);
 
@@ -88,6 +91,9 @@ class Integrations
             $this->sms->SendSMS();
         }
 
+        /**
+         * Send SMS to an specific field
+         */
         if ($cf7_options_field['message'] && $cf7_options_field['phone']) {
             $to = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
                 foreach ($matches as $item) {
@@ -97,7 +103,7 @@ class Integrations
                 }
             }, $cf7_options_field['phone']);
 
-            // Check the type of field is select.
+            // Check if the type of the field is select.
             foreach ($form->scan_form_tags() as $scan_form_tag) {
                 if ($scan_form_tag['basetype'] == 'select') {
                     foreach ($scan_form_tag['raw_values'] as $raw_value) {
@@ -110,7 +116,13 @@ class Integrations
                 }
             }
 
-            $this->sms->to = array($to);
+            if (strpos($to, ',') !== false) {
+                $to = explode(',', $to);
+            } else if (strpos($to, '|') !== false) {
+                $to = explode('|', $to);
+            }
+
+            $this->sms->to = is_array($to) ? $to : array($to);
 
             $this->sms->msg = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
                 foreach ($matches as $item) {
