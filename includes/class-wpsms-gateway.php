@@ -114,6 +114,9 @@ class Gateway
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
             'smsbharti'        => 'smsbharti.com'
         ),
+        'srilanka'      => array(
+            'notify' => 'notify.lk'
+        )
     );
 
     public $gatewayFields = [
