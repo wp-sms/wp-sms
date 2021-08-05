@@ -117,7 +117,7 @@ class msgwow extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "balance.php?authkey=" . $this->has_key . "&type=4", array('timeout' => 30));

@@ -89,7 +89,7 @@ class payamresan extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
         $client = file_get_contents("{$this->wsdl_link}Credit.aspx?Username={$this->username}&Password={$this->password}");

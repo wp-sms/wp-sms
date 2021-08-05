@@ -105,7 +105,7 @@ class jawalbsms extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username/password does not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
         $response = wp_remote_get("{$this->wsdl_link}chk_balance?user={$this->username}&pass={$this->password}");

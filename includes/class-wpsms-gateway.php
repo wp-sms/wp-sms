@@ -389,6 +389,7 @@ class Gateway
                 'octopush'         => 'octopush.com',
                 'experttexting'    => 'experttexting.com',
                 'fortytwo'         => 'fortytwo.com',
+                'mitto'            => 'mitto.ch',
                 'smsglobal'        => 'smsglobal.com',
                 'gatewayapi'       => 'gatewayapi.com',
                 'spirius'          => 'spirius.com',

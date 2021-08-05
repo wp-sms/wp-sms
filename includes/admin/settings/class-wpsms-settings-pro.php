@@ -229,7 +229,7 @@ class Settings_Pro {
        }
 
 		if ( isset( $this->options['license_key_status'] ) ) {
-			$item = array( 'icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000' );
+			$item = array( 'icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000' );
 
 			if ( $this->options['license_key_status'] == "yes" ) {
 				$item = array( 'icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514' );
