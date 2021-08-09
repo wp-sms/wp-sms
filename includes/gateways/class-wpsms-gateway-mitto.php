@@ -72,64 +72,50 @@ class mitto extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $body = [];
-        foreach ($this->to as $number) {
-            $body[] = [
-                'from' => $this->from,
-                'to'   => $number,
-                'text' => $this->msg,
-            ];
-        }
-
         $args = array(
             'headers' => array(
                 'X-Mitto-API-Key' => $this->has_key,
                 'Content-Type'    => 'application/json',
             ),
-            'body'    => json_encode($body),
+            'body'    => json_encode([
+                'from' => $this->from,
+                'to'   => $this->to,
+                'text' => $this->msg,
+            ]),
         );
 
-        $response = wp_remote_post($this->wsdl_link . '/smsbulk', $args);
-        
-        if (is_wp_error($response)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+        $response = wp_remote_post($this->wsdl_link . '/smsbulk?format=json', $args);
 
+        if (is_wp_error($response)) {
+            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
             return new \WP_Error('account-credit', $response->get_error_message());
         }
 
         $response_code = wp_remote_retrieve_response_code($response);
         $result        = json_decode($response['body']);
-
-        if ($response_code == '202') {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result);
-
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $result);
-
-            return $result;
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result->errorDescription, 'error');
-
-            return new \WP_Error('sms-send', $result->errorDescription);
+        
+        if ($response_code != '200' or $result->responseCode !== 0) {
+            $this->log($this->from, $this->msg, $this->to, $result->responseText, 'error');
+            return new \WP_Error('sms-send', $result->responseText);
         }
+
+        // Log the result
+        $this->log($this->from, $this->msg, $this->to, $result);
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param string $response result output.
+         * @since 2.4
+         *
+         */
+        do_action('wp_sms_send', $result);
+
+        return $result;
     }
 
     public function GetCredit()
     {
         return 1; // todo
-
-        // Check username and password
-        if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('X-Mitto-API-Key are required.', 'wp-sms-pro'));
-        }
     }
 }
