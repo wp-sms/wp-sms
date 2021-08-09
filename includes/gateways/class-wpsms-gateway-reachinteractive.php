@@ -71,8 +71,7 @@ class reachinteractive extends \WP_SMS\Gateway
         }
 
         if (is_wp_error($response)) {
-            $this->log($this->from, $this->msg, $this->to, $response, 'error');
-
+            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
             return $response;
         }
 
@@ -140,16 +139,19 @@ class reachinteractive extends \WP_SMS\Gateway
             return $response;
         }
 
-        if (wp_remote_retrieve_response_code($response) != 200) {
-            return new \WP_Error('send-sms', __('For more information, please check the full response on Outbox.', 'wp-sms-pro'));
-        }
-
         $response = json_decode($response['body']);
 
-        foreach ($response as $item) {
-            if (!$item->Success or $item->Success == '') {
-                return new \WP_Error('send-sms', $item->Description);
+        /**
+         * Backward compatibility
+         */
+        if (is_array($response)) {
+            foreach ($response as $item) {
+                if (!$item->Success or $item->Success == '') {
+                    return new \WP_Error('send-sms', $item->Description);
+                }
             }
+        } else if (!$response->Success or $response->Success == '') {
+            return new \WP_Error('send-sms', $response->Description);
         }
 
         // Log the result
