@@ -1613,42 +1613,41 @@ class Settings_Pro {
 
 		ob_start();
 		?>
-        <div class="wrap wpsms-pro-settings-wrap">
-			<?php do_action( 'wp_sms_pro_settings_page' ); ?>
-            <h2><?php _e( 'Settings', 'wp-sms' ) ?></h2>
-            <div class="wpsms-tab-group">
-                <ul class="wpsms-tab">
-                    <li id="wpsms-logo">
-                        <img src="<?php echo WP_SMS_URL; ?>assets/images/logo-250.png"/>
-						<?php do_action( 'wp_sms_pro_after_setting_logo' ); ?>
-                    </li>
-					<?php
-					foreach ( $this->get_tabs() as $tab_id => $tab_name ) {
+        <div class="wrap wpsms-wrap wpsms-pro-settings-wrap">
+        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+        <div class="wpsms-wrap__main">
+                <?php do_action( 'wp_sms_pro_settings_page' ); ?>
+                <h2><?php _e( 'Settings', 'wp-sms' ) ?></h2>
+                <div class="wpsms-tab-group">
+                    <ul class="wpsms-tab">
+                        <?php
+                        foreach ( $this->get_tabs() as $tab_id => $tab_name ) {
 
-						$tab_url = add_query_arg( array(
-							'settings-updated' => false,
-							'tab'              => $tab_id
-						) );
+                            $tab_url = add_query_arg( array(
+                                'settings-updated' => false,
+                                'tab'              => $tab_id
+                            ) );
 
-						$active = $active_tab == $tab_id ? 'active' : '';
+                            $active = $active_tab == $tab_id ? 'active' : '';
 
-						echo '<li><a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="' . $active . '">';
-						echo $tab_name;
-						echo '</a></li>';
-					}
-					?>
-                </ul>
-				<?php echo settings_errors( 'wpsms-notices' ); ?>
-                <div class="wpsms-tab-content">
-                    <form method="post" action="options.php">
-                        <table class="form-table">
-							<?php
-							settings_fields( $this->setting_name );
-							do_settings_fields( 'wps_pp_settings_' . $active_tab, 'wps_pp_settings_' . $active_tab );
-							?>
-                        </table>
-						<?php ($active_tab == 'general' && defined('WP_SMS_LICENSE')) ? '' : submit_button(); ?>
-                    </form>
+                            echo '<li><a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="' . $active . '">';
+                            echo $tab_name;
+                            echo '</a></li>';
+                        }
+                        ?>
+                    </ul>
+                    <?php echo settings_errors( 'wpsms-notices' ); ?>
+                    <div class="wpsms-tab-content">
+                        <form method="post" action="options.php">
+                            <table class="form-table">
+                                <?php
+                                settings_fields( $this->setting_name );
+                                do_settings_fields( 'wps_pp_settings_' . $active_tab, 'wps_pp_settings_' . $active_tab );
+                                ?>
+                            </table>
+                            <?php ($active_tab == 'general' && defined('WP_SMS_LICENSE')) ? '' : submit_button(); ?>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
