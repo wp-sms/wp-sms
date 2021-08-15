@@ -355,7 +355,7 @@ class Settings
                 'newsletter_title'                => array(
                     'id'   => 'newsletter_title',
                     'name' => __('SMS Newsletter', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
                 ),
                 'newsletter_form_groups'          => array(
                     'id'   => 'newsletter_form_groups',

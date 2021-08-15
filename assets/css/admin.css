@@ -170,10 +170,6 @@
     transition: 0.2s;
 }
 
-.wpsms-tab li:first-child a {
-    opacity: 1;
-}
-
 .wpsms-tab li a:hover {
     opacity: 1;
 }
@@ -683,13 +679,13 @@
     padding: 45px;
 }
 
-#screen-meta-links + .wpsms-wrap .wpsms-header-banner {
+#screen-meta-links + .wpsms-wrap .wpsms-header-banner , .privacy_page .wpsms-header-banner {
     transform: translateY(-31px);
     z-index: -1;
     position: relative;
 }
 
-#screen-meta-links + .wpsms-wrap .wpsms-wrap__main {
+#screen-meta-links + .wpsms-wrap .wpsms-wrap__main, .privacy_page .wpsms-wrap__main {
     margin-top: -31px;
 }
 
@@ -834,11 +830,11 @@
     background-image: url("data:image/svg+xml,%3Csvg width='20' height='24' viewBox='0 0 20 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M13.5702 0.448691C13.8429 0.167615 14.216 0.00629718 14.6076 0.0001805C14.8054 -0.00291111 15.0018 0.0337403 15.1851 0.107958C15.3685 0.182176 15.5351 0.292449 15.675 0.432245C15.8149 0.572041 15.9254 0.738512 15.9998 0.921789C16.0742 1.10507 16.1111 1.30142 16.1082 1.49921V8.15921L18.2647 8.15921C18.2647 8.15921 19.0649 8.15997 19.0649 8.83944L19.0658 14.5444V14.5453V14.7128H19.0614C18.9696 19.8568 14.7005 24 9.50694 24C4.29483 24 0.0644604 19.8273 0.0030609 14.6579H0.000446524L0 14.657V14.5448V14.5444L0.000446524 8.83943C0.000446524 8.15965 0.801926 8.1592 0.801926 8.1592L2.92934 8.1592V1.54044C2.92427 1.16026 3.07021 0.7936 3.33516 0.520913C3.6001 0.248227 3.96239 0.0917879 4.34253 0.0859309C4.53437 0.0831557 4.72483 0.118872 4.90263 0.190964C5.08043 0.263057 5.24198 0.370061 5.37773 0.505659C5.51347 0.641257 5.62065 0.802693 5.69294 0.980426C5.76523 1.15816 5.80116 1.34858 5.7986 1.54044V8.15921L13.1532 8.15921V1.49921C13.1475 1.10761 13.2975 0.729767 13.5702 0.448691ZM3.70098 16.3112C4.5029 16.3112 5.15298 15.6611 5.15298 14.8591C5.15298 14.0571 4.5029 13.407 3.70098 13.407C2.89906 13.407 2.24898 14.0571 2.24898 14.8591C2.24898 15.6611 2.89906 16.3112 3.70098 16.3112ZM15.099 16.3147C15.9009 16.3147 16.551 15.6645 16.551 14.8626C16.551 14.0606 15.9009 13.4105 15.099 13.4105C14.297 13.4105 13.647 14.0606 13.647 14.8626C13.647 15.6645 14.297 16.3147 15.099 16.3147ZM4.52467 17.3157C4.57459 17.2795 4.63384 17.2583 4.69542 17.2547C4.74412 17.2517 4.79286 17.2598 4.83799 17.2784C4.88312 17.297 4.92345 17.3255 4.95596 17.3619C4.98713 17.3955 5.02115 17.4338 5.05877 17.4761C5.27675 17.7215 5.61519 18.1024 6.21579 18.4833C6.91827 18.9287 7.95742 19.352 9.49731 19.4233C11.258 19.3675 12.3509 18.9701 13.0377 18.5509C13.6723 18.1636 13.9562 17.7747 14.1338 17.5315L14.1339 17.5313C14.1433 17.5185 14.1524 17.5061 14.1612 17.4941C14.1666 17.4867 14.1719 17.4794 14.1772 17.4724C14.2012 17.4355 14.2326 17.4039 14.2693 17.3796C14.3061 17.3552 14.3474 17.3387 14.3907 17.3309C14.4341 17.3232 14.4786 17.3244 14.5215 17.3344C14.5644 17.3445 14.6047 17.3632 14.6401 17.3895C14.6755 17.4157 14.7051 17.4489 14.7272 17.4871C14.7493 17.5252 14.7633 17.5675 14.7684 17.6112C14.7736 17.655 14.7697 17.6993 14.7571 17.7415C14.7444 17.7837 14.7233 17.8229 14.695 17.8566L14.6627 17.9006C14.4964 18.1282 14.1159 18.649 13.3741 19.1017C12.5795 19.5866 11.3634 20.0131 9.5039 20.0697H9.47917C7.82705 19.9953 6.66232 19.5319 5.8695 19.0291C5.17896 18.5913 4.75271 18.1076 4.55431 17.8826C4.52493 17.8492 4.50055 17.8216 4.48105 17.8006C4.43838 17.756 4.40937 17.7002 4.39743 17.6397C4.38549 17.5791 4.39113 17.5165 4.41368 17.4591C4.43623 17.4017 4.47474 17.3519 4.52467 17.3157Z' fill='%23000'/%3E%3C/svg%3E%0A");
 }
 
-.toplevel_page_wp-sms #wpcontent, .sms_page_wp-sms-outbox #wpcontent, .sms_page_wp-sms-subscribers #wpcontent, .sms_page_wp-sms-subscribers-group #wpcontent, .sms_page_wp-sms-settings #wpcontent, .sms_page_wp-sms-pro #wpcontent, .sms_page_wp-sms-scheduled #wpcontent {
+.toplevel_page_wp-sms #wpcontent, .sms_page_wp-sms-outbox #wpcontent, .sms_page_wp-sms-subscribers-privacy #wpcontent, .sms_page_wp-sms-subscribers #wpcontent, .sms_page_wp-sms-subscribers-group #wpcontent, .sms_page_wp-sms-settings #wpcontent, .sms_page_wp-sms-pro #wpcontent, .sms_page_wp-sms-scheduled #wpcontent {
     padding: 0;
 }
 
-.toplevel_page_wp-sms .wpsms-wrap, .outbox .wpsms-wrap, .sms_page_wp-sms-subscribers .wpsms-wrap, .sms_page_wp-sms-subscribers-group .wpsms-wrap, .sms_page_wp-sms-settings .wpsms-wrap, .sms_page_wp-sms-pro .wpsms-wrap, .sms_page_wp-sms-scheduled .wpsms-wrap {
+.toplevel_page_wp-sms .wpsms-wrap, .outbox .wpsms-wrap, .sms_page_wp-sms-subscribers .wpsms-wrap, .sms_page_wp-sms-outbox .wpsms-wrap, .sms_page_wp-sms-subscribers-privacy .wpsms-wrap, .sms_page_wp-sms-subscribers-group .wpsms-wrap, .sms_page_wp-sms-settings .wpsms-wrap, .sms_page_wp-sms-pro .wpsms-wrap, .sms_page_wp-sms-scheduled .wpsms-wrap {
     margin: 0;
 }
 
@@ -855,6 +851,7 @@
 .sms_page_wp-sms-scheduled #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .toplevel_page_wp-sms #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .sms_page_wp-sms-outbox #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
+.sms_page_wp-sms-subscribers-privacy #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .sms_page_wp-sms-subscribers #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .sms_page_wp-sms-subscribers-group #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .sms_page_wp-sms-settings #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
@@ -912,6 +909,7 @@
 
 .toplevel_page_wp-sms #wpcontent .wpsms-wrap .notice,
 .sms_page_wp-sms-outbox #wpcontent .wpsms-wrap .notice,
+.sms_page_wp-sms-subscribers-privacy #wpcontent .wpsms-wrap .notice,
 .sms_page_wp-sms-subscribers #wpcontent .wpsms-wrap .notice,
 .sms_page_wp-sms-subscribers-group #wpcontent .wpsms-wrap .notice,
 .sms_page_wp-sms-settings #wpcontent .wpsms-wrap .notice,
@@ -972,10 +970,13 @@
     border-bottom: 1px solid #E7E7E7 !important;
 }
 
-.sms_page_wp-sms-subscribers-privacy .postbox-header h2, .wpsms-wrap .postbox-header h2 {
+.sms_page_wp-sms-subscribers-privacy.postbox-header h2, .wpsms-wrap .postbox-header h2 {
     padding: 15px 12px !important;
 }
 
+.sms_page_wp-sms-subscribers-privacy .privacy_page {
+    margin: 0 !important;
+}
 
 .wpsms-wrap input[type="radio"] {
     background: #fff;
@@ -1016,4 +1017,22 @@
 .rtl .wpsms-wrap #flash_no {
     margin-left: 0 !important;
     margin-right: 10px !important;
+}
+
+.wpsms-wrap .notice .notice-dismiss {
+    margin-top: 5px;
+}
+
+.wpsms-wrap .notice .notice-dismiss::before {
+ font-size: 20px;
+}
+
+.wpsms-wrap .description {
+    color: #5B5B5B;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.wpsms-wrap .postbox table tr td, .wpsms-wrap .postbox table tr th {
+    padding: 20px 10px;
 }
