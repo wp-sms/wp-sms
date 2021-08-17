@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.4.13
+Stable tag: 5.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,14 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.5 =
+* New admin design
+* Added multiple sending SMS to CF7 field
+* Added Mitto SMS gateway
+* Fixed some sanitization issues in input data.
+* Fixed separating the numbers issue in the send SMS page
+* Updated msegat.com and reach-interactive gateways (Please re-configure your gateway again)
+
 = 5.4.13 =
 * Updated Unifonic gateway
 * Improvement of some inputs on the admin and sanitizes. (Special thanks to WPScan.com)
