@@ -172,7 +172,7 @@ class Outbox_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Item removed.', 'wp-sms') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p style="padding: 10px 0">' . __('Item removed.', 'wp-sms') . '</p></div>';
         }
 
         // Resend sms
@@ -186,7 +186,7 @@ class Outbox_List_Table extends \WP_List_Table
             $error    = $sms->SendSMS();
 
             if (is_wp_error($error)) {
-                echo '<div class="notice notice-error  is-dismissible"><p>' . esc_html($error->get_error_message()) . '</p></div>';
+                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html($error->get_error_message()) . '</p></div>';
             } else {
                 echo '<div class="notice notice-success is-dismissible"><p>' . __('The SMS sent successfully.', 'wp-sms') . '</p></div>';
             }

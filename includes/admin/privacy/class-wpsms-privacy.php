@@ -82,37 +82,40 @@ class Privacy
     {
         ?>
         <div id="<?php echo $this->metabox; ?>" class="wrap privacy_page">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <form action="admin-post.php" method="post">
-                <?php wp_nonce_field($this->metabox); ?>
-                <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
-                <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
-                <input type="hidden" name="action" value="save_<?php echo $this->metabox; ?>"/>
-            </form>
-            <div id="poststuff">
-                <div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
-                    <div id="postbox-container-1" class="postbox-container">
-                        <?php do_meta_boxes($this->pagehook, 'side', ''); ?>
-                    </div>
+	        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+            <div class="wpsms-wrap__main">
+                <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+                <form action="admin-post.php" method="post">
+                    <?php wp_nonce_field($this->metabox); ?>
+                    <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
+                    <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
+                    <input type="hidden" name="action" value="save_<?php echo $this->metabox; ?>"/>
+                </form>
+                <div id="poststuff">
+                    <div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
+                        <div id="postbox-container-1" class="postbox-container">
+                            <?php do_meta_boxes($this->pagehook, 'side', ''); ?>
+                        </div>
 
-                    <div id="postbox-container-2" class="postbox-container">
-                        <?php do_meta_boxes($this->pagehook, 'normal', ''); ?>
-                    </div>
-                </div><!-- #post-body --><br class="clear">
-            </div><!-- #poststuff -->
+                        <div id="postbox-container-2" class="postbox-container">
+                            <?php do_meta_boxes($this->pagehook, 'normal', ''); ?>
+                        </div>
+                    </div><!-- #post-body --><br class="clear">
+                </div><!-- #poststuff -->
 
-            <script type="text/javascript">
-                //<![CDATA[
-                jQuery(document).ready(function ($) {
-                    $('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-                    postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
-                    $('input[type=tel]').bind('keypress', function (e) {
-                        var keyCode = (e.which) ? e.which : event.keyCode;
-                        return !(keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode !== 43);
+                <script type="text/javascript">
+                    //<![CDATA[
+                    jQuery(document).ready(function ($) {
+                        $('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+                        postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
+                        $('input[type=tel]').bind('keypress', function (e) {
+                            var keyCode = (e.which) ? e.which : event.keyCode;
+                            return !(keyCode > 31 && (keyCode < 48 || keyCode > 57) && keyCode !== 43);
+                        });
                     });
-                });
-                //]]>
-            </script>
+                    //]]>
+                </script>
+            </div>
         </div>
         <?php
     }

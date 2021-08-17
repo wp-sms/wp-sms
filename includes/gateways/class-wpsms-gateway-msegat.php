@@ -14,6 +14,23 @@ class msegat extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
+        $this->gatewayFields = [
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'API username',
+                'desc' => 'Enter API username of gateway',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender number',
+                'desc' => 'Sender number or sender ID',
+            ],
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => 'API key',
+                'desc' => 'Enter API key of gateway'
+            ]
+        ];
         $this->has_key        = true;
         $this->help           = "Use username as your username and use the API/Key as your API.";
         $this->validateNumber = "The phone number(s) the message should be sent to (must be in international format, like 966xxxxxxxxx). ";

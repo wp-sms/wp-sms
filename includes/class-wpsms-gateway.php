@@ -114,6 +114,9 @@ class Gateway
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
             'smsbharti'        => 'smsbharti.com'
         ),
+        'srilanka'      => array(
+            'notify' => 'notify.lk'
+        )
     );
 
     public $gatewayFields = [
@@ -386,6 +389,7 @@ class Gateway
                 'octopush'         => 'octopush.com',
                 'experttexting'    => 'experttexting.com',
                 'fortytwo'         => 'fortytwo.com',
+                'mitto'            => 'mitto.ch',
                 'smsglobal'        => 'smsglobal.com',
                 'gatewayapi'       => 'gatewayapi.com',
                 'spirius'          => 'spirius.com',
