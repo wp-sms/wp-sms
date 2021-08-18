@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.5
+Stable tag: 5.5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,10 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.5.1 =
+* Fixed showing correct license status issue in the plugin's admin header
+* Fixed ExpertTexting gateway
+
 = 5.5 =
 * New admin design
 * Added multiple sending SMS to CF7 field
