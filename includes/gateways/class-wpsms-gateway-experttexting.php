@@ -72,7 +72,7 @@ class experttexting extends \WP_SMS\Gateway
         }
 
         foreach ($this->to as $to) {
-            $response = wp_remote_get($this->wsdl_link . "json/Message/Send?username=" . $this->username . "&api_key=" . $this->has_key . "&from=" . "&api_secret=" . $this->password . $this->from . "&to=" . $to . "&text=" . $text . "&type=" . $type, array('timeout' => 30));
+            $response = wp_remote_get($this->wsdl_link . "json/Message/Send?username=" . $this->username . "&api_key=" . $this->has_key . "&from=" . $this->from . "&api_secret=" . $this->password . "&to=" . $to . "&text=" . $text . "&type=" . $type, array('timeout' => 30));
         }
 
         // Check gateway credit
