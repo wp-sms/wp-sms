@@ -1036,3 +1036,7 @@
 .wpsms-wrap .postbox table tr td, .wpsms-wrap .postbox table tr th {
     padding: 20px 10px;
 }
+
+#TB_ajaxContent{
+    height: min-content !important;
+}
