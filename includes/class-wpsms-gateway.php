@@ -623,6 +623,7 @@ class Gateway
                 'zain'         => 'zain.im',
                 'malath'       => 'malath.net.sa',
                 'safasms'      => 'safa-sms.com',
+                'bareedsms'    => 'bareedsms.com',
             ),
             'africa'         => array(
                 '_ebulksms'          => 'ebulksms.com',
