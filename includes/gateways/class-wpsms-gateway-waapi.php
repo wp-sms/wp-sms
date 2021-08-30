@@ -66,7 +66,7 @@ class waapi extends \WP_SMS\Gateway
                 'client_id' => $this->username,
                 'instance'  => $this->password,
                 'type'      => 'text',
-                'message'   => $this->msg,
+                'message'   => urlencode($this->msg),
                 'number'    => $number,
             ], $this->getApiDomain() . '/api/send.php');
 
