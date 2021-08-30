@@ -40,9 +40,9 @@
             dateFormat: "Y-m-d H:i:00",
             time_24hr: true,
             minuteIncrement: "10",
-            minDate: "today",
+            minDate: "<?= current_time("Y-m-d H:i:00"); ?>",
             disableMobile: true,
-            defaultDate: new Date()
+            defaultDate: "<?= current_time("Y-m-d H:i:00"); ?>"
         });
 
         jQuery("#schedule_status").change(function () {
@@ -171,6 +171,7 @@
                             </th>
                             <td>
                                 <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
+                                <p><?php  echo __("Site's time zone" , 'wp-sms').': '.wp_timezone_string(); ?></p>
                             </td>
                         </tr>
                     <?php else: ?>
