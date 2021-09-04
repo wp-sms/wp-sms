@@ -1036,3 +1036,12 @@
 .wpsms-wrap .postbox table tr td, .wpsms-wrap .postbox table tr th {
     padding: 20px 10px;
 }
+
+.notice input {
+    padding: 4px 6px;
+}
+
+.notice button,.notice input[type="submit"], .notice .button {
+    padding: 10px;
+    margin-left: 4px;
+}
