@@ -1037,6 +1037,16 @@
     padding: 20px 10px;
 }
 
+
+.notice input {
+    padding: 4px 6px;
+}
+
+.notice button,.notice input[type="submit"], .notice .button {
+    padding: 10px;
+    margin-left: 4px;
+}
+
 #TB_ajaxContent{
     height: min-content !important;
 }
