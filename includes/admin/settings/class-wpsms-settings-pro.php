@@ -956,19 +956,19 @@ class Settings_Pro {
 				}
 				$gf_forms[ 'gf_notify_form_' . $form->id ]          = array(
 					'id'   => 'gf_notify_form_' . $form->id,
-					'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form->title ),
+					'name' => sprintf( __( 'Notify for form: (%s)', 'wp-sms' ), $form->title ),
 					'type' => 'header'
 				);
 				$gf_forms[ 'gf_notify_enable_form_' . $form->id ]   = array(
 					'id'      => 'gf_notify_enable_form_' . $form->id,
-					'name'    => __( 'Send SMS', 'wp-sms' ),
+					'name'    => __( 'Status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
 					'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
 				);
 				$gf_forms[ 'gf_notify_receiver_form_' . $form->id ] = array(
 					'id'   => 'gf_notify_receiver_form_' . $form->id,
-					'name' => __( 'Send SMS', 'wp-sms' ),
+					'name' => __( 'To number(s)', 'wp-sms' ),
 					'type' => 'text',
 					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 				);
