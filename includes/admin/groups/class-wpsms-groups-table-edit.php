@@ -34,7 +34,7 @@ class Subscribers_Groups_Table_Edit
 					            <td style="padding-top: 10px;">
 					                <label for="wp_group_name"
 					                       class="wp_sms_subscribers_label">' . __('Name', 'wp-sms') . '</label>
-					                <input type="text" id="wp_group_name" name="wp_group_name" value="' . $group_name . '"
+					                <input type="text" id="wp_group_name" name="wp_group_name" value="' . esc_attr($group_name) . '"
 					                       class="wp_sms_subscribers_input_text"/>
 					                <input type="hidden" id="wp_group_name" name="group_id" value="' . $group_id . '"
 							class="wp_sms_subscribers_input_text"/>

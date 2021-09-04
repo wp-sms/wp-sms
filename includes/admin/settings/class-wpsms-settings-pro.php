@@ -229,7 +229,7 @@ class Settings_Pro {
        }
 
 		if ( isset( $this->options['license_key_status'] ) ) {
-			$item = array( 'icon' => 'no', 'text' => 'Deactive!', 'color' => '#ff0000' );
+			$item = array( 'icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000' );
 
 			if ( $this->options['license_key_status'] == "yes" ) {
 				$item = array( 'icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514' );
@@ -1185,7 +1185,7 @@ class Settings_Pro {
 					'name'    => __( 'Login with OTP status', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Verify mobile number in the login form. This feature stabled with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms' ),
+					'desc'    => __( 'Verify mobile number in the login form. This feature is only compatible with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms' ),
 				),
 				'mobile_verify_optional'     => array(
 					'id'      => 'mobile_verify_optional',

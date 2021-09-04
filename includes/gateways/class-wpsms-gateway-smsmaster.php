@@ -98,7 +98,7 @@ class smsmaster extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
         return $this->client->call('getcredit', array($this->username, $this->password));

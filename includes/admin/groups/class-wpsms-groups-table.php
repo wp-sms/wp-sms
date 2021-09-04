@@ -66,14 +66,14 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
         //Build row actions
         $actions = array(
-            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . __('Edit', 'wp-sms') . '</a>', $item['ID'], $item['name']),
+            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . __('Edit', 'wp-sms') . '</a>', $item['ID'], esc_attr($item['name'])),
             'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
         );
 
         //Return the title contents
         return sprintf('%1$s %3$s',
             /*$1%s*/
-            $item['name'],
+            esc_html($item['name']),
             /*$1%s*/
             $item['ID'],
             /*$2%s*/

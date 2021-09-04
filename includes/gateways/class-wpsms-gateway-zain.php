@@ -110,7 +110,7 @@ class zain extends \WP_SMS\Gateway
     {
         // Check api key
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('Username/Password does not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "chk_balance/?user={$this->username}&pass={$this->password}");

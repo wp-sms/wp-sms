@@ -44,7 +44,7 @@ class SMS_Send
         $woocommerceCustomers = array();
 
         if (Version::pro_is_active() and class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
-            $woocommerceCustomers = WcHelper::getCustomersNumbers();
+            $woocommerceCustomers = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
             $wcSendEnable         = true;
         }
 
@@ -75,7 +75,7 @@ class SMS_Send
                 } else if ($_POST['wp_send_to'] == "wp_users") {
                     $this->sms->to = $get_users_mobile;
                 } else if ($_POST['wp_send_to'] == "wp_tellephone") {
-                    $numbers = sanitize_text_field($_POST['wp_get_number']);
+                    $numbers = wp_unslash($_POST['wp_get_number']);
                     if (strpos($numbers, ',') !== false) {
                         $this->sms->to = explode(",", $numbers);
                     } else {

@@ -350,7 +350,7 @@ class Settings
             )),
 
             // SMS Newsletter tab
-            'newsletter'    => apply_filters('wp_sms_gateway_settings', array(
+            'newsletter'    => apply_filters('wp_sms_newsletter_settings', array(
                 // SMS Newsletter
                 'newsletter_title'                => array(
                     'id'   => 'newsletter_title',
