@@ -4,7 +4,6 @@ namespace WP_SMS;
 
 use WP_SMS\Admin\Helper;
 use WP_SMS\Pro\Scheduled;
-use WP_SMS\Pro\WooCommerce\Helper as WcHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -48,17 +47,13 @@ class SMS_Send
             $wcSendEnable         = true;
         }
 
-        $mobile_field = Option::getOption('add_mobile_field');
-
         //Get User Mobile List by Role
-        if (!empty($mobile_field) and $mobile_field == 1) {
-            $wpsms_list_of_role = array();
-            foreach (wp_roles()->role_names as $key_item => $val_item) {
-                $wpsms_list_of_role[$key_item] = array(
-                    "name"  => $val_item,
-                    "count" => Helper::getUsersList($key_item, true)
-                );
-            }
+        $wpsms_list_of_role = array();
+        foreach (wp_roles()->role_names as $key_item => $val_item) {
+            $wpsms_list_of_role[$key_item] = array(
+                "name"  => $val_item,
+                "count" => Helper::getUsersList($key_item, true)
+            );
         }
 
         $gateway_name = Option::getOption('gateway_name');
