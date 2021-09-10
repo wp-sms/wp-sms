@@ -91,20 +91,20 @@
                                             <option value="wp_role" id="wp_role"><?php _e('Role', 'wp-sms'); ?></option>
                                             <option value="wp_tellephone" id="wp_tellephone"><?php _e('Number(s)', 'wp-sms'); ?></option>
                                         </select>
-                                        <?php if (!empty($mobile_field) or $mobile_field == 1) { ?>
-                                            <select name="wpsms_group_role" class="wpsms-value wprole-group">
-                                                <?php
-                                                foreach ($wpsms_list_of_role as $key_item => $val_item):
-                                                    ?>
-                                                    <option value="<?php echo $key_item; ?>"<?php if ($val_item['count'] < 1) {
-                                                        echo " disabled";
-                                                    } ?>><?php _e($val_item['name'], 'wp-sms'); ?>
-                                                        (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>
-                                                        )
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        <?php } ?>
+
+                                        <select name="wpsms_group_role" class="wpsms-value wprole-group">
+                                            <?php
+                                            foreach ($wpsms_list_of_role as $key_item => $val_item):
+                                                ?>
+                                                <option value="<?php echo $key_item; ?>"<?php if ($val_item['count'] < 1) {
+                                                    echo " disabled";
+                                                } ?>><?php _e($val_item['name'], 'wp-sms'); ?>
+                                                    (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>
+                                                    )
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+
                                         <select name="wpsms_group_name" class="wpsms-value wpsms-group">
                                             <option value="all">
                                                 <?php
@@ -117,14 +117,17 @@
                                                 <option value="<?php echo $items->ID; ?>"><?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?></option>
                                             <?php endforeach; ?>
                                         </select>
+
                                         <span class="wpsms-value wpsms-users" style="display: none;">
                                             <span><?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); ?></span>
                                         </span>
+
                                         <?php if ($wcSendEnable): ?>
                                             <span class="wpsms-value wpsms-wc-users" style="display: none;">
                                             <span><?php echo sprintf(__('<b>%s</b> Customers have the mobile number.', 'wp-sms'), count($woocommerceCustomers)); ?></span>
                                         </span>
                                         <?php endif; ?>
+
                                         <span class="wpsms-value wpsms-numbers">
                                             <div class="clearfix"></div>
                                             <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
