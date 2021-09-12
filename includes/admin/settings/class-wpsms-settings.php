@@ -508,6 +508,13 @@ class Settings
                     'options' => $options,
                     'desc'    => __('Send an SMS to subscribers When published new posts.', 'wp-sms')
                 ),
+                'notif_publish_new_post_type' => array(
+                    'id'      => 'notif_publish_new_post_type',
+                    'name'    => __('Post Types', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => $this->get_list_post_type(array('show_ui' => 1)),
+                    'desc'    => __('Select post types that you want to use this option.', 'wp-sms')
+                ),
                 'notif_publish_new_post_words_count'      => array(
                     'id'   => 'notif_publish_new_post_words_count',
                     'name' => __('Post content words count', 'wp-sms'),
