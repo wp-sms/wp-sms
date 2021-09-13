@@ -1053,7 +1053,7 @@ class Settings_Pro {
 				foreach ( $forms as $form ):
 					$qf_forms[ 'qf_notify_form_' . $form['id'] ]          = array(
 						'id'   => 'qf_notify_form_' . $form['id'],
-						'name' => sprintf( __( 'Notify for %s form', 'wp-sms' ), $form['name'] ),
+						'name' => sprintf( __( 'Notify for form: (%s)', 'wp-sms' ), $form['name'] ),
 						'type' => 'header'
 					);
 					$qf_forms[ 'qf_notify_enable_form_' . $form['id'] ]   = array(
@@ -1065,7 +1065,7 @@ class Settings_Pro {
 					);
 					$qf_forms[ 'qf_notify_receiver_form_' . $form['id'] ] = array(
 						'id'   => 'qf_notify_receiver_form_' . $form['id'],
-						'name' => __( 'Send SMS', 'wp-sms' ),
+						'name' => __( 'To number(s)', 'wp-sms' ),
 						'type' => 'text',
 						'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
 					);
