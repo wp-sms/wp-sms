@@ -956,27 +956,27 @@ class Settings_Pro {
 				}
 				$gf_forms[ 'gf_notify_form_' . $form->id ]          = array(
 					'id'   => 'gf_notify_form_' . $form->id,
-					'name' => sprintf( __( 'Notify for form: (%s)', 'wp-sms' ), $form->title ),
+					'name' => sprintf( __( 'Form notifications (%s)', 'wp-sms' ), $form->title ),
 					'type' => 'header'
 				);
 				$gf_forms[ 'gf_notify_enable_form_' . $form->id ]   = array(
 					'id'      => 'gf_notify_enable_form_' . $form->id,
-					'name'    => __( 'Status', 'wp-sms' ),
+					'name'    => __( 'Send SMS to a number', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
+					'desc'    => __( 'Send SMS once the form is submitted.', 'wp-sms' )
 				);
 				$gf_forms[ 'gf_notify_receiver_form_' . $form->id ] = array(
 					'id'   => 'gf_notify_receiver_form_' . $form->id,
-					'name' => __( 'To number(s)', 'wp-sms' ),
+					'name' => __( 'Phone number(s)', 'wp-sms' ),
 					'type' => 'text',
-					'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
+					'desc' => __( 'Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms' )
 				);
 				$gf_forms[ 'gf_notify_message_form_' . $form->id ]  = array(
 					'id'   => 'gf_notify_message_form_' . $form->id,
 					'name' => __( 'Message body', 'wp-sms' ),
 					'type' => 'textarea',
-					'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+					'desc' => __( 'Enter your message content.', 'wp-sms' ) . '<br>' .
 					          sprintf(
 						          __( 'Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms' ),
 						          '<code>%title%</code>',
@@ -993,20 +993,20 @@ class Settings_Pro {
 						'name'    => __( 'Send SMS to field', 'wp-sms' ),
 						'type'    => 'checkbox',
 						'options' => $options,
-						'desc'    => __( 'Send SMS to field value when this form get new message', 'wp-sms' )
+						'desc'    => __( 'Send an SMS to the value of a field once the form is submitted.', 'wp-sms' )
 					);
 					$gf_forms[ 'gf_notify_receiver_field_form_' . $form->id ] = array(
 						'id'      => 'gf_notify_receiver_field_form_' . $form->id,
-						'name'    => __( 'Field form', 'wp-sms' ),
+						'name'    => __( 'A field of the form', 'wp-sms' ),
 						'type'    => 'select',
 						'options' => Gravityforms::get_field( $form->id ),
-						'desc'    => __( 'Please select the field of the form', 'wp-sms' )
+						'desc'    => __( 'Select the field of your form.', 'wp-sms' )
 					);
 					$gf_forms[ 'gf_notify_message_field_form_' . $form->id ]  = array(
 						'id'   => 'gf_notify_message_field_form_' . $form->id,
 						'name' => __( 'Message body', 'wp-sms' ),
 						'type' => 'textarea',
-						'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+						'desc' => __( 'Enter your message content.', 'wp-sms' ) . '<br>' .
 						          sprintf(
 							          __( 'Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms' ),
 							          '<code>%title%</code>',
@@ -1053,27 +1053,27 @@ class Settings_Pro {
 				foreach ( $forms as $form ):
 					$qf_forms[ 'qf_notify_form_' . $form['id'] ]          = array(
 						'id'   => 'qf_notify_form_' . $form['id'],
-						'name' => sprintf( __( 'Notify for form: (%s)', 'wp-sms' ), $form['name'] ),
+						'name' => sprintf( __( 'Form notifications: (%s)', 'wp-sms' ), $form['name'] ),
 						'type' => 'header'
 					);
 					$qf_forms[ 'qf_notify_enable_form_' . $form['id'] ]   = array(
 						'id'      => 'qf_notify_enable_form_' . $form['id'],
-						'name'    => __( 'Send SMS', 'wp-sms' ),
+						'name'    => __( 'Send SMS to a number', 'wp-sms' ),
 						'type'    => 'checkbox',
 						'options' => $options,
-						'desc'    => __( 'Send SMS when this form get new message', 'wp-sms' )
+						'desc'    => __( 'Send SMS once the form is submitted.', 'wp-sms' )
 					);
 					$qf_forms[ 'qf_notify_receiver_form_' . $form['id'] ] = array(
 						'id'   => 'qf_notify_receiver_form_' . $form['id'],
-						'name' => __( 'To number(s)', 'wp-sms' ),
+						'name' => __( 'Phone number(s)', 'wp-sms' ),
 						'type' => 'text',
-						'desc' => __( 'Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms' )
+						'desc' => __( 'Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms' )
 					);
 					$qf_forms[ 'qf_notify_message_form_' . $form['id'] ]  = array(
 						'id'   => 'qf_notify_message_form_' . $form['id'],
 						'name' => __( 'Message body', 'wp-sms' ),
 						'type' => 'textarea',
-						'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+						'desc' => __( 'Enter your message content.', 'wp-sms' ) . '<br>' .
 						          sprintf(
 							          __( 'Form name: %s, Form url: %s, Referring url: %s', 'wp-sms' ),
 							          '<code>%post_title%</code>',
@@ -1088,20 +1088,20 @@ class Settings_Pro {
 							'name'    => __( 'Send SMS to field', 'wp-sms' ),
 							'type'    => 'checkbox',
 							'options' => $options,
-							'desc'    => __( 'Send SMS to field value when this form get new message', 'wp-sms' )
+							'desc'    => __( 'Send an SMS to the value of a field once the form is submitted.', 'wp-sms' )
 						);
 						$qf_forms[ 'qf_notify_receiver_field_form_' . $form['id'] ] = array(
 							'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
-							'name'    => __( 'Field form', 'wp-sms' ),
+							'name'    => __( 'A field of the form', 'wp-sms' ),
 							'type'    => 'select',
 							'options' => Quform::get_fields( $form['id'] ),
-							'desc'    => __( 'Please select the field of the form', 'wp-sms' )
+							'desc'    => __( 'Select the field of your form.', 'wp-sms' )
 						);
 						$qf_forms[ 'qf_notify_message_field_form_' . $form['id'] ]  = array(
 							'id'   => 'qf_notify_message_field_form_' . $form['id'],
 							'name' => __( 'Message body', 'wp-sms' ),
 							'type' => 'textarea',
-							'desc' => __( 'Enter the contents of the SMS message.', 'wp-sms' ) . '<br>' .
+							'desc' => __( 'Enter your message content.', 'wp-sms' ) . '<br>' .
 							          sprintf(
 								          __( 'Form name: %s, Form url: %s, Referring url: %s', 'wp-sms' ),
 								          '<code>%post_title%</code>',
