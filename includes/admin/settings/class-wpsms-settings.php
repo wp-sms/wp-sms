@@ -545,7 +545,7 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Send an SMS to the author of the post when that post publish.<br>Make sure "Add Mobile number field" enabled in "Features" settings.', 'wp-sms')
+                    'desc'    => __('Send an SMS to the author of the post when that post is published.<br>Make sure the "Add Mobile number field" option is enabled in the Settings > Features', 'wp-sms')
                 ),
                 'notif_publish_new_post_author_post_type' => array(
                     'id'      => 'notif_publish_new_post_author_post_type',

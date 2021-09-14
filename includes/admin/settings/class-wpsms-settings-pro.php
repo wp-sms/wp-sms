@@ -915,7 +915,7 @@ class Settings_Pro {
 					'name'    => __( 'Send SMS', 'wp-sms' ),
 					'type'    => 'checkbox',
 					'options' => $options,
-					'desc'    => __( 'Send SMS to user when the admin replied the ticket. (Please make sure "Add Mobile number field" enabled in "Features" settings.)', 'wp-sms' )
+					'desc'    => __( 'Send SMS to user when the admin replied the ticket. Please make sure the "Add Mobile number field" option is enabled in the Settings > Features', 'wp-sms' )
 				),
 				'as_notify_user_reply_ticket_message'  => array(
 					'id'   => 'as_notify_user_reply_ticket_message',
