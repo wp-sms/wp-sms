@@ -41,6 +41,23 @@ class Version
                 add_filter('wp_sms_as_settings', array($this, 'license_option'));
                 add_filter('wp_sms_pro_um_settings', array($this, 'license_option'));
             }
+
+            /**
+             * Move license and license status from old setting to new setting.
+             */
+            $option    = Option::getOptions();
+            $optionPro = Option::getOptions(true);
+
+            if (isset($optionPro['license_key']) && $optionPro['license_key'] && isset($optionPro['license_key_status']) && $optionPro['license_key_status'] == 'yes') {
+                $option['license_wp-sms-pro_key']    = $optionPro['license_key'];
+                $option['license_wp-sms-pro_status'] = true;
+                update_option('wpsms_settings', $option);
+
+                unset($optionPro['license_key']);
+                unset($optionPro['license_key_status']);
+                update_option('wps_pp_settings', $optionPro);
+            }
+
         } else {
 
             if (is_admin() && isset($_GET['page']) and $_GET['page'] == 'wp-sms-pro') {
