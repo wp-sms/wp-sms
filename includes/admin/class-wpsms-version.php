@@ -29,7 +29,7 @@ class Version
             }
 
             // Check license key.
-            if (!Option::getOption('license_key_status', true) || Option::getOption('license_key_status', true) == 'no') {
+            if (Option::getOption('license_wp-sms-pro_status') == false) {
                 add_action('admin_notices', array($this, 'license_notice'));
                 add_filter('wp_sms_pro_wp_settings', array($this, 'license_option'));
                 add_filter('wp_sms_pro_bp_settings', array($this, 'license_option'));
@@ -42,6 +42,11 @@ class Version
                 add_filter('wp_sms_pro_um_settings', array($this, 'license_option'));
             }
         } else {
+
+            if (is_admin() && isset($_GET['page']) and $_GET['page'] == 'wp-sms-pro') {
+                add_action('admin_notices', array($this, 'license_notice'));
+            }
+
             add_filter('plugin_row_meta', array($this, 'pro_meta_links'), 10, 2);
             add_action('admin_enqueue_scripts', array($this, 'pro_admin_script'));
             add_action('wp_sms_pro_after_setting_logo', array($this, 'pro_setting_title_pro_not_activated'));

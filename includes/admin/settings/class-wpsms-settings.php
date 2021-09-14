@@ -27,6 +27,13 @@ class Settings
         if (isset($_GET['page']) and $_GET['page'] == 'wp-sms-settings' or isset($_POST['option_page']) and $_POST['option_page'] == 'wpsms_settings') {
             add_action('admin_init', array($this, 'register_settings'));
         }
+
+        // Check License Code
+        if (isset($_POST['submit']) and isset($_REQUEST['option_page']) and $_REQUEST['option_page'] == 'wpsms_settings') {
+            add_filter('pre_update_option_' . $this->setting_name, array($this, 'check_license_key'), 10, 2);
+        }
+
+        add_filter('wp_sms_licenses_settings', array($this, 'modifyLicenseSettings'));
     }
 
     /**
@@ -92,13 +99,14 @@ class Settings
                     'wpsms_settings_' . $tab,
                     'wpsms_settings_' . $tab,
                     array(
-                        'id'      => isset($option['id']) ? $option['id'] : null,
-                        'desc'    => !empty($option['desc']) ? $option['desc'] : '',
-                        'name'    => isset($option['name']) ? $option['name'] : null,
-                        'section' => $tab,
-                        'size'    => isset($option['size']) ? $option['size'] : null,
-                        'options' => isset($option['options']) ? $option['options'] : '',
-                        'std'     => isset($option['std']) ? $option['std'] : ''
+                        'id'          => isset($option['id']) ? $option['id'] : null,
+                        'desc'        => !empty($option['desc']) ? $option['desc'] : '',
+                        'name'        => isset($option['name']) ? $option['name'] : null,
+                        'after_input' => isset($option['after_input']) ? $option['after_input'] : null,
+                        'section'     => $tab,
+                        'size'        => isset($option['size']) ? $option['size'] : null,
+                        'options'     => isset($option['options']) ? $option['options'] : '',
+                        'std'         => isset($option['std']) ? $option['std'] : ''
                     )
                 );
 
@@ -122,6 +130,7 @@ class Settings
             'feature'       => __('Features', 'wp-sms'),
             'notifications' => __('Notifications', 'wp-sms'),
             'integration'   => __('Integration', 'wp-sms'),
+            'licenses'      => __('Licenses', 'wp-sms'),
         );
 
         return $tabs;
@@ -204,7 +213,9 @@ class Settings
         );
 
         $settings = apply_filters('wp_sms_registered_settings', array(
-            // General tab
+            /**
+             * General tab
+             */
             'general'       => apply_filters('wp_sms_general_settings', array(
                 'admin_title'         => array(
                     'id'   => 'admin_title',
@@ -237,7 +248,9 @@ class Settings
                 ),
             )),
 
-            // Gateway tab
+            /**
+             * Gateway tab
+             */
             'gateway'       => apply_filters('wp_sms_gateway_settings', array(
                 // Gateway
                 'gayeway_title'             => array(
@@ -349,7 +362,9 @@ class Settings
                 ),
             )),
 
-            // SMS Newsletter tab
+            /**
+             * SMS Newsletter tab
+             */
             'newsletter'    => apply_filters('wp_sms_newsletter_settings', array(
                 // SMS Newsletter
                 'newsletter_title'                => array(
@@ -419,7 +434,10 @@ class Settings
                     'desc' => __('Disable loading Style from Frontend.', 'wp-sms')
                 ),
             )),
-            // Feature tab
+
+            /**
+             * Feature tab
+             */
             'feature'       => apply_filters('wp_sms_feature_settings', array(
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
@@ -493,7 +511,10 @@ class Settings
                     'desc'    => __('Add WP-SMS endpoints to the WP Rest API', 'wp-sms')
                 ),
             )),
-            // Notifications tab
+
+            /**
+             * Notifications tab
+             */
             'notifications' => apply_filters('wp_sms_notifications_settings', array(
                 // Publish new post
                 'notif_publish_new_post_title'            => array(
@@ -508,7 +529,7 @@ class Settings
                     'options' => $options,
                     'desc'    => __('Send an SMS to subscribers When published new posts.', 'wp-sms')
                 ),
-                'notif_publish_new_post_type' => array(
+                'notif_publish_new_post_type'             => array(
                     'id'      => 'notif_publish_new_post_type',
                     'name'    => __('Post Types', 'wp-sms'),
                     'type'    => 'multiselect',
@@ -671,7 +692,10 @@ class Settings
                         )
                 ),
             )),
-            // Integration  tab
+
+            /**
+             * Integration  tab
+             */
             'integration'   => apply_filters('wp_sms_integration_settings', array(
                 // Contact form 7
                 'cf7_title'                    => array(
@@ -736,7 +760,14 @@ class Settings
                         )
                 ),
             )),
+
+            /*
+             * Licenses tab
+             */
+            'licenses'      => apply_filters('wp_sms_licenses_settings', array()),
+
         ));
+
 
         // Check the GDPR is enabled.
         if (Option::getOption('gdpr_compliance')) {
@@ -769,6 +800,101 @@ class Settings
         }
 
         return $settings;
+    }
+
+    /*
+	 * Activate Icon
+	 */
+    public function getLicenseStatusIcon($addOnKey)
+    {
+        $constantLicenseKey = $this->getLicenseFromConstantByAddOnKey($addOnKey);
+        $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
+
+        if (($constantLicenseKey && $this->checkLicenseByAddOnKeyAndLicense($addOnKey, $constantLicenseKey)) or $licenseStatus) {
+            $item = array('icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514');
+
+            if ($constantLicenseKey) {
+                Option::updateOption("license_{$addOnKey}_status", true);
+            }
+
+        } else {
+            $item = array('icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000');
+        }
+
+        return '<span style="color: ' . $item['color'] . '">&nbsp;&nbsp;<span class="dashicons dashicons-' . $item['icon'] . '" style="vertical-align: -4px;"></span>' . __($item['text'], 'wp-sms') . '</span>';
+    }
+
+    private function getLicenseFromConstantByAddOnKey($addOnKey)
+    {
+        $generateConstant = strtoupper(str_replace('-', '_', $addOnKey)) . '_LICENSE';
+
+        if (defined($generateConstant)) {
+            return constant($generateConstant);
+        }
+    }
+
+    /*
+     * Check license key
+     */
+    public function check_license_key($value, $oldValue)
+    {
+        /**
+         * Get AddOns lists
+         */
+        $addOnsFields = apply_filters('wp_sms_licenses_addons', array());
+
+        foreach ($addOnsFields as $addOnKey => $addOnName) {
+
+            $constantLicenseKey       = $this->getLicenseFromConstantByAddOnKey($addOnKey);
+            $generateLicenseStatusKey = "license_{$addOnKey}_status";
+            $licenseKey               = null;
+
+            // Check what type license in use
+            if ($constantLicenseKey) {
+                $licenseKey = $constantLicenseKey;
+            } elseif (isset($_POST['wpsms_settings']["license_{$addOnKey}_key"])) {
+                $licenseKey = $_POST['wpsms_settings']["license_{$addOnKey}_key"];
+            }
+
+            if (!$licenseKey) {
+                $value[$generateLicenseStatusKey] = false;
+                continue;
+            }
+
+            if ($this->checkLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)) {
+                $value[$generateLicenseStatusKey] = true;
+            } else {
+                $value[$generateLicenseStatusKey] = false;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Check the license with server
+     *
+     * @param $addOnKey
+     * @param $licenseKey
+     * @return bool|void
+     */
+    private function checkLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)
+    {
+        $response = wp_remote_get(add_query_arg(array(
+            'plugin-name' => $addOnKey,
+            'license_key' => $licenseKey,
+            'website'     => get_bloginfo('url'),
+        ), WP_SMS_SITE . '/wp-json/plugins/v1/validate'));
+
+        if (is_wp_error($response)) {
+            return;
+        }
+
+        $response = json_decode($response['body']);
+
+        if (isset($response->status) and $response->status == 200) {
+            return true;
+        }
     }
 
     public function header_callback($args)
@@ -833,8 +959,9 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input type="text" class="%1$s-text" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]" value="%3$s"/><p class="description"> %4$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), wp_kses_post($args['desc']));
+        $after_input = (isset($args['after_input']) && !is_null($args['after_input'])) ? $args['after_input'] : '';
+        $size        = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
+        $html        = sprintf('<input type="text" class="%1$s-text" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -1079,7 +1206,7 @@ class Settings
         ob_start();
         ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
-	        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+            <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
             <div class="wpsms-wrap__main">
                 <?php do_action('wp_sms_settings_page'); ?>
                 <h2><?php _e('Settings', 'wp-sms') ?></h2>
@@ -1169,6 +1296,39 @@ class Settings
         $result = json_decode($file, true);
 
         return $result;
+    }
+
+    /**
+     * Modify license setting page and render add-ons settings
+     *
+     * @param $settings
+     * @return array
+     */
+    public function modifyLicenseSettings($settings)
+    {
+        $addOnsFields = apply_filters('wp_sms_licenses_addons', array());
+
+        foreach ($addOnsFields as $addOnKey => $addOnName) {
+
+            // license title
+            $settings["license_{$addOnKey}_title"] = array(
+                'id'   => "license_{$addOnKey}_title",
+                'name' => $addOnName,
+                'type' => 'header',
+            );
+
+            // license key
+            $settings["license_{$addOnKey}_key"] = array(
+                'id'          => "license_{$addOnKey}_key",
+                'name'        => __('License Key', 'wp-sms'),
+                'type'        => 'text',
+                'after_input' => $this->getLicenseStatusIcon($addOnKey),
+                'desc'        => sprintf(__('The license key is used for access to automatic update and support, to get the licenses, please go to <a href="%s" target="_blank">your account</a>.<br /><br />- Need help to enter your license? <a href="%s" target="_blank">Click here</a> to get information.<br />- Having a problem with your license? <a href="%s" target="_blank">Click here</a> for troubleshooting.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
+            );
+
+        }
+
+        return $settings;
     }
 }
 
