@@ -29,7 +29,7 @@ class Settings
         }
 
         // Check License Code
-        if (isset($_POST['submit']) and isset($_REQUEST['option_page']) and $_REQUEST['option_page'] == 'wpsms_settings') {
+        if (isset($_POST['submit']) and isset($_REQUEST['option_page']) and $_REQUEST['option_page'] == 'wpsms_settings' and strpos(wp_get_referer(), 'tab=licenses')) {
             add_filter('pre_update_option_' . $this->setting_name, array($this, 'check_license_key'), 10, 2);
         }
 
@@ -802,23 +802,37 @@ class Settings
         return $settings;
     }
 
+    private function isCurrentTab($tab)
+    {
+        return isset($_REQUEST['page']) && $_REQUEST['page'] == 'wp-sms-settings' && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
+    }
+
     /*
 	 * Activate Icon
 	 */
     public function getLicenseStatusIcon($addOnKey)
     {
         $constantLicenseKey = $this->getLicenseFromConstantByAddOnKey($addOnKey);
+        $licenseKey         = isset($this->options["license_{$addOnKey}_key"]) ? $this->options["license_{$addOnKey}_key"] : null;
         $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
+        $updateOption       = false;
 
-        if (($constantLicenseKey && $this->checkLicenseByAddOnKeyAndLicense($addOnKey, $constantLicenseKey)) or $licenseStatus) {
+        if (($constantLicenseKey && $this->isCurrentTab('licenses') && $this->checkRemoteLicenseByAddOnKeyAndLicense($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
             $item = array('icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514');
 
             if ($constantLicenseKey) {
-                Option::updateOption("license_{$addOnKey}_status", true);
+                $this->options["license_{$addOnKey}_status"] = true;
+                $updateOption                                = true;
             }
 
         } else {
-            $item = array('icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000');
+            $item                                        = array('icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000');
+            $this->options["license_{$addOnKey}_status"] = false;
+            $updateOption                                = true;
+        }
+
+        if ($updateOption && empty($_POST)) {
+            update_option($this->setting_name, $this->options);
         }
 
         return '<span style="color: ' . $item['color'] . '">&nbsp;&nbsp;<span class="dashicons dashicons-' . $item['icon'] . '" style="vertical-align: -4px;"></span>' . __($item['text'], 'wp-sms') . '</span>';
@@ -853,7 +867,7 @@ class Settings
             if ($constantLicenseKey) {
                 $licenseKey = $constantLicenseKey;
             } elseif (isset($_POST['wpsms_settings']["license_{$addOnKey}_key"])) {
-                $licenseKey = $_POST['wpsms_settings']["license_{$addOnKey}_key"];
+                $licenseKey = sanitize_text_field($_POST['wpsms_settings']["license_{$addOnKey}_key"]);
             }
 
             if (!$licenseKey) {
@@ -861,7 +875,7 @@ class Settings
                 continue;
             }
 
-            if ($this->checkLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)) {
+            if ($this->checkRemoteLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)) {
                 $value[$generateLicenseStatusKey] = true;
             } else {
                 $value[$generateLicenseStatusKey] = false;
@@ -878,7 +892,7 @@ class Settings
      * @param $licenseKey
      * @return bool|void
      */
-    private function checkLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)
+    private function checkRemoteLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)
     {
         $response = wp_remote_get(add_query_arg(array(
             'plugin-name' => $addOnKey,
