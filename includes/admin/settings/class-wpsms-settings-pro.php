@@ -26,16 +26,6 @@ class Settings_Pro
         if (isset($_GET['page']) and $_GET['page'] == 'wp-sms-pro' or isset($_POST['option_page']) and $_POST['option_page'] == 'wps_pp_settings') {
             add_action('admin_init', array($this, 'register_settings'));
         }
-
-        add_filter('wp_sms_licenses_addons', array($this, 'modifyLicenseSettingPage'));
-
-    }
-
-    public function modifyLicenseSettingPage($addOns)
-    {
-        $addOns['wp-sms-pro'] = 'WP-SMS Pro';
-
-        return $addOns;
     }
 
     /**

@@ -4,7 +4,6 @@ namespace WP_SMS;
 
 class Admin
 {
-
     public $sms;
     protected $db;
     protected $tb_prefix;
@@ -17,6 +16,7 @@ class Admin
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
         $this->options   = Option::getOptions();
+
         $this->init();
 
         // Add Actions
@@ -28,6 +28,8 @@ class Admin
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
         add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
+
+        $this->check_new_version();
     }
 
     /**
@@ -320,6 +322,34 @@ class Admin
         // Add plugin caps to admin role
         if (is_admin() and is_super_admin()) {
             $this->add_cap();
+        }
+    }
+
+    /**
+     * Check new version of Add-Ons
+     */
+    public function check_new_version()
+    {
+        include_once WP_SMS_DIR . "includes/admin/class-wpsms-update.php";
+
+        foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
+
+            $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
+            $licenseKey         = $constantLicenseKey ? $constantLicenseKey : Option::getOption("license_{$addOnKey}_key");
+            $licenseStatus      = Option::getOption("license_{$addOnKey}_status");
+
+            if (!$licenseKey or !$licenseStatus) {
+                continue;
+            }
+
+            $update = new Update(array(
+                'plugin_slug'  => $addOnKey,
+                'website_url'  => 'https://wp-sms-pro.com',
+                'license_key'  => $licenseKey,
+                'plugin_path'  => $addOn['plugin_path'],
+                'setting_page' => admin_url('admin.php?page=wp-sms-settings&tab=licenses')
+            ));
+
         }
     }
 

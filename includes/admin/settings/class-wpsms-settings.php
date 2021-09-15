@@ -812,7 +812,7 @@ class Settings
 	 */
     public function getLicenseStatusIcon($addOnKey)
     {
-        $constantLicenseKey = $this->getLicenseFromConstantByAddOnKey($addOnKey);
+        $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
         $licenseKey         = isset($this->options["license_{$addOnKey}_key"]) ? $this->options["license_{$addOnKey}_key"] : null;
         $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
         $updateOption       = false;
@@ -838,28 +838,14 @@ class Settings
         return '<span style="color: ' . $item['color'] . '">&nbsp;&nbsp;<span class="dashicons dashicons-' . $item['icon'] . '" style="vertical-align: -4px;"></span>' . __($item['text'], 'wp-sms') . '</span>';
     }
 
-    private function getLicenseFromConstantByAddOnKey($addOnKey)
-    {
-        $generateConstant = strtoupper(str_replace('-', '_', $addOnKey)) . '_LICENSE';
-
-        if (defined($generateConstant)) {
-            return constant($generateConstant);
-        }
-    }
-
     /*
      * Check license key
      */
     public function check_license_key($value, $oldValue)
     {
-        /**
-         * Get AddOns lists
-         */
-        $addOnsFields = apply_filters('wp_sms_licenses_addons', array());
+        foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
 
-        foreach ($addOnsFields as $addOnKey => $addOnName) {
-
-            $constantLicenseKey       = $this->getLicenseFromConstantByAddOnKey($addOnKey);
+            $constantLicenseKey       = wp_sms_generate_constant_license($addOnKey);
             $generateLicenseStatusKey = "license_{$addOnKey}_status";
             $licenseKey               = null;
 
@@ -1320,14 +1306,12 @@ class Settings
      */
     public function modifyLicenseSettings($settings)
     {
-        $addOnsFields = apply_filters('wp_sms_licenses_addons', array());
-
-        foreach ($addOnsFields as $addOnKey => $addOnName) {
+        foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
 
             // license title
             $settings["license_{$addOnKey}_title"] = array(
                 'id'   => "license_{$addOnKey}_title",
-                'name' => $addOnName,
+                'name' => $addOn['plugin_name'],
                 'type' => 'header',
             );
 
