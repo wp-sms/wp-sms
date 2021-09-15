@@ -129,7 +129,7 @@ class Notifications
     public function new_post($new_status, $old_status, $post)
     {
         //Checking post status transition type
-        if ('publish' != $new_status && 'publish' == $old_status){
+        if ('publish' != $new_status or 'publish' == $old_status){
             return;
         }
         //Deciding about specified post types
