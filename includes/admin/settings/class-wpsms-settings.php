@@ -1311,7 +1311,7 @@ class Settings
             // license title
             $settings["license_{$addOnKey}_title"] = array(
                 'id'   => "license_{$addOnKey}_title",
-                'name' => $addOn['plugin_name'],
+                'name' => $addOn,
                 'type' => 'header',
             );
 
