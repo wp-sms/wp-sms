@@ -1033,7 +1033,13 @@ class Settings_Pro {
 				'id'   => 'um_field',
 				'name' => __( 'Mobile number field', 'wp-sms' ),
 				'type' => 'checkbox',
-				'desc' => __( 'Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms' ),
+				'desc' => __( 'Sync mobile number from ultimate-member users, from now on.', 'wp-sms' ),
+			);
+			$um_options['um_sync_previous_members'] = array(
+				'id'   => 'um_sync_previous_members' ,
+				'name' => __('Sync old memeber too?'),
+				'type' => 'checkbox',
+				'desc' => __('Sync moblie numbers from Ultimate Member registered before enebaling last option.')
 			);
 		} else {
 			$um_options['um_notify_form'] = array(
