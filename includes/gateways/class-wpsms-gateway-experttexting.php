@@ -10,13 +10,35 @@ class experttexting extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
+    public $gatewayFields = [
+        'username' => [
+            'id'   => 'gateway_username',
+            'name' => 'Username',
+            'desc' => 'Your ET username. Ex: username=starcity',
+        ],
+        'password' => [
+            'id'   => 'gateway_password',
+            'name' => 'API key',
+            'desc' => 'Your API key (can be found in account settings). Ex: api_key=sswmp8r7l63y',
+        ],
+        'from'     => [
+            'id'   => 'gateway_sender_id',
+            'name' => 'Sender number',
+            'desc' => 'Sender number or sender ID',
+        ],
+        'has_key'  => [
+            'id'   => 'gateway_key',
+            'name' => 'API secret',
+            'desc' => 'Your API secret (can be found in account settings). Ex: api_secret=5fq8vn07iyoqu3j'
+        ]
+    ];
 
     public function __construct()
     {
         parent::__construct();
         $this->validateNumber = "The number you want to send message to. Number should be in international format. Ex: to=17327572923";
         $this->has_key        = true;
-        $this->help           = "You can find the API Key under \"Account Settings\" in <a href='https://www.experttexting.com/appv2/Dashboard/Profile'>ExpertTexting Profile</a>.";
+        $this->help           = "All requests require your user credentials & API key, which you can find under <b>Account Settings</b> in <a href='https://www.experttexting.com/appv2/Dashboard/Profile' target='_blank'>ExpertTexting Profile</a>.";
     }
 
     public function SendSMS()
@@ -72,7 +94,7 @@ class experttexting extends \WP_SMS\Gateway
         }
 
         foreach ($this->to as $to) {
-            $response = wp_remote_get($this->wsdl_link . "json/Message/Send?username=" . $this->username . "&api_key=" . $this->has_key . "&from=" . $this->from . "&api_secret=" . $this->password . "&to=" . $to . "&text=" . $text . "&type=" . $type, array('timeout' => 30));
+            $response = wp_remote_get($this->wsdl_link . "json/Message/Send?username=" . $this->username . "&api_key=" . $this->password . "&from=" . $this->from . "&api_secret=" . $this->has_key . "&to=" . $to . "&text=" . $text . "&type=" . $type, array('timeout' => 30));
         }
 
         // Check gateway credit
