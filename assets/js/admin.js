@@ -1,4 +1,7 @@
 ﻿jQuery(document).ready(function ($) {
+
+    ultimateMember.init();
+
     // Set Chosen
     $(".chosen-select").chosen({width: "25em"});
 
@@ -41,3 +44,44 @@
         });
     }
 });
+
+let ultimateMember = {
+    
+    getFields : function(){
+        this.mobielNumberField = jQuery('#wps_pp_settings\\[um_field\\]');
+        this.syncOldMembersField = jQuery('#wps_pp_settings\\[um_sync_previous_members\\]');
+    },
+
+    isUmOptionEnables : function(){
+        if( this.mobielNumberField.is(':checked') ){
+            this.syncOldMembersField.closest('tr').hide();
+            return true;
+        }
+    },
+
+    hideOrShow : function(){
+        if( this.mobielNumberField.is(':checked')){
+            this.syncOldMembersField.closest('tr').show();
+        }else{
+            this.syncOldMembersField.closest('tr').hide();
+        }
+    },
+
+    addEventListener : function(){
+        this.mobielNumberField.change(function(){
+            this.hideOrShow();
+        }.bind(this));
+    },
+
+    init : function(){
+
+        this.getFields();
+        //Case1. ultimate member sync optionis already enabled
+        if(this.isUmOptionEnables())
+            return;
+        //Case2. ultimate member sync option is not already enabled
+        this.hideOrShow();
+        this.addEventListener();
+    }
+
+}
