@@ -96,8 +96,9 @@ class Gateway
             'smschef' => 'smschef.com',
         ),
         'arabic'        => array(
-            'kwtsms'  => 'kwtsms.com',
-            'taqnyat' => 'taqnyat.sa',
+            'kwtsms'      => 'kwtsms.com',
+            'taqnyat'     => 'taqnyat.sa',
+            'mobishastra' => 'mobishastra.com'
         ),
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
