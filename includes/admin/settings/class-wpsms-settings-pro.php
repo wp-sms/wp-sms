@@ -949,7 +949,7 @@ class Settings_Pro
                 'type'   => 'select',
                 'options'=> $this->get_um_register_form_fields(),
                 'std'    => 'mobiel_number',
-                'desc'   => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobiel Number".', 'wp-sms')
+                'desc'   => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobiel Number").', 'wp-sms')
             );
         } else {
             $um_options['um_notify_form'] = array(
