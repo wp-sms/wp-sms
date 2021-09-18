@@ -1054,3 +1054,11 @@
 #TB_ajaxContent{
     height: min-content !important;
 }
+
+.wps-block{
+    display: block;
+}
+
+.wps-multiselect-label{
+    margin: 5px;
+}

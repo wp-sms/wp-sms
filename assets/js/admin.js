@@ -48,39 +48,58 @@
 let ultimateMember = {
     
     getFields : function(){
-        this.mobielNumberField = jQuery('#wps_pp_settings\\[um_field\\]');
-        this.syncOldMembersField = jQuery('#wps_pp_settings\\[um_sync_previous_members\\]');
+        this.fields = {
+            mobielNumberField : {
+                element: jQuery('#wps_pp_settings\\[um_field\\]'),
+                active:  false,
+            },
+            syncOldMembersField : {
+                element: jQuery('#wps_pp_settings\\[um_sync_previous_members\\]'),
+                active:  true,
+            },
+            fieldSelector : {
+                element: jQuery('#wps_pp_settings\\[um_sync_field_name\\]'),
+                active:  true,
+            }
+        }
+
     },
 
-    isUmOptionEnables : function(){
-        if( this.mobielNumberField.is(':checked') ){
-            this.syncOldMembersField.closest('tr').hide();
+    alreadyEnabled : function(){
+        if( this.fields.mobielNumberField.element.is(':checked') ){
+            this.fields.syncOldMembersField.active = false;
+            this.fields.syncOldMembersField.element.closest('tr').hide()
             return true;
         }
     },
 
-    hideOrShow : function(){
-        if( this.mobielNumberField.is(':checked')){
-            this.syncOldMembersField.closest('tr').show();
+    hideOrShowfields : function(){
+
+        const condition = this.fields.mobielNumberField.element.is(':checked');
+
+        if( condition ){
+            for (const field in this.fields) {
+                console.log(field);
+                if(this.fields[field].active) this.fields[field].element.closest('tr').show();
+            }
         }else{
-            this.syncOldMembersField.closest('tr').hide();
+            for (const field in this.fields) {
+                if(this.fields[field].active) this.fields[field].element.closest('tr').hide();
+            }
         }
     },
 
     addEventListener : function(){
-        this.mobielNumberField.change(function(){
-            this.hideOrShow();
+        this.fields.mobielNumberField.element.change(function(){
+            this.hideOrShowfields();
         }.bind(this));
     },
 
     init : function(){
 
         this.getFields();
-        //Case1. ultimate member sync optionis already enabled
-        if(this.isUmOptionEnables())
-            return;
-        //Case2. ultimate member sync option is not already enabled
-        this.hideOrShow();
+        this.alreadyEnabled();
+        this.hideOrShowfields();
         this.addEventListener();
     }
 
