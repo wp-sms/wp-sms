@@ -939,17 +939,17 @@ class Settings_Pro
             );
             $um_options['um_sync_previous_members'] = array(
                 'id'   => 'um_sync_previous_members' ,
-                'name' => __('Sync old memeber too?'),
+                'name' => __('Sync old member too?'),
                 'type' => 'checkbox',
                 'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Members.', 'wp-sms')
             );
             $um_options['um_sync_field_name'] = array(
                 'id'     => 'um_sync_field_name' ,
-                'name'   => __('Sync with which field(Register Form) ?'),
+                'name'   => __('Select the purpose field in registration form'),
                 'type'   => 'select',
                 'options'=> $this->get_um_register_form_fields(),
-                'std'    => 'mobiel_number',
-                'desc'   => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobiel Number").', 'wp-sms')
+                'std'    => 'mobile_number',
+                'desc'   => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
             );
         } else {
             $um_options['um_notify_form'] = array(

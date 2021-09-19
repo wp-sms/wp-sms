@@ -81,6 +81,7 @@ class Gateway
             'vatansms'       => 'vatansms.com',
             'smsmessenger'   => 'smsmessenger.co.za',
             'vfirst'         => 'vfirst.com',
+            'zipwhip'        => 'zipwhip.com',
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
