@@ -181,17 +181,18 @@ class RestApi
      *
      * @return array|string
      */
-    public static function unSubscribe($name, $mobile, $group)
+    public static function unSubscribe($name, $mobile, $group = false)
     {
-
         if (empty($name) or empty($mobile)) {
             return new \WP_Error('unsubscribe', __('The name and mobile number must be valued!', 'wp-sms'));
         }
 
-        $check_group = Newsletter::getGroup($group);
+        if ($group) {
+            $check_group = Newsletter::getGroup($group);
 
-        if (!isset($check_group) and empty($check_group)) {
-            return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
+            if (!isset($check_group) and empty($check_group)) {
+                return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
+            }
         }
 
         if (preg_match(WP_SMS_MOBILE_REGEX, $mobile) == false) {

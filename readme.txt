@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.5.1
+Stable tag: 5.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -244,6 +244,18 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= 5.6 =
+* Updated Expert Texting gateway's fields
+* Updated setting page and fixed some tweak misspellings
+* Added BareedSMS gateway in the setting page
+* Added Mobishastra gateway in the setting page
+* Added Zipwhip gateway in the setting page
+* Added post type option in the published new posts notification
+* Fixed Encode message in WaApi Gateway
+* Fixed the conflict issue with newsletter settings filter name
+* Fixed an issue to unsubscribe the number in REST API
+* Improvement the license settings functionality
+
 = 5.5.1 =
 * Fixed showing correct license status issue in the plugin's admin header
 * Fixed ExpertTexting gateway

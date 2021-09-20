@@ -40,11 +40,6 @@ class Notifications
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
 
-        if (isset($this->options['notif_publish_new_post'])) {
-            add_action('add_meta_boxes', array($this, 'notification_meta_box'));
-            add_action('publish_post', array($this, 'new_post'), 10, 2);
-        }
-
         // Wordpress new version
         if (isset($this->options['notif_publish_new_wpversion'])) {
             $update = get_site_transient('update_core');
@@ -82,11 +77,19 @@ class Notifications
             add_action('wp_login', array($this, 'login_user'), 99, 2);
         }
 
+        //Published New Posts Actions
+        if (isset($this->options['notif_publish_new_post'])) {
+            add_action('add_meta_boxes', array($this, 'notification_meta_box'));
+            add_action("transition_post_status", array($this, 'new_post'), 10, 3);
+        }
+
         // Check the send to author of the post is enabled or not
         if (Option::getOption('notif_publish_new_post_author')) {
             // Add transition publish post
             add_action('transition_post_status', array($this, 'transition_publish'), 10, 3);
         }
+
+
     }
 
     /**
@@ -123,8 +126,24 @@ class Notifications
      * @return null
      * @internal param $post_id
      */
-    public function new_post($ID, $post)
+    public function new_post($new_status, $old_status, $post)
     {
+        //Checking post status transition type
+        if ('publish' != $new_status or 'publish' == $old_status){
+            return;
+        }
+        //Deciding about specified post types
+        $specified_post_types = isset($this->options['notif_publish_new_post_type']) ? $this->options['notif_publish_new_post_type'] : [];
+        foreach($specified_post_types as $key => $post_type){
+            $value                 = explode('|', $post_type)[1];
+            $specified_post_types[$key] = $value;
+        }
+        if (!array_key_exists($post->post_type, $specified_post_types)) {
+            return;
+        }
+
+        $ID = $post->ID;
+
         if ($_REQUEST['wps_send_subscribe'] == 'yes') {
             if ($_REQUEST['wps_subscribe_group'] == 'all') {
                 $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");

@@ -36,3 +36,29 @@ function wp_sms_sanitize_array($array_or_string)
 
     return $array_or_string;
 }
+
+/**
+ * Get Add-Ons
+ *
+ * @return array
+ */
+function wp_sms_get_addons()
+{
+    return apply_filters('wp_sms_addons', array());
+}
+
+/**
+ * Generate constant license by plugin slug.
+ *
+ * @param $plugin_slug
+ * @return mixed
+ * @example wp-sms-pro > WP_SMS_PRO_LICENSE
+ */
+function wp_sms_generate_constant_license($plugin_slug)
+{
+    $generateConstant = strtoupper(str_replace('-', '_', $plugin_slug)) . '_LICENSE';
+
+    if (defined($generateConstant)) {
+        return constant($generateConstant);
+    }
+}

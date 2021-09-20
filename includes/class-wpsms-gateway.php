@@ -81,6 +81,7 @@ class Gateway
             'vatansms'       => 'vatansms.com',
             'smsmessenger'   => 'smsmessenger.co.za',
             'vfirst'         => 'vfirst.com',
+            'zipwhip'        => 'zipwhip.com',
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
@@ -96,8 +97,9 @@ class Gateway
             'smschef' => 'smschef.com',
         ),
         'arabic'        => array(
-            'kwtsms'  => 'kwtsms.com',
-            'taqnyat' => 'taqnyat.sa',
+            'kwtsms'      => 'kwtsms.com',
+            'taqnyat'     => 'taqnyat.sa',
+            'mobishastra' => 'mobishastra.com'
         ),
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
@@ -623,6 +625,7 @@ class Gateway
                 'zain'         => 'zain.im',
                 'malath'       => 'malath.net.sa',
                 'safasms'      => 'safa-sms.com',
+                'bareedsms'    => 'bareedsms.com',
             ),
             'africa'         => array(
                 '_ebulksms'          => 'ebulksms.com',

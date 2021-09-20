@@ -40,9 +40,9 @@
             dateFormat: "Y-m-d H:i:00",
             time_24hr: true,
             minuteIncrement: "10",
-            minDate: "today",
+            minDate: "<?= current_time("Y-m-d H:i:00"); ?>",
             disableMobile: true,
-            defaultDate: new Date()
+            defaultDate: "<?= current_time("Y-m-d H:i:00"); ?>"
         });
 
         jQuery("#schedule_status").change(function () {
@@ -83,51 +83,51 @@
                                     </th>
                                     <td>
                                         <select name="wp_send_to" id="select_sender">
-                                            <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e('Subscribe users', 'wp-sms'); ?></option>
-                                            <option value="wp_users" id="wp_users"><?php _e('Wordpress Users', 'wp-sms'); ?></option>
+                                            <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e('Subscribers', 'wp-sms'); ?></option>
+                                            <option value="wp_users" id="wp_users"><?php _e('WordPress\'s Users', 'wp-sms'); ?></option>
                                             <?php if ($wcSendEnable) : ?>
-                                                <option value="wc_users" id="wc_users"><?php _e('WooCommerce Customers', 'wp-sms'); ?></option>
+                                                <option value="wc_users" id="wc_users"><?php _e('WooCommerce\'s Customers', 'wp-sms'); ?></option>
                                             <?php endif; ?>
-                                            <option value="wp_role" id="wp_role"<?php $mobile_field = \WP_SMS\Option::getOption('add_mobile_field');
-                                            if (empty($mobile_field) or $mobile_field != 1) {
-                                                echo 'disabled title="' . __('To enable this item, you should enable the Mobile number field in the Settings > Features', 'wp-sms') . '"';
-                                            } ?>><?php _e('Role', 'wp-sms'); ?></option>
+                                            <option value="wp_role" id="wp_role"><?php _e('Role', 'wp-sms'); ?></option>
                                             <option value="wp_tellephone" id="wp_tellephone"><?php _e('Number(s)', 'wp-sms'); ?></option>
                                         </select>
-                                        <?php if (!empty($mobile_field) or $mobile_field == 1) { ?>
-                                            <select name="wpsms_group_role" class="wpsms-value wprole-group">
-                                                <?php
-                                                foreach ($wpsms_list_of_role as $key_item => $val_item):
-                                                    ?>
-                                                    <option value="<?php echo $key_item; ?>"<?php if ($val_item['count'] < 1) {
-                                                        echo " disabled";
-                                                    } ?>><?php _e($val_item['name'], 'wp-sms'); ?>
-                                                        (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>
-                                                        )
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        <?php } ?>
+
+                                        <select name="wpsms_group_role" class="wpsms-value wprole-group">
+                                            <?php
+                                            foreach ($wpsms_list_of_role as $key_item => $val_item):
+                                                ?>
+                                                <option value="<?php echo $key_item; ?>"<?php if ($val_item['count'] < 1) {
+                                                    echo " disabled";
+                                                } ?>><?php _e($val_item['name'], 'wp-sms'); ?>
+                                                    (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>
+                                                    )
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+
                                         <select name="wpsms_group_name" class="wpsms-value wpsms-group">
                                             <option value="all">
                                                 <?php
                                                 global $wpdb;
                                                 $username_active = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
-                                                echo sprintf(__('All (%s subscribers active)', 'wp-sms'), $username_active);
+                                                echo sprintf(__('All group (%s active subscribers)', 'wp-sms'), $username_active);
                                                 ?>
                                             </option>
                                             <?php foreach ($get_group_result as $items): ?>
-                                                <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
+                                                <option value="<?php echo $items->ID; ?>"><?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?></option>
                                             <?php endforeach; ?>
                                         </select>
+
                                         <span class="wpsms-value wpsms-users" style="display: none;">
                                             <span><?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); ?></span>
                                         </span>
+
                                         <?php if ($wcSendEnable): ?>
                                             <span class="wpsms-value wpsms-wc-users" style="display: none;">
                                             <span><?php echo sprintf(__('<b>%s</b> Customers have the mobile number.', 'wp-sms'), count($woocommerceCustomers)); ?></span>
                                         </span>
                                         <?php endif; ?>
+
                                         <span class="wpsms-value wpsms-numbers">
                                             <div class="clearfix"></div>
                                             <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
@@ -171,6 +171,7 @@
                             </th>
                             <td>
                                 <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
+                                <p><?php echo __("Site's time zone", 'wp-sms') . ': ' . wp_timezone_string(); ?></p>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -186,13 +187,13 @@
                     <?php endif; ?>
                     <?php if ($this->sms->flash == "enable") { ?>
                         <tr>
-                            <td><?php _e('Send a Flash', 'wp-sms'); ?>:</td>
+                            <td><?php _e('Send as a Flash', 'wp-sms'); ?>:</td>
                             <td>
                                 <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
                                 <label for="flash_yes"><?php _e('Yes', 'wp-sms'); ?></label>
                                 <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
                                 <label for="flash_no"><?php _e('No', 'wp-sms'); ?></label> <br/>
-                                <p class="description"><?php _e('Flash is possible to send messages without being asked, opens', 'wp-sms'); ?></p>
+                                <p class="description"><?php _e('A message that appears on the recipient\'s mobile screen directly. The recipient does not need to go to the mobile phone inbox to read the message, nor is the message allocated to the SMS inbox.', 'wp-sms'); ?></p>
                             </td>
                         </tr>
                     <?php } ?>

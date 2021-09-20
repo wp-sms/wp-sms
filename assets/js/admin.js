@@ -1,4 +1,7 @@
 ﻿jQuery(document).ready(function ($) {
+
+    ultimateMember.init();
+
     // Set Chosen
     $(".chosen-select").chosen({width: "25em"});
 
@@ -41,3 +44,63 @@
         });
     }
 });
+
+let ultimateMember = {
+    
+    getFields : function(){
+        this.fields = {
+            mobielNumberField : {
+                element: jQuery('#wps_pp_settings\\[um_field\\]'),
+                active:  false,
+            },
+            syncOldMembersField : {
+                element: jQuery('#wps_pp_settings\\[um_sync_previous_members\\]'),
+                active:  true,
+            },
+            fieldSelector : {
+                element: jQuery('#wps_pp_settings\\[um_sync_field_name\\]'),
+                active:  true,
+            }
+        }
+
+    },
+
+    alreadyEnabled : function(){
+        if( this.fields.mobielNumberField.element.is(':checked') ){
+            this.fields.syncOldMembersField.active = false;
+            this.fields.syncOldMembersField.element.closest('tr').hide()
+            return true;
+        }
+    },
+
+    hideOrShowfields : function(){
+
+        const condition = this.fields.mobielNumberField.element.is(':checked');
+
+        if( condition ){
+            for (const field in this.fields) {
+                console.log(field);
+                if(this.fields[field].active) this.fields[field].element.closest('tr').show();
+            }
+        }else{
+            for (const field in this.fields) {
+                if(this.fields[field].active) this.fields[field].element.closest('tr').hide();
+            }
+        }
+    },
+
+    addEventListener : function(){
+        this.fields.mobielNumberField.element.change(function(){
+            this.hideOrShowfields();
+        }.bind(this));
+    },
+
+    init : function(){
+
+        this.getFields();
+        this.alreadyEnabled();
+        this.hideOrShowfields();
+        this.addEventListener();
+    }
+
+}

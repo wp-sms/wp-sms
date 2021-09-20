@@ -4,7 +4,6 @@ namespace WP_SMS;
 
 class Admin
 {
-
     public $sms;
     protected $db;
     protected $tb_prefix;
@@ -17,6 +16,7 @@ class Admin
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
         $this->options   = Option::getOptions();
+
         $this->init();
 
         // Add Actions
