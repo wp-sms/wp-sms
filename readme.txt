@@ -206,7 +206,7 @@ If you've already the pro pack version, you have to enter your license key in th
 
 Anyway the plugin supports registering the license key through `wp-config.php`
 
-	define('WP_SMS_LICENSE', 'your-license-key');
+	define('WP_SMS_PRO_LICENSE', 'your-license-key');
 
 = How to customize WP-SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
