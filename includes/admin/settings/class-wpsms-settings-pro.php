@@ -129,7 +129,7 @@ class Settings_Pro
             return array();
         }
 
-        return $tabs;
+        return apply_filters('wpsms_pro_settings_tabs', $tabs);
     }
 
     /**
