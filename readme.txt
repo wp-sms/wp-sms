@@ -63,10 +63,13 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 
 
 == Installation ==
+Installing the WP SMS plugin is similar to installing any other WordPress plugin, the simple way which is recommended is:
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. To display the SMS newsletter form, go to Themes > Widgets, and add a Subscribe form.
-4. If you're using the wp-sms-pro as well, don't forget to enter your license code on Pro Pack > General
+4. If you're using the wp-sms-pro as well, don't forget to enter your license key on Pro Pack > General
+
+If you need more information, please [click here](https://wp-sms-pro.com/resources/installation/).
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
