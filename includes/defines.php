@@ -23,4 +23,4 @@ define('WP_SMS_VERSION', $plugin_data['Version']);
 define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'https://wp-sms-pro.com');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
-define('WP_SMS_CURRENT_DATE', date('Y-m-d H:i:s', current_time('timestamp')));
+define('WP_SMS_CURRENT_DATE', current_datetime()->format('Y-m-d H:i:s'));

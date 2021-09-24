@@ -40,9 +40,9 @@
             dateFormat: "Y-m-d H:i:00",
             time_24hr: true,
             minuteIncrement: "10",
-            minDate: "<?= current_time("Y-m-d H:i:00"); ?>",
+            minDate: "<?= current_datetime()->format("Y-m-d H:i:00"); ?>",
             disableMobile: true,
-            defaultDate: "<?= current_time("Y-m-d H:i:00"); ?>"
+            defaultDate: "<?= current_datetime()->format("Y-m-d H:i:00"); ?>"
         });
 
         jQuery("#schedule_status").change(function () {
