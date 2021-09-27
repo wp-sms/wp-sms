@@ -99,7 +99,8 @@ class Gateway
         'arabic'        => array(
             'kwtsms'      => 'kwtsms.com',
             'taqnyat'     => 'taqnyat.sa',
-            'mobishastra' => 'mobishastra.com'
+            'mobishastra' => 'mobishastra.com',
+            'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
