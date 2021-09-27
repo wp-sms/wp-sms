@@ -453,7 +453,7 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order id: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms'),
+                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms'),
                             '<code>%billing_first_name%</code>',
                             '<code>%billing_company%</code>',
                             '<code>%billing_address%</code>',
@@ -483,7 +483,7 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order id: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
+                            __('Order ID: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
                             '<code>%order_id%</code>',
                             '<code>%order_number%</code>',
                             '<code>%status%</code>',
@@ -518,7 +518,7 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Product id: %s, Product name: %s', 'wp-sms'),
+                            __('Product ID: %s, Product name: %s', 'wp-sms'),
                             '<code>%product_id%</code>',
                             '<code>%product_name%</code>'
                         )
