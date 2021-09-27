@@ -133,7 +133,7 @@ class Settings
             'licenses'      => __('Licenses', 'wp-sms'),
         );
 
-        return $tabs;
+        return apply_filters('wpsms_settings_tabs', $tabs);
     }
 
     /**
