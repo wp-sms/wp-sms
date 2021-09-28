@@ -54,6 +54,22 @@
         });
         <?php endif; ?>
 
+        jQuery(document).ready(function ($) {
+
+            jQuery('#upload_image_button').click(function () {
+
+                formfield = jQuery('#upload_image').attr('name');
+                tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
+                window.send_to_editor = function (html) {
+                    imgurl = jQuery(html).attr('src');
+                    jQuery('#upload_image').val(imgurl);
+                    tb_remove();
+                }
+
+                return false;
+            });
+
+        });
     });
 </script>
 <div class="wrap wpsms-wrap">
@@ -156,6 +172,18 @@
                             </p>
                         </td>
                     </tr>
+
+                    <?php if ($this->sms->supportMedia) : ?>
+                        <tr>
+                            <th><?php _e('Choice MMS media', 'wp-sms'); ?></th>
+                            <td>
+                                <div><a href="#" class="wpsms-upload-button button">Upload image</a></div>
+                                <div style="margin-top: 11px;"><a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a></div>
+                                <input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
                     <?php if (\WP_SMS\Version::pro_is_active()): ?>
                         <tr id="schedule" valign="top">
                             <th scope="row">
@@ -181,10 +209,11 @@
                             </th>
                             <td style="padding-top: 10px;">
                                 <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled"/>
-                                <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires Pro Pack version.', 'wp-sms'); ?></p>
+                                <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires the Pro Pack', 'wp-sms'); ?></p>
                             </td>
                         </tr>
                     <?php endif; ?>
+
                     <?php if ($this->sms->flash == "enable") { ?>
                         <tr>
                             <td><?php _e('Send as a Flash', 'wp-sms'); ?>:</td>
@@ -197,6 +226,7 @@
                             </td>
                         </tr>
                     <?php } ?>
+
                     <tr>
                         <td>
                             <p class="submit" style="padding: 0;">

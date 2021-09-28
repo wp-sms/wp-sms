@@ -157,6 +157,8 @@ class Gateway
     protected $db;
     protected $tb_prefix;
     public $options;
+    public $supportMedia = false;
+    public $media = [];
 
     /**
      * @var

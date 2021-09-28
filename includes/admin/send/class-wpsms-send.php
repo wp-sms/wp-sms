@@ -14,7 +14,6 @@ if (!defined('ABSPATH')) {
  */
 class SMS_Send
 {
-
     public $sms;
     protected $db;
     protected $tb_prefix;
@@ -90,12 +89,25 @@ class SMS_Send
                 $this->sms->from = sanitize_text_field($_POST['wp_get_sender']);
                 $this->sms->msg  = sanitize_text_field($_POST['wp_get_message']);
 
+                /**
+                 * Flash
+                 */
                 if (isset($_POST['wp_flash']) and $_POST['wp_flash'] == 'true') {
                     $this->sms->isflash = true;
                 } else {
                     $this->sms->isflash = false;
                 }
 
+                /**
+                 * Media
+                 */
+                if ($this->sms->supportMedia) {
+                    $this->sms->media = $_POST['wpsms_mms_image'];
+                }
+
+                /**
+                 * Scheduled
+                 */
                 if (isset($_POST['wpsms_scheduled']) and isset($_POST['schedule_status']) and $_POST['schedule_status'] and $_POST['wpsms_scheduled']) {
                     $wpsms_scheduled = sanitize_text_field($_POST['wpsms_scheduled']);
                     $response        = Scheduled::add($wpsms_scheduled, $this->sms->from, $this->sms->msg, $this->sms->to);
@@ -129,5 +141,3 @@ class SMS_Send
         include_once WP_SMS_DIR . "includes/admin/send/send-sms.php";
     }
 }
-
-new SMS_Send();
