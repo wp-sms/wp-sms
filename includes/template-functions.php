@@ -49,18 +49,20 @@ function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
  * @param array $to
  * @param $msg $pro
  * @param bool $is_flash
+ * @param array $mediaUrls
  *
  * @param bool $from
  *
  * @return string | WP_Error
  */
-function wp_sms_send($to, $msg, $is_flash = false, $from = null)
+function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
 {
     global $sms;
 
     $sms->isflash = $is_flash;
     $sms->to      = $to;
     $sms->msg     = $msg;
+    $sms->media   = $mediaUrls;
 
     if ($from) {
         $sms->from = $from;

@@ -6,36 +6,44 @@ A simple and powerful texting plugin for WordPress
 
 You can add to WordPress, the ability to send SMS, member of SMS newsletter and send to the SMS.
 
-To every events in WordPress, you can send sms through this plugin.
+To every event in WordPress, you can send SMS/MMS through this plugin.
 
 The usage of this plugin is completely free. You have to just have an account from service in the gateway lists that we support them.
 
 Don't worry, we have tried to add the best and the most gateways to the plugin. 
 
-Very easy Send SMS by PHP code:
+### Very easy Send SMS by PHP:
 
-```sh
-$to = array('01000000000');
+```php
+$to[] = '01000000000';
 $msg = "Hello World!";
+
 wp_sms_send( $to, $msg );
+```
+
+### Or even send MMS:
+```php
+$mediaUrls[] = 'https://yoursite.com/image.png';
+
+wp_sms_send( $to, $msg, false, false, $mediaUrls );
 ```
 
 # Features
 
 * Supported +180 sms gateways. [(List all gateways)](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
-* Send SMS to number(s), subscribers and wordpress users.
+* Send SMS/MMS to number(s), subscribers and WordPress users.
 * Subscribe newsletter SMS.
 * Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.
 * Notification SMS when registering a new User.
 * Notification SMS when get new comment.
-* Notification SMS when user logged into wordpress.
+* Notification SMS when user logged into WordPress.
 * Notification SMS when user registered to subscription form.
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
 * Supported WP Widget for newsletter subscribers.
-* Support Wordpress Hooks.
-* Support WP REST API
+* Support WordPress Hooks.
+* Support WP-REST API
 * Import/Export Subscribers.
 
 # Internationalization

@@ -12,11 +12,11 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 A powerful SMS Messaging/Texting plugin for WordPress
 
 == Description ==
-By WP SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS to your newsletter subscribers or your users and get their attentions to your site and products.
+By WP-SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS/MMS to your newsletter subscribers or your users and get their attentions to your site and products.
 
-Using WP SMS you can enjoy many features, You can
+Using WP-SMS you can enjoy many features, You can
 
-* Send SMS to either your users’ numbers or specific numbers
+* Send SMS/MMS to either your users’ numbers or specific numbers
 * Get your users’ mobile numbers when they subscribe to your newsletters
 * Send SMS automatically to users and admins in different situations
 * Increase the security by two step verification
@@ -32,7 +32,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
 * Supporting more than 200 SMS gateways - [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
-* Sending SMS to the mobile number(s), your subscribers and WordPress users
+* Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing for newsletters by SMS
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
 * Sending Notification SMS to admins
@@ -44,7 +44,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 * Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
 * Supporting Widget for showing SMS newsletters to subscribers
 * Supporting WordPress Hooks
-* Supporting WP REST API
+* Supporting WP-REST API
 * Importing/Exporting Subscribers.
 
 = PRO PACKAGE =
@@ -133,12 +133,21 @@ You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purch
 = PHP 7 Support? =
 Yes! WP SMS is compatible with PHP version +7.3
 
-= How to send SMS with PHP codes? =
+= How to send SMS with PHP? =
+Use the below code to send SMS through PHP:
 
 	$to = array('Mobile Number');
 	$msg = "Your Message";
-	$is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+	$is_flash = true;
 	wp_sms_send( $to, $msg, $is_flash );
+
+= How to send MMS with PHP? =
+Use the below code to send MMS through PHP:
+
+	$to = array('Mobile Number');
+	$msg = "Your Message";
+	$mediaUrls[] = 'https://yoursite.com/image.png';
+	wp_sms_send( $to, $msg, false, false, $mediaUrls );
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
