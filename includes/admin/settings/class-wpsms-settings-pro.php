@@ -1291,13 +1291,8 @@ class Settings_Pro
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        if (is_rtl()) {
-            $class_name = 'chosen-select chosen-rtl';
-        } else {
-            $class_name = 'chosen-select';
-        }
-
-        $html = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
+        $class_name = 'js-wpsms-select2';
+        $html       = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= sprintf('<optgroup label="%1$s">', ucfirst($key));
@@ -1481,7 +1476,7 @@ class Settings_Pro
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :

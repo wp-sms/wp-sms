@@ -740,6 +740,20 @@ class Gateway
         }
     }
 
+    public static function mms_status()
+    {
+        global $sms;
+
+        // Get bulk status
+        if ($sms->supportMedia == true) {
+            // Return html
+            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
+        } else {
+            // Return html
+            return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms') . '</div>';
+        }
+    }
+
     /**
      * @return int
      */

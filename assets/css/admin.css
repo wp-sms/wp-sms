@@ -273,7 +273,7 @@
 
 @media screen and (min-width: 1440px) {
     .postbox-container {
-        max-width: 60%;
+        max-width: 65%;
     }
 
     .rtl .postbox-container {
@@ -414,7 +414,7 @@
     outline: unset !important;
 }
 
-.wpsms-wrap input[type="text"], .wpsms-wrap input[type="number"], .chosen-container-multi .chosen-choices, .wpsms-wrap select {
+.wpsms-wrap input[type="text"], .wpsms-wrap input[type="number"], .wpsms-wrap select {
     padding: 12px 16px !important;
     font-weight: normal;
     font-size: 14px;
@@ -556,17 +556,6 @@
     outline: 2px solid transparent;
 }
 
-.wpsms-wrap .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-    padding: 0 !important;
-    min-height: 15px !important;
-    line-height: 1 !important;
-    height: 15px !important;
-}
-
-.wpsms-wrap .chosen-container-multi .chosen-choices {
-    background-image: none !important;
-}
-
 .wpsms-wrap .notice {
     padding: 2px 14px;
     border-radius: 4px;
@@ -683,7 +672,7 @@
     padding: 45px;
 }
 
-#screen-meta-links + .wpsms-wrap .wpsms-header-banner , .privacy_page .wpsms-header-banner {
+#screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner {
     transform: translateY(-31px);
     z-index: -1;
     position: relative;
@@ -935,7 +924,7 @@
 }
 
 .sms_page_wp-sms-subscribers-privacy .button-primary:focus,
-.sms_page_wp-sms-subscribers-privacy .button-primary:hover{
+.sms_page_wp-sms-subscribers-privacy .button-primary:hover {
     background: #EF771F;
     border-color: #EF771F;
     box-shadow: 0 0 0 1px #F88E40;
@@ -1028,7 +1017,7 @@
 }
 
 .wpsms-wrap .notice .notice-dismiss::before {
- font-size: 20px;
+    font-size: 20px;
 }
 
 .wpsms-wrap .description {
@@ -1046,19 +1035,50 @@
     padding: 4px 6px;
 }
 
-.notice button,.notice input[type="submit"], .notice .button {
+.notice button, .notice input[type="submit"], .notice .button {
     padding: 10px;
     margin-left: 4px;
 }
 
-#TB_ajaxContent{
+#TB_ajaxContent {
     height: min-content !important;
 }
 
-.wps-block{
+.wps-block {
     display: block;
 }
 
-.wps-multiselect-label{
+.wps-multiselect-label {
     margin: 5px;
+}
+
+/**
+Select2
+ */
+.select2-container .select2-selection--single {
+    height: 45px;
+    border-color: #5b5b5b;
+    border-radius: 2px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 43px;
+    padding-left: 14px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 8px;
+    right: 7px;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #f88d40;
+}
+
+.select2-container--default .select2-selection--multiple {
+    padding: 3px 2px;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    height: 26px;
 }

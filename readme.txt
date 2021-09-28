@@ -136,7 +136,7 @@ Yes! WP SMS is compatible with PHP version +7.3
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
 
-	$to = array('Mobile Number');
+	$to[] = '01000000000';
 	$msg = "Your Message";
 	$is_flash = true;
 	wp_sms_send( $to, $msg, $is_flash );
@@ -144,7 +144,7 @@ Use the below code to send SMS through PHP:
 = How to send MMS with PHP? =
 Use the below code to send MMS through PHP:
 
-	$to = array('Mobile Number');
+	$to[] = '01000000000';
 	$msg = "Your Message";
 	$mediaUrls[] = 'https://yoursite.com/image.png';
 	wp_sms_send( $to, $msg, false, false, $mediaUrls );
