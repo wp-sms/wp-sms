@@ -3,7 +3,7 @@
     ultimateMember.init();
 
     // Set Chosen
-    $('.js-wpsms-select2').select2({ width: '70%' });
+    $('.js-wpsms-select2').select2();
 
     // Auto submit the gateways form, after changing value
     $("#wpsms_settings\\[gateway_name\\]").on('change', function () {
