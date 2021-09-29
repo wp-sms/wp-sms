@@ -101,8 +101,10 @@ class SMS_Send
                 /**
                  * Media
                  */
-                if ($this->sms->supportMedia) {
-                    $this->sms->media = $_POST['wpsms_mms_image'];
+                $mmsImages = wp_sms_sanitize_array($_POST['wpsms_mms_image']);
+
+                if ($this->sms->supportMedia and count(array_filter($mmsImages)) == count($mmsImages)) {
+                    $this->sms->media = $mmsImages;
                 }
 
                 /**
