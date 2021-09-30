@@ -10,25 +10,6 @@
         $('input[name="submit"]').click();
     });
 
-    // Check about page
-    if ($('.wp-sms-welcome').length) {
-        $('.nav-tab-wrapper a').click(function () {
-            var tab_id = $(this).attr('data-tab');
-
-            if (tab_id == 'link') {
-                return true;
-            }
-
-            $('.nav-tab-wrapper a').removeClass('nav-tab-active');
-            $('.tab-content').removeClass('current');
-
-            $("[data-tab=" + tab_id + "]").addClass('nav-tab-active');
-            $("[data-content=" + tab_id + "]").addClass('current');
-
-            return false;
-        });
-    }
-
     if ($('.repeater').length) {
         $('.repeater').repeater({
             initEmpty: false,

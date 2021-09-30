@@ -120,66 +120,69 @@ class Install
     {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-        $installer_wpsms_ver = get_option('wp_sms_db_version');
+        global $wpdb;
+        $charset_collate       = $wpdb->get_charset_collate();
+        $installer_wpsms_ver   = get_option('wp_sms_db_version');
+        $outboxTable           = $wpdb->prefix . 'sms_send';
+        $subscribersTable      = $wpdb->prefix . 'sms_subscribes';
+        $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
 
         if ($installer_wpsms_ver < WP_SMS_VERSION) {
 
-            global $wpdb;
-            $charset_collate = $wpdb->get_charset_collate();
-
             // Add response and status for outbox
-            $table_name = $wpdb->prefix . 'sms_send';
-            $column     = $wpdb->get_results($wpdb->prepare(
+            $column = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $table_name, 'response'
+                DB_NAME, $outboxTable, 'response'
             ));
 
             if (empty($column)) {
-                $wpdb->query("ALTER TABLE {$table_name} ADD status varchar(10) NOT NULL AFTER recipient, ADD response TEXT NOT NULL AFTER recipient");
+                $wpdb->query("ALTER TABLE {$outboxTable} ADD status varchar(10) NOT NULL AFTER recipient, ADD response TEXT NOT NULL AFTER recipient");
             }
 
             // Fix columns length issue
-            $table_name = $wpdb->prefix . 'sms_subscribes';
-            $wpdb->query("ALTER TABLE {$table_name} MODIFY name VARCHAR(250)");
+            $wpdb->query("ALTER TABLE {$subscribersTable} MODIFY name VARCHAR(250)");
 
             // Delete old last credit option
             delete_option('wp_last_credit');
 
-
-            $table_name = $wpdb->prefix . 'sms_send';
             // Change charset sms_send table to utf8mb4 if not
             $result = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $table_name, 'message'
+                DB_NAME, $outboxTable, 'message'
             ));
 
             if ($result->COLLATION_NAME != $wpdb->collate) {
-                $wpdb->query("ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
+                $wpdb->query("ALTER TABLE {$outboxTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
-            $table_name = $wpdb->prefix . 'sms_subscribes';
             // Change charset sms_subscribes table to utf8mb4 if not
             $result = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $table_name, 'name'
+                DB_NAME, $subscribersTable, 'name'
             ));
 
             if ($result->COLLATION_NAME != $wpdb->collate) {
-                $wpdb->query("ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
+                $wpdb->query("ALTER TABLE {$subscribersTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
-            $table_name = $wpdb->prefix . 'sms_subscribes_group';
             // Change charset sms_subscribes_group table to utf8mb4 if not
             $result = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $table_name, 'name'
+                DB_NAME, $subscribersGroupTable, 'name'
             ));
 
             if ($result->COLLATION_NAME != $wpdb->collate) {
-                $wpdb->query("ALTER TABLE {$table_name} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
+                $wpdb->query("ALTER TABLE {$subscribersGroupTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
+        }
+
+        /**
+         * Add media column in send table
+         */
+        if (!$wpdb->get_var("SHOW COLUMNS FROM `{$outboxTable}` like 'media'")) {
+            $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
         }
     }
 

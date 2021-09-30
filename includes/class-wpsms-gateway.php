@@ -310,10 +310,10 @@ class Gateway
      * @param $to
      * @param $response
      * @param string $status
-     *
+     * @param array $media
      * @return false|int
      */
-    public function log($sender, $message, $to, $response, $status = 'success')
+    public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
         return $this->db->insert(
             $this->tb_prefix . "sms_send",
@@ -323,6 +323,7 @@ class Gateway
                 'message'   => $message,
                 'recipient' => implode(',', $to),
                 'response'  => var_export($response, true),
+                'media'     => serialize($media),
                 'status'    => $status,
             )
         );
