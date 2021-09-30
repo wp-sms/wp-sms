@@ -102,10 +102,12 @@ class SMS_Send
                 /**
                  * Media
                  */
-                $mmsImages = wp_sms_sanitize_array($_POST['wpsms_mms_image']);
+                if (isset($_POST['wpsms_mms_image'])) {
+                    $mmsImages = wp_sms_sanitize_array($_POST['wpsms_mms_image']);
 
-                if ($this->sms->supportMedia and count(array_filter($mmsImages)) == count($mmsImages)) {
-                    $this->sms->media = $mmsImages;
+                    if ($this->sms->supportMedia and count(array_filter($mmsImages)) == count($mmsImages)) {
+                        $this->sms->media = $mmsImages;
+                    }
                 }
 
                 /**
