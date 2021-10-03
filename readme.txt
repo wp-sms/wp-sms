@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.1
+Stable tag: 5.6.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -256,6 +256,14 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= v5.6.2 - 02.10.2021 =
+* NEW: MMS supported! now the plugin supports sending MMS, the Twilio & Plivo gateways are supports at the moments.
+* Update: Added the argument `$mediaUrls` to `wp_sms_send()` function.
+* Update: Ability to modify the admin tabs by using the `wpsms_pro_settings_tabs` and `wpsms_settings_tabs` filters.
+* Update: The chosen library replaced with select2.
+* Bugfix: The issue for sending the SMS while publish a new post has been fixed.
+* Enhancement: For getting the correct local time, used the `current_datetime()` instead of `current_time()`.
+
 = 5.6.1 =
 * Updated Expert Texting gateway's fields
 * Updated setting page and fixed some tweak misspellings
