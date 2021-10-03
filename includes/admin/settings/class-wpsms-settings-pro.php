@@ -129,7 +129,7 @@ class Settings_Pro
             return array();
         }
 
-        return $tabs;
+        return apply_filters('wpsms_pro_settings_tabs', $tabs);
     }
 
     /**
@@ -453,7 +453,7 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order id: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms'),
+                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms'),
                             '<code>%billing_first_name%</code>',
                             '<code>%billing_company%</code>',
                             '<code>%billing_address%</code>',
@@ -483,7 +483,7 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order id: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
+                            __('Order ID: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
                             '<code>%order_id%</code>',
                             '<code>%order_number%</code>',
                             '<code>%status%</code>',
@@ -518,7 +518,7 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Product id: %s, Product name: %s', 'wp-sms'),
+                            __('Product ID: %s, Product name: %s', 'wp-sms'),
                             '<code>%product_id%</code>',
                             '<code>%product_name%</code>'
                         )
@@ -1291,13 +1291,8 @@ class Settings_Pro
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        if (is_rtl()) {
-            $class_name = 'chosen-select chosen-rtl';
-        } else {
-            $class_name = 'chosen-select';
-        }
-
-        $html = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
+        $class_name = 'js-wpsms-select2';
+        $html       = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= sprintf('<optgroup label="%1$s">', ucfirst($key));
@@ -1481,7 +1476,7 @@ class Settings_Pro
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :

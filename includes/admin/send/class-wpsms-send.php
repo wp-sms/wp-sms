@@ -14,7 +14,6 @@ if (!defined('ABSPATH')) {
  */
 class SMS_Send
 {
-
     public $sms;
     protected $db;
     protected $tb_prefix;
@@ -56,8 +55,9 @@ class SMS_Send
             );
         }
 
-        $gateway_name = Option::getOption('gateway_name');
-        $credit       = get_option('wpsms_gateway_credit');
+        $gateway_name   = Option::getOption('gateway_name');
+        $credit         = get_option('wpsms_gateway_credit');
+        $successMessage = __('The SMS sent successfully', 'wp-sms');
 
         if (isset($_POST['SendSMS'])) {
             if ($_POST['wp_get_message']) {
@@ -90,15 +90,33 @@ class SMS_Send
                 $this->sms->from = sanitize_text_field($_POST['wp_get_sender']);
                 $this->sms->msg  = sanitize_text_field($_POST['wp_get_message']);
 
+                /**
+                 * Flash
+                 */
                 if (isset($_POST['wp_flash']) and $_POST['wp_flash'] == 'true') {
                     $this->sms->isflash = true;
                 } else {
                     $this->sms->isflash = false;
                 }
 
+                /**
+                 * Media
+                 */
+                if (isset($_POST['wpsms_mms_image'])) {
+                    $mmsImages = wp_sms_sanitize_array($_POST['wpsms_mms_image']);
+
+                    if ($this->sms->supportMedia and count(array_filter($mmsImages)) == count($mmsImages)) {
+                        $this->sms->media = $mmsImages;
+                    }
+                }
+
+                /**
+                 * Scheduled
+                 */
                 if (isset($_POST['wpsms_scheduled']) and isset($_POST['schedule_status']) and $_POST['schedule_status'] and $_POST['wpsms_scheduled']) {
                     $wpsms_scheduled = sanitize_text_field($_POST['wpsms_scheduled']);
-                    $response        = Scheduled::add($wpsms_scheduled, $this->sms->from, $this->sms->msg, $this->sms->to);
+                    $response        = Scheduled::add($wpsms_scheduled, $this->sms->from, $this->sms->msg, $this->sms->to, true, $this->sms->media);
+                    $successMessage  = __('SMS scheduled successfully!', 'wp-sms');
                 } else {
 
                     // Send sms
@@ -118,7 +136,8 @@ class SMS_Send
 
                     echo "<div class='error'><p>" . sprintf(__('<strong>Error! Gateway response:</strong> %s', 'wp-sms'), $response) . "</p></div>";
                 } else {
-                    echo "<div class='updated'><p>" . __('The SMS sent successfully', 'wp-sms') . "</p></div>";
+
+                    echo "<div class='updated'><p>{$successMessage}</p></div>";
                     $credit = Gateway::credit();
                 }
             } else {
@@ -129,5 +148,3 @@ class SMS_Send
         include_once WP_SMS_DIR . "includes/admin/send/send-sms.php";
     }
 }
-
-new SMS_Send();

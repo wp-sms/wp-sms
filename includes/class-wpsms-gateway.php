@@ -99,7 +99,8 @@ class Gateway
         'arabic'        => array(
             'kwtsms'      => 'kwtsms.com',
             'taqnyat'     => 'taqnyat.sa',
-            'mobishastra' => 'mobishastra.com'
+            'mobishastra' => 'mobishastra.com',
+            'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
@@ -156,6 +157,8 @@ class Gateway
     protected $db;
     protected $tb_prefix;
     public $options;
+    public $supportMedia = false;
+    public $media = [];
 
     /**
      * @var
@@ -307,10 +310,10 @@ class Gateway
      * @param $to
      * @param $response
      * @param string $status
-     *
+     * @param array $media
      * @return false|int
      */
-    public function log($sender, $message, $to, $response, $status = 'success')
+    public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
         return $this->db->insert(
             $this->tb_prefix . "sms_send",
@@ -320,6 +323,7 @@ class Gateway
                 'message'   => $message,
                 'recipient' => implode(',', $to),
                 'response'  => var_export($response, true),
+                'media'     => serialize($media),
                 'status'    => $status,
             )
         );
@@ -729,6 +733,20 @@ class Gateway
 
         // Get bulk status
         if ($sms->bulk_send == true) {
+            // Return html
+            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
+        } else {
+            // Return html
+            return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms') . '</div>';
+        }
+    }
+
+    public static function mms_status()
+    {
+        global $sms;
+
+        // Get bulk status
+        if ($sms->supportMedia == true) {
             // Return html
             return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
         } else {

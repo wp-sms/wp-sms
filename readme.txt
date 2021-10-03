@@ -5,18 +5,18 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.1
+Stable tag: 5.6.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 A powerful SMS Messaging/Texting plugin for WordPress
 
 == Description ==
-By WP SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS to your newsletter subscribers or your users and get their attentions to your site and products.
+By WP-SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS/MMS to your newsletter subscribers or your users and get their attentions to your site and products.
 
-Using WP SMS you can enjoy many features, You can
+Using WP-SMS you can enjoy many features, You can
 
-* Send SMS to either your users’ numbers or specific numbers
+* Send SMS/MMS to either your users’ numbers or specific numbers
 * Get your users’ mobile numbers when they subscribe to your newsletters
 * Send SMS automatically to users and admins in different situations
 * Increase the security by two step verification
@@ -32,7 +32,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
 * Supporting more than 200 SMS gateways - [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
-* Sending SMS to the mobile number(s), your subscribers and WordPress users
+* Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing for newsletters by SMS
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
 * Sending Notification SMS to admins
@@ -44,7 +44,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 * Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
 * Supporting Widget for showing SMS newsletters to subscribers
 * Supporting WordPress Hooks
-* Supporting WP REST API
+* Supporting WP-REST API
 * Importing/Exporting Subscribers.
 
 = PRO PACKAGE =
@@ -63,10 +63,13 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 
 
 == Installation ==
+Installing the WP SMS plugin is similar to installing any other WordPress plugin, the simple way which is recommended is:
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. To display the SMS newsletter form, go to Themes > Widgets, and add a Subscribe form.
-4. If you're using the wp-sms-pro as well, don't forget to enter your license code on Pro Pack > General
+4. If you're using the wp-sms-pro as well, don't forget to enter your license key on Pro Pack > General
+
+If you need more information, please [click here](https://wp-sms-pro.com/resources/installation/).
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
@@ -130,12 +133,21 @@ You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purch
 = PHP 7 Support? =
 Yes! WP SMS is compatible with PHP version +7.3
 
-= How to send SMS with PHP codes? =
+= How to send SMS with PHP? =
+Use the below code to send SMS through PHP:
 
-	$to = array('Mobile Number');
+	$to[] = '01000000000';
 	$msg = "Your Message";
-	$is_flash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.
+	$is_flash = true;
 	wp_sms_send( $to, $msg, $is_flash );
+
+= How to send MMS with PHP? =
+Use the below code to send MMS through PHP:
+
+	$to[] = '01000000000';
+	$msg = "Your Message";
+	$mediaUrls[] = 'https://yoursite.com/image.png';
+	wp_sms_send( $to, $msg, false, false, $mediaUrls );
 
 = How using Actions? =
 Run the following action when sending SMS with this plugin:
@@ -244,6 +256,14 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= v5.6.2 - 02.10.2021 =
+* NEW: MMS supported! now the plugin supports sending MMS, the Twilio & Plivo gateways are supports at the moments.
+* Update: Added the argument `$mediaUrls` to `wp_sms_send()` function.
+* Update: Ability to modify the admin tabs by using the `wpsms_pro_settings_tabs` and `wpsms_settings_tabs` filters.
+* Update: The chosen library replaced with select2.
+* Bugfix: The issue for sending the SMS while publish a new post has been fixed.
+* Enhancement: For getting the correct local time, used the `current_datetime()` instead of `current_time()`.
+
 = 5.6.1 =
 * Updated Expert Texting gateway's fields
 * Updated setting page and fixed some tweak misspellings

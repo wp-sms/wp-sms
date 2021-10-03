@@ -69,6 +69,15 @@ class Outbox_List_Table extends \WP_List_Table
         }
     }
 
+    /**
+     * @param $item
+     * @return string|void
+     */
+    public function column_media($item)
+    {
+        return wp_sms_render_media_list($item['media']);
+    }
+
     function column_sender($item)
     {
         /**
@@ -84,7 +93,7 @@ class Outbox_List_Table extends \WP_List_Table
 
         //Return the title contents
         return sprintf(
-            '%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
+            '%1$s <span style="color:silver">(ID: %2$s)</span>%3$s',
             /*$1%s*/
             $item['sender'],
             /*$2%s*/
@@ -107,32 +116,30 @@ class Outbox_List_Table extends \WP_List_Table
 
     function get_columns()
     {
-        $columns = array(
+        return array(
             'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
             'sender'    => __('Sender', 'wp-sms'),
             'date'      => __('Date', 'wp-sms'),
             'message'   => __('Message', 'wp-sms'),
             'recipient' => __('Recipient', 'wp-sms'),
             'response'  => __('Response', 'wp-sms'),
+            'media'     => __('Media', 'wp-sms-pro'),
             'status'    => __('Status', 'wp-sms'),
         );
-
-        return $columns;
     }
 
     function get_sortable_columns()
     {
-        $sortable_columns = array(
+        return array(
             'ID'        => array('ID', true),     //true means it's already sorted
             'sender'    => array('sender', false),     //true means it's already sorted
             'date'      => array('date', false),  //true means it's already sorted
             'message'   => array('message', false),   //true means it's already sorted
             'recipient' => array('recipient', false), //true means it's already sorted
+            'media'     => array('media', false), //true means it's already sorted
             'status'    => array('status', false) //true means it's already sorted
 
         );
-
-        return $sortable_columns;
     }
 
     function get_bulk_actions()

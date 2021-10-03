@@ -133,7 +133,7 @@ class Settings
             'licenses'      => __('Licenses', 'wp-sms'),
         );
 
-        return $tabs;
+        return apply_filters('wpsms_settings_tabs', $tabs);
     }
 
     /**
@@ -310,15 +310,21 @@ class Settings
                 ),
                 'account_response'          => array(
                     'id'      => 'account_response',
-                    'name'    => __('Result request', 'wp-sms'),
+                    'name'    => __('Credit response', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
                 'bulk_send'                 => array(
                     'id'      => 'bulk_send',
-                    'name'    => __('Bulk send', 'wp-sms'),
+                    'name'    => __('Send bulk SMS?', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::bulk_status(),
+                ),
+                'media_support'             => array(
+                    'id'      => 'media_support',
+                    'name'    => __('Send MMS?', 'wp-sms'),
+                    'type'    => 'html',
+                    'options' => Gateway::mms_status(),
                 ),
                 // Account credit
                 'account_credit_title'      => array(
@@ -1044,7 +1050,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $k => $name) :
@@ -1073,7 +1079,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
@@ -1100,13 +1106,8 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        if (is_rtl()) {
-            $class_name = 'chosen-select chosen-rtl';
-        } else {
-            $class_name = 'chosen-select';
-        }
-
-        $html = sprintf('<select class="%1$s" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
+        $class_name = 'js-wpsms-select2';
+        $html       = sprintf('<select class="%1$s" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= '<optgroup label="' . ucfirst(str_replace('_', ' ', $key)) . '">';
@@ -1321,7 +1322,7 @@ class Settings
                 'name'        => __('License Key', 'wp-sms'),
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                'desc'        => sprintf(__('The license key is used for access to automatic update and support, to get the licenses, please go to <a href="%s" target="_blank">your account</a>.<br /><br />- Need help to enter your license? <a href="%s" target="_blank">Click here</a> to get information.<br />- Having a problem with your license? <a href="%s" target="_blank">Click here</a> for troubleshooting.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
+                'desc'        => sprintf(__('License key is used to get access to automatic updates and support. To get the license, please go to <a href="%s" target="_blank">your account</a>.<br /><br />- Need help to enter your license? <a href="%s" target="_blank">Click here</a> for more information.<br />- Got a license problem? <a href="%s" target="_blank">Click here</a> for troubleshooting.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
             );
 
         }

@@ -40,9 +40,9 @@
             dateFormat: "Y-m-d H:i:00",
             time_24hr: true,
             minuteIncrement: "10",
-            minDate: "<?= current_time("Y-m-d H:i:00"); ?>",
+            minDate: "<?= current_datetime()->format("Y-m-d H:i:00"); ?>",
             disableMobile: true,
-            defaultDate: "<?= current_time("Y-m-d H:i:00"); ?>"
+            defaultDate: "<?= current_datetime()->format("Y-m-d H:i:00"); ?>"
         });
 
         jQuery("#schedule_status").change(function () {
@@ -53,7 +53,6 @@
             }
         });
         <?php endif; ?>
-
     });
 </script>
 <div class="wrap wpsms-wrap">
@@ -99,8 +98,7 @@
                                                 <option value="<?php echo $key_item; ?>"<?php if ($val_item['count'] < 1) {
                                                     echo " disabled";
                                                 } ?>><?php _e($val_item['name'], 'wp-sms'); ?>
-                                                    (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>
-                                                    )
+                                                    (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>)
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
@@ -156,6 +154,19 @@
                             </p>
                         </td>
                     </tr>
+
+                    <tr>
+                        <th><?php _e('Choice MMS media', 'wp-sms'); ?></th>
+                        <td>
+                            <?php if ($this->sms->supportMedia) : ?>
+                                <div><a href="#" class="wpsms-upload-button button">Upload image</a></div>
+                                <div style="margin-top: 11px;"><a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a></div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
+                            <?php else: ?>
+                                <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?></p>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
                     <?php if (\WP_SMS\Version::pro_is_active()): ?>
                         <tr id="schedule" valign="top">
                             <th scope="row">
@@ -181,10 +192,11 @@
                             </th>
                             <td style="padding-top: 10px;">
                                 <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled"/>
-                                <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires Pro Pack version.', 'wp-sms'); ?></p>
+                                <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires the Pro Pack', 'wp-sms'); ?></p>
                             </td>
                         </tr>
                     <?php endif; ?>
+
                     <?php if ($this->sms->flash == "enable") { ?>
                         <tr>
                             <td><?php _e('Send as a Flash', 'wp-sms'); ?>:</td>
@@ -197,6 +209,7 @@
                             </td>
                         </tr>
                     <?php } ?>
+
                     <tr>
                         <td>
                             <p class="submit" style="padding: 0;">
