@@ -224,19 +224,21 @@ Anyway the plugin supports registering the license key through `wp-config.php`
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
 
 == Screenshots ==
-1. Gateway configuration.
-2. Features page.
-3. Notifications page.
-4. Integrations page.
-5. Send SMS Page.
-6. Outbox SMS Page.
-7. Subscribers Page.
-8. At a Glance.
-9. SMS Newsletter widget.
-10. Send post to subscribers.
-11. Contact Form 7 notifications.
-12. SMS Newsletter Page.
-13. Privacy Page.
+1. General Settings page
+2. Gateway Settings page
+3. SMS Newsletter Settings page
+4. Features Settings page
+5. Notifications Settings page
+6. Integration Settings page
+7. Send SMS/MMS page
+8. Outbox SMS/MMS page
+9. Scheduled page
+10. Subscribers page
+11. Groups page
+12. Privacy page
+13. Login With Mobile
+14. Login With Mobile
+15. SMS Subscribers Form
 
 == Upgrade Notice ==
 = 5.4 =
