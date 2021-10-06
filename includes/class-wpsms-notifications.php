@@ -139,7 +139,7 @@ class Notifications
             return;
         }
 
-        if ($_REQUEST['wps_send_subscribe'] == 'yes') {
+        if (isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes') {
             if ($_REQUEST['wps_subscribe_group'] == 'all') {
                 $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
             } else {
