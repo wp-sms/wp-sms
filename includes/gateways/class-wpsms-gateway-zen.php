@@ -11,12 +11,12 @@ class zen extends \WP_SMS\Gateway
     public $flash = "disable";
     public $isflash = false;
     public $has_key = false;
+    public $do = false;
+    public $documentUrl = 'https://wp-sms-pro.com/resources/zen-gateway-configuration/';
 
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = 'Must be sent in international E.164 format (up to 15 digits allowed), e.g: 12025550150';
-        $this->help           = 'Please fill out your TOKEN in the API key field.';
     }
 
     public function SendSMS()
