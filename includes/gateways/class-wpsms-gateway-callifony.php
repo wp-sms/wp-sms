@@ -80,6 +80,7 @@ class callifony extends \WP_SMS\Gateway
         $response = json_decode($response['body']);
 
         if ($response->ErrorCode !== 0) {
+            $this->log($this->from, $this->msg, $this->to, $this->getErrorMessageByErrorCode($response->ErrorCode), 'error');
             return new \WP_Error('send-sms', $this->getErrorMessageByErrorCode($response->ErrorCode));
         }
 
