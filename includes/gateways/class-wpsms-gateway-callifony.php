@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Gateway;
 
-class zen extends \WP_SMS\Gateway
+class callifony extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://push.globalsms.ae";
     public $tariff = "https://www.zen.ae/";
@@ -57,17 +57,23 @@ class zen extends \WP_SMS\Gateway
             return $credit;
         }
 
+        $postBody = [
+            'source'      => $this->from,
+            'destination' => implode(',', $this->to),
+            'text'        => $this->msg,
+            'dataCoding'  => 1,
+        ];
+
+        if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
+            $postBody['dataCoding'] = 8;
+        }
+
         $args = [
             'headers' => [
                 'token'        => $this->has_key,
                 'Content-Type' => 'application/json'
             ],
-            'body'    => json_encode([
-                'source'      => $this->from,
-                'destination' => implode(',', $this->to),
-                'text'        => $this->msg,
-                'dataCoding'  => 1,
-            ])
+            'body'    => json_encode($postBody),
         ];
 
         $response = wp_remote_post("{$this->wsdl_link}/HTTP/api/Client/SendSMS?username={$this->username}&password={$this->password}", $args);

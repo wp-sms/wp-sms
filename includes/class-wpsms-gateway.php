@@ -486,7 +486,7 @@ class Gateway
                 'smsbox' => 'smsbox.be'
             ),
             'united arab emirates' => array(
-                'zen' => 'zen.ae'
+                'callifony' => 'callifony.com'
             ),
             'india'                => array(
                 'shreesms'         => 'shreesms.net',
@@ -497,6 +497,7 @@ class Gateway
                 'smsozone'         => 'ozonesms.com',
                 'msgwow'           => 'msgwow.com',
                 'tripadasmsbox'    => 'tripadasmsbox.com',
+                'callifony'        => 'callifony.com'
             ),
             'iran'                 => array(
                 'iransmspanel'   => 'iransmspanel.ir',
