@@ -20,7 +20,49 @@ class Newsletter
         $this->date      = WP_SMS_CURRENT_DATE;
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
+
         add_action('wp_enqueue_scripts', array($this, 'load_script'));
+        add_action('wp_loaded', array($this, 'unSubscriberNumberByUrlAction'), 20);
+    }
+
+    /**
+     * @return mixed|void|null
+     */
+    public function getUnSubscriberQueryString()
+    {
+        return apply_filters('wp_sms_unsubscribe_query_string', 'wpsms_unsubscribe');
+    }
+
+    /**
+     * @param $number
+     * @return string
+     */
+    public function generateUnSubscribeUrlByNumber($number)
+    {
+        return add_query_arg([
+            $this->getUnSubscriberQueryString() => $number
+        ], get_bloginfo('url'));
+    }
+
+    /**
+     * Unsubscribe a number by query string action
+     *
+     */
+    public function unSubscriberNumberByUrlAction()
+    {
+        $unSubscriberQueryString = $this->getUnSubscriberQueryString();
+
+        if (!isset($_REQUEST[$unSubscriberQueryString]) || !is_numeric(wp_unslash($_REQUEST[$unSubscriberQueryString]))) {
+            return;
+        }
+
+        $number   = wp_unslash(wp_unslash($_REQUEST[$unSubscriberQueryString]));
+        $response = $this->deleteSubscriberByNumber($number);
+
+        wp_die($response['message'], __('SMS Subscription!'), [
+            'link_text' => __('Home page', 'wp-sms'),
+            'link_url'  => get_bloginfo('url'),
+        ]);
     }
 
     /**
@@ -119,16 +161,17 @@ class Newsletter
     public static function deleteSubscriberByNumber($mobile, $group_id = null)
     {
         global $wpdb;
-        $result = $wpdb->delete(
-            $wpdb->prefix . "sms_subscribes",
-            array(
-                'mobile'   => $mobile,
-                'group_id' => $group_id,
-            )
-        );
+
+        $where['mobile'] = $mobile;
+
+        if ($group_id) {
+            $where['group_id'] = $group_id;
+        }
+
+        $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
 
         if (!$result) {
-            return array('result' => 'error', 'message' => __('The subscribe does not exist.', 'wp-sms'));
+            return array('result' => 'error', 'message' => __('The Mobile Number does not exist!', 'wp-sms'));
         }
 
         /**
@@ -141,7 +184,7 @@ class Newsletter
          */
         do_action('wp_sms_delete_subscriber', $result);
 
-        return array('result' => 'success', 'message' => __('Subscribe successfully removed.', 'wp-sms'));
+        return array('result' => 'success', 'message' => __('Successfully canceled the subscription!', 'wp-sms'));
     }
 
 

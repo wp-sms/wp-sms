@@ -227,7 +227,7 @@ class RestApi
             return new \WP_Error('unsubscribe', $result['message']);
         }
 
-        return __('Your subscription was canceled.', 'wp-sms');
+        return $result['message'];
     }
 
     /**
