@@ -12,18 +12,21 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 A powerful SMS Messaging/Texting plugin for WordPress
 
 == Description ==
-By WP-SMS you can add the ability of SMS sending to your WordPress product. So you can send SMS/MMS to your newsletter subscribers or your users and get their attentions to your site and products.
+By WP-SMS you can add the ability of SMS sending to your WordPress product.
+
+So you can send SMS/MMS to your newsletter subscribers or your users and get their attentions to your site and products.
 
 Using WP-SMS you can enjoy many features, You can
 
 * Send SMS/MMS to either your users’ numbers or specific numbers
 * Get your users’ mobile numbers when they subscribe to your newsletters
 * Send SMS automatically to users and admins in different situations
-* Increase the security by two step verification
+* Increase the security by two-step verification
 * Login with your mobile number in case that you forget your password
 * And many more!
 
 This plugin is completely free. You just need to have an account from one of the services in the list of gateways we support.
+
 Don’t worry, we have tried to cover the best and the most well-known gateways for the plugin. Also, the Pro version is available too.
 
 Watch How You Can Send SMS With WordPress!
@@ -31,9 +34,10 @@ Watch How You Can Send SMS With WordPress!
 https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
-* Supporting more than 200 SMS gateways - [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+* Supporting more than 250 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 * Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
-* Subscribing for newsletters by SMS
+* Subscribing/Opt-In SMS newsletters and groups
+* Unsubscribing/Opt-Out SMS through widget or URL
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
 * Sending Notification SMS to admins
  * To inform new releases of WordPress
@@ -48,25 +52,28 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 * Importing/Exporting Subscribers.
 
 = PRO PACKAGE =
-In the Pro version, more features are added and most of popular gateways are supported. The pro version can also be integrated with many other plugins. User registration verification is possible through sending verification codes to subscribers, too. The list of supported gateways and integrated plugins are available in FAQ.
+In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce OTP, order notifications, etc.
+
+The list of supported gateways and integrated plugins are available in FAQ.
 [Buy Pro Package](http://wp-sms-pro.com/purchase/)
 
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
+Translations are done by people just like you, help make WP-SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
 
 = Contributing and Reporting Bugs =
-WP SMS is being developed on GitHub. If you’re interested in contributing to the plugin, please look at [Github page](https://github.com/veronalabs/wp-sms).
+WP SMS is being developed on GitHub. If you’re interested in contributing to the plugin, please look at [GitHub page](https://github.com/veronalabs/wp-sms).
 [Donate to this plugin](http://wp-sms-pro.com/donate)
 
 
 == Installation ==
 Installing the WP SMS plugin is similar to installing any other WordPress plugin, the simple way which is recommended is:
+
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display the SMS newsletter form, go to Themes > Widgets, and add a Subscribe form.
+3. To display the SMS newsletter form, go to Themes > Widgets, and add a WP-SMS Subscribe form.
 4. If you're using the wp-sms-pro as well, don't forget to enter your license key on Pro Pack > General
 
 If you need more information, please [click here](https://wp-sms-pro.com/resources/installation/).
@@ -80,20 +87,25 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * Clickatell.com
 * Bulksms.com
 * Infobip.com
-* Nexmo.com
+* Vonage.com (Nexmo)
 * Clockworksms.com
 * Messagebird.com
 * Clicksend.com
+* Octopush.com
+* Mitto.ch
 * Smsapi.com
 * Dsms.in
 * Esms.vn
+* Slinteractive.com.au
+* Reach-interactive.com
+* Msg91.com
+* Msg360.in
 * Isms.com.my
 * Sms4marketing.it
 * Magicdeal4u.com
 * Alfa-cell.com
 * Moceansms.com
-* Msg91.com
-* Msg360.in
+* Global-voice.net
 * Livesms.eu
 * Ozioma.net
 * Pswin.com
@@ -115,12 +127,12 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 
 = What are the differences between Free and Pro Pack versions? =
 * User Verification Registration through SMS
-* Scheduled SMS feature (To schedule SMS sending).
+* Scheduled sending SMS
 * Professional support & ticketing
 * More supported gateways (listed above)
 * Integrations with more plugins as listed below:
  * Integration with BuddyPress: You can add mobile number fields to the profile page, send SMS to users when they’re mentioned in a post, and send SMS to users when they comment on a post.
- * Integration with WooCommerce: You can add mobile number fields to the checkout page, send sms to users or subscribers when a new product is added to WooCommerce, send SMS to Admin when a new order is submitted in WooCommerce. When the stock is low, the plugin can send SMS to notify Admin. Also, you can send SMS to customers when the orders are changed.
+ * Integration with WooCommerce: Order SMS notifications, verify customer mobile number during the checkout (OTP), SMS notification to customers and subscribers for new products, SMS notification for administrator when the stock is low, and also you can send SMS to customers when the order status is changed.
  * Integration with Gravity forms: The plugin can send SMS to users and Admin after the form is submitted.
  * Integration with Quform: The plugin can send SMS to users or Admin after the form is submitted.
  * Integration with Easy Digital Downloads: You can add mobile number fields to the profile page, and send SMS to users or Admin when an order is submitted with EDD.
@@ -130,8 +142,8 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
-= PHP 7 Support? =
-Yes! WP SMS is compatible with PHP version +7.3
+= PHP v7, v8 Supports? =
+Yes! WP SMS is compatible with PHP version v5.6 up to v8
 
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
@@ -190,7 +202,7 @@ You can use the following filter to modify the receivers’ numbers.
 Example: Add new numbers to your numbers
 
 	function wp_sms_modify_receiver($numbers) {
-		$numbers[] = '09xxxxxxxx';
+		$numbers[] = '01xxxxxxxx';
 		return $numbers;
 	}
 	add_filter('wp_sms_to', 'wp_sms_modify_receiver');
@@ -219,6 +231,9 @@ If you've already the pro pack version, you have to enter your license key in th
 Anyway the plugin supports registering the license key through `wp-config.php`
 
 	define('WP_SMS_PRO_LICENSE', 'your-license-key');
+
+= How to unsubscribe a number by URL? =
+Your subscribers can unsubscribe by URL [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 
 = How to customize WP-SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
