@@ -30,7 +30,7 @@ class Newsletter
      */
     public function getUnSubscriberQueryString()
     {
-        return apply_filters('wp_sms_unsubscribe_query_string', 'wpsms_unsubscribe');
+        return apply_filters('wpsms_unsubscribe_query_string', 'wpsms_unsubscribe');
     }
 
     /**
