@@ -159,13 +159,15 @@ class RestApi
                     $text          = Option::getOption('newsletter_form_welcome_text');
                     $message       = str_replace(array_keys($template_vars), array_values($template_vars), $text);
 
+                    /**
+                     * Filter te welcome SMS message
+                     */
+                    $message = apply_filters('wpsms_welcome_sms_message', $message, $mobile);
+
                     $sms->to  = array($mobile);
                     $sms->msg = $message;
                     $sms->SendSMS();
                 }
-
-                // Return response
-                return __('Your subscription was successful!', 'wp-sms');
             }
 
             return __('Your number has been successfully subscribed.', 'wp-sms');

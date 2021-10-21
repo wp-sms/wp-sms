@@ -180,7 +180,7 @@ Example: Send Welcome SMS to users when they are registered.
 	function send_sms_when_subscribe_new_user($name, $mobile) {
 		$to = array($mobile);
         $msg = "Hi {$name}, Thanks for subscribe.";
-        wp_sms_send( $to, $msg )
+        wp_sms_send($to, $msg);
 	}
 	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
 
