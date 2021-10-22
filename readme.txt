@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.2
+Stable tag: 5.6.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -273,6 +273,13 @@ In this version, we have made a lot of changes. We tried using the free version 
 * BACKUP YOUR DATABASE BEFORE INSTALLING!
 
 == Changelog ==
+= v5.6.3 - 22.10.2021 =
+* NEW: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
+* Enhancement: Fixed a notice error in notification class
+* Enhancement: Added the document link in settings
+* Update: Added the MT URL and Credit Balance URL to OneWaySMS gateway
+* Update: Added Callifony (Zen.ae) gateway
+
 = v5.6.2 - 02.10.2021 =
 * NEW: MMS supported! now the plugin supports sending MMS, the Twilio & Plivo gateways are supports at the moments.
 * Update: Added the argument `$mediaUrls` to `wp_sms_send()` function.
