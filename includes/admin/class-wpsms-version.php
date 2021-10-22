@@ -16,7 +16,6 @@ if (!defined('ABSPATH')) {
  */
 class Version
 {
-
     public function __construct()
     {
         // Check pro pack is enabled

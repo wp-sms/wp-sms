@@ -954,3 +954,18 @@ Select2
 .select2-container .select2-search--inline .select2-search__field {
     height: 26px;
 }
+
+.wpsms-settings-header-field {
+    display: inline-flex;
+    line-height: 21px;
+    font-size: 12px;
+}
+
+.wpsms-settings-description-header {
+    margin: 0px 4px;
+}
+
+.wpsms-settings-description-header .dashicons {
+    font-size: 15px;
+    display: inherit;
+}

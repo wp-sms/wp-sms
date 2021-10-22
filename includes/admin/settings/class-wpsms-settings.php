@@ -106,7 +106,8 @@ class Settings
                         'section'     => $tab,
                         'size'        => isset($option['size']) ? $option['size'] : null,
                         'options'     => isset($option['options']) ? $option['options'] : '',
-                        'std'         => isset($option['std']) ? $option['std'] : ''
+                        'std'         => isset($option['std']) ? $option['std'] : '',
+                        'doc'         => isset($option['doc']) ? $option['doc'] : '',
                     )
                 );
 
@@ -206,7 +207,6 @@ class Settings
      */
     public function get_registered_settings()
     {
-
         $options = array(
             'enable'  => __('Enable', 'wp-sms'),
             'disable' => __('Disable', 'wp-sms')
@@ -393,7 +393,9 @@ class Settings
                 'welcome'                         => array(
                     'id'   => 'welcome',
                     'name' => __('Welcome SMS', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('By enabling this option you can send welcome SMS to subscribers'),
+                    'doc'  => '/resources/send-welcome-sms-to-new-subscribers/',
                 ),
                 'newsletter_form_welcome'         => array(
                     'id'   => 'newsletter_form_welcome',
@@ -405,7 +407,7 @@ class Settings
                     'id'   => 'newsletter_form_welcome_text',
                     'name' => __('SMS text', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => sprintf(__('Subscribe name: %s, Subscribe mobile: %s', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>')
+                    'desc' => sprintf(__('Subscriber name: %s, Subscriber mobile: %s<br><br>if you would like to send unsubscribe link, check out the document.', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>'),
                 ),
                 'mobile_terms'                    => array(
                     'id'   => 'mobile_terms',
@@ -905,7 +907,17 @@ class Settings
 
     public function header_callback($args)
     {
-        echo '<hr/>';
+        $html = '';
+        if (isset($args['desc'])) {
+            $html .= $args['desc'];
+        }
+
+        if ($args['doc']) {
+            $documentUrl = WP_SMS_SITE . $args['doc'];
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
+        }
+
+        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
     }
 
     public function html_callback($args)
@@ -996,7 +1008,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = sprintf('<textarea class="large-text" cols="50" rows="5" id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s]">%2$s</textarea><p class="description"> %3$s</p>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
+        $html = sprintf('<textarea class="large-text" cols="50" rows="5" id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
         echo $html;
     }
 

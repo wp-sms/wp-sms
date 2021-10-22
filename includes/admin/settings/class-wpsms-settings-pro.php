@@ -95,7 +95,8 @@ class Settings_Pro
                         'section'     => $tab,
                         'size'        => isset($option['size']) ? $option['size'] : null,
                         'options'     => isset($option['options']) ? $option['options'] : '',
-                        'std'         => isset($option['std']) ? $option['std'] : ''
+                        'std'         => isset($option['std']) ? $option['std'] : '',
+                        'doc'         => isset($option['doc']) ? $option['doc'] : ''
                     )
                 );
 
@@ -353,14 +354,16 @@ class Settings_Pro
                 'wc_otp'                      => array(
                     'id'   => 'wc_otp',
                     'name' => __('OTP Verification', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('By enabling this option the customers should verify their mobile number while placing the order.', 'wp-sms'),
+                    'doc' => '/resources/secure-login-with-one-time-password-otp/',
                 ),
                 'wc_otp_enable'               => array(
                     'id'      => 'wc_otp_enable',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable OTP Verification on Orders.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms')
+                    'desc'    => __('Enable OTP Verification for placing the order during the checkout.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms')
                 ),
                 'wc_otp_countries_whitelist'  => array(
                     'id'      => 'wc_otp_countries_whitelist',
@@ -859,14 +862,15 @@ class Settings_Pro
             $gf_forms['gf_notify_form_' . $form->id]          = array(
                     'id'   => 'gf_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->title),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->title),
+                    'doc' => '/resources/integrate-wp-sms-pro-with-gravity-forms/',
                 );
             $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
                     'id'      => 'gf_notify_enable_form_' . $form->id,
                     'name'    => __('Send SMS to a number', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Send SMS once the form is submitted.', 'wp-sms')
                 );
             $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
                     'id'   => 'gf_notify_receiver_form_' . $form->id,
@@ -895,7 +899,6 @@ class Settings_Pro
                         'name'    => __('Send SMS to field', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
-                        'desc'    => __('Send an SMS to the value of a field once the form is submitted.', 'wp-sms')
                     );
                 $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
                         'id'      => 'gf_notify_receiver_field_form_' . $form->id,
@@ -970,14 +973,15 @@ class Settings_Pro
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
                         'name' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
-                        'type' => 'header'
+                        'type' => 'header',
+                        'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form['name']),
+                        'doc' => '/resources/integrate-wp-sms-pro-with-quform/',
                     );
                 $qf_forms['qf_notify_enable_form_' . $form['id']]   = array(
                         'id'      => 'qf_notify_enable_form_' . $form['id'],
                         'name'    => __('Send SMS to a number', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
-                        'desc'    => __('Send SMS once the form is submitted.', 'wp-sms')
                     );
                 $qf_forms['qf_notify_receiver_form_' . $form['id']] = array(
                         'id'   => 'qf_notify_receiver_form_' . $form['id'],
@@ -1004,7 +1008,6 @@ class Settings_Pro
                             'name'    => __('Send SMS to field', 'wp-sms'),
                             'type'    => 'checkbox',
                             'options' => $options,
-                            'desc'    => __('Send an SMS to the value of a field once the form is submitted.', 'wp-sms')
                         );
                     $qf_forms['qf_notify_receiver_field_form_' . $form['id']] = array(
                             'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
@@ -1143,7 +1146,17 @@ class Settings_Pro
 
     public function header_callback($args)
     {
-        echo '<hr/>';
+        $html = '';
+        if (isset($args['desc'])) {
+            $html .= $args['desc'];
+        }
+
+        if ($args['doc']) {
+            $documentUrl = WP_SMS_SITE . $args['doc'];
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
+        }
+
+        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
     }
 
     public function html_callback($args)
