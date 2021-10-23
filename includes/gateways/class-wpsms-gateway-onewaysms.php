@@ -11,6 +11,8 @@ class onewaysms extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
+    public $gatewayMtApiUrl;
+    public $gatewayBalanceApiUrl;
 
     public function __construct()
     {
