@@ -384,6 +384,13 @@ class Settings_Pro
                     'type' => 'text',
                     'desc' => __('This option working when a user reached max retries and need a period time for start again retry cycle.<br>For no limits, set it to : 0', 'wp-sms')
                 ),
+                'wc_disable_exists_validation'               => array(
+                    'id'      => 'wc_disable_exists_validation',
+                    'name'    => __('Disable exists number validation', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option, the customers who are not logged-in (guest) can use any number', 'wp-sms')
+                ),
                 'wc_otp_text'                 => array(
                     'id'   => 'wc_otp_text',
                     'name' => __('SMS text', 'wp-sms'),
