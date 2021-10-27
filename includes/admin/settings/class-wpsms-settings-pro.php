@@ -241,8 +241,8 @@ class Settings_Pro
                     'name' => __('General', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'bp_mobile_field_type'              => array(
-                    'id'      => 'bp_mobile_field_type',
+                'bp_mobile_field'              => array(
+                    'id'      => 'bp_mobile_field',
                     'name'    => __('Choose the field', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
@@ -252,8 +252,8 @@ class Settings_Pro
                     ),
                     'desc'    => __('Choose from which field you would like to use for mobile field.', 'wp-sms')
                 ),
-                'bp_mobile_field'              => array(
-                    'id'      => 'bp_mobile_field',
+                'bp_mobile_field_id'              => array(
+                    'id'      => 'bp_mobile_field_id',
                     'name'    => __('Choose the exists field', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => $buddyPressProfileFields,

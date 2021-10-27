@@ -98,20 +98,18 @@ let WpSmsBuddyPress = {
 
     getFields: function () {
         this.fields = {
-            mobileNumberFieldType: {
-                element: jQuery('#wps_pp_settings\\[bp_mobile_field_type\\]'),
-                active: false,
+            mobileNumberField: {
+                element: jQuery('#wps_pp_settings\\[bp_mobile_field\\]'),
             },
             fieldSelector: {
-                element: jQuery('#wps_pp_settings\\[bp_mobile_field\\]'),
-                active: true,
+                element: jQuery('#wps_pp_settings\\[bp_mobile_field_id\\]'),
             }
         }
 
     },
 
     hideOrShowFields: function () {
-        if (this.fields.mobileNumberFieldType.element.val() != 'used_current_field') {
+        if (this.fields.mobileNumberField.element.val() != 'used_current_field') {
             this.fields.fieldSelector.element.closest('tr').hide()
         } else {
             this.fields.fieldSelector.element.closest('tr').show()
@@ -119,7 +117,7 @@ let WpSmsBuddyPress = {
     },
 
     addEventListener: function () {
-        this.fields.mobileNumberFieldType.element.change(function () {
+        this.fields.mobileNumberField.element.change(function () {
             this.hideOrShowFields();
         }.bind(this));
     },
