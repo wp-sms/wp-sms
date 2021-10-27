@@ -116,7 +116,7 @@ class _1s2u extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username/Password was not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "checkbalance?user=" . $this->username . "&pass=" . $this->password);

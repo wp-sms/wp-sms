@@ -109,7 +109,7 @@ class cpsms extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->has_key) {
-            return new \WP_Error('account-credit', __('Username/API-Key does not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('The Username/API Key for this gateway is not set', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . 'v2/creditvalue', [
