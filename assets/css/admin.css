@@ -298,6 +298,7 @@
 
 .wpsms-wrap select {
     padding: 12px 24px 12px 8px !important;
+    min-width: 350px;
 }
 
 .rtl .wpsms-wrap select {
@@ -927,6 +928,10 @@
 /**
 Select2
  */
+.select2-container {
+    min-width:350px;
+}
+
 .select2-container .select2-selection--single {
     height: 45px;
     border-color: #5b5b5b;

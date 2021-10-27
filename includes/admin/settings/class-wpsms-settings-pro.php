@@ -222,18 +222,42 @@ class Settings_Pro
 
         // Set BuddyPress settings
         if (class_exists('BuddyPress')) {
+            $buddyPressProfileFields = [];
+            if (function_exists('bp_xprofile_get_groups')) {
+                $buddyPressProfileGroups = bp_xprofile_get_groups(['fetch_fields' => true]);
+
+                foreach ($buddyPressProfileGroups as $buddyPressProfileGroup) {
+                    if (isset($buddyPressProfileGroup->fields)) {
+                        foreach ($buddyPressProfileGroup->fields as $field) {
+                            $buddyPressProfileFields[$buddyPressProfileGroup->name][$field->id] = $field->name;
+                        }
+                    }
+                }
+            }
+
             $buddypress_settings = array(
                 'bp_fields'                    => array(
                     'id'   => 'bp_fields',
-                    'name' => __('Fields', 'wp-sms'),
+                    'name' => __('General', 'wp-sms'),
                     'type' => 'header'
+                ),
+                'bp_mobile_field_type'              => array(
+                    'id'      => 'bp_mobile_field_type',
+                    'name'    => __('Choose the field', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'disable'            => __('Disable (No field)', 'wp-sms'),
+                        'add_new_field'      => __('Add a new mobile field to profile page', 'wp-sms'),
+                        'used_current_field' => __('Use the exists field', 'wp-sms'),
+                    ),
+                    'desc'    => __('Choose from which field you would like to use for mobile field.', 'wp-sms')
                 ),
                 'bp_mobile_field'              => array(
                     'id'      => 'bp_mobile_field',
-                    'name'    => __('Mobile number field', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Add mobile field to profile page', 'wp-sms')
+                    'name'    => __('Choose the exists field', 'wp-sms'),
+                    'type'    => 'advancedselect',
+                    'options' => $buddyPressProfileFields,
+                    'desc'    => __('Select the BuddyPress field', 'wp-sms')
                 ),
                 'mentions'                     => array(
                     'id'   => 'mentions',
@@ -943,7 +967,7 @@ class Settings_Pro
         if (function_exists('um_user')) {
             $um_options['um_field_header']          = array(
                 'id'   => 'um_field_header',
-                'name' => __('Fields', 'wp-sms'),
+                'name' => __('General', 'wp-sms'),
                 'type' => 'header'
             );
             $um_options['um_field']                 = array(
