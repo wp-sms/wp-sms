@@ -103,6 +103,9 @@ let WpSmsBuddyPress = {
             },
             fieldSelector: {
                 element: jQuery('#wps_pp_settings\\[bp_mobile_field_id\\]'),
+            },
+            syncFields: {
+                element: jQuery('#wps_pp_settings\\[bp_sync_fields\\]'),
             }
         }
 
@@ -111,8 +114,10 @@ let WpSmsBuddyPress = {
     hideOrShowFields: function () {
         if (this.fields.mobileNumberField.element.val() != 'used_current_field') {
             this.fields.fieldSelector.element.closest('tr').hide()
+            this.fields.syncFields.element.closest('tr').hide()
         } else {
             this.fields.fieldSelector.element.closest('tr').show()
+            this.fields.syncFields.element.closest('tr').show()
         }
     },
 

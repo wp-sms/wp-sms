@@ -259,6 +259,12 @@ class Settings_Pro
                     'options' => $buddyPressProfileFields,
                     'desc'    => __('Select the BuddyPress field', 'wp-sms')
                 ),
+                'bp_sync_fields' => array(
+                    'id'   => 'bp_sync_fields',
+                    'name' => __('Sync fields'),
+                    'type' => 'checkbox',
+                    'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
+                ),
                 'mentions'                     => array(
                     'id'   => 'mentions',
                     'name' => __('Mentions', 'wp-sms'),
@@ -976,12 +982,6 @@ class Settings_Pro
                 'type' => 'checkbox',
                 'desc' => __('Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms'),
             );
-            $um_options['um_sync_previous_members'] = array(
-                'id'   => 'um_sync_previous_members',
-                'name' => __('Sync old member too?'),
-                'type' => 'checkbox',
-                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Members.', 'wp-sms')
-            );
             $um_options['um_sync_field_name']       = array(
                 'id'      => 'um_sync_field_name',
                 'name'    => __('Select the purpose field in registration form'),
@@ -989,6 +989,12 @@ class Settings_Pro
                 'options' => $this->get_um_register_form_fields(),
                 'std'     => 'mobile_number',
                 'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
+            );
+            $um_options['um_sync_previous_members'] = array(
+                'id'   => 'um_sync_previous_members',
+                'name' => __('Sync old member too?'),
+                'type' => 'checkbox',
+                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Members.', 'wp-sms')
             );
         } else {
             $um_options['um_notify_form'] = array(
