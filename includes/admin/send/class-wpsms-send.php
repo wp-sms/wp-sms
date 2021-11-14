@@ -36,14 +36,18 @@ class SMS_Send
      */
     public function render_page()
     {
-        $get_group_result     = $this->db->get_results("SELECT * FROM `{$this->db->prefix}sms_subscribes_group`");
-        $get_users_mobile     = $this->db->get_col("SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' ");
-        $wcSendEnable         = false;
-        $woocommerceCustomers = array();
+        $get_group_result        = $this->db->get_results("SELECT * FROM `{$this->db->prefix}sms_subscribes_group`");
+        $get_users_mobile        = $this->db->get_col("SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' ");
+        $woocommerceCustomers    = [];
+        $buddyPressMobileNumbers = [];
+        $proIsActive             = Version::pro_is_active();
 
-        if (Version::pro_is_active() and class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
+        if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
             $woocommerceCustomers = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
-            $wcSendEnable         = true;
+        }
+
+        if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
+            $buddyPressMobileNumbers = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
         }
 
         //Get User Mobile List by Role
@@ -85,6 +89,8 @@ class SMS_Send
                     $this->sms->to = $to;
                 } else if ($_POST['wp_send_to'] == "wc_users") {
                     $this->sms->to = $woocommerceCustomers;
+                } else if ($_POST['wp_send_to'] == "bp_users") {
+                    $this->sms->to = $buddyPressMobileNumbers;
                 }
 
                 $this->sms->from = sanitize_text_field($_POST['wp_get_sender']);

@@ -21,16 +21,16 @@ class experttexting extends \WP_SMS\Gateway
             'name' => 'API key',
             'desc' => 'Your API key (can be found in account settings). Ex: api_key=sswmp8r7l63y',
         ],
+        'has_key'  => [
+            'id'   => 'gateway_key',
+            'name' => 'API secret',
+            'desc' => 'Your API secret (can be found in account settings). Ex: api_secret=5fq8vn07iyoqu3j'
+        ],
         'from'     => [
             'id'   => 'gateway_sender_id',
             'name' => 'Sender number',
             'desc' => 'Sender number or sender ID',
         ],
-        'has_key'  => [
-            'id'   => 'gateway_key',
-            'name' => 'API secret',
-            'desc' => 'Your API secret (can be found in account settings). Ex: api_secret=5fq8vn07iyoqu3j'
-        ]
     ];
 
     public function __construct()
@@ -148,11 +148,7 @@ class experttexting extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms-pro'));
         }
 
-        if (false === ($response = get_transient('wp_sms_gateway_experttexting'))) {
-            $response = wp_remote_get($this->wsdl_link . "json/Account/Balance?username={$this->username}&password={$this->password}&api_key={$this->has_key}", array('timeout' => 30));
-
-            set_transient('wp_sms_gateway_experttexting', $response, 12 * HOUR_IN_SECONDS);
-        }
+        $response = wp_remote_get($this->wsdl_link . "json/Account/Balance?username={$this->username}&api_key={$this->password}&api_secret={$this->has_key}", array('timeout' => 30));
 
         // Check gateway credit
         if (is_wp_error($response)) {

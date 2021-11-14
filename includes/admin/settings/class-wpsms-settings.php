@@ -237,14 +237,16 @@ class Settings
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',
                     'name' => __('Privacy', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'doc'  => '/6064/gdpr-compliant-in-wp-sms/',
+                    'desc' => __('GDPR Compliant', 'wp-sms'),
                 ),
                 'gdpr_compliance'     => array(
                     'id'      => 'gdpr_compliance',
                     'name'    => __('GDPR Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR related features in this page. Read our GDPR documentation to learn more.', 'wp-sms'),
+                    'desc'    => __('Enable GDPR related features in this page.', 'wp-sms'),
                 ),
             )),
 
@@ -709,7 +711,9 @@ class Settings
                 'cf7_title'                    => array(
                     'id'   => 'cf7_title',
                     'name' => __('Contact Form 7', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'doc'  => '/resources/integrate-wp-sms-with-contact-form-7/',
+                    'desc' => __('By enabling this option you can send SMS notification once the Contact form is submitted.', 'wp-sms'),
                 ),
                 'cf7_metabox'                  => array(
                     'id'      => 'cf7_metabox',
@@ -1326,6 +1330,8 @@ class Settings
                 'id'   => "license_{$addOnKey}_title",
                 'name' => $addOn,
                 'type' => 'header',
+                'doc'  => '/resources/troubleshoot-license-activation-issues/',
+                'desc' => __('License key is used to get access to automatic updates and support.', 'wp-sms'),
             );
 
             // license key
@@ -1334,7 +1340,7 @@ class Settings
                 'name'        => __('License Key', 'wp-sms'),
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                'desc'        => sprintf(__('License key is used to get access to automatic updates and support. To get the license, please go to <a href="%s" target="_blank">your account</a>.<br /><br />- Need help to enter your license? <a href="%s" target="_blank">Click here</a> for more information.<br />- Got a license problem? <a href="%s" target="_blank">Click here</a> for troubleshooting.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
             );
 
         }

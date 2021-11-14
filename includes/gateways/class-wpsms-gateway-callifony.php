@@ -5,14 +5,14 @@ namespace WP_SMS\Gateway;
 class callifony extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://push.globalsms.ae";
-    public $tariff = "https://www.zen.ae/";
+    public $tariff = "https://callifony.com/";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
     public $isflash = false;
     public $has_key = false;
     public $do = false;
-    public $documentUrl = 'https://wp-sms-pro.com/resources/zen-gateway-configuration/';
+    public $documentUrl = 'https://wp-sms-pro.com/resources/callifony-gateway-configuration/';
 
     public function __construct()
     {

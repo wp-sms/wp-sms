@@ -196,6 +196,10 @@
     margin: 0 0 0 30px;
 }
 
+.wpsms-tab-content select {
+    min-width: 350px;
+}
+
 .rtl .wpsms-tab {
     float: right;
     padding-right: 0;
@@ -927,6 +931,10 @@
 /**
 Select2
  */
+.select2-container {
+    min-width: 350px;
+}
+
 .select2-container .select2-selection--single {
     height: 45px;
     border-color: #5b5b5b;
