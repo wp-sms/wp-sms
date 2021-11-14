@@ -120,6 +120,9 @@ class Gateway
         ),
         'srilanka'      => array(
             'notify' => 'notify.lk'
+        ),
+        'poland'        => array(
+            'smseagle' => 'smseagle.eu'
         )
     );
 
