@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.3
+Stable tag: 5.6.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -256,23 +256,15 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 15. SMS Subscribers Form
 
 == Upgrade Notice ==
-= 5.4 =
-* Please disable the wp-sms-pro before the update just for avoiding unsuspected issues.
-
-= 4.0 =
-* IMPORTANT! Please keep your gateway information before updating/installing (username, password or anything). Because in this version used a new setting page.
-
-= 3.0 =
-* CHANGED In this version of the plugin has changed the structure and optimized codes.
-In this version, we have made a lot of changes. We tried using the free version as a core and base. The professional version of plugin is made to a professional parcel that through the free plugin is activated.
-
-= 2.4 =
-* CHANGED `$obj` variable TO `$sms` IN YOUR SOURCE CODE.
-
-= 2.0 =
-* BACKUP YOUR DATABASE BEFORE INSTALLING!
+= v5.6 =
+* If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.6.4 - 14.11.2021 =
+* Bugfix: Getting credential in ExpertTexting gateway has been fixed
+* Bugfix: Notice errors in OnewaySms gateway has been fixed
+* Enhancement: Minor improvements
+
 = v5.6.3 - 22.10.2021 =
 * NEW: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 * Enhancement: Fixed a notice error in notification class
