@@ -291,13 +291,17 @@
 }
 
 .wpsms-wrap input[type="text"], .wpsms-wrap input[type="number"], .wpsms-wrap select {
-    padding: 12px 16px !important;
+    padding: 12px 16px;
     font-weight: normal;
     font-size: 14px;
     line-height: 20px;
     border: 1px solid #5B5B5B !important;
     box-sizing: border-box;
     border-radius: 2px;
+}
+
+.wpsms-wrap .current-page {
+    padding: 4px 9px !important;
 }
 
 .wpsms-wrap select {

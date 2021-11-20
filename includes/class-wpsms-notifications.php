@@ -80,7 +80,7 @@ class Notifications
         //Published New Posts Actions
         if (isset($this->options['notif_publish_new_post'])) {
             add_action('add_meta_boxes', array($this, 'notification_meta_box'));
-            add_action("publish_post", array($this, 'notify_subscribers_for_published_post'), 10, 3);
+            add_action("transition_post_status", array($this, 'notify_subscribers_for_published_post'), 10, 3);
         }
 
         // Check the send to author of the post is enabled or not
@@ -96,10 +96,9 @@ class Notifications
      */
     public function notification_meta_box()
     {
-        add_meta_box('subscribe-meta-box', __('SMS', 'wp-sms'), array(
-            $this,
-            'notification_meta_box_handler'
-        ), get_post_types(['public' => true]), 'normal', 'high');
+        foreach ($this->extractPostTypeFromOption('notif_publish_new_post_type') as $postType) {
+            add_meta_box('subscribe-meta-box', __('SMS', 'wp-sms'), array($this, 'notification_meta_box_handler'), $postType, 'normal', 'high');
+        }
     }
 
     /**
@@ -117,48 +116,62 @@ class Notifications
     }
 
     /**
-     * Send SMS when a new post add
-     *
-     * @param $ID
-     * @param $post
-     *
-     * @return null
-     * @internal param $post_id
+     * @param $optionName
+     * @return array|mixed
      */
-    public function notify_subscribers_for_published_post($ID, $post)
+    private function extractPostTypeFromOption($optionName)
     {
-        //Deciding about specified post types
-        $specified_post_types = isset($this->options['notif_publish_new_post_type']) ? $this->options['notif_publish_new_post_type'] : [];
+        $specified_post_types = isset($this->options[$optionName]) ? $this->options[$optionName] : [];
 
         foreach ($specified_post_types as $key => $post_type) {
             $value                      = explode('|', $post_type)[1];
             $specified_post_types[$key] = $value;
         }
 
-        if (in_array($post->post_type, $specified_post_types) == false) {
-            return;
-        }
+        return $specified_post_types;
+    }
 
-        if (isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes') {
-            if ($_REQUEST['wps_subscribe_group'] == 'all') {
-                $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
-            } else {
-                $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'");
+    /**
+     * Send SMS when a new post add
+     *
+     * @param $new_status
+     * @param $old_status
+     * @param $post
+     *
+     * @return null
+     * @internal param $post_id
+     */
+    public function notify_subscribers_for_published_post($new_status, $old_status, $post)
+    {
+        if ('publish' === $new_status) {
+            //Deciding about specified post types
+            $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
+
+            if (in_array($post->post_type, $specified_post_types) == false) {
+                return;
             }
 
-            $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
-            $words_limit                        = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
-            $template_vars                      = array(
-                '%post_title%'   => get_the_title($ID),
-                '%post_content%' => wp_trim_words($post->post_content, $words_limit),
-                '%post_url%'     => wp_get_shortlink($ID),
-                '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $ID, true),
-            );
+            if (isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes') {
+                if ($_REQUEST['wps_subscribe_group'] == 'all') {
+                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
+                } else {
+                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'");
+                }
 
-            $message = str_replace(array_keys($template_vars), array_values($template_vars), $_REQUEST['wpsms_text_template']);
+                $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
+                $words_limit                        = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
+                $template_vars                      = array(
+                    '%post_title%'   => get_the_title($ID),
+                    '%post_content%' => wp_trim_words($post->post_content, $words_limit),
+                    '%post_url%'     => wp_get_shortlink($ID),
+                    '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $ID, true),
+                );
 
-            $this->sms->msg = $message;
-            $this->sms->SendSMS();
+                $message = str_replace(array_keys($template_vars), array_values($template_vars), $_REQUEST['wpsms_text_template']);
+
+                $this->sms->msg = $message;
+                $this->sms->SendSMS();
+            }
         }
     }
 
@@ -246,7 +259,6 @@ class Notifications
      */
     public function login_user($username_login, $username)
     {
-
         if (Option::getOption('admin_mobile_number')) {
             $this->sms->to = array($this->options['admin_mobile_number']);
 
@@ -294,18 +306,12 @@ class Notifications
      */
     function notify_author_for_published_post($new_status, $old_status, $post)
     {
-        if ('publish' === $new_status && 'publish' !== $old_status) {
-            $post_types_option = Option::getOption('notif_publish_new_post_author_post_type');
+        if ('publish' === $new_status) {
+            $post_types_option = $this->extractPostTypeFromOption('notif_publish_new_post_author_post_type');
 
             // Check selected post types or not?
-            if ($post_types_option and is_array($post_types_option)) {
-                // Initialize values
-                $post_types = array();
-                foreach ($post_types_option as $post_publish_type) {
-                    $value                 = explode('|', $post_publish_type);
-                    $post_types[$value[1]] = $value[0];
-                }
-                if (array_key_exists($post->post_type, $post_types) and !user_can($post->post_author, $post_types[$post->post_type])) {
+            if ($post_types_option) {
+                if (in_array($post->post_type, $post_types_option)) {
                     $this->new_post_published($post->ID, $post);
                 }
             }
