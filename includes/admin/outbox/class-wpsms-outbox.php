@@ -326,8 +326,6 @@ class Outbox
      */
     public function render_page()
     {
-        include_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
-
         //Create an instance of our package class...
         $list_table = new Outbox_List_Table;
 

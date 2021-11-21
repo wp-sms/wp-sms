@@ -1062,3 +1062,24 @@
 .wps-multiselect-label{
     margin: 5px;
 }
+
+.wpsms-inbox-page {
+    position: relative;
+}
+
+.wpsms-inbox-page img {
+    width: 100%;
+}
+
+.wpsms-inbox-page .promotion-modal {
+    width: 40%;
+    padding: 50px 30px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+    line-height: 1.4em;
+    background-color: white;
+    border: 5px orange solid;
+}

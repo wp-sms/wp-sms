@@ -96,6 +96,7 @@ class WP_SMS
 
             // Outbox class.
             require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+            require_once WP_SMS_DIR . 'includes/admin/inbox/class-wpsms-inbox.php';
 
             // Privacy class.
             require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy-actions.php';
