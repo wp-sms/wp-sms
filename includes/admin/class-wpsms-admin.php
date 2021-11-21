@@ -118,10 +118,12 @@ class Admin
     public function admin_menu()
     {
         $hook_suffix = array();
+
         add_menu_page(__('SMS', 'wp-sms'), __('SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
         $hook_suffix['send_sms'] = add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'));
+
         add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array($this, 'outbox_callback'));
-        $this->add_inbox_page();
+        add_submenu_page('wp-sms', __('Inbox', 'wp-sms'), __('Inbox', 'wp-sms'), 'wpsms_inbox', 'wp-sms-inbox', array($this, 'inbox_callback'));
 
         $hook_suffix['subscribers'] = add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array($this, 'subscribers_callback'));
         $hook_suffix['groups']      = add_submenu_page('wp-sms', __('Groups', 'wp-sms'), __('Groups', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers-group', array($this, 'groups_callback'));
@@ -158,17 +160,10 @@ class Admin
     /**
      *  Callback inbox page.
      */
-    public function add_inbox_page()
+    public function inbox_callback()
     {
-        if (function_exists('WPSmsTWoWay')) {
-            return;
-        }
-        $suffix = add_submenu_page('wp-sms', __('Inbox', 'wp-sms'), __('Inbox', 'wp-sms'), 'wpsms_inbox', 'wp-sms-inbox', function () {
-            include_once WP_SMS_DIR . "includes/admin/inbox/inbox.php";
-        });
-        add_action("load-{$suffix}", function () {
-            wp_enqueue_style('wp-sms-inbox', WP_SMS_URL . 'assets/css/inbox.css', true, WP_SMS_VERSION);
-        });
+        $page = new Inbox();
+        $page->render_page();
     }
 
     /**
