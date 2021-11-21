@@ -14,8 +14,10 @@ class Inbox
      */
     public function render_page()
     {
-        $templateFile = apply_filters('wp_sms_admin_inbox_template_path', WP_SMS_DIR . "includes/admin/inbox/inbox.php");
+        $renderCallback = apply_filters('wp_sms_admin_inbox_render_callback', function () {
+            include_once WP_SMS_DIR . "includes/admin/inbox/inbox.php";
+        });
 
-        include_once $templateFile;
+        call_user_func($renderCallback);
     }
 }
