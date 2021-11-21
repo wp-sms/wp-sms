@@ -109,7 +109,6 @@ class Admin
         echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(__('%s Subscriber', 'wp-sms'), $subscribe) . "</a></li>";
         if (!is_object($credit)) {
             echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf(__('%s SMS Credit', 'wp-sms'), $credit) . "</a></li>";
-
         }
     }
 
@@ -122,6 +121,7 @@ class Admin
         add_menu_page(__('SMS', 'wp-sms'), __('SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
         $hook_suffix['send_sms'] = add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'));
         add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array($this, 'outbox_callback'));
+        $this->add_inbox_page();
 
         $hook_suffix['subscribers'] = add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array($this, 'subscribers_callback'));
         $hook_suffix['groups']      = add_submenu_page('wp-sms', __('Groups', 'wp-sms'), __('Groups', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers-group', array($this, 'groups_callback'));
@@ -153,6 +153,22 @@ class Admin
     {
         $page = new Outbox();
         $page->render_page();
+    }
+
+    /**
+     *  Callback inbox page.
+     */
+    public function add_inbox_page()
+    {
+        if (function_exists('WPSmsTWoWay')) {
+            return;
+        }
+        $suffix = add_submenu_page('wp-sms', __('Inbox', 'wp-sms'), __('Inbox', 'wp-sms'), 'wpsms_inbox', 'wp-sms-inbox', function () {
+            include_once WP_SMS_DIR . "includes/admin/inbox/inbox.php";
+        });
+        add_action("load-{$suffix}", function () {
+            wp_enqueue_style('wp-sms-inbox', WP_SMS_URL . 'assets/css/inbox.css', true, WP_SMS_VERSION);
+        });
     }
 
     /**
@@ -308,6 +324,7 @@ class Admin
 
         $role->add_cap('wpsms_sendsms');
         $role->add_cap('wpsms_outbox');
+        $role->add_cap('wpsms_inbox');
         $role->add_cap('wpsms_subscribers');
         $role->add_cap('wpsms_setting');
     }
