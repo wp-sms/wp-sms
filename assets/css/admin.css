@@ -1246,13 +1246,18 @@ Select2
 
 .wpsms-inbox-page .promotion-modal {
     width: 40%;
-    padding: 50px 30px;
+    padding: 18px 27px 30px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     font-size: 1.2em;
-    line-height: 1.4em;
+    line-height: 25px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgb(0 0 0 / 15%);
     background-color: white;
-    border: 5px orange solid;
+}
+
+.wpsms-inbox-page .promotion-modal a {
+    margin-top: 22px;
 }
