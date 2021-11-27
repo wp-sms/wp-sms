@@ -265,10 +265,34 @@ class Settings_Pro
                     'type' => 'checkbox',
                     'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
+                'bp_welcome_notification'                     => array(
+                    'id'   => 'bp_welcome_notification',
+                    'name' => __('Welcome Notification', 'wp-sms'),
+                    'type' => 'header',
+                    'desc' => __('By enabling this option you can send welcome SMS to new BuddyPress users'),
+                ),
+                'bp_welcome_notification_enable'            => array(
+                    'id'      => 'bp_welcome_notification_enable',
+                    'name'    => __('Status', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Send an SMS to user when register on BuddyPress.', 'wp-sms')
+                ),
+                'bp_welcome_notification_message'           => array(
+                    'id'   => 'bp_welcome_notification_message',
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                        sprintf(
+                            __('User login: %s, User email: %s', 'wp-sms'),
+                            '<code>%user_login%</code>',
+                            '<code>%user_email%</code>',
+                        )
+                ),
                 'mentions'                     => array(
                     'id'   => 'mentions',
                     'name' => __('Mentions', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
                 ),
                 'bp_mention_enable'            => array(
                     'id'      => 'bp_mention_enable',

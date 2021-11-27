@@ -622,7 +622,7 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Send an SMS to you and user when register on wordpress.', 'wp-sms')
+                    'desc'    => __('Send an SMS to you and user when register on WordPress.', 'wp-sms')
                 ),
                 'notif_register_new_user_admin_template'  => array(
                     'id'   => 'notif_register_new_user_admin_template',
