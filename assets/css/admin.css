@@ -273,10 +273,6 @@
     width: 124px;
 }
 
-.wpsms-tab li:nth-child(8) a::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M 12 0 C 5.3833008 0 0 5.3833008 0 12 C 0 18.616699 5.3833008 24 12 24 C 18.616699 24 24 18.616699 24 12 C 24 5.3833008 18.616699 0 12 0 z M 12 3 C 16.962402 3 21 7.0375977 21 12 C 21 16.962402 16.962402 21 12 21 C 7.0375977 21 3 16.962402 3 12 C 3 7.0375977 7.0375977 3 12 3 z M 7.5 6 C 7.2236328 6 7 6.2236328 7 6.5 L 7 13 L 5.5 13 C 5.3105469 13 5.1376953 13.10791 5.0527344 13.277344 C 4.9682617 13.446777 4.9858398 13.649414 5.0996094 13.800781 L 8.0996094 17.800781 C 8.1938476 17.926758 8.3427734 18 8.5 18 C 8.6572266 18 8.8061524 17.926758 8.9003906 17.800781 L 11.900391 13.800781 C 12.01416 13.649414 12.031738 13.446777 11.947266 13.277344 C 11.862305 13.10791 11.689453 13 11.5 13 L 10 13 L 10 6.5 C 10 6.2236328 9.7763672 6 9.5 6 L 7.5 6 z M 15.5 6.0117188 C 15.347168 6.0117188 15.193848 6.0732422 15.099609 6.1992188 L 12.099609 10.199219 C 11.98584 10.350586 11.968262 10.553223 12.052734 10.722656 C 12.137695 10.89209 12.310547 11 12.5 11 L 14 11 L 14 17.5 C 14 17.776367 14.223633 18 14.5 18 L 16.5 18 C 16.776367 18 17 17.776367 17 17.5 L 17 11 L 18.5 11 C 18.689453 11 18.862305 10.89209 18.947266 10.722656 C 19.031738 10.553223 19.01416 10.350586 18.900391 10.199219 L 15.900391 6.1992188 C 15.806152 6.0732422 15.652832 6.0117188 15.5 6.0117188 z'%3E%3C/path%3E%3C/svg%3E");
-}
-
 .wpsms-tab li a {
     display: flex;
     align-items: center;
@@ -1095,74 +1091,6 @@ tr.tr-header td {
     margin: 5px;
 }
 
-/**
-Send SMS page
- */
-.wpsms-sendsms__container .wpsms-group {
-    margin-top: 11px;
-    width: 100%;
-}
-
-.wpsms-sendsms__container .wpsms-group .js-wpsms-select2 {
-    width: 65%;
-}
-
-.wpsms-sendsms__container textarea {
-    width: 65% !important;
-}
-
-/**
-Select2
- */
-.select2-container {
-    min-width: 350px;
-}
-
-.select2-container .select2-selection--single {
-    height: 45px;
-    border-color: #5b5b5b;
-    border-radius: 2px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 43px;
-    padding-left: 14px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    top: 8px;
-    right: 7px;
-}
-
-.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background-color: #f88d40;
-}
-
-.select2-container--default .select2-selection--multiple {
-    padding: 3px 2px;
-}
-
-.select2-container .select2-search--inline .select2-search__field {
-    height: 26px;
-}
-
-.wpsms-settings-header-field {
-    font-size: 12px;
-    font-weight: normal;
-    color: #7f7f7f;
-    white-space: normal;
-}
-
-.wpsms-settings-description-header {
-    display: inline-block;
-    margin: 0 6px;
-}
-
-.wpsms-settings-description-header .dashicons {
-    font-size: 15px;
-    display: inherit;
-}
-
 .wpsms-inbox-page {
     position: relative;
 }
@@ -1173,18 +1101,13 @@ Select2
 
 .wpsms-inbox-page .promotion-modal {
     width: 40%;
-    padding: 18px 27px 30px;
+    padding: 50px 30px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     font-size: 1.2em;
-    line-height: 25px;
-    text-align: center;
-    box-shadow: 0 5px 25px rgb(0 0 0 / 15%);
+    line-height: 1.4em;
     background-color: white;
-}
-
-.wpsms-inbox-page .promotion-modal a {
-    margin-top: 22px;
+    border: 5px orange solid;
 }
