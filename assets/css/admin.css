@@ -933,6 +933,22 @@
 }
 
 /**
+Send SMS page
+ */
+.wpsms-sendsms__container .wpsms-group {
+    margin-top: 11px;
+    width: 100%;
+}
+
+.wpsms-sendsms__container .wpsms-group .js-wpsms-select2 {
+    width: 65%;
+}
+
+.wpsms-sendsms__container textarea {
+    width: 65% !important;
+}
+
+/**
 Select2
  */
 .select2-container {
