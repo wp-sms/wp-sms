@@ -74,7 +74,10 @@ class Settings
      * */
     public function add_settings_menu()
     {
-        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array($this, 'render_settings'));
+        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array(
+            $this,
+            'render_settings'
+        ), 6);
     }
 
     /**

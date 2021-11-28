@@ -111,6 +111,9 @@ class WP_SMS
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
 
+            // Send class.
+            require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
+
             // Setting classes.
             require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
 
