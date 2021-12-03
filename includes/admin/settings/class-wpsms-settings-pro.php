@@ -96,7 +96,9 @@ class Settings_Pro
                         'size'        => isset($option['size']) ? $option['size'] : null,
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
-                        'doc'         => isset($option['doc']) ? $option['doc'] : ''
+                        'doc'         => isset($option['doc']) ? $option['doc'] : '',
+                        'class'       => "tr-{$option['type']}",
+                        'label_for'   => true,
                     )
                 );
 
@@ -1223,7 +1225,7 @@ class Settings_Pro
             $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
         }
 
-        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
+        echo "<div class='wpsms-settings-header-field'>{$html}</div>";
     }
 
     public function html_callback($args)

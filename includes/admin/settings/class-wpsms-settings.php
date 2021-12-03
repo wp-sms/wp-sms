@@ -108,7 +108,9 @@ class Settings
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
-                    )
+                        'class'       => "tr-{$option['type']}",
+                        'label_for'   => true,
+                    ),
                 );
 
                 register_setting($this->setting_name, $this->setting_name, array($this, 'settings_sanitize'));
@@ -921,7 +923,7 @@ class Settings
             $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
         }
 
-        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
+        echo "<div class='wpsms-settings-header-field'>{$html}</div>";
     }
 
     public function html_callback($args)
