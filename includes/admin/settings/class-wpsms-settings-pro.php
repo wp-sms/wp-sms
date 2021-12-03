@@ -284,9 +284,10 @@ class Settings_Pro
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('User login: %s, User email: %s', 'wp-sms'),
+                            __('User login: %s, User email: %s, User display name: %s', 'wp-sms'),
                             '<code>%user_login%</code>',
                             '<code>%user_email%</code>',
+                            '<code>%display_name%</code>',
                         )
                 ),
                 'mentions'                     => array(
