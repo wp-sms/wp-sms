@@ -314,7 +314,7 @@ class Settings
                 ),
                 'account_response'          => array(
                     'id'      => 'account_response',
-                    'name'    => __('Credit response', 'wp-sms'),
+                    'name'    => __('Balance', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
@@ -443,7 +443,7 @@ class Settings
                     'id'   => 'disable_style_in_front',
                     'name' => __('Disable Frontend Style', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => __('Disable loading Style from Frontend.', 'wp-sms')
+                    'desc' => __('Check this to disable all included styling of SMS Newsletter form elements.', 'wp-sms')
                 ),
             )),
 

@@ -200,12 +200,17 @@
     min-width: 350px;
 }
 
+.wpsms-tab-content .repeater-item select {
+    min-width: auto;
+}
+
 .wpsms-tab-content tr th {
     font-weight: normal;
 }
 
 .wpsms-tab-content tr th label {
     padding: 16px;
+    white-space: nowrap;
 }
 
 .wpsms-tab-content tr.tr-header th, tr.tr-header td {
@@ -924,7 +929,14 @@
 .wpsms-wrap .description {
     color: #5B5B5B;
     font-size: 12px;
-    margin-top: 8px;
+    margin-top: 2px;
+    line-height: 22px;
+}
+
+.wpsms-wrap .description code {
+    border-radius: 16px;
+    font-size: 12px;
+    padding: 2px 7px;
 }
 
 .wpsms-wrap .postbox table tr td, .wpsms-wrap .postbox table tr th {
@@ -1010,7 +1022,10 @@ Select2
     color: #7f7f7f;
 }
 
-.wpsms-settings-description-header {display: inline-block;margin: 0 6px;}
+.wpsms-settings-description-header {
+    display: inline-block;
+    margin: 0 6px;
+}
 
 .wpsms-settings-description-header .dashicons {
     font-size: 15px;
