@@ -215,7 +215,7 @@
 
 .wpsms-tab-content tr.tr-header th, tr.tr-header td {
     color: #ffffff;
-    padding: 14px 0 12px 12px;
+    padding: 14px 12px 12px 12px;
     white-space: nowrap;
     background: #f0f0f1;
     font-weight: bold;
