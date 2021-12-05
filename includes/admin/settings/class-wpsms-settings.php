@@ -8,7 +8,6 @@ if (!defined('ABSPATH')) {
 
 class Settings
 {
-
     public $setting_name;
     public $options = array();
 
@@ -106,7 +105,8 @@ class Settings
                         'section'     => $tab,
                         'size'        => isset($option['size']) ? $option['size'] : null,
                         'options'     => isset($option['options']) ? $option['options'] : '',
-                        'std'         => isset($option['std']) ? $option['std'] : ''
+                        'std'         => isset($option['std']) ? $option['std'] : '',
+                        'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
                     )
                 );
 
@@ -131,6 +131,7 @@ class Settings
             'notifications' => __('Notifications', 'wp-sms'),
             'integration'   => __('Integration', 'wp-sms'),
             'licenses'      => __('Licenses', 'wp-sms'),
+            'two_way'       => __('Two Way', 'wp-sms'),
         );
 
         return $tabs;
@@ -147,7 +148,6 @@ class Settings
      */
     public function settings_sanitize($input = array())
     {
-
         if (empty($_POST['_wp_http_referer'])) {
             return $input;
         }
@@ -206,7 +206,6 @@ class Settings
      */
     public function get_registered_settings()
     {
-
         $options = array(
             'enable'  => __('Enable', 'wp-sms'),
             'disable' => __('Disable', 'wp-sms')
@@ -798,7 +797,6 @@ class Settings
                 'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms'),
             );
         }
-
         return $settings;
     }
 
@@ -808,8 +806,8 @@ class Settings
     }
 
     /*
-	 * Activate Icon
-	 */
+     * Activate Icon
+     */
     public function getLicenseStatusIcon($addOnKey)
     {
         $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
@@ -824,7 +822,6 @@ class Settings
                 $this->options["license_{$addOnKey}_status"] = true;
                 $updateOption                                = true;
             }
-
         } else {
             $item                                        = array('icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000');
             $this->options["license_{$addOnKey}_status"] = false;
@@ -844,7 +841,6 @@ class Settings
     public function check_license_key($value, $oldValue)
     {
         foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
-
             $constantLicenseKey       = wp_sms_generate_constant_license($addOnKey);
             $generateLicenseStatusKey = "license_{$addOnKey}_status";
             $licenseKey               = null;
@@ -940,12 +936,12 @@ class Settings
         foreach ($args['options'] as $key => $option) :
             $checked = false;
 
-            if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
-                $checked = true;
-            } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
-                $checked = true;
-            }
-            $html .= sprintf('<input name="wpsms_settings[%1$s]"" id="wpsms_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="wpsms_settings[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
+        if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
+            $checked = true;
+        } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
+            $checked = true;
+        }
+        $html .= sprintf('<input name="wpsms_settings[%1$s]"" id="wpsms_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="wpsms_settings[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
         endforeach;
         $html .= sprintf('<p class="description">%1$s</p>', wp_kses_post($args['desc']));
         echo $html;
@@ -961,7 +957,8 @@ class Settings
 
         $after_input = (isset($args['after_input']) && !is_null($args['after_input'])) ? $args['after_input'] : '';
         $size        = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html        = sprintf('<input type="text" class="%1$s-text" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
+        $attributes  = (isset($args['attributes']) && !is_null($args['attributes'])) ? implode('', $args['attributes']) : '';
+        $html        = sprintf('<input type="text" class="%1$s-text" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]" value="%3$s" %4$s />%5$s<p class="description">%6$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), esc_attr($attributes), $after_input, wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -1056,8 +1053,8 @@ class Settings
                         $selected = '';
                     }
                 }
-                $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
-            endforeach;
+        $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
+        endforeach;
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -1084,7 +1081,7 @@ class Settings
                     $selected = '';
                 }
             }
-            $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
+        $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -1114,12 +1111,12 @@ class Settings
             foreach ($v as $option => $name) :
 
                 $disabled = '';
-                if (!defined('WP_SMS_PRO_VERSION') && array_column(Gateway::$proGateways, $option)) {
-                    $disabled = ' disabled';
-                    $name     .= '<span> ' . __('- (Pro Pack)', 'wp-sms') . '</span>';
-                }
-                $selected = selected($option, $value, false);
-                $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
+            if (!defined('WP_SMS_PRO_VERSION') && array_column(Gateway::$proGateways, $option)) {
+                $disabled = ' disabled';
+                $name     .= '<span> ' . __('- (Pro Pack)', 'wp-sms') . '</span>';
+            }
+            $selected = selected($option, $value, false);
+            $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
             endforeach;
 
             $html .= '</optgroup>';
@@ -1142,7 +1139,7 @@ class Settings
 
         foreach ($args['options'] as $option => $color) :
             $selected = selected($option, $value, false);
-            $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
+        $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -1203,8 +1200,7 @@ class Settings
     {
         $active_tab = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
 
-        ob_start();
-        ?>
+        ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
             <div class="wpsms-wrap__main">
@@ -1214,7 +1210,6 @@ class Settings
                     <ul class="wpsms-tab">
                         <?php
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
-
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
                                 'tab'              => $tab_id
@@ -1225,17 +1220,15 @@ class Settings
                             echo '<li><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . $active . '">';
                             echo $tab_name;
                             echo '</a></li>';
-                        }
-                        ?>
+                        } ?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
-                    <div class="wpsms-tab-content">
+                    <div class="wpsms-tab-content wpsms_<?= $tab_id ?>_settings_tab">
                         <form method="post" action="options.php">
                             <table class="form-table">
                                 <?php
                                 settings_fields($this->setting_name);
-                                do_settings_fields('wpsms_settings_' . $active_tab, 'wpsms_settings_' . $active_tab);
-                                ?>
+        do_settings_fields('wpsms_settings_' . $active_tab, 'wpsms_settings_' . $active_tab); ?>
                             </table>
                             <?php submit_button(); ?>
                         </form>
@@ -1323,7 +1316,6 @@ class Settings
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
                 'desc'        => sprintf(__('The license key is used for access to automatic update and support, to get the licenses, please go to <a href="%s" target="_blank">your account</a>.<br /><br />- Need help to enter your license? <a href="%s" target="_blank">Click here</a> to get information.<br />- Having a problem with your license? <a href="%s" target="_blank">Click here</a> for troubleshooting.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
             );
-
         }
 
         return $settings;
