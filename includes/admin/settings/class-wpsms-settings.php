@@ -119,7 +119,12 @@ class Settings
                 $optionId = $option['id'];
                 $readonly = (isset($option['readonly']) && $option['readonly'] == true) ? 'wpsms-pro-feature' : '';
 
-                add_settings_field("$this->setting_name[$optionId]", $name, array($this, "{$option['type']}_callback"), "{$this->setting_name}_{$tab}", "{$this->setting_name}_{$tab}",
+                add_settings_field(
+                    "$this->setting_name[$optionId]",
+                    $name,
+                    array($this, "{$option['type']}_callback"),
+                    "{$this->setting_name}_{$tab}",
+                    "{$this->setting_name}_{$tab}",
                     array(
                         'id'          => $optionId ? $optionId : null,
                         'desc'        => !empty($option['desc']) ? $option['desc'] : '',
@@ -132,6 +137,7 @@ class Settings
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
                         'class'       => "tr-{$option['type']} {$readonly}",
                         'label_for'   => true,
+                        'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
                     )
                 );
 
@@ -1075,35 +1081,35 @@ class Settings
 
             foreach ($forms as $form):
                 $form_fields = Gravityforms::get_field($form->id);
-                if (is_array($form_fields) && count($form_fields)) {
-                    $more_fields = ', ';
-                    foreach ($form_fields as $key => $value) {
-                        $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
-                    }
-
-                    $more_fields = rtrim($more_fields, ', ');
+            if (is_array($form_fields) && count($form_fields)) {
+                $more_fields = ', ';
+                foreach ($form_fields as $key => $value) {
+                    $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
                 }
 
-                $gf_forms['gf_notify_form_' . $form->id]          = array(
+                $more_fields = rtrim($more_fields, ', ');
+            }
+
+            $gf_forms['gf_notify_form_' . $form->id]          = array(
                     'id'   => 'gf_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->title),
                     'type' => 'header',
                     'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->title),
                     'doc'  => '/resources/integrate-wp-sms-pro-with-gravity-forms/',
                 );
-                $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
+            $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
                     'id'      => 'gf_notify_enable_form_' . $form->id,
                     'name'    => __('Send SMS to a number', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                 );
-                $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
+            $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
                     'id'   => 'gf_notify_receiver_form_' . $form->id,
                     'name' => __('Phone number(s)', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')
                 );
-                $gf_forms['gf_notify_message_form_' . $form->id]  = array(
+            $gf_forms['gf_notify_message_form_' . $form->id]  = array(
                     'id'   => 'gf_notify_message_form_' . $form->id,
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -1118,21 +1124,21 @@ class Settings
                         ) . $more_fields
                 );
 
-                if (Gravityforms::get_field($form->id)) {
-                    $gf_forms['gf_notify_enable_field_form_' . $form->id]   = array(
+            if (Gravityforms::get_field($form->id)) {
+                $gf_forms['gf_notify_enable_field_form_' . $form->id]   = array(
                         'id'      => 'gf_notify_enable_field_form_' . $form->id,
                         'name'    => __('Send SMS to field', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
                     );
-                    $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
+                $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
                         'id'      => 'gf_notify_receiver_field_form_' . $form->id,
                         'name'    => __('A field of the form', 'wp-sms'),
                         'type'    => 'select',
                         'options' => Gravityforms::get_field($form->id),
                         'desc'    => __('Select the field of your form.', 'wp-sms')
                     );
-                    $gf_forms['gf_notify_message_field_form_' . $form->id]  = array(
+                $gf_forms['gf_notify_message_field_form_' . $form->id]  = array(
                         'id'   => 'gf_notify_message_field_form_' . $form->id,
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
@@ -1146,7 +1152,7 @@ class Settings
                                 '<code>%content%</code>'
                             ) . $more_fields
                     );
-                }
+            }
             endforeach;
         } else {
             $gf_forms['gf_notify_form'] = array(
@@ -1201,34 +1207,34 @@ class Settings
             if ($forms) {
                 foreach ($forms as $form):
                     $form_fields = Quform::get_fields($form['id']);
-                    $more_qf_fields = ', ';
-                    if (is_array($form_fields) && count($form_fields)) {
-                        foreach ($form_fields as $key => $value) {
-                            $more_qf_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
-                        }
-                        $more_qf_fields = rtrim($more_qf_fields, ', ');
+                $more_qf_fields = ', ';
+                if (is_array($form_fields) && count($form_fields)) {
+                    foreach ($form_fields as $key => $value) {
+                        $more_qf_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
                     }
+                    $more_qf_fields = rtrim($more_qf_fields, ', ');
+                }
 
-                    $qf_forms['qf_notify_form_' . $form['id']]          = array(
+                $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
                         'name' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
                         'type' => 'header',
                         'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form['name']),
                         'doc'  => '/resources/integrate-wp-sms-pro-with-quform/',
                     );
-                    $qf_forms['qf_notify_enable_form_' . $form['id']]   = array(
+                $qf_forms['qf_notify_enable_form_' . $form['id']]   = array(
                         'id'      => 'qf_notify_enable_form_' . $form['id'],
                         'name'    => __('Send SMS to a number', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
                     );
-                    $qf_forms['qf_notify_receiver_form_' . $form['id']] = array(
+                $qf_forms['qf_notify_receiver_form_' . $form['id']] = array(
                         'id'   => 'qf_notify_receiver_form_' . $form['id'],
                         'name' => __('Phone number(s)', 'wp-sms'),
                         'type' => 'text',
                         'desc' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')
                     );
-                    $qf_forms['qf_notify_message_form_' . $form['id']]  = array(
+                $qf_forms['qf_notify_message_form_' . $form['id']]  = array(
                         'id'   => 'qf_notify_message_form_' . $form['id'],
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
@@ -1242,21 +1248,21 @@ class Settings
                             ) . $more_qf_fields
                     );
 
-                    if ($form['elements']) {
-                        $qf_forms['qf_notify_enable_field_form_' . $form['id']]   = array(
+                if ($form['elements']) {
+                    $qf_forms['qf_notify_enable_field_form_' . $form['id']]   = array(
                             'id'      => 'qf_notify_enable_field_form_' . $form['id'],
                             'name'    => __('Send SMS to field', 'wp-sms'),
                             'type'    => 'checkbox',
                             'options' => $options,
                         );
-                        $qf_forms['qf_notify_receiver_field_form_' . $form['id']] = array(
+                    $qf_forms['qf_notify_receiver_field_form_' . $form['id']] = array(
                             'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
                             'name'    => __('A field of the form', 'wp-sms'),
                             'type'    => 'select',
                             'options' => $form_fields,
                             'desc'    => __('Select the field of your form.', 'wp-sms')
                         );
-                        $qf_forms['qf_notify_message_field_form_' . $form['id']]  = array(
+                    $qf_forms['qf_notify_message_field_form_' . $form['id']]  = array(
                             'id'   => 'qf_notify_message_field_form_' . $form['id'],
                             'name' => __('Message body', 'wp-sms'),
                             'type' => 'textarea',
@@ -1269,7 +1275,7 @@ class Settings
                                     '<code>%content%</code>',
                                 ) . $more_qf_fields
                         );
-                    }
+                }
                 endforeach;
             } else {
                 $qf_forms['qf_notify_form'] = array(
@@ -1927,7 +1933,6 @@ class Settings
                 'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms')
             );
         }
-
         return $settings;
     }
 
@@ -1937,8 +1942,8 @@ class Settings
     }
 
     /*
-	 * Activate Icon
-	 */
+     * Activate Icon
+     */
     public function getLicenseStatusIcon($addOnKey)
     {
         $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
@@ -1953,7 +1958,6 @@ class Settings
                 $this->options["license_{$addOnKey}_status"] = true;
                 $updateOption                                = true;
             }
-
         } else {
             $item                                        = array('icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000');
             $this->options["license_{$addOnKey}_status"] = false;
@@ -1973,7 +1977,6 @@ class Settings
     public function check_license_key($value, $oldValue)
     {
         foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
-
             $constantLicenseKey       = wp_sms_generate_constant_license($addOnKey);
             $generateLicenseStatusKey = "license_{$addOnKey}_status";
             $licenseKey               = null;
@@ -2169,12 +2172,12 @@ class Settings
         foreach ($args['options'] as $key => $option) :
             $checked = false;
 
-            if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
-                $checked = true;
-            } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
-                $checked = true;
-            }
-            $html .= sprintf('<input name="' . $this->setting_name . '[%1$s]"" id="' . $this->setting_name . '[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="' . $this->setting_name . '[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
+        if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
+            $checked = true;
+        } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
+            $checked = true;
+        }
+        $html .= sprintf('<input name="' . $this->setting_name . '[%1$s]"" id="' . $this->setting_name . '[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="' . $this->setting_name . '[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
         endforeach;
         $html .= sprintf('<p class="description">%1$s</p>', wp_kses_post($args['desc']));
         echo $html;
@@ -2284,8 +2287,8 @@ class Settings
                         $selected = '';
                     }
                 }
-                $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
-            endforeach;
+        $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
+        endforeach;
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -2312,7 +2315,7 @@ class Settings
                     $selected = '';
                 }
             }
-            $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
+        $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -2337,12 +2340,12 @@ class Settings
             foreach ($v as $option => $name) :
 
                 $disabled = '';
-                if (!defined('WP_SMS_PRO_VERSION') && array_column(Gateway::$proGateways, $option)) {
-                    $disabled = ' disabled';
-                    $name     .= '<span> ' . __('- (Pro Pack)', 'wp-sms') . '</span>';
-                }
-                $selected = selected($option, $value, false);
-                $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
+            if (!defined('WP_SMS_PRO_VERSION') && array_column(Gateway::$proGateways, $option)) {
+                $disabled = ' disabled';
+                $name     .= '<span> ' . __('- (Pro Pack)', 'wp-sms') . '</span>';
+            }
+            $selected = selected($option, $value, false);
+            $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
             endforeach;
 
             $html .= '</optgroup>';
@@ -2365,7 +2368,7 @@ class Settings
 
         foreach ($args['options'] as $option => $color) :
             $selected = selected($option, $value, false);
-            $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
+        $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -2428,8 +2431,7 @@ class Settings
     {
         $active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
-        ob_start();
-        ?>
+        ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
             <div class="wpsms-wrap__main">
@@ -2459,8 +2461,7 @@ class Settings
                             echo '<li class="tab-' . $tab_id . $IsProTab . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . $active . '">';
                             echo $tab_name;
                             echo '</a>' . $proLockIcon . '</li>';
-                        }
-                        ?>
+                        } ?>
 
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
@@ -2473,15 +2474,13 @@ class Settings
                             <table class="form-table">
                                 <?php
                                 settings_fields($this->setting_name);
-                                do_settings_fields("{$this->setting_name}_{$active_tab}", "{$this->setting_name}_{$active_tab}");
-                                ?>
+        do_settings_fields("{$this->setting_name}_{$active_tab}", "{$this->setting_name}_{$active_tab}"); ?>
                             </table>
 
                             <?php
                             if (!$contentRestricted) {
                                 submit_button();
-                            }
-                            ?>
+                            } ?>
                         </form>
                     </div>
                 </div>
@@ -2527,7 +2526,8 @@ class Settings
         return $post_types;
     }
 
-    public function getRoles() {
+    public function getRoles()
+    {
         $roles = [];
         foreach (get_editable_roles() as $key => $role) {
             $roles[] = [$key => $role['name']];
@@ -2546,7 +2546,6 @@ class Settings
         $ultimate_member_forms = get_posts(['post_type' => 'um_form']);
 
         foreach ($ultimate_member_forms as $form) {
-
             $form_role = get_post_meta($form->ID, '_um_core');
 
             if (in_array('register', $form_role)) {
@@ -2605,7 +2604,6 @@ class Settings
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
                 'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'))
             );
-
         }
 
         return $settings;
