@@ -703,12 +703,8 @@
     padding: 45px;
 }
 
-<<<<<<< HEAD
 #screen-meta-links+.wpsms-wrap .wpsms-header-banner,
 .privacy_page .wpsms-header-banner {
-=======
-#screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner {
->>>>>>> da71f41fbfd5d9dc98d3c061e9789fda6c1663d9
     transform: translateY(-31px);
     z-index: -1;
     position: relative;
@@ -1095,13 +1091,9 @@
     padding: 4px 6px;
 }
 
-<<<<<<< HEAD
 .notice button,
 .notice input[type="submit"],
 .notice .button {
-=======
-.notice button, .notice input[type="submit"], .notice .button {
->>>>>>> da71f41fbfd5d9dc98d3c061e9789fda6c1663d9
     padding: 10px;
     margin-left: 4px;
 }
