@@ -103,9 +103,8 @@ class WP_SMS
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
 
-            // Settings classes.
+            // Setting classes.
             require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
-            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings-pro.php';
 
             // Subscribers class.
             require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';

@@ -75,11 +75,11 @@ class Version
      * Check pro pack is enabled
      * @return bool
      */
-    public static function pro_is_active()
+    public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
-        if (is_plugin_active('wp-sms-pro/wp-sms-pro.php')) {
+        if (is_plugin_active($pluginSlug)) {
             return true;
         }
     }

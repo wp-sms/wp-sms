@@ -161,7 +161,14 @@ Use the below code to send MMS through PHP:
 	$mediaUrls[] = 'https://yoursite.com/image.png';
 	wp_sms_send( $to, $msg, false, false, $mediaUrls );
 
-= How using Actions? =
+= How to show the SMS subscribe form? =
+There are three ways to show the subscriber form in the theme
+
+1. By loading the widget in theme
+2. By using the shortcode `[wp-sms-subscriber-form]` in posts/pages
+3. By loading the Php function in your theme `wp_sms_subscribes()`
+
+= How to use the Actions? =
 Run the following action when sending SMS with this plugin:
 `wp_sms_send`
 
@@ -184,7 +191,7 @@ Example: Send Welcome SMS to users when they are registered.
 	}
 	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
 
-= How using Hooks? =
+= How to use the Filters? =
 You can use the following filter to modify numbers.
 `wp_sms_from`
 
