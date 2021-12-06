@@ -1110,7 +1110,7 @@ class Settings
                 'id'   => 'gf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Gravityforms should be enable to run this tab', 'wp-sms'),
+                'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms'),
             );
         }
 
@@ -2057,7 +2057,7 @@ class Settings
 
     public function notice_callback($args)
     {
-        echo wp_kses_post($args['options']);
+        echo sprintf('%s', $args['desc']);
     }
 
     public function checkbox_callback($args)

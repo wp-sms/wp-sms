@@ -270,7 +270,8 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 = v5.6.5 - 05.12.2021 =
 * NEW: Selecting the several user groups on send SMS page has been supported
 * Bugfix: The post type & author notification issue has been fixed
-* Enhancement: The setting pages & styles
+* Enhancement: The setting pages & styles improvement
+* Update: Pro settings page merged to the main settings page
 
 = v5.6.4 - 14.11.2021 =
 * Bugfix: Getting credential in ExpertTexting gateway has been fixed
