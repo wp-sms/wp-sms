@@ -2380,6 +2380,11 @@ class Settings
                             echo '</a>' . $proLockIcon . '</li>';
                         }
                         ?>
+
+                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
+                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
+                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>"><?php _e('Product website', 'wp-sms'); ?></a></li>
+                        <li class="tab-link"><a target="_blank" href="https://veronalabs.com"><?php _e('Company website', 'wp-sms'); ?></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?>">
