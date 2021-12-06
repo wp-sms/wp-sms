@@ -2109,7 +2109,7 @@ class Settings
 
         $after_input = (isset($args['after_input']) && !is_null($args['after_input'])) ? $args['after_input'] : '';
         $size        = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html        = sprintf('<input type="text" class="%1$s-text" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
+        $html        = sprintf('<input dir="auto" type="text" class="%1$s-text" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -2126,7 +2126,7 @@ class Settings
         $step = isset($args['step']) ? $args['step'] : 1;
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s-text" id="' . $this->setting_name . '[%5$s]" name="' . $this->setting_name . '[%5$s]" value="%6$s"/><p class="description"> %7$s</p>', esc_attr($step), esc_attr($max), esc_attr($min), esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), wp_kses_post($args['desc']));
+        $html = sprintf('<input dir="auto" type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s-text" id="' . $this->setting_name . '[%5$s]" name="' . $this->setting_name . '[%5$s]" value="%6$s"/><p class="description"> %7$s</p>', esc_attr($step), esc_attr($max), esc_attr($min), esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -2138,7 +2138,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = sprintf('<textarea class="large-text" cols="50" rows="5" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
+        $html = sprintf('<textarea dir="auto" class="large-text" cols="50" rows="5" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
         echo $html;
     }
 
