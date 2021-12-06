@@ -11,9 +11,8 @@ class onewaysms extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
-
-    private $sendSmsMethod = '';
-    private $getCreditMethod = '';
+    public $gatewayMtApiUrl;
+    public $gatewayBalanceApiUrl;
 
     public function __construct()
     {
@@ -21,7 +20,33 @@ class onewaysms extends \WP_SMS\Gateway
         $this->has_key        = true;
         $this->bulk_send      = true;
         $this->validateNumber = "Support only 10 numbers, e.g. 6019xxxxxxx,6012xxxxxxx";
-        $this->help           = "Please enter your API URLs in the API Key field and separated them by a comma<br>The pattern is <code>http://api-send,http://api-credit</code>";
+        $this->gatewayFields  = [
+            'username'             => [
+                'id'   => 'gateway_username',
+                'name' => 'API username',
+                'desc' => 'Enter API username of gateway',
+            ],
+            'password'             => [
+                'id'   => 'gateway_password',
+                'name' => 'API password',
+                'desc' => 'Enter API password of gateway',
+            ],
+            'gatewayMtApiUrl'      => [
+                'id'   => 'gateway_mt_api_url',
+                'name' => 'MT URL',
+                'desc' => 'Enter the MT (Mobile Terminating) API URL',
+            ],
+            'gatewayBalanceApiUrl' => [
+                'id'   => 'gateway_balance_api_url',
+                'name' => 'Credit Balance URL',
+                'desc' => 'Enter the credit balance API URL',
+            ],
+            'from'                 => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender number',
+                'desc' => 'Sender number or sender ID',
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -78,7 +103,7 @@ class onewaysms extends \WP_SMS\Gateway
         $to         = urlencode($to);
         $this->from = urlencode($this->from);
 
-        $response = wp_remote_get("{$this->getSendSmsApiUrl()}?apiusername=" . $this->username . "&apipassword=" . $this->password . "&message=" . $this->msg . "&mobileno=" . $to . "&senderid=" . $this->from . "&languagetype=" . $type);
+        $response = wp_remote_get("{$this->gatewayMtApiUrl}?apiusername=" . $this->username . "&apipassword=" . $this->password . "&message=" . $this->msg . "&mobileno=" . $to . "&senderid=" . $this->from . "&languagetype=" . $type);
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -126,15 +151,10 @@ class onewaysms extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username/Password was not set for this gateway', 'wp-sms'));
+            return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
         }
 
-        $generatedApiUrl = $this->generateApiUrl();
-        if (is_wp_error($generatedApiUrl)) {
-            return $generatedApiUrl;
-        }
-
-        $response = wp_remote_get("{$this->getCreditApiUrl()}?apiusername={$this->username}&apipassword={$this->password}");
+        $response = wp_remote_get("{$this->gatewayBalanceApiUrl}?apiusername={$this->username}&apipassword={$this->password}");
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -154,31 +174,7 @@ class onewaysms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', print_r($response['body'], 1));
         }
     }
-
-    private function generateApiUrl()
-    {
-        $apiUrls = explode(',', $this->has_key);
-
-        if (count($apiUrls) != 2) {
-            return new \WP_Error('send-sms', 'API URLs is not valid.');
-        }
-
-        $this->sendSmsMethod   = $apiUrls[0];
-        $this->getCreditMethod = $apiUrls[1];
-
-        return $this;
-    }
-
-    private function getSendSmsApiUrl()
-    {
-        return $this->sendSmsMethod;
-    }
-
-    private function getCreditApiUrl()
-    {
-        return $this->getCreditMethod;
-    }
-
+    
     private function convertToUnicode($message)
     {
         $chrArray[0]       = "�";

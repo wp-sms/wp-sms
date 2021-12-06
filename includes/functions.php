@@ -62,3 +62,23 @@ function wp_sms_generate_constant_license($plugin_slug)
         return constant($generateConstant);
     }
 }
+
+/**
+ * @param $media
+ * @return string|void
+ */
+function wp_sms_render_media_list($media)
+{
+    $allMedia = unserialize($media);
+
+    if (!is_array($allMedia)) {
+        return;
+    }
+
+    $htmlMedia = [];
+    foreach ($allMedia as $media) {
+        $htmlMedia[] = "<img width='80' src='{$media}'/>";
+    }
+
+    return implode(' ', $htmlMedia);
+}

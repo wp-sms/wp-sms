@@ -81,6 +81,8 @@ class Gateway
             'vatansms'       => 'vatansms.com',
             'smsmessenger'   => 'smsmessenger.co.za',
             'vfirst'         => 'vfirst.com',
+            'zipwhip'        => 'zipwhip.com',
+            'teletopiasms'   => 'teletopiasms.no'
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
@@ -96,8 +98,10 @@ class Gateway
             'smschef' => 'smschef.com',
         ),
         'arabic'        => array(
-            'kwtsms'  => 'kwtsms.com',
-            'taqnyat' => 'taqnyat.sa',
+            'kwtsms'      => 'kwtsms.com',
+            'taqnyat'     => 'taqnyat.sa',
+            'mobishastra' => 'mobishastra.com',
+            'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
@@ -116,6 +120,9 @@ class Gateway
         ),
         'srilanka'      => array(
             'notify' => 'notify.lk'
+        ),
+        'poland'        => array(
+            'smseagle' => 'smseagle.eu'
         )
     );
 
@@ -154,6 +161,8 @@ class Gateway
     protected $db;
     protected $tb_prefix;
     public $options;
+    public $supportMedia = false;
+    public $media = [];
 
     /**
      * @var
@@ -305,10 +314,10 @@ class Gateway
      * @param $to
      * @param $response
      * @param string $status
-     *
+     * @param array $media
      * @return false|int
      */
-    public function log($sender, $message, $to, $response, $status = 'success')
+    public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
         return $this->db->insert(
             $this->tb_prefix . "sms_send",
@@ -318,6 +327,7 @@ class Gateway
                 'message'   => $message,
                 'recipient' => implode(',', $to),
                 'response'  => var_export($response, true),
+                'media'     => serialize($media),
                 'status'    => $status,
             )
         );
@@ -381,10 +391,10 @@ class Gateway
     public static function gateway()
     {
         $gateways = array(
-            ''               => array(
+            ''                     => array(
                 'default' => __('Please select your gateway', 'wp-sms'),
             ),
-            'global'         => array(
+            'global'               => array(
                 'reachinteractive' => 'reach-interactive.com',
                 'octopush'         => 'octopush.com',
                 'experttexting'    => 'experttexting.com',
@@ -407,79 +417,82 @@ class Gateway
                 'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
             ),
-            'united kingdom' => array(
+            'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
                 '_textplode'       => 'textplode.com',
                 'textanywhere'     => 'textanywhere.net',
             ),
-            'french'         => array(
+            'french'               => array(
                 'primotexto' => 'primotexto.com',
                 'mtarget'    => 'mtarget',
             ),
-            'brazil'         => array(
+            'brazil'               => array(
                 'sonoratecnologia' => 'sonoratecnologia.com.br',
             ),
-            'germany'        => array(
+            'germany'              => array(
                 'engy' => 'engy.solutions',
             ),
-            'romania'        => array(
+            'romania'              => array(
                 'globalvoice' => 'global-voice.net',
             ),
-            'estonia'        => array(
+            'estonia'              => array(
                 'dexatel' => 'dexatel.com',
             ),
-            'slovakia'       => array(
+            'slovakia'             => array(
                 'eurosms' => 'eurosms.com',
             ),
-            'turkey'         => array(
+            'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',
                 'verimor'  => 'verimor.com.tr',
             ),
-            'australia'      => array(
+            'australia'            => array(
                 'slinteractive' => 'slinteractive.com.au',
                 'smssolutions'  => 'smssolutionsaustralia.com.au',
             ),
-            'austria'        => array(
+            'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',
             ),
-            'spain'          => array(
+            'spain'                => array(
                 'altiria'    => 'altiria.com',
                 'afilnet'    => 'afilnet.com',
                 'labsmobile' => 'labsmobile.com',
                 'mensatek'   => 'mensatek.com',
             ),
-            'mexico'         => array(
+            'mexico'               => array(
                 'altiria' => 'altiria.com',
             ),
-            'colombia'       => array(
+            'colombia'             => array(
                 'altiria' => 'altiria.com',
             ),
-            'peru'           => array(
+            'peru'                 => array(
                 'altiria' => 'altiria.com',
             ),
-            'chile'          => array(
+            'chile'                => array(
                 'altiria' => 'altiria.com',
             ),
-            'polish'         => array(
+            'polish'               => array(
                 'smsapi' => 'smsapi.pl',
             ),
-            'france'         => array(
+            'france'               => array(
                 'oxemis' => 'oxemis.com',
             ),
-            'denmark'        => array(
+            'denmark'              => array(
                 'cpsms'   => 'cpsms.dk',
                 'suresms' => 'suresms.com',
             ),
-            'italy'          => array(
+            'italy'                => array(
                 'smshosting' => 'smshosting.it',
                 'dot4all'    => 'sms4marketing.it',
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
             ),
-            'belgium'        => array(
+            'belgium'              => array(
                 'smsbox' => 'smsbox.be'
             ),
-            'india'          => array(
+            'united arab emirates' => array(
+                'callifony' => 'callifony.com'
+            ),
+            'india'                => array(
                 'shreesms'         => 'shreesms.net',
                 'ozonesmsworld'    => 'ozonesmsworld.com',
                 'smsgatewayhub'    => 'smsgatewayhub.com',
@@ -488,8 +501,9 @@ class Gateway
                 'smsozone'         => 'ozonesms.com',
                 'msgwow'           => 'msgwow.com',
                 'tripadasmsbox'    => 'tripadasmsbox.com',
+                'callifony'        => 'callifony.com'
             ),
-            'iran'           => array(
+            'iran'                 => array(
                 'iransmspanel'   => 'iransmspanel.ir',
                 'chaparpanel'    => 'chaparpanel.ir',
                 'markazpayamak'  => 'markazpayamak.ir',
@@ -610,7 +624,7 @@ class Gateway
                 'farazsms'       => 'farazsms.com',
                 'raygansms'      => 'raygansms.com',
             ),
-            'arabic'         => array(
+            'arabic'               => array(
                 'msegat'       => 'msegat.com',
                 'oursms'       => 'oursms.net',
                 'gateway'      => 'gateway.sa',
@@ -625,26 +639,26 @@ class Gateway
                 'safasms'      => 'safa-sms.com',
                 'bareedsms'    => 'bareedsms.com',
             ),
-            'africa'         => array(
+            'africa'               => array(
                 '_ebulksms'          => 'ebulksms.com',
                 'africastalking'     => 'africastalking.com',
                 'smsnation'          => 'smsnation.co.rw',
                 'alchemymarketinggm' => 'alchemymarketinggm.com',
             ),
-            'cyprus'         => array(
+            'cyprus'               => array(
                 'websmscy' => 'websms.com.cy',
                 'smsnetgr' => 'sms.net.gr',
             ),
-            'ukraine'        => array(
+            'ukraine'              => array(
                 'smsc' => 'smsc.ua',
             ),
-            'ghana'          => array(
+            'ghana'                => array(
                 'eazismspro' => 'eazismspro.com',
             ),
-            'greece'         => array(
+            'greece'               => array(
                 'smsnetgr' => 'sms.net.gr',
             ),
-            'malaysia'       => array(
+            'malaysia'             => array(
                 'onewaysms' => 'onewaysms.com',
             ),
         );
@@ -727,6 +741,20 @@ class Gateway
 
         // Get bulk status
         if ($sms->bulk_send == true) {
+            // Return html
+            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
+        } else {
+            // Return html
+            return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms') . '</div>';
+        }
+    }
+
+    public static function mms_status()
+    {
+        global $sms;
+
+        // Get bulk status
+        if ($sms->supportMedia == true) {
             // Return html
             return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
         } else {

@@ -107,6 +107,7 @@ class Settings
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
+                        'doc'         => isset($option['doc']) ? $option['doc'] : '',
                     )
                 );
 
@@ -134,7 +135,7 @@ class Settings
             'two_way'       => __('Two Way', 'wp-sms'),
         );
 
-        return $tabs;
+        return apply_filters('wpsms_settings_tabs', $tabs);
     }
 
     /**
@@ -236,14 +237,16 @@ class Settings
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',
                     'name' => __('Privacy', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'doc'  => '/6064/gdpr-compliant-in-wp-sms/',
+                    'desc' => __('GDPR Compliant', 'wp-sms'),
                 ),
                 'gdpr_compliance'     => array(
                     'id'      => 'gdpr_compliance',
                     'name'    => __('GDPR Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR related features in this page. Read our GDPR documentation to learn more.', 'wp-sms'),
+                    'desc'    => __('Enable GDPR related features in this page.', 'wp-sms'),
                 ),
             )),
 
@@ -309,15 +312,21 @@ class Settings
                 ),
                 'account_response'          => array(
                     'id'      => 'account_response',
-                    'name'    => __('Result request', 'wp-sms'),
+                    'name'    => __('Credit response', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
                 'bulk_send'                 => array(
                     'id'      => 'bulk_send',
-                    'name'    => __('Bulk send', 'wp-sms'),
+                    'name'    => __('Send bulk SMS?', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::bulk_status(),
+                ),
+                'media_support'             => array(
+                    'id'      => 'media_support',
+                    'name'    => __('Send MMS?', 'wp-sms'),
+                    'type'    => 'html',
+                    'options' => Gateway::mms_status(),
                 ),
                 // Account credit
                 'account_credit_title'      => array(
@@ -386,7 +395,9 @@ class Settings
                 'welcome'                         => array(
                     'id'   => 'welcome',
                     'name' => __('Welcome SMS', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('By enabling this option you can send welcome SMS to subscribers'),
+                    'doc'  => '/resources/send-welcome-sms-to-new-subscribers/',
                 ),
                 'newsletter_form_welcome'         => array(
                     'id'   => 'newsletter_form_welcome',
@@ -398,7 +409,7 @@ class Settings
                     'id'   => 'newsletter_form_welcome_text',
                     'name' => __('SMS text', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => sprintf(__('Subscribe name: %s, Subscribe mobile: %s', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>')
+                    'desc' => sprintf(__('Subscriber name: %s, Subscriber mobile: %s<br><br>if you would like to send unsubscribe link, check out the document.', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>'),
                 ),
                 'mobile_terms'                    => array(
                     'id'   => 'mobile_terms',
@@ -700,7 +711,9 @@ class Settings
                 'cf7_title'                    => array(
                     'id'   => 'cf7_title',
                     'name' => __('Contact Form 7', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'doc'  => '/resources/integrate-wp-sms-with-contact-form-7/',
+                    'desc' => __('By enabling this option you can send SMS notification once the Contact form is submitted.', 'wp-sms'),
                 ),
                 'cf7_metabox'                  => array(
                     'id'      => 'cf7_metabox',
@@ -895,7 +908,17 @@ class Settings
 
     public function header_callback($args)
     {
-        echo '<hr/>';
+        $html = '';
+        if (isset($args['desc'])) {
+            $html .= $args['desc'];
+        }
+
+        if ($args['doc']) {
+            $documentUrl = WP_SMS_SITE . $args['doc'];
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
+        }
+
+        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
     }
 
     public function html_callback($args)
@@ -987,7 +1010,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = sprintf('<textarea class="large-text" cols="50" rows="5" id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s]">%2$s</textarea><p class="description"> %3$s</p>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
+        $html = sprintf('<textarea class="large-text" cols="50" rows="5" id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -1041,7 +1064,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $k => $name) :
@@ -1070,7 +1093,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wpsms_settings[%1$s]" name="wpsms_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
@@ -1097,13 +1120,8 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        if (is_rtl()) {
-            $class_name = 'chosen-select chosen-rtl';
-        } else {
-            $class_name = 'chosen-select';
-        }
-
-        $html = sprintf('<select class="%1$s" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
+        $class_name = 'js-wpsms-select2';
+        $html       = sprintf('<select class="%1$s" id="wpsms_settings[%2$s]" name="wpsms_settings[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= '<optgroup label="' . ucfirst(str_replace('_', ' ', $key)) . '">';
@@ -1306,6 +1324,8 @@ class Settings
                 'id'   => "license_{$addOnKey}_title",
                 'name' => $addOn,
                 'type' => 'header',
+                'doc'  => '/resources/troubleshoot-license-activation-issues/',
+                'desc' => __('License key is used to get access to automatic updates and support.', 'wp-sms'),
             );
 
             // license key
@@ -1314,7 +1334,7 @@ class Settings
                 'name'        => __('License Key', 'wp-sms'),
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                'desc'        => sprintf(__('The license key is used for access to automatic update and support, to get the licenses, please go to <a href="%s" target="_blank">your account</a>.<br /><br />- Need help to enter your license? <a href="%s" target="_blank">Click here</a> to get information.<br />- Having a problem with your license? <a href="%s" target="_blank">Click here</a> for troubleshooting.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
             );
         }
 

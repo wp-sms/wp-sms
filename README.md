@@ -6,40 +6,44 @@ A simple and powerful texting plugin for WordPress
 
 You can add to WordPress, the ability to send SMS, member of SMS newsletter and send to the SMS.
 
-To every events in WordPress, you can send sms through this plugin.
+To every event in WordPress, you can send SMS/MMS through this plugin.
 
 The usage of this plugin is completely free. You have to just have an account from service in the gateway lists that we support them.
 
 Don't worry, we have tried to add the best and the most gateways to the plugin. 
 
-Very easy Send SMS by PHP code:
+### Very easy Send SMS by PHP:
 
-```sh
-$to = array('01000000000');
+```php
+$to[] = '01000000000';
 $msg = "Hello World!";
+
 wp_sms_send( $to, $msg );
 ```
 
-**Do you like this project? Support it by donating**
-- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wp-sms-pro.com/donate)
-- ![btc](https://camo.githubusercontent.com/4bc31b03fc4026aa2f14e09c25c09b81e06d5e71/687474703a2f2f7777772e6d6f6e747265616c626974636f696e2e636f6d2f696d672f66617669636f6e2e69636f) Bitcoin: 188ipdr3WqaLQLcfpGLCCijqjTMBEtC6dN
+### Or even send MMS:
+```php
+$mediaUrls[] = 'https://yoursite.com/image.png';
+
+wp_sms_send( $to, $msg, false, false, $mediaUrls );
+```
 
 # Features
 
 * Supported +180 sms gateways. [(List all gateways)](https://github.com/veronalabs/wp-sms/tree/master/includes/gateways)
-* Send SMS to number(s), subscribers and wordpress users.
+* Send SMS/MMS to number(s), subscribers and WordPress users.
 * Subscribe newsletter SMS.
 * Send activation code to subscribe for complete subscription.
 * Notification SMS when published new post to subscribers.
 * Notification SMS when the new release of WordPress.
 * Notification SMS when registering a new User.
 * Notification SMS when get new comment.
-* Notification SMS when user logged into wordpress.
+* Notification SMS when user logged into WordPress.
 * Notification SMS when user registered to subscription form.
 * Integrate with (Contact form 7, WooCommerce, Easy Digital Downloads)
 * Supported WP Widget for newsletter subscribers.
-* Support Wordpress Hooks.
-* Support WP REST API
+* Support WordPress Hooks.
+* Support WP-REST API
 * Import/Export Subscribers.
 
 # Internationalization
@@ -144,3 +148,8 @@ POST /wpsms/v1/subscriber/add
 # Community Links
 * [WordPress plugin page](http://wordpress.org/plugins/wp-sms/)
 * [Plugin Website](http://wp-sms-pro.com)
+
+# Donate
+Would'd like to support this project?
+- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wp-sms-pro.com/donate)
+- ![btc](https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/bitcoin.png) Bitcoin: `bc1qjezs7vusvvmhxrhxan7nkl7kvnpy624wxhse2p`

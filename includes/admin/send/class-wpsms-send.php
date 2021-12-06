@@ -14,7 +14,6 @@ if (!defined('ABSPATH')) {
  */
 class SMS_Send
 {
-
     public $sms;
     protected $db;
     protected $tb_prefix;
@@ -37,14 +36,18 @@ class SMS_Send
      */
     public function render_page()
     {
-        $get_group_result     = $this->db->get_results("SELECT * FROM `{$this->db->prefix}sms_subscribes_group`");
-        $get_users_mobile     = $this->db->get_col("SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' ");
-        $wcSendEnable         = false;
-        $woocommerceCustomers = array();
+        $get_group_result        = $this->db->get_results("SELECT * FROM `{$this->db->prefix}sms_subscribes_group`");
+        $get_users_mobile        = $this->db->get_col("SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' ");
+        $woocommerceCustomers    = [];
+        $buddyPressMobileNumbers = [];
+        $proIsActive             = Version::pro_is_active();
 
-        if (Version::pro_is_active() and class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
+        if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
             $woocommerceCustomers = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
-            $wcSendEnable         = true;
+        }
+
+        if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
+            $buddyPressMobileNumbers = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
         }
 
         //Get User Mobile List by Role
@@ -56,8 +59,9 @@ class SMS_Send
             );
         }
 
-        $gateway_name = Option::getOption('gateway_name');
-        $credit       = get_option('wpsms_gateway_credit');
+        $gateway_name   = Option::getOption('gateway_name');
+        $credit         = get_option('wpsms_gateway_credit');
+        $successMessage = __('The SMS sent successfully', 'wp-sms');
 
         if (isset($_POST['SendSMS'])) {
             if ($_POST['wp_get_message']) {
@@ -85,20 +89,40 @@ class SMS_Send
                     $this->sms->to = $to;
                 } else if ($_POST['wp_send_to'] == "wc_users") {
                     $this->sms->to = $woocommerceCustomers;
+                } else if ($_POST['wp_send_to'] == "bp_users") {
+                    $this->sms->to = $buddyPressMobileNumbers;
                 }
 
                 $this->sms->from = sanitize_text_field($_POST['wp_get_sender']);
                 $this->sms->msg  = sanitize_text_field($_POST['wp_get_message']);
 
+                /**
+                 * Flash
+                 */
                 if (isset($_POST['wp_flash']) and $_POST['wp_flash'] == 'true') {
                     $this->sms->isflash = true;
                 } else {
                     $this->sms->isflash = false;
                 }
 
+                /**
+                 * Media
+                 */
+                if (isset($_POST['wpsms_mms_image'])) {
+                    $mmsImages = wp_sms_sanitize_array($_POST['wpsms_mms_image']);
+
+                    if ($this->sms->supportMedia and count(array_filter($mmsImages)) == count($mmsImages)) {
+                        $this->sms->media = $mmsImages;
+                    }
+                }
+
+                /**
+                 * Scheduled
+                 */
                 if (isset($_POST['wpsms_scheduled']) and isset($_POST['schedule_status']) and $_POST['schedule_status'] and $_POST['wpsms_scheduled']) {
                     $wpsms_scheduled = sanitize_text_field($_POST['wpsms_scheduled']);
-                    $response        = Scheduled::add($wpsms_scheduled, $this->sms->from, $this->sms->msg, $this->sms->to);
+                    $response        = Scheduled::add($wpsms_scheduled, $this->sms->from, $this->sms->msg, $this->sms->to, true, $this->sms->media);
+                    $successMessage  = __('SMS scheduled successfully!', 'wp-sms');
                 } else {
 
                     // Send sms
@@ -118,7 +142,8 @@ class SMS_Send
 
                     echo "<div class='error'><p>" . sprintf(__('<strong>Error! Gateway response:</strong> %s', 'wp-sms'), $response) . "</p></div>";
                 } else {
-                    echo "<div class='updated'><p>" . __('The SMS sent successfully', 'wp-sms') . "</p></div>";
+
+                    echo "<div class='updated'><p>{$successMessage}</p></div>";
                     $credit = Gateway::credit();
                 }
             } else {
@@ -129,5 +154,3 @@ class SMS_Send
         include_once WP_SMS_DIR . "includes/admin/send/send-sms.php";
     }
 }
-
-new SMS_Send();

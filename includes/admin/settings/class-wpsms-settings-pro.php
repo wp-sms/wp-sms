@@ -95,7 +95,8 @@ class Settings_Pro
                         'section'     => $tab,
                         'size'        => isset($option['size']) ? $option['size'] : null,
                         'options'     => isset($option['options']) ? $option['options'] : '',
-                        'std'         => isset($option['std']) ? $option['std'] : ''
+                        'std'         => isset($option['std']) ? $option['std'] : '',
+                        'doc'         => isset($option['doc']) ? $option['doc'] : ''
                     )
                 );
 
@@ -129,7 +130,7 @@ class Settings_Pro
             return array();
         }
 
-        return $tabs;
+        return apply_filters('wpsms_pro_settings_tabs', $tabs);
     }
 
     /**
@@ -221,18 +222,48 @@ class Settings_Pro
 
         // Set BuddyPress settings
         if (class_exists('BuddyPress')) {
+            $buddyPressProfileFields = [];
+            if (function_exists('bp_xprofile_get_groups')) {
+                $buddyPressProfileGroups = bp_xprofile_get_groups(['fetch_fields' => true]);
+
+                foreach ($buddyPressProfileGroups as $buddyPressProfileGroup) {
+                    if (isset($buddyPressProfileGroup->fields)) {
+                        foreach ($buddyPressProfileGroup->fields as $field) {
+                            $buddyPressProfileFields[$buddyPressProfileGroup->name][$field->id] = $field->name;
+                        }
+                    }
+                }
+            }
+
             $buddypress_settings = array(
                 'bp_fields'                    => array(
                     'id'   => 'bp_fields',
-                    'name' => __('Fields', 'wp-sms'),
+                    'name' => __('General', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'bp_mobile_field'              => array(
                     'id'      => 'bp_mobile_field',
-                    'name'    => __('Mobile field', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Add mobile field to profile page', 'wp-sms')
+                    'name'    => __('Choose the field', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'disable'            => __('Disable (No field)', 'wp-sms'),
+                        'add_new_field'      => __('Add a new mobile field to profile page', 'wp-sms'),
+                        'used_current_field' => __('Use the exists field', 'wp-sms'),
+                    ),
+                    'desc'    => __('Choose from which field you would like to use for mobile field.', 'wp-sms')
+                ),
+                'bp_mobile_field_id'              => array(
+                    'id'      => 'bp_mobile_field_id',
+                    'name'    => __('Choose the exists field', 'wp-sms'),
+                    'type'    => 'advancedselect',
+                    'options' => $buddyPressProfileFields,
+                    'desc'    => __('Select the BuddyPress field', 'wp-sms')
+                ),
+                'bp_sync_fields' => array(
+                    'id'   => 'bp_sync_fields',
+                    'name' => __('Sync fields'),
+                    'type' => 'checkbox',
+                    'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
                 'mentions'                     => array(
                     'id'   => 'mentions',
@@ -322,12 +353,12 @@ class Settings_Pro
         // Set WooCommerce settings
         if (class_exists('WooCommerce')) {
             $wc_settings = array(
-                'wc_fields'                   => array(
+                'wc_fields'                    => array(
                     'id'   => 'wc_fields',
                     'name' => __('General', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_mobile_field'             => array(
+                'wc_mobile_field'              => array(
                     'id'      => 'wc_mobile_field',
                     'name'    => __('Choose the field', 'wp-sms'),
                     'type'    => 'select',
@@ -338,68 +369,77 @@ class Settings_Pro
                     ),
                     'desc'    => __('Choose from which field you get numbers for sending SMS.', 'wp-sms')
                 ),
-                'wc_meta_box'                 => array(
+                'wc_meta_box'                  => array(
                     'id'   => 'wc_meta_box',
                     'name' => __('Order Meta Box', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_meta_box_enable'          => array(
+                'wc_meta_box_enable'           => array(
                     'id'      => 'wc_meta_box_enable',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Enable send SMS meta box on Orders.<br>Note: You must choose the mobile field first if disable Meta Box will not appear too.', 'wp-sms')
                 ),
-                'wc_otp'                      => array(
+                'wc_otp'                       => array(
                     'id'   => 'wc_otp',
                     'name' => __('OTP Verification', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('By enabling this option the customers should verify their mobile number while placing the order.', 'wp-sms'),
+                    'doc'  => '/resources/secure-login-with-one-time-password-otp/',
                 ),
-                'wc_otp_enable'               => array(
+                'wc_otp_enable'                => array(
                     'id'      => 'wc_otp_enable',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable OTP Verification on Orders.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms')
+                    'desc'    => __('Enable OTP Verification for placing the order during the checkout.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms')
                 ),
-                'wc_otp_countries_whitelist'  => array(
+                'wc_otp_countries_whitelist'   => array(
                     'id'      => 'wc_otp_countries_whitelist',
                     'name'    => __('Countries Whitelist', 'wp-sms'),
                     'type'    => 'countryselect',
                     'options' => $this->getCountriesList(),
                     'desc'    => __('Specify the countries to enable OTP.', 'wp-sms')
                 ),
-                'wc_otp_max_retry'            => array(
+                'wc_otp_max_retry'             => array(
                     'id'   => 'wc_otp_max_retry',
                     'name' => __('Max SMS retries', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('For no limits, set it to : 0', 'wp-sms')
                 ),
-                'wc_otp_max_time_limit'       => array(
+                'wc_otp_max_time_limit'        => array(
                     'id'   => 'wc_otp_max_time_limit',
                     'name' => __('Retries expire time in Hours', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('This option working when a user reached max retries and need a period time for start again retry cycle.<br>For no limits, set it to : 0', 'wp-sms')
                 ),
-                'wc_otp_text'                 => array(
+                'wc_disable_exists_validation' => array(
+                    'id'      => 'wc_disable_exists_validation',
+                    'name'    => __('Disable exists number validation', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option, the customers who are not logged-in (guest) can use any number', 'wp-sms')
+                ),
+                'wc_otp_text'                  => array(
                     'id'   => 'wc_otp_text',
                     'name' => __('SMS text', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => sprintf(__('e.g: Your Verification Code: %s', 'wp-sms'), '<code>%otp_code%</code>')
                 ),
-                'wc_notify_product'           => array(
+                'wc_notify_product'            => array(
                     'id'   => 'wc_notify_product',
                     'name' => __('Notify for new product', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_notify_product_enable'    => array(
+                'wc_notify_product_enable'     => array(
                     'id'      => 'wc_notify_product_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS when publish new a product', 'wp-sms')
                 ),
-                'wc_notify_product_receiver'  => array(
+                'wc_notify_product_receiver'   => array(
                     'id'      => 'wc_notify_product_receiver',
                     'name'    => __('SMS receiver', 'wp-sms'),
                     'type'    => 'select',
@@ -409,14 +449,14 @@ class Settings_Pro
                     ),
                     'desc'    => __('Please select the receiver of sms', 'wp-sms')
                 ),
-                'wc_notify_product_cat'       => array(
+                'wc_notify_product_cat'        => array(
                     'id'      => 'wc_notify_product_cat',
                     'name'    => __('Subscribe group', 'wp-sms'),
                     'type'    => 'select',
                     'options' => $subscribe_groups,
                     'desc'    => __('If you select the Subscribe users, can select the group for send sms', 'wp-sms')
                 ),
-                'wc_notify_product_message'   => array(
+                'wc_notify_product_message'    => array(
                     'id'   => 'wc_notify_product_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -429,31 +469,31 @@ class Settings_Pro
                             '<code>%product_price%</code>'
                         )
                 ),
-                'wc_notify_order'             => array(
+                'wc_notify_order'              => array(
                     'id'   => 'wc_notify_order',
                     'name' => __('Notify for new order', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_notify_order_enable'      => array(
+                'wc_notify_order_enable'       => array(
                     'id'      => 'wc_notify_order_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS when submit new order', 'wp-sms')
                 ),
-                'wc_notify_order_receiver'    => array(
+                'wc_notify_order_receiver'     => array(
                     'id'   => 'wc_notify_order_receiver',
                     'name' => __('SMS receiver', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
-                'wc_notify_order_message'     => array(
+                'wc_notify_order_message'      => array(
                     'id'   => 'wc_notify_order_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order id: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms'),
+                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order status: %s', 'wp-sms'),
                             '<code>%billing_first_name%</code>',
                             '<code>%billing_company%</code>',
                             '<code>%billing_address%</code>',
@@ -465,25 +505,25 @@ class Settings_Pro
                             '<code>%status%</code>'
                         )
                 ),
-                'wc_notify_customer'          => array(
+                'wc_notify_customer'           => array(
                     'id'   => 'wc_notify_customer',
                     'name' => __('Notify to customer order', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_notify_customer_enable'   => array(
+                'wc_notify_customer_enable'    => array(
                     'id'      => 'wc_notify_customer_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to customer when submit the order', 'wp-sms')
                 ),
-                'wc_notify_customer_message'  => array(
+                'wc_notify_customer_message'   => array(
                     'id'   => 'wc_notify_customer_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order id: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
+                            __('Order ID: %s, Order number: %s, Order status: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
                             '<code>%order_id%</code>',
                             '<code>%order_number%</code>',
                             '<code>%status%</code>',
@@ -494,48 +534,48 @@ class Settings_Pro
                             '<code>%order_pay_url%</code>'
                         )
                 ),
-                'wc_notify_stock'             => array(
+                'wc_notify_stock'              => array(
                     'id'   => 'wc_notify_stock',
                     'name' => __('Notify of stock', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_notify_stock_enable'      => array(
+                'wc_notify_stock_enable'       => array(
                     'id'      => 'wc_notify_stock_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS when stock is low', 'wp-sms')
                 ),
-                'wc_notify_stock_receiver'    => array(
+                'wc_notify_stock_receiver'     => array(
                     'id'   => 'wc_notify_stock_receiver',
                     'name' => __('SMS receiver', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
-                'wc_notify_stock_message'     => array(
+                'wc_notify_stock_message'      => array(
                     'id'   => 'wc_notify_stock_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Product id: %s, Product name: %s', 'wp-sms'),
+                            __('Product ID: %s, Product name: %s', 'wp-sms'),
                             '<code>%product_id%</code>',
                             '<code>%product_name%</code>'
                         )
                 ),
-                'wc_notify_status'            => array(
+                'wc_notify_status'             => array(
                     'id'   => 'wc_notify_status',
                     'name' => __('Notify of status', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_notify_status_enable'     => array(
+                'wc_notify_status_enable'      => array(
                     'id'      => 'wc_notify_status_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to customer when status is changed', 'wp-sms')
                 ),
-                'wc_notify_status_message'    => array(
+                'wc_notify_status_message'     => array(
                     'id'   => 'wc_notify_status_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -550,19 +590,19 @@ class Settings_Pro
                             '<code>%order_pay_url%</code>'
                         )
                 ),
-                'wc_notify_by_status'         => array(
+                'wc_notify_by_status'          => array(
                     'id'   => 'wc_notify_by_status',
                     'name' => __('Notify by status', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_notify_by_status_enable'  => array(
+                'wc_notify_by_status_enable'   => array(
                     'id'      => 'wc_notify_by_status_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to customer by order status', 'wp-sms')
                 ),
-                'wc_notify_by_status_content' => array(
+                'wc_notify_by_status_content'  => array(
                     'id'   => 'wc_notify_by_status_content',
                     'name' => __('Order Status & Message', 'wp-sms'),
                     'type' => 'repeater',
@@ -849,32 +889,33 @@ class Settings_Pro
 
             foreach ($forms as $form):
                 $more_fields = '';
-            $form_fields = Gravityforms::get_field($form->id);
-            if (is_array($form_fields) && count($form_fields)) {
-                $more_fields = ', ' . __('Fields', 'wp-sms') . ' : ';
-                foreach ($form_fields as $key => $value) {
-                    $more_fields .= "<code>%{$value}%</code>, ";
+                $form_fields = Gravityforms::get_field($form->id);
+                if (is_array($form_fields) && count($form_fields)) {
+                    $more_fields = ', ' . __('Fields', 'wp-sms') . ' : ';
+                    foreach ($form_fields as $key => $value) {
+                        $more_fields .= "<code>%{$value}%</code>, ";
+                    }
                 }
-            }
-            $gf_forms['gf_notify_form_' . $form->id]          = array(
+                $gf_forms['gf_notify_form_' . $form->id]          = array(
                     'id'   => 'gf_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->title),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->title),
+                    'doc'  => '/resources/integrate-wp-sms-pro-with-gravity-forms/',
                 );
-            $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
+                $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
                     'id'      => 'gf_notify_enable_form_' . $form->id,
                     'name'    => __('Send SMS to a number', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Send SMS once the form is submitted.', 'wp-sms')
                 );
-            $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
+                $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
                     'id'   => 'gf_notify_receiver_form_' . $form->id,
                     'name' => __('Phone number(s)', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')
                 );
-            $gf_forms['gf_notify_message_form_' . $form->id]  = array(
+                $gf_forms['gf_notify_message_form_' . $form->id]  = array(
                     'id'   => 'gf_notify_message_form_' . $form->id,
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -889,22 +930,21 @@ class Settings_Pro
                         ) . $more_fields
                 );
 
-            if (Gravityforms::get_field($form->id)) {
-                $gf_forms['gf_notify_enable_field_form_' . $form->id]   = array(
+                if (Gravityforms::get_field($form->id)) {
+                    $gf_forms['gf_notify_enable_field_form_' . $form->id]   = array(
                         'id'      => 'gf_notify_enable_field_form_' . $form->id,
                         'name'    => __('Send SMS to field', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
-                        'desc'    => __('Send an SMS to the value of a field once the form is submitted.', 'wp-sms')
                     );
-                $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
+                    $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
                         'id'      => 'gf_notify_receiver_field_form_' . $form->id,
                         'name'    => __('A field of the form', 'wp-sms'),
                         'type'    => 'select',
                         'options' => Gravityforms::get_field($form->id),
                         'desc'    => __('Select the field of your form.', 'wp-sms')
                     );
-                $gf_forms['gf_notify_message_field_form_' . $form->id]  = array(
+                    $gf_forms['gf_notify_message_field_form_' . $form->id]  = array(
                         'id'   => 'gf_notify_message_field_form_' . $form->id,
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
@@ -918,7 +958,7 @@ class Settings_Pro
                                 '<code>%content%</code>'
                             ) . $more_fields
                     );
-            }
+                }
             endforeach;
         } else {
             $gf_forms['gf_notify_form'] = array(
@@ -931,25 +971,30 @@ class Settings_Pro
 
         // Get Ultimate Members
         if (function_exists('um_user')) {
-            $um_options['um_field'] = array(
+            $um_options['um_field_header']          = array(
+                'id'   => 'um_field_header',
+                'name' => __('General', 'wp-sms'),
+                'type' => 'header'
+            );
+            $um_options['um_field']                 = array(
                 'id'   => 'um_field',
                 'name' => __('Mobile number field', 'wp-sms'),
                 'type' => 'checkbox',
                 'desc' => __('Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms'),
             );
+            $um_options['um_sync_field_name']       = array(
+                'id'      => 'um_sync_field_name',
+                'name'    => __('Select the purpose field in registration form'),
+                'type'    => 'select',
+                'options' => $this->get_um_register_form_fields(),
+                'std'     => 'mobile_number',
+                'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
+            );
             $um_options['um_sync_previous_members'] = array(
-                'id'   => 'um_sync_previous_members' ,
-                'name' => __('Sync old memeber too?'),
+                'id'   => 'um_sync_previous_members',
+                'name' => __('Sync old member too?'),
                 'type' => 'checkbox',
                 'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Members.', 'wp-sms')
-            );
-            $um_options['um_sync_field_name'] = array(
-                'id'     => 'um_sync_field_name' ,
-                'name'   => __('Sync with which field(Register Form) ?'),
-                'type'   => 'select',
-                'options'=> $this->get_um_register_form_fields(),
-                'std'    => 'mobiel_number',
-                'desc'   => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobiel Number").', 'wp-sms')
             );
         } else {
             $um_options['um_notify_form'] = array(
@@ -970,22 +1015,23 @@ class Settings_Pro
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
                         'name' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
-                        'type' => 'header'
+                        'type' => 'header',
+                        'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form['name']),
+                        'doc'  => '/resources/integrate-wp-sms-pro-with-quform/',
                     );
-                $qf_forms['qf_notify_enable_form_' . $form['id']]   = array(
+                    $qf_forms['qf_notify_enable_form_' . $form['id']]   = array(
                         'id'      => 'qf_notify_enable_form_' . $form['id'],
                         'name'    => __('Send SMS to a number', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
-                        'desc'    => __('Send SMS once the form is submitted.', 'wp-sms')
                     );
-                $qf_forms['qf_notify_receiver_form_' . $form['id']] = array(
+                    $qf_forms['qf_notify_receiver_form_' . $form['id']] = array(
                         'id'   => 'qf_notify_receiver_form_' . $form['id'],
                         'name' => __('Phone number(s)', 'wp-sms'),
                         'type' => 'text',
                         'desc' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')
                     );
-                $qf_forms['qf_notify_message_form_' . $form['id']]  = array(
+                    $qf_forms['qf_notify_message_form_' . $form['id']]  = array(
                         'id'   => 'qf_notify_message_form_' . $form['id'],
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
@@ -998,22 +1044,21 @@ class Settings_Pro
                             )
                     );
 
-                if ($form['elements']) {
-                    $qf_forms['qf_notify_enable_field_form_' . $form['id']]   = array(
+                    if ($form['elements']) {
+                        $qf_forms['qf_notify_enable_field_form_' . $form['id']]   = array(
                             'id'      => 'qf_notify_enable_field_form_' . $form['id'],
                             'name'    => __('Send SMS to field', 'wp-sms'),
                             'type'    => 'checkbox',
                             'options' => $options,
-                            'desc'    => __('Send an SMS to the value of a field once the form is submitted.', 'wp-sms')
                         );
-                    $qf_forms['qf_notify_receiver_field_form_' . $form['id']] = array(
+                        $qf_forms['qf_notify_receiver_field_form_' . $form['id']] = array(
                             'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
                             'name'    => __('A field of the form', 'wp-sms'),
                             'type'    => 'select',
                             'options' => Quform::get_fields($form['id']),
                             'desc'    => __('Select the field of your form.', 'wp-sms')
                         );
-                    $qf_forms['qf_notify_message_field_form_' . $form['id']]  = array(
+                        $qf_forms['qf_notify_message_field_form_' . $form['id']]  = array(
                             'id'   => 'qf_notify_message_field_form_' . $form['id'],
                             'name' => __('Message body', 'wp-sms'),
                             'type' => 'textarea',
@@ -1025,7 +1070,7 @@ class Settings_Pro
                                     '<code>%referring_url%</code>'
                                 )
                         );
-                }
+                    }
                 endforeach;
             } else {
                 $qf_forms['qf_notify_form'] = array(
@@ -1143,7 +1188,17 @@ class Settings_Pro
 
     public function header_callback($args)
     {
-        echo '<hr/>';
+        $html = '';
+        if (isset($args['desc'])) {
+            $html .= $args['desc'];
+        }
+
+        if ($args['doc']) {
+            $documentUrl = WP_SMS_SITE . $args['doc'];
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
+        }
+
+        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
     }
 
     public function html_callback($args)
@@ -1184,12 +1239,12 @@ class Settings_Pro
         foreach ($args['options'] as $key => $option) :
             $checked = false;
 
-        if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
-            $checked = true;
-        } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
-            $checked = true;
-        }
-        $html .= sprintf('<input name="wps_pp_settings[%1$s]"" id="wps_pp_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="wps_pp_settings[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
+            if (isset($this->options[$args['id']]) && $this->options[$args['id']] == $key) {
+                $checked = true;
+            } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
+                $checked = true;
+            }
+            $html .= sprintf('<input name="wps_pp_settings[%1$s]"" id="wps_pp_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="wps_pp_settings[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
         endforeach;
         $html .= sprintf('<p class="description">%1$s</p>', $args['desc']);
         echo $html;
@@ -1291,20 +1346,15 @@ class Settings_Pro
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        if (is_rtl()) {
-            $class_name = 'chosen-select chosen-rtl';
-        } else {
-            $class_name = 'chosen-select';
-        }
-
-        $html = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
+        $class_name = 'js-wpsms-select2';
+        $html       = sprintf('<select class="%1$s" id="wps_pp_settings[%2$s]" name="wps_pp_settings[%2$s]"/>', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= sprintf('<optgroup label="%1$s">', ucfirst($key));
 
             foreach ($v as $option => $name) :
                 $selected = selected($option, $value, false);
-            $html     .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), ucfirst($name));
+                $html     .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), ucfirst($name));
             endforeach;
 
             $html .= '</optgroup>';
@@ -1327,7 +1377,7 @@ class Settings_Pro
 
         foreach ($args['options'] as $option => $color) :
             $selected = selected($option, $value, false);
-        $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
+            $html     .= esc_attr('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $color['label']);
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
@@ -1481,7 +1531,7 @@ class Settings_Pro
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="chosen-select"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="wps_pp_settings[%1$s]" name="wps_pp_settings[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
@@ -1492,7 +1542,7 @@ class Settings_Pro
                     $selected = '';
                 }
             }
-        $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
+            $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($country['code']), esc_attr($selected), $country['name']);
         endforeach;
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', $args['desc']);
@@ -1533,7 +1583,7 @@ class Settings_Pro
                             <table class="form-table">
                                 <?php
                                 settings_fields($this->setting_name);
-        do_settings_fields('wps_pp_settings_' . $active_tab, 'wps_pp_settings_' . $active_tab); ?>
+                                do_settings_fields('wps_pp_settings_' . $active_tab, 'wps_pp_settings_' . $active_tab); ?>
                             </table>
                             <?php ($active_tab == 'general' && defined('WP_SMS_PRO_LICENSE')) ? '' : submit_button(); ?>
                         </form>
@@ -1570,16 +1620,16 @@ class Settings_Pro
         $ultimate_member_forms = get_posts(['post_type' => 'um_form']);
 
         foreach ($ultimate_member_forms as $form) {
-    
+
             $form_role = get_post_meta($form->ID, '_um_core');
 
             if (in_array('register', $form_role)) {
                 $form_fields = get_post_meta($form->ID, '_um_custom_fields');
 
                 $return_value = [];
-                foreach($form_fields[0] as $field){
-                    if( isset($field['title']) && isset($field['metakey']) ){
-                        $return_value[ $field['metakey'] ] = $field['title'];
+                foreach ($form_fields[0] as $field) {
+                    if (isset($field['title']) && isset($field['metakey'])) {
+                        $return_value[$field['metakey']] = $field['title'];
                     }
                 }
                 return $return_value;
