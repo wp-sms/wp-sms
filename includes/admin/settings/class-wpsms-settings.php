@@ -108,7 +108,9 @@ class Settings
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
-                    )
+                        'class'       => "tr-{$option['type']}",
+                        'label_for'   => true,
+                    ),
                 );
 
                 register_setting($this->setting_name, $this->setting_name, array($this, 'settings_sanitize'));
@@ -312,7 +314,7 @@ class Settings
                 ),
                 'account_response'          => array(
                     'id'      => 'account_response',
-                    'name'    => __('Credit response', 'wp-sms'),
+                    'name'    => __('Balance', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
@@ -441,7 +443,7 @@ class Settings
                     'id'   => 'disable_style_in_front',
                     'name' => __('Disable Frontend Style', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => __('Disable loading Style from Frontend.', 'wp-sms')
+                    'desc' => __('Check this to disable all included styling of SMS Newsletter form elements.', 'wp-sms')
                 ),
             )),
 
@@ -622,7 +624,7 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Send an SMS to you and user when register on wordpress.', 'wp-sms')
+                    'desc'    => __('Send an SMS to you and user when register on WordPress.', 'wp-sms')
                 ),
                 'notif_register_new_user_admin_template'  => array(
                     'id'   => 'notif_register_new_user_admin_template',
@@ -918,7 +920,7 @@ class Settings
             $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
         }
 
-        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
+        echo "<div class='wpsms-settings-header-field'>{$html}</div>";
     }
 
     public function html_callback($args)

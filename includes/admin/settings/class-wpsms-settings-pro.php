@@ -96,7 +96,9 @@ class Settings_Pro
                         'size'        => isset($option['size']) ? $option['size'] : null,
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
-                        'doc'         => isset($option['doc']) ? $option['doc'] : ''
+                        'doc'         => isset($option['doc']) ? $option['doc'] : '',
+                        'class'       => "tr-{$option['type']}",
+                        'label_for'   => true,
                     )
                 );
 
@@ -265,10 +267,35 @@ class Settings_Pro
                     'type' => 'checkbox',
                     'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
+                'bp_welcome_notification'                     => array(
+                    'id'   => 'bp_welcome_notification',
+                    'name' => __('Welcome Notification', 'wp-sms'),
+                    'type' => 'header',
+                    'desc' => __('By enabling this option you can send welcome SMS to new BuddyPress users'),
+                ),
+                'bp_welcome_notification_enable'            => array(
+                    'id'      => 'bp_welcome_notification_enable',
+                    'name'    => __('Status', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Send an SMS to user when register on BuddyPress.', 'wp-sms')
+                ),
+                'bp_welcome_notification_message'           => array(
+                    'id'   => 'bp_welcome_notification_message',
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                        sprintf(
+                            __('User login: %s, User email: %s, User display name: %s', 'wp-sms'),
+                            '<code>%user_login%</code>',
+                            '<code>%user_email%</code>',
+                            '<code>%display_name%</code>',
+                        )
+                ),
                 'mentions'                     => array(
                     'id'   => 'mentions',
                     'name' => __('Mentions', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
                 ),
                 'bp_mention_enable'            => array(
                     'id'      => 'bp_mention_enable',
@@ -1198,7 +1225,7 @@ class Settings_Pro
             $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
         }
 
-        echo "<div class='wpsms-settings-header-field'>{$html}</div><hr/>";
+        echo "<div class='wpsms-settings-header-field'>{$html}</div>";
     }
 
     public function html_callback($args)

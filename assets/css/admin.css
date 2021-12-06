@@ -194,7 +194,7 @@
 .wpsms-tab-content {
     background-color: #fff;
     display: grid;
-    padding: 6px 33px;
+    padding: 21px 33px 6px;
     min-height: 680px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
     border-radius: 2px;
@@ -203,6 +203,33 @@
 
 .wpsms-tab-content select {
     min-width: 350px;
+}
+
+.wpsms-tab-content .repeater-item select {
+    min-width: auto;
+}
+
+.wpsms-tab-content tr th {
+    font-weight: normal;
+}
+
+.wpsms-tab-content tr th label {
+    padding: 16px;
+    white-space: nowrap;
+}
+
+.wpsms-tab-content tr.tr-header th,
+tr.tr-header td {
+    color: #ffffff;
+    padding: 14px 12px 12px 12px;
+    white-space: nowrap;
+    background: #f0f0f1;
+    font-weight: bold;
+}
+
+.wpsms-tab-content tr.tr-header th label {
+    color: #000000;
+    padding: 0;
 }
 
 .rtl .wpsms-tab {
@@ -297,13 +324,17 @@
 .wpsms-wrap input[type="text"],
 .wpsms-wrap input[type="number"],
 .wpsms-wrap select {
-    padding: 12px 16px !important;
+    padding: 12px 16px;
     font-weight: normal;
     font-size: 14px;
     line-height: 20px;
     border: 1px solid #5B5B5B !important;
     box-sizing: border-box;
     border-radius: 2px;
+}
+
+.wpsms-wrap .current-page {
+    padding: 4px 9px !important;
 }
 
 .wpsms-wrap select {
@@ -941,7 +972,14 @@
 .wpsms-wrap .description {
     color: #5B5B5B;
     font-size: 12px;
-    margin-top: 8px;
+    margin-top: 2px;
+    line-height: 22px;
+}
+
+.wpsms-wrap .description code {
+    border-radius: 16px;
+    font-size: 12px;
+    padding: 2px 7px;
 }
 
 .wpsms-wrap .postbox table tr td,
@@ -971,6 +1009,22 @@
 
 .wps-multiselect-label {
     margin: 5px;
+}
+
+/**
+Send SMS page
+ */
+.wpsms-sendsms__container .wpsms-group {
+    margin-top: 11px;
+    width: 100%;
+}
+
+.wpsms-sendsms__container .wpsms-group .js-wpsms-select2 {
+    width: 65%;
+}
+
+.wpsms-sendsms__container textarea {
+    width: 65% !important;
 }
 
 /**
@@ -1009,13 +1063,14 @@ Select2
 }
 
 .wpsms-settings-header-field {
-    display: inline-flex;
-    line-height: 21px;
     font-size: 12px;
+    font-weight: normal;
+    color: #7f7f7f;
 }
 
 .wpsms-settings-description-header {
-    margin: 0px 4px;
+    display: inline-block;
+    margin: 0 6px;
 }
 
 .wpsms-settings-description-header .dashicons {
