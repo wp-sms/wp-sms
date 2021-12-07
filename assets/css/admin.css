@@ -120,9 +120,14 @@
 .wpsms-tab .is-pro-tab > span a {
     float: right;
     color: #ffffff;
-    padding: 0px 3px;
+    padding: 0px 4px;
     border-radius: 3px;
     font-size: 12px;
+}
+
+.wpsms-tab .is-pro-tab > span a .dashicons {
+    font-size: 17px;
+    line-height: 18px;
 }
 
 .wpsms-tab .is-pro-tab .pro-installed a {
@@ -255,7 +260,6 @@
 
 .wpsms-tab .tab-company-logo {
     text-align: center;
-    margin-top: 10px;
 }
 
 .wpsms-tab .tab-company-logo a {
@@ -266,7 +270,6 @@
 .wpsms-tab .tab-company-logo img {
     filter: contrast(0.5);
     width: 124px;
-    opacity: 0.5;
 }
 
 .wpsms-tab li a {
