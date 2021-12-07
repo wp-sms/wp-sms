@@ -267,10 +267,10 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.6.5 - 05.12.2021 =
-* NEW: Selecting the several user groups on send SMS page has been supported
+= v5.6.5 - 07.12.2021 =
+* Feature: Selecting the several user groups on send SMS page has been supported
 * Bugfix: The post type & author notification issue has been fixed
-* Enhancement: The setting pages & styles improvement
+* Enhancement: The setting pages & styles improvement, enjoy the new admin interface!
 * Update: Pro settings page merged to the main settings page
 
 = v5.6.4 - 14.11.2021 =
@@ -279,7 +279,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Enhancement: Minor improvements
 
 = v5.6.3 - 22.10.2021 =
-* NEW: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
+* Feature: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 * Enhancement: Fixed a notice error in notification class
 * Enhancement: Added the document link in settings
 * Update: Added the MT URL and Credit Balance URL to OneWaySMS gateway
