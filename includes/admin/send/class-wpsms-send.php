@@ -66,11 +66,14 @@ class SMS_Send
         if (isset($_POST['SendSMS'])) {
             if ($_POST['wp_get_message']) {
                 if ($_POST['wp_send_to'] == "wp_subscribe_username") {
-                    if ($_POST['wpsms_group_name'] == 'all') {
+
+                    if (empty($_POST['wpsms_groups'])) {
                         $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->db->prefix}sms_subscribes WHERE `status` = '1'");
                     } else {
-                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->db->prefix}sms_subscribes WHERE `status` = '1' AND `group_ID` = '" . sanitize_text_field($_POST['wpsms_group_name']) . "'");
+                        $groups        = implode(',', wp_sms_sanitize_array($_POST['wpsms_groups']));
+                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->db->prefix}sms_subscribes WHERE `status` = '1' AND `group_ID` IN (" . $groups . ")");
                     }
+
                 } else if ($_POST['wp_send_to'] == "wp_users") {
                     $this->sms->to = $get_users_mobile;
                 } else if ($_POST['wp_send_to'] == "wp_tellephone") {

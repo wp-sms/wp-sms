@@ -4,7 +4,9 @@
     WpSmsBuddyPress.init();
 
     // Set Chosen
-    $('.js-wpsms-select2').select2();
+    $('.js-wpsms-select2').select2({
+        placeholder: "Please select"
+    });
 
     // Auto submit the gateways form, after changing value
     $("#wpsms_settings\\[gateway_name\\]").on('change', function () {

@@ -474,7 +474,8 @@ class Gateway
                 'smsapi' => 'smsapi.pl',
             ),
             'france'               => array(
-                'oxemis' => 'oxemis.com',
+                'oxemis'  => 'oxemis.com',
+                'spothit' => 'spot-hit.fr',
             ),
             'denmark'              => array(
                 'cpsms'   => 'cpsms.dk',

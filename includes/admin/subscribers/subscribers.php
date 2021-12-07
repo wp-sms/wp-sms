@@ -33,8 +33,7 @@
                     if ($groups): ?>
                         <tr>
                             <td style="padding-top: 10px;">
-                                <label class="wp_sms_subscribers_label" for="wpsms_group_name"><?php _e('Group', 'wp-sms'); ?>
-                                    :</label>
+                                <label class="wp_sms_subscribers_label" for="wpsms_group_name"><?php _e('Group', 'wp-sms'); ?></label>
                                 <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text">
                                     <?php foreach ($groups as $items): ?>
                                         <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>

@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.4
+Stable tag: 5.6.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -161,7 +161,14 @@ Use the below code to send MMS through PHP:
 	$mediaUrls[] = 'https://yoursite.com/image.png';
 	wp_sms_send( $to, $msg, false, false, $mediaUrls );
 
-= How using Actions? =
+= How to show the SMS subscribe form? =
+There are three ways to show the subscriber form in the theme
+
+1. By loading the widget in theme
+2. By using the shortcode `[wp-sms-subscriber-form]` in posts/pages
+3. By loading the Php function in your theme `wp_sms_subscribes()`
+
+= How to use the Actions? =
 Run the following action when sending SMS with this plugin:
 `wp_sms_send`
 
@@ -184,7 +191,7 @@ Example: Send Welcome SMS to users when they are registered.
 	}
 	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
 
-= How using Hooks? =
+= How to use the Filters? =
 You can use the following filter to modify numbers.
 `wp_sms_from`
 
@@ -260,13 +267,19 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.6.5 - 07.12.2021 =
+* Feature: Selecting the several user groups on send SMS page has been supported
+* Bugfix: The post type & author notification issue has been fixed
+* Enhancement: The setting pages & styles improvement, enjoy the new admin interface!
+* Update: Pro settings page merged to the main settings page
+
 = v5.6.4 - 14.11.2021 =
 * Bugfix: Getting credential in ExpertTexting gateway has been fixed
 * Bugfix: Notice errors in OnewaySms gateway has been fixed
 * Enhancement: Minor improvements
 
 = v5.6.3 - 22.10.2021 =
-* NEW: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
+* Feature: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 * Enhancement: Fixed a notice error in notification class
 * Enhancement: Added the document link in settings
 * Update: Added the MT URL and Credit Balance URL to OneWaySMS gateway

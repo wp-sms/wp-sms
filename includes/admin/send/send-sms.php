@@ -62,18 +62,19 @@
     <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
     <div class="wpsms-wrap__main">
         <h2><?php _e('Send SMS', 'wp-sms'); ?></h2>
-        <div class="postbox-container" style="padding-top: 20px;">
+        <div class="postbox-container wpsms-sendsms__container" style="padding-top: 20px;">
             <div class="meta-box-sortables">
                 <div class="postbox">
                     <h2 class="hndle" style="cursor: default;padding: 25px 18px 12px 20px; font-size: 20px;">
-                        <span><?php _e('Send SMS form', 'wp-sms'); ?></span></h2>
+                        <span><?php _e('Send SMS form', 'wp-sms'); ?></span>
+                    </h2>
                     <div class="inside">
                         <form method="post" action="">
                             <?php wp_nonce_field('update-options'); ?>
                             <table class="form-table">
                                 <tr valign="top">
                                     <th scope="row">
-                                        <label for="wp_get_sender"><?php _e('Send from', 'wp-sms'); ?>:</label>
+                                        <label for="wp_get_sender"><?php _e('From', 'wp-sms'); ?>:</label>
                                     </th>
                                     <td>
                                         <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $this->sms->from; ?>" maxlength="18"/>
@@ -81,7 +82,7 @@
                                 </tr>
                                 <tr valign="top">
                                     <th scope="row">
-                                        <label for="select_sender"><?php _e('Send to', 'wp-sms'); ?>:</label>
+                                        <label for="select_sender"><?php _e('To', 'wp-sms'); ?>:</label>
                                     </th>
                                     <td>
                                         <select name="wp_send_to" id="select_sender">
@@ -115,18 +116,25 @@
                                             <?php endforeach; ?>
                                         </select>
 
-                                        <select name="wpsms_group_name" class="wpsms-value wpsms-group">
-                                            <option value="all">
-                                                <?php
-                                                global $wpdb;
-                                                $username_active = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
-                                                echo sprintf(__('All group (%s active subscribers)', 'wp-sms'), $username_active);
-                                                ?>
-                                            </option>
-                                            <?php foreach ($get_group_result as $items): ?>
-                                                <option value="<?php echo $items->ID; ?>"><?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                        <?php if (count($get_group_result)) : ?>
+                                            <div class="wpsms-value wpsms-group">
+                                                <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2">
+                                                    <?php foreach ($get_group_result as $items): ?>
+                                                        <option value="<?php echo $items->ID; ?>"><?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="wpsms-value wpsms-group" style="display: none;">
+                                                <span>
+                                                    <?php
+                                                    global $wpdb;
+                                                    $username_active = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
+                                                    echo sprintf(__('<b>%s</b> Subscribers.', 'wp-sms'), $username_active);
+                                                    ?>
+                                                </span>
+                                            </span>
+                                        <?php endif; ?>
 
                                         <span class="wpsms-value wpsms-users" style="display: none;">
                                             <span><?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); ?></span>
