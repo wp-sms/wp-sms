@@ -249,9 +249,9 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 1. General Settings page
 2. Gateway Settings page
 3. SMS Newsletter Settings page
-4. Features Settings page
-5. Notifications Settings page
-6. Integration Settings page
+4. OTP And Login Settings page
+5. BuddyPress Settings page
+6. WooCommerce Settings page
 7. Send SMS/MMS page
 8. Outbox SMS/MMS page
 9. Scheduled page
@@ -261,6 +261,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 13. Login With Mobile
 14. Login With Mobile
 15. SMS Subscribers Form
+16. Gravity Forms Settings page
 
 == Upgrade Notice ==
 = v5.6 =
