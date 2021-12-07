@@ -253,6 +253,22 @@
     background-size: 20px;
 }
 
+.wpsms-tab .tab-company-logo {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.wpsms-tab .tab-company-logo a {
+    padding: 0;
+    display: inline-grid;
+}
+
+.wpsms-tab .tab-company-logo img {
+    filter: contrast(0.5);
+    width: 124px;
+    opacity: 0.5;
+}
+
 .wpsms-tab li a {
     display: flex;
     align-items: center;
@@ -274,6 +290,11 @@
 
 .wpsms-tab li:hover a {
     opacity: 1;
+}
+
+.wpsms-tab li:hover .pro-installed a {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .wpsms-tab li .active {

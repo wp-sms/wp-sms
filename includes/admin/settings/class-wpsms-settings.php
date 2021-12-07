@@ -2369,7 +2369,7 @@ class Settings
 
                             if ($IsProTab) {
                                 if ($this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-unlock"></span> Pro</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-unlock"></span></a></span></li>';
                                 } else {
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
@@ -2383,8 +2383,8 @@ class Settings
 
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>"><?php _e('Product website', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="https://veronalabs.com"><?php _e('Company website', 'wp-sms'); ?></a></li>
+                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>"><?php _e('Plugin website', 'wp-sms'); ?></a></li>
+                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?>">
