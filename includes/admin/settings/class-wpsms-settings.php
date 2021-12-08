@@ -32,7 +32,7 @@ class Settings
      */
     private function getCurrentOptionName()
     {
-        if (in_array($_REQUEST['tab'], $this->proTabs)) {
+        if (isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $this->proTabs)) {
             return $this->optionNames['pro'];
         }
 
