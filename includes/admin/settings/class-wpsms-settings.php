@@ -12,7 +12,7 @@ class Settings
     public $options = array();
     private $optionNames = [
         'main' => 'wpsms_settings',
-        'pro'  => 'wps_pp_settings',
+        'pro'  => 'wps_pp_settings'
     ];
     private $proTabs = [
         'pro_wordpress',
@@ -23,7 +23,7 @@ class Settings
         'pro_edd',
         'pro_wp_job_manager',
         'pro_awesome_support',
-        'pro_ultimate_members',
+        'pro_ultimate_members'
     ];
     private $proIsInstalled;
 
@@ -131,7 +131,7 @@ class Settings
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
                         'class'       => "tr-{$option['type']}",
                         'label_for'   => true,
-                    ),
+                    )
                 );
 
                 register_setting($this->setting_name, $this->setting_name, array($this, 'settings_sanitize'));
@@ -171,7 +171,7 @@ class Settings
             'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
             'pro_ultimate_members' => __('Ultimate Members', 'wp-sms'),
 
-            'licenses' => __('Licenses', 'wp-sms'),
+            'licenses' => __('Licenses', 'wp-sms')
         );
 
         return apply_filters("{$this->setting_name}_tabs", $tabs);
@@ -338,7 +338,7 @@ class Settings
                         '<code>%first_name%</code>',
                         '<code>%last_name%</code>'
                     )
-            ),
+            )
         );
 
         // Set BuddyPress settings
@@ -408,7 +408,7 @@ class Settings
                             __('User login: %s, User email: %s, User display name: %s', 'wp-sms'),
                             '<code>%user_login%</code>',
                             '<code>%user_email%</code>',
-                            '<code>%display_name%</code>',
+                            '<code>%display_name%</code>'
                         )
                 ),
                 'mentions'                        => array(
@@ -753,7 +753,7 @@ class Settings
                     'name' => __('Order Status & Message', 'wp-sms'),
                     'type' => 'repeater',
                     'desc' => __('Add Order Status & Write Message Body Per Order Status', 'wp-sms')
-                ),
+                )
             );
         } else {
             $wc_settings = array(
@@ -761,7 +761,7 @@ class Settings
                     'id'   => 'wc_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('WooCommerce should be enable to run this tab.', 'wp-sms'),
+                    'desc' => __('WooCommerce should be enable to run this tab.', 'wp-sms')
                 ));
         }
 
@@ -833,7 +833,7 @@ class Settings
                             '<code>%edd_first%</code>',
                             '<code>%edd_last%</code>'
                         )
-                ),
+                )
             );
         } else {
             $edd_settings = array(
@@ -841,7 +841,7 @@ class Settings
                     'id'   => 'edd_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Easy Digital Downloads should be enable to run this tab.', 'wp-sms'),
+                    'desc' => __('Easy Digital Downloads should be enable to run this tab.', 'wp-sms')
                 ));
         }
 
@@ -930,7 +930,7 @@ class Settings
                             '<code>%company_name%</code>',
                             '<code>%website%</code>'
                         )
-                ),
+                )
             );
         } else {
             $job_settings = array(
@@ -938,7 +938,7 @@ class Settings
                     'id'   => 'job_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Job Manager should be enable to run this tab.', 'wp-sms'),
+                    'desc' => __('Job Manager should be enable to run this tab.', 'wp-sms')
                 ));
         }
 
@@ -1016,7 +1016,7 @@ class Settings
                             '<code>%reply_title%</code>',
                             '<code>%reply_username%</code>'
                         )
-                ),
+                )
             );
         } else {
             $as_settings = array(
@@ -1024,7 +1024,7 @@ class Settings
                     'id'   => 'as_notify_new_ticket',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Awesome Support should be enable to run this tab.', 'wp-sms'),
+                    'desc' => __('Awesome Support should be enable to run this tab.', 'wp-sms')
                 ));
         }
 
@@ -1110,7 +1110,7 @@ class Settings
                 'id'   => 'gf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms'),
+                'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1146,7 +1146,7 @@ class Settings
                 'id'   => 'um_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Ultimate Members should be enable to run this tab', 'wp-sms'),
+                'desc' => __('Ultimate Members should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1222,7 +1222,7 @@ class Settings
                     'id'   => 'qf_notify_form',
                     'name' => __('No data', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('There is no form available on Quform plugin, please first add your forms.', 'wp-sms'),
+                    'desc' => __('There is no form available on Quform plugin, please first add your forms.', 'wp-sms')
                 );
             }
         } else {
@@ -1230,7 +1230,7 @@ class Settings
                 'id'   => 'qf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Quform should be enable to run this tab', 'wp-sms'),
+                'desc' => __('Quform should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1268,7 +1268,7 @@ class Settings
                     'name'    => __('GDPR Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR related features in this page.', 'wp-sms'),
+                    'desc'    => __('Enable GDPR related features in this page.', 'wp-sms')
                 ),
             )),
 
@@ -1389,7 +1389,7 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('If you would like to remove space before sending to API, just enable this option.', 'wp-sms')
-                ),
+                )
             )),
 
             /**
@@ -1464,7 +1464,7 @@ class Settings
                     'name' => __('Disable Frontend Style', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Check this to disable all included styling of SMS Newsletter form elements.', 'wp-sms')
-                ),
+                )
             )),
 
             /**
@@ -1541,7 +1541,7 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Add WP-SMS endpoints to the WP Rest API', 'wp-sms')
-                ),
+                )
             )),
 
             /**
@@ -1722,7 +1722,7 @@ class Settings
                             '<code>%username_login%</code>',
                             '<code>%display_name%</code>'
                         )
-                ),
+                )
             )),
 
             /**
@@ -1792,7 +1792,7 @@ class Settings
                             '<code>%edd_first%</code>',
                             '<code>%edd_last%</code>'
                         )
-                ),
+                )
             )),
 
             /*
@@ -1812,7 +1812,7 @@ class Settings
              * License fields
              * @note Don't move up this line, the pro fields doesn't load, weird indeed!
              */
-            'licenses'             => apply_filters('wp_sms_licenses_settings', array()),
+            'licenses'             => apply_filters('wp_sms_licenses_settings', array())
         ));
 
         /*
@@ -1843,7 +1843,7 @@ class Settings
                 'id'   => 'gdpr_notify',
                 'name' => __('GDPR Compliance', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms'),
+                'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms')
             );
         }
 
@@ -2504,7 +2504,7 @@ class Settings
                 'name' => $addOn,
                 'type' => 'header',
                 'doc'  => '/resources/troubleshoot-license-activation-issues/',
-                'desc' => __('License key is used to get access to automatic updates and support.', 'wp-sms'),
+                'desc' => __('License key is used to get access to automatic updates and support.', 'wp-sms')
             );
 
             // license key
@@ -2513,7 +2513,7 @@ class Settings
                 'name'        => __('License Key', 'wp-sms'),
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/')),
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'))
             );
 
         }
