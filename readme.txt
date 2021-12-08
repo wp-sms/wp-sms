@@ -269,7 +269,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Changelog ==
 = v5.6.5.1 - 08.12.2021 =
-* Bugfix: Compatibility new version of plugin with the older version of PHP.
+* Improvement: Compatibility with the older version of PHP.
 
 = v5.6.5 - 07.12.2021 =
 * Feature: Selecting the several user groups on send SMS page has been supported
