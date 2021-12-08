@@ -131,7 +131,7 @@ class Settings
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
                         'class'       => "tr-{$option['type']}",
                         'label_for'   => true,
-                    ),
+                    )
                 );
 
                 register_setting($this->setting_name, $this->setting_name, array($this, 'settings_sanitize'));
