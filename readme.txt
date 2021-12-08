@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.5.1
+Stable tag: 5.6.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -268,7 +268,8 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.6.5.1 - 08.12.2021 =
+= v5.6.5.2 - 10.12.2021 =
+* Improvement: Fixed a notice error has been fixed in the setting page.
 * Improvement: Compatibility with the older version of PHP.
 
 = v5.6.5 - 07.12.2021 =

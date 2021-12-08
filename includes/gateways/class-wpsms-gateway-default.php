@@ -13,29 +13,27 @@ class Default_Gateway extends Gateway
     public $flash = "enable";
     public $isflash = false;
     public $bulk_send = false;
+    public $gatewayFields = [
+        'from' => [
+            'id'   => 'gateway_sender_id',
+            'name' => 'Sender number',
+            'desc' => 'Sender number or sender ID',
+        ]
+    ];
 
     public function __construct()
     {
-        $this->validateNumber = "1xxxxxxxxxx";
     }
 
     public function SendSMS()
     {
-        // Check gateway credit
-        if (is_wp_error($this->GetCredit())) {
-            return new \WP_Error('account-credit', __('Your account does not credit for sending sms.', 'wp-sms'));
-        }
+        $errorMessage = __('The SMS gateway in the plugin is not configured yet.', 'wp-sms');
 
-        return new \WP_Error('send-sms', __('Does not set any gateway', 'wp-sms'));
+        return new \WP_Error('send-sms', $errorMessage);
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
-        }
-
-        return new \WP_Error('account-credit', 0);
+        return null;
     }
 }
