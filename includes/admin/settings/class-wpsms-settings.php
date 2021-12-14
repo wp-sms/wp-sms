@@ -1063,9 +1063,9 @@ class Settings
                 $more_fields = '';
                 $form_fields = Gravityforms::get_field($form->id);
                 if (is_array($form_fields) && count($form_fields)) {
-                    $more_fields = ', ' . __('Fields', 'wp-sms') . ' : ';
+                    $more_fields = ', ';
                     foreach ($form_fields as $key => $value) {
-                        $more_fields .= "<code>%{$value}%</code>, ";
+                        $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
                     }
                 }
                 $gf_forms['gf_notify_form_' . $form->id]          = array(
