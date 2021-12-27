@@ -82,7 +82,8 @@ class Gateway
             'smsmessenger'   => 'smsmessenger.co.za',
             'vfirst'         => 'vfirst.com',
             'zipwhip'        => 'zipwhip.com',
-            'teletopiasms'   => 'teletopiasms.no'
+            'teletopiasms'   => 'teletopiasms.no',
+            'sinch'          => 'sinch.com'
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
