@@ -124,7 +124,10 @@ class Gateway
         ),
         'poland'        => array(
             'smseagle' => 'smseagle.eu'
-        )
+        ),
+        'australia'     => array(
+            'smsbroadcast' => 'smsbroadcast.com.au',
+        ),
     );
 
     public $gatewayFields = [
