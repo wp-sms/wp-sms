@@ -92,7 +92,8 @@ class Gateway
             'gtxmessaging' => 'gtx-messaging.com',
         ),
         'africa'        => array(
-            'jusibe' => 'jusibe.com',
+            'jusibe'      => 'jusibe.com',
+            'montymobile' => 'montymobile.com',
         ),
         'romania'       => array(
             'sendsms' => 'sendsms.ro',
