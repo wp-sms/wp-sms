@@ -129,6 +129,9 @@ class Gateway
         'australia'     => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
         ),
+        'russia'        => array(
+            'sigmasms' => 'sigmasms.ru'
+        )
     );
 
     public $gatewayFields = [
