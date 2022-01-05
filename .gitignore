@@ -30,3 +30,9 @@ nbproject
 
 #Phpstorm project
 .idea
+
+# node_modules
+/node_modules
+
+# Build Folder
+/build
