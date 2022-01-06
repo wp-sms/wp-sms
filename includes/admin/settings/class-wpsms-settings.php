@@ -1184,6 +1184,14 @@ class Settings
 
             if ($forms) {
                 foreach ($forms as $form):
+                    $form_fields = Quform::get_fields($form['id']);
+                    if (is_array($form_fields) && count($form_fields)) {
+                        $more_fields = ', ';
+                        foreach ($form_fields as $key => $value) {
+                            $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                        }
+                        $more_fields = rtrim($more_fields, ', ');
+                    }
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
                         'name' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
@@ -1209,11 +1217,12 @@ class Settings
                         'type' => 'textarea',
                         'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                __('Form name: %s, Form url: %s, Referring url: %s', 'wp-sms'),
+                                __('Form name: %s, Form url: %s, Referring url: %s, Form content: %s', 'wp-sms'),
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
-                                '<code>%referring_url%</code>'
-                            )
+                                '<code>%referring_url%</code>',
+                                '<code>%content%</code>',
+                            ) . $more_fields
                     );
 
                     if ($form['elements']) {
@@ -1227,7 +1236,7 @@ class Settings
                             'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
                             'name'    => __('A field of the form', 'wp-sms'),
                             'type'    => 'select',
-                            'options' => Quform::get_fields($form['id']),
+                            'options' => $form_fields,
                             'desc'    => __('Select the field of your form.', 'wp-sms')
                         );
                         $qf_forms['qf_notify_message_field_form_' . $form['id']]  = array(
@@ -1236,11 +1245,12 @@ class Settings
                             'type' => 'textarea',
                             'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
                                 sprintf(
-                                    __('Form name: %s, Form url: %s, Referring url: %s', 'wp-sms'),
+                                    __('Form name: %s, Form url: %s, Referring url: %s, Form content: %s', 'wp-sms'),
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
-                                    '<code>%referring_url%</code>'
-                                )
+                                    '<code>%referring_url%</code>',
+                                    '<code>%content%</code>',
+                                ) . $more_fields
                         );
                     }
                 endforeach;
