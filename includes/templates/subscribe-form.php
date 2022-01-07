@@ -1,26 +1,18 @@
-<?php if (isset($instance['title']) and empty($instance['title']) or !isset($instance['title'])) : ?>
-    <h2 class="widget-title"><?php _e('Subscribe SMS', 'wp-sms'); ?></h2>
-<?php endif; ?>
+<h2 class="widget-title"><?php echo $attributes['title'] ? $attributes['title'] : __('Subscribe SMS', 'wp-sms'); ?></h2>
 <div id="wpsms-subscribe">
     <div id="wpsms-result"></div>
     <div id="wpsms-step-1">
-        <?php if (isset($instance['description'])) { ?>
-            <p><?php echo isset($instance['description']) ? $instance['description'] : ''; ?></p>
+        <?php if (isset($attributes['description'])) { ?>
+            <p><?php echo isset($attributes['description']) ? $attributes['description'] : ''; ?></p>
         <?php } ?>
         <div class="wpsms-subscribe-form">
             <label><?php _e('Your name', 'wp-sms'); ?>:</label>
             <input id="wpsms-name" type="text" placeholder="<?php _e('Your name', 'wp-sms'); ?>" class="wpsms-input"/>
         </div>
-        <?php
-        if (wp_sms_get_option('international_mobile')) {
-            $wp_sms_input_mobile = " wp-sms-input-mobile";
-        } else {
-            $wp_sms_input_mobile = "";
-        }
-        ?>
+
         <div class="wpsms-subscribe-form">
             <label><?php _e('Your mobile', 'wp-sms'); ?>:</label>
-            <input id="wpsms-mobile" type="text" placeholder="<?php echo wp_sms_get_option('mobile_terms_field_place_holder'); ?>" class="wpsms-input<?php echo $wp_sms_input_mobile ?>"/>
+            <input id="wpsms-mobile" type="text" placeholder="<?php echo wp_sms_get_option('mobile_terms_field_place_holder'); ?>" class="wpsms-input<?php echo $international_mobile ? " wp-sms-input-mobile" : ""; ?>"/>
         </div>
 
         <?php if (wp_sms_get_option('newsletter_form_groups')) { ?>
@@ -45,11 +37,11 @@
                 <?php _e('Unsubscribe', 'wp-sms'); ?>
             </label>
         </div>
-        <?php if (wp_sms_get_option('gdpr_compliance') == 1) { ?>
+        <?php if ($gdpr_compliance) { ?>
             <div class="wpsms-subscribe-form">
                 <label>
-                    <input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo wp_sms_get_option('newsletter_form_gdpr_confirm_checkbox') == 'checked' ? 'checked="checked"' : ''; ?>>
-                    <?php echo wp_sms_get_option('newsletter_form_gdpr_text') ? wp_sms_get_option('newsletter_form_gdpr_text') : 'I agree to receive SMS based on my data'; ?>
+                    <input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo $newsletter_form_gdpr_confirm_checkbox == 'checked' ? 'checked="checked"' : ''; ?>>
+                    <?php echo $newsletter_form_gdpr_text ? $newsletter_form_gdpr_text : 'I agree to receive SMS based on my data'; ?>
                 </label>
             </div>
         <?php } ?>

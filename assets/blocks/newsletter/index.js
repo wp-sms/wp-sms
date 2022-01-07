@@ -108,8 +108,11 @@ wp.blocks.registerBlockType("wp-statistics-widgets/newsletter", {
   icon: "admin-users",
   category: "wp-statistics-widgets",
   attributes: {
-    showLoggedUsers: {
-      type: "boolean"
+    title: {
+      type: 'string'
+    },
+    description: {
+      type: 'string'
     }
   },
   edit: EditComponent,
@@ -123,15 +126,22 @@ function EditComponent(props) {
     className: "wp-statistics-widget"
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
     className: "wp-statistics-widget__title"
-  }, "Visitors"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+  }, "Newsletter"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
     className: "wp-statistics-widget__main"
-  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["CheckboxControl"], {
-    label: "Show Logged Users",
-    help: "Show all visitors include logged users.",
-    checked: props.attributes.showLoggedUsers,
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextControl"], {
+    label: "Title",
+    value: props.attributes.title,
     onChange: e => {
       props.setAttributes({
-        showLoggedUsers: e
+        title: e
+      });
+    }
+  }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextareaControl"], {
+    label: "Description",
+    value: props.attributes.description,
+    onChange: e => {
+      props.setAttributes({
+        description: e
       });
     }
   })));
