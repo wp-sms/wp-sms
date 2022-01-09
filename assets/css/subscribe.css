@@ -2,15 +2,15 @@
     font-family: Tahoma, Arial;
 }
 
-.wpsms-subscribe-form {
+.wpsms-newsletter__form__field {
     margin: 0 0 10px;
 }
 
-.wpsms-subscribe-form > label {
+.wpsms-newsletter__form__field > label {
     display: block;
 }
 
-.wpsms-input {
+.wpsms-newsletter__field__input {
     padding: 5px 7px;
     border: none;
     border: solid 2px #c9c9c9;
@@ -19,8 +19,8 @@
     font-size: 12px;
 }
 
-.wpsms-input:focus,
-.wpsms-input.focus {
+.wpsms-newsletter__field__input:focus,
+.wpsms-newsletter__field__input.focus {
     border: solid 2px #969696;
 }
 
@@ -86,11 +86,11 @@
     width: 100%;
 }
 
-.wpsms-subscribe-form.radio-inputs label {
+.wpsms-newsletter__form__field.wpsms-newsletter__field__input--radio label {
     display: inline-block;
 }
 
-.wpsms-subscribe-form.radio-inputs input{
+.wpsms-newsletter__form__field.wpsms-newsletter__field__input--radio input{
     margin-right: 0px;
 
 }

@@ -6,7 +6,7 @@
   color: #fff;
   font-family: inherit;
   padding: 13px 32px;
-  font-weight: bold;
+  font-weight: 400;
   font-size: 14px;
   line-height: 18px;
   text-decoration: none;
@@ -14,6 +14,7 @@
 
 .wpsms-button:hover {
   background: #EF771F;
+  text-decoration: none;
 }
 
 .wpsms-button:active {
