@@ -1,0 +1,24 @@
+
+#wpsms-result {
+  display: block;
+  margin: 0 0 7px;
+  width: 100%;
+}
+
+.wpsms-message-error {
+  background-color: rgba(255, 0, 0, 0.24);
+  border: 2px solid #b36262;
+  color: #820000;
+  font-size: 12px;
+  padding: 5px;
+  width: 100%;
+}
+
+.wpsms-message-success {
+  background-color: rgba(87, 241, 45, 0.24);
+  border: 2px solid #16c900;
+  color: #0f8500;
+  font-size: 12px;
+  padding: 5px;
+  width: 100%;
+}

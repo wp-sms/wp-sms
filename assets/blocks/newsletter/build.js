@@ -385,10 +385,10 @@
 
     var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 
-    wp.blocks.registerBlockType("wp-statistics-widgets/newsletter", {
+    wp.blocks.registerBlockType("wp-sms-blocks/newsletter", {
       title: "Newsletter",
       icon: "admin-users",
-      category: "wp-statistics-widgets",
+      category: "wp-sms-blocks",
       attributes: {
         title: {
           type: 'string'
@@ -405,11 +405,11 @@
 
     function EditComponent(props) {
       return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
-        className: "wp-statistics-widget"
+        className: "wp-sms-block"
       }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
-        className: "wp-statistics-widget__title"
+        className: "wp-sms-block__title"
       }, "Newsletter"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
-        className: "wp-statistics-widget__main"
+        className: "wp-sms-block__main"
       }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextControl"], {
         label: "Title",
         value: props.attributes.title,

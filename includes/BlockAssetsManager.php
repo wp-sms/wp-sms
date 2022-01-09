@@ -22,7 +22,7 @@ class BlockAssetsManager
                 $block->registerBlockType();
             } else {
                 add_action('admin_notices', function () use ($item) {
-                    echo '<div class="notice notice-error"><p>' . sprintf(__('WP-Statistics Widgets encountered an error, class <b>%s</b> could not be loaded.', 'wp-statistics-widgets'), $item) . '</p></div>';
+                    echo '<div class="notice notice-error"><p>' . sprintf(__('WP-Statistics Widgets encountered an error, class <b>%s</b> could not be loaded.', 'wp-sms'), $item) . '</p></div>';
                 });
             }
         }
@@ -38,8 +38,8 @@ class BlockAssetsManager
             $categories,
             [
                 [
-                    'slug'  => 'wp-statistics-widgets',
-                    'title' => __('WP-Statistics', 'wp-statistics-widgets'),
+                    'slug'  => 'wp-sms',
+                    'title' => __('WP-SMS', 'wp-sms'),
                 ],
             ]
         );

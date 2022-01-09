@@ -1,10 +1,10 @@
 import "./index.scss"
 import { TextControl, TextareaControl } from '@wordpress/components';
 
-wp.blocks.registerBlockType("wp-statistics-widgets/newsletter", {
+wp.blocks.registerBlockType("wp-sms-blocks/newsletter", {
   title: "Newsletter",
   icon: "admin-users",
-  category: "wp-statistics-widgets",
+  category: "wp-sms-blocks",
   attributes: {
     title: { type: 'string' },
     description: { type: 'string' },
@@ -17,9 +17,9 @@ wp.blocks.registerBlockType("wp-statistics-widgets/newsletter", {
 
 function EditComponent(props) {
   return (
-    <div className="wp-statistics-widget">
-      <h2 className="wp-statistics-widget__title">Newsletter</h2>
-      <div className="wp-statistics-widget__main">
+    <div className="wp-sms-block">
+      <h2 className="wp-sms-block__title">Newsletter</h2>
+      <div className="wp-sms-block__main">
         <TextControl
           label="Title"
           value={ props.attributes.title }

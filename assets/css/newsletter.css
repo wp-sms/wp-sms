@@ -1,0 +1,71 @@
+#wpsms-subscribe {
+  font-family: Tahoma, Arial;
+}
+
+.wpsms-subscribe-form {
+  margin: 0 0 10px;
+}
+
+.wpsms-subscribe-form > label {
+  display: block;
+}
+
+.wpsms-input {
+  padding: 5px 7px;
+  border: none;
+  border: solid 2px #c9c9c9;
+  transition: border 0.3s;
+  font-family: Tahoma, Arial;
+  font-size: 12px;
+}
+
+.wpsms-input:focus,
+.wpsms-input.focus {
+  border: solid 2px #969696;
+}
+
+.wpsms-subscribe-form.radio-inputs label {
+  display: inline-block;
+}
+
+.wpsms-subscribe-form.radio-inputs input {
+  margin-right: 0px;
+}
+
+input#wpsms-type-unsubscribe {
+  margin-left: 10px;
+}
+
+#wpsms-step-2 {
+  display: none;
+}
+
+.wpsms-button {
+  background: #F88E40;
+  border-radius: 2px;
+  display: inline-block;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+  padding: 13px 32px;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  text-decoration: none;
+}
+
+.wpsms-button:hover {
+  background: #EF771F;
+}
+
+.wpsms-button:active {
+  position: relative;
+  top: 1px;
+}
+
+.wpsms-button:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.65;
+  pointer-events: none;
+}

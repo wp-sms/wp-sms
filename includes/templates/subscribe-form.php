@@ -19,7 +19,7 @@
             <div class="wpsms-subscribe-form">
                 <label><?php _e('Group', 'wp-sms'); ?>:</label>
                 <select id="wpsms-groups" class="wpsms-input">
-                    <?php foreach ($get_group_result as $items): ?>
+                    <?php foreach ($get_group_result as $items): var_dump($get_group_result); ?>
                         <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
                     <?php endforeach; ?>
                 </select>

@@ -39,15 +39,15 @@ class BlockAbstract
      */
     public function registerBlockType()
     {
-        $blockPath = "wp-statistics-widgets/{$this->blockName}";
+        $blockPath = "wp-sms-blocks/{$this->blockName}";
 
-        wp_register_script("wp-statistics-widgets-{$this->blockName}-script", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.js"), array('wp-blocks', 'wp-element', 'wp-editor'));
-        wp_register_style("wp-statistics-widgets/{$this->blockName}-style", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.css"));
+        wp_register_script("wp-sms-blocks-{$this->blockName}-script", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.js"), array('wp-blocks', 'wp-element', 'wp-editor'));
+        wp_register_style("wp-sms-blocks/{$this->blockName}-style", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.css"));
 
         register_block_type($blockPath, array(
             'render_callback' => [$this, 'renderCallback'],
-            'editor_script'   => "wp-statistics-widgets-{$this->blockName}-script",
-            'editor_style'    => "wp-statistics-widgets/{$this->blockName}-style",
+            'editor_script'   => "wp-sms-blocks-{$this->blockName}-script",
+            'editor_style'    => "wp-sms-blocks/{$this->blockName}-style",
         ));
 
     }
@@ -64,8 +64,8 @@ class BlockAbstract
          * Enqueue the script and data
          */
         if ($this->script) {
-            wp_enqueue_script("wp-statistics-widgets-{$this->blockName}", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
-            wp_localize_script("wp-statistics-widgets-{$this->blockName}", "{$this->blockName}Object", $this->getData($attributes));
+            wp_enqueue_script("wp-sms-blocks-{$this->blockName}", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
+            wp_localize_script("wp-sms-blocks-{$this->blockName}", "{$this->blockName}Object", $this->getData($attributes));
         }
 
         /**

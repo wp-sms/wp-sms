@@ -539,6 +539,18 @@ class Newsletter
         include_once WP_SMS_DIR . "includes/templates/subscribe-form.php";
     }
 
+	/**
+	 * Get Newsletter Groups
+	 *
+	 * @param Not param
+	 */
+
+	public static function get_groups()
+	{
+		$self   = new Newsletter();
+		$groups = $self->db->get_results( "SELECT * FROM `{$self->db->prefix}sms_subscribes_group`" );
+		return $groups;
+	}
 }
 
 new Newsletter();
