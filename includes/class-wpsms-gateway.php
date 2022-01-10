@@ -96,8 +96,9 @@ class Gateway
             'montymobile' => 'montymobile.com',
         ),
         'romania'       => array(
-            'sendsms' => 'sendsms.ro',
-            'smschef' => 'smschef.com',
+            'sendsms'  => 'sendsms.ro',
+            'smschef'  => 'smschef.com',
+            'nobelsms' => 'nobelsms.com',
         ),
         'arabic'        => array(
             'kwtsms'      => 'kwtsms.com',
