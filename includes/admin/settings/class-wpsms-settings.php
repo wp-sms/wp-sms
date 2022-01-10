@@ -2492,7 +2492,7 @@ class Settings
                         <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
-                    <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?>">
+                    <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab.'_settings_tab'?>">
                         <form method="post" action="options.php">
                             <table class="form-table">
                                 <?php
