@@ -130,7 +130,8 @@ class Gateway
             'smsbroadcast' => 'smsbroadcast.com.au',
         ),
         'russia'        => array(
-            'sigmasms' => 'sigmasms.ru'
+            'sigmasms' => 'sigmasms.ru',
+            'turbosms' => 'turbosms.ua',
         )
     );
 
