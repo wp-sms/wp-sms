@@ -35,7 +35,7 @@ class Front
 
         // Check if "Disable Style" in frontend is active or not
         if (empty($this->options['disable_style_in_front']) or (isset($this->options['disable_style_in_front']) and !$this->options['disable_style_in_front'])) {
-            wp_register_style('wpsms-subscribe', WP_SMS_URL . 'assets/css/newsletter.css', true, WP_SMS_VERSION);
+            wp_register_style('wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-subscribe');
         }
     }

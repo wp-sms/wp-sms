@@ -1,100 +1,159 @@
 #wpsms-subscribe {
-    font-family: Tahoma, Arial;
+  font-family: "Barlow", Tahoma;
 }
 
-.wpsms-newsletter__form__field {
-    margin: 0 0 10px;
+.wpsms-subscribe__title {
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 34px;
+  margin: 24px 0 16px;
 }
 
-.wpsms-newsletter__form__field > label {
-    display: block;
+.wpsms-subscribe p {
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 28px;
+  color: #5B5B5B;
 }
 
-.wpsms-newsletter__field__input {
-    padding: 5px 7px;
-    border: none;
-    border: solid 2px #c9c9c9;
-    transition: border 0.3s;
-    font-family: Tahoma, Arial;
-    font-size: 12px;
+/* barlow-regular - latin */
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), url("../fonts/barlow-v5-latin-regular.woff2") format("woff2"), url("../fonts/barlow-v5-latin-regular.woff") format("woff");
+}
+/* barlow-700 - latin */
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 700;
+  src: local(""), url("../fonts/barlow-v5-latin-700.woff2") format("woff2"), url("../fonts/barlow-v5-latin-700.woff") format("woff");
+}
+.wpsms-subscribe__form__field {
+  margin: 0 0 24px;
 }
 
-.wpsms-newsletter__field__input:focus,
-.wpsms-newsletter__field__input.focus {
-    border: solid 2px #969696;
+.wpsms-subscribe__form__field > label {
+  display: block;
 }
 
-.wpsms-button:disabled {
-    box-shadow: none;
-    cursor: not-allowed;
-    opacity: 0.65;
-    pointer-events: none;
+.wpsms-subscribe__field__input {
+  padding: 5px 7px;
+  border: none;
+  border: solid 2px #c9c9c9;
+  transition: border 0.3s;
+  font-family: inherit !important;
+  font-size: 14px;
 }
 
-.wpsms-button {
-    background: #F88E40;
-    border-radius: 2px;
-    display: inline-block;
-    cursor: pointer;
-    color: #fff;
-    font-family: inherit;
-    padding: 13px 32px;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    text-decoration: none;
+.wpsms-subscribe__field__input--radio label {
+  display: inline-block;
 }
 
-.wpsms-button:hover {
-    background: #EF771F;
+.wpsms-subscribe__field__input:focus,
+.wpsms-subscribe__field__input.focus {
+  border: solid 2px #969696;
 }
 
-.wpsms-button:active {
-    position: relative;
-    top: 1px;
+.wpsms-subscribe__form__field label {
+  color: #5B5B5B;
+  font-size: 14px;
+}
+.wpsms-subscribe__form__field input:not([type=checkbox]), .wpsms-subscribe__form__field select {
+  font-size: 14px !important;
+  background-color: #fff;
+  border: 0.5px solid #000000;
+  box-sizing: border-box;
+  border-radius: 2px;
+  padding: 13.4px 16px !important;
+}
+.wpsms-subscribe__form__field input:not([type=checkbox]):focus, .wpsms-subscribe__form__field select:focus {
+  border: 1px solid #F88E40;
+  box-shadow: none;
+  outline: none;
+}
+.wpsms-subscribe__form__field input::placeholder {
+  color: #5B5B5B;
 }
 
-#wpsms-step-1 {
-
-}
-
-#wpsms-step-2 {
-    display: none;
-}
-
-#wpsms-result {
-    display: block;
-    margin: 0 0 7px;
-    width: 100%;
-}
-
-.wpsms-message-error {
-    background-color: rgba(255, 0, 0, 0.24);
-    border: 2px solid #b36262;
-    color: #820000;
-    font-size: 12px;
-    padding: 5px;
-    width: 100%;
-}
-
-.wpsms-message-success {
-    background-color: rgba(87, 241, 45, 0.24);
-    border: 2px solid #16c900;
-    color: #0f8500;
-    font-size: 12px;
-    padding: 5px;
-    width: 100%;
-}
-
-.wpsms-newsletter__form__field.wpsms-newsletter__field__input--radio label {
-    display: inline-block;
-}
-
-.wpsms-newsletter__form__field.wpsms-newsletter__field__input--radio input{
-    margin-right: 0px;
-
+.wpsms-subscribe__form__field.wpsms-subscribe__field__input--radio input {
+  margin-right: 0px;
 }
 
 input#wpsms-type-unsubscribe {
-    margin-left: 10px;
+  margin-left: 10px;
+}
+
+.wpsms-subscribe__form__field--gdpr label {
+  color: #000;
+  cursor: pointer;
+}
+.wpsms-subscribe__form__field--gdpr input {
+  border: 1px solid #000 !important;
+}
+.wpsms-subscribe__form__field--gdpr input:checked {
+  background-color: #F88E40;
+  border-color: #F88E40 !important;
+  color: #fff;
+}
+.wpsms-subscribe__form__field--gdpr input:checked::before {
+  content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M14.83 4.89l1.34.94-5.81 8.38H9.02L5.78 9.67l1.34-1.25 2.57 2.4z' fill='%23fff'/%3E%3C/svg%3E") !important;
+}
+
+#wpsms-step-2 {
+  display: none;
+}
+
+#wpsms-result {
+  display: block;
+  margin: 0 0 7px;
+  width: 100%;
+}
+
+.wpsms-subscribe__message {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid transparent;
+  color: #000;
+  margin: 16px 0;
+  display: block;
+}
+
+.wpsms-subscribe__message--error {
+  border-color: #aa2a2a;
+}
+
+.wpsms-subscribe__message--success {
+  border-color: #65B15C;
+}
+
+.wpsms-button {
+  background: #F88E40;
+  border-radius: 2px;
+  display: inline-block;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+  padding: 13px 32px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 18px;
+  text-decoration: none;
+}
+.wpsms-button:focus, .wpsms-button:active {
+  text-decoration: none;
+}
+.wpsms-button:hover {
+  background: #EF771F;
+  text-decoration: none;
+}
+.wpsms-button:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.65;
+  pointer-events: none;
 }

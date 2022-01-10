@@ -57,7 +57,7 @@ jQuery(document).ready(function ($) {
             }
 
             $("#wpsms-result").fadeIn();
-            $("#wpsms-result").html('<span class="wpsms-message-error">' + message + '</div>');
+            $("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + message + '</div>');
         });
         ajax.done(function (data) {
             var response = data;
@@ -65,7 +65,7 @@ jQuery(document).ready(function ($) {
 
             $("#wpsms-result").fadeIn();
             $("#wpsms-step-1").hide();
-            $("#wpsms-result").html('<span class="wpsms-message-success">' + message + '</div>');
+            $("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>');
             if (subscriber['type'] === 'subscribe' && verify === '1') {
                 $("#wpsms-step-2").show();
             }
@@ -103,7 +103,7 @@ jQuery(document).ready(function ($) {
             }
 
             $("#wpsms-result").fadeIn();
-            $("#wpsms-result").html('<span class="wpsms-message-error">' + message + '</div>');
+            $("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + message + '</div>');
         });
         ajax.done(function (data) {
             var response = data;
@@ -111,7 +111,7 @@ jQuery(document).ready(function ($) {
 
             $("#wpsms-result").fadeIn();
             $("#wpsms-step-2").hide();
-            $("#wpsms-result").html('<span class="wpsms-message-success">' + message + '</div>');
+            $("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>');
         });
     });
 });

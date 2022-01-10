@@ -1,3 +1,6 @@
+.wpsms-subscribe__messages {
+  //margin: 16px 0;
+}
 
 #wpsms-result {
   display: block;
@@ -5,20 +8,22 @@
   width: 100%;
 }
 
-.wpsms-message-error {
-  background-color: rgba(255, 0, 0, 0.24);
-  border: 2px solid #b36262;
-  color: #820000;
+.wpsms-subscribe__message {
+  font-weight: normal;
   font-size: 12px;
-  padding: 5px;
+  line-height: 14px;
   width: 100%;
+  padding: 12px 16px;
+  border: 2px solid transparent;
+  color: #000;
+  margin: 16px 0;
+  display: block;
 }
 
-.wpsms-message-success {
-  background-color: rgba(87, 241, 45, 0.24);
-  border: 2px solid #16c900;
-  color: #0f8500;
-  font-size: 12px;
-  padding: 5px;
-  width: 100%;
+.wpsms-subscribe__message--error {
+  border-color: #aa2a2a;
+}
+
+.wpsms-subscribe__message--success {
+  border-color: #65B15C;
 }

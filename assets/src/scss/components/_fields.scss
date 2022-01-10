@@ -1,32 +1,32 @@
-.wpsms-newsletter__form__field {
+.wpsms-subscribe__form__field {
   margin: 0 0 24px;
 }
 
-.wpsms-newsletter__form__field > label {
+.wpsms-subscribe__form__field > label {
   display: block;
 }
 
-.wpsms-newsletter__field__input {
+.wpsms-subscribe__field__input {
   padding: 5px 7px;
   border: none;
   border: solid 2px #c9c9c9;
   transition: border 0.3s;
-  font-family: Tahoma, Arial;
+  font-family: inherit !important;
   font-size: 14px;
 }
 
-.wpsms-newsletter__field__input--radio {
+.wpsms-subscribe__field__input--radio {
   label {
     display: inline-block;
   }
 }
 
-.wpsms-newsletter__field__input:focus,
-.wpsms-newsletter__field__input.focus {
+.wpsms-subscribe__field__input:focus,
+.wpsms-subscribe__field__input.focus {
   border: solid 2px #969696;
 }
 
-.wpsms-newsletter__form__field {
+.wpsms-subscribe__form__field {
 
   label {
     color: #5B5B5B;
@@ -39,7 +39,7 @@
     border: 0.5px solid #000000;
     box-sizing: border-box;
     border-radius: 2px;
-    padding: 14px 16px !important;
+    padding: 13.4px 16px !important;
 
     &:focus {
       border: 1px solid #F88E40;
@@ -54,7 +54,7 @@
   }
 }
 
-.wpsms-newsletter__form__field.wpsms-newsletter__field__input--radio input {
+.wpsms-subscribe__form__field.wpsms-subscribe__field__input--radio input {
   margin-right: 0px;
 }
 
@@ -62,7 +62,7 @@ input#wpsms-type-unsubscribe {
   margin-left: 10px;
 }
 
-.wpsms-newsletter__form__field--gdpr {
+.wpsms-subscribe__form__field--gdpr {
 
   label {
     color: #000;
