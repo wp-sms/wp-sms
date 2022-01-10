@@ -8,10 +8,11 @@ wp.blocks.registerBlockType("wp-sms-blocks/newsletter", {
   attributes: {
     title: { type: 'string' },
     description: { type: 'string' },
+    preview : { type: 'boolean' }
   },
   example: {
     attributes: {
-      cover: 'https://wp-sms-pro.com/wp-content/uploads/2022/01/newsletter-form.png',
+      preview : true,
     },
   },
   edit: EditComponent,
@@ -21,6 +22,12 @@ wp.blocks.registerBlockType("wp-sms-blocks/newsletter", {
 })
 
 function EditComponent(props) {
+  const { preview, title } = props.attributes;
+  if ( preview ) {
+    return(
+        <img src="https://wp-sms-pro.com/wp-content/uploads/2022/01/newsletter-form.png" />
+    );
+  }
   return (
     <div className="wp-sms-block">
       <h2 className="wp-sms-block__title">Newsletter</h2>
