@@ -181,6 +181,11 @@ class Settings
             'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
             'pro_ultimate_members' => __('Ultimate Members', 'wp-sms'),
 
+            /*
+             * Addon tabs
+             */
+            'addon_two_way'        => __('Two Way', 'wp-sms'),
+
             'licenses' => __('Licenses', 'wp-sms')
         );
 
@@ -1297,6 +1302,16 @@ class Settings
             );
         }
 
+        // Set two-way absence(default) field. NOTE: Main fields will be added in two-way addon itself.
+        $two_way_fields = array(
+            'two_way_absence_field' => array(
+                'id'   => 'two_way_absence_field',
+                'name' => __('Not active', 'wp-sms'),
+                'type' => 'notice',
+                'desc' => __('Two Way should be enable to run this tab', 'wp-sms')
+            )
+        );
+
         $settings = apply_filters('wp_sms_registered_settings', array(
             /**
              * General fields
@@ -1897,6 +1912,11 @@ class Settings
             'pro_wp_job_manager'   => apply_filters('wp_sms_job_settings', $job_settings),
             'pro_awesome_support'  => apply_filters('wp_sms_as_settings', $as_settings),
             'pro_ultimate_members' => apply_filters('wp_sms_pro_um_settings', $um_options),
+
+            /*
+             * Addon fields
+             */
+            'addon_two_way'        => apply_filters('wp_sms_addon_two_way_settings', $two_way_fields),
 
             /*
              * License fields
