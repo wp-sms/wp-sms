@@ -38,7 +38,7 @@ class BlockAssetsManager
             $categories,
             [
                 [
-                    'slug'  => 'wp-sms',
+                    'slug'  => 'wp-sms-blocks',
                     'title' => __('WP-SMS', 'wp-sms'),
                 ],
             ]

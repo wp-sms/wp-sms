@@ -22,7 +22,7 @@ wp.blocks.registerBlockType("wp-sms-blocks/newsletter", {
 })
 
 function EditComponent(props) {
-  const { preview, title } = props.attributes;
+  const { preview } = props.attributes;
   if ( preview ) {
     return(
         <img src="https://wp-sms-pro.com/wp-content/uploads/2022/01/newsletter-form.png" />
