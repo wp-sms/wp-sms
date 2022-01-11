@@ -133,7 +133,10 @@ class Gateway
         'russia'        => array(
             'sigmasms' => 'sigmasms.ru',
             'turbosms' => 'turbosms.ua',
-        )
+        ),
+        'mexico'        => array(
+            'smsmasivos' => 'smsmasivos.com.mx',
+        ),
     );
 
     public $gatewayFields = [
