@@ -1,6 +1,8 @@
-#wpsms-subscribe {
+.wpsms-subscribe {
   font-family: 'Barlow', Tahoma;
+  position: relative;
 }
+
 
 .wpsms-subscribe__title {
   font-weight: bold;
@@ -21,3 +23,4 @@
 @import "components/steps";
 @import "components/messages";
 @import "components/button";
+@import "components/overlay";

@@ -15,9 +15,41 @@
   font-size: 14px;
 }
 
-.wpsms-subscribe__field__input--radio {
+.wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio {
   label {
     display: inline-block;
+  }
+
+  input[type="radio"] {
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    vertical-align: middle;
+    padding: 4px !important;
+    margin-right: 5px;
+    border: 1px solid #000 !important;
+    position: relative;
+
+    &::after {
+      width: 8px;
+      height: 8px;
+    }
+
+    &:checked {
+      background-color: #F88E40 !important;
+      border-color: #F88E40 !important;
+
+      &::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: #fff;
+        border-radius: 4px;
+        display: block;
+        background-color: #fff;
+      }
+    }
   }
 }
 
@@ -31,6 +63,7 @@
   label {
     color: #5B5B5B;
     font-size: 14px;
+    margin-bottom: 8px;
   }
 
   input:not([type="checkbox"]), select {
@@ -44,7 +77,6 @@
     &:focus {
       border: 1px solid #F88E40;
       box-shadow: none;
-
       outline: none;
     }
   }
@@ -54,7 +86,7 @@
   }
 }
 
-.wpsms-subscribe__form__field.wpsms-subscribe__field__input--radio input {
+.wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio input {
   margin-right: 0px;
 }
 
@@ -69,17 +101,43 @@ input#wpsms-type-unsubscribe {
     cursor: pointer;
   }
 
-  input {
+  input[type="checkbox"] {
     border: 1px solid #000 !important;
-  }
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+    box-shadow: none;
+    outline: none;
+    position: relative;
 
-  input:checked {
-    background-color: #F88E40;
-    border-color: #F88E40 !important;
-    color: #fff;
+    &::after {
+      display: none;
+      content: unset !important;
+    }
 
-    &::before {
-      content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M14.83 4.89l1.34.94-5.81 8.38H9.02L5.78 9.67l1.34-1.25 2.57 2.4z' fill='%23fff'/%3E%3C/svg%3E") !important;
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
+
+    &:checked {
+      background-color: #F88E40;
+      border-color: #F88E40 !important;
+      color: #fff;
+
+      &::before {
+        content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M14.83 4.89l1.34.94-5.81 8.38H9.02L5.78 9.67l1.34-1.25 2.57 2.4z' fill='%23fff'/%3E%3C/svg%3E") !important;
+        vertical-align: middle;
+        text-align: center;
+        width: 20px !important;
+        height: 20px !important;
+        display: block;
+        position: absolute;
+        left: -3.5px;
+        top: -2.5px;
+      }
     }
   }
+
 }

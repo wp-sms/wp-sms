@@ -1,4 +1,11 @@
 <div class="wpsms-subscribe">
+    <div class="wpsms-subscribe__overlay">
+        <svg class="wpsms-subscribe__overlay__spinner" xmlns="http://www.w3.org/2000/svg" style="margin:auto;background:0 0" width="200" height="200" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" display="block">
+            <circle cx="50" cy="50" fill="none" stroke="#c6c6c6" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138">
+                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"/>
+            </circle>
+        </svg>
+    </div>
     <h2 class="wpsms-subscribe__title"><?php echo $attributes['title'] ? $attributes['title'] : __( 'Subscribe SMS',
 			'wp-sms' ); ?></h2>
     <div id="wpsms-subscribe" class="wpsms-subscribe__form">
@@ -22,14 +29,14 @@
                 <div class="wpsms-subscribe__form__field">
                     <label><?php _e( 'Group', 'wp-sms' ); ?>:</label>
                     <select id="wpsms-groups" class="wpsms-subscribe__field__input">
-						<?php foreach ( $get_group_result as $items ): var_dump( $get_group_result ); ?>
+						<?php foreach ( $get_group_result as $items ): ?>
                             <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
 						<?php endforeach; ?>
                     </select>
                 </div>
 			<?php } ?>
 
-            <div class="wpsms-subscribe__form__field wpsms-subscribe__field__input--radio">
+            <div class="wpsms-subscribe__form__field wpsms-subscribe__form__field--radio">
                 <label>
                     <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
 					<?php _e( 'Subscribe', 'wp-sms' ); ?>
@@ -43,8 +50,8 @@
 			<?php if ( $gdpr_compliance ) { ?>
                 <div class="wpsms-subscribe__form__field wpsms-subscribe__form__field--gdpr">
                     <label>
-                        <input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo $newsletter_form_gdpr_confirm_checkbox == 'checked' ? 'checked="checked"' : ''; ?>>
-						<?php echo $newsletter_form_gdpr_text ? $newsletter_form_gdpr_text : 'I agree to receive SMS based on my data'; ?>
+                        <input id="wpsms-gdpr-confirmation" type="checkbox" <?php echo $subscribe_form_gdpr_confirm_checkbox == 'checked' ? 'checked="checked"' : ''; ?>>
+						<?php echo $subscribe_form_gdpr_text ? $subscribe_form_gdpr_text : 'I agree to receive SMS based on my data'; ?>
                     </label>
                 </div>
 			<?php } ?>
@@ -69,4 +76,4 @@
             <input type="hidden" id="newsletter-form-verify" value="<?php echo wp_sms_get_option( 'newsletter_form_verify' ); ?>">
         </div>
     </div>
-</div>
+

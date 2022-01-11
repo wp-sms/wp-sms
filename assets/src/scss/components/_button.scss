@@ -1,9 +1,9 @@
 .wpsms-button {
-  background: #F88E40;
+  background: #F88E40 !important;
   border-radius: 2px;
   display: inline-block;
   cursor: pointer;
-  color: #fff;
+  color: #fff !important;
   font-family: inherit;
   padding: 13px 32px;
   font-weight: 700;
@@ -12,12 +12,12 @@
   text-decoration: none;
 
   &:focus, &:active {
-    text-decoration: none;
+    text-decoration: none !important;
   }
 
   &:hover {
-    background: #EF771F;
-    text-decoration: none;
+    background: #EF771F !important;
+    text-decoration: none !important;
   }
 
   &:disabled {

@@ -16,7 +16,9 @@ jQuery(document).ready(function ($) {
     }
 
     $("#wpsms-subscribe #wpsms-submit").click(function () {
+        $(this).attr('disabled', 'disabled');
         $("#wpsms-result").hide();
+        $(".wpsms-subscribe__overlay").css('display', 'flex');
 
         var verify = $("#newsletter-form-verify").val();
 
@@ -50,6 +52,8 @@ jQuery(document).ready(function ($) {
             var response = $.parseJSON(data.responseText);
             var message = null;
 
+            $("#wpsms-submit").removeAttr('disabled');
+            $(".wpsms-subscribe__overlay").css('display', 'none');
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
             } else {
@@ -63,6 +67,8 @@ jQuery(document).ready(function ($) {
             var response = data;
             var message = response.message;
 
+            $("#wpsms-submit").removeAttr('disabled');
+            $(".wpsms-subscribe__overlay").css('display', 'none');
             $("#wpsms-result").fadeIn();
             $("#wpsms-step-1").hide();
             $("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>');
@@ -75,6 +81,8 @@ jQuery(document).ready(function ($) {
     $("#wpsms-subscribe #activation").on('click', function () {
         $("#wpsms-result").hide();
         subscriber['activation'] = $("#wpsms-ativation-code").val();
+        $(this).attr('disabled', 'disabled');
+        $(".wpsms-subscribe__overlay").css('display', 'flex');
 
         $("#wpsms-subscribe").ajaxStart(function () {
             $("#activation").attr('disabled', 'disabled');
@@ -96,6 +104,8 @@ jQuery(document).ready(function ($) {
             var response = $.parseJSON(data.responseText);
             var message = null;
 
+            $("#activation").removeAttr('disabled');
+            $(".wpsms-subscribe__overlay").css('display', 'none');
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
             } else {
@@ -109,6 +119,8 @@ jQuery(document).ready(function ($) {
             var response = data;
             var message = response.message;
 
+            $("#activation").removeAttr('disabled');
+            $(".wpsms-subscribe__overlay").css('display', 'flex');
             $("#wpsms-result").fadeIn();
             $("#wpsms-step-2").hide();
             $("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>');

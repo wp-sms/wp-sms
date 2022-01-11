@@ -12,8 +12,8 @@ class NewsletterBlock extends BlockAbstract {
 	{
 		$international_mobile                  = wp_sms_get_option( 'international_mobile' );
 		$gdpr_compliance                       = wp_sms_get_option( 'gdpr_compliance' );
-		$newsletter_form_gdpr_confirm_checkbox = wp_sms_get_option( 'newsletter_form_gdpr_confirm_checkbox' );
-		$newsletter_form_gdpr_text             = wp_sms_get_option( 'newsletter_form_gdpr_text' );
+		$subscribe_form_gdpr_confirm_checkbox = wp_sms_get_option( 'newsletter_form_gdpr_confirm_checkbox' );
+		$subscribe_form_gdpr_text             = wp_sms_get_option( 'newsletter_form_gdpr_text' );
 		$get_group_result                      = WP_SMS\Newsletter::get_groups();
 
 
