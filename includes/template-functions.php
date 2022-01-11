@@ -70,3 +70,38 @@ function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = []
 
     return $sms->SendSMS();
 }
+
+/**
+ * Short URL generator
+ *
+ * @param string $longUrl
+ * @return string
+ */
+function wp_sms_shorturl($longUrl = '')
+{
+    $short_url_status    = wp_sms_get_option('short_url_status');
+    $short_url_api_token = wp_sms_get_option('short_url_api_token');
+
+    if ($short_url_status == '1' && !empty($short_url_api_token)) {
+        $response = wp_remote_post('https://api-ssl.bitly.com/v4/shorten', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $short_url_api_token,
+                'Content-Type'  => 'application/json',
+            ],
+            'body'    => json_encode([
+                'long_url'   => $longUrl,
+                'domain'     => 'bit.ly',
+            ])
+        ]);
+
+        $response_code = wp_remote_retrieve_response_code($response);
+        if (in_array($response_code, ['200', '201'])) {
+            $result = json_decode($response['body'], true);
+            if (!empty($result['link'])) {
+                return $result['link'];
+            }
+        }
+    }
+
+    return $longUrl;
+}

@@ -1578,7 +1578,25 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Add WP-SMS endpoints to the WP Rest API', 'wp-sms')
-                )
+                ),
+                'short_url'                                 => array(
+                    'id'   => 'short_url',
+                    'name' => __('Short Url API', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'short_url_status'                          => array(
+                    'id'      => 'short_url_status',
+                    'name'    => __('Short Url API status', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Short Url API status', 'wp-sms')
+                ),
+                'short_url_api_token'                          => array(
+                    'id'      => 'short_url_api_token',
+                    'name'    => __('Short Url API Token', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Short Url API Token', 'wp-sms')
+                ),
             )),
 
             /**
