@@ -71,7 +71,7 @@ class Newsletter
     public function load_script()
     {
         // jQuery will be included automatically
-        wp_enqueue_script('wpsms-ajax-script', WP_SMS_URL . 'assets/js/script.js', array('jquery'), WP_SMS_VERSION);
+        //wp_enqueue_script('wpsms-ajax-script', 'http://dev.local/wp-content/plugins/wp-sms/assets/blocks/newsletter/frontend.js', array('jquery'), WP_SMS_VERSION, true);
 
         // Ajax params
         wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(

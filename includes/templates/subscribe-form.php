@@ -56,7 +56,7 @@
                 </div>
 			<?php } ?>
 
-            <button class="wpsms-button" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
+            <button class="wpsms-button wpsms-form-submit" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
         </div>
 		<?php $disable_style = wp_sms_get_option( 'disable_style_in_front' );
 		if ( empty( $disable_style ) and ! $disable_style ): ?>
@@ -70,7 +70,7 @@
                     <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:',
 						'wp-sms' ); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
-                <button class="wpsms-button" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
+                <button class="wpsms-button wpsms-activation-submit" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
             </div>
             <input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
             <input type="hidden" id="newsletter-form-verify" value="<?php echo wp_sms_get_option( 'newsletter_form_verify' ); ?>">
