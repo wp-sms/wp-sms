@@ -10,6 +10,8 @@
   font-size: 14px;
   line-height: 18px;
   text-decoration: none;
+  border: none !important;
+  transition: 0.2s ease-in-out;
 
   &:focus, &:active {
     text-decoration: none !important;

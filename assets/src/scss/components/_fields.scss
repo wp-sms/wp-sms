@@ -30,6 +30,7 @@
     margin-right: 5px;
     border: 1px solid #000 !important;
     position: relative;
+    cursor: pointer;
 
     &::after {
       width: 8px;
@@ -67,6 +68,8 @@
   }
 
   input:not([type="checkbox"]), select {
+    width: auto;
+    height: auto;
     font-size: 14px !important;
     background-color: #fff;
     border: 0.5px solid #000000;
@@ -81,20 +84,34 @@
     }
   }
 
+  select {
+    background-position: 95% center;
+  }
+
   input::placeholder {
     color: #5B5B5B;
   }
 }
 
-.wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio input {
-  margin-right: 0px;
+.wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio {
+
+  label {
+    cursor: pointer;
+  }
+
+  input {
+    margin-right: 0px;
+  }
 }
+
 
 input#wpsms-type-unsubscribe {
   margin-left: 10px;
 }
 
 .wpsms-subscribe__form__field--gdpr {
+  display: flex;
+  align-items: center;
 
   label {
     color: #000;
@@ -102,9 +119,11 @@ input#wpsms-type-unsubscribe {
   }
 
   input[type="checkbox"] {
+    appearance: none !important;
     border: 1px solid #000 !important;
     vertical-align: middle;
     margin-right: 5px;
+    top: 0 !important;
     width: 16px;
     height: 16px;
     box-shadow: none;
@@ -121,21 +140,26 @@ input#wpsms-type-unsubscribe {
       outline: none;
     }
 
+    &::selection {
+      background-color: #F88E40;
+      border-color: #F88E40 !important;
+      color: #fff;
+    }
+
     &:checked {
       background-color: #F88E40;
       border-color: #F88E40 !important;
       color: #fff;
 
       &::before {
-        content: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M14.83 4.89l1.34.94-5.81 8.38H9.02L5.78 9.67l1.34-1.25 2.57 2.4z' fill='%23fff'/%3E%3C/svg%3E") !important;
-        vertical-align: middle;
-        text-align: center;
-        width: 20px !important;
-        height: 20px !important;
-        display: block;
-        position: absolute;
-        left: -3.5px;
-        top: -2.5px;
+        content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 16px !important;
+        height: 16px !important;
+        margin-left: -0.5px;
+        margin-top: -0.5px;
       }
     }
   }

@@ -130,9 +130,9 @@ export function sendActivationForm() {
 export function gdprCheckbox() {
   if (jQuery('#wpsms-gdpr-confirmation').length) {
     if (jQuery('#wpsms-gdpr-confirmation').attr('checked')) {
-      jQuery("#wpsms-submit").removeAttr('disabled');
+      enableSubmitBtn();
     } else {
-      jQuery("#wpsms-submit").attr('disabled', 'disabled');
+      disableSubmitBtn();
     }
   }
 }
