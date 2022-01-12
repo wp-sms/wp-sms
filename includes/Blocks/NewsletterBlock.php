@@ -22,8 +22,8 @@ class NewsletterBlock extends BlockAbstract {
 				'attributes'                            => $attributes,
 				'international_mobile'                  => $international_mobile,
 				'gdpr_compliance'                       => $gdpr_compliance,
-				'newsletter_form_gdpr_confirm_checkbox' => $newsletter_form_gdpr_confirm_checkbox,
-				'newsletter_form_gdpr_text'             => $newsletter_form_gdpr_text,
+				'subscribe_form_gdpr_confirm_checkbox' => $subscribe_form_gdpr_confirm_checkbox,
+				'subscribe_form_gdpr_text'             => $subscribe_form_gdpr_text,
 				'get_group_result'                      => $get_group_result,
 			] );
 	}
