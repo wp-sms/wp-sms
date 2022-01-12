@@ -39,7 +39,16 @@ class Quform
 
                     foreach ($field['elements'] as $elements) {
                         foreach ($elements['elements'] as $element) {
-                            if (isset($element['label'])) {
+
+                            // Fetch the fields in the group
+                            if (isset($element['elements'])) {
+                                foreach ($element['elements'] as $groupElement) {
+                                    if (isset($groupElement['label'])) {
+                                        $option_fields[$groupElement['id']] = $groupElement['label'];
+                                    }
+                                }
+
+                            } elseif (isset($element['label'])) {
                                 $option_fields[$element['id']] = $element['label'];
                             }
                         }
