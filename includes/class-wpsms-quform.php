@@ -23,6 +23,7 @@ class Quform
         if (!class_exists('Quform_Repository')) {
             return;
         }
+
         $quform = new \Quform_Repository();
         $fields = $quform->allForms();
 
@@ -34,13 +35,17 @@ class Quform
             if ($field['id'] == $form_id) {
 
                 if ($field['elements']) {
+                    $option_fields = [];
+
                     foreach ($field['elements'] as $elements) {
                         foreach ($elements['elements'] as $element) {
-                            $option_field[$element['id']] = $element['label'];
+                            if (isset($element['label'])) {
+                                $option_fields[$element['id']] = $element['label'];
+                            }
                         }
                     }
 
-                    return $option_field;
+                    return $option_fields;
                 }
             }
         }
