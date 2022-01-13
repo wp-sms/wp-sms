@@ -1425,7 +1425,7 @@ class Settings
                     'name'    => __('Clean Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('If you would like to remove space before sending to API, just enable this option.', 'wp-sms')
+                    'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
                 )
             )),
 
