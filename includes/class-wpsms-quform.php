@@ -8,11 +8,11 @@ if (!defined('ABSPATH')) {
 
 class Quform
 {
-
     /**
      * Get each form Fields
      *
      * @param $form_id
+     * @return array|void
      */
     static function get_fields($form_id)
     {
@@ -23,6 +23,7 @@ class Quform
         if (!class_exists('Quform_Repository')) {
             return;
         }
+
         $quform = new \Quform_Repository();
         $fields = $quform->allForms();
 
@@ -32,20 +33,31 @@ class Quform
 
         foreach ($fields as $field) {
             if ($field['id'] == $form_id) {
-
-                if ($field['elements']) {
-                    foreach ($field['elements'] as $elements) {
-                        foreach ($elements['elements'] as $element) {
-                            $option_field[$element['id']] = $element['label'];
-                        }
-                    }
-
-                    return $option_field;
-                }
+                return self::getFieldsFromElements($field);
             }
         }
+    }
 
-        return;
+    static function getFieldsFromElements($array)
+    {
+        $fields = [];
+        foreach ($array['elements'] as $element) {
+
+            if (isset($element['elements'])) {
+                foreach ($element['elements'] as $item) {
+                    if (isset($item['elements'])) {
+                        $fields += self::getFieldsFromElements($item);
+                    } else {
+                        $fields[$item['id']] = $item['label'];
+                    }
+                }
+            } else {
+                $fields[$element['id']] = $element['label'];
+            }
+
+        }
+
+        return $fields;
     }
 }
 
