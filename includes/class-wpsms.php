@@ -87,7 +87,7 @@ class WP_SMS
 
 	    require_once WP_SMS_DIR . 'includes/Helper.php';
 	    require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
-	    require_once WP_SMS_DIR . 'includes/Blocks/NewsletterBlock.php';
+	    require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
 	    require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
 
 	    $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();

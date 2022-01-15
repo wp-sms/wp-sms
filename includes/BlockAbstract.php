@@ -70,6 +70,14 @@ class BlockAbstract
 		    'subscribe_text'  => __('Subscribe', 'wp-sms'),
 		    'activation_text' => __('Activation', 'wp-sms')
 	    ));
+
+	    wp_localize_script(
+		    'wpsms-ajax-script',
+		    'pluginAssetsUrl',
+		    [
+			    'imagesFolder' => Helper::getPluginAssetUrl("images/"),
+		    ]
+	    );
         /**
          * Enqueue the script and data
          */

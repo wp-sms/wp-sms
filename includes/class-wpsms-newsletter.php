@@ -74,13 +74,13 @@ class Newsletter
         //wp_enqueue_script('wpsms-ajax-script', 'http://dev.local/wp-content/plugins/wp-sms/assets/blocks/newsletter/frontend.js', array('jquery'), WP_SMS_VERSION, true);
 
         // Ajax params
-        wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(
-            'ajaxurl'         => get_rest_url(null, 'wpsms/v1/newsletter'),
-            'unknown_error'   => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-            'loading_text'    => __('Loading...', 'wp-sms'),
-            'subscribe_text'  => __('Subscribe', 'wp-sms'),
-            'activation_text' => __('Activation', 'wp-sms')
-        ));
+//        wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(
+//            'ajaxurl'         => get_rest_url(null, 'wpsms/v1/newsletter'),
+//            'unknown_error'   => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
+//            'loading_text'    => __('Loading...', 'wp-sms'),
+//            'subscribe_text'  => __('Subscribe', 'wp-sms'),
+//            'activation_text' => __('Activation', 'wp-sms')
+//        ));
     }
 
     /**
