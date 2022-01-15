@@ -322,7 +322,8 @@
     margin: 0 30px 0 0;
 }
 
-.wpsms-tab-content.pro-not-installed tbody {
+.wpsms-tab-content.pro-not-installed tbody,
+.wpsms-tab-content .wpsms-pro-feature {
     pointer-events: none;
     opacity: 0.6;
 }

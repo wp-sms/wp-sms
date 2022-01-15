@@ -70,3 +70,16 @@ function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = []
 
     return $sms->SendSMS();
 }
+
+/**
+ * Short URL generator
+ *
+ * @param string $longUrl
+ * @return string
+ */
+if (!function_exists('wp_sms_shorturl')) {
+    function wp_sms_shorturl($longUrl = '')
+    {
+        return apply_filters('wp_sms_shorturl', $longUrl);
+    }
+}

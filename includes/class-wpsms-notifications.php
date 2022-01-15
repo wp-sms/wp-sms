@@ -163,7 +163,7 @@ class Notifications
                 $template_vars                      = array(
                     '%post_title%'   => get_the_title($ID),
                     '%post_content%' => wp_trim_words($post->post_content, $words_limit),
-                    '%post_url%'     => wp_get_shortlink($ID),
+                    '%post_url%'     => wp_sms_shorturl(wp_get_shortlink($ID)),
                     '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $ID, true),
                 );
 
@@ -240,11 +240,11 @@ class Notifications
         $template_vars  = array(
             '%comment_author%'       => $comment_object->comment_author,
             '%comment_author_email%' => $comment_object->comment_author_email,
-            '%comment_author_url%'   => $comment_object->comment_author_url,
+            '%comment_author_url%'   => wp_sms_shorturl($comment_object->comment_author_url),
             '%comment_author_IP%'    => $comment_object->comment_author_IP,
             '%comment_date%'         => $comment_object->comment_date,
             '%comment_content%'      => $comment_object->comment_content,
-            '%comment_url%'          => get_comment_link($comment_object),
+            '%comment_url%'          => wp_sms_shorturl(get_comment_link($comment_object)),
         );
         $message        = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_new_comment_template']);
         $this->sms->msg = $message;
@@ -285,7 +285,7 @@ class Notifications
         $template_vars = array(
             '%post_title%'   => get_the_title($ID),
             '%post_content%' => wp_trim_words($post->post_content, 10),
-            '%post_url%'     => wp_get_shortlink($ID),
+            '%post_url%'     => wp_sms_shorturl(wp_get_shortlink($ID)),
             '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $ID, true),
         );
         $template      = isset($this->options['notif_publish_new_post_author_template']) ? $this->options['notif_publish_new_post_author_template'] : '';

@@ -117,6 +117,7 @@ class Settings
             foreach ($settings as $option) {
                 $name     = isset($option['name']) ? $option['name'] : '';
                 $optionId = $option['id'];
+                $readonly = (isset($option['readonly']) && $option['readonly'] == true) ? 'wpsms-pro-feature' : '';
 
                 add_settings_field("$this->setting_name[$optionId]", $name, array($this, "{$option['type']}_callback"), "{$this->setting_name}_{$tab}", "{$this->setting_name}_{$tab}",
                     array(
@@ -129,7 +130,7 @@ class Settings
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
-                        'class'       => "tr-{$option['type']}",
+                        'class'       => "tr-{$option['type']} {$readonly}",
                         'label_for'   => true,
                     )
                 );
@@ -1063,9 +1064,9 @@ class Settings
                 $more_fields = '';
                 $form_fields = Gravityforms::get_field($form->id);
                 if (is_array($form_fields) && count($form_fields)) {
-                    $more_fields = ', ' . __('Fields', 'wp-sms') . ' : ';
+                    $more_fields = ', ';
                     foreach ($form_fields as $key => $value) {
-                        $more_fields .= "<code>%{$value}%</code>, ";
+                        $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
                     }
                 }
                 $gf_forms['gf_notify_form_' . $form->id]          = array(
@@ -1184,6 +1185,14 @@ class Settings
 
             if ($forms) {
                 foreach ($forms as $form):
+                    $form_fields = Quform::get_fields($form['id']);
+                    if (is_array($form_fields) && count($form_fields)) {
+                        $more_fields = ', ';
+                        foreach ($form_fields as $key => $value) {
+                            $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                        }
+                        $more_fields = rtrim($more_fields, ', ');
+                    }
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
                         'name' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
@@ -1209,11 +1218,12 @@ class Settings
                         'type' => 'textarea',
                         'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                __('Form name: %s, Form url: %s, Referring url: %s', 'wp-sms'),
+                                __('Form name: %s, Form url: %s, Referring url: %s, Form content: %s', 'wp-sms'),
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
-                                '<code>%referring_url%</code>'
-                            )
+                                '<code>%referring_url%</code>',
+                                '<code>%content%</code>',
+                            ) . $more_fields
                     );
 
                     if ($form['elements']) {
@@ -1227,7 +1237,7 @@ class Settings
                             'id'      => 'qf_notify_receiver_field_form_' . $form['id'],
                             'name'    => __('A field of the form', 'wp-sms'),
                             'type'    => 'select',
-                            'options' => Quform::get_fields($form['id']),
+                            'options' => $form_fields,
                             'desc'    => __('Select the field of your form.', 'wp-sms')
                         );
                         $qf_forms['qf_notify_message_field_form_' . $form['id']]  = array(
@@ -1236,11 +1246,12 @@ class Settings
                             'type' => 'textarea',
                             'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
                                 sprintf(
-                                    __('Form name: %s, Form url: %s, Referring url: %s', 'wp-sms'),
+                                    __('Form name: %s, Form url: %s, Referring url: %s, Form content: %s', 'wp-sms'),
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
-                                    '<code>%referring_url%</code>'
-                                )
+                                    '<code>%referring_url%</code>',
+                                    '<code>%content%</code>',
+                                ) . $more_fields
                         );
                     }
                 endforeach;
@@ -1415,7 +1426,7 @@ class Settings
                     'name'    => __('Clean Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('If you would like to remove space before sending to API, just enable this option.', 'wp-sms')
+                    'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
                 )
             )),
 
@@ -1568,7 +1579,27 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Add WP-SMS endpoints to the WP Rest API', 'wp-sms')
-                )
+                ),
+                'short_url'                                 => array(
+                    'id'   => 'short_url',
+                    'name' => __('Bitly Short URL API', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'short_url_status'                          => array(
+                    'id'      => 'short_url_status',
+                    'name'    => __('Make the URLs Shorter?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option, all URLs will be shorter by Billy.com', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
+                ),
+                'short_url_api_token'                          => array(
+                    'id'      => 'short_url_api_token',
+                    'name'    => __('Access Token', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
+                ),
             )),
 
             /**

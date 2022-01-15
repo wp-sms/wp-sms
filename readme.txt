@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.5.2
+Stable tag: 5.6.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -39,7 +39,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 * Subscribing/Opt-In SMS newsletters and groups
 * Unsubscribing/Opt-Out SMS through widget or URL
 * Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
-* Sending Notification SMS to admins
+* Sending Notification SMS to administrators
  * To inform new releases of WordPress
  * When a new user is registered
  * When new comments are posted
@@ -50,6 +50,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
 * Supporting WordPress Hooks
 * Supporting WP-REST API
 * Importing/Exporting Subscribers.
+* Make short URLs by Bitly.com
 
 = PRO PACKAGE =
 In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce OTP, order notifications, etc.
@@ -138,6 +139,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
  * Integration with Easy Digital Downloads: You can add mobile number fields to the profile page, and send SMS to users or Admin when an order is submitted with EDD.
  * Integration with WP Job Manager: You can add mobile number fields to Job forms and send SMS to employers or Admin when a job is requested with WP Job Manager.
  * Integration with Ultimate Members plugin.
+ * Integration with Bitly.com for make the URLs shorter
 
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
@@ -268,8 +270,15 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.6.6 - 15.01.2022 =
+* Feature: Bitly Short URL has been added in the settings page > feature
+* Update: Compatibility the Setting page with QuForm Child Elements and groups fields and minor improvements.
+* Update: Better naming fields for GravityForms variable fields
+* Updated gateway.sa gateway
+* Updated uwaziimobile gateway
+
 = v5.6.5.2 - 10.12.2021 =
-* Improvement: Fixed a notice error has been fixed in the setting page.
+* Improvement: A notice error has been fixed in the setting page.
 * Improvement: Compatibility with the older version of PHP.
 
 = v5.6.5 - 07.12.2021 =

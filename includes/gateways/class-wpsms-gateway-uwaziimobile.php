@@ -4,12 +4,29 @@ namespace WP_SMS\Gateway;
 
 class uwaziimobile extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://107.20.199.106/";
+    private $wsdl_link = "https://api.uwaziimobile.com/api/v2";
     public $tariff = "http://uwaziimobile.com/";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
     public $isflash = false;
+    public $gatewayFields = [
+        'username' => [
+            'id'   => 'gateway_username',
+            'name' => 'API Key',
+            'desc' => 'Enter your API Key',
+        ],
+        'password' => [
+            'id'   => 'gateway_password',
+            'name' => 'Client ID',
+            'desc' => 'Enter your Client ID',
+        ],
+        'from'     => [
+            'id'   => 'gateway_sender_id',
+            'name' => 'Sender number',
+            'desc' => 'Sender number or sender ID',
+        ],
+    ];
 
     public function __construct()
     {
@@ -58,35 +75,25 @@ class uwaziimobile extends \WP_SMS\Gateway
             return $credit;
         }
 
-        // Reformat number
-        $to = array();
-        foreach ($this->to as $number) {
-            if (substr($number, 0, 2) === "07") {
-                $number = substr($number, 2);
-                $number = '2547' . $number;
-            }
+        $country_code  = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
+        $mobileNumbers = array_map(function ($item) use ($country_code) {
+            return $this->clean_number($item, $country_code);
+        }, $this->to);
 
-            $to[] = $number;
-        }
-
-        $args = array(
+        $response = wp_remote_post(sprintf('%s/SendSMS', $this->wsdl_link), [
+            'timeout' => 30,
             'headers' => array(
-                'Content-Type'  => 'application/json',
-                'accept'        => 'application/json',
-                'authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
             ),
-            'body'    => json_encode(array(
-                'messages' => array(
-                    array(
-                        'from' => $this->from,
-                        'to'   => $to,
-                        'text' => $this->msg,
-                    )
-                )
-            ))
-        );
-
-        $response = wp_remote_post($this->wsdl_link . "restapi/sms/1/text/multi", $args);
+            'body'    => json_encode([
+                'SenderId'      => $this->from,
+                'Message'       => $this->msg,
+                'MobileNumbers' => $mobileNumbers,
+                'ApiKey'        => $this->username,
+                'ClientId'      => $this->password
+            ])
+        ]);
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -100,10 +107,10 @@ class uwaziimobile extends \WP_SMS\Gateway
         $response_code = wp_remote_retrieve_response_code($response);
 
         // Decode response
-        $response = json_decode($response['body']);
+        $response = json_decode($response['body'], true);
 
         // Check response code
-        if ($response_code == '200') {
+        if ($response['ErrorCode'] == '0') {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $response);
 
@@ -119,9 +126,9 @@ class uwaziimobile extends \WP_SMS\Gateway
             return $response;
         } else {
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->requestError->serviceException->text, 'error');
+            $this->log($this->from, $this->msg, $this->to, $response['ErrorDescription'], 'error');
 
-            return new \WP_Error('account-credit', $response->requestError->serviceException->text);
+            return new \WP_Error('account-credit', $response['ErrorDescription']);
         }
     }
 
@@ -132,14 +139,17 @@ class uwaziimobile extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms-pro'));
         }
 
-        $args     = array(
+        $response = wp_remote_get(sprintf('%s/Balance', $this->wsdl_link), [
             'timeout' => 10,
-            'headers' => array(
-                'accept'        => 'application/json',
-                'authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
-            )
-        );
-        $response = wp_remote_get($this->wsdl_link . "restapi/account/1/balance", $args);
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+            ],
+            'body'    => [
+                'ApiKey'   => $this->username,
+                'ClientId' => $this->password,
+            ]
+        ]);
 
         // Check gateway credit
         if (is_wp_error($response)) {
@@ -150,15 +160,48 @@ class uwaziimobile extends \WP_SMS\Gateway
         $response_code = wp_remote_retrieve_response_code($response);
 
         // Decode response
-        $response = json_decode($response['body']);
+        $response = json_decode($response['body'], true);
 
         // Check response code
-        if ($response_code == '200') {
-            return $response->balance;
+        if ($response['ErrorCode'] == '0') {
+            return $response['Data']['Credits'];
         } else {
-            return new \WP_Error('account-credit', $response->requestError->serviceException->text);
+            return new \WP_Error('account-credit', $response['ErrorDescription']);
         }
 
         return true;
+    }
+
+    private function clean_number($number, $country_code)
+    {
+        //Clean Country Code from + or 00
+        $country_code = str_replace('+', '', $country_code);
+
+        if (substr($country_code, 0, 2) == "00") {
+            $country_code = substr($country_code, 2, strlen($country_code));
+        }
+
+        //Remove +
+        $number = str_replace('+', '', $number);
+
+        if (substr($number, 0, strlen($country_code) * 2) == $country_code . $country_code) {
+            $number = substr($number, strlen($country_code) * 2);
+        } else {
+            $number = substr($number, strlen($country_code));
+        }
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 2) == "00") {
+            $number = substr($number, 2, strlen($number));
+        }
+
+        //Remove 00 in the begining
+        if (substr($number, 0, 1) == "0") {
+            $number = substr($number, 1, strlen($number));
+        }
+
+        $number = $country_code . $number;
+
+        return $number;
     }
 }

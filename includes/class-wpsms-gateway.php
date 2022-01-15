@@ -82,7 +82,8 @@ class Gateway
             'smsmessenger'   => 'smsmessenger.co.za',
             'vfirst'         => 'vfirst.com',
             'zipwhip'        => 'zipwhip.com',
-            'teletopiasms'   => 'teletopiasms.no'
+            'teletopiasms'   => 'teletopiasms.no',
+            'sinch'          => 'sinch.com'
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
@@ -91,11 +92,13 @@ class Gateway
             'gtxmessaging' => 'gtx-messaging.com',
         ),
         'africa'        => array(
-            'jusibe' => 'jusibe.com',
+            'jusibe'      => 'jusibe.com',
+            'montymobile' => 'montymobile.com',
         ),
         'romania'       => array(
-            'sendsms' => 'sendsms.ro',
-            'smschef' => 'smschef.com',
+            'sendsms'  => 'sendsms.ro',
+            'smschef'  => 'smschef.com',
+            'nobelsms' => 'nobelsms.com',
         ),
         'arabic'        => array(
             'kwtsms'      => 'kwtsms.com',
@@ -123,7 +126,17 @@ class Gateway
         ),
         'poland'        => array(
             'smseagle' => 'smseagle.eu'
-        )
+        ),
+        'australia'     => array(
+            'smsbroadcast' => 'smsbroadcast.com.au',
+        ),
+        'russia'        => array(
+            'sigmasms' => 'sigmasms.ru',
+            'turbosms' => 'turbosms.ua',
+        ),
+        'mexico'        => array(
+            'smsmasivos' => 'smsmasivos.com.mx',
+        ),
     );
 
     public $gatewayFields = [
