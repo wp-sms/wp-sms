@@ -117,6 +117,7 @@ class Settings
             foreach ($settings as $option) {
                 $name     = isset($option['name']) ? $option['name'] : '';
                 $optionId = $option['id'];
+                $readonly = (isset($option['readonly']) && $option['readonly'] == true) ? 'wpsms-pro-feature' : '';
 
                 add_settings_field("$this->setting_name[$optionId]", $name, array($this, "{$option['type']}_callback"), "{$this->setting_name}_{$tab}", "{$this->setting_name}_{$tab}",
                     array(
@@ -129,7 +130,7 @@ class Settings
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
-                        'class'       => "tr-{$option['type']}",
+                        'class'       => "tr-{$option['type']} {$readonly}",
                         'label_for'   => true,
                     )
                 );
@@ -1581,21 +1582,23 @@ class Settings
                 ),
                 'short_url'                                 => array(
                     'id'   => 'short_url',
-                    'name' => __('Short Url API', 'wp-sms'),
-                    'type' => 'header'
+                    'name' => __('Bitly Short URL API', 'wp-sms'),
+                    'type' => 'header',
                 ),
                 'short_url_status'                          => array(
                     'id'      => 'short_url_status',
-                    'name'    => __('Short Url API status', 'wp-sms'),
+                    'name'    => __('Make the URLs Shorter?', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Short Url API status', 'wp-sms')
+                    'desc'    => __('By enabling this option, all URLs will be shorter by Billy.com', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
                 ),
                 'short_url_api_token'                          => array(
                     'id'      => 'short_url_api_token',
-                    'name'    => __('Short Url API Token', 'wp-sms'),
+                    'name'    => __('Access Token', 'wp-sms'),
                     'type'    => 'text',
-                    'desc'    => __('Short Url API Token', 'wp-sms')
+                    'desc'    => __('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
                 ),
             )),
 
