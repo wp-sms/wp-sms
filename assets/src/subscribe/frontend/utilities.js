@@ -120,7 +120,7 @@ export function sendActivationForm() {
     var message = response.message;
 
     enableActivationBtn();
-    showProcessing();
+    hideProcessing();
     ShowMessages();
     hideSecondStep();
     jQuery("#wpsms-result").html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>');

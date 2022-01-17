@@ -9,7 +9,6 @@
     <h2 class="wpsms-subscribe__title"><?php echo $attributes['title'] ? $attributes['title'] : __( 'Subscribe SMS',
 			'wp-sms' ); ?></h2>
     <div id="wpsms-subscribe" class="wpsms-subscribe__form">
-        <div id="wpsms-result" class="wpsms-subscribe__messages"></div>
         <div id="wpsms-step-1">
 			<?php if ( isset( $attributes['description'] ) ) { ?>
                 <p><?php echo isset( $attributes['description'] ) ? $attributes['description'] : ''; ?></p>
@@ -55,9 +54,9 @@
                     </label>
                 </div>
 			<?php } ?>
-
             <button class="wpsms-button wpsms-form-submit" id="wpsms-submit"><?php _e( 'Subscribe', 'wp-sms' ); ?></button>
         </div>
+        <div id="wpsms-result" class="wpsms-subscribe__messages"></div>
 		<?php $disable_style = wp_sms_get_option( 'disable_style_in_front' );
 		if ( empty( $disable_style ) and ! $disable_style ): ?>
         <div id="wpsms-step-2">

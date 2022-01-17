@@ -16,11 +16,14 @@
 }
 
 .wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio {
+
   label {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
   }
 
   input[type="radio"] {
+    margin-left: 0;
     appearance: none;
     width: 17px;
     height: 17px;
@@ -163,5 +166,32 @@ input#wpsms-type-unsubscribe {
       }
     }
   }
+}
 
+.wpsms-subscribe__form__field .intl-tel-input {
+  display: flex;
+
+  .wpsms-subscribe__field__input {
+    border-left: 0;
+    border-radius: 0 2px 2px 0;
+
+    &:focus {
+      border-left: 0 !important;
+    }
+  }
+
+  .flag-container {
+    position: relative;
+    font-size: 14px;
+    border: 1px solid #000;
+    border-right: 0;
+    transition: border .3s;
+    border-radius: 2px 0 0 2px;
+  }
+
+  &:focus-within {
+    .flag-container, .wpsms-subscribe__field__input {
+      border-color: #F88E40;
+    }
+  }
 }
