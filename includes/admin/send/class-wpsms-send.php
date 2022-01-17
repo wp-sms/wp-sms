@@ -97,7 +97,7 @@ class SMS_Send
                 }
 
                 $this->sms->from = sanitize_text_field($_POST['wp_get_sender']);
-                $this->sms->msg  = sanitize_text_field($_POST['wp_get_message']);
+                $this->sms->msg  = sanitize_textarea_field($_POST['wp_get_message']);
 
                 /**
                  * Flash
