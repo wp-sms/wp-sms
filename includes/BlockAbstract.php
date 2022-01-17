@@ -61,18 +61,20 @@ class BlockAbstract
     public function renderCallback($attributes, $content, WP_Block $block)
     {
 
-	    wp_enqueue_script("wpsms-ajax-script", Helper::getPluginAssetUrl("blocks/{$this->blockName}/frontend.js"), ['jquery'], $this->blockVersion, true);
+	    wp_enqueue_script("wp-sms-blocks-{$this->blockName}-frontend", Helper::getPluginAssetUrl("blocks/{$this->blockName}/frontend.js"), ['jquery'], $this->blockVersion, true);
 
-	    wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(
-		    'ajaxurl'         => get_rest_url(null, 'wpsms/v1/newsletter'),
-		    'unknown_error'   => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-		    'loading_text'    => __('Loading...', 'wp-sms'),
-		    'subscribe_text'  => __('Subscribe', 'wp-sms'),
-		    'activation_text' => __('Activation', 'wp-sms')
-	    ));
+	    if ($this->blockName == "subscribe") {
+		    wp_localize_script( "wp-sms-blocks-{$this->blockName}-frontend", 'wpsms_ajax_object', array(
+			    'ajaxurl'         => get_rest_url( null, 'wpsms/v1/newsletter' ),
+			    'unknown_error'   => __( 'Unknown Error! Check your connection and try again.', 'wp-sms' ),
+			    'loading_text'    => __( 'Loading...', 'wp-sms' ),
+			    'subscribe_text'  => __( 'Subscribe', 'wp-sms' ),
+			    'activation_text' => __( 'Activation', 'wp-sms' ),
+		    ) );
+	    }
 
 	    wp_localize_script(
-		    'wpsms-ajax-script',
+		    "wp-sms-blocks-{$this->blockName}-frontend",
 		    'pluginAssetsUrl',
 		    [
 			    'imagesFolder' => Helper::getPluginAssetUrl("images/"),
