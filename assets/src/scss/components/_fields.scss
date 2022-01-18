@@ -63,6 +63,8 @@
 }
 
 .wpsms-subscribe__form__field {
+  min-width: 200px;
+  max-width: 300px;
 
   label {
     color: #5B5B5B;
@@ -71,7 +73,7 @@
   }
 
   input:not([type="checkbox"]), select {
-    width: auto;
+    width: 100%;
     height: auto;
     font-size: 14px !important;
     background-color: #fff;
