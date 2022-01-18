@@ -25,8 +25,8 @@
   input[type="radio"] {
     margin-left: 0;
     appearance: none;
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     vertical-align: middle;
     padding: 4px !important;
@@ -163,6 +163,9 @@ input#wpsms-type-unsubscribe {
         height: 16px !important;
         margin-left: -0.5px;
         margin-top: -0.5px;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
     }
   }
@@ -187,6 +190,7 @@ input#wpsms-type-unsubscribe {
     border-right: 0;
     transition: border .3s;
     border-radius: 2px 0 0 2px;
+    padding: 0;
   }
 
   &:focus-within {
