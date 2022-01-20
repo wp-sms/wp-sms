@@ -616,10 +616,10 @@ class Settings
                     'name'    => __('SMS receiver', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        'subscriber' => __('Subscribe users', 'wp-sms'),
-                        'users'      => __('Customers (Users)', 'wp-sms')
+                        'subscriber' => __('Subscriber', 'wp-sms'),
+                        'users'      => __('Users', 'wp-sms')
                     ),
-                    'desc'    => __('Please select the receiver of sms', 'wp-sms')
+                    'desc'    => __('Please select the receiver of SMS', 'wp-sms')
                 ),
                 'wc_notify_product_cat'        => array(
                     'id'      => 'wc_notify_product_cat',
@@ -627,6 +627,13 @@ class Settings
                     'type'    => 'select',
                     'options' => $subscribe_groups,
                     'desc'    => __('If you select the Subscribe users, can select the group for send sms', 'wp-sms')
+                ),
+                'wc_notify_product_roles'   => array(
+                    'id'      => 'wc_notify_product_roles',
+                    'name'    => __('Specific roles', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => $this->getRoles(),
+                    'desc'    => __('Select the role of the user you want to receive the SMS.', 'wp-sms')
                 ),
                 'wc_notify_product_message'    => array(
                     'id'   => 'wc_notify_product_message',
@@ -2506,6 +2513,15 @@ class Settings
 
         // return
         return $post_types;
+    }
+
+    public function getRoles() {
+        $roles = [];
+        foreach (get_editable_roles() as $key => $role) {
+            $roles[] = [$key => $role['name']];
+        }
+
+        return $roles;
     }
 
     /**
