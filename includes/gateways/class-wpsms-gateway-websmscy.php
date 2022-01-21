@@ -71,8 +71,8 @@ class websmscy extends \WP_SMS\Gateway
         try {
             $result = $ws->submitSM($this->from, $this->to, $this->msg, "GSM");
 
-            if (isset($result['status']) && $result['status'] == 'error') {
-                throw new \Exception($result['error']);
+            if (isset($result->status) && $result->status == 'error') {
+                throw new \Exception($result->error);
             }
 
             // Log the result
