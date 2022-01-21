@@ -616,10 +616,10 @@ class Settings
                     'name'    => __('SMS receiver', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        'subscriber' => __('Subscribe users', 'wp-sms'),
-                        'users'      => __('Customers (Users)', 'wp-sms')
+                        'subscriber' => __('Subscriber', 'wp-sms'),
+                        'users'      => __('Users', 'wp-sms')
                     ),
-                    'desc'    => __('Please select the receiver of sms', 'wp-sms')
+                    'desc'    => __('Please select the receiver of SMS', 'wp-sms')
                 ),
                 'wc_notify_product_cat'        => array(
                     'id'      => 'wc_notify_product_cat',
@@ -627,6 +627,13 @@ class Settings
                     'type'    => 'select',
                     'options' => $subscribe_groups,
                     'desc'    => __('If you select the Subscribe users, can select the group for send sms', 'wp-sms')
+                ),
+                'wc_notify_product_roles'   => array(
+                    'id'      => 'wc_notify_product_roles',
+                    'name'    => __('Specific roles', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => $this->getRoles(),
+                    'desc'    => __('Select the role of the user you want to receive the SMS.', 'wp-sms')
                 ),
                 'wc_notify_product_message'    => array(
                     'id'   => 'wc_notify_product_message',
@@ -1059,16 +1066,19 @@ class Settings
         // Get Gravityforms
         if (class_exists('RGFormsModel')) {
             $forms = \RGFormsModel::get_forms(null, 'title');
+            $more_fields = '';
 
             foreach ($forms as $form):
-                $more_fields = '';
                 $form_fields = Gravityforms::get_field($form->id);
                 if (is_array($form_fields) && count($form_fields)) {
                     $more_fields = ', ';
                     foreach ($form_fields as $key => $value) {
                         $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
                     }
+
+                    $more_fields = rtrim($more_fields, ', ');
                 }
+
                 $gf_forms['gf_notify_form_' . $form->id]          = array(
                     'id'   => 'gf_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->title),
@@ -1186,13 +1196,14 @@ class Settings
             if ($forms) {
                 foreach ($forms as $form):
                     $form_fields = Quform::get_fields($form['id']);
+                    $more_qf_fields = ', ';
                     if (is_array($form_fields) && count($form_fields)) {
-                        $more_fields = ', ';
                         foreach ($form_fields as $key => $value) {
-                            $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                            $more_qf_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
                         }
-                        $more_fields = rtrim($more_fields, ', ');
+                        $more_qf_fields = rtrim($more_qf_fields, ', ');
                     }
+
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
                         'name' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
@@ -1223,7 +1234,7 @@ class Settings
                                 '<code>%form_url%</code>',
                                 '<code>%referring_url%</code>',
                                 '<code>%content%</code>',
-                            ) . $more_fields
+                            ) . $more_qf_fields
                     );
 
                     if ($form['elements']) {
@@ -1251,7 +1262,7 @@ class Settings
                                     '<code>%form_url%</code>',
                                     '<code>%referring_url%</code>',
                                     '<code>%content%</code>',
-                                ) . $more_fields
+                                ) . $more_qf_fields
                         );
                     }
                 endforeach;
@@ -2502,6 +2513,15 @@ class Settings
 
         // return
         return $post_types;
+    }
+
+    public function getRoles() {
+        $roles = [];
+        foreach (get_editable_roles() as $key => $role) {
+            $roles[] = [$key => $role['name']];
+        }
+
+        return $roles;
     }
 
     /**

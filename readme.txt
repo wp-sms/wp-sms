@@ -5,16 +5,16 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 5.6.6
+Stable tag: 5.6.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 A powerful SMS Messaging/Texting plugin for WordPress
 
 == Description ==
-By WP-SMS you can add the ability of SMS sending to your WordPress product.
+This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, Click send and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
-So you can send SMS/MMS to your newsletter subscribers or your users and get their attentions to your site and products.
+Additionally, you can send SMS/MMS messages to your newsletter subscribers or users and draw their attention to your site, products, and announcements.
 
 Using WP-SMS you can enjoy many features, You can
 
@@ -270,6 +270,11 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.6.7 - 21.01.2022 =
+* Bugfix: The line break issue has been fixed
+* Bugfix: The error in webSMS gateway has been fixed
+* Improvement: Compatibility the setting page with the older version of PHP.
+
 = v5.6.6 - 15.01.2022 =
 * Feature: Bitly Short URL has been added in the settings page > feature
 * Update: Compatibility the Setting page with QuForm Child Elements and groups fields and minor improvements.
