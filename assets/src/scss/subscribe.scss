@@ -1,0 +1,26 @@
+.wpsms-subscribe {
+  font-family: 'Barlow', Tahoma;
+  position: relative;
+}
+
+
+.wpsms-subscribe__title {
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 34px;
+  margin: 24px 0 12px !important;
+}
+
+.wpsms-subscribe p {
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 28px;
+  color: #5B5B5B;
+}
+
+@import "settings/fonts";
+@import "components/fields";
+@import "components/steps";
+@import "components/messages";
+@import "components/button";
+@import "components/overlay";
