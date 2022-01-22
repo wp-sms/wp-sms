@@ -26,7 +26,7 @@ function wp_subscribes()
  */
 function wp_sms_subscribes()
 {
-    Newsletter::loadNewsLetter();
+    _deprecated_function(__FUNCTION__, '5.7');
 }
 
 /**

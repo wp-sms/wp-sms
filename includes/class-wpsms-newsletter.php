@@ -525,20 +525,6 @@ class Newsletter
         return null;
     }
 
-    /**
-     * Load NewsLetter form for Shortcode or Widget usage
-     *
-     * @param null $widget_id
-     * @param null $instance
-     */
-    public static function loadNewsLetter($widget_id = null, $instance = null)
-    {
-        global $wpdb;
-        $get_group_result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`");
-
-        include_once WP_SMS_DIR . "includes/templates/subscribe-form.php";
-    }
-
 	/**
 	 * Get Newsletter Groups
 	 *

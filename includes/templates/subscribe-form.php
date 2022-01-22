@@ -72,7 +72,6 @@
                 </div>
                 <button class="wpsms-button wpsms-activation-submit" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
             </div>
-            <input type="hidden" id="wpsms-widget-id" value="<?php echo $widget_id; ?>">
             <input type="hidden" id="newsletter-form-verify" value="<?php echo wp_sms_get_option( 'newsletter_form_verify' ); ?>">
         </div>
     </div>
