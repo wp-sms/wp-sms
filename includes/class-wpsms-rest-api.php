@@ -88,7 +88,7 @@ class RestApi
             }
 
             if (!Newsletter::getGroup($group)) {
-                return new \WP_Error('subscribe', __('Group id not valid!', 'wp-sms'));
+                return new \WP_Error('subscribe', __('Group ID not valid!', 'wp-sms'));
             }
         }
 

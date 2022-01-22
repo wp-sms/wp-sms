@@ -28,7 +28,7 @@
                 <div class="wpsms-subscribe__form__field">
                     <label><?php _e( 'Group', 'wp-sms' ); ?>:</label>
                     <select id="wpsms-groups" class="wpsms-subscribe__field__input">
-                        <option disabled="disabled"><?php _e( 'Please select the group', 'wp-sms' ); ?></option>
+                        <option value="0"><?php _e( 'Please select the group', 'wp-sms' ); ?></option>
 						<?php foreach ( $get_group_result as $items ): ?>
                             <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option>
 						<?php endforeach; ?>
@@ -67,8 +67,7 @@
 
                 <div class="wpsms-subscribe__form__field">
                     <label><?php _e( 'Activation code:', 'wp-sms' ); ?></label>
-                    <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:',
-						'wp-sms' ); ?>" class="wpsms-subscribe__field__input"/>
+                    <input type="text" id="wpsms-ativation-code" placeholder="<?php _e( 'Activation code:', 'wp-sms' ); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
                 <button class="wpsms-button wpsms-activation-submit" id="activation"><?php _e( 'Activation', 'wp-sms' ); ?></button>
             </div>
