@@ -175,12 +175,13 @@ class Gateway
     protected $tb_prefix;
     public $options;
     public $supportMedia = false;
+    public $supportIncoming = false;
     public $media = [];
 
     /**
      * @var
      */
-    static $get_response;
+    public static $get_response;
 
     public function __construct()
     {
@@ -230,7 +231,7 @@ class Gateway
 
         if (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php')) {
             include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php';
-        } else if (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
+        } elseif (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
             include_once(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php');
         } else {
             return new $class_name();
@@ -744,6 +745,21 @@ class Gateway
 
         // Get gateway from
         return $sms->from;
+    }
+
+    /**
+     * @return string
+     */
+    public static function incoming_message_status()
+    {
+        global $sms;
+
+        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-settings&tab=addon_two_way') : 'https://wp-sms-pro.com/product/wp-sms-two-way';
+
+        if ($sms->supportIncoming === true) {
+            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span><a href=" '.$link.' "> ' . __('Supported', 'wp-sms') . '</a></div>';
+        }
+        return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span><a href="'.$link.'">' . __('Does not support!', 'wp-sms') . '</a></div>';
     }
 
     /**
