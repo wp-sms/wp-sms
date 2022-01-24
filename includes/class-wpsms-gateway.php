@@ -754,7 +754,7 @@ class Gateway
     {
         global $sms;
 
-        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-settings&tab=addon_two_way') : 'https://wp-sms-pro.com/product/wp-sms-two-way';
+        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-settings&tab=addon_two_way') : WP_SMS_SITE.'/product/wp-sms-two-way';
 
         if ($sms->supportIncoming === true) {
             return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span><a href=" '.$link.' "> ' . __('Supported', 'wp-sms') . '</a></div>';
