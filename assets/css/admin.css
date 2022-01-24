@@ -59,8 +59,16 @@
     color: #3b9d00;
 }
 
+.wpsms-has-credit>a {
+    color: inherit;
+}
+
 .wpsms-no-credit {
     color: #c20000;
+}
+
+.wpsms-no-credit>a {
+    color: inherit;
 }
 
 .wpsms-premium-tab {
@@ -1269,7 +1277,7 @@ Select2
 /*
  * Add-Ons Admin page
  */
-.wpsms-add-ons .widefat > * {
+.wpsms-add-ons .widefat>* {
     float: left;
 }
 
@@ -1277,7 +1285,8 @@ Select2
     position: relative;
 }
 
-.wpsms-add-ons .widefat .plugin-card .desc, .widefat .plugin-card .name {
+.wpsms-add-ons .widefat .plugin-card .desc,
+.widefat .plugin-card .name {
     margin-right: 0;
 }
 

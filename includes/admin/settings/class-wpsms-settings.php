@@ -1416,6 +1416,12 @@ class Settings
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
+                'incoming_message'          => array(
+                    'id'      => 'incoming_message',
+                    'name'    => __('Support Incoming Message?'),
+                    'type'    => 'html',
+                    'options' => Gateway::incoming_message_status(),
+                ),
                 'bulk_send'                 => array(
                     'id'      => 'bulk_send',
                     'name'    => __('Send bulk SMS?', 'wp-sms'),
