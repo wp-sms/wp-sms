@@ -269,12 +269,12 @@ class Settings
         $pro_wordpress_settings = array(
             'login_title'            => array(
                 'id'   => 'login_title',
-                'name' => __('Login', 'wp-sms'),
+                'name' => __('Login With SMS', 'wp-sms'),
                 'type' => 'header'
             ),
             'login_sms'              => array(
                 'id'      => 'login_sms',
-                'name'    => __('Login with mobile', 'wp-sms'),
+                'name'    => __('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
                 'desc'    => __('This option adds login with SMS in the login form.', 'wp-sms'),
@@ -293,9 +293,14 @@ class Settings
                         '<code>%site_url%</code>'
                     )
             ),
+            'otp_title'            => array(
+                'id'   => 'otp_title',
+                'name' => __('OTP', 'wp-sms'),
+                'type' => 'header'
+            ),
             'mobile_verify'          => array(
                 'id'      => 'mobile_verify',
-                'name'    => __('Login with OTP status', 'wp-sms'),
+                'name'    => __('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
                 'desc'    => __('Verify mobile number in the login form. This feature is only compatible with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms'),
