@@ -1,0 +1,14 @@
+.wpsms-subscribe__overlay {
+  display: none;
+  background-color: rgba(255,255,255,0.6);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 3;
+}
+
+.wpsms-subscribe__overlay__spinner {
+  width: 10%;
+}

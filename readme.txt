@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.6.7
+Stable tag: 5.6.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -46,7 +46,7 @@ https://www.youtube.com/watch?v=d1QdWL9eDmo
  * When users are logged into the WordPress
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
-* Supporting Widget for showing SMS newsletters to subscribers
+* Supporting Widget/Gutenberg for showing SMS Newsletter Form
 * Supporting WordPress Hooks
 * Supporting WP-REST API
 * Importing/Exporting Subscribers.
@@ -166,9 +166,8 @@ Use the below code to send MMS through PHP:
 = How to show the SMS subscribe form? =
 There are three ways to show the subscriber form in the theme
 
-1. By loading the widget in theme
-2. By using the shortcode `[wp-sms-subscriber-form]` in posts/pages
-3. By loading the Php function in your theme `wp_sms_subscribes()`
+1. By adding the SMS Newsletter through the Widget into the theme
+2. By adding the SMS Newsletter through the Gutenberg editor
 
 = How to use the Actions? =
 Run the following action when sending SMS with this plugin:
@@ -270,6 +269,14 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.6.8 - 02.02.2022 =
+* Update: Tested up to v5.9
+* Update: The SMS Newsletter widget is improvement and redesigned and also is Block based right now! you can also load the SMS Newsletter in Gutenberg editor!
+* Bugfix: An issue with the old version of PHP with the setting page.
+* Improvement: Some typo in the response of requests has been fixed.
+* Deprecate: Function `wp_sms_subscribes()`. load the SMS newsletter form through Widget or Gutenberg instead.
+* Remove: Shortcode `[wp-sms-subscriber-form]` is removed.
+
 = v5.6.7 - 21.01.2022 =
 * Bugfix: The line break issue has been fixed
 * Bugfix: The error in webSMS gateway has been fixed

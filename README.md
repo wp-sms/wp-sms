@@ -55,8 +55,7 @@ Translations are done by people just like you, help make WP SMS available to mor
 # Installation
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display Subscribe goto Themes -> Widgets, and adding `SMS newsletter form` into your sidebar Or using this functions: `<?php wp_sms_subscribes(); ?>` into theme.
-or using this Shortcode `[wp-sms-subscriber-form]` in Posts pages or Widget.
+3. To display Subscribe goto Themes -> Widgets, and adding `SMS newsletter form` into your sidebar
 4. Using this functions for send manual SMS:
 
 * First:`$to = array('Mobile Number');`

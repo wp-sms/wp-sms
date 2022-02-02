@@ -79,7 +79,7 @@ class RestApi
         global $sms;
 
         if (empty($name) or empty($mobile)) {
-            return new \WP_Error('subscribe', __('The name and mobile number must be valued!', 'wp-sms'));
+            return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
         if (Option::getOption('newsletter_form_groups')) {
@@ -88,7 +88,7 @@ class RestApi
             }
 
             if (!Newsletter::getGroup($group)) {
-                return new \WP_Error('subscribe', __('Group id not valid!', 'wp-sms'));
+                return new \WP_Error('subscribe', __('Group ID not valid!', 'wp-sms'));
             }
         }
 
@@ -186,7 +186,7 @@ class RestApi
     public static function unSubscribe($name, $mobile, $group = false)
     {
         if (empty($name) or empty($mobile)) {
-            return new \WP_Error('unsubscribe', __('The name and mobile number must be valued!', 'wp-sms'));
+            return new \WP_Error('unsubscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
         if ($group) {

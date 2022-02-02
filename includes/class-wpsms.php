@@ -81,9 +81,16 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/class-wpsms-gravityforms.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-quform.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-newsletter.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
+
+	    require_once WP_SMS_DIR . 'includes/Helper.php';
+	    require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
+	    require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
+	    require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
+
+	    $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
+        $blockManager->init();
 
         if (is_admin()) {
             // Admin classes.

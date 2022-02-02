@@ -71,16 +71,16 @@ class Newsletter
     public function load_script()
     {
         // jQuery will be included automatically
-        wp_enqueue_script('wpsms-ajax-script', WP_SMS_URL . 'assets/js/script.js', array('jquery'), WP_SMS_VERSION);
+        //wp_enqueue_script('wpsms-ajax-script', 'http://dev.local/wp-content/plugins/wp-sms/assets/blocks/newsletter/frontend.js', array('jquery'), WP_SMS_VERSION, true);
 
         // Ajax params
-        wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(
-            'ajaxurl'         => get_rest_url(null, 'wpsms/v1/newsletter'),
-            'unknown_error'   => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-            'loading_text'    => __('Loading...', 'wp-sms'),
-            'subscribe_text'  => __('Subscribe', 'wp-sms'),
-            'activation_text' => __('Activation', 'wp-sms')
-        ));
+//        wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(
+//            'ajaxurl'         => get_rest_url(null, 'wpsms/v1/newsletter'),
+//            'unknown_error'   => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
+//            'loading_text'    => __('Loading...', 'wp-sms'),
+//            'subscribe_text'  => __('Subscribe', 'wp-sms'),
+//            'activation_text' => __('Activation', 'wp-sms')
+//        ));
     }
 
     /**
@@ -525,20 +525,18 @@ class Newsletter
         return null;
     }
 
-    /**
-     * Load NewsLetter form for Shortcode or Widget usage
-     *
-     * @param null $widget_id
-     * @param null $instance
-     */
-    public static function loadNewsLetter($widget_id = null, $instance = null)
-    {
-        global $wpdb;
-        $get_group_result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`");
+	/**
+	 * Get Newsletter Groups
+	 *
+	 * @param Not param
+	 */
 
-        include_once WP_SMS_DIR . "includes/templates/subscribe-form.php";
-    }
-
+	public static function get_groups()
+	{
+		$self   = new Newsletter();
+		$groups = $self->db->get_results( "SELECT * FROM `{$self->db->prefix}sms_subscribes_group`" );
+		return $groups;
+	}
 }
 
 new Newsletter();
