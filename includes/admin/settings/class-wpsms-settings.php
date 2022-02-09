@@ -1238,7 +1238,7 @@ class Settings
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
                                 '<code>%referring_url%</code>',
-                                '<code>%content%</code>',
+                                '<code>%content%</code>'
                             ) . $more_qf_fields
                     );
 
@@ -1266,7 +1266,7 @@ class Settings
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
                                     '<code>%referring_url%</code>',
-                                    '<code>%content%</code>',
+                                    '<code>%content%</code>'
                                 ) . $more_qf_fields
                         );
                     }
