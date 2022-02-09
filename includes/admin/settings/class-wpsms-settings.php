@@ -1238,7 +1238,7 @@ class Settings
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
                                 '<code>%referring_url%</code>',
-                                '<code>%content%</code>',
+                                '<code>%content%</code>'
                             ) . $more_qf_fields
                     );
 
@@ -1266,7 +1266,7 @@ class Settings
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
                                     '<code>%referring_url%</code>',
-                                    '<code>%content%</code>',
+                                    '<code>%content%</code>'
                                 ) . $more_qf_fields
                         );
                     }
@@ -1785,6 +1785,13 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send an SMS to you When user is login.', 'wp-sms')
+                ),
+                'notif_user_login_roles'   => array(
+                    'id'      => 'notif_user_login_roles',
+                    'name'    => __('Specific roles', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => $this->getRoles(),
+                    'desc'    => __('Select the roles of the user that you want to get notification while login.', 'wp-sms')
                 ),
                 'notif_user_login_template'               => array(
                     'id'   => 'notif_user_login_template',

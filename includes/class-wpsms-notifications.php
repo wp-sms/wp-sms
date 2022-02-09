@@ -255,17 +255,24 @@ class Notifications
      * Send SMS when user logged in
      *
      * @param $username_login
-     * @param $username
+     * @param \WP_User $username
      */
     public function login_user($username_login, $username)
     {
         if (Option::getOption('admin_mobile_number')) {
             $this->sms->to = array($this->options['admin_mobile_number']);
 
-            $template_vars  = array(
+            if (isset($this->options['notif_user_login_roles']) && $this->options['notif_user_login_roles']) {
+                if (in_array($username->roles[0], $this->options['notif_user_login_roles']) == false) {
+                    return;
+                }
+            }
+
+            $template_vars = array(
                 '%username_login%' => $username->user_login,
                 '%display_name%'   => $username->display_name
             );
+            
             $message        = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_user_login_template']);
             $this->sms->msg = $message;
             $this->sms->SendSMS();
