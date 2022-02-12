@@ -171,6 +171,9 @@ input#wpsms-type-unsubscribe {
         content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
         width: 9px !important;
         height: 11px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
