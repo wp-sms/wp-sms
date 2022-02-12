@@ -1648,6 +1648,20 @@ class Settings
                     'type' => 'number',
                     'desc' => __('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
                 ),
+                'notif_publish_new_post_force'                  => array(
+                    'id'      => 'notif_publish_new_post_force',
+                    'name'    => __('Force to Send?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time', 'wp-sms')
+                ),
+                'notif_publish_new_post_default_group'                  => array(
+                    'id'      => 'notif_publish_new_post_default_group',
+                    'name'    => __('Subscribe group', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => $subscribe_groups,
+                    'desc'    => __('Choice the default group to send the SMS', 'wp-sms')
+                ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
                     'name' => __('Message body', 'wp-sms'),

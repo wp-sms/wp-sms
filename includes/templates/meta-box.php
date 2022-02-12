@@ -21,12 +21,12 @@
 <table class="form-table">
     <tr valign="top">
         <th scope="row">
-            <label for="wps-send-subscribe"><?php _e('Send this post to subscribers?', 'wp-sms'); ?>:</label>
+            <label for="wps-send-subscribe"><?php _e('Send Notification to Subscribers?', 'wp-sms'); ?>:</label>
         </th>
         <td>
             <select name="wps_send_subscribe" id="wps-send-subscribe">
-                <option value="0" selected><?php _e('Please select', 'wp-sms'); ?></option>
-                <option value="yes"><?php _e('Yes'); ?></option>
+                <option value="0" <?php if (!$forceToSend): echo 'selected'; endif; ?>><?php _e('Please select', 'wp-sms'); ?></option>
+                <option value="yes" <?php selected($forceToSend); ?>><?php _e('Yes'); ?></option>
                 <option value="no"><?php _e('No'); ?></option>
             </select>
         </td>
@@ -39,13 +39,13 @@
             <select name="wps_subscribe_group" id="wps-subscribe-group">
                 <option value="all"><?php echo sprintf(__('All (%s subscribers active)', 'wp-sms'), $username_active); ?></option>
                 <?php foreach ($get_group_result as $items): ?>
-                    <option value="<?php echo $items->ID; ?>"><?php echo $items->name; ?></option><?php endforeach; ?>
+                    <option value="<?php echo $items->ID; ?>" <?php selected($defaultGroup, $items->ID); ?>><?php echo $items->name; ?></option><?php endforeach; ?>
             </select>
         </td>
     </tr>
     <tr valign="top" id="wpsms-custom-text">
         <th scope="row">
-            <label for="wpsms-text-template"><?php _e('Text template', 'wp-sms'); ?>:</label>
+            <label for="wpsms-text-template"><?php _e('SMS Content', 'wp-sms'); ?>:</label>
         </th>
         <td>
             <textarea cols="80" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php
