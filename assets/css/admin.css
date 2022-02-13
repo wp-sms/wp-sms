@@ -851,7 +851,8 @@ tr.tr-header td {
 .sms_page_wp-sms-subscribers-group #wpcontent,
 .sms_page_wp-sms-settings #wpcontent,
 .sms_page_wp-sms-pro #wpcontent,
-.sms_page_wp-sms-scheduled #wpcontent {
+.sms_page_wp-sms-scheduled #wpcontent,
+.sms_page_wp-sms-inbox #wpcontent {
     padding: 0;
 }
 
@@ -863,7 +864,8 @@ tr.tr-header td {
 .sms_page_wp-sms-subscribers-group .wpsms-wrap,
 .sms_page_wp-sms-settings .wpsms-wrap,
 .sms_page_wp-sms-pro .wpsms-wrap,
-.sms_page_wp-sms-scheduled .wpsms-wrap {
+.sms_page_wp-sms-scheduled .wpsms-wrap,
+.sms_page_wp-sms-inbox .wpsms-wrap {
     margin: 0;
 }
 
@@ -873,7 +875,8 @@ tr.tr-header td {
 .sms_page_wp-sms-subscribers-group #wpcontent .notice,
 .sms_page_wp-sms-settings #wpcontent .notice,
 .sms_page_wp-sms-pro #wpcontent .notice,
-.sms_page_wp-sms-scheduled #wpcontent .notice {
+.sms_page_wp-sms-scheduled #wpcontent .notice,
+.sms_page_wp-sms-inbox #wpcontent .notice {
     margin: 20px !important;
 }
 
@@ -885,7 +888,8 @@ tr.tr-header td {
 .sms_page_wp-sms-subscribers-group #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .sms_page_wp-sms-settings #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
 .sms_page_wp-sms-pro #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-scheduled #wpcontent .wpsms-wrap .wpsms-wrap__main .notice {
+.sms_page_wp-sms-scheduled #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
+.sms_page_wp-sms-inbox #wpcontent .wpsms-wrap .wpsms-wrap__main .notice {
     margin: 20px 0 0 !important;
 }
 
