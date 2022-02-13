@@ -2479,7 +2479,7 @@ class Settings
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>"><?php _e('Plugin website', 'wp-sms'); ?></a></li>
-                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
+                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?>">
