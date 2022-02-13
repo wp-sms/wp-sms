@@ -1,0 +1,1 @@
+<p>{{$commandAction}}</p>

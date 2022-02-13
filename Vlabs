@@ -1,0 +1,48 @@
+#!/usr/bin/env php
+<?php
+// application.php
+
+namespace WPSmsTwoWayPlugin\Command\Build;
+
+require __DIR__.'/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+
+class BuildCommand extends Command
+{
+    // the name of the command (the part after "bin/console")
+    protected static $defaultName = 'Build';
+
+    protected function configure(): void
+    {
+        $this
+            ->setHelp('Use this command to create a production version of the plugin.')
+            ->setDescription('Creates a production version of the plugin.');
+
+        $this
+            ->addOption('output-dir', null, InputOption::VALUE_REQUIRED, 'Specify where you need the build.', './build');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $scoperPath = __DIR__.'/vendor/bin/php-scoper';
+        $outputDir = __DIR__.'/'.$input->getOption('output-dir');
+
+        $output->writeln(shell_exec("composer install --no-dev --optimize-autoloader"));
+        $output->writeln(shell_exec($scoperPath." add-prefix --output-dir $outputDir --force"));
+        $output->writeln(shell_exec("composer install"));
+        $output->writeln(shell_exec("composer --working-dir=$outputDir dump-autoload"));
+        $output->writeln(shell_exec("chmod -R 777 $outputDir/storage"));
+
+        return Command::SUCCESS;
+    }
+}
+
+$application = new Application();
+$application->add(new BuildCommand());
+$application->run();
