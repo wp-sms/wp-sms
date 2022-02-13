@@ -51,7 +51,7 @@ class hostiran extends \WP_SMS\Gateway
         $options = array('login' => $this->username, 'password' => $this->password);
 
         // Get the credit.
-        /*$credit = $this->GetCredit();
+        $credit = $this->GetCredit();
 
         // Check gateway credit
         if (is_wp_error($credit)) {
@@ -59,13 +59,11 @@ class hostiran extends \WP_SMS\Gateway
             $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
 
             return $credit;
-        }*/
-
-        $result = 'SMS sent!';
+        }
 
         try {
-            //$client = new \SoapClient($this->wsdl_link, $options);
-            //$result = $client->sendToMany($this->to, $this->msg, $this->from);
+            $client = new \SoapClient($this->wsdl_link, $options);
+            $result = $client->sendToMany($this->to, $this->msg, $this->from);
 
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
