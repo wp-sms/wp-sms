@@ -1116,3 +1116,81 @@ Select2
     font-size: 15px;
     display: inherit;
 }
+
+
+
+.wpsms-primary-button {
+    background: #fff !important;
+    border: 1px solid #D6D6D6 !important;
+    box-sizing: border-box;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 2px;
+    color: #000 !important;
+    transition: 0.2s;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    line-height: 17px !important;
+    padding: 14px 24px !important;
+}
+
+.wpsms-button-sm {
+    padding: 10px 14px !important;
+}
+
+.wpsms-primary-button:hover {
+    background: #fff !important;
+    border-color: #F88E40 !important;
+    color: #000 !important;
+}
+
+.wpsms-input {
+    background-color: #fff;
+    padding: 8px 14px !important;
+    font-weight: normal;
+    font-size: 14px !important;
+    line-height: 20px !important;
+    border: 1px solid #5B5B5B !important;
+    box-sizing: border-box;
+    border-radius: 2px !important;
+}
+
+.wpsms-input:hover {
+    color: #000 !important;
+}
+
+
+.wpsms-input:focus {
+    outline: #F88E40 !important;
+    box-shadow: 0 0 0 1px #F88E40 !important;
+    color: #000 !important;
+}
+
+.wpsms-input[type="checkbox"] {
+    background: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    border: 1px solid #5B5B5B !important;
+    transition: 0.2s;
+    padding: 0 !important;
+}
+
+.wpsms-input[type="checkbox"]:checked {
+    background-color: #F88E40;
+}
+
+.wpsms-input[type="checkbox"]:hover {
+    border-color: #F88E40 !important;
+}
+
+.wpsms-input[type="checkbox"]:checked {
+    background: #F88E40;
+    border-color: #F88E40 !important;
+}
+
+.wpsms-input[type="checkbox"]:checked::before {
+    margin: -.04rem 0 0 -.12rem !important;
+    content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
+    height: 1.5rem !important;
+    width: 1.5rem !important;
+}
