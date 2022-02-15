@@ -146,18 +146,26 @@ class Notifications
     public function notify_subscribers_for_published_post($new_status, $old_status, $post)
     {
         if ('publish' === $new_status) {
-            //Deciding about specified post types
+            // post types selection
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
             if (in_array($post->post_type, $specified_post_types) == false) {
                 return;
             }
 
-            if (isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes') {
-                if ($_REQUEST['wps_subscribe_group'] == 'all') {
+            $isForce      = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
+            $defaultGroup = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
+
+            if (is_admin() && isset($_POST['post_ID'])) {
+                $isForce      = isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes';
+                $defaultGroup = isset($_REQUEST['wps_subscribe_group']) ? $_REQUEST['wps_subscribe_group'] : '';
+            }
+
+            if ($isForce) {
+                if ($defaultGroup == 'all') {
                     $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
                 } else {
-                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'");
+                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;

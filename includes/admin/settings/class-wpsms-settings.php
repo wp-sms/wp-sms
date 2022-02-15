@@ -1653,7 +1653,7 @@ class Settings
                     'name'    => __('Force to Send?', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time', 'wp-sms')
+                    'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
                 ),
                 'notif_publish_new_post_default_group'                  => array(
                     'id'      => 'notif_publish_new_post_default_group',
