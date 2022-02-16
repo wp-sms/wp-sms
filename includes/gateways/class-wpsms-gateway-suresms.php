@@ -8,7 +8,7 @@ class suresms extends \WP_SMS\Gateway
     public $tariff = "https://www.suresms.com/";
     public $unitrial = false;
     public $unit;
-    public $flash = "disabled";
+    public $flash = "enable";
     public $isflash = false;
 
     public function __construct()
@@ -63,7 +63,7 @@ class suresms extends \WP_SMS\Gateway
         $response = array();
 
         foreach ($this->to as $to) {
-            $response = wp_remote_get($this->wsdl_link . "script/SendSMS.aspx?login=" . $this->username . "&password=" . $this->password . "&to=" . $to . "&text=" . $msg);
+            $response = wp_remote_get($this->wsdl_link . "script/SendSMS.aspx?login=" . $this->username . "&password=" . $this->password . "&to=" . $to . "&text=" . $msg . "&from=" . $this->from . "&flash=" . $this->isflash);
         }
 
         // Check response error

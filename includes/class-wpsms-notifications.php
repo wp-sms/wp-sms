@@ -40,7 +40,7 @@ class Notifications
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
 
-        // Wordpress new version
+        // WordPress new version
         if (isset($this->options['notif_publish_new_wpversion'])) {
             $update = get_site_transient('update_core');
             if (is_object($update) and isset($update->updates)) {
@@ -97,7 +97,7 @@ class Notifications
     public function notification_meta_box()
     {
         foreach ($this->extractPostTypeFromOption('notif_publish_new_post_type') as $postType) {
-            add_meta_box('subscribe-meta-box', __('SMS', 'wp-sms'), array($this, 'notification_meta_box_handler'), $postType, 'normal', 'high');
+            add_meta_box('subscribe-meta-box', __('SMS Notification', 'wp-sms'), array($this, 'notification_meta_box_handler'), $postType, 'normal', 'high');
         }
     }
 
@@ -112,6 +112,8 @@ class Notifications
 
         $get_group_result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`");
         $username_active  = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
+        $forceToSend      = isset($this->options['notif_publish_new_post_force']) ? true : false;
+        $defaultGroup     = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : false;
         include_once WP_SMS_DIR . "includes/templates/meta-box.php";
     }
 
@@ -136,7 +138,7 @@ class Notifications
      *
      * @param $new_status
      * @param $old_status
-     * @param $post
+     * @param \WP_Post $post Post object.
      *
      * @return null
      * @internal param $post_id
@@ -144,27 +146,35 @@ class Notifications
     public function notify_subscribers_for_published_post($new_status, $old_status, $post)
     {
         if ('publish' === $new_status) {
-            //Deciding about specified post types
+            // post types selection
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
             if (in_array($post->post_type, $specified_post_types) == false) {
                 return;
             }
 
-            if (isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes') {
-                if ($_REQUEST['wps_subscribe_group'] == 'all') {
+            $isForce      = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
+            $defaultGroup = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
+
+            if (is_admin() && isset($_POST['post_ID'])) {
+                $isForce      = isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes';
+                $defaultGroup = isset($_REQUEST['wps_subscribe_group']) ? $_REQUEST['wps_subscribe_group'] : '';
+            }
+
+            if ($isForce) {
+                if ($defaultGroup == 'all') {
                     $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
                 } else {
-                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '{$_REQUEST['wps_subscribe_group']}'");
+                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
                 $words_limit                        = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
                 $template_vars                      = array(
-                    '%post_title%'   => get_the_title($ID),
+                    '%post_title%'   => get_the_title($post->ID),
                     '%post_content%' => wp_trim_words($post->post_content, $words_limit),
-                    '%post_url%'     => wp_sms_shorturl(wp_get_shortlink($ID)),
-                    '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $ID, true),
+                    '%post_url%'     => wp_sms_shorturl(wp_get_shortlink($post->ID)),
+                    '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $post->ID, true),
                 );
 
                 $message = str_replace(array_keys($template_vars), array_values($template_vars), $_REQUEST['wpsms_text_template']);
@@ -272,7 +282,7 @@ class Notifications
                 '%username_login%' => $username->user_login,
                 '%display_name%'   => $username->display_name
             );
-            
+
             $message        = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['notif_user_login_template']);
             $this->sms->msg = $message;
             $this->sms->SendSMS();
