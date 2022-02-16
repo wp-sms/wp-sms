@@ -1,5 +1,4 @@
 <div class="wrap wpsms-wrap">
-    <h2><?php _e('Inbox (Incoming Messages)', 'wp-sms'); ?></h2>
     <div class="wpsms-wrap__main wpsms-inbox-page">
         <img class="background-img" src="<?= WP_SMS_URL . '/assets/images/blurred-inbox.png' ?>" alt="">
         <div class="promotion-modal">
