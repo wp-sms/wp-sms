@@ -2463,9 +2463,7 @@ class Settings
                             $proLockIcon = '';
 
                             if ($IsProTab) {
-                                if ($this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-unlock"></span> Pro</a></span></li>';
-                                } else {
+                                if (!$this->proIsInstalled) {
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
                             }

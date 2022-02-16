@@ -130,10 +130,6 @@
     line-height: 18px;
 }
 
-.wpsms-tab .is-pro-tab .pro-installed a {
-    background: green;
-}
-
 .wpsms-tab .is-pro-tab .pro-not-installed a {
     background: #f88d40;
 }
