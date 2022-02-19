@@ -153,7 +153,7 @@ class Settings
              * Main plugin tabs
              */
             'general'              => __('General', 'wp-sms'),
-            'gateway'              => __('Gateway', 'wp-sms'),
+            'gateway'              => __('SMS Gateway', 'wp-sms'),
             'newsletter'           => __('SMS Newsletter', 'wp-sms'),
             'feature'              => __('Features', 'wp-sms'),
             'notifications'        => __('Notifications', 'wp-sms'),
@@ -537,12 +537,12 @@ class Settings
                 ),
                 'wc_mobile_field'              => array(
                     'id'      => 'wc_mobile_field',
-                    'name'    => __('Choose the field', 'wp-sms'),
+                    'name'    => __('Choose the Mobile field', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
                         'disable'            => __('Disable (No field)', 'wp-sms'),
-                        'add_new_field'      => __('Add a new field in the checkout form', 'wp-sms'),
-                        'used_current_field' => __('Use the current phone field in the bill', 'wp-sms'),
+                        'add_new_field'      => __('Add a New Mobile field in the checkout form', 'wp-sms'),
+                        'used_current_field' => __('Use the Billing Phone field', 'wp-sms'),
                     ),
                     'desc'    => __('Choose from which field you get numbers for sending SMS.', 'wp-sms')
                 ),
@@ -1333,51 +1333,51 @@ class Settings
                 // Gateway
                 'gateway_title'             => array(
                     'id'   => 'gateway_title',
-                    'name' => __('Gateway configuration', 'wp-sms'),
+                    'name' => __('SMS Gateway Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'gateway_name'              => array(
                     'id'      => 'gateway_name',
-                    'name'    => __('Gateway name', 'wp-sms'),
+                    'name'    => __('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => Gateway::gateway(),
-                    'desc'    => __('Please select your gateway.', 'wp-sms')
+                    'desc'    => __('Select the SMS Gateway from which you want to send the SMS.', 'wp-sms')
                 ),
                 'gateway_help'              => array(
                     'id'      => 'gateway_help',
-                    'name'    => __('Gateway description', 'wp-sms'),
+                    'name'    => __('Gateway Notice', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::help(),
                 ),
                 'gateway_username'          => array(
                     'id'   => 'gateway_username',
-                    'name' => __('API username', 'wp-sms'),
+                    'name' => __('API Username', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API username of gateway', 'wp-sms')
                 ),
                 'gateway_password'          => array(
                     'id'   => 'gateway_password',
-                    'name' => __('API password', 'wp-sms'),
+                    'name' => __('API Password', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API password of gateway', 'wp-sms')
                 ),
                 'gateway_sender_id'         => array(
                     'id'   => 'gateway_sender_id',
-                    'name' => __('Sender number', 'wp-sms'),
+                    'name' => __('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
                     'desc' => __('Sender number or sender ID', 'wp-sms')
                 ),
                 'gateway_key'               => array(
                     'id'   => 'gateway_key',
-                    'name' => __('API key', 'wp-sms'),
+                    'name' => __('API Key', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API key of gateway', 'wp-sms')
                 ),
                 // Gateway status
                 'gateway_status_title'      => array(
                     'id'   => 'gateway_status_title',
-                    'name' => __('Gateway status', 'wp-sms'),
+                    'name' => __('Gateway Status', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit'            => array(
@@ -1407,7 +1407,7 @@ class Settings
                 // Account credit
                 'account_credit_title'      => array(
                     'id'   => 'account_credit_title',
-                    'name' => __('Account balance', 'wp-sms'),
+                    'name' => __('Account Balance', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit_in_menu'    => array(
@@ -1427,7 +1427,7 @@ class Settings
                 // Message header
                 'message_title'             => array(
                     'id'   => 'message_title',
-                    'name' => __('Message options', 'wp-sms'),
+                    'name' => __('Message Options', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'send_unicode'              => array(
