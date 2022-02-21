@@ -38,7 +38,7 @@
   font-weight: 600 !important;
   font-size: 14px;
   line-height: 17px;
-  padding: 15px 16px;
+  padding: 10px;
   border-radius: 2px;
   transition: 0.2s;
 }
@@ -63,10 +63,6 @@
   .wpsms-wrap .button, .wpsms-wrap .thickbox.button {
     padding: 12px 18px;
   }
-}
-
-.wpsms-wrap textarea {
-  max-width: calc(100% - 45px);
 }
 
 .wpsms-wrap .button-primary:hover {

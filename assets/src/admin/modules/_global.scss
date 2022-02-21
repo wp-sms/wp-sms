@@ -1,65 +1,180 @@
 
-.toplevel_page_wp-sms #wpcontent, .sms_page_wp-sms-outbox #wpcontent, .sms_page_wp-sms-subscribers-privacy #wpcontent, .sms_page_wp-sms-subscribers #wpcontent, .sms_page_wp-sms-subscribers-group #wpcontent, .sms_page_wp-sms-settings #wpcontent, .sms_page_wp-sms-pro #wpcontent, .sms_page_wp-sms-scheduled #wpcontent {
+.sms_page_wp-sms #wpcontent, .toplevel_page_wp-sms #wpcontent, .sms_page_wp-sms-outbox #wpcontent, .sms_page_wp-sms-subscribers-privacy #wpcontent, .sms_page_wp-sms-subscribers #wpcontent, .sms_page_wp-sms-subscribers-group #wpcontent, .sms_page_wp-sms-settings #wpcontent, .sms_page_wp-sms-pro #wpcontent, .sms_page_wp-sms-scheduled #wpcontent {
   padding: 0;
 }
 
-.toplevel_page_wp-sms .wpsms-wrap, .outbox .wpsms-wrap, .sms_page_wp-sms-subscribers .wpsms-wrap, .sms_page_wp-sms-outbox .wpsms-wrap, .sms_page_wp-sms-subscribers-privacy .wpsms-wrap, .sms_page_wp-sms-subscribers-group .wpsms-wrap, .sms_page_wp-sms-settings .wpsms-wrap, .sms_page_wp-sms-pro .wpsms-wrap, .sms_page_wp-sms-scheduled .wpsms-wrap {
+.sms_page_wp-sms .wpsms-wrap, .toplevel_page_wp-sms .wpsms-wrap, .outbox .wpsms-wrap, .sms_page_wp-sms-subscribers .wpsms-wrap, .sms_page_wp-sms-outbox .wpsms-wrap, .sms_page_wp-sms-subscribers-privacy .wpsms-wrap, .sms_page_wp-sms-subscribers-group .wpsms-wrap, .sms_page_wp-sms-settings .wpsms-wrap, .sms_page_wp-sms-pro .wpsms-wrap, .sms_page_wp-sms-scheduled {
   margin: 0;
 }
 
-.toplevel_page_wp-sms #wpcontent .notice,
-.sms_page_wp-sms-outbox #wpcontent .notice,
-.sms_page_wp-sms-subscribers #wpcontent .notice,
-.sms_page_wp-sms-subscribers-group #wpcontent .notice,
-.sms_page_wp-sms-settings #wpcontent .notice,
-.sms_page_wp-sms-pro #wpcontent .notice,
-.sms_page_wp-sms-scheduled #wpcontent .notice {
-  margin: 20px !important;
+.sms_page_wp-sms, .toplevel_page_wp-sms, .sms_page_wp-sms-outbox, .sms_page_wp-sms-subscribers, .sms_page_wp-sms-subscribers-group, .sms_page_wp-sms-settings.sms_page_wp-sms-pro, .sms_page_wp-sms-scheduled {
+  #wpcontent .notice {
+    margin: 20px !important;
+  }
+
+  #wpcontent .wpsms-wrap__main .notice {
+    margin: 20px 0 0 !important;
+  }
+
+  #wpcontent .notice {
+    margin: 20px !important;
+  }
+
+  #wpcontent .notice {
+    margin: 20px 0 !important;
+  }
+
+  #wpcontent .notice {
+    margin: 20px !important;
+  }
+
+  #TB_window {
+    input[type="text"], input[type="number"], select {
+      padding: 8px 16px;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      border: 1px solid #5B5B5B !important;
+      box-sizing: border-box;
+      border-radius: 2px;
+      height: 38px;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      box-shadow: 0 0 0 1px #F88E40;
+      border-color: #F88E40 !important;
+      outline: 2px solid transparent;
+    }
+
+    select:hover, select:hover option {
+      color: #000 !important;
+    }
+
+    input[type="text"]::placeholder, input[type="number"]::placeholder, select::placeholder {
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      color: #000000;
+    }
+
+    input[type="checkbox"] {
+      background: #fff;
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      border: 1px solid #5B5B5B !important;
+      transition: 0.2s;
+      min-height: 16px !important;
+      min-width: 16px !important;
+    }
+
+    input[type="checkbox"]:hover {
+      border-color: #F88E40 !important;
+    }
+
+    input[type="checkbox"]:checked {
+      background: #F88E40;
+      border-color: #F88E40 !important;
+    }
+
+    input[type="checkbox"]:checked::before {
+      margin: -.04rem 0 0 -.9rem !important;
+      content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
+      height: 1rem !important;
+      width: 1rem !important;
+    }
+
+    .button {
+      background: #fff;
+      border: 1px solid #D6D6D6;
+      box-sizing: border-box;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      border-radius: 2px;
+      color: #000;
+      transition: 0.2s;
+    }
+
+
+    .button-primary {
+      font-weight: 600 !important;
+      font-size: 16px;
+      line-height: 17px;
+      padding: 13px 24px;
+      border-radius: 2px;
+      transition: 0.2s;
+      background: #F88E40;
+      border-color: #F88E40;
+      color: #fff !important;
+    }
+
+    .button-primary:hover {
+      background-color: #EF771F;
+      border-color: #EF771F;
+    }
+
+    .button-primary:focus {
+      background-color: #EF771F;
+      border-color: #EF771F;
+      box-shadow: 0 0 0 1px #EF771F;
+      outline: 2px solid transparent;
+    }
+
+    #TB_title {
+      height: 50px;
+      font-size: 15px;
+    }
+
+    #TB_ajaxWindowTitle {
+      padding: 10px 29px 10px 10px;
+    }
+
+    #TB_closeAjaxWindow {
+      button {
+        top: 10px;
+
+        &:hover .tb-close-icon {
+          color: #EF771F;
+        }
+
+        &:focus .tb-close-icon {
+          color: #EF771F;
+          box-shadow: 0 0 0 1px #EF771F;
+          outline: 2px solid transparent;
+        }
+      }
+    }
+  }
 }
 
-.sms_page_wp-sms-scheduled #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.toplevel_page_wp-sms #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-outbox #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-subscribers-privacy #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-subscribers #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-subscribers-group #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-settings #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-pro #wpcontent .wpsms-wrap .wpsms-wrap__main .notice,
-.sms_page_wp-sms-scheduled #wpcontent .wpsms-wrap .wpsms-wrap__main .notice {
-  margin: 20px 0 0 !important;
+.wrap.wpsms-wrap {
+  margin: 0;
 }
 
+.sms_page_wp-sms.rtl {
+  table {
+    td, th{
+      text-align: right !important;
+    }
+  }
 
+  #TB_closeWindowButton {
+    right: unset;
+    left: 0;
+  }
 
-.toplevel_page_wp-sms #wpcontent .notice,
-.sms_page_wp-sms-outbox #wpcontent .notice,
-.sms_page_wp-sms-subscribers #wpcontent .notice,
-.sms_page_wp-sms-subscribers-group #wpcontent .notice,
-.sms_page_wp-sms-settings #wpcontent .notice,
-.sms_page_wp-sms-pro #wpcontent .notice,
-.sms_page_wp-sms-scheduled #wpcontent .notice {
-  margin: 20px !important;
-}
+  #TB_ajaxWindowTitle {
+    padding: 10px 10px 10px 29px !important;
+    text-align: right !important;
+  }
 
-.toplevel_page_wp-sms #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-outbox #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-subscribers-privacy #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-subscribers #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-subscribers-group #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-settings #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-pro #wpcontent .wpsms-wrap .notice,
-.sms_page_wp-sms-scheduled #wpcontent .wpsms-wrap .notice {
-  margin: 20px 0 !important;
-}
+  .select2-selection--multiple .select2-selection__choice {
+    margin-left: 0;
+    margin-right: 5px;
+  }
 
-
-.toplevel_page_wp-sms #wpcontent .notice,
-.sms_page_wp-sms-outbox #wpcontent .notice,
-.sms_page_wp-sms-subscribers #wpcontent .notice,
-.sms_page_wp-sms-subscribers-group #wpcontent .notice,
-.sms_page_wp-sms-settings #wpcontent .notice,
-.sms_page_wp-sms-pro #wpcontent .notice,
-.sms_page_wp-sms-scheduled #wpcontent .notice {
-  margin: 20px !important;
+  .select2-container .select2-search--inline .select2-search__field {
+    margin-left: 0;
+    margin-right: 5px;
+  }
 }
 

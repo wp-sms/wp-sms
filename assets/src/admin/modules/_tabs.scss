@@ -301,3 +301,39 @@
 
 .rtl .wpsms-tab li .active {
 }
+
+.wpsms-tab-group {
+
+  @media screen and (max-width: 782px) {
+    table {
+      td {
+        margin-top: 10px;
+      }
+
+      th {
+        padding: 0 10px;
+        font-size: 15px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 990px) {
+    display: flex;
+    flex-direction: column-reverse;
+
+    .wpsms-tab, .wpsms-tab-content {
+      width: 100%;
+      margin-bottom: 15px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .wpsms-tab-content {
+      padding: 18px 16px 6px;
+
+      form {
+        max-width: calc(100% - 24px);
+      }
+    }
+  }
+}

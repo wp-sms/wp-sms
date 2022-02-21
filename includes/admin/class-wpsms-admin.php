@@ -377,7 +377,7 @@ class Admin
     public function modify_admin_body_classes($classes)
     {
         if (is_rtl()) {
-            $classes .= ' sms_page_wp-sms-outbox';
+            $classes .= ' sms_page_wp-sms';
         }
 
         return $classes;

@@ -1,11 +1,9 @@
-
 .wp_sms_subscribers_input_text {
   left: 81px;
   top: 0px;
   width: 379px;
   height: 28px;
 }
-
 
 .wpsms-wrap input[type="checkbox"]:focus {
   box-shadow: none !important;
@@ -24,8 +22,8 @@
 
 
 .wpsms-wrap input[type="text"]:focus, .wpsms-wrap input[type="number"]:focus, .wpsms-wrap select:focus {
-  border-color: #F88E40;
   box-shadow: 0 0 0 1px #F88E40;
+  border-color: #F88E40 !important;
   outline: 2px solid transparent;
 }
 
@@ -61,7 +59,7 @@
 }
 
 .wpsms-wrap input[type="checkbox"]:checked::before {
-  margin: -.04rem 0 0 -.9rem !important;
+  margin: -0.3px 0px 0px -2px !important;
   content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
   height: 1rem !important;
   width: 1rem !important;
@@ -97,8 +95,8 @@
 
 
 .sms_page_wp-sms-subscribers-privacy input[type="tel"]:focus {
-  border-color: #F88E40;
   box-shadow: 0 0 0 1px #F88E40;
+  border-color: #F88E40 !important;
   outline: 2px solid transparent;
 }
 
@@ -134,7 +132,6 @@
   height: 10px;
   margin: .33rem !important;
 }
-
 
 
 .notice input {
@@ -197,4 +194,8 @@
   content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
   height: 1.5rem !important;
   width: 1.5rem !important;
+}
+
+.wpsms-wrap textarea {
+  max-width: calc(100% - 45px);
 }
