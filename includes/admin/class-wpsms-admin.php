@@ -28,6 +28,7 @@ class Admin
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
         add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
+        add_filter('admin_body_class', array($this, 'modify_admin_body_classes'));
     }
 
     /**
@@ -363,6 +364,23 @@ class Admin
         }
 
         return $status;
+    }
+
+    /**
+     * Modifies the admin body class.
+     *
+     * @date    21/02/2022
+     * @param string $classes Space-separated list of CSS classes.
+     * @return  string
+     *
+     */
+    public function modify_admin_body_classes($classes)
+    {
+        if (is_rtl()) {
+            $classes .= ' sms_page_wp-sms-outbox';
+        }
+
+        return $classes;
     }
 }
 
