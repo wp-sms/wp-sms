@@ -1,0 +1,68 @@
+.wpsms-error-notice {
+  background-color: #ffd5d5;
+  padding: 7px 7px;
+  display: inline-block;
+  border: 1px solid #ffb7b7;
+  border-radius: 2px;
+  color: #e02222;
+}
+
+.wpsms-time {
+  clear: both;
+  color: #a4a2a2;
+  display: block;
+  font-size: 10px;
+}
+
+.wpsms-color-green {
+  color: #27bb00;
+}
+
+.wpsms-color-red {
+  color: #f10000;
+}
+
+.wpsms-button-group .dashicons {
+  vertical-align: text-top;
+}
+
+#wpsms-select-subscriber-group {
+  display: none;
+}
+
+#wpsms-custom-text {
+  display: none;
+}
+
+#wpsms-custom-text textarea {
+  font-size: 12px;
+  width: 100%;
+  height: 114px;
+}
+
+#wpsms-custom-text p.description.data, #wpsms-custom-text code {
+  font-size: 11px !important;
+}
+
+.wpsms-plugin-meta-link span {
+  font-size: 14px;
+  vertical-align: sub;
+}
+
+.wpsms-plugin-meta-link.wp-sms-pro {
+  color: green;
+  font-weight: bold;
+}
+
+.wpsms-has-credit {
+  color: #3b9d00;
+}
+
+.wpsms-no-credit {
+  color: #c20000;
+}
+
+.wpsms-premium-tab {
+  color: #F1F1F1;
+  background: #21A8D2;
+}

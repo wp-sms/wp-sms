@@ -1,0 +1,166 @@
+
+.wpsms-wrap .thickbox.button, .wpsms-wrap .button {
+  background: #fff;
+  border: 1px solid #D6D6D6;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  color: #000;
+  transition: 0.2s;
+}
+
+.wpsms-wrap .wpsms-button-group {
+  margin-top: 20px;
+}
+
+.wpsms-wrap .button:hover {
+  background: #fff;
+  border-color: #F88E40;
+  color: #000;
+}
+
+.wpsms-wrap .button, .wpsms-wrap .thickbox.button {
+  font-weight: 600 !important;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 15px 24px;
+  border-radius: 2px;
+  transition: 0.2s;
+}
+
+@media screen and (max-width: 500px) {
+  .wpsms-wrap .button, .wpsms-wrap .thickbox.button {
+    padding: 8px 12px;
+  }
+}
+
+.rtl .wpsms-wrap .button {
+  font-weight: 600 !important;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 15px 16px;
+  border-radius: 2px;
+  transition: 0.2s;
+}
+
+.wpsms-wrap .button:disabled {
+  background-color: #808080 !important;
+}
+
+.wpsms-wrap .button-primary {
+  font-weight: 600 !important;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 15px 24px;
+  border-radius: 2px;
+  transition: 0.2s;
+  background: #F88E40;
+  border-color: #F88E40;
+  color: #fff !important;
+}
+
+@media screen and (max-width: 500px) {
+  .wpsms-wrap .button, .wpsms-wrap .thickbox.button {
+    padding: 12px 18px;
+  }
+}
+
+.wpsms-wrap textarea {
+  max-width: calc(100% - 45px);
+}
+
+.wpsms-wrap .button-primary:hover {
+  background-color: #EF771F;
+  border-color: #EF771F;
+}
+
+.wpsms-wrap .button-primary:focus {
+  background-color: #EF771F;
+  border-color: #EF771F;
+  box-shadow: 0 0 0 1px #EF771F;
+  outline: 2px solid transparent;
+}
+
+.wpsms-wrap .tablenav .bulkactions .button {
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.wpsms-wrap .search-box .button {
+  padding: 10px 14px;
+}
+
+.sms_page_wp-sms-subscribers-privacy .button-primary {
+  font-weight: 600 !important;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 15px 24px;
+  border-radius: 2px;
+  transition: 0.2s;
+  background: #F88E40;
+  border-color: #F88E40;
+  color: #fff !important;
+}
+
+.sms_page_wp-sms-subscribers-privacy .button-primary:focus,
+.sms_page_wp-sms-subscribers-privacy .button-primary:hover {
+  background: #EF771F;
+  border-color: #EF771F;
+  box-shadow: 0 0 0 1px #F88E40;
+  outline: 2px solid transparent;
+}
+
+
+.notice button, .notice input[type="submit"], .notice .button {
+  padding: 10px;
+  margin-left: 4px;
+}
+
+
+.wpsms-primary-button {
+  background: #fff !important;
+  border: 1px solid #D6D6D6 !important;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 2px;
+  color: #000 !important;
+  transition: 0.2s;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  line-height: 17px !important;
+  padding: 14px 24px !important;
+}
+
+.wpsms-button-sm {
+  padding: 10px 14px !important;
+}
+
+.wpsms-primary-button:hover {
+  background: #fff !important;
+  border-color: #F88E40 !important;
+  color: #000 !important;
+}
+
+.wpsms-primary-button {
+  background: #fff !important;
+  border: 1px solid #D6D6D6 !important;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 2px;
+  color: #000 !important;
+  transition: 0.2s;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  line-height: 17px !important;
+  padding: 14px 24px !important;
+}
+
+.wpsms-button-sm {
+  padding: 10px 14px !important;
+}
+
+.wpsms-primary-button:hover {
+  background: #fff !important;
+  border-color: #F88E40 !important;
+  color: #000 !important;
+}

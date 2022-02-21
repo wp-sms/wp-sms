@@ -13,7 +13,22 @@ function buildStyles() {
     .pipe(gulp.dest('./assets/css'));
 };
 
+function buildAdminStyles(cb) {
+  return gulp.src('./assets/src/admin/admin.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(autoprefixer({cascade: false}))
+    .pipe(cleanCSS({compatibility: 'ie11'}))
+    .pipe(gulp.dest('./assets/css'));
+
+  cb();
+};
+
 exports.buildStyles = buildStyles;
 exports.watch = function () {
   gulp.watch('./assets/src/scss/**/*.scss', gulp.series([buildStyles]));
 };
+
+exports.admin = () => {
+  buildStyles();
+  gulp.watch('./assets/src/admin/**/*.scss', gulp.series([buildAdminStyles]));
+}
