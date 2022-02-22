@@ -52,12 +52,23 @@ class Newsletter
     {
         $unSubscriberQueryString = $this->getUnSubscriberQueryString();
 
-        if (!isset($_REQUEST[$unSubscriberQueryString]) || !is_numeric(wp_unslash($_REQUEST[$unSubscriberQueryString]))) {
+        if (!isset($_REQUEST[$unSubscriberQueryString]) || !wp_unslash($_REQUEST[$unSubscriberQueryString])) {
             return;
         }
 
-        $number   = wp_unslash(wp_unslash($_REQUEST[$unSubscriberQueryString]));
-        $response = $this->deleteSubscriberByNumber($number);
+        $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
+        $numbers = [$number, "+{$number}"];
+        
+        foreach ($numbers as $number) {
+            $response = $this->deleteSubscriberByNumber($number);
+
+            if ($response['result'] == 'success') {
+                wp_die($response['message'], __('SMS Subscription!'), [
+                    'link_text' => __('Home page', 'wp-sms'),
+                    'link_url'  => get_bloginfo('url'),
+                ]);
+            }
+        }
 
         wp_die($response['message'], __('SMS Subscription!'), [
             'link_text' => __('Home page', 'wp-sms'),
@@ -525,18 +536,18 @@ class Newsletter
         return null;
     }
 
-	/**
-	 * Get Newsletter Groups
-	 *
-	 * @param Not param
-	 */
+    /**
+     * Get Newsletter Groups
+     *
+     * @param Not param
+     */
 
-	public static function get_groups()
-	{
-		$self   = new Newsletter();
-		$groups = $self->db->get_results( "SELECT * FROM `{$self->db->prefix}sms_subscribes_group`" );
-		return $groups;
-	}
+    public static function get_groups()
+    {
+        $self   = new Newsletter();
+        $groups = $self->db->get_results("SELECT * FROM `{$self->db->prefix}sms_subscribes_group`");
+        return $groups;
+    }
 }
 
 new Newsletter();
