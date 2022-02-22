@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Blocks;
+namespace WP_SMS;
 
 class Helper
 {

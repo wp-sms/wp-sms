@@ -3,6 +3,7 @@
 namespace WP_SMS\Blocks;
 
 use WP_SMS;
+use WP_SMS\Helper;
 
 class SubscribeBlock extends BlockAbstract {
 	protected $blockName = 'subscribe';
