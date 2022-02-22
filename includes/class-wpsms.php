@@ -73,8 +73,8 @@ class WP_SMS
      */
     public function includes()
     {
-
         // Utility classes.
+        require_once WP_SMS_DIR . 'includes/Helper.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
@@ -84,7 +84,6 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
 
-	    require_once WP_SMS_DIR . 'includes/Helper.php';
 	    require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
 	    require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
 	    require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
