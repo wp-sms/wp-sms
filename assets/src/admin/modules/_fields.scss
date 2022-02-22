@@ -25,6 +25,7 @@
   box-shadow: 0 0 0 1px #F88E40;
   border-color: #F88E40 !important;
   outline: 2px solid transparent;
+  color: #000;
 }
 
 .wpsms-wrap select:hover, .wpsms-wrap select:hover option {
@@ -103,8 +104,8 @@
 
 .wpsms-wrap input[type="radio"] {
   background: #fff;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 2px;
   border: 1px solid #5B5B5B !important;
   transition: 0.2s;
@@ -123,16 +124,16 @@
 .wpsms-wrap input[type="radio"]:focus, .wpsms-wrap input[type="radio"]:hover {
   box-shadow: none;
   border-color: #F88E40 !important;
+  outline: none;
 }
 
 .wpsms-wrap input[type="radio"]:checked::before {
   background-color: #fff !important;
   transition: 0.2s;
-  width: 10px;
-  height: 10px;
-  margin: .33rem !important;
+  width: 8px;
+  height: 8px;
+  margin: .32rem !important;
 }
-
 
 .notice input {
   padding: 4px 6px;
@@ -198,4 +199,40 @@
 
 .wpsms-wrap textarea {
   max-width: calc(100% - 45px);
+
+  &:focus {
+    border-color: #F88E40 !important;
+    outline: #F88E40 !important;
+    box-shadow: 0 0 0 1px #F88E40 !important;
+    color: #000 !important;
+  }
+}
+
+.wpsms-wrap .select2 {
+
+  .select2-selection {
+    border-color: #000;
+    border-radius: 2px;
+    padding: 6px 2px;
+  }
+
+  &:focus-within {
+    .select2-selection {
+      border-color: #F88E40 !important;
+      box-shadow: 0 0 0 1px #F88E40 !important;
+    }
+  }
+
+  textarea {
+
+    &::placeholder {
+      color: #2c3338;
+    }
+  }
+
+  textarea:focus {
+    border-color: transparent !important;
+    outline: transparent !important;
+    box-shadow: 0 0 0 1px transparent !important;
+  }
 }
