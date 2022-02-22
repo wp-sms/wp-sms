@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.6.8
+Stable tag: 5.6.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -269,6 +269,18 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.6.9 - 16.02.2022 =
+* Improvement: The SureSms gateway now supports the Sender ID and Flash
+* Improvement: Compatible the Post SMS Notification with WP-REST API
+* Improvement: The Force to Post SMS Notification and default Subscribe group options added
+* Improvement: Improvements widget and admin styles
+* Improvement: Send flash SMS enabled for eBulkSms.com
+* Improvement: Send flash SMS disabled for Africa's Talking
+
+= v5.6.8.1 - 09.02.2022 =
+* Feature: Add specific roles option for User login notification
+* Bugfix: Compatibility the setting page with PHP v7.2
+
 = v5.6.8 - 02.02.2022 =
 * Update: Tested up to v5.9
 * Update: The SMS Newsletter widget is improvement and redesigned and also is Block based right now! you can also load the SMS Newsletter in Gutenberg editor!

@@ -1252,7 +1252,7 @@ class Settings
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
                                 '<code>%referring_url%</code>',
-                                '<code>%content%</code>',
+                                '<code>%content%</code>'
                             ) . $more_qf_fields
                     );
 
@@ -1280,7 +1280,7 @@ class Settings
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
                                     '<code>%referring_url%</code>',
-                                    '<code>%content%</code>',
+                                    '<code>%content%</code>'
                                 ) . $more_qf_fields
                         );
                 }
@@ -1677,6 +1677,20 @@ class Settings
                     'name' => __('Post content words count', 'wp-sms'),
                     'type' => 'number',
                     'desc' => __('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
+                ),
+                'notif_publish_new_post_force'                  => array(
+                    'id'      => 'notif_publish_new_post_force',
+                    'name'    => __('Force to Send?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
+                ),
+                'notif_publish_new_post_default_group'                  => array(
+                    'id'      => 'notif_publish_new_post_default_group',
+                    'name'    => __('Subscribe group', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => $subscribe_groups,
+                    'desc'    => __('Choice the default group to send the SMS', 'wp-sms')
                 ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
@@ -2480,9 +2494,7 @@ class Settings
                             $proLockIcon = '';
 
                             if ($IsProTab) {
-                                if ($this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-unlock"></span> Pro</a></span></li>';
-                                } else {
+                                if (!$this->proIsInstalled) {
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . WP_SMS_SITE . '" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
                             }
@@ -2495,7 +2507,7 @@ class Settings
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
                         <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>"><?php _e('Plugin website', 'wp-sms'); ?></a></li>
-                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
+                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab.'_settings_tab'?>">

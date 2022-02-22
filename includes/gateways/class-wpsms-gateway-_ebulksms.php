@@ -63,7 +63,7 @@ class _ebulksms extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $response = wp_remote_get($this->wsdl_link . "/sendsms?username=" . $this->username . "&apikey=" . $this->has_key . "&sender=" . $this->from . "&messagetext=" . urlencode($this->msg) . "&flash=0&recipients=" . implode(',', $this->to));
+        $response = wp_remote_get($this->wsdl_link . "/sendsms?username=" . $this->username . "&apikey=" . $this->has_key . "&sender=" . $this->from . "&messagetext=" . urlencode($this->msg) . "&flash=" . $this->isflash . "&recipients=" . implode(',', $this->to));
 
         // Check gateway credit
         if (is_wp_error($response)) {

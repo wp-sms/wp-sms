@@ -16,6 +16,8 @@
 }
 
 .wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio {
+  display: flex;
+  align-items: center;
 
   label {
     display: inline-flex;
@@ -27,13 +29,19 @@
     appearance: none;
     width: 16px;
     height: 16px;
+    max-width: 16px;
+    max-height: 16px;
     border-radius: 50%;
     vertical-align: middle;
-    padding: 4px !important;
+    padding: unset !important;
     margin-right: 5px;
     border: 1px solid #000 !important;
     position: relative;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
 
     &::after {
       width: 8px;
@@ -134,6 +142,9 @@ input#wpsms-type-unsubscribe {
     box-shadow: none;
     outline: none;
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     &::after {
       display: none;
@@ -158,16 +169,12 @@ input#wpsms-type-unsubscribe {
 
       &::before {
         content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
+        width: 11px !important;
+        height: 11px !important;
+        margin: 0 !important;
         display: flex;
-        justify-content: center;
         align-items: center;
-        width: 16px !important;
-        height: 16px !important;
-        margin-left: -0.5px;
-        margin-top: -0.5px;
-        position: absolute;
-        top: 0;
-        left: 0;
+        justify-content: center;
       }
     }
   }
