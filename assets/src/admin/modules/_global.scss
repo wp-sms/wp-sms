@@ -1,13 +1,13 @@
+.sms_page_wp-sms, .sms_page_wp-sms-inbox, .sms_page_wp-sms-add-ons, .toplevel_page_wp-sms, .sms_page_wp-sms-outbox, .sms_page_wp-sms-subscribers, .sms_page_wp-sms-subscribers-group, .sms_page_wp-sms-settings.sms_page_wp-sms-pro, .sms_page_wp-sms-scheduled {
 
-.sms_page_wp-sms #wpcontent, .toplevel_page_wp-sms #wpcontent, .sms_page_wp-sms-outbox #wpcontent, .sms_page_wp-sms-subscribers-privacy #wpcontent, .sms_page_wp-sms-subscribers #wpcontent, .sms_page_wp-sms-subscribers-group #wpcontent, .sms_page_wp-sms-settings #wpcontent, .sms_page_wp-sms-pro #wpcontent, .sms_page_wp-sms-scheduled #wpcontent {
-  padding: 0;
-}
+  #wpcontent {
+    padding: 0;
+  }
 
-.sms_page_wp-sms .wpsms-wrap, .toplevel_page_wp-sms .wpsms-wrap, .outbox .wpsms-wrap, .sms_page_wp-sms-subscribers .wpsms-wrap, .sms_page_wp-sms-outbox .wpsms-wrap, .sms_page_wp-sms-subscribers-privacy .wpsms-wrap, .sms_page_wp-sms-subscribers-group .wpsms-wrap, .sms_page_wp-sms-settings .wpsms-wrap, .sms_page_wp-sms-pro .wpsms-wrap, .sms_page_wp-sms-scheduled {
-  margin: 0;
-}
+  .wpsms-wrap {
+    margin: 0;
+  }
 
-.sms_page_wp-sms, .toplevel_page_wp-sms, .sms_page_wp-sms-outbox, .sms_page_wp-sms-subscribers, .sms_page_wp-sms-subscribers-group, .sms_page_wp-sms-settings.sms_page_wp-sms-pro, .sms_page_wp-sms-scheduled {
   #wpcontent .notice {
     margin: 20px !important;
   }
