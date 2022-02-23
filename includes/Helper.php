@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Blocks;
+namespace WP_SMS;
 
 class Helper
 {
@@ -31,5 +31,25 @@ class Helper
 
             return ob_get_clean();
         }
+    }
+
+    /**
+     * @return mixed|void|null
+     */
+    public static function getUserMobileFieldName()
+    {
+        return apply_filters('wp_sms_user_mobile_field', 'mobile');
+    }
+
+    /**
+     * @param $userId
+     * @return mixed
+     */
+    public static function getUserMobileNumberByUserId($userId)
+    {
+        // get from the user meta
+        $mobileNumber = get_user_meta($userId, self::getUserMobileFieldName(), true);
+
+        return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
 }

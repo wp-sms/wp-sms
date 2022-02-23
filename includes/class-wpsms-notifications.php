@@ -212,13 +212,16 @@ class Notifications
         // Modify request value.
         $request = apply_filters('wp_sms_user_notify_registration', $_REQUEST);
 
+        // get user mobile number
+        $userMobileNumber = Helper::getUserMobileNumberByUserId($user_id);
+
         /**
          * Send SMS to user register.
          */
-        if (isset($user->mobile) or $request and !is_array($request)) {
+        if ($userMobileNumber or ($request and !is_array($request))) {
 
-            if (isset($user->mobile)) {
-                $this->sms->to = array($user->mobile);
+            if ($userMobileNumber) {
+                $this->sms->to = array($userMobileNumber);
             } else if ($request) {
                 $this->sms->to = array($request);
             }
