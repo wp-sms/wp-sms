@@ -7,3 +7,10 @@
 @import "modules/global";
 @import "modules/send-sms-page";
 @import "modules/postbox";
+
+// Add-ons
+@import "modules/add-ons/add-ons";
+@import "modules/add-ons/card";
+
+// Modal
+@import "modules/modal";

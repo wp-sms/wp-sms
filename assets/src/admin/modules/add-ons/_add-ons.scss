@@ -1,0 +1,12 @@
+.wpsms-add-ons {
+  padding-top: 26px !important;
+}
+
+.wpsms-add-ons__grid {
+  display: flex;
+  flex-wrap: wrap;
+
+  @media screen and (max-width: 990px) {
+    flex-direction: column;
+  }
+}

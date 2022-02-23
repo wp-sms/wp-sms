@@ -1,0 +1,138 @@
+.addon-card {
+  width: calc(50% - 26px);
+  background: #fff;
+  border: 1px solid #E7E7E7;
+  box-sizing: border-box;
+  border-radius: 2px;
+  margin: 0 0 16px 16px;
+  position: relative;
+
+  @media screen and (max-width: 990px) {
+    width: calc(100% - 34px);
+    margin: 0 16px 16px;
+  }
+}
+
+.addon-card__header {
+  height: 86px;
+  display: flex;
+  align-items: center;
+  background-color: #F7F7F7;
+  padding: 0 32px;
+
+  @media screen and (max-width: 990px) {
+    padding: 0 12px;
+    height: 70px;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+
+    img {
+      max-width: 48px;
+      max-height: 48px;
+    }
+
+    h3 {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 17px;
+      text-transform: uppercase;
+      margin-left: 12px;
+    }
+  }
+}
+
+.addon-card__main {
+  padding: 32px 32px 0;
+  margin-bottom: 32px;
+
+  @media screen and (max-width: 990px) {
+    padding: 24px 12px 0;
+    margin-bottom: 24px;
+  }
+
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 22px;
+
+  p {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+}
+
+.addon-card__footer {
+  padding: 0 32px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media screen and (max-width: 990px) {
+    padding: 0 12px 16px;
+  }
+}
+
+// addon-card__ribbon
+.addon-card__ribbon {
+  width: 75px;
+  height: 75px;
+  overflow: hidden;
+  position: absolute;
+}
+.addon-card__ribbon::before,
+.addon-card__ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+  border: 5px solid #910101;
+}
+.addon-card__ribbon span {
+  position: absolute;
+  display: block;
+  width: 110px;
+  padding: 7px 0;
+  background-color: #d80b0b;
+  box-shadow: 0 5px 10px rgba(0,0,0,.1);
+  color: #fff;
+  font: 700 13px/1 'Lato', sans-serif;
+  text-shadow: 0 1px 1px rgba(0,0,0,.2);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.addon-card__ribbon--top-left {
+  top: -11px;
+  left: -11px;
+}
+.addon-card__ribbon--top-left::before,
+.addon-card__ribbon--top-left::after {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.addon-card__ribbon--top-left::before {
+  top: 0;
+  right: 0;
+}
+.addon-card__ribbon--top-left::after {
+  bottom: 0;
+  left: 0;
+}
+.addon-card__ribbon--top-left span {
+  right: -6px;
+  top: 17px;
+  transform: rotate(-45deg);
+}
+
+.addon-card__footer__status {
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 17px;
+
+  strong {
+    font-weight: 700;
+  }
+}
