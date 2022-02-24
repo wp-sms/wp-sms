@@ -123,7 +123,7 @@ class Outbox_List_Table extends \WP_List_Table
             'message'   => __('Message', 'wp-sms'),
             'recipient' => __('Recipient', 'wp-sms'),
             'response'  => __('Response', 'wp-sms'),
-            'media'     => __('Media', 'wp-sms-pro'),
+            'media'     => __('Media', 'wp-sms'),
             'status'    => __('Status', 'wp-sms'),
         );
     }

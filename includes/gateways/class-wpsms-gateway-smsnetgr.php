@@ -114,7 +114,7 @@ class smsnetgr extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms-pro'));
+            return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms'));
         }
 
         $response = wp_remote_get(add_query_arg([

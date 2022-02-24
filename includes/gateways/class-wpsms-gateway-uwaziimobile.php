@@ -136,7 +136,7 @@ class uwaziimobile extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms-pro'));
+            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
         $response = wp_remote_get(sprintf('%s/Balance', $this->wsdl_link), [

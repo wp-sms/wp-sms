@@ -145,7 +145,7 @@ class msegat extends \WP_SMS\Gateway
 
         // Check api key
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms-pro'));
+            return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms'));
         }
 
         $args = array(
