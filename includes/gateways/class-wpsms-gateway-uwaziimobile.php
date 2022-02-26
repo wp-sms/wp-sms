@@ -13,8 +13,8 @@ class uwaziimobile extends \WP_SMS\Gateway
     public $gatewayFields = [
         'username' => [
             'id'   => 'gateway_username',
-            'name' => 'API Key',
-            'desc' => 'Enter your API Key',
+            'name' => 'Token',
+            'desc' => 'Enter your Token',
         ],
         'from'     => [
             'id'   => 'gateway_sender_id',

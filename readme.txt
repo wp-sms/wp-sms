@@ -1,7 +1,7 @@
 ﻿=== WP SMS ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
+Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
@@ -9,14 +9,18 @@ Stable tag: 5.6.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-A powerful SMS Messaging/Texting plugin for WordPress
+The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 == Description ==
 This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, Click send and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
-Additionally, you can send SMS/MMS messages to your newsletter subscribers or users and draw their attention to your site, products, and announcements.
+Additionally, you can send SMS/MMS message notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
-Using WP-SMS you can enjoy many features, You can
+Watch the video to learn more about the WordPress SMS Plugin!
+
+https://www.youtube.com/watch?v=7r6jObgdQj0
+
+Main plugin's feature
 
 * Send SMS/MMS to either your users’ numbers or specific numbers
 * Get your users’ mobile numbers when they subscribe to your newsletters
@@ -25,13 +29,9 @@ Using WP-SMS you can enjoy many features, You can
 * Login with your mobile number in case that you forget your password
 * And many more!
 
-This plugin is completely free. You just need to have an account from one of the services in the list of gateways we support.
+This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
 
 Don’t worry, we have tried to cover the best and the most well-known gateways for the plugin. Also, the Pro version is available too.
-
-Watch How You Can Send SMS With WordPress!
-
-https://www.youtube.com/watch?v=7r6jObgdQj0
 
 = Features =
 * Supporting more than 250 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
@@ -145,7 +145,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP v7, v8 Supports? =
-Yes! WP SMS is compatible with PHP version v5.6 up to v8
+Yes! WP-SMS is compatible with PHP version v5.6 up to v8
 
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
