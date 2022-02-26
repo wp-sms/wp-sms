@@ -28,7 +28,7 @@
 <table class="form-table">
     <tr valign="top">
         <th scope="row">
-            <label for="wps-send-to"><?php _e('Send Notification to?', 'wp-sms'); ?>:</label>
+            <label for="wps-send-to"><?php _e('Send Notification to?', 'wp-sms'); ?></label>
         </th>
         <td>
             <select name="wps_send_to" id="wps-send-to">
@@ -40,7 +40,7 @@
     </tr>
     <tr valign="top" id="wpsms-select-subscriber-group">
         <th scope="row">
-            <label for="wps-subscribe-group"><?php _e('Select the group', 'wp-sms'); ?>:</label>
+            <label for="wps-subscribe-group"><?php _e('Subscribe group', 'wp-sms'); ?>:</label>
         </th>
         <td>
             <select name="wps_subscribe_group" id="wps-subscribe-group">
@@ -55,12 +55,12 @@
             <label for="wps-mobile-numbers"><?php _e('Number(s)', 'wp-sms'); ?>:</label>
         </th>
         <td>
-            <input name="wps_mobile_numbers" id="wps-mobile-numbers" class="regular-text" value="<?php echo wp_sms_get_option('notif_publish_new_post_numbers') ?>"/>
+            <input type="text" name="wps_mobile_numbers" id="wps-mobile-numbers" class="regular-text" value="<?php echo wp_sms_get_option('notif_publish_new_post_numbers') ?>"/>
         </td>
     </tr>
     <tr valign="top" id="wpsms-custom-text">
         <th scope="row">
-            <label for="wpsms-text-template"><?php _e('SMS Content', 'wp-sms'); ?>:</label>
+            <label for="wpsms-text-template"><?php _e('Message body', 'wp-sms'); ?>:</label>
         </th>
         <td>
             <textarea cols="80" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php

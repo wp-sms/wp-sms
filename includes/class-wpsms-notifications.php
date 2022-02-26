@@ -143,9 +143,9 @@ class Notifications
      * @return null
      * @internal param $post_id
      */
-    public function notify_subscribers_for_published_post($postID, \WP_Post $post, $update)
+    public function notify_subscribers_for_published_post($postID, $post, $update)
     {
-        if ($update == false && $post->post_status === 'publish') {
+        if ($update && $post->post_status === 'publish') {
             // post types selection
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
@@ -160,7 +160,7 @@ class Notifications
             if (is_admin() && isset($_POST['post_ID'])) {
                 $defaultReceiver = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
                 $isForce         = ($defaultReceiver == '0' ? false : true);
-                $defaultGroup    = isset($_REQUEST['wps_subscribe_group']) ? $_REQUEST['wps_subscribe_group'] : '';
+                $defaultGroup    = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : '';
             }
 
             if ($isForce) {
@@ -171,7 +171,7 @@ class Notifications
                         $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
                     }
                 } elseif ($defaultReceiver == 'numbers') {
-                    $this->sms->to = explode(',', $this->options['notif_publish_new_post_numbers']);
+                    $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;

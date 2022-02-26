@@ -1644,13 +1644,13 @@ class Settings
                 ),
                 'notif_publish_new_post_receiver'   => array(
                     'id'      => 'notif_publish_new_post_receiver',
-                    'name'    => __('SMS receiver', 'wp-sms'),
+                    'name'    => __('Send Notification to?', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        'subscriber' => __('Subscriber', 'wp-sms'),
+                        'subscriber' => __('Subscribers', 'wp-sms'),
                         'numbers'      => __('Number(s)', 'wp-sms')
                     ),
-                    'desc'    => __('Please select the receiver of SMS', 'wp-sms')
+                    'desc'    => __('Please select the receiver of SMS Notification', 'wp-sms')
                 ),
                 'notif_publish_new_post_default_group'                  => array(
                     'id'      => 'notif_publish_new_post_default_group',
@@ -1664,12 +1664,6 @@ class Settings
                     'name'    => __('Number(s)', 'wp-sms'),
                     'type'    => 'text',
                     'desc'    => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
-                ),
-                'notif_publish_new_post_words_count'      => array(
-                    'id'   => 'notif_publish_new_post_words_count',
-                    'name' => __('Post content words count', 'wp-sms'),
-                    'type' => 'number',
-                    'desc' => __('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
                 ),
                 'notif_publish_new_post_force'                  => array(
                     'id'      => 'notif_publish_new_post_force',
@@ -1690,6 +1684,12 @@ class Settings
                             '<code>%post_url%</code>',
                             '<code>%post_date%</code>'
                         )
+                ),
+                'notif_publish_new_post_words_count'      => array(
+                    'id'   => 'notif_publish_new_post_words_count',
+                    'name' => __('Post content words count', 'wp-sms'),
+                    'type' => 'number',
+                    'desc' => __('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
                 ),
                 // Publish new post
                 'notif_publish_new_post_author_title'     => array(
