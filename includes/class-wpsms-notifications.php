@@ -80,7 +80,7 @@ class Notifications
         //Published New Posts Actions
         if (isset($this->options['notif_publish_new_post'])) {
             add_action('add_meta_boxes', array($this, 'notification_meta_box'));
-            add_action("transition_post_status", array($this, 'notify_subscribers_for_published_post'), 10, 3);
+            add_action("wp_insert_post", array($this, 'notify_subscribers_for_published_post'), 10, 3);
         }
 
         // Check the send to author of the post is enabled or not
@@ -136,16 +136,16 @@ class Notifications
     /**
      * Send SMS when a new post add
      *
-     * @param $new_status
-     * @param $old_status
+     * @param $postID
      * @param \WP_Post $post Post object.
+     * @param $update
      *
      * @return null
      * @internal param $post_id
      */
-    public function notify_subscribers_for_published_post($new_status, $old_status, $post)
+    public function notify_subscribers_for_published_post($postID, \WP_Post $post, $update)
     {
-        if ('publish' === $new_status) {
+        if ($update == false && $post->post_status === 'publish') {
             // post types selection
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
@@ -153,19 +153,25 @@ class Notifications
                 return;
             }
 
-            $isForce      = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
-            $defaultGroup = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
+            $isForce         = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
+            $defaultGroup    = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
+            $defaultReceiver = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
 
             if (is_admin() && isset($_POST['post_ID'])) {
-                $isForce      = isset($_REQUEST['wps_send_subscribe']) && $_REQUEST['wps_send_subscribe'] == 'yes';
-                $defaultGroup = isset($_REQUEST['wps_subscribe_group']) ? $_REQUEST['wps_subscribe_group'] : '';
+                $defaultReceiver = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
+                $isForce         = ($defaultReceiver == '0' ? false : true);
+                $defaultGroup    = isset($_REQUEST['wps_subscribe_group']) ? $_REQUEST['wps_subscribe_group'] : '';
             }
 
             if ($isForce) {
-                if ($defaultGroup == 'all') {
-                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
-                } else {
-                    $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
+                if ($defaultReceiver == 'subscriber') {
+                    if ($defaultGroup == 'all') {
+                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
+                    } else {
+                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
+                    }
+                } elseif ($defaultReceiver == 'numbers') {
+                    $this->sms->to = explode(',', $this->options['notif_publish_new_post_numbers']);
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;

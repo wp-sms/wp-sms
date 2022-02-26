@@ -2,6 +2,7 @@
 
     WpSmsUltimateMember.init();
     WpSmsBuddyPress.init();
+    WpSmsNotifications.init();
 
     // Set Chosen
     $('.js-wpsms-select2').select2({
@@ -67,7 +68,6 @@ let WpSmsUltimateMember = {
 
         if (condition) {
             for (const field in this.fields) {
-                console.log(field);
                 if (this.fields[field].active) this.fields[field].element.closest('tr').show();
             }
         } else {
@@ -125,6 +125,50 @@ let WpSmsBuddyPress = {
 
     addEventListener: function () {
         this.fields.mobileNumberField.element.change(function () {
+            this.hideOrShowFields();
+        }.bind(this));
+    },
+
+    init: function () {
+        this.getFields();
+        this.hideOrShowFields();
+        this.addEventListener();
+    }
+
+}
+
+/**
+ * Notifications
+ * @type {{init: WpSmsNotifications.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsNotifications.getFields}}
+ */
+let WpSmsNotifications = {
+
+    getFields: function () {
+        this.fields = {
+            receiverField: {
+                element: jQuery('#wpsms_settings\\[notif_publish_new_post_receiver\\]'),
+            },
+            subscriberField: {
+                element: jQuery('#wpsms_settings\\[notif_publish_new_post_default_group\\]'),
+            },
+            numbersField: {
+                element: jQuery('#wpsms_settings\\[notif_publish_new_post_numbers\\]'),
+            }
+        }
+    },
+
+    hideOrShowFields: function () {
+        if (this.fields.receiverField.element.val() == 'subscriber') {
+            this.fields.subscriberField.element.closest('tr').show()
+            this.fields.numbersField.element.closest('tr').hide()
+        } else {
+            this.fields.subscriberField.element.closest('tr').hide()
+            this.fields.numbersField.element.closest('tr').show()
+        }
+    },
+
+    addEventListener: function () {
+        this.fields.receiverField.element.change(function () {
             this.hideOrShowFields();
         }.bind(this));
     },

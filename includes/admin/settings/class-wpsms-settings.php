@@ -1642,6 +1642,29 @@ class Settings
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
                     'desc'    => __('Select post types that you want to use this option.', 'wp-sms')
                 ),
+                'notif_publish_new_post_receiver'   => array(
+                    'id'      => 'notif_publish_new_post_receiver',
+                    'name'    => __('SMS receiver', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'subscriber' => __('Subscriber', 'wp-sms'),
+                        'numbers'      => __('Number(s)', 'wp-sms')
+                    ),
+                    'desc'    => __('Please select the receiver of SMS', 'wp-sms')
+                ),
+                'notif_publish_new_post_default_group'                  => array(
+                    'id'      => 'notif_publish_new_post_default_group',
+                    'name'    => __('Subscribe group', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => $subscribe_groups,
+                    'desc'    => __('Choice the default group to send the SMS', 'wp-sms')
+                ),
+                'notif_publish_new_post_numbers'   => array(
+                    'id'      => 'notif_publish_new_post_numbers',
+                    'name'    => __('Number(s)', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                ),
                 'notif_publish_new_post_words_count'      => array(
                     'id'   => 'notif_publish_new_post_words_count',
                     'name' => __('Post content words count', 'wp-sms'),
@@ -1654,13 +1677,6 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
-                ),
-                'notif_publish_new_post_default_group'                  => array(
-                    'id'      => 'notif_publish_new_post_default_group',
-                    'name'    => __('Subscribe group', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $subscribe_groups,
-                    'desc'    => __('Choice the default group to send the SMS', 'wp-sms')
                 ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
