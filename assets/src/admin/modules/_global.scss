@@ -6,6 +6,13 @@
 
   .wpsms-wrap {
     margin: 0;
+
+    .wrap__title {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: 0.02em;
+    }
   }
 
   #wpcontent .notice {
@@ -152,7 +159,7 @@
 
 .sms_page_wp-sms.rtl {
   table {
-    td, th{
+    td, th {
       text-align: right !important;
     }
   }
