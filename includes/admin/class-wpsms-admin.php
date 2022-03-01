@@ -202,6 +202,13 @@ class Admin
             wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION);
             wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION);
         }
+
+        wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), null, true);
+        wp_enqueue_script('wp-sms-send-page');
+        wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', [
+            'restRootUrl' => esc_url_raw(rest_url()),
+            'nonce'       => wp_create_nonce('wp_rest'),
+        ]);
     }
 
     /**
