@@ -205,10 +205,10 @@ class Admin
 
         wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-send-page');
-        wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', [
+        wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
             'restRootUrl' => esc_url_raw(rest_url()),
             'nonce'       => wp_create_nonce('wp_rest'),
-        ]);
+        ));
     }
 
     /**
@@ -216,7 +216,6 @@ class Admin
      */
     public function subscribers_assets()
     {
-
         /**
          * Add per page option.
          */
@@ -228,21 +227,10 @@ class Admin
 
         wp_register_script('wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-edit-subscriber');
-
-        $protocol = isset($_SERVER["HTTPS"]) ? 'https://' : 'http://';
-
-        $tb_show_url = add_query_arg(
-            array(
-                'action' => 'wp_sms_edit_subscriber'
-            ),
-            admin_url('admin-ajax.php', $protocol)
-        );
-
-        $ajax_vars = array(
-            'tb_show_url' => $tb_show_url,
+        wp_localize_script('wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', array(
+            'tb_show_url' => add_query_arg(array('action' => 'wp_sms_edit_subscriber'), admin_url('admin-ajax.php')),
             'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
-        );
-        wp_localize_script('wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', $ajax_vars);
+        ));
     }
 
     /**
@@ -252,21 +240,10 @@ class Admin
     {
         wp_register_script('wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-edit-group');
-
-        $protocol = isset($_SERVER["HTTPS"]) ? 'https://' : 'http://';
-
-        $tb_show_url = add_query_arg(
-            array(
-                'action' => 'wp_sms_edit_group'
-            ),
-            admin_url('admin-ajax.php', $protocol)
-        );
-
-        $ajax_vars = array(
-            'tb_show_url' => $tb_show_url,
+        wp_localize_script('wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', array(
+            'tb_show_url' => add_query_arg(array('action' => 'wp_sms_edit_group'), admin_url('admin-ajax.php')),
             'tb_show_tag' => __('Edit Group', 'wp-sms')
-        );
-        wp_localize_script('wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', $ajax_vars);
+        ));
     }
 
     /**
