@@ -5,6 +5,9 @@ namespace WP_SMS\Admin\Widget\Widgets;
 use WP_SMS\Admin\Widget\AbstractWidget;
 use WP_SMS\Helper;
 use WPSmsTwoWay\Models\IncomingMessage;
+use DatePeriod;
+use DateInterval;
+use DateTime;
 
 class StatsWidget extends AbstractWidget
 {
@@ -51,20 +54,12 @@ class StatsWidget extends AbstractWidget
         $DB = get_class(WPSmsTwoWay()->getPlugin()->database());
 
         /**
-         * @param string[] $timeRange ['beginning', 'ending']
-         * @param string   $interval
-         * @link https://www.php.net/manual/en/datetime.formats.relative.php
+         * @param \DatePeriod $period
+         * @param string $format
          */
-        $getResults = function (array $timeRange, string $interval, string $format = 'Y-m-d') use ($DB) {
-            $begin = new \DateTime($timeRange[0]);
-            $end   = new \DateTime($timeRange[1]);
-
-            // for ($time = $begin ; $time >= $end  ; $time->modify($interval)) {);
-            // }
-
-            $time = $begin ;
-            do {
-                $receivedMessages[$time->format($format)] = IncomingMessage::whereBetween('received_at', [(clone $time)->modify($interval)->getTimeStamp(), $time->getTimestamp()])
+        $getResults = function (DatePeriod $period, string $format) use ($DB) {
+            foreach ($period as $number => $date) {
+                $receivedMessages[$date->format($format)] = IncomingMessage::whereBetween('received_at', [(clone $date)->add($period->getDateInterval())->getTimeStamp() ,$date->getTimestamp()])
                     ->select('action_status->success as actionSuccess', $DB::raw('count(*) as count'))
                     ->groupBy('actionSuccess')
                     ->get()
@@ -76,21 +71,23 @@ class StatsWidget extends AbstractWidget
                                 return 'failed';
                             case null:
                                 return 'plain';
-
                         }
                     })
                     ->toArray();
-                $time->modify($interval);
-            } while ($time >= $end);
+            }
 
             return $receivedMessages;
         };
 
-        //! format arg must generate unique labels
-        $receivedMessages['last_7_days']   = $getResults(['now', '-6 days'], '-1 day', 'd D');
-        $receivedMessages['last_30_days']  = $getResults(['now', '-29 day'], '-1 day', 'd M');
-        $receivedMessages['this_year']     = $getResults(['now', 'first day of this year'], '-1 month', 'M');
-        $receivedMessages['last_12_month'] = $getResults(['now', '-12 months'], '-1 month', 'M');
+        $now = new DateTime();
+
+        $receivedMessages['last_7_days']   = $getResults(
+            new DatePeriod($now, DateInterval::createFromDateString('-1 day'), 7),
+            'd D'
+        );
+        // $receivedMessages['last_30_days']  = $getResults(['-29 day'         , 'now'], '+1 day', 'd M');
+        // $receivedMessages['this_year']     = $getResults(['first day of jan', 'now'], '+1 month', 'M');
+        // $receivedMessages['last_12_month'] = $getResults(['-12 months'      , 'now'], '+1 month', 'M');
 
         dump($receivedMessages);
     }
