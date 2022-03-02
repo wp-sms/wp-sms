@@ -81,13 +81,22 @@ class StatsWidget extends AbstractWidget
 
         $now = new DateTime();
 
-        $receivedMessages['last_7_days']   = $getResults(
+        $receivedMessages['last_7_days'] = $getResults(
             new DatePeriod($now, DateInterval::createFromDateString('-1 day'), 7),
             'd D'
         );
-        // $receivedMessages['last_30_days']  = $getResults(['-29 day'         , 'now'], '+1 day', 'd M');
-        // $receivedMessages['this_year']     = $getResults(['first day of jan', 'now'], '+1 month', 'M');
-        // $receivedMessages['last_12_month'] = $getResults(['-12 months'      , 'now'], '+1 month', 'M');
+        $receivedMessages['last_30_days'] = $getResults(
+            new DatePeriod($now, DateInterval::createFromDateString('-1 day'), 30),
+            'd M'
+        );
+        $receivedMessages['this_year'] = $getResults(
+            new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('1 day'), $now),
+            'M'
+        );
+        $receivedMessages['last_12_month'] = $getResults(
+            new DatePeriod($now, DateInterval::createFromDateString('-1 month'), 12),
+            'M'
+        );
 
         dump($receivedMessages);
     }
