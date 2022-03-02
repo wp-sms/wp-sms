@@ -59,7 +59,9 @@ class StatsWidget extends AbstractWidget
          */
         $getResults = function (DatePeriod $period, string $format) use ($DB) {
             foreach ($period as $number => $date) {
-                $receivedMessages[$date->format($format)] = IncomingMessage::whereBetween('received_at', [(clone $date)->add($period->getDateInterval())->getTimeStamp() ,$date->getTimestamp()])
+                $timeFrame = [(clone $date)->add($period->getDateInterval())->getTimeStamp() ,$date->getTimestamp()];
+                sort($timeFrame);
+                $receivedMessages[$date->format($format)] = IncomingMessage::whereBetween('received_at', $timeFrame)
                     ->select('action_status->success as actionSuccess', $DB::raw('count(*) as count'))
                     ->groupBy('actionSuccess')
                     ->get()
