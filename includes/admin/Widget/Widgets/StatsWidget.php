@@ -4,10 +4,6 @@ namespace WP_SMS\Admin\Widget\Widgets;
 
 use WP_SMS\Admin\Widget\AbstractWidget;
 use WP_SMS\Helper;
-use WPSmsTwoWay\Models\IncomingMessage;
-use DatePeriod;
-use DateInterval;
-use DateTime;
 
 class StatsWidget extends AbstractWidget
 {
