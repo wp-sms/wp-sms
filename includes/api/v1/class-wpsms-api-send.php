@@ -119,7 +119,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             case 'subscribers':
 
                 if (!$request->has_param('group_ids')) {
-                    throw new Exception(__('Group IDs is required in the parameters', 'wp-sms'));
+                    throw new Exception(__('Parameter group_ids is required', 'wp-sms'));
                 }
 
                 $recipients = \WP_SMS\Newsletter::getSubscribers($request->get_param('group_ids'), true);
@@ -164,7 +164,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             case 'numbers':
 
                 if (!$request->has_param('numbers')) {
-                    throw new Exception(__('Numbers is required in the parameters', 'wp-sms'));
+                    throw new Exception(__('Parameter numbers is required', 'wp-sms'));
                 }
 
                 $recipients = $request->get_param('numbers');
