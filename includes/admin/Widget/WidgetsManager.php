@@ -7,6 +7,13 @@ use WP_SMS\Helper;
 class WidgetsManager
 {
     /**
+     * @var array
+     */
+    private $widgets = [
+        'StatsWidget' => Widgets\StatsWidget::class,
+    ];
+
+    /**
      * Init widgets
      *
      * @return void
@@ -36,9 +43,11 @@ class WidgetsManager
      */
     private function loadWidgets()
     {
-        $widgets = Helper::findAllClassesInDir(WP_SMS_DIR.'includes/admin/Widget/Widgets');
-        foreach ($widgets as $file => $widget) {
-            require_once $file;
+        foreach ($this->widgets as $fileName => $widget) {
+            $file = WP_SMS_DIR."includes/admin/Widget/Widgets/{$fileName}.php";
+            if (file_exists($file)) {
+                require_once $file;
+            }
             if (is_subclass_of($widget, AbstractWidget::class)) {
                 (new $widget)->register();
             }
