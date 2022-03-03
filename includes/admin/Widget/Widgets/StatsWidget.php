@@ -20,88 +20,21 @@ class StatsWidget extends AbstractWidget
      */
     private $data = [];
 
-    protected function onInit()
+    protected function prepare()
     {
-        add_action('plugins_loaded', function () {
-            $this->fetchSentSmsData();
-            $this->fetchReceivedSmsData();
-        }, 11);
-    }
-
-    protected function assets()
-    {
+        $this->fetchData();
         wp_register_script('wp-sms-chartjs', Helper::getPluginAssetUrl('js/chart.min.js'), [], '3.7.1');
-        wp_enqueue_script('wp-sms-widgets-script', Helper::getPluginAssetUrl('js/widgets/stats.js'), ['wp-sms-chartjs']);
+        wp_enqueue_script('wp-sms-dashboard-widget-stats', Helper::getPluginAssetUrl('js/admin-dashboard-stats-widget.js'), ['wp-sms-chartjs']);
+        wp_localize_script('wp-sms-dashboard-widget-stats', 'WPSmsWidgetsStats', apply_filters('wp-sms-stats-widget-data', $this->data));
     }
 
     public function render()
     {
-        dump('hi');
+        // TODO
     }
 
-    private function fetchSentSmsData()
+    private function fetchData()
     {
         //select json_unquote(json_extract(`action_status`, '$."success"')) as `actionSuccess`, count(*) as count from `wp_sms_two_way_incoming_messages` where `received_at` between ? and ? and `wp_sms_two_way_incoming_messages`.`deleted_at` is null group by `actionSuccess
-    }
-
-    private function fetchReceivedSmsData()
-    {
-        // Check if wp-sms-two-way is active
-        if (!function_exists('WPSmsTwoWay') || !WPSmsTwoWay()->getPlugin()->isBooted()) {
-            return;
-        }
-
-        $DB = get_class(WPSmsTwoWay()->getPlugin()->database());
-
-        /**
-         * @param \DatePeriod $period
-         * @param string $format
-         */
-        $getResults = function (DatePeriod $period, string $format) use ($DB) {
-            $dates = iterator_to_array($period);
-            sort($dates);
-            for ($i = 0; $i < sizeof($dates)-1 ; $i++) {
-                $firstDate  = $dates[$i];
-                $secondDate = $dates[$i+1];
-                $receivedMessages[$secondDate->format($format)] = IncomingMessage::whereBetween('received_at', [$firstDate->getTimeStamp() , $secondDate->getTimeStamp()])
-                    ->select('action_status->success as actionSuccess', $DB::raw('count(*) as count'))
-                    ->groupBy('actionSuccess')
-                    ->get()
-                    ->groupBy(function (&$item) {
-                        switch ($item['actionSuccess']) {
-                            case 'true':
-                                return 'successful';
-                            case 'false':
-                                return 'failed';
-                            case null:
-                                return 'plain';
-                        }
-                    })
-                    ->toArray();
-            }
-
-            return $receivedMessages;
-        };
-
-        $now = new DateTime();
-
-        $receivedMessages['last_7_days'] = $getResults(
-            new DatePeriod($now, DateInterval::createFromDateString('-1 day'), 7),
-            'd D'
-        );
-        $receivedMessages['last_30_days'] = $getResults(
-            new DatePeriod($now, DateInterval::createFromDateString('-1 day'), 30),
-            'd M'
-        );
-        $receivedMessages['this_year'] = $getResults(
-            new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('1 day'), $now),
-            'M'
-        );
-        $receivedMessages['last_12_month'] = $getResults(
-            new DatePeriod($now, DateInterval::createFromDateString('-1 month'), 12),
-            'M'
-        );
-
-        dump($receivedMessages);
     }
 }

@@ -42,8 +42,8 @@ abstract class AbstractWidget
     {
         add_action('wp_dashboard_setup', function () {
             wp_add_dashboard_widget($this->id, $this->name, function (...$args) {
-                if (method_exists($this, 'assets')) {
-                    call_user_func([$this, 'assets']);
+                if (method_exists($this, 'prepare')) {
+                    call_user_func([$this, 'prepare']);
                 }
                 call_user_func([$this, 'render'], ...$args);
             });
