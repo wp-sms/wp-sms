@@ -52,4 +52,38 @@ class Helper
 
         return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
+
+    /**
+     * @param $roleId
+     * @return array
+     */
+    public static function getUsersMobileNumbers($roleId = false)
+    {
+        $mobileFieldKey = self::getUserMobileFieldName();
+        $args           = array(
+            'meta_query'  => array(
+                array(
+                    'key'     => $mobileFieldKey,
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+            ),
+            'count_total' => 'false'
+        );
+
+        if ($roleId) {
+            $args['role'] = $roleId;
+        }
+
+        $users         = get_users($args);
+        $mobileNumbers = [];
+
+        foreach ($users as $user) {
+            if (isset($user->$mobileFieldKey)) {
+                $mobileNumbers[] = $user->$mobileFieldKey;
+            }
+        }
+
+        return $mobileNumbers;
+    }
 }

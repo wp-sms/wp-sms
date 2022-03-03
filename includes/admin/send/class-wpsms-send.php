@@ -2,9 +2,6 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Admin\Helper;
-use WP_SMS\Pro\Scheduled;
-
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -36,8 +33,8 @@ class SMS_Send
      */
     public function render_page()
     {
-        $get_group_result        = $this->db->get_results("SELECT * FROM `{$this->db->prefix}sms_subscribes_group`");
-        $get_users_mobile        = $this->db->get_col("SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' ");
+        $get_group_result        = Newsletter::get_groups();
+        $get_users_mobile        = Helper::getUsersMobileNumbers();
         $woocommerceCustomers    = [];
         $buddyPressMobileNumbers = [];
         $proIsActive             = Version::pro_is_active();
@@ -55,7 +52,7 @@ class SMS_Send
         foreach (wp_roles()->role_names as $key_item => $val_item) {
             $wpsms_list_of_role[$key_item] = array(
                 "name"  => $val_item,
-                "count" => Helper::getUsersList($key_item, true)
+                "count" => count(Helper::getUsersMobileNumbers($key_item))
             );
         }
 
