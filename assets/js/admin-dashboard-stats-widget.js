@@ -49,7 +49,6 @@ const statsWidget = {
             this.parent.elements.timeFrameSelect.change(function () {
                 const chart = this.parent.chart;
                 chart.data = this.getData();
-                console.log(chart.data);
                 chart.update()
             }.bind(this))
         }
