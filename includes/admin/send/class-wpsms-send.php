@@ -33,16 +33,12 @@ class SMS_Send
      */
     public function render_page()
     {
-        $get_group_result        = Newsletter::get_groups();
-        $get_users_mobile        = Helper::getUsersMobileNumbers();
-        $woocommerceCustomers    = [];
-        $buddyPressMobileNumbers = [];
-        $proIsActive             = Version::pro_is_active();
-
+        $woocommerceCustomers = [];
         if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
             $woocommerceCustomers = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
         }
 
+        $buddyPressMobileNumbers = [];
         if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
             $buddyPressMobileNumbers = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
         }
@@ -56,6 +52,15 @@ class SMS_Send
             );
         }
 
-        include_once WP_SMS_DIR . "includes/admin/send/send-sms.php";
+        echo Helper::loadTemplate('admin/send-sms.php', [
+            'get_group_result'        => Newsletter::get_groups(),
+            'get_users_mobile'        => Helper::getUsersMobileNumbers(),
+            'proIsActive'             => Version::pro_is_active(),
+            'woocommerceCustomers'    => $woocommerceCustomers,
+            'buddyPressMobileNumbers' => $buddyPressMobileNumbers,
+            'wpsms_list_of_role'      => $wpsms_list_of_role,
+            'smsObject'               => $this->sms,
+            'gatewayCredit'           => $this->sms::credit(),
+        ]);
     }
 }
