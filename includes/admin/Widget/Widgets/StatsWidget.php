@@ -14,7 +14,7 @@ class StatsWidget extends AbstractWidget
     public function __construct()
     {
         // @todo, filter doesn't work in this structure, please fix it!
-        apply_filters('wp_sms_stats_widget_data', [$this, 'addReceivedMessagesToStatsWidget']);
+        add_filter('wp_sms_stats_widget_data', [$this, 'addReceivedMessagesToStatsWidget']);
     }
 
     /**
