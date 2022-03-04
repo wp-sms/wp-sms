@@ -21,12 +21,14 @@ class StatsWidget extends AbstractWidget
         $this->fetchData();
         wp_register_script('wp-sms-chartjs', Helper::getPluginAssetUrl('js/chart.min.js'), [], '3.7.1');
         wp_enqueue_script('wp-sms-dashboard-widget-stats', Helper::getPluginAssetUrl('js/admin-dashboard-stats-widget.js'), ['wp-sms-chartjs']);
-        wp_localize_script('wp-sms-dashboard-widget-stats', 'WPSmsWidgetsStats', apply_filters('wp_sms_stats_widget_data', $this->data));
+        wp_localize_script('wp-sms-dashboard-widget-stats', 'WPSmsStatsData', apply_filters('wp_sms_stats_widget_data', $this->data));
     }
 
     public function render()
     {
-        // TODO
+        echo "<h1>chart</h1><div class='wp-sms-widget stats-widget'>
+            <canvas width='400' height='400'></canvas>
+        </div>";
     }
 
     private function fetchData()
