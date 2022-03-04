@@ -11,6 +11,12 @@ class StatsWidget extends AbstractWidget
     protected $name = 'WP SMS Stats';
     protected $version = '1.0';
 
+    public function __construct()
+    {
+        // @todo, filter doesn't work in this structure, please fix it!
+        add_filter('wp_sms_stats_widget_data', [$this, 'addReceivedMessagesToStatsWidget']);
+    }
+
     /**
      * @var array
      */
@@ -18,7 +24,6 @@ class StatsWidget extends AbstractWidget
 
     protected function prepare()
     {
-        $this->fetchData();
         wp_register_script('wp-sms-chartjs', Helper::getPluginAssetUrl('js/chart.min.js'), [], '3.7.1');
         wp_enqueue_script('wp-sms-dashboard-widget-stats', Helper::getPluginAssetUrl('js/admin-dashboard-stats-widget.js'), ['wp-sms-chartjs']);
         wp_localize_script('wp-sms-dashboard-widget-stats', 'WPSmsStatsData', apply_filters('wp_sms_stats_widget_data', $this->data));
@@ -26,13 +31,29 @@ class StatsWidget extends AbstractWidget
 
     public function render()
     {
-        echo "<h1>chart</h1><div class='wp-sms-widget stats-widget'>
-            <canvas width='400' height='400'></canvas>
-        </div>";
+        echo Helper::loadTemplate('admin-dashboard-widget.php', [
+            'foo' => 'bar'
+        ]);
     }
 
-    private function fetchData()
+    // @todo, should be dynamic
+    public function addReceivedMessagesToStatsWidget($data)
     {
-        //select json_unquote(json_extract(`action_status`, '$."success"')) as `actionSuccess`, count(*) as count from `wp_sms_two_way_incoming_messages` where `received_at` between ? and ? and `wp_sms_two_way_incoming_messages`.`deleted_at` is null group by `actionSuccess
+        $data['send-messages-stats'] = [
+            'last_7_days'   => [
+
+            ],
+            'last_30_days'  => [
+
+            ],
+            'this_year'     => [
+
+            ],
+            'last_12_month' => [
+
+            ],
+        ];
+
+        return $data;
     }
 }
