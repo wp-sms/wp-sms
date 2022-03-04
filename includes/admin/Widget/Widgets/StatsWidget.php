@@ -27,7 +27,8 @@ class StatsWidget extends AbstractWidget
 
     private function fetchSentMessagesStats()
     {
-        return $data['send-messages-stats'] = [
+        return [
+            'send-messages-stats' => [],
         ];
     }
 }
