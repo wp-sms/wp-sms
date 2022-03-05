@@ -79,21 +79,21 @@
       smsTo = {type: jQuery("select[name='wp_send_to'] option:selected").val()},
       smsMessage = jQuery("#wp_get_message").val(),
       smsMedia = jQuery(".wpsms-mms-image").val(),
-      smsScheduled = {scheduled: jQuery("#schedule_status").val()},
+      smsScheduled = {scheduled: jQuery("#schedule_status").is(":checked")},
       smsFlash = jQuery('[name="wp_flash"]:checked').val();
-
-    if (smsTo.type === "wp_subscribe_username") {
+console.log(smsScheduled);
+    if (smsTo.type === "subscribers") {
       smsTo.groups = jQuery('.wpsms-group select[name="wpsms_groups[]"]').val();
-    } else if (smsTo.type === "wp_users") {
+    } else if (smsTo.type === "users") {
       smsTo.roles = jQuery('select[name="wpsms_roles[]"]').val();
-    } else if (smsTo.type === "wp_tellephone") {
+    } else if (smsTo.type === "numbers") {
       smsTo.numbers = jQuery('textarea[name="wp_get_number"]').val();
     }
 
     if (smsScheduled.scheduled) {
       smsScheduled.date = jQuery("#schedule_date .flatpickr-input").val();
     }
-console.log(smsTo);
+
     let requestBody = {
       sender: smsFrom,
       recipients: smsTo.type,
@@ -107,8 +107,8 @@ console.log(smsTo);
     };
 
     jQuery('.wpsms-wrap__main__notice').removeClass('not-hidden');
-console.log(JSON.stringify(requestBody));
-    jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',
+
+   jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',
       {
         headers: {'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce},
         dataType: 'json',
@@ -120,22 +120,25 @@ console.log(JSON.stringify(requestBody));
           jQuery('input[name="SendSMS"]').attr('disabled', 'disabled');
         },
         success: function (data, status, xhr) {
+          console.log(data);
+          Object.keys(smsTo).forEach(key => {
+            delete smsTo[key];
+          })
           scrollToTop();
           jQuery(".wpsms-sendsms__overlay").css('display', 'none');
           jQuery('input[name="SendSMS"]').removeAttr('disabled');
+          jQuery('.wpsms-wrap__main__notice').removeClass('notice-error');
           jQuery('.wpsms-wrap__main__notice').addClass('notice-success');
-          jQuery('.wpsms-wrap__notice__text').html("The sms has been sent successfully!");
-          jQuery('.wpsms-wrap__account-balance').html('Your account credit: ' + data.balance);
+          jQuery('.wpsms-wrap__notice__text').html(data.message);
+          jQuery('.wpsms-wrap__account-balance').html('Your account credit: ' + data.data.balance);
           jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
           jQuery(".wpsms-sendsms__overlay").css('display', 'none');
         },
         error: function (data, status, xhr) {
           scrollToTop();
-          console.log(data);
-          console.log(status);
-          console.log(xhr);
+          jQuery('.wpsms-wrap__main__notice').removeClass('notice-success');
           jQuery('.wpsms-wrap__main__notice').addClass('notice-error');
-          jQuery('.wpsms-wrap__notice__text').html("There's was an error in sending the sms!");
+          jQuery('.wpsms-wrap__notice__text').html("There's was an error in sending SMS!");
           jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
           jQuery(".wpsms-sendsms__overlay").css('display', 'none');
           jQuery('input[name="SendSMS"]').removeAttr('disabled');
@@ -172,5 +175,3 @@ function scrollToTop() {
 function closeNotice() {
   jQuery(".wpsms-wrap__main__notice").removeClass('not-hidden');
 }
-
-console.log(WpSmsSendSmsTemplateVar);

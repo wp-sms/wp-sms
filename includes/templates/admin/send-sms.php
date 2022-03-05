@@ -36,23 +36,23 @@
                                         </th>
                                         <td>
                                             <select name="wp_send_to" id="select_sender">
-                                                <option value="wp_subscribe_username" id="wp_subscribe_username"><?php _e( 'Subscribers',
+                                                <option value="subscribers" id="wp_subscribe_username"><?php _e( 'Subscribers',
 														'wp-sms' ); ?></option>
-                                                <option value="wp_users" id="wp_users"><?php _e( 'WordPress\'s Users',
+                                                <option value="users" id="wp_users"><?php _e( 'WordPress\'s Users',
 														'wp-sms' ); ?></option>
-                                                <option value="wc_users" id="wc_users"<?php disabled( ! $proIsActive ); ?>>
+                                                <option value="wc-customers" id="wc_users"<?php disabled( ! $proIsActive ); ?>>
 													<?php _e( 'WooCommerce\'s Customers', 'wp-sms' ); ?>
 													<?php if ( ! $proIsActive ) : ?>
                                                         <span>(<?php _e( 'Requires the Pro Pack', 'wp-sms' ); ?>)</span>
 													<?php endif; ?>
                                                 </option>
-                                                <option value="bp_users" id="bp_users"<?php disabled( ! $proIsActive ); ?>>
+                                                <option value="bp-users" id="bp_users"<?php disabled( ! $proIsActive ); ?>>
 													<?php _e( 'BuddyPress\'s Users', 'wp-sms' ); ?>
 													<?php if ( ! $proIsActive ) : ?>
                                                         <span>(<?php _e( 'Requires the Pro Pack', 'wp-sms' ); ?>)</span>
 													<?php endif; ?>
                                                 </option>
-                                                <option value="wp_tellephone" id="wp_tellephone"><?php _e( 'Number(s)',
+                                                <option value="numbers" id="wp_tellephone"><?php _e( 'Number(s)',
 														'wp-sms' ); ?></option>
                                             </select>
 
