@@ -86,4 +86,17 @@ class Helper
 
         return $mobileNumbers;
     }
+
+    /**
+     * @param $message
+     * @return array|string|string[]|null
+     */
+    public static function makeUrlsShorterByMessage($message)
+    {
+        $regex = "/(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
+
+        return preg_replace_callback($regex, function ($url) {
+            return wp_sms_shorturl($url[0]);
+        }, $message);
+    }
 }
