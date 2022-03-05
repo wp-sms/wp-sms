@@ -81,12 +81,17 @@ class SendSmsApi extends \WP_SMS\RestApi
 				return self::response('SMS Scheduled Successfully!');
 			}
 
+            /**
+             * Make shorter the URLs in the message
+             */
+            $message = Helper::makeUrlsShorterByMessage($request->get_param('message'));
+
 			/*
 			 * Regular SMS
 			 */
 			$response = wp_sms_send(
 				$recipientNumbers,
-				$request->get_param('message'),
+				$message,
 				$request->get_param('flash'),
 				$request->get_param('sender'),
 				$request->get_param('media_urls')

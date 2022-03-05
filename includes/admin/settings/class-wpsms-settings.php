@@ -1606,7 +1606,7 @@ class Settings
                     'name'    => __('Make the URLs Shorter?', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('By enabling this option, all URLs will be shorter by Billy.com', 'wp-sms'),
+                    'desc'    => __('By enabling this option, all URLs will be shorter by Bitly.com', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'short_url_api_token'                          => array(
