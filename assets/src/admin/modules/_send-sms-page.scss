@@ -85,6 +85,7 @@ Select2
 
 .wpsms-sendsms__preview {
   margin-left: 32px;
+  margin-top: 10px;
 
   @media screen and (max-width: 768px) {
     display: none;
@@ -171,4 +172,12 @@ Select2
 
 .wpsms-sendsms__overlay__spinner {
   width: 7%;
+}
+
+.wpsms-wrap .wpsms-wrap__main__notice {
+  display: none !important;
+
+  &.not-hidden {
+    display: flex !important;
+  }
 }

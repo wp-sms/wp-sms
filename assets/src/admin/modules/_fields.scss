@@ -198,6 +198,14 @@
 
 .wpsms-wrap textarea {
   max-width: calc(100% - 45px);
+  background-color: #fff;
+  padding: 8px 14px !important;
+  font-weight: normal;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  border: 1px solid #5b5b5b !important;
+  box-sizing: border-box;
+  border-radius: 2px !important;
 
   &:focus {
     border-color: #F88E40 !important;
@@ -207,10 +215,18 @@
   }
 }
 
+.wpsms-wrap {
+  .select2 .select2-search__field {
+    height: 26px;
+    border: none !important;
+    padding: 0 !important;
+  }
+}
+
 .wpsms-wrap .select2 {
 
   .select2-selection {
-    border-color: #000;
+    border-color: #5b5b5b;
     border-radius: 2px;
     padding: 6px 2px;
   }

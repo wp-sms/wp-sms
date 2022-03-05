@@ -63,7 +63,7 @@ class Send extends \WP_SMS\RestApi
         // Get parameters from request
         $params = $request->get_params();
 
-        return self::response(['Is test']);
+        return self::response(['Is test'], 400);
 
         // todo
         if ($_POST['wp_send_to'] == "wp_subscribe_username") {

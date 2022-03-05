@@ -206,9 +206,12 @@ class Admin
         wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-send-page');
         wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
-            'restRootUrl' => esc_url_raw(rest_url()),
-            'nonce'       => wp_create_nonce('wp_rest'),
-        ));
+	        'restRootUrl'     => esc_url_raw(rest_url()),
+	        'nonce'           => wp_create_nonce('wp_rest'),
+	        'messageMsg'      => __('characters', 'wp-sms'),
+	        'currentDateTime' => current_datetime()->format("Y-m-d H:i:00"),
+	        'proIsActive'     => \WP_SMS\Version::pro_is_active(),
+    ));
     }
 
     /**
