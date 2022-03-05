@@ -12,8 +12,9 @@ const statsWidget = {
     },
     elements: [],
     setElements: function () {
-        this.elements.context = jQuery('.wp-sms-widget.stats-widget > canvas')
-        this.elements.timeFrameSelect = jQuery('.wp-sms-widget.stats-widget > select.time-frame')
+        this.elements.context = jQuery('.wp-sms-widgets.stats-widget > canvas')
+        this.elements.timeFrameSelect = jQuery('.wp-sms-widgets.stats-widget select.time-frame')
+        this.elements.smsDirection = jQuery('.wp-sms-widgets.stats-widget select.sms-direction')
     },
     data: {
         init: function (parent) {
@@ -21,32 +22,60 @@ const statsWidget = {
         },
         getData: function () {
             const timeFrame = this.parent.elements.timeFrameSelect.val()
-            const datasets = WPSmsStatsData['received-messages-stats'][timeFrame]
-            return {
-                datasets: [
-                    {
-                        label: 'Successful',
-                        backgroundColor: '#74c69d',
-                        borderColor: '#40916c',
-                        data: datasets['successful'],
-                    },
-                    {
-                        label: 'Failed',
-                        backgroundColor: '#dd2c2f',
-                        borderColor: '#bd1f21',
-                        data: datasets['failure'],
-                    },
-                    {
-                        label: 'Plain',
-                        backgroundColor: '#adb5bd',
-                        borderColor: '#495057',
-                        data: datasets['plain'],
+            const direction = this.parent.elements.smsDirection.val()
+            const datasets = WPSmsStatsData[direction][timeFrame]
+
+            switch (direction) {
+                case 'send-messages-stats':
+                    return {
+                        datasets: [
+                            {
+                                label: 'Successful',
+                                backgroundColor: '#74c69d',
+                                borderColor: '#40916c',
+                                data: datasets['successful'],
+                            },
+                            {
+                                label: 'Failed',
+                                backgroundColor: '#dd2c2f',
+                                borderColor: '#bd1f21',
+                                data: datasets['failure'],
+                            }
+                        ]
                     }
-                ]
+                case 'received-messages-stats':
+                    return {
+                        datasets: [
+                            {
+                                label: 'Successful',
+                                backgroundColor: '#74c69d',
+                                borderColor: '#40916c',
+                                data: datasets['successful'],
+                            },
+                            {
+                                label: 'Failed',
+                                backgroundColor: '#dd2c2f',
+                                borderColor: '#bd1f21',
+                                data: datasets['failure'],
+                            },
+                            {
+                                label: 'Plain',
+                                backgroundColor: '#adb5bd',
+                                borderColor: '#495057',
+                                data: datasets['plain'],
+                            }
+                        ]
+
+                    }
             }
         },
         addEventListener: function () {
             this.parent.elements.timeFrameSelect.change(function () {
+                const chart = this.parent.chart;
+                chart.data = this.getData();
+                chart.update()
+            }.bind(this))
+            this.parent.elements.smsDirection.change(function () {
                 const chart = this.parent.chart;
                 chart.data = this.getData();
                 chart.update()

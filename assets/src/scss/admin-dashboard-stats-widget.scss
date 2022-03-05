@@ -1,0 +1,11 @@
+.wp-sms-widgets {
+
+    &.stats-widget {
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+    }
+}
