@@ -30,4 +30,23 @@ class Helper
             return $text;
         }
     }
+
+    /**
+     * Add Flash Admin WordPress UI Notice
+     *
+     * @param string $text where Show Text Notification
+     * @param string $model Type Of Model from list : error / warning / success / info
+     * @param string $redirect Url for redirect to new page
+     */
+    public static function addFlashNotice($text, $model = "success", $redirect = false)
+    {
+        update_option('wpsms_flash_message', [
+            'text'  => $text,
+            'model' => $model
+        ]);
+        if ($redirect) {
+            wp_redirect($redirect);
+            exit;
+        }
+    }
 }

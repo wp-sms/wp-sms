@@ -24,6 +24,7 @@ class Admin
         add_action('admin_bar_menu', array($this, 'admin_bar'));
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
+        add_action('admin_notices', array($this, 'displayFlashNotice'));
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
@@ -138,6 +139,15 @@ class Admin
         }
     }
 
+    public function displayFlashNotice()
+    {
+        $notice = get_option('wpsms_flash_message', false);
+        if ($notice) {
+            delete_option('wpsms_flash_message');
+            \WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
+        }
+    }
+
     /**
      * Callback send sms page.
      */
@@ -206,12 +216,12 @@ class Admin
         wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-send-page');
         wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
-	        'restRootUrl'     => esc_url_raw(rest_url()),
-	        'nonce'           => wp_create_nonce('wp_rest'),
-	        'messageMsg'      => __('characters', 'wp-sms'),
-	        'currentDateTime' => current_datetime()->format("Y-m-d H:i:00"),
-	        'proIsActive'     => \WP_SMS\Version::pro_is_active(),
-    ));
+            'restRootUrl'     => esc_url_raw(rest_url()),
+            'nonce'           => wp_create_nonce('wp_rest'),
+            'messageMsg'      => __('characters', 'wp-sms'),
+            'currentDateTime' => current_datetime()->format("Y-m-d H:i:00"),
+            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
+        ));
     }
 
     /**
