@@ -457,11 +457,19 @@ class Newsletter
 
         if ($group_ids) {
             $groups = implode(',', wp_sms_sanitize_array($group_ids));
-            $where  .= " WHERE `group_ID` IN ({$groups})";
+            $where  .= "`group_ID` IN ({$groups}) ";
         }
 
         if ($only_active) {
-            $where .= " AND `status` = '1'";
+            if ($where) {
+                $where .= "AND `status` = '1' ";
+            } else {
+                $where .= "`status` = '1' ";
+            }
+        }
+
+        if ($where) {
+            $where = " WHERE {$where}";
         }
 
         return $wpdb->get_col("SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where);
