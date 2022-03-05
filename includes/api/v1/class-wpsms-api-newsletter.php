@@ -10,6 +10,8 @@ if (!defined('ABSPATH')) {
  * @category   class
  * @package    WP_SMS_Api
  * @version    1.0
+ *
+ * @todo This newsletter endpoints will be deprecated and move under /subscribers
  */
 class Newsletter extends \WP_SMS\RestApi
 {

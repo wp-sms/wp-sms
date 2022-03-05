@@ -145,5 +145,5 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
 # Donation
 Would you like to support this project?
-- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wp-sms-pro.com/donate)
+- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](https://wp-sms-pro.com/donate)
 - ![btc](https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/bitcoin.png) Bitcoin: `bc1qjezs7vusvvmhxrhxan7nkl7kvnpy624wxhse2p`
