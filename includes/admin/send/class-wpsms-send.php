@@ -2,9 +2,6 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Admin\Helper;
-use WP_SMS\Pro\Scheduled;
-
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -36,16 +33,12 @@ class SMS_Send
      */
     public function render_page()
     {
-        $get_group_result        = $this->db->get_results("SELECT * FROM `{$this->db->prefix}sms_subscribes_group`");
-        $get_users_mobile        = $this->db->get_col("SELECT `meta_value` FROM `{$this->db->prefix}usermeta` WHERE `meta_key` = 'mobile' AND `meta_value` != '' ");
-        $woocommerceCustomers    = [];
-        $buddyPressMobileNumbers = [];
-        $proIsActive             = Version::pro_is_active();
-
+        $woocommerceCustomers = [];
         if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
             $woocommerceCustomers = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
         }
 
+        $buddyPressMobileNumbers = [];
         if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
             $buddyPressMobileNumbers = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
         }
@@ -55,10 +48,19 @@ class SMS_Send
         foreach (wp_roles()->role_names as $key_item => $val_item) {
             $wpsms_list_of_role[$key_item] = array(
                 "name"  => $val_item,
-                "count" => Helper::getUsersList($key_item, true)
+                "count" => count(Helper::getUsersMobileNumbers($key_item))
             );
         }
 
-        include_once WP_SMS_DIR . "includes/admin/send/send-sms.php";
+        echo Helper::loadTemplate('admin/send-sms.php', [
+            'get_group_result'        => Newsletter::get_groups(),
+            'get_users_mobile'        => Helper::getUsersMobileNumbers(),
+            'proIsActive'             => Version::pro_is_active(),
+            'woocommerceCustomers'    => $woocommerceCustomers,
+            'buddyPressMobileNumbers' => $buddyPressMobileNumbers,
+            'wpsms_list_of_role'      => $wpsms_list_of_role,
+            'smsObject'               => $this->sms,
+            'gatewayCredit'           => $this->sms::credit(),
+        ]);
     }
 }

@@ -27,7 +27,7 @@
                                             <label for="wp_get_sender"><?php _e( 'From', 'wp-sms' ); ?>:</label>
                                         </th>
                                         <td>
-                                            <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $this->sms->from; ?>" maxlength="18"/>
+                                            <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $smsObject->from; ?>" maxlength="18"/>
                                         </td>
                                     </tr>
                                     <tr valign="top">
@@ -117,17 +117,14 @@
                                             <div class="clearfix"></div>
                                             <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                             <div class="clearfix"></div>
-                                            <div style="font-size: 14px"><?php _e( 'Separate the numbers with comma (,) or enter in each lines.',
-		                                            'wp-sms' ); ?></div>
-                                            <?php if ( $this->sms->validateNumber ) : ?>
-                                                <div style="margin-top: 10px"><?php echo sprintf( __( 'Gateway description: <code>%s</code>',
-			                                            'wp-sms' ),
-			                                            $this->sms->validateNumber ); ?></div>
+                                            <div style="font-size: 14px"><?php _e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?></div>
+                                            <?php if ($smsObject->validateNumber) : ?>
+                                                <div style="margin-top: 10px"><?php echo sprintf(__('Gateway description: <code>%s</code>', 'wp-sms'), $smsObject->validateNumber); ?></div>
                                             <?php endif; ?>
                                         </span>
                                         </td>
                                     </tr>
-									<?php if ( ! $this->sms->bulk_send ) : ?>
+	                                <?php if (!$smsObject->bulk_send) : ?>
                                         <tr>
                                             <td></td>
                                             <td><?php _e( 'This gateway doesn\'t support the bulk SMS and will use the first number while sending a group of numbers.',
@@ -141,7 +138,7 @@
                                         <td>
                                             <textarea dir="auto" cols="80" rows="5" wrap="hard" name="wp_get_message wpsms-input" id="wp_get_message"></textarea><br/>
                                             <p class="number">
-												<?php echo __( 'Your account credit', 'wp-sms' ) . ': ' . $credit; ?>
+	                                            <?php echo __('Your account credit', 'wp-sms') . ': ' . $gatewayCredit; ?>
                                             </p>
                                         </td>
                                     </tr>
@@ -149,18 +146,12 @@
                                     <tr>
                                         <th><?php _e( 'Choice MMS media', 'wp-sms' ); ?></th>
                                         <td>
-											<?php if ( $this->sms->supportMedia ) : ?>
-                                                <div><a href="#" class="wpsms-upload-button button">Upload image</a>
-                                                </div>
-                                                <div style="margin-top: 11px;">
-                                                    <a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a>
-                                                </div>
-                                                <input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
-											<?php else: ?>
-                                                <p><?php echo sprintf( __( 'This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.',
-														'wp-sms' ),
-														WP_SMS_SITE . '/gateways' ); ?></p>
-											<?php endif; ?>
+	                                        <?php if ($smsObject->supportMedia) : ?>
+                                                <div><a href="#" class="wpsms-upload-button button">Upload image</a></div>
+                                                <div style="margin-top: 11px;"><a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a></div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
+	                                        <?php else: ?>
+                                                <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?></p>
+	                                        <?php endif; ?>
                                         </td>
                                     </tr>
 
@@ -198,7 +189,7 @@
                                         </tr>
 									<?php endif; ?>
 
-									<?php if ( $this->sms->flash == "enable" ) { ?>
+	                                <?php if ($smsObject->flash == "enable") { ?>
                                         <tr>
                                             <td><?php _e( 'Send as a Flash', 'wp-sms' ); ?>:</td>
                                             <td>

@@ -59,7 +59,7 @@ class verimor extends \WP_SMS\Gateway
         }
 
         $msg = urlencode($this->msg);
-        $to  = implode($this->to, ",");
+        $to  = implode(',', $this->to);
 
         $response = wp_remote_get($this->wsdl_link . "send?username=" . $this->username . "&password=" . $this->password . "&source_addr=" . $this->from . "&msg=" . $msg . "&dest=" . $to . "&datacoding=0");
 

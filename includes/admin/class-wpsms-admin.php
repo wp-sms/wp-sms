@@ -333,7 +333,7 @@ class Admin
      */
     public function admin_newsletter()
     {
-        include_once WP_SMS_DIR . 'includes/templates/admin-newsletter.php';
+        echo Helper::loadTemplate('admin/newsletter-form.php');
     }
 
     /**
