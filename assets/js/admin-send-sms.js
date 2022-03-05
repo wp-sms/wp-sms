@@ -37,24 +37,24 @@
     msg: WpSmsSendSmsTemplateVar.messageMsg
   });
   if (WpSmsSendSmsTemplateVar.proIsActive) {
-  jQuery("#datepicker").flatpickr({
-    enableTime: true,
-    dateFormat: "Y-m-d H:i:00",
-    time_24hr: true,
-    minuteIncrement: "10",
-    minDate: WpSmsSendSmsTemplateVar.currentDateTime,
-    disableMobile: true,
-    defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
-  });
+    jQuery("#datepicker").flatpickr({
+      enableTime: true,
+      dateFormat: "Y-m-d H:i:00",
+      time_24hr: true,
+      minuteIncrement: "10",
+      minDate: WpSmsSendSmsTemplateVar.currentDateTime,
+      disableMobile: true,
+      defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
+    });
 
-  jQuery("#schedule_status").change(function () {
-    if (jQuery(this).is(":checked")) {
-      jQuery('#schedule_date').show();
-    } else {
-      jQuery('#schedule_date').hide();
-    }
-  });
-}
+    jQuery("#schedule_status").change(function () {
+      if (jQuery(this).is(":checked")) {
+        jQuery('#schedule_date').show();
+      } else {
+        jQuery('#schedule_date').hide();
+      }
+    });
+  }
 
   jQuery(".preview__message__humber").html(jQuery("#wp_get_sender").val());
 
@@ -84,8 +84,8 @@
 
     if (smsTo.type === "wp_subscribe_username") {
       smsTo.groups = jQuery('.wpsms-group select[name="wpsms_groups[]"]').val();
-    } else if (smsTo.type === "wp_role") {
-      smsTo.roles = jQuery('select[name="wpsms_group_role"] option:selected').val();
+    } else if (smsTo.type === "wp_users") {
+      smsTo.roles = jQuery('select[name="wpsms_roles[]"]').val();
     } else if (smsTo.type === "wp_tellephone") {
       smsTo.numbers = jQuery('textarea[name="wp_get_number"]').val();
     }
@@ -93,10 +93,12 @@
     if (smsScheduled.scheduled) {
       smsScheduled.date = jQuery("#schedule_date .flatpickr-input").val();
     }
-
+console.log(smsTo);
     let requestBody = {
       sender: smsFrom,
       recipients: smsTo.type,
+      group_ids: smsTo.groups,
+      role_ids: smsTo.roles,
       message: smsMessage,
       numbers: smsTo.numbers,
       flash: smsFlash,
@@ -105,10 +107,10 @@
     };
 
     jQuery('.wpsms-wrap__main__notice').removeClass('not-hidden');
-
-    jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + '/wpsms/v1/send',
+console.log(JSON.stringify(requestBody));
+    jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',
       {
-        headers: { 'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce },
+        headers: {'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce},
         dataType: 'json',
         type: 'post',
         contentType: 'application/json',
@@ -118,10 +120,17 @@
           jQuery('input[name="SendSMS"]').attr('disabled', 'disabled');
         },
         success: function (data, status, xhr) {
+          scrollToTop();
           jQuery(".wpsms-sendsms__overlay").css('display', 'none');
           jQuery('input[name="SendSMS"]').removeAttr('disabled');
+          jQuery('.wpsms-wrap__main__notice').addClass('notice-success');
+          jQuery('.wpsms-wrap__notice__text').html("The sms has been sent successfully!");
+          jQuery('.wpsms-wrap__account-balance').html('Your account credit: ' + data.balance);
+          jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
+          jQuery(".wpsms-sendsms__overlay").css('display', 'none');
         },
         error: function (data, status, xhr) {
+          scrollToTop();
           console.log(data);
           console.log(status);
           console.log(xhr);
@@ -155,4 +164,13 @@
   }
 
 });
+
+function scrollToTop() {
+  jQuery('html, body').animate({scrollTop: 0}, 1000);
+}
+
+function closeNotice() {
+  jQuery(".wpsms-wrap__main__notice").removeClass('not-hidden');
+}
+
 console.log(WpSmsSendSmsTemplateVar);

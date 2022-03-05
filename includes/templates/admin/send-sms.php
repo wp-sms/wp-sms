@@ -4,7 +4,7 @@
         <h1 class="wrap__title"><?php _e( 'Send SMS', 'wp-sms' ); ?></h1>
         <div class="wpsms-wrap__main__notice notice is-dismissible">
             <p class="wpsms-wrap__notice__text" style="padding: 10px 0"></p>
-            <button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span>
+            <button type="button" onclick="closeNotice()" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span>
             </button>
         </div>
         <div class="wpsms-sendsms" style="padding-top: 4px;">
@@ -52,24 +52,8 @@
                                                         <span>(<?php _e( 'Requires the Pro Pack', 'wp-sms' ); ?>)</span>
 													<?php endif; ?>
                                                 </option>
-                                                <option value="wp_role" id="wp_role"><?php _e( 'Role',
-														'wp-sms' ); ?></option>
                                                 <option value="wp_tellephone" id="wp_tellephone"><?php _e( 'Number(s)',
 														'wp-sms' ); ?></option>
-                                            </select>
-
-                                            <select name="wpsms_group_role" class="wpsms-value wprole-group">
-												<?php
-												foreach ( $wpsms_list_of_role as $key_item => $val_item ):
-													?>
-                                                    <option value="<?php echo $key_item; ?>"<?php if ( $val_item['count'] < 1 ) {
-														echo " disabled";
-													} ?>><?php _e( $val_item['name'], 'wp-sms' ); ?>
-                                                        (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.',
-															'wp-sms' ),
-															$val_item['count'] ); ?>)
-                                                    </option>
-												<?php endforeach; ?>
                                             </select>
 
 											<?php if ( count( $get_group_result ) ) : ?>
@@ -100,6 +84,21 @@
 		                                            'wp-sms' ),
 		                                            count( $get_users_mobile ) ); ?></span>
                                         </span>
+                                            <div class="wpsms-value wpsms-users wpsms-users-roles">
+                                                <select name="wpsms_roles[]" multiple="true" class="js-wpsms-select2">
+	                                                <?php
+	                                                foreach ( $wpsms_list_of_role as $key_item => $val_item ):
+		                                                ?>
+                                                        <option value="<?php echo $key_item; ?>"<?php if ( $val_item['count'] < 1 ) {
+			                                                echo " disabled";
+		                                                } ?>><?php _e( $val_item['name'], 'wp-sms' ); ?>
+                                                            (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.',
+				                                                'wp-sms' ),
+				                                                $val_item['count'] ); ?>)
+                                                        </option>
+	                                                <?php endforeach; ?>
+                                                </select>
+                                            </div>
 
                                             <span class="wpsms-value wpsms-wc-users" style="display: none;">
                                             <span><?php echo sprintf( __( '<b>%s</b> Customers have the mobile number.',
@@ -137,7 +136,7 @@
                                         </th>
                                         <td>
                                             <textarea dir="auto" cols="80" rows="5" wrap="hard" name="wp_get_message wpsms-input" id="wp_get_message"></textarea><br/>
-                                            <p class="number">
+                                            <p class="number wpsms-wrap__account-balance">
 	                                            <?php echo __('Your account credit', 'wp-sms') . ': ' . $gatewayCredit; ?>
                                             </p>
                                         </td>
