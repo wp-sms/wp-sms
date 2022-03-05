@@ -226,12 +226,8 @@ Example: Add signatures to messages that are sent
 	}
 	add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
-= Is REST API supported? =
-Yes. Up to now, we’ve just registered one endpoint in the plugin.
-
-Add new subscribes to SMS newsletters.
-
-	POST /wpsms/v1/subscriber/add
+= Does It Support REST API? =
+Yes. It does, see [https://wp-sms-pro.com/resources-category/api-endpoints/](documentation).
 
 = How to get the Pro Pack updates? =
 If you've already the pro pack version, you have to enter your license key in the setting page to get the updates.
