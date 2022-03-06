@@ -4,7 +4,7 @@
     WpSmsBuddyPress.init();
     WpSmsNotifications.init();
 
-    // Set Chosen
+    // Select2
     $('.js-wpsms-select2').select2({
         placeholder: "Please select"
     });

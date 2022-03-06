@@ -59,7 +59,7 @@
 
 											<?php if ( count( $get_group_result ) ) : ?>
                                                 <div class="wpsms-value wpsms-group">
-                                                    <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2">
+                                                    <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Group', 'wp-sms'); ?>">
 														<?php foreach ( $get_group_result as $items ): ?>
                                                             <option value="<?php echo $items->ID; ?>"><?php echo sprintf( __( 'Group %s',
 																	'wp-sms' ),
@@ -86,10 +86,10 @@
 		                                            count( $get_users_mobile ) ); ?></span>
                                         </span>
                                             <div class="wpsms-value wpsms-users wpsms-users-roles">
-                                                <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2">
-													<?php
-													foreach ( $wpsms_list_of_role as $key_item => $val_item ):
-														?>
+                                                <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Role', 'wp-sms'); ?>">
+		                                            <?php
+		                                            foreach ( $wpsms_list_of_role as $key_item => $val_item ):
+			                                            ?>
                                                         <option value="<?php echo $key_item; ?>"<?php if ( $val_item['count'] < 1 ) {
 															echo " disabled";
 														} ?>><?php _e( $val_item['name'], 'wp-sms' ); ?>

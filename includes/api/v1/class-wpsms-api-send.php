@@ -134,6 +134,11 @@ class SendSmsApi extends \WP_SMS\RestApi
 			 * Users
 			 */
 			case 'users':
+
+                if (!$request->get_param('role_ids')) {
+					throw new Exception(__('Parameter role_ids is required', 'wp-sms'));
+				}
+
 				$recipients = Helper::getUsersMobileNumbers($request->get_param('role_ids'));
 				break;
 
