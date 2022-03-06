@@ -6,6 +6,8 @@
     recipientsSelect();
   });
 
+
+
   jQuery("#wp_get_message").counter({
     count: 'up',
     goal: 'sky',
@@ -42,6 +44,7 @@
   });
 
   jQuery("#wp_get_message").on('keyup', function () {
+    messageAutoScroll();
     var message = jQuery("#wp_get_message").val();
     var messageWithLineBreak = message.replace(/(\r\n|\n|\r)/gm, "<br>");
     jQuery(".preview__message__message").html(messageWithLineBreak);
@@ -188,4 +191,8 @@ function recipientsSelect() {
     jQuery(".wpsms-value").hide();
     jQuery(".wprole-group").fadeIn();
   }
+}
+
+function messageAutoScroll() {
+  jQuery('.preview__message__message-wrapper').scrollTop(jQuery('.preview__message__message').height());
 }

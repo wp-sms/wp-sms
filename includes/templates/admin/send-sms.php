@@ -4,7 +4,8 @@
         <h1 class="wrap__title"><?php _e( 'Send SMS', 'wp-sms' ); ?></h1>
         <div class="wpsms-wrap__main__notice notice is-dismissible">
             <p class="wpsms-wrap__notice__text" style="padding: 10px 0"></p>
-            <button type="button" onclick="closeNotice()" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span>
+            <button type="button" onclick="closeNotice()" class="notice-dismiss">
+                <span class="screen-reader-text">Dismiss this notice.</span>
             </button>
         </div>
         <div class="wpsms-sendsms" style="padding-top: 4px;">
@@ -86,17 +87,17 @@
                                         </span>
                                             <div class="wpsms-value wpsms-users wpsms-users-roles">
                                                 <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2">
-	                                                <?php
-	                                                foreach ( $wpsms_list_of_role as $key_item => $val_item ):
-		                                                ?>
+													<?php
+													foreach ( $wpsms_list_of_role as $key_item => $val_item ):
+														?>
                                                         <option value="<?php echo $key_item; ?>"<?php if ( $val_item['count'] < 1 ) {
-			                                                echo " disabled";
-		                                                } ?>><?php _e( $val_item['name'], 'wp-sms' ); ?>
+															echo " disabled";
+														} ?>><?php _e( $val_item['name'], 'wp-sms' ); ?>
                                                             (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.',
-				                                                'wp-sms' ),
-				                                                $val_item['count'] ); ?>)
+																'wp-sms' ),
+																$val_item['count'] ); ?>)
                                                         </option>
-	                                                <?php endforeach; ?>
+													<?php endforeach; ?>
                                                 </select>
                                             </div>
 
@@ -116,14 +117,17 @@
                                             <div class="clearfix"></div>
                                             <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
                                             <div class="clearfix"></div>
-                                            <div style="font-size: 14px"><?php _e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?></div>
-                                            <?php if ($smsObject->validateNumber) : ?>
-                                                <div style="margin-top: 10px"><?php echo sprintf(__('Gateway description: <code>%s</code>', 'wp-sms'), $smsObject->validateNumber); ?></div>
+                                            <div style="font-size: 14px"><?php _e( 'Separate the numbers with comma (,) or enter in each lines.',
+		                                            'wp-sms' ); ?></div>
+                                            <?php if ( $smsObject->validateNumber ) : ?>
+                                                <div style="margin-top: 10px"><?php echo sprintf( __( 'Gateway description: <code>%s</code>',
+			                                            'wp-sms' ),
+			                                            $smsObject->validateNumber ); ?></div>
                                             <?php endif; ?>
                                         </span>
                                         </td>
                                     </tr>
-	                                <?php if (!$smsObject->bulk_send) : ?>
+									<?php if ( ! $smsObject->bulk_send ) : ?>
                                         <tr>
                                             <td></td>
                                             <td><?php _e( 'This gateway doesn\'t support the bulk SMS and will use the first number while sending a group of numbers.',
@@ -137,7 +141,8 @@
                                         <td>
                                             <textarea dir="auto" cols="80" rows="5" wrap="hard" name="wp_get_message wpsms-input" id="wp_get_message"></textarea><br/>
                                             <p class="number wpsms-wrap__account-balance">
-	                                            <?php echo __('Your account credit', 'wp-sms') . ': ' . $gatewayCredit; ?>
+												<?php echo __( 'Your account credit',
+														'wp-sms' ) . ': ' . $gatewayCredit; ?>
                                             </p>
                                         </td>
                                     </tr>
@@ -145,12 +150,18 @@
                                     <tr>
                                         <th><?php _e( 'Choice MMS media', 'wp-sms' ); ?></th>
                                         <td>
-	                                        <?php if ($smsObject->supportMedia) : ?>
-                                                <div><a href="#" class="wpsms-upload-button button">Upload image</a></div>
-                                                <div style="margin-top: 11px;"><a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a></div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
-	                                        <?php else: ?>
-                                                <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?></p>
-	                                        <?php endif; ?>
+											<?php if ( $smsObject->supportMedia ) : ?>
+                                                <div><a href="#" class="wpsms-upload-button button">Upload image</a>
+                                                </div>
+                                                <div style="margin-top: 11px;">
+                                                    <a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a>
+                                                </div>
+                                                <input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
+											<?php else: ?>
+                                                <p><?php echo sprintf( __( 'This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.',
+														'wp-sms' ),
+														WP_SMS_SITE . '/gateways' ); ?></p>
+											<?php endif; ?>
                                         </td>
                                     </tr>
 
@@ -188,7 +199,7 @@
                                         </tr>
 									<?php endif; ?>
 
-	                                <?php if ($smsObject->flash == "enable") { ?>
+									<?php if ( $smsObject->flash == "enable" ) { ?>
                                         <tr>
                                             <th><?php _e( 'Send as a Flash', 'wp-sms' ); ?>:</th>
                                             <td>
@@ -221,7 +232,9 @@
                     <div class="preview__screen">
                         <div class="preview__message">
                             <p class="preview__message__humber">0000</p>
-                            <p class="preview__message__message">We are notifying you that the WP SMS Pro will be changed with respect to value and quality.</p>
+                            <div class="preview__message__message-wrapper">
+                                <p class="preview__message__message">We are notifying you that the WP SMS Pro will be changed with respect to value and quality.</p>
+                            </div>
                             <p class="preview__message__image">
                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="32" height="32" fill="#F88E40"/>

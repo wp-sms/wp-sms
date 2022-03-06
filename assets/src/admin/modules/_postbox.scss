@@ -154,6 +154,7 @@
 }
 
 #screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner {
+  -webkit-transform: translateY(-31px);
   transform: translateY(-31px);
   z-index: -1;
   position: relative;
@@ -163,7 +164,7 @@
   margin-top: -31px;
 }
 
-@media screen and  (max-width: 900px) {
+@media screen and (max-width: 900px) {
   .wpsms-header-banner {
     background: url('../../assets/images/page-header.png') left center/cover no-repeat;
     min-height: 90px;
@@ -174,7 +175,7 @@
   }
 }
 
-@media screen and  (max-width: 570px) {
+@media screen and (max-width: 570px) {
   .wpsms-header-banner .license-status {
     transform: translateY(-200%);
     transition: 0.2s;
@@ -272,7 +273,6 @@
 .wpsms-wrap .tablenav .bulkactions select {
   padding: 8px 25px 8px 8px !important;
 }
-
 
 
 .sms_page_wp-sms-subscribers-privacy .inside .description {

@@ -139,17 +139,22 @@ Select2
   line-height: 22px;
 }
 
+.preview__message__message-wrapper {
+  max-height: 265px;
+  overflow-y: auto;
+}
+
 .preview__message__message {
   font-weight: normal;
   font-size: 12px;
   line-height: 22px;
-  max-height: 265px;
-  overflow-y: auto;
+  overflow-y: visible;
   word-break: break-word;
+  padding: 0 5px;
 }
 
 .preview__message__image {
-  margin: 0 0 10px;
+  margin: 10px 0;
 }
 
 .preview__message__date {
@@ -188,6 +193,10 @@ Select2
 
 .wpsms-users-roles {
   margin-top: 10px;
+}
+
+.wpsms-wrap #datepicker {
+  background-color: #fff;
 }
 
 // RTL
