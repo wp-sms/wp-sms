@@ -129,7 +129,6 @@ function sendSMS() {
         jQuery('input[name="SendSMS"]').attr('disabled', 'disabled');
       },
       success: function (data, status, xhr) {
-        console.log(data);
         Object.keys(smsTo).forEach(key => {
           delete smsTo[key];
         })
@@ -149,8 +148,6 @@ function sendSMS() {
         jQuery(".wpsms-sendsms__overlay").css('display', 'none');
       },
       error: function (data, status, xhr) {
-        console.log(status);
-        console.log();
         scrollToTop();
         jQuery('.wpsms-wrap__main__notice').removeClass('notice-success');
         jQuery('.wpsms-wrap__main__notice').addClass('notice-error');
