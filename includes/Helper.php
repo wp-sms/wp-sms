@@ -91,7 +91,7 @@ class Helper
      * @param $message
      * @return array|string|string[]|null
      */
-    public static function makeUrlsShorterByMessage($message)
+    public static function makeUrlsShorter($message)
     {
         $regex = "/(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
 

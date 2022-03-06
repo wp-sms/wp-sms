@@ -84,7 +84,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             /**
              * Make shorter the URLs in the message
              */
-            $message = Helper::makeUrlsShorterByMessage($request->get_param('message'));
+            $message = Helper::makeUrlsShorter($request->get_param('message'));
 
 			/*
 			 * Regular SMS
