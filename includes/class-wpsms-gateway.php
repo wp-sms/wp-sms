@@ -83,7 +83,8 @@ class Gateway
             'vfirst'         => 'vfirst.com',
             'zipwhip'        => 'zipwhip.com',
             'teletopiasms'   => 'teletopiasms.no',
-            'sinch'          => 'sinch.com'
+            'sinch'          => 'sinch.com',
+            'linkmobility'   => 'linkmobility.no'
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
@@ -109,7 +110,7 @@ class Gateway
         'bangladesh'    => array(
             'dianahost' => 'dianahost.com',
             'bulksmsbd' => 'bulksmsbd.com',
-            'btssms' => 'btssms.com',
+            'btssms'    => 'btssms.com',
         ),
         'palestine'     => array(
             'htd' => 'htd.ps',
