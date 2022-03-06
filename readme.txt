@@ -262,14 +262,14 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Upgrade Notice ==
 = v5.6 =
-* If you have installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
+* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
 = v5.7 - **.03.2022 =
 * Feature: New Design for Send SMS page!
 * Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
 * Feature: The Post SMS Notification also supports groups and custom numbers as well
-* Feature: Bitly Short URL is also supports in Send SMS page
+* Feature: Bitly Short URL is also supported in Send SMS page
 * Improvement: The functionality of getting user's mobiles
 * Improvement: Update strings and fixed some typos
 * Improvement: Admin Styles updated and fixes a couple of issues in RTL languages and responsive mode as well.
