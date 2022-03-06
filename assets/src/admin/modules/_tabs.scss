@@ -280,6 +280,7 @@
   font-weight: bold;
 }
 
+
 .wpsms-tab-content tr.tr-header th label {
   color: #000000;
   padding: 0;
@@ -335,5 +336,82 @@
         max-width: calc(100% - 24px);
       }
     }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  tr.tr-header td {
+    background: transparent;
+    padding: 8px 0;
+    margin: 0;
+  }
+
+  .wpsms-tab-group table th {
+    padding: 0;
+
+    label {
+      padding: 34px 0 10px;
+    }
+  }
+
+  .wpsms-tab-content {
+    max-width: calc(100% - 38px);
+  }
+
+  .wpsms-tab-group .wpsms-tab-content form {
+    max-width: 100%;
+  }
+
+  table .tr-header th {
+    margin-top: 48px !important;
+  }
+
+  table .tr-header:first-of-type th {
+    margin-top: 0 !important;
+  }
+
+  .wpsms-tab-group .wpsms-tab {
+    max-width: calc(100% - 8px);
+    padding-right: 0;
+  }
+
+  .wpsms-tab-content {
+    textarea, input, select, .wpsms-wrap__main .select2-container {
+      min-width: unset !important;
+      max-width: calc(100%) !important;
+    }
+
+    tr th, tr td {
+      width: 100%;
+      display: inline-block;
+      max-width: 100% !important;
+
+      p {
+        max-width: calc(100% - 20px) !important;
+      }
+    }
+
+    .tr-header th {
+      max-width: calc(100% - 24px) !important;
+    }
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .wpsms-wrap {
+    tr th, tr td {
+      width: 100%;
+      display: inline-block;
+      max-width: 88vw !important;
+    }
+  }
+
+  .select2-container {
+    min-width: unset !important;
+  }
+}
+@media screen and (max-width: 520px) {
+  .notice input[type="email"] {
+    margin-bottom: 12px;
   }
 }

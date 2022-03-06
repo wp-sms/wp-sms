@@ -123,8 +123,9 @@ Select2
 .preview__message {
   background: #F7F7F7;
   border-radius: 15px 15px 15px 0;
-  width: 80%;
+  width: 85%;
   padding: 10px 15px;
+  max-height: 380px;
 }
 
 .preview__message__humber, .preview__message__message {
@@ -142,6 +143,9 @@ Select2
   font-weight: normal;
   font-size: 12px;
   line-height: 22px;
+  max-height: 265px;
+  overflow-y: auto;
+  word-break: break-word;
 }
 
 .preview__message__image {
@@ -184,4 +188,49 @@ Select2
 
 .wpsms-users-roles {
   margin-top: 10px;
+}
+
+// RTL
+.rtl {
+  .wpsms-sendsms__preview {
+    margin: 10px 32px 0 0;
+  }
+
+  .preview__message__date, .preview__message__humber {
+    text-align: left;
+  }
+}
+
+// Mobile
+@media screen and (max-width: 768px) {
+  .wpsms-wrap__main {
+
+    .postbox {
+      max-width: 100%;
+    }
+
+    .wpsms-sendsms__container .inside {
+      padding-top: 10px;
+    }
+
+    .postbox table tr th {
+      padding: 14px 0 10px 0 !important;
+    }
+
+    .postbox table tr td {
+      padding: 0 0 18px 0 !important;
+    }
+
+    .select2-container {
+      width: 100% !important;
+    }
+
+    #wp_get_message {
+      width: 100% !important;
+    }
+  }
+
+  .wpsms-header-banner {
+    max-width: 100% !important;
+  }
 }

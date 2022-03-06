@@ -259,6 +259,10 @@
 
 .wpsms-wrap__main {
   padding: 20px;
+
+  @media screen and (max-width: 420px) {
+    padding: 5px;
+  }
 }
 
 .wpsms-wrap .tablenav .bulkactions {

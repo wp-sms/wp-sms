@@ -85,7 +85,7 @@
 		                                            count( $get_users_mobile ) ); ?></span>
                                         </span>
                                             <div class="wpsms-value wpsms-users wpsms-users-roles">
-                                                <select name="wpsms_roles[]" multiple="true" class="js-wpsms-select2">
+                                                <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2">
 	                                                <?php
 	                                                foreach ( $wpsms_list_of_role as $key_item => $val_item ):
 		                                                ?>
@@ -190,7 +190,7 @@
 
 	                                <?php if ($smsObject->flash == "enable") { ?>
                                         <tr>
-                                            <td><?php _e( 'Send as a Flash', 'wp-sms' ); ?>:</td>
+                                            <th><?php _e( 'Send as a Flash', 'wp-sms' ); ?>:</th>
                                             <td>
                                                 <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
                                                 <label for="flash_yes"><?php _e( 'Yes', 'wp-sms' ); ?></label>
