@@ -14,24 +14,40 @@ class StatsWidget extends AbstractWidget
     protected $name = 'WP SMS Stats';
     protected $version = '1.0';
 
+    /**
+     * Preparations before rendering
+     *
+     * @return void
+     */
     protected function prepare()
     {
         wp_register_script('wp-sms-chartjs', Helper::getPluginAssetUrl('js/chart.min.js'), [], '3.7.1');
         wp_enqueue_script('wp-sms-dashboard-widget-stats-script', Helper::getPluginAssetUrl('js/admin-dashboard-stats-widget.js'), ['wp-sms-chartjs'], $this->version);
         wp_enqueue_style('wp-sms-dashboard-widget-stats-styles', Helper::getPluginAssetUrl('css/admin-dashboard-stats-widget.css'), null, $this->version);
-        wp_localize_script('wp-sms-dashboard-widget-stats-script', 'WPSmsStatsData', apply_filters('wp_sms_stats_widget_data', $this->fetchSentMessagesStats()));
+        wp_localize_script('wp-sms-dashboard-widget-stats-script', 'WPSmsStatsData', apply_filters('wp_sms_stats_widget_data', $this->getLocalizationData()));
     }
 
+    /**
+     * Render the widget
+     *
+     * @return void
+     */
     public function render()
     {
         echo Helper::loadTemplate('admin-dashboard-widget.php');
     }
 
-    private function fetchSentMessagesStats()
+    /**
+     * Get widget's dashboard script localization data
+     *
+     * @return void
+     */
+    private function getLocalizationData()
     {
-        // todo
         $widgetData['localization'] = [
-            'successful' => __('Successful', 'wp-sms'),
+            'successful'        => __('Successful', 'wp-sms'),
+            'failed'            => __('Failed', 'wp-sms'),
+            'plain'             => __('Plain', 'wp-sms'),
         ];
 
         /**
