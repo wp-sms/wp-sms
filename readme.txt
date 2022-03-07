@@ -53,7 +53,7 @@ Don’t worry, we have tried to cover the best and the most well-known gateways 
 * Make short URLs by Bitly.com
 
 = PRO PACKAGE =
-In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce OTP, order notifications, etc.
+In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce Mobile Verification, order notifications, etc.
 
 The list of supported gateways and integrated plugins are available in FAQ.
 [Buy Pro Package](http://wp-sms-pro.com/purchase/)
@@ -133,7 +133,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * More supported gateways (listed above)
 * Integrations with more plugins as listed below:
  * Integration with BuddyPress: You can add mobile number fields to the profile page, send SMS to users when they’re mentioned in a post, and send SMS to users when they comment on a post.
- * Integration with WooCommerce: Order SMS notifications, verify customer mobile number during the checkout (OTP), SMS notification to customers and subscribers for new products, SMS notification for administrator when the stock is low, and also you can send SMS to customers when the order status is changed.
+ * Integration with WooCommerce: Order SMS notifications, verify customer mobile number during the checkout, SMS notification to customers and subscribers for new products, SMS notification for administrator when the stock is low, and also you can send SMS to customers when the order status is changed.
  * Integration with Gravity forms: The plugin can send SMS to users and Admin after the form is submitted.
  * Integration with Quform: The plugin can send SMS to users or Admin after the form is submitted.
  * Integration with Easy Digital Downloads: You can add mobile number fields to the profile page, and send SMS to users or Admin when an order is submitted with EDD.
@@ -246,7 +246,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 1. General Settings page
 2. Gateway Settings page
 3. SMS Newsletter Settings page
-4. OTP And Login Settings page
+4. Two-Factor Authentication SMS (2FA) Login Settings page
 5. BuddyPress Settings page
 6. WooCommerce Settings page
 7. Send SMS/MMS page

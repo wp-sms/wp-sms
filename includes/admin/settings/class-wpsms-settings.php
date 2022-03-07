@@ -295,7 +295,7 @@ class Settings
             ),
             'otp_title'            => array(
                 'id'   => 'otp_title',
-                'name' => __('Two Factor Authentication SMS', 'wp-sms'),
+                'name' => __('Two-Factor Authentication SMS', 'wp-sms'),
                 'type' => 'header'
             ),
             'mobile_verify'          => array(
