@@ -24,10 +24,12 @@ class Admin
         add_action('admin_bar_menu', array($this, 'admin_bar'));
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
+        add_action('admin_notices', array($this, 'displayFlashNotice'));
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
         add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
+        add_filter('admin_body_class', array($this, 'modify_admin_body_classes'));
     }
 
     /**
@@ -137,6 +139,15 @@ class Admin
         }
     }
 
+    public function displayFlashNotice()
+    {
+        $notice = get_option('wpsms_flash_message', false);
+        if ($notice) {
+            delete_option('wpsms_flash_message');
+            \WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
+        }
+    }
+
     /**
      * Callback send sms page.
      */
@@ -201,6 +212,16 @@ class Admin
             wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION);
             wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION);
         }
+
+        wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), null, true);
+        wp_enqueue_script('wp-sms-send-page');
+        wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
+            'restRootUrl'     => esc_url_raw(rest_url()),
+            'nonce'           => wp_create_nonce('wp_rest'),
+            'messageMsg'      => __('characters', 'wp-sms'),
+            'currentDateTime' => current_datetime()->format("Y-m-d H:i:00"),
+            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
+        ));
     }
 
     /**
@@ -208,7 +229,6 @@ class Admin
      */
     public function subscribers_assets()
     {
-
         /**
          * Add per page option.
          */
@@ -220,21 +240,10 @@ class Admin
 
         wp_register_script('wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-edit-subscriber');
-
-        $protocol = isset($_SERVER["HTTPS"]) ? 'https://' : 'http://';
-
-        $tb_show_url = add_query_arg(
-            array(
-                'action' => 'wp_sms_edit_subscriber'
-            ),
-            admin_url('admin-ajax.php', $protocol)
-        );
-
-        $ajax_vars = array(
-            'tb_show_url' => $tb_show_url,
+        wp_localize_script('wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', array(
+            'tb_show_url' => add_query_arg(array('action' => 'wp_sms_edit_subscriber'), admin_url('admin-ajax.php')),
             'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
-        );
-        wp_localize_script('wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', $ajax_vars);
+        ));
     }
 
     /**
@@ -244,21 +253,10 @@ class Admin
     {
         wp_register_script('wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-edit-group');
-
-        $protocol = isset($_SERVER["HTTPS"]) ? 'https://' : 'http://';
-
-        $tb_show_url = add_query_arg(
-            array(
-                'action' => 'wp_sms_edit_group'
-            ),
-            admin_url('admin-ajax.php', $protocol)
-        );
-
-        $ajax_vars = array(
-            'tb_show_url' => $tb_show_url,
+        wp_localize_script('wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', array(
+            'tb_show_url' => add_query_arg(array('action' => 'wp_sms_edit_group'), admin_url('admin-ajax.php')),
             'tb_show_tag' => __('Edit Group', 'wp-sms')
-        );
-        wp_localize_script('wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', $ajax_vars);
+        ));
     }
 
     /**
@@ -345,7 +343,7 @@ class Admin
      */
     public function admin_newsletter()
     {
-        include_once WP_SMS_DIR . 'includes/templates/admin-newsletter.php';
+        echo Helper::loadTemplate('admin/newsletter-form.php');
     }
 
     /**
@@ -363,6 +361,23 @@ class Admin
         }
 
         return $status;
+    }
+
+    /**
+     * Modifies the admin body class.
+     *
+     * @date    21/02/2022
+     * @param string $classes Space-separated list of CSS classes.
+     * @return  string
+     *
+     */
+    public function modify_admin_body_classes($classes)
+    {
+        if (is_rtl()) {
+            $classes .= ' sms_page_wp-sms';
+        }
+
+        return $classes;
     }
 }
 

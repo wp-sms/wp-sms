@@ -3,6 +3,7 @@
 namespace WP_SMS\Blocks;
 
 use WP_Block;
+use WP_SMS\Helper;
 
 class BlockAbstract
 {

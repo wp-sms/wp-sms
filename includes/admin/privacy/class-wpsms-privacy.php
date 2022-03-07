@@ -81,7 +81,7 @@ class Privacy
     public function render_page()
     {
         ?>
-        <div id="<?php echo $this->metabox; ?>" class="wrap privacy_page">
+        <div id="<?php echo $this->metabox; ?>" class="wrap wpsms-wrap privacy_page">
 	        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
             <div class="wpsms-wrap__main">
                 <h1><?php echo esc_html(get_admin_page_title()); ?></h1>

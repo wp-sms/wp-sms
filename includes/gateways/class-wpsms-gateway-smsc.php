@@ -107,7 +107,7 @@ class smsc extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms-pro'));
+            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "balance.php?login={$this->username}&psw={$this->password}");

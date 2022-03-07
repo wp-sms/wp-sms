@@ -153,7 +153,7 @@ class Settings
              * Main plugin tabs
              */
             'general'              => __('General', 'wp-sms'),
-            'gateway'              => __('Gateway', 'wp-sms'),
+            'gateway'              => __('SMS Gateway', 'wp-sms'),
             'newsletter'           => __('SMS Newsletter', 'wp-sms'),
             'feature'              => __('Features', 'wp-sms'),
             'notifications'        => __('Notifications', 'wp-sms'),
@@ -537,12 +537,12 @@ class Settings
                 ),
                 'wc_mobile_field'              => array(
                     'id'      => 'wc_mobile_field',
-                    'name'    => __('Choose the field', 'wp-sms'),
+                    'name'    => __('Choose the Mobile field', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
                         'disable'            => __('Disable (No field)', 'wp-sms'),
-                        'add_new_field'      => __('Add a new field in the checkout form', 'wp-sms'),
-                        'used_current_field' => __('Use the current phone field in the bill', 'wp-sms'),
+                        'add_new_field'      => __('Add a New Mobile field in the checkout form', 'wp-sms'),
+                        'used_current_field' => __('Use the Billing Phone field', 'wp-sms'),
                     ),
                     'desc'    => __('Choose from which field you get numbers for sending SMS.', 'wp-sms')
                 ),
@@ -1333,51 +1333,51 @@ class Settings
                 // Gateway
                 'gateway_title'             => array(
                     'id'   => 'gateway_title',
-                    'name' => __('Gateway configuration', 'wp-sms'),
+                    'name' => __('SMS Gateway Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'gateway_name'              => array(
                     'id'      => 'gateway_name',
-                    'name'    => __('Gateway name', 'wp-sms'),
+                    'name'    => __('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => Gateway::gateway(),
-                    'desc'    => __('Please select your gateway.', 'wp-sms')
+                    'desc'    => __('Select the SMS Gateway from which you want to send the SMS.', 'wp-sms')
                 ),
                 'gateway_help'              => array(
                     'id'      => 'gateway_help',
-                    'name'    => __('Gateway description', 'wp-sms'),
+                    'name'    => __('Gateway Notice', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::help(),
                 ),
                 'gateway_username'          => array(
                     'id'   => 'gateway_username',
-                    'name' => __('API username', 'wp-sms'),
+                    'name' => __('API Username', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API username of gateway', 'wp-sms')
                 ),
                 'gateway_password'          => array(
                     'id'   => 'gateway_password',
-                    'name' => __('API password', 'wp-sms'),
+                    'name' => __('API Password', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API password of gateway', 'wp-sms')
                 ),
                 'gateway_sender_id'         => array(
                     'id'   => 'gateway_sender_id',
-                    'name' => __('Sender number', 'wp-sms'),
+                    'name' => __('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
                     'desc' => __('Sender number or sender ID', 'wp-sms')
                 ),
                 'gateway_key'               => array(
                     'id'   => 'gateway_key',
-                    'name' => __('API key', 'wp-sms'),
+                    'name' => __('API Key', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API key of gateway', 'wp-sms')
                 ),
                 // Gateway status
                 'gateway_status_title'      => array(
                     'id'   => 'gateway_status_title',
-                    'name' => __('Gateway status', 'wp-sms'),
+                    'name' => __('Gateway Status', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit'            => array(
@@ -1407,7 +1407,7 @@ class Settings
                 // Account credit
                 'account_credit_title'      => array(
                     'id'   => 'account_credit_title',
-                    'name' => __('Account balance', 'wp-sms'),
+                    'name' => __('Account Balance', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit_in_menu'    => array(
@@ -1427,7 +1427,7 @@ class Settings
                 // Message header
                 'message_title'             => array(
                     'id'   => 'message_title',
-                    'name' => __('Message options', 'wp-sms'),
+                    'name' => __('Message Options', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'send_unicode'              => array(
@@ -1606,7 +1606,7 @@ class Settings
                     'name'    => __('Make the URLs Shorter?', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('By enabling this option, all URLs will be shorter by Billy.com', 'wp-sms'),
+                    'desc'    => __('By enabling this option, all URLs will be shorter by Bitly.com', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'short_url_api_token'                          => array(
@@ -1642,18 +1642,15 @@ class Settings
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
                     'desc'    => __('Select post types that you want to use this option.', 'wp-sms')
                 ),
-                'notif_publish_new_post_words_count'      => array(
-                    'id'   => 'notif_publish_new_post_words_count',
-                    'name' => __('Post content words count', 'wp-sms'),
-                    'type' => 'number',
-                    'desc' => __('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
-                ),
-                'notif_publish_new_post_force'                  => array(
-                    'id'      => 'notif_publish_new_post_force',
-                    'name'    => __('Force to Send?', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
+                'notif_publish_new_post_receiver'   => array(
+                    'id'      => 'notif_publish_new_post_receiver',
+                    'name'    => __('Send Notification to?', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'subscriber' => __('Subscribers', 'wp-sms'),
+                        'numbers'      => __('Number(s)', 'wp-sms')
+                    ),
+                    'desc'    => __('Please select the receiver of SMS Notification', 'wp-sms')
                 ),
                 'notif_publish_new_post_default_group'                  => array(
                     'id'      => 'notif_publish_new_post_default_group',
@@ -1661,6 +1658,19 @@ class Settings
                     'type'    => 'select',
                     'options' => $subscribe_groups,
                     'desc'    => __('Choice the default group to send the SMS', 'wp-sms')
+                ),
+                'notif_publish_new_post_numbers'   => array(
+                    'id'      => 'notif_publish_new_post_numbers',
+                    'name'    => __('Number(s)', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                ),
+                'notif_publish_new_post_force'                  => array(
+                    'id'      => 'notif_publish_new_post_force',
+                    'name'    => __('Force to Send?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
                 ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
@@ -1674,6 +1684,12 @@ class Settings
                             '<code>%post_url%</code>',
                             '<code>%post_date%</code>'
                         )
+                ),
+                'notif_publish_new_post_words_count'      => array(
+                    'id'   => 'notif_publish_new_post_words_count',
+                    'name' => __('Post content words count', 'wp-sms'),
+                    'type' => 'number',
+                    'desc' => __('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
                 ),
                 // Publish new post
                 'notif_publish_new_post_author_title'     => array(

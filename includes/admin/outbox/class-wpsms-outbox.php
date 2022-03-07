@@ -17,6 +17,7 @@ class Outbox_List_Table extends \WP_List_Table
     protected $tb_prefix;
     protected $limit;
     protected $count;
+    protected $adminUrl;
     var $data;
 
     function __construct()
@@ -34,6 +35,7 @@ class Outbox_List_Table extends \WP_List_Table
         $this->count     = $this->get_total();
         $this->limit     = 50;
         $this->data      = $this->get_data();
+        $this->adminUrl  = admin_url('admin.php?page=wp-sms-outbox');
     }
 
     function column_default($item, $column_name)
@@ -123,7 +125,7 @@ class Outbox_List_Table extends \WP_List_Table
             'message'   => __('Message', 'wp-sms'),
             'recipient' => __('Recipient', 'wp-sms'),
             'response'  => __('Response', 'wp-sms'),
-            'media'     => __('Media', 'wp-sms-pro'),
+            'media'     => __('Media', 'wp-sms'),
             'status'    => __('Status', 'wp-sms'),
         );
     }
@@ -170,7 +172,7 @@ class Outbox_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Items removed.', 'wp-sms') . '</p></div>';
+            \WP_SMS\Admin\Helper::addFlashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -179,7 +181,7 @@ class Outbox_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            echo '<div class="notice notice-success is-dismissible"><p style="padding: 10px 0">' . __('Item removed.', 'wp-sms') . '</p></div>';
+            \WP_SMS\Admin\Helper::addFlashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Resend sms
@@ -193,13 +195,18 @@ class Outbox_List_Table extends \WP_List_Table
             $error    = $sms->SendSMS();
 
             if (is_wp_error($error)) {
-                echo '<div class="notice notice-error is-dismissible"><p>' . esc_html($error->get_error_message()) . '</p></div>';
+                \WP_SMS\Admin\Helper::addFlashNotice(esc_html($error->get_error_message()), 'error', $this->adminUrl);
             } else {
-                echo '<div class="notice notice-success is-dismissible"><p>' . __('The SMS sent successfully.', 'wp-sms') . '</p></div>';
+                \WP_SMS\Admin\Helper::addFlashNotice(__('The SMS sent successfully.', 'wp-sms'), 'success', $this->adminUrl);
             }
 
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
+        }
+
+        if (!empty($_GET['_wp_http_referer'])) {
+            wp_redirect(remove_query_arg(array('_wp_http_referer', '_wpnonce'), stripslashes($_SERVER['REQUEST_URI'])));
+            exit;
         }
     }
 

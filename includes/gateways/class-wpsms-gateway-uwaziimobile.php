@@ -2,31 +2,17 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
+use WP_Error;
+
 class uwaziimobile extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.uwaziimobile.com/api/v2";
+    private $wsdl_link = "https://restapi.uwaziimobile.com/v1";
     public $tariff = "http://uwaziimobile.com/";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
     public $isflash = false;
-    public $gatewayFields = [
-        'username' => [
-            'id'   => 'gateway_username',
-            'name' => 'API Key',
-            'desc' => 'Enter your API Key',
-        ],
-        'password' => [
-            'id'   => 'gateway_password',
-            'name' => 'Client ID',
-            'desc' => 'Enter your Client ID',
-        ],
-        'from'     => [
-            'id'   => 'gateway_sender_id',
-            'name' => 'Sender number',
-            'desc' => 'Sender number or sender ID',
-        ],
-    ];
 
     public function __construct()
     {
@@ -80,18 +66,18 @@ class uwaziimobile extends \WP_SMS\Gateway
             return $this->clean_number($item, $country_code);
         }, $this->to);
 
-        $response = wp_remote_post(sprintf('%s/SendSMS', $this->wsdl_link), [
+        $response = wp_remote_post(sprintf('%s/send', $this->wsdl_link), [
             'timeout' => 30,
             'headers' => array(
-                'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
+                'Content-Type'   => 'application/json',
+                'Accept'         => 'application/json',
+                'X-Access-Token' => $this->getAccessToken(),
             ),
             'body'    => json_encode([
-                'SenderId'      => $this->from,
-                'Message'       => $this->msg,
-                'MobileNumbers' => $mobileNumbers,
-                'ApiKey'        => $this->username,
-                'ClientId'      => $this->password
+                'number'   => $mobileNumbers,
+                'senderID' => $this->from,
+                'text'     => $this->msg,
+                'type'     => 'sms',
             ])
         ]);
 
@@ -100,76 +86,118 @@ class uwaziimobile extends \WP_SMS\Gateway
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
 
-            return new \WP_Error('send-sms', $response->get_error_message());
+            return new WP_Error('send-sms', $response->get_error_message());
         }
-
-        // Ger response code
-        $response_code = wp_remote_retrieve_response_code($response);
 
         // Decode response
         $response = json_decode($response['body'], true);
 
-        // Check response code
-        if ($response['ErrorCode'] == '0') {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
-
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $response);
-
-            return $response;
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response['ErrorDescription'], 'error');
-
-            return new \WP_Error('account-credit', $response['ErrorDescription']);
+        if ($response['error_code']) {
+            return new WP_Error('account-credit', $response['errors']);
         }
+
+        // Log the result
+        $this->log($this->from, $this->msg, $this->to, $response);
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param string $response result output.
+         * @since 2.4
+         *
+         */
+        do_action('wp_sms_send', $response);
+
+        return $response;
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms-pro'));
+        try {
+            // Check username and password
+            if (!$this->username or !$this->password) {
+                throw new Exception(__('API Key is not entered.', 'wp-sms'));
+            }
+
+            $response = wp_remote_get(sprintf('%s/me', $this->wsdl_link), [
+                'timeout' => 10,
+                'headers' => [
+                    'Content-Type'   => 'application/json',
+                    'Accept'         => 'application/json',
+                    'X-Access-Token' => $this->getAccessToken(),
+                ]
+            ]);
+
+            // Check gateway credit
+            if (is_wp_error($response)) {
+                throw new Exception($response->get_error_message());
+            }
+
+            // Decode response
+            $response = json_decode($response['body'], true);
+
+            if ($response['error_code']) {
+                throw new Exception($response['errors']);
+            }
+
+            return $response;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
+        }
+    }
+
+    private function getAccessToken()
+    {
+        if (get_option('wpsms_gateway_uwaziimobile_access_token')) {
+            return get_option('wpsms_gateway_uwaziimobile_access_token');
         }
 
-        $response = wp_remote_get(sprintf('%s/Balance', $this->wsdl_link), [
-            'timeout' => 10,
-            'headers' => [
+        $authorizeResponse = $this->executeRequest('authorize', [
+            'username' => $this->username,
+            'password' => $this->password,
+        ]);
+
+        if ($authorizeResponse['???']) { // todo
+            $accessTokenResponse = $this->executeRequest('accesstoken', [
+                'authorization_code' => $this->username,
+                'password'           => $authorizeResponse['???'] // todo
+            ]);
+
+            if ($accessTokenResponse['???']) { // todo
+                update_option('wpsms_gateway_uwaziimobile_access_token', $accessTokenResponse['???']);
+
+                return $accessTokenResponse['???']; // todo
+            }
+        }
+
+        return false;
+    }
+
+    private function executeRequest($endpoint, $params = [], $method = 'POST')
+    {
+        $response = wp_remote_post(sprintf('%s/%s', $this->wsdl_link, $endpoint), [
+            'timeout' => 30,
+            'headers' => array(
                 'Content-Type' => 'application/json',
                 'Accept'       => 'application/json',
-            ],
-            'body'    => [
-                'ApiKey'   => $this->username,
-                'ClientId' => $this->password,
-            ]
+            ),
+            'body'    => json_encode($params)
         ]);
 
         // Check gateway credit
         if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
+            throw new Exception($response->get_error_message());
         }
-
-        // Ger response code
-        $response_code = wp_remote_retrieve_response_code($response);
 
         // Decode response
-        $response = json_decode($response['body'], true);
+        $responseArray = json_decode($response['body'], true);
 
-        // Check response code
-        if ($response['ErrorCode'] == '0') {
-            return $response['Data']['Credits'];
-        } else {
-            return new \WP_Error('account-credit', $response['ErrorDescription']);
+        if (isset($responseArray['errors'])) {
+            throw new Exception(print_r($responseArray['errors'], 1));
         }
 
-        return true;
+        return $responseArray;
     }
 
     private function clean_number($number, $country_code)

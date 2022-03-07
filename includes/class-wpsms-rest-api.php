@@ -31,21 +31,22 @@ class RestApi
      *
      * @param $message
      * @param int $status
-     *
+     * @param array $data
      * @return \WP_REST_Response
      */
-    public static function response($message, $status = 200)
+    public static function response($message, $status = 200, $data = [])
     {
         if ($status == 200) {
             $output = array(
                 'message' => $message,
                 'error'   => array(),
+                'data'    => $data
             );
         } else {
             $output = array(
                 'error' => array(
                     'code'    => $status,
-                    'message' => $message,
+                    'message' => $message
                 ),
             );
         }
@@ -338,32 +339,6 @@ class RestApi
 
         return $result;
     }
-
-    /**
-     * Send SMS
-     *
-     * @param $to
-     * @param $msg
-     * @param bool $isflash
-     *
-     * @return string|\WP_Error
-     */
-    public static function sendSMS($to, $msg, $isflash = false)
-    {
-        // Check if valued required parameters or not
-        if (empty($to) or empty($msg)) {
-            return new \WP_Error('send_sms', __('The required parameters must be valued!', 'wp-sms'));
-        }
-
-        // Get the result
-        global $sms;
-        $sms->to  = array($to);
-        $sms->msg = $msg;
-        $result   = $sms->SendSMS();
-
-        return $result;
-    }
-
 }
 
 new RestApi();

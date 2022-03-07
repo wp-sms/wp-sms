@@ -17,6 +17,7 @@ class Subscribers_List_Table extends \WP_List_Table
     protected $tb_prefix;
     protected $limit;
     protected $count;
+    protected $adminUrl;
     var $data;
 
     public function __construct()
@@ -35,6 +36,7 @@ class Subscribers_List_Table extends \WP_List_Table
         $this->count     = $this->get_total();
         $this->limit     = $this->get_items_per_page('wp_sms_subscriber_per_page');
         $this->data      = $this->get_data();
+        $this->adminUrl  = admin_url('admin.php?page=wp-sms-subscribers');
     }
 
     public function column_default($item, $column_name)
@@ -167,7 +169,7 @@ class Subscribers_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Items removed.', 'wp-sms') . '</p></div>';
+            \WP_SMS\Admin\Helper::addFlashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -176,7 +178,7 @@ class Subscribers_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            echo '<div class="notice notice-success is-dismissible"><p style="padding: 10px 0">' . __('Item removed.', 'wp-sms') . '</p></div>';
+            \WP_SMS\Admin\Helper::addFlashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         if (false !== strpos($current_action, 'move_to_')) {
@@ -189,8 +191,13 @@ class Subscribers_List_Table extends \WP_List_Table
                 }
                 $this->data  = $this->get_data();
                 $this->count = $this->get_total();
-                echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(__('Items moved to «%s» group.', 'wp-sms'), $new_group->name) . '</p></div>';
+                \WP_SMS\Admin\Helper::addFlashNotice(sprintf(__('Items moved to «%s» group.', 'wp-sms'), $new_group->name), 'success', $this->adminUrl);
             }
+        }
+
+        if (!empty($_GET['_wp_http_referer'])) {
+            wp_redirect(remove_query_arg(array('_wp_http_referer', '_wpnonce'), stripslashes($_SERVER['REQUEST_URI'])));
+            exit;
         }
     }
 

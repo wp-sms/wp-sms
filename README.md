@@ -2,17 +2,17 @@
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Percentage of issues still open")
 
 # WP-SMS Plugin
-A simple and powerful texting plugin for WordPress
+The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
-You can add to WordPress, the ability to send SMS, member of SMS newsletter and send to the SMS.
+This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, Click send and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
-To every event in WordPress, you can send SMS/MMS through this plugin.
+Additionally, you can send SMS/MMS message notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
-The usage of this plugin is completely free. You have to just have an account from service in the gateway lists that we support them.
+Watch the video to learn more about the WordPress SMS Plugin!
 
-Don't worry, we have tried to add the best and the most gateways to the plugin. 
+[![Introducing WordPress SMS Plugin](https://wp-sms-pro.com/wp-content/uploads/2022/03/vlcsnap-2022-02-21-21h57m24s633.png)](https://www.youtube.com/watch?v=7r6jObgdQj0)
 
-### Very easy Send SMS by PHP:
+### Send SMS by PHP:
 
 ```php
 $to[] = '01000000000';
@@ -21,7 +21,7 @@ $msg = "Hello World!";
 wp_sms_send( $to, $msg );
 ```
 
-### Or even send MMS:
+### Send MMS:
 ```php
 $mediaUrls[] = 'https://yoursite.com/image.png';
 
@@ -137,18 +137,13 @@ function wp_sms_modify_message($message) {
 }
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
+# Resources
+* [WordPress.org plugin URL](https://wordpress.org/plugins/wp-sms/)
+* [Plugin Website](https://wp-sms-pro.com)
+* [Documentation](https://wp-sms-pro.com/resources-category/api-endpoints/)
+* [API Documentation](https://documenter.getpostman.com/view/3239688/UVkqsvCK#019c5b41-5916-4d2c-9661-ba933dd8ec1a)
 
-# Rest API Endpoints
-Add new subscribe to SMS newsletter
-```sh
-POST /wpsms/v1/subscriber/add
-```
-
-# Community Links
-* [WordPress plugin page](http://wordpress.org/plugins/wp-sms/)
-* [Plugin Website](http://wp-sms-pro.com)
-
-# Donate
-Would'd like to support this project?
-- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](http://wp-sms-pro.com/donate)
+# Donation
+Would you like to support this project?
+- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](https://wp-sms-pro.com/donate)
 - ![btc](https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/bitcoin.png) Bitcoin: `bc1qjezs7vusvvmhxrhxan7nkl7kvnpy624wxhse2p`

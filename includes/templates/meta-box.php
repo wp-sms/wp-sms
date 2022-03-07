@@ -1,19 +1,26 @@
 <script type="text/javascript">
-    jQuery(document).ready(function () {
-        if (jQuery('#wps-send-subscribe').val() == 'yes') {
+    function showHideFields() {
+        const sendTo = jQuery('#wps-send-to').val()
+        if (sendTo == 'subscriber') {
+            jQuery('#wpsms-select-numbers').hide();
             jQuery('#wpsms-select-subscriber-group').show();
             jQuery('#wpsms-custom-text').show();
+        } else if (sendTo == 'numbers') {
+            jQuery('#wpsms-select-subscriber-group').hide();
+            jQuery('#wpsms-select-numbers').show();
+            jQuery('#wpsms-custom-text').show();
+        } else {
+            jQuery('#wpsms-select-subscriber-group').hide();
+            jQuery('#wpsms-select-numbers').hide();
+            jQuery('#wpsms-custom-text').hide();
         }
+    }
 
-        jQuery("#wps-send-subscribe").change(function () {
-            if (this.value == 'yes') {
-                jQuery('#wpsms-select-subscriber-group').show();
-                jQuery('#wpsms-custom-text').show();
-            } else {
-                jQuery('#wpsms-select-subscriber-group').hide();
-                jQuery('#wpsms-custom-text').hide();
-            }
+    jQuery(document).ready(function () {
+        showHideFields();
 
+        jQuery("#wps-send-to").change(function () {
+            showHideFields();
         });
     })
 </script>
@@ -21,19 +28,19 @@
 <table class="form-table">
     <tr valign="top">
         <th scope="row">
-            <label for="wps-send-subscribe"><?php _e('Send Notification to Subscribers?', 'wp-sms'); ?>:</label>
+            <label for="wps-send-to"><?php _e('Send Notification to?', 'wp-sms'); ?></label>
         </th>
         <td>
-            <select name="wps_send_subscribe" id="wps-send-subscribe">
+            <select name="wps_send_to" id="wps-send-to">
                 <option value="0" <?php if (!$forceToSend): echo 'selected'; endif; ?>><?php _e('Please select', 'wp-sms'); ?></option>
-                <option value="yes" <?php selected($forceToSend); ?>><?php _e('Yes'); ?></option>
-                <option value="no"><?php _e('No'); ?></option>
+                <option value="subscriber" <?php selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'subscriber'); ?>><?php _e('Subscribers'); ?></option>
+                <option value="numbers" <?php selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'numbers'); ?>><?php _e('Number(s)'); ?></option>
             </select>
         </td>
     </tr>
     <tr valign="top" id="wpsms-select-subscriber-group">
         <th scope="row">
-            <label for="wps-subscribe-group"><?php _e('Select the group', 'wp-sms'); ?>:</label>
+            <label for="wps-subscribe-group"><?php _e('Subscribe group', 'wp-sms'); ?>:</label>
         </th>
         <td>
             <select name="wps_subscribe_group" id="wps-subscribe-group">
@@ -43,9 +50,17 @@
             </select>
         </td>
     </tr>
+    <tr valign="top" id="wpsms-select-numbers">
+        <th scope="row">
+            <label for="wps-mobile-numbers"><?php _e('Number(s)', 'wp-sms'); ?>:</label>
+        </th>
+        <td>
+            <input type="text" name="wps_mobile_numbers" id="wps-mobile-numbers" class="regular-text" value="<?php echo wp_sms_get_option('notif_publish_new_post_numbers') ?>"/>
+        </td>
+    </tr>
     <tr valign="top" id="wpsms-custom-text">
         <th scope="row">
-            <label for="wpsms-text-template"><?php _e('SMS Content', 'wp-sms'); ?>:</label>
+            <label for="wpsms-text-template"><?php _e('Message body', 'wp-sms'); ?>:</label>
         </th>
         <td>
             <textarea cols="80" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php

@@ -21,7 +21,6 @@ class Newsletter
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
 
-        add_action('wp_enqueue_scripts', array($this, 'load_script'));
         add_action('wp_loaded', array($this, 'unSubscriberNumberByUrlAction'), 20);
     }
 
@@ -52,35 +51,28 @@ class Newsletter
     {
         $unSubscriberQueryString = $this->getUnSubscriberQueryString();
 
-        if (!isset($_REQUEST[$unSubscriberQueryString]) || !is_numeric(wp_unslash($_REQUEST[$unSubscriberQueryString]))) {
+        if (!isset($_REQUEST[$unSubscriberQueryString]) || !wp_unslash($_REQUEST[$unSubscriberQueryString])) {
             return;
         }
 
-        $number   = wp_unslash(wp_unslash($_REQUEST[$unSubscriberQueryString]));
-        $response = $this->deleteSubscriberByNumber($number);
+        $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
+        $numbers = [$number, "+{$number}"];
+
+        foreach ($numbers as $number) {
+            $response = $this->deleteSubscriberByNumber($number);
+
+            if ($response['result'] == 'success') {
+                wp_die($response['message'], __('SMS Subscription!'), [
+                    'link_text' => __('Home page', 'wp-sms'),
+                    'link_url'  => get_bloginfo('url'),
+                ]);
+            }
+        }
 
         wp_die($response['message'], __('SMS Subscription!'), [
             'link_text' => __('Home page', 'wp-sms'),
             'link_url'  => get_bloginfo('url'),
         ]);
-    }
-
-    /**
-     * Include front table
-     */
-    public function load_script()
-    {
-        // jQuery will be included automatically
-        //wp_enqueue_script('wpsms-ajax-script', 'http://dev.local/wp-content/plugins/wp-sms/assets/blocks/newsletter/frontend.js', array('jquery'), WP_SMS_VERSION, true);
-
-        // Ajax params
-//        wp_localize_script('wpsms-ajax-script', 'wpsms_ajax_object', array(
-//            'ajaxurl'         => get_rest_url(null, 'wpsms/v1/newsletter'),
-//            'unknown_error'   => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-//            'loading_text'    => __('Loading...', 'wp-sms'),
-//            'subscribe_text'  => __('Subscribe', 'wp-sms'),
-//            'activation_text' => __('Activation', 'wp-sms')
-//        ));
     }
 
     /**
@@ -454,24 +446,33 @@ class Newsletter
 
 
     /**
-     * @param string $group_id
+     * @param string $group_ids
      *
      * @return array
      */
-    public static function getSubscribers($group_id = '')
+    public static function getSubscribers($group_ids = false, $only_active = false)
     {
         global $wpdb;
-
         $where = '';
 
-        if ($group_id) {
-            $where = $wpdb->prepare(' WHERE group_ID = %d', $group_id);
+        if ($group_ids) {
+            $groups = implode(',', wp_sms_sanitize_array($group_ids));
+            $where  .= "`group_ID` IN ({$groups}) ";
         }
 
-        $result = $wpdb->get_col("SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where);
+        if ($only_active) {
+            if ($where) {
+                $where .= "AND `status` = '1' ";
+            } else {
+                $where .= "`status` = '1' ";
+            }
+        }
 
-        return $result;
+        if ($where) {
+            $where = " WHERE {$where}";
+        }
 
+        return $wpdb->get_col("SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where);
     }
 
 
@@ -525,18 +526,18 @@ class Newsletter
         return null;
     }
 
-	/**
-	 * Get Newsletter Groups
-	 *
-	 * @param Not param
-	 */
+    /**
+     * Get Newsletter Groups
+     *
+     * @param Not param
+     */
 
-	public static function get_groups()
-	{
-		$self   = new Newsletter();
-		$groups = $self->db->get_results( "SELECT * FROM `{$self->db->prefix}sms_subscribes_group`" );
-		return $groups;
-	}
+    public static function get_groups()
+    {
+        $self   = new Newsletter();
+        $groups = $self->db->get_results("SELECT * FROM `{$self->db->prefix}sms_subscribes_group`");
+        return $groups;
+    }
 }
 
 new Newsletter();

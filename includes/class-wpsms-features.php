@@ -15,6 +15,7 @@ class Features
 
     protected $db;
     protected $tb_prefix;
+    private $mobileField;
 
     /**
      * WP_SMS_Features constructor.
@@ -23,11 +24,12 @@ class Features
     {
         global $sms, $wpdb;
 
-        $this->sms       = $sms;
-        $this->db        = $wpdb;
-        $this->tb_prefix = $wpdb->prefix;
-        $this->date      = WP_SMS_CURRENT_DATE;
-        $this->options   = Option::getOptions();
+        $this->sms         = $sms;
+        $this->db          = $wpdb;
+        $this->tb_prefix   = $wpdb->prefix;
+        $this->date        = WP_SMS_CURRENT_DATE;
+        $this->options     = Option::getOptions();
+        $this->mobileField = Helper::getUserMobileFieldName();
 
         if (isset($this->options['add_mobile_field'])) {
             add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
@@ -58,9 +60,9 @@ class Features
     private function checkMobileNumber($mobileNumber, $userID = null)
     {
         if ($userID) {
-            $result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobileNumber}' AND user_id != '{$userID}'");
+            $result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = '{$this->mobileField}' AND meta_value = '{$mobileNumber}' AND user_id != '{$userID}'");
         } else {
-            $result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = 'mobile' AND meta_value = '{$mobileNumber}'");
+            $result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = '{$this->mobileField}' AND meta_value = '{$mobileNumber}'");
         }
 
         if ($result) {
@@ -79,7 +81,7 @@ class Features
             $this->tb_prefix . "usermeta",
             array(
                 'user_id'  => $user_id,
-                'meta_key' => 'mobile',
+                'meta_key' => $this->mobileField,
             )
         );
     }
@@ -110,7 +112,7 @@ class Features
     {
 
         // Get user mobile
-        $user_mobile = get_user_meta($userID, 'mobile', true);
+        $user_mobile = get_user_meta($userID, $this->mobileField, true);
 
         if (empty($user_mobile)) {
             return;
@@ -192,7 +194,7 @@ class Features
     {
         if (isset($_POST['mobile'])) {
             $mobile = sanitize_text_field($_POST['mobile']);
-            update_user_meta($user_id, 'mobile', $mobile);
+            update_user_meta($user_id, $this->mobileField, $mobile);
         }
     }
 

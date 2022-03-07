@@ -6,7 +6,7 @@ class Helper
 {
 
     /**
-     * Show Admin Wordpress Ui Notice
+     * Show Admin WordPress UI Notice
      *
      * @param string $text where Show Text Notification
      * @param string $model Type Of Model from list : error / warning / success / info
@@ -14,7 +14,7 @@ class Helper
      * @param boolean $echo Check Echo or return in function
      * @param string $style_extra add extra Css Style To Code
      *
-     * @return string Wordpress html Notice code
+     * @return string WordPress html Notice code
      * @author Mehrshad Darzi
      */
     public static function notice($text, $model = "info", $close_button = true, $echo = true, $style_extra = 'padding:10px 0')
@@ -32,36 +32,21 @@ class Helper
     }
 
     /**
-     * Get WP users by role
+     * Add Flash Admin WordPress UI Notice
      *
-     * @param string $role
-     * @param bool $count
-     *
-     * @return array|int
+     * @param string $text where Show Text Notification
+     * @param string $model Type Of Model from list : error / warning / success / info
+     * @param string $redirect Url for redirect to new page
      */
-    public static function getUsersList($role, $count = false)
+    public static function addFlashNotice($text, $model = "success", $redirect = false)
     {
-        // Check the WC mobile enabled or not
-        $args = array(
-            'meta_query'  => array(
-                array(
-                    'key'     => 'mobile',
-                    'value'   => '',
-                    'compare' => '!=',
-                ),
-            ),
-            'count_total' => 'false',
-            'role'        => $role,
-            'fields'      => $count ? 'ID' : 'all'
-        );
-
-        $customers = get_users($args);
-
-        if ($count) {
-            return count($customers);
+        update_option('wpsms_flash_message', [
+            'text'  => $text,
+            'model' => $model
+        ]);
+        if ($redirect) {
+            wp_redirect($redirect);
+            exit;
         }
-
-        return $customers;
     }
-
 }

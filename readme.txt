@@ -1,22 +1,26 @@
 ﻿=== WP SMS ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, sms panel, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
+Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.6.9
+Stable tag: 5.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-A powerful SMS Messaging/Texting plugin for WordPress
+The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 == Description ==
 This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, Click send and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
-Additionally, you can send SMS/MMS messages to your newsletter subscribers or users and draw their attention to your site, products, and announcements.
+Additionally, you can send SMS/MMS message notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
-Using WP-SMS you can enjoy many features, You can
+Watch the video to learn more about the WordPress SMS Plugin!
+
+https://www.youtube.com/watch?v=7r6jObgdQj0
+
+Main plugin's feature
 
 * Send SMS/MMS to either your users’ numbers or specific numbers
 * Get your users’ mobile numbers when they subscribe to your newsletters
@@ -25,13 +29,9 @@ Using WP-SMS you can enjoy many features, You can
 * Login with your mobile number in case that you forget your password
 * And many more!
 
-This plugin is completely free. You just need to have an account from one of the services in the list of gateways we support.
+This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
 
 Don’t worry, we have tried to cover the best and the most well-known gateways for the plugin. Also, the Pro version is available too.
-
-Watch How You Can Send SMS With WordPress!
-
-https://www.youtube.com/watch?v=d1QdWL9eDmo
 
 = Features =
 * Supporting more than 250 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
@@ -145,7 +145,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/purchase/)
 
 = PHP v7, v8 Supports? =
-Yes! WP SMS is compatible with PHP version v5.6 up to v8
+Yes! WP-SMS is compatible with PHP version v5.6 up to v8
 
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
@@ -226,12 +226,8 @@ Example: Add signatures to messages that are sent
 	}
 	add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
-= Is REST API supported? =
-Yes. Up to now, we’ve just registered one endpoint in the plugin.
-
-Add new subscribes to SMS newsletters.
-
-	POST /wpsms/v1/subscriber/add
+= Does It Support REST API? =
+Yes. It does, see [https://wp-sms-pro.com/resources-category/api-endpoints/](documentation).
 
 = How to get the Pro Pack updates? =
 If you've already the pro pack version, you have to enter your license key in the setting page to get the updates.
@@ -266,9 +262,23 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Upgrade Notice ==
 = v5.6 =
-* If you installed the Pro Pack (wp-sms-pro) as well, please make sure that's updated to v3.3.*
+* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7 - **.03.2022 =
+* Feature: New Design for Send SMS page!
+* Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
+* Feature: The Post SMS Notification also supports groups and custom numbers as well
+* Feature: Bitly Short URL is also supported in Send SMS page
+* Feature: Endpoint `/wp-json/wpsms/v1/send` now supports new parameters. [See API document](https://documenter.getpostman.com/view/3239688/UVkqsvCK#019c5b41-5916-4d2c-9661-ba933dd8ec1a)
+* Improvement: The functionality of getting user's mobiles
+* Improvement: Update strings and fixed some typos
+* Improvement: Admin Styles updated and fixes a couple of issues in RTL languages and responsive mode as well.
+* Improvement: Compatibility the "Post SMS Notification" with WP-REST, WP-CLI, and other plugins
+* Bugfix: Gateways UwaziiMobile updated.
+* Bugfix: Fix unsubscribing the numbers with mobile country code through URL
+* Bugfix: Compatibility a bunch of gateways with old PHP versions
+
 = v5.6.9 - 16.02.2022 =
 * Improvement: The SureSms gateway now supports the Sender ID and Flash
 * Improvement: Compatible the Post SMS Notification with WP-REST API

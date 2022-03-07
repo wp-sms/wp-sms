@@ -1,0 +1,245 @@
+/**
+Send SMS page
+ */
+.wpsms-sendsms__container .wpsms-group {
+  margin-top: 11px;
+  width: 100%;
+}
+
+.wpsms-sendsms__container .wpsms-group .js-wpsms-select2 {
+  width: 65%;
+}
+
+.wpsms-sendsms__container textarea {
+  width: 65% !important;
+}
+
+/**
+Select2
+ */
+.select2-container {
+  min-width: 350px;
+}
+
+.select2-container .select2-selection--single {
+  height: 45px;
+  border-color: #5b5b5b;
+  border-radius: 2px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 43px;
+  padding-left: 14px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: 8px;
+  right: 7px;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: #f88d40;
+}
+
+.select2-container--default .select2-selection--multiple {
+  padding: 3px 2px;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+  height: 26px;
+}
+
+.wpsms-settings-header-field {
+  font-size: 12px;
+  font-weight: normal;
+  color: #7f7f7f;
+  white-space: normal;
+}
+
+.wpsms-settings-description-header {
+  display: inline-block;
+  margin: 0 6px;
+}
+
+.wpsms-settings-description-header .dashicons {
+  font-size: 15px;
+  display: inherit;
+}
+
+.wpsms-sendsms {
+  display: flex;
+
+
+  @media screen and (max-width: 768px) {
+    flex-wrap: wrap;
+  }
+}
+
+.wpsms-sendsms__container {
+
+  .inside {
+    padding-top: 40px;
+    position: relative;
+  }
+}
+
+.wpsms-sendsms__preview {
+  margin-left: 32px;
+  margin-top: 10px;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+
+  .preview {
+    background-color: #fff;
+    border: 1px solid #E7E7E7;
+    box-sizing: border-box;
+    border-radius: 55px;
+    height: 550px;
+    width: 285px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .preview__screen {
+      margin-top: 30px;
+      border: 1px solid #E7E7E7;
+      width: 80%;
+      height: 72%;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+    }
+
+    .preview__button {
+      border: 1px solid #E7E7E7;
+      width: 30%;
+      height: 10px;
+    }
+  }
+}
+
+.preview__message {
+  background: #F7F7F7;
+  border-radius: 15px 15px 15px 0;
+  width: 85%;
+  padding: 10px 15px;
+  max-height: 380px;
+}
+
+.preview__message__humber, .preview__message__message {
+  margin: 0 0 16px;
+  color: #5B5B5B;
+}
+
+.preview__message__humber {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 22px;
+}
+
+.preview__message__message-wrapper {
+  max-height: 265px;
+  overflow-y: auto;
+}
+
+.preview__message__message {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 22px;
+  overflow-y: visible;
+  word-break: break-word;
+  padding: 0 5px;
+}
+
+.preview__message__image {
+  margin: 10px 0;
+}
+
+.preview__message__date {
+  margin: 0;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 16px;
+  color: #808080;
+  text-align: right;
+}
+
+.wpsms-sendsms__overlay {
+  display: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  align-items: center;
+  justify-content: center;
+}
+
+.wpsms-sendsms__overlay__spinner {
+  width: 7%;
+}
+
+.wpsms-wrap .wpsms-wrap__main__notice {
+  display: none !important;
+
+  &.not-hidden {
+    display: flex !important;
+  }
+}
+
+.wpsms-users-roles {
+  margin-top: 10px;
+}
+
+.wpsms-wrap #datepicker {
+  background-color: #fff;
+}
+
+// RTL
+.rtl {
+  .wpsms-sendsms__preview {
+    margin: 10px 32px 0 0;
+  }
+
+  .preview__message__date, .preview__message__humber {
+    text-align: left;
+  }
+}
+
+// Mobile
+@media screen and (max-width: 768px) {
+  .wpsms-wrap__main {
+
+    .postbox {
+      max-width: 100%;
+    }
+
+    .wpsms-sendsms__container .inside {
+      padding-top: 10px;
+    }
+
+    .postbox table tr th {
+      padding: 14px 0 10px 0 !important;
+    }
+
+    .postbox table tr td {
+      padding: 0 0 18px 0 !important;
+    }
+
+    .select2-container {
+      width: 100% !important;
+    }
+
+    #wp_get_message {
+      width: 100% !important;
+    }
+  }
+
+  .wpsms-header-banner {
+    max-width: 100% !important;
+  }
+}
