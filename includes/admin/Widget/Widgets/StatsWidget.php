@@ -66,11 +66,11 @@ class StatsWidget extends AbstractWidget
         };
 
         $sentMessages['last_7_days'] = $getResults(
-            new DatePeriod(new DateTime, DateInterval::createFromDateString('-1 day'), 7),
+            new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
             'd D'
         );
         $sentMessages['last_30_days'] = $getResults(
-            new DatePeriod(new DateTime, DateInterval::createFromDateString('-1 day'), 30),
+            new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 30),
             'd M'
         );
         $sentMessages['this_year'] = $getResults(
