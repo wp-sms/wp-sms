@@ -270,6 +270,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
 * Feature: The Post SMS Notification also supports groups and custom numbers as well
 * Feature: Bitly Short URL is also supported in Send SMS page
+* Feature: Endpoint `/wp-json/wpsms/v1/send` now supports new parameters. [See API document](https://documenter.getpostman.com/view/3239688/UVkqsvCK#019c5b41-5916-4d2c-9661-ba933dd8ec1a)
 * Improvement: The functionality of getting user's mobiles
 * Improvement: Update strings and fixed some typos
 * Improvement: Admin Styles updated and fixes a couple of issues in RTL languages and responsive mode as well.
