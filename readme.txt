@@ -265,7 +265,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.7 - 7.03.2022 =
+= v5.7 - 07.03.2022 =
 * Feature: New Design for Send SMS page!
 * Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
 * Feature: The Post SMS Notification also supports groups and custom numbers as well
