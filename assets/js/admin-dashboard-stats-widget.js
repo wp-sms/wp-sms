@@ -49,13 +49,14 @@ const WPSmsStatsWidget = {
         const timeFrame = this.elements.timeFrameSelect.val()
         const direction = this.elements.smsDirection.val()
         const datasets = WPSmsStatsData[direction][timeFrame]
+        const localization = WPSmsStatsData.localization
 
         switch (direction) {
             case 'send-messages-stats':
                 return {
                     datasets: [
                         {
-                            label: 'Successful',
+                            label: localization.successful,
                             backgroundColor: 'rgba(0, 190, 86, 0.4)',
                             borderColor: 'rgba(0, 148, 67, 1)',
                             borderWidth: 1,
@@ -76,7 +77,7 @@ const WPSmsStatsWidget = {
                 return {
                     datasets: [
                         {
-                            label: 'Successful',
+                            label: localization.successful,
                             backgroundColor: 'rgba(0, 190, 86, 0.4)',
                             borderColor: 'rgba(0, 148, 67, 1)',
                             borderWidth: 1,
@@ -108,6 +109,7 @@ const WPSmsStatsWidget = {
         const timeFrame = this.elements.timeFrameSelect.val()
         const direction = this.elements.smsDirection.val()
         const datasets = WPSmsStatsData[direction][timeFrame]
+        const localization = WPSmsStatsData.localization
 
         let totals = {}
         for (const key in datasets) {
@@ -123,7 +125,7 @@ const WPSmsStatsWidget = {
                     `
                         <td class='successful'>
                             <img src="data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='96px' height='96px' viewBox='0 0 96 96' enable-background='new 0 0 96 96' xml:space='preserve'%3E%3Cg%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' fill='%236BBE66' d='M48,0c26.51,0,48,21.49,48,48S74.51,96,48,96S0,74.51,0,48 S21.49,0,48,0L48,0z M26.764,49.277c0.644-3.734,4.906-5.813,8.269-3.79c0.305,0.182,0.596,0.398,0.867,0.646l0.026,0.025 c1.509,1.446,3.2,2.951,4.876,4.443l1.438,1.291l17.063-17.898c1.019-1.067,1.764-1.757,3.293-2.101 c5.235-1.155,8.916,5.244,5.206,9.155L46.536,63.366c-2.003,2.137-5.583,2.332-7.736,0.291c-1.234-1.146-2.576-2.312-3.933-3.489 c-2.35-2.042-4.747-4.125-6.701-6.187C26.993,52.809,26.487,50.89,26.764,49.277L26.764,49.277z'/%3E%3C/g%3E%3C/svg%3E">
-                            ${totals.successful} Successful
+                            ${totals.successful} ${localization.successful}
                         </td>
                         <td class='failure'>
                             <img src="data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 122.88 122.88'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:%23eb0100;%7D.cls-1,.cls-2%7Bfill-rule:evenodd;%7D.cls-2%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ctitle%3Ecancel%3C/title%3E%3Cpath class='cls-1' d='M61.44,0A61.44,61.44,0,1,1,0,61.44,61.44,61.44,0,0,1,61.44,0Z'/%3E%3Cpath class='cls-2' d='M35.38,49.72c-2.16-2.13-3.9-3.47-1.19-6.1l8.74-8.53c2.77-2.8,4.39-2.66,7,0L61.68,46.86,73.39,35.15c2.14-2.17,3.47-3.91,6.1-1.2L88,42.69c2.8,2.77,2.66,4.4,0,7L76.27,61.44,88,73.21c2.65,2.58,2.79,4.21,0,7l-8.54,8.74c-2.63,2.71-4,1-6.1-1.19L61.68,76,49.9,87.81c-2.58,2.64-4.2,2.78-7,0l-8.74-8.53c-2.71-2.63-1-4,1.19-6.1L47.1,61.44,35.38,49.72Z'/%3E%3C/svg%3E">
@@ -137,7 +139,7 @@ const WPSmsStatsWidget = {
                     `
                         <td class='successful'>
                             <img src="data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='96px' height='96px' viewBox='0 0 96 96' enable-background='new 0 0 96 96' xml:space='preserve'%3E%3Cg%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' fill='%236BBE66' d='M48,0c26.51,0,48,21.49,48,48S74.51,96,48,96S0,74.51,0,48 S21.49,0,48,0L48,0z M26.764,49.277c0.644-3.734,4.906-5.813,8.269-3.79c0.305,0.182,0.596,0.398,0.867,0.646l0.026,0.025 c1.509,1.446,3.2,2.951,4.876,4.443l1.438,1.291l17.063-17.898c1.019-1.067,1.764-1.757,3.293-2.101 c5.235-1.155,8.916,5.244,5.206,9.155L46.536,63.366c-2.003,2.137-5.583,2.332-7.736,0.291c-1.234-1.146-2.576-2.312-3.933-3.489 c-2.35-2.042-4.747-4.125-6.701-6.187C26.993,52.809,26.487,50.89,26.764,49.277L26.764,49.277z'/%3E%3C/g%3E%3C/svg%3E">
-                            ${totals.successful} Successful
+                            ${totals.successful} ${localization.successful}
                         </td>
                         <td class='failure'>
                             <img src="data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 122.88 122.88'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:%23eb0100;%7D.cls-1,.cls-2%7Bfill-rule:evenodd;%7D.cls-2%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ctitle%3Ecancel%3C/title%3E%3Cpath class='cls-1' d='M61.44,0A61.44,61.44,0,1,1,0,61.44,61.44,61.44,0,0,1,61.44,0Z'/%3E%3Cpath class='cls-2' d='M35.38,49.72c-2.16-2.13-3.9-3.47-1.19-6.1l8.74-8.53c2.77-2.8,4.39-2.66,7,0L61.68,46.86,73.39,35.15c2.14-2.17,3.47-3.91,6.1-1.2L88,42.69c2.8,2.77,2.66,4.4,0,7L76.27,61.44,88,73.21c2.65,2.58,2.79,4.21,0,7l-8.54,8.74c-2.63,2.71-4,1-6.1-1.19L61.68,76,49.9,87.81c-2.58,2.64-4.2,2.78-7,0l-8.74-8.53c-2.71-2.63-1-4,1.19-6.1L47.1,61.44,35.38,49.72Z'/%3E%3C/svg%3E">
