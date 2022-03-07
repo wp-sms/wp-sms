@@ -20,7 +20,7 @@
 
     <div class="two-way-promotion">
         <h2>View incoming messages activity inside WordPress Dashboard</h2>
-        <p>Store Incoming Messages, Create new Commands for your customers, do actions, and even more!</p>
+        <p>Store Incoming Messages, Create new Commands for your customers, do actions, and more!</p>
         <p><a href="<?= WP_SMS_SITE ?>/product/wp-sms-two-way/" class="button-primary wpsms-primary-button" target="_blank">Read More WP-SMS Two Way!</a></p>
     </div>
 </div>
