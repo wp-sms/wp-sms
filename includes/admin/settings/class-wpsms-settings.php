@@ -162,7 +162,7 @@ class Settings
             /*
              * Pro Pack tabs
              */
-            'pro_wordpress'        => __('OTP & Login', 'wp-sms'),
+            'pro_wordpress'        => __('2FA & Login', 'wp-sms'),
             'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
             'pro_woocommerce'      => __('WooCommerce', 'wp-sms'),
             'pro_gravity_forms'    => __('Gravity Forms', 'wp-sms'),
@@ -295,7 +295,7 @@ class Settings
             ),
             'otp_title'            => array(
                 'id'   => 'otp_title',
-                'name' => __('OTP', 'wp-sms'),
+                'name' => __('Two Factor Authentication SMS', 'wp-sms'),
                 'type' => 'header'
             ),
             'mobile_verify'          => array(
@@ -314,29 +314,29 @@ class Settings
             ),
             'mobile_verify_method'   => array(
                 'id'      => 'mobile_verify_method',
-                'name'    => __('OTP Method', 'wp-sms'),
+                'name'    => __('Method', 'wp-sms'),
                 'type'    => 'select',
                 'options' => array(
                     'optional'  => __('Optional - Users can enable/disable it in their profile', 'wp-sms'),
                     'force_all' => __('Enable for All Users', 'wp-sms')
                 ),
-                'desc'    => __('Choose from which what OTP method you want to use.', 'wp-sms')
+                'desc'    => __('Choose from which what 2FA method you want to use.', 'wp-sms')
             ),
             'mobile_verify_runtime'  => array(
                 'id'      => 'mobile_verify_runtime',
-                'name'    => __('OTP run-time', 'wp-sms'),
+                'name'    => __('Run Time', 'wp-sms'),
                 'type'    => 'select',
                 'options' => array(
                     'once_time'  => __('Just once', 'wp-sms'),
                     'every_time' => __('Everytime', 'wp-sms')
                 ),
-                'desc'    => __('Choose from which what OTP run-time you want to use.', 'wp-sms')
+                'desc'    => __('Choose from which what 2FA run-time you want to use.', 'wp-sms')
             ),
             'mobile_verify_message'  => array(
                 'id'   => 'mobile_verify_message',
                 'name' => __('Message content', 'wp-sms'),
                 'type' => 'textarea',
-                'desc' => __('Enter the contents of the OTP SMS message.', 'wp-sms') . '<br>' .
+                'desc' => __('Enter the contents of the 2FA SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
                         __('Mobile code: %s, User name: %s, First Name: %s, Last Name: %s', 'wp-sms'),
                         '<code>%otp%</code>',
@@ -560,7 +560,7 @@ class Settings
                 ),
                 'wc_otp'                       => array(
                     'id'   => 'wc_otp',
-                    'name' => __('OTP Verification', 'wp-sms'),
+                    'name' => __('Mobile Verification', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('By enabling this option the customers should verify their mobile number while placing the order.', 'wp-sms'),
                     'doc'  => '/resources/secure-login-with-one-time-password-otp/',
@@ -570,14 +570,14 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable OTP Verification for placing the order during the checkout.<br>Note: You must choose the mobile field first if disable OTP will not working  too.', 'wp-sms')
+                    'desc'    => __('Enable mobile verification for placing the order during the checkout. make sure the <b>Features » Mobile Field</b> is enabled in advance.', 'wp-sms')
                 ),
                 'wc_otp_countries_whitelist'   => array(
                     'id'      => 'wc_otp_countries_whitelist',
                     'name'    => __('Countries Whitelist', 'wp-sms'),
                     'type'    => 'countryselect',
                     'options' => $this->getCountriesList(),
-                    'desc'    => __('Specify the countries to enable OTP.', 'wp-sms')
+                    'desc'    => __('Specify the countries to verify the numbers.', 'wp-sms')
                 ),
                 'wc_otp_max_retry'             => array(
                     'id'   => 'wc_otp_max_retry',
