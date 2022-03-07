@@ -29,6 +29,6 @@ exports.watch = function () {
 };
 
 exports.admin = () => {
-  buildStyles();
+  buildAdminStyles();
   gulp.watch('./assets/src/admin/**/*.scss', gulp.series([buildAdminStyles]));
 }
