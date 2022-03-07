@@ -153,7 +153,7 @@
   padding: 45px;
 }
 
-#screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner {
+#screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner, #screen-meta-links + input[type="hidden"] + .wpsms-wrap .wpsms-header-banner{
   -webkit-transform: translateY(-31px);
   transform: translateY(-31px);
   position: relative;
