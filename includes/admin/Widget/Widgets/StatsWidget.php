@@ -29,6 +29,10 @@ class StatsWidget extends AbstractWidget
 
     private function fetchSentMessagesStats()
     {
+        // todo
+        $widgetData['localization'] = [
+            'successful' => __('Successful', 'wp-sms'),
+        ];
 
         /**
          * @param \DatePeriod $period
@@ -47,7 +51,7 @@ class StatsWidget extends AbstractWidget
 
                 $label = $firstDate->format($format);
 
-                $query   = $wpdb->prepare("select `status`,count(*) as count from `wp_sms_send` where `date` between %s and %s group by `status`", $firstDate->format('Y-m-d H:i:s'), $secondDate->format('Y-m-d H:i:s'));
+                $query   = $wpdb->prepare("select `status`,count(*) as count from `{$wpdb->prefix}sms_send` where `date` between %s and %s group by `status`", $firstDate->format('Y-m-d H:i:s'), $secondDate->format('Y-m-d H:i:s'));
                 $results = $wpdb->get_results($query);
 
                 foreach ($results as $key => $result) {
@@ -78,8 +82,8 @@ class StatsWidget extends AbstractWidget
             'M'
         );
 
-        return [
-            'send-messages-stats' => $sentMessages,
-        ];
+        $widgetData['send-messages-stats'] = $sentMessages;
+
+        return $widgetData;
     }
 }
