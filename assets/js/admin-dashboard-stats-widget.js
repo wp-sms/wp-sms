@@ -56,15 +56,15 @@ const WPSmsStatsWidget = {
                     datasets: [
                         {
                             label: 'Successful',
-                            backgroundColor: '#00be5652',
-                            borderColor: '#009443ff',
+                            backgroundColor: 'rgba(0, 190, 86, 0.4)',
+                            borderColor: 'rgba(0, 148, 67, 1)',
                             borderWidth: 1,
                             fill: true,
                             data: datasets['successful'],
                         },
                         {
                             label: 'Failed',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1,
                             fill: true,
@@ -77,15 +77,15 @@ const WPSmsStatsWidget = {
                     datasets: [
                         {
                             label: 'Successful',
-                            backgroundColor: '#00be5652',
-                            borderColor: '#009443ff',
+                            backgroundColor: 'rgba(0, 190, 86, 0.4)',
+                            borderColor: 'rgba(0, 148, 67, 1)',
                             borderWidth: 1,
                             fill: true,
                             data: datasets['successful'],
                         },
                         {
                             label: 'Failed',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.4)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1,
                             fill: true,
@@ -93,8 +93,8 @@ const WPSmsStatsWidget = {
                         },
                         {
                             label: 'Plain',
-                            backgroundColor: '#9c9c9c96',
-                            borderColor: '#495057',
+                            backgroundColor: 'rgba(156, 156, 156, 0.3)',
+                            borderColor: 'rgb(73, 80, 87)',
                             borderWidth: 1,
                             fill: true,
                             data: datasets['plain'],
