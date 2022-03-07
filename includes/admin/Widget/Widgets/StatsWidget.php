@@ -70,11 +70,11 @@ class StatsWidget extends AbstractWidget
             'd M'
         );
         $sentMessages['this_year'] = $getResults(
-            new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), new DateTime('first day of next month')),
+            new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
             'M'
         );
         $sentMessages['last_12_month'] = $getResults(
-            new DatePeriod(new DateTime('first day of -11 month'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')), // just to include the end date
+            new DatePeriod(new DateTime('first day of -11 month'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
             'M'
         );
 
