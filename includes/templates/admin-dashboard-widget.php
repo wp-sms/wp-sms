@@ -11,5 +11,14 @@
             <option value="this_year">This year</option>
         </select>
     </div>
-    <canvas class='chart' width='400' height='400'></canvas>
+    <table class="totals">
+        <tr></tr>
+    </table>
+    <div class="chart">
+        <canvas class='' height='200px'></canvas>
+    </div>
+
+    <div class="two-way-promotion">
+        Buy <a href="<?php echo WP_SMS_SITE ?>/product/wp-sms-two-way/">WP-SMS Two-Way</a> to unlock incoming messages and actions, and even more!
+    </div>
 </div>

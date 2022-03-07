@@ -10,7 +10,7 @@ use DatePeriod;
 
 class StatsWidget extends AbstractWidget
 {
-    protected $id = 'wp-sms-stats';
+    protected $id = 'wp-sms-stats-widget';
     protected $name = 'WP SMS Stats';
     protected $version = '1.0';
 
@@ -24,9 +24,7 @@ class StatsWidget extends AbstractWidget
 
     public function render()
     {
-        echo Helper::loadTemplate('admin-dashboard-widget.php', [
-            'foo' => 'bar'
-        ]);
+        echo Helper::loadTemplate('admin-dashboard-widget.php');
     }
 
     private function fetchSentMessagesStats()
