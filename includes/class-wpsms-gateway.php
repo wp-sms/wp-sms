@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use Exception;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -817,5 +819,49 @@ class Gateway
         }
 
         return $to;
+    }
+
+    /**
+     * @param $url
+     * @param array $arguments
+     * @param array $params
+     * @param string $method
+     * @return string
+     * @throws Exception
+     */
+    protected function request($method = 'GET', $url, $arguments = [], $params = [])
+    {
+        /**
+         * Build request URL
+         */
+        $requestUrl = add_query_arg($arguments, $url);
+
+        /**
+         * Prepare the arguments
+         */
+        $parsedParams = wp_parse_args($params, [
+            'method' => $method
+        ]);
+
+        /**
+         * Execute the request
+         */
+        $response = wp_remote_request($requestUrl, $parsedParams);
+
+        if (is_wp_error($response)) {
+            throw new Exception($response->get_error_message());
+        }
+
+        $responseCode = wp_remote_retrieve_response_code($response);
+        $responseBody = wp_remote_retrieve_body($response);
+
+        if (in_array($responseCode, [200, 201, 202]) === false) {
+            $responseArray = json_decode($responseBody, true);
+            throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseArray, 1)));
+        }
+
+        $responseJson = json_decode($responseBody);
+
+        return ($responseJson == null) ? $responseBody : $responseJson;
     }
 }
