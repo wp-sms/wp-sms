@@ -59,7 +59,7 @@ class ozonesmsworld extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to  = implode($this->to, ",");
+        $to  = implode(",",$this->to);
         $msg = urlencode($this->msg);
 
         $response = wp_remote_get($this->wsdl_link . "/?action=compose&username=" . $this->username . "&api_key=" . $this->has_key . "&sender=" . $this->from . "&to=" . $to . "&message=" . $msg . "&unicode=0");

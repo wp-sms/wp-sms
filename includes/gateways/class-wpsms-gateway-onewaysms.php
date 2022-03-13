@@ -99,7 +99,7 @@ class onewaysms extends \WP_SMS\Gateway
             $this->msg = $this->convertToUnicode($this->msg);
         }
 
-        $to         = implode($this->to, ",");
+        $to         = implode(",",$this->to);
         $to         = urlencode($to);
         $this->from = urlencode($this->from);
 

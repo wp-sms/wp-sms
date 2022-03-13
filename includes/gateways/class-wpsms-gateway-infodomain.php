@@ -56,7 +56,7 @@ class infodomain extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to       = implode($this->to, ",");
+        $to       = implode(",",$this->to);
         $msg      = urlencode($this->msg);
         $response = wp_remote_get($this->wsdl_link . "/ISendSMSNoDR.aspx?username=" . $this->username . "&password=" . $this->password . "&message=" . $msg . "&mobile=" . $to . "&Sender=" . $this->from . "&type=1");
 

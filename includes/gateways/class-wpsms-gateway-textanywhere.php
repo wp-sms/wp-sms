@@ -60,7 +60,7 @@ class textanywhere extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to      = implode($this->to, ",");
+        $to      = implode(",", $this->to);
         $message = urlencode($this->msg);
 
         $response = wp_remote_get($this->wsdl_link . "?method=sendsms&externallogin=" . $this->username . "&password=" . $this->password . "&clientbillingreference=myclientbillingreference&clientmessagereference=myclientmessagereference&originator=" . $this->from . "&destinations=" . $to . "&body=" . $message . "&validity=72&charactersetid=2&replymethodid=1");

@@ -56,7 +56,7 @@ class mensatek extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to       = implode($this->to, ";");
+        $to       = implode(";",$this->to);
         $sms_text = iconv('utf-8', 'ISO-8859-1//TRANSLIT', $this->msg);
 
         $response = wp_remote_get($this->wsdl_link . "/enviar.php?Correo=" . $this->username . "&Passwd=" . $this->password . "&Destinatarios=" . $to . "&Remitente=" . $this->from . "&Mensaje=" . $sms_text . "&Report=0&Resp=JSON");

@@ -65,7 +65,7 @@ class _500sms extends \WP_SMS\Gateway
             $receiver[] = "$number";
         }
         $client = new \SoapClient($this->wsdl_link);
-        $result = $client->send_sms($this->username, $this->password, $this->from, implode($receiver, ","), $this->msg);
+        $result = $client->send_sms($this->username, $this->password, $this->from, implode('",",$receiver'), $this->msg);
 
         if ($result) {
             // Log the result

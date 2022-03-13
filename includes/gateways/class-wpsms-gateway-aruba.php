@@ -61,7 +61,7 @@ class aruba extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to  = implode($this->to, ",");
+        $to  = implode(",",$this->to);
         $msg = urlencode($this->msg);
 
         $response = wp_remote_post($this->wsdl_link . "Aruba/SENDSMS?login=" . urlencode($this->username) . "&password=" . urlencode($this->password) . "&message=" . $msg . "&message_type=N&order_id=999FFF111&sender=" . $this->from . "&recipient=" . $to);

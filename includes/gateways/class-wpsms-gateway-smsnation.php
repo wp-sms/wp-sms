@@ -60,7 +60,7 @@ class smsnation extends \WP_SMS\Gateway
         }
 
         // Reformat number
-        $to  = implode($this->to, ",");
+        $to  = implode(",",$this->to);
         $msg = urlencode($this->msg);
 
         $args = array(

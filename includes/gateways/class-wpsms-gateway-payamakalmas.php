@@ -73,7 +73,7 @@ class payamakalmas extends \WP_SMS\Gateway
             'UserName'   => $this->username,
             'Password'   => $this->password,
             'LineNumber' => $this->from,
-            'Recivers'   => implode($this->to, ','),
+            'Recivers'   => implode(',',$this->to),
             'SMSSMG'     => $this->msg,
             'MesClass'   => '1'
         ));

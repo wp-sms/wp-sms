@@ -66,7 +66,7 @@ class kavenegar extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to       = implode($this->to, ",");
+        $to       = implode(",",$this->to);
         $msg      = urlencode($this->msg);
         $path     = $this->get_path("send");
         $response = wp_remote_get($path, array(

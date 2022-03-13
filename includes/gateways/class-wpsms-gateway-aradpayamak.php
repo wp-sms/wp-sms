@@ -69,7 +69,7 @@ class aradpayamak extends \WP_SMS\Gateway
         }
 
         $client = new \SoapClient($this->wsdl_link);
-        $result = $client->sendSMS($this->has_key, $this->username, $this->password, $this->from, implode($to, ";"), $this->msg, 1);
+        $result = $client->sendSMS($this->has_key, $this->username, $this->password, $this->from, implode(";",$to), $this->msg, 1);
         if ($result) {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);

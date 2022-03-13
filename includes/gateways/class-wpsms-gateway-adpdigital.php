@@ -60,7 +60,7 @@ class adpdigital extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to  = str_replace("09", "989", implode($this->to, ","));
+        $to  = str_replace("09", "989", implode(",",$this->to));
         $msg = urlencode($this->msg);
 
         $result = file_get_contents("{$this->wsdl_link}send?username={$this->username}&password={$this->password}&dstaddress={$to}&body={$msg}&clientid={$this->from}&type=text&unicode=1");

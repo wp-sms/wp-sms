@@ -61,7 +61,7 @@ class wifisms extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $result = @file_get_contents($this->wsdl_link . '?action=SMS_SEND&username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&api=1&text=' . urlencode($this->msg) . '&to=' . implode($this->to, ",") . '&FLASH=0&from=' . urlencode($this->from));
+        $result = @file_get_contents($this->wsdl_link . '?action=SMS_SEND&username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&api=1&text=' . urlencode($this->msg) . '&to=' . implode(",", $this->to) . '&FLASH=0&from=' . urlencode($this->from));
 
         if ($result) {
             // Log the result

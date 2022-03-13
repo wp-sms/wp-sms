@@ -58,8 +58,8 @@ class tripadasmsbox extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to = implode($this->to, ",");
-
+        $to  = implode(',', $this->to);
+        
         if ($this->username) {
             $route = $this->username;
         } else {

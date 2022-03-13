@@ -59,7 +59,7 @@ class unisender extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to   = implode($this->to, ",");
+        $to   = implode(",", $this->to);
         $text = iconv('cp1251', 'utf-8', $this->msg);
 
         $response = wp_remote_get($this->wsdl_link . "sendSms?format=json&api_key=" . $this->has_key . "&sender=" . $this->from . "&text=" . $text . "&phone=" . $to);
