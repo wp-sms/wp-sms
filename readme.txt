@@ -239,6 +239,14 @@ Anyway the plugin supports registering the license key through `wp-config.php`
 = How to unsubscribe a number by URL? =
 Your subscribers can unsubscribe by URL [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 
+= How to redirect clients to a specific page after unsubscribing by URL? =
+Here is the hook that you need to use. Just replace XXXXX with desired path.
+
+add_action( 'wp_sms_number_unsubscribed_through_url', function($number){
+    wp_redirect( '/XXXXX' );
+    exit;
+} );
+
 = How to customize WP-SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
 

@@ -61,6 +61,8 @@ class Newsletter
         foreach ($numbers as $number) {
             $response = $this->deleteSubscriberByNumber($number);
 
+            do_action( 'wp_sms_number_unsubscribed_through_url', $number );
+
             if ($response['result'] == 'success') {
                 wp_die($response['message'], __('SMS Subscription!'), [
                     'link_text' => __('Home page', 'wp-sms'),
