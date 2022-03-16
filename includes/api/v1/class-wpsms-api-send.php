@@ -63,9 +63,8 @@ class SendSmsApi extends \WP_SMS\RestApi
 	{
 		try {
 
-			$recipientNumbers = $this->getRecipientsFromRequest($request);
-
-			$mediaUrls = array_filter($request->get_param('media_urls'));
+            $recipientNumbers = $this->getRecipientsFromRequest($request);
+            $mediaUrls        = array_filter($request->get_param('media_urls'));
 
 			/*
 			 * Scheduled SMS
