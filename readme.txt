@@ -70,6 +70,9 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 
 
 == Installation ==
+
+https://www.youtube.com/watch?v=uZVs8DXu_XM
+
 Installing the WP SMS plugin is similar to installing any other WordPress plugin, the simple way which is recommended is:
 
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
