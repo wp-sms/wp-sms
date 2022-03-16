@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7
+Stable tag: 5.7.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -242,10 +242,10 @@ Your subscribers can unsubscribe by URL [https://yourdomain.com/?wpsms_unsubscri
 = How to redirect clients to a specific page after unsubscribing by URL? =
 Here is the hook that you need to use. Just replace XXXXX with desired path.
 
-add_action( 'wp_sms_number_unsubscribed_through_url', function($number){
-    wp_redirect( '/XXXXX' );
-    exit;
-} );
+	add_action( 'wp_sms_number_unsubscribed_through_url', function($number){
+    	wp_redirect( '/XXXXX' );
+    	exit;
+	} );
 
 = How to customize WP-SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
@@ -273,6 +273,13 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.1 - 16.03.2022 =
+* Bugfix: The issue in media URLs REST API request even the request doesn't have the media URL
+* Bugfix: Separating numbers issue has been fixed in some gateways
+* Feature: New action `wp_sms_number_unsubscribed_through_url` has been added
+* Feature: New method `request()` has been added
+* Improvement: Minors and a couple of typos
+
 = v5.7 - 07.03.2022 =
 * Feature: New Design for Send SMS page!
 * Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
