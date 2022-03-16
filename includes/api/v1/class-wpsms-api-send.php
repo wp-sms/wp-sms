@@ -65,6 +65,8 @@ class SendSmsApi extends \WP_SMS\RestApi
 
 			$recipientNumbers = $this->getRecipientsFromRequest($request);
 
+			$mediaUrls = array_filter($mediaUrls);
+
 			/*
 			 * Scheduled SMS
 			 */
@@ -75,7 +77,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 					$request->get_param('message'),
 					$recipientNumbers,
 					true,
-					$request->get_param('media_urls')
+					$mediaUrls
 				);
 
 				return self::response('SMS Scheduled Successfully!');
@@ -94,7 +96,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 				$message,
 				$request->get_param('flash'),
 				$request->get_param('sender'),
-				$request->get_param('media_urls')
+				$mediaUrls
 			);
 
 			if (is_wp_error($response)) {
