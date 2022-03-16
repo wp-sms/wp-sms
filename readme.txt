@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7
+Stable tag: 5.7.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -53,7 +53,7 @@ Don’t worry, we have tried to cover the best and the most well-known gateways 
 * Make short URLs by Bitly.com
 
 = PRO PACKAGE =
-In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce OTP, order notifications, etc.
+In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce Mobile Verification, order notifications, etc.
 
 The list of supported gateways and integrated plugins are available in FAQ.
 [Buy Pro Package](http://wp-sms-pro.com/purchase/)
@@ -70,6 +70,9 @@ WP SMS is being developed on GitHub. If you’re interested in contributing to t
 
 
 == Installation ==
+
+https://www.youtube.com/watch?v=uZVs8DXu_XM
+
 Installing the WP SMS plugin is similar to installing any other WordPress plugin, the simple way which is recommended is:
 
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
@@ -133,7 +136,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * More supported gateways (listed above)
 * Integrations with more plugins as listed below:
  * Integration with BuddyPress: You can add mobile number fields to the profile page, send SMS to users when they’re mentioned in a post, and send SMS to users when they comment on a post.
- * Integration with WooCommerce: Order SMS notifications, verify customer mobile number during the checkout (OTP), SMS notification to customers and subscribers for new products, SMS notification for administrator when the stock is low, and also you can send SMS to customers when the order status is changed.
+ * Integration with WooCommerce: Order SMS notifications, verify customer mobile number during the checkout, SMS notification to customers and subscribers for new products, SMS notification for administrator when the stock is low, and also you can send SMS to customers when the order status is changed.
  * Integration with Gravity forms: The plugin can send SMS to users and Admin after the form is submitted.
  * Integration with Quform: The plugin can send SMS to users or Admin after the form is submitted.
  * Integration with Easy Digital Downloads: You can add mobile number fields to the profile page, and send SMS to users or Admin when an order is submitted with EDD.
@@ -239,6 +242,14 @@ Anyway the plugin supports registering the license key through `wp-config.php`
 = How to unsubscribe a number by URL? =
 Your subscribers can unsubscribe by URL [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 
+= How to redirect clients to a specific page after unsubscribing by URL? =
+Here is the hook that you need to use. Just replace XXXXX with desired path.
+
+	add_action( 'wp_sms_number_unsubscribed_through_url', function($number){
+    	wp_redirect( '/XXXXX' );
+    	exit;
+	} );
+
 = How to customize WP-SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
 
@@ -246,7 +257,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 1. General Settings page
 2. Gateway Settings page
 3. SMS Newsletter Settings page
-4. OTP And Login Settings page
+4. Two-Factor Authentication SMS (2FA) Login Settings page
 5. BuddyPress Settings page
 6. WooCommerce Settings page
 7. Send SMS/MMS page
@@ -265,6 +276,13 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.1 - 16.03.2022 =
+* Bugfix: The issue in media URLs REST API request even the request doesn't have the media URL
+* Bugfix: Separating numbers issue has been fixed in some gateways
+* Feature: New action `wp_sms_number_unsubscribed_through_url` has been added
+* Feature: New method `request()` has been added
+* Improvement: Minors and a couple of typos
+
 = v5.7 - 07.03.2022 =
 * Feature: New Design for Send SMS page!
 * Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
