@@ -365,12 +365,22 @@ class Gateway
             return $recipients;
         }
 
-        $numbers = array();
+        $countryCodeLength = strlen($countryCode);
+        $finalNumbers      = [];
+
         foreach ($recipients as $number) {
-            $numbers[] = preg_replace('/^(?:\\' . $countryCode . '|0)?/', $countryCode, ($number));
+            $number = str_replace("+{$countryCode}", '', $number);
+
+            if (substr($number, 0, $countryCodeLength) != $countryCode && substr($number, 0, 1) != '+') {
+                $finalNumbers[] = $countryCode . $number;
+            } elseif (substr($number, 0, 1) == '+') {
+                $finalNumbers[] = $number;
+            } else {
+                $finalNumbers[] = $number;
+            }
         }
 
-        return $numbers;
+        return $finalNumbers;
     }
 
     /**
