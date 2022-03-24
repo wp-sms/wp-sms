@@ -70,8 +70,6 @@ class Admin
             if (!did_action('wp_enqueue_media')) {
                 wp_enqueue_media();
             }
-
-            wp_enqueue_script('wpsms-sendsms', WP_SMS_URL . 'assets/js/send-sms.js', array('jquery'), WP_SMS_VERSION);
         }
     }
 
