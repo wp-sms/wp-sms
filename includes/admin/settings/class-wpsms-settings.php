@@ -157,7 +157,7 @@ class Settings
             'newsletter'           => __('SMS Newsletter', 'wp-sms'),
             'feature'              => __('Features', 'wp-sms'),
             'notifications'        => __('Notifications', 'wp-sms'),
-            'integration'          => __('Integration', 'wp-sms'),
+            'contact_form7'        => __('Contact Form 7', 'wp-sms'),
 
             /*
              * Pro Pack tabs
@@ -1837,73 +1837,23 @@ class Settings
             )),
 
             /**
-             * Integration fields
+             * Contact form 7 fields
              */
-            'integration'          => apply_filters('wp_sms_integration_settings', array(
-                // Contact form 7
+            'contact_form7'          => apply_filters('wp_sms_contact_form7_settings', array(
                 'cf7_title'                    => array(
                     'id'   => 'cf7_title',
-                    'name' => __('Contact Form 7', 'wp-sms'),
+                    'name' => __('SMS Notification Metabox', 'wp-sms'),
                     'type' => 'header',
                     'doc'  => '/resources/integrate-wp-sms-with-contact-form-7/',
-                    'desc' => __('By enabling this option you can send SMS notification once the Contact form is submitted.', 'wp-sms'),
+                    'desc' => __('By this option you can add SMS notification tools in all edit forms.', 'wp-sms'),
                 ),
                 'cf7_metabox'                  => array(
                     'id'      => 'cf7_metabox',
-                    'name'    => __('SMS meta box', 'wp-sms'),
+                    'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Added Wordpress SMS meta box to Contact form 7 plugin when enable this option.', 'wp-sms')
+                    'desc'    => __('This option adds SMS Notification tab in the edit forms.', 'wp-sms')
                 ),
-                // Woocommerce
-                'wc_title'                     => array(
-                    'id'   => 'wc_title',
-                    'name' => __('WooCommerce', 'wp-sms'),
-                    'type' => 'header'
-                ),
-                'wc_notif_new_order'           => array(
-                    'id'      => 'wc_notif_new_order',
-                    'name'    => __('New order', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Send an SMS to you When get new order.', 'wp-sms')
-                ),
-                'wc_notif_new_order_template'  => array(
-                    'id'   => 'wc_notif_new_order_template',
-                    'name' => __('Message body', 'wp-sms'),
-                    'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Order ID: %s, Order status: %s', 'wp-sms'),
-                            '<code>%order_id%</code>',
-                            '<code>%status%</code>'
-                        )
-                ),
-                // EDD
-                'edd_title'                    => array(
-                    'id'   => 'edd_title',
-                    'name' => __('Easy Digital Downloads', 'wp-sms'),
-                    'type' => 'header'
-                ),
-                'edd_notif_new_order'          => array(
-                    'id'      => 'edd_notif_new_order',
-                    'name'    => __('New order', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Send an SMS to you When get new order.', 'wp-sms')
-                ),
-                'edd_notif_new_order_template' => array(
-                    'id'   => 'edd_notif_new_order_template',
-                    'name' => __('Message body', 'wp-sms'),
-                    'type' => 'textarea',
-                    'desc' => __('Enter the contents of the message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Customer email: %s, Customer name: %s, Customer last name: %s', 'wp-sms'),
-                            '<code>%edd_email%</code>',
-                            '<code>%edd_first%</code>',
-                            '<code>%edd_last%</code>'
-                        )
-                )
             )),
 
             /*
