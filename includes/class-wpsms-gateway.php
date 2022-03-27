@@ -86,7 +86,8 @@ class Gateway
             'zipwhip'        => 'zipwhip.com',
             'teletopiasms'   => 'teletopiasms.no',
             'sinch'          => 'sinch.com',
-            'linkmobility'   => 'linkmobility.no'
+            'linkmobility'   => 'linkmobility.no',
+            'linkmobilityFr'   => 'linkmobility.fr'
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
