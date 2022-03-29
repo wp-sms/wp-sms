@@ -34,7 +34,7 @@ class StatsWidget extends AbstractWidget
      */
     public function render()
     {
-        echo Helper::loadTemplate('admin-dashboard-widget.php');
+        echo Helper::loadTemplate('admin/dashboard-widget.php');
     }
 
     /**
@@ -60,7 +60,8 @@ class StatsWidget extends AbstractWidget
             $dates = iterator_to_array($period);
             sort($dates);
 
-            $datasets;
+            $datasets = [];
+
             for ($i = 0; $i < sizeof($dates)-1 ; $i++) {
                 $firstDate  = $dates[$i];
                 $secondDate = $dates[$i+1];
@@ -78,6 +79,7 @@ class StatsWidget extends AbstractWidget
                 $datasets['successful'][$label] = $results['success'] ?? 0;
                 $datasets['failure'][$label] = $results['error'] ?? 0;
             }
+
             return $datasets;
         };
 
