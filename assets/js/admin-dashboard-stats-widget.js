@@ -62,7 +62,7 @@ const WPSmsStatsWidget = {
                             borderWidth: 1,
                             fill: true,
                             data: datasets['successful'],
-                            tension: 0.4
+                            tension: 0.4,
                         },
                         {
                             label: localization.failed,
@@ -71,7 +71,7 @@ const WPSmsStatsWidget = {
                             borderWidth: 1,
                             fill: true,
                             data: datasets['failure'],
-                            tension: 0.4
+                            tension: 0.4,
                         }
                     ]
                 }
@@ -85,6 +85,7 @@ const WPSmsStatsWidget = {
                             borderWidth: 1,
                             fill: true,
                             data: datasets['successful'],
+                            tension: 0.4,
                         },
                         {
                             label: localization.failed,
@@ -93,6 +94,7 @@ const WPSmsStatsWidget = {
                             borderWidth: 1,
                             fill: true,
                             data: datasets['failure'],
+                            tension: 0.4,
                         },
                         {
                             label: localization.plain,
@@ -101,6 +103,7 @@ const WPSmsStatsWidget = {
                             borderWidth: 1,
                             fill: true,
                             data: datasets['plain'],
+                            tension: 0.4,
                         }
                     ]
                 }
