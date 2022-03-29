@@ -36,3 +36,6 @@ nbproject
 
 # Build Folder
 /build
+
+#vscode
+.vscode

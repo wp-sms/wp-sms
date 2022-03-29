@@ -84,11 +84,11 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
 
-	    require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
-	    require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
-	    require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
+        require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
+        require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
+        require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
 
-	    $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
+        $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
 
         if (is_admin()) {
@@ -114,6 +114,9 @@ class WP_SMS
 
             // Subscribers class.
             require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
+
+            // Widgets
+            require_once WP_SMS_DIR . 'includes/admin/Widget/WidgetsManager.php';
         }
 
         if (!is_admin()) {
