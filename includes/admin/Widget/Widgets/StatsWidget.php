@@ -23,7 +23,6 @@ class StatsWidget extends AbstractWidget
     {
         wp_register_script('wp-sms-chartjs', Helper::getPluginAssetUrl('js/chart.min.js'), [], '3.7.1');
         wp_enqueue_script('wp-sms-dashboard-widget-stats-script', Helper::getPluginAssetUrl('js/admin-dashboard-stats-widget.js'), ['wp-sms-chartjs'], $this->version);
-        wp_enqueue_style('wp-sms-dashboard-widget-stats-styles', Helper::getPluginAssetUrl('css/admin-dashboard-stats-widget.css'), null, $this->version);
         wp_localize_script('wp-sms-dashboard-widget-stats-script', 'WPSmsStatsData', apply_filters('wp_sms_stats_widget_data', $this->getLocalizationData()));
     }
 
