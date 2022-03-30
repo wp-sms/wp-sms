@@ -845,7 +845,7 @@ class Gateway
      * @return string
      * @throws Exception
      */
-    protected function request($method = 'GET', $url, $arguments = [], $params = [])
+    protected function request($method, $url, $arguments = [], $params = [])
     {
         /**
          * Build request URL

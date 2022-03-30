@@ -19,8 +19,6 @@ function buildAdminStyles(cb) {
     .pipe(autoprefixer({cascade: false}))
     .pipe(cleanCSS({compatibility: 'ie11'}))
     .pipe(gulp.dest('./assets/css'));
-
-  cb();
 };
 
 exports.buildStyles = buildStyles;
@@ -28,7 +26,7 @@ exports.watch = function () {
   gulp.watch('./assets/src/scss/**/*.scss', gulp.series([buildStyles]));
 };
 
-exports.admin = () => {
-  buildAdminStyles();
+exports.buildAdminStyles = buildAdminStyles;
+exports.watch = () => {
   gulp.watch('./assets/src/admin/**/*.scss', gulp.series([buildAdminStyles]));
 }

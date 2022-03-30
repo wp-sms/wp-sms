@@ -45,6 +45,9 @@ class Admin
 
         $screen = get_current_screen();
 
+        // Register main plugin style
+        wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION);
+
         /**
          * Whole setting page's assets
          */
@@ -55,12 +58,18 @@ class Admin
             wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
 
-            wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-admin');
 
             if (is_rtl()) {
                 wp_enqueue_style('wpsms-rtl', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION);
             }
+        }
+
+        /**
+         * Dashboard widgets
+         */
+        if ($screen->id == 'dashboard') {
+            wp_enqueue_style('wpsms-admin');
         }
 
         /**
