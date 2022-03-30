@@ -87,14 +87,15 @@ class Gateway
             'teletopiasms'     => 'teletopiasms.no',
             'sinch'            => 'sinch.com',
             'linkmobility'     => 'linkmobility.no',
-            'linkmobilityFr'   => 'linkmobility.fr',
-            'eskiz'            => 'eskiz.uz'
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
         ),
         'germany'       => array(
             'gtxmessaging' => 'gtx-messaging.com',
+        ),
+        'french'               => array(
+            'linkmobilityFr'   => 'linkmobility.fr',
         ),
         'africa'        => array(
             'jusibe'      => 'jusibe.com',
@@ -121,6 +122,9 @@ class Gateway
         ),
         'pakistan'      => array(
             'sendpk' => 'sendpk.com',
+        ),
+        'uzbakistan'      => array(
+            'eskiz'            => 'eskiz.uz',
         ),
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
