@@ -62,6 +62,8 @@ class AddOns
 
     public function renderPage()
     {
-        include_once WP_SMS_DIR . "includes/admin/add-ons/add-ons.php";
+        echo Helper::loadTemplate('admin/add-ons.php', [
+            'addOns' => $this->addOns
+        ]);
     }
 }
