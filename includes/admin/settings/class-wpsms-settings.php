@@ -1296,7 +1296,7 @@ class Settings
                 'desc' => __('Quform should be enable to run this tab', 'wp-sms')
             );
         }
-        
+
         $settings = apply_filters('wp_sms_registered_settings', array(
             /**
              * General fields

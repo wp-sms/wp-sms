@@ -20,7 +20,7 @@ class AddOns
 
     public function prepareAddOnsFromApi()
     {
-        $response = wp_remote_get(WP_SMS_SITE . '/wp-json/wc/store/products');
+        $response = wp_remote_get(WP_SMS_SITE . '/wp-json/wc/store/products?category=204');
 
         // Check response
         if (is_wp_error($response)) {
@@ -37,11 +37,7 @@ class AddOns
 
     public function prepareResponse()
     {
-        foreach ($this->addOns as $key => $addOn) {
-            if ($addOn->name == 'Gateway') {
-                unset($this->addOns[$key]);
-            }
-
+        foreach ($this->addOns as $addOn) {
             $pluginSlug                    = sanitize_title($addOn->name);
             $plugin                        = "{$pluginSlug}/{$pluginSlug}.php";
             $addOn->meta['activate_url']   = add_query_arg(['action' => 'activate', 'plugin' => $plugin, '_wpnonce' => wp_create_nonce("activate-plugin_{$plugin}")], admin_url('plugins.php'));
