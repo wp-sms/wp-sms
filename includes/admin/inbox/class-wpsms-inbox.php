@@ -15,7 +15,7 @@ class Inbox
     public function render_page()
     {
         $renderCallback = apply_filters('wp_sms_admin_inbox_render_callback', function () {
-            include_once WP_SMS_DIR . "includes/admin/inbox/inbox.php";
+            echo Helper::loadTemplate('admin/inbox.php');
         });
 
         call_user_func($renderCallback);
