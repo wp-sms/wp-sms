@@ -102,12 +102,16 @@ class WP_SMS
 
             // Outbox class.
             require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+            require_once WP_SMS_DIR . 'includes/admin/inbox/class-wpsms-inbox.php';
 
             // Privacy class.
             require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy-actions.php';
 
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
+
+            // Send class.
+            require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
 
             // Setting classes.
             require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
