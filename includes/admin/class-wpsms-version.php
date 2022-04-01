@@ -90,7 +90,7 @@ class Version
     public function pro_meta_links($links, $file)
     {
         if ($file == 'wp-sms/wp-sms.php') {
-            $links[] = sprintf(__('<b><a href="%s" target="_blank" class="wpsms-plugin-meta-link wp-sms-pro" title="Get professional package!">Get professional package!</a></b>', 'wp-sms'), WP_SMS_SITE . '/pro');
+            $links[] = sprintf(__('<b><a href="%s" target="_blank" class="wpsms-plugin-meta-link wp-sms-pro" title="Get professional package!">Get professional package!</a></b>', 'wp-sms'), WP_SMS_SITE . '/buy');
         }
 
         return $links;
