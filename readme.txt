@@ -56,7 +56,7 @@ Don’t worry, we have tried to cover the best and the most well-known gateways 
 In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce Mobile Verification, order notifications, etc.
 
 The list of supported gateways and integrated plugins are available in FAQ.
-[Buy Pro Package](http://wp-sms-pro.com/pro/)
+[Buy Pro Package](http://wp-sms-pro.com/buy/)
 
 
 = Translations =
@@ -145,7 +145,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
  * Integration with Bitly.com for make the URLs shorter
 
 = How to buy? =
-You can buy the Pro pack version [through this link](http://wp-sms-pro.com/pro/)
+You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
 
 = PHP v7, v8 Supports? =
 Yes! WP-SMS is compatible with PHP version v5.6 up to v8
