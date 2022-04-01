@@ -93,8 +93,10 @@ class WP_SMS
 
         if (is_admin()) {
             // Admin classes.
-            require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
+            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
             require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
+
+            require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
             require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
 
             // Groups class.
@@ -112,9 +114,6 @@ class WP_SMS
 
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
-
-            // Setting classes.
-            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
 
             // Subscribers class.
             require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';

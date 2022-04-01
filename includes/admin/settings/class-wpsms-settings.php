@@ -55,8 +55,6 @@ class Settings
             update_option($this->setting_name, array());
         }
 
-        add_action('admin_menu', array($this, 'add_settings_menu'), 11);
-
         if (isset($_GET['page']) and $_GET['page'] == 'wp-sms-settings' or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
             add_action('admin_init', array($this, 'register_settings'));
         }
@@ -67,17 +65,6 @@ class Settings
         }
 
         add_filter('wp_sms_licenses_settings', array($this, 'modifyLicenseSettings'));
-    }
-
-    /**
-     * Add WP SMS Professional Package admin page settings
-     * */
-    public function add_settings_menu()
-    {
-        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array(
-            $this,
-            'render_settings'
-        ), 6);
     }
 
     /**
@@ -2596,5 +2583,3 @@ class Settings
         return $settings;
     }
 }
-
-new Settings();
