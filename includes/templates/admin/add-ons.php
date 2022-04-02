@@ -22,7 +22,7 @@
                             </div>
                             <div class="addon-card__main">
                                 <div class="addon-card__main__desc">
-                                    <p><?php echo wp_trim_words($plugin->short_description, 15); ?></p>
+                                    <p><?php echo wp_trim_words($plugin->short_description, 30); ?></p>
                                 </div>
                             </div>
                             <div class="addon-card__footer">
@@ -32,13 +32,15 @@
                                 </div>
                                 <div class="addon-card__footer__action">
                                     <?php if ($plugin->meta['status'] == 'active') : ?>
-                                        <a class="button button-primary" href="<?php echo $plugin->meta['deactivate_url']; ?>"><?php _e('Deactivate Add-On', 'wp-sms'); ?></a>
+                                        <a class="button" href="<?php echo $plugin->meta['deactivate_url']; ?>"><?php _e('Deactivate Add-On', 'wp-sms'); ?></a>
                                     <?php elseif ($plugin->meta['status'] == 'inactive') : ?>
-                                        <a class="button button-primary" href="<?php echo $plugin->meta['activate_url']; ?>"><?php _e('Activate Add-On', 'wp-sms'); ?></a>
+                                        <a class="button" href="<?php echo $plugin->meta['activate_url']; ?>"><?php _e('Activate Add-On', 'wp-sms'); ?></a>
                                     <?php else : ?>
-                                        <div class="column-price">
+                                        <div class="addon-card__footer__price">
                                             <strong><?php echo $plugin->price_html; ?></strong>
-                                        </div><a target="_blank" href="<?php echo $plugin->permalink; ?>" class="button-primary"><?php _e('Buy Add-On', 'wp-sms'); ?></a>
+                                        </div>
+
+                                        <a class="button-primary" target="_blank" href="<?php echo $plugin->permalink; ?>"><?php _e('Buy Add-On', 'wp-sms'); ?></a>
                                     <?php endif; ?>
                                 </div>
                             </div>
