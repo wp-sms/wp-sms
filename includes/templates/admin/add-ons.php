@@ -8,7 +8,7 @@
                     foreach ($addOns as $plugin) : ?>
                         <div class="addon-card">
                             <?php if ($plugin->on_sale) : ?>
-                                <div class="addon-card__ribbon addon-card__ribbon--top-left">
+                                <div class="addon-card__ribbon addon-card__ribbon--top-right">
                                     <span><?php _e('On Sale!', 'wp-sms'); ?></span>
                                 </div>
                             <?php endif; ?>
