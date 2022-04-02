@@ -12,7 +12,9 @@
                         <?php endif; ?>
                         <div class="addon-card__header">
                             <a target="_blank" href="<?php echo $plugin->permalink; ?>" class="thickbox open-plugin-details-modal">
-                                <img src="<?php echo $plugin->images[0]->src; ?>" class="addon-icon" alt="<?php echo $plugin->name; ?>">
+                                <?php if ($plugin->images) : ?>
+                                    <img src="<?php echo $plugin->images[0]->src; ?>" class="addon-icon" alt="<?php echo $plugin->name; ?>">
+                                <?php endif; ?>
                                 <h3><?php echo $plugin->name; ?></h3>
                             </a>
                         </div>
