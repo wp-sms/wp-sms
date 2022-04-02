@@ -7,7 +7,7 @@
                     <?php
                     foreach ($addOns as $plugin) : ?>
                         <div class="addon-card">
-                            <?php if ($plugin->on_sale) : ?>
+                            <?php if ($plugin->meta['status'] == 'not-installed' && $plugin->on_sale) : ?>
                                 <div class="addon-card__ribbon addon-card__ribbon--top-right">
                                     <span><?php _e('On Sale!', 'wp-sms'); ?></span>
                                 </div>
@@ -26,20 +26,22 @@
                                 </div>
                             </div>
                             <div class="addon-card__footer">
-                                <div class="addon-card__footer__status">
-                                    <?php _e('Status:', 'wp-sms'); ?>
-                                    <strong><?php echo $plugin->meta['status_label']; ?></strong>
-                                </div>
+                                <?php if ($plugin->meta['status'] == 'not-installed') : ?>
+                                    <div class="addon-card__footer__price">
+                                        <strong><?php echo $plugin->price_html; ?></strong>
+                                    </div>
+                                <?php else : ?>
+                                    <div class="addon-card__footer__status">
+                                        <?php _e('Status:', 'wp-sms'); ?>
+                                        <strong><?php echo $plugin->meta['status_label']; ?></strong>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="addon-card__footer__action">
                                     <?php if ($plugin->meta['status'] == 'active') : ?>
                                         <a class="button" href="<?php echo $plugin->meta['deactivate_url']; ?>"><?php _e('Deactivate Add-On', 'wp-sms'); ?></a>
                                     <?php elseif ($plugin->meta['status'] == 'inactive') : ?>
                                         <a class="button" href="<?php echo $plugin->meta['activate_url']; ?>"><?php _e('Activate Add-On', 'wp-sms'); ?></a>
                                     <?php else : ?>
-                                        <div class="addon-card__footer__price">
-                                            <strong><?php echo $plugin->price_html; ?></strong>
-                                        </div>
-
                                         <a class="button-primary" target="_blank" href="<?php echo $plugin->permalink; ?>"><?php _e('Buy Add-On', 'wp-sms'); ?></a>
                                     <?php endif; ?>
                                 </div>
