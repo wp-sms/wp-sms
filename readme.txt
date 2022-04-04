@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7.1
+Stable tag: 5.7.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -276,6 +276,19 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.2 - *.04.2022 =
+* Feature: The Add-Ons page added! [Checkout New Add-Ons!](https://wp-sms-pro.com/product-category/add-ons/)
+* Feature: The SMS Stats dashboard widget has been added!
+* Feature: The Inbox page added!
+* Improvement: Supported short URL in `generateUnSubscribeUrlByNumber()` function.
+* Improvement:  The register setting page has been improvement
+* Improvement: Clean up admin styles, scripts, and improvements structure as well
+* Improvement: Compatibility of the `request()` method with PHP v8.0
+* Improvement: The Integration tab is renamed to Contact form 7 and also the basic options (WooCommerce and EDD) have been removed since they are available in the Pro pack as well
+* Improvement: The mobile country code functionality has been improved.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.7.1 - 16.03.2022 =
 * Bugfix: The issue in media URLs REST API request even the request doesn't have the media URL
 * Bugfix: Separating numbers issue has been fixed in some gateways
