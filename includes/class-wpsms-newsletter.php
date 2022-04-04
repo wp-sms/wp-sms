@@ -38,9 +38,11 @@ class Newsletter
      */
     public function generateUnSubscribeUrlByNumber($number)
     {
-        return add_query_arg([
+        $unSubscribeUrl = add_query_arg([
             $this->getUnSubscriberQueryString() => $number
         ], get_bloginfo('url'));
+
+        return wp_sms_shorturl($unSubscribeUrl);
     }
 
     /**
