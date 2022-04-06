@@ -2078,7 +2078,7 @@ class Settings
 								<div style="display: block; width: 100%; margin-bottom: 15px;">
 									<textarea name="message" rows="3" style="display: block; width: 100%;"><?php echo $message ?></textarea>
 									<p class="description">Enter the contents of the SMS message.</p>
-									<p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
+									<p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
 								</div>
 								<div>
 									<input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete />
@@ -2110,7 +2110,7 @@ class Settings
 							<div style="display: block; width: 100%; margin-bottom: 15px;">
 								<textarea name="message" rows="3" style="display: block; width: 100%;"></textarea>
 								<p class="description">Enter the contents of the SMS message.</p>
-								<p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
+								<p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>','<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
 							</div>
 							<div>
 								<input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete />
