@@ -918,6 +918,23 @@ class Settings
                 'job_notify_receiver'         => array(
                     'id'   => 'job_notify_receiver',
                     'name' => __('SMS receiver', 'wp-sms'),
+                    'type' => 'select',
+                    'options' => array(
+                        'subscriber' => __('Subscriber(s)', 'wp-sms'),
+                        'number'      => __('Number(s)', 'wp-sms')
+                    ),
+                    'desc' => __('Please select the SMS receiver(s).', 'wp-sms')
+                ),
+                'job_notify_receiver_subscribers'        => array(
+                    'id'      => 'job_notify_receiver_subscribers',
+                    'name'    => __('Subscribe group', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => $subscribe_groups,
+                    'desc'    => __('Please select the group of subscribers that you want to receive the SMS.', 'wp-sms')
+                ),
+                'job_notify_receiver_numbers'         => array(
+                    'id'   => 'job_notify_receiver_numbers',
+                    'name' => __('Number(s)', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
