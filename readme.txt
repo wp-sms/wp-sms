@@ -281,7 +281,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Feature: The SMS Stats dashboard widget has been added!
 * Feature: The Inbox page added!
 * Improvement: Supported short URL in `generateUnSubscribeUrlByNumber()` function.
-* Improvement:  The register setting page has been improvement
+* Improvement: The register setting page has been improvement
 * Improvement: Clean up admin styles, scripts, and improvements structure as well
 * Improvement: Compatibility of the `request()` method with PHP v8.0
 * Improvement: The Integration tab is renamed to Contact form 7 and also the basic options (WooCommerce and EDD) have been removed since they are available in the Pro pack as well
