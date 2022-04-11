@@ -1944,7 +1944,7 @@ class Settings
         $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
         $updateOption       = false;
 
-        if (($constantLicenseKey && $this->isCurrentTab('licenses') && $this->checkRemoteLicenseByAddOnKeyAndLicense($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
+        if (($constantLicenseKey && $this->isCurrentTab('licenses') && wp_sms_check_remote_license($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
             $item = array('icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514');
 
             if ($constantLicenseKey) {
@@ -1986,7 +1986,7 @@ class Settings
                 continue;
             }
 
-            if ($this->checkRemoteLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)) {
+            if (wp_sms_check_remote_license($addOnKey, $licenseKey)) {
                 $value[$generateLicenseStatusKey] = true;
             } else {
                 $value[$generateLicenseStatusKey] = false;
@@ -1994,32 +1994,6 @@ class Settings
         }
 
         return $value;
-    }
-
-    /**
-     * Check the license with server
-     *
-     * @param $addOnKey
-     * @param $licenseKey
-     * @return bool|void
-     */
-    private function checkRemoteLicenseByAddOnKeyAndLicense($addOnKey, $licenseKey)
-    {
-        $response = wp_remote_get(add_query_arg(array(
-            'plugin-name' => $addOnKey,
-            'license_key' => $licenseKey,
-            'website'     => get_bloginfo('url'),
-        ), WP_SMS_SITE . '/wp-json/plugins/v1/validate'));
-
-        if (is_wp_error($response)) {
-            return;
-        }
-
-        $response = json_decode($response['body']);
-
-        if (isset($response->status) and $response->status == 200) {
-            return true;
-        }
     }
 
     public function header_callback($args)

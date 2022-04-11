@@ -78,6 +78,32 @@ function wp_sms_get_license_key($addOnKey)
 }
 
 /**
+ * Check the license with server
+ *
+ * @param $addOnKey
+ * @param $licenseKey
+ * @return bool|void
+ */
+function wp_sms_check_remote_license($addOnKey, $licenseKey)
+{
+    $response = wp_remote_get(add_query_arg(array(
+        'plugin-name' => $addOnKey,
+        'license_key' => $licenseKey,
+        'website'     => get_bloginfo('url'),
+    ), WP_SMS_SITE . '/wp-json/plugins/v1/validate'));
+
+    if (is_wp_error($response)) {
+        return;
+    }
+
+    $response = json_decode($response['body']);
+
+    if (isset($response->status) and $response->status == 200) {
+        return true;
+    }
+}
+
+/**
  * @param $media
  * @return string|void
  */
