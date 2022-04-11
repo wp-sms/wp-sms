@@ -2330,16 +2330,17 @@ class Settings
         foreach ($args['options'] as $key => $v) {
             $html .= '<optgroup label="' . ucfirst(str_replace('_', ' ', $key)) . '">';
 
-            foreach ($v as $option => $name) :
-
+            foreach ($v as $option => $name) {
                 $disabled = '';
-            if (!defined('WP_SMS_PRO_VERSION') && array_column(Gateway::$proGateways, $option)) {
-                $disabled = ' disabled';
-                $name     .= '<span> ' . __('- (Pro Pack)', 'wp-sms') . '</span>';
+
+                if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
+                    $disabled = ' disabled';
+                    $name     .= '<span> ' . __('- (Pro Pack)', 'wp-sms') . '</span>';
+                }
+
+                $selected = selected($option, $value, false);
+                $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
             }
-            $selected = selected($option, $value, false);
-            $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
-            endforeach;
 
             $html .= '</optgroup>';
         }

@@ -1,6 +1,7 @@
 <?php
 
 use WP_SMS\Gateway;
+use WP_SMS\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -61,6 +62,19 @@ function wp_sms_generate_constant_license($plugin_slug)
     if (defined($generateConstant)) {
         return constant($generateConstant);
     }
+}
+
+/**
+ * Get stored license key
+ *
+ * @param $addOnKey
+ * @return mixed|string
+ */
+function wp_sms_get_license_key($addOnKey)
+{
+    $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
+
+    return $constantLicenseKey ? $constantLicenseKey : Option::getOption("license_{$addOnKey}_key");
 }
 
 /**

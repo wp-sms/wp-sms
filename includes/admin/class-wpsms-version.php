@@ -65,7 +65,14 @@ class Version
     {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
-        if (is_plugin_active($pluginSlug)) {
+        if (!is_plugin_active($pluginSlug)) {
+            return false;
+        }
+
+        $licenseKey    = wp_sms_get_license_key('wp-sms-pro');
+        $licenseStatus = Option::getOption('license_wp-sms-pro_status');
+
+        if ($licenseKey && $licenseStatus) {
             return true;
         }
     }
@@ -102,7 +109,7 @@ class Version
      */
     public function pro_setting_title()
     {
-        echo sprintf(__('<p>WP-SMS-Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION);
+        echo sprintf(__('<p>WP-SMS Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION);
     }
 
     /**
@@ -133,7 +140,7 @@ class Version
      */
     public function version_notice()
     {
-        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP-SMS-Pro</a> is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
+        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP-SMS Pro</a> is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
     }
 
     /**
