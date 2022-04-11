@@ -144,7 +144,7 @@ class Settings
      */
     public function get_tabs()
     {
-        $tabs = array (
+        $tabs = array(
             /*
              * Main plugin tabs
              */
@@ -1470,69 +1470,78 @@ class Settings
              */
             'newsletter'           => apply_filters('wp_sms_newsletter_settings', array(
                 // SMS Newsletter
-                'newsletter_title'                => array(
+                'newsletter_title'                 => array(
                     'id'   => 'newsletter_title',
                     'name' => __('SMS Newsletter', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'newsletter_form_groups'          => array(
+                'newsletter_form_groups'           => array(
                     'id'   => 'newsletter_form_groups',
                     'name' => __('Show Groups', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Enable showing Groups on Form.', 'wp-sms')
                 ),
-                'newsletter_form_verify'          => array(
+                'newsletter_form_verify'           => array(
                     'id'   => 'newsletter_form_verify',
                     'name' => __('Verify Subscriber', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Verified subscribe with the activation code', 'wp-sms')
                 ),
-                'welcome'                         => array(
+                'newsletter_form_specified_groups' => array(
+                    'id'      => 'newsletter_form_specified_groups',
+                    'name'    => __('Post Types', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => array_map(function ($value) {
+                        return[$value->ID => $value->name];
+                    }, Newsletter::getGroups()),
+                    'desc'    => __('Select which groups should be showed in newsletter widget.', 'wp-sms')
+                ),
+                'welcome'                          => array(
                     'id'   => 'welcome',
                     'name' => __('Welcome SMS', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('By enabling this option you can send welcome SMS to subscribers'),
                     'doc'  => '/resources/send-welcome-sms-to-new-subscribers/',
                 ),
-                'newsletter_form_welcome'         => array(
+                'newsletter_form_welcome'          => array(
                     'id'   => 'newsletter_form_welcome',
                     'name' => __('Status', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Enable or Disable welcome SMS.', 'wp-sms')
                 ),
-                'newsletter_form_welcome_text'    => array(
+                'newsletter_form_welcome_text'     => array(
                     'id'   => 'newsletter_form_welcome_text',
                     'name' => __('SMS text', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => sprintf(__('Subscriber name: %s, Subscriber mobile: %s<br><br>if you would like to send unsubscribe link, check out the document.', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>'),
                 ),
-                'mobile_terms'                    => array(
+                'mobile_terms'                     => array(
                     'id'   => 'mobile_terms',
                     'name' => __('Mobile Number Terms', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'mobile_terms_field_place_holder' => array(
+                'mobile_terms_field_place_holder'  => array(
                     'id'   => 'mobile_terms_field_place_holder',
                     'name' => __('Field Placeholder', 'wp-sms'),
                     'type' => 'text'
                 ),
-                'mobile_terms_minimum'            => array(
+                'mobile_terms_minimum'             => array(
                     'id'   => 'mobile_terms_minimum',
                     'name' => __('Minimum number', 'wp-sms'),
                     'type' => 'number'
                 ),
-                'mobile_terms_maximum'            => array(
+                'mobile_terms_maximum'             => array(
                     'id'   => 'mobile_terms_maximum',
                     'name' => __('Maximum number', 'wp-sms'),
                     'type' => 'number'
                 ),
                 //Style Setting
-                'style'                           => array(
+                'style'                            => array(
                     'id'   => 'style',
                     'name' => __('Style', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'disable_style_in_front'          => array(
+                'disable_style_in_front'           => array(
                     'id'   => 'disable_style_in_front',
                     'name' => __('Disable Frontend Style', 'wp-sms'),
                     'type' => 'checkbox',
@@ -2047,83 +2056,93 @@ class Settings
 
         $order_statuses = wc_get_order_statuses();
         ob_start(); ?>
-		<div class="repeater">
-			<div data-repeater-list="wps_pp_settings[<?php echo $args['id'] ?>]">
-				<?php if (is_array($value) && count($value)) : ?>
-					<?php foreach ($value as $data) : ?>
-						<?php $order_status = isset($data['order_status']) ? $data['order_status'] : '' ?>
-						<?php $notify_status = isset($data['notify_status']) ? $data['notify_status'] : '' ?>
-						<?php $message = isset($data['message']) ? $data['message'] : '' ?>
+<div class="repeater">
+    <div
+        data-repeater-list="wps_pp_settings[<?php echo $args['id'] ?>]">
+        <?php if (is_array($value) && count($value)) : ?>
+        <?php foreach ($value as $data) : ?>
+        <?php $order_status = isset($data['order_status']) ? $data['order_status'] : '' ?>
+        <?php $notify_status = isset($data['notify_status']) ? $data['notify_status'] : '' ?>
+        <?php $message = isset($data['message']) ? $data['message'] : '' ?>
 
-						<div class="repeater-item" data-repeater-item>
-							<div style="display: block; width: 100%; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
-								<div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
-									<select name="order_status" style="display: block; width: 100%;">
-										<option value="">- Please Choose -</option>
-										<?php foreach ($order_statuses as $status_key => $status_name) : ?>
-											<?php $key = str_replace('wc-', '', $status_key) ?>
-											<option value="<?php echo $key ?>" <?php echo ($order_status == $key) ? 'selected' : '' ?>><?php echo $status_name ?></option>
-										<?php endforeach; ?>
-									</select>
-									<p class="description">Please choose an order status</p>
-								</div>
-								<div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
-									<select name="notify_status" style="display: block; width: 100%;">
-										<option value="">- Please Choose -</option>
-										<option value="1" <?php echo ($notify_status == '1') ? 'selected' : '' ?>>Enable</option>
-										<option value="2" <?php echo ($notify_status == '2') ? 'selected' : '' ?>>Disable</option>
-									</select>
-									<p class="description">Please select notify status</p>
-								</div>
-								<div style="display: block; width: 100%; margin-bottom: 15px;">
-									<textarea name="message" rows="3" style="display: block; width: 100%;"><?php echo $message ?></textarea>
-									<p class="description">Enter the contents of the SMS message.</p>
-									<p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
-								</div>
-								<div>
-									<input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete />
-								</div>
-							</div>
-						</div>
-					<?php endforeach; ?>
-				<?php else : ?>
-					<div class="repeater-item" data-repeater-item>
-						<div style="display: block; width: 100%; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
-							<div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
-								<select name="order_status" style="display: block; width: 100%;">
-									<option value="">- Please Choose -</option>
-									<?php foreach ($order_statuses as $status_key => $status_name) : ?>
-										<?php $key = str_replace('wc-', '', $status_key) ?>
-										<option value="<?php echo $key ?>"><?php echo $status_name ?></option>
-									<?php endforeach; ?>
-								</select>
-								<p class="description">Please choose an order status</p>
-							</div>
-							<div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
-								<select name="notify_status" style="display: block; width: 100%;">
-									<option value="">- Please Choose -</option>
-									<option value="1">Enable</option>
-									<option value="2">Disable</option>
-								</select>
-								<p class="description">Please select notify status</p>
-							</div>
-							<div style="display: block; width: 100%; margin-bottom: 15px;">
-								<textarea name="message" rows="3" style="display: block; width: 100%;"></textarea>
-								<p class="description">Enter the contents of the SMS message.</p>
-								<p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>','<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?></p>
-							</div>
-							<div>
-								<input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete />
-							</div>
-						</div>
-					</div>
-				<?php endif ?>
-			</div>
-			<div style="margin: 10px 0;">
-				<input type="button" value="Add another order status" class="button button-primary" data-repeater-create />
-			</p>
-		</div>
-		<?php
+        <div class="repeater-item" data-repeater-item>
+            <div style="display: block; width: 100%; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+                <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
+                    <select name="order_status" style="display: block; width: 100%;">
+                        <option value="">- Please Choose -</option>
+                        <?php foreach ($order_statuses as $status_key => $status_name) : ?>
+                        <?php $key = str_replace('wc-', '', $status_key) ?>
+                        <option value="<?php echo $key ?>" <?php echo ($order_status == $key) ? 'selected' : '' ?>><?php echo $status_name ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="description">Please choose an order status</p>
+                </div>
+                <div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
+                    <select name="notify_status" style="display: block; width: 100%;">
+                        <option value="">- Please Choose -</option>
+                        <option value="1" <?php echo ($notify_status == '1') ? 'selected' : '' ?>>Enable
+                        </option>
+                        <option value="2" <?php echo ($notify_status == '2') ? 'selected' : '' ?>>Disable
+                        </option>
+                    </select>
+                    <p class="description">Please select notify status</p>
+                </div>
+                <div style="display: block; width: 100%; margin-bottom: 15px;">
+                    <textarea name="message" rows="3"
+                        style="display: block; width: 100%;"><?php echo $message ?></textarea>
+                    <p class="description">Enter the contents of the SMS message.</p>
+                    <p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?>
+                    </p>
+                </div>
+                <div>
+                    <input type="button" value="Delete" class="button" style="margin-bottom: 15px;"
+                        data-repeater-delete />
+                </div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+        <?php else : ?>
+        <div class="repeater-item" data-repeater-item>
+            <div style="display: block; width: 100%; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+                <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
+                    <select name="order_status" style="display: block; width: 100%;">
+                        <option value="">- Please Choose -</option>
+                        <?php foreach ($order_statuses as $status_key => $status_name) : ?>
+                        <?php $key = str_replace('wc-', '', $status_key) ?>
+                        <option value="<?php echo $key ?>"><?php echo $status_name ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="description">Please choose an order status</p>
+                </div>
+                <div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
+                    <select name="notify_status" style="display: block; width: 100%;">
+                        <option value="">- Please Choose -</option>
+                        <option value="1">Enable</option>
+                        <option value="2">Disable</option>
+                    </select>
+                    <p class="description">Please select notify status</p>
+                </div>
+                <div style="display: block; width: 100%; margin-bottom: 15px;">
+                    <textarea name="message" rows="3" style="display: block; width: 100%;"></textarea>
+                    <p class="description">Enter the contents of the SMS message.</p>
+                    <p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?>
+                    </p>
+                </div>
+                <div>
+                    <input type="button" value="Delete" class="button" style="margin-bottom: 15px;"
+                        data-repeater-delete />
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
+    </div>
+    <div style="margin: 10px 0;">
+        <input type="button" value="Add another order status" class="button button-primary" data-repeater-create />
+        </p>
+    </div>
+    <?php
         echo ob_get_clean();
     }
 
@@ -2425,14 +2444,15 @@ class Settings
         $active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
         ob_start(); ?>
-        <div class="wrap wpsms-wrap wpsms-settings-wrap">
-            <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
-            <div class="wpsms-wrap__main">
-                <?php do_action('wp_sms_settings_page'); ?>
-                <h2><?php _e('Settings', 'wp-sms') ?></h2>
-                <div class="wpsms-tab-group">
-                    <ul class="wpsms-tab">
-                        <?php
+    <div class="wrap wpsms-wrap wpsms-settings-wrap">
+        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+        <div class="wpsms-wrap__main">
+            <?php do_action('wp_sms_settings_page'); ?>
+            <h2><?php _e('Settings', 'wp-sms') ?>
+            </h2>
+            <div class="wpsms-tab-group">
+                <ul class="wpsms-tab">
+                    <?php
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
@@ -2454,30 +2474,40 @@ class Settings
                             echo '</a>' . $proLockIcon . '</li>';
                         } ?>
 
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>"><?php _e('Plugin website', 'wp-sms'); ?></a></li>
-                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
-                    </ul>
-                    <?php echo settings_errors('wpsms-notices'); ?>
-                    <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab.'_settings_tab'?>">
-                        <form method="post" action="options.php">
-                            <table class="form-table">
-                                <?php
+                    <li class="tab-link"><a target="_blank"
+                            href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a>
+                    </li>
+                    <li class="tab-link"><a target="_blank"
+                            href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a>
+                    </li>
+                    <li class="tab-link"><a target="_blank"
+                            href="<?php echo WP_SMS_SITE; ?>"><?php _e('Plugin website', 'wp-sms'); ?></a>
+                    </li>
+                    <li class="tab-company-logo"><a target="_blank"
+                            href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img
+                                src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>" /></a>
+                    </li>
+                </ul>
+                <?php echo settings_errors('wpsms-notices'); ?>
+                <div
+                    class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab.'_settings_tab'?>">
+                    <form method="post" action="options.php">
+                        <table class="form-table">
+                            <?php
                                 settings_fields($this->setting_name);
         do_settings_fields("{$this->setting_name}_{$active_tab}", "{$this->setting_name}_{$active_tab}"); ?>
-                            </table>
+                        </table>
 
-                            <?php
+                        <?php
                             if (!$contentRestricted) {
                                 submit_button();
                             } ?>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <?php
+    </div>
+    <?php
         echo ob_get_clean();
     }
 
