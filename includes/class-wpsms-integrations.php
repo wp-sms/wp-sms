@@ -28,16 +28,6 @@ class Integrations
             add_action('wpcf7_after_save', array($this, 'wpcf7_save_form'));
             add_action('wpcf7_before_send_mail', array($this, 'wpcf7_sms_handler'));
         }
-
-        // Woocommerce
-        if (isset($this->options['wc_notif_new_order'])) {
-            add_action('woocommerce_new_order', array($this, 'wc_new_order'));
-        }
-
-        // EDD
-        if (isset($this->options['edd_notif_new_order'])) {
-            add_action('edd_complete_purchase', array($this, 'edd_new_order'));
-        }
     }
 
     public function cf7_editor_panels($panels)
@@ -92,7 +82,7 @@ class Integrations
         }
 
         /**
-         * Send SMS to an specific field
+         * Send SMS to a specific field
          */
         if ($cf7_options_field['message'] && $cf7_options_field['phone']) {
             $to = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
@@ -144,28 +134,6 @@ class Integrations
                 $this->cf7_data[$index] = $key;
             }
         }
-    }
-
-    public function wc_new_order($order_id)
-    {
-        $order          = new \WC_Order($order_id);
-        $this->sms->to  = array($this->options['admin_mobile_number']);
-        $template_vars  = array(
-            '%order_id%'     => $order_id,
-            '%status%'       => $order->get_status(),
-            '%order_number%' => $order->get_order_number(),
-        );
-        $message        = str_replace(array_keys($template_vars), array_values($template_vars), $this->options['wc_notif_new_order_template']);
-        $this->sms->msg = $message;
-
-        $this->sms->SendSMS();
-    }
-
-    public function edd_new_order()
-    {
-        $this->sms->to  = array($this->options['admin_mobile_number']);
-        $this->sms->msg = $this->options['edd_notif_new_order_template'];
-        $this->sms->SendSMS();
     }
 
 }

@@ -1,7 +1,7 @@
 <div class="wrap wpsms-wrap">
-	<?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
     <div class="wpsms-wrap__main">
-        <h1 class="wrap__title"><?php _e( 'Send SMS', 'wp-sms' ); ?></h1>
+        <h1 class="wrap__title"><?php _e('Send SMS', 'wp-sms'); ?></h1>
         <div class="wpsms-wrap__main__notice notice is-dismissible">
             <p class="wpsms-wrap__notice__text" style="padding: 10px 0"></p>
             <button type="button" onclick="closeNotice()" class="notice-dismiss">
@@ -21,11 +21,11 @@
                                 </svg>
                             </div>
                             <form method="post" action="">
-								<?php wp_nonce_field( 'update-options' ); ?>
+                                <?php wp_nonce_field('update-options'); ?>
                                 <table class="form-table">
                                     <tr valign="top">
                                         <th scope="row">
-                                            <label for="wp_get_sender"><?php _e( 'From', 'wp-sms' ); ?>:</label>
+                                            <label for="wp_get_sender"><?php _e('From', 'wp-sms'); ?>:</label>
                                         </th>
                                         <td>
                                             <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $smsObject->from; ?>" maxlength="18"/>
@@ -33,143 +33,121 @@
                                     </tr>
                                     <tr valign="top">
                                         <th scope="row">
-                                            <label for="select_sender"><?php _e( 'To', 'wp-sms' ); ?>:</label>
+                                            <label for="select_sender"><?php _e('To', 'wp-sms'); ?>:</label>
                                         </th>
                                         <td>
                                             <select name="wp_send_to" id="select_sender">
-                                                <option value="subscribers" id="wp_subscribe_username"><?php _e( 'Subscribers',
-														'wp-sms' ); ?></option>
-                                                <option value="users" id="wp_users"><?php _e( 'WordPress\'s Users',
-														'wp-sms' ); ?></option>
-                                                <option value="wc-customers" id="wc_users"<?php disabled( ! $proIsActive ); ?>>
-													<?php _e( 'WooCommerce\'s Customers', 'wp-sms' ); ?>
-													<?php if ( ! $proIsActive ) : ?>
-                                                        <span>(<?php _e( 'Requires the Pro Pack', 'wp-sms' ); ?>)</span>
-													<?php endif; ?>
+                                                <option value="subscribers" id="wp_subscribe_username"><?php _e('Subscribers', 'wp-sms'); ?></option>
+                                                <option value="users" id="wp_users"><?php _e('WordPress\'s Users', 'wp-sms'); ?></option>
+                                                <option value="wc-customers" id="wc_users"<?php disabled(!$proIsActive); ?>>
+                                                    <?php _e('WooCommerce\'s Customers', 'wp-sms'); ?>
+                                                    <?php if (!$proIsActive) : ?>
+                                                        <span>(<?php _e('Requires the Pro Pack', 'wp-sms'); ?>)</span>
+                                                    <?php endif; ?>
                                                 </option>
-                                                <option value="bp-users" id="bp_users"<?php disabled( ! $proIsActive ); ?>>
-													<?php _e( 'BuddyPress\'s Users', 'wp-sms' ); ?>
-													<?php if ( ! $proIsActive ) : ?>
-                                                        <span>(<?php _e( 'Requires the Pro Pack', 'wp-sms' ); ?>)</span>
-													<?php endif; ?>
+                                                <option value="bp-users" id="bp_users"<?php disabled(!$proIsActive); ?>>
+                                                    <?php _e('BuddyPress\'s Users', 'wp-sms'); ?>
+                                                    <?php if (!$proIsActive) : ?>
+                                                        <span>(<?php _e('Requires the Pro Pack', 'wp-sms'); ?>)</span>
+                                                    <?php endif; ?>
                                                 </option>
-                                                <option value="numbers" id="wp_tellephone"><?php _e( 'Number(s)',
-														'wp-sms' ); ?></option>
+                                                <option value="numbers" id="wp_tellephone"><?php _e('Number(s)', 'wp-sms'); ?></option>
                                             </select>
 
-											<?php if ( count( $get_group_result ) ) : ?>
+                                            <?php if (count($get_group_result)) : ?>
                                                 <div class="wpsms-value wpsms-group">
                                                     <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Group', 'wp-sms'); ?>">
-														<?php foreach ( $get_group_result as $items ): ?>
-                                                            <option value="<?php echo $items->ID; ?>"><?php echo sprintf( __( 'Group %s',
-																	'wp-sms' ),
-																	$items->name ); ?></option>
-														<?php endforeach; ?>
+                                                        <?php foreach ($get_group_result as $items): ?>
+                                                            <option value="<?php echo $items->ID; ?>"><?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?></option>
+                                                        <?php endforeach; ?>
                                                     </select>
                                                 </div>
-											<?php else: ?>
+                                            <?php else: ?>
                                                 <span class="wpsms-value wpsms-group" style="display: none;">
-                                                <span>
-                                                    <?php
-                                                    global $wpdb;
-                                                    $username_active = $wpdb->query( "SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'" );
-                                                    echo sprintf( __( '<b>%s</b> Subscribers.', 'wp-sms' ),
-	                                                    $username_active );
-                                                    ?>
+                                                    <span>
+                                                        <?php
+                                                        global $wpdb;
+                                                        $username_active = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
+                                                        echo sprintf(__('<b>%s</b> Subscribers.', 'wp-sms'), $username_active);
+                                                        ?>
+                                                    </span>
                                                 </span>
-                                            </span>
-											<?php endif; ?>
+                                            <?php endif; ?>
 
                                             <span class="wpsms-value wpsms-users" style="display: none;">
-                                            <span><?php echo sprintf( __( '<b>%s</b> Users have the mobile number.',
-		                                            'wp-sms' ),
-		                                            count( $get_users_mobile ) ); ?></span>
-                                        </span>
+                                                <span><?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); ?></span>
+                                            </span>
+
                                             <div class="wpsms-value wpsms-users wpsms-users-roles">
                                                 <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Role', 'wp-sms'); ?>">
-		                                            <?php
-		                                            foreach ( $wpsms_list_of_role as $key_item => $val_item ):
-			                                            ?>
-                                                        <option value="<?php echo $key_item; ?>"<?php if ( $val_item['count'] < 1 ) {
-															echo " disabled";
-														} ?>><?php _e( $val_item['name'], 'wp-sms' ); ?>
-                                                            (<?php echo sprintf( __( '<b>%s</b> Users have mobile number.',
-																'wp-sms' ),
-																$val_item['count'] ); ?>)
+                                                    <?php
+                                                    foreach ($wpsms_list_of_role as $key_item => $val_item):
+                                                        ?>
+                                                        <option value="<?php echo $key_item; ?>"<?php if ($val_item['count'] < 1) {
+                                                            echo " disabled";
+                                                        } ?>><?php _e($val_item['name'], 'wp-sms'); ?>
+                                                            (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>)
                                                         </option>
-													<?php endforeach; ?>
+                                                    <?php endforeach; ?>
                                                 </select>
                                             </div>
 
                                             <span class="wpsms-value wpsms-wc-users" style="display: none;">
-                                            <span><?php echo sprintf( __( '<b>%s</b> Customers have the mobile number.',
-		                                            'wp-sms' ),
-		                                            count( $woocommerceCustomers ) ); ?></span>
-                                        </span>
+                                                <span><?php echo sprintf(__('<b>%s</b> Customers have the mobile number.', 'wp-sms'), count($woocommerceCustomers)); ?></span>
+                                            </span>
 
                                             <span class="wpsms-value wpsms-bp-users" style="display: none;">
-                                            <span><?php echo sprintf( __( '<b>%s</b> Users have the mobile number in their profile.',
-		                                            'wp-sms' ),
-		                                            count( $buddyPressMobileNumbers ) ); ?></span>
-                                        </span>
+                                                <span><?php echo sprintf(__('<b>%s</b> Users have the mobile number in their profile.', 'wp-sms'), count($buddyPressMobileNumbers)); ?></span>
+                                            </span>
 
                                             <span class="wpsms-value wpsms-numbers">
-                                            <div class="clearfix"></div>
-                                            <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
-                                            <div class="clearfix"></div>
-                                            <div style="font-size: 14px"><?php _e( 'Separate the numbers with comma (,) or enter in each lines.',
-		                                            'wp-sms' ); ?></div>
-                                            <?php if ( $smsObject->validateNumber ) : ?>
-                                                <div style="margin-top: 10px"><?php echo sprintf( __( 'Gateway description: <code>%s</code>',
-			                                            'wp-sms' ),
-			                                            $smsObject->validateNumber ); ?></div>
-                                            <?php endif; ?>
-                                        </span>
+                                                <div class="clearfix"></div>
+                                                <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
+                                                <div class="clearfix"></div>
+                                                <div style="font-size: 14px"><?php _e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?></div>
+                                                <?php if ($smsObject->validateNumber) : ?>
+                                                    <div style="margin-top: 10px"><?php echo sprintf(__('Gateway description: <code>%s</code>', 'wp-sms'), $smsObject->validateNumber); ?></div>
+                                                <?php endif; ?>
+                                            </span>
                                         </td>
                                     </tr>
-									<?php if ( ! $smsObject->bulk_send ) : ?>
+                                    <?php if (!$smsObject->bulk_send) : ?>
                                         <tr>
                                             <td></td>
-                                            <td><?php _e( 'This gateway doesn\'t support the bulk SMS and will use the first number while sending a group of numbers.',
-													'wp-sms' ); ?></td>
+                                            <td><?php _e('This gateway doesn\'t support the bulk SMS and will use the first number while sending a group of numbers.', 'wp-sms'); ?></td>
                                         </tr>
-									<?php endif; ?>
+                                    <?php endif; ?>
                                     <tr valign="top">
                                         <th scope="row">
-                                            <label for="wp_get_message"><?php _e( 'Message', 'wp-sms' ); ?>:</label>
+                                            <label for="wp_get_message"><?php _e('Message', 'wp-sms'); ?>:</label>
                                         </th>
                                         <td>
                                             <textarea dir="auto" cols="80" rows="5" wrap="hard" name="wp_get_message wpsms-input" id="wp_get_message"></textarea><br/>
                                             <p class="number wpsms-wrap__account-balance">
-												<?php echo __( 'Your account credit',
-														'wp-sms' ) . ': ' . $gatewayCredit; ?>
+                                                <?php echo __('Your account credit', 'wp-sms') . ': ' . $gatewayCredit; ?>
                                             </p>
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <th><?php _e( 'Choice MMS media', 'wp-sms' ); ?></th>
+                                        <th><?php _e('Choice MMS media', 'wp-sms'); ?></th>
                                         <td>
-											<?php if ( $smsObject->supportMedia ) : ?>
+                                            <?php if ($smsObject->supportMedia) : ?>
                                                 <div><a href="#" class="wpsms-upload-button button">Upload image</a>
                                                 </div>
                                                 <div style="margin-top: 11px;">
                                                     <a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a>
-                                                </div>
-                                                <input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
-											<?php else: ?>
-                                                <p><?php echo sprintf( __( 'This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.',
-														'wp-sms' ),
-														WP_SMS_SITE . '/gateways' ); ?></p>
-											<?php endif; ?>
+                                                </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
+                                            <?php else: ?>
+                                                <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?></p>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
 
-									<?php if ( $proIsActive ): ?>
+                                    <?php if ($proIsActive): ?>
                                         <tr id="schedule" valign="top">
                                             <th scope="row">
-                                                <label for="datepicker"><?php _e( 'Scheduled message?',
-														'wp-sms' ); ?></label>
+                                                <label for="datepicker"><?php _e('Scheduled message?', 'wp-sms'); ?></label>
                                             </th>
                                             <td>
                                                 <input type="checkbox" id="schedule_status" name="schedule_status"/>
@@ -177,47 +155,42 @@
                                         </tr>
                                         <tr id="schedule_date" valign="top" style="display: none;">
                                             <th scope="row">
-                                                <label for="datepicker"><?php _e( 'Set date', 'wp-sms' ); ?>:</label>
+                                                <label for="datepicker"><?php _e('Set date', 'wp-sms'); ?>:</label>
                                             </th>
                                             <td>
                                                 <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
-                                                <p><?php echo __( "Site's time zone",
-															'wp-sms' ) . ': ' . wp_timezone_string(); ?></p>
+                                                <p><?php echo __("Site's time zone", 'wp-sms') . ': ' . wp_timezone_string(); ?></p>
                                             </td>
                                         </tr>
-									<?php else: ?>
+                                    <?php else: ?>
                                         <tr id="schedule" valign="top">
                                             <th scope="row">
-                                                <label for="datepicker"><?php _e( 'Scheduled message?',
-														'wp-sms' ); ?></label>
+                                                <label for="datepicker"><?php _e('Scheduled message?', 'wp-sms'); ?></label>
                                             </th>
                                             <td style="padding-top: 10px;">
                                                 <input type="checkbox" id="schedule_status" name="schedule_status" disabled="disabled"/>
-                                                <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e( 'Requires the Pro Pack',
-														'wp-sms' ); ?></p>
+                                                <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires the Pro Pack', 'wp-sms'); ?></p>
                                             </td>
                                         </tr>
-									<?php endif; ?>
+                                    <?php endif; ?>
 
-									<?php if ( $smsObject->flash == "enable" ) { ?>
+                                    <?php if ($smsObject->flash == "enable") { ?>
                                         <tr>
-                                            <th><?php _e( 'Send as a Flash', 'wp-sms' ); ?>:</th>
+                                            <th><?php _e('Send as a Flash', 'wp-sms'); ?>:</th>
                                             <td>
                                                 <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
-                                                <label for="flash_yes"><?php _e( 'Yes', 'wp-sms' ); ?></label>
+                                                <label for="flash_yes"><?php _e('Yes', 'wp-sms'); ?></label>
                                                 <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
-                                                <label for="flash_no"><?php _e( 'No', 'wp-sms' ); ?></label> <br/>
-                                                <p class="description"><?php _e( 'A message that appears on the recipient\'s mobile screen directly. The recipient does not need to go to the mobile phone inbox to read the message, nor is the message allocated to the SMS inbox.',
-														'wp-sms' ); ?></p>
+                                                <label for="flash_no"><?php _e('No', 'wp-sms'); ?></label> <br/>
+                                                <p class="description"><?php _e('A message that appears on the recipient\'s mobile screen directly. The recipient does not need to go to the mobile phone inbox to read the message, nor is the message allocated to the SMS inbox.', 'wp-sms'); ?></p>
                                             </td>
                                         </tr>
-									<?php } ?>
+                                    <?php } ?>
 
                                     <tr>
                                         <td>
                                             <p class="submit" style="padding: 0;">
-                                                <input type="submit" class="button-primary" name="SendSMS" value="<?php _e( 'Send SMS',
-													'wp-sms' ); ?>"/>
+                                                <input type="submit" class="button-primary" name="SendSMS" value="<?php _e('Send SMS', 'wp-sms'); ?>"/>
                                             </p>
                                         </td>
                                     </tr>

@@ -2,7 +2,7 @@
 <div class="wpsms-header-banner">
     <?php if (!is_plugin_active('wp-sms-pro/wp-sms-pro.php')) : ?>
         <div class="license-status license-status--free">
-            <h3><a href="https://wp-sms-pro.com/" target="_blank">Get Pro Pack!</a></h3>
+            <h3><a href="<?php echo WP_SMS_SITE; ?>/buy" target="_blank">Get Pro Pack!</a></h3>
             <span>You are using the free version, to enable the premium features, get the pro pack version.</span>
         </div>
     <?php elseif (isset($option['license_wp-sms-pro_status']) and $option['license_wp-sms-pro_status']) : ?>

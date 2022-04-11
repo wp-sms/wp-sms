@@ -1,3 +1,9 @@
+.wpsms-inbox-page {
+  .background-img {
+    width: 100%;
+  }
+}
+
 .promotion-modal {
   position: fixed;
   width: 70%;
@@ -42,7 +48,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  width: 60%;
+  width: 75%;
   margin: 32px auto 0;
 
   @media screen and (max-width: 990px) {

@@ -47,7 +47,8 @@
   background-color: #808080 !important;
 }
 
-.wpsms-wrap .button-primary {
+.wpsms-wrap .button-primary,
+.wp-sms-widgets .button-primary, {
   font-weight: 600 !important;
   font-size: 14px;
   line-height: 17px;
@@ -65,12 +66,14 @@
   }
 }
 
-.wpsms-wrap .button-primary:hover {
+.wpsms-wrap .button-primary:hover,
+.wp-sms-widgets .button-primary:hover {
   background-color: #EF771F;
   border-color: #EF771F;
 }
 
-.wpsms-wrap .button-primary:focus {
+.wpsms-wrap .button-primary:focus,
+.wp-sms-widgets .button-primary:focus {
   background-color: #EF771F;
   border-color: #EF771F;
   box-shadow: 0 0 0 1px #EF771F;

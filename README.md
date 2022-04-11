@@ -137,6 +137,12 @@ function wp_sms_modify_message($message) {
 }
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
+
+# Plugin development
+-   Run `npm install` from the theme directory to install dependencies
+-   Run `gulp buildStyles` to generate styles styles
+-   Run `gulp buildAdminStyles` to generate admin styles
+
 # Resources
 * [WordPress.org plugin URL](https://wordpress.org/plugins/wp-sms/)
 * [Plugin Website](https://wp-sms-pro.com)

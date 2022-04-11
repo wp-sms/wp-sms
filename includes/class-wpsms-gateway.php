@@ -16,83 +16,86 @@ class Gateway
     // Set pro gateways
     public static $proGateways = array(
         'global'        => array(
-            'twilio'         => 'twilio.com',
-            'plivo'          => 'plivo.com',
-            'clickatell'     => 'clickatell.com',
-            'bulksms'        => 'bulksms.com',
-            'infobip'        => 'infobip.com',
-            'nexmo'          => 'nexmo.com',
-            'clockworksms'   => 'clockworksms.com',
-            'messagebird'    => 'messagebird.com',
-            'clicksend'      => 'clicksend.com',
-            'globalvoice'    => 'global-voice.net',
-            'smsapicom'      => 'smsapi.com',
-            'dsms'           => 'dsms.in',
-            'esms'           => 'esms.vn',
-            'isms'           => 'isms.com.my',
-            'alfacell'       => 'alfa-cell.com',
-            'moceansms'      => 'moceansms.com',
-            'msg91'          => 'msg91.com',
-            'msg360'         => 'msg360.in',
-            'livesms'        => 'livesms.eu',
-            'thesmsworld'    => 'thesmsworld.com',
-            'ozioma'         => 'ozioma.net',
-            'pswin'          => 'pswin.com',
-            'ra'             => 'ra.sa',
-            'smsfactor'      => 'smsfactor.com',
-            'textmarketer'   => 'textmarketer.co.uk',
-            'smslive247'     => 'smslive247.com',
-            'sendsms247'     => 'sendsms247.com',
-            'ssdindia'       => 'ssdindia.com',
-            'jolis'          => 'jolis.net',
-            'vsms'           => 'vsms.club',
-            'websms'         => 'websms.at',
-            'smstrade'       => 'smstrade.de',
-            'yamamah'        => 'yamamah.com',
-            'cellsynt'       => 'cellsynt.net',
-            'cmtelecom'      => 'cmtelecom.com',
-            'textlocal'      => 'textlocal.in',
-            'ismartsms'      => 'ismartsms.net',
-            'ooredoosms'     => 'ooredoo-sms.com',
-            'txtlocal'       => 'txtlocal - textlocal.com',
-            'qsms'           => 'qsms.com.au',
-            'hoiio'          => 'hoiio.com',
-            'textmagic'      => 'textmagic.com',
-            'smsmisr'        => 'smsmisr.com',
-            'smsgateway'     => 'smsgateway.me',
-            'bandwidth'      => 'bandwidth.com',
-            '_4jawaly'       => '4jawaly.net',
-            'tyntec'         => 'tyntec.com',
-            'smscountry'     => 'smscountry.com',
-            'routesms'       => 'routesms.com',
-            'skebby'         => 'skebby.it',
-            'sendhub'        => 'sendhub.com',
-            'upsidewireless' => 'upsidewireless.com',
-            'orange'         => 'orange.com',
-            'proovl'         => 'proovl.com',
-            'messente'       => 'messente.com',
-            'springedge'     => 'springedge.com',
-            'bulksmsnigeria' => 'bulksmsnigeria.com',
-            'smsru'          => 'sms.ru',
-            'aspsms'         => 'aspsms.com',
-            'kaleyra'        => 'kaleyra.com',
-            'sendpulse'      => 'sendpulse.com',
-            'mimsms'         => 'mimsms.com',
-            'smsto'          => 'sms.to',
-            'tiniyo'         => 'tiniyo.com',
-            'vatansms'       => 'vatansms.com',
-            'smsmessenger'   => 'smsmessenger.co.za',
-            'vfirst'         => 'vfirst.com',
-            'zipwhip'        => 'zipwhip.com',
-            'teletopiasms'   => 'teletopiasms.no',
-            'sinch'          => 'sinch.com',
-            'linkmobility'   => 'linkmobility.no'
+            'twilio'           => 'twilio.com',
+            'plivo'            => 'plivo.com',
+            'clickatell'       => 'clickatell.com',
+            'bulksms'          => 'bulksms.com',
+            'infobip'          => 'infobip.com',
+            'nexmo'            => 'nexmo.com',
+            'clockworksms'     => 'clockworksms.com',
+            'messagebird'      => 'messagebird.com',
+            'clicksend'        => 'clicksend.com',
+            'globalvoice'      => 'global-voice.net',
+            'smsapicom'        => 'smsapi.com',
+            'dsms'             => 'dsms.in',
+            'esms'             => 'esms.vn',
+            'isms'             => 'isms.com.my',
+            'alfacell'         => 'alfa-cell.com',
+            'moceansms'        => 'moceansms.com',
+            'msg91'            => 'msg91.com',
+            'msg360'           => 'msg360.in',
+            'livesms'          => 'livesms.eu',
+            'thesmsworld'      => 'thesmsworld.com',
+            'ozioma'           => 'ozioma.net',
+            'pswin'            => 'pswin.com',
+            'ra'               => 'ra.sa',
+            'smsfactor'        => 'smsfactor.com',
+            'textmarketer'     => 'textmarketer.co.uk',
+            'smslive247'       => 'smslive247.com',
+            'sendsms247'       => 'sendsms247.com',
+            'ssdindia'         => 'ssdindia.com',
+            'jolis'            => 'jolis.net',
+            'vsms'             => 'vsms.club',
+            'websms'           => 'websms.at',
+            'smstrade'         => 'smstrade.de',
+            'yamamah'          => 'yamamah.com',
+            'cellsynt'         => 'cellsynt.net',
+            'cmtelecom'        => 'cmtelecom.com',
+            'textlocal'        => 'textlocal.in',
+            'ismartsms'        => 'ismartsms.net',
+            'ooredoosms'       => 'ooredoo-sms.com',
+            'txtlocal'         => 'txtlocal - textlocal.com',
+            'qsms'             => 'qsms.com.au',
+            'hoiio'            => 'hoiio.com',
+            'textmagic'        => 'textmagic.com',
+            'smsmisr'          => 'smsmisr.com',
+            'smsgateway'       => 'smsgateway.me',
+            'bandwidth'        => 'bandwidth.com',
+            '_4jawaly'         => '4jawaly.net',
+            'tyntec'           => 'tyntec.com',
+            'smscountry'       => 'smscountry.com',
+            'routesms'         => 'routesms.com',
+            'skebby'           => 'skebby.it',
+            'sendhub'          => 'sendhub.com',
+            'upsidewireless'   => 'upsidewireless.com',
+            'orange'           => 'orange.com',
+            'proovl'           => 'proovl.com',
+            'messente'         => 'messente.com',
+            'springedge'       => 'springedge.com',
+            'bulksmsnigeria'   => 'bulksmsnigeria.com',
+            'smsru'            => 'sms.ru',
+            'aspsms'           => 'aspsms.com',
+            'kaleyra'          => 'kaleyra.com',
+            'sendpulse'        => 'sendpulse.com',
+            'mimsms'           => 'mimsms.com',
+            'smsto'            => 'sms.to',
+            'tiniyo'           => 'tiniyo.com',
+            'vatansms'         => 'vatansms.com',
+            'smsmessenger'     => 'smsmessenger.co.za',
+            'vfirst'           => 'vfirst.com',
+            'zipwhip'          => 'zipwhip.com',
+            'teletopiasms'     => 'teletopiasms.no',
+            'sinch'            => 'sinch.com',
+            'linkmobility'     => 'linkmobility.no',
         ),
         'united states' => array(
             'telnyx' => 'telnyx.com',
         ),
         'germany'       => array(
             'gtxmessaging' => 'gtx-messaging.com',
+        ),
+        'french'               => array(
+            'linkmobilityFr'   => 'linkmobility.fr',
         ),
         'africa'        => array(
             'jusibe'      => 'jusibe.com',
@@ -119,6 +122,9 @@ class Gateway
         ),
         'pakistan'      => array(
             'sendpk' => 'sendpk.com',
+        ),
+        'uzbakistan'      => array(
+            'eskiz'            => 'eskiz.uz',
         ),
         'india'         => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
@@ -179,12 +185,13 @@ class Gateway
     protected $tb_prefix;
     public $options;
     public $supportMedia = false;
+    public $supportIncoming = false;
     public $media = [];
 
     /**
      * @var
      */
-    static $get_response;
+    public static $get_response;
 
     public function __construct()
     {
@@ -234,7 +241,7 @@ class Gateway
 
         if (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php')) {
             include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php';
-        } else if (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
+        } elseif (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
             include_once(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php');
         } else {
             return new $class_name();
@@ -365,12 +372,22 @@ class Gateway
             return $recipients;
         }
 
-        $numbers = array();
+        $countryCodeLength = strlen($countryCode);
+        $finalNumbers      = [];
+
         foreach ($recipients as $number) {
-            $numbers[] = preg_replace('/^(?:\\' . $countryCode . '|0)?/', $countryCode, ($number));
+            $number = str_replace("+{$countryCode}", '', $number);
+
+            if (substr($number, 0, $countryCodeLength) != $countryCode && substr($number, 0, 1) != '+') {
+                $finalNumbers[] = $countryCode . $number;
+            } elseif (substr($number, 0, 1) == '+') {
+                $finalNumbers[] = $number;
+            } else {
+                $finalNumbers[] = $number;
+            }
         }
 
-        return $numbers;
+        return $finalNumbers;
     }
 
     /**
@@ -753,6 +770,21 @@ class Gateway
     /**
      * @return string
      */
+    public static function incoming_message_status()
+    {
+        global $sms;
+
+        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-settings&tab=addon_two_way') : WP_SMS_SITE.'/product/wp-sms-two-way';
+
+        if ($sms->supportIncoming === true) {
+            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span><a href=" '.$link.' "> ' . __('Supported', 'wp-sms') . '</a></div>';
+        }
+        return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span><a href="'.$link.'">' . __('Does not support!', 'wp-sms') . '</a></div>';
+    }
+
+    /**
+     * @return string
+     */
     public static function bulk_status()
     {
         global $sms;
@@ -829,7 +861,7 @@ class Gateway
      * @return string
      * @throws Exception
      */
-    protected function request($method = 'GET', $url, $arguments = [], $params = [])
+    protected function request($method, $url, $arguments = [], $params = [])
     {
         /**
          * Build request URL

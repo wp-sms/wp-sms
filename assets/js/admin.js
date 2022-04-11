@@ -3,6 +3,7 @@
     WpSmsUltimateMember.init();
     WpSmsBuddyPress.init();
     WpSmsNotifications.init();
+    WpSmsJobManager.init();
 
     // Select2
     $('.js-wpsms-select2').select2({
@@ -153,6 +154,50 @@ let WpSmsNotifications = {
             },
             numbersField: {
                 element: jQuery('#wpsms_settings\\[notif_publish_new_post_numbers\\]'),
+            }
+        }
+    },
+
+    hideOrShowFields: function () {
+        if (this.fields.receiverField.element.val() == 'subscriber') {
+            this.fields.subscriberField.element.closest('tr').show()
+            this.fields.numbersField.element.closest('tr').hide()
+        } else {
+            this.fields.subscriberField.element.closest('tr').hide()
+            this.fields.numbersField.element.closest('tr').show()
+        }
+    },
+
+    addEventListener: function () {
+        this.fields.receiverField.element.change(function () {
+            this.hideOrShowFields();
+        }.bind(this));
+    },
+
+    init: function () {
+        this.getFields();
+        this.hideOrShowFields();
+        this.addEventListener();
+    }
+
+}
+
+/**
+ * Job Manager
+ * @type {{init: WpSmsJobManager.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsJobManager.getFields}}
+ */
+let WpSmsJobManager = {
+
+    getFields: function () {
+        this.fields = {
+            receiverField: {
+                element: jQuery('#wps_pp_settings\\[job_notify_receiver\\]'),
+            },
+            subscriberField: {
+                element: jQuery('#wps_pp_settings\\[job_notify_receiver_subscribers\\]'),
+            },
+            numbersField: {
+                element: jQuery('#wps_pp_settings\\[job_notify_receiver_numbers\\]'),
             }
         }
     },
