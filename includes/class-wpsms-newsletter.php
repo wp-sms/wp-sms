@@ -261,12 +261,22 @@ class Newsletter
     /**
      * Get Groups
      *
+     * @param array|null $groupIds
      * @return array|object|null
      */
-    public static function getGroups()
+    public static function getGroups(array $groupIds = null)
     {
         global $wpdb;
-        $result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`");
+        $where = '';
+
+        if (is_array($groupIds) && !empty($groupIds)) {
+            $groups = implode(',', wp_sms_sanitize_array($groupIds));
+            $where  .= "`ID` IN ({$groups}) ";
+        }
+
+        $where = !empty($where) ? "WHERE {$where}" : '';
+
+        $result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
 
         if ($result) {
             return $result;
@@ -525,26 +535,6 @@ class Newsletter
         }
 
         return null;
-    }
-
-    /**
-     * Get specified groups for front end subscribe widget
-     *
-     * @return array|null
-     */
-    public static function getSpecifiedGroupsForFrontEnd()
-    {
-        $groupsIds = Option::getOption('newsletter_form_specified_groups');
-
-        $groups;
-        foreach ($groupsIds as $groupId) {
-            $group = self::getGroup($groupId);
-            if (isset($group)) {
-                $groups[] = $group;
-            }
-        }
-
-        return $groups;
     }
 }
 
