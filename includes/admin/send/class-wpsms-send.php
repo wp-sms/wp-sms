@@ -53,7 +53,7 @@ class SMS_Send
         }
 
         echo Helper::loadTemplate('admin/send-sms.php', [
-            'get_group_result'        => Newsletter::get_groups(),
+            'get_group_result'        => Newsletter::getGroups(),
             'get_users_mobile'        => Helper::getUsersMobileNumbers(),
             'proIsActive'             => Version::pro_is_active(),
             'woocommerceCustomers'    => $woocommerceCustomers,

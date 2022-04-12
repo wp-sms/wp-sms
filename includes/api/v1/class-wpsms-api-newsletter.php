@@ -15,7 +15,6 @@ if (!defined('ABSPATH')) {
  */
 class Newsletter extends \WP_SMS\RestApi
 {
-
     public function __construct()
     {
         // Register routes
@@ -91,7 +90,12 @@ class Newsletter extends \WP_SMS\RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_id = isset ($params['group_id']) ? $params['group_id'] : false;
+        $group_id = isset($params['group_id']) ? $params['group_id'] : false;
+
+        if (!in_array($group_id, \WP_SMS\Option::getOption('newsletter_form_specified_groups'))) {
+            return self::response('Not allowed.', 400);
+        }
+
         $result   = self::subscribe($params['name'], $number, $group_id);
 
         if (is_wp_error($result)) {
@@ -112,7 +116,7 @@ class Newsletter extends \WP_SMS\RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_id = isset ($params['group_id']) ? $params['group_id'] : 0;
+        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
         $result   = self::unSubscribe($params['name'], $number, $group_id);
 
         if (is_wp_error($result)) {
@@ -133,7 +137,7 @@ class Newsletter extends \WP_SMS\RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_id = isset ($params['group_id']) ? $params['group_id'] : 0;
+        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
         $result   = self::verifySubscriber($params['name'], $number, $params['activation'], $group_id);
 
         if (is_wp_error($result)) {
