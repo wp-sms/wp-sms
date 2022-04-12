@@ -264,7 +264,7 @@ class Newsletter
      * @param array|null $groupIds
      * @return array|object|null
      */
-    public static function getGroups(array $groupIds = null)
+    public static function getGroups($groupIds = null)
     {
         global $wpdb;
         $where = '';

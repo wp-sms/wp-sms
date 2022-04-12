@@ -1489,7 +1489,7 @@ class Settings
                 ),
                 'newsletter_form_specified_groups' => array(
                     'id'      => 'newsletter_form_specified_groups',
-                    'name'    => __('Post Types', 'wp-sms'),
+                    'name'    => __('Subscribe groups', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => array_map(function ($value) {
                         return[$value->ID => $value->name];

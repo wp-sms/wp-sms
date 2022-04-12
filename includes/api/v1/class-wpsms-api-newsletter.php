@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Api\V1;
 
+use WP_SMS\Option;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -90,13 +92,14 @@ class Newsletter extends \WP_SMS\RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_id = isset($params['group_id']) ? $params['group_id'] : false;
-
-        if (!in_array($group_id, \WP_SMS\Option::getOption('newsletter_form_specified_groups'))) {
-            return self::response('Not allowed.', 400);
+        $group_id       = isset($params['group_id']) ? $params['group_id'] : false;
+        $allowed_groups = Option::getOption('newsletter_form_specified_groups');
+        
+        if ($group_id && $allowed_groups && !in_array($group_id, $allowed_groups)) {
+            return self::response(__('Not allowed.', 'wp-sms'), 400);
         }
 
-        $result   = self::subscribe($params['name'], $number, $group_id);
+        $result = self::subscribe($params['name'], $number, $group_id);
 
         if (is_wp_error($result)) {
             return self::response($result->get_error_message(), 400);
