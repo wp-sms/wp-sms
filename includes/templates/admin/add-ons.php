@@ -5,7 +5,7 @@
             <div class="wp-list-table widefat widefat plugin-install">
                 <div id="the-list" class="wpsms-add-ons__grid">
                     <?php
-                    foreach ($addOns as $plugin) : ?>
+                    foreach ($addOns as $plugin) : if ($plugin->price_html == '') continue; ?>
                         <div class="addon-card">
                             <?php if ($plugin->meta['status'] == 'not-installed' && $plugin->on_sale) : ?>
                                 <div class="addon-card__ribbon addon-card__ribbon--top-right">

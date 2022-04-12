@@ -8,7 +8,6 @@ if (!defined('ABSPATH')) {
 
 class Newsletter
 {
-
     public $date;
     protected $db;
     protected $tb_prefix;
@@ -63,7 +62,7 @@ class Newsletter
         foreach ($numbers as $number) {
             $response = $this->deleteSubscriberByNumber($number);
 
-            do_action( 'wp_sms_number_unsubscribed_through_url', $number );
+            do_action('wp_sms_number_unsubscribed_through_url', $number);
 
             if ($response['result'] == 'success') {
                 wp_die($response['message'], __('SMS Subscription!'), [
@@ -262,12 +261,22 @@ class Newsletter
     /**
      * Get Groups
      *
+     * @param array|null $groupIds
      * @return array|object|null
      */
-    public static function getGroups()
+    public static function getGroups($groupIds = null)
     {
         global $wpdb;
-        $result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`");
+        $where = '';
+
+        if (is_array($groupIds) && !empty($groupIds)) {
+            $groups = implode(',', wp_sms_sanitize_array($groupIds));
+            $where  .= "`ID` IN ({$groups}) ";
+        }
+
+        $where = !empty($where) ? "WHERE {$where}" : '';
+
+        $result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
 
         if ($result) {
             return $result;
@@ -335,7 +344,6 @@ class Newsletter
                 'message' => sprintf(__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
-
             $result = $wpdb->insert(
                 $wpdb->prefix . "sms_subscribes_group",
                 array(
@@ -358,7 +366,6 @@ class Newsletter
                 return array('result' => 'success', 'message' => __('Group successfully added.', 'wp-sms'));
             }
         }
-
     }
 
     /**
@@ -388,7 +395,6 @@ class Newsletter
                 'message' => sprintf(__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
-
             $result = $wpdb->update(
                 $wpdb->prefix . "sms_subscribes_group",
                 array(
@@ -493,7 +499,8 @@ class Newsletter
     {
         global $wpdb;
 
-        $result = $wpdb->insert("{$wpdb->prefix}sms_subscribes",
+        $result = $wpdb->insert(
+            "{$wpdb->prefix}sms_subscribes",
             array(
                 'date'     => $date,
                 'name'     => $name,
@@ -528,19 +535,6 @@ class Newsletter
         }
 
         return null;
-    }
-
-    /**
-     * Get Newsletter Groups
-     *
-     * @param Not param
-     */
-
-    public static function get_groups()
-    {
-        $self   = new Newsletter();
-        $groups = $self->db->get_results("SELECT * FROM `{$self->db->prefix}sms_subscribes_group`");
-        return $groups;
     }
 }
 

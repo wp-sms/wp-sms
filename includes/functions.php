@@ -1,6 +1,7 @@
 <?php
 
 use WP_SMS\Gateway;
+use WP_SMS\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -60,6 +61,45 @@ function wp_sms_generate_constant_license($plugin_slug)
 
     if (defined($generateConstant)) {
         return constant($generateConstant);
+    }
+}
+
+/**
+ * Get stored license key
+ *
+ * @param $addOnKey
+ * @return mixed|string
+ */
+function wp_sms_get_license_key($addOnKey)
+{
+    $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
+
+    return $constantLicenseKey ? $constantLicenseKey : Option::getOption("license_{$addOnKey}_key");
+}
+
+/**
+ * Check the license with server
+ *
+ * @param $addOnKey
+ * @param $licenseKey
+ * @return bool|void
+ */
+function wp_sms_check_remote_license($addOnKey, $licenseKey)
+{
+    $response = wp_remote_get(add_query_arg(array(
+        'plugin-name' => $addOnKey,
+        'license_key' => $licenseKey,
+        'website'     => get_bloginfo('url'),
+    ), WP_SMS_SITE . '/wp-json/plugins/v1/validate'));
+
+    if (is_wp_error($response)) {
+        return;
+    }
+
+    $response = json_decode($response['body']);
+
+    if (isset($response->status) and $response->status == 200) {
+        return true;
     }
 }
 

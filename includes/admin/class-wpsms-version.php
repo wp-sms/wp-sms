@@ -18,15 +18,23 @@ class Version
 {
     public function __construct()
     {
-        // Check pro pack is enabled
-        if (self::pro_is_active()) {
+        if (is_admin()) {
+            $this->init();
+        }
+    }
+
+    private function init()
+    {
+        // Check pro pack is installed
+        if (self::pro_is_installed()) {
+
             // Check what version of WP-Pro using? if not new version, َShow the notice in admin area
             if (defined('WP_SMS_PRO_VERSION') and version_compare(WP_SMS_PRO_VERSION, "2.4.2", "<=")) {
                 add_action('admin_notices', array($this, 'version_notice'));
             }
 
             // Check license key.
-            if (Option::getOption('license_wp-sms-pro_status') == false) {
+            if (!self::pro_is_active()) {
                 add_action('admin_notices', array($this, 'license_notice'));
             }
 
@@ -47,36 +55,55 @@ class Version
             }
 
         } else {
-
-            if (is_admin() && isset($_GET['page']) and $_GET['page'] == 'wp-sms-pro') {
-                add_action('admin_notices', array($this, 'license_notice'));
-            }
-
             add_filter('plugin_row_meta', array($this, 'pro_meta_links'), 10, 2);
             add_filter('wpsms_gateway_list', array(self::class, 'addProGateways'));
         }
     }
 
     /**
-     * Check pro pack is enabled
+     * Check pro pack is exists
+     *
      * @return bool
      */
-    public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
+    private function pro_is_exists()
+    {
+        if (file_exists(WP_PLUGIN_DIR . '/wp-sms-pro/wp-sms-pro.php')) {
+            return true;
+        }
+    }
+
+    /**
+     * Check pro pack is installed
+     *
+     * @param $pluginSlug
+     * @return bool
+     */
+    public static function pro_is_installed($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
         if (is_plugin_active($pluginSlug)) {
             return true;
         }
+
+        return false;
     }
 
     /**
-     * Check pro pack is exists
+     * Check pro pack is enabled
+     *
      * @return bool
      */
-    private function pro_is_exists()
+    public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
-        if (file_exists(WP_PLUGIN_DIR . '/wp-sms-pro/wp-sms-pro.php')) {
+        if (!self::pro_is_installed($pluginSlug)) {
+            return false;
+        }
+
+        $licenseKey    = wp_sms_get_license_key('wp-sms-pro');
+        $licenseStatus = Option::getOption('license_wp-sms-pro_status');
+
+        if ($licenseKey && $licenseStatus) {
             return true;
         }
     }
@@ -102,7 +129,7 @@ class Version
      */
     public function pro_setting_title()
     {
-        echo sprintf(__('<p>WP-SMS-Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION);
+        echo sprintf(__('<p>WP-SMS Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION);
     }
 
     /**
@@ -141,8 +168,10 @@ class Version
      */
     public function license_notice()
     {
-        $url = admin_url('admin.php?page=wp-sms-settings&tab=licenses');
-        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable automatic updates.', 'wp-sms'), $url), 'error');
+        $url         = admin_url('admin.php?page=wp-sms-settings&tab=licenses');
+        $purchaseUrl = WP_SMS_SITE . '/buy';
+
+        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), $url, $purchaseUrl), 'error');
     }
 }
 
