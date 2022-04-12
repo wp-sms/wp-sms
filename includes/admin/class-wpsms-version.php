@@ -18,6 +18,13 @@ class Version
 {
     public function __construct()
     {
+        if (is_admin()) {
+            $this->init();
+        }
+    }
+
+    private function init()
+    {
         // Check pro pack is installed
         if (self::pro_is_installed()) {
 
