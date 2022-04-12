@@ -528,19 +528,6 @@ class Newsletter
     }
 
     /**
-     * Get Newsletter Groups
-     *
-     * @return void
-     */
-
-    public static function get_groups()
-    {
-        $self   = new Newsletter();
-        $groups = $self->db->get_results("SELECT * FROM `{$self->db->prefix}sms_subscribes_group`");
-        return $groups;
-    }
-
-    /**
      * Get specified groups for front end subscribe widget
      *
      * @return array|null
