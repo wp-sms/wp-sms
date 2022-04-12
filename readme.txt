@@ -276,10 +276,11 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.7.2 - 11.04.2022 =
+= v5.7.2 - 12.04.2022 =
 * Feature: The Add-Ons page added! [Checkout New Add-Ons!](https://wp-sms-pro.com/product-category/add-ons/)
 * Feature: The SMS Stats dashboard widget has been added!
 * Feature: The Inbox page added!
+* Feature: Add new ability to choose the specific groups to show on SMS newsletter widget
 * Improvement: Supported short URL in `generateUnSubscribeUrlByNumber()` function.
 * Improvement: The register setting page has been improvement
 * Improvement: Clean up admin styles, scripts, and improvements structure as well

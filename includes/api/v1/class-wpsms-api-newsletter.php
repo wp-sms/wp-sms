@@ -94,7 +94,7 @@ class Newsletter extends \WP_SMS\RestApi
 
         $group_id       = isset($params['group_id']) ? $params['group_id'] : false;
         $allowed_groups = Option::getOption('newsletter_form_specified_groups');
-        
+
         if ($group_id && $allowed_groups && !in_array($group_id, $allowed_groups)) {
             return self::response(__('Not allowed.', 'wp-sms'), 400);
         }
