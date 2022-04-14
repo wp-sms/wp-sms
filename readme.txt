@@ -270,6 +270,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 14. Login With Mobile
 15. SMS Subscribers Form
 16. Gravity Forms Settings page
+17. SMS Send/Receive stats widget
 
 == Upgrade Notice ==
 = v5.6 =

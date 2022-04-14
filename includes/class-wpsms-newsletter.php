@@ -275,7 +275,7 @@ class Newsletter
         }
 
         $where  = !empty($where) ? "WHERE {$where}" : '';
-        
+
         return $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
     }
 
