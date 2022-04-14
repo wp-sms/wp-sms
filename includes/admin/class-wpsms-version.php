@@ -21,6 +21,8 @@ class Version
         if (is_admin()) {
             $this->init();
         }
+
+        $this->registerCheckLicensesCronJob();
     }
 
     private function init()
@@ -53,7 +55,6 @@ class Version
                 unset($optionPro['license_key_status']);
                 update_option('wps_pp_settings', $optionPro);
             }
-
         } else {
             add_filter('plugin_row_meta', array($this, 'pro_meta_links'), 10, 2);
             add_filter('wpsms_gateway_list', array(self::class, 'addProGateways'));
@@ -172,6 +173,49 @@ class Version
         $purchaseUrl = WP_SMS_SITE . '/buy';
 
         Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), $url, $purchaseUrl), 'error');
+    }
+
+    /**
+     * Update all licenses' statuses
+     *
+     * @return void
+     */
+    public function updateLicensesStatus()
+    {
+        foreach (wp_sms_get_addons() as $addOnKey => $addOnName) {
+            $licenseIsStillValid = wp_sms_check_remote_license($addOnKey, wp_sms_get_license_key($addOnKey));
+
+            if (!$licenseIsStillValid) {
+                Option::updateOption("license_{$addOnKey}_status", false);
+            }
+        }
+    }
+
+    /**
+     * Register check licenses cron job
+     *
+     * @return void
+     */
+    private function registerCheckLicensesCronJob()
+    {
+        // 1. Register cron schedule interval
+        add_filter('cron_schedules', function () {
+            $schedules['wpsms_monthly_interval']     = [
+                'interval' => 2635200,
+                'display'  => __('Monthly', 'wp-sms'),
+                ];
+            return $schedules;
+        });
+
+        // 2. Hook the callback
+        add_action('wp_sms_check_update_licenses_status', function () {
+            $this->updateLicensesStatus();
+        });
+
+        // 3. Register the cron schedule
+        if (! wp_next_scheduled('wp_sms_check_update_licenses_status')) {
+            wp_schedule_event(time(), 'wpsms_monthly_interval', 'wp_sms_check_update_licenses_status');
+        }
     }
 }
 
