@@ -185,7 +185,9 @@ class Version
         foreach (wp_sms_get_addons() as $addOnKey => $addOnName) {
             $licenseIsStillValid = wp_sms_check_remote_license($addOnKey, wp_sms_get_license_key($addOnKey));
 
-            if (!$licenseIsStillValid) {
+            if ($licenseIsStillValid) {
+                Option::updateOption("license_{$addOnKey}_status", true);
+            } else {
                 Option::updateOption("license_{$addOnKey}_status", false);
             }
         }
