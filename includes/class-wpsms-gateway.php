@@ -13,7 +13,9 @@ if (!defined('ABSPATH')) {
  */
 class Gateway
 {
-    // Set pro gateways
+    /**
+     * Set pro gateways
+     */
     public static $proGateways = array(
         'global'        => array(
             'twilio'           => 'twilio.com',
@@ -149,6 +151,9 @@ class Gateway
         ),
     );
 
+    /**
+     * Gateway fields
+     */
     public $gatewayFields = [
         'username' => [
             'id'   => 'gateway_username',
@@ -172,20 +177,109 @@ class Gateway
         ]
     ];
 
+    /**
+     * Username
+     *
+     * @var string
+     */
     public $username;
+
+    /**
+     * Password
+     *
+     * @var static
+     */
     public $password;
+
+    /**
+     * Has key
+     *
+     * @var bool
+     */
     public $has_key = false;
+
+    /**
+     * Show valid number instruction
+     *
+     * @var bool
+     */
     public $validateNumber = false;
+
+    /**
+     * Gateway notice
+     *
+     * @var bool
+     */
     public $help = false;
+
+    /**
+     * Whether the bulk is supported.
+     *
+     * @var bool
+     */
     public $bulk_send = true;
+
+    /**
+     * From/Sender ID
+     *
+     * @var string
+     */
     public $from;
+
+    /**
+     * Receivers numbers
+     *
+     * @var array
+     */
     public $to;
+
+    /**
+     * Message text content
+     *
+     * @var string
+     */
     public $msg;
+
+    /**
+     * WordPress DB object
+     *
+     * @var \wpdb
+     */
     protected $db;
+
+    /**
+     * WordPress DB prefix
+     *
+     * @var string
+     */
     protected $tb_prefix;
+
+    /**
+     * Gateway Option
+     *
+     * @var mixed|void
+     */
     public $options;
+
+    /**
+     * Whether the media is supported
+     *
+     * @var bool
+     */
     public $supportMedia = false;
+
+    /**
+     * Whether the incoming message is supported
+     *
+     * @var bool
+     */
     public $supportIncoming = false;
+
+    /**
+     * Media URLs
+     *
+     * @var array
+     */
     public $media = [];
 
     /**

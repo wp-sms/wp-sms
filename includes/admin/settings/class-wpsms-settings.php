@@ -519,7 +519,7 @@ class Settings
                     'id'   => 'bp_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('BuddyPress should be enable to run this tab.', 'wp-sms'),
+                    'desc' => __('BuddyPress should be installed to show the options.', 'wp-sms'),
                 ));
         }
 
@@ -797,7 +797,7 @@ class Settings
                     'id'   => 'wc_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('WooCommerce should be enable to run this tab.', 'wp-sms')
+                    'desc' => __('WooCommerce should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -877,7 +877,7 @@ class Settings
                     'id'   => 'edd_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Easy Digital Downloads should be enable to run this tab.', 'wp-sms')
+                    'desc' => __('Easy Digital Downloads should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -991,7 +991,7 @@ class Settings
                     'id'   => 'job_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Job Manager should be enable to run this tab.', 'wp-sms')
+                    'desc' => __('Job Manager should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -1077,7 +1077,7 @@ class Settings
                     'id'   => 'as_notify_new_ticket',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Awesome Support should be enable to run this tab.', 'wp-sms')
+                    'desc' => __('Awesome Support should be installed to show the options.', 'wp-sms')
                 ));
         }
 

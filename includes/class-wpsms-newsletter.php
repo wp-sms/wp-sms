@@ -274,13 +274,9 @@ class Newsletter
             $where  .= "`ID` IN ({$groups}) ";
         }
 
-        $where = !empty($where) ? "WHERE {$where}" : '';
+        $where  = !empty($where) ? "WHERE {$where}" : '';
 
-        $result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
-
-        if ($result) {
-            return $result;
-        }
+        return $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
     }
 
     /**
