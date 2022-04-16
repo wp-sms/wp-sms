@@ -42,7 +42,7 @@ class BlockAbstract
     {
         $blockPath = "wp-sms-blocks/{$this->blockName}";
 
-        wp_register_script("wp-sms-blocks-{$this->blockName}-script", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.js"), array('wp-blocks', 'wp-element', 'wp-editor'));
+        wp_register_script("wp-sms-blocks-{$this->blockName}-script", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.js"), array('wp-blocks', 'wp-element'));
         wp_register_style("wp-sms-blocks/{$this->blockName}-style", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.css"));
 
         register_block_type($blockPath, array(
