@@ -1,4 +1,4 @@
-﻿=== WP SMS ===
+﻿=== WP-SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
