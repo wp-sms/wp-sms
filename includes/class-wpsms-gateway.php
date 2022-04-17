@@ -84,7 +84,6 @@ class Gateway
             'tiniyo'           => 'tiniyo.com',
             'vatansms'         => 'vatansms.com',
             'smsmessenger'     => 'smsmessenger.co.za',
-            'vfirst'           => 'vfirst.com',
             'zipwhip'          => 'zipwhip.com',
             'teletopiasms'     => 'teletopiasms.no',
             'sinch'            => 'sinch.com',
