@@ -1,4 +1,4 @@
-﻿jQuery(document).ready(function () {
+jQuery(document).ready(function () {
     jQuery(".wpsms-value").hide();
     jQuery(".wpsms-group").show();
 
