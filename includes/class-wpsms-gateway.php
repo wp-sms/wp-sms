@@ -569,6 +569,9 @@ class Gateway
             'slovakia'             => array(
                 'eurosms' => 'eurosms.com',
             ),
+            'latvia'             => array(
+                'texti' => 'texti.fi',
+            ),
             'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',
                 'verimor'  => 'verimor.com.tr',
