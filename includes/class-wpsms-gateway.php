@@ -84,7 +84,6 @@ class Gateway
             'tiniyo'           => 'tiniyo.com',
             'vatansms'         => 'vatansms.com',
             'smsmessenger'     => 'smsmessenger.co.za',
-            'vfirst'           => 'vfirst.com',
             'zipwhip'          => 'zipwhip.com',
             'teletopiasms'     => 'teletopiasms.no',
             'sinch'            => 'sinch.com',
@@ -568,6 +567,9 @@ class Gateway
             ),
             'slovakia'             => array(
                 'eurosms' => 'eurosms.com',
+            ),
+            'latvia'             => array(
+                'texti' => 'texti.fi',
             ),
             'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',

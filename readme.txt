@@ -1,11 +1,11 @@
-﻿=== WP SMS ===
+﻿=== WP-SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7.2.1
+Stable tag: 5.7.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -277,6 +277,12 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.2.2 - 24.04.2022 =
+* Bugfix: An issue to register the schedule event has been fixed
+* Bugfix: The warning wp-editor error has been fixed
+* Update: A new SMS gateway from Latvia (texti.fi) has been added.
+* Update: SMS Gateway VFirst has been removed due to not stability of API
+
 = v5.7.2.1 - 15.04.2022 =
 * Bugfix: The warning error in settings page when the groups empty
 * Improvement: Improvement license updater
