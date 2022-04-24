@@ -201,11 +201,12 @@ class Version
     private function registerCheckLicensesCronJob()
     {
         // 1. Register cron schedule interval
-        add_filter('cron_schedules', function () {
-            $schedules['wpsms_monthly_interval']     = [
+        add_filter('cron_schedules', function ($schedules) {
+            $schedules['wpsms_monthly_interval'] = [
                 'interval' => 2635200,
                 'display'  => __('Monthly', 'wp-sms'),
-                ];
+            ];
+
             return $schedules;
         });
 
@@ -215,7 +216,7 @@ class Version
         });
 
         // 3. Register the cron schedule
-        if (! wp_next_scheduled('wp_sms_check_update_licenses_status')) {
+        if (!wp_next_scheduled('wp_sms_check_update_licenses_status')) {
             wp_schedule_event(time(), 'wpsms_monthly_interval', 'wp_sms_check_update_licenses_status');
         }
     }
