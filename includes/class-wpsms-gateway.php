@@ -141,7 +141,7 @@ class Gateway
         ),
         'australia'     => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
-            'textteam' => 'textteam.com.au'
+            'textteam'     => 'textteam.com.au'
         ),
         'russia'        => array(
             'sigmasms' => 'sigmasms.ru',
@@ -571,7 +571,7 @@ class Gateway
                 'eurosms' => 'eurosms.com',
             ),
             'latvia'               => array(
-                'texti' => 'texti.fi',
+                'texti' => 'textifi',
             ),
             'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',
