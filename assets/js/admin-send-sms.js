@@ -1,4 +1,6 @@
-jQuery(document).ready(function () {
+﻿jQuery(document).ready(function () {
+    wpsmsRepeatingMessages.init()
+
     jQuery(".wpsms-value").hide();
     jQuery(".wpsms-group").show();
 
@@ -106,11 +108,11 @@ function isRtl(input, output) {
                 const RTL_Regex = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
                 const isRTL = RTL_Regex.test(String.fromCharCode(e.which));
                 const Direction = isRTL ? 'rtl' : 'ltr';
-                jQuery(input).css({'direction': Direction});
+                jQuery(input).css({ 'direction': Direction });
                 if (isRTL) {
-                    jQuery(output).css({'direction': 'rtl'});
+                    jQuery(output).css({ 'direction': 'rtl' });
                 } else {
-                    jQuery(output).css({'direction': 'ltr'});
+                    jQuery(output).css({ 'direction': 'ltr' });
                 }
             }
         });
@@ -118,7 +120,7 @@ function isRtl(input, output) {
 }
 
 function scrollToTop() {
-    jQuery('html, body').animate({scrollTop: 0}, 1000);
+    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
 }
 
 function closeNotice() {
@@ -127,10 +129,11 @@ function closeNotice() {
 
 function sendSMS() {
     let smsFrom = jQuery("#wp_get_sender").val(),
-        smsTo = {type: jQuery("select[name='wp_send_to'] option:selected").val()},
+        smsTo = { type: jQuery("select[name='wp_send_to'] option:selected").val() },
         smsMessage = jQuery("#wp_get_message").val(),
         smsMedia = jQuery(".wpsms-mms-image").val(),
-        smsScheduled = {scheduled: jQuery("#schedule_status").is(":checked")},
+        smsScheduled = { scheduled: jQuery("#schedule_status").is(":checked") },
+        smsRepeating = wpsmsRepeatingMessages.getData(),
         smsFlash = jQuery('[name="wp_flash"]:checked').val();
 
     if (smsTo.type === "subscribers") {
@@ -155,14 +158,15 @@ function sendSMS() {
         numbers: smsTo.numbers,
         flash: smsFlash,
         media_urls: [smsMedia],
-        schedule: smsScheduled.date
+        schedule: smsScheduled.date,
+        repeat: smsRepeating,
     };
 
     jQuery('.wpsms-wrap__main__notice').removeClass('not-hidden');
 
     jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',
         {
-            headers: {'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce},
+            headers: { 'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce },
             dataType: 'json',
             type: 'post',
             contentType: 'application/json',
@@ -235,4 +239,95 @@ function recipientsSelect() {
 
 function messageAutoScroll() {
     jQuery('.preview__message__message-wrapper').scrollTop(jQuery('.preview__message__message').height());
+}
+
+const wpsmsRepeatingMessages = {
+    init: function () {
+        if (!WpSmsSendSmsTemplateVar.proIsActive) return
+        this.setElements()
+        this.initElements()
+        this.handleFieldsVisibility()
+        this.handleEndDateField()
+    },
+
+    setElements: function () {
+        this.elements = {
+            statusCheckbox: jQuery('#wpsms_repeat_status'),
+            parentCheckbox: jQuery('#schedule_status'),
+            subFields: jQuery('.repeat-subfield'),
+            repeatInterval: jQuery('#repeat-interval'),
+            repeatUnit: jQuery('#repeat-interval-unit'),
+            endDatepicker: jQuery('#repeat_ends_on'),
+            foreverCheckbox: jQuery('#repeat-forever'),
+        }
+
+    },
+
+    initElements: function () {
+        this.elements.endDatepicker.flatpickr({
+            enableTime: true,
+            dateFormat: "Y-m-d H:i:00",
+            time_24hr: true,
+            minuteIncrement: "10",
+            minDate: WpSmsSendSmsTemplateVar.currentDateTime,
+            disableMobile: true,
+            defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
+        })
+    },
+
+    handleFieldsVisibility: function () {
+        const handler = function () {
+            if (this.elements.parentCheckbox.is(':checked')) {
+                this.elements.statusCheckbox.closest('tr').show()
+            } else {
+                this.elements.statusCheckbox.closest('tr').hide()
+            }
+
+            if (this.elements.parentCheckbox.is(':checked') && this.elements.statusCheckbox.is(':checked')) {
+                this.elements.subFields.show()
+                this.isActive = true
+            } else {
+                this.elements.subFields.hide()
+                this.isActive = false
+            }
+        }.bind(this)
+
+        handler();
+
+        //Event listeners
+        this.elements.statusCheckbox.change(handler)
+        this.elements.parentCheckbox.change(handler)
+    },
+
+    handleEndDateField: function () {
+        const handler = function () {
+            if (this.elements.foreverCheckbox.is(':checked')) {
+                this.elements.endDatepicker.attr('disabled', 'disabled')
+            } else {
+                this.elements.endDatepicker.removeAttr('disabled', 'disabled')
+            }
+        }.bind(this)
+
+        handler()
+
+        //Event listener
+        this.elements.foreverCheckbox.change(handler)
+    },
+
+    getData: function () {
+
+        if (!this.isActive) return
+
+        const elements = this.elements
+        const data = {
+            interval: {
+                value: elements.repeatInterval.val(),
+                unit: elements.repeatUnit.val()
+            }
+        }
+        elements.foreverCheckbox.is(':checked') ? (data.repeatForever = true) : (data.endDate = elements.endDatepicker.val())
+
+        return data
+    }
+
 }
