@@ -401,10 +401,11 @@ class Gateway
                 foreach ($sms->gatewayFields as $key => $value) {
                     if ($sms->{$key} !== false) {
                         $gatewayFields[$value['id']] = [
-                            'id'   => $value['id'],
-                            'name' => __($value['name'], 'wp-sms'),
-                            'type' => 'text',
-                            'desc' => __($value['desc'], 'wp-sms'),
+                            'id'      => $value['id'],
+                            'name'    => __($value['name'], 'wp-sms'),
+                            'type'    => isset($value['type']) ? $value['type'] : 'text',
+                            'desc'    => __($value['desc'], 'wp-sms'),
+                            'options' => isset($value['options']) ? $value['options'] : array()
                         ];
                     }
                 }
