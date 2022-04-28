@@ -2,6 +2,9 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
+use WP_Error;
+
 class gateway extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://api.gateway.sa/api/v2/";
@@ -78,17 +81,91 @@ class gateway extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
+            // Check gateway credit
+            $this->GetCredit();
+
+            if ($this->api_type && $this->api_type == 'international') {
+                $response = $this->sendSmsWithInternationalApi();
+            } else {
+                $response = $this->sendSmsWithLocalApi();
+            }
+
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $this->log($this->from, $this->msg, $this->to, $response);
 
-            return $credit;
+            /**
+             * Run hook after send sms.
+             *
+             * @since 2.4
+             */
+            do_action('wp_sms_send', $response);
+
+            return $result;
+
+        } catch (Exception $e) {
+            return new WP_Error('send-sms', $e->getMessage());
+        }
+    }
+
+    public function GetCredit()
+    {
+        try {
+
+            if (!$this->username or !$this->password) {
+                throw new Exception(__('Username and Password are required.', 'wp-sms'));
+            }
+
+            if ($this->api_type && $this->api_type == 'international') {
+                $balance = $this->getCreditWithInternationalApi();
+            } else {
+                $balance = $this->getCreditWithLocalApi();
+            }
+
+            return $balance;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
+        }
+    }
+
+    private function getCreditWithLocalApi()
+    {
+        $response = wp_remote_get($this->wsdl_link . 'Balance', [
+            'timeout' => 30,
+            'headers' => [
+                'Content-Type:application/json'
+            ],
+            'body'    => [
+                'ApiKey'   => $this->username,
+                'ClientId' => $this->password,
+            ]
+        ]);
+
+        if (is_wp_error($response)) {
+            throw new Exception($response->get_error_message());
         }
 
+        if (wp_remote_retrieve_response_code($response) != '200') {
+            throw new Exception($response['body']);
+        }
+
+        $result = json_decode($response['body'], true);
+
+        if ($result['ErrorCode'] == '0') {
+            foreach ($result['Data'] as $data) {
+                if ($data['PluginType'] == 'SMS') {
+                    return $data['Credits'];
+                }
+            }
+        } else {
+            throw new Exception($response['body']);
+        }
+    }
+
+    private function sendSmsWithLocalApi()
+    {
         $country_code  = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
         $mobileNumbers = array_map(function ($item) use ($country_code) {
             return $this->clean_number($item, $country_code);
@@ -113,89 +190,67 @@ class gateway extends \WP_SMS\Gateway
             ]
         ]);
 
-        $response_code = wp_remote_retrieve_response_code($response);
-
-        // Check response error
         if (is_wp_error($response)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
-
-            return new \WP_Error('send-sms', $response->get_error_message());
+            throw new Exception($response->get_error_message());
         }
 
-        if ($response_code == '200') {
+        if (wp_remote_retrieve_response_code($response) != '200') {
+            throw new Exception($response['body']);
+        }
 
-            $result = json_decode($response['body'], true);
+        $result = json_decode($response['body'], true);
 
-            if ($result['ErrorCode'] == '0') {
-                foreach ($result['Data'] as $data) {
-                    if ($data['MessageErrorCode'] == '0') {
+        if ($result['ErrorCode'] == '0') {
+            throw new Exception(print_r($result, 1)); // todo, response should be updated in exception
+        }
 
-                        // Log the result
-                        $this->log($this->from, $this->msg, $this->to, $data);
-
-                        /**
-                         * Run hook after send sms.
-                         *
-                         * @since 2.4
-                         */
-                        do_action('wp_sms_send', $data);
-
-                        return $result;
-                    } else {
-                        // Log the result
-                        $this->log($this->from, $this->msg, $this->to, $data, 'error');
-
-                        return new \WP_Error('send-sms', $data);
-                    }
-                }
+        foreach ($result['Data'] as $data) {
+            if ($data['MessageErrorCode'] == '0') {
+                return $data;
             } else {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $data, 'error');
-
-                return new \WP_Error('send-sms', $data);
+                throw new Exception(print_r($data, 1)); // todo, response should be updated in exception
             }
-        } else {
-
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response['body'], 'error');
-
-            return new \WP_Error('send-sms', $response['body']);
         }
     }
 
-    public function GetCredit()
+    private function getCreditWithInternationalApi()
     {
-        // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+        $arguments = [
+            'api_id'       => $this->username,
+            'api_password' => $this->password,
+        ];
+
+        $response = $this->request('GET', 'https://rest.gateway.sa/api/CheckBalance', $arguments);
+
+        if ($response->Message == 'OK') {
+            return $response->BalanceAmount;
         }
 
-        $response = wp_remote_get($this->wsdl_link . 'Balance', [
-            'timeout' => 30,
+        throw new Exception($response->Message);
+    }
+
+    private function sendSmsWithInternationalApi()
+    {
+        $response = $this->request('POST', 'https://rest.gateway.sa/api/SendSMSMulti', [], [
             'headers' => [
-                'Content-Type:application/json'
+                'Content-Type' => 'application/json'
             ],
-            'body'    => [
-                'ApiKey'   => $this->username,
-                'ClientId' => $this->password,
-            ]
+            'body'    => json_encode([
+                'api_id'       => $this->username,
+                'api_password' => $this->password,
+                'sms_type'     => 'T',
+                'encoding'     => isset($this->isflash) ? 'FS' : 'T',
+                'sender_id'    => $this->from,
+                'textmessage'  => $this->msg,
+                'phonenumber'  => implode(',', $this->to)
+            ])
         ]);
 
-        if (!is_wp_error($response)) {
-            $result = json_decode($response['body'], true);
-            if ($result['ErrorCode'] == '0') {
-                foreach ($result['Data'] as $data) {
-                    if ($data['PluginType'] == 'SMS') {
-                        return $data['Credits'];
-                    }
-                }
-            } else {
-                return new \WP_Error('account-credit', $response['body']);
-            }
-        } else {
-            return new \WP_Error('account-credit', $response->get_error_message());
+        if ($response[0]->status == 'F') {
+            throw new Exception($response[0]->remarks);
         }
+
+        return $response;
     }
 
     private function clean_number($number, $country_code)
