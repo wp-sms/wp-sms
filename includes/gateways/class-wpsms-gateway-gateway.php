@@ -10,7 +10,18 @@ class gateway extends \WP_SMS\Gateway
     public $unit;
     public $flash = "enable";
     public $isflash = false;
+    protected $api_type = 'local';
     public $gatewayFields = [
+        'api_type' => [
+            'id'      => 'gateway_api_type',
+            'name'    => 'API type',
+            'desc'    => 'Please select what is your API type',
+            'type'    => 'select',
+            'options' => [
+                'local'         => 'Local',
+                'international' => 'International'
+            ]
+        ],
         'username' => [
             'id'   => 'gateway_username',
             'name' => 'API Key',
