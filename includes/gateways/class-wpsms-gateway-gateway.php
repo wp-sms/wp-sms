@@ -27,13 +27,13 @@ class gateway extends \WP_SMS\Gateway
         ],
         'username' => [
             'id'   => 'gateway_username',
-            'name' => 'API Key',
-            'desc' => 'Enter API Key of gateway',
+            'name' => 'API Key / API ID',
+            'desc' => 'Enter API Key or API ID of gateway',
         ],
         'password' => [
             'id'   => 'gateway_password',
-            'name' => 'Client Id',
-            'desc' => 'Enter Client Id of gateway',
+            'name' => 'API Password',
+            'desc' => 'Enter API Password of gateway',
         ],
         'from'     => [
             'id'   => 'gateway_sender_id',
@@ -102,7 +102,7 @@ class gateway extends \WP_SMS\Gateway
              */
             do_action('wp_sms_send', $response);
 
-            return $result;
+            return $response;
 
         } catch (Exception $e) {
             return new WP_Error('send-sms', $e->getMessage());
