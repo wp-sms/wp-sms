@@ -31,15 +31,15 @@ export function sendSubscribeForm() {
   });
 
   if (subscriber['type'] === 'subscribe') {
-    var method = 'POST';
+    var endpointUrl = wpsms_ajax_object.rest_endpoint_url;
   } else {
-    var method = 'DELETE';
+    var endpointUrl = wpsms_ajax_object.rest_endpoint_url + '/unsubscribe';
   }
 
   var data_obj = Object.assign({}, subscriber);
   var ajax = jQuery.ajax({
-    type: method,
-    url: wpsms_ajax_object.ajaxurl,
+    type: 'POST',
+    url: endpointUrl,
     data: data_obj
   });
 
@@ -95,8 +95,8 @@ export function sendActivationForm() {
 
   var data_obj = Object.assign({}, subscriber);
   var ajax = jQuery.ajax({
-    type: 'PUT',
-    url: wpsms_ajax_object.ajaxurl,
+    type: 'POST',
+    url: wpsms_ajax_object.rest_endpoint_url + '/verify',
     data: data_obj
   });
   ajax.fail(function (data) {
