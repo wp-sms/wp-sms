@@ -151,7 +151,7 @@ function sendSMS() {
         group_ids: smsTo.groups,
         role_ids: smsTo.roles,
         message: smsMessage,
-        numbers: smsTo.numbers,
+        numbers: smsTo.numbers.replace(/\n/g, ",").split(","),
         flash: smsFlash,
         media_urls: [smsMedia],
         schedule: smsScheduled.date
