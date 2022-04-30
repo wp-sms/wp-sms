@@ -105,6 +105,8 @@ class gateway extends \WP_SMS\Gateway
             return $response;
 
         } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage());
+
             return new WP_Error('send-sms', $e->getMessage());
         }
     }
