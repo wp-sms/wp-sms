@@ -278,7 +278,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Changelog ==
 = v5.7.3 - **.**.2022 =
-* 
+*
 
 = v5.7.2.2 - 24.04.2022 =
 * Bugfix: An issue to register the schedule event has been fixed
