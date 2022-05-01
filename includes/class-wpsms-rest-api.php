@@ -8,12 +8,12 @@ if (!defined('ABSPATH')) {
 
 class RestApi
 {
-
-    public $sms;
+    protected $sms;
     protected $option;
     protected $db;
     protected $tb_prefix;
-    public $namespace;
+    protected $namespace;
+    protected $options;
 
     public function __construct()
     {
@@ -99,13 +99,13 @@ class RestApi
         }
 
         $max_number = Option::getOption('mobile_terms_maximum');
-
         if ($max_number) {
             if (strlen($mobile) > $max_number) {
                 // Return response
                 return new \WP_Error('subscribe', sprintf(__('Your mobile number should be less than %s digits', 'wp-sms'), $max_number));
             }
         }
+
         $min_number = Option::getOption('mobile_terms_minimum');
         if ($min_number) {
             if (strlen($mobile) < $min_number) {
@@ -115,7 +115,6 @@ class RestApi
         }
 
         $gateway_name = Option::getOption('gateway_name');
-
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
             // Check gateway setting
             if (!$gateway_name) {
@@ -139,7 +138,7 @@ class RestApi
             }
 
             // Return response
-            return __('You shall join to the SMS newsletter, Activation code has been sent to your mobile.', 'wp-sms');
+            return __('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
 
         } else {
 
@@ -294,50 +293,6 @@ class RestApi
         }
 
         return new \WP_Error('verify_subscriber', __('Not found the number!', 'wp-sms'));
-    }
-
-    /**
-     * Get Subscribers
-     *
-     * @param string $page
-     * @param string $group_id
-     * @param string $mobile
-     * @param string $search
-     *
-     * @return array|object|null
-     */
-    public static function getSubscribers($page = '', $group_id = '', $mobile = '', $search = '')
-    {
-        global $wpdb;
-
-        $result_limit = 50;
-        $where        = '';
-        $limit        = $wpdb->prepare(' LIMIT %d', $result_limit);
-
-        if ($page) {
-            $limit = $limit . $wpdb->prepare(' OFFSET %d', $result_limit * $page - $result_limit);
-        }
-        if ($group_id and $where) {
-            $where .= $wpdb->prepare(' AND group_ID = %d', $group_id);
-        } elseif ($group_id and !$where) {
-            $where = $wpdb->prepare('WHERE group_ID = %d', $group_id);
-        }
-
-        if ($mobile and $where) {
-            $where .= $wpdb->prepare(' AND mobile = %s', $mobile);
-        } elseif ($mobile and !$where) {
-            $where = $wpdb->prepare('WHERE mobile = %s', $mobile);
-        }
-
-        if ($search and $where) {
-            $where .= $wpdb->prepare(' AND name LIKE %s', '%' . $wpdb->esc_like($search) . '%');
-        } elseif ($search and !$where) {
-            $where = $wpdb->prepare('WHERE name LIKE "%s"', '%' . $wpdb->esc_like($search) . '%');
-        }
-
-        $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}sms_subscribes {$where}{$limit}");
-
-        return $result;
     }
 }
 

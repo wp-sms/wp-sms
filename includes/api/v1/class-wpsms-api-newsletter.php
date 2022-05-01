@@ -2,7 +2,11 @@
 
 namespace WP_SMS\Api\V1;
 
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
 use WP_SMS\Option;
+use WP_SMS\RestApi;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -13,9 +17,8 @@ if (!defined('ABSPATH')) {
  * @package    WP_SMS_Api
  * @version    1.0
  *
- * @todo This newsletter endpoints will be deprecated and move under /subscribers
  */
-class Newsletter extends \WP_SMS\RestApi
+class Newsletter extends RestApi
 {
     public function __construct()
     {
@@ -30,63 +33,61 @@ class Newsletter extends \WP_SMS\RestApi
      */
     public function register_routes()
     {
-
-        // SMS Newsletter
         register_rest_route($this->namespace . '/v1', '/newsletter', array(
-            array(
-                'methods'             => \WP_REST_Server::CREATABLE,
-                'callback'            => array($this, 'subscribe_callback'),
-                'args'                => array(
-                    'name'     => array(
-                        'required' => true,
-                    ),
-                    'mobile'   => array(
-                        'required' => true,
-                    ),
-                    'group_id' => array(
-                        'required' => false,
-                    ),
+            'methods'             => WP_REST_Server::CREATABLE,
+            'callback'            => array($this, 'subscribe_callback'),
+            'args'                => array(
+                'name'     => array(
+                    'required' => true,
                 ),
-                'permission_callback' => '__return_true'
+                'mobile'   => array(
+                    'required' => true,
+                ),
+                'group_id' => array(
+                    'required' => false,
+                ),
             ),
-            array(
-                'methods'             => \WP_REST_Server::DELETABLE,
-                'callback'            => array($this, 'unsubscribe_callback'),
-                'args'                => array(
-                    'name'   => array(
-                        'required' => true,
-                    ),
-                    'mobile' => array(
-                        'required' => true,
-                    ),
+            'permission_callback' => '__return_true'
+        ));
+
+        register_rest_route($this->namespace . '/v1', '/newsletter/unsubscribe', array(
+            'methods'             => WP_REST_Server::CREATABLE,
+            'callback'            => array($this, 'unsubscribe_callback'),
+            'args'                => array(
+                'name'   => array(
+                    'required' => true,
                 ),
-                'permission_callback' => '__return_true'
+                'mobile' => array(
+                    'required' => true,
+                ),
             ),
-            array(
-                'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => array($this, 'verify_subscriber_callback'),
-                'args'                => array(
-                    'name'       => array(
-                        'required' => true,
-                    ),
-                    'mobile'     => array(
-                        'required' => true,
-                    ),
-                    'activation' => array(
-                        'required' => true,
-                    ),
+            'permission_callback' => '__return_true'
+        ));
+
+        register_rest_route($this->namespace . '/v1', '/newsletter/verify', array(
+            'methods'             => WP_REST_Server::CREATABLE,
+            'callback'            => array($this, 'verify_subscriber_callback'),
+            'args'                => array(
+                'name'       => array(
+                    'required' => true,
                 ),
-                'permission_callback' => '__return_true'
-            )
+                'mobile'     => array(
+                    'required' => true,
+                ),
+                'activation' => array(
+                    'required' => true,
+                ),
+            ),
+            'permission_callback' => '__return_true'
         ));
     }
 
     /**
      * @param WP_REST_Request $request
      *
-     * @return WP_Error|WP_REST_Response
+     * @return WP_REST_Response
      */
-    public function subscribe_callback(\WP_REST_Request $request)
+    public function subscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
         $params = $request->get_params();
@@ -111,9 +112,9 @@ class Newsletter extends \WP_SMS\RestApi
     /**
      * @param WP_REST_Request $request
      *
-     * @return WP_Error|WP_REST_Response
+     * @return WP_REST_Response
      */
-    public function unsubscribe_callback(\WP_REST_Request $request)
+    public function unsubscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
         $params = $request->get_params();
@@ -132,9 +133,9 @@ class Newsletter extends \WP_SMS\RestApi
     /**
      * @param WP_REST_Request $request
      *
-     * @return WP_Error|WP_REST_Response
+     * @return WP_REST_Response
      */
-    public function verify_subscriber_callback(\WP_REST_Request $request)
+    public function verify_subscriber_callback(WP_REST_Request $request)
     {
         // Get parameters from request
         $params = $request->get_params();

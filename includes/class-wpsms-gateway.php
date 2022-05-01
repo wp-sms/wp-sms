@@ -296,17 +296,17 @@ class Gateway
         $this->tb_prefix = $wpdb->prefix;
         $this->options   = Option::getOptions();
 
+        if (isset($this->options['clean_numbers']) and $this->options['clean_numbers']) {
+            add_filter('wp_sms_to', array($this, 'cleanNumbers'), 10);
+        }
+
         // Check option for add country code to prefix numbers
         if (isset($this->options['mobile_county_code']) and $this->options['mobile_county_code']) {
-            add_filter('wp_sms_to', array($this, 'applyCountryCode'));
+            add_filter('wp_sms_to', array($this, 'applyCountryCode'), 20);
         }
 
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
             //add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
-        }
-
-        if (isset($this->options['clean_numbers']) and $this->options['clean_numbers']) {
-            add_filter('wp_sms_to', array($this, 'cleanNumbers'));
         }
 
         // Add Filters
@@ -401,10 +401,11 @@ class Gateway
                 foreach ($sms->gatewayFields as $key => $value) {
                     if ($sms->{$key} !== false) {
                         $gatewayFields[$value['id']] = [
-                            'id'   => $value['id'],
-                            'name' => __($value['name'], 'wp-sms'),
-                            'type' => 'text',
-                            'desc' => __($value['desc'], 'wp-sms'),
+                            'id'      => $value['id'],
+                            'name'    => __($value['name'], 'wp-sms'),
+                            'type'    => isset($value['type']) ? $value['type'] : 'text',
+                            'desc'    => __($value['desc'], 'wp-sms'),
+                            'options' => isset($value['options']) ? $value['options'] : array()
                         ];
                     }
                 }
