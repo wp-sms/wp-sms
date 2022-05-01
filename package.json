@@ -6,8 +6,8 @@
   "scripts": {
     "preview": "npm-run-all --parallel sync start",
     "sync": "browser-sync start -p 'myexample.local' --files '**/*.php' 'build/*.js' 'build/*.css'",
-    "build": "wp-scripts build assets/src/index.js assets/src/frontend.js",
-    "start": "wp-scripts start build assets/src/index.js assets/src/frontend.js",
+    "build": "wp-scripts build assets/src/blocks/subscribe/index.js assets/src/blocks/subscribe/frontend.js",
+    "start": "wp-scripts start build assets/src/blocks/subscribe/index.js assets/src/blocks/subscribe/frontend.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
