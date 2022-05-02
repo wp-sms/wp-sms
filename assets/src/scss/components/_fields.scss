@@ -1,5 +1,19 @@
 .wpsms-subscribe__form__field {
   margin: 0 0 24px;
+
+  .iti--allow-dropdown {
+    width: 100%;
+
+    .wp-sms-input-mobile {
+      padding-left: 50px !important;
+    }
+  }
+
+  .iti--separate-dial-code {
+    .wp-sms-input-mobile {
+      padding-left: 101px !important
+    }
+  }
 }
 
 .wpsms-subscribe__form__field > label {
