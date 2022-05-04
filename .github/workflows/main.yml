@@ -1,13 +1,12 @@
 name: Deploy to WordPress.org
 on:
   push:
-    branches:
-      - master
     tags:
-    - "v*"
+    - "*"
 jobs:
   tag:
     name: New tag
+    if: github.event.base_ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
