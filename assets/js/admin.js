@@ -4,6 +4,7 @@
     WpSmsBuddyPress.init();
     WpSmsNotifications.init();
     WpSmsJobManager.init();
+    WpSmsWoocommerce.init();
 
     // Select2
     $('.js-wpsms-select2').select2({
@@ -198,6 +199,50 @@ let WpSmsJobManager = {
             },
             numbersField: {
                 element: jQuery('#wps_pp_settings\\[job_notify_receiver_numbers\\]'),
+            }
+        }
+    },
+
+    hideOrShowFields: function () {
+        if (this.fields.receiverField.element.val() == 'subscriber') {
+            this.fields.subscriberField.element.closest('tr').show()
+            this.fields.numbersField.element.closest('tr').hide()
+        } else {
+            this.fields.subscriberField.element.closest('tr').hide()
+            this.fields.numbersField.element.closest('tr').show()
+        }
+    },
+
+    addEventListener: function () {
+        this.fields.receiverField.element.change(function () {
+            this.hideOrShowFields();
+        }.bind(this));
+    },
+
+    init: function () {
+        this.getFields();
+        this.hideOrShowFields();
+        this.addEventListener();
+    }
+
+}
+
+/**
+ * Woocommerce
+ * @type {{init: WpSmsWoocommerce.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsWoocommerce.getFields}}
+ */
+ let WpSmsWoocommerce = {
+
+    getFields: function () {
+        this.fields = {
+            receiverField: {
+                element: jQuery('#wps_pp_settings\\[wc_notify_product_receiver\\]'),
+            },
+            subscriberField: {
+                element: jQuery('#wps_pp_settings\\[wc_notify_product_cat\\]'),
+            },
+            numbersField: {
+                element: jQuery('#wps_pp_settings\\[wc_notify_product_roles\\]'),
             }
         }
     },
