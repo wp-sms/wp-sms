@@ -139,6 +139,7 @@ function sendSMS() {
         smsTo.roles = jQuery('select[name="wpsms_roles[]"]').val();
     } else if (smsTo.type === "numbers") {
         smsTo.numbers = jQuery('textarea[name="wp_get_number"]').val();
+        smsTo.numbers = smsTo.numbers.replace(/\n/g, ",").split(",");
     }
 
     if (smsScheduled.scheduled) {
@@ -193,7 +194,7 @@ function sendSMS() {
                 scrollToTop();
                 jQuery('.wpsms-wrap__main__notice').removeClass('notice-success');
                 jQuery('.wpsms-wrap__main__notice').addClass('notice-error');
-                jQuery('.wpsms-wrap__notice__text').html("There's was an error in sending SMS! " + `(Error ${data.responseJSON.error.code}: ${data.responseJSON.error.message})`);
+                jQuery('.wpsms-wrap__notice__text').html("An error occurred while sending SMS! " + `(Error ${data.responseJSON.error.code}: ${data.responseJSON.error.message})`);
                 jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
                 jQuery('input[name="SendSMS"]').removeAttr('disabled');

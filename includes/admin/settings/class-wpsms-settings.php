@@ -1313,15 +1313,17 @@ class Settings
                 ),
                 'admin_mobile_number' => array(
                     'id'   => 'admin_mobile_number',
-                    'name' => __('Admin mobile number', 'wp-sms'),
+                    'name' => __('Admin Mobile Number', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Admin mobile number for get any sms notifications', 'wp-sms')
                 ),
                 'mobile_county_code'  => array(
                     'id'   => 'mobile_county_code',
-                    'name' => __('Mobile country code', 'wp-sms'),
-                    'type' => 'text',
-                    'desc' => __('Enter your mobile country code for prefix numbers. For example if you enter +1 The final number will be +19999999999', 'wp-sms')
+                    'name' => __('Mobile Country Code', 'wp-sms'),
+                    'type' => 'select',
+                    'desc' => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
+                    'options' => array_merge(['0' => __('No country code', 'wp-sms')], wp_sms_get_countries()),
+                    'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',
@@ -1700,17 +1702,25 @@ class Settings
                     'options' => $options,
                     'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
                 ),
+                'notif_publish_new_send_mms'                  => array(
+                    'id'      => 'notif_publish_new_send_mms',
+                    'name'    => __('Send MMS?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option, the post featured image will be sent as an MMS if your gateway supports it', 'wp-sms')
+                ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s', 'wp-sms'),
+                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s, Post featured image URL: %s', 'wp-sms'),
                             '<code>%post_title%</code>',
                             '<code>%post_content%</code>',
                             '<code>%post_url%</code>',
-                            '<code>%post_date%</code>'
+                            '<code>%post_date%</code>',
+                            '<code>%post_thumbnail%</code>'
                         )
                 ),
                 'notif_publish_new_post_words_count'      => array(
@@ -2241,7 +2251,11 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]">', esc_attr($args['id']));
+        $attributes = array_map(function ($key, $value) {
+            return sprintf('%s="%s"', $key, $value);
+        }, array_keys($args['attributes']), array_values($args['attributes']));
+
+        $html = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]" %2$s>', esc_attr($args['id']), implode(' ', $attributes));
 
         foreach ($args['options'] as $option => $name) {
             $selected = selected($option, $value, false);

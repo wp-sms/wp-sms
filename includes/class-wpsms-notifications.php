@@ -153,14 +153,16 @@ class Notifications
                 return;
             }
 
-            $isForce         = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
-            $defaultGroup    = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
-            $defaultReceiver = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
+            $isForce             = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
+            $defaultGroup        = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
+            $defaultReceiver     = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
+            $defaultPostTemplate = isset($this->options['notif_publish_new_post_template']) ? $this->options['notif_publish_new_post_template'] : '';
 
             if (is_admin() && isset($_POST['post_ID'])) {
-                $defaultReceiver = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
-                $isForce         = ($defaultReceiver == '0' ? false : true);
-                $defaultGroup    = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : '';
+                $defaultReceiver     = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
+                $isForce             = ($defaultReceiver == '0' ? false : true);
+                $defaultGroup        = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : '';
+                $defaultPostTemplate = isset($_REQUEST['wpsms_text_template']) ? sanitize_text_field($_REQUEST['wpsms_text_template']) : '';
             }
 
             if ($isForce) {
@@ -177,13 +179,21 @@ class Notifications
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
                 $words_limit                        = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
                 $template_vars                      = array(
-                    '%post_title%'   => get_the_title($post->ID),
-                    '%post_content%' => wp_trim_words($post->post_content, $words_limit),
-                    '%post_url%'     => wp_sms_shorturl(wp_get_shortlink($post->ID)),
-                    '%post_date%'    => get_post_time('Y-m-d H:i:s', false, $post->ID, true),
+                    '%post_title%'     => get_the_title($post->ID),
+                    '%post_content%'   => wp_trim_words($post->post_content, $words_limit),
+                    '%post_url%'       => wp_sms_shorturl(wp_get_shortlink($post->ID)),
+                    '%post_date%'      => get_post_time('Y-m-d H:i:s', false, $post->ID, true),
+                    '%post_thumbnail%' => get_the_post_thumbnail_url($post->ID),
                 );
 
-                $message = str_replace(array_keys($template_vars), array_values($template_vars), $_REQUEST['wpsms_text_template']);
+                $message = str_replace(array_keys($template_vars), array_values($template_vars), $defaultPostTemplate);
+
+                /**
+                 * Pass the thumbnail to media to send as MMS
+                 */
+                if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
+                    $this->sms->media = [get_the_post_thumbnail_url($post->ID)];
+                }
 
                 $this->sms->msg = $message;
                 $this->sms->SendSMS();

@@ -99,7 +99,7 @@ class Features
         // Check mobile duplicate value
         if (!empty($_POST['mobile'])) {
 
-            if ($this->checkMobileNumber($_POST['mobile'], $user->ID)) {
+            if ($this->checkMobileNumber(sanitize_text_field($_POST['mobile']), $user->ID)) {
                 $errors->add('mobile_error', __('This mobile is already registered, please choose another one.', 'wp-sms'));
             }
         }
@@ -207,8 +207,8 @@ class Features
     {
 
         //Register IntelTelInput Assets
-        wp_enqueue_style('wpsms-intel-tel-input', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, WP_SMS_VERSION);
-        wp_enqueue_script('wpsms-intel-tel-input', WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js', array('jquery'), WP_SMS_VERSION, true);
+        wp_enqueue_style('wpsms-intel-tel-input', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, '17.0.0');
+        wp_enqueue_script('wpsms-intel-tel-input', WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js', array('jquery'), '17.0.0', true);
         wp_enqueue_script('wpsms-intel-script', WP_SMS_URL . 'assets/js/intel/intel-script.js', true, WP_SMS_VERSION, true);
 
         // Localize the IntelTelInput

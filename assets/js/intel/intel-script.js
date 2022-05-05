@@ -1,9 +1,11 @@
 jQuery(document).ready(function () {
-    var input = document.querySelectorAll(".wp-sms-input-mobile, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
+    var $inputTell = document.querySelectorAll(".wp-sms-input-mobile, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
 
-    for (var i = 0; i < input.length; i++) {
-        if (input[i]) {
-            window.intlTelInput(input[i], {
+    for (var i = 0; i < $inputTell.length; i++) {
+        if ($inputTell[i]) {
+            $inputTell[i].setAttribute('dir', 'ltr')
+
+            window.intlTelInput($inputTell[i], {
                 onlyCountries: wp_sms_intel_tel_input.only_countries,
                 preferredCountries: wp_sms_intel_tel_input.preferred_countries,
                 autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
@@ -14,9 +16,12 @@ jQuery(document).ready(function () {
         }
     }
 
-    var input = document.querySelector("#job_mobile, #_job_mobile");
-    if (input && !input.getAttribute('placeholder')) {
-        window.intlTelInput(input, {
+    var $inputTell = document.querySelector("#job_mobile, #_job_mobile");
+
+    if ($inputTell && !$inputTell.getAttribute('placeholder')) {
+        $inputTell.setAttribute('dir', 'ltr')
+
+        window.intlTelInput($inputTell, {
             onlyCountries: wp_sms_intel_tel_input.only_countries,
             preferredCountries: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
