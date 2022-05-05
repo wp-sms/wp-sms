@@ -194,7 +194,7 @@ class Notifications
                 if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
                     $this->sms->media = [get_the_post_thumbnail_url($post->ID)];
                 }
-                
+
                 $this->sms->msg = $message;
                 $this->sms->SendSMS();
             }
