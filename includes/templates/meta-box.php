@@ -46,7 +46,8 @@
             <select name="wps_subscribe_group" id="wps-subscribe-group">
                 <option value="all"><?php echo sprintf(__('All (%s subscribers active)', 'wp-sms'), $username_active); ?></option>
                 <?php foreach ($get_group_result as $items): ?>
-                    <option value="<?php echo $items->ID; ?>" <?php selected($defaultGroup, $items->ID); ?>><?php echo $items->name; ?></option><?php endforeach; ?>
+                    <option value="<?php echo esc_attr($items->ID); ?>" <?php selected($defaultGroup, $items->ID); ?>><?php echo esc_attr($items->name); ?></option>
+                <?php endforeach; ?>
             </select>
         </td>
     </tr>
@@ -63,14 +64,14 @@
             <label for="wpsms-text-template"><?php _e('Message body', 'wp-sms'); ?>:</label>
         </th>
         <td>
-            <textarea cols="80" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php
-                echo wp_sms_get_option('notif_publish_new_post_template'); ?></textarea>
+            <textarea cols="80" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php echo wp_sms_get_option('notif_publish_new_post_template'); ?></textarea>
             <p class="description data">
                 <?php _e('Input data:', 'wp-sms'); ?>
                 <br/><?php _e('Post title', 'wp-sms'); ?>: <code>%post_title%</code>
                 <br/><?php _e('Post content', 'wp-sms'); ?>: <code>%post_content%</code>
                 <br/><?php _e('Post url', 'wp-sms'); ?>: <code>%post_url%</code>
                 <br/><?php _e('Post date', 'wp-sms'); ?>: <code>%post_date%</code>
+                <br/><?php _e('Post thumbnail URL', 'wp-sms'); ?>: <code>%post_thumbnail%</code>
             </p>
         </td>
     </tr>

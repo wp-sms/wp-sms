@@ -1702,17 +1702,25 @@ class Settings
                     'options' => $options,
                     'desc'    => __('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
                 ),
+                'notif_publish_new_send_mms'                  => array(
+                    'id'      => 'notif_publish_new_send_mms',
+                    'name'    => __('Send MMS?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option, the post featured image will be sent as an MMS if your gateway supports it', 'wp-sms')
+                ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s', 'wp-sms'),
+                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s, Post featured image URL: %s', 'wp-sms'),
                             '<code>%post_title%</code>',
                             '<code>%post_content%</code>',
                             '<code>%post_url%</code>',
-                            '<code>%post_date%</code>'
+                            '<code>%post_date%</code>',
+                            '<code>%post_thumbnail%</code>'
                         )
                 ),
                 'notif_publish_new_post_words_count'      => array(
