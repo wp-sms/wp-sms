@@ -8,7 +8,7 @@ class melipayamak extends \WP_SMS\Gateway
     public $tariff = "http://melipayamak.ir/";
     public $unitrial = true;
     public $unit;
-    public $flash = "disable";
+    public $flash = "enable";
     public $isflash = false;
 
     public function __construct()
@@ -83,7 +83,7 @@ class melipayamak extends \WP_SMS\Gateway
                     if ($result > 1000) {
                         $result = 1;
                     }
-                    $this->log($this->from, $textarray_wp2p[0], $this->to[$i], $result);
+                    $this->log($this->from, $textarray_wp2[0], $this->to[$i], $result);
                     do_action('wp_sms_send', $result);
 
                     return $result;
