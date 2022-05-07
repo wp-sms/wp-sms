@@ -1082,7 +1082,7 @@ class Settings
         }
 
         // Get Gravityforms
-        /*if (class_exists('RGFormsModel')) {
+        if (class_exists('RGFormsModel')) {
             $forms = \RGFormsModel::get_forms(null, 'title');
             $more_fields = '';
 
@@ -1169,7 +1169,7 @@ class Settings
                 'type' => 'notice',
                 'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms')
             );
-        }*/
+        }
 
         // Get Ultimate Members
         if (function_exists('um_user')) {
