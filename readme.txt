@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7.3
+Stable tag: 5.7.3.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -282,9 +282,12 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.3.1 - 07.05.2022 =
+* Bugfix: An issue in settings page has been fixed
+
 = v5.7.3 - 05.05.2022 =
 * New: Gateway Espay.id has been added
-* New: Support MMS and %post_thumbnail% variable in send post notification
+* New: Support MMS and `%post_thumbnail%` variable in send post notification
 * Bugfix: Fix separating the numbers by comma and space in send sms page
 * Update: Library intlTelInput updated to v17.0.16
 * Update: Add possibility to Gateway.sa to choose the API type (Local or International)
