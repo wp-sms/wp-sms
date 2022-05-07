@@ -101,7 +101,7 @@ class Settings
             add_settings_section("{$this->setting_name}_{$tab}", __return_null(), '__return_false', "{$this->setting_name}_{$tab}");
 
             if (empty($settings)) {
-                return;
+                continue;
             }
 
             foreach ($settings as $option) {
@@ -1082,41 +1082,42 @@ class Settings
         }
 
         // Get Gravityforms
-        if (class_exists('RGFormsModel')) {
+        /*if (class_exists('RGFormsModel')) {
             $forms = \RGFormsModel::get_forms(null, 'title');
             $more_fields = '';
 
-            foreach ($forms as $form):
+            foreach ($forms as $form) {
                 $form_fields = Gravityforms::get_field($form->id);
-            if (is_array($form_fields) && count($form_fields)) {
-                $more_fields = ', ';
-                foreach ($form_fields as $key => $value) {
-                    $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+
+                if (is_array($form_fields) && count($form_fields)) {
+                    $more_fields = ', ';
+                    foreach ($form_fields as $key => $value) {
+                        $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                    }
+
+                    $more_fields = rtrim($more_fields, ', ');
                 }
 
-                $more_fields = rtrim($more_fields, ', ');
-            }
-
-            $gf_forms['gf_notify_form_' . $form->id]          = array(
+                $gf_forms['gf_notify_form_' . $form->id]          = array(
                     'id'   => 'gf_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->title),
                     'type' => 'header',
                     'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->title),
                     'doc'  => '/resources/integrate-wp-sms-pro-with-gravity-forms/',
                 );
-            $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
+                $gf_forms['gf_notify_enable_form_' . $form->id]   = array(
                     'id'      => 'gf_notify_enable_form_' . $form->id,
                     'name'    => __('Send SMS to a number', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                 );
-            $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
+                $gf_forms['gf_notify_receiver_form_' . $form->id] = array(
                     'id'   => 'gf_notify_receiver_form_' . $form->id,
                     'name' => __('Phone number(s)', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')
                 );
-            $gf_forms['gf_notify_message_form_' . $form->id]  = array(
+                $gf_forms['gf_notify_message_form_' . $form->id]  = array(
                     'id'   => 'gf_notify_message_form_' . $form->id,
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -1131,21 +1132,21 @@ class Settings
                         ) . $more_fields
                 );
 
-            if (Gravityforms::get_field($form->id)) {
-                $gf_forms['gf_notify_enable_field_form_' . $form->id]   = array(
+                if (Gravityforms::get_field($form->id)) {
+                    $gf_forms['gf_notify_enable_field_form_' . $form->id]   = array(
                         'id'      => 'gf_notify_enable_field_form_' . $form->id,
                         'name'    => __('Send SMS to field', 'wp-sms'),
                         'type'    => 'checkbox',
                         'options' => $options,
                     );
-                $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
+                    $gf_forms['gf_notify_receiver_field_form_' . $form->id] = array(
                         'id'      => 'gf_notify_receiver_field_form_' . $form->id,
                         'name'    => __('A field of the form', 'wp-sms'),
                         'type'    => 'select',
                         'options' => Gravityforms::get_field($form->id),
                         'desc'    => __('Select the field of your form.', 'wp-sms')
                     );
-                $gf_forms['gf_notify_message_field_form_' . $form->id]  = array(
+                    $gf_forms['gf_notify_message_field_form_' . $form->id]  = array(
                         'id'   => 'gf_notify_message_field_form_' . $form->id,
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
@@ -1159,8 +1160,8 @@ class Settings
                                 '<code>%content%</code>'
                             ) . $more_fields
                     );
+                }
             }
-            endforeach;
         } else {
             $gf_forms['gf_notify_form'] = array(
                 'id'   => 'gf_notify_form',
@@ -1168,7 +1169,7 @@ class Settings
                 'type' => 'notice',
                 'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms')
             );
-        }
+        }*/
 
         // Get Ultimate Members
         if (function_exists('um_user')) {
