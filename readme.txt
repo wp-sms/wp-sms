@@ -284,7 +284,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 == Changelog ==
 = v5.7.3 - 05.05.2022 =
 * New: Gateway Espay.id has been added
-* New: Support MMS and %post_thumbnail% variable in send post notification
+* New: Support MMS and `%post_thumbnail%` variable in send post notification
 * Bugfix: Fix separating the numbers by comma and space in send sms page
 * Update: Library intlTelInput updated to v17.0.16
 * Update: Add possibility to Gateway.sa to choose the API type (Local or International)

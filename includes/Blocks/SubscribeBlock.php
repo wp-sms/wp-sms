@@ -18,7 +18,7 @@ class SubscribeBlock extends BlockAbstract
         $gdpr_compliance                      = wp_sms_get_option('gdpr_compliance');
         $subscribe_form_gdpr_confirm_checkbox = wp_sms_get_option('newsletter_form_gdpr_confirm_checkbox');
         $subscribe_form_gdpr_text             = wp_sms_get_option('newsletter_form_gdpr_text');
-        $specified_groups_ids_for_widget      = Option::getOption('newsletter_form_specified_groups');
+        $specified_groups_ids_for_widget      = wp_sms_get_option('newsletter_form_specified_groups');
         $get_group_result                     = Newsletter::getGroups($specified_groups_ids_for_widget);
 
 

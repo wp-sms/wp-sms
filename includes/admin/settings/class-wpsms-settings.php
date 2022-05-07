@@ -2595,6 +2595,17 @@ class Settings
      */
     public function modifyLicenseSettings($settings)
     {
+        if (!wp_sms_get_addons()) {
+            $settings["license_title"] = array(
+                'id'   => "license_title",
+                'type' => 'notice',
+                'name' => __('No Pro Pack or Add-On found', 'wp-sms'),
+                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/'))
+            );
+
+            return $settings;
+        }
+
         foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
 
             // license title
