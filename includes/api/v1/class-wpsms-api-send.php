@@ -23,12 +23,12 @@ if (!defined('ABSPATH')) {
 class SendSmsApi extends \WP_SMS\RestApi
 {
     private $sendSmsArguments = [
-        'sender'     => array('required' => true, 'type' => 'string'),
-        'recipients' => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'wc-customers', 'bp-users', 'numbers']),
+        'sender'     => array('required' => true,  'type' => 'string'),
+        'recipients' => array('required' => true,  'type' => 'string', 'enum' => ['subscribers', 'users', 'wc-customers', 'bp-users', 'numbers']),
         'group_ids'  => array('required' => false, 'type' => 'array'),
         'role_ids'   => array('required' => false, 'type' => 'array'),
         'numbers'    => array('required' => false, 'type' => 'array', 'format' => 'uri'),
-        'message'    => array('required' => true, 'type' => 'string'),
+        'message'    => array('required' => true,  'type' => 'string'),
         'flash'      => array('required' => false, 'type' => 'boolean'),
         'media_urls' => array('required' => false, 'type' => 'array'),
         'schedule'   => array('required' => false, 'type' => 'string', 'format' => 'date-time'),
@@ -127,7 +127,6 @@ class SendSmsApi extends \WP_SMS\RestApi
                 'balance' => Gateway::credit()
             ]);
         } catch (\Throwable $e) {
-            dump($e); // TODO test code
             return self::response($e->getMessage(), 400);
         }
     }
