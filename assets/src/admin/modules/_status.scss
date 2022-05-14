@@ -1,4 +1,5 @@
-.wp_sms_status_success {
+.wp_sms_status_success,
+.wp_sms_status_repeat-ended {
   background: #04ca15;
   color: #ffffff;
   padding: 3px 5px;
@@ -12,7 +13,8 @@
   border-radius: 3px;
 }
 
-.wp_sms_status_on-queue {
+.wp_sms_status_on-queue,
+.wp_sms_status_repeat-on-going {
   background: #045cca;
   color: #ffffff;
   padding: 3px 5px;
