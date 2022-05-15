@@ -170,7 +170,7 @@ class RestApi
                 }
             }
 
-            return __('Your number has been successfully subscribed.', 'wp-sms');
+            return __('Your mobile number has been successfully subscribed.', 'wp-sms');
         }
     }
 
