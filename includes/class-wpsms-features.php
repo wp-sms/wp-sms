@@ -99,7 +99,7 @@ class Features
         // Check mobile duplicate value
         if (!empty($_POST['mobile'])) {
 
-            if ($this->checkMobileNumber(sanitize_text_field($_POST['mobile']), $user->ID)) {
+            if ($this->checkMobileNumber(sanitize_text_field($_POST['mobile']), $update ? $user->ID : null)) {
                 $errors->add('mobile_error', __('This mobile is already registered, please choose another one.', 'wp-sms'));
             }
         }
