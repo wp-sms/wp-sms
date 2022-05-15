@@ -89,6 +89,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $request->get_param('sender'),
                     $message,
                     $recipientNumbers,
+                    $mediaUrls
                 );
                 return self::response(__('Repeating SMS is scheduled successfully!', 'wp-sms'));
             }
