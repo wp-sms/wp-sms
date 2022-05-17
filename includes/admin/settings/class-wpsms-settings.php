@@ -542,6 +542,13 @@ class Settings
                     ),
                     'desc'    => __('Choose from which field you get numbers for sending SMS.', 'wp-sms')
                 ),
+                'wc_mobile_field_necessity'           => array(
+                    'id'      => 'wc_mobile_field_necessity',
+                    'name'    => __('Required field?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Enable this option if you want the mobile number to be required.', 'wp-sms')
+                ),
                 'wc_meta_box'                  => array(
                     'id'   => 'wc_meta_box',
                     'name' => __('Order Meta Box', 'wp-sms'),
