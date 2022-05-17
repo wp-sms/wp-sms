@@ -248,7 +248,7 @@ let WpSmsJobManager = {
                 element: jQuery('#wps_pp_settings\\[wc_mobile_field\\]'),
             },
             mobileFieldNecessity: {
-                element: jQuery('#wps_pp_settings\\[wc_mobile_field_necessity\\]'),
+                element: jQuery('#wps_pp_settings\\[wc_mobile_field_optional\\]'),
             }
         }
     },
