@@ -306,7 +306,7 @@ class Settings
                 'name'    => __('Should be optional?', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('If you would like to make the mobile number field option, please enable the option.', 'wp-sms'),
+                'desc'    => __('If you would like to make the mobile number field optional, please enable the option.', 'wp-sms'),
             ),
             'mobile_verify_method'   => array(
                 'id'      => 'mobile_verify_method',
@@ -547,7 +547,7 @@ class Settings
                     'name'    => __('Should be optional?', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('If you would like to make the mobile number field option, please enable the option.', 'wp-sms')
+                    'desc'    => __('If you would like to make the mobile number field optional, please enable the option.', 'wp-sms')
                 ),
                 'wc_meta_box'                  => array(
                     'id'   => 'wc_meta_box',
