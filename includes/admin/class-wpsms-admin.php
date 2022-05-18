@@ -304,8 +304,8 @@ class Admin
         wp_enqueue_script('postbox');
 
         add_meta_box('privacy-meta-1', esc_html(get_admin_page_title()), array(Privacy::class, 'privacy_meta_html_gdpr'), $pagehook, 'side', 'core');
-        add_meta_box('privacy-meta-2', __('Export User’s Data related to WP-SMS', 'wp-sms'), array(Privacy::class, 'privacy_meta_html_export'), $pagehook, 'normal', 'core');
-        add_meta_box('privacy-meta-3', __('Erase User’s Data related to WP-SMS', 'wp-sms'), array(Privacy::class, 'privacy_meta_html_delete'), $pagehook, 'normal', 'core');
+        add_meta_box('privacy-meta-2', __('Export User’s Data related to WP SMS', 'wp-sms'), array(Privacy::class, 'privacy_meta_html_export'), $pagehook, 'normal', 'core');
+        add_meta_box('privacy-meta-3', __('Erase User’s Data related to WP SMS', 'wp-sms'), array(Privacy::class, 'privacy_meta_html_delete'), $pagehook, 'normal', 'core');
     }
 
     /**

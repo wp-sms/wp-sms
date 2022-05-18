@@ -151,7 +151,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 				if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
 					$recipients = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
 				} else {
-					throw new Exception(__('WooCommerce or WP-SMS Pro is not enabled', 'wp-sms-pro'));
+					throw new Exception(__('WooCommerce or WP SMS Pro is not enabled', 'wp-sms-pro'));
 				}
 
 				break;
@@ -164,7 +164,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 				if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
 					$recipients = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
 				} else {
-					throw new Exception(__('BuddyPress or WP-SMS Pro is not enabled', 'wp-sms-pro'));
+					throw new Exception(__('BuddyPress or WP SMS Pro is not enabled', 'wp-sms-pro'));
 				}
 
 				break;

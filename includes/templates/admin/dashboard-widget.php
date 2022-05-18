@@ -21,6 +21,6 @@
     <div class="two-way-promotion">
         <h2><?php _e('View incoming messages activity inside WordPress Dashboard 🤩', 'wp-sms'); ?></h2>
         <p><?php _e('Store Incoming Messages, Create new Commands for your customers, do actions, and more!', 'wp-sms'); ?></p>
-        <p><a href="<?php echo WP_SMS_SITE ?>/product/wp-sms-two-way/" class="button-primary" target="_blank"><?php _e('Read More WP-SMS Two Way!', 'wp-sms'); ?></a></p>
+        <p><a href="<?php echo WP_SMS_SITE ?>/product/wp-sms-two-way/" class="button-primary" target="_blank"><?php _e('Read More WP SMS Two Way!', 'wp-sms'); ?></a></p>
     </div>
 </div>
