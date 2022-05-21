@@ -83,22 +83,24 @@ class hostpinnacle extends \WP_SMS\Gateway
 
             $msg_type = isset($this->options['send_unicode']) ? 'text' : 'unicode';
 
-            $params = [
-                'userid' => $this->username,
-                'password' => $this->password,
-                'apikey' => $this->has_key,
-                'sendMethod' => 'quick',
-                'mobile' => implode(',', $this->to),
-                'msg' => $this->msg,
-                'senderid' => $this->from,
-                'msgType' => $msg_type,
-                'output' => 'json'
-            ];
+            $response = $this->request('POST', "{$this->wsdl_link}/send", [], [
+                'headers' => [
+                    'apiKey' => $this->has_key
+                ],
+                'body'    => [
+                    'userid'     => $this->username,
+                    'password'   => $this->password,
+                    'sendMethod' => 'quick',
+                    'mobile'     => implode(',', $this->to),
+                    'msg'        => urlencode($this->msg),
+                    'senderid'   => $this->from,
+                    'msgType'    => $msg_type,
+                    'output'     => 'json'
+                ]
+            ]);
 
-            $response = $this->request('POST', "{$this->wsdl_link}/send", $params, []);
-
-            if (isset($response->response->code) && $response->response->code !== '200') {
-                throw new \Exception($response->response->msg);
+            if (isset($response->status) && $response->status == 'error') {
+                throw new \Exception($response->reason);
             }
 
             //log the result
