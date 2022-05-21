@@ -798,6 +798,9 @@ class Gateway
             'indonesia'            => array(
                 'espay' => 'espay.id',
             ),
+            'kenya'        => array(
+                'hostpinnacle' => 'hostpinnacle.co.ke',
+            ),
         );
 
         return apply_filters('wpsms_gateway_list', $gateways);
