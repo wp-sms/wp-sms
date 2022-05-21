@@ -73,22 +73,19 @@ class smsgatewayhub extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the Credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
         try {
+
+            // Get the Credit.
+            $credit = $this->GetCredit();
+
+            // Check gateway credit
+            if (is_wp_error($credit)) {
+                throw new \Exception($credit->get_error_message());
+            }
 
             $dcs = isset($this->options['send_unicode']) ? '0' : '8';
             $flash_sms = $this->isflash ? '1' : '0';
-            
+
             $params = [
                 'APIKey' => $this->has_key,
                 'senderid' => $this->from,
@@ -103,6 +100,10 @@ class smsgatewayhub extends \WP_SMS\Gateway
             ];
 
             $response = $this->request('POST', "{$this->wsdl_link}/SendSMS", $params, []);
+
+            if (isset($response->ErrorCode) && $response->ErrorCode !== '000') {
+                throw new \Exception($response->ErrorMessage);
+            }
 
             //log the result
             $this->log ($this->from, $this->msg, $this->to, $response);
@@ -130,7 +131,7 @@ class smsgatewayhub extends \WP_SMS\Gateway
         try {
             // Check gateway API
             if (!$this->has_key) {
-                return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms'));
+                throw new \Exception('The API Key for this gateway is not set');
             }
 
             $params = [
@@ -138,6 +139,10 @@ class smsgatewayhub extends \WP_SMS\Gateway
             ];
 
             $response = $this->request('GET', "{$this->wsdl_link}/GetBalance", $params, []);
+
+            if ($response->ErrorCode !== 0) {
+                throw new \Exception($response->ErrorMessage);
+            }
 
             return $response->Balance;
 
