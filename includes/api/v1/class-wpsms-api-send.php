@@ -81,11 +81,12 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $data      = $request->get_param('repeat');
                 $startDate = new DateTime(get_gmt_from_date($request->get_param('schedule')));
                 $endDate   = isset($data['endDate']) ? (new DateTime(get_gmt_from_date($data['endDate']))) : null ;
-                $interval  = DateInterval::createFromDateString("+{$data['interval']['value']} {$data['interval']['unit']}");
+                $interval  = $data['interval'];
                 RepeatingMessages::add(
                     $startDate,
-                    $interval,
                     $endDate,
+                    $interval['value'],
+                    $interval['unit'],
                     $request->get_param('sender'),
                     $message,
                     $recipientNumbers,
