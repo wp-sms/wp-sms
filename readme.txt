@@ -283,7 +283,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Changelog ==
 = dev-master - **.05.2022 =
-* Update: Add the possibility to translate the settings for WPML with custom wpml-config.xml file
+* Update: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
 
 = v5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
