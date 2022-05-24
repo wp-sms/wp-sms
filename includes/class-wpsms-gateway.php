@@ -627,15 +627,16 @@ class Gateway
                 'callifony' => 'callifony.com'
             ),
             'india'                => array(
-                'shreesms'         => 'shreesms.net',
-                'ozonesmsworld'    => 'ozonesmsworld.com',
-                'smsgatewayhub'    => 'smsgatewayhub.com',
-                'smsgatewaycenter' => 'smsgatewaycenter.com',
-                'pridesms'         => 'pridesms.in',
-                'smsozone'         => 'ozonesms.com',
-                'msgwow'           => 'msgwow.com',
-                'tripadasmsbox'    => 'tripadasmsbox.com',
-                'callifony'        => 'callifony.com'
+                'tubelightcommunications' => 'tubelightcommunications.com',
+                'shreesms'                => 'shreesms.net',
+                'ozonesmsworld'           => 'ozonesmsworld.com',
+                'smsgatewayhub'           => 'smsgatewayhub.com',
+                'smsgatewaycenter'        => 'smsgatewaycenter.com',
+                'pridesms'                => 'pridesms.in',
+                'smsozone'                => 'ozonesms.com',
+                'msgwow'                  => 'msgwow.com',
+                'tripadasmsbox'           => 'tripadasmsbox.com',
+                'callifony'               => 'callifony.com'
             ),
             'iran'                 => array(
                 'iransmspanel'   => 'iransmspanel.ir',
@@ -798,7 +799,7 @@ class Gateway
             'indonesia'            => array(
                 'espay' => 'espay.id',
             ),
-            'kenya'        => array(
+            'kenya'                => array(
                 'hostpinnacle' => 'hostpinnacle.co.ke',
             ),
         );

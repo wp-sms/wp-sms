@@ -21,12 +21,12 @@ class hostpinnacle extends \WP_SMS\Gateway
         $this->gatewayFields  = [
             'username' => [
                 'id'   => 'gateway_username',
-                'name' => 'Registered Username	',
+                'name' => 'Registered Username',
                 'desc' => 'Enter your username.',
             ],
             'password' => [
                 'id'   => 'gateway_password',
-                'name' => 'Password	',
+                'name' => 'Password',
                 'desc' => 'Enter your password.',
             ],
             'from'     => [
