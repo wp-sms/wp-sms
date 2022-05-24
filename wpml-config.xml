@@ -1,0 +1,22 @@
+<wpml-config>
+  <admin-texts>
+    <key name="wpsms_settings">
+      <key name="notif_publish_new_post_template"/>
+      <key name="newsletter_form_welcome_text"/>
+      <key name="notif_publish_new_post_author_template"/>
+      <key name="company_notice_notification_content"/>
+      <key name="notif_user_login_template"/>
+      <key name="notif_register_new_user_admin_template"/>
+      <key name="notif_register_new_user_template"/>
+      <key name="notif_new_comment_template"/>
+      <key name="newsletter_form_gdpr_text"/>
+      <key name="wc_otp_text"/>
+      <key name="wc_notify_product_message"/>
+      <key name="wc_notify_order_message"/>
+      <key name="wc_notify_customer_message"/>
+      <key name="wc_notify_stock_message"/>
+      <key name="wc_notify_status_message"/>
+      <key name="wc_notify_by_status_content"/>
+    </key>
+  </admin-texts>
+</wpml-config>

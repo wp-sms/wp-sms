@@ -282,6 +282,9 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= dev-master - **.05.2022 =
+* Update: Add the possibility to translate the settings for WPML with custom wpml-config.xml file
+
 = v5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
 
