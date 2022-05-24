@@ -1875,7 +1875,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Username: %s, Nickname: %s', 'wp-sms'),
+                            __('Username: %s, Display name: %s', 'wp-sms'),
                             '<code>%username_login%</code>',
                             '<code>%display_name%</code>'
                         )

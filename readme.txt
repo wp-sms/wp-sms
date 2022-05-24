@@ -283,9 +283,8 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Changelog ==
 = v5.7.4 - **.05.2022 =
-* New: A new feature to make the mobile number optional in WooCommerce checkout
-* New: Gateway: Hostpinnacle from Kenya
-* New: Gateway: Tubelight Communications from India
+* New: Gateway Hostpinnacle from Kenya
+* New: Gateway Tubelight Communications from India
 * New: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
 * Improvement: The Post SMS notification box when the force send is enabled
 * Improvement: Tweak in admin styles and CSS
