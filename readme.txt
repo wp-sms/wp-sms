@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7.3.1
+Stable tag: 5.7.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -282,8 +282,16 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= dev-master - **.05.2022 =
-* Update: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
+= v5.7.4 - **.05.2022 =
+* New: A new feature to make the mobile number optional in WooCommerce checkout
+* New: Gateway: Hostpinnacle from Kenya
+* New: Gateway: Tubelight Communications from India
+* New: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
+* Improvement: The Post SMS notification box when the force send is enabled
+* Improvement: Tweak in admin styles and CSS
+* Improvement: Supported DLT for GatewayHub
+* Bugfix: Keep the mobile number field after updating the profile
+* Bugfix: Showing display spinner when styles are not loaded
 
 = v5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
