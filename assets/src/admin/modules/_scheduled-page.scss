@@ -20,3 +20,17 @@
   padding: 3px 5px;
   border-radius: 3px;
 }
+
+// Tab styles
+.wpsms-scheduled-page{
+  .wpsms-tab{
+    display: flex;
+    flex-direction: row;
+
+    li > a{
+      &::before{
+        content: none;
+      }
+    }
+  }
+}
