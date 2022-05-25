@@ -282,7 +282,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.7.4 - **.05.2022 =
+= v5.7.4 - 25.05.2022 =
 * New: Gateway Hostpinnacle from Kenya
 * New: Gateway Tubelight Communications from India
 * New: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
