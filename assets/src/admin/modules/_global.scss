@@ -138,6 +138,7 @@
     #TB_closeAjaxWindow {
       button {
         top: 10px;
+        right: 10px;
 
         &:hover .tb-close-icon {
           color: #EF771F;
@@ -165,8 +166,8 @@
   }
 
   #TB_closeWindowButton {
-    right: unset;
-    left: 0;
+    right: auto !important;
+    left: 10px;
   }
 
   #TB_ajaxWindowTitle {

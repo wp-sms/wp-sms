@@ -22,7 +22,7 @@ class BlockAssetsManager
                 $block->registerBlockType();
             } else {
                 add_action('admin_notices', function () use ($item) {
-                    echo '<div class="notice notice-error"><p>' . sprintf(__('WP-Statistics Widgets encountered an error, class <b>%s</b> could not be loaded.', 'wp-sms'), $item) . '</p></div>';
+                    echo '<div class="notice notice-error"><p>' . sprintf(__('WP SMS Widget encountered an error, class <b>%s</b> could not be loaded.', 'wp-sms'), $item) . '</p></div>';
                 });
             }
         }
@@ -39,7 +39,7 @@ class BlockAssetsManager
             [
                 [
                     'slug'  => 'wp-sms-blocks',
-                    'title' => __('WP-SMS', 'wp-sms'),
+                    'title' => __('WP SMS', 'wp-sms'),
                 ],
             ]
         );

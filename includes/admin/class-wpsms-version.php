@@ -130,7 +130,7 @@ class Version
      */
     public function pro_setting_title()
     {
-        echo sprintf(__('<p>WP-SMS Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION);
+        echo sprintf(__('<p>WP SMS Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION);
     }
 
     /**
@@ -161,7 +161,7 @@ class Version
      */
     public function version_notice()
     {
-        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP-SMS-Pro</a> is out of date and not compatible with new version of WP-SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
+        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP SMS Pro</a> is out of date and not compatible with new version of WP SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
     }
 
     /**
@@ -172,7 +172,7 @@ class Version
         $url         = admin_url('admin.php?page=wp-sms-settings&tab=licenses');
         $purchaseUrl = WP_SMS_SITE . '/buy';
 
-        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP-SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), $url, $purchaseUrl), 'error');
+        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), $url, $purchaseUrl), 'error');
     }
 
     /**

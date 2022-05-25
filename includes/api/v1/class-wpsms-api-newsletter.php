@@ -127,7 +127,7 @@ class Newsletter extends RestApi
             return self::response($result->get_error_message(), 400);
         }
 
-        return self::response(__('Your number has been successfully unsubscribed.', 'wp-sms'));
+        return self::response(__('Your mobile number has been successfully unsubscribed.', 'wp-sms'));
     }
 
     /**
@@ -148,7 +148,7 @@ class Newsletter extends RestApi
             return self::response($result->get_error_message(), 400);
         }
 
-        return self::response(__('Your number has been successfully subscribed.', 'wp-sms'));
+        return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));
     }
 }
 

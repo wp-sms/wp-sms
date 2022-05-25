@@ -94,7 +94,7 @@ class Newsletter
         global $wpdb;
 
         if (self::isDuplicate($mobile, $group_id)) {
-            return array('result' => 'error', 'message' => __('The mobile numbers has been already duplicate.', 'wp-sms'));
+            return array('result' => 'error', 'message' => __('The mobile number has been already duplicate.', 'wp-sms'));
         }
 
         $result = $wpdb->insert(
@@ -166,7 +166,7 @@ class Newsletter
         $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
 
         if (!$result) {
-            return array('result' => 'error', 'message' => __('The Mobile Number does not exist!', 'wp-sms'));
+            return array('result' => 'error', 'message' => __('The mobile number does not exist!', 'wp-sms'));
         }
 
         /**
@@ -203,7 +203,7 @@ class Newsletter
         }
 
         if (self::isDuplicate($mobile, $group_id, $id)) {
-            return array('result' => 'error', 'message' => __('The mobile numbers has been already duplicate.', 'wp-sms'));
+            return array('result' => 'error', 'message' => __('The mobile number has been already duplicate.', 'wp-sms'));
         }
 
         $result = $wpdb->update(

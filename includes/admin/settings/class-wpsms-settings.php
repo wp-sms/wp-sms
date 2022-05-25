@@ -306,7 +306,7 @@ class Settings
                 'name'    => __('Should be optional?', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('If you would like to make the mobile number field option, please enable the option.', 'wp-sms'),
+                'desc'    => __('If you would like to make the mobile number field optional, please enable the option.', 'wp-sms'),
             ),
             'mobile_verify_method'   => array(
                 'id'      => 'mobile_verify_method',
@@ -541,6 +541,13 @@ class Settings
                         'used_current_field' => __('Use the Billing Phone field', 'wp-sms'),
                     ),
                     'desc'    => __('Choose from which field you get numbers for sending SMS.', 'wp-sms')
+                ),
+                'wc_mobile_field_optional'           => array(
+                    'id'      => 'wc_mobile_field_optional',
+                    'name'    => __('Should be optional?', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('If you would like to make the mobile number field optional, please enable the option.', 'wp-sms')
                 ),
                 'wc_meta_box'                  => array(
                     'id'   => 'wc_meta_box',
@@ -1625,7 +1632,7 @@ class Settings
                     'name'    => __('REST API status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Add WP-SMS endpoints to the WP Rest API', 'wp-sms')
+                    'desc'    => __('Add WP SMS endpoints to the WP Rest API', 'wp-sms')
                 ),
                 'short_url'                                 => array(
                     'id'   => 'short_url',
@@ -1868,7 +1875,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Username: %s, Nickname: %s', 'wp-sms'),
+                            __('Username: %s, Display name: %s', 'wp-sms'),
                             '<code>%username_login%</code>',
                             '<code>%display_name%</code>'
                         )

@@ -1,7 +1,7 @@
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Percentage of issues still open")
 
-# WP-SMS Plugin
+# WP SMS Plugin
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, Click send and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
@@ -131,7 +131,7 @@ wp_sms_msg
 Example: Add signature to messages that are sent.
 ```sh
 function wp_sms_modify_message($message) {
-	$message = $message . ' /n Powerby: WP-SMS';
+	$message = $message . ' /n Powerby: WP SMS';
 	
 	return $message;
 }

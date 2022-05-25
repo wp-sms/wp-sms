@@ -1,11 +1,11 @@
-﻿=== WP-SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
+﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
 Tested up to: 5.9
 Requires PHP: 5.6
-Stable tag: 5.7.3.1
+Stable tag: 5.7.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -62,7 +62,7 @@ The list of supported gateways and integrated plugins are available in FAQ.
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
 
-Translations are done by people just like you, help make WP-SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
 
 = Contributing and Reporting Bugs =
 WP SMS is being developed on GitHub. If you’re interested in contributing to the plugin, please look at [GitHub page](https://github.com/veronalabs/wp-sms).
@@ -77,7 +77,7 @@ Installing the WP SMS plugin is similar to installing any other WordPress plugin
 
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display the SMS newsletter form, go to Themes > Widgets, and add a WP-SMS Subscribe form.
+3. To display the SMS newsletter form, go to Themes > Widgets, and add a WP SMS Subscribe form.
 4. If you're using the wp-sms-pro as well, don't forget to enter your license key on Pro Pack > General
 
 If you need more information, please [click here](https://wp-sms-pro.com/resources/installation/).
@@ -148,7 +148,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
 
 = PHP v7, v8 Supports? =
-Yes! WP-SMS is compatible with PHP version v5.6 up to v8
+Yes! WP SMS is compatible with PHP version v5.6 up to v8
 
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
@@ -224,7 +224,7 @@ You can use the following filter to modify text messages
 Example: Add signatures to messages that are sent
 
 	function wp_sms_modify_message($message) {
-		$message = $message . ' /n Powerby: WP-SMS';
+		$message = $message . ' /n Powerby: WP SMS';
 		return $message;
 	}
 	add_filter('wp_sms_msg', 'wp_sms_modify_message');
@@ -250,7 +250,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
     	exit;
 	} );
 
-= How to customize WP-SMS? =
+= How to customize WP SMS? =
 We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
 
 == Screenshots ==
@@ -282,6 +282,16 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.4 - 25.05.2022 =
+* New: Gateway Hostpinnacle from Kenya
+* New: Gateway Tubelight Communications from India
+* New: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
+* Improvement: The Post SMS notification box when the force send is enabled
+* Improvement: Tweak in admin styles and CSS
+* Improvement: Supported DLT for GatewayHub
+* Bugfix: Keep the mobile number field after updating the profile
+* Bugfix: Showing display spinner when styles are not loaded
+
 = v5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
 

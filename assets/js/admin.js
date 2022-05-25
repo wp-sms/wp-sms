@@ -243,6 +243,12 @@ let WpSmsJobManager = {
             },
             numbersField: {
                 element: jQuery('#wps_pp_settings\\[wc_notify_product_roles\\]'),
+            },
+            checkoutMobileField: {
+                element: jQuery('#wps_pp_settings\\[wc_mobile_field\\]'),
+            },
+            mobileFieldNecessity: {
+                element: jQuery('#wps_pp_settings\\[wc_mobile_field_optional\\]'),
             }
         }
     },
@@ -256,6 +262,14 @@ let WpSmsJobManager = {
             this.fields.numbersField.element.closest('tr').show()
         }
     },
+    
+    hideOrShowFields2: function () {
+        if (this.fields.checkoutMobileField.element.val() == 'add_new_field') {
+            this.fields.mobileFieldNecessity.element.closest('tr').show()
+        } else {
+            this.fields.mobileFieldNecessity.element.closest('tr').hide()
+        }
+    },
 
     addEventListener: function () {
         this.fields.receiverField.element.change(function () {
@@ -263,9 +277,16 @@ let WpSmsJobManager = {
         }.bind(this));
     },
 
+    addEventListener: function () {
+        this.fields.checkoutMobileField.element.change(function () {
+            this.hideOrShowFields2();
+        }.bind(this));
+    },
+
     init: function () {
         this.getFields();
         this.hideOrShowFields();
+        this.hideOrShowFields2();
         this.addEventListener();
     }
 
