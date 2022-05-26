@@ -151,8 +151,8 @@ class Settings
             'general'              => __('General', 'wp-sms'),
             'gateway'              => __('SMS Gateway', 'wp-sms'),
             'newsletter'           => __('SMS Newsletter', 'wp-sms'),
-            'feature'              => __('Features', 'wp-sms'),
             'notifications'        => __('Notifications', 'wp-sms'),
+            'advanced'             => __('Advanced', 'wp-sms'),
             'contact_form7'        => __('Contact Form 7', 'wp-sms'),
 
             /*
@@ -1562,7 +1562,7 @@ class Settings
             /**
              * Feature fields
              */
-            'feature'              => apply_filters('wp_sms_feature_settings', array(
+            'advanced'              => apply_filters('wp_sms_feature_settings', array(
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
                     'name' => __('Mobile field', 'wp-sms'),
