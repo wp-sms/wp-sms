@@ -19,7 +19,7 @@
 
             <div class="wpsms-subscribe__form__field">
                 <label><?php _e('Your mobile', 'wp-sms'); ?>:</label>
-                <input id="wpsms-mobile" type="text" placeholder="<?php echo wp_sms_get_option('mobile_terms_field_place_holder'); ?>" class="wpsms-subscribe__field__input<?php echo $international_mobile ? " wp-sms-input-mobile" : ""; ?>"/>
+                <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input']]); ?>
             </div>
 
             <?php if (wp_sms_get_option('newsletter_form_groups')) { ?>
