@@ -18,7 +18,7 @@ export function sendSubscribeForm() {
   subscriber['name'] = jQuery("#wpsms-name").val();
   subscriber['mobile'] = jQuery("#wpsms-mobile").val();
   subscriber['group_id'] = jQuery("#wpsms-groups").val();
-  subscriber['type'] = jQuery('input[name=subscribe_type]:checked').val();
+  subscriber['type'] = jQuery('.wpsms-subscribe-type__field__input:checked').val();
 
   jQuery("#wpsms-subscribe").ajaxStart(function () {
     jQuery("#wpsms-submit").attr('disabled', 'disabled');

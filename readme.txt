@@ -292,6 +292,8 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Bugfix: Keep the mobile number field after updating the profile
 * Bugfix: Showing display spinner when styles are not loaded
 
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
 
@@ -306,8 +308,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Improvement: Compatibility of the SMS newsletter form with the Godaddy host provider
 * Improvement: Compatible the intlTelInput with RTL languages
 * Improvement: Possibility to select the mobile country code instead of entering them
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.7.2.2 - 24.04.2022 =
 * Bugfix: An issue to register the schedule event has been fixed

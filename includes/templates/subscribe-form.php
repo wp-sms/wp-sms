@@ -36,12 +36,12 @@
 
             <div class="wpsms-subscribe__form__field wpsms-subscribe__form__field--radio">
                 <label>
-                    <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
+                    <input type="radio" class="wpsms-subscribe-type__field__input" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked" data-label="<?php _e('Subscribe', 'wp-sms'); ?>"/>
                     <?php _e('Subscribe', 'wp-sms'); ?>
                 </label>
 
                 <label>
-                    <input type="radio" name="subscribe_type" id="wpsms-type-unsubscribe" value="unsubscribe"/>
+                    <input type="radio" class="wpsms-subscribe-type__field__input" name="subscribe_type" id="wpsms-type-unsubscribe" value="unsubscribe" data-label="<?php _e('Unsubscribe', 'wp-sms'); ?>"/>
                     <?php _e('Unsubscribe', 'wp-sms'); ?>
                 </label>
             </div>
