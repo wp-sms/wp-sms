@@ -1491,20 +1491,27 @@ class Settings
                     'type' => 'checkbox',
                     'desc' => __('Enable showing Groups on Form.', 'wp-sms')
                 ),
+                'newsletter_form_specified_groups' => array(
+                    'id'      => 'newsletter_form_specified_groups',
+                    'name'    => __('Display groups', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => array_map(function ($value) {
+                        return [$value->ID => $value->name];
+                    }, Newsletter::getGroups()),
+                    'desc'    => __('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
+                ),
+                'newsletter_form_default_group' => array(
+                    'id'      => 'newsletter_form_default_group',
+                    'name'    => __('Default group', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => $subscribe_groups,
+                    'desc'    => __('Choice the default group', 'wp-sms')
+                ),
                 'newsletter_form_verify'           => array(
                     'id'   => 'newsletter_form_verify',
                     'name' => __('Verify Subscriber', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Verified subscribe with the activation code', 'wp-sms')
-                ),
-                'newsletter_form_specified_groups' => array(
-                    'id'      => 'newsletter_form_specified_groups',
-                    'name'    => __('Subscribe groups', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => array_map(function ($value) {
-                        return[$value->ID => $value->name];
-                    }, Newsletter::getGroups()),
-                    'desc'    => __('Select which groups should be showed in newsletter widget.', 'wp-sms')
                 ),
                 'welcome'                          => array(
                     'id'   => 'welcome',
