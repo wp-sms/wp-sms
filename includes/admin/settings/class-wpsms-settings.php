@@ -1511,7 +1511,7 @@ class Settings
                     'id'   => 'newsletter_form_verify',
                     'name' => __('Verify Subscriber', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => __('Verified subscribe with the activation code', 'wp-sms')
+                    'desc' => __('Subscribers will receive an activation code by SMS', 'wp-sms')
                 ),
                 'welcome'                          => array(
                     'id'   => 'welcome',

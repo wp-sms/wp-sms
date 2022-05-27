@@ -66,6 +66,11 @@ class SendSmsApi extends \WP_SMS\RestApi
             $recipientNumbers = $this->getRecipientsFromRequest($request);
             $mediaUrls        = array_filter($request->get_param('media_urls'));
 
+            /**
+             * Make shorter the URLs in the message
+             */
+            $message = Helper::makeUrlsShorter($request->get_param('message'));
+
 			/*
 			 * Scheduled SMS
 			 */
@@ -73,7 +78,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 				Scheduled::add(
 					$request->get_param('schedule'),
 					$request->get_param('sender'),
-					$request->get_param('message'),
+					$message,
 					$recipientNumbers,
 					true,
 					$mediaUrls
@@ -81,11 +86,6 @@ class SendSmsApi extends \WP_SMS\RestApi
 
 				return self::response('SMS Scheduled Successfully!');
 			}
-
-            /**
-             * Make shorter the URLs in the message
-             */
-            $message = Helper::makeUrlsShorter($request->get_param('message'));
 
 			/*
 			 * Regular SMS
