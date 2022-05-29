@@ -177,7 +177,7 @@ class Notifications
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
-                $words_limit                        = ($notif_publish_new_post_words_count === false) ? 10 : $notif_publish_new_post_words_count;
+                $words_limit                        = ($notif_publish_new_post_words_count == NULL) ? 10 : $notif_publish_new_post_words_count;
                 $template_vars                      = array(
                     '%post_title%'     => get_the_title($post->ID),
                     '%post_content%'   => wp_trim_words($post->post_content, $words_limit),
