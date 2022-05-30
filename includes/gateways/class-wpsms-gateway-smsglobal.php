@@ -4,19 +4,36 @@ namespace WP_SMS\Gateway;
 
 class smsglobal extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.smsglobal.com/v2/";
-    public $tariff = "https://smsglobal.com/";
+    private $wsdl_link = "https://api.smsglobal.com/v2";
+    public $tariff = "https://smsglobal.com";
     public $unitrial = false;
     public $unit;
-    public $flash = "enable";
+    public $flash = "false";
     public $isflash = false;
 
     public function __construct()
     {
         parent::__construct();
         $this->validateNumber = "The number starting with country code.";
-        $this->help           = "Fill Api key as your API and use API Password as API Secret and leave empty the API username.";
+        $this->help           = "Please fill the below fields. Information on managing API keys can be found <a href='https://knowledgebase.smsglobal.com/en/articles/5186368-how-to-integrate-with-an-api-in-mxt-video' target='_blank'>here</a>.";
         $this->has_key        = true;
+        $this->gatewayFields  = [
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => 'API Key',
+                'desc' => 'Enter your API key that is issued by SMSGlobal.',
+            ],
+            'password'             => [
+                'id'   => 'gateway_password',
+                'name' => 'API Secret',
+                'desc' => 'Enter the API secret that is issued with your API key.',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Enter your registered and approved sender name. <a href="https://smsportal.hostpinnacle.co.ke/user/info/?action=sender-id" target="_blank">More info?</a>',
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -49,137 +66,120 @@ class smsglobal extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            // Get the Credit.
+            $credit = $this->GetCredit();
 
-            return $credit;
-        }
-
-        $time  = time();
-        $nonce = mt_rand();
-
-        $mac = array(
-            $time,
-            $nonce,
-            'POST',
-            '/v2/sms',
-            'api.smsglobal.com',
-            '443',
-            '',
-        );
-
-        $mac  = sprintf("%s\n", implode("\n", $mac));
-        $hash = hash_hmac('sha256', $mac, $this->password, true);
-        $mac  = base64_encode($hash);
-
-        $headers = array(
-            'Authorization' => 'MAC id="' . $this->has_key . '", ts="' . $time . '", nonce="' . $nonce . '", mac="' . $mac . '"',
-            'Content-Type'  => 'application/json'
-        );
-
-        $body = array(
-            'destinations' => explode(',', implode(',', $this->to)),
-            'message'      => $this->msg,
-            'origin'       => $this->from,
-        );
-
-        $response = wp_remote_post($this->wsdl_link . 'sms', [
-            'headers' => $headers,
-            'body'    => json_encode($body)
-        ]);
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
-
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
-
-        $result        = json_decode($response['body']);
-        $response_code = wp_remote_retrieve_response_code($response);
-
-        if (is_object($result)) {
-            if ($response_code == '200') {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result);
-
-                /**
-                 * Run hook after send sms.
-                 *
-                 * @since 2.4
-                 */
-                do_action('wp_sms_send', $result);
-
-                return $result;
-            } else {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result->errors, 'error');
-
-                return new \WP_Error('send-sms', print_r($result->errors, 1));
+            // Check gateway credit
+            if (is_wp_error($credit)) {
+                throw new \Exception($credit->get_error_message());
             }
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response['body'], 'error');
 
-            return new \WP_Error('send-sms', print_r($response['body'], 1));
+            $time  = time();
+            $nonce = mt_rand();
+
+            $mac = array(
+                $time,
+                $nonce,
+                'POST',
+                '/v2/sms',
+                'api.smsglobal.com',
+                '443',
+                '',
+            );
+
+            $mac  = sprintf("%s\n", implode("\n", $mac));
+            $hash = hash_hmac('sha256', $mac, $this->password, true);
+            $mac  = base64_encode($hash);
+
+            $arguments = [
+                'headers' => [
+                    'Authorization' => 'MAC id="' . $this->has_key . '", ts="' . $time . '", nonce="' . $nonce . '", mac="' . $mac . '"',
+                    'Content-Type'  => 'application/json'
+                ],
+                'body' => [
+                    'destinations' => implode(',', $this->to),
+                    'message'      => $this->msg,
+                    'origin'       => $this->from,
+                ]
+            ];
+
+            $response = $this->request('POST', "{$this->wsdl}/sms", [], $arguments);
+
+            // Check response
+            if ($response->code !== '200') {
+                throw new \Exception($response->message);
+            }
+
+            //log the result
+            $this->log ($this->from, $this->msg, $this->to, $response);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $response result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
+
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
         }
+
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->password && !$this->has_key) {
-            return new \WP_Error('account-credit', __('The Username/API Key for this gateway is not set', 'wp-sms'));
-        }
 
-        $time  = time();
-        $nonce = mt_rand();
-
-        $mac = array(
-            $time,
-            $nonce,
-            'GET',
-            '/v2/user/credit-balance',
-            'api.smsglobal.com',
-            '443',
-            '',
-        );
-
-        $mac  = sprintf("%s\n", implode("\n", $mac));
-        $hash = hash_hmac('sha256', $mac, $this->password, true);
-        $mac  = base64_encode($hash);
-
-        $headers = array(
-            'Authorization' => 'MAC id="' . $this->has_key . '", ts="' . $time . '", nonce="' . $nonce . '", mac="' . $mac . '"',
-            'Content-Type'  => 'application/json'
-        );
-
-        $response = wp_remote_get($this->wsdl_link . 'user/credit-balance', [
-            'headers' => $headers
-        ]);
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
-
-        $result = json_decode($response['body']);
-
-        $response_code = wp_remote_retrieve_response_code($response);
-        if (is_object($result)) {
-            if ($response_code == '200') {
-                return $result->balance;
-            } else {
-                return new \WP_Error('credit', $result->error->message);
+        try {
+            // Check API key and password
+            if (!$this->password or !$this->has_key) {
+                throw new \Exception(__('The API Key or API Secret for this gateway is not set', 'wp-sms'));
             }
-        } else {
-            return new \WP_Error('credit', $response['body']);
+
+            $time  = time();
+            $nonce = mt_rand();
+
+            $mac = array(
+                $time,
+                $nonce,
+                'GET',
+                '/v2/user/credit-balance',
+                'api.smsglobal.com',
+                '443',
+                '',
+            );
+
+            $mac  = sprintf("%s\n", implode("\n", $mac));
+            $hash = hash_hmac('sha256', $mac, $this->password, true);
+            $mac  = base64_encode($hash);
+
+            $arguments = [
+                'headers' => [
+                    'Authorization' => 'MAC id="' . $this->has_key . '", ts="' . $time . '", nonce="' . $nonce . '", mac="' . $mac . '"',
+                    'Content-Type'  => 'application/json'
+                ]
+            ];
+
+            $response = $this->request('GET', "{$this->wsdl_link}/user/credit-balance", [], $arguments);
+
+            // Check response
+            if ($response->code !== '200') {
+                throw new \Exception($response->message);
+            }
+
+            return $response->balance;
+
+        } catch (\Exception $e) {
+            $error_message = $e->getMessage();
+            return new \WP_Error('account-credit', $error_message);
         }
+       
     }
 }
