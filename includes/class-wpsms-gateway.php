@@ -994,8 +994,12 @@ class Gateway
         $responseBody = wp_remote_retrieve_body($response);
 
         if (in_array($responseCode, [200, 201, 202]) === false) {
-            $responseArray = json_decode($responseBody, true);
-            throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseArray, 1)));
+
+            if (Helper::isJson($responseBody)) {
+                $responseBody = json_decode($responseBody, true);
+            }
+
+            throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
         }
 
         $responseJson = json_decode($responseBody);
