@@ -52,13 +52,13 @@
                                                 <option value="wc-customers" id="wc_users" <?php disabled(!$proIsActive); ?>>
                                                     <?php _e('WooCommerce\'s Customers', 'wp-sms'); ?>
                                                     <?php if (!$proIsActive) : ?>
-                                                    <span>(<?php _e('Requires the Pro Pack', 'wp-sms'); ?>)</span>
+                                                    <span>(<?php _e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
                                                     <?php endif; ?>
                                                 </option>
                                                 <option value="bp-users" id="bp_users" <?php disabled(!$proIsActive); ?>>
                                                     <?php _e('BuddyPress\'s Users', 'wp-sms'); ?>
                                                     <?php if (!$proIsActive) : ?>
-                                                    <span>(<?php _e('Requires the Pro Pack', 'wp-sms'); ?>)</span>
+                                                    <span>(<?php _e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
                                                     <?php endif; ?>
                                                 </option>
                                                 <option value="numbers" id="wp_tellephone"><?php _e('Number(s)', 'wp-sms'); ?>
@@ -238,8 +238,7 @@
                                         <td style="padding-top: 10px;">
                                             <input type="checkbox" id="schedule_status" name="schedule_status"
                                                 disabled="disabled" />
-                                            <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires the Pro Pack', 'wp-sms'); ?>
-                                            </p>
+                                            <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php echo sprintf('Requires <a href="%s" target="_blank">Pro Pack!</a>', WP_SMS_SITE . '/buy'); ?></p>
                                         </td>
                                     </tr>
                                     <tr valign="top">
@@ -249,8 +248,7 @@
                                         <td style="padding-top: 10px;">
                                             <input type="checkbox" id="repeat_status" name="repeat_status"
                                                 disabled="disabled" />
-                                            <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php _e('Requires the Pro Pack', 'wp-sms'); ?>
-                                            </p>
+                                            <p class="wpsms-error-notice" style="padding: 4px 4px;"><?php echo sprintf('Requires <a href="%s" target="_blank">Pro Pack!</a>', WP_SMS_SITE . '/buy'); ?></p>
                                         </td>
                                     </tr>
                                     <?php endif; ?>

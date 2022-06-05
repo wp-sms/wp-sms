@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.7.4
+Stable tag: 5.7.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -282,6 +282,16 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.5 - **.06.2022 =
+* Improvement: Better settings fields organization
+* Improvement: Update the subscriber button caption to Unsubscribe when the unsubscribe radio is checked
+* New:  Default group option has been added in the SMS newsletter form
+* New: Short URLs supported in the scheduled SMS
+* New: Better rendering the mobile number fields by new function `wp_sms_render_mobile_field()`
+* Bugfix: The post content words count field in SMS post notification has been fixed
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.7.4 - 25.05.2022 =
 * New: Gateway Hostpinnacle from Kenya
 * New: Gateway Tubelight Communications from India
@@ -291,8 +301,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Improvement: Supported DLT for GatewayHub
 * Bugfix: Keep the mobile number field after updating the profile
 * Bugfix: Showing display spinner when styles are not loaded
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
