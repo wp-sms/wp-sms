@@ -166,7 +166,7 @@
                                             </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]"
                                                 value="" />
                                             <?php else: ?>
-                                            <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?>
+                                            <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?>
                                             </p>
                                             <?php endif; ?>
                                         </td>
@@ -194,7 +194,7 @@
                                     </tr>
                                     <tr valign="top">
                                         <th scope="row">
-                                            <label for="repeat_status"><?php _e('Repeat?', 'wp-sms'); ?></label>
+                                            <label for="wpsms_repeat_status"><?php _e('Repeat?', 'wp-sms'); ?></label>
                                         </th>
                                         <td>
                                             <input type="checkbox" id="wpsms_repeat_status" name="repeat_status" />
