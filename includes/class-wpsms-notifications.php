@@ -173,11 +173,7 @@ class Notifications
                         $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
                     }
                 } elseif ($defaultReceiver == 'numbers') {
-                    if (isset($_REQUEST['wps_mobile_numbers'])) {
-                        $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
-                    } else {
-                        $this->sms->to = explode(',', sanitize_text_field($this->options['notif_publish_new_post_numbers']));
-                    }
+                    $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
