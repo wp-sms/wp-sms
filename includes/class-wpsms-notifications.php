@@ -153,19 +153,19 @@ class Notifications
                 return;
             }
 
-            if (isset($_REQUEST['wps_send_to'])) {
+            $isForce             = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
+            $defaultGroup        = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
+            $defaultReceiver     = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
+            $defaultPostTemplate = isset($this->options['notif_publish_new_post_template']) ? $this->options['notif_publish_new_post_template'] : '';
 
-                $defaultReceiver = $_REQUEST['wps_send_to'];
+            if (is_admin() && isset($_POST['post_ID'])) {
+                $defaultReceiver     = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
+                $isForce             = ($defaultReceiver == '0' ? false : true);
                 $defaultGroup        = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : '';
                 $defaultPostTemplate = isset($_REQUEST['wpsms_text_template']) ? sanitize_text_field($_REQUEST['wpsms_text_template']) : '';
-
-            } else {
-
-                $defaultReceiver = false;
-
             }
 
-            if ($defaultReceiver) {
+            if ($isForce) {
                 if ($defaultReceiver == 'subscriber') {
                     if ($defaultGroup == 'all') {
                         $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
@@ -173,11 +173,7 @@ class Notifications
                         $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
                     }
                 } elseif ($defaultReceiver == 'numbers') {
-                    if (isset($_REQUEST['wps_mobile_numbers'])) {
-                        $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
-                    } else {
-                        $this->sms->to = explode(',', sanitize_text_field($this->options['notif_publish_new_post_numbers']));
-                    }
+                    $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
