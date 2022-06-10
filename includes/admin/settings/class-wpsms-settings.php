@@ -680,7 +680,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order edit URL: %s, Order Items: %s, Order status: %s', 'wp-sms'),
+                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Order edit URL: %s, Order Items: %s, Order status: %s', 'wp-sms'),
                             '<code>%billing_first_name%</code>',
                             '<code>%billing_company%</code>',
                             '<code>%billing_address%</code>',
@@ -688,6 +688,8 @@ class Settings
                             '<code>%order_id%</code>',
                             '<code>%order_number%</code>',
                             '<code>%order_total%</code>',
+                            '<code>%order_total_currency%</code>',
+                            '<code>%order_total_currency_symbol%</code>',
                             '<code>%order_edit_url%</code>',
                             '<code>%order_items%</code>',
                             '<code>%status%</code>'
@@ -711,12 +713,14 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order ID: %s, Order number: %s, Order status: %s, Order Items: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
+                            __('Order ID: %s, Order number: %s, Order status: %s, Order Items: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
                             '<code>%order_id%</code>',
                             '<code>%order_number%</code>',
                             '<code>%status%</code>',
                             '<code>%order_items%</code>',
                             '<code>%order_total%</code>',
+                            '<code>%order_total_currency%</code>',
+                            '<code>%order_total_currency_symbol%</code>',
                             '<code>%billing_first_name%</code>',
                             '<code>%billing_last_name%</code>',
                             '<code>%order_view_url%</code>',
@@ -2086,7 +2090,7 @@ class Settings
                     <textarea name="message" rows="3"
                         style="display: block; width: 100%;"><?php echo $message ?></textarea>
                     <p class="description">Enter the contents of the SMS message.</p>
-                    <p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?>
+                    <p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%order_total_currency%</code>','<code>%order_total_currency_symbol%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?>
                     </p>
                 </div>
                 <div>
@@ -2121,7 +2125,7 @@ class Settings
                 <div style="display: block; width: 100%; margin-bottom: 15px;">
                     <textarea name="message" rows="3" style="display: block; width: 100%;"></textarea>
                     <p class="description">Enter the contents of the SMS message.</p>
-                    <p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?>
+                    <p class="description"><?php echo sprintf(__('Order status: %s, Order Items: %s, Order number: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'), '<code>%status%</code>', '<code>%order_items%</code>', '<code>%order_number%</code>', '<code>%order_total%</code>', '<code>%order_total_currency%</code>', '<code>%order_total_currency_symbol%</code>', '<code>%customer_first_name%</code>', '<code>%customer_last_name%</code>', '<code>%order_view_url%</code>', '<code>%order_pay_url%</code>') ?>
                     </p>
                 </div>
                 <div>

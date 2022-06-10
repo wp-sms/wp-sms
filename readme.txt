@@ -285,7 +285,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 = v5.7.5 - **.06.2022 =
 * Improvement: Better settings fields organization
 * Improvement: Update the subscriber button label while to switching the subscriber action
-* New:  Default group option has been added in the SMS newsletter form
+* New: Default group option has been added in the SMS newsletter form
 * New: Short URLs supported in the scheduled SMS
 * New: Better rendering the mobile number fields by new function `wp_sms_render_mobile_field()`
 * Bugfix: The post content words count field in SMS post notification has been fixed
