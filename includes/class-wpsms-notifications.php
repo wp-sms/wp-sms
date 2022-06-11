@@ -145,7 +145,7 @@ class Notifications
      */
     public function notify_subscribers_for_published_post($postID, $post, $update)
     {
-        if ($update && $post->post_status === 'publish') {
+        if ($post->post_status === 'publish') {
             // post types selection
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
@@ -157,6 +157,10 @@ class Notifications
             $defaultGroup        = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
             $defaultReceiver     = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
             $defaultPostTemplate = isset($this->options['notif_publish_new_post_template']) ? $this->options['notif_publish_new_post_template'] : '';
+
+            if (count($_POST) == 0 && $update == 1 && $postID) {
+                return;
+            }
 
             if (is_admin() && isset($_POST['post_ID'])) {
                 $defaultReceiver     = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
