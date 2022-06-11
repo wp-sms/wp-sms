@@ -407,7 +407,10 @@ class Admin
      */
     public function modify_admin_body_classes($classes)
     {
-        $classes .= ' sms_page_wp-sms';
+        // Add class for the admin body only for plugin's pages
+        if (isset($_GET['page']) && in_array($_GET['page'], array('wp-sms', 'wp-sms-outbox', 'wp-sms-inbox', 'wp-sms-scheduled', 'wp-sms-subscribers', 'wp-sms-subscribers-group', 'wp-sms-subscribers-privacy', 'wp-sms-settings', 'wp-sms-add-ons'))) {
+            $classes .= ' sms_page_wp-sms';
+        }
 
         return $classes;
     }
