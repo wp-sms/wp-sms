@@ -19,7 +19,7 @@
 
             <div class="wpsms-subscribe__form__field">
                 <label><?php _e('Your mobile', 'wp-sms'); ?>:</label>
-                <input id="wpsms-mobile" type="text" placeholder="<?php echo wp_sms_get_option('mobile_terms_field_place_holder'); ?>" class="wpsms-subscribe__field__input<?php echo $international_mobile ? " wp-sms-input-mobile" : ""; ?>"/>
+                <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input']]); ?>
             </div>
 
             <?php if (wp_sms_get_option('newsletter_form_groups')) { ?>
@@ -28,7 +28,7 @@
                     <select id="wpsms-groups" class="wpsms-subscribe__field__input">
                         <option value="0"><?php _e('Please select the group', 'wp-sms'); ?></option>
                         <?php foreach ($get_group_result as $items): ?>
-                            <option value="<?php echo esc_attr($items->ID); ?>"><?php echo esc_attr($items->name); ?></option>
+                            <option value="<?php echo esc_attr($items->ID); ?>" <?php selected(wp_sms_get_option('newsletter_form_default_group'), $items->ID); ?>><?php echo esc_attr($items->name); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -36,12 +36,12 @@
 
             <div class="wpsms-subscribe__form__field wpsms-subscribe__form__field--radio">
                 <label>
-                    <input type="radio" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked"/>
+                    <input type="radio" class="wpsms-subscribe-type__field__input" name="subscribe_type" id="wpsms-type-subscribe" value="subscribe" checked="checked" data-label="<?php _e('Subscribe', 'wp-sms'); ?>"/>
                     <?php _e('Subscribe', 'wp-sms'); ?>
                 </label>
 
                 <label>
-                    <input type="radio" name="subscribe_type" id="wpsms-type-unsubscribe" value="unsubscribe"/>
+                    <input type="radio" class="wpsms-subscribe-type__field__input" name="subscribe_type" id="wpsms-type-unsubscribe" value="unsubscribe" data-label="<?php _e('Unsubscribe', 'wp-sms'); ?>"/>
                     <?php _e('Unsubscribe', 'wp-sms'); ?>
                 </label>
             </div>

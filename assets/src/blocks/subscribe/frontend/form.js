@@ -11,6 +11,10 @@ jQuery("#wpsms-gdpr-confirmation").on('change', function () {
   }
 });
 
+jQuery(".wpsms-subscribe-type__field__input").on('click', function () {
+  jQuery('.wpsms-form-submit').text(jQuery(this).data('label'));
+})
+
 jQuery('.wpsms-button').on('click', function () {
   if (jQuery(this).hasClass('wpsms-form-submit')) {
     sendSubscribeForm();

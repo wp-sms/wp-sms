@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
 Requires at least: 3.0
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.7.4
+Stable tag: 5.7.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -282,6 +282,18 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.5 - 12.06.2022 =
+* Improvement: Better settings fields organization
+* Improvement: Update the subscriber button label while switching the subscriber action
+* New: Default group option has been added to the SMS newsletter form
+* New: Short URLs supported in the scheduled SMS
+* New: Better rendering the mobile number fields by new function `wp_sms_render_mobile_field()`
+* Bugfix: The post content words count field in SMS post notification has been fixed
+* Bugfix: WP dashboard margin issue has been fixed
+* Bugfix: Duplicate send SMS when the ForceToSend option is enabled in SMS post notification
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.7.4 - 25.05.2022 =
 * New: Gateway Hostpinnacle from Kenya
 * New: Gateway Tubelight Communications from India
@@ -306,8 +318,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Improvement: Compatibility of the SMS newsletter form with the Godaddy host provider
 * Improvement: Compatible the intlTelInput with RTL languages
 * Improvement: Possibility to select the mobile country code instead of entering them
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.7.2.2 - 24.04.2022 =
 * Bugfix: An issue to register the schedule event has been fixed

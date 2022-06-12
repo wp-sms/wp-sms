@@ -1,0 +1,36 @@
+.wp_sms_status_success,
+.wp_sms_status_repeat-ended {
+  background: #04ca15;
+  color: #ffffff;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.wp_sms_status_fail {
+  background: #ca0404;
+  color: #ffffff;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.wp_sms_status_on-queue,
+.wp_sms_status_repeat-on-going {
+  background: #045cca;
+  color: #ffffff;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+// Tab styles
+.wpsms-scheduled-page{
+  .wpsms-tab{
+    display: flex;
+    flex-direction: row;
+
+    li > a{
+      &::before{
+        content: none;
+      }
+    }
+  }
+}

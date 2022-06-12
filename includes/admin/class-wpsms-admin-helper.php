@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Admin;
 
+use DateInterval;
+
 class Helper
 {
 
@@ -48,5 +50,37 @@ class Helper
             wp_redirect($redirect);
             exit;
         }
+    }
+
+    /**
+     * Format a date interval into human readable string
+     *
+     * @param DateInterval $interval
+     * @see https://gist.github.com/xadim/8cf3569ee14ec943c324
+     * @return string
+     */
+    public static function formatDateInterval(DateInterval $interval)
+    {
+        $result = "";
+        if ($interval->y) {
+            $result .= $interval->format("%y ".__("years ", "wp-sms"));
+        }
+        if ($interval->m) {
+            $result .= $interval->format("%m ".__("months ", "wp-sms"));
+        }
+        if ($interval->d) {
+            $result .= $interval->format("%d ".__("days ", "wp-sms"));
+        }
+        if ($interval->h) {
+            $result .= $interval->format("%h ".__("hours ", "wp-sms"));
+        }
+        if ($interval->i) {
+            $result .= $interval->format("%i ".__("minutes ", "wp-sms"));
+        }
+        if ($interval->s) {
+            $result .= $interval->format("%s ".__("seconds ", "wp-sms"));
+        }
+
+        return $result;
     }
 }

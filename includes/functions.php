@@ -379,3 +379,119 @@ function wp_sms_get_countries()
 
     return $countries;
 }
+
+/**
+ * Show SMS newsletter form.
+ *
+ * @deprecated 4.0 Use wp_sms_subscribes()
+ * @see wp_sms_subscribes()
+ *
+ */
+function wp_subscribes()
+{
+    _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscribes()');
+    wp_sms_subscribes();
+}
+
+/**
+ * Show SMS newsletter form.
+ *
+ */
+function wp_sms_subscribes()
+{
+    _deprecated_function(__FUNCTION__, '5.7');
+}
+
+/**
+ * Get option value.
+ *
+ * @param $option_name
+ * @param bool $pro
+ * @param string $setting_name
+ *
+ * @return string
+ */
+function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
+{
+    return Option::getOption($option_name, $pro, $setting_name);
+}
+
+/**
+ * Send SMS.
+ *
+ * @param array $to
+ * @param $msg $pro
+ * @param bool $is_flash
+ * @param array $mediaUrls
+ *
+ * @param bool $from
+ *
+ * @return string | WP_Error
+ */
+function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
+{
+    global $sms;
+
+    $sms->isflash = $is_flash;
+    $sms->to      = $to;
+    $sms->msg     = $msg;
+    $sms->media   = $mediaUrls;
+
+    if ($from) {
+        $sms->from = $from;
+    }
+
+    return $sms->SendSMS();
+}
+
+/**
+ * Short URL generator
+ *
+ * @param string $longUrl
+ * @return string
+ */
+if (!function_exists('wp_sms_shorturl')) {
+    function wp_sms_shorturl($longUrl = '')
+    {
+        return apply_filters('wp_sms_shorturl', $longUrl);
+    }
+}
+
+/**
+ * @return void
+ */
+function wp_sms_render_mobile_field($args)
+{
+    $defaults = array(
+        'type'        => 'text',
+        'placeholder' => wp_sms_get_option('mobile_terms_field_place_holder'),
+        'min'         => wp_sms_get_option('mobile_terms_minimum'),
+        'max'         => wp_sms_get_option('mobile_terms_maximum'),
+        'required'    => false,
+        'id'          => 'wpsms-mobile',
+        'value'       => '',
+        'name'        => '',
+        'class'       => array(),
+        'attributes'  => array(),
+    );
+
+    $args = wp_parse_args($args, $defaults);
+
+    if (wp_sms_get_option('international_mobile')) {
+        $args['class'] = array_merge(['wp-sms-input-mobile'], $args['class']);
+    }
+
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    echo sprintf(
+        '<input id="%s" type="text" name="%s" placeholder="%s" class="%s" value="%s" required="%s" minlength="%s" maxlength="%s" %s/>',
+        $args['id'],
+        $args['name'],
+        $args['placeholder'],
+        implode(' ', $args['class']),
+        esc_attr($args['value']),
+        $args['required'],
+        $args['min'],
+        $args['max'],
+        implode(' ', $args['attributes'])
+    );
+}

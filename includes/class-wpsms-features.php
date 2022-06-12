@@ -31,7 +31,7 @@ class Features
         $this->options     = Option::getOptions();
         $this->mobileField = Helper::getUserMobileFieldName();
 
-        if (isset($this->options['add_mobile_field'])) {
+        if (wp_sms_get_option('add_mobile_field')) {
             add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
             add_filter('user_contactmethods', array($this, 'add_mobile_field_to_profile_form'));
             add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
@@ -44,7 +44,7 @@ class Features
             add_action('user_profile_update_errors', array($this, 'MobileFieldErrors'), 10, 3);
         }
 
-        if (isset($this->options['international_mobile'])) {
+        if (wp_sms_get_option('international_mobile')) {
             add_action('wp_enqueue_scripts', array($this, 'load_international_input'));
             add_action('admin_enqueue_scripts', array($this, 'load_international_input'));
             add_action('login_enqueue_scripts', array($this, 'load_international_input'));
