@@ -282,13 +282,15 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.7.5 - **.06.2022 =
+= v5.7.5 - 12.06.2022 =
 * Improvement: Better settings fields organization
-* Improvement: Update the subscriber button label while to switching the subscriber action
-* New: Default group option has been added in the SMS newsletter form
+* Improvement: Update the subscriber button label while switching the subscriber action
+* New: Default group option has been added to the SMS newsletter form
 * New: Short URLs supported in the scheduled SMS
 * New: Better rendering the mobile number fields by new function `wp_sms_render_mobile_field()`
 * Bugfix: The post content words count field in SMS post notification has been fixed
+* Bugfix: WP dashboard margin issue has been fixed
+* Bugfix: Duplicate send SMS when the ForceToSend option is enabled in SMS post notification
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
