@@ -7,9 +7,9 @@ use WP_Error;
 
 class uwaziimobile extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://restapi.uwaziimobile.com/v1";
-    public $tariff = "http://uwaziimobile.com/";
-    public $unitrial = true;
+    private $wsdl_link = "https://api2.uwaziimobile.com";
+    public $tariff = "https://www.uwaziimobile.com";
+    public $unitrial = false;
     public $unit;
     public $flash = "disable";
     public $isflash = false;
@@ -17,7 +17,22 @@ class uwaziimobile extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
+        $this->bulk_send = true;
+        $this->has_key = true;
         $this->validateNumber = "Destination addresses must be in international format (Example: 254722123456).";
+        $this->help = "Enter your Gateway Token and Sender ID. You can avail them from your control panel.";
+        $this->gatewayFields = [
+            'has_key' => [
+                'id' => 'gateway_key',
+                'name' => 'Gateway Token',
+                'desc' => 'Enter your Gateway Token.',
+            ],
+            'from' => [
+                'id' => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Enter the Sender ID',
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -50,186 +65,63 @@ class uwaziimobile extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
-        $country_code  = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
-        $mobileNumbers = array_map(function ($item) use ($country_code) {
-            return $this->clean_number($item, $country_code);
-        }, $this->to);
-
-        $response = wp_remote_post(sprintf('%s/send', $this->wsdl_link), [
-            'timeout' => 30,
-            'headers' => array(
-                'Content-Type'   => 'application/json',
-                'Accept'         => 'application/json',
-                'X-Access-Token' => $this->getAccessToken(),
-            ),
-            'body'    => json_encode([
-                'number'   => $mobileNumbers,
-                'senderID' => $this->from,
-                'text'     => $this->msg,
-                'type'     => 'sms',
-            ])
-        ]);
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
-
-            return new WP_Error('send-sms', $response->get_error_message());
-        }
-
-        // Decode response
-        $response = json_decode($response['body'], true);
-
-        if ($response['error_code']) {
-            return new WP_Error('account-credit', $response['errors']);
-        }
-
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $response);
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param string $response result output.
-         * @since 2.4
-         *
-         */
-        do_action('wp_sms_send', $response);
-
-        return $response;
-    }
-
-    public function GetCredit()
-    {
         try {
-            // Check username and password
-            if (!$this->username or !$this->password) {
-                throw new Exception(__('API Key is not entered.', 'wp-sms'));
-            }
 
-            $response = wp_remote_get(sprintf('%s/me', $this->wsdl_link), [
-                'timeout' => 10,
-                'headers' => [
-                    'Content-Type'   => 'application/json',
-                    'Accept'         => 'application/json',
-                    'X-Access-Token' => $this->getAccessToken(),
-                ]
-            ]);
+            // Get the credit.
+            $credit = $this->GetCredit();
 
             // Check gateway credit
-            if (is_wp_error($response)) {
-                throw new Exception($response->get_error_message());
+            if (is_wp_error($credit)) {
+                throw new \Exception($credit->get_error_message());
             }
 
-            // Decode response
-            $response = json_decode($response['body'], true);
+            $response = $this->request('GET', "{$this->wsdl_link}/send", [
+                [
+                    'token' => $this->has_key,
+                    'phone' => implode(',', $this->to),
+                    'senderID' => $this->from,
+                    'text' => $this->msg,
+                ],
+            ], []);
 
-            if ($response['error_code']) {
-                throw new Exception($response['errors']);
-            }
+            //log the result
+            $this->log($this->from, $this->msg, $this->to, $response);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $response result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
 
             return $response;
 
         } catch (Exception $e) {
-            return new WP_Error('account-credit', $e->getMessage());
+
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            return new \WP_Error('send-sms', $e->getMessage());
+
         }
     }
 
-    private function getAccessToken()
+    public function GetCredit()
     {
-        if (get_option('wpsms_gateway_uwaziimobile_access_token')) {
-            return get_option('wpsms_gateway_uwaziimobile_access_token');
-        }
 
-        $authorizeResponse = $this->executeRequest('authorize', [
-            'username' => $this->username,
-            'password' => $this->password,
-        ]);
+        try {
 
-        if ($authorizeResponse['???']) { // todo
-            $accessTokenResponse = $this->executeRequest('accesstoken', [
-                'authorization_code' => $this->username,
-                'password'           => $authorizeResponse['???'] // todo
-            ]);
-
-            if ($accessTokenResponse['???']) { // todo
-                update_option('wpsms_gateway_uwaziimobile_access_token', $accessTokenResponse['???']);
-
-                return $accessTokenResponse['???']; // todo
+            // Check username and password
+            if (!$this->has_key) {
+                throw new Exception(__('Gateway Token is not entered.', 'wp-sms'));
             }
+
+            return 1;
+
+        } catch (\Exception $e) {
+            $error_message = $e->getMessage();
+            return new \WP_Error('account-credit', $error_message);
         }
 
-        return false;
-    }
-
-    private function executeRequest($endpoint, $params = [], $method = 'POST')
-    {
-        $response = wp_remote_post(sprintf('%s/%s', $this->wsdl_link, $endpoint), [
-            'timeout' => 30,
-            'headers' => array(
-                'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
-            ),
-            'body'    => json_encode($params)
-        ]);
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            throw new Exception($response->get_error_message());
-        }
-
-        // Decode response
-        $responseArray = json_decode($response['body'], true);
-
-        if (isset($responseArray['errors'])) {
-            throw new Exception(print_r($responseArray['errors'], 1));
-        }
-
-        return $responseArray;
-    }
-
-    private function clean_number($number, $country_code)
-    {
-        //Clean Country Code from + or 00
-        $country_code = str_replace('+', '', $country_code);
-
-        if (substr($country_code, 0, 2) == "00") {
-            $country_code = substr($country_code, 2, strlen($country_code));
-        }
-
-        //Remove +
-        $number = str_replace('+', '', $number);
-
-        if (substr($number, 0, strlen($country_code) * 2) == $country_code . $country_code) {
-            $number = substr($number, strlen($country_code) * 2);
-        } else {
-            $number = substr($number, strlen($country_code));
-        }
-
-        //Remove 00 in the begining
-        if (substr($number, 0, 2) == "00") {
-            $number = substr($number, 2, strlen($number));
-        }
-
-        //Remove 00 in the begining
-        if (substr($number, 0, 1) == "0") {
-            $number = substr($number, 1, strlen($number));
-        }
-
-        $number = $country_code . $number;
-
-        return $number;
     }
 }
