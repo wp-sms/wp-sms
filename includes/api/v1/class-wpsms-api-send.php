@@ -82,6 +82,15 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $startDate = new DateTime(get_gmt_from_date($request->get_param('schedule')));
                 $endDate   = isset($data['endDate']) ? (new DateTime(get_gmt_from_date($data['endDate']))) : null ;
                 $interval  = $data['interval'];
+
+                if ($startDate->getTimestamp() < time()) {
+                    return self::response(__('Selected start date must be in future', 'wp-sms'), 400);
+                }
+
+                if (isset($endDate) && $endDate->getTimestamp() < $startDate->getTimestamp()) {
+                    return self::response(__('Selected end date must be after start date', 'wp-sms'), 400);
+                }
+
                 RepeatingMessages::add(
                     $startDate,
                     $endDate,
@@ -99,6 +108,10 @@ class SendSmsApi extends \WP_SMS\RestApi
              * Scheduled SMS
              */
             if ($request->has_param('schedule')) {
+                if ((new DateTime(get_gmt_from_date($request->get_param('schedule'))))->getTimestamp() < time()) {
+                    return self::response(__('Selected start date must be in future', 'wp-sms'), 400);
+                }
+
                 Scheduled::add(
                     $request->get_param('schedule'),
                     $request->get_param('sender'),
