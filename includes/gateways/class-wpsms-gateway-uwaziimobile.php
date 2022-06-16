@@ -25,12 +25,12 @@ class uwaziimobile extends \WP_SMS\Gateway
             'has_key' => [
                 'id' => 'gateway_key',
                 'name' => 'Gateway Token',
-                'desc' => 'Enter your Gateway Token.',
+                'desc' => 'Enter your Gateway Token. The gateway token can be generated through your control panel.',
             ],
             'from' => [
                 'id' => 'gateway_sender_id',
                 'name' => 'Sender ID',
-                'desc' => 'Enter the Sender ID',
+                'desc' => 'Enter the Sender ID. ',
             ],
         ];
     }
