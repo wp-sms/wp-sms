@@ -23,7 +23,7 @@ class smsglobal extends \WP_SMS\Gateway
                 'name' => 'API Key',
                 'desc' => 'Enter your API key that is issued by SMSGlobal.',
             ],
-            'password'             => [
+            'password' => [
                 'id'   => 'gateway_password',
                 'name' => 'API Secret',
                 'desc' => 'Enter the API secret that is issued with your API key.',
@@ -98,22 +98,22 @@ class smsglobal extends \WP_SMS\Gateway
                     'Authorization' => 'MAC id="' . $this->has_key . '", ts="' . $time . '", nonce="' . $nonce . '", mac="' . $mac . '"',
                     'Content-Type'  => 'application/json'
                 ],
-                'body' => [
-                    'destinations' => implode(',', $this->to),
+                'body'    => json_encode([
+                    'destinations' => explode(',', implode(',', $this->to)),
                     'message'      => $this->msg,
                     'origin'       => $this->from,
-                ]
+                ])
             ];
 
-            $response = $this->request('POST', "{$this->wsdl}/sms", [], $arguments);
+            $response = $this->request('POST', "{$this->wsdl_link}/sms", [], $arguments);
 
             // Check response
-            if ($response->code !== '200') {
+            if (isset($response->code) && $response->code !== '200') {
                 throw new \Exception($response->message);
             }
 
             //log the result
-            $this->log ($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
@@ -170,16 +170,16 @@ class smsglobal extends \WP_SMS\Gateway
             $response = $this->request('GET', "{$this->wsdl_link}/user/credit-balance", [], $arguments);
 
             // Check response
-            if ($response->code !== '200') {
+            if (isset($response->code) && $response->code !== '200') {
                 throw new \Exception($response->message);
             }
 
-            return $response->balance;
+            return $response->balance . ' ' . $response->currency;
 
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
             return new \WP_Error('account-credit', $error_message);
         }
-       
+
     }
 }
