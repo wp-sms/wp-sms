@@ -95,6 +95,9 @@ class Gateway
         'germany'       => array(
             'gtxmessaging' => 'gtx-messaging.com',
         ),
+        'united kingdom' => array(
+            'firetext' => 'firetext.co.uk',
+        ),
         'french'        => array(
             'linkmobilityFr' => 'linkmobility.fr',
         ),
