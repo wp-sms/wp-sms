@@ -462,12 +462,17 @@ if (!function_exists('wp_sms_shorturl')) {
  */
 function wp_sms_render_mobile_field($args)
 {
+    if (wp_sms_get_option('add_mobile_field_woocommerce_require') == 1) {
+        $required = 'true'
+    }else{
+        $required = 'false'
+    }
     $defaults = array(
         'type'        => 'text',
         'placeholder' => wp_sms_get_option('mobile_terms_field_place_holder'),
         'min'         => wp_sms_get_option('mobile_terms_minimum'),
         'max'         => wp_sms_get_option('mobile_terms_maximum'),
-        'required'    => false,
+        'required'    => $required,
         'id'          => 'wpsms-mobile',
         'value'       => '',
         'name'        => '',
