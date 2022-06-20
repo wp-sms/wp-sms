@@ -463,9 +463,9 @@ if (!function_exists('wp_sms_shorturl')) {
 function wp_sms_render_mobile_field($args)
 {
     if (wp_sms_get_option('add_mobile_field_woocommerce_require') == 1) {
-        $required = 'true'
+        $required = 'true';
     }else{
-        $required = 'false'
+        $required = 'false';
     }
     $defaults = array(
         'type'        => 'text',
