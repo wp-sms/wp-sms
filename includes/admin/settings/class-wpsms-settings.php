@@ -1349,6 +1349,20 @@ class Settings
                     'options' => $options,
                     'desc'    => __('Add Mobile number to user profile and register form.', 'wp-sms')
                 ),
+                'add_mobile_field'                         => array(
+                    'id'      => 'add_mobile_field_woocommerce',
+                    'name'    => __('Add mobile number field (WooCommerce).', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Add mobile number to the WooCommerce registration form.', 'wp-sms')
+                ),
+                'add_mobile_field'                         => array(
+                    'id'      => 'add_mobile_field_woocommerce_require',
+                    'name'    => __('Add a required mobile number field (WooCommerce).', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Make a mobile number for the WooCommerce registration form required.', 'wp-sms')
+                ),
                 'mobile_terms_field_place_holder'  => array(
                     'id'   => 'mobile_terms_field_place_holder',
                     'name' => __('Field Placeholder', 'wp-sms'),
