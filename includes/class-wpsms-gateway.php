@@ -549,6 +549,7 @@ class Gateway
                 'uwaziimobile'     => 'uwaziimobile.com',
                 'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
+                'aobox' => 'aobox.it',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
