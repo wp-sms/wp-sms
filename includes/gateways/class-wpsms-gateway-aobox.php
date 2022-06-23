@@ -94,7 +94,7 @@ class aobox extends \WP_SMS\Gateway
                 'text'     => $this->msg,
             ];
 
-            $response = $this->request('POST', "$this->wsdl_link/gateway.php", $params, []);
+            $response = $this->request('POST', "$this->wsdl_link/gateway.php", $params);
 
             if (isset($response->statuscode) && $response->statuscode !== 0) {
                 throw new Exception($response);
@@ -135,7 +135,7 @@ class aobox extends \WP_SMS\Gateway
                 'password' => $this->password,
             ];
 
-            return $this->request('POST', "$this->wsdl_link/getcred3.php", $params, []);
+            return $this->request('POST', "$this->wsdl_link/getcred3.php", $params);
 
         } catch (Exception $e) {
             $error_message = $e->getMessage();
