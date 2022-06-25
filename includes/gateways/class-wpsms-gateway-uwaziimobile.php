@@ -72,13 +72,18 @@ class uwaziimobile extends \WP_SMS\Gateway
 
             // Check gateway credit
             if (is_wp_error($credit)) {
-                throw new \Exception($credit->get_error_message());
+                throw new Exception($credit->get_error_message());
             }
 
-            $response = $this->request('GET', "{$this->wsdl_link}/send", [
+            $country_code  = $this->options['mobile_county_code'] ?? '';
+            $mobileNumbers = array_map(function ($item) use ($country_code) {
+                return $this->clean_number($item, $country_code);
+            }, $this->to);
+
+            $response = $this->request('GET', "$this->wsdl_link/send", [
                 [
                     'token' => $this->has_key,
-                    'phone' => implode(',', $this->to),
+                    'phone' => implode($mobileNumbers),
                     'senderID' => $this->from,
                     'text' => $this->msg,
                 ],
@@ -101,7 +106,7 @@ class uwaziimobile extends \WP_SMS\Gateway
         } catch (Exception $e) {
 
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-            return new \WP_Error('send-sms', $e->getMessage());
+            return new WP_Error('send-sms', $e->getMessage());
 
         }
     }
@@ -118,10 +123,40 @@ class uwaziimobile extends \WP_SMS\Gateway
 
             return 1;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error_message = $e->getMessage();
-            return new \WP_Error('account-credit', $error_message);
+            return new WP_Error('account-credit', $error_message);
         }
 
+    }
+    private function clean_number($number, $country_code)
+    {
+        //Clean Country Code from + or 00
+        $country_code = str_replace('+', '', $country_code);
+
+        if (substr($country_code, 0, 2) == "00") {
+            $country_code = substr($country_code, 2, strlen($country_code));
+        }
+
+        //Remove +
+        $number = str_replace('+', '', $number);
+
+        if (substr($number, 0, strlen($country_code) * 2) == $country_code . $country_code) {
+            $number = substr($number, strlen($country_code) * 2);
+        } else {
+            $number = substr($number, strlen($country_code));
+        }
+
+        //Remove 00 in the beginning
+        if (substr($number, 0, 2) == "00") {
+            $number = substr($number, 2, strlen($number));
+        }
+
+        //Remove 00 in the beginning
+        if (substr($number, 0, 1) == "0") {
+            $number = substr($number, 1, strlen($number));
+        }
+
+        return $country_code . $number;
     }
 }
