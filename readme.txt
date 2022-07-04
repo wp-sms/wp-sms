@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.7.5.1
+Stable tag: 5.7.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,6 +96,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * Messagebird.com
 * Clicksend.com
 * Octopush.com
+* Sms.to
 * Mitto.ch
 * Smsapi.com
 * Dsms.in
@@ -282,6 +283,11 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.7.6 - 05.07.2022 =
+* Bugfix: SMS gateway UwaziiMobile has been fixed
+* New: SMS gateway Aobox.it has been added
+* New: Filter `wp_sms_output_variables_message` has been added
+
 = v5.7.5.1 - 16.06.2022 =
 * Bugfix: Bulksms.com gateway issue has been fixed
 
