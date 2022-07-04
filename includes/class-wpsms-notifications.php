@@ -190,7 +190,11 @@ class Notifications
                     '%post_thumbnail%' => get_the_post_thumbnail_url($post->ID),
                 );
 
-                $message = str_replace(array_keys($template_vars), array_values($template_vars), $defaultPostTemplate);
+                $message = \WP_SMS\Helper::getOutputMessageVariables($template_vars, $defaultPostTemplate, array(
+                    'method'  => 'notify_subscribers_for_published_post',
+                    'post_id' => $postID,
+                    'post'    => $post,
+                ));
 
                 /**
                  * Pass the thumbnail to media to send as MMS

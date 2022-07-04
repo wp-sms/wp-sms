@@ -17,7 +17,7 @@ class Gateway
      * Set pro gateways
      */
     public static $proGateways = array(
-        'global'        => array(
+        'global'         => array(
             'twilio'         => 'twilio.com',
             'plivo'          => 'plivo.com',
             'clickatell'     => 'clickatell.com',
@@ -26,6 +26,7 @@ class Gateway
             'nexmo'          => 'nexmo.com',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
+            'smstos'         => 'sms.to',
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
@@ -80,7 +81,6 @@ class Gateway
             'kaleyra'        => 'kaleyra.com',
             'sendpulse'      => 'sendpulse.com',
             'mimsms'         => 'mimsms.com',
-            'smsto'          => 'sms.to',
             'tiniyo'         => 'tiniyo.com',
             'vatansms'       => 'vatansms.com',
             'smsmessenger'   => 'smsmessenger.co.za',
@@ -89,65 +89,68 @@ class Gateway
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
         ),
-        'united states' => array(
+        'united states'  => array(
             'telnyx' => 'telnyx.com',
         ),
-        'germany'       => array(
+        'germany'        => array(
             'gtxmessaging' => 'gtx-messaging.com',
         ),
-        'french'        => array(
+        'united kingdom' => array(
+            'firetext' => 'firetext.co.uk',
+        ),
+        'french'         => array(
             'linkmobilityFr' => 'linkmobility.fr',
         ),
-        'africa'        => array(
+        'africa'         => array(
             'jusibe'      => 'jusibe.com',
             'montymobile' => 'montymobile.com',
         ),
-        'romania'       => array(
+        'romania'        => array(
             'sendsms'  => 'sendsms.ro',
             'smschef'  => 'smschef.com',
             'nobelsms' => 'nobelsms.com',
         ),
-        'arabic'        => array(
+        'arabic'         => array(
             'kwtsms'      => 'kwtsms.com',
             'taqnyat'     => 'taqnyat.sa',
             'mobishastra' => 'mobishastra.com',
             'brqsms'      => 'brqsms.com',
         ),
-        'bangladesh'    => array(
+        'bangladesh'     => array(
             'dianahost' => 'dianahost.com',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd'
         ),
-        'palestine'     => array(
+        'palestine'      => array(
             'htd' => 'htd.ps',
         ),
-        'pakistan'      => array(
+        'pakistan'       => array(
             'sendpk' => 'sendpk.com',
         ),
-        'uzbakistan'    => array(
+        'uzbakistan'     => array(
             'eskiz' => 'eskiz.uz',
         ),
-        'india'         => array(
+        'india'          => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
             'smsbharti'        => 'smsbharti.com'
         ),
-        'srilanka'      => array(
+        'srilanka'       => array(
             'notify' => 'notify.lk'
         ),
-        'poland'        => array(
+        'poland'         => array(
             'smseagle' => 'smseagle.eu'
         ),
-        'australia'     => array(
+        'australia'      => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
             'textteam'     => 'textteam.com.au'
         ),
-        'russia'        => array(
+        'russia'         => array(
             'sigmasms' => 'sigmasms.ru',
             'turbosms' => 'turbosms.ua',
         ),
-        'mexico'        => array(
+        'mexico'         => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
     );
@@ -435,6 +438,7 @@ class Gateway
      * @param $response
      * @param string $status
      * @param array $media
+     *
      * @return false|int
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
@@ -546,6 +550,7 @@ class Gateway
                 'uwaziimobile'     => 'uwaziimobile.com',
                 'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
+                'aobox'            => 'aobox.it',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -572,7 +577,7 @@ class Gateway
                 'eurosms' => 'eurosms.com',
             ),
             'latvia'               => array(
-                'texti' => 'textifi',
+                'texti' => 'texti.fi',
             ),
             'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',
@@ -859,6 +864,7 @@ class Gateway
         // Get gateway help
         $help     = $sms->help;
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
+
         return $document ? sprintf(__('%s <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
 
@@ -885,6 +891,7 @@ class Gateway
         if ($sms->supportIncoming === true) {
             return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span><a href=" ' . $link . ' "> ' . __('Supported', 'wp-sms') . '</a></div>';
         }
+
         return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span><a href="' . $link . '">' . __('Does not support!', 'wp-sms') . '</a></div>';
     }
 
@@ -964,6 +971,7 @@ class Gateway
      * @param array $arguments
      * @param array $params
      * @param string $method
+     *
      * @return string
      * @throws Exception
      */

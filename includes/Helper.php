@@ -105,4 +105,38 @@ class Helper
         json_decode($string);
         return json_last_error() === JSON_ERROR_NONE;
     }
+
+    /**
+     * Get final message content by tag variables
+     *
+     * @param array $variables
+     * @param string $content
+     * @param array $args
+     * @return string
+     */
+    public static function getOutputMessageVariables($variables, $content, $args = array())
+    {
+        /**
+         * Filters the variables to replace in the message content
+         *
+         * @param array $variables Array containing message variables parsed from the argument.
+         * @param string $content Default message content before replacing variables.
+         * @since 5.7.6
+         *
+         */
+        $variables = apply_filters('wp_sms_output_variables', $variables, $content, $args);
+
+        $message = str_replace(array_keys($variables), array_values($variables), $content);
+
+        /**
+         * Filters the final message content after replacing variables
+         *
+         * @param string $message Message content after replacing variables.
+         * @param string $content Default message content before replacing variables.
+         * @param array $variables Array containing message variables parsed from the argument.
+         * @since 5.7.6
+         *
+         */
+        return apply_filters('wp_sms_output_variables_message', $message, $content, $variables, $args);
+    }
 }
