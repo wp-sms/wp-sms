@@ -192,7 +192,7 @@ class Settings
         parse_str($_POST['_wp_http_referer'], $referrer);
 
         $settings = $this->get_registered_settings();
-        $tab      = isset($referrer['tab']) ? $referrer['tab'] : 'wp';
+        $tab      = isset($referrer['tab']) ? $referrer['tab'] : 'general';
 
         $input = $input ? $input : array();
         $input = apply_filters("{$this->setting_name}_{$tab}_sanitize", $input);
