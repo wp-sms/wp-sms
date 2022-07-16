@@ -418,14 +418,9 @@ class Admin
 
     public function do_output_buffer()
     {
-        if (is_admin()) {
-            $tabs         = array('wp-sms-subscribers-group', 'wp-sms-subscribers', 'wp-sms-scheduled', 'wp-sms-inbox', 'wp-sms-outbox');
-            $current_page = admin_url("admin.php?page=" . $_GET["page"]);
-            foreach ($tabs as $tab) {
-                if (strpos($current_page, $tab) !== false) {
-                    ob_start();
-                }
-            }
+        $tabs         = array('wp-sms-subscribers-group', 'wp-sms-subscribers', 'wp-sms-scheduled', 'wp-sms-inbox', 'wp-sms-outbox');
+        if (is_admin() and isset($_GET['page']) and in_array($_GET['page'], $tabs)) {
+            ob_start();
         }
     }
 }
