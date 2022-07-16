@@ -138,13 +138,13 @@ Select2
   max-height: 380px;
 }
 
-.preview__message__humber,
+.preview__message__number,
 .preview__message__message {
   margin: 0 0 16px;
   color: #5B5B5B;
 }
 
-.preview__message__humber {
+.preview__message__number {
   font-weight: 500;
   font-size: 12px;
   line-height: 22px;
@@ -217,7 +217,7 @@ Select2
   }
 
   .preview__message__date,
-  .preview__message__humber {
+  .preview__message__number {
     text-align: left;
   }
 }
