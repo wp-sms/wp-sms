@@ -27,6 +27,7 @@ class Admin
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('admin_notices', array($this, 'displayFlashNotice'));
+        add_action('init', array($this, 'do_output_buffer'));
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
@@ -413,6 +414,19 @@ class Admin
         }
 
         return $classes;
+    }
+
+    public function do_output_buffer()
+    {
+        if (is_admin()) {
+            $tabs         = array('wp-sms-subscribers-group', 'wp-sms-subscribers', 'wp-sms-scheduled', 'wp-sms-inbox', 'wp-sms-outbox');
+            $current_page = admin_url("admin.php?page=" . $_GET["page"]);
+            foreach ($tabs as $tab) {
+                if (strpos($current_page, $tab) !== false) {
+                    ob_start();
+                }
+            }
+        }
     }
 }
 
