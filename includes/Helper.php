@@ -136,7 +136,20 @@ class Helper
          * @param array $variables Array containing message variables parsed from the argument.
          * @since 5.7.6
          *
+         *
          */
         return apply_filters('wp_sms_output_variables_message', $message, $content, $variables, $args);
+    }
+
+    /**
+     * return current admin page url
+     *
+     * @return string
+     */
+
+    public static function getCurrentAdminPageUrl() {
+        global $wp;
+
+        return add_query_arg( $_SERVER['QUERY_STRING'], '', home_url( $wp->request ).'/wp-admin/admin.php' );
     }
 }
