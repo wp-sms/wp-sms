@@ -283,8 +283,11 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.7.7 - **.07.2022 =
-* 
+= v5.7.7 - 17.07.2022 =
+* Bugfix: The general settings page has been fixed
+* Bugfix: The search issue in subscribers and other admin areas has been fixed
+* Fixes select2 inputs and some CSS tweaks
+* Improvement: Add a feature to clear SMS previews after sending
 
 = v5.7.6 - 05.07.2022 =
 * Bugfix: SMS gateway UwaziiMobile has been fixed
