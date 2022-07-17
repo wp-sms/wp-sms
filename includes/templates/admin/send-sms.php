@@ -288,7 +288,7 @@
                 <div class="preview">
                     <div class="preview__screen">
                         <div class="preview__message">
-                            <p class="preview__message__humber">0000</p>
+                            <p class="preview__message__number">0000</p>
                             <div class="preview__message__message-wrapper">
                                 <p class="preview__message__message"></p>
                             </div>

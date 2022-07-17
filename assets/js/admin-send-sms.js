@@ -34,14 +34,14 @@
         });
     }
 
-    jQuery(".preview__message__humber").html(jQuery("#wp_get_sender").val());
+    jQuery(".preview__message__number").html(jQuery("#wp_get_sender").val());
 
     if (jQuery("#wp_get_message").val()) {
         jQuery(".preview__message__message").html(jQuery("#wp_get_message").val());
     }
 
     jQuery("#wp_get_sender").on('keyup', function () {
-        jQuery(".preview__message__humber").html(jQuery("#wp_get_sender").val());
+        jQuery(".preview__message__number").html(jQuery("#wp_get_sender").val());
     });
 
     jQuery("#wp_get_message").on('keyup', function () {
@@ -127,6 +127,11 @@ function closeNotice() {
     jQuery(".wpsms-wrap__main__notice").removeClass('not-hidden');
 }
 
+function clearForm() {
+    jQuery(".preview__message__humber").html('')
+    jQuery(".preview__message__message").html('')
+}
+
 function sendSMS() {
     let smsFrom = jQuery("#wp_get_sender").val(),
         smsTo = { type: jQuery("select[name='wp_send_to'] option:selected").val() },
@@ -193,6 +198,7 @@ function sendSMS() {
                 jQuery('.wpsms-wrap__account-balance').html('Your account credit: ' + data.data.balance);
                 jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
+                clearForm();
             },
             error: function (data, status, xhr) {
                 scrollToTop();
