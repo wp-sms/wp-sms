@@ -1404,13 +1404,6 @@ class Settings
                     'options' => $options,
                     'desc'    => __('Allow users to enter national numbers (and not have to think about international dial codes).', 'wp-sms')
                 ),
-                'international_mobile_separate_dial_code'  => array(
-                    'id'      => 'international_mobile_separate_dial_code',
-                    'name'    => __('Separate dial code', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Display the country dial code next to the selected flag so it\'s not part of the typed number.<br>Note: this will disable National mode because technically we are dealing with international numbers, but with the dial code separated.', 'wp-sms')
-                ),
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',
                     'name' => __('Privacy', 'wp-sms'),
