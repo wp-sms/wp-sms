@@ -273,3 +273,8 @@
 .wpsms-wrap .select2-container .select2-search--inline .select2-search__field, .select2-container .select2-search--inline .select2-search__field {
   min-width: 100% !important;
 }
+
+.wpsms-wrap .select2-container .select2-search--inline, .select2-container .select2-search--inline {
+  float: unset !important;
+  clear: both;
+}
