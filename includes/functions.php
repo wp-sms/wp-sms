@@ -28,7 +28,7 @@ function wp_sms_sanitize_array($array_or_string)
     } elseif (is_array($array_or_string)) {
         foreach ($array_or_string as $key => &$value) {
             if (is_array($value)) {
-                $value = sanitize_text_or_array_field($value);
+                $value = wp_sms_sanitize_array($value);
             } else {
                 $value = sanitize_text_field($value);
             }

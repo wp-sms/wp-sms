@@ -144,7 +144,8 @@ class Gateway
         ),
         'australia'      => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
-            'textteam'     => 'textteam.com.au'
+            'textteam'     => 'textteam.com.au',
+            'messagemedia' => 'messagemedia.com/au'
         ),
         'russia'         => array(
             'sigmasms' => 'sigmasms.ru',
