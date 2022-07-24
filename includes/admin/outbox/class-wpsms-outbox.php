@@ -33,7 +33,7 @@ class Outbox_List_Table extends \WP_List_Table
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
         $this->count     = $this->get_total();
-        $this->limit     = 50;
+        $this->limit     = $this->get_items_per_page('wp_sms_outbox_per_page');
         $this->data      = $this->get_data();
         $this->adminUrl  = admin_url('admin.php?page=wp-sms-outbox');
     }
