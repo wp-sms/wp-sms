@@ -265,13 +265,13 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         $orderby     = "";
 
         if (isset($_REQUEST['orderby'])) {
-            $orderby .= "ORDER BY {$this->tb_prefix}sms_subscribes_group.{$_REQUEST['orderby']} {$_REQUEST['order']}";
+            $orderby .= $this->db->prepare("ORDER BY %1ssms_subscribes_group.%1s %1s",$this->tb_prefix, $_REQUEST['orderby'], $_REQUEST['order']);
         }
 
         if (!$query) {
-            $query = "SELECT * FROM {$this->tb_prefix}sms_subscribes_group {$orderby} LIMIT {$this->limit} OFFSET {$page_number}";
+            $query = $this->db->prepare("SELECT * FROM %1ssms_subscribes_group %1s LIMIT %d OFFSET %d", $this->tb_prefix, $orderby, $this->limit, $page_number);
         } else {
-            $query .= " LIMIT {$this->limit} OFFSET {$page_number}";
+            $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
         }
 
         $result = $this->db->get_results($query, ARRAY_A);
