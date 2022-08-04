@@ -44,6 +44,7 @@ class Subscribers_List_Table extends \WP_List_Table
         switch ($column_name) {
             case 'name':
             case 'mobile':
+                return wp_sms_render_quick_reply($item['mobile']);
             case 'activate_key':
                 return $item[$column_name];
 

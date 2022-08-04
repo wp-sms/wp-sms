@@ -75,7 +75,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         //Return the title contents
         return sprintf('%1$s %3$s',
             /*$1%s*/
-            esc_html($item['name']),
+            wp_sms_render_quick_reply($item['name'], $item['ID']),
             /*$1%s*/
             $item['ID'],
             /*$2%s*/

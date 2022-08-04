@@ -40,6 +40,8 @@ class Admin
      */
     public function admin_assets()
     {
+        global $sms;
+
         // Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
             wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION);
@@ -47,6 +49,14 @@ class Admin
         }
 
         $screen = get_current_screen();
+
+        wp_register_script('wpsms-quick-reply', WP_SMS_URL . 'assets/js/quick-reply.js', true, WP_SMS_VERSION);
+        wp_localize_script('wpsms-quick-reply', 'wpSmsQuickReplyTemplateVar', array(
+                'restRootUrl' => esc_url_raw(rest_url()),
+                'nonce'       => wp_create_nonce('wp_rest'),
+                'senderID'    => $sms->from
+            )
+        );
 
         // Register main plugin style
         wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION);
