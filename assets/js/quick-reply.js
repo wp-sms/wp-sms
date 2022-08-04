@@ -96,7 +96,7 @@ let quickReply = {
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
                     jQuery('.wpsms-quick-reply-popup-message').removeClass('notice notice-success')
                     jQuery('.wpsms-quick-reply-popup-message').addClass('notice notice-error')
-                    jQuery('.wpsms-quick-reply-popup-message').html("<p>An error occurred while sending SMS! " + `(Error ${data.responseJSON.error.code}: ${data.responseJSON.error.message})` + '</p>');
+                    jQuery('.wpsms-quick-reply-popup-message').html("<p>" + data.responseJSON.error.message + '</p>');
                     jQuery('.wpsms-quick-reply-popup').removeClass('hidden')
                     jQuery('.wpsms-quick-reply-popup').addClass('not-hidden')
                     jQuery('input[name="SendSMS"]').removeAttr('disabled')

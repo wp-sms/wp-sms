@@ -73,6 +73,10 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception(__('The group does not have any number.', 'wp-sms'));
             }
 
+            if (!$request->get_param('message')) {
+                throw new Exception(__('The message body can not be empty.', 'wp-sms'));
+            }
+
             /**
              * Make shorter the URLs in the message
              */
