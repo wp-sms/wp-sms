@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.7.7
+Stable tag: 5.7.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -283,8 +283,15 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
-= v5.7.* - **.07.2022 =
-* Bugfix: **
+= v5.7.8 - 05.08.2022 =
+* New: Support Quick reply in admin area for sending quick replies to number(s) or a group
+* New: Ability to change items per page in outbox, inbox, scheduled, and group
+* New: Support SMS gateway MessageMedia from Australia
+* Bugfix: Sorting function issue in admin pages fixed
+* Bugfix: The issue in the OurSms gateway has been fixed
+* Bugfix: Wrong calling function in wp_sms_sanitize_array() fixed
+* Improvement: The separate dial code option removed
+* Improvement: Minor things
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
