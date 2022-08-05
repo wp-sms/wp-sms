@@ -23,12 +23,12 @@ if (!defined('ABSPATH')) {
 class SendSmsApi extends \WP_SMS\RestApi
 {
     private $sendSmsArguments = [
-        'sender'     => array('required' => true,  'type' => 'string'),
-        'recipients' => array('required' => true,  'type' => 'string', 'enum' => ['subscribers', 'users', 'wc-customers', 'bp-users', 'numbers']),
+        'sender'     => array('required' => true, 'type' => 'string'),
+        'recipients' => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'wc-customers', 'bp-users', 'numbers']),
         'group_ids'  => array('required' => false, 'type' => 'array'),
         'role_ids'   => array('required' => false, 'type' => 'array'),
         'numbers'    => array('required' => false, 'type' => 'array', 'format' => 'uri'),
-        'message'    => array('required' => true,  'type' => 'string'),
+        'message'    => array('required' => true, 'type' => 'string'),
         'flash'      => array('required' => false, 'type' => 'boolean'),
         'media_urls' => array('required' => false, 'type' => 'array'),
         'schedule'   => array('required' => false, 'type' => 'string', 'format' => 'date-time'),
@@ -69,6 +69,14 @@ class SendSmsApi extends \WP_SMS\RestApi
             $recipientNumbers = $this->getRecipientsFromRequest($request);
             $mediaUrls        = array_filter($request->get_param('media_urls'));
 
+            if (count($recipientNumbers) === 0) {
+                throw new Exception(__('The group does not have any number.', 'wp-sms'));
+            }
+
+            if (!$request->get_param('message')) {
+                throw new Exception(__('The message body can not be empty.', 'wp-sms'));
+            }
+
             /**
              * Make shorter the URLs in the message
              */
@@ -80,7 +88,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             if ($request->has_param('schedule') && $request->has_param('repeat')) {
                 $data      = $request->get_param('repeat');
                 $startDate = new DateTime(get_gmt_from_date($request->get_param('schedule')));
-                $endDate   = isset($data['endDate']) ? (new DateTime(get_gmt_from_date($data['endDate']))) : null ;
+                $endDate   = isset($data['endDate']) ? (new DateTime(get_gmt_from_date($data['endDate']))) : null;
                 $interval  = $data['interval'];
 
                 if ($startDate->getTimestamp() < time()) {

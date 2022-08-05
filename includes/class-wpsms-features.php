@@ -240,12 +240,6 @@ class Features
             $tel_intel_vars['national_mode'] = false;
         }
 
-        if (Option::getOption('international_mobile_separate_dial_code')) {
-            $tel_intel_vars['separate_dial'] = true;
-        } else {
-            $tel_intel_vars['separate_dial'] = false;
-        }
-
         $tel_intel_vars['util_js'] = WP_SMS_URL . 'assets/js/intel/utils.js';
 
         wp_localize_script('wpsms-intel-script', 'wp_sms_intel_tel_input', $tel_intel_vars);

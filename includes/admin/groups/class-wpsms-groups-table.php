@@ -75,7 +75,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         //Return the title contents
         return sprintf('%1$s %3$s',
             /*$1%s*/
-            esc_html($item['name']),
+            wp_sms_render_quick_reply($item['name'], $item['ID']),
             /*$1%s*/
             $item['ID'],
             /*$2%s*/
@@ -262,11 +262,18 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
     function get_data($query = '')
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
-        if (!$query) {
-            $query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_subscribes_group` LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
-        } else {
-            $query .= ' LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+        $orderby     = "";
+
+        if (isset($_REQUEST['orderby'])) {
+            $orderby .= "ORDER BY {$this->tb_prefix}sms_subscribes_group.{$_REQUEST['orderby']} {$_REQUEST['order']}";
         }
+
+        if (!$query) {
+            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes_group {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
+        } else {
+            $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
+        }
+
         $result = $this->db->get_results($query, ARRAY_A);
 
         return $result;

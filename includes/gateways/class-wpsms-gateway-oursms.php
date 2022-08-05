@@ -105,6 +105,10 @@ class oursms extends \WP_SMS\Gateway
         // Get response
         $response = wp_remote_get($this->wsdl_link . 'getbalance.php?username=' . $this->username . '&password=' . $this->password . '&return=json');
 
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
         // Decode response
         $response = json_decode($response['body']);
 

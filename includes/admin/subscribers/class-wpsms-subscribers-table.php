@@ -44,6 +44,7 @@ class Subscribers_List_Table extends \WP_List_Table
         switch ($column_name) {
             case 'name':
             case 'mobile':
+                return wp_sms_render_quick_reply($item['mobile']);
             case 'activate_key':
                 return $item[$column_name];
 
@@ -300,11 +301,18 @@ class Subscribers_List_Table extends \WP_List_Table
     public function get_data($query = '')
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
-        if (!$query) {
-            $query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_subscribes` LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
-        } else {
-            $query .= ' LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+        $orderby     = "";
+
+        if (isset($_REQUEST['orderby'])) {
+            $orderby .= "ORDER BY {$this->tb_prefix}sms_subscribes.{$_REQUEST['orderby']} {$_REQUEST['order']}";
         }
+
+        if (!$query) {
+            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
+        } else {
+            $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
+        }
+
         $result = $this->db->get_results($query, ARRAY_A);
 
         return $result;

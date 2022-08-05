@@ -1,10 +1,16 @@
+<?php
+namespace WP_SMS;
+?>
+
 <div class="wrap wpsms-wrap">
-	<?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
     <div class="wpsms-wrap__main">
         <h2><?php _e('Subscribers', 'wp-sms'); ?></h2>
-        <?php add_thickbox(); ?>
+        <?php
+        echo Helper::loadTemplate('admin/quick-reply.php');
+        ?>
         <div class="wpsms-button-group">
-            <a name="<?php _e('Add Subscribe', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=250&inlineId=add-subscriber" class="thickbox button"><span class="dashicons dashicons-admin-users"></span> <?php _e('Add Subscribe', 'wp-sms'); ?>
+            <a name="<?php _e('Add Subscriber', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=250&inlineId=add-subscriber" class="thickbox button"><span class="dashicons dashicons-admin-users"></span> <?php _e('Add Subscriber', 'wp-sms'); ?>
             </a>
             <a href="admin.php?page=wp-sms-subscribers-group" class="button"><span class="dashicons dashicons-category"></span> <?php _e('Manage Group', 'wp-sms'); ?>
             </a>

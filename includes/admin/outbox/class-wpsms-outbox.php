@@ -33,7 +33,7 @@ class Outbox_List_Table extends \WP_List_Table
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
         $this->count     = $this->get_total();
-        $this->limit     = 50;
+        $this->limit     = $this->get_items_per_page('wp_sms_outbox_per_page');
         $this->data      = $this->get_data();
         $this->adminUrl  = admin_url('admin.php?page=wp-sms-outbox');
     }
@@ -49,7 +49,7 @@ class Outbox_List_Table extends \WP_List_Table
             case 'recipient':
                 $html = '<details>
 						  <summary>' . __('View more...', 'wp-sms') . '</summary>
-						  <p>' . $item[$column_name] . '</p>
+						  <p>' . wp_sms_render_quick_reply($item[$column_name]) . '</p>
 						</details>';
 
                 return $html;
@@ -309,11 +309,20 @@ class Outbox_List_Table extends \WP_List_Table
     function get_data($query = '')
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
-        if (!$query) {
-            $query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_send` ORDER BY date DESC LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+        $orderby     = "";
+
+        if (isset($_REQUEST['orderby'])) {
+            $orderby .= "ORDER BY {$this->tb_prefix}sms_send.{$_REQUEST['orderby']} {$_REQUEST['order']}";
         } else {
-            $query .= ' LIMIT ' . $this->limit . ' OFFSET ' . $page_number;
+            $orderby .= "ORDER BY date DESC";
         }
+
+        if (!$query) {
+            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_send {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
+        } else {
+            $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
+        }
+
         $result = $this->db->get_results($query, ARRAY_A);
 
         return $result;
