@@ -573,7 +573,7 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable mobile verification for placing the order during the checkout. make sure the <b>Features » Mobile Field</b> is enabled in advance.', 'wp-sms')
+                    'desc'    => __('Enable mobile verification for placing the order during the checkout. make sure the <b>General » Mobile field</b> is enabled in advance.', 'wp-sms')
                 ),
                 'wc_otp_countries_whitelist'   => array(
                     'id'      => 'wc_otp_countries_whitelist',
