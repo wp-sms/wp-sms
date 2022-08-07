@@ -286,10 +286,9 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 = v5.7.8 - 05.08.2022 =
 * New: Support Quick reply in admin area for sending quick replies to number(s) or a group
 * New: Ability to change items per page in outbox, inbox, scheduled, and group
-* New: Support SMS gateway MessageMedia from Australia
 * Bugfix: Sorting function issue in admin pages fixed
 * Bugfix: The issue in the OurSms gateway has been fixed
-* Bugfix: Wrong calling function in wp_sms_sanitize_array() fixed
+* Bugfix: Wrong calling function in `wp_sms_sanitize_array()` fixed
 * Improvement: The separate dial code option removed
 * Improvement: Minor things
 

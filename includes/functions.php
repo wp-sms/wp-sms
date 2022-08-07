@@ -507,8 +507,7 @@ function wp_sms_render_quick_reply($number, $group_id = false)
     wp_enqueue_script('wpsms-quick-reply');
 
     $numbers = explode(',', $number);
-
-    $result = '';
+    $result  = '';
 
     if (count($numbers) > 1) {
         $i = 0;
