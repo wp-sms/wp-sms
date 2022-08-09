@@ -17,6 +17,8 @@ class Subscribers
     public function render_page()
     {
 
+        add_thickbox();
+
         // Add subscriber
         if (isset($_POST['wp_add_subscribe'])) {
             $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';

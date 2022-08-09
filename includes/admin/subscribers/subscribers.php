@@ -8,8 +8,6 @@ namespace WP_SMS;
         <h2><?php _e('Subscribers', 'wp-sms'); ?></h2>
         <?php
         echo Helper::loadTemplate('admin/quick-reply.php');
-
-        add_thickbox();
         ?>
         <div class="wpsms-button-group">
             <a name="<?php _e('Add Subscriber', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=250&inlineId=add-subscriber" class="thickbox button"><span class="dashicons dashicons-admin-users"></span> <?php _e('Add Subscriber', 'wp-sms'); ?>
