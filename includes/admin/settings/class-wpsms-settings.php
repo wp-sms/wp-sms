@@ -1390,20 +1390,6 @@ class Settings
                     'options' => $this->getCountriesList(),
                     'desc'    => __('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
-                'international_mobile_auto_hide'           => array(
-                    'id'      => 'international_mobile_auto_hide',
-                    'name'    => __('Auto hide dial code', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('If there is just a dial code in the input: remove it on blur or submit, and re-add it on focus.<br>Requires National mode to be deactivate', 'wp-sms')
-                ),
-                'international_mobile_national_mode'       => array(
-                    'id'      => 'international_mobile_national_mode',
-                    'name'    => __('National mode', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Allow users to enter national numbers (and not have to think about international dial codes).', 'wp-sms')
-                ),
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',
                     'name' => __('Privacy', 'wp-sms'),
