@@ -35,92 +35,16 @@ class Features
             add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
             add_filter('user_contactmethods', array($this, 'add_mobile_field_to_profile_form'));
             add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
-            add_filter('registration_errors', array($this, 'registration_errors'), 10, 3);
-            add_action('user_register', array($this, 'save_register'));
+            add_filter('frontend_registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
+            add_action('user_register', array($this, 'save_register'), 999999);
 
-            add_action('user_register', array($this, 'checkAdminDuplicateNumber'));
-            add_action('profile_update', array($this, 'checkAdminDuplicateNumber'));
-
-            add_action('user_profile_update_errors', array($this, 'MobileFieldErrors'), 10, 3);
+            add_action('user_profile_update_errors', array($this, 'admin_registration_errors'), 10, 3);
         }
 
         if (wp_sms_get_option('international_mobile')) {
             add_action('wp_enqueue_scripts', array($this, 'load_international_input'));
             add_action('admin_enqueue_scripts', array($this, 'load_international_input'));
             add_action('login_enqueue_scripts', array($this, 'load_international_input'));
-        }
-    }
-
-    /**
-     * @param $mobileNumber
-     * @param null $userID
-     *
-     * @return bool
-     */
-    private function checkMobileNumber($mobileNumber, $userID = null)
-    {
-        if ($userID) {
-            $result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = '{$this->mobileField}' AND meta_value = '{$mobileNumber}' AND user_id != '{$userID}'");
-        } else {
-            $result = $this->db->get_results("SELECT * from `{$this->tb_prefix}usermeta` WHERE meta_key = '{$this->mobileField}' AND meta_value = '{$mobileNumber}'");
-        }
-
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @param $user_id
-     */
-    private function delete_user_mobile($user_id)
-    {
-        $this->db->delete(
-            $this->tb_prefix . "usermeta",
-            array(
-                'user_id'  => $user_id,
-                'meta_key' => $this->mobileField,
-            )
-        );
-    }
-
-    /**
-     * Handle the mobile field update errors
-     *
-     * @param $errors
-     * @param $update
-     * @param $user Object
-     */
-    public function MobileFieldErrors($errors, $update, $user)
-    {
-
-        // Check mobile duplicate value
-        if (!empty($_POST['mobile'])) {
-
-            if ($this->checkMobileNumber(sanitize_text_field($_POST['mobile']), $update ? $user->ID : null)) {
-                $errors->add('mobile_error', __('This mobile is already registered, please choose another one.', 'wp-sms'));
-            }
-        }
-    }
-
-    /**
-     * @param $userID
-     */
-    public function checkAdminDuplicateNumber($userID)
-    {
-
-        // Get user mobile
-        $user_mobile = get_user_meta($userID, $this->mobileField, true);
-
-        if (empty($user_mobile)) {
-            return;
-        }
-
-        // Delete user mobile
-        if ($this->checkMobileNumber($user_mobile, $userID)) {
-            $this->delete_user_mobile($userID);
         }
     }
 
@@ -148,39 +72,28 @@ class Features
     }
 
     /**
+     * Handle errors for registration through the front-end WordPress login form
+     *
      * @param $errors
      * @param $sanitized_user_login
      * @param $user_email
      *
      * @return mixed
      */
-    public function registration_errors($errors, $sanitized_user_login, $user_email)
+    public function frontend_registration_errors($errors, $sanitized_user_login, $user_email)
     {
         if (!Option::getOption('mobile_verify_optional', true) and empty($_POST['mobile'])) {
             $errors->add('first_name_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
         if (isset($_POST['mobile']) and !empty($_POST['mobile'])) {
-            $error = false;
 
             $mobile = sanitize_text_field($_POST['mobile']);
 
-            if (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $mobile, $matches) == false) {
-                $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-                $error = true;
-            }
+            $validity = Helper::checkMobileNumberValidity($mobile);
 
-            if (!$error && isset($matches[0]) && strlen($matches[0]) < 10) {
-                $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-                $error = true;
-            }
-
-            if (!$error && isset($matches[0]) && strlen($matches[0]) > 14) {
-                $errors->add('invalid_mobile_number', __('Please enter a valid mobile number', 'wp-sms'));
-            }
-
-            if ($this->checkMobileNumber($mobile)) {
-                $errors->add('duplicate_mobile_number', __('<strong>ERROR</strong>: This mobile is already registered, please choose another one.', 'wp-sms'));
+            if (is_wp_error($validity)) {
+                $errors->add($validity->get_error_code(), $validity->get_error_message());
             }
         }
 
@@ -188,6 +101,32 @@ class Features
     }
 
     /**
+     * Handle the mobile field update errors
+     *
+     * @param $errors
+     * @param $update
+     * @param $user
+     *
+     * @return void|\WP_Error
+     */
+    public function admin_registration_errors($errors, $update, $user)
+    {
+        if (isset($_POST['mobile'])) {
+            $mobile = sanitize_text_field($_POST['mobile']);
+
+            $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
+
+            if (is_wp_error($validity)) {
+                $errors->add($validity->get_error_code(), $validity->get_error_message());
+            }
+
+            return $errors;
+        }
+    }
+
+    /**
+     * save user mobile number in database
+     *
      * @param $user_id
      */
     public function save_register($user_id)
@@ -226,18 +165,6 @@ class Features
             $tel_intel_vars['preferred_countries'] = $preferred_countries_option;
         } else {
             $tel_intel_vars['preferred_countries'] = '';
-        }
-
-        if (Option::getOption('international_mobile_auto_hide')) {
-            $tel_intel_vars['auto_hide'] = true;
-        } else {
-            $tel_intel_vars['auto_hide'] = false;
-        }
-
-        if (Option::getOption('international_mobile_national_mode')) {
-            $tel_intel_vars['national_mode'] = true;
-        } else {
-            $tel_intel_vars['national_mode'] = false;
         }
 
         $tel_intel_vars['util_js'] = WP_SMS_URL . 'assets/js/intel/utils.js';

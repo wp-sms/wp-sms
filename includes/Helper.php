@@ -147,9 +147,52 @@ class Helper
      * @return string
      */
 
-    public static function getCurrentAdminPageUrl() {
+    public static function getCurrentAdminPageUrl()
+    {
         global $wp;
 
-        return add_query_arg( $_SERVER['QUERY_STRING'], '', home_url( $wp->request ).'/wp-admin/admin.php' );
+        return add_query_arg($_SERVER['QUERY_STRING'], '', home_url($wp->request) . '/wp-admin/admin.php');
+    }
+
+    /**
+     * This function check the validity of users' phone numbers. If the number is not available, raise an error
+     *
+     * @param $mobileNumber
+     * @param $userID
+     *
+     * @return bool|\WP_Error
+     */
+    public static function checkMobileNumberValidity($mobileNumber, $userID = false)
+    {
+        global $wpdb;
+
+        $mobileField = Helper::getUserMobileFieldName();
+
+        // check whether international mode is enabled
+        $international_mode = Option::getOption('international_mobile') ? true : false;
+
+        //check whether the first character of mobile number is +
+        $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
+
+        // 1. Check whether international mode is on and the number is NOT started with +
+        if ($international_mode and !$country_code) {
+            return new \WP_Error('invalid_number', __("The mobile number doesn't contain the country code. ", 'wp-sms'));
+        }
+
+        // 2. Check whether the user ID ( or number) exist.
+        $where = '';
+        if ($userID) {
+            $where = $wpdb->prepare('AND user_id = %s', $userID);
+        }
+
+        $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
+        $result = $wpdb->get_results($sql);
+
+        // if any result found, raise an error
+        if ($result) {
+            return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+        }
+
+        return true;
     }
 }
