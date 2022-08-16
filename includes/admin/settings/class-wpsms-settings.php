@@ -1354,24 +1354,9 @@ class Settings
                     'name' => __('Field Placeholder', 'wp-sms'),
                     'type' => 'text'
                 ),
-                'mobile_terms_minimum'             => array(
-                    'id'   => 'mobile_terms_minimum',
-                    'name' => __('Minimum number', 'wp-sms'),
-                    'type' => 'number'
-                ),
-                'mobile_terms_maximum'             => array(
-                    'id'   => 'mobile_terms_maximum',
-                    'name' => __('Maximum number', 'wp-sms'),
-                    'type' => 'number'
-                ),
-                'international_mobile_title'               => array(
-                    'id'   => 'international_mobile_title',
-                    'name' => __('International Telephone Input', 'wp-sms'),
-                    'type' => 'header'
-                ),
                 'international_mobile'                     => array(
                     'id'      => 'international_mobile',
-                    'name'    => __('Enable for mobile fields', 'wp-sms'),
+                    'name'    => __('International Number', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Make mobile input fields in whole plugin to intel tel input.', 'wp-sms')
@@ -1389,6 +1374,16 @@ class Settings
                     'type'    => 'countryselect',
                     'options' => $this->getCountriesList(),
                     'desc'    => __('Specify the countries to appear at the top of the list.', 'wp-sms')
+                ),
+                'mobile_terms_minimum'             => array(
+                    'id'   => 'mobile_terms_minimum',
+                    'name' => __('Minimum number', 'wp-sms'),
+                    'type' => 'number'
+                ),
+                'mobile_terms_maximum'             => array(
+                    'id'   => 'mobile_terms_maximum',
+                    'name' => __('Maximum number', 'wp-sms'),
+                    'type' => 'number'
                 ),
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',

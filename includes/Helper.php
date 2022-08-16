@@ -171,15 +171,34 @@ class Helper
         // check whether international mode is enabled
         $international_mode = Option::getOption('international_mobile') ? true : false;
 
-        //check whether the first character of mobile number is +
+        // check whether the first character of mobile number is +
         $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
+
+        // get min length of the number if it is set
+        $min_length = Option::getOption('mobile_terms_minimum');
+
+        // get max length of the number if it is set
+        $max_length = Option::getOption('mobile_terms_maximum');
 
         // 1. Check whether international mode is on and the number is NOT started with +
         if ($international_mode and !$country_code) {
             return new \WP_Error('invalid_number', __("The mobile number doesn't contain the country code. ", 'wp-sms'));
         }
 
-        // 2. Check whether the user ID ( or number) exist.
+        // 2. Check whether the min and max length of the number comply
+        if (!$international_mode) {
+
+            if ($max_length and strlen($mobileNumber) > $max_length) {
+                return new \WP_Error('invalid_number', __("Your mobile number must have up to {$max_length} characters.", 'wp-sms'));
+            }
+
+            if ($min_length and strlen($mobileNumber) < $min_length) {
+                return new \WP_Error('invalid_number', __("Your mobile number must have at least {$min_length} characters.", 'wp-sms'));
+            }
+
+        }
+
+        // 3. Check whether the user ID ( or number) exist.
         $where = '';
         if ($userID) {
             $where = $wpdb->prepare('AND user_id = %s', $userID);
