@@ -465,8 +465,8 @@ function wp_sms_render_mobile_field($args)
     $defaults = array(
         'type'        => 'text',
         'placeholder' => wp_sms_get_option('mobile_terms_field_place_holder'),
-        'min'         => wp_sms_get_option('mobile_terms_minimum'),
-        'max'         => wp_sms_get_option('mobile_terms_maximum'),
+        'min'         => '',
+        'max'         => '',
         'required'    => false,
         'id'          => 'wpsms-mobile',
         'value'       => '',
@@ -479,6 +479,9 @@ function wp_sms_render_mobile_field($args)
 
     if (wp_sms_get_option('international_mobile')) {
         $args['class'] = array_merge(['wp-sms-input-mobile'], $args['class']);
+    } else {
+        $args['min'] = wp_sms_get_option('mobile_terms_minimum');
+        $args['max'] = wp_sms_get_option('mobile_terms_maximum');
     }
 
     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -507,7 +510,7 @@ function wp_sms_render_quick_reply($number, $group_id = false)
     wp_enqueue_script('wpsms-quick-reply');
 
     $numbers = explode(',', $number);
-    $result = '';
+    $result  = '';
 
     if (count($numbers) > 1) {
         $i = 0;

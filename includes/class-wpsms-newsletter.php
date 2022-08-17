@@ -93,8 +93,11 @@ class Newsletter
     {
         global $wpdb;
 
-        if (self::isDuplicate($mobile, $group_id)) {
-            return array('result' => 'error', 'message' => __('The mobile number has been already duplicate.', 'wp-sms'));
+        // Check mobile validity
+        $validate = Helper::checkMobileNumberValidity($mobile, false, true, $group_id);
+
+        if (is_wp_error($validate)) {
+            return array('result' => 'error', 'message' => $validate->get_error_message());
         }
 
         $result = $wpdb->insert(
@@ -202,8 +205,11 @@ class Newsletter
             return array('result' => 'error', 'message' => __('The fields must be valued.', 'wp-sms'));
         }
 
-        if (self::isDuplicate($mobile, $group_id, $id)) {
-            return array('result' => 'error', 'message' => __('The mobile number has been already duplicate.', 'wp-sms'));
+        // Check mobile validity
+        $validate = Helper::checkMobileNumberValidity($mobile, $id, true, $group_id);
+
+        if (is_wp_error($validate)) {
+            return array('result' => 'error', 'message' => $validate->get_error_message());
         }
 
         $result = $wpdb->update(
@@ -274,7 +280,7 @@ class Newsletter
             $where  .= "`ID` IN ({$groups}) ";
         }
 
-        $where  = !empty($where) ? "WHERE {$where}" : '';
+        $where = !empty($where) ? "WHERE {$where}" : '';
 
         return $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
     }
@@ -422,34 +428,6 @@ class Newsletter
             }
         }
     }
-
-    /**
-     * Check the mobile number is duplicate
-     *
-     * @param $mobile_number
-     * @param null $group_id
-     * @param null $id
-     *
-     * @return mixed
-     */
-    public static function isDuplicate($mobile_number, $group_id = null, $id = null)
-    {
-        global $wpdb;
-        $sql = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = '" . $mobile_number . "'";
-
-        if ($group_id) {
-            $sql .= " AND group_id = '" . $group_id . "'";
-        }
-
-        if ($id) {
-            $sql .= " AND id != '" . $id . "'";
-        }
-
-        $result = $wpdb->get_row($sql);
-
-        return $result;
-    }
-
 
     /**
      * @param string $group_ids

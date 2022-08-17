@@ -158,11 +158,12 @@ class Helper
      * This function check the validity of users' phone numbers. If the number is not available, raise an error
      *
      * @param $mobileNumber
-     * @param $userID
-     *
+     * @param bool $userID
+     * @param bool $isSubscriber
+     * @param bool $groupID
      * @return bool|\WP_Error
      */
-    public static function checkMobileNumberValidity($mobileNumber, $userID = false)
+    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false)
     {
         global $wpdb;
 
@@ -198,14 +199,31 @@ class Helper
 
         }
 
-        // 3. Check whether the user ID ( or number) exist.
-        $where = '';
-        if ($userID) {
-            $where = $wpdb->prepare('AND user_id = %s', $userID);
-        }
+        // 3. Check whether number is exists in usermeta or sms_subscriber table
+        $result = '';
 
-        $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
-        $result = $wpdb->get_results($sql);
+        if ($isSubscriber) {
+            $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
+
+            if ($groupID) {
+                $sql .= $wpdb->prepare(" AND group_id = '%s'", $groupID);
+            }
+
+            if ($userID) {
+                $sql .= $wpdb->prepare(" AND id != '%s'", $userID);
+            }
+
+            $result = $wpdb->get_row($sql);
+
+        } else {
+            $where = '';
+            if ($userID) {
+                $where = $wpdb->prepare('AND user_id = %s', $userID);
+            }
+
+            $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
+            $result = $wpdb->get_results($sql);
+        }
 
         // if any result found, raise an error
         if ($result) {

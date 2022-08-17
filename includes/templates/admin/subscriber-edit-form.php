@@ -53,7 +53,11 @@
 
         <tr>
             <td colspan="2" style="padding-top: 20px;">
-                <input type="submit" class="button-primary" name="wp_update_subscribe" value="<?php _e('Update', 'wp-sms'); ?>"/>
+                <?php if (isset($subscriber_id)) : ?>
+                    <input type="submit" class="button-primary" name="wp_update_subscribe" value="<?php _e('Update', 'wp-sms'); ?>"/>
+                <?php else : ?>
+                    <input type="submit" class="button-primary" name="wp_add_subscribe" value="<?php _e('Add', 'wp-sms'); ?>"/>
+                <?php endif; ?>
             </td>
         </tr>
     </table>

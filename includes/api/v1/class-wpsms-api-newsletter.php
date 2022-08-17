@@ -5,7 +5,6 @@ namespace WP_SMS\Api\V1;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
-use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_SMS\RestApi;
 
@@ -91,13 +90,8 @@ class Newsletter extends RestApi
     public function subscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
-        $params   = $request->get_params();
-        $number   = self::convertNumber($params['mobile']);
-        $validate = Helper::checkMobileNumberValidity($number);
-
-        if (is_wp_error($validate)) {
-            return self::response($validate->get_error_message(), 400);
-        }
+        $params = $request->get_params();
+        $number = self::convertNumber($params['mobile']);
 
         $group_id       = isset($params['group_id']) ? $params['group_id'] : false;
         $allowed_groups = Option::getOption('newsletter_form_specified_groups');
