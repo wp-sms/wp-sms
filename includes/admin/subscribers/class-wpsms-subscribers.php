@@ -24,13 +24,19 @@ class Subscribers
             $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
             $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
             $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
-            if ($group) {
-                $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
-            } else {
-                $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
-            }
+            $validate            = \WP_SMS\Helper::checkMobileNumberValidity($wp_subscribe_mobile);
 
-            echo Helper::notice($result['message'], $result['result']);
+            if (is_wp_error($validate)) {
+                echo Helper::notice($validate->get_error_message(), 'error');
+            } else {
+                if ($group) {
+                    $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
+                } else {
+                    $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
+                }
+
+                echo Helper::notice($result['message'], $result['result']);
+            }
         }
 
         // Edit subscriber page
@@ -40,8 +46,14 @@ class Subscribers
             $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
             $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
             $subscribe_status    = isset($_POST['wpsms_subscribe_status']) ? sanitize_text_field($_POST['wpsms_subscribe_status']) : '';
-            $result              = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
-            echo Helper::notice($result['message'], $result['result']);
+            $validate            = \WP_SMS\Helper::checkMobileNumberValidity($wp_subscribe_mobile);
+
+            if (is_wp_error($validate)) {
+                echo Helper::notice($validate->get_error_message(), 'error');
+            } else {
+                $result = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
+                echo Helper::notice($result['message'], $result['result']);
+            }
         }
 
         // Import subscriber page
