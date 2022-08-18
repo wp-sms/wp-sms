@@ -163,7 +163,7 @@ class Helper
      * @param bool $groupID
      * @return bool|\WP_Error
      */
-    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false)
+    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
     {
         global $wpdb;
 
@@ -211,8 +211,9 @@ class Helper
                 $sql .= $wpdb->prepare(" AND group_id = '%s'", $groupID);
             }
 
-            if ($userID) {
-                $sql .= $wpdb->prepare(" AND id != '%s'", $userID);
+            // While updating we should query except the current one.
+            if ($subscribeId) {
+                $sql .= $wpdb->prepare(" AND id != '%s'", $subscribeId);
             }
 
             $result = $wpdb->get_row($sql);
@@ -222,7 +223,7 @@ class Helper
             $mobileField = Helper::getUserMobileFieldName();
 
             if ($userID) {
-                $where = $wpdb->prepare('AND user_id = %s', $userID);
+                $where = $wpdb->prepare('AND user_id != %s', $userID);
             }
 
             $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);

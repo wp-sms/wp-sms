@@ -206,7 +206,7 @@ class Newsletter
         }
 
         // Check mobile validity
-        $validate = Helper::checkMobileNumberValidity($mobile, $id, true, $group_id);
+        $validate = Helper::checkMobileNumberValidity($mobile, false, true, $group_id, $id);
 
         if (is_wp_error($validate)) {
             return array('result' => 'error', 'message' => $validate->get_error_message());
