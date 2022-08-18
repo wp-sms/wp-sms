@@ -216,7 +216,7 @@ class Newsletter
             $wpdb->prefix . "sms_subscribes",
             array(
                 'name'     => $name,
-                'mobile'   => $mobile,
+                'mobile'   => Helper::sanitizeMobileNumber($mobile),
                 'group_ID' => $group_id,
                 'status'   => $status,
             ),
@@ -239,7 +239,7 @@ class Newsletter
 
             return array('result' => 'success', 'message' => __('Subscriber successfully updated.', 'wp-sms'));
         } else {
-            return array('result' => 'error', 'message' => __('Having problem with update subscriber, Duplicate entries or subscriber not found! please try again.', 'wp-sms'));
+            return array('result' => 'error', 'message' => __('No change has been occurred.', 'wp-sms'));
         }
     }
 
@@ -478,7 +478,7 @@ class Newsletter
             array(
                 'date'     => $date,
                 'name'     => $name,
-                'mobile'   => $mobile,
+                'mobile'   => Helper::sanitizeMobileNumber($mobile),
                 'status'   => $status,
                 'group_ID' => $group_id
             )

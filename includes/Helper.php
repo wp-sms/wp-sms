@@ -160,7 +160,9 @@ class Helper
      * @param $mobileNumber
      * @param bool $userID
      * @param bool $isSubscriber
-     * @param bool $groupID
+     * @param $groupID
+     * @param $subscribeId
+     *
      * @return bool|\WP_Error
      */
     public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
@@ -240,9 +242,10 @@ class Helper
 
     /**
      * @param $mobile
+     *
      * @return string
      */
-    public function sanitizeMobileNumber($mobile)
+    public static function sanitizeMobileNumber($mobile)
     {
         return trim($mobile);
     }

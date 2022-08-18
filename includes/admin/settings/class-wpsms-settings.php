@@ -1351,8 +1351,9 @@ class Settings
                 ),
                 'mobile_terms_field_place_holder'  => array(
                     'id'   => 'mobile_terms_field_place_holder',
-                    'name' => __('Field Placeholder', 'wp-sms'),
-                    'type' => 'text'
+                    'name' => __('Mobile Field Placeholder', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Help your clients to enter their mobile number in a correct format by choosing a proper placeholder.', 'wp-sms')
                 ),
                 'international_mobile'                     => array(
                     'id'      => 'international_mobile',
