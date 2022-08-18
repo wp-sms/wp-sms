@@ -11,7 +11,8 @@ jQuery(document).ready(function () {
                 //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
                 nationalMode: false,
                 utilsScript: wp_sms_intel_tel_input.util_js,
-                formatOnDisplay: false
+                formatOnDisplay: false,
+                initialCountry: 'auto'
             });
         }
     }
@@ -27,7 +28,8 @@ jQuery(document).ready(function () {
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
             nationalMode: wp_sms_intel_tel_input.national_mode,
             utilsScript: wp_sms_intel_tel_input.util_js,
-            formatOnDisplay: false
+            formatOnDisplay: false,
+            initialCountry: 'auto'
         });
     }
 
