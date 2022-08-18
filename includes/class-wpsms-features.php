@@ -48,9 +48,10 @@ class Features
         }
     }
 
+    // add mobile field input to add user admin page
     public function add_mobile_field_to_newuser_form()
     {
-        include_once WP_SMS_DIR . "includes/templates/mobile-field.php";
+        echo Helper::loadTemplate('mobile-field.php');
     }
 
     /**
@@ -65,11 +66,11 @@ class Features
         return $fields;
     }
 
+    // add mobile filed input to add user in front-end
     public function add_mobile_field_to_register_form()
     {
         $mobile = (isset($_POST['mobile'])) ? Helper::sanitizeMobileNumber($_POST['mobile']) : '';
 
-        // todo 
         echo Helper::loadTemplate('mobile-field-register.php', array(
             'mobile' => $mobile
         ));
