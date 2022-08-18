@@ -626,6 +626,9 @@ class Gateway
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
             ),
+            'bangladesh'     => array(
+                'revesms' => 'smpp.ajuratech.com'
+            ),
             'belgium'              => array(
                 'smsbox' => 'smsbox.be'
             ),
