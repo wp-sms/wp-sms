@@ -67,8 +67,12 @@ class Features
 
     public function add_mobile_field_to_register_form()
     {
-        $mobile = (isset($_POST['mobile'])) ? sanitize_text_field($_POST['mobile']) : '';
-        include_once WP_SMS_DIR . "includes/templates/mobile-field-register.php";
+        $mobile = (isset($_POST['mobile'])) ? Helper::sanitizeMobileNumber($_POST['mobile']) : '';
+
+        // todo 
+        echo Helper::loadTemplate('mobile-field-register.php', array(
+            'mobile' => $mobile
+        ));
     }
 
     /**
@@ -88,8 +92,7 @@ class Features
 
         if (isset($_POST['mobile']) and !empty($_POST['mobile'])) {
 
-            $mobile = sanitize_text_field($_POST['mobile']);
-
+            $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
             $validity = Helper::checkMobileNumberValidity($mobile);
 
             if (is_wp_error($validity)) {
@@ -112,8 +115,7 @@ class Features
     public function admin_registration_errors($errors, $update, $user)
     {
         if (isset($_POST['mobile'])) {
-            $mobile = sanitize_text_field($_POST['mobile']);
-
+            $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
             $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
 
             if (is_wp_error($validity)) {
@@ -132,7 +134,7 @@ class Features
     public function save_register($user_id)
     {
         if (isset($_POST['mobile'])) {
-            $mobile = sanitize_text_field($_POST['mobile']);
+            $mobile = Helper::sanitizeMobileNumber($_POST['mobile']);
             update_user_meta($user_id, $this->mobileField, $mobile);
         }
     }

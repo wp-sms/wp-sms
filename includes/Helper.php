@@ -247,6 +247,6 @@ class Helper
      */
     public static function sanitizeMobileNumber($mobile)
     {
-        return trim($mobile);
+        return sanitize_text_field(trim($mobile));
     }
 }
