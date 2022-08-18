@@ -237,4 +237,13 @@ class Helper
 
         return true;
     }
+
+    /**
+     * @param $mobile
+     * @return string
+     */
+    public function sanitizeMobileNumber($mobile)
+    {
+        return trim($mobile);
+    }
 }
