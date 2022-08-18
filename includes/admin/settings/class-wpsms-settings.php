@@ -1331,7 +1331,7 @@ class Settings
                 ),
                 'mobile_county_code'  => array(
                     'id'   => 'mobile_county_code',
-                    'name' => __('Mobile Country Code', 'wp-sms'),
+                    'name' => __('Country Code Prefix', 'wp-sms'),
                     'type' => 'select',
                     'desc' => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
                     'options' => array_merge(['0' => __('No country code', 'wp-sms')], wp_sms_get_countries()),
@@ -1344,7 +1344,7 @@ class Settings
                 ),
                 'add_mobile_field'                         => array(
                     'id'      => 'add_mobile_field',
-                    'name'    => __('Add Mobile number field', 'wp-sms'),
+                    'name'    => __('Add Mobile Number Field', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Add Mobile number to user profile and register form.', 'wp-sms')
@@ -1357,10 +1357,10 @@ class Settings
                 ),
                 'international_mobile'                     => array(
                     'id'      => 'international_mobile',
-                    'name'    => __('International Number', 'wp-sms'),
+                    'name'    => __('International Telephone Input', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Make mobile input fields in whole plugin to intel tel input.', 'wp-sms')
+                    'desc'    => __('Adds a flag dropdown to any mobile number input field', 'wp-sms')
                 ),
                 'international_mobile_only_countries'      => array(
                     'id'      => 'international_mobile_only_countries',
@@ -1378,12 +1378,12 @@ class Settings
                 ),
                 'mobile_terms_minimum'             => array(
                     'id'   => 'mobile_terms_minimum',
-                    'name' => __('Minimum number', 'wp-sms'),
+                    'name' => __('Minimum Length Number', 'wp-sms'),
                     'type' => 'number'
                 ),
                 'mobile_terms_maximum'             => array(
                     'id'   => 'mobile_terms_maximum',
-                    'name' => __('Maximum number', 'wp-sms'),
+                    'name' => __('Maximum Length Number', 'wp-sms'),
                     'type' => 'number'
                 ),
                 'admin_title_privacy' => array(
