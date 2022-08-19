@@ -34,8 +34,9 @@ class Features
         if (wp_sms_get_option('add_mobile_field')) {
             add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
             add_filter('user_contactmethods', array($this, 'add_mobile_field_to_profile_form'));
+
             add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
-            add_filter('frontend_registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
+            add_filter('registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
             add_action('user_register', array($this, 'save_register'), 999999);
 
             add_action('user_profile_update_errors', array($this, 'admin_registration_errors'), 10, 3);
