@@ -573,7 +573,7 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable mobile verification for placing the order during the checkout. make sure the <b>Features » Mobile Field</b> is enabled in advance.', 'wp-sms')
+                    'desc'    => __('Enable mobile verification for placing the order during the checkout. make sure the <b>General » Mobile field</b> is enabled in advance.', 'wp-sms')
                 ),
                 'wc_otp_countries_whitelist'   => array(
                     'id'      => 'wc_otp_countries_whitelist',
@@ -1331,7 +1331,7 @@ class Settings
                 ),
                 'mobile_county_code'  => array(
                     'id'   => 'mobile_county_code',
-                    'name' => __('Mobile Country Code', 'wp-sms'),
+                    'name' => __('Country Code Prefix', 'wp-sms'),
                     'type' => 'select',
                     'desc' => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
                     'options' => array_merge(['0' => __('No country code', 'wp-sms')], wp_sms_get_countries()),
@@ -1344,37 +1344,23 @@ class Settings
                 ),
                 'add_mobile_field'                         => array(
                     'id'      => 'add_mobile_field',
-                    'name'    => __('Add Mobile number field', 'wp-sms'),
+                    'name'    => __('Add Mobile Number Field', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Add Mobile number to user profile and register form.', 'wp-sms')
                 ),
                 'mobile_terms_field_place_holder'  => array(
                     'id'   => 'mobile_terms_field_place_holder',
-                    'name' => __('Field Placeholder', 'wp-sms'),
-                    'type' => 'text'
-                ),
-                'mobile_terms_minimum'             => array(
-                    'id'   => 'mobile_terms_minimum',
-                    'name' => __('Minimum number', 'wp-sms'),
-                    'type' => 'number'
-                ),
-                'mobile_terms_maximum'             => array(
-                    'id'   => 'mobile_terms_maximum',
-                    'name' => __('Maximum number', 'wp-sms'),
-                    'type' => 'number'
-                ),
-                'international_mobile_title'               => array(
-                    'id'   => 'international_mobile_title',
-                    'name' => __('International Telephone Input', 'wp-sms'),
-                    'type' => 'header'
+                    'name' => __('Mobile Field Placeholder', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Help your clients to enter their mobile number in a correct format by choosing a proper placeholder.', 'wp-sms')
                 ),
                 'international_mobile'                     => array(
                     'id'      => 'international_mobile',
-                    'name'    => __('Enable for mobile fields', 'wp-sms'),
+                    'name'    => __('International Telephone Input', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Make mobile input fields in whole plugin to intel tel input.', 'wp-sms')
+                    'desc'    => __('Adds a flag dropdown to any mobile number input field', 'wp-sms')
                 ),
                 'international_mobile_only_countries'      => array(
                     'id'      => 'international_mobile_only_countries',
@@ -1390,19 +1376,15 @@ class Settings
                     'options' => $this->getCountriesList(),
                     'desc'    => __('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
-                'international_mobile_auto_hide'           => array(
-                    'id'      => 'international_mobile_auto_hide',
-                    'name'    => __('Auto hide dial code', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('If there is just a dial code in the input: remove it on blur or submit, and re-add it on focus.<br>Requires National mode to be deactivate', 'wp-sms')
+                'mobile_terms_minimum'             => array(
+                    'id'   => 'mobile_terms_minimum',
+                    'name' => __('Minimum Length Number', 'wp-sms'),
+                    'type' => 'number'
                 ),
-                'international_mobile_national_mode'       => array(
-                    'id'      => 'international_mobile_national_mode',
-                    'name'    => __('National mode', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Allow users to enter national numbers (and not have to think about international dial codes).', 'wp-sms')
+                'mobile_terms_maximum'             => array(
+                    'id'   => 'mobile_terms_maximum',
+                    'name' => __('Maximum Length Number', 'wp-sms'),
+                    'type' => 'number'
                 ),
                 'admin_title_privacy' => array(
                     'id'   => 'admin_title_privacy',

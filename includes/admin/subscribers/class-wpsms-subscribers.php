@@ -17,17 +17,21 @@ class Subscribers
     public function render_page()
     {
 
+        add_thickbox();
+
         // Add subscriber
         if (isset($_POST['wp_add_subscribe'])) {
             $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
             $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
             $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
+
             if ($group) {
                 $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
             } else {
                 $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
             }
 
+            // Print notice
             echo Helper::notice($result['message'], $result['result']);
         }
 
@@ -39,6 +43,8 @@ class Subscribers
             $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
             $subscribe_status    = isset($_POST['wpsms_subscribe_status']) ? sanitize_text_field($_POST['wpsms_subscribe_status']) : '';
             $result              = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
+
+            // Print notice
             echo Helper::notice($result['message'], $result['result']);
         }
 

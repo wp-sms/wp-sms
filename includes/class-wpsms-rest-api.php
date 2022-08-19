@@ -93,27 +93,6 @@ class RestApi
             }
         }
 
-        if (preg_match(WP_SMS_MOBILE_REGEX, $mobile) == false) {
-            // Return response
-            return new \WP_Error('subscribe', __('Please enter a valid mobile number', 'wp-sms'));
-        }
-
-        $max_number = Option::getOption('mobile_terms_maximum');
-        if ($max_number) {
-            if (strlen($mobile) > $max_number) {
-                // Return response
-                return new \WP_Error('subscribe', sprintf(__('Your mobile number should be less than %s digits', 'wp-sms'), $max_number));
-            }
-        }
-
-        $min_number = Option::getOption('mobile_terms_minimum');
-        if ($min_number) {
-            if (strlen($mobile) < $min_number) {
-                // Return response
-                return new \WP_Error('subscribe', sprintf(__('Your mobile number should be greater than %s digits', 'wp-sms'), $min_number));
-            }
-        }
-
         $gateway_name = Option::getOption('gateway_name');
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
             // Check gateway setting
@@ -196,30 +175,7 @@ class RestApi
                 return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
             }
         }
-
-        if (preg_match(WP_SMS_MOBILE_REGEX, $mobile) == false) {
-            // Return response
-            return new \WP_Error('unsubscribe', __('Please enter a valid mobile number', 'wp-sms'));
-        }
-
-        $max_number = Option::getOption('mobile_terms_maximum');
-
-        if ($max_number) {
-            if (strlen($mobile) > $max_number) {
-                // Return response
-                return new \WP_Error('unsubscribe', sprintf(__('Your mobile number should be less than %s digits', 'wp-sms'), $max_number));
-
-            }
-        }
-
-        $max_number = Option::getOption('mobile_terms_minimum');
-
-        if ($max_number) {
-            if (strlen($mobile) < $max_number) {
-                // Return response
-                return new \WP_Error('unsubscribe', sprintf(__('Your mobile number should be greater than %s digits', 'wp-sms'), $max_number));
-            }
-        }
+        
         // Delete subscriber
         $result = Newsletter::deleteSubscriberByNumber($mobile, $group);
 

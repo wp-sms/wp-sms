@@ -8,9 +8,11 @@ jQuery(document).ready(function () {
             window.intlTelInput($inputTell[i], {
                 onlyCountries: wp_sms_intel_tel_input.only_countries,
                 preferredCountries: wp_sms_intel_tel_input.preferred_countries,
-                autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
-                nationalMode: wp_sms_intel_tel_input.national_mode,
-                utilsScript: wp_sms_intel_tel_input.util_js
+                //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
+                nationalMode: false,
+                utilsScript: wp_sms_intel_tel_input.util_js,
+                formatOnDisplay: false,
+                initialCountry: 'auto'
             });
         }
     }
@@ -25,7 +27,9 @@ jQuery(document).ready(function () {
             preferredCountries: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
             nationalMode: wp_sms_intel_tel_input.national_mode,
-            utilsScript: wp_sms_intel_tel_input.util_js
+            utilsScript: wp_sms_intel_tel_input.util_js,
+            formatOnDisplay: false,
+            initialCountry: 'auto'
         });
     }
 
