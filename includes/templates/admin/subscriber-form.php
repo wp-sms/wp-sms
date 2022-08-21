@@ -7,13 +7,13 @@
         <tr>
             <td style="padding-top: 10px;">
                 <label for="wp_subscribe_name" class="wp_sms_subscribers_label"><?php _e('Name', 'wp-sms'); ?></label>
-                <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? $subscriber->name : ''; ?>" class="wp_sms_subscribers_input_text"/>
+                <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
             </td>
         </tr>
         <tr>
             <td style="padding-top: 10px;">
                 <label for="wp_subscribe_mobile" class="wp_sms_subscribers_label"><?php _e('Mobile', 'wp-sms'); ?></label>
-                <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? $subscriber->mobile : '')); ?>
+                <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? esc_attr($subscriber->mobile) : '')); ?>
             </td>
         </tr>
         <?php if ($groups) : ?>
@@ -22,7 +22,7 @@
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php _e('Group', 'wp-sms'); ?></label>
                     <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text code">
                         <?php foreach ($groups as $items) : ?>
-                            <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>><?php echo esc_attr($items->name); ?></option>
+                            <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo esc_attr(selected($subscriber->group_ID, $items->ID)); endif; ?>><?php echo esc_attr($items->name); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

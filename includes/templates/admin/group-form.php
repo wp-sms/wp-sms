@@ -3,9 +3,9 @@
         <tr>
             <td style="padding-top: 10px;">
                 <label for="wp_group_name" class="wp_sms_subscribers_label"><?php _e('Name', 'wp-sms'); ?></label>
-                <input type="text" id="wp_group_name" name="wp_group_name" <?php if (isset($group_name)) { echo "value = {$group_name}"; }?> class="wp_sms_subscribers_input_text" required/>
+                <input type="text" id="wp_group_name" name="wp_group_name" value="<?php echo isset($group_name) ? esc_attr($group_name) : ''; ?>" class="wp_sms_subscribers_input_text" required/>
                 <?php if (isset($group_id)) : ?>
-                    <input type="hidden" id="wp_group_name" name="group_id" value="<?php echo $group_id; ?>" class="wp_sms_subscribers_input_text"/>
+                    <input type="hidden" id="wp_group_name" name="group_id" value="<?php echo esc_attr($group_id); ?>" class="wp_sms_subscribers_input_text"/>
                 <?php endif; ?>
             </td>
         </tr>
