@@ -22,7 +22,7 @@
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php _e('Group', 'wp-sms'); ?></label>
                     <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text code">
                         <?php foreach ($groups as $items) : ?>
-                            <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo esc_attr(selected($subscriber->group_ID, $items->ID)); endif; ?>><?php echo esc_attr($items->name); ?></option>
+                            <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>><?php echo esc_attr($items->name); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
