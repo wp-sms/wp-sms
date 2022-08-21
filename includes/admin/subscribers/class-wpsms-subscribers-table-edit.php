@@ -32,7 +32,7 @@ class Subscribers_Subscribers_Table_Edit
         $subscriber = Newsletter::getSubscriber($subscriber_id);
         $groups     = Newsletter::getGroups();
 
-        echo Helper::loadTemplate('admin/subscriber-group-form.php', array(
+        echo Helper::loadTemplate('admin/subscriber-form.php', array(
             'subscriber_id' => $subscriber_id,
             'subscriber'    => $subscriber,
             'groups'        => $groups

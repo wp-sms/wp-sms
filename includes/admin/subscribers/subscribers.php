@@ -17,7 +17,7 @@ $groups = Newsletter::getGroups();
         </div>
 
         <div id="add-subscriber" style="display:none;">
-            <?php echo Helper::loadTemplate('admin/subscriber-group-form.php', array('groups' => $groups)); ?>
+            <?php echo Helper::loadTemplate('admin/subscriber-form.php', array('groups' => $groups)); ?>
         </div>
 
         <div id="import-subscriber" style="display:none;">
