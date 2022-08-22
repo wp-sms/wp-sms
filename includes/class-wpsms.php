@@ -85,12 +85,21 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
         require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 
+        // Blocks
         require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
         require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
         require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
+
+        // Controllers
+        require_once WP_SMS_DIR . 'includes/Controller/AjaxControllerAbstract.php';
+        require_once WP_SMS_DIR . 'includes/Controller/SubscriberFormAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/ControllerManager.php';
+
+        $controllerManager = new \WP_SMS\Controller\ControllerManager();
+        $controllerManager->init();
 
         if (is_admin()) {
             // Admin classes.
@@ -114,10 +123,7 @@ class WP_SMS
 
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
-
-            // Subscribers class.
-            require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
-
+            
             // Widgets
             require_once WP_SMS_DIR . 'includes/admin/Widget/WidgetsManager.php';
         }

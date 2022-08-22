@@ -9,7 +9,6 @@ if (!defined('ABSPATH')) {
 //Edit Groups Class
 class Subscribers_Groups_Table_Edit
 {
-
     public $db;
     protected $tb_prefix;
 
@@ -20,12 +19,12 @@ class Subscribers_Groups_Table_Edit
         $this->db        = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
 
-        add_action('wp_ajax_wp_sms_edit_group', array($this, 'wp_sms_edit_group'));
+        add_action('wp_ajax_wp_sms_edit_group', array($this, 'groupFormCallback'));
     }
 
-    function wp_sms_edit_group()
+    public function groupFormCallback()
     {
-        //set Actiom Values
+        //set action Values
         $group_id   = isset($_GET['group_id']) ? sanitize_text_field($_GET['group_id']) : null;
         $group_name = isset($_GET['group_name']) ? sanitize_text_field($_GET['group_name']) : null;
 
