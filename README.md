@@ -140,7 +140,7 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
 # Plugin development
 -   Run `npm install` from the theme directory to install dependencies
--   Run `gulp buildStyles` to generate styles styles
+-   Run `gulp buildStyles` to generate styles
 -   Run `gulp buildAdminStyles` to generate admin styles
 -   Run `npm run build` to build the blocks
 

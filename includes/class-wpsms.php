@@ -96,6 +96,7 @@ class WP_SMS
         // Controllers
         require_once WP_SMS_DIR . 'includes/Controller/AjaxControllerAbstract.php';
         require_once WP_SMS_DIR . 'includes/Controller/SubscriberFormAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/GroupFormAjax.php';
         require_once WP_SMS_DIR . 'includes/Controller/ControllerManager.php';
 
         $controllerManager = new \WP_SMS\Controller\ControllerManager();
@@ -107,9 +108,6 @@ class WP_SMS
 
             require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
             require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-
-            // Groups class.
-            require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
 
             // Outbox class.
             require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';

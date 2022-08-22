@@ -12,5 +12,6 @@ class ControllerManager
     public function registerControllers()
     {
         SubscriberFormAjax::listen();
+        GroupFormAjax::listen();
     }
 }
