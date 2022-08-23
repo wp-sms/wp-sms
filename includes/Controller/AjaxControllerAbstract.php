@@ -91,22 +91,22 @@ abstract class AjaxControllerAbstract
     public function has($key)
     {
         if (isset($this->request[$key])) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
-     * [get description]
-     * @param string $key [description]
-     * @param string $default [description]
-     * @return strin
+     * @param $key
+     * @param $default
+     * @param $stripSlashes
+     * @return mixed|string|null
      */
-    public function get($key, $default = null, $stripslashes = tru)
+    public function get($key, $default = null, $stripSlashes = true)
     {
         if ($this->has($key)) {
-            if ($stripslashes) {
+            if ($stripSlashes) {
                 return stripslashes($this->request[$key]);
             }
 
