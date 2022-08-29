@@ -30,6 +30,7 @@ class Gateway
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
+            'whatsappcloud'  => 'business.whatsapp.com',
             'dsms'           => 'dsms.in',
             'esms'           => 'esms.vn',
             'isms'           => 'isms.com.my',
