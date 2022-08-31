@@ -8,7 +8,7 @@
     </div>
 
     <div class="wpsms-wrap wpsms-quick-reply-popup">
-        <div class="wpsms-quick-reply-popup-message"></div>
+        <div class="wp-sms-popup-messages"></div>
     </div>
 
     <form method="post" class="js-wpSmsQuickReply" <?php if (isset($reload)) : echo 'data-reload=' . $reload; endif; ?>>
