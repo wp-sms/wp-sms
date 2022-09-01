@@ -92,7 +92,7 @@ class Features
             $errors->add('first_name_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
-        if (isset($_POST['mobile']) and !empty($_POST['mobile'])) {
+        if (isset($_POST['mobile']) and $_POST['mobile']) {
 
             $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
             $validity = Helper::checkMobileNumberValidity($mobile);
@@ -116,7 +116,7 @@ class Features
      */
     public function admin_registration_errors($errors, $update, $user)
     {
-        if (isset($_POST['mobile'])) {
+        if (isset($_POST['mobile']) && $_POST['mobile']) {
             $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
             $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
 
