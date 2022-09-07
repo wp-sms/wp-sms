@@ -511,18 +511,14 @@ function wp_sms_render_quick_reply($number, $group_id = false)
 
     $numbers = explode(',', $number);
     $result  = '';
+    $quick_reply_icon = plugins_url('wp-sms/assets/images/quick-reply-icon.svg');
 
     if (count($numbers) > 1) {
-        $i = 0;
         foreach ($numbers as $item) {
-            if (++$i == count($numbers)) {
-                $result .= sprintf('<a href="#TB_inline?&width=500&height=500&inlineId=wpsms-quick-reply" class="number thickbox js-replyModalToggle" name="Quick Reply" data-number="%1$s"><span class="dashicons dashicons-redo quick-reply-icon"></span> %1$s</a>', esc_html($item));
-            } else {
-                $result .= sprintf('<a href="#TB_inline?&width=500&height=500&inlineId=wpsms-quick-reply" class="number thickbox js-replyModalToggle" name="Quick Reply" data-number="%1$s"><span class="dashicons dashicons-redo quick-reply-icon"></span> %1$s</a>, ', esc_html($item));
-            }
+            $result .= sprintf('<a href="#TB_inline?&width=500&height=500&inlineId=wpsms-quick-reply" class="number thickbox js-replyModalToggle" name="Quick Reply" style="display: block" data-number="%1$s"><img class="quick-reply-icon" src="%2$s" alt="quick-reply-icon"> %1$s</a>', esc_html($item), $quick_reply_icon);
         }
     } else {
-        $result = sprintf('<a href="#TB_inline?&width=500&height=500&inlineId=wpsms-quick-reply" class="number thickbox js-replyModalToggle" name="Quick Reply" data-number="%1$s" data-group-id="%2$s"><span class="dashicons dashicons-redo quick-reply-icon"></span> %1$s</a>', esc_html($number), $group_id);
+        $result = sprintf('<a href="#TB_inline?&width=500&height=500&inlineId=wpsms-quick-reply" class="number thickbox js-replyModalToggle" name="Quick Reply" style="display: block" data-number="%1$s" data-group-id="%2$s"><img class="quick-reply-icon" src="%3$s" alt=""> %1$s</a>', esc_html($number), $group_id, $quick_reply_icon);
     }
 
     return $result;
