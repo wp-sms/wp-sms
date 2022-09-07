@@ -15,7 +15,7 @@
                 <td style="padding-top: 10px;">
                     <?php if (count($groups)) : ?>
                         <div class="wpsms-value wpsms-group">
-                            <p class="thickbox-description">You can choose to export a specific group by selecting its name, or export all subscribers by leaving it blank.</p>
+                            <p class="thickbox-description"><?php __("You can choose to export a specific group by selecting its name, or export all subscribers by leaving it blank.", 'wp-sms') ?></p>
                             <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the group(s).', 'wp-sms'); ?>" style="width: 100% !important;">
                                 <?php foreach ($groups as $group): ?>
                                     <option value="<?php echo $group->ID; ?>">
@@ -26,7 +26,7 @@
                             </select>
                         </div>
                     <?php endif; ?>
-                    <p>The data will be exported to a *.csv file.</p>
+                    <p> <?php __('The data will be exported to a *.csv file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 

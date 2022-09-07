@@ -13,7 +13,7 @@
         <table>
             <tr>
                 <td style="padding-top: 10px;">
-                    <p>The data will be exported to a *.csv file.</p>
+                    <p> <?php __('The data will be exported to a *.csv file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 
