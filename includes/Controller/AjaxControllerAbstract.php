@@ -99,15 +99,15 @@ abstract class AjaxControllerAbstract
 
     /**
      * @param $key
-     * @param $default
-     * @param $stripSlashes
+     * @param null $default
      * @return mixed|string|null
      */
-    public function get($key, $default = null, $stripSlashes = true)
+    public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            if ($stripSlashes) {
-                return stripslashes($this->request[$key]);
+
+            if (is_array($this->request[$key])) {
+                return wp_sms_sanitize_array($this->request[$key]);
             }
 
             return sanitize_text_field($this->request[$key]);

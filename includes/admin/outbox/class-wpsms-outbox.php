@@ -349,6 +349,9 @@ class Outbox
      */
     public function render_page()
     {
+
+        add_thickbox();
+
         //Create an instance of our package class...
         $list_table = new Outbox_List_Table;
 

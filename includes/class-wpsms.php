@@ -75,6 +75,7 @@ class WP_SMS
     {
         // Utility classes.
         require_once WP_SMS_DIR . 'includes/Helper.php';
+        require_once WP_SMS_DIR . 'includes/Utils/CsvHelper.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
@@ -97,6 +98,7 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/Controller/AjaxControllerAbstract.php';
         require_once WP_SMS_DIR . 'includes/Controller/SubscriberFormAjax.php';
         require_once WP_SMS_DIR . 'includes/Controller/GroupFormAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/ExportAjax.php';
         require_once WP_SMS_DIR . 'includes/Controller/ControllerManager.php';
 
         $controllerManager = new \WP_SMS\Controller\ControllerManager();

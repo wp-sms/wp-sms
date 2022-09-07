@@ -13,5 +13,6 @@ class ControllerManager
     {
         SubscriberFormAjax::listen();
         GroupFormAjax::listen();
+        ExportAjax::listen();
     }
 }

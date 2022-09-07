@@ -430,11 +430,12 @@ class Newsletter
     }
 
     /**
-     * @param string $group_ids
-     *
+     * @param bool $group_ids
+     * @param bool $only_active
+     * @param array $columns
      * @return array
      */
-    public static function getSubscribers($group_ids = false, $only_active = false)
+    public static function getSubscribers($group_ids = false, $only_active = false, $columns = array())
     {
         global $wpdb;
         $where = '';
@@ -456,9 +457,19 @@ class Newsletter
             $where = " WHERE {$where}";
         }
 
-        return $wpdb->get_col("SELECT `mobile` FROM {$wpdb->prefix}sms_subscribes" . $where);
-    }
+        if (count($columns) == 0) {
+            $columns = array('mobile');
+        }
 
+        $select = implode(',', $columns);
+        $query  = "SELECT {$select} FROM {$wpdb->prefix}sms_subscribes{$where}";
+
+        if (count($columns) > 0) {
+            return $wpdb->get_results($query);
+        } else {
+            return $wpdb->get_col($query);
+        }
+    }
 
     /**
      * @param $date

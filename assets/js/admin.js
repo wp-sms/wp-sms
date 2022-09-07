@@ -7,9 +7,12 @@
     WpSmsJobManager.init();
     WpSmsUltimateMember.init();
 
+    let WpSmsSelect2 = $('.js-wpsms-select2')
+
     // Select2
-    $('.js-wpsms-select2').select2({
-        placeholder: "Please select"
+    WpSmsSelect2.select2({
+        placeholder: "Please select",
+        dropdownParent: WpSmsSelect2.parent()
     });
 
     // Auto submit the gateways form, after changing value

@@ -29,6 +29,10 @@ Select2
  */
 .select2-container {
   min-width: 350px;
+
+  &:not(.TB_ajaxContent) {
+    min-width: 395px;
+  }
 }
 
 .select2-container .select2-selection--single {
