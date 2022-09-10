@@ -6,7 +6,12 @@
             </circle>
         </svg>
     </div>
-    <div class="wp-sms-popup-messages"></div>
+
+    <!-- Show request message the client -->
+    <div class="wpsms-wrap wpsms-export-popup">
+        <div class="wp-sms-popup-messages"></div>
+    </div>
+
     <form class="js-wpSmsExportForm">
         <input type="hidden">
         <input class="wp-sms-export-type" type="hidden" value="subscriber">
@@ -26,7 +31,7 @@
                             </select>
                         </div>
                     <?php endif; ?>
-                    <p> <?php __('The data will be exported to a *.csv file.', 'wp-sms'); ?> </p>
+                    <p> <?php _e('The data will be exported to a *.csv file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 

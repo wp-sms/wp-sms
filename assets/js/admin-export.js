@@ -58,9 +58,9 @@ let wpSmsExport = {
                 success: function (blob, status, xhr) {
                     jQuery('.js-wpSmsExportButton').prop('disabled', false)
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
-                    jQuery('.wp-sms-popup-messages').removeClass('notice notice-error')
-                    jQuery('.wp-sms-popup-messages').addClass('notice notice-success')
-                    jQuery('.wp-sms-popup-messages').html('<p>The data exported successfully.</p>')
+                    jQuery('.wpsms-export-popup .wp-sms-popup-messages').removeClass('notice notice-error')
+                    jQuery('.wpsms-export-popup .wp-sms-popup-messages').addClass('notice notice-success')
+                    jQuery('.wpsms-export-popup .wp-sms-popup-messages').html('<p>The data exported successfully.</p>')
 
                     var fileName = xhr.getResponseHeader('Content-Disposition')
 
@@ -87,12 +87,12 @@ let wpSmsExport = {
                 },
 
                 // failed request
-                error: function (data, status, xhr) {
+                error: function (data, response, xhr) {
                     jQuery('.js-wpSmsExportButton').prop('disabled', false)
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
-                    jQuery('.wp-sms-popup-messages').removeClass('notice notice-success')
-                    jQuery('.wp-sms-popup-messages').addClass('notice notice-error')
-                    jQuery('.wp-sms-popup-messages').html('<p>Failed to export the data.</p>')
+                    jQuery('.wpsms-export-popup .wp-sms-popup-messages').removeClass('notice notice-success')
+                    jQuery('.wpsms-export-popup .wp-sms-popup-messages').addClass('notice notice-error')
+                    jQuery('.wpsms-export-popup .wp-sms-popup-messages').html('<p>Failed to export the data.</p>')
                 }
 
             })

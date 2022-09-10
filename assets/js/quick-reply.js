@@ -80,9 +80,9 @@ let quickReply = {
 
                 success: function (data, status, xhr) {
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
-                    jQuery('.wp-sms-popup-messages').removeClass('notice notice-error')
-                    jQuery('.wp-sms-popup-messages').addClass('notice notice-success')
-                    jQuery('.wp-sms-popup-messages').html('<p>' + data.message + '</p>')
+                    jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').removeClass('notice notice-error')
+                    jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').addClass('notice notice-success')
+                    jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').html('<p>' + data.responseText + '</p>')
                     jQuery('.wpsms-quick-reply-popup').removeClass('hidden')
                     jQuery('.wpsms-quick-reply-popup').addClass('not-hidden')
                     jQuery('input[name="SendSMS"]').removeAttr('disabled')
@@ -94,9 +94,9 @@ let quickReply = {
 
                 error: function (data, status, xhr) {
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
-                    jQuery('.wp-sms-popup-messages').removeClass('notice notice-success')
-                    jQuery('.wp-sms-popup-messages').addClass('notice notice-error')
-                    jQuery('.wp-sms-popup-messages').html("<p>" + data.responseJSON.error.message + '</p>');
+                    jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').removeClass('notice notice-success')
+                    jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').addClass('notice notice-error')
+                    jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').html("<p>" + data.responseText + "</p>");
                     jQuery('.wpsms-quick-reply-popup').removeClass('hidden')
                     jQuery('.wpsms-quick-reply-popup').addClass('not-hidden')
                     jQuery('input[name="SendSMS"]').removeAttr('disabled')
