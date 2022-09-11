@@ -1,18 +1,18 @@
 ﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo
+Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 3.0
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.7.9
+Stable tag: 5.8.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 == Description ==
-This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, Click send and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
 Additionally, you can send SMS/MMS message notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
@@ -96,6 +96,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * Messagebird.com
 * Clicksend.com
 * Octopush.com
+* WhatsApp Business API
 * Sms.to
 * Mitto.ch
 * Smsapi.com
@@ -284,16 +285,15 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 
 == Changelog ==
 = v5.8.0 - 11.09.2022 =
-* New: Add WhatsApp Cloud
 * Bugfix: The "Screen Options" on the groups' page has been fixed
-* Feature: Add action wp_sms_log_after_save
+* Feature: Add action `wp_sms_log_after_save`
 * Improvement: A new Export System has been implemented. Now you can export the outbox, the inbox, and the subscribers' data.
 * Improvement: New header image for the settings' page
 * Improvement: A Controller Manager is added to have more clear and easy AJAX requests
 * Improvement: Minor & clean-up things
 * Improvement: The quick reply front-end has been redesigned
-* Improvement: Mobile Number validity check has been improve
-* Add: Support incoming messages for the Smsglobal gateway
+* Improvement: Mobile Number validity check has been improved
+* Add: Support incoming messages for the SmsGlobal gateway
 
 = v5.7.9 - 19.08.2022 =
 * Bugfix: Multiple recipients for the quick reply
