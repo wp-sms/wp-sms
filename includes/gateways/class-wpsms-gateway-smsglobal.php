@@ -10,6 +10,7 @@ class smsglobal extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
+    public $supportIncoming = true;
 
     public function __construct()
     {

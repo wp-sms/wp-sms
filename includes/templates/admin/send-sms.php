@@ -4,7 +4,7 @@
         <h1 class="wrap__title"><?php _e('Send SMS', 'wp-sms'); ?>
         </h1>
         <div class="wpsms-wrap__main__notice notice is-dismissible">
-            <p class="wpsms-wrap__notice__text" style="padding: 10px 0"></p>
+            <p class="wpsms-wrap__notice__text" style="padding: 10px 0; white-space: pre;"></p>
             <button type="button" onclick="closeNotice()" class="notice-dismiss">
                 <span class="screen-reader-text">Dismiss this notice.</span>
             </button>

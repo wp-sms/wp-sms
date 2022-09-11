@@ -7,13 +7,13 @@
         <tr>
             <td style="padding-top: 10px;">
                 <label for="wp_subscribe_name" class="wp_sms_subscribers_label"><?php _e('Name', 'wp-sms'); ?></label>
-                <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? $subscriber->name : ''; ?>" class="wp_sms_subscribers_input_text"/>
+                <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
             </td>
         </tr>
         <tr>
             <td style="padding-top: 10px;">
                 <label for="wp_subscribe_mobile" class="wp_sms_subscribers_label"><?php _e('Mobile', 'wp-sms'); ?></label>
-                <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? $subscriber->mobile : '')); ?>
+                <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? esc_attr($subscriber->mobile) : '')); ?>
             </td>
         </tr>
         <?php if ($groups) : ?>

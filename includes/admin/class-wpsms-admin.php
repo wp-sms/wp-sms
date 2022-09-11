@@ -51,12 +51,6 @@ class Admin
         $screen = get_current_screen();
 
         wp_register_script('wpsms-quick-reply', WP_SMS_URL . 'assets/js/quick-reply.js', true, WP_SMS_VERSION);
-        wp_localize_script('wpsms-quick-reply', 'wpSmsQuickReplyTemplateVar', array(
-                'restRootUrl' => esc_url_raw(rest_url()),
-                'nonce'       => wp_create_nonce('wp_rest'),
-                'senderID'    => $sms->from
-            )
-        );
 
         // Register main plugin style
         wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION);
@@ -70,6 +64,14 @@ class Admin
             wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
+            wp_enqueue_script('wpsms-export', WP_SMS_URL . 'assets/js/admin-export.js', true, WP_SMS_VERSION);
+            wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
+                    'restRootUrl'   => esc_url_raw(rest_url()),
+                    'nonce'         => wp_create_nonce('wp_rest'),
+                    'senderID'      => $sms->from,
+                    'exportAjaxUrl' => \WP_SMS\Controller\ExportAjax::url()
+                )
+            );
 
             wp_enqueue_style('wpsms-admin');
 
@@ -420,8 +422,6 @@ class Admin
         if (!function_exists('wp_get_current_user')) {
             include(ABSPATH . "wp-includes/pluggable.php");
         }
-
-        include_once WP_SMS_DIR . "includes/admin/export.php";
 
         // Add plugin caps to admin role
         if (is_admin() and is_super_admin()) {

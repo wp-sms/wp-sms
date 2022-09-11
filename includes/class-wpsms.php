@@ -75,6 +75,7 @@ class WP_SMS
     {
         // Utility classes.
         require_once WP_SMS_DIR . 'includes/Helper.php';
+        require_once WP_SMS_DIR . 'includes/Utils/CsvHelper.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
@@ -85,6 +86,7 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
         require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 
+        // Blocks
         require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
         require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
         require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
@@ -92,15 +94,22 @@ class WP_SMS
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
 
+        // Controllers
+        require_once WP_SMS_DIR . 'includes/Controller/AjaxControllerAbstract.php';
+        require_once WP_SMS_DIR . 'includes/Controller/SubscriberFormAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/GroupFormAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/ExportAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/ControllerManager.php';
+
+        $controllerManager = new \WP_SMS\Controller\ControllerManager();
+        $controllerManager->init();
+
         if (is_admin()) {
             // Admin classes.
             require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
 
             require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
             require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-
-            // Groups class.
-            require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table-edit.php';
 
             // Outbox class.
             require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
@@ -114,10 +123,7 @@ class WP_SMS
 
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
-
-            // Subscribers class.
-            require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table-edit.php';
-
+            
             // Widgets
             require_once WP_SMS_DIR . 'includes/admin/Widget/WidgetsManager.php';
         }

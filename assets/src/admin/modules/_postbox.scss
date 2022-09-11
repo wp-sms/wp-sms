@@ -3,7 +3,7 @@
   line-height: 19px;
   left: 0px;
   top: 6px;
-  width: 81px;
+  width: 100px;
   height: 19px;
   display: block;
 }
@@ -333,7 +333,6 @@
   padding: 20px 10px;
 }
 
-
 #TB_ajaxContent {
   height: min-content !important;
 }
@@ -346,4 +345,18 @@
   margin: 5px;
 }
 
+td.response.column-response p {
+    white-space: pre-wrap;
+}
 
+.thickbox-description {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    text-align: justify;
+}
+
+.wp-sms-popup-messages {
+  p {
+    padding: 10px 0 !important;
+  }
+}

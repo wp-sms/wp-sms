@@ -13,11 +13,11 @@ $groups = Newsletter::getGroups();
             <a name="<?php _e('Add Subscriber', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=250&inlineId=add-subscriber" class="thickbox button"><span class="dashicons dashicons-admin-users"></span> <?php _e('Add Subscriber', 'wp-sms'); ?></a>
             <a href="admin.php?page=wp-sms-subscribers-group" class="button"><span class="dashicons dashicons-category"></span> <?php _e('Manage Group', 'wp-sms'); ?></a>
             <a name="<?php _e('Import', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=270&inlineId=import-subscriber" class="thickbox button"><span class="dashicons dashicons-undo"></span> <?php _e('Import', 'wp-sms'); ?></a>
-            <a name="<?php _e('Export', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=150&inlineId=export-subscriber" class="thickbox button"><span class="dashicons dashicons-redo"></span> <?php _e('Export', 'wp-sms'); ?></a>
+            <a name="<?php _e('Export', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=150&inlineId=wp-sms-export-from" class="thickbox button"><span class="dashicons dashicons-redo"></span> <?php _e('Export', 'wp-sms'); ?></a>
         </div>
 
         <div id="add-subscriber" style="display:none;">
-            <?php echo Helper::loadTemplate('admin/subscriber-edit-form.php', array('groups' => $groups)); ?>
+            <?php echo Helper::loadTemplate('admin/subscriber-form.php', array('groups' => $groups)); ?>
         </div>
 
         <div id="import-subscriber" style="display:none;">
@@ -58,31 +58,9 @@ $groups = Newsletter::getGroups();
             </form>
         </div>
 
-        <div id="export-subscriber" style="display:none;">
-            <form action="<?php echo admin_url('admin.php?page=wp-sms-subscribers') ?>" method="post">
-                <table>
-                    <tr>
-                        <td style="padding-top: 10px;">
-                            <label for="export-file-type" class="wp_sms_subscribers_label"><?php _e('Export To', 'wp-sms'); ?></label>
-                            <select id="export-file-type" name="export-file-type" class="wp_sms_subscribers_input_text">
-                                <option value="0"><?php _e('Please select.', 'wp-sms'); ?></option>
-                                <option value="excel">Excel</option>
-                                <option value="xml">XML</option>
-                                <option value="csv">CSV</option>
-                                <option value="tsv">TSV</option>
-                            </select>
-                            <p class="description"><?php _e('Select the output file type.', 'wp-sms'); ?></p>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2" style="padding-top: 10px;">
-                            <input type="submit" class="button-primary" name="wps_export_subscribe" value="<?php _e('Export', 'wp-sms'); ?>"/>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
+        <?php echo Helper::loadTemplate('admin/export-subscriber-form.php', array(
+            'groups' => $groups,
+        )); ?>
 
         <form id="subscribers-filter" method="get">
             <?php $_request_page = sanitize_text_field($_REQUEST['page']) ?>

@@ -30,6 +30,7 @@ class Gateway
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
+            'whatsappcloud'  => 'business.whatsapp.com',
             'dsms'           => 'dsms.in',
             'esms'           => 'esms.vn',
             'isms'           => 'isms.com.my',
@@ -444,18 +445,22 @@ class Gateway
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
-        return $this->db->insert(
-            $this->tb_prefix . "sms_send",
-            array(
-                'date'      => WP_SMS_CURRENT_DATE,
-                'sender'    => $sender,
-                'message'   => $message,
-                'recipient' => implode(',', $to),
-                'response'  => var_export($response, true),
-                'media'     => serialize($media),
-                'status'    => $status,
-            )
-        );
+        $result = $this->db->insert("{$this->tb_prefix}sms_send", array(
+            'date'      => WP_SMS_CURRENT_DATE,
+            'sender'    => $sender,
+            'message'   => $message,
+            'recipient' => implode(',', $to),
+            'response'  => var_export($response, true),
+            'media'     => serialize($media),
+            'status'    => $status,
+        ));
+
+        /**
+         * Fire after send sms
+         */
+        do_action('wp_sms_log_after_save', $result, $sender, $message, $to, $response, $status, $media);
+
+        return $result;
     }
 
     /**
@@ -626,7 +631,7 @@ class Gateway
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
             ),
-            'bangladesh'     => array(
+            'bangladesh'           => array(
                 'revesms' => 'smpp.ajuratech.com'
             ),
             'belgium'              => array(
