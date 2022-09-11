@@ -283,6 +283,18 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.8.0 - 11.09.2022 =
+* New: Add WhatsApp Cloud
+* Bugfix: The "Screen Options" on the groups' page has been fixed
+* Feature: Add action wp_sms_log_after_save
+* Improvement: A new Export System has been implemented. Now you can export the outbox, the inbox, and the subscribers' data.
+* Improvement: New header image for the settings' page
+* Improvement: A Controller Manager is added to have more clear and easy AJAX requests
+* Improvement: Minor & clean-up things
+* Improvement: The quick reply front-end has been redesigned
+* Improvement: Mobile Number validity check has been improve
+* Add: Support incoming messages for the Smsglobal gateway
+
 = v5.7.9 - 19.08.2022 =
 * Bugfix: Multiple recipients for the quick reply
 * Improvement: Mobile International Input Functionality
