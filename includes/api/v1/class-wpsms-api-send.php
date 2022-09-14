@@ -68,7 +68,6 @@ class SendSmsApi extends \WP_SMS\RestApi
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
             $mediaUrls        = array_filter($request->get_param('media_urls'));
-
             if (count($recipientNumbers) === 0) {
                 throw new Exception(__('The group does not have any number.', 'wp-sms'));
             }
