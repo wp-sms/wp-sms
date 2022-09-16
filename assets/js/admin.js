@@ -8,12 +8,18 @@
     WpSmsUltimateMember.init();
 
     let WpSmsSelect2 = $('.js-wpsms-select2')
+    let WpSmsExportForm = $('.js-wpSmsExportForm')
+
+    const WpSmsSelect2Options = {
+        placeholder: "Please select"
+    };
+
+    if (WpSmsExportForm.length) {
+        WpSmsSelect2Options.dropdownParent = WpSmsSelect2.parent()
+    }
 
     // Select2
-    WpSmsSelect2.select2({
-        placeholder: "Please select",
-        dropdownParent: WpSmsSelect2.parent()
-    });
+    WpSmsSelect2.select2(WpSmsSelect2Options);
 
     // Auto submit the gateways form, after changing value
     $("#wpsms_settings\\[gateway_name\\]").on('change', function () {

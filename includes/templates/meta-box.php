@@ -19,7 +19,7 @@
     jQuery(document).ready(function () {
         showHideFields();
 
-        jQuery("#wps-send-to").change(function () {
+        jQuery("#wps-send-to").on('change', function () {
             showHideFields();
         });
     })
@@ -32,9 +32,13 @@
         </th>
         <td>
             <select name="wps_send_to" id="wps-send-to">
-                <option value="0" <?php if (!$forceToSend): echo 'selected'; endif; ?>><?php _e('Please select', 'wp-sms'); ?></option>
-                <option value="subscriber" <?php if ($forceToSend) { selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'subscriber'); } ?>><?php _e('Subscribers'); ?></option>
-                <option value="numbers" <?php if ($forceToSend) { selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'numbers'); } ?>><?php _e('Number(s)'); ?></option>
+                <option value="0" <?php if (isset($_GET['post']) and !$forceToSend): echo 'selected'; endif; ?>><?php _e('Please select', 'wp-sms'); ?></option>
+                <option value="subscriber" <?php if (empty($_GET['post']) and $forceToSend) {
+                    selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'subscriber');
+                } ?>><?php _e('Subscribers'); ?></option>
+                <option value="numbers" <?php if (empty($_GET['post']) and $forceToSend) {
+                    selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'numbers');
+                } ?>><?php _e('Number(s)'); ?></option>
             </select>
         </td>
     </tr>

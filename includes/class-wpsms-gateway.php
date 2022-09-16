@@ -38,6 +38,7 @@ class Gateway
             'moceansms'      => 'moceansms.com',
             'msg91'          => 'msg91.com',
             'msg360'         => 'msg360.in',
+            'ovh'            => 'ovh.com',
             'livesms'        => 'livesms.eu',
             'thesmsworld'    => 'thesmsworld.com',
             'ozioma'         => 'ozioma.net',
@@ -146,7 +147,8 @@ class Gateway
         'australia'      => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
             'textteam'     => 'textteam.com.au',
-            'messagemedia' => 'messagemedia.com/au'
+            'messagemedia' => 'messagemedia.com/au',
+            'smscentral'   => 'smscentral.com.au'
         ),
         'russia'         => array(
             'sigmasms' => 'sigmasms.ru',
