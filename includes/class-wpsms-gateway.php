@@ -38,6 +38,7 @@ class Gateway
             'moceansms'      => 'moceansms.com',
             'msg91'          => 'msg91.com',
             'msg360'         => 'msg360.in',
+            'ovh'            => 'ovh.com',
             'livesms'        => 'livesms.eu',
             'thesmsworld'    => 'thesmsworld.com',
             'ozioma'         => 'ozioma.net',
