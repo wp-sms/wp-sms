@@ -464,7 +464,7 @@ class Newsletter
         $select = implode(',', $columns);
         $query  = "SELECT {$select} FROM {$wpdb->prefix}sms_subscribes{$where}";
 
-        if (count($columns) > 0) {
+        if (count($columns) > 1) {
             return $wpdb->get_results($query);
         } else {
             return $wpdb->get_col($query);
