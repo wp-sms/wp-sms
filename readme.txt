@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.8.1
+Stable tag: 5.8.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -284,6 +284,9 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.8.2 - 18.09.2022 =
+* Bugfix: Fixed query issue while getting subscribers
+
 = v5.8.1 - 16.09.2022 =
 * Bugfix: Fixed the Sanitize text in contact form 7 send SMS form
 * Bugfix: Fixed the Select2 dropdown issue in send sms page
