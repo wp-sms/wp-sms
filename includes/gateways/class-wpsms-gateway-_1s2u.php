@@ -80,7 +80,7 @@ class _1s2u extends \WP_SMS\Gateway
         $to  = implode(',', $numbers);
         $msg = urlencode($this->msg);
 
-        $response = wp_remote_get($this->wsdl_link . "bulksms?username=" . $this->username . "&password=" . $this->password . "&mno=" . $to . "&id=" . $this->from . "&msg=" . $msg . "&mt=" . $mt . "&fl=" . $fl);
+        $response = wp_remote_get("{$this->wsdl_link}bulksms?username={$this->username}&password={$this->password}&mno={$to}&id={$this->from}&msg={$msg}&mt={$mt}&fl={$fl}");
 
         // Check response error
         if (is_wp_error($response)) {
@@ -119,7 +119,7 @@ class _1s2u extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
         }
 
-        $response = wp_remote_get($this->wsdl_link . "checkbalance?user=" . $this->username . "&pass=" . $this->password);
+        $response = wp_remote_get("{$this->wsdl_link}checkbalance?user={$this->username}&pass={$this->password}");
 
         if (is_wp_error($response)) {
             return new \WP_Error('account-credit', $response->get_error_message());
