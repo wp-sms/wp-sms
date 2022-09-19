@@ -1,31 +1,5 @@
-<script type="text/javascript">
-    function showHideFields() {
-        const sendTo = jQuery('#wps-send-to').val()
-        if (sendTo == 'subscriber') {
-            jQuery('#wpsms-select-numbers').hide();
-            jQuery('#wpsms-select-subscriber-group').show();
-            jQuery('#wpsms-custom-text').show();
-        } else if (sendTo == 'numbers') {
-            jQuery('#wpsms-select-subscriber-group').hide();
-            jQuery('#wpsms-select-numbers').show();
-            jQuery('#wpsms-custom-text').show();
-        } else {
-            jQuery('#wpsms-select-subscriber-group').hide();
-            jQuery('#wpsms-select-numbers').hide();
-            jQuery('#wpsms-custom-text').hide();
-        }
-    }
-
-    jQuery(document).ready(function () {
-        showHideFields();
-
-        jQuery("#wps-send-to").on('change', function () {
-            showHideFields();
-        });
-    })
-</script>
-
 <table class="form-table">
+    <!-- Send Message To -->
     <tr valign="top">
         <th scope="row">
             <label for="wps-send-to"><?php _e('Send Notification to?', 'wp-sms'); ?></label>
@@ -39,9 +13,13 @@
                 <option value="numbers" <?php if (empty($_GET['post']) and $forceToSend) {
                     selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'numbers');
                 } ?>><?php _e('Number(s)'); ?></option>
+                <option value="users" <?php if (empty($_GET['post']) and $forceToSend) {
+                    selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'users');
+                } ?>><?php _e('WordPress Users'); ?></option>
             </select>
         </td>
     </tr>
+    <!-- Select Subscriber Group -->
     <tr valign="top" id="wpsms-select-subscriber-group">
         <th scope="row">
             <label for="wps-subscribe-group"><?php _e('Subscribe group', 'wp-sms'); ?>:</label>
@@ -55,6 +33,7 @@
             </select>
         </td>
     </tr>
+    <!-- Enter receiver number -->
     <tr valign="top" id="wpsms-select-numbers">
         <th scope="row">
             <label for="wps-mobile-numbers"><?php _e('Number(s)', 'wp-sms'); ?>:</label>
@@ -63,6 +42,38 @@
             <input type="text" name="wps_mobile_numbers" id="wps-mobile-numbers" class="regular-text" value="<?php echo wp_sms_get_option('notif_publish_new_post_numbers') ?>"/>
         </td>
     </tr>
+    <!-- Select specific role -->
+    <tr valign="top" id="wpsms-select-users">
+        <th scope="row">
+            <label for="wpsms_roles"><?php _e('Specific Roles', 'wp-sms'); ?>:</label>
+        </th>
+        <td>
+            <div class="wpsms-value wpsms-users wpsms-users-roles">
+                <select id="wpsms_roles" name="wpsms_roles[]" multiple="multiple" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Role', 'wp-sms'); ?>">
+                    <?php
+                    foreach ($wpsms_list_of_role as $key_item => $val_item):
+                        ?>
+                        <!--echo Roles-->
+                        <option value="<?php echo $key_item; ?>"
+                            <?php
+                            if ($val_item['count'] < 1) {
+                                echo " disabled";
+                            } else {
+                                if (!empty($selected_roles) and in_array(strtolower($val_item['name']), $selected_roles)) {
+                                    echo 'selected';
+                                }
+                            }
+                            ?>
+                        >
+                            <?php _e($val_item['name'], 'wp-sms'); ?>
+                            (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </td>
+    </tr>
+    <!--Message Body-->
     <tr valign="top" id="wpsms-custom-text">
         <th scope="row">
             <label for="wpsms-text-template"><?php _e('Message body', 'wp-sms'); ?>:</label>
@@ -80,3 +91,38 @@
         </td>
     </tr>
 </table>
+
+<script type="text/javascript">
+    function showHideFields() {
+        const sendTo = jQuery('#wps-send-to').val()
+        if (sendTo == 'subscriber') {
+            jQuery('#wpsms-select-subscriber-group').show();
+            jQuery('#wpsms-select-numbers').hide();
+            jQuery('#wpsms-select-users').hide();
+            jQuery('#wpsms-custom-text').show();
+        } else if (sendTo == 'numbers') {
+            jQuery('#wpsms-select-subscriber-group').hide();
+            jQuery('#wpsms-select-numbers').show();
+            jQuery('#wpsms-select-users').hide();
+            jQuery('#wpsms-custom-text').show();
+        } else if (sendTo == 'users') {
+            jQuery('#wpsms-select-subscriber-group').hide();
+            jQuery('#wpsms-select-numbers').hide();
+            jQuery('#wpsms-select-users').show();
+            jQuery('#wpsms-custom-text').show();
+        } else {
+            jQuery('#wpsms-select-subscriber-group').hide();
+            jQuery('#wpsms-select-numbers').hide();
+            jQuery('#wpsms-select-users').hide();
+            jQuery('#wpsms-custom-text').hide();
+        }
+    }
+
+    jQuery(document).ready(function () {
+        showHideFields();
+
+        jQuery("#wps-send-to").on('change', function () {
+            showHideFields();
+        });
+    })
+</script>

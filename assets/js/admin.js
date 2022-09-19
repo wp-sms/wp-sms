@@ -114,6 +114,9 @@ let WpSmsNotifications = {
             },
             numbersField: {
                 element: jQuery('#wpsms_settings\\[notif_publish_new_post_numbers\\]'),
+            },
+            usersField: {
+                element: jQuery('#wpsms_settings\\[notif_publish_new_post_users\\]'),
             }
         }
     },
@@ -122,9 +125,15 @@ let WpSmsNotifications = {
         if (this.fields.receiverField.element.val() == 'subscriber') {
             this.fields.subscriberField.element.closest('tr').show()
             this.fields.numbersField.element.closest('tr').hide()
-        } else {
+            this.fields.usersField.element.closest('tr').hide()
+        } else if (this.fields.receiverField.element.val() == 'numbers') {
             this.fields.subscriberField.element.closest('tr').hide()
             this.fields.numbersField.element.closest('tr').show()
+            this.fields.usersField.element.closest('tr').hide()
+        } else if (this.fields.receiverField.element.val() == 'users') {
+            this.fields.subscriberField.element.closest('tr').hide()
+            this.fields.numbersField.element.closest('tr').hide()
+            this.fields.usersField.element.closest('tr').show()
         }
     },
 

@@ -88,6 +88,24 @@ class Helper
     }
 
     /**
+     * Prepare a list of WP roles
+     *
+     * @return array
+     */
+    public static function getListOfRoles()
+    {
+        $wpsms_list_of_role = array();
+        foreach (wp_roles()->role_names as $key_item => $val_item) {
+            $wpsms_list_of_role[$key_item] = array(
+                "name"  => $val_item,
+                "count" => count(self::getUsersMobileNumbers($key_item))
+            );
+        }
+
+        return $wpsms_list_of_role;
+    }
+
+    /**
      * @param $message
      * @return array|string|string[]|null
      */

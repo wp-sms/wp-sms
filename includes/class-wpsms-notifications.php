@@ -110,11 +110,21 @@ class Notifications
     {
         global $wpdb;
 
-        $get_group_result = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`");
+        $get_group_result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}sms_subscribes_group");
         $username_active  = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
-        $forceToSend      = isset($this->options['notif_publish_new_post_force']) ? true : false;
+        $forceToSend      = isset($this->options['notif_publish_new_post_force']);
         $defaultGroup     = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : false;
-        include_once WP_SMS_DIR . "includes/templates/meta-box.php";
+        $selected_roles   = isset($this->options['notif_publish_new_post_users']) ? $this->options['notif_publish_new_post_users'] : false;
+
+        echo Helper::loadTemplate('meta-box.php', [
+            'get_group_result'   => $get_group_result,
+            'selected_roles'     => $selected_roles,
+            'username_active'    => $username_active,
+            'forceToSend'        => $forceToSend,
+            'defaultGroup'       => $defaultGroup,
+            'wpsms_list_of_role' => Helper::getListOfRoles(),
+            'get_users_mobile'   => Helper::getUsersMobileNumbers(),
+        ]);
     }
 
     /**
@@ -149,7 +159,7 @@ class Notifications
             // post types selection
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
-            if (in_array($post->post_type, $specified_post_types) == false) {
+            if (!in_array($post->post_type, $specified_post_types)) {
                 return;
             }
 
@@ -157,6 +167,7 @@ class Notifications
             $defaultGroup        = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
             $defaultReceiver     = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
             $defaultPostTemplate = isset($this->options['notif_publish_new_post_template']) ? $this->options['notif_publish_new_post_template'] : '';
+            $selected_roles      = isset($this->options['notif_publish_new_post_users']) ? $this->options['notif_publish_new_post_users'] : false;
 
             if (count($_POST) == 0 && $update == 1 && $postID) {
                 return;
@@ -164,7 +175,7 @@ class Notifications
 
             if (is_admin() && isset($_POST['post_ID'])) {
                 $defaultReceiver     = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
-                $isForce             = ($defaultReceiver == '0' ? false : true);
+                $isForce             = !($defaultReceiver == '0');
                 $defaultGroup        = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : '';
                 $defaultPostTemplate = isset($_REQUEST['wpsms_text_template']) ? sanitize_text_field($_REQUEST['wpsms_text_template']) : '';
             }
@@ -178,6 +189,9 @@ class Notifications
                     }
                 } elseif ($defaultReceiver == 'numbers') {
                     $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
+                } elseif ($defaultReceiver == 'users') {
+                    $recipients    = Helper::getUsersMobileNumbers($selected_roles);
+                    $this->sms->to = $recipients;
                 }
 
                 $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
