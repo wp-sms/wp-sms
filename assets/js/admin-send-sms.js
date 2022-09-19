@@ -191,7 +191,7 @@ function sendSMS() {
                 jQuery(".wpsms-remove-button").trigger('click');
                 scrollToTop();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('input[name="SendSMS"]').removeAttr('disabled');
+                jQuery('input[name="SendSMS"]').prop('disabled', false);
                 jQuery('.wpsms-wrap__main__notice').removeClass('notice-error');
                 jQuery('.wpsms-wrap__main__notice').addClass('notice-success');
                 jQuery('.wpsms-wrap__notice__text').html(data.message);
@@ -207,7 +207,7 @@ function sendSMS() {
                 jQuery('.wpsms-wrap__notice__text').html(data.responseJSON.error.message);
                 jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('input[name="SendSMS"]').removeAttr('disabled');
+                jQuery('input[name="SendSMS"]').prop('disabled', false);
             }
         });
 }
@@ -310,7 +310,7 @@ const wpsmsRepeatingMessages = {
             if (this.elements.foreverCheckbox.is(':checked')) {
                 this.elements.endDatepicker.attr('disabled', 'disabled')
             } else {
-                this.elements.endDatepicker.removeAttr('disabled', 'disabled')
+                this.elements.endDatepicker.prop('disabled', false)
             }
         }.bind(this)
 
