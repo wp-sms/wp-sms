@@ -84,7 +84,7 @@ let WpSMSGeneral = {
     },
 
     addEventListener: function () {
-        this.fields.internatioanlMode.element.change(function () {
+        this.fields.internatioanlMode.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -138,7 +138,7 @@ let WpSmsNotifications = {
     },
 
     addEventListener: function () {
-        this.fields.receiverField.element.change(function () {
+        this.fields.receiverField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -183,7 +183,7 @@ let WpSmsBuddyPress = {
     },
 
     addEventListener: function () {
-        this.fields.mobileNumberField.element.change(function () {
+        this.fields.mobileNumberField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -241,13 +241,13 @@ let WpSmsWoocommerce = {
     },
 
     addEventListener: function () {
-        this.fields.receiverField.element.change(function () {
+        this.fields.receiverField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
 
     addEventListener: function () {
-        this.fields.checkoutMobileField.element.change(function () {
+        this.fields.checkoutMobileField.element.on('change', function () {
             this.hideOrShowFields2();
         }.bind(this));
     },
@@ -292,7 +292,7 @@ let WpSmsJobManager = {
     },
 
     addEventListener: function () {
-        this.fields.receiverField.element.change(function () {
+        this.fields.receiverField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -353,7 +353,7 @@ let WpSmsUltimateMember = {
     },
 
     addEventListener: function () {
-        this.fields.mobileNumberField.element.change(function () {
+        this.fields.mobileNumberField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },

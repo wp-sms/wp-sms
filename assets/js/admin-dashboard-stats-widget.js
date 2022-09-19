@@ -169,8 +169,8 @@ const WPSmsStatsWidget = {
             chart.update()
         }.bind(this)
 
-        this.elements.timeFrameSelect.change(action)
-        this.elements.smsDirection.change(action)
+        this.elements.timeFrameSelect.on('change', action)
+        this.elements.smsDirection.on('change', action)
     },
 
     initChart: function () {

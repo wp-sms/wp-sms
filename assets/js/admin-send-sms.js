@@ -4,7 +4,7 @@
     jQuery(".wpsms-value").hide();
     jQuery(".wpsms-group").show();
 
-    jQuery("select#select_sender").change(function () {
+    jQuery("select#select_sender").on('change', function () {
         recipientsSelect();
     });
 
@@ -25,7 +25,7 @@
             defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
         });
 
-        jQuery("#schedule_status").change(function () {
+        jQuery("#schedule_status").on('change', function () {
             if (jQuery(this).is(":checked")) {
                 jQuery('#schedule_date').show();
             } else {
@@ -301,8 +301,8 @@ const wpsmsRepeatingMessages = {
         handler();
 
         //Event listeners
-        this.elements.statusCheckbox.change(handler)
-        this.elements.parentCheckbox.change(handler)
+        this.elements.statusCheckbox.on('change', handler)
+        this.elements.parentCheckbox.on('change', handler)
     },
 
     handleEndDateField: function () {
@@ -317,7 +317,7 @@ const wpsmsRepeatingMessages = {
         handler()
 
         //Event listener
-        this.elements.foreverCheckbox.change(handler)
+        this.elements.foreverCheckbox.on('change', handler)
     },
 
     getData: function () {
