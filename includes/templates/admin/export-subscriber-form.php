@@ -20,7 +20,7 @@
                 <td style="padding-top: 10px;">
                     <?php if (count($groups)) : ?>
                         <div class="wpsms-value wpsms-group">
-                            <p class="thickbox-description"><?php __("You can choose to export a specific group by selecting its name, or export all subscribers by leaving it blank.", 'wp-sms') ?></p>
+                            <p class="thickbox-description"><?php _e("You can choose to export a specific group(s) by selecting them, or export all subscribers by leaving the input form blank.", 'wp-sms') ?></p>
                             <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the group(s).', 'wp-sms'); ?>" style="width: 100% !important;">
                                 <?php foreach ($groups as $group): ?>
                                     <option value="<?php echo $group->ID; ?>">
