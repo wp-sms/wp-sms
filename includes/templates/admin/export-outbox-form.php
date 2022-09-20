@@ -18,7 +18,7 @@
         <table>
             <tr>
                 <td style="padding-top: 10px;">
-                    <p> <?php _e('The data will be exported to a *.csv file.', 'wp-sms'); ?> </p>
+                    <p> <?php _e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 
