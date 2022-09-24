@@ -26,7 +26,7 @@ class Gateway
             'nexmo'          => 'nexmo.com',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
-            'smstos'         => 'sms.to',
+            'smsto'         => 'sms.to',
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
