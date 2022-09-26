@@ -99,6 +99,7 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/Controller/SubscriberFormAjax.php';
         require_once WP_SMS_DIR . 'includes/Controller/GroupFormAjax.php';
         require_once WP_SMS_DIR . 'includes/Controller/ExportAjax.php';
+        require_once WP_SMS_DIR . 'includes/Controller/ImportAjax.php';
         require_once WP_SMS_DIR . 'includes/Controller/ControllerManager.php';
 
         $controllerManager = new \WP_SMS\Controller\ControllerManager();

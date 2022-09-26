@@ -73,7 +73,8 @@ class Admin
                     'restRootUrl'   => esc_url_raw(rest_url()),
                     'nonce'         => wp_create_nonce('wp_rest'),
                     'senderID'      => $sms->from,
-                    'exportAjaxUrl' => \WP_SMS\Controller\ExportAjax::url()
+                    'exportAjaxUrl' => \WP_SMS\Controller\ExportAjax::url(),
+                    'importAjaxUrl' => \WP_SMS\Controller\ImportAjax::url()
                 )
             );
 
