@@ -119,6 +119,8 @@
     }
 
     jQuery(document).ready(function () {
+        jQuery('#wps-send-to').val(0);
+        jQuery('#wps-send-to').change();
         showHideFields();
 
         jQuery("#wps-send-to").on('change', function () {
