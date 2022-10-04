@@ -26,7 +26,7 @@ class Gateway
             'nexmo'          => 'nexmo.com',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
-            'smsto'         => 'sms.to',
+            'smsto'          => 'sms.to',
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
@@ -90,6 +90,7 @@ class Gateway
             'teletopiasms'   => 'teletopiasms.no',
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
+            'smspoh'         => 'smspoh.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
