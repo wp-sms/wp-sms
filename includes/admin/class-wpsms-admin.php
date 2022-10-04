@@ -67,14 +67,20 @@ class Admin
                 wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION);
             }
 
+            if (stristr($screen->id, 'subscribers')) {
+                wp_enqueue_script('wpsms-upload-subscriber-csv', WP_SMS_URL . 'assets/js/upload-subscriber-csv.js', true, WP_SMS_VERSION);
+                wp_enqueue_script('wpsms-import-subscriber', WP_SMS_URL . 'assets/js/import-subscriber.js', true, WP_SMS_VERSION);
+            }
+
             wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-export', WP_SMS_URL . 'assets/js/admin-export.js', true, WP_SMS_VERSION);
             wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
-                    'restRootUrl'   => esc_url_raw(rest_url()),
-                    'nonce'         => wp_create_nonce('wp_rest'),
-                    'senderID'      => $sms->from,
-                    'exportAjaxUrl' => \WP_SMS\Controller\ExportAjax::url(),
-                    'importAjaxUrl' => \WP_SMS\Controller\ImportAjax::url()
+                    'restRootUrl'         => esc_url_raw(rest_url()),
+                    'nonce'               => wp_create_nonce('wp_rest'),
+                    'senderID'            => $sms->from,
+                    'exportAjaxUrl'       => \WP_SMS\Controller\ExportAjax::url(),
+                    'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
+                    'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
                 )
             );
 

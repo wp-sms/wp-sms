@@ -14,17 +14,25 @@
     </div>
 
     <form class="js-wpSmsImportForm" method="post" enctype="multipart/form-data">
+        <p id="first-row-label" style="display: none">Specify data type if each column.</p>
         <table>
-            <tr>
+            <tr class="js-WpSmsHiddenAfterUpload">
                 <td style="padding-top: 10px;">
                     <input type="file" accept="text/csv" id="wp-sms-input-file">
                     <p>The only acceptable format is <code>*.csv.</code></p>
                 </td>
             </tr>
 
+            <tr class="js-WpSmsHiddenAfterUpload">
+                <td style="padding-top: 10px;">
+                    <input type="checkbox" id="file-has-header">
+                    <label for="file-has-header">Check the box if the file includes headers. </label>
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="2" style="padding-top: 20px;">
-                    <input type="submit" class="button-primary" name="wps_import" value="<?php _e('Upload', 'wp-sms'); ?>"/>
+                    <input type="submit" class="js-wpSmsImportButton button-primary" name="wps_import" value="<?php _e('Upload', 'wp-sms'); ?>"/>
                 </td>
             </tr>
         </table>
