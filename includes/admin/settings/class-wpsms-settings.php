@@ -215,7 +215,6 @@ class Settings
         // Loop through the whitelist and unset any that are empty for the tab being saved
         if (!empty($settings[$tab])) {
             foreach ($settings[$tab] as $key => $value) {
-
                 // settings used to have numeric keys, now they have keys that match the option ID. This ensures both methods work
                 if (is_numeric($key)) {
                     $key = $value['id'];
@@ -1607,6 +1606,33 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
+                'g_recaptcha'                                 => array(
+                    'id'   => 'g_recaptcha',
+                    'name' => __('Google recaptcha', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'g_recaptcha_status'                          => array(
+                    'id'      => 'g_recaptcha_status',
+                    'name'    => __('Activate', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('By enabling this option, google recaptcha v2 will be added to request-sms actions.', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
+                ),
+                'g_recaptcha_site_key'                          => array(
+                    'id'      => 'g_recaptcha_site_key',
+                    'name'    => __('Site Key', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Please enter your v2 recaptcha site key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
+                ),
+                'g_recaptcha_secret_key'                          => array(
+                    'id'      => 'g_recaptcha_secret_key',
+                    'name'    => __('Secret Key', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Please enter your v2 recaptcha secret key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled
+                ),
             )),
 
             /**
@@ -2321,7 +2347,7 @@ class Settings
                             <table class="form-table">
                                 <?php
                                 settings_fields($this->setting_name);
-                                do_settings_fields("{$this->setting_name}_{$active_tab}", "{$this->setting_name}_{$active_tab}"); ?>
+        do_settings_fields("{$this->setting_name}_{$active_tab}", "{$this->setting_name}_{$active_tab}"); ?>
                             </table>
 
                             <?php
@@ -2448,7 +2474,6 @@ class Settings
         }
 
         foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
-
             // license title
             $settings["license_{$addOnKey}_title"] = array(
                 'id'   => "license_{$addOnKey}_title",
