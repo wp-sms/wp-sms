@@ -13,7 +13,7 @@
         <div class="wp-sms-popup-messages"></div>
     </div>
 
-    <form class="js-wpSmsImportForm" method="post" enctype="multipart/form-data">
+    <form class="js-wpSmsUploadForm" method="post" enctype="multipart/form-data">
         <p id="first-row-label" style="display: none">Specify data type if each column.</p>
         <table>
             <tr class="js-WpSmsHiddenAfterUpload">
@@ -32,7 +32,7 @@
 
             <tr>
                 <td colspan="2" style="padding-top: 20px;">
-                    <input type="submit" class="js-wpSmsImportButton button-primary" name="wps_import" value="<?php _e('Upload', 'wp-sms'); ?>"/>
+                    <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php _e('Upload', 'wp-sms'); ?>"/>
                 </td>
             </tr>
         </table>

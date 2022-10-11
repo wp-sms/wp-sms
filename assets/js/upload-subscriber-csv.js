@@ -1,8 +1,8 @@
 jQuery(document).ready(function () {
-    wpSmsUploadCsv.init();
+    wpSmsUploadSubscriberCsv.init();
 });
 
-let wpSmsUploadCsv = {
+let wpSmsUploadSubscriberCsv = {
 
     /**
      * initialize functions
@@ -16,14 +16,17 @@ let wpSmsUploadCsv = {
      * initialize JQ selectors
      */
     setFields: function () {
-        this.importForm = jQuery('.js-wpSmsImportForm')
+        this.uploadForm = jQuery('.js-wpSmsUploadForm')
     },
 
     addEventListener: function () {
-        this.importForm.on('submit', function (event) {
+        this.uploadForm.on('submit', function (event) {
 
             // avoid to execute the actual submit of the form
             event.preventDefault()
+
+            let uploadForm = jQuery('.js-wpSmsUploadForm')
+            let uploadButton = jQuery('.js-wpSmsUploadButton')
 
             var fileData = jQuery('#wp-sms-input-file')[0].files
             var fromData = new FormData()
@@ -50,53 +53,57 @@ let wpSmsUploadCsv = {
 
                 // enabling loader
                 beforeSend: function () {
-                    jQuery('.js-wpSmsImportButton').attr('disabled', 'disabled')
+                    jQuery('.js-wpSmsUploadButton').attr('disabled', 'disabled')
                     jQuery('.wpsms-sendsms__overlay').css('display', 'flex')
                 },
 
                 // successful request
                 success: function (request, data, xhr) {
-                    jQuery('.js-wpSmsImportButton').prop('disabled', false)
+                    uploadButton.prop('disabled', false)
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
                     jQuery('.js-WpSmsHiddenAfterUpload').css('display', 'none')
-                    jQuery('.js-wpSmsImportButton').prop('value', 'Import')
+                    uploadButton.prop('value', 'Import')
                     jQuery('#first-row-label').css('display', 'block')
+
 
                     var firstRow = JSON.parse(xhr.getResponseHeader("FirstRow-content"))
 
                     firstRow.forEach(function (item) {
-                        jQuery('.js-wpSmsImportButton').before(
+                        uploadButton.before(
                             '<tr>' +
-                                '<td>' +
-                                item +
-                                '</td>' +
-                                '<td>' +
-                                    '<select id="first-row-dropdown">' +
-                                        '<option>Please Select</option>' +
-                                        '<option value="ID">ID</option>' +
-                                        '<option value="date">Date</option>' +
-                                        '<option value="name">Name</option>' +
-                                        '<option value="mobile">Mobile</option>' +
-                                        '<option value="status">Status</option>' +
-                                        '<option value="group_ID">Group ID</option>' +
-                                    '</select>' +
-                                '</td>' +
+                            '<td>' +
+                            item +
+                            '</td>' +
+                            '<td>' +
+                            '<select class="import-column-type">' +
+                            '<option>Please Select</option>' +
+                            '<option value="name">Name</option>' +
+                            '<option value="mobile">Mobile</option>' +
+                            '<option value="group_ID">Group ID</option>' +
+                            '</select>' +
+                            '</td>' +
                             '</tr>'
                         )
                     })
+
+                    uploadForm.addClass('js-wpSmsImportForm')
+                    uploadButton.addClass('js-wpSmsImportButton')
+                    uploadForm.removeClass('js-wpSmsUploadForm')
+                    uploadButton.removeClass('js-wpSmsUploadButton')
+
                 },
 
                 // failed request
                 error: function (data, response, xhr) {
-                    jQuery('.js-wpSmsImportButton').prop('disabled', false)
+
+                    uploadButton.prop('disabled', false)
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
 
-                    console.log('Failed')
                 }
 
             })
 
-        }.bind(this));
+        }.bind(this))
     },
 
 }

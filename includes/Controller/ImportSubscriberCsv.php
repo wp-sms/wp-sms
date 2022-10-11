@@ -13,7 +13,6 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
     {
         try {
 
-
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage(), $e->getCode());
         }
