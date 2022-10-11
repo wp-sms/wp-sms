@@ -71,16 +71,22 @@ class liveall extends \WP_SMS\Gateway
                 throw new \Exception($credit->get_error_message());
             }
 
-            $params = json_encode([
-                'apitoken' => $this->has_key,
-                'senderid' => $this->from,
-                'messages' => array_map(function ($number) {
-                    return ['destination' => $number, 'message' => $this->msg];
-                }, $this->to),
-            ]);
-
-            file_put_contents('log', print_r($params, true));
-
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => json_encode([
+                    'apitoken' => $this->has_key,
+                    'senderid' => $this->from,
+                    'messages' => array_map(function ($number) {
+                        return [
+                            'destination' => $number,
+                            'message'     => $this->msg
+                        ];
+                    }, $this->to),
+                ])
+            ];
+            
             $response = $this->request('POST', "{$this->wsdl_link}/Sendout/SendJSMS", [], $params);
 
             if (isset($response->success) && !$response->success) {
