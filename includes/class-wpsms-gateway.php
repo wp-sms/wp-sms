@@ -809,6 +809,7 @@ class Gateway
             ),
             'greece'               => array(
                 'smsnetgr' => 'sms.net.gr',
+                'liveall'  => 'liveall.eu',
             ),
             'malaysia'             => array(
                 'onewaysms' => 'onewaysms.com',
