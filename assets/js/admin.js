@@ -26,7 +26,7 @@
         if (data.text.indexOf(params.term) > -1 || data.element.getAttribute('value') !== null && data.element.getAttribute('value').toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
             var modifiedData = $.extend({}, data, true);
             modifiedData.text += ' (matched)';
-            
+
             // You can return modified objects from here
             // This includes matching the `children` how you want in nested data sets
             return modifiedData;
