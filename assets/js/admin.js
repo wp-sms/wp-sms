@@ -38,13 +38,6 @@
 
     const WpSmsSelect2Options = {
         placeholder: "Please select",
-        matcher: matchCustom,
-        sortResults: function (results) {
-            if (results.length > 1) {
-                results.pop();
-            }
-            return results;
-        },
     };
 
     if (WpSmsExportForm.length) {

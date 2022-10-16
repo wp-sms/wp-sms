@@ -2332,7 +2332,7 @@ class Settings
         $html       = sprintf('<select class="%1$s" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
-            $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
+            $html     .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $key)));
 
             foreach ($v as $option => $name) {
                 $disabled = '';
