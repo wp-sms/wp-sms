@@ -68,7 +68,6 @@ class Admin
             }
 
             if (stristr($screen->id, 'subscribers')) {
-                wp_enqueue_script('wpsms-upload-subscriber-csv', WP_SMS_URL . 'assets/js/upload-subscriber-csv.js', true, WP_SMS_VERSION);
                 wp_enqueue_script('wpsms-import-subscriber', WP_SMS_URL . 'assets/js/import-subscriber.js', true, WP_SMS_VERSION);
             }
 

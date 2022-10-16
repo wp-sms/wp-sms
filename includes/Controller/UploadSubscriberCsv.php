@@ -44,12 +44,21 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
                     $first_row = fgetcsv($csvFile);
                 }
 
+				$fileName = $_FILES['file']['name'];
+
+                $destination = wp_upload_dir();
+                $destination = $destination['path'] . '/' . $_FILES['file']['name'];
+
+                move_uploaded_file($_FILES['file']['tmp_name'], $destination);
+
                 // Close opened CSV file
                 fclose($csvFile);
 
                 $first_row = json_encode($first_row);
 
                 header("FirstRow-content: {$first_row}");
+                header("X-FirstTempPath-content: {$_FILES['file']['tmp_name']}");
+                header("X-FirstName-content: {$first_row}");
 
             }
         } catch (Exception $e) {

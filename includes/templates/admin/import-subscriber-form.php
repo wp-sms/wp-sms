@@ -30,9 +30,36 @@
                 </td>
             </tr>
 
+            <tr id="wp-sms-group-select" style="display: none">
+                <td colspan="2" style="padding-top: 20px;">
+                    <p>Choose a group to import.</p>
+                    <select>
+                        <option value="0">Please Select</option>
+                        <option value="new_group">Add a new group</option>
+						<?php
+						if ( $groups ) :
+							foreach ( $groups as $group ) :
+								?>
+                                <option value="<?php echo esc_attr( $group->ID ); ?>"><?php echo esc_attr( $group->name ); ?></option>
+							<?php
+							endforeach;
+						endif;
+						?>
+                    </select>
+                </td>
+            </tr>
+
+            <tr id="wp-sms-group-name" style="display: none">
+                <td>
+                    <label for="wp-sms-select-group-name">Group Name: </label>
+                    <input type="text" id="wp-sms-select-group-name">
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="2" style="padding-top: 20px;">
-                    <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php _e('Upload', 'wp-sms'); ?>"/>
+                    <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php _e( 'Upload', 'wp-sms' ); ?>"/>
+                    <input type="submit" class="js-wpSmsImportButton button-primary" style="display: none;" value="<?php _e( 'Import', 'wp-sms' ); ?>"/>
                 </td>
             </tr>
         </table>
