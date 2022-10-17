@@ -12,6 +12,7 @@ let wpSmsImportSubscriber = {
         this.uploadEventListener()
         this.selectColumnFileHeaderEventListener()
         this.selectOrAddGroup()
+        this.disableSelectedOptions()
         this.importEventListener()
     },
 
@@ -70,7 +71,7 @@ let wpSmsImportSubscriber = {
                     uploadButton.css('display', 'none')
                     importButton.css('display', 'block')
 
-                    var firstRow = JSON.parse(xhr.getResponseHeader("FirstRow-content"))
+                    var firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
 
                     firstRow.forEach(function (item) {
                         jQuery('#wp-sms-group-select').before(
@@ -139,6 +140,19 @@ let wpSmsImportSubscriber = {
 
     },
 
+    disableSelectedOptions: function () {
+        jQuery('body').on('change', '#wp-sms-group-select select', function (event) {
+            var selectedOption = jQuery('#wp-sms-group-select select').val()
+
+            switch (selectedOption) {
+                case '0':
+                    break
+                default:
+                    break
+            }
+        })
+    },
+
     importEventListener: function () {
         this.importButton.on('click', function (event) {
 
@@ -202,7 +216,7 @@ let wpSmsImportSubscriber = {
                     importButton.prop('disabled', false)
                     jQuery('.wpsms-sendsms__overlay').css('display', 'none')
 
-                    location.reload()
+                    //location.reload()
                 },
 
                 // failed request
