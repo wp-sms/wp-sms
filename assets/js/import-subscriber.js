@@ -98,7 +98,7 @@ let wpSmsImportSubscriber = {
                             )
                         })
 
-                    }, 2000)
+                    }, 1000)
                 },
 
                 // failed request
@@ -243,7 +243,7 @@ let wpSmsImportSubscriber = {
 
                     setTimeout(function () {
                         location.reload()
-                    }, 2000)
+                    }, 1000)
                 },
 
                 // failed request

@@ -22,8 +22,6 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		$state        = $this->get( 'state' );
 		$has_header   = $this->get( 'hasHeader' );
 
-		file_put_contents('log', print_r($name_index, true));
-
 		// Start session
 		Helper::maybeStartSession();
 
