@@ -63,40 +63,57 @@ let wpSmsImportSubscriber = {
                 },
 
                 // successful request
-                success: function (request, data, xhr) {
-                    uploadButton.prop('disabled', false)
-                    jQuery('.js-wpSmsOverlay').css('display', 'none')
-                    jQuery('.js-WpSmsHiddenAfterUpload').css('display', 'none')
-                    jQuery('#first-row-label').css('display', 'block')
-                    uploadButton.css('display', 'none')
-                    importButton.css('display', 'block')
+                success: function (response, data, xhr) {
+                    setTimeout(function () {
 
-                    var firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
+                        uploadButton.prop('disabled', false)
+                        jQuery('.js-wpSmsOverlay').css('display', 'none')
+                        jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-error')
+                        jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-success')
+                        jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html('<p>' + response.data + '</p>')
+                        jQuery('.js-wpSmsImportPopup').removeClass('hidden')
+                        jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
+                        jQuery('.js-WpSmsHiddenAfterUpload').css('display', 'none')
+                        jQuery('#first-row-label').css('display', 'block')
+                        uploadButton.css('display', 'none')
+                        importButton.css('display', 'block')
 
-                    firstRow.forEach(function (item) {
-                        jQuery('.js-wpSmsGroupSelect').before(
-                            '<tr class="wp-sms-data-type-row js-wpSmsDataTypeRow">' +
-                            '<td class="wp-sms-data-type-header">' +
-                            item +
-                            '</td>' +
-                            '<td class="wp-sms-data-type-select-tag">' +
-                            '<select class="import-column-type js-wpSmsImportColumnType">' +
-                            '<option value="0">Please Select</option>' +
-                            '<option value="name">Name</option>' +
-                            '<option value="mobile">Mobile</option>' +
-                            '<option value="group">Group ID</option>' +
-                            '</select>' +
-                            '</td>' +
-                            '</tr>'
-                        )
-                    })
+                        var firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
 
+                        firstRow.forEach(function (item) {
+                            jQuery('.js-wpSmsGroupSelect').before(
+                                '<tr class="wp-sms-data-type-row js-wpSmsDataTypeRow">' +
+                                '<td class="wp-sms-data-type-header">' +
+                                item +
+                                '</td>' +
+                                '<td class="wp-sms-data-type-select-tag">' +
+                                '<select class="import-column-type js-wpSmsImportColumnType">' +
+                                '<option value="0">Please Select</option>' +
+                                '<option value="name">Name</option>' +
+                                '<option value="mobile">Mobile</option>' +
+                                '<option value="group">Group ID</option>' +
+                                '</select>' +
+                                '</td>' +
+                                '</tr>'
+                            )
+                        })
+
+                    }, 2000)
                 },
 
                 // failed request
                 error: function (data, response, xhr) {
                     uploadButton.prop('disabled', false)
+
+                    //disable loading spinner
                     jQuery('.js-wpSmsOverlay').css('display', 'none')
+
+                    //print error messages
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-success')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-error')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html("<p>" + data.responseJSON.data + "</p>");
+                    jQuery('.js-wpSmsImportPopup').removeClass('hidden')
+                    jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
                 }
 
             })
@@ -171,8 +188,8 @@ let wpSmsImportSubscriber = {
             let selectGroupColumn = jQuery('.js-wpSmsImportColumnType')
 
             selectGroupColumn.each(function (index) {
-                if (jQuery(this).val() !== '0') {
-                    var objectKey = jQuery(this).val()
+                if (jQuery(this).find('option:selected').val() !== '0') {
+                    var objectKey = jQuery(this).find('option:selected').val()
                     requestBody[objectKey] = index
                 }
             })
@@ -215,18 +232,29 @@ let wpSmsImportSubscriber = {
                 },
 
                 // successful request
-                success: function (request, data, xhr) {
+                success: function (request, data, response) {
                     importButton.prop('disabled', false)
                     jQuery('.js-wpSmsOverlay').css('display', 'none')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-error')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-success')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html('<p>' + response.responseJSON.data + '</p>')
+                    jQuery('.js-wpSmsImportPopup').removeClass('hidden')
+                    jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
 
-                    // location.reload()
+                    setTimeout(function () {
+                        location.reload()
+                    }, 2000)
                 },
 
                 // failed request
                 error: function (data, response, xhr) {
                     importButton.prop('disabled', false)
                     jQuery('.js-wpSmsOverlay').css('display', 'none')
-                    console.log('failed')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-success')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-error')
+                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html("<p>" + data.responseJSON.data + "</p>");
+                    jQuery('.js-wpSmsImportPopup').removeClass('hidden')
+                    jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
                 }
             })
 

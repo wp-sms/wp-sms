@@ -22,6 +22,8 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		$state        = $this->get( 'state' );
 		$has_header   = $this->get( 'hasHeader' );
 
+		file_put_contents('log', print_r($name_index, true));
+
 		// Start session
 		Helper::maybeStartSession();
 
@@ -31,7 +33,11 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		$destination = $destination['path'] . '/' . $file;
 		$csvFile     = file( $destination );
 
-		unset($_SESSION['wp_sms_import_file']);
+		if ( empty( $csvFile ) ) {
+			throw new Exception( __( 'There is no file to import. Please try again to upload the file.', 'wp-sms' ) );
+		}
+
+		unset( $_SESSION['wp_sms_import_file'] );
 
 		$lines   = count( $csvFile );
 		$counter = 0;
@@ -60,7 +66,8 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		}
 
 		//delete the uploaded file
-		unlink($destination);
+		unlink( $destination );
 
+		wp_send_json_success(__('Data imported successfully.', 'wp-sms'));
 	}
 }

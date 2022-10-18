@@ -9,12 +9,12 @@
     </div>
 
     <!-- Show request message the client -->
-    <div class="wpsms-wrap wpsms-export-popup">
-        <div class="wp-sms-popup-messages"></div>
+    <div class="wpsms-wrap wpsms-import-popup js-wpSmsImportPopup">
+        <div class="wp-sms-popup-messages js-wpSmsPopupMessage"></div>
     </div>
 
     <form class="js-wpSmsUploadForm wp-sms-upload-form" method="post" enctype="multipart/form-data">
-        <p id="first-row-label" style="display: none"><?php _e('Specify data type if each column.', 'wp-sms'); ?></p>
+        <p id="first-row-label" style="display: none"><?php _e('Now, please specify data type if each column.', 'wp-sms'); ?></p>
         <table>
             <tr class="js-WpSmsHiddenAfterUpload">
                 <td style="padding-top: 10px;">

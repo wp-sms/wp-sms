@@ -11,7 +11,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract {
 
 	protected function run() {
 		if ( empty( $_FILES["file"]["name"] ) ) {
-			throw new Exception( 'No file is uploaded.' );
+			throw new Exception( __('Choose a *.csv file, first.', 'wp-sms') );
 		}
 
 		// Allowed mime types
@@ -57,6 +57,9 @@ class UploadSubscriberCsv extends AjaxControllerAbstract {
 			Helper::maybeStartSession();
 
 			$_SESSION['wp_sms_import_file'] = $_FILES['file']['name'];
+
+			wp_send_json_success(__('File uploaded successfully.', 'wp-sms'));
+
 		}
 	}
 }
