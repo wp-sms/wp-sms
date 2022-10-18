@@ -43,7 +43,7 @@ let wpSmsImportSubscriber = {
             // check whether the file has header
             var hasHeader = false
 
-            if (jQuery('#file-has-header').is(':checked')) {
+            if (jQuery('.js-wpSmsFileHasHeader').is(':checked')) {
                 hasHeader = true
             }
 
@@ -59,13 +59,13 @@ let wpSmsImportSubscriber = {
                 // enabling loader
                 beforeSend: function () {
                     jQuery('.js-wpSmsUploadButton').attr('disabled', 'disabled')
-                    jQuery('.wpsms-sendsms__overlay').css('display', 'flex')
+                    jQuery('.js-wpSmsOverlay').css('display', 'flex')
                 },
 
                 // successful request
                 success: function (request, data, xhr) {
                     uploadButton.prop('disabled', false)
-                    jQuery('.wpsms-sendsms__overlay').css('display', 'none')
+                    jQuery('.js-wpSmsOverlay').css('display', 'none')
                     jQuery('.js-WpSmsHiddenAfterUpload').css('display', 'none')
                     jQuery('#first-row-label').css('display', 'block')
                     uploadButton.css('display', 'none')
@@ -74,13 +74,13 @@ let wpSmsImportSubscriber = {
                     var firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
 
                     firstRow.forEach(function (item) {
-                        jQuery('#wp-sms-group-select').before(
-                            '<tr>' +
-                            '<td>' +
+                        jQuery('.js-wpSmsGroupSelect').before(
+                            '<tr class="wp-sms-data-type-row">' +
+                            '<td class="wp-sms-data-type-header">' +
                             item +
                             '</td>' +
-                            '<td>' +
-                            '<select class="import-column-type">' +
+                            '<td class="wp-sms-data-type-select-tag">' +
+                            '<select class="import-column-type js-wpSmsImportColumnType">' +
                             '<option value="0">Please Select</option>' +
                             '<option value="name">Name</option>' +
                             '<option value="mobile">Mobile</option>' +
@@ -96,7 +96,7 @@ let wpSmsImportSubscriber = {
                 // failed request
                 error: function (data, response, xhr) {
                     uploadButton.prop('disabled', false)
-                    jQuery('.wpsms-sendsms__overlay').css('display', 'none')
+                    jQuery('.js-wpSmsOverlay').css('display', 'none')
                 }
 
             })
@@ -105,10 +105,10 @@ let wpSmsImportSubscriber = {
     },
 
     selectColumnFileHeaderEventListener: function () {
-        jQuery('body').on('change', '.import-column-type', function (event) {
+        jQuery('body').on('change', '.js-wpSmsImportColumnType', function (event) {
             var isGroupSelected = false
 
-            jQuery('.import-column-type').each(function () {
+            jQuery('.js-wpSmsImportColumnType').each(function () {
                 // check if the group id is selected
                 if (jQuery(this).val() === 'group') {
                     isGroupSelected = true
@@ -116,11 +116,11 @@ let wpSmsImportSubscriber = {
             })
 
             if (isGroupSelected) {
-                jQuery('#wp-sms-group-select').css('display', 'none')
+                jQuery('.js-wpSmsGroupSelect').css('display', 'none')
                 jQuery('.js-wpSmsUploadForm').addClass('hasGroup')
                 jQuery('.js-wpSmsUploadForm').removeClass('noGroup')
             } else {
-                jQuery('#wp-sms-group-select').css('display', 'block')
+                jQuery('.js-wpSmsGroupSelect').css('display', 'block')
                 jQuery('.js-wpSmsUploadForm').addClass('noGroup')
                 jQuery('.js-wpSmsUploadForm').removeClass('hasGroup')
             }
@@ -129,27 +129,27 @@ let wpSmsImportSubscriber = {
     },
 
     selectOrAddGroup: function () {
-
-        jQuery('body').on('change', '#wp-sms-group-select select', function (event) {
-            if (jQuery('#wp-sms-group-select select').val() === 'new_group') {
-                jQuery('#wp-sms-group-name').css('display', 'block')
+        jQuery('body').on('change', '.js-wpSmsGroupSelect select', function (event) {
+            if (jQuery('.js-wpSmsGroupSelect select').val() === 'new_group') {
+                jQuery('.js-wpSmsGroupName').css('display', 'block')
             } else {
-                jQuery('#wp-sms-group-name').css('display', 'none')
+                jQuery('.js-wpSmsGroupName').css('display', 'none')
             }
         })
-
     },
 
     disableSelectedOptions: function () {
-        jQuery('body').on('change', '#wp-sms-group-select select', function (event) {
-            var selectedOption = jQuery('#wp-sms-group-select select').val()
+        jQuery('body').on('change', '.js-wpSmsImportColumnType', function (event) {
 
-            switch (selectedOption) {
-                case '0':
-                    break
-                default:
-                    break
-            }
+            var selectedOptions = []
+
+            jQuery('.js-wpSmsImportColumnType').each(function () {
+                var value = jQuery(this).val()
+                if (value !== '0') {
+                    selectedOptions.push(value)
+                }
+            })
+            console.log(selectedOptions)
         })
     },
 
@@ -161,7 +161,7 @@ let wpSmsImportSubscriber = {
 
             let importButton = jQuery('.js-wpSmsImportButton')
             let requestBody = {}
-            let selectGroupColumn = jQuery('.import-column-type')
+            let selectGroupColumn = jQuery('.js-wpSmsImportColumnType')
 
             selectGroupColumn.each(function (index) {
                 if (jQuery(this).val() !== '0') {
@@ -171,8 +171,8 @@ let wpSmsImportSubscriber = {
             })
 
             if (!requestBody.group) {
-                var selectedGroupOption = jQuery('#wp-sms-group-select select').val()
-                var groupName = jQuery('#wp-sms-select-group-name').val()
+                var selectedGroupOption = jQuery('.js-wpSmsGroupSelect select').val()
+                var groupName = jQuery('.js-wpSmsSelectGroupName').val()
 
                 switch (selectedGroupOption) {
                     case '0':
@@ -192,12 +192,8 @@ let wpSmsImportSubscriber = {
                 }
             }
 
-            if (jQuery('#file-has-header').is(':checked')) {
+            if (jQuery('.js-wpSmsFileHasHeader').is(':checked')) {
                 requestBody.hasHeader = true
-            }
-
-            if (!requestBody.name || !requestBody.mobile) {
-                //TODO error handler
             }
 
             jQuery.ajax({
@@ -208,21 +204,21 @@ let wpSmsImportSubscriber = {
                 // enabling loader
                 beforeSend: function () {
                     jQuery('.js-wpSmsUploadButton').attr('disabled', 'disabled')
-                    jQuery('.wpsms-sendsms__overlay').css('display', 'flex')
+                    jQuery('.js-wpSmsOverlay').css('display', 'flex')
                 },
 
                 // successful request
                 success: function (request, data, xhr) {
                     importButton.prop('disabled', false)
-                    jQuery('.wpsms-sendsms__overlay').css('display', 'none')
+                    jQuery('.js-wpSmsOverlay').css('display', 'none')
 
-                    //location.reload()
+                    // location.reload()
                 },
 
                 // failed request
                 error: function (data, response, xhr) {
                     importButton.prop('disabled', false)
-                    jQuery('.wpsms-sendsms__overlay').css('display', 'none')
+                    jQuery('.js-wpSmsOverlay').css('display', 'none')
                     console.log('failed')
                 }
             })

@@ -1,6 +1,6 @@
 <div id="wp-sms-import-from" style="display:none;">
 
-    <div class="wpsms-sendsms__overlay">
+    <div class="js-wpSmsOverlay wpsms-sendsms__overlay">
         <svg class="wpsms-sendsms__overlay__spinner" xmlns="http://www.w3.org/2000/svg" style="margin:auto;background:0 0" width="200" height="200" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" display="block">
             <circle cx="50" cy="50" fill="none" stroke="#c6c6c6" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138">
                 <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
@@ -13,29 +13,29 @@
         <div class="wp-sms-popup-messages"></div>
     </div>
 
-    <form class="js-wpSmsUploadForm" method="post" enctype="multipart/form-data">
-        <p id="first-row-label" style="display: none">Specify data type if each column.</p>
+    <form class="js-wpSmsUploadForm wp-sms-upload-form" method="post" enctype="multipart/form-data">
+        <p id="first-row-label" style="display: none"><?php _e('Specify data type if each column.', 'wp-sms'); ?></p>
         <table>
             <tr class="js-WpSmsHiddenAfterUpload">
                 <td style="padding-top: 10px;">
                     <input type="file" accept="text/csv" id="wp-sms-input-file">
-                    <p>The only acceptable format is <code>*.csv.</code></p>
+                    <p><?php _e('The only acceptable format is <code>*.csv.</code>', 'wp-sms'); ?></p>
                 </td>
             </tr>
 
             <tr class="js-WpSmsHiddenAfterUpload">
                 <td style="padding-top: 10px;">
-                    <input type="checkbox" id="file-has-header">
-                    <label for="file-has-header">Check the box if the file includes headers. </label>
+                    <input type="checkbox" id="file-has-header" class="js-wpSmsFileHasHeader">
+                    <label for="file-has-header"><?php _e('Check the box if the file includes headers.', 'wp-sms'); ?> </label>
                 </td>
             </tr>
 
-            <tr id="wp-sms-group-select" style="display: none">
+            <tr id="wp-sms-group-select" class="js-wpSmsGroupSelect" style="display: none">
                 <td colspan="2" style="padding-top: 20px;">
-                    <p>Choose a group to import.</p>
+                    <p><?php _e('Choose a group to import.', 'wp-sms'); ?></p>
                     <select>
-                        <option value="0">Please Select</option>
-                        <option value="new_group">Add a new group</option>
+                        <option value="0"><?php _e('Please Select', 'wp-sms'); ?></option>
+                        <option value="new_group"><?php _e('Add a new group', 'wp-sms'); ?></option>
 						<?php
 						if ( $groups ) :
 							foreach ( $groups as $group ) :
@@ -49,10 +49,9 @@
                 </td>
             </tr>
 
-            <tr id="wp-sms-group-name" style="display: none">
+            <tr id="wp-sms-group-name" class="js-wpSmsGroupName" style="display: none">
                 <td>
-                    <label for="wp-sms-select-group-name">Group Name: </label>
-                    <input type="text" id="wp-sms-select-group-name">
+                    <input type="text" id="wp-sms-select-group-name" class="js-wpSmsSelectGroupName">
                 </td>
             </tr>
 

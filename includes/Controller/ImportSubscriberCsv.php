@@ -25,16 +25,13 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		// Start session
 		Helper::maybeStartSession();
 
-		file_put_contents( 'log-2', print_r( $_SESSION, true ) );
-
-		return;
-
-		//find the uploaded file (the last added file to the upload folder)
-		//and read its content
+		//find the uploaded file in the session
 		$destination = wp_upload_dir();
-		$files       = scandir( $destination['path'], SCANDIR_SORT_DESCENDING );
-		$destination = $destination['path'] . '/' . $files[0];
+		$file        = $_SESSION['wp_sms_import_file'];
+		$destination = $destination['path'] . '/' . $file;
 		$csvFile     = file( $destination );
+
+		unset($_SESSION['wp_sms_import_file']);
 
 		$lines   = count( $csvFile );
 		$counter = 0;
@@ -62,8 +59,8 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 			$counter ++;
 		}
 
+		//delete the uploaded file
+		unlink($destination);
 
-		// delete the file
-		// todo
 	}
 }

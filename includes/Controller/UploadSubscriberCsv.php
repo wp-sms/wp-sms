@@ -41,12 +41,10 @@ class UploadSubscriberCsv extends AjaxControllerAbstract {
 				$first_row = fgetcsv( $csvFile );
 			}
 
-			//$fileName = $_FILES['file']['name'];
+			$destination = wp_upload_dir();
+			$destination = $destination['path'] . '/' . $_FILES['file']['name'];
 
-//			$destination = wp_upload_dir();
-//			$destination = $destination['path'] . '/' . $_FILES['file']['name'];
-
-			//move_uploaded_file( $_FILES['file']['tmp_name'], $destination );
+			move_uploaded_file( $_FILES['file']['tmp_name'], $destination );
 
 			// Close opened CSV file
 			fclose( $csvFile );
@@ -58,9 +56,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract {
 			// Start session
 			Helper::maybeStartSession();
 
-			file_put_contents('log-1', print_r($_FILES['file'], true));
-
-			$_SESSION['wp_sms_import_file'] = $_FILES['file'];
+			$_SESSION['wp_sms_import_file'] = $_FILES['file']['name'];
 		}
 	}
 }
