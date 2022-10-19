@@ -79,7 +79,6 @@ class Gateway
             'springedge'     => 'springedge.com',
             'bulksmsnigeria' => 'bulksmsnigeria.com',
             'smsru'          => 'sms.ru',
-            'aspsms'         => 'aspsms.com',
             'kaleyra'        => 'kaleyra.com',
             'sendpulse'      => 'sendpulse.com',
             'mimsms'         => 'mimsms.com',
@@ -584,6 +583,9 @@ class Gateway
             ),
             'slovakia'             => array(
                 'eurosms' => 'eurosms.com',
+            ),
+            'switzerland'          => array(
+                'aspsms' => 'aspsms.com',
             ),
             'latvia'               => array(
                 'texti' => 'texti.fi',
