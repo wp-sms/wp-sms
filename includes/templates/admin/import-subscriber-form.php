@@ -1,5 +1,13 @@
 <div id="wp-sms-import-from" style="display:none;">
 
+    <!--Progress Bar-->
+    <div class="wp-sms-progress-ui js-wpSmsProgressUi" style="display: none">
+        <div class="wp-sms-progress-bar js-wpSmsProgressBar" style="width: 0"></div>
+        <div class="wp-sms-progress-percentage js-wpSmsProgressPercentage"></div>
+        <div class="wp-sms-progress-info js-wpSmsProgressInfo"></div>
+        <div class="wp-sms-import-errors js-wpSmsImportErrors"></div>
+    </div>
+
     <!--Loading Spinner-->
     <div class="js-wpSmsOverlay wpsms-sendsms__overlay">
         <svg class="wpsms-sendsms__overlay__spinner" xmlns="http://www.w3.org/2000/svg" style="margin:auto;background:0 0" width="200" height="200" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" display="block">
@@ -9,17 +17,9 @@
         </svg>
     </div>
 
-    <!--Progress Bar-->
-    <div class="wp-sms-progress-ui js-wpSmsProgressUi">
-        <div class="wp-sms-progress-bar js-wpSmsProgressBar"></div>
-        <div class="wp-sms-progress-percentage js-wpSmsProgressPercentage"></div>
-        <div class="wp-sms-progress-info js-wpSmsProgressInfo"></div>
-        <div class="wp-sms-import-errors js-wpSmsImportErrors"></div>
-    </div>
-
     <!-- Show request message to the client -->
-    <div class="wpsms-wrap wpsms-import-popup js-wpSmsImportPopup">
-        <div class="wp-sms-popup-messages js-wpSmsPopupMessage"></div>
+    <div class="wpsms-wrap wpsms-import-popup js-wpSmsMessageModal">
+        <div class="wp-sms-popup-messages js-wpSmsErrorMessage"></div>
     </div>
 
     <form class="js-wpSmsUploadForm wp-sms-upload-form" method="post" enctype="multipart/form-data">

@@ -29,8 +29,8 @@ abstract class AjaxControllerAbstract {
 
 			if ( $action->requiredFields ) {
 				foreach ( $action->requiredFields as $item ) {
-					if ( $action->get( $item ) == null) {
-						throw new \Exception( sprintf( __('Field %s is required.', 'wp-sms'), ucfirst($item) ) );
+					if ( $action->get( $item ) == null ) {
+						throw new \Exception( sprintf( __( 'Field %s is required.', 'wp-sms' ), ucfirst( $item ) ) );
 					}
 				}
 			}

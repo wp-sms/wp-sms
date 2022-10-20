@@ -4,46 +4,46 @@ jQuery(document).ready(function () {
 
 let wpSmsImportSubscriber = {
 
-    /**
-     * initialize functions
-     */
     init: function () {
         this.setFields()
         this.uploadEventListener()
         this.selectColumnFileHeaderEventListener()
         this.selectOrAddGroup()
         this.disableSelectedOptions()
-        this.importEventListener()
+        this.bindImportRequestBody()
     },
 
-    /**
-     * initialize JQ selectors
-     */
     setFields: function () {
         this.uploadForm = jQuery('.js-wpSmsUploadForm')
         this.importButton = jQuery('.js-wpSmsImportButton')
+        this.uploadButton = jQuery('.js-wpSmsUploadButton')
+        this.loadingSpinner = jQuery('.js-wpSmsOverlay')
+        this.messageModal = jQuery('.js-wpSmsMessageModal')
+        this.modalErrorMessage = jQuery('.js-wpSmsErrorMessage')
+        this.hasHeader = jQuery('.js-wpSmsFileHasHeader')
+
+        this.requestBody = {}
     },
 
     uploadEventListener: function () {
+        let $this = this
+
         this.uploadForm.on('submit', function (event) {
 
             // avoid to execute the actual submit of the form
             event.preventDefault()
 
-            let uploadButton = jQuery('.js-wpSmsUploadButton')
-            let importButton = jQuery('.js-wpSmsImportButton')
-
-            var fileData = jQuery('#wp-sms-input-file')[0].files
-            var fromData = new FormData()
+            let fileData = jQuery('#wp-sms-input-file')[0].files
+            let fromData = new FormData()
 
             if (fileData.length > 0) {
                 fromData.append('file', fileData[0])
             }
 
             // check whether the file has header
-            var hasHeader = false
+            let hasHeader = false
 
-            if (jQuery('.js-wpSmsFileHasHeader').is(':checked')) {
+            if ($this.hasHeader.is(':checked')) {
                 hasHeader = true
             }
 
@@ -58,27 +58,27 @@ let wpSmsImportSubscriber = {
 
                 // enabling loader
                 beforeSend: function () {
-                    jQuery('.js-wpSmsUploadButton').attr('disabled', 'disabled')
-                    jQuery('.js-wpSmsOverlay').css('display', 'flex')
+                    $this.uploadButton.attr('disabled', 'disabled')
+                    $this.loadingSpinner.css('display', 'flex')
                 },
 
                 // successful request
                 success: function (response, data, xhr) {
                     setTimeout(function () {
 
-                        uploadButton.prop('disabled', false)
-                        jQuery('.js-wpSmsOverlay').css('display', 'none')
-                        jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-error')
-                        jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-success')
-                        jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html('<p>' + response.data + '</p>')
-                        jQuery('.js-wpSmsImportPopup').removeClass('hidden')
-                        jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
+                        $this.uploadButton.prop('disabled', false)
+                        $this.loadingSpinner.css('display', 'none')
+                        $this.modalErrorMessage.removeClass('notice notice-error')
+                        $this.modalErrorMessage.addClass('notice notice-success')
+                        $this.modalErrorMessage.html('<p>' + response.data + '</p>')
+                        $this.messageModal.removeClass('hidden')
+                        $this.messageModal.addClass('not-hidden')
                         jQuery('.js-WpSmsHiddenAfterUpload').css('display', 'none')
                         jQuery('#first-row-label').css('display', 'block')
-                        uploadButton.css('display', 'none')
-                        importButton.css('display', 'block')
+                        $this.uploadButton.css('display', 'none')
+                        $this.importButton.css('display', 'block')
 
-                        var firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
+                        let firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
 
                         firstRow.forEach(function (item) {
                             jQuery('.js-wpSmsGroupSelect').before(
@@ -103,17 +103,17 @@ let wpSmsImportSubscriber = {
 
                 // failed request
                 error: function (data, response, xhr) {
-                    uploadButton.prop('disabled', false)
+                    $this.uploadButton.prop('disabled', false)
 
                     //disable loading spinner
-                    jQuery('.js-wpSmsOverlay').css('display', 'none')
+                    $this.loadingSpinner.css('display', 'none')
 
                     //print error messages
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-success')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-error')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html("<p>" + data.responseJSON.data + "</p>");
-                    jQuery('.js-wpSmsImportPopup').removeClass('hidden')
-                    jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
+                    $this.modalErrorMessage.removeClass('notice notice-success')
+                    $this.modalErrorMessage.addClass('notice notice-error')
+                    $this.modalErrorMessage.html("<p>" + data.responseJSON.data + "</p>");
+                    $this.messageModal.removeClass('hidden')
+                    $this.messageModal.addClass('not-hidden')
                 }
 
             })
@@ -123,7 +123,7 @@ let wpSmsImportSubscriber = {
 
     selectColumnFileHeaderEventListener: function () {
         jQuery('body').on('change', '.js-wpSmsImportColumnType', function (event) {
-            var isGroupSelected = false
+            let isGroupSelected = false
 
             jQuery('.js-wpSmsImportColumnType').each(function () {
                 // check if the group id is selected
@@ -154,10 +154,10 @@ let wpSmsImportSubscriber = {
     disableSelectedOptions: function () {
         jQuery('body').on('change', '.js-wpSmsImportColumnType', function (event) {
 
-            var selectedOptions = []
+            let selectedOptions = []
 
             jQuery('.js-wpSmsImportColumnType').each(function () {
-                var value = jQuery(this).val()
+                let value = jQuery(this).val()
                 if (value !== '0' && !selectedOptions.includes(value)) {
                     selectedOptions.push(value)
                 }
@@ -177,88 +177,91 @@ let wpSmsImportSubscriber = {
         })
     },
 
-    importEventListener: function () {
-        this.importButton.on('click', function (event) {
+    bindImportRequestBody: function () {
+        let $this = this
+
+        $this.importButton.on('click', function (event) {
 
             // avoid to execute the actual submit of the form
             event.preventDefault()
 
-            let importButton = jQuery('.js-wpSmsImportButton')
-            let requestBody = {}
             let selectGroupColumn = jQuery('.js-wpSmsImportColumnType')
 
             selectGroupColumn.each(function (index) {
                 if (jQuery(this).find('option:selected').val() !== '0') {
-                    var objectKey = jQuery(this).find('option:selected').val()
-                    requestBody[objectKey] = index
+                    let objectKey = jQuery(this).find('option:selected').val()
+                    $this.requestBody[objectKey] = index
                 }
             })
 
-            if (!requestBody.group) {
-                var selectedGroupOption = jQuery('.js-wpSmsGroupSelect select').val()
-                var groupName = jQuery('.js-wpSmsSelectGroupName').val()
+            if (!$this.requestBody.group) {
+                let selectedGroupOption = jQuery('.js-wpSmsGroupSelect select').val()
+                let groupName = jQuery('.js-wpSmsSelectGroupName').val()
 
                 switch (selectedGroupOption) {
                     case '0':
-                        requestBody['state'] = 0
-                        requestBody['group'] = null
+                        $this.requestBody['state'] = 0
+                        $this.requestBody['group'] = null
                         break
 
                     case 'new_group':
-                        requestBody['state'] = 'new_group'
-                        requestBody['group'] = groupName
+                        $this.requestBody['state'] = 'new_group'
+                        $this.requestBody['group'] = groupName
                         break
 
                     default:
-                        requestBody['state'] = 'existed_group'
-                        requestBody['group'] = selectedGroupOption
+                        $this.requestBody['state'] = 'existed_group'
+                        $this.requestBody['group'] = selectedGroupOption
                         break
                 }
             }
 
-            if (jQuery('.js-wpSmsFileHasHeader').is(':checked')) {
-                requestBody.hasHeader = true
+            if ($this.hasHeader.is(':checked')) {
+                $this.requestBody.hasHeader = true
             }
 
-            jQuery.ajax({
-                url: wpSmsGlobalTemplateVar.importSubscriberCsv,
-                method: 'GET',
-                data: requestBody,
+            //todo
 
-                // enabling loader
-                beforeSend: function () {
-                    jQuery('.js-wpSmsUploadButton').attr('disabled', 'disabled')
-                    jQuery('.js-wpSmsOverlay').css('display', 'flex')
-                },
+            // $this.loadingSpinner.css('display', 'none')
+            // $this.uploadForm.css('display', 'none')
+            // $this.messageModal.css('display', 'none')
+            // $this.progressBarSection.css('display', 'block')
 
-                // successful request
-                success: function (request, data, response) {
-                    importButton.prop('disabled', false)
-                    jQuery('.js-wpSmsOverlay').css('display', 'none')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-error')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-success')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html('<p>' + response.responseJSON.data + '</p>')
-                    jQuery('.js-wpSmsImportPopup').removeClass('hidden')
-                    jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
-
-                    setTimeout(function () {
-                        location.reload()
-                    }, 1000)
-                },
-
-                // failed request
-                error: function (data, response, xhr) {
-                    importButton.prop('disabled', false)
-                    jQuery('.js-wpSmsOverlay').css('display', 'none')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').removeClass('notice notice-success')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').addClass('notice notice-error')
-                    jQuery('.js-wpSmsImportPopup .js-wpSmsPopupMessage').html("<p>" + data.responseJSON.data + "</p>");
-                    jQuery('.js-wpSmsImportPopup').removeClass('hidden')
-                    jQuery('.js-wpSmsImportPopup').addClass('not-hidden')
-                }
-            })
-
-        }.bind(this))
+            $this.importEventListener(0)
+        })
     },
 
+    importEventListener: function (startPoint) {
+        let $this = this
+        $this.requestBody.startPoint = startPoint
+
+        jQuery.ajax({
+            url: wpSmsGlobalTemplateVar.importSubscriberCsv,
+            method: 'GET',
+            data: $this.requestBody,
+
+            // enabling loader
+            beforeSend: function () {
+
+            },
+
+            // successful request
+            success: function (request, data, response) {
+
+                let isImportDone = response.responseJSON.data.importDone
+                let getStartPoint = response.responseJSON.data.startPoint
+
+                if (isImportDone) {
+                    // location.reload()
+                    return;
+                }
+                return $this.importEventListener(getStartPoint)
+            },
+
+            // failed request
+            error: function (data, response, xhr) {
+
+            }
+        })
+    },
 }

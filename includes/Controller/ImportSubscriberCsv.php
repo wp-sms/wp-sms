@@ -14,13 +14,10 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		'mobile',
 	];
 
+	/**
+	 * @throws Exception
+	 */
 	protected function run() {
-		//get index of each required parameter for adding a new subscriber
-		$name_index   = $this->get( 'name' );
-		$mobile_index = $this->get( 'mobile' );
-		$group        = $this->get( 'group' );
-		$state        = $this->get( 'state' );
-		$has_header   = $this->get( 'hasHeader' );
 
 		// Start session
 		Helper::maybeStartSession();
@@ -29,43 +26,99 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		$destination = wp_upload_dir();
 		$file        = $_SESSION['wp_sms_import_file'];
 		$destination = $destination['path'] . '/' . $file;
-		$csvFile     = file( $destination );
+		$data        = file( $destination );
 
-		if ( empty( $csvFile ) ) {
-			throw new Exception( __( 'There is no file to import. Please try again to upload the file.', 'wp-sms' ) );
+		$start_point = $this->get( 'startPoint' );
+
+		// Get index of each required parameter for adding a new subscriber
+		$name_index   = $this->get( 'name' );
+		$mobile_index = $this->get( 'mobile' );
+		$group        = $this->get( 'group' );
+		$state        = $this->get( 'state' );
+		$has_header   = $this->get( 'hasHeader' );
+
+		if ( $start_point == 0 ) {
+
+			// Check whether file uploaded
+			if ( empty( $data ) ) {
+				throw new Exception( __( 'There is no file to import. Please try again to upload the file.', 'wp-sms' ) );
+			}
+
+			if ( $state == 'new_group' ) {
+				$result = Newsletter::addGroup( $group );
+				$group  = $result['data']['group_ID'];
+			}
 		}
 
-		unset( $_SESSION['wp_sms_import_file'] );
+		if ( isset( $has_header ) && $has_header ) {
+			array_shift( $data );
+		}
 
-		$lines   = count( $csvFile );
+
+		// Break the loop when the import completed
+		if ( count( $data ) <= $start_point ) {
+			//delete the uploaded file
+			unlink( $destination );
+
+			wp_send_json_success( [
+				'importDone' => true,
+				'message'    => 'All data imported successfully!'
+			] );
+		}
+
+		$offset = 50;
+		$lines  = array_slice( $data, $start_point, $offset );
+
+		/**
+		 * Import data
+		 */
 		$counter = 0;
-		$result  = [];
+		$error   = [];
 
-		if ( $has_header ) {
-			$lines   -= 1;
-			$counter = 1;
-		}
+		foreach ( $lines as $line ) {
+			$array         = explode( ',', $line );
+			$mobile_number = $array[ $mobile_index ];
 
-		if ( $state == 'new_group' ) {
-			$result = Newsletter::addGroup( $group );
-			$group  = $result['data']['group_ID'];
-		}
-
-		while ( $counter <= $lines ) {
-			$array = explode( ',', $csvFile[ $counter ] );
+			// todo
+			/*if ( preg_match( '/^[0-9]{10}+$/', $mobile_number ) ) {
+				$error[ $mobile_number ] = __( "Wrong number format.", 'wp-sms' );
+				$counter ++;
+				continue;
+			}*/
 
 			if ( $state ) {
-				$result[] = Newsletter::addSubscriber( $array[ $name_index ], $array[ $mobile_index ], $group );
+				$group_state = $group;
 			} else {
-				$result[] = Newsletter::addSubscriber( $array[ $name_index ], $array[ $mobile_index ], $array[ $group ] );
+				$group_state = $array[ $group ];
+
+				$selected_group = Newsletter::getGroup( $array[ $group ] );
+				if ( ! isset( $selected_group ) ) {
+					$error[ $mobile_number ] = __( "The selected group ID doesn't exist.", 'wp-sms' );
+					$counter ++;
+					continue;
+				}
+			}
+
+			$result = Newsletter::addSubscriber( $array[ $name_index ], $array[ $mobile_index ], $group_state );
+
+			if ( $result['result'] == 'error' ) {
+				$error[ $mobile_number ] = $result['message'];
+				$counter ++;
+				continue;
 			}
 
 			$counter ++;
 		}
 
-		//delete the uploaded file
-		unlink( $destination );
-
-		wp_send_json_success(__('Data imported successfully.', 'wp-sms'));
+		/**
+		 * Return response
+		 */
+		wp_send_json_success( [
+			'startPoint' => $start_point + $counter,
+			'importDone' => false,
+			'count'      => count( $data ),
+			'offset'     => $offset,
+			'error'      => $error
+		] );
 	}
 }
