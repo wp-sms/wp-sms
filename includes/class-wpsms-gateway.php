@@ -559,6 +559,8 @@ class Gateway
                 'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
                 'aobox'            => 'aobox.it',
+                'sendapp'          => 'Sendapp SMS',
+                'sendappWhatsApp'  => 'Sendapp Whathapp',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
