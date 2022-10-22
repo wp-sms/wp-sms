@@ -2,10 +2,10 @@
 
 namespace WP_SMS\Gateway;
 
-class sendapp extends \WP_SMS\Gateway
+class sendappWhatsApp extends \WP_SMS\Gateway
 {
-    private $wsdl_link = 'https://sms.sendapp.live/services/send.php';
-    public $tariff = "https://sendapp.live";
+    private $wsdl_link = 'https://sendapp.cloud/api/send.php';
+    public $tariff = "https://sendapp.cloud";
     public $unitrial = false;
     public $unit;
     public $flash = "false";
@@ -14,15 +14,20 @@ class sendapp extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->bulk_send      = true;
+        $this->bulk_send      = false;
         $this->has_key        = true;
-        $this->validateNumber = "+11234567890";
+        $this->validateNumber = "84933313xxx";
         $this->help           = "";
         $this->gatewayFields  = [
             'has_key' => [
                 'id'   => 'gateway_key',
-                'name' => 'API Key',
-                'desc' => 'Get the API Key from your SendApp account in https://sms.sendapp.live/api.php',
+                'name' => 'Access Token',
+                'desc' => 'Get the Access Token from your SendApp account in https://sendapp.cloud/dashboard/index/whatsapp',
+            ],
+            'from'    => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Instance ID',
+                'desc' => 'Instance ID',
             ]
         ];
     }
@@ -58,10 +63,7 @@ class sendapp extends \WP_SMS\Gateway
 
         try {
 
-            $response = [];
-            foreach ($this->to as $number) {
-                $response[] = $this->executeSendSMS($number);
-            }
+            $response = $this->executeSendMessage($this->to[0]);
 
             //log the result
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -91,15 +93,7 @@ class sendapp extends \WP_SMS\Gateway
                 throw new \Exception(__('The API Key Key for this gateway is not set.', 'wp-sms'));
             }
 
-            $response = $this->request('GET', $this->wsdl_link, [
-                'key' => $this->has_key
-            ]);
-
-            if ($response->error) {
-                throw new \Exception($response->error->message);
-            }
-
-            return $response->data->credits;
+            return 1;
 
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
@@ -107,16 +101,18 @@ class sendapp extends \WP_SMS\Gateway
         }
     }
 
-    private function executeSendSMS($number)
+    private function executeSendMessage($number)
     {
         $response = $this->request('GET', $this->wsdl_link, [
-            'key'     => $this->has_key,
-            'number'  => $number,
-            'message' => urlencode($this->msg),
+            'access_token' => $this->has_key,
+            'instance_id'  => $this->from,
+            'number'       => $number,
+            'type'         => 'text',
+            'message'      => urlencode($this->msg),
         ]);
 
-        if ($response->error) {
-            throw new \Exception($response->error->message);
+        if ($response->status == 'error') {
+            throw new \Exception($response->message);
         }
 
         return $response->data;
