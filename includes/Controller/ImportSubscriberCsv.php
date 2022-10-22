@@ -54,15 +54,16 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 			array_shift( $data );
 		}
 
-
 		// Break the loop when the import completed
 		if ( count( $data ) <= $start_point ) {
 			//delete the uploaded file
 			unlink( $destination );
 
+			//todo number of imported subscribers
 			wp_send_json_success( [
 				'importDone' => true,
-				'message'    => 'All data imported successfully!'
+				'count'      => count( $data ),
+//				'message'    => __(sprintf('%s of %s subscribers imported successfully! Reload the page to see the result.', 2, count($data)), 'wp-sms' )
 			] );
 		}
 
@@ -72,19 +73,21 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		/**
 		 * Import data
 		 */
-		$counter = 0;
-		$error   = [];
+		$counter        = 0;
+		$success_upload = 0;
+		$error          = [];
 
 		foreach ( $lines as $line ) {
 			$array         = explode( ',', $line );
 			$mobile_number = $array[ $mobile_index ];
 
-			// todo
-			/*if ( preg_match( '/^[0-9]{10}+$/', $mobile_number ) ) {
-				$error[ $mobile_number ] = __( "Wrong number format.", 'wp-sms' );
+			$check_validity = Helper::checkMobileNumberValidity( $mobile_number );
+
+			if ( is_wp_error( $check_validity ) ) {
+				$error[ $mobile_number ] = $check_validity->get_error_message();
 				$counter ++;
 				continue;
-			}*/
+			}
 
 			if ( $state ) {
 				$group_state = $group;
@@ -108,17 +111,19 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 			}
 
 			$counter ++;
+			$success_upload ++;
 		}
 
 		/**
 		 * Return response
 		 */
 		wp_send_json_success( [
-			'startPoint' => $start_point + $counter,
-			'importDone' => false,
-			'count'      => count( $data ),
-			'offset'     => $offset,
-			'error'      => $error
+			'startPoint'    => $start_point + $counter,
+			'importDone'    => false,
+			'count'         => count( $data ),
+			'offset'        => $offset,
+			'error'         => $error,
+			'successUpload' => $success_upload
 		] );
 	}
 }

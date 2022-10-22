@@ -41,7 +41,7 @@
 
             <tr id="wp-sms-group-select" class="js-wpSmsGroupSelect" style="display: none">
                 <td colspan="2" style="padding-top: 20px;">
-                    <p><?php _e( 'Choose a group to import.', 'wp-sms' ); ?></p>
+                    <p><?php _e( 'Choose or add a group:', 'wp-sms' ); ?></p>
                     <select>
                         <option value="0"><?php _e( 'Please Select', 'wp-sms' ); ?></option>
                         <option value="new_group"><?php _e( 'Add a new group', 'wp-sms' ); ?></option>

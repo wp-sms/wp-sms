@@ -23,6 +23,7 @@ let wpSmsImportSubscriber = {
         this.hasHeader = jQuery('.js-wpSmsFileHasHeader')
 
         this.requestBody = {}
+        this.successUpload = 0
     },
 
     uploadEventListener: function () {
@@ -83,16 +84,16 @@ let wpSmsImportSubscriber = {
                         firstRow.forEach(function (item) {
                             jQuery('.js-wpSmsGroupSelect').before(
                                 '<tr class="wp-sms-data-type-row js-wpSmsDataTypeRow">' +
-                                    '<td class="wp-sms-data-type-header">' + item + '</td>' +
-                                    '<td class="wp-sms-data-type-arrow"><span class="dashicons dashicons-arrow-right-alt"></span></td>' +
-                                    '<td class="wp-sms-data-type-select-tag">' +
-                                        '<select class="import-column-type js-wpSmsImportColumnType">' +
-                                            '<option value="0">Please Select</option>' +
-                                            '<option value="name">Name</option>' +
-                                            '<option value="mobile">Mobile</option>' +
-                                            '<option value="group">Group ID</option>' +
-                                        '</select>' +
-                                    '</td>' +
+                                '<td class="wp-sms-data-type-header">' + item + '</td>' +
+                                '<td class="wp-sms-data-type-arrow"><span class="dashicons dashicons-arrow-right-alt"></span></td>' +
+                                '<td class="wp-sms-data-type-select-tag">' +
+                                '<select class="import-column-type js-wpSmsImportColumnType">' +
+                                '<option value="0">Please Select</option>' +
+                                '<option value="name">Name</option>' +
+                                '<option value="mobile">Mobile</option>' +
+                                '<option value="group">Group ID</option>' +
+                                '</select>' +
+                                '</td>' +
                                 '</tr>'
                             )
                         })
@@ -241,7 +242,8 @@ let wpSmsImportSubscriber = {
 
             // enabling loader
             beforeSend: function () {
-
+                $this.uploadButton.attr('disabled', 'disabled')
+                $this.loadingSpinner.css('display', 'flex')
             },
 
             // successful request
@@ -249,17 +251,43 @@ let wpSmsImportSubscriber = {
 
                 let isImportDone = response.responseJSON.data.importDone
                 let getStartPoint = response.responseJSON.data.startPoint
+                let totalSubscriber = response.responseJSON.data.count
+
+                if (response.responseJSON.data.successUpload) {
+                    $this.successUpload += parseInt(response.responseJSON.data.successUpload)
+                }
 
                 if (isImportDone) {
-                    // location.reload()
+                    $this.uploadButton.prop('disabled', false)
+
+                    //disable loading spinner
+                    $this.loadingSpinner.css('display', 'none')
+
+                    //print error messages
+                    $this.modalErrorMessage.removeClass('notice notice-error')
+                    $this.modalErrorMessage.addClass('notice notice-success')
+                    $this.modalErrorMessage.html('<p>' + $this.successUpload + ' of ' + totalSubscriber + ' subscribers imported successfully!' + '</p>')
+                    $this.messageModal.removeClass('hidden')
+                    $this.messageModal.addClass('not-hidden')
+
                     return;
                 }
                 return $this.importEventListener(getStartPoint)
             },
 
             // failed request
-            error: function (data, response, xhr) {
+            error: function (response) {
+                $this.uploadButton.prop('disabled', false)
 
+                //disable loading spinner
+                $this.loadingSpinner.css('display', 'none')
+
+                //print error messages
+                $this.modalErrorMessage.removeClass('notice notice-success')
+                $this.modalErrorMessage.addClass('notice notice-error')
+                $this.modalErrorMessage.html("<p>" + response.responseJSON.data + "</p>");
+                $this.messageModal.removeClass('hidden')
+                $this.messageModal.addClass('not-hidden')
             }
         })
     },

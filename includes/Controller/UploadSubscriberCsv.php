@@ -34,6 +34,10 @@ class UploadSubscriberCsv extends AjaxControllerAbstract {
 		// Open uploaded CSV file with read-only mode
 		$csvFile = fopen( $_FILES['file']['tmp_name'], 'r' );
 
+		if ( empty( file( $_FILES['file']['tmp_name'] ) ) ) {
+			throw new Exception( __( "The uploaded file doesn't contain any data.", 'wp-sms' ) );
+		}
+
 		// check whether file includes header
 		$has_header = $_GET['hasHeader'];
 
