@@ -83,17 +83,16 @@ let wpSmsImportSubscriber = {
                         firstRow.forEach(function (item) {
                             jQuery('.js-wpSmsGroupSelect').before(
                                 '<tr class="wp-sms-data-type-row js-wpSmsDataTypeRow">' +
-                                '<td class="wp-sms-data-type-header">' +
-                                item +
-                                '</td>' +
-                                '<td class="wp-sms-data-type-select-tag">' +
-                                '<select class="import-column-type js-wpSmsImportColumnType">' +
-                                '<option value="0">Please Select</option>' +
-                                '<option value="name">Name</option>' +
-                                '<option value="mobile">Mobile</option>' +
-                                '<option value="group">Group ID</option>' +
-                                '</select>' +
-                                '</td>' +
+                                    '<td class="wp-sms-data-type-header">' + item + '</td>' +
+                                    '<td class="wp-sms-data-type-arrow"><span class="dashicons dashicons-arrow-right-alt"></span></td>' +
+                                    '<td class="wp-sms-data-type-select-tag">' +
+                                        '<select class="import-column-type js-wpSmsImportColumnType">' +
+                                            '<option value="0">Please Select</option>' +
+                                            '<option value="name">Name</option>' +
+                                            '<option value="mobile">Mobile</option>' +
+                                            '<option value="group">Group ID</option>' +
+                                        '</select>' +
+                                    '</td>' +
                                 '</tr>'
                             )
                         })

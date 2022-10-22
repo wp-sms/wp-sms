@@ -1,25 +1,23 @@
-#TB_window {
-  overflow: scroll;
-  max-height: 450px;
-}
-.wp-sms-upload-form {
-
-  table {
-    width: 100%;
+.sms_page_wp-sms {
+  #TB_window {
+    overflow: scroll;
+    max-height: 450px;
   }
 
-  td {
-    width: 50%;
-  }
+  .wp-sms-upload-form {
+    table {
+      width: 100%;
+    }
 
-  select {
-    width: 100%;
-    text-align: center;
-  }
+    td {
+      width: 33%;
+    }
 
-  .wp-sms-data-type-header {
-    border: 1px solid #000;
-    text-align: center;
-  }
+    select {
+      width: 100%;
+    }
 
+    .wp-sms-data-type-header {
+    }
+  }
 }
