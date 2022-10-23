@@ -268,7 +268,7 @@ let wpSmsImportSubscriber = {
                     //print error messages
                     $this.modalErrorMessage.removeClass('notice notice-error')
                     $this.modalErrorMessage.addClass('notice notice-success')
-                    $this.modalErrorMessage.html('<p>' + $this.successUpload + ' of ' + totalSubscriber + ' subscribers imported successfully!' + '</p>')
+                    $this.modalErrorMessage.html('<p>' + $this.successUpload + ' of ' + totalSubscriber + ' subscribers imported successfully! Refresh the page to see the result!' + '</p>')
                     $this.messageModal.removeClass('hidden')
                     $this.messageModal.addClass('not-hidden')
 

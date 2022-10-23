@@ -38,7 +38,6 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		$has_header   = $this->get( 'hasHeader' );
 
 		if ( $start_point == 0 ) {
-
 			// Check whether file uploaded
 			if ( empty( $data ) ) {
 				throw new Exception( __( 'There is no file to import. Please try again to upload the file.', 'wp-sms' ) );
@@ -70,9 +69,6 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 		$offset = 50;
 		$lines  = array_slice( $data, $start_point, $offset );
 
-		/**
-		 * Import data
-		 */
 		$counter        = 0;
 		$success_upload = 0;
 		$error          = [];
@@ -81,7 +77,24 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 			$array         = explode( ',', $line );
 			$mobile_number = $array[ $mobile_index ];
 
-			$check_validity = Helper::checkMobileNumberValidity( $mobile_number );
+			// check whether the group id is chosen from the CSV file by the client
+			// or it is created or chosen in the front-end
+			if ( $state ) {
+				$group_id = $group;
+			} else {
+				$group_id = $array[ $group ];
+			}
+
+			// check group id validity
+			$selected_group = Newsletter::getGroup( $group_id );
+			if ( ! isset( $selected_group ) ) {
+				$error[ $mobile_number ] = __( "There is no Group associated with the selected Group ID.", 'wp-sms' );
+				$counter ++;
+				continue;
+			}
+
+			// check mobile number validity
+			$check_validity = Helper::checkMobileNumberValidity( $mobile_number, false, true, $group_id, false );
 
 			if ( is_wp_error( $check_validity ) ) {
 				$error[ $mobile_number ] = $check_validity->get_error_message();
@@ -89,20 +102,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 				continue;
 			}
 
-			if ( $state ) {
-				$group_state = $group;
-			} else {
-				$group_state = $array[ $group ];
-
-				$selected_group = Newsletter::getGroup( $array[ $group ] );
-				if ( ! isset( $selected_group ) ) {
-					$error[ $mobile_number ] = __( "The selected group ID doesn't exist.", 'wp-sms' );
-					$counter ++;
-					continue;
-				}
-			}
-
-			$result = Newsletter::addSubscriber( $array[ $name_index ], $array[ $mobile_index ], $group_state );
+			$result = Newsletter::addSubscriber( $array[ $name_index ], $array[ $mobile_index ], $group_id );
 
 			if ( $result['result'] == 'error' ) {
 				$error[ $mobile_number ] = $result['message'];
