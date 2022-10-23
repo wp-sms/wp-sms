@@ -48,11 +48,6 @@ class Subscribers
             echo Helper::notice($result['message'], $result['result']);
         }
 
-        // Import subscriber page
-        if (isset($_POST['wps_import'])) {
-            include_once WP_SMS_DIR . "includes/admin/import.php";
-        }
-
         include_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';
 
         //Create an instance of our package class...
