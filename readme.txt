@@ -1,9 +1,9 @@
 ﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
-Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
+Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, reventon94
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 3.0
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 5.6
 Stable tag: 5.8.3
 License: GPLv3
@@ -290,13 +290,15 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Bugfix: Fix Uwaziimobile gateway issues to improve its performance
 * Bugfix: Fix Smsto gateway issues to improve its performance
 * Improvement: Now WordPress users option is added to the recipient of published new posts
-* Improvement: Import system has totally changed to preform better
+* Improvement: Import system has totally changed to preform better, now you can import thousands of subscribers!
 * Improvement: Improve import and export error handlers
 * Improvement: Check mobile number validity while importing new subscribers
 * Improvement: Minor improvements & clean-up things
 * Add: WP SMS now supports Liveall gateway
-* Add: WP SMS now supports Sendapp Whatsapp gateway
-* Add: Aspsms gateway now is available in the free version of WP SMS
+* Add: WP SMS now supports SendApp SMS & SendApp Whatsapp gateways
+* Add: AspSms gateway now is available in the free version of WP SMS
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.2 - 18.09.2022 =
 * Bugfix: Fixed query issue while getting subscribers
@@ -332,8 +334,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Bugfix: Wrong calling function in `wp_sms_sanitize_array()` fixed
 * Improvement: The separate dial code option removed
 * Improvement: Minor things
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.7.7 - 17.07.2022 =
 * Bugfix: The general settings page has been fixed
