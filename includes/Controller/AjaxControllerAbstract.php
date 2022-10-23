@@ -27,6 +27,12 @@ abstract class AjaxControllerAbstract {
 			$class  = self::getClassName();
 			$action = new $class;
 
+            // Check CSRF
+            if ( ! wp_verify_nonce($action->get('_nonce'), $action->action) ) {
+                throw new \Exception( __( 'Access denied.', 'wp-sms' ) );
+            }
+
+            // Check required parameters
 			if ( $action->requiredFields ) {
 				foreach ( $action->requiredFields as $item ) {
 					if ( $action->get( $item ) == null ) {
@@ -84,8 +90,11 @@ abstract class AjaxControllerAbstract {
 	 * @return string
 	 */
 	public static function url( $params = array() ) {
+        $action = (new static() )->action;
+
 		$params = http_build_query( array_merge( array(
-			'action' => ( new static() )->action,
+			'action' => $action,
+			'_nonce' => wp_create_nonce($action),
 		), $params ) );
 
 		return admin_url( '/admin-ajax.php' ) . '?' . $params;
