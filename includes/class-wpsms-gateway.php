@@ -26,7 +26,7 @@ class Gateway
             'nexmo'          => 'nexmo.com',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
-            'smstos'         => 'sms.to',
+            'smsto'          => 'sms.to',
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
@@ -79,7 +79,6 @@ class Gateway
             'springedge'     => 'springedge.com',
             'bulksmsnigeria' => 'bulksmsnigeria.com',
             'smsru'          => 'sms.ru',
-            'aspsms'         => 'aspsms.com',
             'kaleyra'        => 'kaleyra.com',
             'sendpulse'      => 'sendpulse.com',
             'mimsms'         => 'mimsms.com',
@@ -90,6 +89,7 @@ class Gateway
             'teletopiasms'   => 'teletopiasms.no',
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
+            'smspoh'         => 'smspoh.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -559,6 +559,8 @@ class Gateway
                 'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
                 'aobox'            => 'aobox.it',
+                'sendapp'          => 'Sendapp SMS',
+                'sendappWhatsApp'  => 'Sendapp Whathapp',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -583,6 +585,9 @@ class Gateway
             ),
             'slovakia'             => array(
                 'eurosms' => 'eurosms.com',
+            ),
+            'switzerland'          => array(
+                'aspsms' => 'aspsms.com',
             ),
             'latvia'               => array(
                 'texti' => 'texti.fi',
@@ -808,6 +813,7 @@ class Gateway
             ),
             'greece'               => array(
                 'smsnetgr' => 'sms.net.gr',
+                'liveall'  => 'liveall.eu',
             ),
             'malaysia'             => array(
                 'onewaysms' => 'onewaysms.com',

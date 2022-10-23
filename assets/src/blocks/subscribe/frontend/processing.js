@@ -11,7 +11,7 @@ export function disableSubmitBtn() {
 }
 
 export function enableSubmitBtn() {
-  jQuery("#wpsms-submit").removeAttr('disabled');
+  jQuery("#wpsms-submit").prop('disabled', false);
 }
 
 export function disableActivationBtn() {
@@ -19,7 +19,7 @@ export function disableActivationBtn() {
 }
 
 export function enableActivationBtn() {
-  jQuery("#activation").removeAttr('disabled');
+  jQuery("#activation").prop('disabled', false);
 }
 
 export function hideFirstStep() {

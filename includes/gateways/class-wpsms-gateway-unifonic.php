@@ -115,7 +115,8 @@ class unifonic extends \WP_SMS\Gateway
 
         if ($response_code == '200') {
             $result = json_decode($response['body']);
-            if (isset($result['success']) and $result['success'] == 'true') {
+
+            if ( isset($result->success) and $result->success == 'true' ) {
 
                 // Log the result
                 $this->log($this->from, $this->msg, $this->to, $result);

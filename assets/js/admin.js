@@ -10,8 +10,34 @@
     let WpSmsSelect2 = $('.js-wpsms-select2')
     let WpSmsExportForm = $('.js-wpSmsExportForm')
 
+    function matchCustom(params, data) {
+        // If there are no search terms, return all of the data
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+
+        // Do not display the item if there is no 'text' property
+        if (typeof data.text === 'undefined') {
+            return null;
+        }
+
+        // `params.term` should be the term that is used for searching
+        // `data.text` is the text that is displayed for the data object
+        if (data.text.indexOf(params.term) > -1 || data.element.getAttribute('value') !== null && data.element.getAttribute('value').toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+            var modifiedData = $.extend({}, data, true);
+            modifiedData.text += ' (matched)';
+
+            // You can return modified objects from here
+            // This includes matching the `children` how you want in nested data sets
+            return modifiedData;
+        }
+
+        // Return `null` if the term should not be displayed
+        return null;
+    }
+
     const WpSmsSelect2Options = {
-        placeholder: "Please select"
+        placeholder: "Please select",
     };
 
     if (WpSmsExportForm.length) {
@@ -84,7 +110,7 @@ let WpSMSGeneral = {
     },
 
     addEventListener: function () {
-        this.fields.internatioanlMode.element.change(function () {
+        this.fields.internatioanlMode.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -114,6 +140,9 @@ let WpSmsNotifications = {
             },
             numbersField: {
                 element: jQuery('#wpsms_settings\\[notif_publish_new_post_numbers\\]'),
+            },
+            usersField: {
+                element: jQuery('#wpsms_settings\\[notif_publish_new_post_users\\]'),
             }
         }
     },
@@ -122,14 +151,20 @@ let WpSmsNotifications = {
         if (this.fields.receiverField.element.val() == 'subscriber') {
             this.fields.subscriberField.element.closest('tr').show()
             this.fields.numbersField.element.closest('tr').hide()
-        } else {
+            this.fields.usersField.element.closest('tr').hide()
+        } else if (this.fields.receiverField.element.val() == 'numbers') {
             this.fields.subscriberField.element.closest('tr').hide()
             this.fields.numbersField.element.closest('tr').show()
+            this.fields.usersField.element.closest('tr').hide()
+        } else if (this.fields.receiverField.element.val() == 'users') {
+            this.fields.subscriberField.element.closest('tr').hide()
+            this.fields.numbersField.element.closest('tr').hide()
+            this.fields.usersField.element.closest('tr').show()
         }
     },
 
     addEventListener: function () {
-        this.fields.receiverField.element.change(function () {
+        this.fields.receiverField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -174,7 +209,7 @@ let WpSmsBuddyPress = {
     },
 
     addEventListener: function () {
-        this.fields.mobileNumberField.element.change(function () {
+        this.fields.mobileNumberField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -232,13 +267,13 @@ let WpSmsWoocommerce = {
     },
 
     addEventListener: function () {
-        this.fields.receiverField.element.change(function () {
+        this.fields.receiverField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
 
     addEventListener: function () {
-        this.fields.checkoutMobileField.element.change(function () {
+        this.fields.checkoutMobileField.element.on('change', function () {
             this.hideOrShowFields2();
         }.bind(this));
     },
@@ -283,7 +318,7 @@ let WpSmsJobManager = {
     },
 
     addEventListener: function () {
-        this.fields.receiverField.element.change(function () {
+        this.fields.receiverField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },
@@ -344,7 +379,7 @@ let WpSmsUltimateMember = {
     },
 
     addEventListener: function () {
-        this.fields.mobileNumberField.element.change(function () {
+        this.fields.mobileNumberField.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
     },

@@ -1667,7 +1667,8 @@ class Settings
                     'type'    => 'select',
                     'options' => array(
                         'subscriber' => __('Subscribers', 'wp-sms'),
-                        'numbers'      => __('Number(s)', 'wp-sms')
+                        'numbers'      => __('Number(s)', 'wp-sms'),
+                        'users'      => __('WordPress Users', 'wp-sms')
                     ),
                     'desc'    => __('Please select the receiver of SMS Notification', 'wp-sms')
                 ),
@@ -1677,6 +1678,13 @@ class Settings
                     'type'    => 'select',
                     'options' => $subscribe_groups,
                     'desc'    => __('Choice the default group to send the SMS', 'wp-sms')
+                ),
+                'notif_publish_new_post_users'                  => array(
+                    'id'      => 'notif_publish_new_post_users',
+                    'name'    => __('Specific Roles', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => $this->getRoles(),
+                    'desc'    => __('Select the roles of the user that you want to get notification while login.', 'wp-sms')
                 ),
                 'notif_publish_new_post_numbers'   => array(
                     'id'      => 'notif_publish_new_post_numbers',
@@ -2324,7 +2332,7 @@ class Settings
         $html       = sprintf('<select class="%1$s" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
-            $html .= '<optgroup label="' . ucfirst(str_replace('_', ' ', $key)) . '">';
+            $html     .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $key)));
 
             foreach ($v as $option => $name) {
                 $disabled = '';
@@ -2527,9 +2535,13 @@ class Settings
 
     public function getRoles()
     {
+        $wpsms_list_of_role = Helper::getListOfRoles();
         $roles = [];
-        foreach (get_editable_roles() as $key => $role) {
-            $roles[] = [$key => $role['name']];
+
+        foreach ($wpsms_list_of_role as $key_item => $val_item){
+            if ($val_item['count'] >= 1) {
+                $roles[] = [$key_item => $val_item['name']];
+            }
         }
 
         return $roles;

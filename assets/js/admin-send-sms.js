@@ -4,7 +4,7 @@
     jQuery(".wpsms-value").hide();
     jQuery(".wpsms-group").show();
 
-    jQuery("select#select_sender").change(function () {
+    jQuery("select#select_sender").on('change', function () {
         recipientsSelect();
     });
 
@@ -25,7 +25,7 @@
             defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
         });
 
-        jQuery("#schedule_status").change(function () {
+        jQuery("#schedule_status").on('change', function () {
             if (jQuery(this).is(":checked")) {
                 jQuery('#schedule_date').show();
             } else {
@@ -191,7 +191,7 @@ function sendSMS() {
                 jQuery(".wpsms-remove-button").trigger('click');
                 scrollToTop();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('input[name="SendSMS"]').removeAttr('disabled');
+                jQuery('input[name="SendSMS"]').prop('disabled', false);
                 jQuery('.wpsms-wrap__main__notice').removeClass('notice-error');
                 jQuery('.wpsms-wrap__main__notice').addClass('notice-success');
                 jQuery('.wpsms-wrap__notice__text').html(data.message);
@@ -207,7 +207,7 @@ function sendSMS() {
                 jQuery('.wpsms-wrap__notice__text').html(data.responseJSON.error.message);
                 jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('input[name="SendSMS"]').removeAttr('disabled');
+                jQuery('input[name="SendSMS"]').prop('disabled', false);
             }
         });
 }
@@ -301,8 +301,8 @@ const wpsmsRepeatingMessages = {
         handler();
 
         //Event listeners
-        this.elements.statusCheckbox.change(handler)
-        this.elements.parentCheckbox.change(handler)
+        this.elements.statusCheckbox.on('change', handler)
+        this.elements.parentCheckbox.on('change', handler)
     },
 
     handleEndDateField: function () {
@@ -310,14 +310,14 @@ const wpsmsRepeatingMessages = {
             if (this.elements.foreverCheckbox.is(':checked')) {
                 this.elements.endDatepicker.attr('disabled', 'disabled')
             } else {
-                this.elements.endDatepicker.removeAttr('disabled', 'disabled')
+                this.elements.endDatepicker.prop('disabled', false)
             }
         }.bind(this)
 
         handler()
 
         //Event listener
-        this.elements.foreverCheckbox.change(handler)
+        this.elements.foreverCheckbox.on('change', handler)
     },
 
     getData: function () {

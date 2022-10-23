@@ -85,7 +85,7 @@ let quickReply = {
                     jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').html('<p>' + data.responseText + '</p>')
                     jQuery('.wpsms-quick-reply-popup').removeClass('hidden')
                     jQuery('.wpsms-quick-reply-popup').addClass('not-hidden')
-                    jQuery('input[name="SendSMS"]').removeAttr('disabled')
+                    jQuery('input[name="SendSMS"]').prop('disabled', false)
 
                     if (jQuery('.js-wpSmsQuickReply').attr('data-reload')) {
                         location.reload()
@@ -99,7 +99,7 @@ let quickReply = {
                     jQuery('.wpsms-quick-reply-popup .wp-sms-popup-messages').html("<p>" + data.responseText + "</p>");
                     jQuery('.wpsms-quick-reply-popup').removeClass('hidden')
                     jQuery('.wpsms-quick-reply-popup').addClass('not-hidden')
-                    jQuery('input[name="SendSMS"]').removeAttr('disabled')
+                    jQuery('input[name="SendSMS"]').prop('disabled', false)
                 }
             })
         }.bind(this))

@@ -7,7 +7,7 @@ use WP_Error;
 
 class uwaziimobile extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api2.uwaziimobile.com";
+    private $wsdl_link = "https://restapi.uwaziimobile.com/v1";
     public $tariff = "https://www.uwaziimobile.com";
     public $unitrial = false;
     public $unit;
@@ -17,22 +17,9 @@ class uwaziimobile extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->bulk_send = true;
-        $this->has_key = true;
+        $this->bulk_send      = true;
         $this->validateNumber = "Destination addresses must be in international format (Example: 254722123456).";
-        $this->help = "Enter your Gateway Token and Sender ID. You can avail them from your control panel.";
-        $this->gatewayFields = [
-            'has_key' => [
-                'id' => 'gateway_key',
-                'name' => 'Gateway Token',
-                'desc' => 'Enter your Gateway Token. The gateway token can be generated through your control panel.',
-            ],
-            'from' => [
-                'id' => 'gateway_sender_id',
-                'name' => 'Sender ID',
-                'desc' => 'Enter the Sender ID. ',
-            ],
-        ];
+        $this->help           = "Enter your Username and Password.";
     }
 
     public function SendSMS()
@@ -80,14 +67,31 @@ class uwaziimobile extends \WP_SMS\Gateway
                 return $this->clean_number($item, $country_code);
             }, $this->to);
 
-            $response = $this->request('GET', "$this->wsdl_link/send", [
+            $token = $this->getToken();
+
+            $body = [
                 [
-                    'token' => $this->has_key,
-                    'phone' => implode($mobileNumbers),
-                    'senderID' => $this->from,
-                    'text' => $this->msg,
+                    "number"   => $mobileNumbers,
+                    "senderID" => $this->from,
+                    "text"     => $this->msg,
+                    "type"     => "sms",
+                ]
+            ];
+
+            $params = array(
+                'headers' => [
+                    'X-Access-Token' => $token,
+                    'Content-Type'   => 'application/json'
                 ],
-            ], []);
+                'body'    => json_encode($body)
+            );
+
+            $response = $this->request('POST', "{$this->wsdl_link}/send", [], $params);
+
+            // check $response validation
+            if (isset($response->status) && $response->status != 1) {
+                throw new Exception($response->errors);
+            }
 
             //log the result
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -117,11 +121,26 @@ class uwaziimobile extends \WP_SMS\Gateway
         try {
 
             // Check username and password
-            if (!$this->has_key) {
-                throw new Exception(__('Gateway Token is not entered.', 'wp-sms'));
+            if (!$this->username or !$this->password) {
+                throw new Exception(__('The username/password is not entered.', 'wp-sms'));
             }
 
-            return 1;
+            $token = $this->getToken();
+
+            $params = [
+                'headers' => [
+                    'X-Access-Token' => $token
+                ]
+            ];
+
+            $response = $this->request('GET', "{$this->wsdl_link}/me", [], $params);
+
+            // check $response validation
+            if (isset($response->status) && $response->status != 1) {
+                throw new Exception($response->errors);
+            }
+
+            return $response->data->balance_limit;
 
         } catch (Exception $e) {
             $error_message = $e->getMessage();
@@ -129,6 +148,7 @@ class uwaziimobile extends \WP_SMS\Gateway
         }
 
     }
+
     private function clean_number($number, $country_code)
     {
         //Clean Country Code from + or 00
@@ -158,5 +178,77 @@ class uwaziimobile extends \WP_SMS\Gateway
         }
 
         return $country_code . $number;
+    }
+
+    /**
+     * This private function returns an access token. First, it checks for existence of
+     * the token in the system cache and if there wasn't any tokens, it creates a new one.
+     * The token is stored in system cache only for 4 hours.
+     *
+     * @return mixed|string
+     * @throws Exception
+     */
+    private function getToken()
+    {
+        // Get any existing copy of uwaziimobile gateway token
+        if (false === ($token = get_transient('wpsms_uwazii_token'))) {
+            // It wasn't there, so regenerate the data and save the transient
+
+            try {
+
+                // generate request body to authenticate
+                $body = [
+                    "username" => $this->username,
+                    "password" => $this->password
+                ];
+
+                $params = [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body'    => json_encode($body)
+                ];
+
+                // get authorization code
+                $response = $this->request('POST', "{$this->wsdl_link}/authorize", [], $params);
+
+                // check $response validation
+                if (isset($response->status) && $response->status != 1) {
+                    throw new Exception($response->errors);
+                }
+
+                // generate request body to get Access Token
+                $body = [
+                    'authorization_code' => $response->data->authorization_code
+                ];
+
+                $params = [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body'    => json_encode($body)
+                ];
+
+                // get access token
+                $response = $this->request('POST', "{$this->wsdl_link}/accesstoken", [], $params);
+
+                // check $response validation
+                if (isset($response->status) && $response->status != 1) {
+                    throw new Exception($response->errors);
+                }
+
+                $token = $response->data->access_token;
+
+                set_transient('wpsms_uwazii_token', $token, HOUR_IN_SECONDS * 4);
+
+            } catch (Exception $e) {
+                $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+                return new WP_Error('send-sms', $e->getMessage());
+            }
+        }
+
+        // Use the data like you would have normally...
+        return $token;
     }
 }
