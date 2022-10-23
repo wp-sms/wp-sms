@@ -227,6 +227,8 @@ let wpSmsImportSubscriber = {
             // $this.messageModal.css('display', 'none')
             // $this.progressBarSection.css('display', 'block')
 
+            jQuery('#TB_ajaxContent').animate({scrollTop: '0px'}, 300);
+
             $this.importEventListener(0)
         })
     },
