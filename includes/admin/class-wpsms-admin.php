@@ -334,7 +334,7 @@ class Admin
         wp_register_script('wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-edit-subscriber');
         wp_localize_script('wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', array(
-            'tb_show_url' => add_query_arg(array('action' => 'wp_sms_edit_subscriber'), admin_url('admin-ajax.php')),
+            'tb_show_url' => \WP_SMS\Controller\SubscriberFormAjax::url(),
             'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
         ));
     }
@@ -356,7 +356,7 @@ class Admin
         wp_register_script('wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-edit-group');
         wp_localize_script('wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', array(
-            'tb_show_url' => add_query_arg(array('action' => 'wp_sms_edit_group'), admin_url('admin-ajax.php')),
+            'tb_show_url' => \WP_SMS\Controller\GroupFormAjax::url(),
             'tb_show_tag' => __('Edit Group', 'wp-sms')
         ));
     }
