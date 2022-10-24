@@ -79,7 +79,6 @@ class Gateway
             'springedge'     => 'springedge.com',
             'bulksmsnigeria' => 'bulksmsnigeria.com',
             'smsru'          => 'sms.ru',
-            'aspsms'         => 'aspsms.com',
             'kaleyra'        => 'kaleyra.com',
             'sendpulse'      => 'sendpulse.com',
             'mimsms'         => 'mimsms.com',
@@ -560,6 +559,8 @@ class Gateway
                 'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
                 'aobox'            => 'aobox.it',
+                'sendapp'          => 'Sendapp SMS',
+                'sendappWhatsApp'  => 'Sendapp Whathapp',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -584,6 +585,9 @@ class Gateway
             ),
             'slovakia'             => array(
                 'eurosms' => 'eurosms.com',
+            ),
+            'switzerland'          => array(
+                'aspsms' => 'aspsms.com',
             ),
             'latvia'               => array(
                 'texti' => 'texti.fi',
