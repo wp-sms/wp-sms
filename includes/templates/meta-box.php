@@ -93,23 +93,6 @@
 </table>
 
 <script type="text/javascript">
-    const { subscribe } = wp.data;
-
-    const initialPostStatus = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'status' );
-
-    if ( 'publish' !== initialPostStatus ) {
-        jQuery('#wps-send-to:not(.is-forced)').val(0);
-        jQuery('#wps-send-to:not(.is-forced)').change();
-        showHideFields();
-        const unssubscribe = subscribe( () => {
-            const currentPostStatus = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'status' );
-            if ( 'publish' === currentPostStatus ) {
-                jQuery('#wps-send-to').val(0);
-                jQuery('#wps-send-to').change();
-                showHideFields();
-            }
-        } );
-    }
 
     function showHideFields() {
         const sendTo = jQuery('#wps-send-to').val()
@@ -136,7 +119,29 @@
         }
     }
 
-    jQuery("#wps-send-to").on('change', function () {
-        showHideFields();
-    });
+    jQuery( document ).ready(function() {
+        const { subscribe } = wp.data;
+
+        const initialPostStatus = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'status' );
+
+        if ( 'publish' !== initialPostStatus ) {
+            jQuery('#wps-send-to:not(.is-forced)').val(0);
+            jQuery('#wps-send-to:not(.is-forced)').change();
+            showHideFields();
+            const unssubscribe = subscribe( () => {
+                const currentPostStatus = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'status' );
+                if ( 'publish' === currentPostStatus ) {
+                    jQuery('#wps-send-to').val(0);
+                    jQuery('#wps-send-to').change();
+                    showHideFields();
+                }
+            } );
+        }
+
+        jQuery("#wps-send-to").on('change', function () {
+            showHideFields();
+        });
+    })
+
+
 </script>
