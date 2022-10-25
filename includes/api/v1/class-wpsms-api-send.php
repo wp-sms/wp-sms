@@ -8,6 +8,7 @@ use DateTime;
 use DateInterval;
 use WP_SMS\Gateway;
 use WP_SMS\Helper;
+use WP_SMS\Newsletter;
 use WP_SMS\Pro\Scheduled;
 use WP_SMS\Pro\RepeatingMessages;
 
@@ -166,11 +167,22 @@ class SendSmsApi extends \WP_SMS\RestApi
              */
             case 'subscribers':
 
-                if (!$request->get_param('group_ids')) {
-                    throw new Exception(__('Parameter group_ids is required', 'wp-sms'));
+                $group_id = $request->get_param('group_ids');
+                $groups   = Newsletter::getGroups();
+
+                // Check there is group or not
+                if ($groups) {
+                    if (!$request->get_param('group_ids')) {
+                        throw new Exception(__('Parameter group_ids is required', 'wp-sms'));
+                    }
+
+                    // Check group validity
+                    if (!Newsletter::getGroup($group_id)) {
+                        throw new Exception(__('The group ID is not valid', 'wp-sms'));
+                    }
                 }
 
-                $recipients = \WP_SMS\Newsletter::getSubscribers($request->get_param('group_ids'), true);
+                $recipients = Newsletter::getSubscribers($group_id, true);
                 break;
 
             /**

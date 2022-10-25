@@ -62,7 +62,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 			wp_send_json_success( [
 				'importDone' => true,
 				'count'      => count( $data ),
-//				'message'    => __(sprintf('%s of %s subscribers imported successfully! Reload the page to see the result.', 2, count($data)), 'wp-sms' )
+                //'message'    => __(sprintf('%s of %s subscribers imported successfully! Reload the page to see the result.', 2, count($data)), 'wp-sms' )
 			] );
 		}
 
@@ -88,7 +88,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract {
 			// check group id validity
 			$selected_group = Newsletter::getGroup( $group_id );
 			if ( ! isset( $selected_group ) ) {
-				$error[ $mobile_number ] = __( "There is no Group associated with the selected Group ID.", 'wp-sms' );
+				$error[ $mobile_number ] = __( 'The group ID is not valid', 'wp-sms' );
 				$counter ++;
 				continue;
 			}
