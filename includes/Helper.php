@@ -265,9 +265,10 @@ class Helper {
 	/**
 	 * @return void
 	 */
-	public static function maybeStartSession() {
-		if ( ! session_id() ) {
-			session_start();
-		}
-	}
+    public static function maybeStartSession()
+    {
+        if (!session_id()) {
+            session_start(array('read_and_close'));
+        }
+    }
 }
