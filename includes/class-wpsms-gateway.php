@@ -291,6 +291,18 @@ class Gateway
     public $media = [];
 
     /**
+     * determine the request is OTP message or standard message
+     *
+     * @var string
+     */
+    public $sms_action = '';
+
+    /**
+     * @var string
+     */
+    public $payload = '';
+
+    /**
      * @var
      */
     public static $get_response;
