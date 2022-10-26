@@ -8,17 +8,36 @@
     "sync": "browser-sync start -p 'myexample.local' --files '**/*.php' 'build/*.js' 'build/*.css'",
     "build": "wp-scripts build assets/src/blocks/subscribe/index.js assets/src/blocks/subscribe/frontend.js",
     "start": "wp-scripts start build assets/src/blocks/subscribe/index.js assets/src/blocks/subscribe/frontend.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "webpack",
+    "build:production": "cross-env NODE_ENV=production webpack",
+    "watch": "webpack --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/runtime-corejs2": "^7.0.0",
+    "@wordpress/babel-preset-default": "^2.1.0",
     "@wordpress/scripts": "^17.0.0",
+    "autoprefixer": "^9.1.3",
+    "babel-loader": "^8.0.0",
     "browser-sync": "^2.27.4",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "css-minimizer-webpack-plugin": "^4.2.2",
+    "extract-loader": "^2.0.1",
+    "file-loader": "^2.0.0",
     "gulp-sass": "^5.1.0",
+    "node-sass": "^4.9.3",
     "npm-run-all": "^4.1.5",
-    "sass": "^1.47.0"
+    "postcss-cli": "^6.0.0",
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.47.0",
+    "sass-loader": "^7.1.0",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
   },
   "dependencies": {
     "gulp": "^4.0.2",
