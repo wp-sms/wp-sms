@@ -301,13 +301,6 @@ class Settings
                 'options' => $options,
                 'desc'    => __('Verify mobile number in the login form. This feature is only compatible with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms'),
             ),
-            'mobile_verify_optional' => array(
-                'id'      => 'mobile_verify_optional',
-                'name'    => __('Should be optional?', 'wp-sms'),
-                'type'    => 'checkbox',
-                'options' => $options,
-                'desc'    => __('If you would like to make the mobile number field optional, please enable the option.', 'wp-sms'),
-            ),
             'mobile_verify_method'   => array(
                 'id'      => 'mobile_verify_method',
                 'name'    => __('Method', 'wp-sms'),
@@ -317,16 +310,6 @@ class Settings
                     'force_all' => __('Enable for All Users', 'wp-sms')
                 ),
                 'desc'    => __('Choose from which what 2FA method you want to use.', 'wp-sms')
-            ),
-            'mobile_verify_runtime'  => array(
-                'id'      => 'mobile_verify_runtime',
-                'name'    => __('Run Time', 'wp-sms'),
-                'type'    => 'select',
-                'options' => array(
-                    'once_time'  => __('Just once', 'wp-sms'),
-                    'every_time' => __('Everytime', 'wp-sms')
-                ),
-                'desc'    => __('Choose from which what 2FA run-time you want to use.', 'wp-sms')
             ),
             'mobile_verify_message'  => array(
                 'id'   => 'mobile_verify_message',
