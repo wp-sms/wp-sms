@@ -119,6 +119,7 @@ class Gateway
             'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'     => array(
+            'smsdone' => 'SMS Done - smsd.one'
             'dianahost' => 'dianahost.com',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
