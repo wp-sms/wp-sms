@@ -69,8 +69,9 @@ class SendSmsApi extends \WP_SMS\RestApi
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
             $mediaUrls        = array_filter($request->get_param('media_urls'));
+
             if (count($recipientNumbers) === 0) {
-                throw new Exception(__('The group does not have any number.', 'wp-sms'));
+                throw new Exception(__('Could not find any mobile numbers.', 'wp-sms'));
             }
 
             if (!$request->get_param('message')) {
@@ -218,7 +219,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
                     $recipients = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
                 } else {
-                    throw new Exception(__('BuddyPress or WP-SMS Pro is not enabled', 'wp-sms-pro'));
+                    throw new Exception(__('BuddyPress or WP SMS Pro is not enabled', 'wp-sms-pro'));
                 }
 
                 break;
