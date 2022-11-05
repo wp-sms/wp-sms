@@ -140,6 +140,21 @@ class Helper {
 		 */
 		$variables = apply_filters( 'wp_sms_output_variables', $variables, $content, $args );
 
+        /**
+         * Map the meta variables to the values
+         */
+        if (isset($args['order']) and $args['order'] instanceof \WC_Order) {
+            preg_match_all('/%order_meta_(.*?)%/', $content, $match);
+
+            if (count($match) > 1) {
+                $output = array_combine($match[0], $match[1]);
+
+                foreach ($output as $key => $value) {
+                    $variables[$key] = $args['order']->get_meta($value);
+                }
+            }
+        }
+
 		$message = str_replace( array_keys( $variables ), array_values( $variables ), $content );
 
 		/**
