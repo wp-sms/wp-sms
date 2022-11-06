@@ -8,6 +8,7 @@ use DateTime;
 use DateInterval;
 use WP_SMS\Gateway;
 use WP_SMS\Helper;
+use WP_SMS\Newsletter;
 use WP_SMS\Pro\Scheduled;
 use WP_SMS\Pro\RepeatingMessages;
 
@@ -68,8 +69,9 @@ class SendSmsApi extends \WP_SMS\RestApi
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
             $mediaUrls        = array_filter($request->get_param('media_urls'));
+
             if (count($recipientNumbers) === 0) {
-                throw new Exception(__('The group does not have any number.', 'wp-sms'));
+                throw new Exception(__('Could not find any mobile numbers.', 'wp-sms'));
             }
 
             if (!$request->get_param('message')) {
@@ -166,11 +168,22 @@ class SendSmsApi extends \WP_SMS\RestApi
              */
             case 'subscribers':
 
-                if (!$request->get_param('group_ids')) {
-                    throw new Exception(__('Parameter group_ids is required', 'wp-sms'));
+                $group_id = $request->get_param('group_ids');
+                $groups   = Newsletter::getGroups();
+
+                // Check there is group or not
+                if ($groups) {
+                    if (!$request->get_param('group_ids')) {
+                        throw new Exception(__('Parameter group_ids is required', 'wp-sms'));
+                    }
+
+                    // Check group validity
+                    if (!Newsletter::getGroup($group_id)) {
+                        throw new Exception(__('The group ID is not valid', 'wp-sms'));
+                    }
                 }
 
-                $recipients = \WP_SMS\Newsletter::getSubscribers($request->get_param('group_ids'), true);
+                $recipients = Newsletter::getSubscribers($group_id, true);
                 break;
 
             /**
@@ -206,7 +219,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
                     $recipients = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
                 } else {
-                    throw new Exception(__('BuddyPress or WP-SMS Pro is not enabled', 'wp-sms-pro'));
+                    throw new Exception(__('BuddyPress or WP SMS Pro is not enabled', 'wp-sms-pro'));
                 }
 
                 break;

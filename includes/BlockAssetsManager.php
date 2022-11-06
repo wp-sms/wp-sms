@@ -16,6 +16,10 @@ class BlockAssetsManager
 
     public function registerBlocks()
     {
+		if (!function_exists('register_block_type')) {
+			error_log(__('WP SMS: The "register_block_type" function is not supported in this version of WordPress.', 'wp-sms'));
+			return;
+		}
         foreach ($this->blocks as $item) {
             if (class_exists($item)) {
                 $block = new $item();

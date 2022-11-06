@@ -11,7 +11,7 @@ function buildStyles() {
     .pipe(autoprefixer({cascade: false}))
     .pipe(cleanCSS({compatibility: 'ie11'}))
     .pipe(gulp.dest('./assets/css'));
-};
+}
 
 function buildAdminStyles(cb) {
   return gulp.src('./assets/src/admin/admin.scss')
@@ -19,12 +19,12 @@ function buildAdminStyles(cb) {
     .pipe(autoprefixer({cascade: false}))
     .pipe(cleanCSS({compatibility: 'ie11'}))
     .pipe(gulp.dest('./assets/css'));
-};
+}
 
 exports.buildStyles = buildStyles;
 exports.watch = function () {
   gulp.watch('./assets/src/scss/**/*.scss', gulp.series([buildStyles]));
-};
+}
 
 exports.buildAdminStyles = buildAdminStyles;
 exports.watch = () => {

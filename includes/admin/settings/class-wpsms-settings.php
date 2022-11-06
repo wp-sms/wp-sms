@@ -774,13 +774,14 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
+                            __('Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s, Order Meta %s', 'wp-sms'),
                             '<code>%status%</code>',
                             '<code>%order_number%</code>',
                             '<code>%customer_first_name%</code>',
                             '<code>%customer_last_name%</code>',
                             '<code>%order_view_url%</code>',
-                            '<code>%order_pay_url%</code>'
+                            '<code>%order_pay_url%</code>',
+                            '<code>%order_meta_{key-name}%</code>'
                         )
                 ),
                 'wc_notify_by_status'          => array(

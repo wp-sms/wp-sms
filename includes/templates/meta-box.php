@@ -5,7 +5,7 @@
             <label for="wps-send-to"><?php _e('Send Notification to?', 'wp-sms'); ?></label>
         </th>
         <td>
-            <select name="wps_send_to" id="wps-send-to">
+            <select name="wps_send_to" id="wps-send-to" class="<?php echo $forceToSend ? "is-forced" : '';  ?>">
                 <option value="0" <?php if (isset($_GET['post']) and !$forceToSend): echo 'selected'; endif; ?>><?php _e('Please select', 'wp-sms'); ?></option>
                 <option value="subscriber" <?php if (empty($_GET['post']) and $forceToSend) {
                     selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'subscriber');
@@ -93,6 +93,7 @@
 </table>
 
 <script type="text/javascript">
+
     function showHideFields() {
         const sendTo = jQuery('#wps-send-to').val()
         if (sendTo == 'subscriber') {
@@ -118,13 +119,29 @@
         }
     }
 
-    jQuery(document).ready(function () {
-        jQuery('#wps-send-to').val(0);
-        jQuery('#wps-send-to').change();
-        showHideFields();
+    jQuery( document ).ready(function() {
+        const { subscribe } = wp.data;
+
+        const initialPostStatus = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'status' );
+
+        if ( 'publish' !== initialPostStatus ) {
+            jQuery('#wps-send-to:not(.is-forced)').val(0);
+            jQuery('#wps-send-to:not(.is-forced)').change();
+            showHideFields();
+            const unssubscribe = subscribe( () => {
+                const currentPostStatus = wp.data.select( 'core/editor' ).getEditedPostAttribute( 'status' );
+                if ( 'publish' === currentPostStatus ) {
+                    jQuery('#wps-send-to').val(0);
+                    jQuery('#wps-send-to').change();
+                    showHideFields();
+                }
+            } );
+        }
 
         jQuery("#wps-send-to").on('change', function () {
             showHideFields();
         });
     })
+
+
 </script>
