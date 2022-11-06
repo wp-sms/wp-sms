@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 5.8.3
+Stable tag: 5.8.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -284,6 +284,17 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.8.4 - 05.11.2022 =
+* Bugfix: Fix force to send issue
+* Bugfix: PHP session notice in WordPress Health panel
+* Improvement: You can now send SMS to all your subscribers, whether they have a group or not
+* Improvement: Message responses are improved to be more clear and specific
+* Add: The flag of "read_and_close" has been added to start session
+* Add: WebPack has been added as the asset builder
+* Add: Order meta key has been implemented
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.8.3 - 23.10.2022 =
 * Bugfix: Remove jQuery deprecated functions
 * Bugfix: Fix 1s2u gateway issues to improve its performance
@@ -297,8 +308,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Add: WP SMS now supports Liveall gateway
 * Add: WP SMS now supports SendApp SMS & SendApp Whatsapp gateways
 * Add: AspSms gateway now is available in the free version of WP SMS
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.2 - 18.09.2022 =
 * Bugfix: Fixed query issue while getting subscribers
