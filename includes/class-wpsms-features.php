@@ -8,7 +8,6 @@ if (!defined('ABSPATH')) {
 
 class Features
 {
-
     public $sms;
     public $date;
     public $options;
@@ -31,9 +30,11 @@ class Features
         $this->options     = Option::getOptions();
         $this->mobileField = Helper::getUserMobileFieldName();
 
+        $this->add_wpsms_user_profile_fields_group();
+
         if (wp_sms_get_option('add_mobile_field')) {
             add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
-            add_filter('user_contactmethods', array($this, 'add_mobile_field_to_profile_form'));
+            add_filter('wp_sms_user_profile_fields', array($this, 'add_mobile_field_to_profile_form'));
 
             add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
             add_filter('registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
@@ -49,6 +50,43 @@ class Features
         }
     }
 
+    /**
+     * Add WPSMS fields to user profile
+     *
+     * @return void
+     */
+    private function add_wpsms_user_profile_fields_group()
+    {
+        $renderFields = function ($user) {
+            $fields = apply_filters('wp_sms_user_profile_fields', [], $user->ID);
+            if (empty($fields)) {
+                return;
+            }
+
+            echo Helper::loadTemplate(
+                'admin/user-profile-fields.php',
+                [
+                    'fields' => $fields,
+                ]
+            );
+        };
+
+        add_action('show_user_profile', $renderFields);
+        add_action('edit_user_profile', $renderFields);
+
+        $saveFields = function ($userId) {
+            $fields = apply_filters('wp_sms_user_profile_fields', [], $userId);
+            foreach ($fields as $field) {
+                if (isset($field['saveCallback']) && is_callable($field['saveCallback'])) {
+                    call_user_func($field['saveCallback'], $userId);
+                }
+            }
+        };
+
+        add_action('personal_options_update', $saveFields);
+        add_action('edit_user_profile_update', $saveFields);
+    }
+
     // add mobile field input to add user admin page
     public function add_mobile_field_to_newuser_form()
     {
@@ -62,7 +100,20 @@ class Features
      */
     public function add_mobile_field_to_profile_form($fields)
     {
-        $fields['mobile'] = __('Mobile', 'wp-sms');
+        $mobileFieldName  = Helper::getUserMobileFieldName();
+        $currentValue     = wp_get_current_user()->get($mobileFieldName);
+
+        $fields['mobile'] = [
+            'id'           => 'mobile',
+            'title'        => __('Mobile', 'wp-sms'),
+            'content'      => '<input class="wp-sms-input-mobile" type="text" name="mobile" value="'.esc_attr($currentValue).'">',
+            'saveCallback' => function ($userId) use ($mobileFieldName) {
+                if (isset($_POST['mobile'])) {
+                    $value = Helper::sanitizeMobileNumber($_POST['mobile']);
+                    update_user_meta($userId, $mobileFieldName, $value);
+                }
+            }
+        ];
 
         return $fields;
     }
@@ -93,7 +144,6 @@ class Features
         }
 
         if (isset($_POST['mobile']) and $_POST['mobile']) {
-
             $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
             $validity = Helper::checkMobileNumberValidity($mobile);
 
@@ -148,7 +198,6 @@ class Features
      */
     public function load_international_input()
     {
-
         //Register IntelTelInput Assets
         wp_enqueue_style('wpsms-intel-tel-input', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, '17.0.0');
         wp_enqueue_script('wpsms-intel-tel-input', WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js', array('jquery'), '17.0.0', true);
@@ -175,8 +224,6 @@ class Features
 
         wp_localize_script('wpsms-intel-script', 'wp_sms_intel_tel_input', $tel_intel_vars);
     }
-
-
 }
 
 new Features();
