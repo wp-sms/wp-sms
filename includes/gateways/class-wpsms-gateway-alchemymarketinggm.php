@@ -20,22 +20,22 @@ class alchemymarketinggm extends \WP_SMS\Gateway
         $this->validateNumber = "The telephone number can be specified in local number format (e.g. 7654321), or in international number format (e.g.+447946318520). More then one recipient addresses can be separated by a colon (e.g.: +447949876543, +447920222333).";
         $this->help           = "Please fill in the below-required fields to send SMS through the Alchemy gateway. You must contact their support team to get the details of the port.";
         $this->gatewayFields  = [
-            'username' => [
+            'username'     => [
                 'id'   => 'gateway_username',
                 'name' => 'Username',
                 'desc' => 'Enter your username.',
             ],
-            'password' => [
+            'password'     => [
                 'id'   => 'gateway_password',
                 'name' => 'Password',
                 'desc' => 'Enter your password.',
             ],
-            'from'     => [
+            'from'         => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Sender ID',
                 'desc' => 'You can use local phone number format, or international phone number format (telephone numbers formatted according to the international number format start with a plus sign). If the international phone number format is used, note that you must substitute %2B for the + character, because of URL encoding rules.',
             ],
-            'port'     => [
+            'gateway_port' => [
                 'id'   => 'gateway_port',
                 'name' => 'Gateway Port',
                 'desc' => 'Enter the gateway port.',
@@ -78,7 +78,10 @@ class alchemymarketinggm extends \WP_SMS\Gateway
         try {
 
             $arguments = [
-                'body' => [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => [
                     'action'      => 'sendmessage',
                     'username'    => $this->username,
                     'password'    => $this->password,
@@ -93,13 +96,12 @@ class alchemymarketinggm extends \WP_SMS\Gateway
 
             $response = $this->request('POST', $this->wsdl_link, [], $arguments);
 
-            //todo need improvement, I guess
-            if ($response->acceptreport->statuscode && $response->acceptreport->statuscode != '0') {
-                throw new \Exception($response->acceptreport->statusmessage);
+            if ($response->response->data->acceptreport->statuscode && $response->response->data->acceptreport->statuscode != '0') {
+                throw new \Exception($response->response->data->acceptreport->statusmessage);
             }
 
             //log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $response->response->data->acceptreport);
 
             /**
              * Run hook after send sms.
