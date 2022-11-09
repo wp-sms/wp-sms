@@ -9,8 +9,9 @@ use WP_SMS\Helper;
 
 class SubscribeBlock extends BlockAbstract
 {
-    protected $blockName = 'subscribe';
+    protected $blockName = 'Subscribe';
     protected $blockVersion = '1.0';
+    protected $script = '/js/blocks/subscribe.js';
 
     protected function output($attributes)
     {

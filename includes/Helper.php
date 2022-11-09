@@ -8,7 +8,7 @@ class Helper {
 	}
 
 	public static function getAssetPath( $asset ) {
-		return plugin_dir_path( __FILE__ ) . $asset;
+		return plugin_dir_path( dirname(__FILE__, 1) ) . $asset;
 	}
 
 	/**
