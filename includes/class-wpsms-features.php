@@ -34,7 +34,7 @@ class Features
 
         if (wp_sms_get_option('add_mobile_field')) {
             add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
-            add_filter('wp_sms_user_profile_fields', array($this, 'add_mobile_field_to_profile_form'));
+            add_filter('wp_sms_user_profile_fields', array($this, 'add_mobile_field_to_profile_form'), 10, 2);
 
             add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
             add_filter('registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
@@ -95,10 +95,10 @@ class Features
      *
      * @return mixed
      */
-    public function add_mobile_field_to_profile_form($fields)
+    public function add_mobile_field_to_profile_form($fields, $userId)
     {
-        $mobileFieldName = Helper::getUserMobileFieldName();
-        $currentValue    = wp_get_current_user()->get($mobileFieldName);
+        $mobileFieldName  = Helper::getUserMobileFieldName();
+        $currentValue     = get_user_by('id', $userId)->get($mobileFieldName);
 
         $fields['mobile'] = [
             'id'           => 'mobile',
