@@ -1,4 +1,4 @@
-<h2>WP SMS</h2>
+<h2>SMS</h2>
 
 <table class="form-table">
     <?php foreach ($fields as $field): ?>
