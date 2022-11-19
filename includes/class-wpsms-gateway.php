@@ -1052,7 +1052,7 @@ class Gateway
      * @example In the message body "Hello World|1234" the template ID is 1234
      *
      */
-    protected function getTemplateIdFromMessageBody()
+    protected function getTemplateIdAndMessageBody()
     {
         $message_body = explode("|", $this->msg);
 
