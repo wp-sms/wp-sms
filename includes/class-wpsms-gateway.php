@@ -1043,4 +1043,21 @@ class Gateway
 
         return ($responseJson == null) ? $responseBody : $responseJson;
     }
+
+    /**
+     * Fetch the template ID from message body
+     *
+     *
+     * @return string|void
+     * @example In the message body "Hello World|1234" the template ID is 1234
+     *
+     */
+    protected function getTemplateIdFromMessageBody()
+    {
+        $message_body = explode("|", $this->msg);
+
+        if (isset($message_body[1]) && $message_body[1]) {
+            return $message_body[1];
+        }
+    }
 }
