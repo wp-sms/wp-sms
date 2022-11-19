@@ -1049,7 +1049,7 @@ class Gateway
      *
      *
      * @return array|void
-     * @example In the message body "Hello World|1234" the template ID is 1234
+     * @example In the message body "Hello World|1234" It returns array('Hello World', '1234')
      *
      */
     protected function getTemplateIdAndMessageBody()
