@@ -157,6 +157,9 @@ class Gateway
         'mexico'         => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
+        'iran'           => array(
+            'mehrafraz' => 'mehrafraz.com/fa',
+        ),
     );
 
     /**
