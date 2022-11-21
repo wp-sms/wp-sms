@@ -73,7 +73,7 @@ class smsto extends \WP_SMS\Gateway
             'message'   => $this->msg,
         );
 
-        if ((isset($this->options['rest_api_status'])) && (isset($this->options['gateway_smsto_callback_url']))) {
+        if ((isset($this->options['gateway_smsto_callback_url']))) {
             $callback_url                = apply_filters('sms_to_callback', $this->options['gateway_smsto_callback_url']);
             $bodyContent['callback_url'] = 'https://' . $callback_url . '/wp-json/sms-to/get_post';
         }
