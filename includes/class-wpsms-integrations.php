@@ -49,7 +49,13 @@ class Integrations
         $cf7_options       = get_option('wpcf7_sms_' . $form->id());
         $cf7_options_field = get_option('wpcf7_sms_form' . $form->id());
 
-        include_once WP_SMS_DIR . "includes/templates/wpcf7-form.php";
+        $get_group_result = Newsletter::getGroups();
+
+        echo Helper::loadTemplate('wpcf7-form.php', [
+            'get_group_result'  => $get_group_result,
+            'cf7_options'       => $cf7_options,
+            'cf7_options_field' => $cf7_options_field,
+        ]);
     }
 
     public function wpcf7_save_form($form)
@@ -65,10 +71,19 @@ class Integrations
         $this->set_cf7_data();
 
         /**
-         * Send SMS to the specific number
+         * Send SMS to the specific number or subscribers' group
          */
-        if ($cf7_options['message'] && $cf7_options['phone']) {
-            $this->sms->to = explode(',', $cf7_options['phone']);
+        if ($cf7_options['message'] && $cf7_options['recipient']) {
+
+            switch ($cf7_options['recipient']) {
+                case 'subscriber':
+                    $this->sms->to = Newsletter::getSubscribers($cf7_options['groups'], true);
+                    break;
+
+                case 'number':
+                    $this->sms->to = explode(',', $cf7_options['phone']);
+                    break;
+            }
 
             $this->sms->msg = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
                 foreach ($matches as $item) {

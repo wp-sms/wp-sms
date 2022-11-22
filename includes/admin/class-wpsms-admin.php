@@ -98,6 +98,16 @@ class Admin
         }
 
         /**
+         * Contact Form 7 SMS Notification Tab
+         */
+        if ($screen->id == 'toplevel_page_wpcf7') {
+            wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
+            wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
+            wp_enqueue_style('wpsms-admin');
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
+        }
+
+        /**
          * Send SMS page's assets
          */
         if ($screen->id === 'toplevel_page_wp-sms') {
