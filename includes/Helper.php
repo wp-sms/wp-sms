@@ -2,6 +2,11 @@
 
 namespace WP_SMS;
 
+/**
+ * Class WP_SMS
+ * @package WP_SMS
+ * @description The helper that provides the useful methods for the plugin for development purposes.
+ */
 class Helper {
 	public static function getPluginAssetUrl( $assetName, $plugin = 'wp-sms' ) {
 		return plugins_url( $plugin ) . "/assets/{$assetName}";
