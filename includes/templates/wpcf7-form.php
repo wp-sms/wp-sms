@@ -8,8 +8,8 @@
                 <th scope="row"><label for="wpcf7-sms-recipient"><?php _e('Recipients', 'wp-sms'); ?>:</label></th>
                 <td>
                     <select name="wpcf7-sms[recipient]" id="wpcf7-sms-recipient">
-                        <option value="number" <?php if (isset($cf7_options) && $cf7_options['recipient'] == 'number'): echo 'selected'; endif; ?> > <?php _e('Number', 'wp-sms'); ?></option>
-                        <option value="subscriber" <?php if (isset($cf7_options) && $cf7_options['recipient'] == 'subscriber'): echo 'selected'; endif; ?> > <?php _e('Subscriber Group', 'wp-sms'); ?></option>
+                        <option value="number" <?php if (isset($cf7_options['recipient']) && $cf7_options['recipient'] == 'number'): echo 'selected'; endif; ?> > <?php _e('Number', 'wp-sms'); ?></option>
+                        <option value="subscriber" <?php if (isset($cf7_options['recipient']) && $cf7_options['recipient'] == 'subscriber'): echo 'selected'; endif; ?> > <?php _e('Subscriber Group', 'wp-sms'); ?></option>
                     </select>
                 </td>
             </tr>
