@@ -73,14 +73,14 @@ class Integrations
         /**
          * Send SMS to the specific number or subscribers' group
          */
-        if ($cf7_options['message'] && $cf7_options['recipient']) {
+        if ((isset($cf7_options['phone']) || isset($cf7_options['recipient'])) && isset($cf7_options['message'])) {
 
             switch ($cf7_options['recipient']) {
                 case 'subscriber':
                     $this->sms->to = Newsletter::getSubscribers($cf7_options['groups'], true);
                     break;
 
-                case 'number':
+                default:
                     $this->sms->to = explode(',', $cf7_options['phone']);
                     break;
             }
