@@ -3,7 +3,7 @@ namespace WP_SMS;
 ?>
 
 <div class="wrap wpsms-wrap">
-    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+    <?php echo Helper::loadTemplate('header.php'); ?>
     <div class="wpsms-wrap__main">
         <h2><?php _e('Groups', 'wp-sms'); ?></h2>
         <?php

@@ -1,5 +1,5 @@
 <div class="wrap wpsms-wrap">
-    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+    <?php echo \WP_SMS\Helper::loadTemplate('header.php'); ?>
     <div class="wpsms-wrap__main">
         <h1 class="wrap__title"><?php _e('Send SMS', 'wp-sms'); ?>
         </h1>

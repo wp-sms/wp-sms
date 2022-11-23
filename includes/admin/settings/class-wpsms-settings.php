@@ -2419,7 +2419,7 @@ class Settings
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
         ob_start(); ?>
     <div class="wrap wpsms-wrap wpsms-settings-wrap">
-        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+        <?php echo Helper::loadTemplate('header.php'); ?>
         <div class="wpsms-wrap__main">
             <?php do_action('wp_sms_settings_page'); ?>
             <h2><?php _e('Settings', 'wp-sms') ?>

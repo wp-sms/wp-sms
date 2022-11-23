@@ -1,5 +1,5 @@
 <div class="wrap wpsms-wrap">
-    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+    <?php echo \WP_SMS\Helper::loadTemplate('header.php'); ?>
     <div id="poststuff" class="wpsms-add-ons">
         <div id="post-body" class="metabox-holder">
             <div class="wp-list-table widefat widefat plugin-install">
