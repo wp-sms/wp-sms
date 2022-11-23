@@ -441,15 +441,10 @@ let WpSmsContactForm7 = {
             this.fields.recipient_groups.element.hide()
             this.fields.message_body.element.show()
 
-        } else if (this.fields.recipient.element.val() === 'subscriber') {
+        } else {
             this.fields.recipient_numbers.element.hide()
             this.fields.recipient_groups.element.show()
             this.fields.message_body.element.show()
-
-        } else {
-            this.fields.recipient_numbers.element.hide()
-            this.fields.recipient_groups.element.hide()
-            this.fields.message_body.element.hide()
 
         }
     },
