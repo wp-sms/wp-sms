@@ -20,20 +20,26 @@ Watch the video to learn more about the WordPress SMS Plugin!
 
 https://www.youtube.com/watch?v=7r6jObgdQj0
 
-Main plugin's feature
+Main plugin's features
 
-* Send SMS/MMS to either your users’ numbers or specific numbers
-* Get your users’ mobile numbers when they subscribe to your newsletters
-* Send SMS automatically to users and admins in different situations
-* Increase the security by two-step verification
-* Login with your mobile number in case that you forget your password
+* Sending SMS/MMS to either your users’ numbers or specific numbers
+* Getting your users’ mobile numbers when they subscribe to your newsletters
+* Sending SMS automatically to users and admins in different situations
+* Increasing the security by two-step verification
+* Logging in with your mobile number in case that you forget your password
 * And many more!
 
 This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
 
 Don’t worry, we have tried to cover the best and the most well-known gateways for the plugin. Also, the Pro version is available too.
 
-= Features =
+= PRO PACKAGE =
+In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce Mobile Verification, order notifications, etc.
+
+The list of supported gateways and integrated plugins are available in FAQ.
+[Buy Pro Package](http://wp-sms-pro.com/buy/)
+
+= Pro Version Features =
 * Supporting more than 250 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 * Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
 * Subscribing/Opt-In SMS newsletters and groups
@@ -51,13 +57,6 @@ Don’t worry, we have tried to cover the best and the most well-known gateways 
 * Supporting WP-REST API
 * Importing/Exporting Subscribers.
 * Make short URLs by Bitly.com
-
-= PRO PACKAGE =
-In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce Mobile Verification, order notifications, etc.
-
-The list of supported gateways and integrated plugins are available in FAQ.
-[Buy Pro Package](http://wp-sms-pro.com/buy/)
-
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
@@ -77,8 +76,8 @@ Installing the WP SMS plugin is similar to installing any other WordPress plugin
 
 1. Upload `wp-sms` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display the SMS newsletter form, go to Themes > Widgets, and add a WP SMS Subscribe form.
-4. If you're using the wp-sms-pro as well, don't forget to enter your license key on Pro Pack > General
+3. To display the SMS newsletter form, go to Themes → Widgets, and add a WP SMS Subscribe form.
+4. If you're using the wp-sms-pro as well, don't forget to enter your license key on Pro Pack → General
 
 If you need more information, please [click here](https://wp-sms-pro.com/resources/installation/).
 
@@ -149,7 +148,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
 
-= PHP v7, v8 Supports? =
+= Is it supported in PHP v7, v8 ? =
 Yes! WP SMS is compatible with PHP version v5.6 up to v8
 
 = How to send SMS with PHP? =
@@ -169,7 +168,7 @@ Use the below code to send MMS through PHP:
 	wp_sms_send( $to, $msg, false, false, $mediaUrls );
 
 = How to show the SMS subscribe form? =
-There are three ways to show the subscriber form in the theme
+There are two ways to show the subscriber form in the theme:
 
 1. By adding the SMS Newsletter through the Widget into the theme
 2. By adding the SMS Newsletter through the Gutenberg editor
@@ -231,7 +230,7 @@ Example: Add signatures to messages that are sent
 	}
 	add_filter('wp_sms_msg', 'wp_sms_modify_message');
 
-= Does It Support REST API? =
+= Does it support REST API? =
 Yes. It does, see [https://wp-sms-pro.com/resources-category/api-endpoints/](documentation).
 
 = How to get the Pro Pack updates? =
