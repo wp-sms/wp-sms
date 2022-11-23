@@ -1,11 +1,11 @@
 ﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
-Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, reventon94
+Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, rezathriii
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 3.0
-Tested up to: 6.1
+Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 5.8.4
+Stable tag: 5.8.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -283,6 +283,18 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
 
 == Changelog ==
+= v5.8.5 - 23.11.2022 =
+* Bugfix: The import system has been debugged.
+* Bugfix: Some minor bugfixes have been done.
+* Update: The Alchemymarketing gateway has been updated.
+* Update: The Hostiran gateway has been updated.
+* Improvement: The Gulp asset builder has been replaced by Node Script.
+* Improvement: A Helper has been implemented to load templates instead of using of require_once function to deliver better performance and have cleaner codes.
+* Add: The getTemplateIdFromMessageBody() function has been added. Now the template IDs are fetched from the message body to let customers send SMS through the gateways which have the Template ID as a required parameter.
+* Add: You can now send SMS to multiple subscribers' groups in Contact Form 7 SMS notification panel.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.8.4 - 05.11.2022 =
 * Bugfix: Fix force to send issue
 * Bugfix: PHP session notice in WordPress Health panel
@@ -291,8 +303,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Add: The flag of "read_and_close" has been added to start session
 * Add: WebPack has been added as the asset builder
 * Add: Order meta key has been implemented
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.3 - 23.10.2022 =
 * Bugfix: Remove jQuery deprecated functions
