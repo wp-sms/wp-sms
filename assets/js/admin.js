@@ -7,6 +7,10 @@
     WpSmsJobManager.init();
     WpSmsUltimateMember.init();
 
+    if (jQuery('#wpcf7-contact-form-editor').length && jQuery('#wpsms-tab').length) {
+        WpSmsContactForm7.init();
+    }
+
     let WpSmsSelect2 = $('.js-wpsms-select2')
     let WpSmsExportForm = $('.js-wpSmsExportForm')
 
@@ -390,5 +394,65 @@ let WpSmsUltimateMember = {
         this.hideOrShowFields();
         this.addEventListener();
     }
+
+}
+
+/**
+ * Contact Form 7
+ * @type {{init: WpSmsContactForm7.init, hideOrShowFields: WpSmsContactForm7.hideOrShowFields, setFields: WpSmsContactForm7.setFields, addEventListener: WpSmsContactForm7.addEventListener}}
+ */
+let WpSmsContactForm7 = {
+
+    /**
+     * Initialize Functions
+     */
+    init: function () {
+        this.setFields()
+        this.hideOrShowFields()
+        this.addEventListener()
+    },
+
+    /**
+     * Initialize jQuery Selectors
+     */
+    setFields: function () {
+        this.fields = {
+            recipient: {
+                element: jQuery('#wpcf7-sms-recipient')
+            },
+            recipient_numbers: {
+                element: jQuery('#wp-sms-recipient-numbers')
+            },
+            recipient_groups: {
+                element: jQuery('#wp-sms-recipient-groups')
+            },
+            message_body: {
+                element: jQuery('#wp-sms-cf7-message-body')
+            }
+        }
+    },
+
+    /**
+     *  Show or Hide content by changing the Select HTMl tag
+     */
+    hideOrShowFields: function () {
+        if (this.fields.recipient.element.val() === 'number') {
+            this.fields.recipient_numbers.element.show()
+            this.fields.recipient_groups.element.hide()
+            this.fields.message_body.element.show()
+
+        } else {
+            this.fields.recipient_numbers.element.hide()
+            this.fields.recipient_groups.element.show()
+            this.fields.message_body.element.show()
+
+        }
+    },
+
+    addEventListener: function () {
+        this.fields.recipient.element.on('change', function () {
+            this.hideOrShowFields();
+        }.bind(this));
+    },
 
 }

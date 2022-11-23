@@ -76,10 +76,9 @@ class Settings
     public function get_settings()
     {
         $settings = get_option($this->setting_name);
+
         if (!$settings) {
-            update_option($this->setting_name, array(
-                'rest_api_status' => 1,
-            ));
+            update_option($this->setting_name, array());
         }
 
         return apply_filters('wpsms_get_settings', $settings);
@@ -1604,18 +1603,6 @@ class Settings
              * Feature fields
              */
             'advanced'              => apply_filters('wp_sms_feature_settings', array(
-                'rest_api'                                 => array(
-                    'id'   => 'rest_api',
-                    'name' => __('REST API', 'wp-sms'),
-                    'type' => 'header'
-                ),
-                'rest_api_status'                          => array(
-                    'id'      => 'rest_api_status',
-                    'name'    => __('REST API status', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Add WP SMS endpoints to the WP Rest API', 'wp-sms')
-                ),
                 'short_url'                                 => array(
                     'id'   => 'short_url',
                     'name' => __('Bitly Short URL API', 'wp-sms'),
@@ -2432,7 +2419,7 @@ class Settings
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
         ob_start(); ?>
     <div class="wrap wpsms-wrap wpsms-settings-wrap">
-        <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+        <?php echo Helper::loadTemplate('header.php'); ?>
         <div class="wpsms-wrap__main">
             <?php do_action('wp_sms_settings_page'); ?>
             <h2><?php _e('Settings', 'wp-sms') ?>

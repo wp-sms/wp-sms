@@ -4,24 +4,47 @@ namespace WP_SMS\Gateway;
 
 class alchemymarketinggm extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://alchemymarketinggm.com:port/api";
-    public $tariff = "http://www.alchemymarketinggm.com";
+    private $wsdl_link = "https://alchemytelco.com:port/api";
+    public $tariff = "https://alchemytelco.com";
     public $unitrial = false;
     public $unit;
     public $flash = "enable";
     public $isflash = false;
+    public $gateway_port;
 
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "90xxxxxxxxxx";
-        $this->help           = "Use API key as Alchemy server port, like: 9443, you must ask them for it.";
-        $this->has_key        = true;
+        $this->bulk_send      = false;
+        $this->has_key        = false;
+        $this->validateNumber = "The telephone number can be specified in local number format (e.g. 7654321), or in international number format (e.g.+447946318520). More then one recipient addresses can be separated by a colon (e.g.: +447949876543, +447920222333).";
+        $this->help           = "Please fill in the below-required fields to send SMS through the Alchemy gateway. You must contact their support team to get the details of the port.";
+        $this->gatewayFields  = [
+            'username'     => [
+                'id'   => 'gateway_username',
+                'name' => 'Username',
+                'desc' => 'Enter your username.',
+            ],
+            'password'     => [
+                'id'   => 'gateway_password',
+                'name' => 'Password',
+                'desc' => 'Enter your password.',
+            ],
+            'from'         => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'You can use local phone number format, or international phone number format (telephone numbers formatted according to the international number format start with a plus sign). If the international phone number format is used, note that you must substitute %2B for the + character, because of URL encoding rules.',
+            ],
+            'gateway_port' => [
+                'id'   => 'gateway_port',
+                'name' => 'Gateway Port',
+                'desc' => 'Enter the gateway port.',
+            ]
+        ];
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -52,91 +75,59 @@ class alchemymarketinggm extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $arguments = [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => [
+                    'action'      => 'sendmessage',
+                    'username'    => $this->username,
+                    'password'    => $this->password,
+                    'originator'  => $this->from,
+                    'recipient'   => implode(',', $this->to),
+                    'messagetype' => 'SMS:TEXT',
+                    'messagedata' => $this->msg
+                ]
+            ];
 
-            return $credit;
+            $this->wsdl_link = str_replace('port', $this->gateway_port, $this->wsdl_link);
 
-        }
+            $response = $this->request('POST', $this->wsdl_link, [], $arguments);
 
-        // Encode message
+            if ($response->response->data->acceptreport->statuscode && $response->response->data->acceptreport->statuscode != '0') {
+                throw new \Exception($response->response->data->acceptreport->statusmessage);
+            }
 
-        foreach ($this->to as $k => $number) {
-            $this->to[$k] = trim($number);
-        }
-
-        $this->wsdl_link = str_replace('port', $this->has_key, $this->wsdl_link);
-        $to              = implode(',', $this->to);
-        $to              = urlencode($to);
-        $msg             = urlencode($this->msg);
-
-        $result = file_get_contents($this->wsdl_link . '?username=' . $this->username . '&password=' . $this->password . '&action=sendmessage&messagetype=SMS:TEXT&recipient=' . $to . '&messagedata=' . $msg);
-
-        $result = (array)simplexml_load_string($result);
-
-        if (isset($result['action']) and $result['action'] == 'sendmessage' and isset($result['data']->acceptreport)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result['data']);
+            //log the result
+            $this->log($this->from, $this->msg, $this->to, $response->response->data->acceptreport);
 
             /**
              * Run hook after send sms.
              *
-             * @param string $result result output.
-             *
+             * @param string $response result output.
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', $result['data']);
+            do_action('wp_sms_send', $response);
 
-            return $result['data'];
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
         }
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $result['data']->errormessage, 'error');
-
-        return new \WP_Error('send-sms', $result);
     }
 
     public function GetCredit()
     {
-
         // Check username and password
         if (!$this->username && !$this->password) {
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
-        // Check api key
-        if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms'));
-        }
-
-        $this->wsdl_link = str_replace('port', $this->has_key, $this->wsdl_link);
-
-        // Get data
-        $response = wp_remote_get($this->wsdl_link . '?action=getcredits&username=' . $this->username . '&password=' . $this->password);
-
-        if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
-
-        // Check enable simplexml function in the php
-        if (!function_exists('simplexml_load_string')) {
-            return new \WP_Error('account-credit', 'simplexml_load_string PHP Function disabled!');
-        }
-
-        // Load xml
-        $xml = (array)simplexml_load_string($response['body']);
-
-        if (isset($xml['action']) and $xml['action'] == 'getcredits') {
-            return (int)$xml['data']->account->balance;
-        } else {
-            $error = (array)$xml['data']->errormessage;
-
-            return new \WP_Error('account-credit', $error[0]);
-        }
+        return 1;
     }
 }

@@ -157,6 +157,9 @@ class Gateway
         'mexico'         => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
+        'iran'           => array(
+            'mehrafraz' => 'mehrafraz.com/fa',
+        ),
     );
 
     /**
@@ -1042,5 +1045,25 @@ class Gateway
         $responseJson = json_decode($responseBody);
 
         return ($responseJson == null) ? $responseBody : $responseJson;
+    }
+
+    /**
+     * Fetch the template ID from message body
+     *
+     *
+     * @return array|void
+     * @example In the message body "Hello World|1234" It returns array('Hello World', '1234')
+     *
+     */
+    protected function getTemplateIdAndMessageBody()
+    {
+        $message_body = explode("|", $this->msg);
+
+        if (isset($message_body[1]) && $message_body[1]) {
+            return array(
+                'template_id' => $message_body[1],
+                'message'     => $message_body[0]
+            );
+        }
     }
 }

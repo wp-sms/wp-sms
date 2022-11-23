@@ -64,7 +64,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract {
 		header( "X-FirstRow-content: {$first_row}" );
 
 		// Start session
-		Helper::maybeStartSession();
+		Helper::maybeStartSession(false);
 
 		$_SESSION['wp_sms_import_file'] = $_FILES['file']['name'];
 

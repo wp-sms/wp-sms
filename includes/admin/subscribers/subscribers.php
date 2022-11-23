@@ -5,7 +5,7 @@ $groups = Newsletter::getGroups();
 ?>
 
 <div class="wrap wpsms-wrap">
-    <?php require_once WP_SMS_DIR . 'includes/templates/header.php'; ?>
+    <?php echo Helper::loadTemplate('header.php'); ?>
     <div class="wpsms-wrap__main">
         <h2><?php _e('Subscribers', 'wp-sms'); ?></h2>
         <?php echo Helper::loadTemplate('admin/quick-reply.php'); ?>

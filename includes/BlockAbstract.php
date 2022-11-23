@@ -40,15 +40,10 @@ class BlockAbstract
      */
     public function registerBlockType()
     {
-        $blockPath = "wp-sms-blocks/{$this->blockName}";
-
-        wp_register_script("wp-sms-blocks-{$this->blockName}-script", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.js"), array('wp-blocks', 'wp-element'));
-        wp_register_style("wp-sms-blocks/{$this->blockName}-style", Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.css"));
+        $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
 
         register_block_type($blockPath, array(
             'render_callback' => [$this, 'renderCallback'],
-            'editor_script'   => "wp-sms-blocks-{$this->blockName}-script",
-            'editor_style'    => "wp-sms-blocks/{$this->blockName}-style",
         ));
     }
 
@@ -60,10 +55,21 @@ class BlockAbstract
      */
     public function renderCallback($attributes, $content, WP_Block $block)
     {
-        wp_enqueue_script("wp-sms-blocks-{$this->blockName}-frontend", Helper::getPluginAssetUrl("blocks/{$this->blockName}/frontend.js"), ['jquery'], $this->blockVersion, true);
+        /*
+         * Generate an unique ID for blocks
+         */
+        $unique_id = uniqid();
+        $block_id = "{$this->blockName}-block-" . $unique_id;
 
-        if ($this->blockName == "subscribe") {
-            wp_localize_script("wp-sms-blocks-{$this->blockName}-frontend", 'wpsms_ajax_object', array(
+        /**
+         * Enqueue the script and data
+         */
+        if ($this->script) {
+            wp_enqueue_script("wp-sms-blocks-subscribe", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
+        }
+
+        if ($this->blockName == "Subscribe") {
+            wp_localize_script("wp-sms-blocks-subscribe", 'wpsms_ajax_object', array(
                 'rest_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
                 'unknown_error'     => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
                 'loading_text'      => __('Loading...', 'wp-sms'),
@@ -73,23 +79,17 @@ class BlockAbstract
         }
 
         wp_localize_script(
-            "wp-sms-blocks-{$this->blockName}-frontend",
+            "wp-sms-blocks-{$this->blockName}",
             'pluginAssetsUrl',
             [
                 'imagesFolder' => Helper::getPluginAssetUrl("images/"),
             ]
         );
-        /**
-         * Enqueue the script and data
-         */
-        if ($this->script) {
-            wp_enqueue_script("wp-sms-blocks-{$this->blockName}", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
-            wp_localize_script("wp-sms-blocks-{$this->blockName}", "{$this->blockName}Object", $this->getData($attributes));
-        }
 
         /**
-         * Render the output
+         * Render the output - With a unique ID
          */
+        $attributes['block_id'] = $block_id;
         return $this->output($attributes);
     }
 }

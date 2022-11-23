@@ -2,13 +2,18 @@
 
 namespace WP_SMS;
 
+/**
+ * Class WP_SMS
+ * @package WP_SMS
+ * @description The helper that provides the useful methods for the plugin for development purposes.
+ */
 class Helper {
 	public static function getPluginAssetUrl( $assetName, $plugin = 'wp-sms' ) {
 		return plugins_url( $plugin ) . "/assets/{$assetName}";
 	}
 
 	public static function getAssetPath( $asset ) {
-		return plugin_dir_path( __FILE__ ) . $asset;
+		return plugin_dir_path( dirname(__FILE__, 1) ) . $asset;
 	}
 
 	/**
@@ -280,10 +285,10 @@ class Helper {
 	/**
 	 * @return void
 	 */
-    public static function maybeStartSession()
+    public static function maybeStartSession($readAndClose = true)
     {
         if (!session_id()) {
-            session_start(array('read_and_close' => true));
+            session_start(array('read_and_close' => $readAndClose));
         }
     }
 }
