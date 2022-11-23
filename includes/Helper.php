@@ -285,10 +285,10 @@ class Helper {
 	/**
 	 * @return void
 	 */
-    public static function maybeStartSession()
+    public static function maybeStartSession($readAndClose = true)
     {
         if (!session_id()) {
-            session_start(array('read_and_close' => true));
+            session_start(array('read_and_close' => $readAndClose));
         }
     }
 }
