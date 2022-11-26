@@ -358,6 +358,8 @@ class Outbox
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
-        include_once WP_SMS_DIR . "includes/admin/outbox/outbox.php";
+        echo Helper::loadTemplate('admin/outbox.php', [
+            'list_table' => $list_table,
+        ]);
     }
 }
