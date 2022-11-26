@@ -26,7 +26,6 @@ class Gateway
             'nexmo'          => 'nexmo.com',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
-            'smsto'          => 'sms.to',
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
@@ -576,6 +575,7 @@ class Gateway
                 'aobox'            => 'aobox.it',
                 'sendapp'          => 'Sendapp SMS',
                 'sendappWhatsApp'  => 'Sendapp Whathapp',
+                'smsto'            => 'sms.to',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
