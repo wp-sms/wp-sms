@@ -1623,6 +1623,23 @@ class Settings
                     'desc'    => __('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
+                'webhooks'                                 => array(
+                    'id'   => 'webhooks',
+                    'name' => __('Webhooks', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'send_sms_webhook'                          => array(
+                    'id'      => 'send_sms_webhook',
+                    'name'    => __('Send SMS Webhook', 'wp-sms'),
+                    'type'    => 'textarea',
+                    'desc'    => __('Separate different webhooks with comma (,).', 'wp-sms'),
+                ),
+                'add_subscriber_webhook'                          => array(
+                    'id'      => 'add_subscriber_webhook',
+                    'name'    => __('New Subscriber Webhook', 'wp-sms'),
+                    'type'    => 'textarea',
+                    'desc'    => __('Separate different webhooks with comma (,).', 'wp-sms'),
+                ),
             )),
 
             /**
