@@ -74,8 +74,8 @@ class WP_SMS
     public function includes()
     {
         // Utility classes.
-        require_once WP_SMS_DIR . 'includes/Helper.php';
-        require_once WP_SMS_DIR . 'includes/Utils/CsvHelper.php';
+        require_once WP_SMS_DIR . 'src/Helper.php';
+        require_once WP_SMS_DIR . 'src/Utils/CsvHelper.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
         require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
@@ -87,21 +87,21 @@ class WP_SMS
         require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
 
         // Blocks
-        require_once WP_SMS_DIR . 'includes/BlockAbstract.php';
-        require_once WP_SMS_DIR . 'includes/Blocks/SubscribeBlock.php';
-        require_once WP_SMS_DIR . 'includes/BlockAssetsManager.php';
+        require_once WP_SMS_DIR . 'src/BlockAbstract.php';
+        require_once WP_SMS_DIR . 'src/Blocks/SubscribeBlock.php';
+        require_once WP_SMS_DIR . 'src/BlockAssetsManager.php';
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
 
         // Controllers
-        require_once WP_SMS_DIR . 'includes/Controller/AjaxControllerAbstract.php';
-        require_once WP_SMS_DIR . 'includes/Controller/SubscriberFormAjax.php';
-        require_once WP_SMS_DIR . 'includes/Controller/GroupFormAjax.php';
-        require_once WP_SMS_DIR . 'includes/Controller/ExportAjax.php';
-        require_once WP_SMS_DIR . 'includes/Controller/UploadSubscriberCsv.php';
-        require_once WP_SMS_DIR . 'includes/Controller/ImportSubscriberCsv.php';
-        require_once WP_SMS_DIR . 'includes/Controller/ControllerManager.php';
+        require_once WP_SMS_DIR . 'src/Controller/AjaxControllerAbstract.php';
+        require_once WP_SMS_DIR . 'src/Controller/SubscriberFormAjax.php';
+        require_once WP_SMS_DIR . 'src/Controller/GroupFormAjax.php';
+        require_once WP_SMS_DIR . 'src/Controller/ExportAjax.php';
+        require_once WP_SMS_DIR . 'src/Controller/UploadSubscriberCsv.php';
+        require_once WP_SMS_DIR . 'src/Controller/ImportSubscriberCsv.php';
+        require_once WP_SMS_DIR . 'src/Controller/ControllerManager.php';
 
         $controllerManager = new \WP_SMS\Controller\ControllerManager();
         $controllerManager->init();
@@ -125,7 +125,7 @@ class WP_SMS
 
             // Send class.
             require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
-            
+
             // Widgets
             require_once WP_SMS_DIR . 'includes/admin/Widget/WidgetsManager.php';
         }
