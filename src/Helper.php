@@ -28,19 +28,19 @@ class Helper
      */
     public static function loadTemplate($template, $parameters = [], $isPro = false)
     {
-        $base_path = plugin_dir_path(__FILE__);
+        $base_path = WP_SMS_DIR;
 
         if ($isPro) {
-            $base_path = WP_SMS_PRO_DIR . '/includes/';
+            $base_path = WP_SMS_PRO_DIR;
         }
 
-        $templatePath = $base_path . "templates/{$template}";
+        $templatePath = $base_path . "includes/templates/{$template}";
 
         if (file_exists($templatePath)) {
             ob_start();
 
             extract($parameters);
-            require $base_path . "templates/{$template}";
+            require $templatePath;
 
             return ob_get_clean();
         }
