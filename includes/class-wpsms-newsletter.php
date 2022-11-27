@@ -142,6 +142,27 @@ class Newsletter {
 		}
 	}
 
+    public static function getSubscriberByMobile($number)
+    {
+        global $wpdb;
+
+        $metaValue[] = $number;
+
+        // Check if number is international format or not and add country code to meta value
+        if (substr($number, 0, 1) != '+') {
+            $metaValue[] = '+' . $number;
+        }
+
+        $metaValue = "'" . implode("','", $metaValue) . "'";
+        $sql       = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$metaValue})";
+
+        $result = $wpdb->get_row($sql);
+
+        if ($result) {
+            return $result;
+        }
+    }
+
 	/**
 	 * Delete subscriber by number
 	 *
