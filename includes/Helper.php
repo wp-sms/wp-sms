@@ -7,143 +7,161 @@ namespace WP_SMS;
  * @package WP_SMS
  * @description The helper that provides the useful methods for the plugin for development purposes.
  */
-class Helper {
-	public static function getPluginAssetUrl( $assetName, $plugin = 'wp-sms' ) {
-		return plugins_url( $plugin ) . "/assets/{$assetName}";
-	}
+class Helper
+{
+    public static function getPluginAssetUrl($assetName, $plugin = 'wp-sms')
+    {
+        return plugins_url($plugin) . "/assets/{$assetName}";
+    }
 
-	public static function getAssetPath( $asset ) {
-		return plugin_dir_path( dirname(__FILE__, 1) ) . $asset;
-	}
+    public static function getAssetPath($asset)
+    {
+        return plugin_dir_path(dirname(__FILE__, 1)) . $asset;
+    }
 
-	/**
-	 * @param $template
-	 * @param array $parameters
-	 *
-	 * @return false|string|void
-	 */
-	public static function loadTemplate( $template, $parameters = [] ) {
-		$templatePath = plugin_dir_path( __FILE__ ) . "templates/{$template}";
+    /**
+     * @param $template
+     * @param array $parameters
+     * @param $isPro
+     *
+     * @return false|string|void
+     */
+    public static function loadTemplate($template, $parameters = [], $isPro = false)
+    {
+        $base_path = plugin_dir_path(__FILE__);
 
-		if ( file_exists( $templatePath ) ) {
-			ob_start();
+        if ($isPro) {
+            $base_path = WP_SMS_PRO_DIR . '/includes/';
+        }
 
-			extract( $parameters );
-			require plugin_dir_path( __FILE__ ) . "templates/{$template}";
+        $templatePath = $base_path . "templates/{$template}";
 
-			return ob_get_clean();
-		}
-	}
+        if (file_exists($templatePath)) {
+            ob_start();
 
-	/**
-	 * @return mixed|void|null
-	 */
-	public static function getUserMobileFieldName() {
-		return apply_filters( 'wp_sms_user_mobile_field', 'mobile' );
-	}
+            extract($parameters);
+            require $base_path . "templates/{$template}";
 
-	/**
-	 * @param $userId
-	 *
-	 * @return mixed
-	 */
-	public static function getUserMobileNumberByUserId( $userId ) {
-		// get from the user meta
-		$mobileNumber = get_user_meta( $userId, self::getUserMobileFieldName(), true );
+            return ob_get_clean();
+        }
+    }
 
-		return apply_filters( 'wp_sms_user_mobile_number', $mobileNumber, $userId );
-	}
+    /**
+     * @return mixed|void|null
+     */
+    public static function getUserMobileFieldName()
+    {
+        return apply_filters('wp_sms_user_mobile_field', 'mobile');
+    }
 
-	/**
-	 * @param $roleId
-	 *
-	 * @return array
-	 */
-	public static function getUsersMobileNumbers( $roleId = false ) {
-		$mobileFieldKey = self::getUserMobileFieldName();
-		$args           = array(
-			'meta_query'  => array(
-				array(
-					'key'     => $mobileFieldKey,
-					'value'   => '',
-					'compare' => '!=',
-				),
-			),
-			'count_total' => 'false'
-		);
+    /**
+     * @param $userId
+     *
+     * @return mixed
+     */
+    public static function getUserMobileNumberByUserId($userId)
+    {
+        // get from the user meta
+        $mobileNumber = get_user_meta($userId, self::getUserMobileFieldName(), true);
 
-		if ( $roleId ) {
-			$args['role'] = $roleId;
-		}
+        return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
+    }
 
-		$users         = get_users( $args );
-		$mobileNumbers = [];
+    /**
+     * @param $roleId
+     *
+     * @return array
+     */
+    public static function getUsersMobileNumbers($roleId = false)
+    {
+        $mobileFieldKey = self::getUserMobileFieldName();
+        $args           = array(
+            'meta_query'  => array(
+                array(
+                    'key'     => $mobileFieldKey,
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+            ),
+            'count_total' => 'false'
+        );
 
-		foreach ( $users as $user ) {
-			if ( isset( $user->$mobileFieldKey ) ) {
-				$mobileNumbers[] = $user->$mobileFieldKey;
-			}
-		}
+        if ($roleId) {
+            $args['role'] = $roleId;
+        }
 
-		return $mobileNumbers;
-	}
+        $users         = get_users($args);
+        $mobileNumbers = [];
 
-	/**
-	 * Prepare a list of WP roles
-	 *
-	 * @return array
-	 */
-	public static function getListOfRoles() {
-		$wpsms_list_of_role = array();
-		foreach ( wp_roles()->role_names as $key_item => $val_item ) {
-			$wpsms_list_of_role[ $key_item ] = array(
-				"name"  => $val_item,
-				"count" => count( self::getUsersMobileNumbers( $key_item ) )
-			);
-		}
+        foreach ($users as $user) {
+            if (isset($user->$mobileFieldKey)) {
+                $mobileNumbers[] = $user->$mobileFieldKey;
+            }
+        }
 
-		return $wpsms_list_of_role;
-	}
+        return $mobileNumbers;
+    }
 
-	/**
-	 * @param $message
-	 *
-	 * @return array|string|string[]|null
-	 */
-	public static function makeUrlsShorter( $message ) {
-		$regex = "/(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
+    /**
+     * Prepare a list of WP roles
+     *
+     * @return array
+     */
+    public static function getListOfRoles()
+    {
+        $wpsms_list_of_role = array();
+        foreach (wp_roles()->role_names as $key_item => $val_item) {
+            $wpsms_list_of_role[$key_item] = array(
+                "name"  => $val_item,
+                "count" => count(self::getUsersMobileNumbers($key_item))
+            );
+        }
 
-		return preg_replace_callback( $regex, function ( $url ) {
-			return wp_sms_shorturl( $url[0] );
-		}, $message );
-	}
+        return $wpsms_list_of_role;
+    }
 
-	public static function isJson( $string ) {
-		json_decode( $string );
+    /**
+     * @param $message
+     *
+     * @return array|string|string[]|null
+     */
+    public static function makeUrlsShorter($message)
+    {
+        $regex = "/(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
 
-		return json_last_error() === JSON_ERROR_NONE;
-	}
+        return preg_replace_callback($regex, function ($url) {
+            return wp_sms_shorturl($url[0]);
+        }, $message);
+    }
 
-	/**
-	 * Get final message content by tag variables
-	 *
-	 * @param array $variables
-	 * @param string $content
-	 * @param array $args
-	 *
-	 * @return string
-	 */
-	public static function getOutputMessageVariables( $variables, $content, $args = array() ) {
-		/**
-		 * Filters the variables to replace in the message content
-		 *
-		 * @param array $variables Array containing message variables parsed from the argument.
-		 * @param string $content Default message content before replacing variables.
-		 *
-		 * @since 5.7.6
-		 *
-		 */
-		$variables = apply_filters( 'wp_sms_output_variables', $variables, $content, $args );
+    public static function isJson($string)
+    {
+        json_decode($string);
+
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+
+    /**
+     * Get final message content by tag variables
+     *
+     * @param array $variables
+     * @param string $content
+     * @param array $args
+     *
+     * @return string
+     */
+    public static function getOutputMessageVariables($variables, $content, $args = array())
+    {
+        /**
+         * Filters the variables to replace in the message content
+         *
+         * @param array $variables Array containing message variables parsed from the argument.
+         * @param string $content Default message content before replacing variables.
+         *
+         * @since 5.7.6
+         *
+         */
+        $variables = apply_filters('wp_sms_output_variables', $variables, $content, $args);
 
         /**
          * Map the meta variables to the values
@@ -160,131 +178,134 @@ class Helper {
             }
         }
 
-		$message = str_replace( array_keys( $variables ), array_values( $variables ), $content );
+        $message = str_replace(array_keys($variables), array_values($variables), $content);
 
-		/**
-		 * Filters the final message content after replacing variables
-		 *
-		 * @param string $message Message content after replacing variables.
-		 * @param string $content Default message content before replacing variables.
-		 * @param array $variables Array containing message variables parsed from the argument.
-		 *
-		 * @since 5.7.6
-		 *
-		 *
-		 */
-		return apply_filters( 'wp_sms_output_variables_message', $message, $content, $variables, $args );
-	}
+        /**
+         * Filters the final message content after replacing variables
+         *
+         * @param string $message Message content after replacing variables.
+         * @param string $content Default message content before replacing variables.
+         * @param array $variables Array containing message variables parsed from the argument.
+         *
+         * @since 5.7.6
+         *
+         *
+         */
+        return apply_filters('wp_sms_output_variables_message', $message, $content, $variables, $args);
+    }
 
-	/**
-	 * return current admin page url
-	 *
-	 * @return string
-	 */
+    /**
+     * return current admin page url
+     *
+     * @return string
+     */
 
-	public static function getCurrentAdminPageUrl() {
-		global $wp;
+    public static function getCurrentAdminPageUrl()
+    {
+        global $wp;
 
-		return add_query_arg( $_SERVER['QUERY_STRING'], '', home_url( $wp->request ) . '/wp-admin/admin.php' );
-	}
+        return add_query_arg($_SERVER['QUERY_STRING'], '', home_url($wp->request) . '/wp-admin/admin.php');
+    }
 
-	/**
-	 * This function check the validity of users' phone numbers. If the number is not available, raise an error
-	 *
-	 * @param $mobileNumber
-	 * @param bool $userID
-	 * @param bool $isSubscriber
-	 * @param $groupID
-	 * @param $subscribeId
-	 *
-	 * @return bool|\WP_Error
-	 */
-	public static function checkMobileNumberValidity( $mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false ) {
-		global $wpdb;
+    /**
+     * This function check the validity of users' phone numbers. If the number is not available, raise an error
+     *
+     * @param $mobileNumber
+     * @param bool $userID
+     * @param bool $isSubscriber
+     * @param $groupID
+     * @param $subscribeId
+     *
+     * @return bool|\WP_Error
+     */
+    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
+    {
+        global $wpdb;
 
-		// check whether international mode is enabled
-		$international_mode = Option::getOption( 'international_mobile' ) ? true : false;
+        // check whether international mode is enabled
+        $international_mode = Option::getOption('international_mobile') ? true : false;
 
-		// check whether the first character of mobile number is +
-		$country_code = substr( $mobileNumber, 0, 1 ) == '+' ? true : false;
+        // check whether the first character of mobile number is +
+        $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
 
-		/**
-		 * 1. Check whether international mode is on and the number is NOT started with +
-		 */
-		if ( $international_mode and ! $country_code ) {
-			return new \WP_Error( 'invalid_number', __( "The mobile number doesn't contain the country code. ", 'wp-sms' ) );
-		}
+        /**
+         * 1. Check whether international mode is on and the number is NOT started with +
+         */
+        if ($international_mode and !$country_code) {
+            return new \WP_Error('invalid_number', __("The mobile number doesn't contain the country code. ", 'wp-sms'));
+        }
 
-		/**
-		 * 2. Check whether the min and max length of the number comply
-		 */
-		if ( ! $international_mode ) {
+        /**
+         * 2. Check whether the min and max length of the number comply
+         */
+        if (!$international_mode) {
 
-			// get min length of the number if it is set
-			$min_length = Option::getOption( 'mobile_terms_minimum' );
+            // get min length of the number if it is set
+            $min_length = Option::getOption('mobile_terms_minimum');
 
-			// get max length of the number if it is set
-			$max_length = Option::getOption( 'mobile_terms_maximum' );
+            // get max length of the number if it is set
+            $max_length = Option::getOption('mobile_terms_maximum');
 
-			if ( $max_length and strlen( $mobileNumber ) > $max_length ) {
-				return new \WP_Error( 'invalid_number', __( "Your mobile number must have up to {$max_length} characters.", 'wp-sms' ) );
-			}
+            if ($max_length and strlen($mobileNumber) > $max_length) {
+                return new \WP_Error('invalid_number', __("Your mobile number must have up to {$max_length} characters.", 'wp-sms'));
+            }
 
-			if ( $min_length and strlen( $mobileNumber ) < $min_length ) {
-				return new \WP_Error( 'invalid_number', __( "Your mobile number must have at least {$min_length} characters.", 'wp-sms' ) );
-			}
+            if ($min_length and strlen($mobileNumber) < $min_length) {
+                return new \WP_Error('invalid_number', __("Your mobile number must have at least {$min_length} characters.", 'wp-sms'));
+            }
 
-		}
+        }
 
-		/**
-		 * 3. Check whether number is exists in usermeta or sms_subscriber table
-		 */
-		if ( $isSubscriber ) {
-			$sql = $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber );
+        /**
+         * 3. Check whether number is exists in usermeta or sms_subscriber table
+         */
+        if ($isSubscriber) {
+            $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
 
-			if ( $groupID ) {
-				$sql .= $wpdb->prepare( " AND group_id = '%s'", $groupID );
-			}
+            if ($groupID) {
+                $sql .= $wpdb->prepare(" AND group_id = '%s'", $groupID);
+            }
 
-			// While updating we should query except the current one.
-			if ( $subscribeId ) {
-				$sql .= $wpdb->prepare( " AND id != '%s'", $subscribeId );
-			}
+            // While updating we should query except the current one.
+            if ($subscribeId) {
+                $sql .= $wpdb->prepare(" AND id != '%s'", $subscribeId);
+            }
 
-			$result = $wpdb->get_row( $sql );
+            $result = $wpdb->get_row($sql);
 
-		} else {
-			$where       = '';
-			$mobileField = Helper::getUserMobileFieldName();
+        } else {
+            $where       = '';
+            $mobileField = Helper::getUserMobileFieldName();
 
-			if ( $userID ) {
-				$where = $wpdb->prepare( 'AND user_id != %s', $userID );
-			}
+            if ($userID) {
+                $where = $wpdb->prepare('AND user_id != %s', $userID);
+            }
 
-			$sql    = $wpdb->prepare( "SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber );
-			$result = $wpdb->get_results( $sql );
-		}
+            $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
+            $result = $wpdb->get_results($sql);
+        }
 
-		// if any result found, raise an error
-		if ( $result ) {
-			return new \WP_Error( 'is_duplicate', __( 'This mobile is already registered, please choose another one.', 'wp-sms' ) );
-		}
+        // if any result found, raise an error
+        if ($result) {
+            return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * @param $mobile
-	 *
-	 * @return string
-	 */
-	public static function sanitizeMobileNumber( $mobile ) {
-		return sanitize_text_field( trim( $mobile ) );
-	}
+    /**
+     * @param $mobile
+     *
+     * @return string
+     */
+    public static function sanitizeMobileNumber($mobile)
+    {
+        return sanitize_text_field(trim($mobile));
+    }
 
-	/**
-	 * @return void
-	 */
+    /**
+     * @return void
+     */
     public static function maybeStartSession($readAndClose = true)
     {
         if (!session_id()) {
