@@ -1629,13 +1629,13 @@ class Settings
                     'type' => 'header',
                 ),
                 'send_sms_webhook'                          => array(
-                    'id'      => 'send_sms_webhook',
+                    'id'      => 'new_sms_webhook',
                     'name'    => __('Send SMS Webhook', 'wp-sms'),
                     'type'    => 'textarea',
                     'desc'    => __('Separate different webhooks with comma (,).', 'wp-sms'),
                 ),
                 'add_subscriber_webhook'                          => array(
-                    'id'      => 'add_subscriber_webhook',
+                    'id'      => 'new_subscriber_webhook',
                     'name'    => __('New Subscriber Webhook', 'wp-sms'),
                     'type'    => 'textarea',
                     'desc'    => __('Separate different webhooks with comma (,).', 'wp-sms'),
