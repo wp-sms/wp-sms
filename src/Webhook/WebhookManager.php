@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Controller;
+namespace WP_SMS\Webhook;
 
 class WebhookManager {
 

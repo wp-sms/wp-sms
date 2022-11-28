@@ -106,6 +106,10 @@ class WP_SMS
         $controllerManager = new \WP_SMS\Controller\ControllerManager();
         $controllerManager->init();
 
+        // Webhooks
+        require_once WP_SMS_DIR . 'src/Webhook/WebhookFactory.php';
+        // todo include other webhook classes
+
         if (is_admin()) {
             // Admin classes.
             require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
@@ -138,6 +142,7 @@ class WP_SMS
         // API class.
         require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
         require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-send.php';
+        require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-webhook.php';
         require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-credit.php';
     }
 
