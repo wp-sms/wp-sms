@@ -20,16 +20,14 @@ class WebhookFactory
      */
     public static function subscribeWebhook($webhookUrl, $webhookType)
     {
-        $webhookName     = sprintf('%s_webhook', $webhookType);
-        $webhooks        = Option::getOption($webhookName);
-        $webhookUrlArray = explode(PHP_EOL, $webhooks);
+        $webhooks = self::getWebhooks($webhookType);
 
         /**
          * Append webhook url
          */
-        $webhookUrlArray[] = sanitize_url($webhookUrl);
+        $webhooks[] = sanitize_url($webhookUrl);
 
-        Option::updateOption($webhookName, implode(PHP_EOL, array_unique($webhookUrlArray)));
+        self::updateWebhook($webhookType, $webhooks);
     }
 
     /**
@@ -41,15 +39,52 @@ class WebhookFactory
      */
     public static function unsubscribeWebhook($webhookUrl, $webhookType)
     {
-        $webhookName     = sprintf('%s_webhook', $webhookType);
-        $webhooks        = Option::getOption($webhookName);
-        $webhookUrlArray = explode(PHP_EOL, $webhooks);
+        $webhooks = self::getWebhooks($webhookType);
 
         /**
          * Remove webhook url
          */
-        unset($webhookUrlArray[array_search($webhookUrl, $webhookUrlArray)]);
+        if (($key = array_search($webhookUrl, $webhooks)) !== false) {
+            unset($webhooks[$key]);
+        }
 
-        Option::updateOption($webhookName, implode(PHP_EOL, $webhookUrlArray));
+        self::updateWebhook($webhookType, $webhooks);
+    }
+
+    /**
+     * Get webhooks from database
+     *
+     * @param $webhookType
+     * @return false|string[]
+     */
+    private static function getWebhooks($webhookType)
+    {
+        $webhookName = self::getWebhookOptionKeyByType($webhookType);
+        $webhooks    = Option::getOption($webhookName);
+        return explode(PHP_EOL, $webhooks);
+    }
+
+    /**
+     * Update webhook in database
+     *
+     * @param $webhookType
+     * @param $webhooks
+     * @return void
+     */
+    private static function updateWebhook($webhookType, $webhooks)
+    {
+        $webhookName = self::getWebhookOptionKeyByType($webhookType);
+        Option::updateOption($webhookName, implode(PHP_EOL, array_unique($webhooks)));
+    }
+
+    /**
+     * Get webhook option key by type
+     *
+     * @param $webhookType
+     * @return string
+     */
+    private static function getWebhookOptionKeyByType($webhookType)
+    {
+        return sprintf('%s_webhook', $webhookType);
     }
 }
