@@ -57,7 +57,7 @@ class WebhookFactory
      * @param $webhookType
      * @return false|string[]
      */
-    private static function getWebhooks($webhookType)
+    public static function getWebhooks($webhookType)
     {
         $webhookName = self::getWebhookOptionKeyByType($webhookType);
         $webhooks    = Option::getOption($webhookName);
