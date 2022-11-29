@@ -4,7 +4,7 @@ namespace WP_SMS\Webhook;
 
 use Exception;
 
-class NewSMSWebhook extends WebhookAbstract
+class NewSmsWebhook extends WebhookAbstract
 {
     protected $webhookType = 'new_sms';
     protected $webhookAction = array(

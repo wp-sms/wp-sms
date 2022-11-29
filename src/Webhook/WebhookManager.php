@@ -11,7 +11,7 @@ class WebhookManager
 
     public function registerWebhooks()
     {
-        NewSMSWebhook::boot();
+        NewSmsWebhook::boot();
         NewSubscriberWebhook::boot();
     }
 }

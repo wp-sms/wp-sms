@@ -111,7 +111,7 @@ class WP_SMS
         require_once WP_SMS_DIR . 'src/Webhook/WebhookAbstract.php';
         require_once WP_SMS_DIR . 'src/Webhook/WebhookManager.php';
         require_once WP_SMS_DIR . 'src/Webhook/NewSubscriberWebhook.php';
-        require_once WP_SMS_DIR . 'src/Webhook/NewSMSWebhook.php';
+        require_once WP_SMS_DIR . 'src/Webhook/NewSmsWebhook.php';
 
         $webhookManager = new \WP_SMS\Webhook\WebhookManager();
         $webhookManager->init();
