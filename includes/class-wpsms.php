@@ -108,7 +108,13 @@ class WP_SMS
 
         // Webhooks
         require_once WP_SMS_DIR . 'src/Webhook/WebhookFactory.php';
-        // todo include other webhook classes
+        require_once WP_SMS_DIR . 'src/Webhook/WebhookAbstract.php';
+        require_once WP_SMS_DIR . 'src/Webhook/WebhookManager.php';
+        require_once WP_SMS_DIR . 'src/Webhook/NewSubscriberWebhook.php';
+        require_once WP_SMS_DIR . 'src/Webhook/NewSMSWebhook.php';
+
+        $webhookManager = new \WP_SMS\Webhook\WebhookManager();
+        $webhookManager->init();
 
         if (is_admin()) {
             // Admin classes.
