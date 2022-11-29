@@ -1605,7 +1605,7 @@ class Settings
             'advanced'              => apply_filters('wp_sms_feature_settings', array(
                 'short_url'                                 => array(
                     'id'   => 'short_url',
-                    'name' => __('Bitly Short URL API', 'wp-sms'),
+                    'name' => __('Bitly Short URL', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'                          => array(
@@ -1622,6 +1622,23 @@ class Settings
                     'type'    => 'text',
                     'desc'    => __('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
+                ),
+                'webhooks'                                 => array(
+                    'id'   => 'webhooks',
+                    'name' => __('Webhooks', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'send_sms_webhook'                          => array(
+                    'id'      => 'new_sms_webhook',
+                    'name'    => __('Send SMS Webhook', 'wp-sms'),
+                    'type'    => 'textarea',
+                    'desc'    => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                ),
+                'add_subscriber_webhook'                          => array(
+                    'id'      => 'new_subscriber_webhook',
+                    'name'    => __('New Subscriber Webhook', 'wp-sms'),
+                    'type'    => 'textarea',
+                    'desc'    => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
             )),
 

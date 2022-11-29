@@ -52,9 +52,9 @@ class SendSmsApi extends \WP_SMS\RestApi
         register_rest_route($this->namespace . '/v1', '/send', array(
             array(
                 'methods'             => \WP_REST_Server::CREATABLE,
-                'callback'            => array($this, 'send_callback'),
+                'callback'            => array($this, 'sendSmsCallback'),
                 'args'                => $this->sendSmsArguments,
-                'permission_callback' => array($this, 'get_item_permissions_check'),
+                'permission_callback' => array($this, 'sendSmsPermission'),
             )
         ));
     }
@@ -64,7 +64,7 @@ class SendSmsApi extends \WP_SMS\RestApi
      *
      * @return \WP_REST_Response
      */
-    public function send_callback(WP_REST_Request $request)
+    public function sendSmsCallback(WP_REST_Request $request)
     {
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
@@ -247,7 +247,7 @@ class SendSmsApi extends \WP_SMS\RestApi
      *
      * @return bool
      */
-    public function get_item_permissions_check($request)
+    public function sendSmsPermission($request)
     {
         return current_user_can('wpsms_sendsms');
     }
