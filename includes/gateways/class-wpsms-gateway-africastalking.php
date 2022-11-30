@@ -15,20 +15,20 @@ class africastalking extends \WP_SMS\Gateway
     {
         parent::__construct();
 
-        $this->validateNumber = "+254711XXXYYY";
-        $this->help           = "API key generated from your account settings";
+        $this->validateNumber = "";
+        $this->help           = "You can generate an API key from the dashboard, here is an article from the help center on <a href='https://help.africastalking.com/en/articles/1361037-how-do-i-generate-an-api-key' target='_blank'>how to generate an API Key.</a>";
         $this->bulk_send      = true;
         $this->has_key        = true;
         $this->gatewayFields  = [
             'username' => [
                 'id'   => 'gateway_username',
-                'name' => 'Registered Username',
-                'desc' => 'Enter your username.',
+                'name' => 'Username',
+                'desc' => 'Your Africa’s Talking application username.',
             ],
             'has_key'  => [
                 'id'   => 'gateway_key',
                 'name' => 'API Key',
-                'desc' => 'Enter API key of gateway. You can avail it from your control panel.',
+                'desc' => 'Africa’s Talking application apiKey.',
             ],
             'from'     => [
                 'id'   => 'gateway_sender_id',
@@ -70,16 +70,23 @@ class africastalking extends \WP_SMS\Gateway
         try {
 
             $arguments = [
-                'username' => $this->username,
-                'to'       => $this->to,
-                'message'  => $this->msg,
-                'from'     => $this->from
+                'headers' => [
+                    'apiKey'       => $this->has_key,
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Accept'       => 'application/json'
+                ],
+                'body'    => [
+                    'username' => $this->username,
+                    'to'       => implode(',', $this->to),
+                    'message'  => $this->msg,
+                    'from'     => !empty($this->from) ? $this->from : null
+                ]
             ];
 
             $response = $this->request('POST', "{$this->wsdl_link}/messaging", [], $arguments);
 
-            if (isset($response->statusCode) && $response->statusCode != '100') {
-                throw new \Exception($response);
+            if (isset($response) && empty($response->SMSMessageData->Recipients)) {
+                throw new \Exception($response->SMSMessageData->Message);
             }
 
             //log the result
@@ -103,7 +110,8 @@ class africastalking extends \WP_SMS\Gateway
         }
     }
 
-    public function GetCredit()
+    public
+    function GetCredit()
     {
         try {
             // Check username and password
