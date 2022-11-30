@@ -52,7 +52,7 @@ class Newsletter extends RestApi
             ),
             array(
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => array($this, 'get_subscriber_callback'),
+                'callback'            => array($this, 'get_subscribers_callback'),
                 'args'                => array(
                     'group_id' => array(
                         'required' => false,
@@ -125,7 +125,7 @@ class Newsletter extends RestApi
      * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function get_subscriber_callback(WP_REST_Request $request)
+    public function get_subscribers_callback(WP_REST_Request $request)
     {
         return \WP_SMS\Newsletter::getSubscribers(false, false, [
             'name',
