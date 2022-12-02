@@ -158,7 +158,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception($response->get_error_message());
             }
 
-            return self::response('Successfully send SMS!', 200, [
+            return self::response(__('Successfully send SMS!', 'wp-sms'), 200, [
                 'balance' => Gateway::credit()
             ]);
         } catch (\Throwable $e) {
