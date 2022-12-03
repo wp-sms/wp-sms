@@ -158,7 +158,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception($response->get_error_message());
             }
 
-            return self::response('Successfully send SMS!', 200, [
+            return self::response(__('Successfully send SMS!', 'wp-sms'), 200, [
                 'balance' => Gateway::credit()
             ]);
         } catch (\Throwable $e) {
@@ -179,8 +179,10 @@ class SendSmsApi extends \WP_SMS\RestApi
              */
             case 'subscribers':
 
-                $group_id = $request->get_param('group_ids');
-                $groups   = Newsletter::getGroups();
+                $group_ids = $request->get_param('group_ids');
+                $groups    = Newsletter::getGroups();
+
+                file_put_contents('/Users/reventon/Sites/veronalabs/log', print_r($groups, true), FILE_APPEND);
 
                 // Check there is group or not
                 if ($groups) {
@@ -189,12 +191,18 @@ class SendSmsApi extends \WP_SMS\RestApi
                     }
 
                     // Check group validity
-                    if (!Newsletter::getGroup($group_id)) {
-                        throw new Exception(__('The group ID is not valid', 'wp-sms'));
+                    foreach ($group_ids as $group_id) {
+                        if (!Newsletter::getGroup($group_id)) {
+                            $group_validity_error[] = sprintf(__('The group ID %s is not valid', 'wp-sms'), $group_id);
+                        }
+                    }
+
+                    if (isset($group_validity_error) && !empty($group_validity_error)) {
+                        throw new Exception($group_validity_error);
                     }
                 }
 
-                $recipients = Newsletter::getSubscribers($group_id, true);
+                $recipients = Newsletter::getSubscribers($group_ids, true);
                 break;
 
             /**
