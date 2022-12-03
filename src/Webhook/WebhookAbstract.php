@@ -76,7 +76,7 @@ abstract class WebhookAbstract
             }
 
         } catch (\Throwable $e) {
-            error_log(sprintf('WP-SMS: The provided webhook could not be executed, Error Message: %s', $e->getMessage()));
+            error_log(sprintf('WP SMS: The provided webhook could not be executed, Error Message: %s', $e->getMessage()));
         }
     }
 }
