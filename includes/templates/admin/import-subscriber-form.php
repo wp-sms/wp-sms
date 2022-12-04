@@ -28,7 +28,7 @@
             <tr class="js-WpSmsHiddenAfterUpload">
                 <td style="padding-top: 10px;">
                     <input type="file" accept="text/csv" id="wp-sms-input-file">
-                    <p><?php _e( 'The only acceptable format is <code>*.csv.</code>', 'wp-sms' ); ?></p>
+                    <p><?php _e( 'The only acceptable format is <code>*.csv</code>', 'wp-sms' ); ?></p>
                 </td>
             </tr>
 
