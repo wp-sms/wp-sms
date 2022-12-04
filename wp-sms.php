@@ -10,14 +10,14 @@
  * Domain Path: /languages
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 } // Exit if accessed directly
 
 /**
  * Load Plugin Defines
  */
-require_once 'includes/defines.php';
+include_once __DIR__ . '/includes/defines.php';
 
 /**
  * Load plugin Special Functions
@@ -27,7 +27,7 @@ require_once WP_SMS_DIR . 'includes/functions.php';
 /**
  * Get plugin options
  */
-$wpsms_option = get_option( 'wpsms_settings' );
+$wpsms_option = get_option('wpsms_settings');
 
 /**
  * Initial gateway
