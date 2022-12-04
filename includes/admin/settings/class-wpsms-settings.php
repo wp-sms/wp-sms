@@ -1639,6 +1639,8 @@ class Settings
                     'id'   => 'webhooks',
                     'name' => __('Webhooks', 'wp-sms'),
                     'type' => 'header',
+                    'desc' => __('Webhooks allow you to receive notifications when a specific event occurs.', 'wp-sms'),
+                    'doc'  => '/resources/webhooks/'
                 ),
                 'send_sms_webhook'       => array(
                     'id'   => 'new_sms_webhook',
