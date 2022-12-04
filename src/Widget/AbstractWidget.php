@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Admin\Widget;
+namespace WP_SMS\Widget;
 
 abstract class AbstractWidget
 {

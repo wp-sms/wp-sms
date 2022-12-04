@@ -1,5 +1,7 @@
 <?php
 
+use WP_SMS\Admin\Widget\WidgetsManager;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -137,7 +139,8 @@ class WP_SMS
             require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
 
             // Widgets
-            require_once WP_SMS_DIR . 'includes/admin/Widget/WidgetsManager.php';
+            require_once WP_SMS_DIR . 'src/Widget/WidgetsManager.php';
+            \WP_SMS\Widget\WidgetsManager::init();
         }
 
         if (!is_admin()) {

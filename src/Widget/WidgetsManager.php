@@ -1,8 +1,6 @@
 <?php
 
-namespace WP_SMS\Admin\Widget;
-
-use WP_SMS\Helper;
+namespace WP_SMS\Widget;
 
 class WidgetsManager
 {
@@ -33,7 +31,7 @@ class WidgetsManager
      */
     private function includeRequirements()
     {
-        require_once WP_SMS_DIR.'includes/admin/Widget/AbstractWidget.php';
+        require_once WP_SMS_DIR . 'src/Widget/AbstractWidget.php';
     }
 
     /**
@@ -44,10 +42,12 @@ class WidgetsManager
     private function loadWidgets()
     {
         foreach ($this->widgets as $fileName => $widget) {
-            $file = WP_SMS_DIR."includes/admin/Widget/Widgets/{$fileName}.php";
+            $file = WP_SMS_DIR . "src/Widget/Widgets/{$fileName}.php";
+
             if (file_exists($file)) {
                 require_once $file;
             }
+
             if (is_subclass_of($widget, AbstractWidget::class)) {
                 (new $widget)->register();
             }
@@ -63,5 +63,3 @@ class WidgetsManager
     {
     }
 }
-
-widgetsManager::init();
