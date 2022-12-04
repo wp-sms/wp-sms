@@ -609,7 +609,9 @@ class Settings
                 'wc_notify_product'            => array(
                     'id'   => 'wc_notify_product',
                     'name' => __('Notify for new product', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
+                    'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
                 'wc_notify_product_enable'     => array(
                     'id'      => 'wc_notify_product_enable',
@@ -658,7 +660,9 @@ class Settings
                 'wc_notify_order'              => array(
                     'id'   => 'wc_notify_order',
                     'name' => __('Notify for new order', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
+                    'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
                 'wc_notify_order_enable'       => array(
                     'id'      => 'wc_notify_order_enable',
@@ -697,7 +701,9 @@ class Settings
                 'wc_notify_customer'           => array(
                     'id'   => 'wc_notify_customer',
                     'name' => __('Notify to customer order', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
+                    'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
                 'wc_notify_customer_enable'    => array(
                     'id'      => 'wc_notify_customer_enable',
@@ -729,7 +735,9 @@ class Settings
                 'wc_notify_stock'              => array(
                     'id'   => 'wc_notify_stock',
                     'name' => __('Notify of stock', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
+                    'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
                 'wc_notify_stock_enable'       => array(
                     'id'      => 'wc_notify_stock_enable',
@@ -758,7 +766,9 @@ class Settings
                 'wc_notify_status'             => array(
                     'id'   => 'wc_notify_status',
                     'name' => __('Notify of status', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
+                    'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
                 'wc_notify_status_enable'      => array(
                     'id'      => 'wc_notify_status_enable',
@@ -786,7 +796,9 @@ class Settings
                 'wc_notify_by_status'          => array(
                     'id'   => 'wc_notify_by_status',
                     'name' => __('Notify by status', 'wp-sms'),
-                    'type' => 'header'
+                    'type' => 'header',
+                    'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
+                    'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
                 'wc_notify_by_status_enable'   => array(
                     'id'      => 'wc_notify_by_status_enable',
