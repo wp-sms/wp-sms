@@ -285,9 +285,9 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 == Changelog ==
 = v5.9 - **.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
-* New: [Support Webhooks] to trigger actions when sending SMS and new Subscriber(https://wp-sms-pro.com/resources/webhooks/)
-* New: Support filter by subscribers in Admin -> SMS -> Subscribers
-* New: Implement filter subscribers by the group in Admin -> SMS -> Groups
+* New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
+* New: Support filter by subscribers in Admin → SMS → Subscribers
+* New: Implement filter subscribers by the group in Admin → SMS → Groups
 * New: REST API Endpoint `wpsms/v1/webhook` to register and deregister a webhook
 * New: REST API Endpoint `wpsms/v1/outbox` to get outbox SMS
 * New: Method `getSubscriberByMobile($number)`
