@@ -53,10 +53,11 @@ The list of supported gateways and integrated plugins are available in FAQ.
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
 * Supporting Widget/Gutenberg for showing SMS Newsletter Form
-* Supporting WordPress Hooks
-* Supporting WP-REST API
+* Supporting Webhooks
+* Supporting WP REST API
 * Importing/Exporting Subscribers.
-* Make short URLs by Bitly.com
+* Compatible with Bitly.com for shortening URLs in SMS
+* Compatible with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
@@ -280,7 +281,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 `PUT: wpsms/v1/newsletter` to: `POST: wpsms/v1/newsletter/verify`
 
 = v5.6 =
-* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
+* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
 = v5.9 - **.12.2022 =
