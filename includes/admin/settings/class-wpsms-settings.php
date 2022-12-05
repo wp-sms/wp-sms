@@ -1644,7 +1644,7 @@ class Settings
                 ),
                 'send_sms_webhook'       => array(
                     'id'   => 'new_sms_webhook',
-                    'name' => __('Send SMS Webhook', 'wp-sms'),
+                    'name' => __('Outgoing SMS Webhook', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
