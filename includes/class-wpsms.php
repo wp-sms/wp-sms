@@ -68,6 +68,18 @@ class WP_SMS
         load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
+    /*
+     * Include file
+     */
+    private function include($file)
+    {
+        $file_path = WP_SMS_DIR . $file;
+
+        if (file_exists($file_path)) {
+            require_once $file_path;
+        }
+    }
+
     /**
      * Includes plugin files
      *
@@ -76,83 +88,76 @@ class WP_SMS
     public function includes()
     {
         // Utility classes.
-        require_once WP_SMS_DIR . 'src/Helper.php';
-        require_once WP_SMS_DIR . 'src/Utils/CsvHelper.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-integrations.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-gravityforms.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-quform.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-newsletter.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
-        require_once WP_SMS_DIR . 'includes/admin/class-wpsms-version.php';
+        $this->include('src/Helper.php');
+        $this->include('src/Utils/CsvHelper.php');
+
+        // Legacy classes.
+        $this->include('includes/class-wpsms-features.php');
+        $this->include('includes/class-wpsms-notifications.php');
+        $this->include('includes/class-wpsms-integrations.php');
+        $this->include('includes/class-wpsms-gravityforms.php');
+        $this->include('includes/class-wpsms-quform.php');
+        $this->include('includes/class-wpsms-newsletter.php');
+        $this->include('includes/class-wpsms-rest-api.php');
+        $this->include('includes/class-wpsms-shortcode.php');
+        $this->include('includes/admin/class-wpsms-version.php');
 
         // Blocks
-        require_once WP_SMS_DIR . 'src/BlockAbstract.php';
-        require_once WP_SMS_DIR . 'src/Blocks/SubscribeBlock.php';
-        require_once WP_SMS_DIR . 'src/BlockAssetsManager.php';
+        $this->include('src/BlockAbstract.php');
+        $this->include('src/Blocks/SubscribeBlock.php');
+        $this->include('src/BlockAssetsManager.php');
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
 
         // Controllers
-        require_once WP_SMS_DIR . 'src/Controller/AjaxControllerAbstract.php';
-        require_once WP_SMS_DIR . 'src/Controller/SubscriberFormAjax.php';
-        require_once WP_SMS_DIR . 'src/Controller/GroupFormAjax.php';
-        require_once WP_SMS_DIR . 'src/Controller/ExportAjax.php';
-        require_once WP_SMS_DIR . 'src/Controller/UploadSubscriberCsv.php';
-        require_once WP_SMS_DIR . 'src/Controller/ImportSubscriberCsv.php';
-        require_once WP_SMS_DIR . 'src/Controller/ControllerManager.php';
+        $this->include('src/Controller/AjaxControllerAbstract.php');
+        $this->include('src/Controller/SubscriberFormAjax.php');
+        $this->include('src/Controller/GroupFormAjax.php');
+        $this->include('src/Controller/ExportAjax.php');
+        $this->include('src/Controller/UploadSubscriberCsv.php');
+        $this->include('src/Controller/ImportSubscriberCsv.php');
+        $this->include('src/Controller/ControllerManager.php');
 
         $controllerManager = new \WP_SMS\Controller\ControllerManager();
         $controllerManager->init();
 
         // Webhooks
-        require_once WP_SMS_DIR . 'src/Webhook/WebhookFactory.php';
-        require_once WP_SMS_DIR . 'src/Webhook/WebhookAbstract.php';
-        require_once WP_SMS_DIR . 'src/Webhook/WebhookManager.php';
-        require_once WP_SMS_DIR . 'src/Webhook/NewSubscriberWebhook.php';
-        require_once WP_SMS_DIR . 'src/Webhook/NewSmsWebhook.php';
+        $this->include('src/Webhook/WebhookFactory.php');
+        $this->include('src/Webhook/WebhookAbstract.php');
+        $this->include('src/Webhook/WebhookManager.php');
+        $this->include('src/Webhook/NewSubscriberWebhook.php');
+        $this->include('src/Webhook/NewSmsWebhook.php');
 
         $webhookManager = new \WP_SMS\Webhook\WebhookManager();
         $webhookManager->init();
 
         if (is_admin()) {
-            // Admin classes.
-            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
-
-            require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin.php';
-            require_once WP_SMS_DIR . 'includes/admin/class-wpsms-admin-helper.php';
-
-            // Outbox class.
-            require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
-            require_once WP_SMS_DIR . 'includes/admin/inbox/class-wpsms-inbox.php';
-
-            // Privacy class.
-            require_once WP_SMS_DIR . 'includes/admin/privacy/class-wpsms-privacy-actions.php';
-
-            // Send class.
-            require_once WP_SMS_DIR . 'includes/admin/send/class-wpsms-send.php';
-
-            // Send class.
-            require_once WP_SMS_DIR . 'includes/admin/add-ons/class-add-ons.php';
+            // Admin legacy classes.
+            $this->include('includes/admin/settings/class-wpsms-settings.php');
+            $this->include('includes/admin/class-wpsms-admin.php');
+            $this->include('includes/admin/class-wpsms-admin-helper.php');
+            $this->include('includes/admin/outbox/class-wpsms-outbox.php');
+            $this->include('includes/admin/inbox/class-wpsms-inbox.php');
+            $this->include('includes/admin/privacy/class-wpsms-privacy-actions.php');
+            $this->include('includes/admin/send/class-wpsms-send.php');
+            $this->include('includes/admin/add-ons/class-add-ons.php');
 
             // Widgets
-            require_once WP_SMS_DIR . 'src/Widget/WidgetsManager.php';
+            $this->include('src/Widget/WidgetsManager.php');
             \WP_SMS\Widget\WidgetsManager::init();
         }
 
         if (!is_admin()) {
             // Front Class.
-            require_once WP_SMS_DIR . 'includes/class-front.php';
+            $this->include('includes/class-front.php');
         }
 
         // API class.
-        require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
-        require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-send.php';
-        require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-webhook.php';
-        require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-credit.php';
+        $this->include('includes/api/v1/class-wpsms-api-newsletter.php');
+        $this->include('includes/api/v1/class-wpsms-api-send.php');
+        $this->include('includes/api/v1/class-wpsms-api-webhook.php');
+        $this->include('includes/api/v1/class-wpsms-api-credit.php');
     }
 
     /**
