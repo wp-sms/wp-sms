@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
+
 class directsend extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://directsend.co.kr/index.php/api_v2/sms_change_word";
@@ -22,22 +24,17 @@ class directsend extends \WP_SMS\Gateway
             'username' => [
                 'id'   => 'gateway_username',
                 'name' => 'Username',
-                'desc' => 'Enter your username.',
-            ],
-            'password' => [
-                'id'   => 'gateway_password',
-                'name' => 'Password',
-                'desc' => 'Enter your password.',
-            ],
-            'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender Number',
-                'desc' => 'Enter the sender number.',
+                'desc' => 'Directsend issued ID.',
             ],
             'has_key'  => [
                 'id'   => 'gateway_key',
                 'name' => 'API Key',
                 'desc' => 'Directsend issued API key.',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender Number',
+                'desc' => 'Enter the sender number.',
             ]
         ];
     }
@@ -73,22 +70,30 @@ class directsend extends \WP_SMS\Gateway
 
         try {
 
-            $message = array();
+            $recipients = array_map(function ($recipient) {
+                return array(
+                    'mobile' => $recipient
+                );
+            }, $this->to);
 
             $response = $this->request('POST', "{$this->wsdl_link}", [], [
                 'headers' => [
-                    'ache-control' => 'no-cache',
-                    'content-type' => 'application/json',
-                    'charset'      => 'utf-8',
+                    'cache-control' => 'no-cache',
+                    'content-type'  => 'application/json',
+                    'charset'       => 'utf-8',
                 ],
-                'body'    => [
+                'body'    => json_encode([
                     'username' => $this->username,
-                    'key'      => $this->password,
-                    'receiver' => implode(',', $this->to),
-                    'message'  => urlencode($this->msg),
+                    'key'      => $this->has_key,
+                    'receiver' => $recipients,
+                    'message'  => $this->msg,
                     'sender'   => $this->from,
-                ]
+                ])
             ]);
+
+            if (isset($response->status) && $response->status != '0') {
+                throw new Exception($response);
+            }
 
             //log the result
             $this->log($this->from, $this->msg, $this->to, $response);
