@@ -839,6 +839,9 @@ class Gateway
             'kenya'                => array(
                 'hostpinnacle' => 'hostpinnacle.co.ke',
             ),
+            'south korea'          => array(
+                'directsend' => 'directsend.co.kr',
+            ),
         );
 
         return apply_filters('wpsms_gateway_list', $gateways);
