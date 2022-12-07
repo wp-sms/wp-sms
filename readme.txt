@@ -299,6 +299,8 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Bugfix: The Africa stalking SMS gateway issue
 * Bugfix: Send SMS to multiple Groups is now available again
 
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.8.5 - 23.11.2022 =
 * Bugfix: The import system has been debugged.
 * Bugfix: Some minor bugfixes have been done.
@@ -308,8 +310,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Improvement: A Helper has been implemented to load templates instead of using of require_once function to deliver better performance and have cleaner codes.
 * Add: The getTemplateIdFromMessageBody() function has been added. Now the template IDs are fetched from the message body to let customers send SMS through the gateways which have the Template ID as a required parameter.
 * Add: You can now send SMS to multiple subscribers' groups in Contact Form 7 SMS notification panel.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.4 - 05.11.2022 =
 * Bugfix: Fix force to send issue
