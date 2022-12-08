@@ -1055,7 +1055,7 @@ class Gateway
      *
      *
      * @return array|void
-     * @example In the message body "Hello World|1234" It returns array('Hello World', '1234')
+     * @example In the message body "Hello World|1234" It returns array('template_id' => 1234, 'message' => 'Hello World')
      *
      */
     protected function getTemplateIdAndMessageBody()
