@@ -34,7 +34,7 @@ class Helper
             $base_path = WP_SMS_PRO_DIR;
         }
 
-        $templatePath = $base_path . "views/{$template}";
+        $templatePath = $base_path . "includes/templates/{$template}";
 
         if (file_exists($templatePath)) {
             ob_start();
