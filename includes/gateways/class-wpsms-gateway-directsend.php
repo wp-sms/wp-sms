@@ -76,7 +76,7 @@ class directsend extends \WP_SMS\Gateway
                 );
             }, $this->to);
 
-            $response = $this->request('POST', "{$this->wsdl_link}", [], [
+            $arguments = array(
                 'headers' => [
                     'cache-control' => 'no-cache',
                     'content-type'  => 'application/json',
@@ -89,7 +89,9 @@ class directsend extends \WP_SMS\Gateway
                     'message'  => $this->msg,
                     'sender'   => $this->from,
                 ])
-            ]);
+            );
+
+            $response = $this->request('POST', "{$this->wsdl_link}", [], $arguments);
 
             if (isset($response->status) && $response->status != '0') {
                 throw new Exception($response);
