@@ -182,6 +182,8 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $group_ids = $request->get_param('group_ids');
                 $groups    = Newsletter::getGroups();
 
+                file_put_contents('/Users/reventon/Sites/veronalabs/log', print_r($groups, true), FILE_APPEND);
+
                 // Check there is group or not
                 if ($groups) {
                     if (!$request->get_param('group_ids')) {
