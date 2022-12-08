@@ -660,7 +660,8 @@ class Gateway
                 'smsbox' => 'smsbox.be'
             ),
             'united arab emirates' => array(
-                'callifony' => 'callifony.com'
+                'callifony'       => 'callifony.com',
+                'smartsmsgateway' => 'smartsmsgateway.com',
             ),
             'india'                => array(
                 'tubelightcommunications' => 'tubelightcommunications.com',
