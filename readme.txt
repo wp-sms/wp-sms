@@ -284,7 +284,7 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v5.9 - **.12.2022 =
+= v5.9 - 10.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
 * New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
 * New: Support filter by subscribers in Admin → SMS → Subscribers
@@ -294,8 +294,8 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * New: Method `getSubscriberByMobile($number)`
 * Improvement: Directory and folder plugin structure
 * Improvement: The template loader and structure
-* Improvement: Compatibility with WP CLI
-* Bugfix: The sms.to SMS gateway issue
+* Bugfix: The include issue in CLI mode
+* Bugfix: The Sms.to SMS gateway issue
 * Bugfix: The Africa stalking SMS gateway issue
 * Bugfix: Send SMS to multiple Groups is now available again
 

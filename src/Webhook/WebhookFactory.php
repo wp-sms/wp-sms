@@ -61,7 +61,10 @@ class WebhookFactory
     {
         $webhookName = self::getWebhookOptionKeyByType($webhookType);
         $webhooks    = Option::getOption($webhookName);
-        return explode(PHP_EOL, $webhooks);
+
+        if ($webhooks) {
+            return explode(PHP_EOL, $webhooks);
+        }
     }
 
     /**
