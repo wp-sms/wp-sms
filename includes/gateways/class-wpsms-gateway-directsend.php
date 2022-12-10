@@ -12,6 +12,8 @@ class directsend extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
+    public $kakao_plus_id;
+    public $user_template_no;
 
     public function __construct()
     {
@@ -21,21 +23,31 @@ class directsend extends \WP_SMS\Gateway
         $this->validateNumber = "";
         $this->help           = "";
         $this->gatewayFields  = [
-            'username' => [
+            'username'         => [
                 'id'   => 'gateway_username',
                 'name' => 'Username',
                 'desc' => 'Directsend issued ID.',
             ],
-            'has_key'  => [
+            'has_key'          => [
                 'id'   => 'gateway_key',
                 'name' => 'API Key',
                 'desc' => 'Directsend issued API key.',
             ],
-            'from'     => [
+            'from'             => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Sender Number',
                 'desc' => 'Enter the sender number.',
-            ]
+            ],
+            'kakao_plus_id'    => [
+                'id'   => 'kakao_plus_id',
+                'name' => 'Kakao Plus ID',
+                'desc' => 'Enter your Kakao plus ID.',
+            ],
+            'user_template_no' => [
+                'id'   => 'user_template_no',
+                'name' => 'User Template Number',
+                'desc' => 'Enter the registered template number.',
+            ],
         ];
     }
 
@@ -76,20 +88,24 @@ class directsend extends \WP_SMS\Gateway
                 );
             }, $this->to);
 
-            $arguments = array(
-                'headers' => [
-                    'cache-control' => 'no-cache',
-                    'content-type'  => 'application/json',
-                    'charset'       => 'utf-8',
-                ],
-                'body'    => json_encode([
-                    'username' => $this->username,
-                    'key'      => $this->has_key,
-                    'receiver' => $recipients,
-                    'message'  => $this->msg,
-                    'sender'   => $this->from,
-                ])
-            );
+            $from_explode = explode('|', $this->from);
+
+            if (isset($from_explode[1]) && $from_explode[1] == 'kakao') {
+                $this->wsdl_link                       = 'https://directsend.co.kr/index.php/api_v2/kakao_notice';
+                $arguments['body']['kakao_plus_id']    = $this->kakao_plus_id;
+                $arguments['body']['user_template_no'] = $this->user_template_no;
+            }
+
+            $arguments['headers']['cache-control'] = 'no-cache';
+            $arguments['headers']['content-type']  = 'application/json';
+            $arguments['headers']['charset']       = 'utf-8';
+            $arguments['body']['username']         = $this->username;
+            $arguments['body']['key']              = $this->has_key;
+            $arguments['body']['receiver']         = $recipients;
+            $arguments['body']['message']          = $this->msg;
+            $arguments['body']['sender']           = $from_explode[0];
+
+            $arguments['body'] = json_encode($arguments['body']);
 
             $response = $this->request('POST', "{$this->wsdl_link}", [], $arguments);
 
