@@ -461,6 +461,14 @@ class Gateway
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
+        /**
+         * Backward compatibility
+         * @todo Remove this if the length of the sender is increased in database
+         */
+        if (strlen($sender) > 20) {
+            $sender = substr($sender, 0, 20);
+        }
+
         $result = $this->db->insert("{$this->tb_prefix}sms_send", array(
             'date'      => WP_SMS_CURRENT_DATE,
             'sender'    => $sender,
