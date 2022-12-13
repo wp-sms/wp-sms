@@ -4,28 +4,42 @@ namespace WP_SMS\Gateway;
 
 class africastalking extends \WP_SMS\Gateway
 {
-    private $wsdl_link = '';
-    private $client = null;
-    private $http;
-    public $tariff = "http://africastalking.com/";
-    public $unitrial = true;
+    private $wsdl_link = 'https://api.africastalking.com/version1';
+    public $tariff = "https://africastalking.com";
+    public $unitrial = false;
     public $unit;
-    public $flash = "disabled";
+    public $flash = "false";
     public $isflash = false;
 
     public function __construct()
     {
         parent::__construct();
-        include_once('libraries/africastalking/AfricasTalkingGateway.php');
 
-        $this->validateNumber = "+254711XXXYYY";
-        $this->help           = "API key generated from your account settings";
+        $this->validateNumber = "";
+        $this->help           = "You can generate an API key from the dashboard, here is an article from the help center on <a href='https://help.africastalking.com/en/articles/1361037-how-do-i-generate-an-api-key' target='_blank'>how to generate an API Key.</a>";
+        $this->bulk_send      = true;
         $this->has_key        = true;
+        $this->gatewayFields  = [
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'Username',
+                'desc' => 'Your Africa’s Talking application username.',
+            ],
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => 'API Key',
+                'desc' => 'Africa’s Talking application apiKey.',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Your registered short code or alphanumeric, defaults to AFRICASTKNG.',
+            ]
+        ];
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -53,62 +67,61 @@ class africastalking extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
-        $gateway = new \AfricasTalkingGateway($this->username, $this->has_key);
-
         try {
-            $results = $gateway->sendMessage(implode(',', $this->to), $this->msg, $this->from);
 
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result);
+            $arguments = [
+                'headers' => [
+                    'apiKey'       => $this->has_key,
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Accept'       => 'application/json'
+                ],
+                'body'    => [
+                    'username' => $this->username,
+                    'to'       => implode(',', $this->to),
+                    'message'  => $this->msg,
+                    'from'     => !empty($this->from) ? $this->from : null
+                ]
+            ];
+
+            $response = $this->request('POST', "{$this->wsdl_link}/messaging", [], $arguments);
+
+            if (isset($response) && empty($response->SMSMessageData->Recipients)) {
+                throw new \Exception($response->SMSMessageData->Message);
+            }
+
+            //log the result
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
              *
-             * @param string $result result output.
+             * @param string $response result output.
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', $result);
+            do_action('wp_sms_send', $response);
 
-            return $result;
-        } catch (\AfricasTalkingGatewayException $e) {
-            // Log the result
+            return $response;
+
+        } catch (\Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
             return new \WP_Error('send-sms', $e->getMessage());
         }
     }
 
-    public function GetCredit()
+    public
+    function GetCredit()
     {
-        // Check username and password
-        if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
-        }
-
-        if (!function_exists('curl_version')) {
-            return new \WP_Error('required-function', __('CURL extension not found in your server. please enable curl extension.', 'wp-sms'));
-        }
-
-        $gateway = new \AfricasTalkingGateway($this->username, $this->has_key);
-
         try {
-            $data = $gateway->getUserData();
-            preg_match('!\d+!', $data->balance, $matches);
+            // Check username and password
+            if (!$this->username or !$this->has_key) {
+                return new \WP_Error('account-credit', __('Username and API key are required.', 'wp-sms'));
+            }
 
-            return $matches[0];
-        } catch (\AfricasTalkingGatewayException $e) {
+            return 1;
+
+        } catch (\Exception $e) {
             return new \WP_Error('account-credit', $e->getMessage());
         }
     }

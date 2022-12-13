@@ -52,9 +52,20 @@ class SendSmsApi extends \WP_SMS\RestApi
         register_rest_route($this->namespace . '/v1', '/send', array(
             array(
                 'methods'             => \WP_REST_Server::CREATABLE,
-                'callback'            => array($this, 'send_callback'),
+                'callback'            => array($this, 'sendSmsCallback'),
                 'args'                => $this->sendSmsArguments,
-                'permission_callback' => array($this, 'get_item_permissions_check'),
+                'permission_callback' => array($this, 'sendSmsPermission'),
+            )
+        ));
+
+        // @todo, this can be moved to a separate class
+        register_rest_route($this->namespace . '/v1', '/outbox', array(
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'getOutboxCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_outbox');
+                },
             )
         ));
     }
@@ -64,7 +75,7 @@ class SendSmsApi extends \WP_SMS\RestApi
      *
      * @return \WP_REST_Response
      */
-    public function send_callback(WP_REST_Request $request)
+    public function sendSmsCallback(WP_REST_Request $request)
     {
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
@@ -147,7 +158,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception($response->get_error_message());
             }
 
-            return self::response('Successfully send SMS!', 200, [
+            return self::response(__('Successfully send SMS!', 'wp-sms'), 200, [
                 'balance' => Gateway::credit()
             ]);
         } catch (\Throwable $e) {
@@ -168,8 +179,8 @@ class SendSmsApi extends \WP_SMS\RestApi
              */
             case 'subscribers':
 
-                $group_id = $request->get_param('group_ids');
-                $groups   = Newsletter::getGroups();
+                $group_ids = $request->get_param('group_ids');
+                $groups    = Newsletter::getGroups();
 
                 // Check there is group or not
                 if ($groups) {
@@ -178,12 +189,18 @@ class SendSmsApi extends \WP_SMS\RestApi
                     }
 
                     // Check group validity
-                    if (!Newsletter::getGroup($group_id)) {
-                        throw new Exception(__('The group ID is not valid', 'wp-sms'));
+                    foreach ($group_ids as $group_id) {
+                        if (!Newsletter::getGroup($group_id)) {
+                            $group_validity_error[] = sprintf(__('The group ID %s is not valid', 'wp-sms'), $group_id);
+                        }
+                    }
+
+                    if (isset($group_validity_error) && !empty($group_validity_error)) {
+                        throw new Exception($group_validity_error);
                     }
                 }
 
-                $recipients = Newsletter::getSubscribers($group_id, true);
+                $recipients = Newsletter::getSubscribers($group_ids, true);
                 break;
 
             /**
@@ -241,13 +258,25 @@ class SendSmsApi extends \WP_SMS\RestApi
     }
 
     /**
+     * @param WP_REST_Request $request
+     * @return array|object|\stdClass[]|null
+     * @todo support pagination and filter
+     */
+    public function getOutboxCallback(WP_REST_Request $request)
+    {
+        $query = "SELECT * FROM `{$this->tb_prefix}sms_send`";
+
+        return $this->db->get_results($query, ARRAY_A);
+    }
+
+    /**
      * Check user permission
      *
      * @param $request
      *
      * @return bool
      */
-    public function get_item_permissions_check($request)
+    public function sendSmsPermission($request)
     {
         return current_user_can('wpsms_sendsms');
     }

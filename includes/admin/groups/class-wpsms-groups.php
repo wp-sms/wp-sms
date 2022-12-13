@@ -42,6 +42,8 @@ class Groups
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
-        include_once WP_SMS_DIR . "includes/admin/groups/groups.php";
+        echo \WP_SMS\Helper::loadTemplate('admin/groups.php', [
+            'list_table' => $list_table,
+        ]);
     }
 }

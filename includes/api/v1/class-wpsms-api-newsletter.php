@@ -34,20 +34,32 @@ class Newsletter extends RestApi
     public function register_routes()
     {
         register_rest_route($this->namespace . '/v1', '/newsletter', array(
-            'methods'             => WP_REST_Server::CREATABLE,
-            'callback'            => array($this, 'subscribe_callback'),
-            'args'                => array(
-                'name'     => array(
-                    'required' => true,
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'subscribe_callback'),
+                'args'                => array(
+                    'name'     => array(
+                        'required' => true,
+                    ),
+                    'mobile'   => array(
+                        'required' => true,
+                    ),
+                    'group_id' => array(
+                        'required' => false,
+                    )
                 ),
-                'mobile'   => array(
-                    'required' => true,
-                ),
-                'group_id' => array(
-                    'required' => false,
-                ),
+                'permission_callback' => '__return_true'
             ),
-            'permission_callback' => '__return_true'
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array($this, 'get_subscribers_callback'),
+                'args'                => array(
+                    'group_id' => array(
+                        'required' => false,
+                    )
+                ),
+                'permission_callback' => '__return_true'
+            )
         ));
 
         register_rest_route($this->namespace . '/v1', '/newsletter/unsubscribe', array(
@@ -59,7 +71,7 @@ class Newsletter extends RestApi
                 ),
                 'mobile' => array(
                     'required' => true,
-                ),
+                )
             ),
             'permission_callback' => '__return_true'
         ));
@@ -76,7 +88,7 @@ class Newsletter extends RestApi
                 ),
                 'activation' => array(
                     'required' => true,
-                ),
+                )
             ),
             'permission_callback' => '__return_true'
         ));
@@ -107,6 +119,18 @@ class Newsletter extends RestApi
         }
 
         return self::response($result);
+    }
+
+    /**
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function get_subscribers_callback(WP_REST_Request $request)
+    {
+        return \WP_SMS\Newsletter::getSubscribers(false, false, [
+            'name',
+            'mobile'
+        ]);
     }
 
     /**

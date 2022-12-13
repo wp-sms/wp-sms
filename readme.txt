@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 5.8.5
+Stable tag: 5.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -53,10 +53,11 @@ The list of supported gateways and integrated plugins are available in FAQ.
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
 * Supporting Widget/Gutenberg for showing SMS Newsletter Form
-* Supporting WordPress Hooks
-* Supporting WP-REST API
+* Supporting Webhooks
+* Supporting WP REST API
 * Importing/Exporting Subscribers.
-* Make short URLs by Bitly.com
+* Compatible with Bitly.com for shortening URLs in SMS
+* Compatible with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
@@ -148,8 +149,8 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
 
-= Is it supported in PHP v7, v8 ? =
-Yes! WP SMS is compatible with PHP version v5.6 up to v8
+= Is the plugin compatible with PHP v8.0? =
+Yes! WP SMS is compatible with PHP version v5.6 up to v8.0
 
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
@@ -173,65 +174,11 @@ There are two ways to show the subscriber form in the theme:
 1. By adding the SMS Newsletter through the Widget into the theme
 2. By adding the SMS Newsletter through the Gutenberg editor
 
-= How to use the Actions? =
-Run the following action when sending SMS with this plugin:
-`wp_sms_send`
-
-Example: Send emails after sending SMS
-
-	function send_mail_after_sending_sms($message_info) {
-		wp_mail('you@mail.com', 'Send SMS', $message_info);
-	}
-	add_action('wp_sms_send', 'send_mail_after_sending_sms');
-
-Run the following action when subscribing a new user.
-`wp_sms_add_subscriber`
-
-Example: Send Welcome SMS to users when they are registered.
-
-	function send_sms_when_subscribe_new_user($name, $mobile) {
-		$to = array($mobile);
-        $msg = "Hi {$name}, Thanks for subscribe.";
-        wp_sms_send($to, $msg);
-	}
-	add_action('wp_sms_add_subscriber', 'send_sms_when_subscribe_new_user', 10, 2);
-
-= How to use the Filters? =
-You can use the following filter to modify numbers.
-`wp_sms_from`
-
-Example: Add 0 to the end of the sender number
-
-	function wp_sms_modify_from($from) {
-		$from = $from . ' 0';
-		return $val;
-	}
-	add_filter('wp_sms_from', 'wp_sms_modify_from');
-
-You can use the following filter to modify the receivers’ numbers.
-`wp_sms_to`
-
-Example: Add new numbers to your numbers
-
-	function wp_sms_modify_receiver($numbers) {
-		$numbers[] = '01xxxxxxxx';
-		return $numbers;
-	}
-	add_filter('wp_sms_to', 'wp_sms_modify_receiver');
-
-You can use the following filter to modify text messages
-`wp_sms_msg`
-
-Example: Add signatures to messages that are sent
-
-	function wp_sms_modify_message($message) {
-		$message = $message . ' /n Powerby: WP SMS';
-		return $message;
-	}
-	add_filter('wp_sms_msg', 'wp_sms_modify_message');
+= Does the plugin support Hooks (Action & Filter)? =
+Yes. It does, checkout [https://wp-sms-pro.com/documentation/](documentation).
 
 = Does it support REST API? =
-Yes. It does, see [https://wp-sms-pro.com/resources-category/api-endpoints/](documentation).
+Yes. It does, checkout [https://wp-sms-pro.com/resources-category/api-endpoints/](documentation).
 
 = How to get the Pro Pack updates? =
 If you've already the pro pack version, you have to enter your license key in the setting page to get the updates.
@@ -240,7 +187,7 @@ Anyway the plugin supports registering the license key through `wp-config.php`
 
 	define('WP_SMS_PRO_LICENSE', 'your-license-key');
 
-= How to unsubscribe a number by URL? =
+= How to unsubscribe a number through the URL? =
 Your subscribers can unsubscribe by URL [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 
 = How to redirect clients to a specific page after unsubscribing by URL? =
@@ -250,9 +197,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
     	wp_redirect( '/XXXXX' );
     	exit;
 	} );
-
-= How to customize WP SMS? =
-We can customize the plugin based on your need. Just visit our [Plugin Development Services](https://veronalabs.com/plugin-development).
 
 == Screenshots ==
 1. General Settings page
@@ -280,9 +224,29 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 `PUT: wpsms/v1/newsletter` to: `POST: wpsms/v1/newsletter/verify`
 
 = v5.6 =
-* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to v3.3.*
+* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v5.9 - 13.12.2022 =
+* New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
+* New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
+* New: Support filter by subscribers in Admin → SMS → Subscribers
+* New: Implement filter subscribers by the group in Admin → SMS → Groups
+* New: REST API Endpoint `wpsms/v1/webhook` to register and deregister a webhook
+* New: REST API Endpoint `wpsms/v1/outbox` to get outbox SMS
+* New: Method `getSubscriberByMobile($number)`
+* New: First Korean SMS gateway (Directsend.co.kr and Kakao)
+* New: SMS gateway SmartSmsGateway.com from UAE
+* Improvement: Directory and folder plugin structure
+* Improvement: The template loader and structure
+* Improvement: Backward compatibility for recording the outbox if the sender id is too long
+* Bugfix: The include issue in CLI mode
+* Bugfix: The Sms.to SMS gateway issue
+* Bugfix: The Africa stalking SMS gateway issue
+* Bugfix: Send SMS to multiple Groups is now available again
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.8.5 - 23.11.2022 =
 * Bugfix: The import system has been debugged.
 * Bugfix: Some minor bugfixes have been done.
@@ -292,8 +256,6 @@ We can customize the plugin based on your need. Just visit our [Plugin Developme
 * Improvement: A Helper has been implemented to load templates instead of using of require_once function to deliver better performance and have cleaner codes.
 * Add: The getTemplateIdFromMessageBody() function has been added. Now the template IDs are fetched from the message body to let customers send SMS through the gateways which have the Template ID as a required parameter.
 * Add: You can now send SMS to multiple subscribers' groups in Contact Form 7 SMS notification panel.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.4 - 05.11.2022 =
 * Bugfix: Fix force to send issue

@@ -1,8 +1,8 @@
 <?php
 
-namespace WP_SMS\Admin\Widget\Widgets;
+namespace WP_SMS\Widget\Widgets;
 
-use WP_SMS\Admin\Widget\AbstractWidget;
+use WP_SMS\Widget\AbstractWidget;
 use WP_SMS\Helper;
 use DateTime;
 use DateInterval;
@@ -67,7 +67,7 @@ class StatsWidget extends AbstractWidget
 
                 $label = $firstDate->format($format);
 
-                $query   = $wpdb->prepare("select `status`,count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'));
+                $query   = $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'));
                 $results = $wpdb->get_results($query);
 
                 foreach ($results as $key => $result) {

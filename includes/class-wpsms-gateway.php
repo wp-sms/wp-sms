@@ -26,7 +26,6 @@ class Gateway
             'nexmo'          => 'nexmo.com',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
-            'smsto'          => 'sms.to',
             'clicksend'      => 'clicksend.com',
             'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
@@ -462,6 +461,14 @@ class Gateway
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
+        /**
+         * Backward compatibility
+         * @todo Remove this if the length of the sender is increased in database
+         */
+        if (strlen($sender) > 20) {
+            $sender = substr($sender, 0, 20);
+        }
+
         $result = $this->db->insert("{$this->tb_prefix}sms_send", array(
             'date'      => WP_SMS_CURRENT_DATE,
             'sender'    => $sender,
@@ -576,6 +583,7 @@ class Gateway
                 'aobox'            => 'aobox.it',
                 'sendapp'          => 'Sendapp SMS',
                 'sendappWhatsApp'  => 'Sendapp Whathapp',
+                'smsto'            => 'sms.to',
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -660,7 +668,8 @@ class Gateway
                 'smsbox' => 'smsbox.be'
             ),
             'united arab emirates' => array(
-                'callifony' => 'callifony.com'
+                'callifony'       => 'callifony.com',
+                'smartsmsgateway' => 'smartsmsgateway.com',
             ),
             'india'                => array(
                 'tubelightcommunications' => 'tubelightcommunications.com',
@@ -838,6 +847,9 @@ class Gateway
             ),
             'kenya'                => array(
                 'hostpinnacle' => 'hostpinnacle.co.ke',
+            ),
+            'south korea'          => array(
+                'directsend' => 'directsend.co.kr',
             ),
         );
 
@@ -1052,7 +1064,7 @@ class Gateway
      *
      *
      * @return array|void
-     * @example In the message body "Hello World|1234" It returns array('Hello World', '1234')
+     * @example In the message body "Hello World|1234" It returns array('template_id' => 1234, 'message' => 'Hello World')
      *
      */
     protected function getTemplateIdAndMessageBody()

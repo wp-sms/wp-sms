@@ -35,8 +35,8 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         $this->tb_prefix = $wpdb->prefix;
         $this->count     = $this->get_total();
         $this->limit     = $this->get_items_per_page('wp_sms_group_per_page');;
-        $this->data      = $this->get_data();
-        $this->adminUrl  = admin_url('admin.php?page=wp-sms-subscribers-group');
+        $this->data     = $this->get_data();
+        $this->adminUrl = admin_url('admin.php?page=wp-sms-subscribers-group');
     }
 
     function column_default($item, $column_name)
@@ -49,7 +49,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
             case 'total_subscribers':
                 $total = Newsletter::getTotal($item['ID']);
                 if ($total) {
-                    return $total;
+                    return sprintf('<a href="%s">%s</a>', admin_url('admin.php?page=wp-sms-subscribers&group_id=' . $item['ID']), $total);
                 } else {
                     return '0';
                 }

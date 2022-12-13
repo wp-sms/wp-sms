@@ -156,7 +156,7 @@ class Subscribers_List_Table extends \WP_List_Table
         $current_action = $this->current_action();
         //Detect when a bulk action is being triggered...
         // Search action
-        if (isset($_GET['s'])) {
+        if (isset($_GET['s']) and $_GET['s']) {
             $prepare     = $this->db->prepare("SELECT * from `{$this->tb_prefix}sms_subscribes` WHERE name LIKE %s OR mobile LIKE %s", '%' . $this->db->esc_like($_GET['s']) . '%', '%' . $this->db->esc_like($_GET['s']) . '%');
             $this->data  = $this->get_data($prepare);
             $this->count = $this->get_total($prepare);
@@ -302,13 +302,19 @@ class Subscribers_List_Table extends \WP_List_Table
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
         $orderby     = "";
+        $where       = "";
 
         if (isset($_REQUEST['orderby'])) {
             $orderby .= "ORDER BY {$this->tb_prefix}sms_subscribes.{$_REQUEST['orderby']} {$_REQUEST['order']}";
         }
 
         if (!$query) {
-            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
+            if (isset($_GET['group_id']) && $_GET['group_id']) {
+                $group_id = sanitize_text_field($_GET['group_id']);
+                $where    = "WHERE group_ID = {$group_id}";
+            }
+
+            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$where} {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
         } else {
             $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
         }
@@ -324,10 +330,26 @@ class Subscribers_List_Table extends \WP_List_Table
         if (!$query) {
             $query = 'SELECT * FROM `' . $this->tb_prefix . 'sms_subscribes`';
         }
+
         $result = $this->db->get_results($query, ARRAY_A);
         $result = count($result);
 
         return $result;
     }
 
+    /**
+     * @param $which
+     * @return void
+     */
+    protected function extra_tablenav($which)
+    {
+        switch ($which) {
+            case 'top':
+                echo Helper::loadTemplate('admin/group-filter.php', array(
+                    'groups'   => Newsletter::getGroups(),
+                    'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
+                ));
+                break;
+        }
+    }
 }

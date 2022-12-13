@@ -95,7 +95,7 @@ class hostiran extends \WP_SMS\Gateway
             $response = $this->request('POST', "{$this->wsdl_link}/SendSMS", [], $arguments);
 
             if ($response->StrRetStatus !== 'Ok') {
-                throw new Exception($response);
+                throw new Exception($response->StrRetStatus);
             }
 
             //log the result
@@ -140,7 +140,7 @@ class hostiran extends \WP_SMS\Gateway
             $response = $this->request('POST', "{$this->wsdl_link}/GetCredit", [], $arguments);
 
             if ($response->StrRetStatus !== 'Ok') {
-                throw new Exception($response);
+                throw new Exception($response->StrRetStatus);
             }
 
             return $response;

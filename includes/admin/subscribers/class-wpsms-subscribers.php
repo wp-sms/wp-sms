@@ -56,6 +56,8 @@ class Subscribers
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
-        include_once WP_SMS_DIR . "includes/admin/subscribers/subscribers.php";
+        echo \WP_SMS\Helper::loadTemplate('admin/subscribers.php', [
+            'list_table' => $list_table,
+        ]);
     }
 }
