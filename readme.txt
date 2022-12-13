@@ -227,7 +227,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v5.9 - 12.12.2022 =
+= v5.9 - 13.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
 * New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
 * New: Support filter by subscribers in Admin → SMS → Subscribers
