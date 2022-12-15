@@ -60,12 +60,6 @@ class Outbox_List_Table extends \WP_List_Table
 						</details>';
 
                 return $html;
-            case 'status':
-                if ($item[$column_name] == 'success') {
-                    return '<span class="wp_sms_status_success">' . __('Success', 'wp-sms') . '</span>';
-                } else {
-                    return '<span class="wp_sms_status_fail">' . __('Fail', 'wp-sms') . '</span>';
-                }
             default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
@@ -78,6 +72,18 @@ class Outbox_List_Table extends \WP_List_Table
     public function column_media($item)
     {
         return wp_sms_render_media_list($item['media']);
+    }
+
+    /**
+     * @param $item
+     * @return false|string|null
+     */
+    public function column_status($item)
+    {
+        return Helper::loadTemplate('admin/label-button.php', array(
+            'type'  => ($item['status'] == 'success' ? 'active' : 'inactive'),
+            'label' => ($item['status'] == 'success' ? __('Success', 'wp-sms') : __('Failed', 'wp-sms'))
+        ));
     }
 
     function column_sender($item)
