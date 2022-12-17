@@ -42,7 +42,7 @@ class Outbox_List_Table extends \WP_List_Table
     {
         switch ($column_name) {
             case 'date':
-                return sprintf(__('%s <span class="wpsms-time">Time: %s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i:s', strtotime($item[$column_name])));
+                return sprintf(__('%s <span class="wpsms-time">%s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i:s', strtotime($item[$column_name])));
 
             case 'message':
                 return $item[$column_name];

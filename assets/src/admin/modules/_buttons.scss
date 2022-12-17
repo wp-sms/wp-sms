@@ -181,6 +181,11 @@
   background: #ecedf8;
   border: 1px solid #d5d7e9;
 
+  span {
+    margin-top: 1px;
+    display: inline-block;
+  }
+
   &.active {
     background: #e1f6ed;
     border-color: rgba(87, 192, 145, .24);
