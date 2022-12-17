@@ -232,7 +232,7 @@ class Helper
          * 1. Check whether international mode is on and the number is NOT started with +
          */
         if ($international_mode and !$country_code) {
-            return new \WP_Error('invalid_number', __("The mobile number doesn't contain the country code. ", 'wp-sms'));
+            return new \WP_Error('invalid_number', __("The mobile number doesn't contain the country code.", 'wp-sms'));
         }
 
         /**
@@ -311,5 +311,23 @@ class Helper
         if (!session_id()) {
             session_start(array('read_and_close' => $readAndClose));
         }
+    }
+
+    /**
+     * This function adds mobile country code to the mobile number if the mobile country code option is enabled.
+     *
+     * @param $mobileNumber
+     * @return mixed|string
+     */
+    public static function prepareMobileNumber($mobileNumber)
+    {
+        $international_mode = Option::getOption('international_mobile') ? true : false;
+        $country_code       = substr($mobileNumber, 0, 1) == '+' ? true : false;
+
+        if ($international_mode and !$country_code) {
+            $mobileNumber = '+' . $mobileNumber;
+        }
+
+        return $mobileNumber;
     }
 }
