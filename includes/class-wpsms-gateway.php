@@ -876,8 +876,10 @@ class Gateway
                 // Update credit
                 update_option('wpsms_gateway_credit', 0);
 
-                // Return html
-                return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Deactive!', 'wp-sms') . '</div>';
+                return Helper::loadTemplate('admin/label-button.php', array(
+                    'type'  => 'inactive',
+                    'label' => __('Deactivate', 'wp-sms')
+                ));
             }
             // Update credit
             if (!is_object($result)) {
@@ -886,7 +888,10 @@ class Gateway
             self::$get_response = var_export($result, true);
 
             // Return html
-            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Active!', 'wp-sms') . '</div>';
+            return Helper::loadTemplate('admin/label-button.php', array(
+                'type'  => 'active',
+                'label' => __('Activated', 'wp-sms')
+            ));
         }
     }
 
@@ -933,10 +938,16 @@ class Gateway
         $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-settings&tab=addon_two_way') : WP_SMS_SITE . '/product/wp-sms-two-way';
 
         if ($sms->supportIncoming === true) {
-            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span><a href=" ' . $link . ' "> ' . __('Supported', 'wp-sms') . '</a></div>';
+            return Helper::loadTemplate('admin/label-button.php', array(
+                'type'  => 'active',
+                'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, __('Supported', 'wp-sms'))
+            ));
         }
 
-        return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span><a href="' . $link . '">' . __('Does not support!', 'wp-sms') . '</a></div>';
+        return Helper::loadTemplate('admin/label-button.php', array(
+            'type'  => 'inactive',
+            'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, __('Not Supported', 'wp-sms'))
+        ));
     }
 
     /**
@@ -949,10 +960,16 @@ class Gateway
         // Get bulk status
         if ($sms->bulk_send == true) {
             // Return html
-            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
+            return Helper::loadTemplate('admin/label-button.php', array(
+                'type'  => 'active',
+                'label' => __('Supported', 'wp-sms')
+            ));
         } else {
             // Return html
-            return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms') . '</div>';
+            return Helper::loadTemplate('admin/label-button.php', array(
+                'type'  => 'inactive',
+                'label' => __('Not Supported', 'wp-sms')
+            ));
         }
     }
 
@@ -963,10 +980,16 @@ class Gateway
         // Get bulk status
         if ($sms->supportMedia == true) {
             // Return html
-            return '<div class="wpsms-has-credit"><span class="dashicons dashicons-yes"></span> ' . __('Supported', 'wp-sms') . '</div>';
+            return Helper::loadTemplate('admin/label-button.php', array(
+                'type'  => 'active',
+                'label' => __('Supported', 'wp-sms')
+            ));
         } else {
             // Return html
-            return '<div class="wpsms-no-credit"><span class="dashicons dashicons-no"></span> ' . __('Does not support!', 'wp-sms') . '</div>';
+            return Helper::loadTemplate('admin/label-button.php', array(
+                'type'  => 'inactive',
+                'label' => __('Not Supported', 'wp-sms')
+            ));
         }
     }
 

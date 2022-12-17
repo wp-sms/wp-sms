@@ -2063,7 +2063,7 @@ class Settings
 
     public function html_callback($args)
     {
-        echo wp_kses_post($args['options']);
+        echo wp_kses_normalize_entities($args['options']);
     }
 
     public function notice_callback($args)

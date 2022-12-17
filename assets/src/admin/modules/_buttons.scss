@@ -184,6 +184,10 @@
   span {
     margin-top: 1px;
     display: inline-block;
+
+    a {
+      text-decoration: none;
+    }
   }
 
   &.active {
