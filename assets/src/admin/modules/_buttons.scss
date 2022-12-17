@@ -166,7 +166,6 @@
 
 
 .wpsms-indicator__status {
-  color: #276a52;
   font-size: .687rem;
   font-weight: 600;
   line-height: 1;
@@ -187,6 +186,7 @@
 
     a {
       text-decoration: none;
+      color: inherit;
     }
   }
 
