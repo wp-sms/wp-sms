@@ -321,9 +321,13 @@ class Subscribers_List_Table extends \WP_List_Table
 
             if (isset($_GET['country_code']) && $_GET['country_code']) {
                 $country_code = sanitize_text_field($_GET['country_code']);
-                $where        = "WHERE mobile LIKE '{$country_code}%'";
-            }
 
+                if ($where) {
+                    $where .= " AND mobile LIKE '{$country_code}%'";
+                } else {
+                    $where = "WHERE mobile LIKE '{$country_code}%'";
+                }
+            }
             $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$where} {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
         } else {
             $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
