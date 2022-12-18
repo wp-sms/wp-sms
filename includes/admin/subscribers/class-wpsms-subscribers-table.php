@@ -319,6 +319,11 @@ class Subscribers_List_Table extends \WP_List_Table
                 $where    = "WHERE group_ID = {$group_id}";
             }
 
+            if (isset($_GET['country_code']) && $_GET['country_code']) {
+                $country_code = sanitize_text_field($_GET['country_code']);
+                $where        = "WHERE mobile LIKE '{$country_code}%'";
+            }
+
             $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$where} {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
         } else {
             $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
@@ -349,14 +354,19 @@ class Subscribers_List_Table extends \WP_List_Table
     {
         switch ($which) {
             case 'top':
+
+                // Filter by Group
                 echo Helper::loadTemplate('admin/group-filter.php', array(
                     'groups'   => Newsletter::getGroups(),
                     'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
                 ));
+
+                // Filter by Country
                 echo Helper::loadTemplate('admin/country-filter.php', array(
-                    'groups'   => Newsletter::getGroups(),
-                    'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
+                    'countries' => Newsletter::filter_subscribers_by_country(),
+                    'selected'  => (isset($_GET['country_code']) ? $_GET['country_code'] : '')
                 ));
+
                 break;
         }
     }
