@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 5.9
+Stable tag: 5.9.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -233,6 +233,17 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v5.9.1 - 18.12.2022 =
+* New: Filter subscribers by country
+* New: Add helper prepareMobileNumber
+* Improvement: Labels and buttons style
+* Improvement: Requests responses are now more clear
+* Improvement: Outbox page style
+* Bugfix: The Alchemymarketing SMS gateway issue
+* Bugfix: Webhooks notices issue
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.9 - 13.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
 * New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
@@ -250,8 +261,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Bugfix: The Sms.to SMS gateway issue
 * Bugfix: The Africa stalking SMS gateway issue
 * Bugfix: Send SMS to multiple Groups is now available again
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.5 - 23.11.2022 =
 * Bugfix: The import system has been debugged.
