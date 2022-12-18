@@ -353,6 +353,10 @@ class Subscribers_List_Table extends \WP_List_Table
                     'groups'   => Newsletter::getGroups(),
                     'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
                 ));
+                echo Helper::loadTemplate('admin/country-filter.php', array(
+                    'groups'   => Newsletter::getGroups(),
+                    'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
+                ));
                 break;
         }
     }
