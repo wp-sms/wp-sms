@@ -560,11 +560,9 @@ class Newsletter
     /**
      * Filter subscribers by country code
      *
-     * @param array $numbers
      * @return void
-     *
      */
-    public static function filter_subscribers_by_country()
+    public static function filterSubscribersByCountry()
     {
         global $wpdb;
 
@@ -572,7 +570,7 @@ class Newsletter
         $country_codes = wp_sms_get_countries();
 
         foreach ($country_codes as $country_code => $country_name) {
-            $query       = $wpdb->prepare("SELECT COUNT(mobile) AS 'total' FROM {$wpdb->prefix}sms_subscribes WHERE mobile LIKE '$country_code%'");
+            $query       = "SELECT COUNT(mobile) AS 'total' FROM {$wpdb->prefix}sms_subscribes WHERE mobile LIKE '$country_code%'";
             $temp_result = $wpdb->get_results($query);
 
             if ($temp_result[0]->total != '0') {
