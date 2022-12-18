@@ -509,8 +509,8 @@ function wp_sms_render_quick_reply($number, $group_id = false)
     add_thickbox();
     wp_enqueue_script('wpsms-quick-reply');
 
-    $numbers = explode(',', $number);
-    $result  = '';
+    $numbers          = explode(',', $number);
+    $result           = '';
     $quick_reply_icon = plugins_url('wp-sms/assets/images/quick-reply-icon.svg');
 
     if (count($numbers) > 1) {

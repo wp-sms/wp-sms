@@ -59,9 +59,6 @@ class Subscribers_List_Table extends \WP_List_Table
             case 'date':
                 return sprintf(__('%s <span class="wpsms-time">%s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i', strtotime($item[$column_name])));
 
-            case 'status':
-                return ($item[$column_name] == '1' ? '<span class="dashicons dashicons-yes wpsms-color-green"></span>' : '<span class="dashicons dashicons-no-alt wpsms-color-red"></span>');
-
             default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
@@ -89,6 +86,14 @@ class Subscribers_List_Table extends \WP_List_Table
             /*$2%s*/
             $this->row_actions($actions)
         );
+    }
+
+    public function column_status($item)
+    {
+        return Helper::loadTemplate('admin/label-button.php', array(
+            'type'  => ($item['status'] == '1' ? 'active' : 'inactive'),
+            'label' => ($item['status'] == '1' ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms'))
+        ));
     }
 
     public function column_cb($item)
@@ -314,6 +319,15 @@ class Subscribers_List_Table extends \WP_List_Table
                 $where    = "WHERE group_ID = {$group_id}";
             }
 
+            if (isset($_GET['country_code']) && $_GET['country_code']) {
+                $country_code = sanitize_text_field($_GET['country_code']);
+
+                if ($where) {
+                    $where .= " AND mobile LIKE '{$country_code}%'";
+                } else {
+                    $where = "WHERE mobile LIKE '{$country_code}%'";
+                }
+            }
             $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$where} {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
         } else {
             $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
@@ -332,9 +346,8 @@ class Subscribers_List_Table extends \WP_List_Table
         }
 
         $result = $this->db->get_results($query, ARRAY_A);
-        $result = count($result);
 
-        return $result;
+        return count($result);
     }
 
     /**
@@ -345,10 +358,19 @@ class Subscribers_List_Table extends \WP_List_Table
     {
         switch ($which) {
             case 'top':
+
+                // Filter by Group
                 echo Helper::loadTemplate('admin/group-filter.php', array(
                     'groups'   => Newsletter::getGroups(),
                     'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
                 ));
+
+                // Filter by Country
+                echo Helper::loadTemplate('admin/country-filter.php', array(
+                    'countries' => Newsletter::filterSubscribersByCountry(),
+                    'selected'  => (isset($_GET['country_code']) ? $_GET['country_code'] : '')
+                ));
+
                 break;
         }
     }

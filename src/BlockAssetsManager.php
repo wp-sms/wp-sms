@@ -16,17 +16,18 @@ class BlockAssetsManager
 
     public function registerBlocks()
     {
-		if (!function_exists('register_block_type')) {
-			error_log(__('WP SMS: The "register_block_type" function is not supported in this version of WordPress.', 'wp-sms'));
-			return;
-		}
+        if (!function_exists('register_block_type')) {
+            error_log(__('WP SMS: The "register_block_type" function is not supported in this version of WordPress.', 'wp-sms'));
+            return;
+        }
+
         foreach ($this->blocks as $item) {
             if (class_exists($item)) {
                 $block = new $item();
                 $block->registerBlockType();
             } else {
                 add_action('admin_notices', function () use ($item) {
-                    echo '<div class="notice notice-error"><p>' . sprintf(__('WP SMS Widget encountered an error, class <b>%s</b> could not be loaded.', 'wp-sms'), $item) . '</p></div>';
+                    echo '<div class="notice notice-error"><p>' . sprintf(__('WP SMS: Widget encountered an error, class <b>%s</b> could not be loaded.', 'wp-sms'), $item) . '</p></div>';
                 });
             }
         }
@@ -38,14 +39,9 @@ class BlockAssetsManager
      */
     public function registerPluginBlockCategory($categories)
     {
-        return array_merge(
-            $categories,
-            [
-                [
-                    'slug'  => 'wp-sms-blocks',
-                    'title' => __('WP SMS', 'wp-sms'),
-                ],
-            ]
-        );
+        return array_merge($categories, [[
+            'slug'  => 'wp-sms-blocks',
+            'title' => __('WP SMS', 'wp-sms'),
+        ]]);
     }
 }

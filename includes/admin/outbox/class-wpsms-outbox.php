@@ -42,7 +42,7 @@ class Outbox_List_Table extends \WP_List_Table
     {
         switch ($column_name) {
             case 'date':
-                return sprintf(__('%s <span class="wpsms-time">Time: %s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i:s', strtotime($item[$column_name])));
+                return sprintf(__('%s <span class="wpsms-time">%s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i:s', strtotime($item[$column_name])));
 
             case 'message':
                 return $item[$column_name];
@@ -53,19 +53,6 @@ class Outbox_List_Table extends \WP_List_Table
 						</details>';
 
                 return $html;
-            case 'response':
-                $html = '<details>
-						  <summary>' . __('View more...', 'wp-sms') . '</summary>
-						  <p>' . $item[$column_name] . '</p>
-						</details>';
-
-                return $html;
-            case 'status':
-                if ($item[$column_name] == 'success') {
-                    return '<span class="wp_sms_status_success">' . __('Success', 'wp-sms') . '</span>';
-                } else {
-                    return '<span class="wp_sms_status_fail">' . __('Fail', 'wp-sms') . '</span>';
-                }
             default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
@@ -78,6 +65,20 @@ class Outbox_List_Table extends \WP_List_Table
     public function column_media($item)
     {
         return wp_sms_render_media_list($item['media']);
+    }
+
+    /**
+     * @param $item
+     * @return false|string|null
+     */
+    public function column_status($item)
+    {
+        $status = Helper::loadTemplate('admin/label-button.php', array(
+            'type'  => ($item['status'] == 'success' ? 'active' : 'inactive'),
+            'label' => ($item['status'] == 'success' ? __('Success', 'wp-sms') : __('Failed', 'wp-sms'))
+        ));
+
+        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, __('View response', 'wp-sms'), $item['status']);
     }
 
     function column_sender($item)
@@ -124,7 +125,6 @@ class Outbox_List_Table extends \WP_List_Table
             'date'      => __('Date', 'wp-sms'),
             'message'   => __('Message', 'wp-sms'),
             'recipient' => __('Recipient', 'wp-sms'),
-            'response'  => __('Response', 'wp-sms'),
             'media'     => __('Media', 'wp-sms'),
             'status'    => __('Status', 'wp-sms'),
         );

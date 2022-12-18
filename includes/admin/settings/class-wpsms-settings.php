@@ -1980,14 +1980,16 @@ class Settings
         $updateOption       = false;
 
         if (($constantLicenseKey && $this->isCurrentTab('licenses') && wp_sms_check_remote_license($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
-            $item = array('icon' => 'yes', 'text' => 'Active!', 'color' => '#1eb514');
+            $status = __('Activated', 'wp-sms');
+            $type   = 'active';
 
             if ($constantLicenseKey) {
                 $this->options["license_{$addOnKey}_status"] = true;
                 $updateOption                                = true;
             }
         } else {
-            $item                                        = array('icon' => 'no', 'text' => 'Inactive!', 'color' => '#ff0000');
+            $status                                      = __('Deactivated', 'wp-sms');
+            $type                                        = 'inactive';
             $this->options["license_{$addOnKey}_status"] = false;
             $updateOption                                = true;
         }
@@ -1996,7 +1998,10 @@ class Settings
             update_option($this->setting_name, $this->options);
         }
 
-        return '<span style="color: ' . $item['color'] . '">&nbsp;&nbsp;<span class="dashicons dashicons-' . $item['icon'] . '" style="vertical-align: -4px;"></span>' . __($item['text'], 'wp-sms') . '</span>';
+        return Helper::loadTemplate('admin/label-button.php', array(
+            'type'  => $type,
+            'label' => $status
+        ));
     }
 
     /*
@@ -2063,7 +2068,7 @@ class Settings
 
     public function html_callback($args)
     {
-        echo wp_kses_post($args['options']);
+        echo wp_kses_normalize_entities($args['options']);
     }
 
     public function notice_callback($args)

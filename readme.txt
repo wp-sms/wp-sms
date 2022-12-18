@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 5.9
+Stable tag: 5.9.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,11 +22,26 @@ https://www.youtube.com/watch?v=7r6jObgdQj0
 
 Main plugin's features
 
-* Sending SMS/MMS to either your users’ numbers or specific numbers
+* Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
 * Getting your users’ mobile numbers when they subscribe to your newsletters
 * Sending SMS automatically to users and admins in different situations
+* Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
+* Subscribing/Opt-In SMS newsletters and groups
+* Unsubscribing/Opt-Out SMS through widget or URL
 * Increasing the security by two-step verification
 * Logging in with your mobile number in case that you forget your password
+* Sending Notification SMS to administrators
+ * To inform new releases of WordPress
+ * When a new user is registered
+ * When new comments are posted
+ * When users are logged into the WordPress
+ * When users are registered to subscribe in forms
+* Integration with Contact Form 7
+* Integration with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
+* Supporting Widget/Gutenberg for showing SMS Newsletter Form
+* Supporting Webhooks
+* Supporting WP REST API
+* Importing/Exporting Subscribers.
 * And many more!
 
 This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
@@ -41,23 +56,14 @@ The list of supported gateways and integrated plugins are available in FAQ.
 
 = Pro Version Features =
 * Supporting more than 250 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
-* Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
-* Subscribing/Opt-In SMS newsletters and groups
-* Unsubscribing/Opt-Out SMS through widget or URL
-* Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
 * Sending Notification SMS to administrators
  * To inform new releases of WordPress
  * When a new user is registered
  * When new comments are posted
  * When users are logged into the WordPress
  * When users are registered to subscribe in forms
-* Integration with Contact Form 7, WooCommerce, Easy Digital Downloads. Integration with other plugins is also possible in WP SMS Pro version.
-* Supporting Widget/Gutenberg for showing SMS Newsletter Form
-* Supporting Webhooks
-* Supporting WP REST API
-* Importing/Exporting Subscribers.
+* Integration with WooCommerce, Easy Digital Downloads. Integration with other plugins
 * Compatible with Bitly.com for shortening URLs in SMS
-* Compatible with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
@@ -227,6 +233,17 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v5.9.1 - 18.12.2022 =
+* New: Filter subscribers by country
+* New: Add helper prepareMobileNumber
+* Improvement: Labels and buttons style
+* Improvement: Requests responses are now more clear
+* Improvement: Outbox page style
+* Bugfix: The Alchemymarketing SMS gateway issue
+* Bugfix: Webhooks notices issue
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.9 - 13.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
 * New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
@@ -244,8 +261,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Bugfix: The Sms.to SMS gateway issue
 * Bugfix: The Africa stalking SMS gateway issue
 * Bugfix: Send SMS to multiple Groups is now available again
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.8.5 - 23.11.2022 =
 * Bugfix: The import system has been debugged.
