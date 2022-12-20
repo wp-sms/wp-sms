@@ -12,9 +12,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 == Description ==
-This plugin adds the ability to send SMS to your WordPress through more than 200 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+This plugin adds the ability to send SMS to your WordPress through more than 250 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
-Additionally, you can send SMS/MMS message notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
+With this plugin, you can also send SMS/MMS notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
 Watch the video to learn more about the WordPress SMS Plugin!
 
@@ -23,13 +23,13 @@ https://www.youtube.com/watch?v=7r6jObgdQj0
 Main plugin's features
 
 * Sending SMS/MMS to the mobile number(s), your subscribers and WordPress users
-* Getting your users’ mobile numbers when they subscribe to your newsletters
-* Sending SMS automatically to users and admins in different situations
-* Sending Activation Codes to subscribers when a new post is published and also when subscribers are completing their subscription process
-* Subscribing/Opt-In SMS newsletters and groups
-* Unsubscribing/Opt-Out SMS through widget or URL
-* Increasing the security by two-step verification
-* Logging in with your mobile number in case that you forget your password
+* Collecting mobile numbers from subscribers during the newsletter sign-up process
+* Automatically sending SMS messages to users and administrators in various situations
+* Sending activation codes to subscribers when a new post is published or when they complete the subscription process
+* Allowing users to opt-in to SMS newsletters and groups
+* Providing an option for users to unsubscribe or opt-out of SMS messages through a widget or URL
+* Enhancing security with two-step verification
+* Enabling users to log in using their mobile number in case they forget their password
 * Sending Notification SMS to administrators
  * To inform new releases of WordPress
  * When a new user is registered
@@ -38,32 +38,36 @@ Main plugin's features
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7
 * Integration with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
-* Supporting Widget/Gutenberg for showing SMS Newsletter Form
+* Providing a widget/Gutenberg block for displaying an SMS newsletter form
 * Supporting Webhooks
 * Supporting WP REST API
-* Importing/Exporting Subscribers.
-* And many more!
+* Meeting GDPR compliance requirements
+* Importing and exporting subscribers
+* And much more!
 
 This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
 
-Don’t worry, we have tried to cover the best and the most well-known gateways for the plugin. Also, the Pro version is available too.
+Rest assured, we have made an effort to include the most popular and reliable gateways in the plugin. In addition, a Pro version is also available for purchase.
 
 = PRO PACKAGE =
-In the Pro pack, most of the integrations with other plugins and some popular gateways are in the pro pack. User registration verification, WooCommerce Mobile Verification, order notifications, etc.
+The Pro package includes a range of integrations with other plugins and several well-known gateways. It also includes features such as user registration verification, WooCommerce mobile verification, and order notifications.
 
 The list of supported gateways and integrated plugins are available in FAQ.
 [Buy Pro Package](http://wp-sms-pro.com/buy/)
 
 = Pro Version Features =
-* Supporting more than 250 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+* Supporting about 300 SMS gateways! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+* Scheduled SMS/MMS sending
+* The ability to set up repeating SMS/MMS messages
+* URL shortening through Bitly
 * Sending Notification SMS to administrators
  * To inform new releases of WordPress
  * When a new user is registered
  * When new comments are posted
  * When users are logged into the WordPress
  * When users are registered to subscribe in forms
-* Integration with WooCommerce, Easy Digital Downloads. Integration with other plugins
-* Compatible with Bitly.com for shortening URLs in SMS
+* Integration with WooCommerce and Easy Digital Downloads, as well as compatibility with other plugins
+* Compatibility with Bitly.com for shortening URLs in SMS messages.
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
