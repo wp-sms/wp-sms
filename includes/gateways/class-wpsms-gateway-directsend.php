@@ -109,8 +109,8 @@ class directsend extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "{$this->wsdl_link}", [], $arguments);
 
-            if (isset($response->status) && $response->status != '0') {
-                throw new Exception($response);
+            if (isset($response->status) && !in_array($response->status, [0, 1])) {
+                throw new Exception($response->message);
             }
 
             //log the result
