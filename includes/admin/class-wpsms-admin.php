@@ -292,7 +292,7 @@ class Admin
             'restRootUrl'     => esc_url_raw(rest_url()),
             'nonce'           => wp_create_nonce('wp_rest'),
             'messageMsg'      => __('characters', 'wp-sms'),
-            'currentDateTime' => current_datetime()->format("Y-m-d H:i:00"),
+            'currentDateTime' => WP_SMS_CURRENT_DATE,
             'proIsActive'     => \WP_SMS\Version::pro_is_active(),
         ));
     }
