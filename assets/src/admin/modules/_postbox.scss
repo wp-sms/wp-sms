@@ -33,6 +33,10 @@
   padding: 12px 24px 12px 8px !important;
 }
 
+.wpsms-wrap summary {
+    user-select: none;
+}
+
 .rtl .wpsms-wrap select {
   padding: 12px 8px 12px 24px !important;
 }
