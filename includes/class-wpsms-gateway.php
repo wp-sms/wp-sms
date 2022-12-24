@@ -543,8 +543,7 @@ class Gateway
     {
         $numbers = array();
         foreach ($recipients as $recipient) {
-            $numbers[] = str_replace(' ', '', $recipient);
-            $numbers[] = str_replace('-', '', $recipient);
+            $numbers[] = str_replace(array(' ', '-', ','), '', $recipient);
         }
 
         return $numbers;

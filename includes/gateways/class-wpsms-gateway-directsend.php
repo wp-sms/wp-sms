@@ -84,7 +84,7 @@ class directsend extends \WP_SMS\Gateway
 
             $recipients = array_map(function ($recipient) {
                 return array(
-                    'mobile' => $recipient
+                    'mobile' => $this->clean_number($recipient)
                 );
             }, $this->to);
 
@@ -147,6 +147,21 @@ class directsend extends \WP_SMS\Gateway
             $error_message = $e->getMessage();
             return new \WP_Error('account-credit', $error_message);
         }
+    }
+
+    /**
+     * remove the country code
+     *
+     * @param string $number
+     *
+     * @return string
+     */
+    public function clean_number($number)
+    {
+        $number = str_replace('+82', '', $number);
+        $number = trim($number);
+
+        return $number;
     }
 
 }
