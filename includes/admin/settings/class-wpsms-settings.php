@@ -1533,7 +1533,7 @@ class Settings
                 ),
                 'clean_numbers'             => array(
                     'id'      => 'clean_numbers',
-                    'name'    => __('Clean Numbers', 'wp-sms'),
+                    'name'    => __('Clean The Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
