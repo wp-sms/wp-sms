@@ -364,7 +364,7 @@ class Notifications
      */
     function notify_author_for_published_post($new_status, $old_status, $post)
     {
-        if ('publish' === $new_status) {
+        if ('publish' === $new_status && 'publish' !== $old_status) {
             $post_types_option = $this->extractPostTypeFromOption('notif_publish_new_post_author_post_type');
 
             // Check selected post types or not?
