@@ -82,11 +82,15 @@ class directsend extends \WP_SMS\Gateway
 
         try {
 
+            $numbers = array_map(function ($number) {
+                return $this->clean_number($number);
+            }, $this->to);
+
             $recipients = array_map(function ($recipient) {
                 return array(
-                    'mobile' => $this->clean_number($recipient)
+                    'mobile' => $recipient
                 );
-            }, $this->to);
+            }, $numbers);
 
             $from_explode = explode('|', $this->from);
 
@@ -114,7 +118,7 @@ class directsend extends \WP_SMS\Gateway
             }
 
             //log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $numbers, $response);
 
             /**
              * Run hook after send sms.
@@ -128,7 +132,7 @@ class directsend extends \WP_SMS\Gateway
             return $response;
 
         } catch (\Exception $e) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            $this->log($this->from, $this->msg, $numbers, $e->getMessage(), 'error');
 
             return new \WP_Error('send-sms', $e->getMessage());
         }
