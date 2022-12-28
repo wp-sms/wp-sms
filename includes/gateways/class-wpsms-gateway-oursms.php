@@ -2,19 +2,47 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
+use WP_Error;
+
 class oursms extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://www.oursms.net/api/";
+    private $wsdl_link = "https://api.oursms.com/api-a";
     public $tariff = "https://www.oursms.net/";
     public $unitrial = false;
     public $unit;
-    public $flash = "enable";
+    public $flash = "disable";
     public $isflash = false;
 
     public function __construct()
     {
         parent::__construct();
+        $this->bulk_send      = true;
+        $this->has_key        = true;
         $this->validateNumber = "Separate numbers between them with comma ( , ) Numbers must be entered in international format 966500000000 and international messages without 00 or +";
+        $this->help           = "";
+        $this->gatewayFields  = [
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'Username',
+                'desc' => 'Enter your username.',
+            ],
+            'password' => [
+                'id'   => 'gateway_password',
+                'name' => 'Password',
+                'desc' => 'Enter your password.',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Enter your Sender ID. Default: oursms',
+            ],
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => 'API Key',
+                'desc' => 'Enter API key of gateway. You can avail it from your control panel.',
+            ]
+        ];
     }
 
     public function SendSMS()
@@ -50,73 +78,74 @@ class oursms extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $arguments = array(
+                'body' => array(
+                    'username' => $this->username,
+                    'token'    => $this->has_key,
+                    'src'      => $this->from ?: 'oursms',
+                    'dests'    => implode(',', $this->to),
+                    'body'     => $this->msg
+                )
+            );
 
-            return $credit;
-        }
+            // Get Send SMS Response
+            $response = $this->request('POST', "{$this->wsdl_link}/msgs", [], $arguments);
 
-        $to = implode(',', $this->to);
+            // Error Handler
+            if (isset($response['errorCode'])) {
+                throw new Exception($response['message']);
+            }
 
-        $msg = urlencode($this->msg);
-
-        // Get response
-        $response = wp_remote_get($this->wsdl_link . 'sendsms.php?username=' . $this->username . '&password=' . $this->password . '&message=' . $msg . '&numbers=' . $to . '&sender=' . $this->from . '&unicode=e&Rmduplicated=1&return=json');
-
-        // Decode response
-        $response = json_decode($response['body']);
-
-        if ($response->Code == 100) {
-            // Log the result
+            //log the result
             $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
              *
-             * @param string $result result output.
-             *
+             * @param string $response result output.
              * @since 2.4
              *
              */
             do_action('wp_sms_send', $response);
 
-            return true;
-        } else {
-            // Log th result
-            $this->log($this->from, $this->msg, $this->to, $response->MessageIs, 'error');
+            return $response;
 
-            return new \WP_Error('send-sms', $response->MessageIs);
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
 
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
-        }
+        try {
 
-        // Get response
-        $response = wp_remote_get($this->wsdl_link . 'getbalance.php?username=' . $this->username . '&password=' . $this->password . '&return=json');
+            // Check username and password
+            if (!$this->username && !$this->password) {
+                return new WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+            }
 
-        if (is_wp_error($response)) {
-            return $response;
-        }
+            $params = array(
+                'username' => $this->username,
+                'password' => $this->password
+            );
 
-        // Decode response
-        $response = json_decode($response['body']);
+            // Get Credit Response
+            $response = $this->request('GET', "{$this->wsdl_link}/billing/credits", $params, []);
 
-        if ($response->Code == 117) {
-            // Return blance
-            return $response->currentuserpoints;
-        } else {
-            return new \WP_Error('account-credit', $response->MessageIs);
+            if (isset($response['errorCode'])) {
+                throw new Exception($response['message']);
+            }
+
+            return $response->credits;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
         }
     }
 }
