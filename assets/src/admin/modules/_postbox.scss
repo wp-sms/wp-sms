@@ -34,7 +34,7 @@
 }
 
 .wpsms-wrap summary {
-    user-select: none;
+  user-select: none;
 }
 
 .rtl .wpsms-wrap select {
@@ -56,6 +56,25 @@
   margin: 10px 0 24px;
   display: flex;
   align-items: flex-start;
+  position: relative;
+
+  &.wpsms-newsletter__notice {
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    form {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+
+      .field-group {
+        justify-content: flex-end;
+        margin-right: 44px;
+        margin-left: 44px;
+      }
+    }
+  }
 }
 
 .wpsms-wrap .notice::before {
@@ -157,7 +176,7 @@
   padding: 45px;
 }
 
-#screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner, #screen-meta-links + input[type="hidden"] + .wpsms-wrap .wpsms-header-banner{
+#screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner, #screen-meta-links + input[type="hidden"] + .wpsms-wrap .wpsms-header-banner {
   -webkit-transform: translateY(-31px);
   transform: translateY(-31px);
   position: relative;
@@ -313,7 +332,8 @@
 }
 
 .wpsms-wrap .notice .notice-dismiss {
-  margin-top: 5px;
+  margin: 9px;
+  text-decoration: none;
 }
 
 .wpsms-wrap .notice .notice-dismiss::before {
@@ -350,13 +370,13 @@
 }
 
 td.response.column-response p {
-    white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 
 .thickbox-description {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-    text-align: justify;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  text-align: justify;
 }
 
 .wp-sms-popup-messages {
