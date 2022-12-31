@@ -20,7 +20,7 @@ class AddOns
 
     public function prepareAddOnsFromApi()
     {
-        $response = wp_remote_get(WP_SMS_SITE . '/wp-json/wc/store/products?category=204');
+        $response = wp_remote_get(WP_SMS_SITE . '/wp-json/wc/store/products?category=204', ['timeout' => 15]);
 
         // Check response
         if (is_wp_error($response)) {
