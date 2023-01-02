@@ -187,10 +187,11 @@ class Outbox_List_Table extends \WP_List_Table
         // Resend sms
         if ('resend' == $this->current_action()) {
             global $sms;
+
             $error     = null;
             $get_id    = sanitize_text_field($_GET['ID']);
             $result    = $this->db->get_row($this->db->prepare("SELECT * from `{$this->tb_prefix}sms_send` WHERE ID =%d", intval($get_id)));
-            $sms->to   = array($result->recipient);
+            $sms->to   = explode(',', $result->recipient);
             $sms->msg  = $result->message;
             $sms->from = $result->sender;
             $error     = $sms->SendSMS();
