@@ -152,7 +152,7 @@ class Notifications
      * @param WP_Post $post The post object.
      * @param bool $update Whether this is an update to an existing post.
      *
-     * @return null
+     * @return void
      */
     public function notify_subscribers_for_published_post($postID, $post, $update)
     {
