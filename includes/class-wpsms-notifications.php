@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_Post;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -144,82 +146,126 @@ class Notifications
     }
 
     /**
-     * Send SMS when a new post add
+     * Send SMS notification to subscribers when a new post is published or scheduled.
      *
-     * @param $postID
-     * @param \WP_Post $post Post object.
-     * @param $update
+     * @param int $postID The ID of the post.
+     * @param WP_Post $post The post object.
+     * @param bool $update Whether this is an update to an existing post.
      *
      * @return null
-     * @internal param $post_id
      */
     public function notify_subscribers_for_published_post($postID, $post, $update)
     {
-        if ($post->post_status === 'publish') {
-            // post types selection
+        // Check if the post is being published or scheduled
+        if ($post->post_status === 'publish' || $post->post_status === 'future') {
+
+            // Validate the post type and break the process there is no match for the selected post types
             $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
 
             if (!in_array($post->post_type, $specified_post_types)) {
                 return;
             }
 
-            $isForce             = isset($this->options['notif_publish_new_post_force']) && $this->options['notif_publish_new_post_force'];
-            $defaultGroup        = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : '';
-            $defaultReceiver     = isset($this->options['notif_publish_new_post_receiver']) ? $this->options['notif_publish_new_post_receiver'] : '';
-            $defaultPostTemplate = isset($this->options['notif_publish_new_post_template']) ? $this->options['notif_publish_new_post_template'] : '';
-            $selected_roles      = isset($this->options['notif_publish_new_post_users']) ? $this->options['notif_publish_new_post_users'] : false;
+            // Save notification data in post meta if in the admin area and a post ID exists
+            if (is_admin() && $postID) {
 
-            if (count($_POST) == 0 && $update == 1 && $postID) {
+                if (isset($_REQUEST['wps_send_to'])) {
+                    add_post_meta($postID, 'wp_sms_receiver', $_REQUEST['wps_send_to']);
+                } else {
+                    // Break the process if there is no recipient for the SMS
+                    return;
+                }
+
+                if (isset($this->options['notif_publish_new_post_force'])) {
+                    add_post_meta($postID, 'wp_sms_force_sms', true);
+                }
+
+                if (isset($_REQUEST['wps_subscribe_group'])) {
+                    add_post_meta($postID, 'wp_sms_groups', sanitize_text_field($_REQUEST['wps_subscribe_group']));
+                }
+
+                if (isset($_REQUEST['wps_mobile_numbers'])) {
+                    add_post_meta($postID, 'wp_sms_numbers', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
+                }
+
+                if (isset($_REQUEST['wpsms_roles'])) {
+                    add_post_meta($postID, 'wp_sms_roles', sanitize_text_field($_REQUEST['wpsms_roles']));
+                }
+
+                if (isset($_REQUEST['wpsms_text_template'])) {
+                    add_post_meta($postID, 'wp_sms_message_body', sanitize_text_field($_REQUEST['wpsms_text_template']));
+                }
+
+            }
+
+            // Return if the post is scheduled to be published in the future
+            if ($post->post_status === 'future') {
                 return;
             }
 
-            if (is_admin() && isset($_POST['post_ID'])) {
-                $defaultReceiver     = isset($_REQUEST['wps_send_to']) ? $_REQUEST['wps_send_to'] : '';
-                $isForce             = !($defaultReceiver == '0');
-                $defaultGroup        = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : '';
-                $defaultPostTemplate = isset($_REQUEST['wpsms_text_template']) ? sanitize_text_field($_REQUEST['wpsms_text_template']) : '';
-            }
+            // Retrieve data from post meta
+            $recipients        = get_post_meta($postID, 'wp_sms_receiver')[0];
+            $force_send        = get_post_meta($postID, 'wp_sms_force_sms')[0];
+            $subscriber_groups = get_post_meta($postID, 'wp_sms_groups')[0];
+            $numbers           = get_post_meta($postID, 'wp_sms_numbers')[0];
+            $user_roles        = get_post_meta($postID, 'wp_sms_roles')[0];
+            $message_body      = get_post_meta($postID, 'wp_sms_message_body')[0];
 
-            if ($isForce) {
-                if ($defaultReceiver == 'subscriber') {
-                    if ($defaultGroup == 'all') {
+            // Retrieve recipient mobile numbers
+            // $recipients can be 'subscriber', 'numbers', or 'users'
+            switch ($recipients) {
+
+                // If $subscriber_groups is 'all', get mobile numbers for all subscribers
+                // Otherwise, get mobile numbers for subscribers in the specified group
+                case 'subscriber':
+                    if ($subscriber_groups == 'all') {
                         $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
                     } else {
-                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$defaultGroup'");
+                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$subscriber_groups'");
                     }
-                } elseif ($defaultReceiver == 'numbers') {
-                    $this->sms->to = explode(',', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
-                } elseif ($defaultReceiver == 'users') {
-                    $recipients    = Helper::getUsersMobileNumbers($selected_roles);
+                    break;
+
+                // Get mobile numbers from the comma-separated string in $numbers
+                case 'numbers':
+                    $this->sms->to = explode(',', $numbers);
+                    break;
+
+                // Get mobile numbers for users with the specified roles
+                case 'users':
+                    $recipients    = Helper::getUsersMobileNumbers($user_roles);
                     $this->sms->to = $recipients;
-                }
-
-                $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
-                $words_limit                        = ($notif_publish_new_post_words_count == NULL) ? 10 : $notif_publish_new_post_words_count;
-                $template_vars                      = array(
-                    '%post_title%'     => get_the_title($post->ID),
-                    '%post_content%'   => wp_trim_words($post->post_content, $words_limit),
-                    '%post_url%'       => wp_sms_shorturl(wp_get_shortlink($post->ID)),
-                    '%post_date%'      => get_post_time('Y-m-d H:i:s', false, $post->ID, true),
-                    '%post_thumbnail%' => get_the_post_thumbnail_url($post->ID),
-                );
-
-                $message = \WP_SMS\Helper::getOutputMessageVariables($template_vars, $defaultPostTemplate, array(
-                    'method'  => 'notify_subscribers_for_published_post',
-                    'post_id' => $postID,
-                    'post'    => $post,
-                ));
-
-                /**
-                 * Pass the thumbnail to media to send as MMS
-                 */
-                if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
-                    $this->sms->media = [get_the_post_thumbnail_url($post->ID)];
-                }
-
-                $this->sms->msg = $message;
-                $this->sms->SendSMS();
+                    break;
             }
+
+            // Get the words count limitation for the message body
+            // If not specified, default to 10 words
+            $notif_publish_new_post_words_count = isset($this->options['notif_publish_new_post_words_count']) ? intval($this->options['notif_publish_new_post_words_count']) : false;
+            $words_limit                        = ($notif_publish_new_post_words_count == NULL) ? 10 : $notif_publish_new_post_words_count;
+
+            // Pre-defined variables to use in the message template
+            $template_vars = array(
+                '%post_title%'     => get_the_title($post->ID),
+                '%post_content%'   => wp_trim_words($post->post_content, $words_limit),
+                '%post_url%'       => wp_sms_shorturl(wp_get_shortlink($post->ID)),
+                '%post_date%'      => get_post_time('Y-m-d H:i:s', false, $post->ID, true),
+                '%post_thumbnail%' => get_the_post_thumbnail_url($post->ID),
+            );
+
+            // Get the message template and replace placeholders with the corresponding values
+            $message = \WP_SMS\Helper::getOutputMessageVariables($template_vars, $message_body, array(
+                'method'  => 'notify_subscribers_for_published_post',
+                'post_id' => $postID,
+                'post'    => $post,
+            ));
+
+            // If the "notif_publish_new_send_mms" option is set and enabled, send the message as an MMS with the post
+            if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
+                $this->sms->media = [get_the_post_thumbnail_url($post->ID)];
+            }
+
+            // Send SMS request
+            $this->sms->msg = $message;
+            $this->sms->SendSMS();
         }
     }
 
@@ -228,7 +274,8 @@ class Notifications
      *
      * @param $user_id
      */
-    public function new_user($user_id)
+    public
+    function new_user($user_id)
     {
         $user          = get_userdata($user_id);
         $template_vars = array(
@@ -276,7 +323,8 @@ class Notifications
      * @param $comment_id
      * @param $comment_object
      */
-    public function new_comment($comment_id, $comment_object)
+    public
+    function new_comment($comment_id, $comment_object)
     {
 
         if ($comment_object->comment_type == 'order_note') {
@@ -308,7 +356,8 @@ class Notifications
      * @param $username_login
      * @param \WP_User $username
      */
-    public function login_user($username_login, $username)
+    public
+    function login_user($username_login, $username)
     {
         if (Option::getOption('admin_mobile_number')) {
             $this->sms->to = array($this->options['admin_mobile_number']);
@@ -337,7 +386,8 @@ class Notifications
      * @param $ID
      * @param $post
      */
-    public function new_post_published($ID, \WP_Post $post)
+    public
+    function new_post_published($ID, \WP_Post $post)
     {
         $message       = '';
         $template_vars = array(
