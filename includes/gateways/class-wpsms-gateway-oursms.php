@@ -7,11 +7,11 @@ use WP_Error;
 
 class oursms extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.oursms.com/api-a";
-    public $tariff = "https://www.oursms.net/";
+    private $wsdl_link = "https://api.oursms.com";
+    public $tariff = "https://www.oursms.net";
     public $unitrial = false;
     public $unit;
-    public $flash = "disable";
+    public $flash = "false";
     public $isflash = false;
 
     public function __construct()
@@ -20,27 +20,12 @@ class oursms extends \WP_SMS\Gateway
         $this->bulk_send      = true;
         $this->has_key        = true;
         $this->validateNumber = "Separate numbers between them with comma ( , ) Numbers must be entered in international format 966500000000 and international messages without 00 or +";
-        $this->help           = "";
+        $this->help           = "To get API token, <a href='https://www.youtube.com/watch?v=UfZlQ4wq3JA' target='_blank'>watch This video</a>";
         $this->gatewayFields  = [
-            'username' => [
-                'id'   => 'gateway_username',
-                'name' => 'Username',
-                'desc' => 'Enter your username.',
-            ],
-            'password' => [
-                'id'   => 'gateway_password',
-                'name' => 'Password',
-                'desc' => 'Enter your password.',
-            ],
-            'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender ID',
-                'desc' => 'Enter your Sender ID. Default: oursms',
-            ],
-            'has_key'  => [
+            'has_key' => [
                 'id'   => 'gateway_key',
-                'name' => 'API Key',
-                'desc' => 'Enter API key of gateway. You can avail it from your control panel.',
+                'name' => 'API Token',
+                'desc' => 'Enter API token of gateway. You can avail it from your control panel.',
             ]
         ];
     }
@@ -81,21 +66,23 @@ class oursms extends \WP_SMS\Gateway
         try {
 
             $arguments = array(
-                'body' => array(
-                    'username' => $this->username,
-                    'token'    => $this->has_key,
-                    'src'      => $this->from ?: 'oursms',
-                    'dests'    => implode(',', $this->to),
-                    'body'     => $this->msg
-                )
+                'headers' => [
+                    'Authorization' => "Bearer {$this->has_key}",
+                    'Content-Type'  => 'application/json'
+                ],
+                'body'    => json_encode([
+                    'src'   => 'OurSms',
+                    'dests' => $this->to,
+                    'body'  => $this->msg,
+                ])
             );
 
             // Get Send SMS Response
-            $response = $this->request('POST', "{$this->wsdl_link}/msgs", [], $arguments);
+            $response = $this->request('POST', "{$this->wsdl_link}/msgs/sms", [], $arguments);
 
             // Error Handler
-            if (isset($response['errorCode'])) {
-                throw new Exception($response['message']);
+            if (isset($response->errorCode)) {
+                throw new Exception($response->message);
             }
 
             //log the result
@@ -126,20 +113,21 @@ class oursms extends \WP_SMS\Gateway
         try {
 
             // Check username and password
-            if (!$this->username && !$this->password) {
-                return new WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+            if (!$this->has_key) {
+                return new WP_Error('account-credit', __('API Token is required.', 'wp-sms'));
             }
 
             $params = array(
-                'username' => $this->username,
-                'password' => $this->password
+                'headers' => [
+                    'Authorization' => "Bearer {$this->has_key}"
+                ]
             );
 
             // Get Credit Response
-            $response = $this->request('GET', "{$this->wsdl_link}/billing/credits", $params, []);
+            $response = $this->request('GET', "{$this->wsdl_link}/billing/credits", [], $params);
 
-            if (isset($response['errorCode'])) {
-                throw new Exception($response['message']);
+            if (isset($response->errorCode)) {
+                throw new Exception($response->message);
             }
 
             return $response->credits;
