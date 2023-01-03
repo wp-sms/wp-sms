@@ -170,7 +170,7 @@ class Notifications
             if (is_admin() && $postID) {
 
                 if (isset($_REQUEST['wps_send_to'])) {
-                    add_post_meta($postID, 'wp_sms_receiver', $_REQUEST['wps_send_to']);
+                    add_post_meta($postID, 'wp_sms_receiver', sanitize_text_field($_REQUEST['wps_send_to']));
                 } else {
                     // Break the process if there is no recipient for the SMS
                     return;
@@ -204,12 +204,12 @@ class Notifications
             }
 
             // Retrieve data from post meta
-            $recipients        = get_post_meta($postID, 'wp_sms_receiver')[0];
-            $force_send        = get_post_meta($postID, 'wp_sms_force_sms')[0];
-            $subscriber_groups = get_post_meta($postID, 'wp_sms_groups')[0];
-            $numbers           = get_post_meta($postID, 'wp_sms_numbers')[0];
-            $user_roles        = get_post_meta($postID, 'wp_sms_roles')[0];
-            $message_body      = get_post_meta($postID, 'wp_sms_message_body')[0];
+            $recipients        = get_post_meta($postID, 'wp_sms_receiver', true);
+            $force_send        = get_post_meta($postID, 'wp_sms_force_sms', true);
+            $subscriber_groups = get_post_meta($postID, 'wp_sms_groups', true);
+            $numbers           = get_post_meta($postID, 'wp_sms_numbers', true);
+            $user_roles        = get_post_meta($postID, 'wp_sms_roles', true);
+            $message_body      = get_post_meta($postID, 'wp_sms_message_body', true);
 
             // Retrieve recipient mobile numbers
             // $recipients can be 'subscriber', 'numbers', or 'users'
@@ -219,9 +219,9 @@ class Notifications
                 // Otherwise, get mobile numbers for subscribers in the specified group
                 case 'subscriber':
                     if ($subscriber_groups == 'all') {
-                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes");
+                        $this->sms->to = Newsletter::getSubscribers();
                     } else {
-                        $this->sms->to = $this->db->get_col("SELECT mobile FROM {$this->tb_prefix}sms_subscribes WHERE group_ID = '$subscriber_groups'");
+                        $this->sms->to = Newsletter::getSubscribers(array($subscriber_groups));
                     }
                     break;
 

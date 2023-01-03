@@ -464,13 +464,13 @@ class Newsletter
     }
 
     /**
-     * @param bool $group_ids
+     * @param bool|array $group_ids
      * @param bool $only_active
      * @param array $columns
      *
      * @return array
      */
-    public static function getSubscribers($group_ids = false, $only_active = false, $columns = array())
+    public static function getSubscribers($group_ids = null, $only_active = false, $columns = array())
     {
         global $wpdb;
         $where = '';
