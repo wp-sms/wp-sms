@@ -121,7 +121,8 @@ class Gateway
             'dianahost' => 'dianahost.com',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
-            'greenweb'  => 'greenweb.com.bd'
+            'greenweb'  => 'greenweb.com.bd',
+            'smsdone'   => 'smsd.one'
         ),
         'palestine'      => array(
             'htd' => 'htd.ps',
