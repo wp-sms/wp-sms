@@ -12,7 +12,6 @@ if (!class_exists('WP_List_Table')) {
 
 class Subscribers_List_Table extends \WP_List_Table
 {
-
     protected $db;
     protected $tb_prefix;
     protected $limit;
@@ -96,6 +95,15 @@ class Subscribers_List_Table extends \WP_List_Table
         ));
     }
 
+    public function column_custom_fields($item)
+    {
+        $customFields = unserialize($item['custom_fields']);
+
+        foreach ($customFields as $key => $value) {
+            printf('<div class="wpsms-custom-field"><strong>%s</strong>: %s</div>', $key, $value);
+        }
+    }
+
     public function column_cb($item)
     {
         return sprintf(
@@ -110,12 +118,13 @@ class Subscribers_List_Table extends \WP_List_Table
     public function get_columns()
     {
         $columns = array(
-            'cb'       => '<input type="checkbox" />', //Render a checkbox instead of text
-            'name'     => __('Name', 'wp-sms'),
-            'mobile'   => __('Mobile', 'wp-sms'),
-            'group_ID' => __('Group', 'wp-sms'),
-            'date'     => __('Date', 'wp-sms'),
-            'status'   => __('Status', 'wp-sms'),
+            'cb'            => '<input type="checkbox" />', //Render a checkbox instead of text
+            'name'          => __('Name', 'wp-sms'),
+            'mobile'        => __('Mobile', 'wp-sms'),
+            'group_ID'      => __('Group', 'wp-sms'),
+            'date'          => __('Date', 'wp-sms'),
+            'status'        => __('Status', 'wp-sms'),
+            'custom_fields' => __('Custom Fields/Data', 'wp-sms'),
         );
 
         if (Option::getOption('newsletter_form_verify')) {
@@ -128,12 +137,13 @@ class Subscribers_List_Table extends \WP_List_Table
     public function get_sortable_columns()
     {
         $sortable_columns = array(
-            'ID'       => array('ID', true),     //true means it's already sorted
-            'name'     => array('name', false),     //true means it's already sorted
-            'mobile'   => array('mobile', false),     //true means it's already sorted
-            'group_ID' => array('group_ID', false),     //true means it's already sorted
-            'date'     => array('date', false),   //true means it's already sorted
-            'status'   => array('status', false), //true means it's already sorted
+            'ID'            => array('ID', true),     //true means it's already sorted
+            'name'          => array('name', false),     //true means it's already sorted
+            'mobile'        => array('mobile', false),     //true means it's already sorted
+            'group_ID'      => array('group_ID', false),     //true means it's already sorted
+            'date'          => array('date', false),   //true means it's already sorted
+            'status'        => array('status', false), //true means it's already sorted
+            'custom_fields' => array('custom_fields', false), //true means it's already sorted
         );
 
         if (Option::getOption('newsletter_form_verify')) {
