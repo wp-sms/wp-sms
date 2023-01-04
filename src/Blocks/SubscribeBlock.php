@@ -22,7 +22,6 @@ class SubscribeBlock extends BlockAbstract
         $specified_groups_ids_for_widget      = wp_sms_get_option('newsletter_form_specified_groups');
         $get_group_result                     = Newsletter::getGroups($specified_groups_ids_for_widget);
 
-
         return Helper::loadTemplate(
             'subscribe-form.php',
             [

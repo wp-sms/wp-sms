@@ -175,6 +175,13 @@ class Install
                 $wpdb->query("ALTER TABLE {$subscribersGroupTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
+            /**
+             * Add custom_fields column in send subscribes table
+             */
+            if (!$wpdb->get_var("SHOW COLUMNS FROM `{$subscribersTable}` like 'custom_fields'")) {
+                $wpdb->query("ALTER TABLE `{$subscribersTable}` ADD `custom_fields` TEXT NULL AFTER `activate_key`");
+            }
+
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }
 
@@ -187,7 +194,7 @@ class Install
     }
 
     /**
-     * Creating Table for New Blog in wordpress
+     * Creating Table for New Blog in WordPress
      *
      * @param $blog_id
      */
