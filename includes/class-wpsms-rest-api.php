@@ -71,11 +71,11 @@ class RestApi
      *
      * @param $name
      * @param $mobile
-     * @param null $group
-     *
+     * @param bool $group
+     * @param array $customFields
      * @return array|string
      */
-    public static function subscribe($name, $mobile, $group = false)
+    public static function subscribe($name, $mobile, $group = false, $customFields = array())
     {
         global $sms;
 
@@ -104,7 +104,7 @@ class RestApi
             $key = rand(1000, 9999);
 
             // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '0', $key);
+            $result = Newsletter::addSubscriber($name, $mobile, $group, '0', $key, $customFields);
 
             if ($result['result'] == 'error') {
                 // Return response
@@ -122,7 +122,7 @@ class RestApi
         } else {
 
             // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '1');
+            $result = Newsletter::addSubscriber($name, $mobile, $group, '1', null, $customFields);
 
             if ($result['result'] == 'error') {
                 // Return response
@@ -175,7 +175,7 @@ class RestApi
                 return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
             }
         }
-        
+
         // Delete subscriber
         $result = Newsletter::deleteSubscriberByNumber($mobile, $group);
 

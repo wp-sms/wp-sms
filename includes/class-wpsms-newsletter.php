@@ -87,10 +87,11 @@ class Newsletter
      * @param string $group_id
      * @param string $status
      * @param null $key
+     * @param array $custom_fields
      *
      * @return array
      */
-    public static function addSubscriber($name, $mobile, $group_id = '', $status = '1', $key = null)
+    public static function addSubscriber($name, $mobile, $group_id = '', $status = '1', $key = null, $custom_fields = array())
     {
         global $wpdb;
 
@@ -104,12 +105,13 @@ class Newsletter
         $result = $wpdb->insert(
             $wpdb->prefix . "sms_subscribes",
             array(
-                'date'         => WP_SMS_CURRENT_DATE,
-                'name'         => $name,
-                'mobile'       => $mobile,
-                'status'       => $status,
-                'activate_key' => $key,
-                'group_ID'     => $group_id,
+                'date'          => WP_SMS_CURRENT_DATE,
+                'name'          => $name,
+                'mobile'        => $mobile,
+                'status'        => $status,
+                'activate_key'  => $key,
+                'custom_fields' => $custom_fields,
+                'group_ID'      => $group_id,
             )
         );
 

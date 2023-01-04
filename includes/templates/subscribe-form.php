@@ -35,12 +35,12 @@
             <?php } ?>
 
             <?php if (isset($attributes['fields'])) : ?>
-            <?php foreach ($attributes['fields'] as $key => $field) : ?>
-                <div class="wpsms-subscribe__form__field">
-                    <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html($field['label']); ?>:</label>
-                    <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
-                </div>
-            <?php endforeach; ?>
+                <?php foreach ($attributes['fields'] as $key => $field) : ?>
+                    <div class="wpsms-subscribe__form__field">
+                        <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html($field['label']); ?>:</label>
+                        <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
+                    </div>
+                <?php endforeach; ?>
             <?php endif; ?>
 
             <div class="wpsms-subscribe__form__field wpsms-subscribe__form__field--radio">
