@@ -123,13 +123,10 @@ class Subscribers_List_Table extends \WP_List_Table
             'mobile'        => __('Mobile', 'wp-sms'),
             'group_ID'      => __('Group', 'wp-sms'),
             'date'          => __('Date', 'wp-sms'),
+            'activate_key'  => __('Activate code', 'wp-sms'),
             'status'        => __('Status', 'wp-sms'),
-            'custom_fields' => __('Custom Fields/Data', 'wp-sms'),
+            'custom_fields' => __('Custom Fields', 'wp-sms'),
         );
-
-        if (Option::getOption('newsletter_form_verify')) {
-            $columns['activate_key'] = __('Activate code', 'wp-sms');
-        }
 
         return $columns;
     }
