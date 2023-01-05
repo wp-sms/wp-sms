@@ -1465,7 +1465,7 @@ class Settings
                 // Gateway status
                 'gateway_status_title'      => array(
                     'id'   => 'gateway_status_title',
-                    'name' => __('Gateway Status', 'wp-sms'),
+                    'name' => __('Gateway Overview', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit'            => array(
@@ -1476,25 +1476,25 @@ class Settings
                 ),
                 'account_response'          => array(
                     'id'      => 'account_response',
-                    'name'    => __('Balance', 'wp-sms'),
+                    'name'    => __('Balance / Credit', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
                 'incoming_message'          => array(
                     'id'      => 'incoming_message',
-                    'name'    => __('Support Incoming Message?'),
+                    'name'    => __('Incoming Message'),
                     'type'    => 'html',
                     'options' => Gateway::incoming_message_status(),
                 ),
                 'bulk_send'                 => array(
                     'id'      => 'bulk_send',
-                    'name'    => __('Send bulk SMS?', 'wp-sms'),
+                    'name'    => __('Send Bulk SMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::bulk_status(),
                 ),
                 'media_support'             => array(
                     'id'      => 'media_support',
-                    'name'    => __('Send MMS?', 'wp-sms'),
+                    'name'    => __('Send MMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::mms_status(),
                 ),
