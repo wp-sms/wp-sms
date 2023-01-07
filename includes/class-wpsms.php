@@ -65,6 +65,11 @@ class WP_SMS
      */
     public function load_textdomain()
     {
+        $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
+
+        unload_textdomain( 'wp-sms' );
+        load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
+
         load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
