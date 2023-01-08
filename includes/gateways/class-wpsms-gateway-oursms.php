@@ -13,6 +13,7 @@ class oursms extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
+    public $from = 'OurSms';
 
     public function __construct()
     {
@@ -70,7 +71,7 @@ class oursms extends \WP_SMS\Gateway
                     'Content-Type'  => 'application/json'
                 ],
                 'body'    => json_encode([
-                    'src'   => 'OurSms',
+                    'src'   => $this->from,
                     'dests' => $this->to,
                     'body'  => $this->msg,
                 ])
@@ -85,7 +86,7 @@ class oursms extends \WP_SMS\Gateway
             }
 
             // Log the result
-            $this->log('OurSms', $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
