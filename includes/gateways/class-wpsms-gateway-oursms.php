@@ -13,6 +13,7 @@ class oursms extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
+    public $from = 'OurSms';
 
     public function __construct()
     {
@@ -32,11 +33,10 @@ class oursms extends \WP_SMS\Gateway
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
-         * @param string $this ->from sender number.
+         * @param string $this- >from sender number.
          *
          * @since 3.4
          *
@@ -46,7 +46,7 @@ class oursms extends \WP_SMS\Gateway
         /**
          * Modify Receiver number
          *
-         * @param array $this ->to receiver number
+         * @param array $this- >to receiver number
          *
          * @since 3.4
          *
@@ -56,7 +56,7 @@ class oursms extends \WP_SMS\Gateway
         /**
          * Modify text message
          *
-         * @param string $this ->msg text message.
+         * @param string $this- >msg text message.
          *
          * @since 3.4
          *
@@ -71,7 +71,7 @@ class oursms extends \WP_SMS\Gateway
                     'Content-Type'  => 'application/json'
                 ],
                 'body'    => json_encode([
-                    'src'   => 'OurSms',
+                    'src'   => $this->from,
                     'dests' => $this->to,
                     'body'  => $this->msg,
                 ])
@@ -85,13 +85,14 @@ class oursms extends \WP_SMS\Gateway
                 throw new Exception($response->message);
             }
 
-            //log the result
+            // Log the result
             $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
              *
              * @param string $response result output.
+             *
              * @since 2.4
              *
              */
