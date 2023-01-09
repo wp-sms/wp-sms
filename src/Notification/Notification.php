@@ -8,9 +8,19 @@ class Notification
 
     public function send($message, $to)
     {
-        $message = $this->getOutputMessage($message);
+        $response = wp_sms_send($to, $this->getOutputMessage($message));
 
-        return wp_sms_send($to, $message);
+        /**
+         * If response is true, call success method
+         */
+        if (is_wp_error($response) && is_callable([$this, 'failed'])) {
+            $this->failed($to, $response);
+        } elseif (is_callable([$this, 'success'])) {
+            $this->success($to);
+        }
+
+        // Return response
+        return $response;
     }
 
     protected function getOutputMessage($message)

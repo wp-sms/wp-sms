@@ -650,14 +650,7 @@ class Settings
                     'id'   => 'wc_notify_product_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Product title: %s, Product url: %s, Product date: %s, Product price: %s', 'wp-sms'),
-                            '<code>%product_title%</code>',
-                            '<code>%product_url%</code>',
-                            '<code>%product_date%</code>',
-                            '<code>%product_price%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
                 'wc_notify_order'              => array(
                     'id'   => 'wc_notify_order',
@@ -703,21 +696,7 @@ class Settings
                     'id'   => 'wc_notify_customer_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Order ID: %s, Order number: %s, Order status: %s, Order Items: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer first name: %s, Customer last name: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
-                            '<code>%order_id%</code>',
-                            '<code>%order_number%</code>',
-                            '<code>%status%</code>',
-                            '<code>%order_items%</code>',
-                            '<code>%order_total%</code>',
-                            '<code>%order_total_currency%</code>',
-                            '<code>%order_total_currency_symbol%</code>',
-                            '<code>%billing_first_name%</code>',
-                            '<code>%billing_last_name%</code>',
-                            '<code>%order_view_url%</code>',
-                            '<code>%order_pay_url%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
                 'wc_notify_stock'              => array(
                     'id'   => 'wc_notify_stock',
@@ -768,17 +747,7 @@ class Settings
                     'id'   => 'wc_notify_status_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Order status: %s, Order number: %s, Customer first name: %s, Customer last name: %s, Order view URL: %s, Order payment URL: %s, Order Meta %s', 'wp-sms'),
-                            '<code>%status%</code>',
-                            '<code>%order_number%</code>',
-                            '<code>%customer_first_name%</code>',
-                            '<code>%customer_last_name%</code>',
-                            '<code>%order_view_url%</code>',
-                            '<code>%order_pay_url%</code>',
-                            '<code>%order_meta_{key-name}%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
                 'wc_notify_by_status'          => array(
                     'id'   => 'wc_notify_by_status',
@@ -2050,6 +2019,7 @@ class Settings
             'args'           => $args,
             'value'          => $value,
             'order_statuses' => wc_get_order_statuses(),
+            'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
         ));
     }
 

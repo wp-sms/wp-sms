@@ -15,14 +15,15 @@ class WooCommerceOrderNotification extends Notification
         '%billing_address%'             => 'getAddress',
         '%order_edit_url%'              => 'getEditOrderUrl',
         '%billing_phone%'               => 'getBillingPhone',
-        '%order_number%'                => 'getOrderNumber',
-        '%order_total%'                 => 'getOrderTotal',
-        '%order_total_currency%'        => 'getOrderCurrency',
-        '%order_total_currency_symbol%' => 'getOrderCurrencySymbol',
-        '%order_id%'                    => 'getOrderId',
-        '%order_items%'                 => 'getOrderItems',
-        '%status%'                      => 'getOrderStatus',
-        '%order_meta_{key-name}%'       => 'getOrderMeta',
+        '%order_number%'                => 'getNumber',
+        '%order_total%'                 => 'getTotal',
+        '%order_total_currency%'        => 'getCurrency',
+        '%order_total_currency_symbol%' => 'getCurrencySymbol',
+        '%order_pay_url%'               => 'getPayUrl',
+        '%order_id%'                    => 'getId',
+        '%order_items%'                 => 'getItems',
+        '%status%'                      => 'getStatus',
+        '%order_meta_{key-name}%'       => 'getMeta',
     ];
 
     public function __construct($orderId = false)
@@ -30,6 +31,20 @@ class WooCommerceOrderNotification extends Notification
         if ($orderId) {
             $this->order = wc_get_order($orderId);
         }
+    }
+
+    protected function success($to)
+    {
+        $this->order->add_order_note(
+            sprintf(__('Successfully send SMS notification to %s', 'wp-sms'), implode(',', $to))
+        );
+    }
+
+    protected function failed($to, $response)
+    {
+        $this->order->add_order_note(
+            sprintf(__('Failed to send SMS notification to %s. Error: %s', 'wp-sms'), implode(',', $to), $response->get_error_message())
+        );
     }
 
     public function getFirstName()
@@ -62,32 +77,37 @@ class WooCommerceOrderNotification extends Notification
         return $this->order->get_billing_phone();
     }
 
-    public function getOrderNumber()
+    public function getNumber()
     {
         return $this->order->get_order_number();
     }
 
-    public function getOrderTotal()
+    public function getTotal()
     {
         return $this->order->get_total();
     }
 
-    public function getOrderCurrency()
+    public function getCurrency()
     {
         return $this->order->get_currency();
     }
 
-    public function getOrderCurrencySymbol()
+    public function getCurrencySymbol()
     {
         return get_woocommerce_currency_symbol($this->order->get_currency());
     }
 
-    public function getOrderId()
+    public function getPayUrl()
+    {
+        return wp_sms_shorturl($this->order->get_checkout_payment_url());
+    }
+
+    public function getId()
     {
         return $this->order->get_id();
     }
 
-    public function getOrderItems()
+    public function getItems()
     {
         $preparedItems  = [];
         $currencySymbol = html_entity_decode(get_woocommerce_currency_symbol());
@@ -100,12 +120,12 @@ class WooCommerceOrderNotification extends Notification
         return implode('\n', $preparedItems);
     }
 
-    public function getOrderStatus()
+    public function getStatus()
     {
         return wc_get_order_status_name($this->order->get_status());
     }
 
-    public function getOrderMeta($metaKey)
+    public function getMeta($metaKey)
     {
         return $this->order->get_meta($metaKey);
     }
