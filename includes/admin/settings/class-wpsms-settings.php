@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Notification\NotificationFactory;
+
 if (!defined('ABSPATH')) {
     exit;
 } // No direct access allowed ;)
@@ -681,22 +683,7 @@ class Settings
                     'id'   => 'wc_notify_order_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Order edit URL: %s, Order Items: %s, Order status: %s', 'wp-sms'),
-                            '<code>%billing_first_name%</code>',
-                            '<code>%billing_company%</code>',
-                            '<code>%billing_address%</code>',
-                            '<code>%billing_phone%</code>',
-                            '<code>%order_id%</code>',
-                            '<code>%order_number%</code>',
-                            '<code>%order_total%</code>',
-                            '<code>%order_total_currency%</code>',
-                            '<code>%order_total_currency_symbol%</code>',
-                            '<code>%order_edit_url%</code>',
-                            '<code>%order_items%</code>',
-                            '<code>%status%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
                 'wc_notify_customer'           => array(
                     'id'   => 'wc_notify_customer',
@@ -718,7 +705,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order ID: %s, Order number: %s, Order status: %s, Order Items: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
+                            __('Order ID: %s, Order number: %s, Order status: %s, Order Items: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer first name: %s, Customer last name: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
                             '<code>%order_id%</code>',
                             '<code>%order_number%</code>',
                             '<code>%status%</code>',
@@ -783,7 +770,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            __('Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s, Order Meta %s', 'wp-sms'),
+                            __('Order status: %s, Order number: %s, Customer first name: %s, Customer last name: %s, Order view URL: %s, Order payment URL: %s, Order Meta %s', 'wp-sms'),
                             '<code>%status%</code>',
                             '<code>%order_number%</code>',
                             '<code>%customer_first_name%</code>',

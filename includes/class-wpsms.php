@@ -96,6 +96,14 @@ class WP_SMS
         $this->include('src/Helper.php');
         $this->include('src/Utils/CsvHelper.php');
 
+        // Notification classes
+        $this->include('src/Notification/Notification.php');
+        $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
+        $this->include('src/Notification/Handler/WooCommerceProductNotification.php');
+        $this->include('src/Notification/Handler/WordPressPostNotification.php');
+        $this->include('src/Notification/Handler/WordPresUserNotification.php');
+        $this->include('src/Notification/NotificationFactory.php');
+
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');
         $this->include('includes/class-wpsms-notifications.php');
