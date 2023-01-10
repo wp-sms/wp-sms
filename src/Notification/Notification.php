@@ -6,9 +6,9 @@ class Notification
 {
     protected $variables = [];
 
-    public function send($message, $to)
+    public function send($message, $to, $mediaUrls = [])
     {
-        $response = wp_sms_send($to, $this->getOutputMessage($message));
+        $response = wp_sms_send($to, $this->getOutputMessage($message), false, null, $mediaUrls);
 
         /**
          * If response is true, call success method

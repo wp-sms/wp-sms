@@ -101,7 +101,8 @@ class WP_SMS
         $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
         $this->include('src/Notification/Handler/WooCommerceProductNotification.php');
         $this->include('src/Notification/Handler/WordPressPostNotification.php');
-        $this->include('src/Notification/Handler/WordPresUserNotification.php');
+        $this->include('src/Notification/Handler/WordPressUserNotification.php');
+        $this->include('src/Notification/Handler/WordPressCommentNotification.php');
         $this->include('src/Notification/Handler/CustomNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
 

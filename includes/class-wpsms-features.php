@@ -63,12 +63,9 @@ class Features
                 return;
             }
 
-            echo Helper::loadTemplate(
-                'admin/user-profile-fields.php',
-                [
-                    'fields' => $fields,
-                ]
-            );
+            echo Helper::loadTemplate('admin/user-profile-fields.php', [
+                'fields' => $fields,
+            ]);
         };
 
         add_action('show_user_profile', $renderFields);
@@ -100,13 +97,13 @@ class Features
      */
     public function add_mobile_field_to_profile_form($fields)
     {
-        $mobileFieldName  = Helper::getUserMobileFieldName();
-        $currentValue     = wp_get_current_user()->get($mobileFieldName);
+        $mobileFieldName = Helper::getUserMobileFieldName();
+        $currentValue    = wp_get_current_user()->get($mobileFieldName);
 
         $fields['mobile'] = [
             'id'           => 'mobile',
             'title'        => __('Mobile', 'wp-sms'),
-            'content'      => '<input class="wp-sms-input-mobile" type="text" name="mobile" value="'.esc_attr($currentValue).'">',
+            'content'      => '<input class="wp-sms-input-mobile" type="text" name="mobile" value="' . esc_attr($currentValue) . '">',
             'saveCallback' => function ($userId) use ($mobileFieldName) {
                 if (isset($_POST['mobile'])) {
                     $value = Helper::sanitizeMobileNumber($_POST['mobile']);

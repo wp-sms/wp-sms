@@ -5,8 +5,9 @@ namespace WP_SMS\Notification;
 use WP_SMS\Notification\Handler\CustomNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
+use WP_SMS\Notification\Handler\WordPressCommentNotification;
 use WP_SMS\Notification\Handler\WordPressPostNotification;
-use WP_SMS\Notification\Handler\WordPresUserNotification;
+use WP_SMS\Notification\Handler\WordPressUserNotification;
 
 class NotificationFactory
 {
@@ -32,18 +33,27 @@ class NotificationFactory
      * @param $postId
      * @return WordPressPostNotification
      */
-    public static function getPost($postId)
+    public static function getPost($postId = false)
     {
         return new WordPressPostNotification($postId);
     }
 
     /**
-     * @param $commentId
-     * @return WordPresUserNotification
+     * @param $userId
+     * @return WordPressUserNotification
      */
-    public static function getUser($commentId)
+    public static function getUser($userId = false)
     {
-        return new WordPresUserNotification($commentId);
+        return new WordPressUserNotification($userId);
+    }
+
+    /**
+     * @param $commentId
+     * @return WordPressCommentNotification
+     */
+    public static function getComment($commentId = false)
+    {
+        return new WordPressCommentNotification($commentId);
     }
 
     /**

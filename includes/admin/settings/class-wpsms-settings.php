@@ -1680,15 +1680,7 @@ class Settings
                     'id'   => 'notif_publish_new_post_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s, Post featured image URL: %s', 'wp-sms'),
-                            '<code>%post_title%</code>',
-                            '<code>%post_content%</code>',
-                            '<code>%post_url%</code>',
-                            '<code>%post_date%</code>',
-                            '<code>%post_thumbnail%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 'notif_publish_new_post_words_count'      => array(
                     'id'   => 'notif_publish_new_post_words_count',
@@ -1720,14 +1712,7 @@ class Settings
                     'id'   => 'notif_publish_new_post_author_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s', 'wp-sms'),
-                            '<code>%post_title%</code>',
-                            '<code>%post_content%</code>',
-                            '<code>%post_url%</code>',
-                            '<code>%post_date%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 // Publish new wp version
                 'notif_publish_new_wpversion_title'       => array(
@@ -1759,25 +1744,13 @@ class Settings
                     'id'   => 'notif_register_new_user_admin_template',
                     'name' => __('Message body for admin', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('User login: %s, User email: %s, Register date: %s', 'wp-sms'),
-                            '<code>%user_login%</code>',
-                            '<code>%user_email%</code>',
-                            '<code>%date_register%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 'notif_register_new_user_template'        => array(
                     'id'   => 'notif_register_new_user_template',
                     'name' => __('Message body for user', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('User login: %s, User email: %s, Register date: %s', 'wp-sms'),
-                            '<code>%user_login%</code>',
-                            '<code>%user_email%</code>',
-                            '<code>%date_register%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 // New comment
                 'notif_new_comment_title'                 => array(
@@ -1796,17 +1769,7 @@ class Settings
                     'id'   => 'notif_new_comment_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Comment author: %s, Author email: %s, Author url: %s, Author IP: %s, Comment date: %s, Comment content: %s, Comment URL: %s', 'wp-sms'),
-                            '<code>%comment_author%</code>',
-                            '<code>%comment_author_email%</code>',
-                            '<code>%comment_author_url%</code>',
-                            '<code>%comment_author_IP%</code>',
-                            '<code>%comment_date%</code>',
-                            '<code>%comment_content%</code>',
-                            '<code>%comment_url%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
                 ),
                 // User login
                 'notif_user_login_title'                  => array(
@@ -1832,12 +1795,7 @@ class Settings
                     'id'   => 'notif_user_login_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Username: %s, Display name: %s', 'wp-sms'),
-                            '<code>%username_login%</code>',
-                            '<code>%display_name%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 )
             )),
 
