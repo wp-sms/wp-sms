@@ -9,5 +9,7 @@ class CustomNotification extends Notification
     public function registerVariables($variable)
     {
         $this->variables = $variable;
+
+        return $this;
     }
 }

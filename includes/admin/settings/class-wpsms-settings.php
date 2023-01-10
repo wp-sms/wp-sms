@@ -722,12 +722,7 @@ class Settings
                     'id'   => 'wc_notify_stock_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Product ID: %s, Product name: %s', 'wp-sms'),
-                            '<code>%product_id%</code>',
-                            '<code>%product_name%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getCustom()->registerVariables(['%product_id%' => '', '%product_name%' => ''])->printVariables()
                 ),
                 'wc_notify_status'             => array(
                     'id'   => 'wc_notify_status',
