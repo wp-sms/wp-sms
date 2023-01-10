@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Notification;
 
+use WP_SMS\Notification\Handler\CustomNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
 use WP_SMS\Notification\Handler\WordPressPostNotification;
@@ -43,5 +44,13 @@ class NotificationFactory
     public static function getUser($commentId)
     {
         return new WordPresUserNotification($commentId);
+    }
+
+    /**
+     * @return CustomNotification
+     */
+    public static function getCustom()
+    {
+        return new CustomNotification();
     }
 }

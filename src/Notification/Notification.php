@@ -40,8 +40,15 @@ class Notification
         foreach ($variables as $variable => $callBack) {
 
             // First replace regular variables
-            if (strpos($finalMessage, $variable) !== false && is_callable([$this, $callBack])) {
-                $finalMessage = str_replace($variable, $this->$callBack(), $finalMessage);
+            if (strpos($finalMessage, $variable) !== false) {
+
+                // Replace variable with callback
+                if (is_callable([$this, $callBack])) {
+                    $finalMessage = str_replace($variable, $this->$callBack(), $finalMessage);
+                } else {
+                    $finalMessage = str_replace($variable, $callBack, $finalMessage);
+                }
+
             }
 
             // Then replace meta variables
