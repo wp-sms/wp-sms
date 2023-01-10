@@ -3,6 +3,7 @@
 namespace WP_SMS\Notification;
 
 use WP_SMS\Notification\Handler\CustomNotification;
+use WP_SMS\Notification\Handler\SubscriberNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
 use WP_SMS\Notification\Handler\WordPressCommentNotification;
@@ -54,6 +55,15 @@ class NotificationFactory
     public static function getComment($commentId = false)
     {
         return new WordPressCommentNotification($commentId);
+    }
+
+    /**
+     * @param $subscriberId
+     * @return SubscriberNotification
+     */
+    public static function getSubscriber($subscriberId = false)
+    {
+        return new SubscriberNotification($subscriberId);
     }
 
     /**

@@ -121,11 +121,12 @@ class Newsletter
              *
              * @param string $name name.
              * @param string $mobile mobile.
+             * @param string $wpdb->insert_id Subscriber ID
              *
              * @since 3.0
              *
              */
-            do_action('wp_sms_add_subscriber', $name, $mobile);
+            do_action('wp_sms_add_subscriber', $name, $mobile, $wpdb->insert_id);
 
             return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'));
         } else {

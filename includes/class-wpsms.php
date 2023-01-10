@@ -67,7 +67,7 @@ class WP_SMS
     {
         $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
 
-        unload_textdomain( 'wp-sms' );
+        unload_textdomain('wp-sms');
         load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
 
         load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
@@ -103,6 +103,7 @@ class WP_SMS
         $this->include('src/Notification/Handler/WordPressPostNotification.php');
         $this->include('src/Notification/Handler/WordPressUserNotification.php');
         $this->include('src/Notification/Handler/WordPressCommentNotification.php');
+        $this->include('src/Notification/Handler/SubscriberNotification.php');
         $this->include('src/Notification/Handler/CustomNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
 
@@ -116,6 +117,11 @@ class WP_SMS
         $this->include('includes/class-wpsms-rest-api.php');
         $this->include('includes/class-wpsms-shortcode.php');
         $this->include('includes/admin/class-wpsms-version.php');
+
+        // Newsletter
+        $this->include('src/Subscriber/SubscriberManager.php');
+        $subscriberManager = new \WP_SMS\Subscriber\SubscriberManager();
+        $subscriberManager->init();
 
         // Blocks
         $this->include('src/BlockAbstract.php');

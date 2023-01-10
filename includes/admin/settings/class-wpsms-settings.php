@@ -1546,7 +1546,7 @@ class Settings
                     'id'   => 'newsletter_form_welcome_text',
                     'name' => __('SMS text', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => sprintf(__('Subscriber name: %s, Subscriber mobile: %s<br><br>if you would like to send unsubscribe link, check out the document.', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>'),
+                    'desc' => __('Enter the contents of the SMS message. if you would like to send unsubscribe link, check out the document.', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
                 ),
                 //Style Setting
                 'style'                            => array(
