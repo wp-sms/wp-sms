@@ -23,7 +23,7 @@ class Notification
         return $response;
     }
 
-    protected function getOutputMessage($message)
+    public function getOutputMessage($message)
     {
         /**
          * Filters the variables to replace in the message content
