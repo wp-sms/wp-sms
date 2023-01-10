@@ -65,10 +65,13 @@ class WP_SMS
      */
     public function load_textdomain()
     {
-        $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
+        // Compatibility with WordPress < 5.0
+        if (function_exists('determine_locale')) {
+            $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
 
-        unload_textdomain('wp-sms');
-        load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
+            unload_textdomain('wp-sms');
+            load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
+        }
 
         load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
@@ -195,5 +198,13 @@ class WP_SMS
     public function newsletter()
     {
         return new \WP_SMS\Newsletter();
+    }
+
+    /**
+     * @return \WP_SMS\Notification\NotificationFactory
+     */
+    public function notification()
+    {
+        return new \WP_SMS\Notification\NotificationFactory();
     }
 }
