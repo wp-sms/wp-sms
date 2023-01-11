@@ -86,11 +86,15 @@ function wp_sms_get_license_key($addOnKey)
  */
 function wp_sms_check_remote_license($addOnKey, $licenseKey)
 {
-    $response = wp_remote_get(add_query_arg(array(
+    $buildUrl = add_query_arg(array(
         'plugin-name' => $addOnKey,
         'license_key' => $licenseKey,
-        'website'     => get_bloginfo('url'),
-    ), WP_SMS_SITE . '/wp-json/plugins/v1/validate'));
+        'website'     => get_bloginfo('url')
+    ), WP_SMS_SITE . '/wp-json/plugins/v1/validate');
+
+    $response = wp_remote_get($buildUrl, [
+        'timeout' => 10
+    ]);
 
     if (is_wp_error($response)) {
         return;
