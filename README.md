@@ -53,15 +53,50 @@ Translations are done by people just like you, help make WP SMS available to mor
 
 
 # Installation
-1. Upload `wp-sms` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. To display Subscribe goto Themes -> Widgets, and adding `SMS newsletter form` into your sidebar
-4. Using this functions for send manual SMS:
+This is a development (pre-build) version which mean the assets are not built, and you need to build them yourself. for downloading the latest stable version, please visit the [WordPress Plugin Directory](https://wordpress.org/plugins/wp-sms/).
 
-* First:`$to = array('Mobile Number');`
-* `$msg = "Your Message";`
-* `$isflash = true; // Only if wants to send flash SMS, else you can remove this parameter from function.`
-* Send SMS: `wp_sms_send( $to, $msg, $isflash )`
+### Clone the GitHub repository
+Clone the repository into your plugins directory and activate the plugin.
+```bash
+git@github.com:veronalabs/wp-sms.git
+```
+
+### Install dependencies
+```bash
+composer install
+```
+
+### Build Assets
+Install dependencies
+```bash
+npm install
+```
+
+Build the blocks
+```bash
+npm run build
+```
+
+Build the assets
+```bash
+npm run sass-compile
+```
+
+
+### Unit Tests
+The plugin has a suite of unit tests that can be run with PHPUnit. To run the tests, you'll need to install the development dependencies with Composer, then run the tests with [Codeception](https://codeception.com/)
+
+For starting you need to create a database for testing, then copy the `.env.testing.example` file to `.env.testing` and update the database credentials.
+
+Run the tests
+```bash
+php vendor/bin/codecept run
+```
+
+Generate new unit test
+```bash
+php vendor/bin/codecept generate:wpunit unit YourTestName
+```
 
 # Actions
 Run the following action when sending SMS with this plugin.
@@ -137,11 +172,6 @@ function wp_sms_modify_message($message) {
 }
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
-
-# Plugin development
--   Run `npm install` from the theme directory to install dependencies
--   Run `npm run build` to build the blocks
--   Run `npm run sass-compile` to build the assets
 
 # Resources
 * [WordPress.org plugin URL](https://wordpress.org/plugins/wp-sms/)

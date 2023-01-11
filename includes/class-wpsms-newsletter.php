@@ -128,7 +128,7 @@ class Newsletter
              */
             do_action('wp_sms_add_subscriber', $name, $mobile, $wpdb->insert_id);
 
-            return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'));
+            return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
         } else {
             return array('result' => 'error', 'message' => __('Having problem with add subscriber, please try again later.', 'wp-sms'));
         }

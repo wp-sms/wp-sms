@@ -20,6 +20,7 @@ class WordPressPostNotification extends Notification
         '%post_password%'      => 'getPassword',
         '%post_comment_count%' => 'getCommentCount',
         '%post_post_type%'     => 'getPostType',
+        '%post_id%'            => 'getId',
     ];
 
     public function __construct($postId = false)
@@ -84,5 +85,10 @@ class WordPressPostNotification extends Notification
     public function getPostType()
     {
         return $this->post->post_type;
+    }
+
+    public function getId()
+    {
+        return $this->post->ID;
     }
 }
