@@ -1361,7 +1361,7 @@ class Settings
                     'name'    => __('GDPR Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR related features in this page.', 'wp-sms')
+                    'desc'    => __('Enable GDPR-related features.', 'wp-sms')
                 ),
             )),
 

@@ -118,7 +118,6 @@ class WP_SMS
         $this->include('includes/class-wpsms-quform.php');
         $this->include('includes/class-wpsms-newsletter.php');
         $this->include('includes/class-wpsms-rest-api.php');
-        $this->include('includes/class-wpsms-shortcode.php');
         $this->include('includes/admin/class-wpsms-version.php');
 
         // Newsletter
