@@ -35,6 +35,7 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
         $validity = \WP_SMS\Helper::checkMobileNumberValidity('+hello');
 
         $this->assertInstanceOf(WP_Error::class, $validity);
+        $this->assertStringContainsString($validity->get_error_code(), 'invalid_number');
     }
 
     public function testDuplicateNumberInUserMeta()
