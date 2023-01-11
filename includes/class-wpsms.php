@@ -40,7 +40,7 @@ class WP_SMS
      */
     public static function get_instance()
     {
-        null === self::$instance and self::$instance = new self();
+        null === self::$instance and self::$instance = new self;
 
         return self::$instance;
     }
@@ -163,6 +163,13 @@ class WP_SMS
         $this->include('src/SmsOtp/Verifier.php');
         $this->include('src/SmsOtp/SmsOtp.php');
 
+        // Shortcode
+        $this->include('src/Shortcode/ShortcodeAbstract.php');
+        $this->include('src/Shortcode/ShortcodeManager.php');
+        $this->include('src/Shortcode/SubscriptionShortcode.php');
+
+        $shortcodeManager = new \WP_SMS\Shortcode\ShortcodeManager();
+        $shortcodeManager->init();
 
         if (is_admin()) {
             // Admin legacy classes.
