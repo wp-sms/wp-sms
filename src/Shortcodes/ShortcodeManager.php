@@ -1,17 +1,16 @@
 <?php
 
-namespace WP_SMS\Webhook;
+namespace WP_SMS\Shortcode;
 
-class WebhookManager
+class ShortcodeManager
 {
     public function init()
     {
-        $this->registerWebhooks();
+        $this->registerShortcode();
     }
 
-    public function registerWebhooks()
+    public function registerShortcode()
     {
-        NewSmsWebhook::boot();
-        NewSubscriberWebhook::boot();
+        SubscriptionShortcode::boot();
     }
 }
