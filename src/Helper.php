@@ -169,6 +169,10 @@ class Helper
     {
         global $wpdb;
 
+        if (!is_numeric($mobileNumber)) {
+            return new \WP_Error('invalid_number', __('Invalid Mobile Number', 'wp-sms'));
+        }
+
         // check whether international mode is enabled
         $international_mode = Option::getOption('international_mobile') ? true : false;
 
