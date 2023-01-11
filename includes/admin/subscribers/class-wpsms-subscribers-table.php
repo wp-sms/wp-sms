@@ -99,8 +99,10 @@ class Subscribers_List_Table extends \WP_List_Table
     {
         $customFields = unserialize($item['custom_fields']);
 
-        foreach ($customFields as $key => $value) {
-            printf('<div class="wpsms-custom-field"><strong>%s</strong>: %s</div>', $key, $value);
+        if (is_array($customFields)) {
+            foreach ($customFields as $key => $value) {
+                printf('<div class="wpsms-custom-field"><strong>%s</strong>: %s</div>', $key, $value);
+            }
         }
     }
 
