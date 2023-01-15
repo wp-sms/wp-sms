@@ -387,27 +387,27 @@ function wp_sms_get_countries()
 /**
  * Show SMS newsletter form
  *
- * @deprecated 4.0 Use wp_sms_subscriber_form()
- * @see wp_sms_subscriber_form()
+ * @deprecated 4.0 Use wp_sms_render_subscriber_form()
+ * @see wp_sms_render_subscriber_form()
  *
  */
 function wp_subscribes()
 {
     _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscribes()');
-    wp_sms_subscriber_form();
+    wp_sms_render_subscriber_form();
 }
 
 /**
  * Show SMS newsletter form
  *
- * @deprecated 4.0 Use wp_sms_subscriber_form()
- * @see wp_sms_subscriber_form()
+ * @deprecated 4.0 Use wp_sms_render_subscriber_form()
+ * @see wp_sms_render_subscriber_form()
  *
  */
 function wp_sms_subscribes()
 {
     _deprecated_function(__FUNCTION__, '5.7');
-    wp_sms_subscriber_form();
+    wp_sms_render_subscriber_form();
 }
 
 /**
@@ -417,7 +417,7 @@ function wp_sms_subscribes()
  *
  * @return false|string|null
  */
-function wp_sms_subscriber_form($attributes = array())
+function wp_sms_render_subscriber_form($attributes = array())
 {
     return \WP_SMS\Helper::loadTemplate(
         'subscribe-form.php',

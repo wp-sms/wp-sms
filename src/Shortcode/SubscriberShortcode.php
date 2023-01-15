@@ -6,14 +6,14 @@ class SubscriberShortcode
 {
     public function register()
     {
-        add_shortcode('wp_sms_subscriber_form', array($this, 'registerSubscriberShortcodeCallback'));
+        add_shortcode('wp_sms_subscriber_form_shortcode', array($this, 'registerSubscriberShortcodeCallback'));
     }
 
     public function registerSubscriberShortcodeCallback($attributes)
     {
         isset($attributes['fields']) ? $attrs = $this->retrieveData($attributes) : $attrs = $attributes;
 
-        return wp_sms_subscriber_form($attrs);
+        return wp_sms_render_subscriber_form($attrs);
     }
 
     public function retrieveData($attrs)

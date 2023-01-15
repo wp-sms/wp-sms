@@ -16,6 +16,5 @@ class ShortcodeManager
                 $newClass->register();
             }
         }
-
     }
 }
