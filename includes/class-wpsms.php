@@ -164,9 +164,8 @@ class WP_SMS
         $this->include('src/SmsOtp/SmsOtp.php');
 
         // Shortcode
-        $this->include('src/Shortcode/ShortcodeAbstract.php');
         $this->include('src/Shortcode/ShortcodeManager.php');
-        $this->include('src/Shortcode/SubscriptionShortcode.php');
+        $this->include('src/Shortcode/SubscriberShortcode.php');
 
         $shortcodeManager = new \WP_SMS\Shortcode\ShortcodeManager();
         $shortcodeManager->init();

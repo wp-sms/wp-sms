@@ -4,13 +4,18 @@ namespace WP_SMS\Shortcode;
 
 class ShortcodeManager
 {
+    private $shortcodes = [
+        \WP_SMS\Shortcode\SubscriberShortcode::class,
+    ];
+
     public function init()
     {
-        $this->registerShortcode();
-    }
+        foreach ($this->shortcodes as $shortcode) {
+            if (class_exists($shortcode)) {
+                $newClass = new SubscriberShortcode();
+                $newClass->register();
+            }
+        }
 
-    public function registerShortcode()
-    {
-        SubscriptionShortcode::boot();
     }
 }

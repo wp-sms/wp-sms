@@ -38,6 +38,11 @@ class Front
             wp_register_style('wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-subscribe');
         }
+
+        // todo
+        wp_register_script('wp-sms-blocks-subscribe', WP_SMS_URL . 'assets/js/blocks/subscribe.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_enqueue_script('wp-sms-blocks-subscribe');
+
     }
 
     /**

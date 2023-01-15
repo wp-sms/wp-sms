@@ -83,6 +83,6 @@ class BlockAbstract
         /**
          * Render the output - With a unique ID
          */
-        return $this->output($attributes);
+        return $this->output();
     }
 }
