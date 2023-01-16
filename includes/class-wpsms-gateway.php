@@ -89,6 +89,7 @@ class Gateway
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
+            'sendinblue'     => 'sendinblue.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
