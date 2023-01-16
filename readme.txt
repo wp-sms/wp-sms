@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 5.9.1
+Stable tag: 6.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -237,6 +237,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.9 - **.**.2023 =
+* 
+
 = v5.9.1 - 18.12.2022 =
 * New: Filter subscribers by country
 * New: Add helper prepareMobileNumber
