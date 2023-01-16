@@ -22,9 +22,10 @@ class SubscriberShortcode
         $custom_fields = explode('|', $attrs['fields']);
 
         foreach ($custom_fields as $custom_field) {
-            $field             = explode(':', $custom_field);
-            $fields[$field[0]] = array(
-                'label'       => ucfirst($field[0]),
+            $field          = explode(':', $custom_field);
+            $label          = strtolower(ltrim($field[0]));
+            $fields[$label] = array(
+                'label'       => $label,
                 'type'        => 'text',
                 'description' => isset($field[1]) ? $field[1] : '',
             );
