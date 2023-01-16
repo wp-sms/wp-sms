@@ -40,7 +40,7 @@ class WP_SMS
      */
     public static function get_instance()
     {
-        null === self::$instance and self::$instance = new self;
+        null === self::$instance and self::$instance = new self();
 
         return self::$instance;
     }
@@ -154,6 +154,15 @@ class WP_SMS
 
         $webhookManager = new \WP_SMS\Webhook\WebhookManager();
         $webhookManager->init();
+
+        // SmsOtp
+        $this->include('src/SmsOtp/Exceptions/OtpLimitExceededException.php');
+        $this->include('src/SmsOtp/Exceptions/TooManyAttemptsException.php');
+        $this->include('src/SmsOtp/Exceptions/InvalidArgumentException.php');
+        $this->include('src/SmsOtp/Generator.php');
+        $this->include('src/SmsOtp/Verifier.php');
+        $this->include('src/SmsOtp/SmsOtp.php');
+
 
         if (is_admin()) {
             // Admin legacy classes.
