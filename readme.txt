@@ -237,8 +237,8 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9 - **.**.2023 =
-* 
+= v6.0 - **.**.2023 =
+*
 
 = v5.9.1 - 18.12.2022 =
 * New: Filter subscribers by country
