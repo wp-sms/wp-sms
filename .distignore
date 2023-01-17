@@ -2,12 +2,18 @@
 /.git
 /.github
 /node_modules
+/tests
 
 .distignore
 .gitignore
-
+.editorconfig
+.env.testing.example
 .gulpfile.js
+codeception.dist.yml
+composer.json
+composer.lock
 LICENSE
 package.json
 package-lock.json
+postcss.config.js
 README.md
