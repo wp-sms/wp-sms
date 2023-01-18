@@ -102,6 +102,28 @@ class Newsletter
             return array('result' => 'error', 'message' => $validate->get_error_message());
         }
 
+        if (!empty($custom_fields)) {
+            $result = array();
+            $fields = explode('|', $custom_fields[0]);
+
+            foreach ($fields as $field) {
+                $field_array  = explode(':', $field);
+                $field_detail = array(
+                    'label'       => ucfirst($field_array[0]),
+                    'type'        => 'text',
+                    'description' => $field_array[1]
+                );
+
+                if (empty($field_array[1])) {
+                    $field_detail = null;
+                }
+
+                $result[strtolower($field_array[0])] = $field_detail;
+            }
+
+            $custom_fields = $result;
+        }
+
         $result = $wpdb->insert(
             $wpdb->prefix . "sms_subscribes",
             array(
@@ -110,7 +132,7 @@ class Newsletter
                 'mobile'        => $mobile,
                 'status'        => $status,
                 'activate_key'  => $key,
-                'custom_fields' => $custom_fields,
+                'custom_fields' => serialize($custom_fields),
                 'group_ID'      => $group_id,
             )
         );
@@ -121,7 +143,7 @@ class Newsletter
              *
              * @param string $name name.
              * @param string $mobile mobile.
-             * @param string $wpdb->insert_id Subscriber ID
+             * @param string $wpdb- >insert_id Subscriber ID
              *
              * @since 3.0
              *

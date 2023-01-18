@@ -6,7 +6,7 @@ let wpSmsSubscribeForm = {
 
     init: function () {
         this.info = Array()
-        
+
         this.setFields()
         this.EventListener()
     },
@@ -27,6 +27,7 @@ let wpSmsSubscribeForm = {
         let processingOverlay = element.children().find('.js-wpSmsSubscribeOverlay')
         let firstStep = element.children().find('.js-wpSmsSubscribeStepOne')
         let secondStep = element.children().find('.js-wpSmsSubscribeStepTwo')
+        let customFields = element.children().find('.js-wpSmsSubscriberCustomFields')
 
         submitButton.prop('disabled', true)
         messageContainer.hide()
@@ -36,6 +37,21 @@ let wpSmsSubscribeForm = {
         subscriber['mobile'] = element.children().find(".js-wpSmsSubscriberMobile input").val()
         subscriber['group_id'] = element.children().find(".js-wpSmsSubscriberGroupId select").val()
         subscriber['type'] = element.children().find(".js-wpSmsSubscribeType:checked").val()
+
+        if (customFields.length) {
+
+            var field = ''
+
+            customFields.each(function (index, item) {
+                var label = jQuery(item).data('field-name')
+                var value = jQuery(item).find('input').val()
+
+                field += label + ':' + value + '|'
+            })
+
+            subscriber['custom_fields'] = field.slice(0, -1)
+
+        }
 
         element.ajaxStart(function () {
             submitButton.attr('disabled', 'disabled')
@@ -85,7 +101,6 @@ let wpSmsSubscribeForm = {
             processingOverlay.css('display', 'none')
             messageContainer.fadeIn()
             firstStep.hide()
-
 
             messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
 

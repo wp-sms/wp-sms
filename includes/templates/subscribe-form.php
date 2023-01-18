@@ -11,7 +11,7 @@
         <div class="wpsms-subscribe__form">
             <div class="wpsms-form-step-one js-wpSmsSubscribeStepOne">
                 <?php if (isset($attributes['description'])) { ?>
-                    <p><?php echo isset($attributes['description']) ? $attributes['description'] : ''; ?></p>
+                    <p><?php echo $attributes['description']; ?></p>
                 <?php } ?>
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
                     <label><?php _e('Your name', 'wp-sms'); ?>:</label>
@@ -36,7 +36,7 @@
                 <?php } ?>
 
                 <?php if (isset($attributes['fields'])) : ?><?php foreach ($attributes['fields'] as $key => $field) : ?>
-                    <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField">
+                    <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberCustomFields" data-field-name=<?php echo esc_html(ucfirst($field['label'])); ?>>
                         <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?>:</label>
                         <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
                     </div>
