@@ -19,9 +19,6 @@ let wpSmsSubscribeForm = {
     },
 
     sendSubscriptionForm: function (element, $this = this) {
-
-        let subscriber = Array()
-
         let submitButton = element.children().find('.js-wpSmsSubmitButton')
         let messageContainer = element.children().find('.js-wpSmsSubscribeMessage')
         let processingOverlay = element.children().find('.js-wpSmsSubscribeOverlay')
@@ -33,24 +30,24 @@ let wpSmsSubscribeForm = {
         messageContainer.hide()
         processingOverlay.css('display', 'flex')
 
-        subscriber['name'] = element.children().find(".js-wpSmsSubscriberName input").val()
-        subscriber['mobile'] = element.children().find(".js-wpSmsSubscriberMobile input").val()
-        subscriber['group_id'] = element.children().find(".js-wpSmsSubscriberGroupId select").val()
-        subscriber['type'] = element.children().find(".js-wpSmsSubscribeType:checked").val()
+        let requestBody = {
+            name: element.children().find(".js-wpSmsSubscriberName input").val(),
+            mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(),
+            group_id: element.children().find(".js-wpSmsSubscriberGroupId select").val(),
+            type: element.children().find(".js-wpSmsSubscribeType:checked").val()
+        }
 
         if (customFields.length) {
-
-            var field = ''
+            var fields = {}
 
             customFields.each(function (index, item) {
                 var label = jQuery(item).data('field-name')
                 var value = jQuery(item).find('input').val()
 
-                field += label + ':' + value + '|'
+                fields[label] = value
             })
 
-            subscriber['custom_fields'] = field.slice(0, -1)
-
+            requestBody.custom_fields = fields
         }
 
         element.ajaxStart(function () {
@@ -63,18 +60,17 @@ let wpSmsSubscribeForm = {
             submitButton.text(wpsms_ajax_object.subscribe_text)
         })
 
-        if (subscriber['type'] === 'subscribe') {
+        if (requestBody.type === 'subscribe') {
             var endpointUrl = wpsms_ajax_object.rest_endpoint_url
         } else {
             var endpointUrl = wpsms_ajax_object.rest_endpoint_url + '/unsubscribe'
         }
 
-        var data_obj = Object.assign({}, subscriber)
-
         var ajax = jQuery.ajax({
             type: 'POST',
             url: endpointUrl,
-            data: data_obj
+            contentType: 'application/json',
+            data: JSON.stringify(requestBody)
         })
 
         ajax.fail(function (data) {
@@ -104,12 +100,12 @@ let wpSmsSubscribeForm = {
 
             messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
 
-            if (subscriber['type'] === 'subscribe' && $this.mandatoryVerify === '1') {
+            if (requestBody.type === 'subscribe' && $this.mandatoryVerify === '1') {
                 secondStep.show()
             }
         })
 
-        $this.info = subscriber
+        $this.info = requestBody
 
     },
 
@@ -125,7 +121,7 @@ let wpSmsSubscribeForm = {
         messageContainer.hide()
         processingOverlay.css('display', 'flex')
 
-        $this.info['activation'] = element.children().find('.js-wpSmsActivationCode').val()
+        $this.info.activation = element.children().find('.js-wpSmsActivationCode').val()
 
         subscribeFormContainer.ajaxStart(function () {
             activationButton.prop('disabled', true)
@@ -137,12 +133,11 @@ let wpSmsSubscribeForm = {
             activationButton.text(wpsms_ajax_object.activation_text)
         })
 
-        var data_obj = Object.assign({}, $this.info)
-
         var ajax = jQuery.ajax({
             type: 'POST',
             url: wpsms_ajax_object.rest_endpoint_url + '/verify',
-            data: data_obj
+            contentType: 'application/json',
+            data: JSON.stringify($this.info)
         })
 
         ajax.fail(function (data) {

@@ -102,28 +102,6 @@ class Newsletter
             return array('result' => 'error', 'message' => $validate->get_error_message());
         }
 
-        if (!empty($custom_fields)) {
-            $result = array();
-            $fields = explode('|', $custom_fields[0]);
-
-            foreach ($fields as $field) {
-                $field_array  = explode(':', $field);
-                $field_detail = array(
-                    'label'       => ucfirst($field_array[0]),
-                    'type'        => 'text',
-                    'description' => $field_array[1]
-                );
-
-                if (empty($field_array[1])) {
-                    $field_detail = null;
-                }
-
-                $result[strtolower($field_array[0])] = $field_detail;
-            }
-
-            $custom_fields = $result;
-        }
-
         $result = $wpdb->insert(
             $wpdb->prefix . "sms_subscribes",
             array(

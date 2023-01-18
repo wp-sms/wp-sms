@@ -11,7 +11,11 @@ class SubscriberShortcode
 
     public function registerSubscriberShortcodeCallback($attributes)
     {
-        isset($attributes['fields']) ? $attrs = $this->retrieveData($attributes) : $attrs = $attributes;
+        if (isset($attributes['fields'])) {
+            $attrs = $this->retrieveData($attributes);
+        } else {
+            $attrs = $attributes;
+        }
 
         return wp_sms_render_subscriber_form($attrs);
     }

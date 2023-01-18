@@ -48,8 +48,7 @@ class Newsletter extends RestApi
                         'required' => false,
                     ),
                     'custom_fields' => array(
-                        'required' => false,
-                        'type' => 'array'
+                        'required' => false
                     )
                 ),
                 'permission_callback' => '__return_true'
