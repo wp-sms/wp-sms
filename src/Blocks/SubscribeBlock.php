@@ -12,8 +12,8 @@ class SubscribeBlock extends BlockAbstract
     protected $blockName = 'Subscribe';
     protected $blockVersion = '1.0';
 
-    protected function output()
+    protected function output($attributes)
     {
-        return wp_sms_render_subscriber_form();
+        return wp_sms_render_subscriber_form($attributes);
     }
 }
