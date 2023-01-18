@@ -11,23 +11,23 @@ final class Generator
     /**
      * @var DateInterval
      */
-    private DateInterval $rateLimitTimeInterval;
+    private $rateLimitTimeInterval;
 
     /**
      * @var integer
      */
-    private int $rateLimitCount;
+    private $rateLimitCount;
 
     /**
      * @var string
      */
-    private string $agent;
+    private $agent;
 
     /**
      * @param string $phoneNumber
      * @param string $agent
      */
-    public function __construct(string $phoneNumber, string $agent)
+    public function __construct($phoneNumber, $agent)
     {
         $this->phoneNumber = $phoneNumber;
         $this->agent       = $agent;
@@ -40,7 +40,7 @@ final class Generator
      * @param integer $count
      * @return void
      */
-    public function setRateLimit(DateInterval $interval, int $count)
+    public function setRateLimit($interval, $count)
     {
         $this->rateLimitTimeInterval = $interval;
         $this->rateLimitCount        = $count;
@@ -103,7 +103,7 @@ final class Generator
      * @throws Exceptions\InvalidArgumentException
      * @return void
      */
-    public function createCode(int $length)
+    public function createCode($length)
     {
         if ($length < 4 || $length > 10) {
             throw new Exceptions\InvalidArgumentException(__('Provided $length argument must be between 4 and 10.', 'wp-sms-pro'));

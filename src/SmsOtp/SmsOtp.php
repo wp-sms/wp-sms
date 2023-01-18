@@ -12,34 +12,34 @@ final class SmsOtp
     /**
      * @var boolean
      */
-    private bool $overrideDefaultRateLimit = false;
+    private $overrideDefaultRateLimit = false;
 
     /**
      * @var string
      */
-    private string $phoneNumber;
+    private $phoneNumber;
 
     /**
      * @var string
      */
-    private string $agent;
+    private $agent;
 
     /**
      * @var DateInterval
      */
-    private DateInterval $rateLimitTimeInterval;
+    private $rateLimitTimeInterval;
 
     /**
      * @var integer
      */
-    private int $rateLimitCount;
+    private $rateLimitCount;
 
     /**
      * @param string $phoneNumber
      * @param string $agent Creation agent name/identifier, to discriminate generate OTPs
      * @param boolean $formatInput Whether to format the $phoneNumber param to a standard format
      */
-    public function __construct(string $phoneNumber, string $agent, bool $formatInput = false)
+    public function __construct($phoneNumber, $agent, $formatInput = false)
     {
         $this->phoneNumber = sanitize_text_field($phoneNumber);
         $this->agent       = sanitize_text_field($agent);
@@ -71,7 +71,7 @@ final class SmsOtp
      * @param integer $length Pass-code's length
      * @return Generator
      */
-    public function generate(int $length = 6)
+    public function generate($length = 6)
     {
         $generator = new Generator($this->getPhoneNumber(), $this->getAgent());
 
@@ -95,7 +95,7 @@ final class SmsOtp
      * @param string $code
      * @return void
      */
-    public function verify(string $code)
+    public function verify($code)
     {
         $verifier = new Verifier($this->getPhoneNumber(), $this->getAgent());
 
@@ -116,7 +116,7 @@ final class SmsOtp
      * @param DateInterval $interval
      * @return boolean
      */
-    public function numberIsRecentlyVerified(DateInterval $interval = null)
+    public function numberIsRecentlyVerified($interval = null)
     {
         $verifier = new Verifier($this->getPhoneNumber(), $this->getAgent());
         return $verifier->checkIfNumberIsRecentlyVerified($interval);
@@ -129,7 +129,7 @@ final class SmsOtp
      * @param integer $count
      * @return static
      */
-    public function rateLimit(DateInterval $interval, int $count)
+    public function rateLimit($interval, $count)
     {
         $this->overrideDefaultRateLimit = true;
 

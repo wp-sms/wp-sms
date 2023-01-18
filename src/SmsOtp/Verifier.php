@@ -11,23 +11,23 @@ final class Verifier
     /**
      * @var DateInterval
      */
-    private DateInterval $rateLimitTimeInterval;
+    private $rateLimitTimeInterval;
 
     /**
      * @var integer
      */
-    private int $rateLimitCount;
+    private $rateLimitCount;
 
     /**
      * @var string
      */
-    private string $agent;
+    private $agent;
 
     /**
      * @param string $phoneNumber
      * @param string $agent
      */
-    public function __construct(string $phoneNumber, string $agent)
+    public function __construct($phoneNumber, $agent)
     {
         $this->phoneNumber = $phoneNumber;
         $this->agent       = $agent;
@@ -40,10 +40,10 @@ final class Verifier
      * @param integer $count
      * @return void
      */
-    public function setRateLimit(DateInterval $period, int $count)
+    public function setRateLimit($period, $count)
     {
         $this->rateLimitTimeInterval = $period;
-        $this->rateLimitCount      = $count;
+        $this->rateLimitCount        = $count;
     }
 
     /**
@@ -84,7 +84,7 @@ final class Verifier
      * @throws Exceptions\TooManyAttemptsException only if $bubbleException is set to true
      * @return boolean
      */
-    public function verify(string $code)
+    public function verify($code)
     {
         global $wpdb;
 
@@ -119,7 +119,7 @@ final class Verifier
      * @param boolean $result
      * @return void
      */
-    private function createVerificationAttemptRecord(string $attemptedCode, bool $result)
+    private function createVerificationAttemptRecord($attemptedCode, $result)
     {
         global $wpdb;
 
@@ -173,9 +173,9 @@ final class Verifier
      * Check if a number is recently verified
      *
      * @param DateInterval|null $interval Default is 'PT5M'
-     * @return void
+     * @return boolean
      */
-    public function checkIfNumberIsRecentlyVerified(DateInterval $interval = null)
+    public function checkIfNumberIsRecentlyVerified($interval = null)
     {
         global $wpdb;
 
