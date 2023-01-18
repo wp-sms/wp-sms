@@ -8,8 +8,8 @@ if (!defined('ABSPATH')) {
 
 class Install
 {
-    public const TABLE_OTP          = 'sms_otp';
-    public const TABLE_OTP_ATTEMPTS = 'sms_otp_attempts';
+    const TABLE_OTP          = 'sms_otp';
+    const TABLE_OTP_ATTEMPTS = 'sms_otp_attempts';
 
     public function __construct()
     {
