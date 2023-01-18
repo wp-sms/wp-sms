@@ -5,256 +5,192 @@ jQuery(document).ready(function () {
 let wpSmsSubscribeForm = {
 
     init: function () {
+        this.info = Array()
+        
         this.setFields()
-        this.gdprCheckbox()
         this.EventListener()
     },
 
     setFields: function () {
-        this.wpSmsSubscribeOverlay = jQuery(".js-wpSmsSubscribeOverlay")
-        this.wpSmsFormSubmitButton = jQuery(".js-wpSmsSubmitButton")
-        this.wpSmsActivation = jQuery(".js-wpSmsActivationButton")
-        this.wpSmsSubscribeStepTwo = jQuery(".js-wpSmsSubscribeStepTwo")
-        this.wpSmsSubscribeResult = jQuery(".js-wpSmsSubscribeMessage")
-        this.wpSmsSubscriberForm = jQuery(".js-wpSmsSubscribeForm")
-        this.wpSmsGdprConfirmation = jQuery('.js-wpSmsGdprConfirmation')
+        this.wpSmsGdprCheckbox = jQuery('.js-wpSmsGdprConfirmation')
         this.wpSmsEventType = jQuery(".js-wpSmsSubscribeType")
-        this.wpSmsFormSubmitButtonByClass = jQuery('.js-wpSmsSubscribeFormButton')
+        this.wpSmsSubmitTypeButton = jQuery('.js-wpSmsSubmitTypeButton')
+        this.mandatoryVerify = jQuery('.js-wpSmsMandatoryVerify').val()
     },
 
-    showProcessing: function () {
-        this.wpSmsSubscribeOverlay.css('display', 'flex');
-    },
+    sendSubscriptionForm: function (element, $this = this) {
 
-    hideProcessing: function () {
-        this.wpSmsSubscribeOverlay.css('display', 'none');
-    },
+        let subscriber = Array()
 
-    enableSubmitButton: function (element = this.wpSmsFormSubmitButton) {
-        element.prop('disabled', false);
-    },
+        let submitButton = element.children().find('.js-wpSmsSubmitButton')
+        let messageContainer = element.children().find('.js-wpSmsSubscribeMessage')
+        let processingOverlay = element.children().find('.js-wpSmsSubscribeOverlay')
+        let firstStep = element.children().find('.js-wpSmsSubscribeStepOne')
+        let secondStep = element.children().find('.js-wpSmsSubscribeStepTwo')
 
-    disableSubmitButton: function (element = this.wpSmsFormSubmitButton) {
-        element.prop('disabled', true);
-    },
+        submitButton.prop('disabled', true)
+        messageContainer.hide()
+        processingOverlay.css('display', 'flex')
 
-    enableActivationButton: function () {
-        this.wpSmsActivation.prop('disabled', false);
-    },
+        subscriber['name'] = element.children().find(".js-wpSmsSubscriberName input").val()
+        subscriber['mobile'] = element.children().find(".js-wpSmsSubscriberMobile input").val()
+        subscriber['group_id'] = element.children().find(".js-wpSmsSubscriberGroupId select").val()
+        subscriber['type'] = element.children().find(".js-wpSmsSubscribeType:checked").val()
 
-    disableActivationButton: function () {
-        this.wpSmsActivation.attr('disabled', 'disabled');
-    },
+        element.ajaxStart(function () {
+            submitButton.attr('disabled', 'disabled')
+            submitButton.text(wpsms_ajax_object.loading_text)
+        })
 
-    hideSecondStep: function () {
-        this.wpSmsSubscribeStepTwo.hide();
-    },
-
-    showMessages: function () {
-        this.wpSmsSubscribeResult.fadeIn();
-    },
-
-    hideMessages: function () {
-        this.wpSmsSubscribeResult.hide();
-    },
-
-    sendSubscriptionForm: function ($this = this) {
-
-        $this.wpSmsSubscriberForm.each(function () {
-
-            var subscriberInfo = Array()
-            var submitButton = jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsSubscribeFormButton')
-            var subscribeFormContainer = jQuery(this).parents('.js-wpSmsSubscribeFormContainer')
-            var responseMessageContainer = jQuery(this).children().find(".js-wpSmsSubscribeMessage")
-            var processingOverlay = jQuery(this).children().find(".js-wpSmsSubscribeOverlay")
-            var subscribingFirstStep = jQuery(this).children().find(".js-wpSmsSubscribeStepOne")
-            var subscribingSecondStep = jQuery(this).children().find(".js-wpSmsSubscribeStepTwo")
-
+        element.ajaxComplete(function () {
             submitButton.prop('disabled', true)
-            responseMessageContainer.hide()
-            processingOverlay.css('display', 'flex')
+            submitButton.text(wpsms_ajax_object.subscribe_text)
+        })
 
-            var verify = jQuery(this).children().find(".newsletter-form-verify").val()
+        if (subscriber['type'] === 'subscribe') {
+            var endpointUrl = wpsms_ajax_object.rest_endpoint_url
+        } else {
+            var endpointUrl = wpsms_ajax_object.rest_endpoint_url + '/unsubscribe'
+        }
 
-            subscriberInfo['name'] = jQuery(this).children().find(".js-wpSmsSubscriberName input").val()
-            subscriberInfo['mobile'] = jQuery(this).children().find(".js-wpSmsSubscriberMobile input").val()
-            subscriberInfo['group_id'] = jQuery(this).children().find(".js-wpSmsSubscriberGroupId select").val()
-            subscriberInfo['type'] = jQuery(this).children().find(".js-wpSmsSubscribeType").val()
+        var data_obj = Object.assign({}, subscriber)
 
-            subscribeFormContainer.ajaxStart(function () {
-                submitButton.attr('disabled', 'disabled')
-                submitButton.text(wpsms_ajax_object.loading_text)
-            })
+        var ajax = jQuery.ajax({
+            type: 'POST',
+            url: endpointUrl,
+            data: data_obj
+        })
 
-            subscribeFormContainer.ajaxComplete(function () {
-                submitButton.prop('disabled', true)
-                submitButton.text(wpsms_ajax_object.subscribe_text)
-            })
+        ajax.fail(function (data) {
+            var response = JSON.parse(data.responseText)
+            var message = null
 
-            if (subscriberInfo['type'] === 'subscribe') {
-                var endpointUrl = wpsms_ajax_object.rest_endpoint_url
+            submitButton.prop('disabled', false)
+            processingOverlay.css('display', 'none')
+
+            if (typeof (response.error) != "undefined" && response.error !== null) {
+                message = response.error.message;
             } else {
-                var endpointUrl = wpsms_ajax_object.rest_endpoint_url + '/unsubscribe'
+                message = wpsms_ajax_object.unknown_error;
             }
 
-            var data_obj = Object.assign({}, subscriberInfo)
-
-            var ajax = jQuery.ajax({
-                type: 'POST',
-                url: endpointUrl,
-                data: data_obj
-            })
-
-            ajax.fail(function (data) {
-                var response = jQuery.parseJSON(data.responseText)
-                var message = null
-
-                submitButton.prop('disabled', false)
-                processingOverlay.css('display', 'none')
-
-                if (typeof (response.error) != "undefined" && response.error !== null) {
-                    message = response.error.message;
-                } else {
-                    message = wpsms_ajax_object.unknown_error;
-                }
-
-                responseMessageContainer.fadeIn()
-                responseMessageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + message + '</div>')
-            })
-
-            ajax.done(function (data) {
-                var message = data.message;
-
-                submitButton.prop('disabled', false)
-                processingOverlay.css('display', 'none')
-                responseMessageContainer.fadeIn()
-                subscribingFirstStep.hide()
-
-
-                responseMessageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
-
-                if (subscriberInfo['type'] === 'subscribe' && verify === '1') {
-                    subscribingSecondStep.show()
-                }
-            })
-
+            messageContainer.fadeIn()
+            messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + message + '</div>')
         })
+
+        ajax.done(function (data) {
+            var message = data.message;
+
+            submitButton.prop('disabled', false)
+            processingOverlay.css('display', 'none')
+            messageContainer.fadeIn()
+            firstStep.hide()
+
+
+            messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
+
+            if (subscriber['type'] === 'subscribe' && $this.mandatoryVerify === '1') {
+                secondStep.show()
+            }
+        })
+
+        $this.info = subscriber
 
     },
 
-    sendActivationCode: function ($this = this) {
+    sendActivationCode: function (element, $this = this) {
 
-        $this.wpSmsSubscriberForm.each(function () {
+        let activationButton = element.children().find('.js-wpSmsActivationButton')
+        let subscribeFormContainer = element.parents('.js-wpSmsSubscribeFormContainer')
+        let messageContainer = element.children().find('.js-wpSmsSubscribeMessage')
+        let processingOverlay = element.children().find('.js-wpSmsSubscribeOverlay')
+        let secondStep = element.children().find('.js-wpSmsSubscribeStepTwo')
 
-            var submitButton = jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsSubscribeFormButton')
-            var activationButton = jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsActivationButton')
-            var subscribeFormContainer = jQuery(this).parents('.js-wpSmsSubscribeFormContainer')
-            var responseMessageContainer = jQuery(this).children().find(".js-wpSmsSubscribeMessage")
-            var processingOverlay = jQuery(this).children().find(".js-wpSmsSubscribeOverlay")
-            var subscribingFirstStep = jQuery(this).children().find(".js-wpSmsSubscribeStepOne")
-            var subscribingSecondStep = jQuery(this).children().find(".js-wpSmsSubscribeStepTwo")
+        activationButton.prop('disabled', true)
+        messageContainer.hide()
+        processingOverlay.css('display', 'flex')
 
+        $this.info['activation'] = element.children().find('.js-wpSmsActivationCode').val()
+
+        subscribeFormContainer.ajaxStart(function () {
             activationButton.prop('disabled', true)
-            responseMessageContainer.hide()
-            processingOverlay.css('display', 'flex')
-
-            subscriberInfo['activation'] = jQuery(this).children().find(".js-wpSmsActivationCode").val()
-
-            subscribeFormContainer.ajaxStart(function () {
-                activationButton.prop('disabled', true)
-                activationButton.text(wpsms_ajax_object.loading_text)
-            })
-
-            subscribeFormContainer.ajaxComplete(function () {
-                activationButton.prop('disabled', false)
-                activationButton.text(wpsms_ajax_object.activation_text)
-            })
-
-            var data_obj = Object.assign({}, subscriberInfo)
-
-            var ajax = jQuery.ajax({
-                type: 'POST',
-                url: wpsms_ajax_object.rest_endpoint_url + '/verify',
-                data: data_obj
-            })
-
-            ajax.fail(function (data) {
-                var response = jQuery.parseJSON(data.responseText)
-                var message = null
-
-                activationButton.prop('disabled', false)
-                processingOverlay.css('display', 'none')
-
-                if (typeof (response.error) != "undefined" && response.error !== null) {
-                    message = response.error.message
-                } else {
-                    message = wpsms_ajax_object.unknown_error
-                }
-
-                responseMessageContainer.fadeIn()
-
-                responseMessageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + message + '</div>')
-            })
-
-            ajax.done(function (data) {
-                var message = data.message
-
-                activationButton.prop('disabled', false)
-                processingOverlay.css('display', 'none')
-                responseMessageContainer.fadeIn()
-                subscribingSecondStep.hide()
-
-                responseMessageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
-            })
-
+            activationButton.text(wpsms_ajax_object.loading_text)
         })
 
-    },
+        subscribeFormContainer.ajaxComplete(function () {
+            activationButton.prop('disabled', false)
+            activationButton.text(wpsms_ajax_object.activation_text)
+        })
 
-    gdprCheckbox: function ($this = this) {
-        $this.wpSmsGdprConfirmation.each(function () {
-            if (jQuery(this).length && jQuery(this).attr('checked')) {
-                $this.enableSubmitButton()
+        var data_obj = Object.assign({}, $this.info)
+
+        var ajax = jQuery.ajax({
+            type: 'POST',
+            url: wpsms_ajax_object.rest_endpoint_url + '/verify',
+            data: data_obj
+        })
+
+        ajax.fail(function (data) {
+            var response = JSON.parse(data.responseText)
+            var message = null
+
+            activationButton.prop('disabled', false)
+            processingOverlay.css('display', 'none')
+
+            if (typeof (response.error) != "undefined" && response.error !== null) {
+                message = response.error.message
             } else {
-                $this.disableSubmitButton()
+                message = wpsms_ajax_object.unknown_error
             }
+
+            messageContainer.fadeIn()
+
+            messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + message + '</div>')
         })
+
+        ajax.done(function (data) {
+            var message = data.message
+
+            activationButton.prop('disabled', false)
+            processingOverlay.css('display', 'none')
+            messageContainer.fadeIn()
+            secondStep.hide()
+
+            messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
+        })
+
     },
 
     EventListener: function ($this = this) {
 
-        // GDPR confirmation
+        // GDPR Confirmation
         // Enable and disable the form submit button by changing the status of GDPR checkbox
-        $this.wpSmsGdprConfirmation.each(function () { // todo type value must be checked
-            jQuery(this).on('change', function () {
-                var submitButton = jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsSubscribeFormButton')
-                if (this.checked && $this.wpSmsEventType.val()) {
-                    $this.enableSubmitButton(submitButton)
-                } else {
-                    $this.disableSubmitButton(submitButton)
-                }
-            })
+        this.wpSmsGdprCheckbox.on('change', function () {
+            if (this.checked) {
+                jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsSubmitButton').first().prop('disabled', false)
+            } else {
+                jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsSubmitButton').first().prop('disabled', true)
+            }
         })
 
         // Subscribe or Unsubscribe
         // Change the text of submit button based on the chosen event, Subscribe or Unsubscribe
-        $this.wpSmsEventType.each(function () {
-            jQuery(this).on('click', function () {
-                jQuery(this)
-                    .parents('.js-wpSmsSubscribeFormField')
-                    .nextAll('.js-wpSmsSubscribeFormButton').first()
-                    .text(jQuery(this).data('label'))
-            })
+        this.wpSmsEventType.on('click', function () {
+            jQuery(this).parents('.js-wpSmsSubscribeFormField').nextAll('.js-wpSmsSubmitButton').first().text(jQuery(this).data('label'))
         })
 
-        // Submitting the form
-        $this.wpSmsFormSubmitButtonByClass.on('click', function () {
-            if (jQuery(this).hasClass('wpsms-form-submit')) {
-                $this.sendSubscriptionForm()
+        // Submitting The Form
+        this.wpSmsSubmitTypeButton.on('click', function (event) {
+
+            // avoid to execute the actual submit of the form
+            event.preventDefault()
+
+            if (jQuery(this).hasClass('js-wpSmsSubmitButton')) {
+                $this.sendSubscriptionForm(jQuery(this).parents('.js-wpSmsSubscribeForm'))
             }
 
-            if (jQuery(this).hasClass('wpsms-activation-submit')) {
-                $this.sendActivationCode()
+            if (jQuery(this).hasClass('js-wpSmsActivationButton')) {
+                $this.sendActivationCode(jQuery(this).parents('.js-wpSmsSubscribeForm'))
             }
         })
 
