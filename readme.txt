@@ -256,6 +256,8 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Bugfix: The resend issue on the outbox page
 * Bugfix: The SMS notification issue for scheduled posts
 
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v5.9.1 - 18.12.2022 =
 * New: Filter subscribers by country
 * New: Add helper prepareMobileNumber
@@ -264,8 +266,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Improvement: Outbox page style
 * Bugfix: The Alchemymarketing SMS gateway issue
 * Bugfix: Webhooks notices issue
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.9 - 13.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)

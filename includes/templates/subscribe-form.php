@@ -7,11 +7,13 @@
                 </circle>
             </svg>
         </div>
-        <h2 class="wpsms-subscribe__title"><?php echo isset($attributes['title']) ? $attributes['title'] : __('Subscribe SMS', 'wp-sms'); ?></h2>
+
+        <h2 class="wpsms-subscribe__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : __('Subscribe SMS', 'wp-sms'); ?></h2>
+
         <div class="wpsms-subscribe__form">
             <div class="wpsms-form-step-one js-wpSmsSubscribeStepOne">
                 <?php if (isset($attributes['description'])) { ?>
-                    <p><?php echo $attributes['description']; ?></p>
+                    <p><?php echo esc_html($attributes['description']); ?></p>
                 <?php } ?>
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
                     <label><?php _e('Your name', 'wp-sms'); ?>:</label>
@@ -63,24 +65,21 @@
                 <?php } ?>
                 <button class="wpsms-button wpsms-form-submit js-wpSmsSubmitTypeButton js-wpSmsSubmitButton" <?php if ($gdpr_compliance && $subscribe_form_gdpr_confirm_checkbox == 'unchecked') {
                     echo 'disabled';
-                }; ?>><?php _e('Subscribe', 'wp-sms'); ?></button>
+                }; ?>>
+                    <?php _e('Subscribe', 'wp-sms'); ?>
+                </button>
             </div>
-            <div class="wpsms-subscribe__messages js-wpSmsSubscribeMessage"></div>
-            <?php $disable_style = wp_sms_get_option('disable_style_in_front');
-            if (empty($disable_style) and !$disable_style): ?>
-            <div class="wpsms-form-step-two js-wpSmsSubscribeStepTwo">
-                <?php else: ?>
-                <div class="wpsms-form-step-two js-wpSmsSubscribeStepTwo" style="display: none;">
-                    <?php endif; ?>
 
-                    <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField">
-                        <label><?php _e('Activation code:', 'wp-sms'); ?></label>
-                        <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code:', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
-                    </div>
-                    <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activation', 'wp-sms'); ?></button>
+            <div class="wpsms-subscribe__messages js-wpSmsSubscribeMessage"></div>
+
+            <div class="wpsms-form-step-two js-wpSmsSubscribeStepTwo" <?php wp_sms_get_option('disable_style_in_front') ? '' : 'style="display: none;"'; ?>>
+
+                <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField">
+                    <label><?php _e('Activation code:', 'wp-sms'); ?></label>
+                    <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code:', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
+                <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activation', 'wp-sms'); ?></button>
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo wp_sms_get_option('newsletter_form_verify'); ?>">
             </div>
         </div>
-    </div>
 </form>
