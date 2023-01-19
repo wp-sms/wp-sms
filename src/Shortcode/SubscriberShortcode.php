@@ -17,7 +17,7 @@ class SubscriberShortcode
             $attrs = $attributes;
         }
 
-        return wp_sms_render_subscriber_form($attrs);
+        return wp_sms_subscriber_form($attrs);
     }
 
     public function retrieveData($attrs)

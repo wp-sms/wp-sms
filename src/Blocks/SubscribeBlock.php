@@ -14,6 +14,6 @@ class SubscribeBlock extends BlockAbstract
 
     protected function output($attributes)
     {
-        return wp_sms_render_subscriber_form($attributes);
+        return wp_sms_subscriber_form($attributes);
     }
 }
