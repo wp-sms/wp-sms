@@ -1500,6 +1500,8 @@ class Settings
                     'id'   => 'newsletter_title',
                     'name' => __('SMS Newsletter', 'wp-sms'),
                     'type' => 'header',
+                    'desc' => __('SMS Newsletter is a feature that allows you to collect mobile numbers from your website visitors and send them SMS.', 'wp-sms'),
+                    'doc'  => '/resources/add-sms-subscriber-form/'
                 ),
                 'newsletter_form_groups'           => array(
                     'id'   => 'newsletter_form_groups',
