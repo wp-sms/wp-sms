@@ -314,7 +314,7 @@ class Subscribers_List_Table extends \WP_List_Table
     public function get_data($query = '')
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
-        $orderby     = "ORDER BY {$this->tb_prefix}sms_subscribes.date ASC";
+        $orderby     = "ORDER BY {$this->tb_prefix}sms_subscribes.date DESC";
         $where       = "";
 
         if (isset($_REQUEST['orderby'])) {
