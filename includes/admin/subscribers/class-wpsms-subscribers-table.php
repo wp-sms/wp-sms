@@ -267,7 +267,6 @@ class Subscribers_List_Table extends \WP_List_Table
          * to a custom query. The returned data will be pre-sorted, and this array
          * sorting technique would be unnecessary.
          */
-
         usort($data, '\WP_SMS\Subscribers_List_Table::usort_reorder');
 
         /**
@@ -315,11 +314,11 @@ class Subscribers_List_Table extends \WP_List_Table
     public function get_data($query = '')
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
-        $orderby     = "";
+        $orderby     = "ORDER BY {$this->tb_prefix}sms_subscribes.date ASC";
         $where       = "";
 
         if (isset($_REQUEST['orderby'])) {
-            $orderby .= "ORDER BY {$this->tb_prefix}sms_subscribes.{$_REQUEST['orderby']} {$_REQUEST['order']}";
+            $orderby = "ORDER BY {$this->tb_prefix}sms_subscribes.{$_REQUEST['orderby']} {$_REQUEST['order']}";
         }
 
         if (!$query) {
