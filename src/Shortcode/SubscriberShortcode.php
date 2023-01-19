@@ -6,7 +6,7 @@ class SubscriberShortcode
 {
     public function register()
     {
-        add_shortcode('wp_sms_subscriber_form_shortcode', array($this, 'registerSubscriberShortcodeCallback'));
+        add_shortcode('wp_sms_subscriber_form', array($this, 'registerSubscriberShortcodeCallback'));
     }
 
     public function registerSubscriberShortcodeCallback($attributes)

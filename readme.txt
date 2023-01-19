@@ -183,7 +183,7 @@ There are four ways to show the SMS Subscriber form in the website:
 
 1. By adding the SMS Newsletter through the Widget into the theme
 2. By adding the SMS Newsletter through the Gutenberg editor
-3. By adding the shortcode `[wp-sms-subscribe]` into the theme
+3. By adding the shortcode `[wp_sms_subscriber_form]` into the theme
 4. By adding the PHP code `<?php echo wp_sms_subscriber_form(); ?>` into the theme
 
 Do you need more information? [Click here](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
@@ -241,11 +241,11 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.0 - **.01.2023 =
-* New: Shortcode is back! `[wp_sms_subscription_form]` [Documentation](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
-* New: Support custom fields for subscribers!
+= v6.0 - 20.01.2023 =
+* New: Shortcode `[wp_sms_subscriber_form]` is back! [Documentation](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
+* New: Support custom fields for subscribers! [Demo](https://demo.wp-sms-pro.com/)
 * New: Implement notification handler
-* New: Add SmsOtp provider library in the plugin
+* New: The SmsOtp library added in the plugin
 * Improvement: The Oursms gateway updated
 * Improvement: All notification variables and centralization of the functionality
 * Improvement: Check the numeric number in the validity helper
