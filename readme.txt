@@ -26,7 +26,7 @@ Main plugin's features
 * Collecting mobile numbers from subscribers during the newsletter sign-up process
 * Automatically sending SMS messages to users and administrators in various situations
 * Sending activation codes to subscribers when a new post is published or when they complete the subscription process
-* Allowing users to opt-in to SMS newsletters and groups
+* Allowing users to opt-in to SMS newsletters and group with your custom fields
 * Providing an option for users to unsubscribe or opt-out of SMS messages through a widget or URL
 * Enhancing security with two-step verification
 * Enabling users to log in using their mobile number in case they forget their password
@@ -38,7 +38,7 @@ Main plugin's features
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7
 * Integration with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
-* Providing a widget/Gutenberg block for displaying an SMS newsletter form
+* Providing a widget/Gutenberg block/Shortcode for displaying an SMS newsletter form
 * Supporting Webhooks
 * Supporting WP REST API
 * Meeting GDPR compliance requirements
@@ -179,10 +179,14 @@ Use the below code to send MMS through PHP:
 	wp_sms_send( $to, $msg, false, false, $mediaUrls );
 
 = How to show the SMS subscribe form? =
-There are two ways to show the subscriber form in the theme:
+There are four ways to show the SMS Subscriber form in the website:
 
 1. By adding the SMS Newsletter through the Widget into the theme
 2. By adding the SMS Newsletter through the Gutenberg editor
+3. By adding the shortcode `[wp-sms-subscribe]` into the theme
+4. By adding the PHP code `<?php echo wp_sms_subscriber_form(); ?>` into the theme
+
+Do you need more information? [Click here](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
 
 = Does the plugin support Hooks (Action & Filter)? =
 Yes. It does, checkout [https://wp-sms-pro.com/documentation/](documentation).
@@ -237,8 +241,20 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.0 - **.**.2023 =
-*
+= v6.0 - **.01.2023 =
+* New: Shortcode is back! `[wp_sms_subscription_form]` [Documentation](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
+* New: Support custom fields for subscribers!
+* New: Implement notification handler
+* New: Add SmsOtp provider library in the plugin
+* Improvement: The Oursms gateway updated
+* Improvement: All notification variables and centralization of the functionality
+* Improvement: Check the numeric number in the validity helper
+* Improvement: The assets and clean up the code
+* Bugfix: The issue while switching the language on the admin
+* Bugfix: The issue on the Directsend gateway
+* Bugfix: The issue on sending the SMS to author after publishing the post
+* Bugfix: The resend issue on the outbox page
+* Bugfix: The SMS notification issue for scheduled posts
 
 = v5.9.1 - 18.12.2022 =
 * New: Filter subscribers by country
