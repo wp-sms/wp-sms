@@ -53,7 +53,7 @@ class BlockAbstract
      * @param WP_Block $block
      * @return mixed
      */
-    public function renderCallback($attributes, $content, WP_Block $block)
+    public function renderCallback($attributes, $content, $block)
     {
         /**
          * Enqueue the script and data

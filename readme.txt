@@ -241,7 +241,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.0 - 20.01.2023 =
+= v6.0 - 21.01.2023 =
 * New: Shortcode `[wp_sms_subscriber_form]` is back! [Documentation](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
 * New: Support custom fields for subscribers! [Demo](https://demo.wp-sms-pro.com/)
 * New: Implement notification handler
