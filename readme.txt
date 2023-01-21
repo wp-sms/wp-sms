@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 6.0
+Stable tag: 6.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
