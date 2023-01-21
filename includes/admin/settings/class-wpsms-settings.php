@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Notification\NotificationFactory;
+
 if (!defined('ABSPATH')) {
     exit;
 } // No direct access allowed ;)
@@ -648,14 +650,7 @@ class Settings
                     'id'   => 'wc_notify_product_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Product title: %s, Product url: %s, Product date: %s, Product price: %s', 'wp-sms'),
-                            '<code>%product_title%</code>',
-                            '<code>%product_url%</code>',
-                            '<code>%product_date%</code>',
-                            '<code>%product_price%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
                 'wc_notify_order'              => array(
                     'id'   => 'wc_notify_order',
@@ -681,22 +676,7 @@ class Settings
                     'id'   => 'wc_notify_order_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Billing First Name: %s, Billing Company: %s, Billing Address: %s, Billing Phone Number: %s, Order ID: %s, Order number: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Order edit URL: %s, Order Items: %s, Order status: %s', 'wp-sms'),
-                            '<code>%billing_first_name%</code>',
-                            '<code>%billing_company%</code>',
-                            '<code>%billing_address%</code>',
-                            '<code>%billing_phone%</code>',
-                            '<code>%order_id%</code>',
-                            '<code>%order_number%</code>',
-                            '<code>%order_total%</code>',
-                            '<code>%order_total_currency%</code>',
-                            '<code>%order_total_currency_symbol%</code>',
-                            '<code>%order_edit_url%</code>',
-                            '<code>%order_items%</code>',
-                            '<code>%status%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
                 'wc_notify_customer'           => array(
                     'id'   => 'wc_notify_customer',
@@ -716,21 +696,7 @@ class Settings
                     'id'   => 'wc_notify_customer_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Order ID: %s, Order number: %s, Order status: %s, Order Items: %s, Order Total: %s, Order Total Currency: %s, Order Total Currency Symbol: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s', 'wp-sms'),
-                            '<code>%order_id%</code>',
-                            '<code>%order_number%</code>',
-                            '<code>%status%</code>',
-                            '<code>%order_items%</code>',
-                            '<code>%order_total%</code>',
-                            '<code>%order_total_currency%</code>',
-                            '<code>%order_total_currency_symbol%</code>',
-                            '<code>%billing_first_name%</code>',
-                            '<code>%billing_last_name%</code>',
-                            '<code>%order_view_url%</code>',
-                            '<code>%order_pay_url%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
                 'wc_notify_stock'              => array(
                     'id'   => 'wc_notify_stock',
@@ -756,12 +722,7 @@ class Settings
                     'id'   => 'wc_notify_stock_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Product ID: %s, Product name: %s', 'wp-sms'),
-                            '<code>%product_id%</code>',
-                            '<code>%product_name%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
                 'wc_notify_status'             => array(
                     'id'   => 'wc_notify_status',
@@ -781,17 +742,7 @@ class Settings
                     'id'   => 'wc_notify_status_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Order status: %s, Order number: %s, Customer name: %s, Customer family: %s, Order view URL: %s, Order payment URL: %s, Order Meta %s', 'wp-sms'),
-                            '<code>%status%</code>',
-                            '<code>%order_number%</code>',
-                            '<code>%customer_first_name%</code>',
-                            '<code>%customer_last_name%</code>',
-                            '<code>%order_view_url%</code>',
-                            '<code>%order_pay_url%</code>',
-                            '<code>%order_meta_{key-name}%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
                 'wc_notify_by_status'          => array(
                     'id'   => 'wc_notify_by_status',
@@ -1410,7 +1361,7 @@ class Settings
                     'name'    => __('GDPR Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR related features in this page.', 'wp-sms')
+                    'desc'    => __('Enable GDPR-related features.', 'wp-sms')
                 ),
             )),
 
@@ -1465,7 +1416,7 @@ class Settings
                 // Gateway status
                 'gateway_status_title'      => array(
                     'id'   => 'gateway_status_title',
-                    'name' => __('Gateway Status', 'wp-sms'),
+                    'name' => __('Gateway Overview', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit'            => array(
@@ -1476,25 +1427,25 @@ class Settings
                 ),
                 'account_response'          => array(
                     'id'      => 'account_response',
-                    'name'    => __('Balance', 'wp-sms'),
+                    'name'    => __('Balance / Credit', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
                 'incoming_message'          => array(
                     'id'      => 'incoming_message',
-                    'name'    => __('Support Incoming Message?'),
+                    'name'    => __('Incoming Message'),
                     'type'    => 'html',
                     'options' => Gateway::incoming_message_status(),
                 ),
                 'bulk_send'                 => array(
                     'id'      => 'bulk_send',
-                    'name'    => __('Send bulk SMS?', 'wp-sms'),
+                    'name'    => __('Send Bulk SMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::bulk_status(),
                 ),
                 'media_support'             => array(
                     'id'      => 'media_support',
-                    'name'    => __('Send MMS?', 'wp-sms'),
+                    'name'    => __('Send MMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::mms_status(),
                 ),
@@ -1533,7 +1484,7 @@ class Settings
                 ),
                 'clean_numbers'             => array(
                     'id'      => 'clean_numbers',
-                    'name'    => __('Clean Numbers', 'wp-sms'),
+                    'name'    => __('Clean The Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
@@ -1549,6 +1500,8 @@ class Settings
                     'id'   => 'newsletter_title',
                     'name' => __('SMS Newsletter', 'wp-sms'),
                     'type' => 'header',
+                    'desc' => __('SMS Newsletter is a feature that allows you to collect mobile numbers from your website visitors and send them SMS.', 'wp-sms'),
+                    'doc'  => '/resources/add-sms-subscriber-form/'
                 ),
                 'newsletter_form_groups'           => array(
                     'id'   => 'newsletter_form_groups',
@@ -1595,7 +1548,7 @@ class Settings
                     'id'   => 'newsletter_form_welcome_text',
                     'name' => __('SMS text', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => sprintf(__('Subscriber name: %s, Subscriber mobile: %s<br><br>if you would like to send unsubscribe link, check out the document.', 'wp-sms'), '<code>%subscribe_name%</code>', '<code>%subscribe_mobile%</code>'),
+                    'desc' => __('Enter the contents of the SMS message. if you would like to send unsubscribe link, check out the document.', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
                 ),
                 //Style Setting
                 'style'                            => array(
@@ -1729,15 +1682,7 @@ class Settings
                     'id'   => 'notif_publish_new_post_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s, Post featured image URL: %s', 'wp-sms'),
-                            '<code>%post_title%</code>',
-                            '<code>%post_content%</code>',
-                            '<code>%post_url%</code>',
-                            '<code>%post_date%</code>',
-                            '<code>%post_thumbnail%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 'notif_publish_new_post_words_count'      => array(
                     'id'   => 'notif_publish_new_post_words_count',
@@ -1769,14 +1714,7 @@ class Settings
                     'id'   => 'notif_publish_new_post_author_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Post title: %s, Post content: %s, Post url: %s, Post date: %s', 'wp-sms'),
-                            '<code>%post_title%</code>',
-                            '<code>%post_content%</code>',
-                            '<code>%post_url%</code>',
-                            '<code>%post_date%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 // Publish new wp version
                 'notif_publish_new_wpversion_title'       => array(
@@ -1808,25 +1746,13 @@ class Settings
                     'id'   => 'notif_register_new_user_admin_template',
                     'name' => __('Message body for admin', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('User login: %s, User email: %s, Register date: %s', 'wp-sms'),
-                            '<code>%user_login%</code>',
-                            '<code>%user_email%</code>',
-                            '<code>%date_register%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 'notif_register_new_user_template'        => array(
                     'id'   => 'notif_register_new_user_template',
                     'name' => __('Message body for user', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('User login: %s, User email: %s, Register date: %s', 'wp-sms'),
-                            '<code>%user_login%</code>',
-                            '<code>%user_email%</code>',
-                            '<code>%date_register%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 // New comment
                 'notif_new_comment_title'                 => array(
@@ -1845,17 +1771,7 @@ class Settings
                     'id'   => 'notif_new_comment_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Comment author: %s, Author email: %s, Author url: %s, Author IP: %s, Comment date: %s, Comment content: %s, Comment URL: %s', 'wp-sms'),
-                            '<code>%comment_author%</code>',
-                            '<code>%comment_author_email%</code>',
-                            '<code>%comment_author_url%</code>',
-                            '<code>%comment_author_IP%</code>',
-                            '<code>%comment_date%</code>',
-                            '<code>%comment_content%</code>',
-                            '<code>%comment_url%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
                 ),
                 // User login
                 'notif_user_login_title'                  => array(
@@ -1881,12 +1797,7 @@ class Settings
                     'id'   => 'notif_user_login_template',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Username: %s, Display name: %s', 'wp-sms'),
-                            '<code>%username_login%</code>',
-                            '<code>%display_name%</code>'
-                        )
+                    'desc' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 )
             )),
 
@@ -2063,6 +1974,7 @@ class Settings
             'args'           => $args,
             'value'          => $value,
             'order_statuses' => wc_get_order_statuses(),
+            'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
         ));
     }
 
@@ -2552,7 +2464,7 @@ class Settings
                 'name'        => __('License Key', 'wp-sms'),
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'), esc_url(WP_SMS_SITE . '/resources/troubleshoot-license-activation-issues/'))
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'))
             );
         }
 

@@ -89,6 +89,7 @@ class Gateway
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
+            'sendinblue'     => 'sendinblue.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -121,7 +122,8 @@ class Gateway
             'dianahost' => 'dianahost.com',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
-            'greenweb'  => 'greenweb.com.bd'
+            'greenweb'  => 'greenweb.com.bd',
+            'smsdone'   => 'smsd.one'
         ),
         'palestine'      => array(
             'htd' => 'htd.ps',
@@ -543,7 +545,7 @@ class Gateway
     {
         $numbers = array();
         foreach ($recipients as $recipient) {
-            $numbers[] = str_replace(' ', '', $recipient);
+            $numbers[] = str_replace(array(' ', '-', ','), '', $recipient);
         }
 
         return $numbers;

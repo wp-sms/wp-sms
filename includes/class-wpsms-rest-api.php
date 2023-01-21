@@ -71,14 +71,12 @@ class RestApi
      *
      * @param $name
      * @param $mobile
-     * @param null $group
-     *
+     * @param bool $group
+     * @param array $customFields
      * @return array|string
      */
-    public static function subscribe($name, $mobile, $group = false)
+    public static function subscribe($name, $mobile, $group = false, $customFields = array())
     {
-        global $sms;
-
         if (empty($name) or empty($mobile)) {
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
@@ -104,16 +102,13 @@ class RestApi
             $key = rand(1000, 9999);
 
             // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '0', $key);
+            $result = Newsletter::addSubscriber($name, $mobile, $group, '0', $key, $customFields);
 
             if ($result['result'] == 'error') {
                 // Return response
                 return new \WP_Error('subscribe', $result['message']);
             } else {
-
-                $sms->to  = array($mobile);
-                $sms->msg = __('Your activation code', 'wp-sms') . ': ' . $key;
-                $sms->SendSMS();
+                wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
             }
 
             // Return response
@@ -122,31 +117,11 @@ class RestApi
         } else {
 
             // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '1');
+            $result = Newsletter::addSubscriber($name, $mobile, $group, '1', null, $customFields);
 
             if ($result['result'] == 'error') {
                 // Return response
                 return new \WP_Error('subscribe', $result['message']);
-            } else {
-
-                // Send welcome message
-                if (Option::getOption('newsletter_form_welcome')) {
-                    $template_vars = array(
-                        '%subscribe_name%'   => $name,
-                        '%subscribe_mobile%' => $mobile,
-                    );
-                    $text          = Option::getOption('newsletter_form_welcome_text');
-                    $message       = str_replace(array_keys($template_vars), array_values($template_vars), $text);
-
-                    /**
-                     * Filter te welcome SMS message
-                     */
-                    $message = apply_filters('wpsms_welcome_sms_message', $message, $mobile);
-
-                    $sms->to  = array($mobile);
-                    $sms->msg = $message;
-                    $sms->SendSMS();
-                }
             }
 
             return __('Your mobile number has been successfully subscribed.', 'wp-sms');
@@ -175,7 +150,7 @@ class RestApi
                 return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
             }
         }
-        
+
         // Delete subscriber
         $result = Newsletter::deleteSubscriberByNumber($mobile, $group);
 
@@ -199,7 +174,7 @@ class RestApi
      */
     public static function verifySubscriber($name, $mobile, $activation, $groupId = 0)
     {
-        global $sms, $wpdb;
+        global $wpdb;
 
         if (empty($name) or empty($mobile) or empty($activation)) {
             return new \WP_Error('unsubscribe', __('The required parameters must be valued!', 'wp-sms'));
@@ -229,20 +204,6 @@ class RestApi
             }
 
             if ($result) {
-                // Send welcome message
-                if (Option::getOption('newsletter_form_welcome')) {
-                    $template_vars = array(
-                        '%subscribe_name%'   => $name,
-                        '%subscribe_mobile%' => $mobile,
-                    );
-                    $text          = Option::getOption('newsletter_form_welcome_text');
-                    $message       = str_replace(array_keys($template_vars), array_values($template_vars), $text);
-
-                    $sms->to  = array($mobile);
-                    $sms->msg = $message;
-                    $sms->SendSMS();
-                }
-
                 // Return response
                 return __('Your subscription done successfully!', 'wp-sms');
             }

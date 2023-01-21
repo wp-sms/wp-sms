@@ -142,59 +142,6 @@ class Helper
     }
 
     /**
-     * Get final message content by tag variables
-     *
-     * @param array $variables
-     * @param string $content
-     * @param array $args
-     *
-     * @return string
-     */
-    public static function getOutputMessageVariables($variables, $content, $args = array())
-    {
-        /**
-         * Filters the variables to replace in the message content
-         *
-         * @param array $variables Array containing message variables parsed from the argument.
-         * @param string $content Default message content before replacing variables.
-         *
-         * @since 5.7.6
-         *
-         */
-        $variables = apply_filters('wp_sms_output_variables', $variables, $content, $args);
-
-        /**
-         * Map the meta variables to the values
-         */
-        if (isset($args['order']) and $args['order'] instanceof \WC_Order) {
-            preg_match_all('/%order_meta_(.*?)%/', $content, $match);
-
-            if (count($match) > 1) {
-                $output = array_combine($match[0], $match[1]);
-
-                foreach ($output as $key => $value) {
-                    $variables[$key] = $args['order']->get_meta($value);
-                }
-            }
-        }
-
-        $message = str_replace(array_keys($variables), array_values($variables), $content);
-
-        /**
-         * Filters the final message content after replacing variables
-         *
-         * @param string $message Message content after replacing variables.
-         * @param string $content Default message content before replacing variables.
-         * @param array $variables Array containing message variables parsed from the argument.
-         *
-         * @since 5.7.6
-         *
-         *
-         */
-        return apply_filters('wp_sms_output_variables_message', $message, $content, $variables, $args);
-    }
-
-    /**
      * return current admin page url
      *
      * @return string
@@ -221,6 +168,10 @@ class Helper
     public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
     {
         global $wpdb;
+
+        if (!is_numeric($mobileNumber)) {
+            return new \WP_Error('invalid_number', __('Invalid Mobile Number', 'wp-sms'));
+        }
 
         // check whether international mode is enabled
         $international_mode = Option::getOption('international_mobile') ? true : false;

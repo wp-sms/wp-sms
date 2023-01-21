@@ -86,11 +86,15 @@ function wp_sms_get_license_key($addOnKey)
  */
 function wp_sms_check_remote_license($addOnKey, $licenseKey)
 {
-    $response = wp_remote_get(add_query_arg(array(
+    $buildUrl = add_query_arg(array(
         'plugin-name' => $addOnKey,
         'license_key' => $licenseKey,
-        'website'     => get_bloginfo('url'),
-    ), WP_SMS_SITE . '/wp-json/plugins/v1/validate'));
+        'website'     => get_bloginfo('url')
+    ), WP_SMS_SITE . '/wp-json/plugins/v1/validate');
+
+    $response = wp_remote_get($buildUrl, [
+        'timeout' => 10
+    ]);
 
     if (is_wp_error($response)) {
         return;
@@ -381,25 +385,51 @@ function wp_sms_get_countries()
 }
 
 /**
- * Show SMS newsletter form.
+ * Show SMS newsletter form
  *
- * @deprecated 4.0 Use wp_sms_subscribes()
- * @see wp_sms_subscribes()
+ * @deprecated 4.0 Use wp_sms_subscriber_form()
+ * @see wp_sms_subscriber_form()
  *
  */
 function wp_subscribes()
 {
     _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscribes()');
-    wp_sms_subscribes();
+    wp_sms_subscriber_form();
 }
 
 /**
- * Show SMS newsletter form.
+ * Show SMS newsletter form
+ *
+ * @deprecated 4.0 Use wp_sms_subscriber_form()
+ * @see wp_sms_subscriber_form()
  *
  */
 function wp_sms_subscribes()
 {
     _deprecated_function(__FUNCTION__, '5.7');
+    wp_sms_subscriber_form();
+}
+
+/**
+ * Show SMS newsletter form
+ *
+ * @param array $attributes
+ *
+ * @return false|string|null
+ */
+function wp_sms_subscriber_form($attributes = array())
+{
+    return \WP_SMS\Helper::loadTemplate(
+        'subscribe-form.php',
+        [
+            'attributes'                           => $attributes,
+            'international_mobile'                 => wp_sms_get_option('international_mobile'),
+            'gdpr_compliance'                      => wp_sms_get_option('gdpr_compliance'),
+            'subscribe_form_gdpr_confirm_checkbox' => wp_sms_get_option('newsletter_form_gdpr_confirm_checkbox'),
+            'subscribe_form_gdpr_text'             => wp_sms_get_option('newsletter_form_gdpr_text'),
+            'get_group_result'                     => \WP_SMS\Newsletter::getGroups(wp_sms_get_option('newsletter_form_specified_groups')),
+        ]
+    );
 }
 
 /**

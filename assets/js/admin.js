@@ -7,6 +7,10 @@
     WpSmsJobManager.init();
     WpSmsUltimateMember.init();
 
+    if (jQuery('#subscribe-meta-box').length) {
+        WpSmsMetaBox.init();
+    }
+
     if (jQuery('#wpcf7-contact-form-editor').length && jQuery('#wpsms-tab').length) {
         WpSmsContactForm7.init();
     }
@@ -446,6 +450,85 @@ let WpSmsContactForm7 = {
             this.fields.recipient_groups.element.show()
             this.fields.message_body.element.show()
 
+        }
+    },
+
+    addEventListener: function () {
+        this.fields.recipient.element.on('change', function () {
+            this.hideOrShowFields();
+        }.bind(this));
+    },
+
+}
+
+/**
+ * Meta Box
+ * @type {{init: WpSmsMetaBox.init, hideOrShowFields: WpSmsMetaBox.hideOrShowFields, setFields: WpSmsMetaBox.setFields, addEventListener: WpSmsMetaBox.addEventListener}}
+ */
+let WpSmsMetaBox = {
+
+    /**
+     * Initialize Functions
+     */
+    init: function () {
+        this.setFields()
+        this.hideOrShowFields()
+        this.addEventListener()
+    },
+
+    /**
+     * Initialize jQuery Selectors
+     */
+    setFields: function () {
+        this.fields = {
+            recipient: {
+                element: jQuery('#wps-send-to'),
+
+                subscriber: {
+                    element: jQuery('#wpsms-select-subscriber-group'),
+                },
+
+                numbers: {
+                    element: jQuery('#wpsms-select-numbers'),
+                },
+
+                users: {
+                    element: jQuery('#wpsms-select-users'),
+                }
+            },
+            message_body: {
+                element: jQuery('#wpsms-custom-text'),
+            }
+        }
+    },
+
+    /**
+     *  Show or Hide content by changing the Select HTMl tag
+     */
+    hideOrShowFields: function () {
+        if (this.fields.recipient.element.val() === 'subscriber') {
+            this.fields.recipient.subscriber.element.show()
+            this.fields.recipient.numbers.element.hide()
+            this.fields.recipient.users.element.hide()
+            this.fields.message_body.element.show()
+
+        } else if (this.fields.recipient.element.val() === 'numbers') {
+            this.fields.recipient.subscriber.element.hide()
+            this.fields.recipient.numbers.element.show()
+            this.fields.recipient.users.element.hide()
+            this.fields.message_body.element.show()
+
+        } else if (this.fields.recipient.element.val() === 'users') {
+            this.fields.recipient.subscriber.element.hide()
+            this.fields.recipient.numbers.element.hide()
+            this.fields.recipient.users.element.show()
+            this.fields.message_body.element.show()
+
+        } else {
+            this.fields.recipient.subscriber.element.hide()
+            this.fields.recipient.numbers.element.hide()
+            this.fields.recipient.users.element.hide()
+            this.fields.message_body.element.hide()
         }
     },
 

@@ -53,14 +53,8 @@ class BlockAbstract
      * @param WP_Block $block
      * @return mixed
      */
-    public function renderCallback($attributes, $content, WP_Block $block)
+    public function renderCallback($attributes, $content, $block)
     {
-        /*
-         * Generate an unique ID for blocks
-         */
-        $unique_id = uniqid();
-        $block_id = "{$this->blockName}-block-" . $unique_id;
-
         /**
          * Enqueue the script and data
          */
@@ -87,9 +81,8 @@ class BlockAbstract
         );
 
         /**
-         * Render the output - With a unique ID
+         * Render the output
          */
-        $attributes['block_id'] = $block_id;
         return $this->output($attributes);
     }
 }

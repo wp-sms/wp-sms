@@ -39,3 +39,9 @@ nbproject
 
 #vscode
 .vscode
+
+#vendor
+/vendor
+
+# Testing
+.env.testing

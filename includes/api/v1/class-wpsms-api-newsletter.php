@@ -46,6 +46,9 @@ class Newsletter extends RestApi
                     ),
                     'group_id' => array(
                         'required' => false,
+                    ),
+                    'custom_fields' => array(
+                        'required' => false
                     )
                 ),
                 'permission_callback' => '__return_true'
@@ -102,8 +105,9 @@ class Newsletter extends RestApi
     public function subscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
-        $params = $request->get_params();
-        $number = self::convertNumber($params['mobile']);
+        $params       = $request->get_params();
+        $number       = self::convertNumber($params['mobile']);
+        $customFields = $request->get_param('custom_fields');
 
         $group_id       = isset($params['group_id']) ? $params['group_id'] : false;
         $allowed_groups = Option::getOption('newsletter_form_specified_groups');
@@ -112,7 +116,7 @@ class Newsletter extends RestApi
             return self::response(__('Not allowed.', 'wp-sms'), 400);
         }
 
-        $result = self::subscribe($params['name'], $number, $group_id);
+        $result = self::subscribe($params['name'], $number, $group_id, $customFields);
 
         if (is_wp_error($result)) {
             return self::response($result->get_error_message(), 400);

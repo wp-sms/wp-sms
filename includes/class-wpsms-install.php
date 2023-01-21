@@ -8,6 +8,8 @@ if (!defined('ABSPATH')) {
 
 class Install
 {
+    const TABLE_OTP          = 'sms_otp';
+    const TABLE_OTP_ATTEMPTS = 'sms_otp_attempts';
 
     public function __construct()
     {
@@ -36,7 +38,6 @@ class Install
         } else {
             self::table_sql();
         }
-
     }
 
     /**
@@ -90,6 +91,9 @@ class Install
 
             dbDelta($create_sms_send);
         }
+
+        self::createSmsOtpTable();
+        self::createSmsOtpAttemptsTable();
     }
 
     /**
@@ -97,7 +101,7 @@ class Install
      *
      * @param $network_wide
      */
-    static function install($network_wide)
+    public static function install($network_wide)
     {
         global $wp_sms_db_version;
 
@@ -116,7 +120,7 @@ class Install
     /**
      * Upgrade plugin requirements if needed
      */
-    static function upgrade()
+    public static function upgrade()
     {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -128,11 +132,12 @@ class Install
         $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
 
         if ($installer_wpsms_ver < WP_SMS_VERSION) {
-
             // Add response and status for outbox
             $column = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $outboxTable, 'response'
+                DB_NAME,
+                $outboxTable,
+                'response'
             ));
 
             if (empty($column)) {
@@ -148,7 +153,9 @@ class Install
             // Change charset sms_send table to utf8mb4 if not
             $result = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $outboxTable, 'message'
+                DB_NAME,
+                $outboxTable,
+                'message'
             ));
 
             if ($result->COLLATION_NAME != $wpdb->collate) {
@@ -158,7 +165,9 @@ class Install
             // Change charset sms_subscribes table to utf8mb4 if not
             $result = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $subscribersTable, 'name'
+                DB_NAME,
+                $subscribersTable,
+                'name'
             ));
 
             if ($result->COLLATION_NAME != $wpdb->collate) {
@@ -168,12 +177,24 @@ class Install
             // Change charset sms_subscribes_group table to utf8mb4 if not
             $result = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
-                DB_NAME, $subscribersGroupTable, 'name'
+                DB_NAME,
+                $subscribersGroupTable,
+                'name'
             ));
 
             if ($result->COLLATION_NAME != $wpdb->collate) {
                 $wpdb->query("ALTER TABLE {$subscribersGroupTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
+
+            /**
+             * Add custom_fields column in send subscribes table
+             */
+            if (!$wpdb->get_var("SHOW COLUMNS FROM `{$subscribersTable}` like 'custom_fields'")) {
+                $wpdb->query("ALTER TABLE `{$subscribersTable}` ADD `custom_fields` TEXT NULL AFTER `activate_key`");
+            }
+
+            self::createSmsOtpTable();
+            self::createSmsOtpAttemptsTable();
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }
@@ -187,7 +208,7 @@ class Install
     }
 
     /**
-     * Creating Table for New Blog in wordpress
+     * Creating Table for New Blog in WordPress
      *
      * @param $blog_id
      */
@@ -211,12 +232,61 @@ class Install
      */
     public function remove_table_on_delete_blog($tables)
     {
-
         foreach (array('sms_subscribes', 'sms_subscribes_group', 'sms_send') as $tbl) {
             $tables[] = $this->tb_prefix . $tbl;
         }
 
         return $tables;
+    }
+
+    /**
+     * Create sms_otp table
+     *
+     * @return array|false
+     */
+    private static function createSmsOtpTable()
+    {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        global $wpdb;
+
+        $charset_collate = $wpdb->get_charset_collate();
+        $tableName       = $wpdb->prefix . self::TABLE_OTP;
+        if ($wpdb->get_var("show tables like '{$tableName}'") != $tableName) {
+            $query = "CREATE TABLE IF NOT EXISTS {$tableName}(
+                `ID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+                `phone_number` VARCHAR(20) NOT NULL,
+                `agent` VARCHAR(255) NOT NULL,
+                `code` CHAR(32) NOT NULL,
+                `created_at` INT UNSIGNED NOT NULL,
+                PRIMARY KEY  (ID)) $charset_collate";
+            return dbDelta($query);
+        }
+    }
+
+    /**
+     * Create sms_otp_attempts table
+     *
+     * @return array|false
+     */
+    private static function createSmsOtpAttemptsTable()
+    {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        global $wpdb;
+
+        $charset_collate = $wpdb->get_charset_collate();
+        $tableName       = $wpdb->prefix . self::TABLE_OTP_ATTEMPTS;
+        if ($wpdb->get_var("show tables like '{$tableName}'") != $tableName) {
+            $query = "CREATE TABLE IF NOT EXISTS {$tableName}(
+                `ID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `phone_number` VARCHAR(20) NOT NULL,
+                `agent` VARCHAR(255) NOT NULL,
+                `code` VARCHAR(255) NOT NULL,
+                `result` TINYINT(1) NOT NULL,
+                `time` INT UNSIGNED NOT NULL,
+                PRIMARY KEY  (ID),
+                KEY (phone_number)) $charset_collate";
+            return dbDelta($query);
+        }
     }
 }
 

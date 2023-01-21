@@ -87,10 +87,11 @@ class Newsletter
      * @param string $group_id
      * @param string $status
      * @param null $key
+     * @param array $custom_fields
      *
      * @return array
      */
-    public static function addSubscriber($name, $mobile, $group_id = '', $status = '1', $key = null)
+    public static function addSubscriber($name, $mobile, $group_id = '', $status = '1', $key = null, $custom_fields = array())
     {
         global $wpdb;
 
@@ -104,12 +105,13 @@ class Newsletter
         $result = $wpdb->insert(
             $wpdb->prefix . "sms_subscribes",
             array(
-                'date'         => WP_SMS_CURRENT_DATE,
-                'name'         => $name,
-                'mobile'       => $mobile,
-                'status'       => $status,
-                'activate_key' => $key,
-                'group_ID'     => $group_id,
+                'date'          => WP_SMS_CURRENT_DATE,
+                'name'          => $name,
+                'mobile'        => $mobile,
+                'status'        => $status,
+                'activate_key'  => $key,
+                'custom_fields' => serialize($custom_fields),
+                'group_ID'      => $group_id,
             )
         );
 
@@ -119,13 +121,14 @@ class Newsletter
              *
              * @param string $name name.
              * @param string $mobile mobile.
+             * @param string $wpdb- >insert_id Subscriber ID
              *
              * @since 3.0
              *
              */
-            do_action('wp_sms_add_subscriber', $name, $mobile);
+            do_action('wp_sms_add_subscriber', $name, $mobile, $wpdb->insert_id);
 
-            return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'));
+            return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
         } else {
             return array('result' => 'error', 'message' => __('Having problem with add subscriber, please try again later.', 'wp-sms'));
         }
@@ -464,13 +467,13 @@ class Newsletter
     }
 
     /**
-     * @param bool $group_ids
+     * @param bool|array $group_ids
      * @param bool $only_active
      * @param array $columns
      *
      * @return array
      */
-    public static function getSubscribers($group_ids = false, $only_active = false, $columns = array())
+    public static function getSubscribers($group_ids = null, $only_active = false, $columns = array())
     {
         global $wpdb;
         $where = '';

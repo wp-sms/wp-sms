@@ -65,6 +65,14 @@ class WP_SMS
      */
     public function load_textdomain()
     {
+        // Compatibility with WordPress < 5.0
+        if (function_exists('determine_locale')) {
+            $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
+
+            unload_textdomain('wp-sms');
+            load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
+        }
+
         load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
@@ -91,6 +99,17 @@ class WP_SMS
         $this->include('src/Helper.php');
         $this->include('src/Utils/CsvHelper.php');
 
+        // Notification classes
+        $this->include('src/Notification/Notification.php');
+        $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
+        $this->include('src/Notification/Handler/WooCommerceProductNotification.php');
+        $this->include('src/Notification/Handler/WordPressPostNotification.php');
+        $this->include('src/Notification/Handler/WordPressUserNotification.php');
+        $this->include('src/Notification/Handler/WordPressCommentNotification.php');
+        $this->include('src/Notification/Handler/SubscriberNotification.php');
+        $this->include('src/Notification/Handler/CustomNotification.php');
+        $this->include('src/Notification/NotificationFactory.php');
+
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');
         $this->include('includes/class-wpsms-notifications.php');
@@ -99,8 +118,12 @@ class WP_SMS
         $this->include('includes/class-wpsms-quform.php');
         $this->include('includes/class-wpsms-newsletter.php');
         $this->include('includes/class-wpsms-rest-api.php');
-        $this->include('includes/class-wpsms-shortcode.php');
         $this->include('includes/admin/class-wpsms-version.php');
+
+        // Newsletter
+        $this->include('src/Subscriber/SubscriberManager.php');
+        $subscriberManager = new \WP_SMS\Subscriber\SubscriberManager();
+        $subscriberManager->init();
 
         // Blocks
         $this->include('src/BlockAbstract.php');
@@ -131,6 +154,21 @@ class WP_SMS
 
         $webhookManager = new \WP_SMS\Webhook\WebhookManager();
         $webhookManager->init();
+
+        // SmsOtp
+        $this->include('src/SmsOtp/Exceptions/OtpLimitExceededException.php');
+        $this->include('src/SmsOtp/Exceptions/TooManyAttemptsException.php');
+        $this->include('src/SmsOtp/Exceptions/InvalidArgumentException.php');
+        $this->include('src/SmsOtp/Generator.php');
+        $this->include('src/SmsOtp/Verifier.php');
+        $this->include('src/SmsOtp/SmsOtp.php');
+
+        // Shortcode
+        $this->include('src/Shortcode/ShortcodeManager.php');
+        $this->include('src/Shortcode/SubscriberShortcode.php');
+
+        $shortcodeManager = new \WP_SMS\Shortcode\ShortcodeManager();
+        $shortcodeManager->init();
 
         if (is_admin()) {
             // Admin legacy classes.
@@ -174,5 +212,13 @@ class WP_SMS
     public function newsletter()
     {
         return new \WP_SMS\Newsletter();
+    }
+
+    /**
+     * @return \WP_SMS\Notification\NotificationFactory
+     */
+    public function notification()
+    {
+        return new \WP_SMS\Notification\NotificationFactory();
     }
 }

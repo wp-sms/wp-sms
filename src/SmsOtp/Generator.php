@@ -1,0 +1,175 @@
+<?php
+
+namespace WP_SMS\SmsOtp;
+
+use WP_SMS\Install;
+use DateTime;
+use DateInterval;
+
+final class Generator
+{
+    /**
+     * @var DateInterval
+     */
+    private $rateLimitTimeInterval;
+
+    /**
+     * @var integer
+     */
+    private $rateLimitCount;
+
+    /**
+     * @var string
+     */
+    private $agent;
+
+    /**
+     * @param string $phoneNumber
+     * @param string $agent
+     */
+    public function __construct($phoneNumber, $agent)
+    {
+        $this->phoneNumber = $phoneNumber;
+        $this->agent       = $agent;
+    }
+
+    /**
+     * Set generation rate limit
+     *
+     * @param DateInterval $interval
+     * @param integer $count
+     * @return void
+     */
+    public function setRateLimit($interval, $count)
+    {
+        $this->rateLimitTimeInterval = $interval;
+        $this->rateLimitCount        = $count;
+    }
+
+    /**
+     * Get generation limit time threshold
+     *
+     * @return DateInterval
+     */
+    public function getRateLimitTimeInterval()
+    {
+        return $this->rateLimitTimeInterval ?? new DateInterval('PT5M');
+    }
+
+    /**
+     * Get verification time threshold
+     *
+     * @return DateTime
+     */
+    public function getRateLimitTimeThreshold()
+    {
+        return (new DateTime())->sub($this->getRateLimitTimeInterval());
+    }
+
+    /**
+     * Get generation limit count
+     *
+     * @return integer
+     */
+    public function getRateLimitCount()
+    {
+        return $this->rateLimitCount ?? 5;
+    }
+
+    /**
+     * Get passcode
+     *
+     * @return string $passcode
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Get phone number
+     *
+     * @return string $phoneNumber
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Create pass code
+     *
+     * @param integer $length
+     * @throws Exceptions\InvalidArgumentException
+     * @return void
+     */
+    public function createCode($length)
+    {
+        if ($length < 4 || $length > 10) {
+            throw new Exceptions\InvalidArgumentException(__('Provided $length argument must be between 4 and 10.', 'wp-sms-pro'));
+        }
+
+        $hash = bin2hex(openssl_random_pseudo_bytes(16));
+
+        $values = array_values(unpack('C*', $hash));
+
+        $offset = ($values[\count($values) - 1] & 0xF);
+        $code = ($values[$offset + 0] & 0x7F) << 24 | ($values[$offset + 1] & 0xFF) << 16 | ($values[$offset + 2] & 0xFF) << 8 | ($values[$offset + 3] & 0xFF);
+        $otp = $code % (10 ** $length);
+
+        $this->code = str_pad((string) $otp, $length, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Limit OTP generation rate
+     *
+     * @throws Exceptions\OtpLimitExceededException
+     * @return void
+     */
+    public function limitGeneration()
+    {
+        global $wpdb;
+
+        $tableName = $wpdb->prefix . Install::TABLE_OTP;
+        $query = $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d",
+            [
+                $this->phoneNumber,
+                $this->agent,
+                $this->getRateLimitTimeThreshold()->getTimestamp()
+            ]
+        );
+
+        $result = (int) $wpdb->get_var($query);
+
+        if ($result >= $this->getRateLimitCount()) {
+            throw new Exceptions\OtpLimitExceededException(__('OTPs generated for this number has reached its limit, please try some other time.', 'wp-sms-pro'));
+        }
+    }
+
+    /**
+     * Insert record into database
+     *
+     * @return int|false
+     */
+    public function saveIntoDatabase()
+    {
+        global $wpdb;
+
+        return $wpdb->insert(
+            $wpdb->prefix . Install::TABLE_OTP,
+            [
+                'phone_number' => $this->phoneNumber,
+                'code'         => md5($this->code),
+                'agent'        => $this->agent,
+                'created_at'   => time(),
+            ],
+            [
+                '%s',
+                '%s',
+                '%s',
+                '%d',
+            ]
+        );
+    }
+}
