@@ -62,16 +62,6 @@ class BlockAbstract
             wp_enqueue_script("wp-sms-blocks-subscribe", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
         }
 
-        if ($this->blockName == "Subscribe") {
-            wp_localize_script("wp-sms-blocks-subscribe", 'wpsms_ajax_object', array(
-                'rest_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
-                'unknown_error'     => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-                'loading_text'      => __('Loading...', 'wp-sms'),
-                'subscribe_text'    => __('Subscribe', 'wp-sms'),
-                'activation_text'   => __('Activation', 'wp-sms'),
-            ));
-        }
-
         wp_localize_script(
             "wp-sms-blocks-{$this->blockName}",
             'pluginAssetsUrl',

@@ -39,10 +39,17 @@ class Front
             wp_enqueue_style('wpsms-subscribe');
         }
 
-        // todo
-        wp_register_script('wp-sms-blocks-subscribe', WP_SMS_URL . 'assets/js/blocks/subscribe.js', ['jquery'], WP_SMS_VERSION, true);
-        wp_enqueue_script('wp-sms-blocks-subscribe');
+        // Register subscriber form script
+        wp_register_script('wp-sms-subscriber-script', WP_SMS_URL . 'assets/js/subscribe.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_enqueue_script('wp-sms-subscriber-script');
 
+        wp_localize_script("wp-sms-subscriber-script", 'wpsms_ajax_object', array(
+            'rest_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
+            'unknown_error'     => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
+            'loading_text'      => __('Loading...', 'wp-sms'),
+            'subscribe_text'    => __('Subscribe', 'wp-sms'),
+            'activation_text'   => __('Activation', 'wp-sms'),
+        ));
     }
 
     /**
