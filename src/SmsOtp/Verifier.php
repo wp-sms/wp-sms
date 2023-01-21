@@ -2,7 +2,7 @@
 
 namespace WP_SMS\SmsOtp;
 
-use WP_SMS\Pro\Install;
+use WP_SMS\Install;
 use DateTime;
 use DateInterval;
 
