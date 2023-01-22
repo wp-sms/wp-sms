@@ -80,7 +80,7 @@ class hostiran extends \WP_SMS\Gateway
         try {
 
             $arguments = [
-                'header' => [
+                'headers' => [
                     'token' => $this->has_key
                 ],
                 'body'   => [
@@ -128,7 +128,7 @@ class hostiran extends \WP_SMS\Gateway
             }
 
             $arguments = [
-                'header' => [
+                'headers' => [
                     'token' => $this->has_key
                 ],
                 'body'   => [
