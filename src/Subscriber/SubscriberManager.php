@@ -9,7 +9,8 @@ class SubscriberManager
 {
     public function init()
     {
-        add_action('wp_sms_add_subscriber', [$this, 'welcomeMessageCallback'], 10, 3);
+        add_action('wp_sms_add_subscriber', [$this, 'welcomeMessageCallback'], 10, 4);
+        add_action('wp_sms_verify_subscriber', [$this, 'welcomeMessageCallback'], 10, 4);
     }
 
     /**
@@ -17,12 +18,13 @@ class SubscriberManager
      *
      * @param $name
      * @param $mobile
+     * @param $status
      * @param $id
      */
-    public function welcomeMessageCallback($name, $mobile, $id)
+    public function welcomeMessageCallback($name, $mobile, $status, $id)
     {
         // Send welcome message
-        if (Option::getOption('newsletter_form_welcome')) {
+        if ($status == '1' && Option::getOption('newsletter_form_welcome')) {
             $message  = Option::getOption('newsletter_form_welcome_text');
             $receiver = array($mobile);
 
