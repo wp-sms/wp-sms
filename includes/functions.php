@@ -462,6 +462,11 @@ function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = []
 {
     global $sms;
 
+    // Backward compatibility
+    if (!is_array($to)) {
+        $to = array($to);
+    }
+
     $sms->isflash = $is_flash;
     $sms->to      = $to;
     $sms->msg     = $msg;
