@@ -204,6 +204,8 @@ class RestApi
             }
 
             if ($result) {
+                do_action('wp_sms_verify_subscriber', $name, $mobile, 1, $check_mobile->ID);
+
                 // Return response
                 return __('Your subscription done successfully!', 'wp-sms');
             }
