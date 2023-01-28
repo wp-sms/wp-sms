@@ -61,6 +61,7 @@ class Install
             mobile VARCHAR(20) NOT NULL,
             status tinyint(1),
             activate_key INT(11),
+            custom_fields TEXT,
             group_ID int(5),
             PRIMARY KEY(ID)) $charset_collate;");
 
