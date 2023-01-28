@@ -510,12 +510,19 @@ class Gateway
         foreach ($recipients as $number) {
             $number = str_replace("+{$countryCode}", '', $number);
 
-            if (substr($number, 0, $countryCodeLength) != $countryCode && substr($number, 0, 1) != '+') {
-                $finalNumbers[] = $countryCode . $number;
-            } elseif (substr($number, 0, 1) == '+') {
+            if (substr($number, 0, $countryCodeLength) == $countryCode || substr($number, 0, 1) == '+') {
                 $finalNumbers[] = $number;
+
             } else {
-                $finalNumbers[] = $number;
+                if (substr($number, 0, 2) == '00') {
+                    $number = ltrim($number, '00');
+                }
+
+                if (substr($number, 0, 1) == '0') {
+                    $number = ltrim($number, '0');
+                }
+
+                $finalNumbers[] = $countryCode . $number;
             }
         }
 

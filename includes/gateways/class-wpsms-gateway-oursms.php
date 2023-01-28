@@ -13,7 +13,6 @@ class oursms extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
-    public $from = 'OurSms';
 
     public function __construct()
     {
@@ -26,8 +25,13 @@ class oursms extends \WP_SMS\Gateway
             'has_key' => [
                 'id'   => 'gateway_key',
                 'name' => 'API Token',
-                'desc' => 'Enter API token of gateway. You can avail it from your control panel.',
-            ]
+                'desc' => 'Please enter API token of gateway. You can avail it from your control panel.',
+            ],
+            'from'    => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender Name',
+                'desc' => 'Please enter your Sender Name or sender ID.',
+            ],
         ];
     }
 
@@ -64,6 +68,10 @@ class oursms extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
+
+            if (empty($this->from)) {
+                $this->from = 'OurSms';
+            }
 
             $arguments = array(
                 'headers' => [

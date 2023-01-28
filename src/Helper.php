@@ -259,7 +259,7 @@ class Helper
      */
     public static function maybeStartSession($readAndClose = true)
     {
-        if (!session_id()) {
+        if (empty(session_id()) && !headers_sent()) {
             session_start(array('read_and_close' => $readAndClose));
         }
     }
