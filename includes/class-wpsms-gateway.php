@@ -504,26 +504,25 @@ class Gateway
             return $recipients;
         }
 
-        $countryCodeLength = strlen($countryCode);
-        $finalNumbers      = [];
+        $finalNumbers = [];
 
-        foreach ($recipients as $number) {
-            $number = str_replace("+{$countryCode}", '', $number);
+        foreach ($recipients as $recipient) {
 
-            if (substr($number, 0, $countryCodeLength) == $countryCode || substr($number, 0, 1) == '+') {
-                $finalNumbers[] = $number;
+            if (substr($recipient, 0, 2) === '00') {
+                $reformattedNumber = $countryCode . substr($recipient, 2);
+
+            } elseif (substr($recipient, 0, 1) === '0') {
+                $reformattedNumber = $countryCode . substr($recipient, 1);
+
+            } elseif (substr($recipient, 0, 1) === '+') {
+                $reformattedNumber = $recipient;
 
             } else {
-                if (substr($number, 0, 2) == '00') {
-                    $number = ltrim($number, '00');
-                }
+                $reformattedNumber = $countryCode . $recipient;
 
-                if (substr($number, 0, 1) == '0') {
-                    $number = ltrim($number, '0');
-                }
-
-                $finalNumbers[] = $countryCode . $number;
             }
+
+            $finalNumbers[] = $reformattedNumber;
         }
 
         return $finalNumbers;
