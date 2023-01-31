@@ -60,11 +60,9 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             //delete the uploaded file
             unlink($destination);
 
-            //todo number of imported subscribers
             wp_send_json_success([
                 'importDone' => true,
                 'count'      => count($data),
-                //'message'    => __(sprintf('%s of %s subscribers imported successfully! Reload the page to see the result.', 2, count($data)), 'wp-sms' )
             ]);
         }
 
@@ -73,7 +71,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
 
         $counter        = 0;
         $success_upload = 0;
-        $error          = [];
+        $errors         = [];
 
         foreach ($lines as $line) {
             $array         = explode(',', $line);
@@ -90,7 +88,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             // check group id validity
             $selected_group = Newsletter::getGroup($group_id);
             if (!isset($selected_group)) {
-                $error[$mobile_number] = __('The group ID is not valid', 'wp-sms');
+                $errors[$mobile_number] = __('The group ID is not valid', 'wp-sms');
                 $counter++;
                 continue;
             }
@@ -99,7 +97,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             $check_validity = Helper::checkMobileNumberValidity($mobile_number, false, true, $group_id, false);
 
             if (is_wp_error($check_validity)) {
-                $error[$mobile_number] = $check_validity->get_error_message();
+                $errors[$mobile_number] = $check_validity->get_error_message();
                 $counter++;
                 continue;
             }
@@ -107,7 +105,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             $result = Newsletter::addSubscriber($array[$name_index], $array[$mobile_index], $group_id);
 
             if ($result['result'] == 'error') {
-                $error[$mobile_number] = $result['message'];
+                $errors[$mobile_number] = $result['message'];
                 $counter++;
                 continue;
             }
@@ -124,7 +122,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             'importDone'    => false,
             'count'         => count($data),
             'offset'        => $offset,
-            'error'         => $error,
+            'errors'        => $errors,
             'successUpload' => $success_upload
         ]);
     }
