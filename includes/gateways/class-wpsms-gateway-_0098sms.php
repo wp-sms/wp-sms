@@ -4,8 +4,8 @@ namespace WP_SMS\Gateway;
 
 class _0098sms extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://webservice.0098sms.com/service.asmx?wsdl";
-    public $tariff = "http://www.0098sms.com/";
+    private $wsdl_link = "https://webservice.0098sms.com/service.asmx?wsdl";
+    public $tariff = "https://www.0098sms.com/";
     public $unitrial = false;
     public $unit;
     public $flash = "enable";

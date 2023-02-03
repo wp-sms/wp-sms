@@ -1,13 +1,5 @@
 <div id="wp-sms-import-from" style="display:none;">
 
-    <!--Progress Bar-->
-    <div class="wp-sms-progress-ui js-wpSmsProgressUi" style="display: none">
-        <div class="wp-sms-progress-bar js-wpSmsProgressBar" style="width: 0"></div>
-        <div class="wp-sms-progress-percentage js-wpSmsProgressPercentage"></div>
-        <div class="wp-sms-progress-info js-wpSmsProgressInfo"></div>
-        <div class="wp-sms-import-errors js-wpSmsImportErrors"></div>
-    </div>
-
     <!--Loading Spinner-->
     <div class="js-wpSmsOverlay wpsms-sendsms__overlay">
         <svg class="wpsms-sendsms__overlay__spinner" xmlns="http://www.w3.org/2000/svg" style="margin:auto;background:0 0" width="200" height="200" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" display="block">
@@ -20,40 +12,49 @@
     <!-- Show request message to the client -->
     <div class="wpsms-wrap wpsms-import-popup js-wpSmsMessageModal">
         <div class="wp-sms-popup-messages js-wpSmsErrorMessage"></div>
+        <div class="js-WpSmsImportResult" style="display: none">
+            <table>
+                <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Reason for failure</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <form class="js-wpSmsUploadForm wp-sms-upload-form" method="post" enctype="multipart/form-data">
-        <p id="first-row-label" style="display: none"><?php _e( 'Now, please specify data type if each column.', 'wp-sms' ); ?></p>
-        <table>
-            <tr class="js-WpSmsHiddenAfterUpload">
-                <td style="padding-top: 10px;">
-                    <input type="file" accept="text/csv" id="wp-sms-input-file">
-                    <p><?php _e( 'The only acceptable format is <code>*.csv</code>', 'wp-sms' ); ?></p>
-                </td>
-            </tr>
 
-            <tr class="js-WpSmsHiddenAfterUpload">
-                <td style="padding-top: 10px;">
-                    <input type="checkbox" id="file-has-header" class="js-wpSmsFileHasHeader">
-                    <label for="file-has-header"><?php _e( 'Check the box if the file includes headers.', 'wp-sms' ); ?> </label>
-                </td>
-            </tr>
+        <div class="js-WpSmsImportStep1" style="padding-top: 10px;">
+            <input type="file" accept="text/csv" id="wp-sms-input-file">
+            <p><?php _e('The only acceptable format is <code>*.csv</code>', 'wp-sms'); ?></p>
+        </div>
 
+        <div class="js-WpSmsImportStep1" style="padding-top: 10px;">
+            <input type="checkbox" id="file-has-header" class="js-wpSmsFileHasHeader">
+            <label for="file-has-header"><?php _e('Check the box if the file includes headers.', 'wp-sms'); ?> </label>
+        </div>
+
+        <p id="first-row-label" class="js-WpSmsImportStep2" style="display: none"><?php _e('Now, please specify data type of each column.', 'wp-sms'); ?></p>
+
+        <table class="js-WpSmsImportStep2">
             <tr id="wp-sms-group-select" class="js-wpSmsGroupSelect" style="display: none">
                 <td colspan="2" style="padding-top: 20px;">
-                    <p><?php _e( 'Choose or add a group:', 'wp-sms' ); ?></p>
+                    <p><?php _e('Choose or add a group:', 'wp-sms'); ?></p>
                     <select>
-                        <option value="0"><?php _e( 'Please Select', 'wp-sms' ); ?></option>
-                        <option value="new_group"><?php _e( 'Add a new group', 'wp-sms' ); ?></option>
-						<?php
-						if ( $groups ) :
-							foreach ( $groups as $group ) :
-								?>
-                                <option value="<?php echo esc_attr( $group->ID ); ?>"><?php echo esc_attr( $group->name ); ?></option>
-							<?php
-							endforeach;
-						endif;
-						?>
+                        <option value="0"><?php _e('Please Select', 'wp-sms'); ?></option>
+                        <option value="new_group"><?php _e('Add a new group', 'wp-sms'); ?></option>
+                        <?php
+                        if ($groups) :
+                            foreach ($groups as $group) :
+                                ?>
+                                <option value="<?php echo esc_attr($group->ID); ?>"><?php echo esc_attr($group->name); ?></option>
+                            <?php
+                            endforeach;
+                        endif;
+                        ?>
                     </select>
                 </td>
             </tr>
@@ -63,13 +64,14 @@
                     <input type="text" id="wp-sms-select-group-name" class="js-wpSmsSelectGroupName">
                 </td>
             </tr>
-
-            <tr>
-                <td colspan="2" style="padding-top: 20px;">
-                    <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php _e( 'Upload', 'wp-sms' ); ?>"/>
-                    <input type="submit" class="js-wpSmsImportButton button-primary" style="display: none;" value="<?php _e( 'Import', 'wp-sms' ); ?>"/>
-                </td>
-            </tr>
         </table>
+
+        <div style="padding-top: 20px;">
+            <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php _e('Upload', 'wp-sms'); ?>"/>
+            <input type="submit" class="js-wpSmsImportButton button-primary" style="display: none;" value="<?php _e('Import', 'wp-sms'); ?>"/>
+            <input type="submit" class="js-wpSmsRefreshButton button-primary" style="display: none;" value="<?php _e('Refresh', 'wp-sms'); ?>"/>
+        </div>
+
     </form>
+
 </div>

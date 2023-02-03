@@ -11,25 +11,30 @@ let wpSmsImportSubscriber = {
         this.selectOrAddGroup()
         this.disableSelectedOptions()
         this.bindImportRequestBody()
+        this.refreshEventListener()
     },
 
     setFields: function () {
         this.uploadForm = jQuery('.js-wpSmsUploadForm')
         this.importButton = jQuery('.js-wpSmsImportButton')
         this.uploadButton = jQuery('.js-wpSmsUploadButton')
+        this.refreshButton = jQuery('.js-wpSmsRefreshButton')
         this.loadingSpinner = jQuery('.js-wpSmsOverlay')
         this.messageModal = jQuery('.js-wpSmsMessageModal')
         this.modalErrorMessage = jQuery('.js-wpSmsErrorMessage')
+        this.importStep2 = jQuery('.js-WpSmsImportStep2')
         this.hasHeader = jQuery('.js-wpSmsFileHasHeader')
+        this.importResult = jQuery('.js-WpSmsImportResult')
+        this.importResultTable = jQuery('.js-WpSmsImportResult table tbody')
 
         this.requestBody = {}
+        this.import_result = {}
         this.successUpload = 0
     },
 
-    uploadEventListener: function () {
-        let $this = this
+    uploadEventListener: function ($this = this) {
 
-        this.uploadForm.on('submit', function (event) {
+        $this.uploadForm.on('submit', function (event) {
 
             // avoid to execute the actual submit of the form
             event.preventDefault()
@@ -68,26 +73,26 @@ let wpSmsImportSubscriber = {
                     setTimeout(function () {
 
                         $this.uploadButton.prop('disabled', false)
-                        $this.loadingSpinner.css('display', 'none')
+                        $this.loadingSpinner.hide()
                         $this.modalErrorMessage.removeClass('notice notice-error')
                         $this.modalErrorMessage.addClass('notice notice-success')
                         $this.modalErrorMessage.html('<p>' + response.data + '</p>')
                         $this.messageModal.removeClass('hidden')
                         $this.messageModal.addClass('not-hidden')
-                        jQuery('.js-WpSmsHiddenAfterUpload').css('display', 'none')
+                        jQuery('.js-WpSmsImportStep1').css('display', 'none')
                         jQuery('#first-row-label').css('display', 'block')
-                        $this.uploadButton.css('display', 'none')
-                        $this.importButton.css('display', 'block')
+                        $this.uploadButton.hide()
+                        $this.importButton.show()
 
                         let firstRow = JSON.parse(xhr.getResponseHeader("X-FirstRow-content"))
 
                         firstRow.forEach(function (item) {
                             jQuery('.js-wpSmsGroupSelect').before(
-                                '<tr class="wp-sms-data-type-row js-wpSmsDataTypeRow">' +
-                                '<td class="wp-sms-data-type-header">' + item + '</td>' +
-                                '<td class="wp-sms-data-type-arrow"><span class="dashicons dashicons-arrow-right-alt"></span></td>' +
-                                '<td class="wp-sms-data-type-select-tag">' +
-                                '<select class="import-column-type js-wpSmsImportColumnType">' +
+                                '<tr class="js-wpSmsDataTypeRow">' +
+                                '<td>' + item + '</td>' +
+                                '<td><span class="dashicons dashicons-arrow-right-alt"></span></td>' +
+                                '<td>' +
+                                '<select class="js-wpSmsImportColumnType">' +
                                 '<option value="0">Please Select</option>' +
                                 '<option value="name">Name</option>' +
                                 '<option value="mobile">Mobile</option>' +
@@ -177,9 +182,7 @@ let wpSmsImportSubscriber = {
         })
     },
 
-    bindImportRequestBody: function () {
-        let $this = this
-
+    bindImportRequestBody: function ($this = this) {
         $this.importButton.on('click', function (event) {
 
             // avoid to execute the actual submit of the form
@@ -220,21 +223,14 @@ let wpSmsImportSubscriber = {
                 $this.requestBody.hasHeader = true
             }
 
-            //todo
-
-            // $this.loadingSpinner.css('display', 'none')
-            // $this.uploadForm.css('display', 'none')
-            // $this.messageModal.css('display', 'none')
-            // $this.progressBarSection.css('display', 'block')
-
             jQuery('#TB_ajaxContent').animate({scrollTop: '0px'}, 300);
 
             $this.importEventListener(0)
         })
     },
 
-    importEventListener: function (startPoint) {
-        let $this = this
+    importEventListener: function (startPoint, $this = this) {
+
         $this.requestBody.startPoint = startPoint
 
         jQuery.ajax({
@@ -254,25 +250,65 @@ let wpSmsImportSubscriber = {
                 let isImportDone = response.responseJSON.data.importDone
                 let getStartPoint = response.responseJSON.data.startPoint
                 let totalSubscriber = response.responseJSON.data.count
+                let errors = response.responseJSON.data.errors
+
+                if (!isImportDone) {
+                    for (var [key, value] of Object.entries(errors)) {
+                        $this.import_result[key] = value
+                    }
+                }
 
                 if (response.responseJSON.data.successUpload) {
                     $this.successUpload += parseInt(response.responseJSON.data.successUpload)
                 }
 
                 if (isImportDone) {
-                    $this.uploadButton.prop('disabled', false)
-
                     //disable loading spinner
                     $this.loadingSpinner.css('display', 'none')
 
-                    //print error messages
-                    $this.modalErrorMessage.removeClass('notice notice-error')
-                    $this.modalErrorMessage.addClass('notice notice-success')
-                    $this.modalErrorMessage.html('<p>' + $this.successUpload + ' of ' + totalSubscriber + ' subscribers imported successfully! Refresh the page to see the result!' + '</p>')
+                    $this.importStep2.css('display', 'none')
+                    $this.importButton.css('display', 'none')
+                    $this.refreshButton.css('display', 'block')
+
+                    //print error messages and result
                     $this.messageModal.removeClass('hidden')
                     $this.messageModal.addClass('not-hidden')
+                    $this.modalErrorMessage.removeClass('notice-error')
+                    $this.modalErrorMessage.addClass('notice-success')
 
-                    return;
+                    var $alert_message
+
+                    switch ($this.successUpload) {
+                        case totalSubscriber:
+                            $alert_message = '<p>Subscribers have been imported successfully!</p>'
+                            break
+
+                        case 0:
+                            $this.modalErrorMessage.removeClass('notice-success')
+                            $this.modalErrorMessage.addClass('notice-error')
+
+                            $alert_message = '<p>Subscribers have not been imported. Look for errors in the logs.</p>'
+                            break
+
+                        default:
+                            $alert_message = '<p>' + $this.successUpload + ' of ' + totalSubscriber + ' subscribers have been imported successfully!</p>'
+                    }
+
+                    $this.modalErrorMessage.html($alert_message)
+
+                    if (!jQuery.isEmptyObject($this.import_result)) {
+
+                        $this.importResult.show()
+
+                        for (var [number, failureMessage] of Object.entries($this.import_result)) {
+
+                            $this.importResultTable.append(
+                                "<tr><td><code>" + number + "</code></td><td>" + failureMessage + "</td></tr>"
+                            )
+                        }
+                    }
+
+                    return
                 }
                 return $this.importEventListener(getStartPoint)
             },
@@ -285,12 +321,23 @@ let wpSmsImportSubscriber = {
                 $this.loadingSpinner.css('display', 'none')
 
                 //print error messages
+                $this.messageModal.removeClass('hidden')
+                $this.messageModal.addClass('not-hidden')
                 $this.modalErrorMessage.removeClass('notice notice-success')
                 $this.modalErrorMessage.addClass('notice notice-error')
                 $this.modalErrorMessage.html("<p>" + response.responseJSON.data + "</p>");
-                $this.messageModal.removeClass('hidden')
-                $this.messageModal.addClass('not-hidden')
             }
         })
     },
+
+    refreshEventListener: function ($this = this) {
+        $this.refreshButton.on('click', function (event) {
+
+            // avoid to execute the actual submit of the form
+            event.preventDefault()
+
+            window.location.reload();
+
+        })
+    }
 }
