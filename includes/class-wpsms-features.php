@@ -44,9 +44,9 @@ class Features
         }
 
         if (wp_sms_get_option('international_mobile')) {
-            add_action('wp_enqueue_scripts', array($this, 'load_international_input'));
-            add_action('admin_enqueue_scripts', array($this, 'load_international_input'));
-            add_action('login_enqueue_scripts', array($this, 'load_international_input'));
+            add_action('wp_enqueue_scripts', array($this, 'load_international_input'), 999999);
+            add_action('admin_enqueue_scripts', array($this, 'load_international_input'), 999999);
+            add_action('login_enqueue_scripts', array($this, 'load_international_input'), 999999);
         }
     }
 

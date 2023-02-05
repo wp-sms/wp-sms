@@ -1,5 +1,4 @@
 <h2><?php _e('SMS', 'wp-sms'); ?></h2>
-
 <table class="form-table">
     <?php foreach ($fields as $field): ?>
         <tr>
