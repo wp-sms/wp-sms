@@ -90,6 +90,7 @@ class Gateway
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
             'sendinblue'     => 'sendinblue.com',
+            'whatsappapi'     => 'app.whatsapp-api.net',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -161,6 +162,9 @@ class Gateway
         'iran'           => array(
             'mehrafraz' => 'mehrafraz.com/fa',
         ),
+        'Indonesia'      => array(
+            'nusasms' => 'nusasms.com'
+        )
     );
 
     /**
