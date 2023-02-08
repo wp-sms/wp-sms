@@ -73,6 +73,28 @@ class oursms extends \WP_SMS\Gateway
                 $this->from = 'OurSms';
             }
 
+            // +9661234
+            // 009661234
+            // 09661234
+            // 9661234
+
+            $recipients = $this->cleanNumbers($this->to);
+            $to         = array();
+
+            foreach ($recipients as $recipient) {
+
+                $pos = strpos($recipient, '966');
+
+                if ($pos) {
+                    $recipient = substr($recipient, $pos);
+                } else {
+                    $recipient = '966' . $recipient;
+                }
+
+                $to[] = $recipient;
+
+            }
+
             $arguments = array(
                 'headers' => [
                     'Authorization' => "Bearer {$this->has_key}",
@@ -80,7 +102,7 @@ class oursms extends \WP_SMS\Gateway
                 ],
                 'body'    => json_encode([
                     'src'   => $this->from,
-                    'dests' => $this->to,
+                    'dests' => $to,
                     'body'  => $this->msg,
                 ])
             );
