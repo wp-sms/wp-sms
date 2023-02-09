@@ -6,6 +6,7 @@ if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
+// todo move the actions to \WP_SMS\User\MobileFieldHandler\ then remove the functionality
 class Features
 {
     public $sms;
