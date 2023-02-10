@@ -46,7 +46,7 @@ class WooCommerceAddMobileFieldHandler
         $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
 
         if (is_wp_error($validity)) {
-            wc_add_notice(__('The phone number should be 11 digits and start with 1.'), 'error');
+            wc_add_notice($validity->get_error_message(), 'error');
         }
     }
 
@@ -72,7 +72,7 @@ class WooCommerceAddMobileFieldHandler
     {
         return [
             'label'       => __('Mobile Number', 'wp-sms'),
-            'placeholder' => __('Please enter your mobile number', 'wp-sms'),
+            'description' => __('Enter your mobile number for getting SMS notification', 'wp-sms'),
             'required'    => true,
             'clear'       => false,
             'type'        => 'text',
