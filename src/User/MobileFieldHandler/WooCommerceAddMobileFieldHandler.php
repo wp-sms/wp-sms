@@ -27,7 +27,7 @@ class WooCommerceAddMobileFieldHandler
 
         // checkout billing address
         add_filter('woocommerce_checkout_fields', [$this, 'registerFieldInCheckoutBillingForm']);
-        add_action('woocommerce_after_checkout_validation', [$this, 'validateMobileNumberCallback'], 10, 2);
+        add_action('woocommerce_after_checkout_validation', [$this, 'validateMobileNumberInCheckoutCallback'], 10, 2);
     }
 
     public function registerFieldInBillingForm($fields)
@@ -43,10 +43,24 @@ class WooCommerceAddMobileFieldHandler
     public function validateMobileNumberCallback()
     {
         $mobile   = Helper::sanitizeMobileNumber($_POST[$this->mobileField]);
-        $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
+        $validity = Helper::checkMobileNumberValidity($mobile);
 
         if (is_wp_error($validity)) {
             wc_add_notice($validity->get_error_message(), 'error');
+        }
+    }
+
+    /**
+     * @param $errors \WP_Error
+     * @return void
+     */
+    public function validateMobileNumberInCheckoutCallback($data, $errors)
+    {
+        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->mobileField]);
+        $validity = Helper::checkMobileNumberValidity($mobile, get_current_user_id());
+
+        if (is_wp_error($validity)) {
+            $errors->add($validity->get_error_code(), $validity->get_error_message());
         }
     }
 
