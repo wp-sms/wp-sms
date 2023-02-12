@@ -100,6 +100,7 @@ class WP_SMS
         $this->include('src/Utils/CsvHelper.php');
 
         // MobileFieldHandler
+        $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/WooCommerceUsePhoneFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/WordPressMobileFieldHandler.php');

@@ -5,6 +5,8 @@ namespace WP_SMS\User;
 class MobileFieldManager
 {
     private $mobileFieldHandler = [
+        ''                               => \WP_SMS\User\MobileFieldHandler\DefaultFieldHandler::class,
+        'disable'                        => \WP_SMS\User\MobileFieldHandler\DefaultFieldHandler::class,
         'add_mobile_field_in_profile'    => \WP_SMS\User\MobileFieldHandler\WordPressMobileFieldHandler::class,
         'add_mobile_field_in_wc_billing' => \WP_SMS\User\MobileFieldHandler\WooCommerceAddMobileFieldHandler::class,
         'use_phone_field_in_wc_billing'  => \WP_SMS\User\MobileFieldHandler\WooCommerceUsePhoneFieldHandler::class,
