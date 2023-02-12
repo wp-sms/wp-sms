@@ -77,11 +77,6 @@ class WooCommerceAddMobileFieldHandler
      */
     public function updateMobileNumberAfterPlaceTheOrder($orderId, $postedData, $order)
     {
-        file_put_contents('log-updateMobileNumberAfterPlaceTheOrder', print_r([
-            $orderId,
-            $postedData
-        ], 1));
-
         $userMobile = isset($postedData[$this->mobileField]) ? sanitize_text_field($postedData[$this->mobileField]) : '';
 
         if ($userMobile) {
