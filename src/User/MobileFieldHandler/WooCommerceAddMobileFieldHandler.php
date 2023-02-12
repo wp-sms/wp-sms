@@ -35,6 +35,11 @@ class WooCommerceAddMobileFieldHandler
         add_action('woocommerce_process_shop_order_meta', array($this, 'updateCustomerMobileNumberAfterUpdateTheOrder'), 10, 2);
     }
 
+    public function getMobileNumberByUserId($userId)
+    {
+        return get_user_meta($userId, $this->mobileField, true);
+    }
+
     public function registerFieldInBillingForm($fields)
     {
         $fields[$this->mobileField] = $this->getField();

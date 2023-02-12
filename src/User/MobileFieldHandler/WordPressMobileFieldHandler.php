@@ -31,6 +31,11 @@ class WordPressMobileFieldHandler
         add_action('profile_update', array($this, 'updateMobileNumberCallback'));
     }
 
+    public function getMobileNumberByUserId($userId)
+    {
+        return get_user_meta($userId, $this->mobileField, true);
+    }
+
     // add mobile field input to add user admin page
     public function add_mobile_field_to_newuser_form()
     {

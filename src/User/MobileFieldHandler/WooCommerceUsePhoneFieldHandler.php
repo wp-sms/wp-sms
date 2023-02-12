@@ -10,6 +10,18 @@ class WooCommerceUsePhoneFieldHandler
         add_filter('woocommerce_admin_billing_fields', [$this, 'modifyAdminBillingPhoneAttributes']);
     }
 
+    public function getMobileNumberByUserId($userId)
+    {
+        $mobileNumber = get_user_meta($userId, 'billing_phone', true);
+
+        // backward compatibility
+        if (!$mobileNumber) {
+            $mobileNumber = get_user_meta($userId, '_billing_phone', true);
+        }
+
+        return $mobileNumber;
+    }
+
     /**
      * @param $fields
      */

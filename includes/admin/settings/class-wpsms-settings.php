@@ -512,29 +512,6 @@ class Settings
         // Set WooCommerce settings
         if (class_exists('WooCommerce')) {
             $wc_settings = array(
-                'wc_fields'                   => array(
-                    'id'   => 'wc_fields',
-                    'name' => __('General', 'wp-sms'),
-                    'type' => 'header'
-                ),
-                'wc_mobile_field'             => array(
-                    'id'      => 'wc_mobile_field',
-                    'name'    => __('Choose the Mobile field', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => array(
-                        'disable'            => __('Disable (No field)', 'wp-sms'),
-                        'add_new_field'      => __('Add a New Mobile field in the checkout form', 'wp-sms'),
-                        'used_current_field' => __('Use the Billing Phone field', 'wp-sms'),
-                    ),
-                    'desc'    => __('Choose from which field you get numbers for sending SMS.', 'wp-sms')
-                ),
-                'wc_mobile_field_optional'    => array(
-                    'id'      => 'wc_mobile_field_optional',
-                    'name'    => __('Should be optional?', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('If you would like to make the mobile number field optional, please enable the option.', 'wp-sms')
-                ),
                 'wc_meta_box'                 => array(
                     'id'   => 'wc_meta_box',
                     'name' => __('Order Meta Box', 'wp-sms'),

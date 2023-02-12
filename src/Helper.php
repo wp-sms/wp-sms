@@ -61,8 +61,8 @@ class Helper
      */
     public static function getUserMobileNumberByUserId($userId)
     {
-        // get from the user meta
-        $mobileNumber = get_user_meta($userId, self::getUserMobileFieldName(), true);
+        $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
+        $mobileNumber       = $mobileFieldManager->getHandler()->getMobileNumberByUserId($userId);
 
         return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
