@@ -157,6 +157,24 @@ class Helper
     }
 
     /**
+     * Get customer mobile number by order id
+     *
+     * @param $orderId
+     * @return string|void
+     * @throws Exception
+     */
+    public static function getWooCommerceCustomerNumberByOrderID($orderId)
+    {
+        $userId = get_post_meta($orderId, '_customer_user', true);
+
+        if ($userId) {
+            return self::getUserMobileNumberByUserId($orderId);
+        }
+
+        return get_post_meta($orderId, self::getUserMobileFieldName(), true);
+    }
+
+    /**
      * Prepare a list of WP roles
      *
      * @return array
