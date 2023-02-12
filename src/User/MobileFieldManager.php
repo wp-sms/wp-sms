@@ -2,10 +2,11 @@
 
 namespace WP_SMS\User;
 
+use WP_SMS\Option;
+
 class MobileFieldManager
 {
     private $mobileFieldHandler = [
-        ''                               => \WP_SMS\User\MobileFieldHandler\DefaultFieldHandler::class,
         'disable'                        => \WP_SMS\User\MobileFieldHandler\DefaultFieldHandler::class,
         'add_mobile_field_in_profile'    => \WP_SMS\User\MobileFieldHandler\WordPressMobileFieldHandler::class,
         'add_mobile_field_in_wc_billing' => \WP_SMS\User\MobileFieldHandler\WooCommerceAddMobileFieldHandler::class,
@@ -19,6 +20,11 @@ class MobileFieldManager
         if (isset($this->mobileFieldHandler[$field]) && class_exists($this->mobileFieldHandler[$field])) {
             return new $this->mobileFieldHandler[$field];
         }
+
+        // Backward compatibility
+        Option::updateOption('add_mobile_field', 'disable');
+
+        return new $this->mobileFieldHandler['disable'];
     }
 
     public function init()
