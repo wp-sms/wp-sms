@@ -19,7 +19,7 @@ class WooCommerceUsePhoneFieldHandler
             $mobileNumber = get_user_meta($userId, '_billing_phone', true);
         }
 
-        return $mobileNumber;
+        return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
 
     public function getUserMobileFieldName()

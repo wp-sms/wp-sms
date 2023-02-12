@@ -6,16 +6,6 @@ use WP_SMS\Helper;
 
 class WooCommerceAddMobileFieldHandler
 {
-    /**
-     * @var mixed|null
-     */
-    private $mobileField;
-
-    public function __construct()
-    {
-        $this->mobileField = \WP_SMS\Helper::getUserMobileFieldName();
-    }
-
     public function register()
     {
         // billing address in my account
@@ -37,7 +27,8 @@ class WooCommerceAddMobileFieldHandler
 
     public function getMobileNumberByUserId($userId)
     {
-        return get_user_meta($userId, $this->mobileField, true);
+        $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
+        return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
 
     public function getUserMobileFieldName()
@@ -47,7 +38,7 @@ class WooCommerceAddMobileFieldHandler
 
     public function registerFieldInBillingForm($fields)
     {
-        $fields[$this->mobileField] = $this->getField();
+        $fields[$this->getUserMobileFieldName()] = $this->getField();
 
         return $fields;
     }
@@ -57,7 +48,7 @@ class WooCommerceAddMobileFieldHandler
      */
     public function validateMobileNumberCallback()
     {
-        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->mobileField]);
+        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
         $validity = Helper::checkMobileNumberValidity($mobile);
 
         if (is_wp_error($validity)) {
@@ -71,7 +62,7 @@ class WooCommerceAddMobileFieldHandler
      */
     public function validateMobileNumberInCheckoutCallback($data, $errors)
     {
-        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->mobileField]);
+        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
         $validity = Helper::checkMobileNumberValidity($mobile, get_current_user_id());
 
         if (is_wp_error($validity)) {
@@ -87,7 +78,7 @@ class WooCommerceAddMobileFieldHandler
      */
     public function updateMobileNumberAfterPlaceTheOrder($orderId, $postedData, $order)
     {
-        $userMobile = isset($postedData[$this->mobileField]) ? sanitize_text_field($postedData[$this->mobileField]) : '';
+        $userMobile = isset($postedData[$this->getUserMobileFieldName()]) ? sanitize_text_field($postedData[$this->getUserMobileFieldName()]) : '';
 
         if ($userMobile) {
             $this->updateMobileNumber($orderId, $userMobile);
@@ -96,7 +87,7 @@ class WooCommerceAddMobileFieldHandler
 
     public function registerFieldInAdminUserBillingForm($args)
     {
-        $args['billing']['fields'][$this->mobileField] = array(
+        $args['billing']['fields'][$this->getUserMobileFieldName()] = array(
             'label'       => __('Mobile Number', 'wp-sms'),
             'description' => __('Mobile Number for getting SMS notification', 'wp-sms'),
             'class'       => 'wp-sms-input-mobile'
@@ -107,7 +98,7 @@ class WooCommerceAddMobileFieldHandler
 
     public function registerFieldInCheckoutBillingForm($fields)
     {
-        $fields['billing'][$this->mobileField] = $this->getField();
+        $fields['billing'][$this->getUserMobileFieldName()] = $this->getField();
 
         return $fields;
     }
@@ -132,9 +123,9 @@ class WooCommerceAddMobileFieldHandler
         }
 
         $orderId = sanitize_text_field($_GET['post']);
-        $mobile  = get_post_meta($orderId, $this->mobileField, true);
+        $mobile  = get_post_meta($orderId, $this->getUserMobileFieldName(), true);
 
-        $billingFields[$this->mobileField] = [
+        $billingFields[$this->getUserMobileFieldName()] = [
             'label' => __('Mobile Number', 'wp-sms'),
             'class' => 'wp-sms-input-mobile',
             'value' => $mobile
@@ -160,13 +151,13 @@ class WooCommerceAddMobileFieldHandler
         $mobileNumber = sanitize_text_field($mobileNumber);
 
         // Update in order meta
-        update_post_meta($orderId, $this->mobileField, $mobileNumber);
+        update_post_meta($orderId, $this->getUserMobileFieldName(), $mobileNumber);
 
         // Update in user meta
         $userId = get_post_meta($orderId, '_customer_user', true);
 
         if ($userId and $userId != 0) {
-            update_user_meta($userId, $this->mobileField, $mobileNumber);
+            update_user_meta($userId, $this->getUserMobileFieldName(), $mobileNumber);
         }
     }
 }

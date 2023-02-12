@@ -7,16 +7,6 @@ use WP_SMS\Option;
 
 class WordPressMobileFieldHandler
 {
-    /**
-     * @var mixed|null
-     */
-    private $mobileField;
-
-    public function __construct()
-    {
-        $this->mobileField = Helper::getUserMobileFieldName();
-    }
-
     public function register()
     {
         add_action('user_new_form', array($this, 'add_mobile_field_to_newuser_form'));
@@ -33,7 +23,8 @@ class WordPressMobileFieldHandler
 
     public function getMobileNumberByUserId($userId)
     {
-        return get_user_meta($userId, $this->mobileField, true);
+        $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
+        return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
 
     public function getUserMobileFieldName()
@@ -111,7 +102,7 @@ class WordPressMobileFieldHandler
     {
         if (isset($_POST['mobile'])) {
             $mobile = Helper::sanitizeMobileNumber($_POST['mobile']);
-            update_user_meta($user_id, $this->mobileField, $mobile);
+            update_user_meta($user_id, $this->getUserMobileFieldName(), $mobile);
         }
     }
 
