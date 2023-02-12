@@ -221,7 +221,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             case 'wc-customers':
 
                 if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
-                    $recipients = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
+                    $recipients = \WP_SMS\Helper::getWooCommerceCustomersNumbers();
                 } else {
                     throw new Exception(__('WooCommerce or WP-SMS Pro is not enabled', 'wp-sms-pro'));
                 }
