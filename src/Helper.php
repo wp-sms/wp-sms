@@ -163,7 +163,7 @@ class Helper
      * @return string|void
      * @throws Exception
      */
-    public static function getWooCommerceCustomerNumberByOrderID($orderId)
+    public static function getWooCommerceCustomerNumberByOrderId($orderId)
     {
         $userId = get_post_meta($orderId, '_customer_user', true);
 
