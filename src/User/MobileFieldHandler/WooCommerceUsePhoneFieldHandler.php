@@ -22,6 +22,11 @@ class WooCommerceUsePhoneFieldHandler
         return $mobileNumber;
     }
 
+    public function getUserMobileFieldName()
+    {
+        return apply_filters('wp_sms_user_mobile_field', '_billing_phone');
+    }
+
     /**
      * @param $fields
      */

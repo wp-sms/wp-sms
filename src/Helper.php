@@ -51,7 +51,8 @@ class Helper
      */
     public static function getUserMobileFieldName()
     {
-        return apply_filters('wp_sms_user_mobile_field', 'mobile');
+        $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
+        return $mobileFieldManager->getHandler()->getUserMobileFieldName();
     }
 
     /**
@@ -65,6 +66,25 @@ class Helper
         $mobileNumber       = $mobileFieldManager->getHandler()->getMobileNumberByUserId($userId);
 
         return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
+    }
+
+    /**
+     * @param $number
+     * @return mixed|void|null
+     */
+    public static function getUserByPhoneNumber($number)
+    {
+        if (empty($number)) {
+            return;
+        }
+
+        $mobileMetaKey = self::getUserMobileFieldName();
+        $users         = get_users([
+            'meta_key'   => $mobileMetaKey,
+            'meta_value' => $number
+        ]);
+
+        return !empty($users) ? array_values($users)[0] : null;
     }
 
     /**

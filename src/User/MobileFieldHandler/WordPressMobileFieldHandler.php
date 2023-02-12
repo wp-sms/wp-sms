@@ -36,6 +36,11 @@ class WordPressMobileFieldHandler
         return get_user_meta($userId, $this->mobileField, true);
     }
 
+    public function getUserMobileFieldName()
+    {
+        return apply_filters('wp_sms_user_mobile_field', 'mobile');
+    }
+
     // add mobile field input to add user admin page
     public function add_mobile_field_to_newuser_form()
     {

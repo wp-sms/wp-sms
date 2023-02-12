@@ -40,6 +40,11 @@ class WooCommerceAddMobileFieldHandler
         return get_user_meta($userId, $this->mobileField, true);
     }
 
+    public function getUserMobileFieldName()
+    {
+        return apply_filters('wp_sms_user_mobile_field', 'mobile');
+    }
+
     public function registerFieldInBillingForm($fields)
     {
         $fields[$this->mobileField] = $this->getField();
