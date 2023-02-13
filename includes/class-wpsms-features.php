@@ -42,19 +42,6 @@ class Features
 
         add_action('show_user_profile', $renderFields);
         add_action('edit_user_profile', $renderFields);
-
-
-        $saveFields = function ($userId) {
-            $fields = apply_filters('wp_sms_user_profile_fields', [], $userId);
-            foreach ($fields as $field) {
-                if (isset($field['saveCallback']) && is_callable($field['saveCallback'])) {
-                    call_user_func($field['saveCallback'], $userId);
-                }
-            }
-        };
-
-        add_action('personal_options_update', $saveFields, 10, 1);
-        add_action('edit_user_profile_update', $saveFields, 10, 1);
     }
 
     /**
