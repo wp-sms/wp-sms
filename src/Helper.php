@@ -323,7 +323,7 @@ class Helper
      */
     public static function sanitizeMobileNumber($mobile)
     {
-        return sanitize_text_field(trim($mobile));
+        return apply_filters('wp_sms_sanitize_mobile_number', sanitize_text_field(trim($mobile)));
     }
 
     /**
