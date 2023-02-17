@@ -524,33 +524,6 @@ class Settings
                     'options' => $options,
                     'desc'    => __('Enable send SMS meta box on Orders.<br>Note: You must choose the mobile field first if disable Meta Box will not appear too.', 'wp-sms')
                 ),
-                'wc_otp'                      => array(
-                    'id'   => 'wc_otp',
-                    'name' => __('Mobile Verification', 'wp-sms'),
-                    'type' => 'header',
-                    'desc' => __('By enabling this option the customers should verify their mobile number while placing the order.', 'wp-sms'),
-                    'doc'  => '/resources/secure-login-with-one-time-password-otp/',
-                ),
-                'wc_otp_enable'               => array(
-                    'id'      => 'wc_otp_enable',
-                    'name'    => __('Status', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Enable mobile verification for placing the order during the checkout. make sure the <b>General » Mobile field</b> is enabled in advance.', 'wp-sms')
-                ),
-                'wc_otp_countries_whitelist'  => array(
-                    'id'      => 'wc_otp_countries_whitelist',
-                    'name'    => __('Countries Whitelist', 'wp-sms'),
-                    'type'    => 'countryselect',
-                    'options' => $this->getCountriesList(),
-                    'desc'    => __('Specify the countries to verify the numbers.', 'wp-sms')
-                ),
-                'wc_otp_text'                 => array(
-                    'id'   => 'wc_otp_text',
-                    'name' => __('SMS text', 'wp-sms'),
-                    'type' => 'textarea',
-                    'desc' => sprintf(__('e.g: Your Verification Code: %s', 'wp-sms'), '<code>%otp_code%</code>')
-                ),
                 'wc_notify_product'           => array(
                     'id'   => 'wc_notify_product',
                     'name' => __('Notify for new product', 'wp-sms'),
