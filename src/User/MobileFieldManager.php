@@ -21,7 +21,19 @@ class MobileFieldManager
             return new $this->mobileFieldHandler[$field];
         }
 
-        // Backward compatibility
+        /**
+         * WooCommerce Backward compatibility
+         * This will use the exists billing phone field in checkout even the option is not configured.
+         */
+        if (class_exists('WooCommerce')) {
+            Option::updateOption('add_mobile_field', 'use_phone_field_in_wc_billing');
+            
+            return new $this->mobileFieldHandler['use_phone_field_in_wc_billing'];
+        }
+
+        /**
+         * Old version Backward compatibility
+         */
         Option::updateOption('add_mobile_field', 'disable');
 
         return new $this->mobileFieldHandler['disable'];
