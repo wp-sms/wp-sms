@@ -27,7 +27,7 @@ class MobileFieldManager
          */
         if (class_exists('WooCommerce')) {
             Option::updateOption('add_mobile_field', 'use_phone_field_in_wc_billing');
-            
+
             return new $this->mobileFieldHandler['use_phone_field_in_wc_billing'];
         }
 

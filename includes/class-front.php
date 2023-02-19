@@ -8,12 +8,8 @@ if (!defined('ABSPATH')) {
 
 class Front
 {
-
     public function __construct()
     {
-
-        $this->options = Option::getOptions();
-
         // Load assets
         add_action('wp_enqueue_scripts', array($this, 'front_assets'));
         add_action('admin_bar_menu', array($this, 'admin_bar'));
@@ -34,7 +30,7 @@ class Front
         }
 
         // Check if "Disable Style" in frontend is active or not
-        if (empty($this->options['disable_style_in_front']) or (isset($this->options['disable_style_in_front']) and !$this->options['disable_style_in_front'])) {
+        if (!wp_sms_get_option('disable_style_in_front')) {
             wp_register_style('wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-subscribe');
         }
@@ -60,7 +56,7 @@ class Front
         global $wp_admin_bar;
         if (is_super_admin() && is_admin_bar_showing()) {
             $credit = get_option('wpsms_gateway_credit');
-            if (isset($this->options['account_credit_in_menu']) and !is_object($credit)) {
+            if (wp_sms_get_option('account_credit_in_menu') and !is_object($credit)) {
                 $wp_admin_bar->add_menu(array(
                     'id'    => 'wp-credit-sms',
                     'title' => '<span class="ab-icon"></span>' . $credit,
