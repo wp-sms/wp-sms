@@ -56,6 +56,17 @@ class Helper
     }
 
     /**
+     * @return string
+     */
+    public static function getWooCommerceCheckoutFieldName()
+    {
+        $mobileFieldHandler = (new \WP_SMS\User\MobileFieldManager())->getHandler();
+        return $mobileFieldHandler instanceof \WP_SMS\User\MobileFieldHandler\WooCommerceAddMobileFieldHandler ?
+            $mobileFieldHandler->getUserMobileFieldName() :
+            'billing_phone';
+    }
+
+    /**
      * @param $userId
      *
      * @return mixed
@@ -262,7 +273,6 @@ class Helper
          * 2. Check whether the min and max length of the number comply
          */
         if (!$international_mode) {
-
             // get min length of the number if it is set
             $min_length = Option::getOption('mobile_terms_minimum');
 
@@ -276,7 +286,6 @@ class Helper
             if ($min_length and strlen($mobileNumber) < $min_length) {
                 return new \WP_Error('invalid_number', __("Your mobile number must have at least {$min_length} characters.", 'wp-sms'));
             }
-
         }
 
         /**
@@ -295,7 +304,6 @@ class Helper
             }
 
             $result = $wpdb->get_row($sql);
-
         } else {
             $where       = '';
             $mobileField = self::getUserMobileFieldName();

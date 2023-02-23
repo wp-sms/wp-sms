@@ -90,7 +90,8 @@ class Gateway
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
             'sendinblue'     => 'sendinblue.com',
-            'whatsappapi'     => 'app.whatsapp-api.net',
+            'whatsappapi'    => 'app.whatsapp-api.net',
+            'rapidsms'       => 'rapidsms.net',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -153,8 +154,9 @@ class Gateway
             'smscentral'   => 'smscentral.com.au'
         ),
         'russia'         => array(
-            'sigmasms' => 'sigmasms.ru',
-            'turbosms' => 'turbosms.ua',
+            'sigmasms'   => 'sigmasms.ru',
+            'turbosms'   => 'turbosms.ua',
+            'smstraffic' => 'smstraffic.eu',
         ),
         'mexico'         => array(
             'smsmasivos' => 'smsmasivos.com.mx',
@@ -163,7 +165,9 @@ class Gateway
             'mehrafraz' => 'mehrafraz.com/fa',
         ),
         'Indonesia'      => array(
-            'nusasms' => 'nusasms.com'
+            'nusasms' => 'nusasms.com',
+            'smsviro' => 'smsviro.com',
+
         )
     );
 
