@@ -82,4 +82,5 @@
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo wp_sms_get_option('newsletter_form_verify'); ?>">
             </div>
         </div>
+    </div>
 </form>
