@@ -2,6 +2,7 @@
 
 namespace WP_SMS;
 
+
 /**
  * Class WP_SMS
  * @package WP_SMS
@@ -138,33 +139,35 @@ class Helper
      */
     public static function getWooCommerceCustomersNumbers($roles = [])
     {
-        $fieldKey = self::getUserMobileFieldName();
-        $args     = array(
-            'meta_query' => array(
-                array(
-                    'key'     => $fieldKey,
-                    'compare' => '>',
-                ),
-                array(
-                    'key'     => 'billing_phone',
-                    'compare' => '>',
-                ),
-            ),
-            'fields'     => 'all_with_meta'
-        );
+//        $fieldKey = self::getUserMobileFieldName();
+//        $args     = array(
+//            'meta_query' => array(
+//                array(
+//                    'key'     => $fieldKey,
+//                    'compare' => '>',
+//                ),
+//                array(
+//                    'key'     => 'billing_phone',
+//                    'compare' => '>',
+//                ),
+//            ),
+//            'fields'     => 'all_with_meta'
+//        );
+//
+//        if ($roles) {
+//            $args['role__in'] = $roles;
+//        }
+//
+//        $customers = get_users($args);
+//        $numbers   = array();
+//
+//        foreach ($customers as $customer) {
+//            $numbers[] = $customer->$fieldKey;
+//        }
+//
+//        return $numbers;
 
-        if ($roles) {
-            $args['role__in'] = $roles;
-        }
-
-        $customers = get_users($args);
-        $numbers   = array();
-
-        foreach ($customers as $customer) {
-            $numbers[] = $customer->$fieldKey;
-        }
-
-        return $numbers;
+        \WPSmsWooPro\Core\Helper::getCustomersNumbers();
     }
 
     /**
