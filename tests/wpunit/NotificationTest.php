@@ -4,7 +4,6 @@ use WP_SMS\Notification\NotificationFactory;
 use WC_Coupon;
 
 
-
 class NotificationTest extends \Codeception\TestCase\WPTestCase
 {
     /**
@@ -111,12 +110,16 @@ class NotificationTest extends \Codeception\TestCase\WPTestCase
 
     public function testCouponNotificationOutput()
     {
-        $coupon       = new WC_Coupon();
+        $coupon = new WC_Coupon();
+        $coupon->set_code('FDSGFGFDG');
+        $coupon->set_amount('20');
+        $coupon->save();
+
         $notification = NotificationFactory::getWooCommerceCoupon($coupon);
 
         $this->assertStringContainsString(
-            $notification->getOutputMessage('Coupon Code : %coupon_code% , Coupon Amount : %coupon_code%')
-            , "Coupon Code : {$coupon->get_code()} , Coupon Amount : {$coupon->get_amount()}"
+            $notification->getOutputMessage('Coupon Code : %coupon_code% , Coupon Amount : %coupon_amount%'),
+            "Coupon Code : {$coupon->get_code()} , Coupon Amount : {$coupon->get_amount()}"
         );
     }
 }
