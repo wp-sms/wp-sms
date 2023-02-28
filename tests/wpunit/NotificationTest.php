@@ -1,6 +1,9 @@
 <?php
 
 use WP_SMS\Notification\NotificationFactory;
+use WC_Coupon;
+
+
 
 class NotificationTest extends \Codeception\TestCase\WPTestCase
 {
@@ -46,6 +49,7 @@ class NotificationTest extends \Codeception\TestCase\WPTestCase
             "<code>%age%</code> <code>%name%</code>"
         );
     }
+
 
     public function testCustomOutputMessage()
     {
@@ -102,6 +106,17 @@ class NotificationTest extends \Codeception\TestCase\WPTestCase
         $this->assertStringContainsString(
             $notification->getOutputMessage('Name: %subscriber_name%, Mobile: %subscriber_mobile%'),
             "Name: John, Mobile: 0123456789"
+        );
+    }
+
+    public function testCouponNotificationOutput()
+    {
+        $coupon       = new WC_Coupon();
+        $notification = NotificationFactory::getWooCommerceCoupon($coupon);
+
+        $this->assertStringContainsString(
+            $notification->getOutputMessage('Coupon Code : %coupon_code% , Coupon Amount : %coupon_code%')
+            , "Coupon Code : {$coupon->get_code()} , Coupon Amount : {$coupon->get_amount()}"
         );
     }
 }
