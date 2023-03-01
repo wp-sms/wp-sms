@@ -244,7 +244,7 @@ class Gateway
      *
      * @var string
      */
-    public $from;
+    public $from = '';
 
     /**
      * Receivers numbers
