@@ -1495,7 +1495,7 @@ class Settings
             'advanced'             => apply_filters('wp_sms_feature_settings', array(
                 'short_url'              => array(
                     'id'   => 'short_url',
-                    'name' => __('Bitly Short URL', 'wp-sms'),
+                    'name' => !$this->proIsInstalled ? __('Bitly Short URL (Pro)', 'wp-sms') : __('Bitly Short URL', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'       => array(

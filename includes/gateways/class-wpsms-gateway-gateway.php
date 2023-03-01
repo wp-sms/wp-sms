@@ -7,7 +7,7 @@ use WP_Error;
 
 class gateway extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.gateway.sa/api/v2/";
+    private $wsdl_link = "https://rest.gateway.sa/api/";
     public $tariff = "http://sms.gateway.sa/";
     public $unitrial = false;
     public $unit;
@@ -140,8 +140,8 @@ class gateway extends \WP_SMS\Gateway
                 'Content-Type:application/json'
             ],
             'body'    => [
-                'ApiKey'   => $this->username,
-                'ClientId' => $this->password,
+                'api_id'   => $this->username,
+                'api_password' => $this->password,
             ]
         ]);
 
@@ -187,8 +187,8 @@ class gateway extends \WP_SMS\Gateway
                 'Is_Flash'      => $Is_Flash,
                 'Message'       => $this->msg,
                 'MobileNumbers' => implode(',', $mobileNumbers),
-                'ApiKey'        => $this->username,
-                'ClientId'      => $this->password,
+                'api_id'        => $this->username,
+                'api_password'  => $this->password,
             ]
         ]);
 

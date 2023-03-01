@@ -40,7 +40,7 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
 
     public function testDuplicateNumberInUserMeta()
     {
-        add_user_meta(1, 'mobile', '+1111111111');
+        add_user_meta(1, \WP_SMS\Helper::getUserMobileFieldName(), '+1111111111');
 
         $validity = \WP_SMS\Helper::checkMobileNumberValidity('+1111111111');
 

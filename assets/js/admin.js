@@ -156,15 +156,15 @@ let WpSmsNotifications = {
     },
 
     hideOrShowFields: function () {
-        if (this.fields.receiverField.element.val() == 'subscriber') {
+        if (this.fields.receiverField.element.val() === 'subscriber') {
             this.fields.subscriberField.element.closest('tr').show()
             this.fields.numbersField.element.closest('tr').hide()
             this.fields.usersField.element.closest('tr').hide()
-        } else if (this.fields.receiverField.element.val() == 'numbers') {
+        } else if (this.fields.receiverField.element.val() === 'numbers') {
             this.fields.subscriberField.element.closest('tr').hide()
             this.fields.numbersField.element.closest('tr').show()
             this.fields.usersField.element.closest('tr').hide()
-        } else if (this.fields.receiverField.element.val() == 'users') {
+        } else if (this.fields.receiverField.element.val() === 'users') {
             this.fields.subscriberField.element.closest('tr').hide()
             this.fields.numbersField.element.closest('tr').hide()
             this.fields.usersField.element.closest('tr').show()
@@ -207,7 +207,7 @@ let WpSmsBuddyPress = {
     },
 
     hideOrShowFields: function () {
-        if (this.fields.mobileNumberField.element.val() != 'used_current_field') {
+        if (this.fields.mobileNumberField.element.val() !== 'used_current_field') {
             this.fields.fieldSelector.element.closest('tr').hide()
             this.fields.syncFields.element.closest('tr').hide()
         } else {
@@ -238,13 +238,13 @@ let WpSmsWoocommerce = {
 
     getFields: function () {
         this.fields = {
-            receiverField: {
+            newProductSmsReceiverField: {
                 element: jQuery('#wps_pp_settings\\[wc_notify_product_receiver\\]'),
             },
-            subscriberField: {
+            newProductSubscriberField: {
                 element: jQuery('#wps_pp_settings\\[wc_notify_product_cat\\]'),
             },
-            numbersField: {
+            newProductNumbersField: {
                 element: jQuery('#wps_pp_settings\\[wc_notify_product_roles\\]'),
             },
             checkoutMobileField: {
@@ -256,41 +256,42 @@ let WpSmsWoocommerce = {
         }
     },
 
-    hideOrShowFields: function () {
-        if (this.fields.receiverField.element.val() == 'subscriber') {
-            this.fields.subscriberField.element.closest('tr').show()
-            this.fields.numbersField.element.closest('tr').hide()
+    hideOrShowNewProductSmsReceiver: function () {
+        if (this.fields.newProductSmsReceiverField.element.val() === 'subscriber') {
+            this.fields.newProductSubscriberField.element.closest('tr').show()
+            this.fields.newProductNumbersField.element.closest('tr').hide()
         } else {
-            this.fields.subscriberField.element.closest('tr').hide()
-            this.fields.numbersField.element.closest('tr').show()
+            this.fields.newProductSubscriberField.element.closest('tr').hide()
+            this.fields.newProductNumbersField.element.closest('tr').show()
         }
     },
 
-    hideOrShowFields2: function () {
-        if (this.fields.checkoutMobileField.element.val() == 'add_new_field') {
+    hideOrShowCheckoutMobileField: function () {
+        if (this.fields.checkoutMobileField.element.val() === 'add_new_field') {
             this.fields.mobileFieldNecessity.element.closest('tr').show()
         } else {
             this.fields.mobileFieldNecessity.element.closest('tr').hide()
         }
     },
 
-    addEventListener: function () {
-        this.fields.receiverField.element.on('change', function () {
-            this.hideOrShowFields();
+    newProductSmsReceiverEventListener: function () {
+        this.fields.newProductSmsReceiverField.element.on('change', function () {
+            this.hideOrShowNewProductSmsReceiver();
         }.bind(this));
     },
 
-    addEventListener: function () {
+    checkoutMobileFieldEventListener: function () {
         this.fields.checkoutMobileField.element.on('change', function () {
-            this.hideOrShowFields2();
+            this.hideOrShowCheckoutMobileField();
         }.bind(this));
     },
 
     init: function () {
         this.getFields();
-        this.hideOrShowFields();
-        this.hideOrShowFields2();
-        this.addEventListener();
+        this.hideOrShowNewProductSmsReceiver();
+        this.hideOrShowCheckoutMobileField();
+        this.newProductSmsReceiverEventListener();
+        this.checkoutMobileFieldEventListener();
     }
 
 }
@@ -316,7 +317,7 @@ let WpSmsJobManager = {
     },
 
     hideOrShowFields: function () {
-        if (this.fields.receiverField.element.val() == 'subscriber') {
+        if (this.fields.receiverField.element.val() === 'subscriber') {
             this.fields.subscriberField.element.closest('tr').show()
             this.fields.numbersField.element.closest('tr').hide()
         } else {
