@@ -122,4 +122,23 @@ class NotificationTest extends \Codeception\TestCase\WPTestCase
             "Coupon Code : {$coupon->get_code()} , Coupon Amount : {$coupon->get_amount()}"
         );
     }
+
+    public function testCustomerNotificationOutput()
+    {
+        $customer = new WC_Customer();
+        $customer->set_id('0');
+        $customer->set_email('test@test.com');
+        $customer->set_username('toptop');
+        $customer->set_first_name('John');
+        $customer->set_last_name('Smith');
+        $customer->set_address('Ottendorf-Okrilla, Freistaat Sachsen(SN), 01455');
+        $customer->save();
+
+        $notification = NotificationFactory::getWooCommerceCustomer($customer);
+
+        $this->assertStringContainsString(
+            $notification->getOutputMessage('Customer Id: %customer_id%, Customer Email: %customer_email%, Customer Username: %customer_username%, Customer Firstname: %customer_first_name%, Customer Lastname: %customer_last_name%, Customer Address: %customer_address%'),
+            "Customer Id: {$customer->get_id()}, Customer Email: {$customer->get_email()}, Customer Username: {$customer->get_username()}, Customer Firstname: {$customer->get_first_name()}, Customer Lastname: {$customer->get_last_name()}, Customer Address: {$customer->get_address()}"
+        );
+    }
 }
