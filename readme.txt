@@ -3,7 +3,7 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, rezathriii
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 3.0
-Tested up to: 6.1.1
+Tested up to: 6.1
 Requires PHP: 5.6
 Stable tag: 6.0.4
 License: GPLv3
@@ -241,6 +241,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.1 - **.**.****
+*
+
 = v6.0.4 - 03.02.2023 =
 * Bugfix: Getting the correct mobile value in the user profile
 * Improvement: The importer and showing the importer results

@@ -322,7 +322,7 @@ class Helper
             return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
         }
 
-        return true;
+        return apply_filters('wp_sms_mobile_number_validity', true, $mobileNumber);
     }
 
     /**

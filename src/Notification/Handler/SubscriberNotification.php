@@ -27,7 +27,7 @@ class SubscriberNotification extends Notification
 
     public function getSubscriberName()
     {
-        return $this->subscriber->name;
+        return mb_strimwidth($this->subscriber->name, 0, 30);
     }
 
     public function getSubscriberMobile()
