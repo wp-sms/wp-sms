@@ -80,7 +80,7 @@ class _1s2u extends \WP_SMS\Gateway
         $to  = implode(',', $numbers);
         $msg = urlencode($this->msg);
 
-        $response = wp_remote_get("{$this->wsdl_link}bulksms?username={$this->username}&password={$this->password}&mno={$to}&id={$this->from}&msg={$msg}&mt={$mt}&fl={$fl}");
+        $response = wp_remote_get("{$this->wsdl_link}bulksms?username={$this->username}&password={$this->password}&mno={$to}&Sid={$this->from}&msg={$msg}&mt={$mt}&fl={$fl}");
 
         // Check response error
         if (is_wp_error($response)) {
