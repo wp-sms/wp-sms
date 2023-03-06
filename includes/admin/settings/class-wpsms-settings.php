@@ -275,7 +275,7 @@ class Settings
                 'id'      => 'login_sms',
                 'name'    => __('Status', 'wp-sms'),
                 'type'    => 'checkbox',
-                'options' => $options,
+                'options' => $option
                 'desc'    => __('This option adds login with SMS in the login form.', 'wp-sms'),
             ),
             'login_sms_message'     => array(
@@ -1534,7 +1534,7 @@ class Settings
                 ),
                 'g_recaptcha'            => array(
                     'id'   => 'g_recaptcha',
-                    'name' => __('Google recaptcha', 'wp-sms'),
+                    'name' => __('Google reCAPTCHA', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'g_recaptcha_status'     => array(
@@ -1542,21 +1542,21 @@ class Settings
                     'name'     => __('Activate', 'wp-sms'),
                     'type'     => 'checkbox',
                     'options'  => $options,
-                    'desc'     => __('By enabling this option, google recaptcha v2 will be added to request-sms actions.', 'wp-sms'),
+                    'desc'     => __('By enabling this option, google reCAPTCHA v2 will be added to request-sms actions.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'g_recaptcha_site_key'   => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => __('Site Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => __('Please enter your v2 recaptcha site key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'g_recaptcha_secret_key' => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => __('Secret Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => __('Please enter your v2 recaptcha secret key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'desc'     => __('Please enter your v2 reCAPTCHA secret key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
             )),
