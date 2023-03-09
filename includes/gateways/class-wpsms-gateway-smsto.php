@@ -31,7 +31,7 @@ class smsto extends \WP_SMS\Gateway
          * @since 3.4
          *
          */
-        $this->from = apply_filters('sms_to_from', $this->from);
+        $this->from = apply_filters('wp_sms_from', $this->from);
         /**
          * Modify Receiver number
          *
@@ -39,7 +39,7 @@ class smsto extends \WP_SMS\Gateway
          * @since 3.4
          *
          */
-        $this->to = apply_filters('sms_to_to', $this->to);
+        $this->to = apply_filters('wp_sms_to', $this->to);
         /**
          * Modify text message
          *
@@ -65,7 +65,7 @@ class smsto extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $this->msg = apply_filters('sms_to_msg', $this->msg);
+        $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         $bodyContent = array(
             'sender_id' => $this->from,
@@ -121,6 +121,8 @@ class smsto extends \WP_SMS\Gateway
         $response = json_decode($response);
         $err      = json_decode($err);
 
+        curl_close($curlSession);
+
         if ($err) {
             $response = [
                 'error'  => true,
@@ -128,14 +130,15 @@ class smsto extends \WP_SMS\Gateway
                 'data'   => $bodyContent,
                 'status' => 'FAILED'
             ];
-            do_action('sms_to_send', $response);
+            do_action('wp_sms_send', $response);
+
             $this->log($this->from, $this->msg, $this->to, $response);
 
             return $response;
         }
 
 
-        if ($response->success == "true") {
+        if (isset($response->success) && $response->success == "true") {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $response, 'PENDING');
 
@@ -146,15 +149,17 @@ class smsto extends \WP_SMS\Gateway
              * @since 2.4
              *
              */
-            do_action('sms_to_send', $response);
+            do_action('wp_sms_send', $response);
 
             return $response;
         } else {
+
+            $errorMessage = isset($response->message) ? $response->message : print_r($response->message, true);
+
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->message, 'ERROR');
-            return new \WP_Error('send-sms', $response->message);
+            $this->log($this->from, $this->msg, $this->to, $errorMessage, 'ERROR');
+            return new \WP_Error('send-sms', $errorMessage);
         }
-        curl_close($curlSession);
     }
 
     public function GetCredit()

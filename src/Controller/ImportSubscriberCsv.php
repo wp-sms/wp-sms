@@ -21,12 +21,9 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
     protected function run()
     {
 
-        // Start session
-        Helper::maybeStartSession();
-
         //find the uploaded file in the session
         $destination = wp_upload_dir();
-        $file        = $_SESSION['wp_sms_import_file'];
+        $file        = get_option('wp_sms_import_file');
         $destination = $destination['path'] . '/' . $file;
         $data        = file($destination);
 
@@ -125,5 +122,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             'errors'        => $errors,
             'successUpload' => $success_upload
         ]);
+
+        delete_option('wp_sms_import_file');
     }
 }
