@@ -48,7 +48,7 @@ class smsto extends \WP_SMS\Gateway
          * @since 3.4
          *
          */
-        $this->msg = apply_filters('wp_sms_msg', $this->msg);
+        $this->msg = apply_filters('wp_sms_msg', $this->msg, $this->to);
 
         if (empty($this->has_key)) {
             return [
