@@ -40,6 +40,7 @@ class smsto extends \WP_SMS\Gateway
          *
          */
         $this->to = apply_filters('wp_sms_to', $this->to);
+
         /**
          * Modify text message
          *
@@ -47,25 +48,20 @@ class smsto extends \WP_SMS\Gateway
          * @since 3.4
          *
          */
-        $has_key = $this->has_key;
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        $no_of_characters = $this->CountNumberOfCharacters();
-
-        if ($no_of_characters > 480) {
-            return new \WP_Error('account-credit', __('You have exceeded the max limit of 480 characters', 'sms-to'));
-        }
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
+
+        if (empty($this->has_key)) {
+            return [
+                'error'  => true,
+                'reason' => 'Invalid Credentials',
+                'data'   => null,
+                'status' => 'FAILED'
+            ];
+        }
+
+        if ($this->CountNumberOfCharacters() > 480) {
+            return new \WP_Error('account-credit', 'You have exceeded the max limit of 480 characters');
+        }
 
         $bodyContent = array(
             'sender_id' => $this->from,
@@ -76,15 +72,6 @@ class smsto extends \WP_SMS\Gateway
         if ((isset($this->options['gateway_smsto_callback_url']))) {
             $callback_url                = apply_filters('sms_to_callback', $this->options['gateway_smsto_callback_url']);
             $bodyContent['callback_url'] = 'https://' . $callback_url . '/wp-json/sms-to/get_post';
-        }
-
-        if (empty($has_key)) {
-            return [
-                'error'  => true,
-                'reason' => 'Invalid Credentials',
-                'data'   => null,
-                'status' => 'FAILED'
-            ];
         }
 
         if ($this->isflash == false) {
@@ -103,7 +90,7 @@ class smsto extends \WP_SMS\Gateway
             CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST  => 'POST',
             CURLOPT_HTTPHEADER     => [
-                'authorization: Bearer ' . $has_key,
+                'authorization: Bearer ' . $this->has_key,
                 'content-type: application/json',
             ],
         ];
@@ -138,9 +125,9 @@ class smsto extends \WP_SMS\Gateway
         }
 
 
-        if (isset($response->success) && $response->success == "true") {
+        if (isset($response->success) && $response->success == 'true') {
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response, 'PENDING');
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
@@ -157,7 +144,7 @@ class smsto extends \WP_SMS\Gateway
             $errorMessage = isset($response->message) ? $response->message : print_r($response->message, true);
 
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $errorMessage, 'ERROR');
+            $this->log($this->from, $this->msg, $this->to, $errorMessage, 'error');
             return new \WP_Error('send-sms', $errorMessage);
         }
     }
@@ -166,7 +153,7 @@ class smsto extends \WP_SMS\Gateway
     {
         // Check api
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('API not set', 'sms-to'));
+            return new \WP_Error('account-credit', 'API not set');
         }
 
         /**
@@ -203,8 +190,6 @@ class smsto extends \WP_SMS\Gateway
 
     public function CountNumberOfCharacters()
     {
-        $numberOfCharacters = strlen($this->msg);
-        return $numberOfCharacters;
+        return strlen($this->msg);
     }
-
 }
