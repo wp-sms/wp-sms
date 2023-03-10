@@ -275,7 +275,7 @@ class Settings
                 'id'      => 'login_sms',
                 'name'    => __('Status', 'wp-sms'),
                 'type'    => 'checkbox',
-                'options' => $option,
+                'options' => $options,
                 'desc'    => __('This option adds login with SMS in the login form.', 'wp-sms'),
             ),
             'login_sms_message'     => array(
