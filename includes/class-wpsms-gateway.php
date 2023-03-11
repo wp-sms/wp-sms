@@ -168,6 +168,9 @@ class Gateway
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
 
+        ),
+        'sweden'      => array(
+            'prosms' => 'prosms.se',
         )
     );
 
