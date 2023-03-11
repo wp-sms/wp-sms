@@ -245,7 +245,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 == Changelog ==
 = v6.1 - **.03.2023 =
-* Add: SMS gateways App.whatsapp-api.net and ProSMS.se
+* Add: SMS gateway ProSMS.se
 * Add: Filters `wp_sms_user_mobile_number` and `wp_sms_mobile_number_validity`
 * Improvement: PHP v8.2 compatibility
 * Improvement: The mobile field number functionality refactored and used handler

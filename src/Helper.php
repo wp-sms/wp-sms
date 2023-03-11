@@ -180,7 +180,11 @@ class Helper
         $userId = get_post_meta($orderId, '_customer_user', true);
 
         if ($userId) {
-            return self::getUserMobileNumberByUserId($orderId);
+            $customerMobileNumber = self::getUserMobileNumberByUserId($orderId);
+
+            if ($customerMobileNumber) {
+                return $customerMobileNumber;
+            }
         }
 
         return get_post_meta($orderId, self::getUserMobileFieldName(), true);
