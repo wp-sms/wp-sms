@@ -2,10 +2,13 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
+use WP_Error;
+
 class _1s2u extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.1s2u.io/";
-    public $tariff = "https://1s2u.com/";
+    private $wsdl_link = "https://api.1s2u.io";
+    public $tariff = "https://1s2u.com";
     public $unitrial = false;
     public $unit;
     public $flash = "enable";
@@ -14,7 +17,22 @@ class _1s2u extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
+        $this->bulk_send      = true;
+        $this->has_key        = false;
         $this->validateNumber = "The phone number must contain only digits together with the country code. It should not contain any other symbols such as (+) sign.  Instead  of  plus  sign,  please  put  (00)" . PHP_EOL . "e.g seperate numbers with comma: 12345678900, 11222338844";
+        $this->help           = "";
+        $this->gatewayFields  = [
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'Registered Username',
+                'desc' => 'Enter your username.',
+            ],
+            'password' => [
+                'id'   => 'gateway_password',
+                'name' => 'Password',
+                'desc' => 'Enter your password.',
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -50,77 +68,89 @@ class _1s2u extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $mt = 0;
-        if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
-            $mt = 1;
-        }
+        try {
 
-        $fl = 0;
-        if ($this->isflash == true) {
-            $fl = 1;
-        }
+            $mt = 0;
+            if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
+                $mt = 1;
+            }
 
-        $numbers = array();
+            $fl = 0;
+            if ($this->isflash) {
+                $fl = 1;
+            }
 
-        foreach ($this->to as $number) {
-            $numbers[] = $this->clean_number($number);
-        }
+            $numbers = array();
 
-        $to  = implode(',', $numbers);
-        $msg = urlencode($this->msg);
+            foreach ($this->to as $number) {
+                $numbers[] = $this->clean_number($number);
+            }
 
-        $response = wp_remote_get("{$this->wsdl_link}bulksms?username={$this->username}&password={$this->password}&mno={$to}&Sid={$this->from}&msg={$msg}&mt={$mt}&fl={$fl}");
+            $arguments = array(
+                'username' => $this->username,
+                'password' => $this->password,
+                'mno'      => implode(',', $numbers),
+                'Sid'      => $this->from,
+                'msg'      => urlencode($this->msg),
+                'mt'       => $mt,
+                'fl'       => $fl
+            );
 
-        // Check response error
-        if (is_wp_error($response)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+            $response = $this->request('POST', "{$this->wsdl_link}/bulksms", [], $arguments);
 
-            return new \WP_Error('send-sms', $response->get_error_message());
-        }
+            //todo error handler
 
-        $result = $this->send_error_check($response['body']);
-
-        if (!is_wp_error($result)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result);
+            //log the result
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
              *
+             * @param string $response result output.
              * @since 2.4
+             *
              */
-            do_action('wp_sms_send', $result);
+            do_action('wp_sms_send', $response);
 
-            return $result;
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result->get_error_message(), 'error');
+            return $response;
 
-            return new \WP_Error('send-sms', $result->get_error_message());
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
+
     }
 
+    /**
+     * @return string | WP_Error
+     * @throws Exception
+     */
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
-        }
 
-        $response = wp_remote_get("{$this->wsdl_link}checkbalance?user={$this->username}&pass={$this->password}");
+        try {
 
-        if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
+            // Check username and password
+            if (!$this->username && !$this->password) {
+                throw new Exception(__('Username and password are required.', 'wp-sms'));
+            }
 
-        $errorMessage = $this->send_error_check($response['body']);
-        $result       = json_decode($response['body']);
+            $arguments = [
+                'USER' => $this->username,
+                'PASS' => $this->password
+            ];
 
-        if ($result and is_int($result) and $result != 00) {
-            return $result;
-        } else {
-            return new \WP_Error('account-credit', $errorMessage);
+            $response = $this->request('POST', "{$this->wsdl_link}/checkbalance", [], $arguments);
+
+            if (!isset($response)) {
+                throw new Exception($response);
+            }
+
+            return $response;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
         }
 
     }
@@ -130,77 +160,13 @@ class _1s2u extends \WP_SMS\Gateway
      *
      * @param $number
      *
-     * @return bool|string
+     * @return string
      */
     private function clean_number($number)
     {
         $number = str_replace('+', '00', $number);
-        $number = trim($number);
 
-        return $number;
-    }
-
-    /**
-     * @param $result
-     *
-     * @return string|\WP_Error
-     */
-    private function send_error_check($result)
-    {
-
-        switch ($result) {
-            case strpos($result, 'OK') !== false:
-                $error = '';
-                break;
-            case '0000':
-                $error = 'Service Not Available or Down Temporary.';
-                break;
-            case '0005':
-                $error = 'Invalid server.';
-                break;
-            case '0010':
-                $error = 'Username not provided.';
-                break;
-            case '0011':
-                $error = 'Password not provided.';
-                break;
-            case '00':
-                $error = 'Invalid username/password.';
-                break;
-            case '0020':
-            case '0':
-            case '0020 / 0':
-                $error = 'Insufficient Credits.';
-                break;
-            case '0030':
-                $error = 'Invalid Sender ID.';
-                break;
-            case '0040':
-                $error = 'Mobile number not provided.';
-                break;
-            case '0041':
-                $error = 'Invalid mobile number.';
-                break;
-            case '0066':
-            case '0042':
-                $error = 'Network not supported.';
-                break;
-            case '0050':
-                $error = 'Invalid message.';
-                break;
-            case '0060':
-                $error = 'Invalid quantity specified.';
-                break;
-            default:
-                $error = sprintf('Unknow error: %s', $result);
-                break;
-        }
-
-        if ($error) {
-            return new \WP_Error('send-sms', $error);
-        }
-
-        return $result;
+        return trim($number);
     }
 
 }
