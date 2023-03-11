@@ -232,6 +232,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 17. SMS Send/Receive stats widget
 
 == Upgrade Notice ==
+= v6.1 =
+* Since the mobile field option is refactored, please review and re-config the mobile field options
+
 = v5.7.3 =
 * If your theme uses these endpoints for SMS subscribers, you have to update it as bellow:
 `DELETE: wpsms/v1/newsletter` to: `POST: wpsms/v1/newsletter/unsubscribe`
@@ -241,8 +244,15 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.1 - **.**.****
-*
+= v6.1 - **.03.2023 =
+* Add: SMS gateway ProSMS.se
+* Add: Filters `wp_sms_user_mobile_number` and `wp_sms_mobile_number_validity`
+* Improvement: PHP v8.2 compatibility
+* Improvement: The mobile field number functionality refactored and used handler
+* Improvement: The subscribe form style issue when frontend style is disabled
+* Improvement: Use the DB for keeping the temp data file data in Import/Export instead of session
+* Improvement: SMS gateways OurSms, gateway.sa, 1s2u and sms.to
+* Bugfix: The missed close div tag in `subscribe-form.php`
 
 = v6.0.4 - 03.02.2023 =
 * Bugfix: Getting the correct mobile value in the user profile

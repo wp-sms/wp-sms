@@ -6,8 +6,19 @@ class Notification
 {
     protected $variables = [];
 
+    /**
+     * @param $message
+     * @param $to
+     * @param $mediaUrls
+     * @return string|\WP_Error
+     */
     public function send($message, $to, $mediaUrls = [])
     {
+        // Backward compatibility
+        if (!is_array($to)) {
+            $to = array($to);
+        }
+
         $response = wp_sms_send($to, $this->getOutputMessage($message), false, null, $mediaUrls);
 
         /**
