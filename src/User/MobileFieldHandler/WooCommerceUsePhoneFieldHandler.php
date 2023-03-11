@@ -8,6 +8,7 @@ class WooCommerceUsePhoneFieldHandler
     {
         add_filter('woocommerce_checkout_fields', array($this, 'modifyBillingPhoneAttributes'));
         add_filter('woocommerce_admin_billing_fields', [$this, 'modifyAdminBillingPhoneAttributes']);
+        add_filter('woocommerce_customer_meta_fields', [$this, 'modifyAdminCustomerMetaBillingPhoneAttributes']);
     }
 
     public function getMobileNumberByUserId($userId)
@@ -43,6 +44,15 @@ class WooCommerceUsePhoneFieldHandler
     {
         if (isset($fields['phone']['class'])) {
             $fields['phone']['class'][] = 'wp-sms-input-mobile';
+        }
+
+        return $fields;
+    }
+
+    public function modifyAdminCustomerMetaBillingPhoneAttributes($fields)
+    {
+        if (isset($fields['billing']['fields'])) {
+            $fields['billing']['fields']['billing_phone']['class'] = 'wp-sms-input-mobile';
         }
 
         return $fields;
