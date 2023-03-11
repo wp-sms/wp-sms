@@ -50,17 +50,6 @@ class _1s2u extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
         $mt = 0;
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
             $mt = 1;
@@ -125,12 +114,13 @@ class _1s2u extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', $response->get_error_message());
         }
 
-        $result = json_decode($response['body']);
+        $errorMessage = $this->send_error_check($response['body']);
+        $result       = json_decode($response['body']);
 
         if ($result and is_int($result) and $result != 00) {
             return $result;
         } else {
-            return new \WP_Error('account-credit', 'Invalid username or password');
+            return new \WP_Error('account-credit', $errorMessage);
         }
 
     }
@@ -177,13 +167,9 @@ class _1s2u extends \WP_SMS\Gateway
             case '00':
                 $error = 'Invalid username/password.';
                 break;
-            case '0020 / 0':
-                $error = 'Insufficient Credits.';
-                break;
             case '0020':
-                $error = 'Insufficient Credits.';
-                break;
             case '0':
+            case '0020 / 0':
                 $error = 'Insufficient Credits.';
                 break;
             case '0030':
@@ -195,6 +181,7 @@ class _1s2u extends \WP_SMS\Gateway
             case '0041':
                 $error = 'Invalid mobile number.';
                 break;
+            case '0066':
             case '0042':
                 $error = 'Network not supported.';
                 break;
@@ -203,9 +190,6 @@ class _1s2u extends \WP_SMS\Gateway
                 break;
             case '0060':
                 $error = 'Invalid quantity specified.';
-                break;
-            case '0066':
-                $error = 'Network not supported.';
                 break;
             default:
                 $error = sprintf('Unknow error: %s', $result);
