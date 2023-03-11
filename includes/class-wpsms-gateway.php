@@ -579,7 +579,7 @@ class Gateway
                 'cheapglobalsms'   => 'cheapglobalsms.com',
                 'instantalerts'    => 'instantalerts.co',
                 'mobtexting'       => 'mobtexting.com',
-                'sms77'            => 'seven',
+                'sms77'            => 'sms77.de (seven)',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
                 'waapi'            => 'whatsappmessagesbywaapi.co',
