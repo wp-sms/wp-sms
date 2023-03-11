@@ -169,9 +169,6 @@ class Gateway
             'smsviro' => 'smsviro.com',
 
         ),
-        'sweden'      => array(
-            'prosms' => 'prosms.se',
-        )
     );
 
     /**
@@ -858,6 +855,10 @@ class Gateway
             'south korea'          => array(
                 'directsend' => 'directsend.co.kr',
             ),
+            'sweden'      => array(
+                'prosms' => 'prosms.se',
+            )
+
         );
 
         return apply_filters('wpsms_gateway_list', $gateways);
