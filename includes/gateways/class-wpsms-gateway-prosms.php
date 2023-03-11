@@ -90,9 +90,9 @@ class prosms extends \WP_SMS\Gateway
     public function GetCredit()
     {
         try {
-            // Check username and password
+            // Check Api key
             if (!$this->has_key) {
-                throw new Exception(__('Username/password for this gateway are required.', 'wp-sms-pro'));
+                throw new Exception(__('Api key for this gateway is required.', 'wp-sms-pro'));
             }
             $arguments = [
                 'headers' => array(
