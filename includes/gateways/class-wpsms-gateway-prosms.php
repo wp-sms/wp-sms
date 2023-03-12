@@ -65,10 +65,14 @@ class prosms extends \WP_SMS\Gateway
                 ))
             );
 
-            $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $arguments);
+            $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $arguments, false);
 
             if ($response->status == 'error') {
-                throw new Exception($response->message);
+                if (isset($response->errorResult)) {
+                    throw new Exception($this->buildErrorReportResult($response->errorResult));
+                } else {
+                    throw new Exception($response->message);
+                }
             }
 
             // Log the result
@@ -91,7 +95,7 @@ class prosms extends \WP_SMS\Gateway
     {
         try {
             // Check Api key
-            if (!$this->has_key) {
+            if (!$this->has_key or !isset($this->has_key)) {
                 throw new Exception(__('Api key for this gateway is required.', 'wp-sms-pro'));
             }
             $arguments = [
@@ -100,7 +104,7 @@ class prosms extends \WP_SMS\Gateway
                 )
             ];
 
-            $response = $this->request('GET', "{$this->wsdl_link}/user/getcreditvalue", [], $arguments);
+            $response = $this->request('GET', "{$this->wsdl_link}/user/getcreditvalue", [], $arguments, false);
 
             if ($response->status == 'error') {
                 throw new Exception($response->message);
@@ -112,4 +116,15 @@ class prosms extends \WP_SMS\Gateway
             return new \WP_Error('get-credit', $e->getMessage());
         }
     }
+
+    private function buildErrorReportResult($response)
+    {
+        $errors = [];
+        foreach ($response->report->rejected as $item) {
+            $errors[] = "Number {$item->receiver} - {$item->message}";
+        }
+
+        return implode(', ', $errors);
+    }
 }
+
