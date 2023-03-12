@@ -99,9 +99,20 @@ class WP_SMS
         $this->include('src/Helper.php');
         $this->include('src/Utils/CsvHelper.php');
 
+        // MobileFieldHandler
+        $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
+        $this->include('src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php');
+        $this->include('src/User/MobileFieldHandler/WooCommerceUsePhoneFieldHandler.php');
+        $this->include('src/User/MobileFieldHandler/WordPressMobileFieldHandler.php');
+        $this->include('src/User/MobileFieldManager.php');
+        $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
+        $mobileFieldManager->init();
+
         // Notification classes
         $this->include('src/Notification/Notification.php');
         $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
+        $this->include('src/Notification/Handler/WooCommerceCouponNotification.php');
+        $this->include('src/Notification/Handler/WooCommerceCustomerNotification.php');
         $this->include('src/Notification/Handler/WooCommerceProductNotification.php');
         $this->include('src/Notification/Handler/WordPressPostNotification.php');
         $this->include('src/Notification/Handler/WordPressUserNotification.php');

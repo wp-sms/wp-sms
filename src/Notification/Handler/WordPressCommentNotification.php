@@ -20,7 +20,7 @@ class WordPressCommentNotification extends Notification
         '%comment_post_title%'   => 'getPostTitle',
         '%comment_post_url%'     => 'getPostUrl',
         '%comment_post_id%'      => 'getPostId',
-    ];
+        ];
 
     public function __construct($commentId = false)
     {

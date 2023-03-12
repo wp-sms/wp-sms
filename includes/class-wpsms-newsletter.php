@@ -61,21 +61,23 @@ class Newsletter
         $numbers = [$number, "+{$number}"];
 
         foreach ($numbers as $number) {
-            $response = $this->deleteSubscriberByNumber($number);
+            $response = self::deleteSubscriberByNumber($number);
 
             do_action('wp_sms_number_unsubscribed_through_url', $number);
 
             if ($response['result'] == 'success') {
-                wp_die($response['message'], __('SMS Subscription!'), [
+                wp_die($response['message'], __('SMS newsletter'), [
                     'link_text' => __('Home page', 'wp-sms'),
                     'link_url'  => get_bloginfo('url'),
+                    'response'  => 200,
                 ]);
             }
         }
 
-        wp_die($response['message'], __('SMS Subscription!'), [
+        wp_die($response['message'], __('SMS newsletter'), [
             'link_text' => __('Home page', 'wp-sms'),
             'link_url'  => get_bloginfo('url'),
+            'response'  => 200,
         ]);
     }
 
@@ -122,7 +124,7 @@ class Newsletter
              * @param string $name name.
              * @param string $mobile mobile.
              * @param string $status mobile.
-             * @param string $wpdb->insert_id Subscriber ID
+             * @param string $wpdb- >insert_id Subscriber ID
              *
              * @since 3.0
              *

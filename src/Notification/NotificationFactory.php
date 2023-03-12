@@ -9,6 +9,8 @@ use WP_SMS\Notification\Handler\WooCommerceProductNotification;
 use WP_SMS\Notification\Handler\WordPressCommentNotification;
 use WP_SMS\Notification\Handler\WordPressPostNotification;
 use WP_SMS\Notification\Handler\WordPressUserNotification;
+use WP_SMS\Notification\Handler\WooCommerceCouponNotification;
+use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
 
 class NotificationFactory
 {
@@ -28,6 +30,24 @@ class NotificationFactory
     public static function getWooCommerceProduct($productId = false)
     {
         return new WooCommerceProductNotification($productId);
+    }
+
+    /**
+     * @param $couponId
+     * @return WooCommerceCouponNotification
+     */
+    public static function getWooCommerceCoupon($couponId = false)
+    {
+        return new WooCommerceCouponNotification($couponId);
+    }
+
+    /**
+     * @param $customerId
+     * @return WooCommerceCustomerNotification
+     */
+    public static function getWooCommerceCustomer($customerId = false)
+    {
+        return new WooCommerceCustomerNotification($customerId);
     }
 
     /**

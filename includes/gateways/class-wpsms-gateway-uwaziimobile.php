@@ -127,6 +127,10 @@ class uwaziimobile extends \WP_SMS\Gateway
 
             $token = $this->getToken();
 
+            if (is_wp_error($token)) {
+                throw new Exception(__('There is a problem with the username and password provided.', 'wp-sms'));
+            }
+
             $params = [
                 'headers' => [
                     'X-Access-Token' => $token
@@ -242,8 +246,6 @@ class uwaziimobile extends \WP_SMS\Gateway
                 set_transient('wpsms_uwazii_token', $token, HOUR_IN_SECONDS * 4);
 
             } catch (Exception $e) {
-                $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-
                 return new WP_Error('send-sms', $e->getMessage());
             }
         }

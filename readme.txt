@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 6.0.4.1
+Stable tag: 6.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -60,23 +60,17 @@ The list of supported gateways and integrated plugins are available in FAQ.
 * Scheduled SMS/MMS sending
 * The ability to set up repeating SMS/MMS messages
 * URL shortening through Bitly
-* Sending Notification SMS to administrators
- * To inform new releases of WordPress
- * When a new user is registered
- * When new comments are posted
- * When users are logged into the WordPress
- * When users are registered to subscribe in forms
-* Integration with WooCommerce and Easy Digital Downloads, as well as compatibility with other plugins
+* Login, 2FA and OTP with SMS
+* Integration with WooCommerce, Easy Digital Downloads, BuddyPress, GravityForms, QuForm, WP Job Manager, Awesome Support and Ultimate Members
 * Compatibility with Bitly.com for shortening URLs in SMS messages.
 
 = Translations =
 WP SMS has been translated in to many languages, for the current list and contributors, please visit the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms).
 
-Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](http://wp-sms-pro.com/localization/) today!
+Translations are done by people just like you, help make WP SMS available to more people around the world and [do a translation](https://wp-sms-pro.com/localization/) today!
 
 = Contributing and Reporting Bugs =
 WP SMS is being developed on GitHub. If you’re interested in contributing to the plugin, please look at [GitHub page](https://github.com/veronalabs/wp-sms).
-[Donate to this plugin](http://wp-sms-pro.com/donate)
 
 
 == Installation ==
@@ -142,10 +136,11 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * Zain.im
 
 = What are the differences between Free and Pro Pack versions? =
-* User Verification Registration through SMS
+* Login, 2FA and OTP with SMS
 * Scheduled sending SMS
 * Professional support & ticketing
 * More supported gateways (listed above)
+* Compatibility with Bitly.com for shortening URLs in SMS messages.
 * Integrations with more plugins as listed below:
  * Integration with BuddyPress: You can add mobile number fields to the profile page, send SMS to users when they’re mentioned in a post, and send SMS to users when they comment on a post.
  * Integration with WooCommerce: Order SMS notifications, verify customer mobile number during the checkout, SMS notification to customers and subscribers for new products, SMS notification for administrator when the stock is low, and also you can send SMS to customers when the order status is changed.
@@ -159,8 +154,8 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
 
-= Is the plugin compatible with PHP v8.0? =
-Yes! WP SMS is compatible with PHP version v5.6 up to v8.0
+= Is the plugin compatible with PHP v8? =
+Yes! WP SMS is compatible with PHP version v5.6 up to v8.2
 
 = How to send SMS with PHP? =
 Use the below code to send SMS through PHP:
@@ -232,6 +227,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 17. SMS Send/Receive stats widget
 
 == Upgrade Notice ==
+= v6.1 =
+* Since the mobile field option is refactored, please review and re-config the mobile field options
+
 = v5.7.3 =
 * If your theme uses these endpoints for SMS subscribers, you have to update it as bellow:
 `DELETE: wpsms/v1/newsletter` to: `POST: wpsms/v1/newsletter/unsubscribe`
@@ -241,6 +239,16 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.1 - 12.03.2023 =
+* Add: SMS gateway ProSMS.se
+* Add: Filters `wp_sms_user_mobile_number` and `wp_sms_mobile_number_validity`
+* Improvement: PHP v8.2 compatibility
+* Improvement: The mobile field number functionality refactored and used handler
+* Improvement: The subscribe form style issue when frontend style is disabled
+* Improvement: Use the DB for keeping the temp data file data in Import/Export instead of session
+* Improvement: SMS gateways OurSms, gateway.sa, 1s2u and sms.to
+* Bugfix: The missed close div tag in `subscribe-form.php`
+
 = v6.0.4.1 - 02.03.2023 =
 * Improvement: Hardened plugin security and improvement
 

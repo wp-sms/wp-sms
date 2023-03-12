@@ -2,6 +2,7 @@
 
 namespace WP_SMS;
 
+
 /**
  * Class WP_SMS
  * @package WP_SMS
@@ -51,7 +52,19 @@ class Helper
      */
     public static function getUserMobileFieldName()
     {
-        return apply_filters('wp_sms_user_mobile_field', 'mobile');
+        $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
+        return $mobileFieldManager->getHandler()->getUserMobileFieldName();
+    }
+
+    /**
+     * @return string
+     */
+    public static function getWooCommerceCheckoutFieldName()
+    {
+        $mobileFieldHandler = (new \WP_SMS\User\MobileFieldManager())->getHandler();
+        return $mobileFieldHandler instanceof \WP_SMS\User\MobileFieldHandler\WooCommerceAddMobileFieldHandler ?
+            $mobileFieldHandler->getUserMobileFieldName() :
+            'billing_phone';
     }
 
     /**
@@ -61,10 +74,27 @@ class Helper
      */
     public static function getUserMobileNumberByUserId($userId)
     {
-        // get from the user meta
-        $mobileNumber = get_user_meta($userId, self::getUserMobileFieldName(), true);
+        $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
+        return $mobileFieldManager->getHandler()->getMobileNumberByUserId($userId);
+    }
 
-        return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
+    /**
+     * @param $number
+     * @return mixed|void|null
+     */
+    public static function getUserByPhoneNumber($number)
+    {
+        if (empty($number)) {
+            return;
+        }
+
+        $mobileMetaKey = self::getUserMobileFieldName();
+        $users         = get_users([
+            'meta_key'   => $mobileMetaKey,
+            'meta_value' => $number
+        ]);
+
+        return !empty($users) ? array_values($users)[0] : null;
     }
 
     /**
@@ -100,6 +130,64 @@ class Helper
         }
 
         return $mobileNumbers;
+    }
+
+    /**
+     * Get WooCommerce customers
+     *
+     * @return array|int
+     */
+    public static function getWooCommerceCustomersNumbers($roles = [])
+    {
+        $fieldKey = self::getUserMobileFieldName();
+        $args     = array(
+            'meta_query' => array(
+                array(
+                    'key'     => $fieldKey,
+                    'compare' => '>',
+                ),
+                array(
+                    'key'     => 'billing_phone',
+                    'compare' => '>',
+                ),
+            ),
+            'fields'     => 'all_with_meta'
+        );
+
+        if ($roles) {
+            $args['role__in'] = $roles;
+        }
+
+        $customers = get_users($args);
+        $numbers   = array();
+
+        foreach ($customers as $customer) {
+            $numbers[] = $customer->$fieldKey;
+        }
+
+        return $numbers;
+    }
+
+    /**
+     * Get customer mobile number by order id
+     *
+     * @param $orderId
+     * @return string|void
+     * @throws Exception
+     */
+    public static function getWooCommerceCustomerNumberByOrderId($orderId)
+    {
+        $userId = get_post_meta($orderId, '_customer_user', true);
+
+        if ($userId) {
+            $customerMobileNumber = self::getUserMobileNumberByUserId($orderId);
+
+            if ($customerMobileNumber) {
+                return $customerMobileNumber;
+            }
+        }
+
+        return get_post_meta($orderId, self::getUserMobileFieldName(), true);
     }
 
     /**
@@ -190,7 +278,6 @@ class Helper
          * 2. Check whether the min and max length of the number comply
          */
         if (!$international_mode) {
-
             // get min length of the number if it is set
             $min_length = Option::getOption('mobile_terms_minimum');
 
@@ -204,7 +291,6 @@ class Helper
             if ($min_length and strlen($mobileNumber) < $min_length) {
                 return new \WP_Error('invalid_number', __("Your mobile number must have at least {$min_length} characters.", 'wp-sms'));
             }
-
         }
 
         /**
@@ -223,7 +309,6 @@ class Helper
             }
 
             $result = $wpdb->get_row($sql);
-
         } else {
             $where       = '';
             $mobileField = self::getUserMobileFieldName();
@@ -241,7 +326,7 @@ class Helper
             return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
         }
 
-        return true;
+        return apply_filters('wp_sms_mobile_number_validity', true, $mobileNumber);
     }
 
     /**
@@ -251,7 +336,7 @@ class Helper
      */
     public static function sanitizeMobileNumber($mobile)
     {
-        return sanitize_text_field(trim($mobile));
+        return apply_filters('wp_sms_sanitize_mobile_number', sanitize_text_field(trim($mobile)));
     }
 
     /**

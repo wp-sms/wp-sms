@@ -35,7 +35,7 @@ class SMS_Send
     {
         $woocommerceCustomers = [];
         if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
-            $woocommerceCustomers = \WP_SMS\Pro\WooCommerce\Helper::getCustomersNumbers();
+            $woocommerceCustomers = \WP_SMS\Helper::getWooCommerceCustomersNumbers();
         }
 
         $buddyPressMobileNumbers = [];

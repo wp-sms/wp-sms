@@ -90,6 +90,8 @@ class Gateway
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
             'sendinblue'     => 'sendinblue.com',
+            'whatsappapi'    => 'app.whatsapp-api.net',
+            'rapidsms'       => 'rapidsms.net',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -152,14 +154,20 @@ class Gateway
             'smscentral'   => 'smscentral.com.au'
         ),
         'russia'         => array(
-            'sigmasms' => 'sigmasms.ru',
-            'turbosms' => 'turbosms.ua',
+            'sigmasms'   => 'sigmasms.ru',
+            'turbosms'   => 'turbosms.ua',
+            'smstraffic' => 'smstraffic.eu',
         ),
         'mexico'         => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
         'iran'           => array(
             'mehrafraz' => 'mehrafraz.com/fa',
+        ),
+        'Indonesia'      => array(
+            'nusasms' => 'nusasms.com',
+            'smsviro' => 'smsviro.com',
+
         ),
     );
 
@@ -236,7 +244,7 @@ class Gateway
      *
      * @var string
      */
-    public $from;
+    public $from = '';
 
     /**
      * Receivers numbers
@@ -571,7 +579,7 @@ class Gateway
                 'cheapglobalsms'   => 'cheapglobalsms.com',
                 'instantalerts'    => 'instantalerts.co',
                 'mobtexting'       => 'mobtexting.com',
-                'sms77'            => 'sms77.de',
+                'sms77'            => 'sms77.de (seven)',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
                 'waapi'            => 'whatsappmessagesbywaapi.co',
@@ -847,6 +855,10 @@ class Gateway
             'south korea'          => array(
                 'directsend' => 'directsend.co.kr',
             ),
+            'sweden'               => array(
+                'prosms' => 'prosms.se',
+            )
+
         );
 
         return apply_filters('wpsms_gateway_list', $gateways);
@@ -1038,7 +1050,7 @@ class Gateway
      * @return string
      * @throws Exception
      */
-    protected function request($method, $url, $arguments = [], $params = [])
+    protected function request($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
     {
         /**
          * Build request URL
@@ -1064,13 +1076,15 @@ class Gateway
         $responseCode = wp_remote_retrieve_response_code($response);
         $responseBody = wp_remote_retrieve_body($response);
 
-        if (in_array($responseCode, [200, 201, 202]) === false) {
+        if ($throwFailedHttpCodeResponse) {
+            if (in_array($responseCode, [200, 201, 202]) === false) {
 
-            if (Helper::isJson($responseBody)) {
-                $responseBody = json_decode($responseBody, true);
+                if (Helper::isJson($responseBody)) {
+                    $responseBody = json_decode($responseBody, true);
+                }
+
+                throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
             }
-
-            throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
         }
 
         $responseJson = json_decode($responseBody);

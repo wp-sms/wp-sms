@@ -393,7 +393,7 @@ function wp_sms_get_countries()
  */
 function wp_subscribes()
 {
-    _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscribes()');
+    _deprecated_function(__FUNCTION__, '4.0', 'wp_sms_subscriber_form');
     wp_sms_subscriber_form();
 }
 
@@ -406,7 +406,7 @@ function wp_subscribes()
  */
 function wp_sms_subscribes()
 {
-    _deprecated_function(__FUNCTION__, '5.7');
+    _deprecated_function(__FUNCTION__, '5.7', 'wp_sms_subscriber_form');
     wp_sms_subscriber_form();
 }
 
@@ -419,9 +419,7 @@ function wp_sms_subscribes()
  */
 function wp_sms_subscriber_form($attributes = array())
 {
-    return \WP_SMS\Helper::loadTemplate(
-        'subscribe-form.php',
-        [
+    return \WP_SMS\Helper::loadTemplate('subscribe-form.php', [
             'attributes'                           => $attributes,
             'international_mobile'                 => wp_sms_get_option('international_mobile'),
             'gdpr_compliance'                      => wp_sms_get_option('gdpr_compliance'),
