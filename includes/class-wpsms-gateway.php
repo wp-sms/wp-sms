@@ -855,7 +855,7 @@ class Gateway
             'south korea'          => array(
                 'directsend' => 'directsend.co.kr',
             ),
-            'sweden'      => array(
+            'sweden'               => array(
                 'prosms' => 'prosms.se',
             )
 
@@ -1050,7 +1050,7 @@ class Gateway
      * @return string
      * @throws Exception
      */
-    protected function request($method, $url, $arguments = [], $params = [])
+    protected function request($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
     {
         /**
          * Build request URL
@@ -1076,13 +1076,15 @@ class Gateway
         $responseCode = wp_remote_retrieve_response_code($response);
         $responseBody = wp_remote_retrieve_body($response);
 
-        if (in_array($responseCode, [200, 201, 202]) === false) {
+        if ($throwFailedHttpCodeResponse) {
+            if (in_array($responseCode, [200, 201, 202]) === false) {
 
-            if (Helper::isJson($responseBody)) {
-                $responseBody = json_decode($responseBody, true);
+                if (Helper::isJson($responseBody)) {
+                    $responseBody = json_decode($responseBody, true);
+                }
+
+                throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
             }
-
-            throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
         }
 
         $responseJson = json_decode($responseBody);
