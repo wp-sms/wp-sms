@@ -1549,14 +1549,14 @@ class Settings
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => __('Site Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="https://www.google.com/recaptcha/admin">Get Site Key from here</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'g_recaptcha_secret_key' => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => __('Secret Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => __('Please enter your v2 reCAPTCHA secret key here, <a href="http://www.google.com/recaptcha/admin">http://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'desc'     => __('Please enter your v2 reCAPTCHA secret key here, <a href="https://www.google.com/recaptcha/admin">Get Secret Key from here</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
             )),
