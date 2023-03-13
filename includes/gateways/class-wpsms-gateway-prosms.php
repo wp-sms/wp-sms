@@ -67,7 +67,8 @@ class prosms extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $arguments, false);
 
-            if ($response->messageCode = '1017') {
+            //check sender name
+            if ($response->messageCode == '1017') {
                 throw new Exception($response->errorResult);
             }
 
@@ -78,6 +79,7 @@ class prosms extends \WP_SMS\Gateway
                     throw new Exception($response->message);
                 }
             }
+
 
             $responseLog = [];
             foreach ($response->result->report->accepted as $item) {
