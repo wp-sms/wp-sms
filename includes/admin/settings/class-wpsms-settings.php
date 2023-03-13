@@ -27,7 +27,9 @@ class Settings
         'pro_awesome_support',
         'pro_ultimate_members'
     ];
+
     private $proIsInstalled;
+    private $wooProIsInstalled;
 
     /**
      * @return string
@@ -47,8 +49,9 @@ class Settings
 
     public function __construct()
     {
-        $this->setting_name   = $this->getCurrentOptionName();
-        $this->proIsInstalled = Version::pro_is_active();
+        $this->setting_name      = $this->getCurrentOptionName();
+        $this->proIsInstalled    = Version::pro_is_active();
+        $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -1534,7 +1537,7 @@ class Settings
                 ),
                 'g_recaptcha'            => array(
                     'id'   => 'g_recaptcha',
-                    'name' => __('Google reCAPTCHA', 'wp-sms'),
+                    'name' => !$this->proIsInstalled ? __('Google reCAPTCHA (Pro / WooCommerce Pro)', 'wp-sms') : __('Google reCAPTCHA', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'g_recaptcha_status'     => array(
@@ -1543,21 +1546,21 @@ class Settings
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => __('By enabling this option, google reCAPTCHA v2 will be added to request-sms actions.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
                 'g_recaptcha_site_key'   => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => __('Site Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="https://www.google.com/recaptcha/admin">Get Site Key from here</a>', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
                 'g_recaptcha_secret_key' => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => __('Secret Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => __('Please enter your v2 reCAPTCHA secret key here, <a href="https://www.google.com/recaptcha/admin">Get Secret Key from here</a>', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'desc'     => __('Please enter your v2 reCAPTCHA secret key here, <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>', 'wp-sms'),
+                    'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
             )),
 
