@@ -81,14 +81,8 @@ class RestApi
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
-        if (Option::getOption('newsletter_form_groups')) {
-            if (!$group) {
-                return new \WP_Error('subscribe', __('Please select the group!', 'wp-sms'));
-            }
-
-            if (!Newsletter::getGroup($group)) {
-                return new \WP_Error('subscribe', __('Group ID not valid!', 'wp-sms'));
-            }
+        if (!empty($group) && !Newsletter::getGroup($group)) {
+            return new \WP_Error('subscribe', __('Group ID not valid!', 'wp-sms'));
         }
 
         $gateway_name = Option::getOption('gateway_name');
