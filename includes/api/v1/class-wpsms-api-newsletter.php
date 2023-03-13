@@ -38,13 +38,13 @@ class Newsletter extends RestApi
                 'methods'             => WP_REST_Server::CREATABLE,
                 'callback'            => array($this, 'subscribe_callback'),
                 'args'                => array(
-                    'name'     => array(
+                    'name'          => array(
                         'required' => true,
                     ),
-                    'mobile'   => array(
+                    'mobile'        => array(
                         'required' => true,
                     ),
-                    'group_id' => array(
+                    'group_id'      => array(
                         'required' => false,
                     ),
                     'custom_fields' => array(
@@ -61,7 +61,7 @@ class Newsletter extends RestApi
                         'required' => false,
                     )
                 ),
-                'permission_callback' => '__return_true'
+                'permission_callback' => array($this, 'getSubscribersPermission')
             )
         ));
 
@@ -177,6 +177,18 @@ class Newsletter extends RestApi
         }
 
         return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));
+    }
+
+    /**
+     * Check user permission
+     *
+     * @param $request
+     *
+     * @return bool
+     */
+    public function getSubscribersPermission($request)
+    {
+        return current_user_can('wpsms_subscribers');
     }
 }
 

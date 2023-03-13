@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, rezathriii
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 3.0
-Tested up to: 6.1
+Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 6.0.4
+Stable tag: 6.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -248,6 +248,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Improvement: Use the DB for keeping the temp data file data in Import/Export instead of session
 * Improvement: SMS gateways OurSms, gateway.sa, 1s2u and sms.to
 * Bugfix: The missed close div tag in `subscribe-form.php`
+
+= v6.0.4.1 - 02.03.2023 =
+* Improvement: Hardened plugin security and improvement
 
 = v6.0.4 - 03.02.2023 =
 * Bugfix: Getting the correct mobile value in the user profile
