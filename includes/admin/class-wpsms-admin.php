@@ -129,7 +129,7 @@ class Admin
                 $wp_admin_bar->add_menu(array(
                     'id'    => 'wp-credit-sms',
                     'title' => '<span class="ab-icon"></span>' . $credit,
-                    'href'  => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms-settings'
+                    'href'  => WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'
                 ));
             }
         }

@@ -12,7 +12,7 @@ jQuery(document).ready(function () {
                 nationalMode: false,
                 utilsScript: wp_sms_intel_tel_input.util_js,
                 formatOnDisplay: false,
-                initialCountry: 'auto'
+                //initialCountry: 'auto'
             });
         }
     }
@@ -29,7 +29,7 @@ jQuery(document).ready(function () {
             nationalMode: wp_sms_intel_tel_input.national_mode,
             utilsScript: wp_sms_intel_tel_input.util_js,
             formatOnDisplay: false,
-            initialCountry: 'auto'
+            //initialCountry: 'auto'
         });
     }
 

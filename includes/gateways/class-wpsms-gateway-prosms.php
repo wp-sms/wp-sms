@@ -67,6 +67,11 @@ class prosms extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $arguments, false);
 
+            //check sender name
+            if ($response->messageCode == '1017') {
+                throw new Exception($response->errorResult);
+            }
+
             if ($response->status == 'error') {
                 if (isset($response->errorResult)) {
                     throw new Exception($this->buildErrorReportResult($response->errorResult));
@@ -75,8 +80,13 @@ class prosms extends \WP_SMS\Gateway
                 }
             }
 
+
+            $responseLog = [];
+            foreach ($response->result->report->accepted as $item) {
+                $responseLog[] = "{$response->status} Result <br>From {$item->receiver} - {$item->country}";
+            }
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, implode(', ', $responseLog));
 
             /*
              * Run hook after send sms.
@@ -98,6 +108,7 @@ class prosms extends \WP_SMS\Gateway
             if (!$this->has_key or !isset($this->has_key)) {
                 throw new Exception(__('Api key for this gateway is required.', 'wp-sms-pro'));
             }
+
             $arguments = [
                 'headers' => array(
                     'Authorization' => "Bearer $this->has_key",
@@ -109,6 +120,7 @@ class prosms extends \WP_SMS\Gateway
             if ($response->status == 'error') {
                 throw new Exception($response->message);
             }
+
 
             return $response->result;
 
