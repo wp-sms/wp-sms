@@ -13,6 +13,7 @@ class bulkgate extends \WP_SMS\Gateway
     public $flash = "false";
     public $isflash = false;
     public $unitrial = true;
+    public $supportIncoming = true;
     public $unit;
 
     public function __construct()
@@ -20,17 +21,22 @@ class bulkgate extends \WP_SMS\Gateway
         parent::__construct();
         $this->bulk_send     = true;
         $this->has_key       = true;
-        $this->help          = '<a href="https://jawalbsms.ws">Take your own api token</a> ';
+        $this->help          = '<a href="https://portal.bulkgate.com/application/">Get your own Application ID and Application Token</a> ';
         $this->gatewayFields = [
-            'from'    => [
-                'id'   => 'gateway_sender_name',
-                'name' => 'Application id',
-                'desc' => 'Enter application id of gateway',
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'Application ID',
+                'desc' => 'Enter your Application ID',
             ],
-            'has_key' => [
-                'id'   => 'gateway_key',
-                'name' => 'Application token',
-                'desc' => 'Enter API key of gateway'
+            'password' => [
+                'id'   => 'gateway_password',
+                'name' => 'Application Token',
+                'desc' => 'Enter your Application Token',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Enter your sender ID',
             ]
         ];
     }
@@ -54,27 +60,35 @@ class bulkgate extends \WP_SMS\Gateway
 
         try {
 
-            $arguments = array(
-                'application_id'    => $this->from,
-                'application_token' => $this->has_key,
-                'number'            => $this->to,
-                'text'              => $this->msg,
-            );
-
-            //send promotioanl sms
             if (count($this->to) > 1) {
-                $response = $this->request('GET', "{$this->wsdl_link}/simple/promotional", $arguments, [], false);
-                exit;
-            }else {
-                $response = $this->request('GET', "{$this->wsdl_link}/simple/transactional", $arguments, [], false);
+                $number = implode(';', $this->to);
+                $apiUrl = "{$this->wsdl_link}/simple/promotional";
+            } else {
+                $number = $this->to[0];
+                $apiUrl = "{$this->wsdl_link}/simple/transactional";
             }
 
-            if ($response->code == '400') {
-                throw new Exception($response->type);
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => json_encode([
+                    'application_id'    => $this->username,
+                    'application_token' => $this->password,
+                    'number'            => $number,
+                    'text'              => $this->msg,
+                    'sender_id_value'   => $this->from,
+                ])
+            ];
+
+            $response = $this->request('POST', $apiUrl, [], $params, false);
+
+            if (isset($response->error) && $response->error) {
+                throw new Exception($response->error);
             }
 
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $responseLog);
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /*
              * Run hook after send sms.
@@ -98,16 +112,14 @@ class bulkgate extends \WP_SMS\Gateway
             }
 
             $arguments = [
-                'application_id'    => $this->from,
-                'application_token' => $this->has_key,
+                'application_id'    => $this->username,
+                'application_token' => $this->password,
             ];
 
             $response = $this->request('GET', "{$this->wsdl_link}/simple/info", $arguments, [], false);
 
-            if (!isset($response->data)) {
-                if ($response->code == '401') {
-                    throw new Exception($response->error);
-                }
+            if (isset($response->error) && $response->error) {
+                throw new Exception($response->error);
             }
 
             return $response->data->credit;
