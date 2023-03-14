@@ -90,7 +90,7 @@ class liveall extends \WP_SMS\Gateway
             $response = $this->request('POST', "{$this->wsdl_link}/Sendout/SendJSMS", [], $params);
 
             if (isset($response->success) && !$response->success) {
-                throw new \Exception($response);
+                throw new \Exception($response->OperationErrors[0]->errorMessage);
             }
 
             //log the result
