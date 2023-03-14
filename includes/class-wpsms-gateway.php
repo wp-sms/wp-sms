@@ -570,7 +570,7 @@ class Gateway
                 'mitto'            => 'mitto.ch',
                 'smsglobal'        => 'smsglobal.com',
                 'gatewayapi'       => 'gatewayapi.com',
-                'bulkgate'       => 'bulkgate.com',
+                'bulkgate'         => 'bulkgate.com',
                 'spirius'          => 'spirius.com',
                 '_1s2u'            => '1s2u.com',
                 'easysendsms'      => 'easysendsms.com',

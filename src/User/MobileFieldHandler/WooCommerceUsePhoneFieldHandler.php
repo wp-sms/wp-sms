@@ -13,7 +13,7 @@ class WooCommerceUsePhoneFieldHandler
 
     public function getMobileNumberByUserId($userId)
     {
-        $mobileNumber = get_user_meta($userId, 'billing_phone', true);
+        $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
 
         // backward compatibility
         if (!$mobileNumber) {
