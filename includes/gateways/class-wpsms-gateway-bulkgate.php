@@ -21,7 +21,7 @@ class bulkgate extends \WP_SMS\Gateway
         parent::__construct();
         $this->bulk_send     = true;
         $this->has_key       = true;
-        $this->help          = '<a href="https://portal.bulkgate.com/application/">Get your own Application ID and Application Token</a> ';
+        $this->help          = '<a href="https://portal.bulkgate.com/application/">Get your own Application ID and Application Token</a>';
         $this->gatewayFields = [
             'username' => [
                 'id'   => 'gateway_username',

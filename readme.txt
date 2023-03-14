@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 6.1
+Stable tag: 6.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -100,6 +100,7 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * Messagebird.com
 * Clicksend.com
 * Octopush.com
+* BulkGate.com
 * WhatsApp Business API
 * Sms.to
 * Mitto.ch
@@ -239,6 +240,14 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.1.1 - 14.03.2023 =
+* Improvement: Make the default the first country in the list in intl-tell-input
+* Improvement: Make `group_id` option in REST API endpoint
+* Improvement: Minor improvements (Special Thanks to Jarko Piironen for testing)
+* Add: Add gateway BulkGate.com
+* Bugfix: The error response issue in gateway Liveall.eu
+* Bugfix: Getting correct the mobile value in WooCommerceUsePhoneFieldHandler
+
 = v6.1 - 12.03.2023 =
 * Add: SMS gateway ProSMS.se
 * Add: Filters `wp_sms_user_mobile_number` and `wp_sms_mobile_number_validity`
