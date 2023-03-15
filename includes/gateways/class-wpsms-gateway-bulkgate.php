@@ -8,7 +8,7 @@ use WP_Error;
 
 class bulkgate extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://portal.bulkgate.com/api/1.0";
+    private $wsdl_link = "https://portal.bulkgate.com/api/2.0";
     public $tariff = "https://www.bulkgate.com/";
     public $flash = "false";
     public $isflash = false;
@@ -61,11 +61,11 @@ class bulkgate extends \WP_SMS\Gateway
         try {
 
             if (count($this->to) > 1) {
-                $number = implode(';', $this->to);
-                $apiUrl = "{$this->wsdl_link}/simple/promotional";
+                $number = $this->to;
+                $apiUrl = "{$this->wsdl_link}/advanced/promotional";
             } else {
                 $number = $this->to[0];
-                $apiUrl = "{$this->wsdl_link}/simple/transactional";
+                $apiUrl = "{$this->wsdl_link}/advanced/transactional";
             }
 
             $params = [
@@ -116,7 +116,7 @@ class bulkgate extends \WP_SMS\Gateway
                 'application_token' => $this->password,
             ];
 
-            $response = $this->request('GET', "{$this->wsdl_link}/simple/info", $arguments, [], false);
+            $response = $this->request('GET', "{$this->wsdl_link}/advanced/info", $arguments, [], false);
 
             if (isset($response->error) && $response->error) {
                 throw new Exception($response->error);
