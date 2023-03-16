@@ -73,11 +73,12 @@ class bulkgate extends \WP_SMS\Gateway
                     'Content-Type' => 'application/json',
                 ],
                 'body'    => json_encode([
-                    'application_id'    => $this->username,
-                    'application_token' => $this->password,
-                    'number'            => $number,
-                    'text'              => $this->msg,
-                    'sender_id_value'   => $this->from,
+                    'application_id'      => $this->username,
+                    'application_token'   => $this->password,
+                    'application_product' => 'wp_sms',
+                    'number'              => $number,
+                    'text'                => $this->msg,
+                    'sender_id_value'     => $this->from,
                 ])
             ];
 
@@ -112,8 +113,9 @@ class bulkgate extends \WP_SMS\Gateway
             }
 
             $arguments = [
-                'application_id'    => $this->username,
-                'application_token' => $this->password,
+                'application_id'      => $this->username,
+                'application_token'   => $this->password,
+                'application_product' => 'wp_sms',
             ];
 
             $response = $this->request('GET', "{$this->wsdl_link}/simple/info", $arguments, [], false);
