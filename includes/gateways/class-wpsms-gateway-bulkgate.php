@@ -103,11 +103,12 @@ class bulkgate extends \WP_SMS\Gateway
             }
 
             $body = [
-                'application_id'    => $this->username,
-                'application_token' => $this->password,
-                'number'            => $number,
-                'duplicates_check'  => $checkDuplicates,
-                'channel' => [],
+                'application_id'      => $this->username,
+                'application_token'   => $this->password,
+                'application_product' => 'wp_sms',
+                'number'              => $number,
+                'duplicates_check'    => $checkDuplicates,
+                'channel'             => [],
             ];
 
             if (strlen(trim((string) $this->viberSender)) > 0) {
@@ -163,8 +164,9 @@ class bulkgate extends \WP_SMS\Gateway
             }
 
             $arguments = [
-                'application_id'    => $this->username,
-                'application_token' => $this->password,
+                'application_id'      => $this->username,
+                'application_token'   => $this->password,
+                'application_product' => 'wp_sms',
             ];
 
             $response = $this->request('GET', "{$this->wsdl_link}/advanced/info", $arguments, [], false);
