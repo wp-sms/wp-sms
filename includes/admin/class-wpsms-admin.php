@@ -123,7 +123,8 @@ class Admin
     public function admin_bar()
     {
         global $wp_admin_bar;
-        if (is_super_admin() && is_admin_bar_showing()) {
+
+        if (is_super_admin() && is_admin_bar_showing() && current_user_can('wpsms_sendsms')) {
             $credit = get_option('wpsms_gateway_credit');
             if (isset($this->options['account_credit_in_menu']) and !is_object($credit)) {
                 $wp_admin_bar->add_menu(array(
@@ -134,12 +135,14 @@ class Admin
             }
         }
 
-        $wp_admin_bar->add_menu(array(
-            'id'     => 'wp-send-sms',
-            'parent' => 'new-content',
-            'title'  => __('SMS', 'wp-sms'),
-            'href'   => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms'
-        ));
+        if (current_user_can('wpsms_sendsms')) {
+            $wp_admin_bar->add_menu(array(
+                'id'     => 'wp-send-sms',
+                'parent' => 'new-content',
+                'title'  => __('SMS', 'wp-sms'),
+                'href'   => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms'
+            ));
+        }
     }
 
     /**
