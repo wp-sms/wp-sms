@@ -29,42 +29,42 @@ class WordPressUserNotification extends Notification
 
     public function getId()
     {
-        return $this->user->ID;
+        return $this->user->data->ID;
     }
 
     public function getLogin()
     {
-        return $this->user->user_login;
+        return $this->user->data->user_login;
     }
 
     public function getEmail()
     {
-        return $this->user->user_email;
+        return $this->user->data->user_email;
     }
 
     public function getDateRegister()
     {
-        return $this->user->user_registered;
+        return $this->user->data->user_registered;
     }
 
     public function getUrl()
     {
-        return wp_sms_shorturl($this->user->user_url);
+        return wp_sms_shorturl($this->user->data->user_url);
     }
 
     public function getDisplayName()
     {
-        return $this->user->display_name;
+        return $this->user->data->display_name;
     }
 
     public function getFirstName()
     {
-        return $this->user->first_name;
+        return get_user_meta($this->user->ID, 'first_name', true);
     }
 
     public function getLastName()
     {
-        return $this->user->last_name;
+        return get_user_meta($this->user->ID, 'last_name', true);
     }
 
     public function getRole()

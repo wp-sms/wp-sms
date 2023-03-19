@@ -2334,9 +2334,7 @@ class Settings
         $roles              = [];
 
         foreach ($wpsms_list_of_role as $key_item => $val_item) {
-            if ($val_item['count'] >= 1) {
-                $roles[] = [$key_item => $val_item['name']];
-            }
+            $roles[] = [$key_item => $val_item['name']];
         }
 
         return $roles;
