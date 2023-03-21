@@ -142,13 +142,16 @@ class Helper
         $fieldKey = self::getUserMobileFieldName();
         $args     = array(
             'meta_query' => array(
+                'relation' => 'OR',
                 array(
                     'key'     => $fieldKey,
-                    'compare' => '>',
+                    'value'   => '',
+                    'compare' => '!=',
                 ),
                 array(
                     'key'     => 'billing_phone',
-                    'compare' => '>',
+                    'value'   => '',
+                    'compare' => '!=',
                 ),
             ),
             'fields'     => 'all_with_meta'
