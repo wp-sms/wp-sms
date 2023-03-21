@@ -8,6 +8,7 @@
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
  * Domain Path: /languages
+ * GitHub Plugin URI: https://github.com/veronalabs/wp-sms
  */
 
 if (!defined('ABSPATH')) {
