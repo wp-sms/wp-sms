@@ -17,18 +17,10 @@ class Option
      *
      * @return mixed|void
      */
-    public static function getOptions($pro = false, $setting_name = '')
+    public static function getOptions($pro = false, $setting_name = 'wpsms_settings')
     {
-        if (!$setting_name) {
-            if ($pro) {
-                global $wpsms_pro_option;
-
-                return $wpsms_pro_option;
-            }
-
-            global $wpsms_option;
-
-            return $wpsms_option;
+        if ($pro) {
+            $setting_name = 'wps_pp_settings';
         }
 
         return get_option($setting_name);
@@ -39,28 +31,15 @@ class Option
      * Get the only Option that we want
      *
      * @param $option_name
-     * @param string $setting_name
      * @param bool $pro
      *
      * @return string
      */
-    public static function getOption($option_name, $pro = false, $setting_name = '')
+    public static function getOption($option_name, $pro = false)
     {
-        if (!$setting_name) {
-            if ($pro) {
-                global $wpsms_pro_option;
-
-                return isset($wpsms_pro_option[$option_name]) ? $wpsms_pro_option[$option_name] : '';
-            }
-
-            global $wpsms_option;
-
-            return isset($wpsms_option[$option_name]) ? $wpsms_option[$option_name] : '';
-        }
-        $options = self::getOptions($setting_name);
+        $options = self::getOptions($pro);
 
         return isset($options[$option_name]) ? $options[$option_name] : '';
-
     }
 
     /**
@@ -94,5 +73,4 @@ class Option
 
         update_option($setting_name, $options);
     }
-
 }
