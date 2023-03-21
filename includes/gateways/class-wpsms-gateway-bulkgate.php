@@ -8,13 +8,16 @@ use WP_Error;
 
 class bulkgate extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://portal.bulkgate.com/api/1.0";
+    private $wsdl_link = "https://portal.bulkgate.com/api/2.0";
     public $tariff = "https://www.bulkgate.com/";
     public $flash = "false";
     public $isflash = false;
     public $unitrial = true;
     public $supportIncoming = true;
     public $unit;
+    public $smsUnicode = false;
+    public $viberSender = '';
+    public $senderIdValue = '';
 
     public function __construct()
     {
@@ -33,10 +36,39 @@ class bulkgate extends \WP_SMS\Gateway
                 'name' => 'Application Token',
                 'desc' => 'Enter your Application Token',
             ],
-            'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender ID',
-                'desc' => 'Enter your sender ID',
+            'from' => [
+                'id'      => 'gateway_sender_id',
+                'name'    => 'Sender ID type',
+                'desc'    => 'Please select what is your Sender ID type',
+                'type'    => 'select',
+                'options' => [
+                    'gSystem'  => 'System Number',
+                    'gShort'   => 'Short Code',
+                    'gText'    => 'Text Sender',
+                    'gOwn'     => 'Own Number',
+                    'gProfile' => 'BulkGate Sender ID Profile',
+                    'gMobile'  => 'MobileConnect'
+                ]
+            ],
+            'smsUnicode' => [
+                'id'      => 'gateway_unicode',
+                'name'    => 'Unicode',
+                'desc'    => 'When you activate Unicode, it allows you to use characters outside of the standard GSM character set.',
+                'type'    => 'select',
+                'options' => [
+                    'off'  => 'Off',
+                    'on'   => 'On',
+                ]
+            ],
+            'senderIdValue' => [
+                'id'   => 'gateway_sender_id_value',
+                'name' => 'Sender ID Value',
+                'desc' => 'Enter value for Text Sender/Own Number/Profile/MobileConnect',
+            ],
+            'viberSender' => [
+                'id'   => 'gateway_viber_sender',
+                'name' => 'Viber Sender',
+                'desc' => 'Set your registered Viber Sender',
             ]
         ];
     }
@@ -61,24 +93,44 @@ class bulkgate extends \WP_SMS\Gateway
         try {
 
             if (count($this->to) > 1) {
-                $number = implode(';', $this->to);
-                $apiUrl = "{$this->wsdl_link}/simple/promotional";
+                $number = $this->to;
+                $apiUrl = "{$this->wsdl_link}/advanced/promotional";
+                $checkDuplicates = 'same_text';
             } else {
                 $number = $this->to[0];
-                $apiUrl = "{$this->wsdl_link}/simple/transactional";
+                $apiUrl = "{$this->wsdl_link}/advanced/transactional";
+                $checkDuplicates = true;
             }
+
+            $body = [
+                'application_id'      => $this->username,
+                'application_token'   => $this->password,
+                'application_product' => 'wp_sms',
+                'number'              => $number,
+                'duplicates_check'    => $checkDuplicates,
+                'channel'             => [],
+            ];
+
+            if (strlen(trim((string) $this->viberSender)) > 0) {
+                $body['channel']['viber'] = [
+                    'sender'     => $this->viberSender,
+                    'expiration' => 3600,
+                    'text'       => $this->msg
+                ];
+            }
+
+            $body['channel']['sms'] = [
+                'sender_id'       => $this->from,
+                'sender_id_value' => $this->senderIdValue,
+                'text'            => $this->msg,
+                'unicode'         => $this->smsUnicode
+            ];
 
             $params = [
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
-                'body'    => json_encode([
-                    'application_id'    => $this->username,
-                    'application_token' => $this->password,
-                    'number'            => $number,
-                    'text'              => $this->msg,
-                    'sender_id_value'   => $this->from,
-                ])
+                'body' => json_encode($body)
             ];
 
             $response = $this->request('POST', $apiUrl, [], $params, false);
@@ -112,11 +164,12 @@ class bulkgate extends \WP_SMS\Gateway
             }
 
             $arguments = [
-                'application_id'    => $this->username,
-                'application_token' => $this->password,
+                'application_id'      => $this->username,
+                'application_token'   => $this->password,
+                'application_product' => 'wp_sms',
             ];
 
-            $response = $this->request('GET', "{$this->wsdl_link}/simple/info", $arguments, [], false);
+            $response = $this->request('GET', "{$this->wsdl_link}/advanced/info", $arguments, [], false);
 
             if (isset($response->error) && $response->error) {
                 throw new Exception($response->error);
