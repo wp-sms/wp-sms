@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, rezathriii
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 3.0
-Tested up to: 6.1.2
+Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.2
+Stable tag: 6.1.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,7 +240,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.1.2 - **.03.2023 =
+= v6.1.2 - 21.03.2023 =
 * Bugfix: The reset configuration issue has been fixed
 * Bugfix: Fix getting correct value from user object in WordPressUserNotification
 * Improvement: Update BulkGate API to v2 (advanced API)
