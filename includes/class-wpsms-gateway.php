@@ -810,6 +810,7 @@ class Gateway
                 'raygansms'      => 'raygansms.com',
             ),
             'arabic'               => array(
+                '_4jawaly'     => '4jawaly.com',
                 'msegat'       => 'msegat.com',
                 'oursms'       => 'oursms.net',
                 'gateway'      => 'gateway.sa',
