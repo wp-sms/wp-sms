@@ -88,10 +88,26 @@ class Helper
             return;
         }
 
+        $metaValue[]   = $number;
         $mobileMetaKey = self::getUserMobileFieldName();
-        $users         = get_users([
+
+        // Check if number is international format or not and add country code to meta value
+        if (substr($number, 0, 1) != '+') {
+            $metaValue[] = '+' . $number;
+        } else {
+            $metaValue[] = ltrim($number, '+');
+        }
+
+        // Remove the country code from prefix of number +144444444 -> 44444444
+        foreach (wp_sms_get_countries() as $countryCode => $countryName) {
+            if (strpos($number, $countryCode) === 0) {
+                $metaValue[] = substr($number, strlen($countryCode));
+            }
+        }
+
+        $users = get_users([
             'meta_key'   => $mobileMetaKey,
-            'meta_value' => $number
+            'meta_value' => $metaValue
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
@@ -149,7 +165,7 @@ class Helper
                     'compare' => '!=',
                 ),
                 array(
-                    'key'     => 'billing_phone',
+                    'key'     => '_billing_phone',
                     'value'   => '',
                     'compare' => '!=',
                 ),
