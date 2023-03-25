@@ -92,14 +92,15 @@ class gateway extends \WP_SMS\Gateway
             $response = $this->request('GET', "{$this->wsdl_link}/SendSMSMulti", [
                 'api_id'       => $this->has_key,
                 'api_password' => $this->password,
-                'sms_type'     => 'P',
+                'sms_type'     => 'T',
                 'encoding'     => $encoding,
                 'sender_id'    => $this->from,
-                'phonenumber'  => implode(',', $this->to)
+                'phonenumber'  => implode(',', $this->to),
+                'textmessage'  => $this->msg
             ], []);
-
-            if (isset($response['status']) && $response['status'] != 'S') {
-                throw new Exception($response['remarks']);
+            
+            if (isset($response->status) && $response->status == 'F') {
+                throw new Exception($response->remarks);
             }
 
             // Log the result
@@ -127,7 +128,6 @@ class gateway extends \WP_SMS\Gateway
 
     public function GetCredit()
     {
-
         try {
 
             $response = $this->request('GET', "{$this->wsdl_link}/CheckBalance", [
@@ -135,12 +135,15 @@ class gateway extends \WP_SMS\Gateway
                 'api_password' => $this->password
             ], []);
 
-            return $response;
+            if (!isset($response->BalanceAmount)) {
+                throw new Exception($response);
+            }
+
+            return $response->BalanceAmount;
 
         } catch (Exception $e) {
             return new WP_Error('account-credit', $e->getMessage());
         }
-
     }
 
 }
