@@ -59,7 +59,11 @@ class smsapi extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $response = wp_remote_post($this->wsdl_link . 'sms.do?username=' . urlencode($this->username) . '&password=' . $this->password . '&message=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&from=' . urlencode($this->from));
+        if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
+            $this->msg = $this->convertToUnicode($this->msg);
+        }
+
+        $response = wp_remote_post($this->wsdl_link . 'sms.do?username=' . urlencode($this->username) . '&password=' . $this->password . '&message=' . urlencode($this->msg) . '&to=' . implode(",", $this->to) . '&from=' . urlencode($this->from));
 
         // Check gateway credit
         if (is_wp_error($response)) {
