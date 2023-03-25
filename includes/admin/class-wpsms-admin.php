@@ -140,7 +140,7 @@ class Admin
                 'id'     => 'wp-send-sms',
                 'parent' => 'new-content',
                 'title'  => __('SMS', 'wp-sms'),
-                'href'   => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms'
+                'href'   => WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms'
             ));
         }
     }
