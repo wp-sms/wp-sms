@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.1.2
+Stable tag: 6.1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,6 +240,14 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.1.3 - 01.04.2023 =
+* Bugfix: Fixed query for getting WooCommerce customer mobile numbers.
+* Bugfix: Improved search functionality to consider phone numbers with and without country codes.
+* Bugfix: Corrected error in [smsapi.pl](http://smsapi.pl/) while sending unicode SMS.
+* Bugfix: Updated [gateway.sa](http://gateway.sa/).
+* Bugfix: Fixed issue with importer.
+* Bugfix: Fixed query for getting user mobile in WooCommerce by ID.
+
 = v6.1.2 - 21.03.2023 =
 * Bugfix: The reset configuration issue has been fixed
 * Bugfix: Fix getting correct value from user object in WordPressUserNotification
