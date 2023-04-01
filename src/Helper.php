@@ -182,7 +182,7 @@ class Helper
         $userId = get_post_meta($orderId, '_customer_user', true);
 
         if ($userId) {
-            $customerMobileNumber = self::getUserMobileNumberByUserId($orderId);
+            $customerMobileNumber = self::getUserMobileNumberByUserId($userId);
 
             if ($customerMobileNumber) {
                 return $customerMobileNumber;
