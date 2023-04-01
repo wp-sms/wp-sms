@@ -159,13 +159,7 @@ class Newsletter
     {
         global $wpdb;
 
-        $metaValue[] = $number;
-
-        // Check if number is international format or not and add country code to meta value
-        if (substr($number, 0, 1) != '+') {
-            $metaValue[] = '+' . $number;
-        }
-
+        $metaValue = Helper::prepareMobileNumberQuery($number);
         $metaValue = "'" . implode("','", $metaValue) . "'";
         $sql       = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$metaValue})";
 

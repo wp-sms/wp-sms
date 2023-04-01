@@ -3,11 +3,12 @@
  * Plugin Name: WP SMS
  * Plugin URI: https://wp-sms-pro.com/
  * Description: The Best WordPress SMS Messaging and Notification Plugin for WordPress!
- * Version: 6.1.2
+ * Version: 6.1.3
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
  * Domain Path: /languages
+ * GitHub Plugin URI: https://github.com/veronalabs/wp-sms
  */
 
 if (!defined('ABSPATH')) {

@@ -88,10 +88,9 @@ class Helper
             return;
         }
 
-        $mobileMetaKey = self::getUserMobileFieldName();
-        $users         = get_users([
-            'meta_key'   => $mobileMetaKey,
-            'meta_value' => $number
+        $users = get_users([
+            'meta_key'   => self::getUserMobileFieldName(),
+            'meta_value' => self::prepareMobileNumberQuery($number)
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
@@ -142,13 +141,16 @@ class Helper
         $fieldKey = self::getUserMobileFieldName();
         $args     = array(
             'meta_query' => array(
+                'relation' => 'OR',
                 array(
                     'key'     => $fieldKey,
-                    'compare' => '>',
+                    'value'   => '',
+                    'compare' => '!=',
                 ),
                 array(
-                    'key'     => 'billing_phone',
-                    'compare' => '>',
+                    'key'     => '_billing_phone',
+                    'value'   => '',
+                    'compare' => '!=',
                 ),
             ),
             'fields'     => 'all_with_meta'
@@ -180,7 +182,7 @@ class Helper
         $userId = get_post_meta($orderId, '_customer_user', true);
 
         if ($userId) {
-            $customerMobileNumber = self::getUserMobileNumberByUserId($orderId);
+            $customerMobileNumber = self::getUserMobileNumberByUserId($userId);
 
             if ($customerMobileNumber) {
                 return $customerMobileNumber;
@@ -365,5 +367,28 @@ class Helper
         }
 
         return $mobileNumber;
+    }
+
+    public static function prepareMobileNumberQuery($number)
+    {
+        $metaValue[]    = $number;
+        $numberWithPlus = '+' . $number;
+
+        // Check if number is international format or not and add country code to meta value
+        if (substr($number, 0, 1) != '+') {
+            $metaValue[] = $numberWithPlus;
+            $number      = $numberWithPlus;
+        } else {
+            $metaValue[] = ltrim($number, '+');
+        }
+
+        // Remove the country code from prefix of number +144444444 -> 44444444
+        foreach (wp_sms_get_countries() as $countryCode => $countryName) {
+            if (strpos($number, $countryCode) === 0) {
+                $metaValue[] = substr($number, strlen($countryCode));
+            }
+        }
+
+        return $metaValue;
     }
 }

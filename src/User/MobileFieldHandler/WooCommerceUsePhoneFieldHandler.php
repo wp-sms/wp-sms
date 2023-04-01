@@ -17,7 +17,7 @@ class WooCommerceUsePhoneFieldHandler
 
         // backward compatibility
         if (!$mobileNumber) {
-            $mobileNumber = get_user_meta($userId, 'billing_phone', true);
+            $mobileNumber = get_user_meta($userId, '_billing_phone', true);
         }
 
         return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
@@ -25,7 +25,7 @@ class WooCommerceUsePhoneFieldHandler
 
     public function getUserMobileFieldName()
     {
-        return apply_filters('wp_sms_user_mobile_field', '_billing_phone');
+        return apply_filters('wp_sms_user_mobile_field', 'billing_phone');
     }
 
     /**

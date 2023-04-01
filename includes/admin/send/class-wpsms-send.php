@@ -34,7 +34,7 @@ class SMS_Send
     public function render_page()
     {
         $woocommerceCustomers = [];
-        if (class_exists('woocommerce') and class_exists('WP_SMS\Pro\WooCommerce\Helper')) {
+        if (class_exists('woocommerce') and Version::pro_is_active()) {
             $woocommerceCustomers = \WP_SMS\Helper::getWooCommerceCustomersNumbers();
         }
 
