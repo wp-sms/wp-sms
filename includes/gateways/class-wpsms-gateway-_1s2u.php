@@ -32,6 +32,11 @@ class _1s2u extends \WP_SMS\Gateway
                 'name' => 'Password',
                 'desc' => 'Enter your password.',
             ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender number',
+                'desc' => 'Sender number or sender ID',
+            ],
         ];
     }
 
@@ -98,7 +103,9 @@ class _1s2u extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "{$this->wsdl_link}/bulksms", [], $arguments);
 
-            //todo error handler
+            if (isset($response) && !strpos($response, 'OK')) {
+                throw new Exception($this->getErrorMessage($response));
+            }
 
             //log the result
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -130,9 +137,8 @@ class _1s2u extends \WP_SMS\Gateway
     {
 
         try {
-
             // Check username and password
-            if (!$this->username && !$this->password) {
+            if (!$this->username || !$this->password) {
                 throw new Exception(__('Username and password are required.', 'wp-sms'));
             }
 
@@ -143,8 +149,8 @@ class _1s2u extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "{$this->wsdl_link}/checkbalance", [], $arguments);
 
-            if (!isset($response)) {
-                throw new Exception($response);
+            if (isset($response) && $response == '00') {
+                throw new Exception($this->getErrorMessage($response));
             }
 
             return $response;
@@ -167,6 +173,75 @@ class _1s2u extends \WP_SMS\Gateway
         $number = str_replace('+', '00', $number);
 
         return trim($number);
+    }
+
+    /**
+     * Get error message from the request error code
+     *
+     * @param $errorCode
+     * @return string|null
+     */
+    private function getErrorMessage($errorCode)
+    {
+        switch ($errorCode) {
+            case '0000':
+                $message = __('Service Not Available or Down Temporary', 'wp-sms');
+                break;
+
+            case '0005':
+                $message = __('Invalid server', 'wp-sms');
+                break;
+
+            case '0010':
+                $message = __('Username not provided.', 'wp-sms');
+                break;
+
+            case '0011':
+                $message = __('Password not provided.', 'wp-sms');
+                break;
+
+            case '00':
+                $message = __('Invalid username/password.', 'wp-sms');
+                break;
+
+            case '0':
+            case '0020':
+                $message = __('Insufficient Credits', 'wp-sms');
+                break;
+
+            case '0030':
+                $message = __('Invalid Sender ID', 'wp-sms');
+                break;
+
+            case '0040':
+                $message = __('Mobile number not provided.', 'wp-sms');
+                break;
+
+            case '0041':
+                $message = __('Invalid mobile number', 'wp-sms');
+                break;
+
+            case '0042':
+                $message = __('Network not supported.', 'wp-sms');
+                break;
+
+            case '0050':
+                $message = __('Invalid message.', 'wp-sms');
+                break;
+
+            case '0060':
+                $message = __('Invalid quantity specified.', 'wp-sms');
+                break;
+
+            case '0066':
+                $message = __('Network not supported', 'wp-sms');
+                break;
+
+            default:
+                $message = __("Something's wrong. Please contact the SMS gateway provider support team.", 'wp-sms');
+        }
+
+        return $message;
     }
 
 }
