@@ -184,56 +184,56 @@ class _1s2u extends \WP_SMS\Gateway
     private function getErrorMessage($errorCode)
     {
         switch ($errorCode) {
-            case '0000':
+            case $errorCode === '0000':
                 $message = __('Service Not Available or Down Temporary', 'wp-sms');
                 break;
 
-            case '0005':
-                $message = __('Invalid server', 'wp-sms');
-                break;
-
-            case '0010':
-                $message = __('Username not provided.', 'wp-sms');
-                break;
-
-            case '0011':
-                $message = __('Password not provided.', 'wp-sms');
-                break;
-
-            case '00':
+            case $errorCode === '00':
                 $message = __('Invalid username/password.', 'wp-sms');
                 break;
 
-            case '0':
-            case '0020':
+            case $errorCode === '0005':
+                $message = __('Invalid server', 'wp-sms');
+                break;
+
+            case $errorCode === '0010':
+                $message = __('Username not provided.', 'wp-sms');
+                break;
+
+            case $errorCode === '0011':
+                $message = __('Password not provided.', 'wp-sms');
+                break;
+
+            case $errorCode === '0':
+            case $errorCode === '0020':
                 $message = __('Insufficient Credits', 'wp-sms');
                 break;
 
-            case '0030':
+            case $errorCode === '0030':
                 $message = __('Invalid Sender ID', 'wp-sms');
                 break;
 
-            case '0040':
+            case $errorCode === '0040':
                 $message = __('Mobile number not provided.', 'wp-sms');
                 break;
 
-            case '0041':
+            case $errorCode === '0041':
                 $message = __('Invalid mobile number', 'wp-sms');
                 break;
 
-            case '0042':
+            case $errorCode === '0042':
                 $message = __('Network not supported.', 'wp-sms');
                 break;
 
-            case '0050':
+            case $errorCode === '0050':
                 $message = __('Invalid message.', 'wp-sms');
                 break;
 
-            case '0060':
+            case $errorCode === '0060':
                 $message = __('Invalid quantity specified.', 'wp-sms');
                 break;
 
-            case '0066':
+            case $errorCode === '0066':
                 $message = __('Network not supported', 'wp-sms');
                 break;
 
