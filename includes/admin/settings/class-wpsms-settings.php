@@ -1312,7 +1312,7 @@ class Settings
                 ),
                 'gateway_help'              => array(
                     'id'      => 'gateway_help',
-                    'name'    => __('Gateway Notice', 'wp-sms'),
+                    'name'    => __('Gateway Guide', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::help(),
                 ),
