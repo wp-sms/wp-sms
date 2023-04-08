@@ -101,7 +101,7 @@ class _1s2u extends \WP_SMS\Gateway
                 'fl'       => $fl
             );
 
-            $response = $this->request('POST', "{$this->wsdl_link}/bulksms", [], $arguments);
+            $response = $this->request('POST', "{$this->wsdl_link}/bulksms", $arguments);
 
             if (isset($response) && !strpos($response, 'OK')) {
                 throw new Exception($this->getErrorMessage($response));
@@ -147,7 +147,7 @@ class _1s2u extends \WP_SMS\Gateway
                 'PASS' => $this->password
             ];
 
-            $response = $this->request('POST', "{$this->wsdl_link}/checkbalance", [], $arguments);
+            $response = $this->request('POST', "{$this->wsdl_link}/checkbalance", $arguments);
 
             if (isset($response) && $response == '00') {
                 throw new Exception($this->getErrorMessage($response));
