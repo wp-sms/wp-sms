@@ -26,12 +26,12 @@ class wali extends \WP_SMS\Gateway
             'token'     => [
                 'id'   => 'gateway_token',
                 'name' => 'Token',
-                'desc' => 'Please enter your Token.',
+                'desc' => 'Please enter your API key token. <a href="https://app.wali.chat/apikeys">Obtain it here</a>.',
             ],
             'device_id' => [
                 'id'   => 'gateway_device_id',
-                'name' => 'Device ID',
-                'desc' => 'Device ID to be used for message delivery. If not defined, the first created device will be used by default. You can use this to arbitrary send messages across multiple devices connected to your account. You can get the device ID from the Web Console > Devices',
+                'name' => 'WhatsApp Device ID (Optional)',
+                'desc' => 'Optional target WhatsApp device ID (24 hexadecimal characters) to be used for message delivery. If not defined, the first created WhatsApp number will be used by default. You can arbitrarily send messages across multiple devices connected to your account. Obtain the WhatsApp device ID from the <a href="https://app.wali.chat">Web Dashboard</a> > Click on the desired WhatsApp number > Copy ID field.',
             ],
         ];
     }
@@ -157,7 +157,7 @@ class wali extends \WP_SMS\Gateway
 
             $response = $this->request('POST', $this->wsdl_link . '/files', [], $params, false);
 
-            if (isset($response->meta->file)) {
+            if (isset($response->meta) and isset($response->meta->file)) {
                 return $response->meta->file;
             }
 
