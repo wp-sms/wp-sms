@@ -3,6 +3,7 @@
 namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Helper;
+use WP_SMS\Option;
 
 class WooCommerceAddMobileFieldHandler
 {
@@ -48,11 +49,14 @@ class WooCommerceAddMobileFieldHandler
      */
     public function validateMobileNumberCallback()
     {
-        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
-        $validity = Helper::checkMobileNumberValidity($mobile);
+        $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
 
-        if (is_wp_error($validity)) {
-            wc_add_notice($validity->get_error_message(), 'error');
+        if (!empty($mobile)) {
+            $validity = Helper::checkMobileNumberValidity($mobile);
+
+            if (is_wp_error($validity)) {
+                wc_add_notice($validity->get_error_message(), 'error');
+            }
         }
     }
 
@@ -62,11 +66,14 @@ class WooCommerceAddMobileFieldHandler
      */
     public function validateMobileNumberInCheckoutCallback($data, $errors)
     {
-        $mobile   = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
-        $validity = Helper::checkMobileNumberValidity($mobile, get_current_user_id());
+        $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
 
-        if (is_wp_error($validity)) {
-            $errors->add($validity->get_error_code(), $validity->get_error_message());
+        if (!empty($mobile)) {
+            $validity = Helper::checkMobileNumberValidity($mobile, get_current_user_id());
+
+            if (is_wp_error($validity)) {
+                $errors->add($validity->get_error_code(), $validity->get_error_message());
+            }
         }
     }
 
@@ -108,7 +115,7 @@ class WooCommerceAddMobileFieldHandler
         return [
             'label'       => __('Mobile Number', 'wp-sms'),
             'description' => __('Enter your mobile number for getting SMS notification', 'wp-sms'),
-            'required'    => true,
+            'required'    => !(Option::getOption('optional_mobile_field') == 'optional'),
             'clear'       => false,
             'type'        => 'text',
             'input_class' => array('wp-sms-input-mobile')
