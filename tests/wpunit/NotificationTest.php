@@ -99,7 +99,7 @@ class NotificationTest extends \Codeception\TestCase\WPTestCase
 
     public function testSubscriberOutputMessage()
     {
-        $subscriber   = WPSms()->newsletter()::addSubscriber('Vernon C. Cahill', '6506896529'); 
+        $subscriber   = WPSms()->newsletter()::addSubscriber('Vernon C. Cahill', '6506896529');
         $notification = NotificationFactory::getSubscriber($subscriber['id']);
 
         $this->assertStringContainsString(
