@@ -1,8 +1,6 @@
 <?php
 
 use WP_SMS\Notification\NotificationFactory;
-use WC_Coupon;
-
 
 class NotificationTest extends \Codeception\TestCase\WPTestCase
 {
