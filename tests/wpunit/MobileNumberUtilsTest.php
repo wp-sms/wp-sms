@@ -47,7 +47,7 @@ class MobileNumberUtilsTest extends \Codeception\TestCase\WPTestCase
             $user = Helper::getUserByPhoneNumber($number);
 
             $this->assertInstanceOf(WP_User::class, $user);
-            $this->assertContains($userId, $user->ID);
+            $this->assertIsInt($userId, $user->ID);
         }
     }
 }
