@@ -127,6 +127,6 @@ class WooCommerceOrderNotification extends Notification
 
     public function getMeta($metaKey)
     {
-        return apply_filters('wp_sms_notification_woocommerce_order_meta_key', $this->order->get_meta($metaKey));
+        return apply_filters("wp_sms_notification_woocommerce_order_meta_key_{$metaKey}", $this->order->get_meta($metaKey));
     }
 }
