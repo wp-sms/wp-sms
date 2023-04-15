@@ -189,7 +189,14 @@ class Helper
             }
         }
 
-        return get_post_meta($orderId, self::getUserMobileFieldName(), true);
+        $mobile = get_post_meta($orderId, self::getUserMobileFieldName(), true);
+
+        // Backward compatibility, the context of order meta is different with customer
+        if (!$mobile) {
+            $mobile = get_post_meta($orderId, '_' . self::getUserMobileFieldName(), true);
+        }
+
+        return $mobile;
     }
 
     /**
