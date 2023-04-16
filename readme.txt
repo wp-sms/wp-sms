@@ -241,7 +241,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 == Changelog ==
 = v6.1.4 - 16.04.2023 =
-* Add: Supported for gateway wali.chat
+* Add: Gateway [WaliChat](https://wali.chat/)
 * Add: Feature to make mobile field optional or required in the settings page
 * Bugfix: Upgraded Library JQuery Character and Word counter plugin to v2.5.1
 * Bugfix: An Issue with sending SMS to WooCommerce customers

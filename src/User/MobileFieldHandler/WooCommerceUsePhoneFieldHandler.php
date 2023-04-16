@@ -35,11 +35,11 @@ class WooCommerceUsePhoneFieldHandler
      */
     public function modifyBillingPhoneAttributes($fields)
     {
-        if (Option::getOption('optional_mobile_field') === 'optional') {
-            $fields['billing']['billing_phone']['required'] = false;
-        }
-
         if (isset($fields['billing']['billing_phone'])) {
+            if (Option::getOption('optional_mobile_field') === 'optional') {
+                $fields['billing']['billing_phone']['required'] = false;
+            }
+            
             $fields['billing']['billing_phone']['class'][] = 'wp-sms-input-mobile';
         }
 
