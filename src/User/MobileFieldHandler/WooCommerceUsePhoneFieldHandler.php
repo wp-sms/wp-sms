@@ -2,6 +2,8 @@
 
 namespace WP_SMS\User\MobileFieldHandler;
 
+use WP_SMS\Option;
+
 class WooCommerceUsePhoneFieldHandler
 {
     public function register()
@@ -34,6 +36,10 @@ class WooCommerceUsePhoneFieldHandler
     public function modifyBillingPhoneAttributes($fields)
     {
         if (isset($fields['billing']['billing_phone'])) {
+            if (Option::getOption('optional_mobile_field') === 'optional') {
+                $fields['billing']['billing_phone']['required'] = false;
+            }
+            
             $fields['billing']['billing_phone']['class'][] = 'wp-sms-input-mobile';
         }
 

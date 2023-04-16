@@ -1240,6 +1240,16 @@ class Settings
                     ],
                     'desc'    => __('Choose how to set the mobile number video for the user', 'wp-sms')
                 ),
+                'optional_mobile_field'                    => array(
+                    'id'      => 'optional_mobile_field',
+                    'name'    => __('Mobile Field Mandatory Status', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        '0' => __('Required', 'wp-sms'),
+                        'optional' => __('Optional', 'wp-sms')
+                    ),
+                    'desc'    => __('The mobile number field is typically required by default, but would you prefer it to be optional?', 'wp-sms')
+                ),
                 'mobile_terms_field_place_holder'          => array(
                     'id'   => 'mobile_terms_field_place_holder',
                     'name' => __('Mobile Field Placeholder', 'wp-sms'),
@@ -1312,7 +1322,7 @@ class Settings
                 ),
                 'gateway_help'              => array(
                     'id'      => 'gateway_help',
-                    'name'    => __('Gateway Notice', 'wp-sms'),
+                    'name'    => __('Gateway Guide', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::help(),
                 ),

@@ -1,8 +1,6 @@
 <?php
 
 use WP_SMS\Notification\NotificationFactory;
-use WC_Coupon;
-
 
 class NotificationTest extends \Codeception\TestCase\WPTestCase
 {
@@ -99,12 +97,12 @@ class NotificationTest extends \Codeception\TestCase\WPTestCase
 
     public function testSubscriberOutputMessage()
     {
-        $subscriber   = WPSms()->newsletter()::getSubscriber(1);
-        $notification = NotificationFactory::getSubscriber($subscriber->ID);
+        $subscriber   = WPSms()->newsletter()::addSubscriber('Vernon C. Cahill', '6506896529');
+        $notification = NotificationFactory::getSubscriber($subscriber['id']);
 
         $this->assertStringContainsString(
             $notification->getOutputMessage('Name: %subscriber_name%, Mobile: %subscriber_mobile%'),
-            "Name: John, Mobile: 0123456789"
+            "Name: Vernon C. Cahill, Mobile: 6506896529"
         );
     }
 

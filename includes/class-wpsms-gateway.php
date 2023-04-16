@@ -574,6 +574,7 @@ class Gateway
                 'spirius'          => 'spirius.com',
                 '_1s2u'            => '1s2u.com',
                 'easysendsms'      => 'easysendsms.com',
+                'wali'             => 'wali.chat',
                 'torpedos'         => 'torpedos, smsplus.com.br',
                 'smss'             => 'smss.co',
                 'bearsms'          => 'bearsms',

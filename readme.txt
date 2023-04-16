@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.1.3
+Stable tag: 6.1.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,6 +240,17 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.1.4 - 16.04.2023 =
+* Add: Gateway [WaliChat](https://wali.chat/)
+* Add: Feature to make mobile field optional or required in the settings page
+* Bugfix: Upgraded Library JQuery Character and Word counter plugin to v2.5.1
+* Bugfix: An Issue with sending SMS to WooCommerce customers
+* Bugfix: An Issue with getting WooCommerce guest mobile number from order
+* Improvement: Optimized 1s2u gateway for better performance
+* Improvement: Added filter `wp_sms_notification_woocommerce_order_meta_key_{meta-key}`` for greater flexibility in WooCommerce order notifications.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.1.3 - 01.04.2023 =
 * Bugfix: Fixed query for getting WooCommerce customer mobile numbers.
 * Bugfix: Improved search functionality to consider phone numbers with and without country codes.
@@ -307,8 +318,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Bugfix: The issue on sending the SMS to author after publishing the post
 * Bugfix: The resend issue on the outbox page
 * Bugfix: The SMS notification issue for scheduled posts
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v5.9.1 - 18.12.2022 =
 * New: Filter subscribers by country
