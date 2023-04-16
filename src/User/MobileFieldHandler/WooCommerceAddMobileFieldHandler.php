@@ -66,6 +66,10 @@ class WooCommerceAddMobileFieldHandler
      */
     public function validateMobileNumberInCheckoutCallback($data, $errors)
     {
+        if (Option::getOption('optional_mobile_field') != 'optional' && !$_POST[$this->getUserMobileFieldName()]) {
+            $errors->add('mobile_number_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
+        }
+
         $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
 
         if (!empty($mobile)) {
