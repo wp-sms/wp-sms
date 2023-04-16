@@ -1242,7 +1242,7 @@ class Settings
                 ),
                 'optional_mobile_field'                    => array(
                     'id'      => 'optional_mobile_field',
-                    'name'    => __('Optional Mobile Field', 'wp-sms'),
+                    'name'    => __('Mobile Field Mandatory Status', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
                         '0' => __('Required', 'wp-sms'),
