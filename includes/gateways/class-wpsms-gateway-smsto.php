@@ -4,7 +4,7 @@ namespace WP_SMS\Gateway;
 
 class smsto extends \WP_SMS\Gateway
 {
-    public $wsdl_link = "https://api.sms.to/sms";
+    public $wsdl_link = "https://api.sms.to";
     public $tariff = "https://auth.sms.to/";
     public $unitrial = true;
     public $unit;
@@ -74,15 +74,14 @@ class smsto extends \WP_SMS\Gateway
             $bodyContent['callback_url'] = 'https://' . $callback_url . '/wp-json/sms-to/get_post';
         }
 
-        if ($this->isflash == false) {
-            $this->wsdl_link = "https://api.sms.to/sms";
-        } else
-            if ($this->isflash == true) {
-                $this->wsdl_link = "https://api.sms.to/fsms";
-            }
+        $apiURL = "{$this->wsdl_link}/sms/send";
+
+        if ($this->isflash) {
+            $apiURL = "{$this->wsdl_link}/fsms/send";
+        }
 
         $opts = [
-            CURLOPT_URL            => $this->wsdl_link . '/send',
+            CURLOPT_URL            => $apiURL,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING       => "",
             CURLOPT_MAXREDIRS      => 10,
