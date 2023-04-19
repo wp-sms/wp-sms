@@ -247,7 +247,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Bugfix: An Issue with sending SMS to WooCommerce customers
 * Bugfix: An Issue with getting WooCommerce guest mobile number from order
 * Improvement: Optimized 1s2u gateway for better performance
-* Improvement: Added filter `wp_sms_notification_woocommerce_order_meta_key_{meta-key}`` for greater flexibility in WooCommerce order notifications.
+* Improvement: Added filter `wp_sms_notification_woocommerce_order_meta_key_{meta-key}` for greater flexibility in WooCommerce order notifications.
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 

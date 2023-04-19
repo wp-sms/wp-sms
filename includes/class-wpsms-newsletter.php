@@ -133,7 +133,7 @@ class Newsletter
 
             return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
         } else {
-            return array('result' => 'error', 'message' => __('Having problem with add subscriber, please try again later.', 'wp-sms'));
+            return array('result' => 'error', 'message' => __('Failed to add subscriber, please deactivate and then activate WP SMS and then try again.', 'wp-sms'));
         }
     }
 
