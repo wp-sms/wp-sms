@@ -118,7 +118,6 @@ class WooCommerceAddMobileFieldHandler
     {
         return [
             'label'       => __('Mobile Number', 'wp-sms'),
-            'description' => __('Enter your mobile number for getting SMS notification', 'wp-sms'),
             'required'    => !(Option::getOption('optional_mobile_field') == 'optional'),
             'clear'       => false,
             'type'        => 'text',
