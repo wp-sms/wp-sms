@@ -92,9 +92,9 @@ class alchemymarketinggm extends \WP_SMS\Gateway
                 ]
             ];
 
-            $this->wsdl_link = str_replace('port', $this->gateway_port, $this->wsdl_link);
+            $apiURL = str_replace('port', $this->gateway_port, $this->wsdl_link);
 
-            $response = $this->request('POST', $this->wsdl_link, [], $arguments);
+            $response = $this->request('POST', $apiURL, [], $arguments);
 
             if ($response->response->data->acceptreport->statuscode && $response->response->data->acceptreport->statuscode != '0') {
                 throw new \Exception($response->response->data->acceptreport->statusmessage);
