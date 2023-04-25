@@ -169,6 +169,11 @@ class Gateway
             'smsviro' => 'smsviro.com',
 
         ),
+        'Taiwan'         => array(
+            'mitake'  => 'mitake.com.tw',
+            'every8d' => 'teamplus.tech',
+
+        ),
     );
 
     /**
