@@ -175,7 +175,7 @@ class Gateway
 
         ),
         'south korea'    => array(
-            'nhncloud' => 'directsend.co.kr',
+            'nhncloud' => 'nhncloud.com/kr',
         ),
     );
 
