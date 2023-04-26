@@ -174,6 +174,9 @@ class Gateway
             'every8d' => 'teamplus.tech',
 
         ),
+        'south korea'    => array(
+            'nhncloud' => 'directsend.co.kr',
+        ),
     );
 
     /**
