@@ -266,6 +266,8 @@ class Helper
     {
         global $wpdb;
 
+        $mobileNumber = trim($mobileNumber);
+
         if (!is_numeric($mobileNumber)) {
             return new \WP_Error('invalid_number', __('Invalid Mobile Number', 'wp-sms'));
         }
