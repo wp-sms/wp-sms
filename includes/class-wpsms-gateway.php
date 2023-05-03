@@ -27,7 +27,6 @@ class Gateway
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
             'clicksend'      => 'clicksend.com',
-            'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
             'whatsappcloud'  => 'business.whatsapp.com',
             'dsms'           => 'dsms.in',

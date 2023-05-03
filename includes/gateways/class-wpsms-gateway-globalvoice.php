@@ -27,6 +27,7 @@ class globalvoice extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->has_key = true;
+        $this->help = 'Please <a href="https://retail.global-voice.net/connections/" target="_blank">Click here</a> to get the API Token.';
     }
 
     public function SendSMS()
