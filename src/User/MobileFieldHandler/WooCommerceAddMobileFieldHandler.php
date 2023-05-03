@@ -25,7 +25,7 @@ class WooCommerceAddMobileFieldHandler
         add_filter('woocommerce_admin_billing_fields', [$this, 'registerFieldInAdminOrderBillingForm']);
         add_action('woocommerce_process_shop_order_meta', array($this, 'updateCustomerMobileNumberAfterUpdateTheOrder'), 10, 2);
 
-        add_action('wp_enqueue_scripts', [$this, 'checkoutMobileFieldInlineStyle']);
+        //add_action('wp_enqueue_scripts', [$this, 'checkoutMobileFieldInlineStyle']);
     }
 
     public function getMobileNumberByUserId($userId)
