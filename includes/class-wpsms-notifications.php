@@ -166,6 +166,37 @@ class Notifications
                 return;
             }
 
+            $termIds         = [];
+            $specified_terms = isset($this->options['notif_publish_new_taxonomy_and_term']) ? $this->options['notif_publish_new_taxonomy_and_term'] : [];
+
+            /**
+             * Check terms
+             */
+            if ($specified_terms) {
+                $taxonomies = get_object_taxonomies($post->post_type);
+                $matchFound = false;
+
+                foreach ($taxonomies as $taxonomy) {
+                    $terms = get_the_terms($post, $taxonomy);
+
+                    if (isset($terms)) {
+                        foreach ($terms as $term) {
+                            $termIds[] = $term->term_id;
+                        }
+                    }
+                }
+
+                foreach ($termIds as $item) {
+                    if (in_array($item, $specified_terms)) {
+                        $matchFound = true;
+                    }
+                }
+
+                if (!$matchFound) {
+                    return;
+                }
+            }
+
             // Save notification data in post meta if in the admin area and a post ID exists
             if (is_admin() && $postID) {
 
@@ -241,6 +272,10 @@ class Notifications
             // If the "notif_publish_new_send_mms" option is set and enabled, send the message as an MMS with the post
             if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
                 $mediaUrls = [get_the_post_thumbnail_url($post->ID)];
+            }
+            
+            if (empty($receiver) || !$message_body) {
+                return;
             }
 
             // Fire notification

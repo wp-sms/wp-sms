@@ -1600,7 +1600,7 @@ class Settings
                 ),
                 'notif_publish_new_taxonomy_and_term'     => array(
                     'id'      => 'notif_publish_new_taxonomy_and_term',
-                    'name'    => __('Taxonomy and Term', 'wp-sms'),
+                    'name'    => __('Taxonomies and Terms', 'wp-sms'),
                     'type'    => 'advancedmultiselect',
                     'options' => $this->getTaxonomiesAndTerms(),
                     'desc'    => __('Select taxonomies that you want to use this option.', 'wp-sms')
@@ -2379,7 +2379,7 @@ class Settings
     }
 
     /**
-     * Get list of taxonomies and terms
+     * Return a list of public taxonomies and terms which are not empty
      *
      * @return array
      */
@@ -2394,7 +2394,7 @@ class Settings
 
             $terms = get_terms(array(
                 'taxonomy'   => $taxonomy,
-                'hide_empty' => true,
+                'hide_empty' => false,
                 'orderby'    => 'name',
                 'order'      => 'ASC',
                 'public'     => true,
@@ -2402,7 +2402,7 @@ class Settings
 
             if (isset($terms)) {
                 foreach ($terms as $term) {
-                    $result[$taxonomy][$term->name] = __(ucfirst($term->name), 'wp-sms');
+                    $result[$taxonomy][$term->term_id] = __(ucfirst($term->name), 'wp-sms');
                 }
             }
 
