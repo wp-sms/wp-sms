@@ -107,6 +107,7 @@ class Gateway
         'africa'         => array(
             'jusibe'      => 'jusibe.com',
             'montymobile' => 'montymobile.com',
+            'hubtel'      => 'hubtel.com',
         ),
         'romania'        => array(
             'sendsms'  => 'sendsms.ro',
