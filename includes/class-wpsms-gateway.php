@@ -52,7 +52,6 @@ class Gateway
             'websms'         => 'websms.at',
             'smstrade'       => 'smstrade.de',
             'yamamah'        => 'yamamah.com',
-            'cellsynt'       => 'cellsynt.net',
             'cmtelecom'      => 'cmtelecom.com',
             'textlocal'      => 'textlocal.in',
             'ismartsms'      => 'ismartsms.net',
@@ -666,8 +665,15 @@ class Gateway
                 'spothit' => 'spot-hit.fr',
             ),
             'denmark'              => array(
-                'cpsms'   => 'cpsms.dk',
-                'suresms' => 'suresms.com',
+                'cpsms'    => 'cpsms.dk',
+                'cellsynt' => 'cellsynt.net',
+                'suresms'  => 'suresms.com',
+            ),
+            'finland'              => array(
+                'cellsynt' => 'cellsynt.net',
+            ),
+            'norway'               => array(
+                'cellsynt' => 'cellsynt.net',
             ),
             'italy'                => array(
                 'smshosting' => 'smshosting.it',
@@ -866,7 +872,8 @@ class Gateway
                 'directsend' => 'directsend.co.kr',
             ),
             'sweden'               => array(
-                'prosms' => 'prosms.se',
+                'prosms'   => 'prosms.se',
+                'cellsynt' => 'cellsynt.net',
             )
 
         );
