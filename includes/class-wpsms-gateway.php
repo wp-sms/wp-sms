@@ -666,14 +666,14 @@ class Gateway
             ),
             'denmark'              => array(
                 'cpsms'    => 'cpsms.dk',
-                'cellsynt' => 'cellsynt.net',
+                'cellsynt' => 'cellsynt',
                 'suresms'  => 'suresms.com',
             ),
             'finland'              => array(
-                'cellsynt' => 'cellsynt.net',
+                'cellsynt' => 'cellsynt',
             ),
             'norway'               => array(
-                'cellsynt' => 'cellsynt.net',
+                'cellsynt' => 'cellsynt',
             ),
             'italy'                => array(
                 'smshosting' => 'smshosting.it',
@@ -873,7 +873,7 @@ class Gateway
             ),
             'sweden'               => array(
                 'prosms'   => 'prosms.se',
-                'cellsynt' => 'cellsynt.net',
+                'cellsynt' => 'cellsynt',
             )
 
         );
