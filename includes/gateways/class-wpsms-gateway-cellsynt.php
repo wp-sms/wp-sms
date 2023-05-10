@@ -14,7 +14,8 @@ class cellsynt extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "00xxxxxxxxxxxx";
+        $this->validateNumber  = "00xxxxxxxxxxxx";
+        $this->supportIncoming = true;
     }
 
     public function SendSMS()
