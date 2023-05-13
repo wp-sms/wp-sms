@@ -240,7 +240,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.1.5 - 16.04.2023 =
+= v6.1.5 - 13.05.2023 =
 * Added: Users can now filter post notifications by taxonomy/terms
 * Added: Added support for the Deewan.sa gateway
 * Updated: Switched from the paid gateway Cellsynt to the free version
