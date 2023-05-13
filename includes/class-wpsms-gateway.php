@@ -27,7 +27,6 @@ class Gateway
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
             'clicksend'      => 'clicksend.com',
-            'globalvoice'    => 'global-voice.net',
             'smsapicom'      => 'smsapi.com',
             'whatsappcloud'  => 'business.whatsapp.com',
             'dsms'           => 'dsms.in',
@@ -53,7 +52,6 @@ class Gateway
             'websms'         => 'websms.at',
             'smstrade'       => 'smstrade.de',
             'yamamah'        => 'yamamah.com',
-            'cellsynt'       => 'cellsynt.net',
             'cmtelecom'      => 'cmtelecom.com',
             'textlocal'      => 'textlocal.in',
             'ismartsms'      => 'ismartsms.net',
@@ -108,6 +106,7 @@ class Gateway
         'africa'         => array(
             'jusibe'      => 'jusibe.com',
             'montymobile' => 'montymobile.com',
+            'hubtel'      => 'hubtel.com',
         ),
         'romania'        => array(
             'sendsms'  => 'sendsms.ro',
@@ -168,6 +167,14 @@ class Gateway
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
 
+        ),
+        'Taiwan'         => array(
+            'mitake'  => 'mitake.com.tw',
+            'every8d' => 'teamplus.tech',
+
+        ),
+        'south korea'    => array(
+            'nhncloud' => 'nhncloud.com/kr',
         ),
     );
 
@@ -658,8 +665,15 @@ class Gateway
                 'spothit' => 'spot-hit.fr',
             ),
             'denmark'              => array(
-                'cpsms'   => 'cpsms.dk',
-                'suresms' => 'suresms.com',
+                'cpsms'    => 'cpsms.dk',
+                'cellsynt' => 'cellsynt',
+                'suresms'  => 'suresms.com',
+            ),
+            'finland'              => array(
+                'cellsynt' => 'cellsynt',
+            ),
+            'norway'               => array(
+                'cellsynt' => 'cellsynt',
             ),
             'italy'                => array(
                 'smshosting' => 'smshosting.it',
@@ -814,6 +828,7 @@ class Gateway
                 'msegat'       => 'msegat.com',
                 'oursms'       => 'oursms.net',
                 'gateway'      => 'gateway.sa',
+                'deewan'       => 'deewan.sa',
                 'jawalbsms'    => 'jawalbsms.ws',
                 'resalaty'     => 'resalaty.com',
                 'unifonic'     => 'unifonic.com',
@@ -858,7 +873,8 @@ class Gateway
                 'directsend' => 'directsend.co.kr',
             ),
             'sweden'               => array(
-                'prosms' => 'prosms.se',
+                'prosms'   => 'prosms.se',
+                'cellsynt' => 'cellsynt',
             )
 
         );

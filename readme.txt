@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.1.4
+Stable tag: 6.1.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,6 +240,21 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.1.5 - 13.05.2023 =
+* Added: Users can now filter post notifications by taxonomy/terms
+* Added: Added support for the Deewan.sa gateway
+* Updated: Switched from the paid gateway Cellsynt to the free version
+* Fixed: Resolved an issue with some other gateways
+* Fixed: Fixed an error in the SmsApi gateway
+* Fixed: Corrected the country code in intlTelInput
+* Fixed: Numbers are now trimmed before validity check in the import process
+* Improved: Sanitized user input on the privacy page
+* Improved: Updated International Telephone Input to version 18.1.1
+* Improved: Removed the mobile field from the WooCommerce checkout page
+* Improved: Quick reply now shows actual error and success response
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.1.4 - 16.04.2023 =
 * Add: Gateway [WaliChat](https://wali.chat/)
 * Add: Feature to make mobile field optional or required in the settings page
@@ -247,9 +262,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Bugfix: An Issue with sending SMS to WooCommerce customers
 * Bugfix: An Issue with getting WooCommerce guest mobile number from order
 * Improvement: Optimized 1s2u gateway for better performance
-* Improvement: Added filter `wp_sms_notification_woocommerce_order_meta_key_{meta-key}`` for greater flexibility in WooCommerce order notifications.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+* Improvement: Added filter `wp_sms_notification_woocommerce_order_meta_key_{meta-key}` for greater flexibility in WooCommerce order notifications.
 
 = v6.1.3 - 01.04.2023 =
 * Bugfix: Fixed query for getting WooCommerce customer mobile numbers.

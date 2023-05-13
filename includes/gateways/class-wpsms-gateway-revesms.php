@@ -21,27 +21,27 @@ class revesms extends \WP_SMS\Gateway
         $this->validateNumber = "";
         $this->help           = "Fill the below fields with provided credentials by the SMS gateway provider.";
         $this->gatewayFields  = [
-            'gateway_ip'       => [
+            'gateway_ip'   => [
                 'id'   => 'gateway_ip',
                 'name' => 'IP',
                 'desc' => "Gateway IP without 'port', 'http', 'https', '/', ':', etc. For example: 192.168.1.1",
             ],
-            'gateway_port'     => [
+            'gateway_port' => [
                 'id'   => 'gateway_port',
                 'name' => 'Port',
                 'desc' => 'Gateway port. For example: 8888',
             ],
-            'has_key'  => [
+            'has_key'      => [
                 'id'   => 'gateway_key',
                 'name' => 'API Key',
                 'desc' => 'API key provided by termination.',
             ],
-            'password' => [
+            'password'     => [
                 'id'   => 'gateway_password',
                 'name' => 'Secret Key',
                 'desc' => 'Secret key provided by termination.',
             ],
-            'from'     => [
+            'from'         => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Caller ID',
                 'desc' => 'Sender Identification Number.',
@@ -88,7 +88,7 @@ class revesms extends \WP_SMS\Gateway
                 throw new \Exception($credit->get_error_message());
             }
 
-            $this->wsdl_link = "http://{$this->gateway_ip}:{$this->gateway_port}";
+            $apiURL = "http://{$this->gateway_ip}:{$this->gateway_port}/sendtext";
 
             $params = [
                 'apikey'         => $this->has_key,
@@ -98,7 +98,7 @@ class revesms extends \WP_SMS\Gateway
                 'messageContent' => urlencode($this->msg)
             ];
 
-            $response = $this->request('GET', "{$this->wsdl_link}/sendtext", $params, []);
+            $response = $this->request('GET', $apiURL, $params, []);
 
             if (isset($response->Status) && $response->Status != '0') {
                 throw new \Exception($response);

@@ -47,7 +47,7 @@ class Privacy_Actions
             wp_die(__('Cheatin&#8217; uh?'));
         }
         check_admin_referer($this->metabox);
-        wp_redirect($_POST['_wp_http_referer']);
+        wp_redirect(sanitize_text_field($_POST['_wp_http_referer']));
     }
 
     /**
@@ -84,7 +84,7 @@ class Privacy_Actions
              * Success Mobile Number
              */
             if (isset($_GET['delete_mobile'])) {
-                Helper::notice(sprintf(__('User with %s mobile number is removed completely', 'wp-sms'), trim($_GET['delete_mobile'])), "success");
+                Helper::notice(sprintf(__('User with %s mobile number is removed completely', 'wp-sms'), trim(sanitize_text_field($_GET['delete_mobile']))), "success");
             }
 
         }
@@ -97,7 +97,7 @@ class Privacy_Actions
     public function process_form()
     {
         if (isset($_POST['wp_sms_nonce_privacy']) and isset($_POST['submit']) and (isset($_POST['mobile-number-delete']) || isset($_POST['mobile-number-export']))) {
-            if (wp_verify_nonce($_POST['wp_sms_nonce_privacy'], 'wp_sms_nonce_privacy')) {
+            if (wp_verify_nonce(sanitize_text_field($_POST['wp_sms_nonce_privacy']), 'wp_sms_nonce_privacy')) {
 
                 $mobile = ($_POST['submit'] == __('Export') ? sanitize_text_field($_POST['mobile-number-export']) : sanitize_text_field($_POST['mobile-number-delete']));
 

@@ -6,6 +6,7 @@ jQuery(document).ready(function () {
             $inputTell[i].setAttribute('dir', 'ltr')
 
             window.intlTelInput($inputTell[i], {
+                autoInsertDialCode: true,
                 onlyCountries: wp_sms_intel_tel_input.only_countries,
                 preferredCountries: wp_sms_intel_tel_input.preferred_countries,
                 //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
@@ -23,6 +24,7 @@ jQuery(document).ready(function () {
         $inputTell.setAttribute('dir', 'ltr')
 
         window.intlTelInput($inputTell, {
+            autoInsertDialCode: true,
             onlyCountries: wp_sms_intel_tel_input.only_countries,
             preferredCountries: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,

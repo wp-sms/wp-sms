@@ -1245,7 +1245,7 @@ class Settings
                     'name'    => __('Mobile Field Mandatory Status', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        '0' => __('Required', 'wp-sms'),
+                        '0'        => __('Required', 'wp-sms'),
                         'optional' => __('Optional', 'wp-sms')
                     ),
                     'desc'    => __('The mobile number field is typically required by default, but would you prefer it to be optional?', 'wp-sms')
@@ -1597,6 +1597,13 @@ class Settings
                     'type'    => 'multiselect',
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
                     'desc'    => __('Select post types that you want to use this option.', 'wp-sms')
+                ),
+                'notif_publish_new_taxonomy_and_term'     => array(
+                    'id'      => 'notif_publish_new_taxonomy_and_term',
+                    'name'    => __('Taxonomies and Terms', 'wp-sms'),
+                    'type'    => 'advancedmultiselect',
+                    'options' => $this->getTaxonomiesAndTerms(),
+                    'desc'    => __('Select taxonomies that you want to use this option.', 'wp-sms')
                 ),
                 'notif_publish_new_post_receiver'         => array(
                     'id'      => 'notif_publish_new_post_receiver',
@@ -2170,6 +2177,39 @@ class Settings
         echo $html;
     }
 
+    public function advancedmultiselect_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
+
+//        $class_name = 'js-wpsms-select2';
+        $html     = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $selected = '';
+
+        foreach ($args['options'] as $k => $v) :
+            $html .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $k)));
+
+            foreach ($v as $option => $name) :
+                if (isset($value) and is_array($value)) {
+                    if (in_array($option, $value)) {
+                        $selected = " selected='selected'";
+                    } else {
+                        $selected = '';
+                    }
+                }
+                $html .= sprintf('<option value="%1$s" %2$s>%3$s</option>', esc_attr($option), esc_attr($selected), $name);
+            endforeach;
+        endforeach;
+
+        $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
+
+        echo $html;
+
+    }
+
     public function color_select_callback($args)
     {
         if (isset($this->options[$args['id']])) {
@@ -2336,6 +2376,39 @@ class Settings
 
         // return
         return $post_types;
+    }
+
+    /**
+     * Return a list of public taxonomies and terms which are not empty
+     *
+     * @return array
+     */
+    public function getTaxonomiesAndTerms()
+    {
+        $result     = [];
+        $taxonomies = get_taxonomies(array(
+            'public' => true,
+        ));
+
+        foreach ($taxonomies as $taxonomy) {
+
+            $terms = get_terms(array(
+                'taxonomy'   => $taxonomy,
+                'hide_empty' => false,
+                'orderby'    => 'name',
+                'order'      => 'ASC',
+                'public'     => true,
+            ));
+
+            if (isset($terms)) {
+                foreach ($terms as $term) {
+                    $result[$taxonomy][$term->term_id] = __(ucfirst($term->name), 'wp-sms');
+                }
+            }
+
+        }
+
+        return $result;
     }
 
     public function getRoles()

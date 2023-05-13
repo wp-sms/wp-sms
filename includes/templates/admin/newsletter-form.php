@@ -1,5 +1,5 @@
 <div class="notice notice-warning wpsms-newsletter__notice">
-    <form action="https://static.mailerlite.com/webforms/submit/k7h5a2" data-code="k7h5a2" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <form action="https://dashboard.mailerlite.com/forms/421827/86962232715379904/share" method="get" target="_blank" novalidate>
         <?php _e('Get the latest updates and special deals by signing up for WP SMS newsletters', 'wp-sms'); ?>
 
         <div class="field-group">

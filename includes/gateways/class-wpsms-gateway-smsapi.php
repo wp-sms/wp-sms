@@ -81,8 +81,8 @@ class smsapi extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "{$this->wsdl_link}/sms.do", [], $arguments);
 
-            if (isset($response['error'])) {
-                throw new Exception($response['message']);
+            if (isset($response->error)) {
+                throw new Exception($response->message);
             }
 
             // Log the result

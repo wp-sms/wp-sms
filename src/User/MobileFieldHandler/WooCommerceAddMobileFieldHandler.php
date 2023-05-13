@@ -24,6 +24,8 @@ class WooCommerceAddMobileFieldHandler
         // admin order billing address
         add_filter('woocommerce_admin_billing_fields', [$this, 'registerFieldInAdminOrderBillingForm']);
         add_action('woocommerce_process_shop_order_meta', array($this, 'updateCustomerMobileNumberAfterUpdateTheOrder'), 10, 2);
+
+        //add_action('wp_enqueue_scripts', [$this, 'checkoutMobileFieldInlineStyle']);
     }
 
     public function getMobileNumberByUserId($userId)
@@ -118,7 +120,6 @@ class WooCommerceAddMobileFieldHandler
     {
         return [
             'label'       => __('Mobile Number', 'wp-sms'),
-            'description' => __('Enter your mobile number for getting SMS notification', 'wp-sms'),
             'required'    => !(Option::getOption('optional_mobile_field') == 'optional'),
             'clear'       => false,
             'type'        => 'text',
@@ -149,6 +150,23 @@ class WooCommerceAddMobileFieldHandler
     {
         if (isset($_POST['_billing_mobile'])) {
             $this->updateMobileNumber($orderId, $_POST['_billing_mobile']);
+        }
+    }
+
+    public function checkoutMobileFieldInlineStyle()
+    {
+        // Check if the current page is the checkout page
+        if (is_checkout()) {
+            $customCss = "
+            #mobile_field .iti--show-flags {
+            width: 100% !important;
+            }
+            #mobile_field .iti__flag-container {
+            top : 4px !important;
+            }";
+
+            // Add custom CSS codes inline to 'woocommerce-layout' stylesheet
+            wp_add_inline_style('woocommerce-layout', $customCss);
         }
     }
 
