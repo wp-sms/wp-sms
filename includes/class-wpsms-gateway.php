@@ -828,6 +828,7 @@ class Gateway
                 'msegat'       => 'msegat.com',
                 'oursms'       => 'oursms.net',
                 'gateway'      => 'gateway.sa',
+                'deewan'       => 'deewan.sa',
                 'jawalbsms'    => 'jawalbsms.ws',
                 'resalaty'     => 'resalaty.com',
                 'unifonic'     => 'unifonic.com',
