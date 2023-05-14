@@ -166,12 +166,10 @@ class Gateway
         'Indonesia'      => array(
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
-
         ),
         'Taiwan'         => array(
             'mitake'  => 'mitake.com.tw',
             'every8d' => 'teamplus.tech',
-
         ),
         'south korea'    => array(
             'nhncloud' => 'nhncloud.com/kr',
