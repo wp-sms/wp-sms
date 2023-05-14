@@ -19,6 +19,7 @@ class smsto extends \WP_SMS\Gateway
         $this->has_key        = true;
         $this->bulk_send      = true;
         $this->help           = 'Please enter your API key and leave the API username & API password empty.';
+        $this->documentUrl    = 'https://wp-sms-pro.com/resources/sms-to-gateway-configuration/';
     }
 
     public function SendSMS()

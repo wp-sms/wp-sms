@@ -238,6 +238,13 @@ class Gateway
     public $help = false;
 
     /**
+     * Gateway document url
+     *
+     * @var bool
+     */
+    public $documentUrl = false;
+
+    /**
      * Whether the bulk is supported.
      *
      * @var bool
