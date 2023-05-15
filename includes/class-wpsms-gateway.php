@@ -1129,8 +1129,8 @@ class Gateway
 
         if (isset($message_body[1]) && $message_body[1]) {
             return array(
-                'template_id' => $message_body[1],
-                'message'     => $message_body[0]
+                'template_id' => trim($message_body[1]),
+                'message'     => trim($message_body[0])
             );
         }
     }
