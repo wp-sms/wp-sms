@@ -809,6 +809,7 @@ class Gateway
                 'rayansmspanel'  => 'rayansmspanel.ir',
                 'farazsms'       => 'farazsms.com',
                 'raygansms'      => 'raygansms.com',
+                'signalads'      => 'signalads',
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
