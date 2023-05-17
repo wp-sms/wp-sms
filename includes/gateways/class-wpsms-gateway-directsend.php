@@ -3,6 +3,7 @@
 namespace WP_SMS\Gateway;
 
 use Exception;
+use WP_Error;
 
 class directsend extends \WP_SMS\Gateway
 {
@@ -93,9 +94,10 @@ class directsend extends \WP_SMS\Gateway
             }, $numbers);
 
             $from_explode = explode('|', $this->from);
+            $apiUrl       = $this->wsdl_link;
 
             if (isset($from_explode[1]) && $from_explode[1] == 'kakao') {
-                $this->wsdl_link                       = 'https://directsend.co.kr/index.php/api_v2/kakao_notice';
+                $apiUrl                                = 'https://directsend.co.kr/index.php/api_v2/kakao_notice';
                 $arguments['body']['kakao_plus_id']    = $this->kakao_plus_id;
                 $arguments['body']['user_template_no'] = $this->user_template_no;
             }
@@ -111,9 +113,9 @@ class directsend extends \WP_SMS\Gateway
 
             $arguments['body'] = json_encode($arguments['body']);
 
-            $response = $this->request('POST', "{$this->wsdl_link}", [], $arguments);
+            $response = $this->request('POST', "$apiUrl", [], $arguments);
 
-            if (isset($response->status) && !in_array($response->status, [0, 1])) {
+            if (isset($response->status) && isset($response->message) && !in_array($response->status, [0, 1])) {
                 throw new Exception($response->message);
             }
 
@@ -131,10 +133,10 @@ class directsend extends \WP_SMS\Gateway
 
             return $response;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->log($this->from, $this->msg, $numbers, $e->getMessage(), 'error');
 
-            return new \WP_Error('send-sms', $e->getMessage());
+            return new WP_Error('send-sms', $e->getMessage());
         }
     }
 
@@ -143,13 +145,13 @@ class directsend extends \WP_SMS\Gateway
         try {
             // Check username and password
             if (!$this->username or !$this->has_key) {
-                throw new \Exception(__('The Username/API key for this gateway is not set.', 'wp-sms'));
+                throw new Exception(__('The Username/API key for this gateway is not set.', 'wp-sms'));
             }
             return 1;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error_message = $e->getMessage();
-            return new \WP_Error('account-credit', $error_message);
+            return new WP_Error('account-credit', $error_message);
         }
     }
 
@@ -163,9 +165,7 @@ class directsend extends \WP_SMS\Gateway
     public function clean_number($number)
     {
         $number = str_replace('+82', '', $number);
-        $number = trim($number);
-
-        return $number;
+        return trim($number);
     }
 
 }
