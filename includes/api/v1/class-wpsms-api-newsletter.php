@@ -109,14 +109,20 @@ class Newsletter extends RestApi
         $number       = self::convertNumber($params['mobile']);
         $customFields = $request->get_param('custom_fields');
 
-        $group_id       = isset($params['group_id']) ? $params['group_id'] : false;
+        $group_ids       = isset($params['group_id']) ? $params['group_id'] : false;
         $allowed_groups = Option::getOption('newsletter_form_specified_groups');
 
-        if ($group_id && $allowed_groups && !in_array($group_id, $allowed_groups)) {
-            return self::response(__('Not allowed.', 'wp-sms'), 400);
+        if ($group_ids && $allowed_groups) {
+            foreach ($group_ids as $group_id) {
+                if (!in_array($group_id, $allowed_groups)) {
+                    return self::response(__('Not allowed.', 'wp-sms'), 400);
+                }
+            }
         }
 
-        $result = self::subscribe($params['name'], $number, $group_id, $customFields);
+        foreach ($group_ids as $group_id) {
+            $result = self::subscribe($params['name'], $number, $group_id, $customFields);
+        }
 
         if (is_wp_error($result)) {
             return self::response($result->get_error_message(), 400);
@@ -148,8 +154,11 @@ class Newsletter extends RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
-        $result   = self::unSubscribe($params['name'], $number, $group_id);
+        $group_ids = isset($params['group_id']) ? $params['group_id'] : 0;
+
+        foreach ($group_ids as $group_id) {
+            $result = self::unSubscribe($params['name'], $number, $group_id);
+        }
 
         if (is_wp_error($result)) {
             return self::response($result->get_error_message(), 400);

@@ -11,6 +11,24 @@ let wpSmsSubscribeForm = {
         this.EventListener()
     },
 
+    // Extract Group id in the Newsletter Form
+    getGroupIds: function (element) {
+        const group_id = [];
+        const checkboxInput = document.getElementsByName("group_checkbox");
+
+        if (checkboxInput.length > 0) {
+            var checkboxElements = document.querySelector(".js-wpSmsSubscriberGroupIds").querySelectorAll("label");
+            for (var i = 0; checkboxElements[i]; ++i) {
+                if (checkboxElements[i].querySelector("input").checked) {
+                    group_id.push(checkboxElements[i].querySelector("input").value);
+                }
+            }
+        } else {
+            group_id.push(element.children().find(".js-wpSmsSubscriberGroupId select").val());
+        }
+        return group_id;
+    },
+
     setFields: function () {
         this.wpSmsGdprCheckbox = jQuery('.js-wpSmsGdprConfirmation')
         this.wpSmsEventType = jQuery(".js-wpSmsSubscribeType")
@@ -33,7 +51,7 @@ let wpSmsSubscribeForm = {
         let requestBody = {
             name: element.children().find(".js-wpSmsSubscriberName input").val(),
             mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(),
-            group_id: element.children().find(".js-wpSmsSubscriberGroupId select").val(),
+            group_id: this.getGroupIds(element),
             type: element.children().find(".js-wpSmsSubscribeType:checked").val()
         }
 

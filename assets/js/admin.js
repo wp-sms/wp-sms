@@ -99,6 +99,15 @@ let WpSMSGeneral = {
             },
             preferredCountries: {
                 element: jQuery('#wpsms_settings\\[international_mobile_preferred_countries\\]'),
+            },
+            newsletterFormGroups: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_groups\\]"),
+            },
+            newsletterFormMultipleSelect: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_multiple_select\\]"),
+            },
+            newsletterFormSpecifiedGroups: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_specified_groups\\]"),
             }
         }
     },
@@ -115,12 +124,25 @@ let WpSMSGeneral = {
             this.fields.mobileMinimumChar.element.closest('tr').show()
             this.fields.mobileMaximumChar.element.closest('tr').show()
         }
+
+        if (this.fields.newsletterFormGroups.element.is(":checked")) {
+            this.fields.newsletterFormMultipleSelect.element.closest("tr").show();
+            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").show();
+        } else {
+            this.fields.newsletterFormMultipleSelect.element.closest("tr").hide();
+            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
+        }
     },
 
     addEventListener: function () {
         this.fields.internatioanlMode.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
+
+        this.fields.newsletterFormGroups.element.on("change", function () {
+            this.hideOrShowFields();
+        }.bind(this)
+        );
     },
 
     init: function () {

@@ -16,32 +16,45 @@
                     <p><?php echo esc_html($attributes['description']); ?></p>
                 <?php } ?>
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
-                    <label><?php _e('Your name', 'wp-sms'); ?>:</label>
-                    <input type="text" placeholder="<?php _e('Your name', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <label><?php _e('Your name', 'wp-sms'); ?></label>
+                    <input type="text" placeholder="<?php _e('First name...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input" />
                 </div>
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberMobile">
-                    <label><?php _e('Your mobile', 'wp-sms'); ?>:</label>
-                    <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input']]); ?>
+                    <label><?php _e('Phone number', 'wp-sms'); ?></label>
+                    <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input'], 'placeholder' => 'Phone number...']); ?>
                 </div>
 
+
                 <?php if (wp_sms_get_option('newsletter_form_groups')) { ?>
-                    <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberGroupId">
-                        <label><?php _e('Group', 'wp-sms'); ?>:</label>
-                        <select id="wpsms-groups" class="wpsms-subscribe__field__input">
-                            <option value="0"><?php _e('Please select the group', 'wp-sms'); ?></option>
-                            <?php foreach ($get_group_result as $items): ?>
-                                <option value="<?php echo esc_attr($items->ID); ?>" <?php selected(wp_sms_get_option('newsletter_form_default_group'), $items->ID); ?>><?php echo esc_attr($items->name); ?></option>
+                    <?php if (wp_sms_get_option('newsletter_form_multiple_select')) { ?>
+                        <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField wpsms-subscribe__form__field--gdpr js-wpSmsSubscriberGroupIds">
+                            <p><?php _e('Groups', 'wp-sms'); ?></p>
+                            <?php foreach ($get_group_result as $items) : ?>
+                                <label>
+                                    <input name="group_checkbox" type="checkbox" value="<?php echo esc_attr($items->ID); ?>" /><?php echo esc_attr($items->name); ?>
+                                </label>
                             <?php endforeach; ?>
-                        </select>
-                    </div>
+                        </div>
+                    <?php } else { ?>
+                        <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberGroupId">
+                            <label><?php _e('Select a group', 'wp-sms'); ?></label>
+                            <select id="wpsms-groups" class="wpsms-subscribe__field__input">
+                                <option value="0"><?php _e('Please select the group', 'wp-sms'); ?></option>
+                                <?php foreach ($get_group_result as $items) : ?>
+                                    <option value="<?php echo esc_attr($items->ID); ?>" <?php selected(wp_sms_get_option('newsletter_form_default_group'), $items->ID); ?>><?php echo esc_attr($items->name); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="wpsms-subscribe__field__triangle"></div>
+                        </div>
+                    <?php } ?>
                 <?php } ?>
 
                 <?php if (isset($attributes['fields'])) : ?><?php foreach ($attributes['fields'] as $key => $field) : ?>
-                    <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberCustomFields" data-field-name=<?php echo esc_html(ucfirst($field['label'])); ?>>
-                        <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?>:</label>
-                        <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
-                    </div>
+                <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberCustomFields" data-field-name=<?php echo esc_html(ucfirst($field['label']));?>>
+                    <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?>:</label>
+                    <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
+                </div>
                 <?php endforeach; ?><?php endif; ?>
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField wpsms-subscribe__form__field--radio">
@@ -81,6 +94,7 @@
                 <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activation', 'wp-sms'); ?></button>
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo wp_sms_get_option('newsletter_form_verify'); ?>">
             </div>
+
         </div>
     </div>
 </form>
