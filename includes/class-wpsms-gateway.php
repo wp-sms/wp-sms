@@ -174,6 +174,9 @@ class Gateway
         'south korea'    => array(
             'nhncloud' => 'nhncloud.com/kr',
         ),
+        'morocco'        => array(
+            'bulksmsMa' => 'bulksms.ma'
+        )
     );
 
     /**
