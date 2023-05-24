@@ -497,6 +497,7 @@ let WpSmsMetaBox = {
         this.setFields()
         this.hideOrShowFields()
         this.addEventListener()
+        this.insertShortcode()
     },
 
     /**
@@ -521,6 +522,9 @@ let WpSmsMetaBox = {
             },
             message_body: {
                 element: jQuery('#wpsms-custom-text'),
+            },
+            short_codes: {
+                element: jQuery('#wpsms-short-codes'),
             }
         }
     },
@@ -561,4 +565,15 @@ let WpSmsMetaBox = {
         }.bind(this));
     },
 
+    insertShortcode: function() {
+        this.fields.short_codes.element.find("code").each(function(index) {
+            jQuery(this).on('click', function () {
+                var shortCodeValue = jQuery(this).text()
+                jQuery('#wpsms-text-template').val(function(i , text){
+                    const cursorPosition = jQuery(this)[0].selectionStart;
+                    return text.substring(0, cursorPosition) + shortCodeValue + text.substring(cursorPosition);
+                })
+            })
+        })
+    },
 }
