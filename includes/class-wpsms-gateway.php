@@ -884,6 +884,12 @@ class Gateway
 
         );
 
+        if (WP_DEBUG) {
+            $gateways['test'] = [
+                'test' => 'Test'
+            ];
+        }
+
         return apply_filters('wpsms_gateway_list', $gateways);
     }
 
