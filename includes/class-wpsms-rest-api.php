@@ -133,14 +133,6 @@ class RestApi
             return new \WP_Error('unsubscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
-        if ($group) {
-            $check_group = Newsletter::getGroup($group);
-
-            if (!isset($check_group) and empty($check_group)) {
-                return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
-            }
-        }
-
         // Delete subscriber
         $result = Newsletter::deleteSubscriberByNumber($mobile, $group);
 

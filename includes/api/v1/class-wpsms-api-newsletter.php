@@ -167,25 +167,24 @@ class Newsletter extends RestApi
     public function unsubscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
-        $params = $request->get_params();
-        $number = self::convertNumber($params['mobile']);
+        $params         = $request->get_params();
+        $number         = self::convertNumber($params['mobile']);
+        $group_id       = isset($params['group_id']) ? $params['group_id'] : 0;
+        $groups_enabled = Option::getOption('newsletter_form_groups');
 
-        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
-
-        $group_ids_array = array();
-
-        // @todo -> Iman, this is not a good approach!!! use the same method that I used on subscribe
-        if (is_array($group_id) && $group_id) {
-            $group_ids_array = $group_id;
-            foreach ($group_ids_array as $item) {
-                $result = self::unSubscribe($params['name'], $number, $item);
-            }
-        } else {
-            $result = self::unSubscribe($params['name'], $number, $group_id);
+        //  If admin enabled groups and user did not select any group, then return error
+        if ($groups_enabled && !$group_id) {
+            return self::response(__('Please select a specific group.', 'wp-sms'), 400);
         }
 
-        if (is_wp_error($result)) {
-            return self::response($result->get_error_message(), 400);
+        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+
+        foreach ($groupIds as $groupId) {
+            $result = self::unSubscribe($params['name'], $number, $groupId);
+
+            if (is_wp_error($result)) {
+                return self::response($result->get_error_message(), 400);
+            }
         }
 
         return self::response(__('Your mobile number has been successfully unsubscribed.', 'wp-sms'));
