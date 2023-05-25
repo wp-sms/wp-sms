@@ -1,3 +1,7 @@
+.wpsms-subscribe__form {
+  margin-top: 30px;
+}
+
 .wpsms-subscribe__form__field {
   margin: 0 0 30px;
 
@@ -93,10 +97,11 @@
 .js-wpSmsSubscriberGroupId {
   label {
     position: absolute;
-    top: -14px;
+    top: -10px;
     left: 8px;
     padding: 0 8px;
     background: white;
+    border-radius: 4px;
   }
 }
 
@@ -118,7 +123,7 @@
     border: 1px solid #d9d9d9;
     box-sizing: border-box;
     border-radius: 8px;
-    padding: 12px 15px !important;
+    padding: 15px !important;
 
     &:focus {
       border: 1px solid #f88e40;
@@ -127,19 +132,19 @@
     }
   }
 
-  .wpsms-subscribe__field__triangle {
-    width: 0;
-    height: 0;
-    border-bottom: 0;
-    border-top: 9px solid #f88e40;
-    border-left: 7px solid rgba(255, 255, 255, 0);
-    border-right: 7px solid rgba(255, 255, 255, 0);
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-radius: 5px;
-  }
+  // .wpsms-subscribe__field__triangle {
+  //   width: 0;
+  //   height: 0;
+  //   border-bottom: 0;
+  //   border-top: 9px solid #f88e40;
+  //   border-left: 7px solid rgba(255, 255, 255, 0);
+  //   border-right: 7px solid rgba(255, 255, 255, 0);
+  //   position: absolute;
+  //   right: 14px;
+  //   top: 50%;
+  //   transform: translateY(-50%);
+  //   border-radius: 5px;
+  // }
 
   select {
     color: black;
@@ -199,8 +204,11 @@ input.wpsms-type-unsubscribe {
 
     &::after {
       content: "";
-      border-radius: 4px;
-      transform: translateY(1px);
+      transform: rotate(0);
+    }
+
+    &::before {
+      content: "";
     }
 
     &:focus {
@@ -218,8 +226,13 @@ input.wpsms-type-unsubscribe {
       border: 1px solid #222222 !important;
       background-color: #222222;
 
+      &::before {
+        content: "";
+      }
+
       &::after {
         content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
+        transform: rotate(0);
       }
     }
   }

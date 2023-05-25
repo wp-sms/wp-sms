@@ -9,12 +9,12 @@
         </div>
 
         <h2 class="wpsms-subscribe__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : __('Subscribe SMS', 'wp-sms'); ?></h2>
+        <?php if (isset($attributes['description'])) { ?>
+            <p><?php echo esc_html($attributes['description']); ?></p>
+        <?php } ?>
 
         <div class="wpsms-subscribe__form">
             <div class="wpsms-form-step-one js-wpSmsSubscribeStepOne">
-                <?php if (isset($attributes['description'])) { ?>
-                    <p><?php echo esc_html($attributes['description']); ?></p>
-                <?php } ?>
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
                     <label><?php _e('Your name', 'wp-sms'); ?></label>
                     <input type="text" placeholder="<?php _e('First name...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input" />

@@ -1451,7 +1451,7 @@ class Settings
                     'id'   => 'newsletter_form_multiple_select',
                     'name' => __('Multiple Select', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => __('Enable showing check box for each Group on Form.', 'wp-sms')
+                    'desc' => __('Select multiple groups by enabling this option.', 'wp-sms')
                 ),
                 'newsletter_form_specified_groups' => array(
                     'id'      => 'newsletter_form_specified_groups',

@@ -108,6 +108,9 @@ let WpSMSGeneral = {
             },
             newsletterFormSpecifiedGroups: {
                 element: jQuery("#wpsms_settings\\[newsletter_form_specified_groups\\]"),
+            },
+            newsletterFormDefaultGroup: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_default_group\\]"),
             }
         }
     },
@@ -128,9 +131,11 @@ let WpSMSGeneral = {
         if (this.fields.newsletterFormGroups.element.is(":checked")) {
             this.fields.newsletterFormMultipleSelect.element.closest("tr").show();
             this.fields.newsletterFormSpecifiedGroups.element.closest("tr").show();
+            this.fields.newsletterFormDefaultGroup.element.closest("tr").show();
         } else {
             this.fields.newsletterFormMultipleSelect.element.closest("tr").hide();
             this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
+            this.fields.newsletterFormDefaultGroup.element.closest("tr").hide();
         }
     },
 

@@ -46,6 +46,7 @@ class Newsletter extends RestApi
                     ),
                     'group_id'      => array(
                         'required' => false,
+                        'type'     => array('integer', 'array'),
                     ),
                     'custom_fields' => array(
                         'required' => false
@@ -109,18 +110,18 @@ class Newsletter extends RestApi
         $number       = self::convertNumber($params['mobile']);
         $customFields = $request->get_param('custom_fields');
 
-        $group_ids       = isset($params['group_id']) ? $params['group_id'] : false;
-        $allowed_groups = Option::getOption('newsletter_form_specified_groups');
+        $group_id = isset($params['group_id']) ? $params['group_id'] : false;
 
-        if ($group_ids && $allowed_groups) {
-            foreach ($group_ids as $group_id) {
-                if (!in_array($group_id, $allowed_groups)) {
-                    return self::response(__('Not allowed.', 'wp-sms'), 400);
-                }
-            }
+        $group_id_validation = $this->validate_group_id($group_id);
+        if ($group_id_validation !== true) {
+            return $group_id_validation;
         }
 
-        foreach ($group_ids as $group_id) {
+        if (is_array($group_id)) {
+            foreach ($group_id as $item) {
+                $result = self::subscribe($params['name'], $number, $item, $customFields);
+            }
+        } else {
             $result = self::subscribe($params['name'], $number, $group_id, $customFields);
         }
 
@@ -129,6 +130,49 @@ class Newsletter extends RestApi
         }
 
         return self::response($result);
+    }
+
+    /**
+     * Validates group_id parameter
+     */
+    public function validate_group_id($group_id)
+    {
+        $groups_enabled = Option::getOption('newsletter_form_groups');
+
+        //  If admin enabled groups and user did not select any group, then return error
+        if ($groups_enabled && !$group_id) {
+            return self::response(__('Please select a specific group.', 'wp-sms'), 400);
+        }
+
+        // If group_id is array, check for each item
+        // to see if the item is in the list of enabled groups.
+        if (is_array($group_id)) {
+            foreach ($group_id as $item) {
+                if ($this->check_subscribe_group($item) !== true) {
+                    return $this->check_subscribe_group($item);
+                }
+            }
+
+            // If group_id is not array, check
+            // to see if the group_id is in the list of enabled groups.     
+        } elseif ($this->check_subscribe_group($group_id) !== true) {
+            return $this->check_subscribe_group($group_id);
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns Error if this group is not in the list of allowed groups
+     */
+    public function check_subscribe_group($group_id)
+    {
+        $allowed_groups = Option::getOption('newsletter_form_specified_groups');
+
+        if ($group_id && $allowed_groups && !in_array($group_id, $allowed_groups)) {
+            return self::response(__('Not allowed.', 'wp-sms'), 400);
+        }
+        return true;
     }
 
     /**
@@ -154,9 +198,16 @@ class Newsletter extends RestApi
         $params = $request->get_params();
         $number = self::convertNumber($params['mobile']);
 
-        $group_ids = isset($params['group_id']) ? $params['group_id'] : 0;
+        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
 
-        foreach ($group_ids as $group_id) {
+        $group_ids_array = array();
+
+        if (is_array($group_id) && $group_id) {
+            $group_ids_array = $group_id;
+            foreach ($group_ids_array as $item) {
+                $result = self::unSubscribe($params['name'], $number, $item);
+            }
+        } else {
             $result = self::unSubscribe($params['name'], $number, $group_id);
         }
 

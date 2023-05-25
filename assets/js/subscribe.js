@@ -12,7 +12,7 @@ let wpSmsSubscribeForm = {
     },
 
     // Extract Group id in the Newsletter Form
-    getGroupIds: function (element) {
+    getGroupId: function (element) {
         const group_id = [];
         const checkboxInput = document.getElementsByName("group_checkbox");
 
@@ -51,7 +51,7 @@ let wpSmsSubscribeForm = {
         let requestBody = {
             name: element.children().find(".js-wpSmsSubscriberName input").val(),
             mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(),
-            group_id: this.getGroupIds(element),
+            group_id: this.getGroupId(element),
             type: element.children().find(".js-wpSmsSubscribeType:checked").val()
         }
 
