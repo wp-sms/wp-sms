@@ -56,8 +56,8 @@ class Notifications
             if (isset($update[1])) {
                 if ($update[1]->current > $wp_version and $this->sms->GetCredit()) {
                     if (get_option('wp_last_send_notification') == false) {
-                        
-                        $receiver  = array($this->options['admin_mobile_number']);
+
+                        $receiver     = array($this->options['admin_mobile_number']);
                         $message_body = sprintf(__('WordPress %s is available! Please update now', 'wp-sms'), $update[1]->current);
                         $notification = NotificationFactory::getCustom();
                         $notification->send($message_body, $receiver);
@@ -275,7 +275,7 @@ class Notifications
             if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
                 $mediaUrls = [get_the_post_thumbnail_url($post->ID)];
             }
-            
+
             if (empty($receiver) || !$message_body) {
                 return;
             }

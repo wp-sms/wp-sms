@@ -24,7 +24,7 @@ let wpSmsSubscribeForm = {
                     group_id.push(checkboxElements[i].querySelector("input").value);
                 }
             }
-        } else if (group_id_checkbox.length > 0) {
+        } else if (group_id_select.length > 0) {
             group_id.push(element.children().find(".js-wpSmsSubscriberGroupId select").val());
         } else {
             return;
