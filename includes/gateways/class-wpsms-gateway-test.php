@@ -7,8 +7,8 @@ use WP_Error;
 
 class test extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://rest.payamak-panel.com/api/SendSMS";
-    public $tariff = "http://sms.hostiran.net";
+    private $wsdl_link = '';
+    public $tariff = '';
     public $unitrial = true;
     public $unit;
     public $flash = "false";

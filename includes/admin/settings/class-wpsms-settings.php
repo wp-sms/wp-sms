@@ -1447,6 +1447,12 @@ class Settings
                     'type' => 'checkbox',
                     'desc' => __('Enable showing Groups on Form.', 'wp-sms')
                 ),
+                'newsletter_form_multiple_select'           => array(
+                    'id'   => 'newsletter_form_multiple_select',
+                    'name' => __('Multiple Select', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'desc' => __('Select multiple groups by enabling this option.', 'wp-sms')
+                ),
                 'newsletter_form_specified_groups' => array(
                     'id'      => 'newsletter_form_specified_groups',
                     'name'    => __('Display groups', 'wp-sms'),

@@ -81,10 +81,6 @@ class RestApi
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
-        if (!empty($group) && !Newsletter::getGroup($group)) {
-            return new \WP_Error('subscribe', __('Group ID not valid!', 'wp-sms'));
-        }
-
         $gateway_name = Option::getOption('gateway_name');
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
             // Check gateway setting
@@ -135,14 +131,6 @@ class RestApi
     {
         if (empty($name) or empty($mobile)) {
             return new \WP_Error('unsubscribe', __('Name and Mobile Number are required!', 'wp-sms'));
-        }
-
-        if ($group) {
-            $check_group = Newsletter::getGroup($group);
-
-            if (!isset($check_group) and empty($check_group)) {
-                return new \WP_Error('unsubscribe', __('The group number is not valid!', 'wp-sms'));
-            }
         }
 
         // Delete subscriber
