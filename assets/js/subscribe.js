@@ -98,13 +98,16 @@ let wpSmsSubscribeForm = {
             var response = JSON.parse(data.responseText)
             var message = null
 
+
             submitButton.prop('disabled', false)
             processingOverlay.css('display', 'none')
 
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
-            } else if(response.code == "rest_invalid_param") {
-                message = response.data.params.group_id;
+            } else if(response.data.status !== null) {
+                Object.keys(response.data.params).forEach(function(parameter){
+                    message = response.data.params[parameter];
+                })
             } else {
                 message = wpsms_ajax_object.unknown_error;
             }
