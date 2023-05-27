@@ -103,6 +103,8 @@ let wpSmsSubscribeForm = {
 
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
+            } else if(response.code == "rest_invalid_param") {
+                message = response.data.params.group_id;
             } else {
                 message = wpsms_ajax_object.unknown_error;
             }
