@@ -81,8 +81,6 @@ class oxemis extends \WP_SMS\Gateway
 
             $response = $this->request('POST', "$this->wsdl_link/send.php", $arguments, []);
 
-            file_put_contents('/Users/reventon/Sites/veronalabs/log', print_r($response, true), FILE_APPEND);
-
             if (!isset($response->success) && isset($response->message)) {
                 return new Exception($response->message);
             }
