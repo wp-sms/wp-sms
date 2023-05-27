@@ -2,12 +2,13 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
 use WP_Error;
 
 class oxemis extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://www.oxisms.com/api/1.0/";
-    public $tariff = "https://www.oxemis.com/en/sms/";
+    private $wsdl_link = "https://www.oxisms.com/api/1.0";
+    public $tariff = "https://www.oxemis.com/en/sms";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
@@ -16,7 +17,27 @@ class oxemis extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
+        $this->has_key        = true;
+        $this->bulk_send      = true;
         $this->validateNumber = "Example: 0033601234567";
+        $this->help           = "";
+        $this->gatewayFields  = [
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => 'API ID',
+                'desc' => 'Enter your API ID.'
+            ],
+            'password' => [
+                'id'   => 'gateway_password',
+                'name' => 'API Password',
+                'desc' => 'Enter your API Password.',
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'SMS Sender name or number',
+                'desc' => 'Enter your SMS Sender name or number.',
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -48,79 +69,72 @@ class oxemis extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
+            $arguments = [
+                'api_key'      => $this->has_key,
+                'api_password' => $this->password,
+                'message'      => $this->msg,
+                'recipients'   => implode(',', $this->to),
+                'sender'       => $this->from
+            ];
+
+            $response = $this->request('POST', "$this->wsdl_link/send.php", $arguments, []);
+
+            if (isset($response->success) && isset($response->message)) {
+                return new Exception($response->message);
+            }
+
             // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $this->log($this->from, $this->msg, $this->to, $response);
 
-            return $credit;
-        }
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             *
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
 
-        $argument = add_query_arg(array(
-            'api_key'      => $this->username,
-            'api_password' => $this->password,
-            'message'      => $this->msg,
-            'recipients'   => implode(',', $this->to),
-            'sender'       => $this->from,
-        ), $this->wsdl_link . 'send.php');
-
-        $response = wp_remote_get($argument);
-
-        if (is_wp_error($response)) {
             return $response;
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
-
-        if (200 != wp_remote_retrieve_response_code($response)) {
-            return new WP_Error('account-credit', $response['body']);
-        }
-
-        $body = json_decode($response['body']);
-
-        if (!$body->success) {
-            $this->log($this->from, $this->msg, $this->to, $body->message, 'error');
-            return new WP_Error('account-credit', $body->message);
-        }
-
-        $this->log($this->from, $this->msg, $this->to, $body->details);
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param string $result result output.
-         * @since 2.4
-         *
-         */
-        do_action('wp_sms_send', $response['body']);
-
-        return $body->details;
     }
 
     public function GetCredit()
     {
-        $argument = add_query_arg(array(
-            'api_key'      => $this->username,
-            'api_password' => $this->password,
-        ), $this->wsdl_link . 'account.php');
+        try {
 
-        $response = wp_remote_get($argument);
+            // Check API key and API Password
+            if (!$this->has_key || !$this->password) {
+                return new WP_Error('account-credit', __('The API Key and API Password are required.', 'wp-sms'));
+            }
 
-        if (is_wp_error($response)) {
-            return $response;
+            $arguments = [
+                'api_key'      => $this->has_key,
+                'api_password' => $this->password
+            ];
+
+            $response = $this->request('POST', "$this->wsdl_link/account.php", $arguments, []);
+
+            if (isset($response->success) && isset($response->message)) {
+                return new Exception($response->message);
+            }
+
+            if (!isset($response->details->credit)) {
+                return $response;
+            }
+
+            return $response->details->credit;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
         }
-
-        if (200 != wp_remote_retrieve_response_code($response)) {
-            return new WP_Error('account-credit', $response['body']);
-        }
-
-        $body = json_decode($response['body']);
-
-        if (!$body->success) {
-            return new WP_Error('account-credit', $body->message);
-        }
-
-        return $body->details->credit;
     }
 }
