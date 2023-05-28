@@ -13,22 +13,24 @@ let wpSmsSubscribeForm = {
 
     // Extract Group id in the Newsletter Form
     getGroupId: function (element) {
-        const group_id = [];
-        const group_id_checkbox = document.getElementsByName("group_id_checkbox");
-        const group_id_select = document.getElementsByName("group_id_select");
+        let group_id = [];
+        let groupIdCheckbox = document.getElementsByName("group_id_checkbox");
+        let groupIdSelect = document.getElementsByName("group_id_select");
 
-        if (group_id_checkbox.length > 0) {
-            var checkboxElements = document.querySelector(".js-wpSmsSubscriberGroupIds").querySelectorAll("label");
-            for (var i = 0; checkboxElements[i]; ++i) {
-                if (checkboxElements[i].querySelector("input").checked) {
-                    group_id.push(checkboxElements[i].querySelector("input").value);
-                }
+        for (var i = 0; i < groupIdCheckbox.length; ++i) {
+            if (groupIdCheckbox[i].checked) {
+                group_id.push(groupIdCheckbox[i].value);
             }
-        } else if (group_id_select.length > 0) {
-            group_id.push(element.children().find(".js-wpSmsSubscriberGroupId select").val());
-        } else {
+        }
+
+        if (groupIdSelect.length > 0 && groupIdSelect[0].value) {
+            group_id.push(groupIdSelect[0].value);
+        }
+
+        if (!group_id.length) {
             return;
         }
+
         return group_id;
     },
 

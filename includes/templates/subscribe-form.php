@@ -40,7 +40,7 @@
                         <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberGroupId">
                             <label><?php _e('Select a group', 'wp-sms'); ?></label>
                             <select name="group_id_select" id="wpsms-groups" class="wpsms-subscribe__field__input">
-                                <option value="0"><?php _e('Please select the group', 'wp-sms'); ?></option>
+                                <option value=""><?php _e('Please select the group', 'wp-sms'); ?></option>
                                 <?php foreach ($get_group_result as $items) : ?>
                                     <option value="<?php echo esc_attr($items->ID); ?>" <?php selected(wp_sms_get_option('newsletter_form_default_group'), $items->ID); ?>><?php echo esc_attr($items->name); ?></option>
                                 <?php endforeach; ?>
