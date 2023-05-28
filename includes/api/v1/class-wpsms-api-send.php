@@ -41,6 +41,8 @@ class SendSmsApi extends \WP_SMS\RestApi
         // Register routes
         add_action('rest_api_init', array($this, 'register_routes'));
 
+        $this->sendSmsArguments = apply_filters('wp_sms_api_send_sms_arguments', $this->sendSmsArguments);
+
         parent::__construct();
     }
 
@@ -254,7 +256,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 break;
         }
 
-        return apply_filters('wp_sms_api_recipients_numbers', $recipients, $request->get_param('recipients'));
+        return apply_filters('wp_sms_api_recipients_numbers', $recipients, $request->get_param('recipients'), $request);
     }
 
     /**
