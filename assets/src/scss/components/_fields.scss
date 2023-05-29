@@ -172,16 +172,29 @@ input.wpsms-type-unsubscribe {
 
 .wpsms-subscribe__form__field--gdpr {
   margin: 0 0 24px;
+  border: 1px solid #d9d9d9;
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 20px 15px 8px 15px !important;
+  position: relative;
 
   label {
     color: #000;
     cursor: pointer;
     position: relative;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   p {
-    margin: 0 0 6px 0;
+    position: absolute;
+    top: -16px;
+    left: 8px;
+    background: white;
+    border-radius: 4px;
+    color: #222222;
+    font-size: 14px;
+    margin: 0 !important;
+    padding: 0 8px !important;
   }
 
   input[type="checkbox"] {

@@ -29,7 +29,7 @@
                 <?php if (wp_sms_get_option('newsletter_form_groups')) { ?>
                     <?php if (wp_sms_get_option('newsletter_form_multiple_select')) { ?>
                         <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField wpsms-subscribe__form__field--gdpr js-wpSmsSubscriberGroupIds">
-                            <p><?php _e('Groups', 'wp-sms'); ?></p>
+                            <p><?php _e('Select the groups', 'wp-sms'); ?></p>
                             <?php foreach ($get_group_result as $items) : ?>
                                 <label>
                                     <input name="group_id_checkbox" type="checkbox" value="<?php echo esc_attr($items->ID); ?>"/><?php echo esc_attr($items->name); ?>
