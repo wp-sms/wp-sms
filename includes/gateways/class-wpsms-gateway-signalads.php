@@ -122,8 +122,6 @@ class signalads extends \WP_SMS\Gateway
 
             $response = $this->request('GET', "$this->wsdl_link/user/credit.json", [], $arguments);
 
-            file_put_contents('/Users/reventon/Sites/veronalabs/log', print_r($response, true), FILE_APPEND);
-
             if (!isset($response->success)) {
                 return new Exception($response);
             }
