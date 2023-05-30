@@ -203,30 +203,30 @@ class Notifications
             if (is_admin() && $postID) {
 
                 if (isset($_REQUEST['wps_send_to'])) {
-                    add_post_meta($postID, 'wp_sms_receiver', sanitize_text_field($_REQUEST['wps_send_to']));
+                    update_post_meta($postID, 'wp_sms_receiver', sanitize_text_field($_REQUEST['wps_send_to']));
                 } else {
                     // Break the process if there is no recipient for the SMS
                     return;
                 }
 
                 if (isset($this->options['notif_publish_new_post_force'])) {
-                    add_post_meta($postID, 'wp_sms_force_sms', true);
+                    update_post_meta($postID, 'wp_sms_force_sms', true);
                 }
 
                 if (isset($_REQUEST['wps_subscribe_group'])) {
-                    add_post_meta($postID, 'wp_sms_groups', sanitize_text_field($_REQUEST['wps_subscribe_group']));
+                    update_post_meta($postID, 'wp_sms_groups', sanitize_text_field($_REQUEST['wps_subscribe_group']));
                 }
 
                 if (isset($_REQUEST['wps_mobile_numbers'])) {
-                    add_post_meta($postID, 'wp_sms_numbers', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
+                    update_post_meta($postID, 'wp_sms_numbers', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
                 }
 
                 if (isset($_REQUEST['wpsms_roles'])) {
-                    add_post_meta($postID, 'wp_sms_roles', sanitize_text_field($_REQUEST['wpsms_roles']));
+                    update_post_meta($postID, 'wp_sms_roles', sanitize_text_field($_REQUEST['wpsms_roles']));
                 }
 
                 if (isset($_REQUEST['wpsms_text_template'])) {
-                    add_post_meta($postID, 'wp_sms_message_body', sanitize_text_field($_REQUEST['wpsms_text_template']));
+                    update_post_meta($postID, 'wp_sms_message_body', sanitize_text_field($_REQUEST['wpsms_text_template']));
                 }
 
             }
@@ -238,7 +238,6 @@ class Notifications
 
             // Retrieve data from post meta
             $recipients        = get_post_meta($postID, 'wp_sms_receiver', true);
-            $force_send        = get_post_meta($postID, 'wp_sms_force_sms', true);
             $subscriber_groups = get_post_meta($postID, 'wp_sms_groups', true);
             $numbers           = get_post_meta($postID, 'wp_sms_numbers', true);
             $user_roles        = get_post_meta($postID, 'wp_sms_roles', true);
@@ -279,6 +278,8 @@ class Notifications
             if (empty($receiver) || !$message_body) {
                 return;
             }
+
+            update_post_meta($postID, 'wp_sms_post_publish_time', $postTime);
 
             // Fire notification
             $notification = NotificationFactory::getPost($postID);
