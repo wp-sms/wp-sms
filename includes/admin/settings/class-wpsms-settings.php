@@ -173,7 +173,7 @@ class Settings
             'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
             'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
             'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
-            'pro_ultimate_members' => __('Ultimate Members', 'wp-sms'),
+            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms'),
 
             'licenses' => __('Licenses', 'wp-sms')
         );
@@ -1064,7 +1064,7 @@ class Settings
             );
         }
 
-        // Get Ultimate Members
+        // Get Ultimate Member
         if (function_exists('um_user')) {
             $um_options['um_field_header']          = array(
                 'id'   => 'um_field_header',
@@ -1075,7 +1075,7 @@ class Settings
                 'id'   => 'um_field',
                 'name' => __('Mobile number field', 'wp-sms'),
                 'type' => 'checkbox',
-                'desc' => __('Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms'),
+                'desc' => __('Sync Mobile number from Ultimate Member mobile number form field.', 'wp-sms'),
             );
             $um_options['um_sync_field_name']       = array(
                 'id'      => 'um_sync_field_name',
@@ -1089,14 +1089,14 @@ class Settings
                 'id'   => 'um_sync_previous_members',
                 'name' => __('Sync old member too?'),
                 'type' => 'checkbox',
-                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Members.', 'wp-sms')
+                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
             );
         } else {
             $um_options['um_notify_form'] = array(
                 'id'   => 'um_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Ultimate Members should be enable to run this tab', 'wp-sms')
+                'desc' => __('Ultimate Member should be enable to run this tab', 'wp-sms')
             );
         }
 
