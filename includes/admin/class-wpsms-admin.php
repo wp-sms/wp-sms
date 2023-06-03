@@ -455,7 +455,7 @@ class Admin
 
     /**
      * Init FeedbackBird widget a third-party service to get feedbacks from users
-     * 
+     *
      * @url feedbackbird.io
      *
      * @return void
@@ -463,27 +463,31 @@ class Admin
     private function initFeedback()
     {
         add_action('admin_enqueue_scripts', function () {
-            wp_enqueue_script('feedbackbird-app-script', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
-            wp_add_inline_script('feedbackbird-app-script', sprintf('var feedbackBirdObject = %s;', json_encode([
-                'userid' => get_current_user(),
-                'meta'   => [
-                    'php_version'    => PHP_VERSION,
-                    'active_plugins' => array_map(function ($plugin, $pluginPath) {
-                        return [
-                            'name'    => $plugin['Name'],
-                            'version' => $plugin['Version'],
-                            'status'  => is_plugin_active($pluginPath) ? 'active' : 'deactivate',
-                        ];
-                    }, get_plugins(), array_keys(get_plugins())),
-                ]
-            ])));
+            $screen = get_current_screen();
 
-            add_filter('script_loader_tag', function ($tag, $handle, $src) {
-                if ('feedbackbird-app-script' === $handle) {
-                    return preg_replace('/^<script /i', '<script type="module" id="feedbackbird-app-script" crossorigin="crossorigin"', $tag);
-                }
-                return $tag;
-            }, 10, 3);
+            if (stristr($screen->id, 'wp-sms')) {
+                wp_enqueue_script('feedbackbird-app-script', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
+                wp_add_inline_script('feedbackbird-app-script', sprintf('var feedbackBirdObject = %s;', json_encode([
+                    'userid' => get_current_user(),
+                    'meta'   => [
+                        'php_version'    => PHP_VERSION,
+                        'active_plugins' => array_map(function ($plugin, $pluginPath) {
+                            return [
+                                'name'    => $plugin['Name'],
+                                'version' => $plugin['Version'],
+                                'status'  => is_plugin_active($pluginPath) ? 'active' : 'deactivate',
+                            ];
+                        }, get_plugins(), array_keys(get_plugins())),
+                    ]
+                ])));
+
+                add_filter('script_loader_tag', function ($tag, $handle, $src) {
+                    if ('feedbackbird-app-script' === $handle) {
+                        return preg_replace('/^<script /i', '<script type="module" id="feedbackbird-app-script" crossorigin="crossorigin"', $tag);
+                    }
+                    return $tag;
+                }, 10, 3);
+            }
         });
     }
 
