@@ -1091,6 +1091,23 @@ class Settings
                 'type' => 'checkbox',
                 'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
             );
+            $um_options['um_notification_header']  = array(
+                'id'   => 'um_notification_header',
+                'name' => __('Notification', 'wp-sms'),
+                'type' => 'header'
+            );
+            $um_options['um_send_sms_after_approval']  = array(
+                'id'   => 'um_send_sms_after_approval',
+                'name' => __('Send SMS after approval', 'wp-sms'),
+                'type' => 'checkbox',
+                'desc' => __('Send SMS after approval the user', 'wp-sms'),
+            );
+            $um_options['um_message_body']  = array(
+                'id'   => 'um_message_body',
+                'name' => __('Message body', 'wp-sms'),
+                'type' => 'textarea',
+                'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+            );
         } else {
             $um_options['um_notify_form'] = array(
                 'id'   => 'um_notify_form',
