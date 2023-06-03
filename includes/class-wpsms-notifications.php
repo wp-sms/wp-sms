@@ -168,6 +168,10 @@ class Notifications
                 return;
             }
 
+            if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
+                return;
+            }
+
             $termIds         = [];
             $specified_terms = isset($this->options['notif_publish_new_taxonomy_and_term']) ? $this->options['notif_publish_new_taxonomy_and_term'] : [];
 
@@ -278,8 +282,6 @@ class Notifications
             if (empty($receiver) || !$message_body) {
                 return;
             }
-
-            update_post_meta($postID, 'wp_sms_post_publish_time', $postTime);
 
             // Fire notification
             $notification = NotificationFactory::getPost($postID);
