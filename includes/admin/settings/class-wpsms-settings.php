@@ -508,7 +508,7 @@ class Settings
                     'id'   => 'bp_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('BuddyPress should be installed to show the options.', 'wp-sms'),
+                    'desc' => __('BuddyPress plugin should be installed to show the options.', 'wp-sms'),
                 ));
         }
 
@@ -690,7 +690,7 @@ class Settings
                     'id'   => 'wc_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('WooCommerce should be installed to show the options.', 'wp-sms')
+                    'desc' => __('WooCommerce plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -770,7 +770,7 @@ class Settings
                     'id'   => 'edd_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Easy Digital Downloads should be installed to show the options.', 'wp-sms')
+                    'desc' => __('Easy Digital Downloads plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -884,7 +884,7 @@ class Settings
                     'id'   => 'job_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Job Manager should be installed to show the options.', 'wp-sms')
+                    'desc' => __('Job Manager plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -970,7 +970,7 @@ class Settings
                     'id'   => 'as_notify_new_ticket',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Awesome Support should be installed to show the options.', 'wp-sms')
+                    'desc' => __('Awesome Support plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -1060,7 +1060,7 @@ class Settings
                 'id'   => 'gf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms')
+                'desc' => __('Gravity Forms plugin should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1091,12 +1091,29 @@ class Settings
                 'type' => 'checkbox',
                 'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
             );
+            $um_options['um_notification_header']  = array(
+                'id'   => 'um_notification_header',
+                'name' => __('Notification', 'wp-sms'),
+                'type' => 'header'
+            );
+            $um_options['um_send_sms_after_approval']  = array(
+                'id'   => 'um_send_sms_after_approval',
+                'name' => __('Send SMS after approval', 'wp-sms'),
+                'type' => 'checkbox',
+                'desc' => __('Send SMS after approval the user', 'wp-sms'),
+            );
+            $um_options['um_message_body']  = array(
+                'id'   => 'um_message_body',
+                'name' => __('Message body', 'wp-sms'),
+                'type' => 'textarea',
+                'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+            );
         } else {
             $um_options['um_notify_form'] = array(
                 'id'   => 'um_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Ultimate Member should be enable to run this tab', 'wp-sms')
+                'desc' => __('Ultimate Member plugin should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1191,7 +1208,7 @@ class Settings
                 'id'   => 'qf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Quform should be enable to run this tab', 'wp-sms')
+                'desc' => __('Quform plugin should be enable to run this tab', 'wp-sms')
             );
         }
 
