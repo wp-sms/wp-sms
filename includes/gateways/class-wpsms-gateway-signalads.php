@@ -71,7 +71,7 @@ class signalads extends \WP_SMS\Gateway
                     'Authorization' => "Bearer $this->has_key"
                 ),
                 'body'    => array(
-                    'numbers' => implode(',', $this->to),
+                    'numbers' => $this->to,
                     'from'    => $this->from,
                     'message' => $this->msg
                 )
