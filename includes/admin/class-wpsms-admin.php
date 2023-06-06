@@ -483,7 +483,7 @@ class Admin
 
                 add_filter('script_loader_tag', function ($tag, $handle, $src) {
                     if ('feedbackbird-app-script' === $handle) {
-                        return preg_replace('/^<script /i', '<script type="module" id="feedbackbird-app-script" crossorigin="crossorigin"', $tag);
+                        return preg_replace('/^<script /i', '<script type="module" crossorigin="crossorigin" ', $tag);
                     }
                     return $tag;
                 }, 10, 3);
