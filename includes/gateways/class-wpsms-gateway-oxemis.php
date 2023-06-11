@@ -74,7 +74,7 @@ class oxemis extends \WP_SMS\Gateway
             $arguments = [
                 'api_key'      => $this->has_key,
                 'api_password' => $this->password,
-                'message'      => $this->msg,
+                'message'      => urlencode($this->msg),
                 'recipients'   => implode(',', $this->to),
                 'sender'       => $this->from
             ];
