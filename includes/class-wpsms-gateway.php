@@ -634,7 +634,7 @@ class Gateway
                 'aspsms' => 'aspsms.com',
             ),
             'latvia'               => array(
-                'texti' => 'texti.fi',
+                'nesssolution' => 'ness-solutions.com',
             ),
             'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',
