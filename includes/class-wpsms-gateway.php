@@ -124,7 +124,9 @@ class Gateway
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
-            'smsdone'   => 'smsd.one'
+            'smsdone'   => 'smsd.one',
+            'micron'   => 'microntechbd.com',
+            'revesms' => 'smpp.ajuratech.com',
         ),
         'palestine'      => array(
             'htd' => 'htd.ps',
@@ -689,9 +691,6 @@ class Gateway
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
             ),
-            'bangladesh'           => array(
-                'revesms' => 'smpp.ajuratech.com'
-            ),
             'belgium'              => array(
                 'smsbox' => 'smsbox.be'
             ),
@@ -1096,6 +1095,7 @@ class Gateway
         $parsedParams = wp_parse_args($params, [
             'method' => $method
         ]);
+
 
         /**
          * Execute the request
