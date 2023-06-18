@@ -19,6 +19,10 @@ class Notification
             $to = array($to);
         }
 
+        // if(!$this->optIn){
+        //     return;
+        // }
+
         $response = wp_sms_send($to, $this->getOutputMessage($message), false, null, $mediaUrls);
 
         /**

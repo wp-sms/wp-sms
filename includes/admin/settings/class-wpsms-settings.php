@@ -643,9 +643,21 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
+                'xxxxxxx'                 => array(
+                    'id'   => 'xxxxxxx',
+                    'name' => __('Recieve SMS checkbox', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'xxxxxx'          => array(
+                    'id'      => 'xxxxxx',
+                    'name'    => __('Status', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Show the checkbox on the checkout for confirming to send notification via SMS.', 'wp-sms')
+                ),
                 'wc_notify_status'            => array(
                     'id'   => 'wc_notify_status',
-                    'name' => __('Notify of status', 'wp-sms'),
+                    'name' => __('Notify of order status', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
@@ -665,7 +677,7 @@ class Settings
                 ),
                 'wc_notify_by_status'         => array(
                     'id'   => 'wc_notify_by_status',
-                    'name' => __('Notify by status', 'wp-sms'),
+                    'name' => __('Notify of specific order status', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
