@@ -456,7 +456,7 @@ class Admin
     /**
      * Init FeedbackBird widget a third-party service to get feedbacks from users
      *
-     * @url feedbackbird.io
+     * @url https://feedbackbird.io
      *
      * @return void
      */

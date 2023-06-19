@@ -11,6 +11,7 @@ class WooCommerceCouponNotification extends Notification
     protected $variables = [
         '%coupon_code%'   => 'getCode',
         '%coupon_amount%' => 'getAmount',
+        '%coupon_name%'   => 'getName',
     ];
 
     public function __construct($couponId = false)
@@ -30,5 +31,8 @@ class WooCommerceCouponNotification extends Notification
         return $this->coupon->get_amount();
     }
 
-
+    public function getName()
+    {
+        return get_the_title($this->coupon->get_id());
+    }
 }
