@@ -67,6 +67,12 @@ class smsapi extends \WP_SMS\Gateway
 
         try {
 
+          $messageBody = $this->msg;
+
+          if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
+              $messageBody = $this->convertToUnicode($messageBody);
+          }
+
             $arguments = [
                 'headers' => [
                     'Authorization' => "Bearer {$this->has_key}"
@@ -74,7 +80,7 @@ class smsapi extends \WP_SMS\Gateway
                 'body'    => [
                     'to'      => implode(',', $this->to),
                     'from'    => urlencode($this->from),
-                    'message' => $this->msg,
+                    'message' => $messageBody,
                     'format'  => 'json'
                 ]
             ];
