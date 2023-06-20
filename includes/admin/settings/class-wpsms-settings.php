@@ -643,13 +643,13 @@ class Settings
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
-                'xxxxxxx'                 => array(
-                    'id'   => 'xxxxxxx',
+                'wc_recieve_sms_checkbox'                 => array(
+                    'id'   => 'wc_recieve_sms_checkbox',
                     'name' => __('Recieve SMS checkbox', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'xxxxxx'          => array(
-                    'id'      => 'xxxxxx',
+                'wc_recieve_sms_checkbox_enable'          => array(
+                    'id'      => 'wc_recieve_sms_checkbox_enable',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
