@@ -90,6 +90,7 @@ class Gateway
             'sendinblue'     => 'sendinblue.com',
             'whatsappapi'    => 'app.whatsapp-api.net',
             'rapidsms'       => 'rapidsms.net',
+            'apifon' => 'apifon.com'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -535,16 +536,12 @@ class Gateway
 
             if (substr($recipient, 0, 2) === '00') {
                 $reformattedNumber = $countryCode . substr($recipient, 2);
-
             } elseif (substr($recipient, 0, 1) === '0') {
                 $reformattedNumber = $countryCode . substr($recipient, 1);
-
             } elseif (substr($recipient, 0, 1) === '+') {
                 $reformattedNumber = $recipient;
-
             } else {
                 $reformattedNumber = $countryCode . $recipient;
-
             }
 
             $finalNumbers[] = $reformattedNumber;
