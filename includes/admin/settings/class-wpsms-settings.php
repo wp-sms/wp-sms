@@ -645,7 +645,7 @@ class Settings
                 ),
                 'wc_recieve_sms_checkbox'                 => array(
                     'id'   => 'wc_recieve_sms_checkbox',
-                    'name' => __('Recieve SMS checkbox', 'wp-sms'),
+                    'name' => __('Confirmation Checkbox', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'wc_recieve_sms_checkbox_enable'          => array(
@@ -653,7 +653,7 @@ class Settings
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Show the checkbox on the checkout for confirming to send notification via SMS.', 'wp-sms')
+                    'desc'    => __('Show the checkbox on the checkout for the customer to confirm receiving notification via SMS.', 'wp-sms')
                 ),
                 'wc_notify_status'            => array(
                     'id'   => 'wc_notify_status',

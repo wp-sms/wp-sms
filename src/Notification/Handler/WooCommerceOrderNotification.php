@@ -32,7 +32,7 @@ class WooCommerceOrderNotification extends Notification
             $this->order = wc_get_order($orderId);
         }
 
-        if ($this->order && $this->order->get_meta('wpsms_optin_notification') && $this->order->get_meta('wpsms_optin_notification' == 0)) {
+        if ($this->order && !$this->order->get_meta('wpsms_woocommerce_order_notification')) {
             $this->optIn = false;
         }
     }
