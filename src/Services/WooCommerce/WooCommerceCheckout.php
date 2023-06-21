@@ -12,10 +12,10 @@ class WooCommerceCheckout
             if (apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
                 add_action('woocommerce_review_order_before_submit', array($this, 'registerCheckboxCallback'), 10);
                 add_action('woocommerce_checkout_update_order_meta', array($this, 'registerStoreCheckboxCallback'), 10, 2);
+
+                add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
             }
         });
-
-        add_action('woocommerce_admin_order_data_after_order_details', array($this, 'registerOrderUpdateCheckbox'));
     }
 
     /**
@@ -23,11 +23,12 @@ class WooCommerceCheckout
      */
     public function registerOrderUpdateCheckbox($order)
     {
-        $order_status = 'This user has disabled the order status notification.';
-        if ($order->get_meta('wpsms_woocommerce_order_notification')) {
-            $order_status =  'This user has enabled the order status notification.';
+        echo sprintf("<p style='margin-bottom: 0'><strong>%s</strong></p>", __('Status Update SMS Notifications:', 'wp-sms'));
+        if (!$order->get_meta('wpsms_woocommerce_order_notification')) {
+            echo __('Disabled', 'wp-sms');
+        } else {
+            echo __('Enabled', 'wp-sms');
         }
-        print "<h4 style='margin-top: 220px' class='wpsms_order_notification_status'>{$order_status}</h4>";
     }
 
     /**
