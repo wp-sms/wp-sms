@@ -174,6 +174,11 @@ class WP_SMS
         $this->include('src/SmsOtp/Verifier.php');
         $this->include('src/SmsOtp/SmsOtp.php');
 
+        // Services
+        $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
+        $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
+        $wooCommerceCheckout->init();
+
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
         $this->include('src/Shortcode/SubscriberShortcode.php');

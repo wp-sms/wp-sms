@@ -5,6 +5,7 @@ namespace WP_SMS\Notification;
 class Notification
 {
     protected $variables = [];
+    protected $optIn = true;
 
     /**
      * @param $message
@@ -17,6 +18,10 @@ class Notification
         // Backward compatibility
         if (!is_array($to)) {
             $to = array($to);
+        }
+
+        if (!$this->optIn) {
+            return;
         }
 
         $response = wp_sms_send($to, $this->getOutputMessage($message), false, null, $mediaUrls);
@@ -59,7 +64,6 @@ class Notification
                 } else {
                     $finalMessage = str_replace($variable, $callBack, $finalMessage);
                 }
-
             }
 
             // Then replace meta variables
