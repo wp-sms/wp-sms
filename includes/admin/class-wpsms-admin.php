@@ -508,7 +508,7 @@ class Admin
      */
     public function woocommerce_mobile_field_notice()
     {
-        echo Helper::loadTemplate('admin/mobile_field_notice.php');
+        echo Helper::loadTemplate('admin/mobile-field-notice.php');
     }
 
     /**
