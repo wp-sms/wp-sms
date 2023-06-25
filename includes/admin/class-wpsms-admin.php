@@ -442,6 +442,10 @@ class Admin
             add_action('wp_sms_settings_page', array($this, 'admin_newsletter'));
         }
 
+        if (isset($_GET['tab']) && $_GET['tab'] == 'pro_woocommerce' && $this->options['add_mobile_field'] == 'disable') {
+            add_action('wp_sms_settings_page', array($this, 'woocommerce_mobile_field_notice'));
+        }
+
         // Check exists require function
         if (!function_exists('wp_get_current_user')) {
             include(ABSPATH . "wp-includes/pluggable.php");
@@ -497,6 +501,14 @@ class Admin
     public function admin_newsletter()
     {
         echo Helper::loadTemplate('admin/newsletter-form.php');
+    }
+
+    /**
+     * WooCommerce Mobile Field Notice
+     */
+    public function woocommerce_mobile_field_notice()
+    {
+        echo Helper::loadTemplate('admin/mobile_field_notice.php');
     }
 
     /**
