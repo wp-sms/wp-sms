@@ -200,6 +200,10 @@ class WP_SMS
             // Widgets
             $this->include('src/Widget/WidgetsManager.php');
             \WP_SMS\Widget\WidgetsManager::init();
+
+            // Notices
+            $this->include('src/Notice/NoticeManager.php');
+            \WP_SMS\Notice\NoticeManager::init();
         }
 
         if (!is_admin()) {
