@@ -76,12 +76,16 @@
     }
   }
 
-  &.wpsms-mobile_field__notice {
+  &.wpsms-simple_admin_notice {
     padding-top: 8px;
     padding-bottom: 8px;
 
     &::before{
       margin-top: 3px;
+    }
+
+    .notice-dismiss{
+      margin: 0 !important;
     }
   }
 }

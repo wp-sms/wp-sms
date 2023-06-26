@@ -9,8 +9,7 @@ class NoticeManager
      * @var array
      */
     private $notices = [
-        'WooCommerceMobileField' => Notices\WooCommerceMobileField::class,
-        'TwoFactorMobileField'   => Notices\TwoFactorMobileField::class,
+        'MobileFieldNotices' => Notices\MobileFieldNotices::class,
     ];
 
 
