@@ -24,6 +24,9 @@ class WooCommerceOrderNotification extends Notification
         '%order_items%'                 => 'getItems',
         '%status%'                      => 'getStatus',
         '%order_meta_{key-name}%'       => 'getMeta',
+        '%get_order_receive_url%'       => 'getOrderReceiveUrl',
+        '%get_cancel_order_url%'        => 'getCancelOrderUrl',
+        '%get_view_order_url%'          => 'getViewOrderUrl',
     ];
 
     public function __construct($orderId = false)
@@ -104,6 +107,21 @@ class WooCommerceOrderNotification extends Notification
     public function getPayUrl()
     {
         return wp_sms_shorturl($this->order->get_checkout_payment_url());
+    }
+
+    public function getOrderReceiveUrl()
+    {
+        return wp_sms_shorturl($this->order->get_checkout_order_received_url());
+    }
+
+    public function getCancelOrderUrl()
+    {
+        return wp_sms_shorturl($this->order->get_cancel_order_url());
+    }
+
+    public function getViewOrderUrl()
+    {
+        return wp_sms_shorturl($this->order->get_view_order_url());
     }
 
     public function getId()
