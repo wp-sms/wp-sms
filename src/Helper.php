@@ -404,7 +404,7 @@ class Helper
     /**
      * Show Admin Notice
      */
-    public static function notice($message, $type = 'info', $dismiss = true, $link = '')
+    public static function notice($message, $type = 'info', $dismiss = false, $link = '')
     {
         echo self::loadTemplate('admin/notice.php', [
             'message' => $message,

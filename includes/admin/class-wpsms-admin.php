@@ -422,16 +422,6 @@ class Admin
      */
     private function init()
     {
-        if (isset($_GET['action'])) {
-            if ($_GET['action'] == 'wpsms-hide-newsletter') {
-                update_option('wpsms_hide_newsletter', true);
-            }
-        }
-
-        if (!get_option('wpsms_hide_newsletter')) {
-            add_action('wp_sms_settings_page', array($this, 'admin_newsletter'));
-        }
-
         // Check exists require function
         if (!function_exists('wp_get_current_user')) {
             include(ABSPATH . "wp-includes/pluggable.php");
@@ -479,14 +469,6 @@ class Admin
                 }, 10, 3);
             }
         });
-    }
-
-    /**
-     * Admin newsletter
-     */
-    public function admin_newsletter()
-    {
-        echo Helper::loadTemplate('admin/newsletter-form.php');
     }
 
     /**
