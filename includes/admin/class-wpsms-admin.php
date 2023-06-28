@@ -27,7 +27,6 @@ class Admin
         add_action('admin_bar_menu', array($this, 'admin_bar'));
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
-        add_action('admin_notices', array($this, 'displayFlashNotice'));
         add_action('init', array($this, 'do_output_buffer'));
 
         // Add Filters
@@ -198,15 +197,6 @@ class Admin
             if (method_exists($this, $methodName)) {
                 add_action("load-{$hook}", array($this, $methodName));
             }
-        }
-    }
-
-    public function displayFlashNotice()
-    {
-        $notice = get_option('wpsms_flash_message', false);
-        if ($notice) {
-            delete_option('wpsms_flash_message');
-            \WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
         }
     }
 

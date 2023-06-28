@@ -1,3 +1,4 @@
+<?php // @todo */ ?>
 <div class="notice notice-warning wpsms-simple_admin_notice">
     <?php echo $message; ?>
     <?php if ($dismiss) : ?>

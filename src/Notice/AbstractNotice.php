@@ -6,11 +6,8 @@ use WP_SMS\Option;
 
 abstract class AbstractNotice
 {
-
     protected $notices = [];
     protected $options;
-
-    abstract public function render();
 
     /**
      * Constructor
@@ -20,28 +17,50 @@ abstract class AbstractNotice
         $this->options = Option::getOptions();
     }
 
-    /**
-     * Register
-     */
-    public function register()
+    public function render()
     {
-        if (
-            isset($_GET['action']) && isset($_GET['name']) && isset($_GET['security'])
-            && $_GET['action'] == 'wpsms-hide-notice' && wp_verify_nonce($_GET['security'], 'wp_sms_notice')
-        ) {
-            update_option('wpsms_hide_' . $_GET['name'] . '_notice', true);
-        }
-
         add_action('wp_sms_settings_page', function () {
-            call_user_func([$this, 'render']);
+            $nonce = wp_create_nonce('wp_sms_notice');
+
+            foreach ($this->notices as $notice) {
+                // @todo Check the notice is not dismissed
+                /*if () {
+                    continue;
+                }
+
+                // @todo to march the current
+                if () {
+                    continue;
+                }*/
+
+                Notice::notice($notice, $notice); // todo
+            }
         });
+    }
+
+    /**
+     * This method is responsible to dismiss the notice and update it on option.
+     *
+     * @return void
+     */
+    public function action()
+    {
+        if (isset($_GET['wpsms_dismiss_notice']) && wp_verify_nonce('')) {
+
+            // todo
+            update_option('wpsms_notices', $this->notices);
+        }
     }
 
     /**
      * Register Notice
      */
-    protected function registerNotice($notice)
+    protected function registerNotice($notice, $dismiss = false, $url = false)
     {
-        $this->notices[] = $notice;
+        $this->notices[] = [
+            'notice'  => $notice,
+            'dismiss' => $dismiss,
+            'url'     => $url
+        ];
     }
 }

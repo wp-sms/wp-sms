@@ -2,56 +2,54 @@
 
 namespace WP_SMS\Notice;
 
-class NoticeManager
+class NoticeManager extends AbstractNotice
 {
+    protected static $instance = null;
 
-    /**
-     * @var array
-     */
-    private $notices = [
-        'MobileFieldNotices' => Notices\MobileFieldNotices::class,
-    ];
-
-
-    /**
-     * Init Notices
-     *
-     * @return void
-     */
-    public static function init()
+    public function __construct()
     {
-        $instance = new self;
-        $instance->includeRequirements();
-        $instance->loadNotices();
+        add_action('admin_init', [$this, 'initStaticNotice']);
+        add_action('admin_notices', array($this, 'displayFlashNotice'));
     }
 
-    /**
-     * Include requirements
-     *
-     * @return void
-     */
-    private function includeRequirements()
+    public static function getInstance()
     {
-        require_once WP_SMS_DIR . 'src/Notice/AbstractNotice.php';
+        null === self::$instance and self::$instance = new self;
+
+        return self::$instance;
     }
 
-    /**
-     * Require files in Notices folder
-     *
-     * @return void
-     */
-    private function loadNotices()
+    public function displayFlashNotice()
     {
-        foreach ($this->notices as $fileName => $notice) {
-            $file = WP_SMS_DIR . "src/Notice/Notices/{$fileName}.php";
+        $notice = get_option('wpsms_flash_message', false);
 
-            if (file_exists($file)) {
-                require_once $file;
-            }
+        if ($notice) {
+            delete_option('wpsms_flash_message');
 
-            if (is_subclass_of($notice, AbstractNotice::class)) {
-                (new $notice)->register();
-            }
+            Notice::notice($notice['text'], $notice['model']);
+
+            /**
+             * @todo Remove this after replacing \WP_SMS\Admin\Helper::notice with Notice::notice in all plugins
+             */
+            //\WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
         }
+    }
+
+    /**
+     * Init static (pre defined) notice functionality
+     *
+     * @return void
+     */
+    public function initStaticNotice()
+    {
+        $this->registerStaticNotices();
+        $this->render();
+        $this->action();
+    }
+
+    private function registerStaticNotices()
+    {
+        $this->registerNotice(__('You need to configure the Mobile field option in General settings to send SMS to customers.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_woocommerce');
+        $this->registerNotice(__('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings');
     }
 }
