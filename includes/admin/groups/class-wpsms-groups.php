@@ -6,8 +6,7 @@ if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
-
-use WP_SMS\Admin\Helper;
+use WP_SMS\Helper;
 
 class Groups
 {
@@ -22,7 +21,7 @@ class Groups
             $group_name = sanitize_text_field($_POST['wp_group_name']);
             $result     = Newsletter::addGroup($group_name);
 
-            echo Helper::notice($result['message'], $result['result']);
+            Helper::notice($result['message'], $result['result']);
         }
 
         // Manage groups
@@ -31,7 +30,7 @@ class Groups
             $group_name = sanitize_text_field($_POST['wp_group_name']);
             $result     = Newsletter::updateGroup($group_id, $group_name);
 
-            echo Helper::notice($result['message'], $result['result']);
+            Helper::notice($result['message'], $result['result']);
         }
 
         include_once WP_SMS_DIR . '/includes/admin/groups/class-wpsms-groups-table.php';

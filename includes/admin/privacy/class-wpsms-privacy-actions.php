@@ -2,7 +2,7 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Admin\Helper;
+use WP_SMS\Helper;
 
 if (!defined('ABSPATH')) {
     exit;

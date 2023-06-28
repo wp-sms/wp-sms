@@ -3,6 +3,7 @@
 namespace WP_SMS\Notice;
 
 use WP_SMS\Option;
+use WP_SMS\Helper;
 
 class NoticeManager extends AbstractNotice
 {
@@ -36,18 +37,11 @@ class NoticeManager extends AbstractNotice
         $nonce = wp_create_nonce('wp_sms_notice');
 
         foreach ($this->notices as $id => $notice) {
-            $tab = '';
-
-            // @todo: update the condition logic.
-            if (strpos($notice['url'], 'tab=') !== false) {
-                $tab = substr($notice['url'], strpos($notice['url'], 'tab=') + 4);
-            }
-
             $dismissed = array_key_exists($id, get_option('wpsms_notices') ? get_option('wpsms_notices') : []);
             $link      = $this->generateNoticeLink($id, $notice['url'], $nonce);
 
-            if (isset($_GET['tab']) && $_GET['tab'] == $tab && !$dismissed && $this->options['add_mobile_field'] == 'disable') {
-                Notice::notice($notice['message'], 'warning', true, $link);
+            if (sprintf(basename($_SERVER['REQUEST_URI'])) == $notice['url'] && !$dismissed && $this->options['add_mobile_field'] == 'disable') {
+                Helper::notice($notice['message'], 'warning', true, $link);
             }
         }
     }
@@ -61,7 +55,7 @@ class NoticeManager extends AbstractNotice
 
         if ($notice) {
             delete_option('wpsms_flash_message');
-            Notice::notice($notice['text'], $notice['model']);
+            Helper::notice($notice['text'], $notice['model']);
         }
     }
 

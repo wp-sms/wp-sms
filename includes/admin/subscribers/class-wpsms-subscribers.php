@@ -2,7 +2,7 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Admin\Helper;
+use WP_SMS\Helper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -32,7 +32,7 @@ class Subscribers
             }
 
             // Print notice
-            echo Helper::notice($result['message'], $result['result']);
+            Helper::notice($result['message'], $result['result']);
         }
 
         // Edit subscriber page
@@ -45,7 +45,7 @@ class Subscribers
             $result              = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
 
             // Print notice
-            echo Helper::notice($result['message'], $result['result']);
+            Helper::notice($result['message'], $result['result']);
         }
 
         include_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';

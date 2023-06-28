@@ -201,7 +201,6 @@ class WP_SMS
             \WP_SMS\Widget\WidgetsManager::init();
 
             // Notices
-            $this->include('src/Notice/Notice.php');
             $this->include('src/Notice/AbstractNotice.php');
             $this->include('src/Notice/NoticeManager.php');
             \WP_SMS\Notice\NoticeManager::getInstance();
