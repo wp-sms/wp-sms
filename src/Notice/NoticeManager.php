@@ -35,14 +35,16 @@ class NoticeManager extends AbstractNotice
     {
         $nonce = wp_create_nonce('wp_sms_notice');
 
-        foreach ($this->notices as $notice) {
+        foreach ($this->notices as $id => $notice) {
             $tab = '';
+
+            // @todo: update the condition logic.
             if (strpos($notice['url'], 'tab=') !== false) {
                 $tab = substr($notice['url'], strpos($notice['url'], 'tab=') + 4);
             }
 
-            $dismissed = array_key_exists($notice['id'], get_option('wpsms_notices') ? get_option('wpsms_notices') : []);
-            $link      = self::generateNoticeLink($notice['id'], $notice['url'], $nonce);
+            $dismissed = array_key_exists($id, get_option('wpsms_notices') ? get_option('wpsms_notices') : []);
+            $link      = $this->generateNoticeLink($id, $notice['url'], $nonce);
 
             if (isset($_GET['tab']) && $_GET['tab'] == $tab && !$dismissed && $this->options['add_mobile_field'] == 'disable') {
                 Notice::notice($notice['message'], 'warning', true, $link);
@@ -81,19 +83,5 @@ class NoticeManager extends AbstractNotice
     {
         $this->registerNotice('woocommerce_mobile_field', __('You need to configure the Mobile field option in General settings to send SMS to customers.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_woocommerce');
         $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
-    }
-
-
-    /**
-     * Generate a link for dismissing the nocie
-     */
-    public static function generateNoticeLink($id, $url, $nonce)
-    {
-        $link = add_query_arg(array(
-            'security'             => $nonce,
-            'wpsms_dismiss_notice' => $id,
-        ), admin_url($url));
-
-        return $link;
     }
 }

@@ -25,11 +25,21 @@ abstract class AbstractNotice
      */
     protected function registerNotice($id, $message, $dismiss = false, $url = false)
     {
-        $this->notices[] = [
-            'id'      => $id,
+        $this->notices[$id] = [
             'message' => $message,
             'dismiss' => $dismiss,
             'url'     => $url
         ];
+    }
+
+    /**
+     * Generate a link for dismissing the notice
+     */
+    protected static function generateNoticeLink($id, $url, $nonce)
+    {
+        return add_query_arg(array(
+            'security'             => $nonce,
+            'wpsms_dismiss_notice' => $id,
+        ), admin_url($url));
     }
 }
