@@ -2,18 +2,23 @@
 
 namespace WP_SMS\Notice;
 
+use WP_SMS\Option;
+
 class NoticeManager extends AbstractNotice
 {
     protected static $instance = null;
+    protected $options;
 
     public function __construct()
     {
+        $this->options = Option::getOptions();
+
         // Static notices
         add_action('admin_init', [$this, 'initStaticNotice']);
         add_action('wp_sms_settings_page', array($this, 'displayStaticNotices'));
 
         // Flash notices
-        add_action('admin_notices', array($this, 'displayFlashNotice'));
+        add_action('admin_notices', array($this, 'displayFlashNotices'));
     }
 
     public static function getInstance()
@@ -23,38 +28,38 @@ class NoticeManager extends AbstractNotice
         return self::$instance;
     }
 
+    /**
+     * Display Static Notices
+     */
     public function displayStaticNotices()
     {
         $nonce = wp_create_nonce('wp_sms_notice');
 
         foreach ($this->notices as $notice) {
-            // @todo Check the notice is not dismissed
-            /*if () {
-                continue;
+            $tab = '';
+            if (strpos($notice['url'], 'tab=') !== false) {
+                $tab = substr($notice['url'], strpos($notice['url'], 'tab=') + 4);
             }
 
-            // @todo to march the current
-            if () {
-                continue;
-            }*/
+            $dismissed = array_key_exists($notice['id'], get_option('wpsms_notices') ? get_option('wpsms_notices') : []);
+            $link      = self::generateNoticeLink($notice['id'], $notice['url'], $nonce);
 
-            Notice::notice($notice, $notice); // todo
+            if (isset($_GET['tab']) && $_GET['tab'] == $tab && !$dismissed && $this->options['add_mobile_field'] == 'disable') {
+                Notice::notice($notice['message'], 'warning', true, $link);
+            }
         }
     }
 
-    public function displayFlashNotice()
+    /**
+     * Display Flash Notices
+     */
+    public function displayFlashNotices()
     {
         $notice = get_option('wpsms_flash_message', false);
 
         if ($notice) {
             delete_option('wpsms_flash_message');
-
             Notice::notice($notice['text'], $notice['model']);
-
-            /**
-             * @todo Remove this after replacing \WP_SMS\Admin\Helper::notice with Notice::notice in all plugins
-             */
-            //\WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
         }
     }
 
@@ -69,9 +74,26 @@ class NoticeManager extends AbstractNotice
         $this->action();
     }
 
+    /**
+     * Register our static notices here
+     */
     private function registerStaticNotices()
     {
-        $this->registerNotice(__('You need to configure the Mobile field option in General settings to send SMS to customers.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_woocommerce');
-        $this->registerNotice(__('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings');
+        $this->registerNotice('woocommerce_mobile_field', __('You need to configure the Mobile field option in General settings to send SMS to customers.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_woocommerce');
+        $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
+    }
+
+
+    /**
+     * Generate a link for dismissing the nocie
+     */
+    public static function generateNoticeLink($id, $url, $nonce)
+    {
+        $link = add_query_arg(array(
+            'security'             => $nonce,
+            'wpsms_dismiss_notice' => $id,
+        ), admin_url($url));
+
+        return $link;
     }
 }

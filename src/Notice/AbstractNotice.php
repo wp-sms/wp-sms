@@ -2,20 +2,9 @@
 
 namespace WP_SMS\Notice;
 
-use WP_SMS\Option;
-
 abstract class AbstractNotice
 {
     protected $notices = [];
-    protected $options;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->options = Option::getOptions();
-    }
 
     /**
      * This method is responsible to dismiss the notice and update it on option.
@@ -24,20 +13,21 @@ abstract class AbstractNotice
      */
     public function action()
     {
-        if (isset($_GET['wpsms_dismiss_notice']) && wp_verify_nonce('')) {
-
-            // todo
-            update_option('wpsms_notices', $this->notices);
+        if (isset($_GET['wpsms_dismiss_notice']) && wp_verify_nonce($_GET['security'], 'wp_sms_notice')) {
+            $notices_options                                = get_option('wpsms_notices');
+            $notices_options[$_GET['wpsms_dismiss_notice']] = true;
+            update_option('wpsms_notices', $notices_options);
         }
     }
 
     /**
      * Register Notice
      */
-    protected function registerNotice($notice, $dismiss = false, $url = false)
+    protected function registerNotice($id, $message, $dismiss = false, $url = false)
     {
         $this->notices[] = [
-            'notice'  => $notice,
+            'id'      => $id,
+            'message' => $message,
             'dismiss' => $dismiss,
             'url'     => $url
         ];
