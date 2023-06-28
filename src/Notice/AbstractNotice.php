@@ -5,6 +5,8 @@ namespace WP_SMS\Notice;
 abstract class AbstractNotice
 {
     protected $notices = [];
+    protected $staticNoticeOption = 'wpsms_notices';
+    protected $flashNoticeOption = 'wpsms_flash_message';
 
     /**
      * This method is responsible to dismiss the notice and update it on option.
@@ -14,9 +16,14 @@ abstract class AbstractNotice
     public function action()
     {
         if (isset($_GET['wpsms_dismiss_notice']) && wp_verify_nonce($_GET['security'], 'wp_sms_notice')) {
-            $notices_options                                = get_option('wpsms_notices');
+            $notices_options                                = get_option($this->staticNoticeOption);
             $notices_options[$_GET['wpsms_dismiss_notice']] = true;
-            update_option('wpsms_notices', $notices_options);
+
+            update_option($this->staticNoticeOption, $notices_options);
+
+            // Redirect back
+            wp_redirect(sanitize_url(wp_unslash($_SERVER['HTTP_REFERER'])));
+            exit;
         }
     }
 
