@@ -8,7 +8,11 @@ class NoticeManager extends AbstractNotice
 
     public function __construct()
     {
+        // Static notices
         add_action('admin_init', [$this, 'initStaticNotice']);
+        add_action('wp_sms_settings_page', array($this, 'displayStaticNotices'));
+
+        // Flash notices
         add_action('admin_notices', array($this, 'displayFlashNotice'));
     }
 
@@ -17,6 +21,25 @@ class NoticeManager extends AbstractNotice
         null === self::$instance and self::$instance = new self;
 
         return self::$instance;
+    }
+
+    public function displayStaticNotices()
+    {
+        $nonce = wp_create_nonce('wp_sms_notice');
+
+        foreach ($this->notices as $notice) {
+            // @todo Check the notice is not dismissed
+            /*if () {
+                continue;
+            }
+
+            // @todo to march the current
+            if () {
+                continue;
+            }*/
+
+            Notice::notice($notice, $notice); // todo
+        }
     }
 
     public function displayFlashNotice()
@@ -43,7 +66,6 @@ class NoticeManager extends AbstractNotice
     public function initStaticNotice()
     {
         $this->registerStaticNotices();
-        $this->render();
         $this->action();
     }
 

@@ -20,6 +20,7 @@ class Notice
      */
     public static function notice($text, $model = 'info', $close_button = true, $echo = true, $style_extra = 'padding:10px 0')
     {
+        // @todo remove this lenses and move to template
         $text = '
         <div class="notice notice-' . $model . '' . ($close_button === true ? " is-dismissible" : "") . '">
            <div style="' . $style_extra . '">' . $text . '</div>

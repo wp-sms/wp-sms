@@ -17,27 +17,6 @@ abstract class AbstractNotice
         $this->options = Option::getOptions();
     }
 
-    public function render()
-    {
-        add_action('wp_sms_settings_page', function () {
-            $nonce = wp_create_nonce('wp_sms_notice');
-
-            foreach ($this->notices as $notice) {
-                // @todo Check the notice is not dismissed
-                /*if () {
-                    continue;
-                }
-
-                // @todo to march the current
-                if () {
-                    continue;
-                }*/
-
-                Notice::notice($notice, $notice); // todo
-            }
-        });
-    }
-
     /**
      * This method is responsible to dismiss the notice and update it on option.
      *
