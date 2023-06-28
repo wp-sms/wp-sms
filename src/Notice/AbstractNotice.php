@@ -2,46 +2,51 @@
 
 namespace WP_SMS\Notice;
 
-use WP_SMS\Option;
-
 abstract class AbstractNotice
 {
-
     protected $notices = [];
-    protected $options;
-
-    abstract public function render();
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->options = Option::getOptions();
-    }
+    protected $staticNoticeOption = 'wpsms_notices';
+    protected $flashNoticeOption = 'wpsms_flash_message';
 
     /**
-     * Register
+     * This method is responsible to dismiss the notice and update it on option.
+     *
+     * @return void
      */
-    public function register()
+    public function action()
     {
-        if (
-            isset($_GET['action']) && isset($_GET['name']) && isset($_GET['security'])
-            && $_GET['action'] == 'wpsms-hide-notice' && wp_verify_nonce($_GET['security'], 'wp_sms_notice')
-        ) {
-            update_option('wpsms_hide_' . $_GET['name'] . '_notice', true);
+        if (isset($_GET['wpsms_dismiss_notice']) && wp_verify_nonce($_GET['security'], 'wp_sms_notice')) {
+            $notices_options                                = get_option($this->staticNoticeOption);
+            $notices_options[$_GET['wpsms_dismiss_notice']] = true;
+
+            update_option($this->staticNoticeOption, $notices_options);
+
+            // Redirect back
+            wp_redirect(sanitize_url(wp_unslash($_SERVER['HTTP_REFERER'])));
+            exit;
         }
-
-        add_action('wp_sms_settings_page', function () {
-            call_user_func([$this, 'render']);
-        });
     }
 
     /**
      * Register Notice
      */
-    protected function registerNotice($notice)
+    protected function registerNotice($id, $message, $dismiss = false, $url = false)
     {
-        $this->notices[] = $notice;
+        $this->notices[$id] = [
+            'message' => $message,
+            'dismiss' => $dismiss,
+            'url'     => $url
+        ];
+    }
+
+    /**
+     * Generate a link for dismissing the notice
+     */
+    protected static function generateNoticeLink($id, $url, $nonce)
+    {
+        return add_query_arg(array(
+            'security'             => $nonce,
+            'wpsms_dismiss_notice' => $id,
+        ), admin_url($url));
     }
 }

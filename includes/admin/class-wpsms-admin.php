@@ -27,7 +27,6 @@ class Admin
         add_action('admin_bar_menu', array($this, 'admin_bar'));
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
-        add_action('admin_notices', array($this, 'displayFlashNotice'));
         add_action('init', array($this, 'do_output_buffer'));
 
         // Add Filters
@@ -198,15 +197,6 @@ class Admin
             if (method_exists($this, $methodName)) {
                 add_action("load-{$hook}", array($this, $methodName));
             }
-        }
-    }
-
-    public function displayFlashNotice()
-    {
-        $notice = get_option('wpsms_flash_message', false);
-        if ($notice) {
-            delete_option('wpsms_flash_message');
-            \WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
         }
     }
 
@@ -432,16 +422,6 @@ class Admin
      */
     private function init()
     {
-        if (isset($_GET['action'])) {
-            if ($_GET['action'] == 'wpsms-hide-newsletter') {
-                update_option('wpsms_hide_newsletter', true);
-            }
-        }
-
-        if (!get_option('wpsms_hide_newsletter')) {
-            add_action('wp_sms_settings_page', array($this, 'admin_newsletter'));
-        }
-
         // Check exists require function
         if (!function_exists('wp_get_current_user')) {
             include(ABSPATH . "wp-includes/pluggable.php");
@@ -489,14 +469,6 @@ class Admin
                 }, 10, 3);
             }
         });
-    }
-
-    /**
-     * Admin newsletter
-     */
-    public function admin_newsletter()
-    {
-        echo Helper::loadTemplate('admin/newsletter-form.php');
     }
 
     /**

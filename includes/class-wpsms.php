@@ -190,7 +190,6 @@ class WP_SMS
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
             $this->include('includes/admin/class-wpsms-admin.php');
-            $this->include('includes/admin/class-wpsms-admin-helper.php');
             $this->include('includes/admin/outbox/class-wpsms-outbox.php');
             $this->include('includes/admin/inbox/class-wpsms-inbox.php');
             $this->include('includes/admin/privacy/class-wpsms-privacy-actions.php');
@@ -202,8 +201,9 @@ class WP_SMS
             \WP_SMS\Widget\WidgetsManager::init();
 
             // Notices
+            $this->include('src/Notice/AbstractNotice.php');
             $this->include('src/Notice/NoticeManager.php');
-            \WP_SMS\Notice\NoticeManager::init();
+            \WP_SMS\Notice\NoticeManager::getInstance();
         }
 
         if (!is_admin()) {

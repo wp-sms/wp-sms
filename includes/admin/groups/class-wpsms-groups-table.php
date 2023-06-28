@@ -145,7 +145,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Admin\Helper::addFlashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -154,7 +154,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_subscribes_group", array('ID' => intval($get_id)), ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Admin\Helper::addFlashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         if (!empty($_GET['_wp_http_referer'])) {

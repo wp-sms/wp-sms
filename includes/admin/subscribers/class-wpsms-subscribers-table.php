@@ -186,7 +186,7 @@ class Subscribers_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Admin\Helper::addFlashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -195,7 +195,7 @@ class Subscribers_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Admin\Helper::addFlashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         if (false !== strpos($current_action, 'move_to_')) {
@@ -208,7 +208,7 @@ class Subscribers_List_Table extends \WP_List_Table
                 }
                 $this->data  = $this->get_data();
                 $this->count = $this->get_total();
-                \WP_SMS\Admin\Helper::addFlashNotice(sprintf(__('Items moved to «%s» group.', 'wp-sms'), $new_group->name), 'success', $this->adminUrl);
+                \WP_SMS\Helper::flashNotice(sprintf(__('Items moved to «%s» group.', 'wp-sms'), $new_group->name), 'success', $this->adminUrl);
             }
         }
 
