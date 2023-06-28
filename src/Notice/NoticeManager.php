@@ -40,7 +40,7 @@ class NoticeManager extends AbstractNotice
             $dismissed = array_key_exists($id, get_option('wpsms_notices') ? get_option('wpsms_notices') : []);
             $link      = $this->generateNoticeLink($id, $notice['url'], $nonce);
 
-            if (sprintf(basename($_SERVER['REQUEST_URI'])) == $notice['url'] && !$dismissed && $this->options['add_mobile_field'] == 'disable') {
+            if (basename($_SERVER['REQUEST_URI']) == $notice['url'] && !$dismissed && $this->options['add_mobile_field'] == 'disable') {
                 Helper::notice($notice['message'], 'warning', true, $link);
             }
         }
