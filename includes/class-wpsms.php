@@ -242,4 +242,12 @@ class WP_SMS
     {
         return new \WP_SMS\Notification\NotificationFactory();
     }
+
+    /**
+     * @return \WP_SMS\Notice\NoticeManager
+     */
+    public function notice()
+    {
+        return \WP_SMS\Notice\NoticeManager::getInstance();
+    }
 }
