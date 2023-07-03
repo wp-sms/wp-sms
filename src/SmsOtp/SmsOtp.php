@@ -84,7 +84,6 @@ final class SmsOtp
 
         $generator->limitGeneration();
         $generator->createCode($length);
-        $generator->deletePreviousCodes();
         $generator->saveIntoDatabase();
 
         return $generator;
