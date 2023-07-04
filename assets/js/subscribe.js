@@ -11,6 +11,29 @@ let wpSmsSubscribeForm = {
         this.EventListener()
     },
 
+    // Extract Group id in the Newsletter Form
+    getGroupId: function (element) {
+        let group_id = [];
+        let groupIdCheckbox = document.getElementsByName("group_id_checkbox");
+        let groupIdSelect = document.getElementsByName("group_id_select");
+
+        for (var i = 0; i < groupIdCheckbox.length; ++i) {
+            if (groupIdCheckbox[i].checked) {
+                group_id.push(groupIdCheckbox[i].value);
+            }
+        }
+
+        if (groupIdSelect.length > 0 && groupIdSelect[0].value) {
+            group_id.push(groupIdSelect[0].value);
+        }
+
+        if (!group_id.length) {
+            return;
+        }
+
+        return group_id;
+    },
+
     setFields: function () {
         this.wpSmsGdprCheckbox = jQuery('.js-wpSmsGdprConfirmation')
         this.wpSmsEventType = jQuery(".js-wpSmsSubscribeType")
@@ -33,7 +56,7 @@ let wpSmsSubscribeForm = {
         let requestBody = {
             name: element.children().find(".js-wpSmsSubscriberName input").val(),
             mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(),
-            group_id: element.children().find(".js-wpSmsSubscriberGroupId select").val(),
+            group_id: this.getGroupId(element),
             type: element.children().find(".js-wpSmsSubscribeType:checked").val()
         }
 
@@ -77,11 +100,16 @@ let wpSmsSubscribeForm = {
             var response = JSON.parse(data.responseText)
             var message = null
 
+
             submitButton.prop('disabled', false)
             processingOverlay.css('display', 'none')
 
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
+            } else if(response.data.status !== null) {
+                Object.keys(response.data.params).forEach(function(parameter){
+                    message = response.data.params[parameter];
+                })
             } else {
                 message = wpsms_ajax_object.unknown_error;
             }

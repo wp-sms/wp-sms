@@ -174,6 +174,11 @@ class WP_SMS
         $this->include('src/SmsOtp/Verifier.php');
         $this->include('src/SmsOtp/SmsOtp.php');
 
+        // Services
+        $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
+        $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
+        $wooCommerceCheckout->init();
+
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
         $this->include('src/Shortcode/SubscriberShortcode.php');
@@ -195,6 +200,11 @@ class WP_SMS
             // Widgets
             $this->include('src/Widget/WidgetsManager.php');
             \WP_SMS\Widget\WidgetsManager::init();
+
+            // Notices
+            $this->include('src/Notice/AbstractNotice.php');
+            $this->include('src/Notice/NoticeManager.php');
+            \WP_SMS\Notice\NoticeManager::getInstance();
         }
 
         if (!is_admin()) {
@@ -231,5 +241,13 @@ class WP_SMS
     public function notification()
     {
         return new \WP_SMS\Notification\NotificationFactory();
+    }
+
+    /**
+     * @return \WP_SMS\Notice\NoticeManager
+     */
+    public function notice()
+    {
+        return \WP_SMS\Notice\NoticeManager::getInstance();
     }
 }

@@ -90,6 +90,7 @@ class Gateway
             'sendinblue'     => 'sendinblue.com',
             'whatsappapi'    => 'app.whatsapp-api.net',
             'rapidsms'       => 'rapidsms.net',
+            'apifon' => 'apifon.com'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -124,7 +125,9 @@ class Gateway
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
-            'smsdone'   => 'smsd.one'
+            'smsdone'   => 'smsd.one',
+            'micron'   => 'microntechbd.com',
+            'revesms' => 'smpp.ajuratech.com',
         ),
         'palestine'      => array(
             'htd' => 'htd.ps',
@@ -166,16 +169,17 @@ class Gateway
         'Indonesia'      => array(
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
-
         ),
         'Taiwan'         => array(
             'mitake'  => 'mitake.com.tw',
             'every8d' => 'teamplus.tech',
-
         ),
         'south korea'    => array(
             'nhncloud' => 'nhncloud.com/kr',
         ),
+        'morocco'        => array(
+            'bulksmsMa' => 'bulksms.ma'
+        )
     );
 
     /**
@@ -238,6 +242,13 @@ class Gateway
      * @var bool
      */
     public $help = false;
+
+    /**
+     * Gateway document url
+     *
+     * @var bool
+     */
+    public $documentUrl = false;
 
     /**
      * Whether the bulk is supported.
@@ -525,16 +536,12 @@ class Gateway
 
             if (substr($recipient, 0, 2) === '00') {
                 $reformattedNumber = $countryCode . substr($recipient, 2);
-
             } elseif (substr($recipient, 0, 1) === '0') {
                 $reformattedNumber = $countryCode . substr($recipient, 1);
-
             } elseif (substr($recipient, 0, 1) === '+') {
                 $reformattedNumber = $recipient;
-
             } else {
                 $reformattedNumber = $countryCode . $recipient;
-
             }
 
             $finalNumbers[] = $reformattedNumber;
@@ -626,7 +633,7 @@ class Gateway
                 'aspsms' => 'aspsms.com',
             ),
             'latvia'               => array(
-                'texti' => 'texti.fi',
+                'nesssolution' => 'ness-solutions.com',
             ),
             'turkey'               => array(
                 'bulutfon' => 'bulutfon.com',
@@ -668,6 +675,7 @@ class Gateway
                 'cpsms'    => 'cpsms.dk',
                 'cellsynt' => 'cellsynt',
                 'suresms'  => 'suresms.com',
+                'prosmsdk' => 'prosms.se'
             ),
             'finland'              => array(
                 'cellsynt' => 'cellsynt',
@@ -680,9 +688,6 @@ class Gateway
                 'dot4all'    => 'sms4marketing.it',
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
-            ),
-            'bangladesh'           => array(
-                'revesms' => 'smpp.ajuratech.com'
             ),
             'belgium'              => array(
                 'smsbox' => 'smsbox.be'
@@ -823,6 +828,7 @@ class Gateway
                 'rayansmspanel'  => 'rayansmspanel.ir',
                 'farazsms'       => 'farazsms.com',
                 'raygansms'      => 'raygansms.com',
+                'signalads'      => 'signalads.com'
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
@@ -878,6 +884,12 @@ class Gateway
             )
 
         );
+
+        if (WP_DEBUG) {
+            $gateways['test'] = [
+                'test' => 'Test'
+            ];
+        }
 
         return apply_filters('wpsms_gateway_list', $gateways);
     }
@@ -1082,6 +1094,7 @@ class Gateway
             'method' => $method
         ]);
 
+
         /**
          * Execute the request
          */
@@ -1124,8 +1137,8 @@ class Gateway
 
         if (isset($message_body[1]) && $message_body[1]) {
             return array(
-                'template_id' => $message_body[1],
-                'message'     => $message_body[0]
+                'template_id' => trim($message_body[1]),
+                'message'     => trim($message_body[0])
             );
         }
     }

@@ -67,6 +67,10 @@ composer install
 ```
 
 ### Build Assets
+Requirement: Before any build it`s necessary to fix these below versions then use npm
+- npm v6.*
+- node v14.*
+
 Install dependencies
 ```bash
 npm install
@@ -188,7 +192,6 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 * [Documentation](https://wp-sms-pro.com/resources-category/api-endpoints/)
 * [API Documentation](https://documenter.getpostman.com/view/3239688/UVkqsvCK#019c5b41-5916-4d2c-9661-ba933dd8ec1a)
 
-# Donation
+# Donate
 Would you like to support this project?
 - ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](https://wp-sms-pro.com/donate)
-- ![btc](https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/bitcoin.png) Bitcoin: `bc1qjezs7vusvvmhxrhxan7nkl7kvnpy624wxhse2p`

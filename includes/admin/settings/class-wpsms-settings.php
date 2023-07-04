@@ -173,7 +173,7 @@ class Settings
             'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
             'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
             'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
-            'pro_ultimate_members' => __('Ultimate Members', 'wp-sms'),
+            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms'),
 
             'licenses' => __('Licenses', 'wp-sms')
         );
@@ -508,40 +508,40 @@ class Settings
                     'id'   => 'bp_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('BuddyPress should be installed to show the options.', 'wp-sms'),
+                    'desc' => __('BuddyPress plugin should be installed to show the options.', 'wp-sms'),
                 ));
         }
 
         // Set WooCommerce settings
         if (class_exists('WooCommerce')) {
             $wc_settings = array(
-                'wc_meta_box'                 => array(
+                'wc_meta_box'                               => array(
                     'id'   => 'wc_meta_box',
                     'name' => __('Order Meta Box', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'wc_meta_box_enable'          => array(
+                'wc_meta_box_enable'                        => array(
                     'id'      => 'wc_meta_box_enable',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Enable send SMS meta box on Orders.<br>Note: You must choose the mobile field first if disable Meta Box will not appear too.', 'wp-sms')
                 ),
-                'wc_notify_product'           => array(
+                'wc_notify_product'                         => array(
                     'id'   => 'wc_notify_product',
                     'name' => __('Notify for new product', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
-                'wc_notify_product_enable'    => array(
+                'wc_notify_product_enable'                  => array(
                     'id'      => 'wc_notify_product_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS when publish new a product', 'wp-sms')
                 ),
-                'wc_notify_product_receiver'  => array(
+                'wc_notify_product_receiver'                => array(
                     'id'      => 'wc_notify_product_receiver',
                     'name'    => __('SMS receiver', 'wp-sms'),
                     'type'    => 'select',
@@ -551,133 +551,145 @@ class Settings
                     ),
                     'desc'    => __('Please select the receiver of SMS', 'wp-sms')
                 ),
-                'wc_notify_product_cat'       => array(
+                'wc_notify_product_cat'                     => array(
                     'id'      => 'wc_notify_product_cat',
                     'name'    => __('Subscribe group', 'wp-sms'),
                     'type'    => 'select',
                     'options' => $subscribe_groups,
                     'desc'    => __('If you select the Subscribe users, can select the group for send sms', 'wp-sms')
                 ),
-                'wc_notify_product_roles'     => array(
+                'wc_notify_product_roles'                   => array(
                     'id'      => 'wc_notify_product_roles',
                     'name'    => __('Specific roles', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->getRoles(),
                     'desc'    => __('Select the role of the user you want to receive the SMS.', 'wp-sms')
                 ),
-                'wc_notify_product_message'   => array(
+                'wc_notify_product_message'                 => array(
                     'id'   => 'wc_notify_product_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
-                'wc_notify_order'             => array(
+                'wc_notify_order'                           => array(
                     'id'   => 'wc_notify_order',
                     'name' => __('Notify for new order', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
-                'wc_notify_order_enable'      => array(
+                'wc_notify_order_enable'                    => array(
                     'id'      => 'wc_notify_order_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS when submit new order', 'wp-sms')
                 ),
-                'wc_notify_order_receiver'    => array(
+                'wc_notify_order_receiver'                  => array(
                     'id'   => 'wc_notify_order_receiver',
                     'name' => __('SMS receiver', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
-                'wc_notify_order_message'     => array(
+                'wc_notify_order_message'                   => array(
                     'id'   => 'wc_notify_order_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
-                'wc_notify_customer'          => array(
+                'wc_notify_customer'                        => array(
                     'id'   => 'wc_notify_customer',
                     'name' => __('Notify to customer order', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
-                'wc_notify_customer_enable'   => array(
+                'wc_notify_customer_enable'                 => array(
                     'id'      => 'wc_notify_customer_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to customer when submit the order', 'wp-sms')
                 ),
-                'wc_notify_customer_message'  => array(
+                'wc_notify_customer_message'                => array(
                     'id'   => 'wc_notify_customer_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
-                'wc_notify_stock'             => array(
+                'wc_notify_stock'                           => array(
                     'id'   => 'wc_notify_stock',
                     'name' => __('Notify of stock', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
-                'wc_notify_stock_enable'      => array(
+                'wc_notify_stock_enable'                    => array(
                     'id'      => 'wc_notify_stock_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS when stock is low', 'wp-sms')
                 ),
-                'wc_notify_stock_receiver'    => array(
+                'wc_notify_stock_receiver'                  => array(
                     'id'   => 'wc_notify_stock_receiver',
                     'name' => __('SMS receiver', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
-                'wc_notify_stock_message'     => array(
+                'wc_notify_stock_message'                   => array(
                     'id'   => 'wc_notify_stock_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables()
                 ),
-                'wc_notify_status'            => array(
+                'wc_checkout_confirmation_checkbox'         => array(
+                    'id'   => 'wc_checkout_confirmation_checkbox',
+                    'name' => __('Confirmation Checkbox', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'wc_checkout_confirmation_checkbox_enabled' => array(
+                    'id'      => 'wc_checkout_confirmation_checkbox_enabled',
+                    'name'    => __('Status', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Show the checkbox on the checkout for the customer to confirm receiving notification via SMS.', 'wp-sms')
+                ),
+                'wc_notify_status'                          => array(
                     'id'   => 'wc_notify_status',
-                    'name' => __('Notify of status', 'wp-sms'),
+                    'name' => __('Notify of order status', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
-                'wc_notify_status_enable'     => array(
+                'wc_notify_status_enable'                   => array(
                     'id'      => 'wc_notify_status_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to customer when status is changed', 'wp-sms')
                 ),
-                'wc_notify_status_message'    => array(
+                'wc_notify_status_message'                  => array(
                     'id'   => 'wc_notify_status_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables()
                 ),
-                'wc_notify_by_status'         => array(
+                'wc_notify_by_status'                       => array(
                     'id'   => 'wc_notify_by_status',
-                    'name' => __('Notify by status', 'wp-sms'),
+                    'name' => __('Notify of specific order status', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Check the document for get more information about message variables', 'wp-sms'),
                     'doc'  => '/resources/woocommerce-sms-variables-and-order-meta/'
                 ),
-                'wc_notify_by_status_enable'  => array(
+                'wc_notify_by_status_enable'                => array(
                     'id'      => 'wc_notify_by_status_enable',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to customer by order status', 'wp-sms')
                 ),
-                'wc_notify_by_status_content' => array(
+                'wc_notify_by_status_content'               => array(
                     'id'   => 'wc_notify_by_status_content',
                     'name' => __('Order Status & Message', 'wp-sms'),
                     'type' => 'repeater',
@@ -690,7 +702,7 @@ class Settings
                     'id'   => 'wc_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('WooCommerce should be installed to show the options.', 'wp-sms')
+                    'desc' => __('WooCommerce plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -770,7 +782,7 @@ class Settings
                     'id'   => 'edd_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Easy Digital Downloads should be installed to show the options.', 'wp-sms')
+                    'desc' => __('Easy Digital Downloads plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -884,7 +896,7 @@ class Settings
                     'id'   => 'job_fields',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Job Manager should be installed to show the options.', 'wp-sms')
+                    'desc' => __('Job Manager plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -970,7 +982,7 @@ class Settings
                     'id'   => 'as_notify_new_ticket',
                     'name' => __('Not active', 'wp-sms'),
                     'type' => 'notice',
-                    'desc' => __('Awesome Support should be installed to show the options.', 'wp-sms')
+                    'desc' => __('Awesome Support plugin should be installed to show the options.', 'wp-sms')
                 ));
         }
 
@@ -1060,24 +1072,24 @@ class Settings
                 'id'   => 'gf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Gravity Forms should be enable to run this tab', 'wp-sms')
+                'desc' => __('Gravity Forms plugin should be enable to run this tab', 'wp-sms')
             );
         }
 
-        // Get Ultimate Members
+        // Get Ultimate Member
         if (function_exists('um_user')) {
-            $um_options['um_field_header']          = array(
+            $um_options['um_field_header']            = array(
                 'id'   => 'um_field_header',
                 'name' => __('General', 'wp-sms'),
                 'type' => 'header'
             );
-            $um_options['um_field']                 = array(
+            $um_options['um_field']                   = array(
                 'id'   => 'um_field',
                 'name' => __('Mobile number field', 'wp-sms'),
                 'type' => 'checkbox',
-                'desc' => __('Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms'),
+                'desc' => __('Sync Mobile number from Ultimate Member mobile number form field.', 'wp-sms'),
             );
-            $um_options['um_sync_field_name']       = array(
+            $um_options['um_sync_field_name']         = array(
                 'id'      => 'um_sync_field_name',
                 'name'    => __('Select the purpose field in registration form'),
                 'type'    => 'select',
@@ -1085,18 +1097,35 @@ class Settings
                 'std'     => 'mobile_number',
                 'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
             );
-            $um_options['um_sync_previous_members'] = array(
+            $um_options['um_sync_previous_members']   = array(
                 'id'   => 'um_sync_previous_members',
                 'name' => __('Sync old member too?'),
                 'type' => 'checkbox',
-                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Members.', 'wp-sms')
+                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
+            );
+            $um_options['um_notification_header']     = array(
+                'id'   => 'um_notification_header',
+                'name' => __('Notification', 'wp-sms'),
+                'type' => 'header'
+            );
+            $um_options['um_send_sms_after_approval'] = array(
+                'id'   => 'um_send_sms_after_approval',
+                'name' => __('Send SMS after approval', 'wp-sms'),
+                'type' => 'checkbox',
+                'desc' => __('Send SMS after approval the user', 'wp-sms'),
+            );
+            $um_options['um_message_body']            = array(
+                'id'   => 'um_message_body',
+                'name' => __('Message body', 'wp-sms'),
+                'type' => 'textarea',
+                'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
             );
         } else {
             $um_options['um_notify_form'] = array(
                 'id'   => 'um_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Ultimate Members should be enable to run this tab', 'wp-sms')
+                'desc' => __('Ultimate Member plugin should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1191,7 +1220,7 @@ class Settings
                 'id'   => 'qf_notify_form',
                 'name' => __('Not active', 'wp-sms'),
                 'type' => 'notice',
-                'desc' => __('Quform should be enable to run this tab', 'wp-sms')
+                'desc' => __('Quform plugin should be enable to run this tab', 'wp-sms')
             );
         }
 
@@ -1446,6 +1475,12 @@ class Settings
                     'name' => __('Show Groups', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Enable showing Groups on Form.', 'wp-sms')
+                ),
+                'newsletter_form_multiple_select'  => array(
+                    'id'   => 'newsletter_form_multiple_select',
+                    'name' => __('Multiple Select', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'desc' => __('Select multiple groups by enabling this option.', 'wp-sms')
                 ),
                 'newsletter_form_specified_groups' => array(
                     'id'      => 'newsletter_form_specified_groups',

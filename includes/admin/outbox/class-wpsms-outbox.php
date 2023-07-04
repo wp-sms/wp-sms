@@ -172,7 +172,7 @@ class Outbox_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Admin\Helper::addFlashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -181,7 +181,7 @@ class Outbox_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Admin\Helper::addFlashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Resend sms
@@ -197,9 +197,9 @@ class Outbox_List_Table extends \WP_List_Table
             $error     = $sms->SendSMS();
 
             if (is_wp_error($error)) {
-                \WP_SMS\Admin\Helper::addFlashNotice(esc_html($error->get_error_message()), 'error', $this->adminUrl);
+                \WP_SMS\Helper::flashNotice(esc_html($error->get_error_message()), 'error', $this->adminUrl);
             } else {
-                \WP_SMS\Admin\Helper::addFlashNotice(__('The SMS sent successfully.', 'wp-sms'), 'success', $this->adminUrl);
+                \WP_SMS\Helper::flashNotice(__('The SMS sent successfully.', 'wp-sms'), 'success', $this->adminUrl);
             }
 
             $this->data  = $this->get_data();

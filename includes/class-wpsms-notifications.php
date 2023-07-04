@@ -56,9 +56,11 @@ class Notifications
             if (isset($update[1])) {
                 if ($update[1]->current > $wp_version and $this->sms->GetCredit()) {
                     if (get_option('wp_last_send_notification') == false) {
-                        $this->sms->to  = array($this->options['admin_mobile_number']);
-                        $this->sms->msg = sprintf(__('WordPress %s is available! Please update now', 'wp-sms'), $update[1]->current);
-                        $this->sms->SendSMS();
+
+                        $receiver     = array($this->options['admin_mobile_number']);
+                        $message_body = sprintf(__('WordPress %s is available! Please update now', 'wp-sms'), $update[1]->current);
+                        $notification = NotificationFactory::getCustom();
+                        $notification->send($message_body, $receiver);
 
                         update_option('wp_last_send_notification', true);
                     }
@@ -166,6 +168,10 @@ class Notifications
                 return;
             }
 
+            if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
+                return;
+            }
+
             $termIds         = [];
             $specified_terms = isset($this->options['notif_publish_new_taxonomy_and_term']) ? $this->options['notif_publish_new_taxonomy_and_term'] : [];
 
@@ -201,30 +207,30 @@ class Notifications
             if (is_admin() && $postID) {
 
                 if (isset($_REQUEST['wps_send_to'])) {
-                    add_post_meta($postID, 'wp_sms_receiver', sanitize_text_field($_REQUEST['wps_send_to']));
+                    update_post_meta($postID, 'wp_sms_receiver', sanitize_text_field($_REQUEST['wps_send_to']));
                 } else {
                     // Break the process if there is no recipient for the SMS
                     return;
                 }
 
                 if (isset($this->options['notif_publish_new_post_force'])) {
-                    add_post_meta($postID, 'wp_sms_force_sms', true);
+                    update_post_meta($postID, 'wp_sms_force_sms', true);
                 }
 
                 if (isset($_REQUEST['wps_subscribe_group'])) {
-                    add_post_meta($postID, 'wp_sms_groups', sanitize_text_field($_REQUEST['wps_subscribe_group']));
+                    update_post_meta($postID, 'wp_sms_groups', sanitize_text_field($_REQUEST['wps_subscribe_group']));
                 }
 
                 if (isset($_REQUEST['wps_mobile_numbers'])) {
-                    add_post_meta($postID, 'wp_sms_numbers', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
+                    update_post_meta($postID, 'wp_sms_numbers', sanitize_text_field($_REQUEST['wps_mobile_numbers']));
                 }
 
                 if (isset($_REQUEST['wpsms_roles'])) {
-                    add_post_meta($postID, 'wp_sms_roles', sanitize_text_field($_REQUEST['wpsms_roles']));
+                    update_post_meta($postID, 'wp_sms_roles', sanitize_text_field($_REQUEST['wpsms_roles']));
                 }
 
                 if (isset($_REQUEST['wpsms_text_template'])) {
-                    add_post_meta($postID, 'wp_sms_message_body', sanitize_text_field($_REQUEST['wpsms_text_template']));
+                    update_post_meta($postID, 'wp_sms_message_body', sanitize_text_field($_REQUEST['wpsms_text_template']));
                 }
 
             }
@@ -236,7 +242,6 @@ class Notifications
 
             // Retrieve data from post meta
             $recipients        = get_post_meta($postID, 'wp_sms_receiver', true);
-            $force_send        = get_post_meta($postID, 'wp_sms_force_sms', true);
             $subscriber_groups = get_post_meta($postID, 'wp_sms_groups', true);
             $numbers           = get_post_meta($postID, 'wp_sms_numbers', true);
             $user_roles        = get_post_meta($postID, 'wp_sms_roles', true);
@@ -273,7 +278,7 @@ class Notifications
             if (isset($this->options['notif_publish_new_send_mms']) and $this->options['notif_publish_new_send_mms']) {
                 $mediaUrls = [get_the_post_thumbnail_url($post->ID)];
             }
-            
+
             if (empty($receiver) || !$message_body) {
                 return;
             }

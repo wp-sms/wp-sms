@@ -167,6 +167,8 @@ function sendSMS() {
         repeat: smsRepeating,
     };
 
+    requestBody = wp.hooks.applyFilters('wp_sms_send_request_body', requestBody);
+
     jQuery('.wpsms-wrap__main__notice').removeClass('not-hidden');
 
     jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',

@@ -85,7 +85,7 @@ class smartsmsgateway extends \WP_SMS\Gateway
 
             $response = $this->request('GET', "{$this->wsdl_link}/api_http.php", $params, []);
 
-            if (str_contains($response, 'ERROR')) {
+            if (strpos($response, 'ERROR')) {
                 throw new \Exception($response);
             }
 
@@ -102,7 +102,6 @@ class smartsmsgateway extends \WP_SMS\Gateway
             do_action('wp_sms_send', $response);
 
             return $response;
-
         } catch (\Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
@@ -131,12 +130,9 @@ class smartsmsgateway extends \WP_SMS\Gateway
             }
 
             return $response;
-
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
             return new \WP_Error('account-credit', $error_message);
         }
-
     }
-
 }

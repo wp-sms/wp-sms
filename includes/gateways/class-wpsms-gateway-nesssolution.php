@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Gateway;
 
-class texti extends \WP_SMS\Gateway
+class nesssolution extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://traffic.sales.lv/API:0.16/";
     public $tariff = "https://texti.fi/";

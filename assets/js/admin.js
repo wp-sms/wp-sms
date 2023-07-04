@@ -99,6 +99,18 @@ let WpSMSGeneral = {
             },
             preferredCountries: {
                 element: jQuery('#wpsms_settings\\[international_mobile_preferred_countries\\]'),
+            },
+            newsletterFormGroups: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_groups\\]"),
+            },
+            newsletterFormMultipleSelect: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_multiple_select\\]"),
+            },
+            newsletterFormSpecifiedGroups: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_specified_groups\\]"),
+            },
+            newsletterFormDefaultGroup: {
+                element: jQuery("#wpsms_settings\\[newsletter_form_default_group\\]"),
             }
         }
     },
@@ -115,12 +127,27 @@ let WpSMSGeneral = {
             this.fields.mobileMinimumChar.element.closest('tr').show()
             this.fields.mobileMaximumChar.element.closest('tr').show()
         }
+
+        if (this.fields.newsletterFormGroups.element.is(":checked")) {
+            this.fields.newsletterFormMultipleSelect.element.closest("tr").show();
+            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").show();
+            this.fields.newsletterFormDefaultGroup.element.closest("tr").show();
+        } else {
+            this.fields.newsletterFormMultipleSelect.element.closest("tr").hide();
+            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
+            this.fields.newsletterFormDefaultGroup.element.closest("tr").hide();
+        }
     },
 
     addEventListener: function () {
         this.fields.internatioanlMode.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
+
+        this.fields.newsletterFormGroups.element.on("change", function () {
+            this.hideOrShowFields();
+        }.bind(this)
+        );
     },
 
     init: function () {
@@ -475,6 +502,7 @@ let WpSmsMetaBox = {
         this.setFields()
         this.hideOrShowFields()
         this.addEventListener()
+        this.insertShortcode()
     },
 
     /**
@@ -499,6 +527,9 @@ let WpSmsMetaBox = {
             },
             message_body: {
                 element: jQuery('#wpsms-custom-text'),
+            },
+            short_codes: {
+                element: jQuery('#wpsms-short-codes'),
             }
         }
     },
@@ -539,4 +570,15 @@ let WpSmsMetaBox = {
         }.bind(this));
     },
 
+    insertShortcode: function() {
+        this.fields.short_codes.element.find("code").each(function(index) {
+            jQuery(this).on('click', function () {
+                var shortCodeValue = ' ' + jQuery(this).text() + ' ';
+                jQuery('#wpsms-text-template').val(function(i , text){
+                    const cursorPosition = jQuery(this)[0].selectionStart;
+                    return text.substring(0, cursorPosition) + shortCodeValue + text.substring(cursorPosition);
+                })
+            })
+        })
+    },
 }

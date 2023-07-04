@@ -20,13 +20,13 @@ class Admin
         $this->options   = Option::getOptions();
 
         $this->init();
+        $this->initFeedback();
 
         // Add Actions
         add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
         add_action('admin_bar_menu', array($this, 'admin_bar'));
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
-        add_action('admin_notices', array($this, 'displayFlashNotice'));
         add_action('init', array($this, 'do_output_buffer'));
 
         // Add Filters
@@ -197,15 +197,6 @@ class Admin
             if (method_exists($this, $methodName)) {
                 add_action("load-{$hook}", array($this, $methodName));
             }
-        }
-    }
-
-    public function displayFlashNotice()
-    {
-        $notice = get_option('wpsms_flash_message', false);
-        if ($notice) {
-            delete_option('wpsms_flash_message');
-            \WP_SMS\Admin\Helper::notice($notice['text'], $notice['model']);
         }
     }
 
@@ -431,16 +422,6 @@ class Admin
      */
     private function init()
     {
-        if (isset($_GET['action'])) {
-            if ($_GET['action'] == 'wpsms-hide-newsletter') {
-                update_option('wpsms_hide_newsletter', true);
-            }
-        }
-
-        if (!get_option('wpsms_hide_newsletter')) {
-            add_action('wp_sms_settings_page', array($this, 'admin_newsletter'));
-        }
-
         // Check exists require function
         if (!function_exists('wp_get_current_user')) {
             include(ABSPATH . "wp-includes/pluggable.php");
@@ -453,11 +434,41 @@ class Admin
     }
 
     /**
-     * Admin newsletter
+     * Init FeedbackBird widget a third-party service to get feedbacks from users
+     *
+     * @url https://feedbackbird.io
+     *
+     * @return void
      */
-    public function admin_newsletter()
+    private function initFeedback()
     {
-        echo Helper::loadTemplate('admin/newsletter-form.php');
+        add_action('admin_enqueue_scripts', function () {
+            $screen = get_current_screen();
+
+            if (stristr($screen->id, 'wp-sms')) {
+                wp_enqueue_script('feedbackbird-app-script', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
+                wp_add_inline_script('feedbackbird-app-script', sprintf('var feedbackBirdObject = %s;', json_encode([
+                    'userid' => get_current_user(),
+                    'meta'   => [
+                        'php_version'    => PHP_VERSION,
+                        'active_plugins' => array_map(function ($plugin, $pluginPath) {
+                            return [
+                                'name'    => $plugin['Name'],
+                                'version' => $plugin['Version'],
+                                'status'  => is_plugin_active($pluginPath) ? 'active' : 'deactivate',
+                            ];
+                        }, get_plugins(), array_keys(get_plugins())),
+                    ]
+                ])));
+
+                add_filter('script_loader_tag', function ($tag, $handle, $src) {
+                    if ('feedbackbird-app-script' === $handle) {
+                        return preg_replace('/^<script /i', '<script type="module" crossorigin="crossorigin" ', $tag);
+                    }
+                    return $tag;
+                }, 10, 3);
+            }
+        });
     }
 
     /**

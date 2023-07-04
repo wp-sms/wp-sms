@@ -75,6 +75,19 @@
       }
     }
   }
+
+  &.wpsms-admin-notice {
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    &::before{
+      margin-top: 3px;
+    }
+
+    .notice-dismiss{
+      margin: 0 !important;
+    }
+  }
 }
 
 .wpsms-wrap .notice::before {
@@ -177,8 +190,8 @@
 }
 
 #screen-meta-links + .wpsms-wrap .wpsms-header-banner, .privacy_page .wpsms-header-banner, #screen-meta-links + input[type="hidden"] + .wpsms-wrap .wpsms-header-banner {
-  -webkit-transform: translateY(-31px);
-  transform: translateY(-31px);
+  -webkit-transform: translateY(-34px);
+  transform: translateY(-34px);
   position: relative;
   z-index: -1;
 }

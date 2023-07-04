@@ -54,6 +54,7 @@
                                                         <span>(<?php _e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
                                                     <?php endif; ?>
                                                 </option>
+                                                <?php do_action('wp_sms_form_send_to_select_option', $smsObject, $proIsActive); ?>
                                                 <option value="numbers" id="wp_tellephone"><?php _e('Number(s)', 'wp-sms'); ?>
                                                 </option>
                                             </select>
@@ -106,6 +107,8 @@
                                             <span class="wpsms-value wpsms-bp-users" style="display: none;">
                                                 <span><?php echo sprintf(__('<b>%s</b> Users have the mobile number in their profile.', 'wp-sms'), count($buddyPressMobileNumbers)); ?></span>
                                             </span>
+
+                                            <?php do_action('wp_sms_form_send_to_value', $smsObject, $proIsActive); ?>
 
                                             <span class="wpsms-value wpsms-numbers">
                                                 <div class="clearfix"></div>

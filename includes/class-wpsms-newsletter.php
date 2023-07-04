@@ -39,7 +39,8 @@ class Newsletter
     public function generateUnSubscribeUrlByNumber($number)
     {
         $unSubscribeUrl = add_query_arg([
-            $this->getUnSubscriberQueryString() => $number
+            $this->getUnSubscriberQueryString() => $number,
+            'nonce'                             => wp_create_nonce('wp_sms_unsubscribe')
         ], get_bloginfo('url'));
 
         return wp_sms_shorturl($unSubscribeUrl);
@@ -55,6 +56,15 @@ class Newsletter
 
         if (!isset($_REQUEST[$unSubscriberQueryString]) || !wp_unslash($_REQUEST[$unSubscriberQueryString])) {
             return;
+        }
+
+        // Check CSRF
+        if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'wp_sms_unsubscribe')) {
+            wp_die('Access denied.', __('SMS newsletter'), [
+                'link_text' => __('Home page', 'wp-sms'),
+                'link_url'  => get_bloginfo('url'),
+                'response'  => 200,
+            ]);
         }
 
         $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
@@ -124,7 +134,7 @@ class Newsletter
              * @param string $name name.
              * @param string $mobile mobile.
              * @param string $status mobile.
-             * @param string $wpdb- >insert_id Subscriber ID
+             * @param string $wpdb - >insert_id Subscriber ID
              *
              * @since 3.0
              *

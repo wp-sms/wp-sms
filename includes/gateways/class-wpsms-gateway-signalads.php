@@ -5,10 +5,10 @@ namespace WP_SMS\Gateway;
 use Exception;
 use WP_Error;
 
-class oxemis extends \WP_SMS\Gateway
+class signalads extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://www.oxisms.com/api/1.0";
-    public $tariff = "https://www.oxemis.com/en/sms";
+    private $wsdl_link = "http://panel.signalads.com/rest/api/v1";
+    public $tariff = "https://signalads.com";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
@@ -19,23 +19,18 @@ class oxemis extends \WP_SMS\Gateway
         parent::__construct();
         $this->has_key        = true;
         $this->bulk_send      = true;
-        $this->validateNumber = "Example: 0033601234567";
+        $this->validateNumber = "+XXXXXXXXXXXXX";
         $this->help           = "";
         $this->gatewayFields  = [
-            'has_key'  => [
+            'has_key' => [
                 'id'   => 'gateway_key',
-                'name' => 'API ID',
-                'desc' => 'Enter your API ID.'
+                'name' => 'API Key',
+                'desc' => 'Enter your API key.'
             ],
-            'password' => [
-                'id'   => 'gateway_password',
-                'name' => 'API Password',
-                'desc' => 'Enter your API Password.',
-            ],
-            'from'     => [
+            'from'    => [
                 'id'   => 'gateway_sender_id',
-                'name' => 'SMS Sender name or number',
-                'desc' => 'Enter your SMS Sender name or number.',
+                'name' => 'Sender Number',
+                'desc' => 'Enter the SMS Sender number.',
             ],
         ];
     }
@@ -72,17 +67,20 @@ class oxemis extends \WP_SMS\Gateway
         try {
 
             $arguments = [
-                'api_key'      => $this->has_key,
-                'api_password' => $this->password,
-                'message'      => urlencode($this->msg),
-                'recipients'   => implode(',', $this->to),
-                'sender'       => $this->from
+                'headers' => array(
+                    'Authorization' => "Bearer $this->has_key"
+                ),
+                'body'    => array(
+                    'numbers' => $this->to,
+                    'from'    => $this->from,
+                    'message' => $this->msg
+                )
             ];
 
-            $response = $this->request('POST', "$this->wsdl_link/send.php", $arguments, []);
+            $response = $this->request('GET', "$this->wsdl_link/message/send.json", [], $arguments);
 
-            if (!isset($response->success) && isset($response->message)) {
-                return new Exception($response->message);
+            if (!isset($response->success)) {
+                return new Exception($response);
             }
 
             // Log the result
@@ -111,27 +109,28 @@ class oxemis extends \WP_SMS\Gateway
     {
         try {
 
-            // Check API key and API Password
-            if (!$this->has_key || !$this->password) {
-                return new WP_Error('account-credit', __('The API Key and API Password are required.', 'wp-sms'));
+            // Check API key
+            if (!$this->has_key) {
+                return new WP_Error('account-credit', __('The API Key is required.', 'wp-sms'));
             }
 
             $arguments = [
-                'api_key'      => $this->has_key,
-                'api_password' => $this->password
+                'headers' => array(
+                    'Authorization' => "Bearer $this->has_key"
+                )
             ];
 
-            $response = $this->request('POST', "$this->wsdl_link/account.php", $arguments, []);
+            $response = $this->request('GET', "$this->wsdl_link/user/credit.json", [], $arguments);
 
-            if (!isset($response->success) && isset($response->message)) {
-                return new Exception($response->message);
+            if (!isset($response->success)) {
+                return new Exception($response);
             }
 
-            if (!isset($response->details->credit)) {
+            if (!isset($response->data->credit)) {
                 return $response;
             }
 
-            return $response->details->credit;
+            return $response->data->credit;
 
         } catch (Exception $e) {
             return new WP_Error('account-credit', $e->getMessage());

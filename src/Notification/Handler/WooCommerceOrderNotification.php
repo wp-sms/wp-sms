@@ -20,6 +20,9 @@ class WooCommerceOrderNotification extends Notification
         '%order_total_currency%'        => 'getCurrency',
         '%order_total_currency_symbol%' => 'getCurrencySymbol',
         '%order_pay_url%'               => 'getPayUrl',
+        '%order_view_url%'              => 'getViewUrl',
+        '%order_cancel_url%'            => 'getCancelUrl',
+        '%order_received_url%'          => 'getReceivedUrl',
         '%order_id%'                    => 'getId',
         '%order_items%'                 => 'getItems',
         '%status%'                      => 'getStatus',
@@ -30,6 +33,10 @@ class WooCommerceOrderNotification extends Notification
     {
         if ($orderId) {
             $this->order = wc_get_order($orderId);
+        }
+
+        if ($this->order && !$this->order->get_meta('wpsms_woocommerce_order_notification')) {
+            $this->optIn = false;
         }
     }
 
@@ -100,6 +107,21 @@ class WooCommerceOrderNotification extends Notification
     public function getPayUrl()
     {
         return wp_sms_shorturl($this->order->get_checkout_payment_url());
+    }
+
+    public function getViewUrl()
+    {
+        return wp_sms_shorturl($this->order->get_view_order_url());
+    }
+
+    public function getCancelUrl()
+    {
+        return wp_sms_shorturl($this->order->get_cancel_order_url());
+    }
+
+    public function getReceivedUrl()
+    {
+        return wp_sms_shorturl($this->order->get_checkout_order_received_url());
     }
 
     public function getId()

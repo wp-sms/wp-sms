@@ -45,7 +45,9 @@ class Newsletter extends RestApi
                         'required' => true,
                     ),
                     'group_id'      => array(
-                        'required' => false,
+                        'required'          => false,
+                        'type'              => array('integer', 'array'),
+                        'validate_callback' => array($this, 'validate_group_callback')
                     ),
                     'custom_fields' => array(
                         'required' => false
@@ -105,24 +107,44 @@ class Newsletter extends RestApi
     public function subscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
-        $params       = $request->get_params();
-        $number       = self::convertNumber($params['mobile']);
-        $customFields = $request->get_param('custom_fields');
+        $params         = $request->get_params();
+        $number         = self::convertNumber($params['mobile']);
+        $customFields   = $request->get_param('custom_fields');
+        $group_id       = $request->get_param('group_id');
+        $groups_enabled = Option::getOption('newsletter_form_groups');
 
-        $group_id       = isset($params['group_id']) ? $params['group_id'] : false;
-        $allowed_groups = Option::getOption('newsletter_form_specified_groups');
-
-        if ($group_id && $allowed_groups && !in_array($group_id, $allowed_groups)) {
-            return self::response(__('Not allowed.', 'wp-sms'), 400);
+        //  If admin enabled groups and user did not select any group, then return error
+        if ($groups_enabled && !$group_id) {
+            return self::response(__('Please select a specific group.', 'wp-sms'), 400);
         }
 
-        $result = self::subscribe($params['name'], $number, $group_id, $customFields);
+        $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
-        if (is_wp_error($result)) {
-            return self::response($result->get_error_message(), 400);
+        foreach ($groupIds as $groupId) {
+            $result = self::subscribe($params['name'], $number, $groupId, $customFields);
+
+            if (is_wp_error($result)) {
+                return self::response($result->get_error_message(), 400);
+            }
         }
 
-        return self::response($result);
+        return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));
+    }
+
+    /**
+     * Validates group_id parameter
+     */
+    public function validate_group_callback($group_id)
+    {
+        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+
+        foreach ($groupIds as $groupId) {
+            if (!\WP_SMS\Newsletter::getGroup($groupId)) {
+                return new \WP_Error('subscribe', sprintf(__('Group ID #%s is not valid', 'wp-sms'), $groupId));
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -145,14 +167,24 @@ class Newsletter extends RestApi
     public function unsubscribe_callback(WP_REST_Request $request)
     {
         // Get parameters from request
-        $params = $request->get_params();
-        $number = self::convertNumber($params['mobile']);
+        $params         = $request->get_params();
+        $number         = self::convertNumber($params['mobile']);
+        $group_id       = isset($params['group_id']) ? $params['group_id'] : 0;
+        $groups_enabled = Option::getOption('newsletter_form_groups');
 
-        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
-        $result   = self::unSubscribe($params['name'], $number, $group_id);
+        //  If admin enabled groups and user did not select any group, then return error
+        if ($groups_enabled && !$group_id) {
+            return self::response(__('Please select a specific group.', 'wp-sms'), 400);
+        }
 
-        if (is_wp_error($result)) {
-            return self::response($result->get_error_message(), 400);
+        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+
+        foreach ($groupIds as $groupId) {
+            $result = self::unSubscribe($params['name'], $number, $groupId);
+
+            if (is_wp_error($result)) {
+                return self::response($result->get_error_message(), 400);
+            }
         }
 
         return self::response(__('Your mobile number has been successfully unsubscribed.', 'wp-sms'));
