@@ -240,7 +240,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.2.0 - **.07.2023 =
+= v6.2.0 - 04.07.2023 =
 * Improvement: Updated and cleaned up various mirror and major components.
 * Improvement: Enhanced the styles of the SMS Newsletter form.
 * Improvement: Upgraded the SMS Notification Metabox for better functionality.
