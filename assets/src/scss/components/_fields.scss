@@ -112,6 +112,7 @@
   label {
     color: #222222;
     font-size: 14px;
+    z-index: 1;
   }
 
   input:not([type="checkbox"]),
@@ -175,14 +176,13 @@ input.wpsms-type-unsubscribe {
   border: 1px solid #d9d9d9;
   box-sizing: border-box;
   border-radius: 8px;
-  padding: 20px 15px 8px 15px !important;
+  padding: 20px 15px !important;
   position: relative;
 
   label {
     color: #000;
     cursor: pointer;
     position: relative;
-    margin-bottom: 8px;
   }
 
   p {
@@ -217,7 +217,7 @@ input.wpsms-type-unsubscribe {
 
     &::after {
       content: "";
-      transform: rotate(0);
+      transform: rotate(0) translateY(-1px);
     }
 
     &::before {
