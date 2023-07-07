@@ -162,6 +162,7 @@ class WP_SMS
         $this->include('src/Webhook/WebhookManager.php');
         $this->include('src/Webhook/NewSubscriberWebhook.php');
         $this->include('src/Webhook/NewSmsWebhook.php');
+        $this->include('src/Webhook/NewIncomingSmsWebhook.php');
 
         $webhookManager = new \WP_SMS\Webhook\WebhookManager();
         $webhookManager->init();

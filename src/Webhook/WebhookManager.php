@@ -13,5 +13,6 @@ class WebhookManager
     {
         NewSmsWebhook::boot();
         NewSubscriberWebhook::boot();
+        NewIncomingSmsWebhook::boot();
     }
 }

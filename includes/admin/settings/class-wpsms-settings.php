@@ -1541,12 +1541,12 @@ class Settings
              * Feature fields
              */
             'advanced'             => apply_filters('wp_sms_feature_settings', array(
-                'short_url'              => array(
+                'short_url'                => array(
                     'id'   => 'short_url',
                     'name' => !$this->proIsInstalled ? __('Bitly Short URL (Pro)', 'wp-sms') : __('Bitly Short URL', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'short_url_status'       => array(
+                'short_url_status'         => array(
                     'id'       => 'short_url_status',
                     'name'     => __('Make the URLs Shorter?', 'wp-sms'),
                     'type'     => 'checkbox',
@@ -1554,38 +1554,44 @@ class Settings
                     'desc'     => __('By enabling this option, all URLs will be shorter by Bitly.com', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
-                'short_url_api_token'    => array(
+                'short_url_api_token'      => array(
                     'id'       => 'short_url_api_token',
                     'name'     => __('Access Token', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
-                'webhooks'               => array(
+                'webhooks'                 => array(
                     'id'   => 'webhooks',
                     'name' => __('Webhooks', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Webhooks allow you to receive notifications when a specific event occurs.', 'wp-sms'),
                     'doc'  => '/resources/webhooks/'
                 ),
-                'send_sms_webhook'       => array(
+                'new_sms_webhook'          => array(
                     'id'   => 'new_sms_webhook',
                     'name' => __('Outgoing SMS Webhook', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
-                'add_subscriber_webhook' => array(
+                'new_subscriber_webhook'   => array(
                     'id'   => 'new_subscriber_webhook',
                     'name' => __('New Subscriber Webhook', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
-                'g_recaptcha'            => array(
+                'new_incoming_sms_webhook' => array(
+                    'id'   => 'new_incoming_sms_webhook',
+                    'name' => __('New Incoming SMS Webhook', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('This required Add-On Two-way', 'wp-sms') . '<br>' . __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                ),
+                'g_recaptcha'              => array(
                     'id'   => 'g_recaptcha',
                     'name' => !$this->proIsInstalled ? __('Google reCAPTCHA (Pro / WooCommerce Pro)', 'wp-sms') : __('Google reCAPTCHA', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'g_recaptcha_status'     => array(
+                'g_recaptcha_status'       => array(
                     'id'       => 'g_recaptcha_status',
                     'name'     => __('Activate', 'wp-sms'),
                     'type'     => 'checkbox',
@@ -1593,14 +1599,14 @@ class Settings
                     'desc'     => __('By enabling this option, google reCAPTCHA v2 will be added to request-sms actions.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
-                'g_recaptcha_site_key'   => array(
+                'g_recaptcha_site_key'     => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => __('Site Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
-                'g_recaptcha_secret_key' => array(
+                'g_recaptcha_secret_key'   => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => __('Secret Key', 'wp-sms'),
                     'type'     => 'text',
