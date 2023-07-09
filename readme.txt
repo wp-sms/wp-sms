@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.2.0.1
+Stable tag: 6.2.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,6 +240,11 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.2.0.2 - 09.07.2023 =
+* Fixes: The opt-in WooCommerce issue
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.2.0.1 - 08.07.2023 =
 * Addition: Support a new webhook for incoming SMS
 * Improvement: Backward compatibility
@@ -259,8 +264,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Addition: Introduced support for new variables `%get_order_receive_url%`, `%get_cancel_order_url%`, and `%get_view_order_url%` in WooCommerce order notifications.
 * Fixes: Resolved the issue of duplicate SMS sending during post updates.
 * Update: Updated Gateways DirectSend, Oxemis, and SmsApi.pl to their latest versions.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.1.5 - 13.05.2023 =
 * Added: Users can now filter post notifications by taxonomy/terms
