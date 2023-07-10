@@ -164,9 +164,15 @@ class RestApi
 
         // Check the mobile number is string or integer
         if (strpos($mobile, '+') !== false) {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $groupId);
+            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
         } else {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $groupId);
+            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d", $mobile, 0);
+        }
+
+        $updateCondition = array('mobile' => $mobile);
+        if ($groupId and $groupId !== 0) {
+            $db_prepare                  .= $wpdb->prepare(" AND group_ID = %d", $groupId);
+            $updateCondition['group_ID'] = $groupId;
         }
 
         $check_mobile = $wpdb->get_row($db_prepare);
@@ -180,9 +186,9 @@ class RestApi
 
             // Check the mobile number is string or integer
             if (strpos($mobile, '+') !== false) {
-                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $groupId), array('%d', '%d'), array('%s'));
+                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), $updateCondition, array('%d', '%d'), array('%s'));
             } else {
-                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $groupId), array('%d', '%d'), array('%d'));
+                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), $updateCondition, array('%d', '%d'), array('%d'));
             }
 
             if ($result) {
