@@ -92,9 +92,14 @@
   border: solid 2px #969696;
 }
 
+.js-wpSmsSubscribeStepTwo {
+  margin-top: 30px;
+}
+
 .js-wpSmsSubscriberName,
 .js-wpSmsSubscriberMobile,
-.js-wpSmsSubscriberGroupId {
+.js-wpSmsSubscriberGroupId,
+.js-wpSmsSubscribeFormField {
   label {
     position: absolute;
     top: -10px;
