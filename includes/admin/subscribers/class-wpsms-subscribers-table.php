@@ -198,7 +198,7 @@ class Subscribers_List_Table extends \WP_List_Table
             \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
-        if (false !== strpos($current_action, 'move_to_')) {
+        if (false !== strpos($current_action, 'move_to_') && isset($_GET['id']) && is_array($_GET['id'])) {
             $new_group_id = substr($current_action, 8);
             $new_group    = Newsletter::getGroup($new_group_id);
             if ($new_group) {
