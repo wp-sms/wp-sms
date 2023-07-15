@@ -169,6 +169,10 @@ class RestApi
             $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d", $mobile, 0);
         }
 
+        if (is_array($groupId)) {
+            $groupId = $groupId[0];
+        }
+
         $updateCondition = array('mobile' => $mobile);
         if ($groupId and $groupId !== 0) {
             $db_prepare                  .= $wpdb->prepare(" AND group_ID = %d", $groupId);
