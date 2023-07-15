@@ -81,6 +81,8 @@ class RestApi
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
+        $groupIds = is_array($group) ? $group : array($group);
+
         $gateway_name = Option::getOption('gateway_name');
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
             // Check gateway setting
@@ -91,29 +93,31 @@ class RestApi
 
             $key = rand(1000, 9999);
 
-            // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '0', $key, $customFields);
-
-            if ($result['result'] == 'error') {
-                // Return response
-                return new \WP_Error('subscribe', $result['message']);
-            } else {
-                wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
+            foreach ($groupIds as $groupId) {
+                // Add subscribe to database
+                $result = Newsletter::addSubscriber($name, $mobile, $groupId, '0', $key, $customFields);
+                if ($result['result'] == 'error') {
+                    // Return response
+                    return new \WP_Error('subscribe', $result['message']);
+                }
             }
+
+            wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
 
             // Return response
             return __('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
-
         } else {
 
-            // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '1', null, $customFields);
-
-            if ($result['result'] == 'error') {
-                // Return response
-                return new \WP_Error('subscribe', $result['message']);
+            foreach ($groupIds as $groupId) {
+                // Add subscribe to database
+                $result = Newsletter::addSubscriber($name, $mobile, $groupId, '1', null, $customFields);
+                if ($result['result'] == 'error') {
+                    // Return response
+                    return new \WP_Error('subscribe', $result['message']);
+                }
             }
 
+            file_put_contents('0_ Also here executed', '');
             return __('Your mobile number has been successfully subscribed.', 'wp-sms');
         }
     }
