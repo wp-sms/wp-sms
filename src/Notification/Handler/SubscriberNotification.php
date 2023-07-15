@@ -42,7 +42,15 @@ class SubscriberNotification extends Notification
 
     public function getSubscriberGroup()
     {
-        return $this->subscriber->group_ID;
+        $results = Newsletter::getSubscriberByMobile($this->subscriber->mobile, true);
+
+        $groups = array();
+        foreach ($results as $row) {
+            $group = Newsletter::getGroup($row->group_ID);
+            array_push($groups, $group->name);
+        }
+
+        return implode(", ", $groups);
     }
 
     public function getSubscriberCustomFields()

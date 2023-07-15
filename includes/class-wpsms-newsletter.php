@@ -128,18 +128,9 @@ class Newsletter
         );
 
         if ($result) {
-            /**
-             * Run hook after adding subscribe.
-             *
-             * @param string $name name.
-             * @param string $mobile mobile.
-             * @param string $status mobile.
-             * @param string $wpdb - >insert_id Subscriber ID
-             *
-             * @since 3.0
-             *
-             */
-            do_action('wp_sms_add_subscriber', $name, $mobile, $status, $wpdb->insert_id);
+            add_filter('wp_sms_added_subscriber_id', function () use ($wpdb) {
+                return $wpdb->insert_id;
+            });
 
             return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
         } else {
@@ -165,7 +156,7 @@ class Newsletter
         }
     }
 
-    public static function getSubscriberByMobile($number)
+    public static function getSubscriberByMobile($number, $all_rows = false)
     {
         global $wpdb;
 
@@ -173,7 +164,11 @@ class Newsletter
         $metaValue = "'" . implode("','", $metaValue) . "'";
         $sql       = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$metaValue})";
 
-        $result = $wpdb->get_row($sql);
+        if ($all_rows) {
+            $result = $wpdb->get_results($sql);
+        } else {
+            $result = $wpdb->get_row($sql);
+        }
 
         if ($result) {
             return $result;

@@ -208,6 +208,9 @@ class Newsletter extends RestApi
             }
         }
 
+        $subscriber_id = apply_filters('wp_sms_verified_subscriber_id', 0);
+        do_action('wp_sms_verify_subscriber', $params['name'], $number, 1, $subscriber_id);
+
         return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));
     }
 
