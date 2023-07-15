@@ -188,6 +188,16 @@ input.wpsms-type-unsubscribe {
     color: #000;
     cursor: pointer;
     position: relative;
+    color: #000;
+    cursor: pointer;
+    display: block;
+    top: 0;
+    left: 0;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
   }
 
   p {
