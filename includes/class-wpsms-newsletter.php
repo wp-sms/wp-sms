@@ -165,7 +165,7 @@ class Newsletter
         }
     }
 
-    public static function getSubscriberByMobile($number, $all_rows = false)
+    public static function getSubscriberByMobile($number)
     {
         global $wpdb;
 
@@ -173,11 +173,7 @@ class Newsletter
         $metaValue = "'" . implode("','", $metaValue) . "'";
         $sql       = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$metaValue})";
 
-        if ($all_rows) {
-            $result = $wpdb->get_results($sql);
-        } else {
-            $result = $wpdb->get_row($sql);
-        }
+        $result = $wpdb->get_row($sql);
 
         if ($result) {
             return $result;
