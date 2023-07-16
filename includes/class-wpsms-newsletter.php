@@ -128,9 +128,18 @@ class Newsletter
         );
 
         if ($result) {
-            add_filter('wp_sms_added_subscriber_id', function () use ($wpdb) {
-                return $wpdb->insert_id;
-            });
+            /**
+             * Run hook after adding subscribe.
+             *
+             * @param string $name name.
+             * @param string $mobile mobile.
+             * @param string $status mobile.
+             * @param string $wpdb - >insert_id Subscriber ID
+             *
+             * @since 3.0
+             *
+             */
+            do_action('wp_sms_add_subscriber', $name, $mobile, $status, $wpdb->insert_id);
 
             return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
         } else {

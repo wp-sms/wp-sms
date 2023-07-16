@@ -77,9 +77,6 @@ class RestApi
      */
     public static function subscribe($name, $mobile, $group = false, $customFields = array())
     {
-        $status        = '0';
-        $success_state = '';
-
         if (empty($name) or empty($mobile)) {
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
@@ -98,7 +95,7 @@ class RestApi
 
             foreach ($groupIds as $groupId) {
                 // Add subscribe to database
-                $result = Newsletter::addSubscriber($name, $mobile, $groupId, $status, $key, $customFields);
+                $result = Newsletter::addSubscriber($name, $mobile, $groupId, '0', $key, $customFields);
                 if ($result['result'] == 'error') {
                     // Return response
                     return new \WP_Error('subscribe', $result['message']);
@@ -107,37 +104,21 @@ class RestApi
 
             wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
 
-            $success_state = __('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
+            // Return response
+            return __('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
         } else {
-            $status = '1';
             foreach ($groupIds as $groupId) {
                 // Add subscribe to database
-                $result = Newsletter::addSubscriber($name, $mobile, $groupId, $status, null, $customFields);
+                $result = Newsletter::addSubscriber($name, $mobile, $groupId, '1', null, $customFields);
                 if ($result['result'] == 'error') {
                     // Return response
                     return new \WP_Error('subscribe', $result['message']);
                 }
             }
 
-            $success_state = __('Your mobile number has been successfully subscribed.', 'wp-sms');
+            // Return response
+            return __('Your mobile number has been successfully subscribed.', 'wp-sms');
         }
-
-        /**
-         * Run hook after adding subscribe.
-         *
-         * @param string $name name.
-         * @param string $mobile mobile.
-         * @param string $status mobile.
-         * @param string $wpdb - >insert_id Subscriber ID
-         *
-         * @since 3.0
-         *
-         */
-        $subscriber_id = apply_filters('wp_sms_added_subscriber_id', 0);
-        do_action('wp_sms_add_subscriber', $name, $mobile, $status, $subscriber_id);
-
-        // Return response
-        return $success_state;
     }
 
     /**
@@ -218,9 +199,8 @@ class RestApi
             }
 
             if ($result) {
-                add_filter('wp_sms_verified_subscriber_id', function () use ($check_mobile) {
-                    return $check_mobile->ID;
-                });
+                do_action('wp_sms_verify_subscriber', $name, $mobile, 1, $check_mobile->ID);
+
                 // Return response
                 return __('Your subscription done successfully!', 'wp-sms');
             }
