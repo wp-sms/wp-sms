@@ -81,17 +81,8 @@ class RestApi
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
-        // Delete subscribes if previously subscribed with this number in some groups and is inactive
-        $inactive_groups = Helper::checkMobileNumberValidity($mobile, false, $group, false, false, true);
-        if ($inactive_groups) {
-            foreach ($inactive_groups as $inactive_group) {
-                $result = Newsletter::deleteSubscriberByNumber($mobile, $inactive_group);
-                // Check result
-                if ($result['result'] == 'error') {
-                    return new \WP_Error('delete previous data', $result['message']);
-                }
-            }
-        }
+        // Delete inactive subscribes with this number
+        Helper::deleteInactiveSubscribes($mobile);
 
         $groupIds = is_array($group) ? $group : array($group);
 
