@@ -47,6 +47,115 @@ class Newsletter
     }
 
     /**
+     * This function check the validity of users' phone numbers. If the number is not available, raise an error
+     *
+     * @param $mobileNumber
+     * @param bool $userID
+     * @param bool $isSubscriber
+     * @param $groupID
+     * @param $subscribeId
+     *
+     * @return bool|\WP_Error
+     */
+    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
+    {
+        global $wpdb;
+
+        $mobileNumber = trim($mobileNumber);
+
+        if (!is_numeric($mobileNumber)) {
+            return new \WP_Error('invalid_number', __('Invalid Mobile Number', 'wp-sms'));
+        }
+
+        // check whether international mode is enabled
+        $international_mode = Option::getOption('international_mobile') ? true : false;
+
+        // check whether the first character of mobile number is +
+        $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
+
+        /**
+         * 1. Check whether international mode is on and the number is NOT started with +
+         */
+        if ($international_mode and !$country_code) {
+            return new \WP_Error('invalid_number', __("The mobile number doesn't contain the country code.", 'wp-sms'));
+        }
+
+        /**
+         * 2. Check whether the min and max length of the number comply
+         */
+        if (!$international_mode) {
+            // get min length of the number if it is set
+            $min_length = Option::getOption('mobile_terms_minimum');
+
+            // get max length of the number if it is set
+            $max_length = Option::getOption('mobile_terms_maximum');
+
+            if ($max_length and strlen($mobileNumber) > $max_length) {
+                return new \WP_Error('invalid_number', __("Your mobile number must have up to {$max_length} characters.", 'wp-sms'));
+            }
+
+            if ($min_length and strlen($mobileNumber) < $min_length) {
+                return new \WP_Error('invalid_number', __("Your mobile number must have at least {$min_length} characters.", 'wp-sms'));
+            }
+        }
+
+        /**
+         * 3. Check whether number is exists in usermeta or sms_subscriber table
+         */
+        if ($isSubscriber) {
+            $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
+
+            if ($groupID) {
+                $sql .= $wpdb->prepare(" AND group_ID = '%s'", $groupID);
+            }
+
+            // While updating we should query except the current one.
+            if ($subscribeId) {
+                $sql .= $wpdb->prepare(" AND id != '%s'", $subscribeId);
+            }
+
+            $result = $wpdb->get_row($sql);
+        } else {
+            $where       = '';
+            $mobileField = self::getUserMobileFieldName();
+
+            if ($userID) {
+                $where = $wpdb->prepare('AND user_id != %s', $userID);
+            }
+
+            $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
+            $result = $wpdb->get_results($sql);
+        }
+
+        // if result has active status, raise an error
+        if ($result && $result->status == '1') {
+            return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+        }
+
+        return apply_filters('wp_sms_mobile_number_validity', true, $mobileNumber);
+    }
+
+    /**
+     * Delete inactive subscribes with this number
+     */
+    public static function deleteInactiveSubscribersByMobile($mobile)
+    {
+        global $wpdb;
+        $sql     = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s AND status = '0'", $mobile);
+        $results = $wpdb->get_results($sql);
+
+        if ($results) {
+            foreach ($results as $row) {
+                $result = self::deleteSubscriberByNumber($mobile, $row->group_ID);
+                // Check result
+                if ($result['result'] == 'error') {
+                    return new \WP_Error('clear_inactive_subscribes', $result['message']);
+                }
+            }
+        }
+    }
+
+    /**
      * Unsubscribe a number by query string action
      *
      */
@@ -108,7 +217,7 @@ class Newsletter
         global $wpdb;
 
         // Check mobile validity
-        $validate = Helper::checkMobileNumberValidity($mobile, false, true, $group_id);
+        $validate = self::checkMobileNumberValidity($mobile, false, true, $group_id);
 
         if (is_wp_error($validate)) {
             return array('result' => 'error', 'message' => $validate->get_error_message());
@@ -238,7 +347,7 @@ class Newsletter
         }
 
         // Check mobile validity
-        $validate = Helper::checkMobileNumberValidity($mobile, false, true, $group_id, $id);
+        $validate = self::checkMobileNumberValidity($mobile, false, true, $group_id, $id);
 
         if (is_wp_error($validate)) {
             return array('result' => 'error', 'message' => $validate->get_error_message());

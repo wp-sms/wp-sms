@@ -4,6 +4,7 @@ namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Helper;
 use WP_SMS\Option;
+use WP_SMS\Newsletter;
 
 class WordPressMobileFieldHandler
 {
@@ -83,7 +84,7 @@ class WordPressMobileFieldHandler
 
         if (isset($_POST['mobile']) and $_POST['mobile']) {
             $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
-            $validity = Helper::checkMobileNumberValidity($mobile);
+            $validity = Newsletter::checkMobileNumberValidity($mobile);
 
             if (is_wp_error($validity)) {
                 $errors->add($validity->get_error_code(), $validity->get_error_message());
@@ -123,7 +124,7 @@ class WordPressMobileFieldHandler
 
         if (isset($_POST['mobile']) && $_POST['mobile']) {
             $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
-            $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
+            $validity = Newsletter::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
 
             if (is_wp_error($validity)) {
                 $errors->add($validity->get_error_code(), $validity->get_error_message());

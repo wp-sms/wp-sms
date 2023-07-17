@@ -25,14 +25,14 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
 
     public function testNumeric()
     {
-        $validity = \WP_SMS\Helper::checkMobileNumberValidity('+1111111111');
+        $validity = \WP_SMS\Newsletter::checkMobileNumberValidity('+1111111111');
 
         $this->assertTrue($validity);
     }
 
     public function testNotNumeric()
     {
-        $validity = \WP_SMS\Helper::checkMobileNumberValidity('+hello');
+        $validity = \WP_SMS\Newsletter::checkMobileNumberValidity('+hello');
 
         $this->assertInstanceOf(WP_Error::class, $validity);
         $this->assertStringContainsString($validity->get_error_code(), 'invalid_number');
@@ -42,7 +42,7 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
     {
         add_user_meta(1, \WP_SMS\Helper::getUserMobileFieldName(), '+1111111111');
 
-        $validity = \WP_SMS\Helper::checkMobileNumberValidity('+1111111111');
+        $validity = \WP_SMS\Newsletter::checkMobileNumberValidity('+1111111111');
 
         $this->assertInstanceOf(WP_Error::class, $validity);
         $this->assertStringContainsString($validity->get_error_code(), 'is_duplicate');

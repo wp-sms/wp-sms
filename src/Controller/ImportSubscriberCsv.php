@@ -91,7 +91,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
             }
 
             // check mobile number validity
-            $check_validity = Helper::checkMobileNumberValidity($mobile_number, false, true, $group_id, false);
+            $check_validity = Newsletter::checkMobileNumberValidity($mobile_number, false, true, $group_id, false);
 
             if (is_wp_error($check_validity)) {
                 $errors[$mobile_number] = $check_validity->get_error_message();
