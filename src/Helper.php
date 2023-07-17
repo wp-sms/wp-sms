@@ -262,7 +262,7 @@ class Helper
      *
      * @return bool|\WP_Error
      */
-    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
+    public static function checkMobileNumberValidity($mobileNumber, $userID = false, $isSubscriber = false, $groupID = false, $subscribeId = false, $checkSubscriberStatus = false)
     {
         global $wpdb;
 
@@ -305,7 +305,36 @@ class Helper
         }
 
         /**
-         * 3. Check whether number is exists in usermeta or sms_subscriber table
+         * 3. Check whether subscriber has already inactive subscribes
+         */
+        if ($isSubscriber && $checkSubscriberStatus) {
+            $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s AND status = '0'", $mobileNumber);
+
+            if ($groupID) {
+                $groupIDs      = is_array($groupID) ? $groupID : array($groupID);
+                $groupIDs_list = '';
+                foreach ($groupIDs as $key => $group) {
+                    $groupIDs_list .= $group;
+                    if ($key !== array_key_last($groupIDs)) {
+                        $groupIDs_list .= ', ';
+                    }
+                }
+                $sql .= $wpdb->prepare(" AND group_ID IN ('%s')", $groupIDs_list);
+            }
+
+            $results         = $wpdb->get_results($sql);
+
+            $inactive_groups = array();
+            if ($results) {
+                foreach ($results as $row) {
+                    array_push($inactive_groups, $row->group_ID);
+                }
+            }
+            return $inactive_groups;
+        }
+
+        /**
+         * 4. Check whether number is exists in usermeta or sms_subscriber table
          */
         if ($isSubscriber) {
             $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
@@ -332,8 +361,8 @@ class Helper
             $result = $wpdb->get_results($sql);
         }
 
-        // if any result found, raise an error
-        if ($result) {
+        // if result has active status, raise an error
+        if ($result && $result->status == '1') {
             return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
         }
 
