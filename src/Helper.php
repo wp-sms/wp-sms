@@ -340,25 +340,6 @@ class Helper
         return apply_filters('wp_sms_mobile_number_validity', true, $mobileNumber);
     }
 
-    /**
-     * Delete inactive subscribes with this number
-     */
-    public static function deleteInactiveSubscribes($mobile)
-    {
-        global $wpdb;
-        $sql     = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s AND status = '0'", $mobile);
-        $results = $wpdb->get_results($sql);
-
-        if ($results) {
-            foreach ($results as $row) {
-                $result = Newsletter::deleteSubscriberByNumber($mobile, $row->group_ID);
-                // Check result
-                if ($result['result'] == 'error') {
-                    return new \WP_Error('clear inactive subscribes', $result['message']);
-                }
-            }
-        }
-    }
 
     /**
      * @param $mobile
