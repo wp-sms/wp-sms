@@ -4,7 +4,6 @@ namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Helper;
 use WP_SMS\Option;
-use WP_SMS\Newsletter;
 
 class WooCommerceAddMobileFieldHandler
 {
@@ -55,7 +54,7 @@ class WooCommerceAddMobileFieldHandler
         $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
 
         if (!empty($mobile)) {
-            $validity = Newsletter::checkMobileNumberValidity($mobile);
+            $validity = Helper::checkMobileNumberValidity($mobile);
 
             if (is_wp_error($validity)) {
                 wc_add_notice($validity->get_error_message(), 'error');
@@ -76,7 +75,7 @@ class WooCommerceAddMobileFieldHandler
         $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
 
         if (!empty($mobile)) {
-            $validity = Newsletter::checkMobileNumberValidity($mobile, get_current_user_id());
+            $validity = Helper::checkMobileNumberValidity($mobile, get_current_user_id());
 
             if (is_wp_error($validity)) {
                 $errors->add($validity->get_error_code(), $validity->get_error_message());

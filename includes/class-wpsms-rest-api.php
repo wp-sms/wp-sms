@@ -2,8 +2,6 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Newsletter;
-
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -84,7 +82,7 @@ class RestApi
         }
 
         // Delete inactive subscribes with this number
-        Newsletter::deleteInactiveSubscribersByMobile($mobile);
+        Helper::deleteInactiveSubscribes($mobile);
 
         $groupIds = is_array($group) ? $group : array($group);
 
