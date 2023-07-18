@@ -320,6 +320,11 @@ class Helper
             }
 
             $result = $wpdb->get_row($sql);
+
+            // If result has active status, raise an error
+            if ($result && $result->status == '1') {
+                return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+            }
         } else {
             $where       = '';
             $mobileField = self::getUserMobileFieldName();
@@ -330,11 +335,11 @@ class Helper
 
             $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
             $result = $wpdb->get_results($sql);
-        }
 
-        // if result has active status, raise an error
-        if ($result && $result->status == '1') {
-            return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+            // If result is not empty, raise an error
+            if ($result) {
+                return new \WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+            }
         }
 
         return apply_filters('wp_sms_mobile_number_validity', true, $mobileNumber);
