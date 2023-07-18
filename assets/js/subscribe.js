@@ -11,20 +11,20 @@ let wpSmsSubscribeForm = {
         this.EventListener()
     },
 
-    // Extract Group id in the Newsletter Form
+    // Extract group_id from newsletter form
     getGroupId: function (element) {
         let group_id = [];
-        let groupIdCheckbox = document.getElementsByName("group_id_checkbox");
-        let groupIdSelect = document.getElementsByName("group_id_select");
+        let groupIdCheckboxes = element.find('input[name="group_id_checkbox"]');
+        let groupIdSelect = element.find('select[name="group_id_select"]');
 
-        for (var i = 0; i < groupIdCheckbox.length; ++i) {
-            if (groupIdCheckbox[i].checked) {
-                group_id.push(groupIdCheckbox[i].value);
+        for (var i = 0; i < groupIdCheckboxes.length; ++i) {
+            if (groupIdCheckboxes[i].checked) {
+                group_id.push(groupIdCheckboxes[i].value);
             }
         }
 
-        if (groupIdSelect.length > 0 && groupIdSelect[0].value) {
-            group_id.push(groupIdSelect[0].value);
+        if (groupIdSelect && groupIdSelect.val()) {
+            group_id.push(groupIdSelect.val());
         }
 
         if (!group_id.length) {
@@ -106,8 +106,8 @@ let wpSmsSubscribeForm = {
 
             if (typeof (response.error) != "undefined" && response.error !== null) {
                 message = response.error.message;
-            } else if(response.data.status !== null) {
-                Object.keys(response.data.params).forEach(function(parameter){
+            } else if (response.data.status !== null) {
+                Object.keys(response.data.params).forEach(function (parameter) {
                     message = response.data.params[parameter];
                 })
             } else {

@@ -118,17 +118,13 @@ class Newsletter extends RestApi
             return self::response(__('Please select a specific group.', 'wp-sms'), 400);
         }
 
-        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+        $result = self::subscribe($params['name'], $number, $group_id, $customFields);
 
-        foreach ($groupIds as $groupId) {
-            $result = self::subscribe($params['name'], $number, $groupId, $customFields);
-
-            if (is_wp_error($result)) {
-                return self::response($result->get_error_message(), 400);
-            }
+        if (is_wp_error($result)) {
+            return self::response($result->get_error_message(), 400);
         }
 
-        return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));
+        return self::response($result);
     }
 
     /**
@@ -202,10 +198,14 @@ class Newsletter extends RestApi
         $number = self::convertNumber($params['mobile']);
 
         $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
-        $result   = self::verifySubscriber($params['name'], $number, $params['activation'], $group_id);
+        $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
-        if (is_wp_error($result)) {
-            return self::response($result->get_error_message(), 400);
+        foreach ($groupIds as $groupId) {
+            // Add subscribe to database
+            $result = self::verifySubscriber($params['name'], $number, $params['activation'], $groupId);
+            if (is_wp_error($result)) {
+                return self::response($result->get_error_message(), 400);
+            }
         }
 
         return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));

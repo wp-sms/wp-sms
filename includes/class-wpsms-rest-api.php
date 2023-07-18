@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Newsletter;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -81,6 +83,11 @@ class RestApi
             return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
         }
 
+        // Delete inactive subscribes with this number
+        Newsletter::deleteInactiveSubscribersByMobile($mobile);
+
+        $groupIds = is_array($group) ? $group : array($group);
+
         $gateway_name = Option::getOption('gateway_name');
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
             // Check gateway setting
@@ -91,29 +98,30 @@ class RestApi
 
             $key = rand(1000, 9999);
 
-            // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '0', $key, $customFields);
-
-            if ($result['result'] == 'error') {
-                // Return response
-                return new \WP_Error('subscribe', $result['message']);
-            } else {
-                wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
+            foreach ($groupIds as $groupId) {
+                // Add subscribe to database
+                $result = Newsletter::addSubscriber($name, $mobile, $groupId, '0', $key, $customFields);
+                if ($result['result'] == 'error') {
+                    // Return response
+                    return new \WP_Error('subscribe', $result['message']);
+                }
             }
+
+            wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
 
             // Return response
             return __('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
-
         } else {
-
-            // Add subscribe to database
-            $result = Newsletter::addSubscriber($name, $mobile, $group, '1', null, $customFields);
-
-            if ($result['result'] == 'error') {
-                // Return response
-                return new \WP_Error('subscribe', $result['message']);
+            foreach ($groupIds as $groupId) {
+                // Add subscribe to database
+                $result = Newsletter::addSubscriber($name, $mobile, $groupId, '1', null, $customFields);
+                if ($result['result'] == 'error') {
+                    // Return response
+                    return new \WP_Error('subscribe', $result['message']);
+                }
             }
 
+            // Return response
             return __('Your mobile number has been successfully subscribed.', 'wp-sms');
         }
     }
@@ -164,9 +172,19 @@ class RestApi
 
         // Check the mobile number is string or integer
         if (strpos($mobile, '+') !== false) {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d AND group_ID = %d", $mobile, 0, $groupId);
+            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
         } else {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d AND group_ID = %d", $mobile, 0, $groupId);
+            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d", $mobile, 0);
+        }
+
+        if (is_array($groupId)) {
+            $groupId = $groupId[0];
+        }
+
+        $updateCondition = array('mobile' => $mobile);
+        if ($groupId and $groupId !== 0) {
+            $db_prepare                  .= $wpdb->prepare(" AND group_ID = %d", $groupId);
+            $updateCondition['group_ID'] = $groupId;
         }
 
         $check_mobile = $wpdb->get_row($db_prepare);
@@ -180,9 +198,9 @@ class RestApi
 
             // Check the mobile number is string or integer
             if (strpos($mobile, '+') !== false) {
-                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $groupId), array('%d', '%d'), array('%s'));
+                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), $updateCondition, array('%d', '%d'), array('%s'));
             } else {
-                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), array('mobile' => $mobile, 'group_ID' => $groupId), array('%d', '%d'), array('%d'));
+                $result = $wpdb->update("{$wpdb->prefix}sms_subscribes", array('status' => '1'), $updateCondition, array('%d', '%d'), array('%d'));
             }
 
             if ($result) {

@@ -92,9 +92,14 @@
   border: solid 2px #969696;
 }
 
+.js-wpSmsSubscribeStepTwo {
+  margin-top: 30px;
+}
+
 .js-wpSmsSubscriberName,
 .js-wpSmsSubscriberMobile,
-.js-wpSmsSubscriberGroupId {
+.js-wpSmsSubscriberGroupId,
+.js-wpSmsSubscribeFormField {
   label {
     position: absolute;
     top: -10px;
@@ -183,6 +188,16 @@ input.wpsms-type-unsubscribe {
     color: #000;
     cursor: pointer;
     position: relative;
+    color: #000;
+    cursor: pointer;
+    display: block;
+    top: 0;
+    left: 0;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
   }
 
   p {

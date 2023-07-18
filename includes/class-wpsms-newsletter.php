@@ -181,6 +181,26 @@ class Newsletter
     }
 
     /**
+     * Delete inactive subscribes with this number
+     */
+    public static function deleteInactiveSubscribersByMobile($mobile)
+    {
+        global $wpdb;
+        $sql     = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s AND status = '0'", $mobile);
+        $results = $wpdb->get_results($sql);
+
+        if ($results) {
+            foreach ($results as $row) {
+                $result = Newsletter::deleteSubscriberByNumber($mobile, $row->group_ID);
+                // Check result
+                if ($result['result'] == 'error') {
+                    return new \WP_Error('clear inactive subscribes', $result['message']);
+                }
+            }
+        }
+    }
+
+    /**
      * Delete subscriber by number
      *
      * @param $mobile
