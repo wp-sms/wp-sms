@@ -19,7 +19,7 @@ class sendapp extends \WP_SMS\Gateway
         parent::__construct();
         $this->bulk_send      = true;
         $this->has_key        = true;
-        $this->validateNumber = "+11234567890";
+        $this->validateNumber = "";
         $this->help           = "";
         $this->gatewayFields  = [
             'has_key' => [
@@ -66,7 +66,7 @@ class sendapp extends \WP_SMS\Gateway
             foreach ($this->to as $number) {
 
                 $params = array(
-                    'Number'  => $number,
+                    'number'  => $number,
                     'message' => $this->msg,
                     'key'     => $this->has_key
                 );
