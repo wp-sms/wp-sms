@@ -267,7 +267,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Addition: Enabled support for subscribing to Multiple Groups in the SMS newsletter.
 * Addition: Integrated new SMS gateways - Micron, SignalAds and ProSmsDk.
 * Addition: Added support for a new variable `%coupon_name%` in WooCommerce coupon notifications.
-* Addition: Introduced support for new variables `%get_order_receive_url%`, `%get_cancel_order_url%`, and `%get_view_order_url%` in WooCommerce order notifications.
+* Addition: Introduced support for new variables `%order_view_url%`, `%order_cancel_url%`, and `%order_view_url%` in WooCommerce order notifications.
 * Fixes: Resolved the issue of duplicate SMS sending during post updates.
 * Update: Updated Gateways DirectSend, Oxemis, and SmsApi.pl to their latest versions.
 
