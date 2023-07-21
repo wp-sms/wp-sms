@@ -1245,7 +1245,7 @@ class Settings
                     'name'       => __('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
                     'desc'       => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
-                    'options'    => array_merge(['0' => __('No country code', 'wp-sms')], wp_sms_get_countries()),
+                    'options'    => array_merge(['0' => __('No country code (Glogal)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_field'                             => array(
