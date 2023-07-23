@@ -2336,6 +2336,11 @@ class Settings
                     <ul class="wpsms-tab">
                         <?php
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
+
+                            if ($tab_id == 'licenses') {
+                                continue;
+                            }
+
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
                                 'tab'              => $tab_id
@@ -2356,9 +2361,6 @@ class Settings
                             echo '</a>' . $proLockIcon . '</li>';
                         } ?>
 
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/zapier-integration"><?php _e('Zapier Integration', 'wp-sms'); ?></a></li>
                         <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>

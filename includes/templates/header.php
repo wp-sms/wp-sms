@@ -1,19 +1,36 @@
 <?php $option = get_option('wpsms_settings'); ?>
 <div class="wpsms-header-banner">
+
+    <?php
+
+    // Create tab url and active class for licenses tab
+    $tab_url = add_query_arg(array(
+        'settings-updated' => false,
+        'tab'              => 'licenses',
+        'page'             => 'wp-sms-settings'
+    ));
+    $active  = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
+
+    ?>
+
+    <div class="wpsms-header-items-flex">
+        <a class="documentation" target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><span class="icon"></span><?php _e('Documentation', 'wp-sms'); ?></a>
+        <a class="gateway" target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><span class="icon"></span><?php _e('Gateway', 'wp-sms'); ?></a>
+        <a class="zapier" target="_blank" href="<?php echo WP_SMS_SITE; ?>/zapier-integration"><span class="icon"></span><?php _e('Zapier Integration', 'wp-sms'); ?></a>
+        <a class="licenses<?php echo ' ' . $active; ?>" href="<?php echo esc_url($tab_url); ?>"><span class="icon"></span>Licenses</a>
+    </div>
+
     <?php if (!is_plugin_active('wp-sms-pro/wp-sms-pro.php')) : ?>
         <div class="license-status license-status--free">
-            <h3><a href="<?php echo WP_SMS_SITE; ?>/buy" target="_blank"><?php _e('Get Pro Pack!', 'wp-sms'); ?></a></h3>
-            <span><?php _e('You are using the free version, to enable the premium features, get the pro pack version.', 'wp-sms'); ?></span>
+            <a href="<?php echo WP_SMS_SITE; ?>/buy" target="_blank"><span><?php _e('Get more features!', 'wp-sms'); ?></a></span>
         </div>
     <?php elseif (isset($option['license_wp-sms-pro_status']) and $option['license_wp-sms-pro_status']) : ?>
         <div class="license-status license-status--valid">
-            <h3><?php _e('Pro License', 'wp-sms'); ?></h3>
-            <span><?php _e('Your license is enabled', 'wp-sms'); ?></span>
+            <span><?php _e('Your license is activated', 'wp-sms'); ?></span>
         </div>
     <?php else : ?>
         <div class="license-status license-status--invalid">
-            <h3><?php _e('Pro License', 'wp-sms'); ?></h3>
-            <span><?php _e('Your license is not enabled', 'wp-sms'); ?></span>
+            <span><?php _e('Invalid license!', 'wp-sms'); ?></span>
         </div>
     <?php endif; ?>
 </div>
