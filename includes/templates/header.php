@@ -12,20 +12,16 @@
     $active  = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
 
     // Get information about active add-ons
-    $wp_sms_addons = array(
-        'wp-sms-pro/wp-sms-pro.php'                         => 'license_wp-sms-pro_status',
-        'wp-sms-two-way/wp-sms-two-way.php'                 => 'license_wp-sms-two-way_status',
-        'wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php' => 'license_wp-sms-woocommerce-pro_status'
-    );
+    $addons = is_plugin_active('wp-sms-pro/wp-sms-pro.php') ? array('license_wp-sms-pro_status' => false) : array();
 
-    $addons = array();
-    foreach ($wp_sms_addons as $name => $option_key) {
-        if (is_plugin_active($name)) {
-            if (isset($option[$option_key]) && $option[$option_key]) {
-                $addons[$option_key] = true;
-            } else {
-                $addons[$option_key] = false;
-            }
+    $get_addons = wp_sms_get_addons();
+    foreach ($get_addons as $addOnKey => $addOnName) {
+        $addons["license_{$addOnKey}_status"] = false;
+    }
+
+    foreach ($addons as $option_key => $status) {
+        if (isset($option[$option_key]) && $option[$option_key]) {
+            $addons[$option_key] = true;
         }
     }
     ?>
@@ -39,11 +35,11 @@
     </div>
 
     <!-- Activated Licenses Status -->
-    <?php if (!is_plugin_active('wp-sms-pro/wp-sms-pro.php')) : ?>
+    <?php if (count($addons) == 0) : ?>
         <div class="license-status license-status--free">
-            <a href="<?php echo WP_SMS_SITE; ?>/buy" target="_blank"><span><?php _e('Get more features!', 'wp-sms'); ?></a></span>
+            <a href="<?php echo WP_SMS_SITE; ?>/buy" target="_blank"><span><?php _e('Unlock More Features!', 'wp-sms'); ?></a></span>
         </div>
-    <?php elseif (count($addons) > 0) : ?>
+    <?php else : ?>
         <div class="license-status license-status--valid">
             <span><?php echo sprintf(__('%s/%s Active License!', 'wp-sms'), count(array_filter($addons)), count($addons)); ?></span>
         </div>

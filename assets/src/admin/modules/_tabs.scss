@@ -27,7 +27,7 @@
 }
 
 .wpsms-tab .tab-pro_ultimate_members {
-  border-bottom: 1px solid #e1e1e2;
+  // border-bottom: 1px solid #e1e1e2;
   margin-bottom: 9px;
   padding-bottom: 17px;
 }
@@ -181,6 +181,15 @@
   background-size: 20px;
 }
 
+.wpsms-tab .tab-section-header {
+  padding: 13px 14px;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: #000000;
+  opacity: 0.5;
+}
+
 .wpsms-tab .tab-company-logo {
   text-align: center;
 }
@@ -225,7 +234,7 @@
 .wpsms-tab li .active {
   background: #ffffff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
-  border-radius: 2px;
+  border-radius: 4px;
   filter: unset;
   opacity: 1;
 }
