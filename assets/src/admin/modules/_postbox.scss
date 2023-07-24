@@ -282,10 +282,6 @@
     padding: 10px 20px;
     height: auto;
 
-    // .license-status {
-    //   display: none;
-    // }
-
     .wpsms-header-logo {
       margin-left: 0;
     }
@@ -303,7 +299,6 @@
 @media screen and (max-width: 824px) {
   .wpsms-header-banner {
     .wpsms-header-items-flex {
-
       a {
         white-space: nowrap;
         padding: 5px 8px;
@@ -318,6 +313,12 @@
   }
 }
 
+@media screen and (max-width: 390px) {
+  .wpsms-header-banner .license-status {
+    display: none;
+  }
+}
+
 .rtl .wpsms-header-banner {
   justify-content: flex-start;
   align-items: center;
@@ -328,7 +329,7 @@
   right: 20px;
   bottom: 14px;
   opacity: 0.75;
-  transition: .3s all ease-out;
+  transition: 0.3s all ease-out;
 }
 
 .wpsms-header-banner .license-status h3 {
