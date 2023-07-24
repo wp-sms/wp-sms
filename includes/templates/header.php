@@ -41,7 +41,7 @@
         </div>
     <?php else : ?>
         <div class="license-status license-status--valid">
-            <span><?php echo sprintf(__('%s/%s Licenses Are Activated', 'wp-sms'), count(array_filter($addons)), count($addons)); ?></span>
+            <span><?php echo sprintf(__('License Status: %s of %s Activated.', 'wp-sms'), count(array_filter($addons)), count($addons)); ?></span>
         </div>
     <?php endif; ?>
 
