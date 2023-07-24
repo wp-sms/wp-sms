@@ -31,13 +31,13 @@
         <a class="documentation" target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><span class="icon"></span><?php _e('Documentation', 'wp-sms'); ?></a>
         <a class="gateway" target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><span class="icon"></span><?php _e('Gateway', 'wp-sms'); ?></a>
         <a class="zapier" target="_blank" href="<?php echo WP_SMS_SITE; ?>/zapier-integration"><span class="icon"></span><?php _e('Zapier Integration', 'wp-sms'); ?></a>
-        <a class="licenses<?php echo ' ' . $active; ?>" href="<?php echo esc_url($tab_url); ?>"><span class="icon"></span><?php _e('Manage Licenses', 'wp-sms'); ?></a>
+        <a class="licenses<?php echo ' ' . esc_attr($active); ?>" href="<?php echo esc_url($tab_url); ?>"><span class="icon"></span><?php _e('Manage Licenses', 'wp-sms'); ?></a>
     </div>
 
     <!-- Activated Licenses Status -->
     <?php if (count($addons) == 0) : ?>
         <div class="license-status license-status--free">
-            <a href="<?php echo WP_SMS_SITE; ?>/buy" target="_blank"><span><?php _e('Unlock More Features!', 'wp-sms'); ?></a></span>
+            <a href="<?php echo esc_url(WP_SMS_SITE); ?>/buy" target="_blank"><span><?php _e('Unlock More Features!', 'wp-sms'); ?></a></span>
         </div>
     <?php else : ?>
         <div class="license-status license-status--valid">
