@@ -26,6 +26,7 @@ class WooCommerceOrderNotification extends Notification
         '%order_id%'                    => 'getId',
         '%order_items%'                 => 'getItems',
         '%status%'                      => 'getStatus',
+        '%shipping_method%'             => 'getShippingMethod',
         '%order_meta_{key-name}%'       => 'getMeta',
     ];
 
@@ -146,6 +147,11 @@ class WooCommerceOrderNotification extends Notification
     public function getStatus()
     {
         return wc_get_order_status_name($this->order->get_status());
+    }
+
+    public function getShippingMethod()
+    {
+        return $this->order->get_shipping_method();
     }
 
     public function getMeta($metaKey)
