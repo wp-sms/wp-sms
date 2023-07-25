@@ -196,6 +196,8 @@
   background-color: #f47b36;
   background: url("../../assets/images/page-header.jpg") left center/cover no-repeat;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 
   .wpsms-header-logo {
     width: 140px;
@@ -261,13 +263,19 @@
   }
 }
 
+#screen-meta-links {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}
+
 #screen-meta-links + .wpsms-wrap .wpsms-header-banner,
 .privacy_page .wpsms-header-banner,
 #screen-meta-links + input[type="hidden"] + .wpsms-wrap .wpsms-header-banner {
-  -webkit-transform: translateY(-34px);
-  transform: translateY(-34px);
-  position: relative;
-  z-index: -1;
+  // -webkit-transform: translateY(-34px);
+  // transform: translateY(-34px);
+  // position: relative;
+  // z-index: -1;
 }
 
 #screen-meta-links + .wpsms-wrap .wpsms-wrap__main,
@@ -296,14 +304,7 @@
   }
 }
 
-@media screen and (min-width: 724px) and (max-width: 1100px) {
-  .wpsms-header-banner {
-    .license-status {
-      left: 180px;
-      top: 24px;
-    }
-  }
-}
+
 
 @media screen and (max-width: 724px) {
   .wpsms-header-banner {
@@ -339,6 +340,17 @@
   bottom: 14px;
   opacity: 0.75;
   transition: 0.3s all ease-out;
+}
+
+@media screen and (min-width: 724px) and (max-width: 1100px) {
+  .wpsms-header-banner {
+    .license-status {
+      left: 180px;
+      top: 24px;
+      right: auto;
+      bottom: auto;
+    }
+  }
 }
 
 .wpsms-header-banner .license-status h3 {
