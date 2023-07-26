@@ -112,13 +112,15 @@ class Helper
                     'compare' => '!=',
                 ),
             ),
-            'count_total' => 'false'
+            'count_total' => 'false',
+            'number'      => 1000
         );
 
         if ($roleId) {
             $args['role'] = $roleId;
         }
 
+        $args          = apply_filters('wp_sms_mobile_numbers_query_args', $args);
         $users         = get_users($args);
         $mobileNumbers = [];
 
@@ -153,13 +155,15 @@ class Helper
                     'compare' => '!=',
                 ),
             ),
-            'fields'     => 'all_with_meta'
+            'fields'     => 'all_with_meta',
+            'number'     => 1000
         );
 
         if ($roles) {
             $args['role__in'] = $roles;
         }
 
+        $args      = apply_filters('wp_sms_wc_mobile_numbers_query_args', $args);
         $customers = get_users($args);
         $numbers   = array();
 
