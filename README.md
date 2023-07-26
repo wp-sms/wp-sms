@@ -1,5 +1,7 @@
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Percentage of issues still open")
+[![WP compatibility](https://plugintests.com/plugins/wporg/wp-sms/wp-badge.svg)](https://plugintests.com/plugins/wporg/wp-sms/latest)
+[![PHP compatibility](https://plugintests.com/plugins/wporg/wp-sms/php-badge.svg)](https://plugintests.com/plugins/wporg/wp-sms/latest)
 
 # WP SMS Plugin
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!

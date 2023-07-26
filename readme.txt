@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 3.0
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 6.2.1
+Stable tag: 6.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,13 +240,20 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.2.2 - 26.07.2023 =
+* Improvement: Admin header and styles updated to display licenses status more effectively.
+* Improvement: Enhanced `wp_sms_send()` function to validate and handle empty strings and '0' more effectively.
+* New: Added support for variable `%shipping_method%` on WooCommerce order notification, enabling more customization options.
+* Fixes: Addressed the issue with automatic conversion of false to an array, which was deprecated.
+* Fixes: Resolved lag in Subscriber Form editing for a smoother user experience.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.2.1 - 17.07.2023 =
 * Fixes: Fixed group query and subscriber verification in multi-groups for newsletters.
 * Fixes: Resolved SendApp gateway errors.
 * Fixes: Fixed uncaught error on subscriber page when passing null ID.
 * Improvement: Improved styles and made minor enhancements.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.2.0.2 - 09.07.2023 =
 * Fixes: The opt-in WooCommerce issue
@@ -267,7 +274,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Addition: Enabled support for subscribing to Multiple Groups in the SMS newsletter.
 * Addition: Integrated new SMS gateways - Micron, SignalAds and ProSmsDk.
 * Addition: Added support for a new variable `%coupon_name%` in WooCommerce coupon notifications.
-* Addition: Introduced support for new variables `%get_order_receive_url%`, `%get_cancel_order_url%`, and `%get_view_order_url%` in WooCommerce order notifications.
+* Addition: Introduced support for new variables `%order_view_url%`, `%order_cancel_url%`, and `%order_received_url%` in WooCommerce order notifications.
 * Fixes: Resolved the issue of duplicate SMS sending during post updates.
 * Update: Updated Gateways DirectSend, Oxemis, and SmsApi.pl to their latest versions.
 
