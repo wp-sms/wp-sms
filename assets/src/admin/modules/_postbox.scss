@@ -283,6 +283,15 @@
   margin-top: -31px;
 }
 
+.wpsms-wrap__main {
+  padding: 20px;
+
+  @media screen and (max-width: 420px) {
+    padding: 5px;
+    margin-top: -10px !important;
+  }
+}
+
 @media screen and (max-width: 1280px) {
   .wpsms-header-banner {
     flex-direction: column;
@@ -303,8 +312,6 @@
     }
   }
 }
-
-
 
 @media screen and (max-width: 724px) {
   .wpsms-header-banner {
@@ -418,14 +425,6 @@
 .rtl .wpsms-header-banner .license-status span::before {
   margin-left: 5px;
   margin-right: 0;
-}
-
-.wpsms-wrap__main {
-  padding: 20px;
-
-  @media screen and (max-width: 420px) {
-    padding: 5px;
-  }
 }
 
 .wpsms-wrap .tablenav .bulkactions {
