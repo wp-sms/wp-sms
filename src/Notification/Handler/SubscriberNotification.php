@@ -42,7 +42,8 @@ class SubscriberNotification extends Notification
 
     public function getSubscriberGroup()
     {
-        return $this->subscriber->group_ID;
+        $group = Newsletter::getGroup($this->subscriber->group_ID);
+        return $group->name;
     }
 
     public function getSubscriberCustomFields()

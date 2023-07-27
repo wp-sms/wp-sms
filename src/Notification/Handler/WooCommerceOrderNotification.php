@@ -26,6 +26,7 @@ class WooCommerceOrderNotification extends Notification
         '%order_id%'                    => 'getId',
         '%order_items%'                 => 'getItems',
         '%status%'                      => 'getStatus',
+        '%shipping_method%'             => 'getShippingMethod',
         '%order_meta_{key-name}%'       => 'getMeta',
     ];
 
@@ -33,10 +34,11 @@ class WooCommerceOrderNotification extends Notification
     {
         if ($orderId) {
             $this->order = wc_get_order($orderId);
-        }
+            $optInStatus = get_post_meta($orderId, 'wpsms_woocommerce_order_notification', true);
 
-        if ($this->order && !$this->order->get_meta('wpsms_woocommerce_order_notification')) {
-            $this->optIn = false;
+            if ($optInStatus and $optInStatus == 'no') {
+                $this->optIn = false;
+            }
         }
     }
 
@@ -145,6 +147,11 @@ class WooCommerceOrderNotification extends Notification
     public function getStatus()
     {
         return wc_get_order_status_name($this->order->get_status());
+    }
+
+    public function getShippingMethod()
+    {
+        return $this->order->get_shipping_method();
     }
 
     public function getMeta($metaKey)

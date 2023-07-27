@@ -8,10 +8,10 @@ class WooCommerceCheckout
 
     public function init()
     {
-        add_action('init', function () {
+        add_action('woocommerce_init', function () {
             if (apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
                 add_action('woocommerce_review_order_before_submit', array($this, 'registerCheckboxCallback'), 10);
-                add_action('woocommerce_checkout_update_order_meta', array($this, 'registerStoreCheckboxCallback'), 10, 2);
+                add_action('woocommerce_checkout_order_processed', array($this, 'registerStoreCheckboxCallback'), 10, 2);
 
                 add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
             }
@@ -24,10 +24,10 @@ class WooCommerceCheckout
     public function registerOrderUpdateCheckbox($order)
     {
         echo sprintf("<p style='margin-bottom: 0'><strong>%s</strong></p>", __('Status Update SMS Notifications:', 'wp-sms'));
-        if (!$order->get_meta('wpsms_woocommerce_order_notification')) {
-            echo __('Disabled', 'wp-sms');
-        } else {
+        if ($order->get_meta('wpsms_woocommerce_order_notification') && $order->get_meta('wpsms_woocommerce_order_notification') == 'yes') {
             echo __('Enabled', 'wp-sms');
+        } else {
+            echo __('Disabled', 'wp-sms');
         }
     }
 
@@ -52,8 +52,10 @@ class WooCommerceCheckout
      */
     public function registerStoreCheckboxCallback($orderId, $data)
     {
-        if (isset($_POST[self::FIELD_ORDER_NOTIFICATION])) {
-            update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, sanitize_text_field($_POST[self::FIELD_ORDER_NOTIFICATION]));
+        if (isset($_POST[self::FIELD_ORDER_NOTIFICATION]) && $_POST[self::FIELD_ORDER_NOTIFICATION]) {
+            update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'yes');
+        } else {
+            update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'no');
         }
     }
 }

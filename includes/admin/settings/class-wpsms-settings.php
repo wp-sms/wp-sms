@@ -163,6 +163,11 @@ class Settings
             'contact_form7'        => __('Contact Form 7', 'wp-sms'),
 
             /*
+             * Licenses tab
+             */
+            'licenses'             => __('Licenses', 'wp-sms'),
+
+            /*
              * Pro Pack tabs
              */
             'pro_wordpress'        => __('2FA & Login', 'wp-sms'),
@@ -173,9 +178,8 @@ class Settings
             'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
             'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
             'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
-            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms'),
+            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
 
-            'licenses' => __('Licenses', 'wp-sms')
         );
 
         return apply_filters('wp_sms_registered_tabs', $tabs);
@@ -1245,7 +1249,7 @@ class Settings
                     'name'       => __('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
                     'desc'       => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
-                    'options'    => array_merge(['0' => __('No country code', 'wp-sms')], wp_sms_get_countries()),
+                    'options'    => array_merge(['0' => __('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_field'                             => array(
@@ -1541,12 +1545,12 @@ class Settings
              * Feature fields
              */
             'advanced'             => apply_filters('wp_sms_feature_settings', array(
-                'short_url'              => array(
+                'short_url'                => array(
                     'id'   => 'short_url',
                     'name' => !$this->proIsInstalled ? __('Bitly Short URL (Pro)', 'wp-sms') : __('Bitly Short URL', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'short_url_status'       => array(
+                'short_url_status'         => array(
                     'id'       => 'short_url_status',
                     'name'     => __('Make the URLs Shorter?', 'wp-sms'),
                     'type'     => 'checkbox',
@@ -1554,38 +1558,44 @@ class Settings
                     'desc'     => __('By enabling this option, all URLs will be shorter by Bitly.com', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
-                'short_url_api_token'    => array(
+                'short_url_api_token'      => array(
                     'id'       => 'short_url_api_token',
                     'name'     => __('Access Token', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
-                'webhooks'               => array(
+                'webhooks'                 => array(
                     'id'   => 'webhooks',
                     'name' => __('Webhooks', 'wp-sms'),
                     'type' => 'header',
                     'desc' => __('Webhooks allow you to receive notifications when a specific event occurs.', 'wp-sms'),
                     'doc'  => '/resources/webhooks/'
                 ),
-                'send_sms_webhook'       => array(
+                'new_sms_webhook'          => array(
                     'id'   => 'new_sms_webhook',
                     'name' => __('Outgoing SMS Webhook', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
-                'add_subscriber_webhook' => array(
+                'new_subscriber_webhook'   => array(
                     'id'   => 'new_subscriber_webhook',
                     'name' => __('New Subscriber Webhook', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
                 ),
-                'g_recaptcha'            => array(
+                'new_incoming_sms_webhook' => array(
+                    'id'   => 'new_incoming_sms_webhook',
+                    'name' => __('New Incoming SMS Webhook', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('This required Add-On Two-way', 'wp-sms') . '<br>' . __('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                ),
+                'g_recaptcha'              => array(
                     'id'   => 'g_recaptcha',
                     'name' => !$this->proIsInstalled ? __('Google reCAPTCHA (Pro / WooCommerce Pro)', 'wp-sms') : __('Google reCAPTCHA', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'g_recaptcha_status'     => array(
+                'g_recaptcha_status'       => array(
                     'id'       => 'g_recaptcha_status',
                     'name'     => __('Activate', 'wp-sms'),
                     'type'     => 'checkbox',
@@ -1593,14 +1603,14 @@ class Settings
                     'desc'     => __('By enabling this option, google reCAPTCHA v2 will be added to request-sms actions.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
-                'g_recaptcha_site_key'   => array(
+                'g_recaptcha_site_key'     => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => __('Site Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Please enter your v2 reCAPTCHA site key here, <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
-                'g_recaptcha_secret_key' => array(
+                'g_recaptcha_secret_key'   => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => __('Secret Key', 'wp-sms'),
                     'type'     => 'text',
@@ -2330,6 +2340,12 @@ class Settings
                     <ul class="wpsms-tab">
                         <?php
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
+
+                            // Skip showing licenses in side tabs
+                            if ($tab_id == 'licenses') {
+                                continue;
+                            }
+
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
                                 'tab'              => $tab_id
@@ -2348,11 +2364,13 @@ class Settings
                             echo '<li class="tab-' . $tab_id . $IsProTab . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . $active . '">';
                             echo $tab_name;
                             echo '</a>' . $proLockIcon . '</li>';
+
+                            // Show Add-Ons label
+                            if ($tab_id == end($this->proTabs) && $tab_id !== array_key_last($this->get_tabs())) {
+                                echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
+                            }
                         } ?>
 
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><?php _e('Documentation', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/add-new/"><?php _e('Suggest / Add your gateway', 'wp-sms'); ?></a></li>
-                        <li class="tab-link"><a target="_blank" href="<?php echo WP_SMS_SITE; ?>/zapier-integration"><?php _e('Zapier Integration', 'wp-sms'); ?></a></li>
                         <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>

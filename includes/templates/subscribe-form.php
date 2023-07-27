@@ -88,8 +88,8 @@
             <div class="wpsms-form-step-two js-wpSmsSubscribeStepTwo" style="display: none" <?php wp_sms_get_option('disable_style_in_front') ? '' : 'style="display: none;"'; ?>>
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField">
-                    <label><?php _e('Activation code:', 'wp-sms'); ?></label>
-                    <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code:', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <label><?php _e('Activation code', 'wp-sms'); ?></label>
+                    <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
                 <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activation', 'wp-sms'); ?></button>
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo wp_sms_get_option('newsletter_form_verify'); ?>">

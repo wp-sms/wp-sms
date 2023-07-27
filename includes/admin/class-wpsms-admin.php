@@ -448,8 +448,8 @@ class Admin
             if (stristr($screen->id, 'wp-sms')) {
                 wp_enqueue_script('feedbackbird-app-script', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
                 wp_add_inline_script('feedbackbird-app-script', sprintf('var feedbackBirdObject = %s;', json_encode([
-                    'userid' => get_current_user(),
-                    'meta'   => [
+                    'user_email' => function_exists('wp_get_current_user') ? wp_get_current_user()->user_email : '',
+                    'meta'       => [
                         'php_version'    => PHP_VERSION,
                         'active_plugins' => array_map(function ($plugin, $pluginPath) {
                             return [

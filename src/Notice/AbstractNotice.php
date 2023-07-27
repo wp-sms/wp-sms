@@ -30,7 +30,7 @@ abstract class AbstractNotice
     /**
      * Register Notice
      */
-    protected function registerNotice($id, $message, $dismiss = false, $url = false)
+    public function registerNotice($id, $message, $dismiss = false, $url = false)
     {
         $this->notices[$id] = [
             'message' => $message,

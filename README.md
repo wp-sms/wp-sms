@@ -1,5 +1,7 @@
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/veronalabs/wp-sms.svg)](http://isitmaintained.com/project/veronalabs/wp-sms "Percentage of issues still open")
+[![WP compatibility](https://plugintests.com/plugins/wporg/wp-sms/wp-badge.svg)](https://plugintests.com/plugins/wporg/wp-sms/latest)
+[![PHP compatibility](https://plugintests.com/plugins/wporg/wp-sms/php-badge.svg)](https://plugintests.com/plugins/wporg/wp-sms/latest)
 
 # WP SMS Plugin
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
@@ -67,6 +69,10 @@ composer install
 ```
 
 ### Build Assets
+Requirement: Before any build it`s necessary to fix these below versions then use npm
+- npm v6.*
+- node v14.*
+
 Install dependencies
 ```bash
 npm install
@@ -191,16 +197,3 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 # Donate
 Would you like to support this project?
 - ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](https://wp-sms-pro.com/donate)
-
-
-### Build the assets
-Requirement: Before any build it`s necessary to fix these below versions then use npm
-- npm v6.*
-- node v14.*
-
-
-Then install dependencies
-
-```sh
-npm install
-```

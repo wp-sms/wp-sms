@@ -2,9 +2,12 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
+use WP_Error;
+
 class sendapp extends \WP_SMS\Gateway
 {
-    private $wsdl_link = 'https://sms.sendapp.live/services/send.php';
+    private $wsdl_link = 'https://sms.sendapp.live';
     public $tariff = "https://sendapp.live";
     public $unitrial = false;
     public $unit;
@@ -16,7 +19,7 @@ class sendapp extends \WP_SMS\Gateway
         parent::__construct();
         $this->bulk_send      = true;
         $this->has_key        = true;
-        $this->validateNumber = "+11234567890";
+        $this->validateNumber = "";
         $this->help           = "";
         $this->gatewayFields  = [
             'has_key' => [
@@ -59,8 +62,23 @@ class sendapp extends \WP_SMS\Gateway
         try {
 
             $response = [];
+
             foreach ($this->to as $number) {
-                $response[] = $this->executeSendSMS($number);
+
+                $params = array(
+                    'number'  => $number,
+                    'message' => $this->msg,
+                    'key'     => $this->has_key
+                );
+
+                $result = $this->request('GET', "{$this->wsdl_link}/services/send.php", $params, []);
+
+                if (isset($result->error) && !$result->success) {
+                    throw new Exception($result->error->message);
+                }
+
+                $response[] = $result->data;
+
             }
 
             //log the result
@@ -77,10 +95,10 @@ class sendapp extends \WP_SMS\Gateway
 
             return $response;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
-            return new \WP_Error('send-sms', $e->getMessage());
+            return new WP_Error('send-sms', $e->getMessage());
         }
     }
 
@@ -88,37 +106,23 @@ class sendapp extends \WP_SMS\Gateway
     {
         try {
             if (!$this->has_key) {
-                throw new \Exception(__('The API Key Key for this gateway is not set.', 'wp-sms'));
+                throw new Exception(__('The API Key required.', 'wp-sms'));
             }
 
-            $response = $this->request('GET', $this->wsdl_link, [
-                'key' => $this->has_key
-            ]);
+            $params = [
+                'key' => trim($this->has_key)
+            ];
 
-            if ($response->error) {
-                throw new \Exception($response->error->message);
+            $response = $this->request('GET', "{$this->wsdl_link}/services/send.php", $params, []);
+
+            if (isset($response->error) && !$response->success) {
+                throw new Exception($response->error->message);
             }
 
             return $response->data->credits;
 
-        } catch (\Exception $e) {
-            $error_message = $e->getMessage();
-            return new \WP_Error('account-credit', $error_message);
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
         }
-    }
-
-    private function executeSendSMS($number)
-    {
-        $response = $this->request('GET', $this->wsdl_link, [
-            'key'     => $this->has_key,
-            'number'  => $number,
-            'message' => urlencode($this->msg),
-        ]);
-
-        if ($response->error) {
-            throw new \Exception($response->error->message);
-        }
-
-        return $response->data;
     }
 }

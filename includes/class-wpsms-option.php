@@ -23,7 +23,7 @@ class Option
             $setting_name = 'wps_pp_settings';
         }
 
-        return get_option($setting_name);
+        return get_option($setting_name, array());
     }
 
 

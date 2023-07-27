@@ -26,8 +26,8 @@
   position: relative;
 }
 
-.wpsms-tab .tab-licenses {
-  border-bottom: 1px solid #e1e1e2;
+.wpsms-tab .tab-pro_ultimate_members {
+  // border-bottom: 1px solid #e1e1e2;
   margin-bottom: 9px;
   padding-bottom: 17px;
 }
@@ -68,7 +68,7 @@
 .wpsms-tab #wpsms-logo {
   text-align: center;
   padding-bottom: 7px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
   border-radius: 2px;
   margin-bottom: 30px;
@@ -79,7 +79,7 @@
 }
 
 .wpsms-tab li > a::before {
-  content: '';
+  content: "";
   min-width: 20px;
   min-height: 20px;
   display: inline-block;
@@ -181,6 +181,15 @@
   background-size: 20px;
 }
 
+.wpsms-tab .tab-section-header {
+  padding: 13px 14px;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: #000000;
+  opacity: 0.5;
+}
+
 .wpsms-tab .tab-company-logo {
   text-align: center;
 }
@@ -206,11 +215,10 @@
   line-height: 24px;
   letter-spacing: 0.02em;
   color: #000000;
-
 }
 
 .wpsms-tab li a {
-  opacity: .5;
+  opacity: 0.5;
   transition: 0.2s;
 }
 
@@ -224,9 +232,9 @@
 }
 
 .wpsms-tab li .active {
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
-  border-radius: 2px;
+  border-radius: 4px;
   filter: unset;
   opacity: 1;
 }
@@ -274,14 +282,14 @@
   white-space: nowrap;
 }
 
-.wpsms-tab-content tr.tr-header th, tr.tr-header td {
+.wpsms-tab-content tr.tr-header th,
+tr.tr-header td {
   color: #ffffff;
   padding: 14px 12px 12px 12px;
   white-space: nowrap;
   background: #f0f0f1;
   font-weight: bold;
 }
-
 
 .wpsms-tab-content tr.tr-header th label {
   color: #000000;
@@ -306,7 +314,6 @@
 }
 
 .wpsms-tab-group {
-
   @media screen and (max-width: 782px) {
     table {
       td {
@@ -324,7 +331,8 @@
     display: flex;
     flex-direction: column-reverse;
 
-    .wpsms-tab, .wpsms-tab-content {
+    .wpsms-tab,
+    .wpsms-tab-content {
       width: 100%;
       margin-bottom: 15px;
       margin-left: 0;
@@ -378,12 +386,16 @@
   }
 
   .wpsms-tab-content {
-    textarea, input, select, .wpsms-wrap__main .select2-container {
+    textarea,
+    input,
+    select,
+    .wpsms-wrap__main .select2-container {
       min-width: unset !important;
       max-width: calc(100%) !important;
     }
 
-    tr th, tr td {
+    tr th,
+    tr td {
       width: 100%;
       display: inline-block;
       max-width: 100% !important;
@@ -401,7 +413,8 @@
 
 @media screen and (max-width: 420px) {
   .wpsms-wrap {
-    tr th, tr td {
+    tr th,
+    tr td {
       width: 100%;
       display: inline-block;
       max-width: 88vw !important;

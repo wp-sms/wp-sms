@@ -92,9 +92,14 @@
   border: solid 2px #969696;
 }
 
+.js-wpSmsSubscribeStepTwo {
+  margin-top: 30px;
+}
+
 .js-wpSmsSubscriberName,
 .js-wpSmsSubscriberMobile,
-.js-wpSmsSubscriberGroupId {
+.js-wpSmsSubscriberGroupId,
+.js-wpSmsSubscribeFormField {
   label {
     position: absolute;
     top: -10px;
@@ -112,6 +117,7 @@
   label {
     color: #222222;
     font-size: 14px;
+    z-index: 1;
   }
 
   input:not([type="checkbox"]),
@@ -175,14 +181,23 @@ input.wpsms-type-unsubscribe {
   border: 1px solid #d9d9d9;
   box-sizing: border-box;
   border-radius: 8px;
-  padding: 20px 15px 8px 15px !important;
+  padding: 20px 15px !important;
   position: relative;
 
   label {
     color: #000;
     cursor: pointer;
     position: relative;
+    color: #000;
+    cursor: pointer;
+    display: block;
+    top: 0;
+    left: 0;
     margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
   }
 
   p {
@@ -217,7 +232,7 @@ input.wpsms-type-unsubscribe {
 
     &::after {
       content: "";
-      transform: rotate(0);
+      transform: rotate(0) translateY(-1px);
     }
 
     &::before {
@@ -245,7 +260,7 @@ input.wpsms-type-unsubscribe {
 
       &::after {
         content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
-        transform: rotate(0);
+        transform: rotate(0) translateY(-1px);
       }
     }
   }

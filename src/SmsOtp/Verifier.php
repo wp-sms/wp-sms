@@ -89,26 +89,24 @@ final class Verifier
         global $wpdb;
 
         $otpTable = $wpdb->prefix . Install::TABLE_OTP;
-        $query = $wpdb->prepare(
-            "SELECT * FROM {$otpTable} WHERE `phone_number` = %s AND `agent` = %s AND `code` = %s AND `created_at` > %d",
+        $query    = $wpdb->prepare(
+            "SELECT * FROM {$otpTable} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d ORDER BY created_at DESC LIMIT 1",
             [
                 $this->phoneNumber,
                 $this->agent,
-                md5($code),
                 $this->getRateLimitTimeThreshold()->getTimestamp()
             ]
         );
 
-        $match  = $wpdb->get_row($query);
+        $match = $wpdb->get_row($query);
 
-        switch(!empty($match)) {
-            case true:
-                self::createVerificationAttemptRecord($code, true);
-                $wpdb->delete($otpTable, ['ID' => $match->ID]);
-                return true;
-            case false:
-                self::createVerificationAttemptRecord($code, false);
-                return false;
+        if (!empty($match) && $match->code == md5($code)) {
+            self::createVerificationAttemptRecord($code, true);
+            $wpdb->delete($otpTable, ['ID' => $match->ID]);
+            return true;
+        } else {
+            self::createVerificationAttemptRecord($code, false);
+            return false;
         }
     }
 

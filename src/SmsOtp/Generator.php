@@ -172,19 +172,4 @@ final class Generator
             ]
         );
     }
-
-
-    /**
-     * Delete previous verification codes of this User from the database
-     * @return int|false
-     */
-    public function deletePreviousCodes()
-    {
-        global $wpdb;
-        return $wpdb->delete(
-            $wpdb->prefix . Install::TABLE_OTP,
-            ['phone_number' => $this->phoneNumber],
-            ['%s']
-        );
-    }
 }

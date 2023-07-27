@@ -162,6 +162,7 @@ class WP_SMS
         $this->include('src/Webhook/WebhookManager.php');
         $this->include('src/Webhook/NewSubscriberWebhook.php');
         $this->include('src/Webhook/NewSmsWebhook.php');
+        $this->include('src/Webhook/NewIncomingSmsWebhook.php');
 
         $webhookManager = new \WP_SMS\Webhook\WebhookManager();
         $webhookManager->init();
@@ -241,5 +242,13 @@ class WP_SMS
     public function notification()
     {
         return new \WP_SMS\Notification\NotificationFactory();
+    }
+
+    /**
+     * @return \WP_SMS\Notice\NoticeManager
+     */
+    public function notice()
+    {
+        return \WP_SMS\Notice\NoticeManager::getInstance();
     }
 }

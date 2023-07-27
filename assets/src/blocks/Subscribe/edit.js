@@ -57,8 +57,8 @@ export default function edit( { className, attributes, setAttributes } ) {
             <div className="wp-sms-block wp-sms-block--subscribe">
                 <h2 className="wp-sms-block__title">Subscribe</h2>
                 <div className="wp-sms-block__main">
-                    <TitleTextInput/>
-                    <DescriptionTextareaInput/>
+                    {TitleTextInput()}
+                    {DescriptionTextareaInput()}
                 </div>
             </div>
         </div>

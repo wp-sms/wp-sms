@@ -23,6 +23,7 @@ class SubscriberManager
      */
     public function welcomeMessageCallback($name, $mobile, $status, $id)
     {
+
         // Send welcome message
         if ($status == '1' && Option::getOption('newsletter_form_welcome')) {
             $message  = Option::getOption('newsletter_form_welcome_text');
