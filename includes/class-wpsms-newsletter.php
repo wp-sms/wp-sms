@@ -59,12 +59,14 @@ class Newsletter
         }
 
         // Check CSRF
-        if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'wp_sms_unsubscribe')) {
-            wp_die('Access denied.', __('SMS newsletter'), [
-                'link_text' => __('Home page', 'wp-sms'),
-                'link_url'  => get_bloginfo('url'),
-                'response'  => 200,
-            ]);
+        if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {
+            if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'wp_sms_unsubscribe')) {
+                wp_die('Access denied.', __('SMS newsletter'), [
+                    'link_text' => __('Home page', 'wp-sms'),
+                    'link_url'  => get_bloginfo('url'),
+                    'response'  => 200,
+                ]);
+            }
         }
 
         $number  = wp_unslash(trim($_REQUEST[$unSubscriberQueryString]));
