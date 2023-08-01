@@ -201,8 +201,13 @@ class Newsletter extends RestApi
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
         foreach ($groupIds as $groupId) {
+
+            // Remove additional space and make compatible with auto-fill
+            $activation = trim($params['activation']);
+
             // Add subscribe to database
-            $result = self::verifySubscriber($params['name'], $number, $params['activation'], $groupId);
+            $result = self::verifySubscriber($params['name'], $number, $activation, $groupId);
+
             if (is_wp_error($result)) {
                 return self::response($result->get_error_message(), 400);
             }
