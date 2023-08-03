@@ -505,9 +505,10 @@ if (!function_exists('wp_sms_shorturl')) {
  */
 function wp_sms_render_mobile_field($args)
 {
-    $defaults = array(
+    $placeHolder = wp_sms_get_option('mobile_terms_field_place_holder');
+    $defaults    = array(
         'type'        => 'text',
-        'placeholder' => wp_sms_get_option('mobile_terms_field_place_holder'),
+        'placeholder' => $placeHolder ? $placeHolder : __('Phone number...', 'wp-sms'),
         'min'         => '',
         'max'         => '',
         'required'    => false,
