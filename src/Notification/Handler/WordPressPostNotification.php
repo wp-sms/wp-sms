@@ -39,7 +39,7 @@ class WordPressPostNotification extends Notification
     {
         $wordLimit = wp_sms_get_option('notif_publish_new_post_words_count');
 
-        return wp_trim_words($this->post->post_content, $wordLimit ? $wordLimit : 10);
+        return wp_trim_words($this->post->post_content, $wordLimit ? $wordLimit : 10, '...');
     }
 
     public function getUrl()
