@@ -28,7 +28,7 @@ class SubscriberShortcode
 
     public function retrieveGroupsData($attrs)
     {
-        $groups           = explode('|', $attrs['groups']);
+        $groups           = self::explodeData($attrs['groups']);
         $newsletterGroups = Newsletter::getGroups();
 
         foreach ($newsletterGroups as $key => $group) {
@@ -56,5 +56,13 @@ class SubscriberShortcode
         }
 
         return $fields;
+    }
+
+    public static function explodeData($string)
+    {
+        $delimiters = ['|', ',', ', ', '-'];
+        $string     = str_replace($delimiters, $delimiters[0], $string);
+
+        return explode($delimiters[0], $string);
     }
 }
