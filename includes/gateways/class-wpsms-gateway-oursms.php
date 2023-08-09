@@ -40,7 +40,7 @@ class oursms extends \WP_SMS\Gateway
         /**
          * Modify sender number
          *
-         * @param string $this- >from sender number.
+         * @param string $this - >from sender number.
          *
          * @since 3.4
          *
@@ -50,7 +50,7 @@ class oursms extends \WP_SMS\Gateway
         /**
          * Modify Receiver number
          *
-         * @param array $this- >to receiver number
+         * @param array $this - >to receiver number
          *
          * @since 3.4
          *
@@ -60,7 +60,7 @@ class oursms extends \WP_SMS\Gateway
         /**
          * Modify text message
          *
-         * @param string $this- >msg text message.
+         * @param string $this - >msg text message.
          *
          * @since 3.4
          *
@@ -78,23 +78,7 @@ class oursms extends \WP_SMS\Gateway
             // 09661234
             // 9661234
 
-            $recipients = $this->cleanNumbers($this->to);
-            $to         = array();
-
-            foreach ($recipients as $recipient) {
-
-                $pos = strpos($recipient, '966');
-
-                if ($pos) {
-                    $recipient = substr($recipient, $pos);
-                } else {
-                    $recipient = '966' . $recipient;
-                }
-
-                $to[] = $recipient;
-
-            }
-
+            $to        = $this->cleanNumbers($this->to);
             $arguments = array(
                 'headers' => [
                     'Authorization' => "Bearer {$this->has_key}",

@@ -1094,7 +1094,6 @@ class Gateway
             'method' => $method
         ]);
 
-
         /**
          * Execute the request
          */

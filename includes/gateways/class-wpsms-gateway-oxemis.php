@@ -18,6 +18,7 @@ class oxemis extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->bulk_send      = true;
+        $this->help           = 'For passing the CampaignName in your message, please add |CampaignName after your messages, example: Hello|CampaignName';
         $this->validateNumber = 'Phone number to contact. You should use the international MSISDN format (33601020304) but you can also use the national number if this number is a French Number (0601020304). The number is "cleaned" from special chars (like "." ou "+").';
     }
 
@@ -52,12 +53,21 @@ class oxemis extends \WP_SMS\Gateway
 
         try {
 
+            $messageTemplate = $this->getTemplateIdAndMessageBody();
+            $options         = [];
+
+            if (isset($messageTemplate['template_id'])) {
+                $options['CampaignName'] = $messageTemplate['template_id'];
+                $this->msg               = $messageTemplate['message'];
+            }
+
             $params = array(
                 'headers' => [
                     'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
                     'Content-Type'  => 'application/json',
                 ],
                 'body'    => [
+                    'Options'    => $options,
                     'Message'    => [
                         'Sender' => $this->from,
                         'Text'   => $this->msg,
