@@ -314,13 +314,13 @@ class Helper
         if ($isSubscriber) {
             $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
 
-            if ($groupID) {
-                $sql .= $wpdb->prepare(" AND group_id = '%s'", $groupID);
+            if (isset($groupID)) {
+                $sql .= $wpdb->prepare(" AND group_ID = %s", $groupID);
             }
 
             // While updating we should query except the current one.
             if ($subscribeId) {
-                $sql .= $wpdb->prepare(" AND id != '%s'", $subscribeId);
+                $sql .= $wpdb->prepare(" AND id != %s", $subscribeId);
             }
 
             $result = $wpdb->get_row($sql);
