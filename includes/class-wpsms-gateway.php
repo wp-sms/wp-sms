@@ -90,7 +90,7 @@ class Gateway
             'sendinblue'     => 'sendinblue.com',
             'whatsappapi'    => 'app.whatsapp-api.net',
             'rapidsms'       => 'rapidsms.net',
-            'apifon' => 'apifon.com'
+            'apifon'         => 'apifon.com'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -126,8 +126,8 @@ class Gateway
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
             'smsdone'   => 'smsd.one',
-            'micron'   => 'microntechbd.com',
-            'revesms' => 'smpp.ajuratech.com',
+            'micron'    => 'microntechbd.com',
+            'revesms'   => 'smpp.ajuratech.com',
         ),
         'palestine'      => array(
             'htd' => 'htd.ps',
@@ -1083,9 +1083,19 @@ class Gateway
     protected function request($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
     {
         /**
+         * Filter to modify arguments
+         */
+        $arguments = apply_filters('wp_sms_request_arguments', $arguments);
+
+        /**
          * Build request URL
          */
         $requestUrl = add_query_arg($arguments, $url);
+
+        /**
+         * Filter to modify params
+         */
+        $params = apply_filters('wp_sms_request_params', $params);
 
         /**
          * Prepare the arguments
