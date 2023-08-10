@@ -425,7 +425,7 @@ function wp_sms_subscriber_form($attributes = array())
             'gdpr_compliance'                      => wp_sms_get_option('gdpr_compliance'),
             'subscribe_form_gdpr_confirm_checkbox' => wp_sms_get_option('newsletter_form_gdpr_confirm_checkbox'),
             'subscribe_form_gdpr_text'             => wp_sms_get_option('newsletter_form_gdpr_text'),
-            'get_group_result'                     => \WP_SMS\Newsletter::getGroups(wp_sms_get_option('newsletter_form_specified_groups')),
+            'get_group_result'                     => isset($attributes['groups']) ? $attributes['groups'] : \WP_SMS\Newsletter::getGroups(wp_sms_get_option('newsletter_form_specified_groups')),
         ]
     );
 }
@@ -505,9 +505,10 @@ if (!function_exists('wp_sms_shorturl')) {
  */
 function wp_sms_render_mobile_field($args)
 {
-    $defaults = array(
+    $placeHolder = wp_sms_get_option('mobile_terms_field_place_holder');
+    $defaults    = array(
         'type'        => 'text',
-        'placeholder' => wp_sms_get_option('mobile_terms_field_place_holder'),
+        'placeholder' => $placeHolder ? $placeHolder : __('Phone number...', 'wp-sms'),
         'min'         => '',
         'max'         => '',
         'required'    => false,

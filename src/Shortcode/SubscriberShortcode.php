@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Shortcode;
 
+use WP_SMS\Newsletter;
+
 class SubscriberShortcode
 {
     public function register()
@@ -11,16 +13,34 @@ class SubscriberShortcode
 
     public function registerSubscriberShortcodeCallback($attributes)
     {
+        $attrs = $attributes;
+
+        if (isset($attributes['groups'])) {
+            $attrs['groups'] = $this->retrieveGroupsData($attributes);
+        }
         if (isset($attributes['fields'])) {
-            $attrs = $this->retrieveData($attributes);
-        } else {
-            $attrs = $attributes;
+            $attrs['fields'] = $this->retrieveFieldsData($attributes);
         }
 
         return wp_sms_subscriber_form($attrs);
     }
 
-    public function retrieveData($attrs)
+
+    public function retrieveGroupsData($attrs)
+    {
+        $groups           = self::explodeData($attrs['groups']);
+        $newsletterGroups = Newsletter::getGroups();
+
+        foreach ($newsletterGroups as $key => $group) {
+            if (!in_array($group->ID, $groups)) {
+                unset($newsletterGroups[$key]);
+            }
+        }
+
+        return $newsletterGroups;
+    }
+
+    public function retrieveFieldsData($attrs)
     {
         $fields        = array();
         $custom_fields = explode('|', $attrs['fields']);
@@ -35,8 +55,14 @@ class SubscriberShortcode
             );
         }
 
-        $attrs['fields'] = $fields;
+        return $fields;
+    }
 
-        return $attrs;
+    public static function explodeData($string)
+    {
+        $delimiters = ['|', ',', ', ', '-'];
+        $string     = str_replace($delimiters, $delimiters[0], $string);
+
+        return explode($delimiters[0], $string);
     }
 }

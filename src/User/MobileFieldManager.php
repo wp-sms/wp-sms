@@ -17,6 +17,8 @@ class MobileFieldManager
     {
         $field = wp_sms_get_option('add_mobile_field');
 
+        $this->mobileFieldHandler = apply_filters('wp_sms_mobile_filed_handler', $this->mobileFieldHandler);
+
         if (isset($this->mobileFieldHandler[$field]) && class_exists($this->mobileFieldHandler[$field])) {
             return new $this->mobileFieldHandler[$field];
         }

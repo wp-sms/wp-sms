@@ -112,13 +112,15 @@ class Helper
                     'compare' => '!=',
                 ),
             ),
-            'count_total' => 'false'
+            'count_total' => 'false',
+            'number'      => 1000
         );
 
         if ($roleId) {
             $args['role'] = $roleId;
         }
 
+        $args          = apply_filters('wp_sms_mobile_numbers_query_args', $args);
         $users         = get_users($args);
         $mobileNumbers = [];
 
@@ -153,13 +155,15 @@ class Helper
                     'compare' => '!=',
                 ),
             ),
-            'fields'     => 'all_with_meta'
+            'fields'     => 'all_with_meta',
+            'number'     => 1000
         );
 
         if ($roles) {
             $args['role__in'] = $roles;
         }
 
+        $args      = apply_filters('wp_sms_wc_mobile_numbers_query_args', $args);
         $customers = get_users($args);
         $numbers   = array();
 
@@ -310,13 +314,13 @@ class Helper
         if ($isSubscriber) {
             $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
 
-            if ($groupID) {
-                $sql .= $wpdb->prepare(" AND group_id = '%s'", $groupID);
+            if (isset($groupID)) {
+                $sql .= $wpdb->prepare(" AND group_ID = %s", $groupID);
             }
 
             // While updating we should query except the current one.
             if ($subscribeId) {
-                $sql .= $wpdb->prepare(" AND id != '%s'", $subscribeId);
+                $sql .= $wpdb->prepare(" AND id != %s", $subscribeId);
             }
 
             $result = $wpdb->get_row($sql);

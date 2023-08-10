@@ -2,10 +2,10 @@
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, rezathriii
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
-Requires at least: 3.0
-Tested up to: 6.2
+Requires at least: 4.1
+Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.2.2
+Stable tag: 6.2.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,14 +240,25 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.2.3 - 10.08.2023 =
+* Improvement: Refined Woocommerce customers query, limited to 1000, and optimized MySQL performance using filters.
+* Development: Introduced new filters - `wp_sms_mobile_filed_handler`, `wpsms_unsubscribe_csrf_enabled`, `wp_sms_request_arguments`, and `wp_sms_request_params`.
+* Improvement: Condensed spacing for improved auto-fill compatibility.
+* Improvement: Updated styles, now with RTL improvement.
+* Improvement: Upgraded oxisms.com gateway to API v2.
+* Improvement: Enhanced the `checkMobileNumberValidity` function.
+* Fixes: Resolved placeholder issue.
+* Fixes: Fixed character truncation during trimming.
+* Feature: New attribute `groups` now supported in `[wp_sms_subscriber_form]` shortcode.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.2.2 - 26.07.2023 =
 * Improvement: Admin header and styles updated to display licenses status more effectively.
 * Improvement: Enhanced `wp_sms_send()` function to validate and handle empty strings and '0' more effectively.
 * New: Added support for variable `%shipping_method%` on WooCommerce order notification, enabling more customization options.
 * Fixes: Addressed the issue with automatic conversion of false to an array, which was deprecated.
 * Fixes: Resolved lag in Subscriber Form editing for a smoother user experience.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.2.1 - 17.07.2023 =
 * Fixes: Fixed group query and subscriber verification in multi-groups for newsletters.

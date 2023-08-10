@@ -22,7 +22,7 @@
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberMobile">
                     <label><?php _e('Phone number', 'wp-sms'); ?></label>
-                    <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input'], 'placeholder' => 'Phone number...']); ?>
+                    <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input']]); ?>
                 </div>
 
 

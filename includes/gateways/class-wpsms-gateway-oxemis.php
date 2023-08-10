@@ -7,7 +7,7 @@ use WP_Error;
 
 class oxemis extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://www.oxisms.com/api/1.0";
+    private $wsdl_link = "https://api.oxisms.com";
     public $tariff = "https://www.oxemis.com/en/sms";
     public $unitrial = true;
     public $unit;
@@ -17,27 +17,9 @@ class oxemis extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->has_key        = true;
         $this->bulk_send      = true;
-        $this->validateNumber = "Example: 0033601234567";
-        $this->help           = "";
-        $this->gatewayFields  = [
-            'has_key'  => [
-                'id'   => 'gateway_key',
-                'name' => 'API ID',
-                'desc' => 'Enter your API ID.'
-            ],
-            'password' => [
-                'id'   => 'gateway_password',
-                'name' => 'API Password',
-                'desc' => 'Enter your API Password.',
-            ],
-            'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'SMS Sender name or number',
-                'desc' => 'Enter your SMS Sender name or number.',
-            ],
-        ];
+        $this->help           = 'For passing the CampaignName in your message, please add |CampaignName after your messages, example: Hello|CampaignName';
+        $this->validateNumber = 'Phone number to contact. You should use the international MSISDN format (33601020304) but you can also use the national number if this number is a French Number (0601020304). The number is "cleaned" from special chars (like "." ou "+").';
     }
 
     public function SendSMS()
@@ -71,18 +53,37 @@ class oxemis extends \WP_SMS\Gateway
 
         try {
 
-            $arguments = [
-                'api_key'      => $this->has_key,
-                'api_password' => $this->password,
-                'message'      => urlencode($this->msg),
-                'recipients'   => implode(',', $this->to),
-                'sender'       => $this->from
-            ];
+            $messageTemplate = $this->getTemplateIdAndMessageBody();
+            $options         = [];
 
-            $response = $this->request('POST', "$this->wsdl_link/send.php", $arguments, []);
+            if (isset($messageTemplate['template_id'])) {
+                $options['CampaignName'] = $messageTemplate['template_id'];
+                $this->msg               = $messageTemplate['message'];
+            }
 
-            if (!isset($response->success) && isset($response->message)) {
-                return new Exception($response->message);
+            $params = array(
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+                    'Content-Type'  => 'application/json',
+                ],
+                'body'    => [
+                    'Options'    => $options,
+                    'Message'    => [
+                        'Sender' => $this->from,
+                        'Text'   => $this->msg,
+                    ],
+                    'Recipients' => array_map(function ($number) {
+                        return [
+                            'PhoneNumber' => $number,
+                        ];
+                    }, $this->to),
+                ],
+            );
+
+            $response = $this->request('POST', "{$this->wsdl_link}/send", [], $params, false);
+
+            if (isset($response->Code)) {
+                throw new Exception($response->Message);
             }
 
             // Log the result
@@ -112,26 +113,24 @@ class oxemis extends \WP_SMS\Gateway
         try {
 
             // Check API key and API Password
-            if (!$this->has_key || !$this->password) {
+            if (!$this->username || !$this->password) {
                 return new WP_Error('account-credit', __('The API Key and API Password are required.', 'wp-sms'));
             }
 
-            $arguments = [
-                'api_key'      => $this->has_key,
-                'api_password' => $this->password
-            ];
+            $params = array(
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
+                    'Content-Type'  => 'application/json',
+                ]
+            );
 
-            $response = $this->request('POST', "$this->wsdl_link/account.php", $arguments, []);
+            $response = $this->request('GET', "{$this->wsdl_link}/user", [], $params, false);
 
-            if (!isset($response->success) && isset($response->message)) {
-                return new Exception($response->message);
+            if (isset($response->Code)) {
+                throw new Exception($response->Message);
             }
 
-            if (!isset($response->details->credit)) {
-                return $response;
-            }
-
-            return $response->details->credit;
+            return $response->Credits;
 
         } catch (Exception $e) {
             return new WP_Error('account-credit', $e->getMessage());
