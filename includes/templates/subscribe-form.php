@@ -16,12 +16,12 @@
         <div class="wpsms-subscribe__form">
             <div class="wpsms-form-step-one js-wpSmsSubscribeStepOne">
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
-                    <label><?php _e('Your name', 'wp-sms'); ?></label>
-                    <input type="text" placeholder="<?php _e('First name...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <label><?php _e('Your Name', 'wp-sms'); ?></label>
+                    <input type="text" placeholder="<?php _e('Full Name...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberMobile">
-                    <label><?php _e('Phone number', 'wp-sms'); ?></label>
+                    <label><?php _e('Phone Number', 'wp-sms'); ?></label>
                     <?php wp_sms_render_mobile_field(['class' => ['wpsms-subscribe__field__input']]); ?>
                 </div>
 
