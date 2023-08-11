@@ -5,8 +5,8 @@ namespace WP_SMS\Gateway;
 class _ebulksms extends \WP_SMS\Gateway
 {
 
-    public $wsdl_link = "http://api.ebulksms.com";
-    public $tariff = "http://ebulksms.com/";
+    public $wsdl_link = "https://api.ebulksms.com";
+    public $tariff = "https://ebulksms.com/";
     public $unitrial = true;
     public $unit;
     public $flash = "enable";
