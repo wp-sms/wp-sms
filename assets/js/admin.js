@@ -2,10 +2,8 @@
 
     WpSMSGeneral.init();
     WpSmsNotifications.init();
-    WpSmsBuddyPress.init();
     WpSmsWoocommerce.init();
     WpSmsJobManager.init();
-    WpSmsUltimateMember.init();
 
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
@@ -111,6 +109,21 @@ let WpSMSGeneral = {
             },
             newsletterFormDefaultGroup: {
                 element: jQuery("#wpsms_settings\\[newsletter_form_default_group\\]"),
+            },
+            mobileFieldStatus: {
+                element: jQuery("#wpsms_settings\\[add_mobile_field\\]"),
+            },
+            ultimateMemberFieldSelector: {
+                element: jQuery('#wpsms_settings\\[um_sync_field_name\\]'),
+            },
+            ultimateMemberSyncOldMembersField: {
+                element: jQuery('#wpsms_settings\\[um_sync_previous_members\\]'),
+            },
+            buddyPressFieldSelector: {
+                element: jQuery('#wpsms_settings\\[bp_mobile_field_id\\]'),
+            },
+            buddyPressSyncFields: {
+                element: jQuery('#wpsms_settings\\[bp_sync_fields\\]'),
             }
         }
     },
@@ -145,17 +158,46 @@ let WpSMSGeneral = {
         }.bind(this));
 
         this.fields.newsletterFormGroups.element.on("change", function () {
-            this.hideOrShowFields();
-        }.bind(this)
+                this.hideOrShowFields();
+            }.bind(this)
         );
+
+        // Add event listener for mobile field status
+        this.fields.mobileFieldStatus.element.on("change", function () {
+                this.manageMobileFieldsVisibility();
+            }.bind(this)
+        );
+    },
+
+    manageMobileFieldsVisibility: function () {
+        let mobileFieldValue = this.fields.mobileFieldStatus.element.val()
+
+        // Firstly hide all related fields
+        this.fields.buddyPressFieldSelector.element.closest("tr").hide()
+        this.fields.buddyPressSyncFields.element.closest("tr").hide()
+        this.fields.ultimateMemberFieldSelector.element.closest("tr").hide()
+        this.fields.ultimateMemberSyncOldMembersField.element.closest("tr").hide()
+
+        // Secondly show fields based on the selected mobile field status option
+        switch (mobileFieldValue) {
+            case 'use_ultimate_member_mobile_field':
+                this.fields.ultimateMemberFieldSelector.element.closest("tr").show()
+                this.fields.ultimateMemberSyncOldMembersField.element.closest("tr").show()
+                break;
+
+            case 'use_buddypress_mobile_field':
+                this.fields.buddyPressFieldSelector.element.closest("tr").show()
+                this.fields.buddyPressSyncFields.element.closest("tr").show()
+                break;
+        }
     },
 
     init: function () {
         this.getFields();
         this.hideOrShowFields();
         this.addEventListener();
+        this.manageMobileFieldsVisibility();
     }
-
 }
 
 
@@ -212,50 +254,6 @@ let WpSmsNotifications = {
 
 }
 
-/**
- * BuddyPress
- * @type {{init: WpSmsBuddyPress.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsBuddyPress.getFields}}
- */
-let WpSmsBuddyPress = {
-
-    getFields: function () {
-        this.fields = {
-            mobileNumberField: {
-                element: jQuery('#wps_pp_settings\\[bp_mobile_field\\]'),
-            },
-            fieldSelector: {
-                element: jQuery('#wps_pp_settings\\[bp_mobile_field_id\\]'),
-            },
-            syncFields: {
-                element: jQuery('#wps_pp_settings\\[bp_sync_fields\\]'),
-            }
-        }
-
-    },
-
-    hideOrShowFields: function () {
-        if (this.fields.mobileNumberField.element.val() !== 'used_current_field') {
-            this.fields.fieldSelector.element.closest('tr').hide()
-            this.fields.syncFields.element.closest('tr').hide()
-        } else {
-            this.fields.fieldSelector.element.closest('tr').show()
-            this.fields.syncFields.element.closest('tr').show()
-        }
-    },
-
-    addEventListener: function () {
-        this.fields.mobileNumberField.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
-    },
-
-    init: function () {
-        this.getFields();
-        this.hideOrShowFields();
-        this.addEventListener();
-    }
-
-}
 
 /**
  * Woocommerce
@@ -367,67 +365,6 @@ let WpSmsJobManager = {
 
 }
 
-/**
- * UltimateMember
- * @type {{init: WpSmsUltimateMember.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsUltimateMember.getFields, hideOrShowFields: WpSmsUltimateMember.hideOrShowFields, addEventListener: WpSmsUltimateMember.addEventListener}}
- */
-let WpSmsUltimateMember = {
-
-    getFields: function () {
-        this.fields = {
-            mobileNumberField: {
-                element: jQuery('#wps_pp_settings\\[um_field\\]'),
-                active: false,
-            },
-            syncOldMembersField: {
-                element: jQuery('#wps_pp_settings\\[um_sync_previous_members\\]'),
-                active: true,
-            },
-            fieldSelector: {
-                element: jQuery('#wps_pp_settings\\[um_sync_field_name\\]'),
-                active: true,
-            }
-        }
-
-    },
-
-    alreadyEnabled: function () {
-        if (this.fields.mobileNumberField.element.is(':checked')) {
-            this.fields.syncOldMembersField.active = false;
-            this.fields.syncOldMembersField.element.closest('tr').hide()
-            return true;
-        }
-    },
-
-    hideOrShowFields: function () {
-
-        const condition = this.fields.mobileNumberField.element.is(':checked');
-
-        if (condition) {
-            for (const field in this.fields) {
-                if (this.fields[field].active) this.fields[field].element.closest('tr').show();
-            }
-        } else {
-            for (const field in this.fields) {
-                if (this.fields[field].active) this.fields[field].element.closest('tr').hide();
-            }
-        }
-    },
-
-    addEventListener: function () {
-        this.fields.mobileNumberField.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
-    },
-
-    init: function () {
-        this.getFields();
-        this.alreadyEnabled();
-        this.hideOrShowFields();
-        this.addEventListener();
-    }
-
-}
 
 /**
  * Contact Form 7
@@ -570,11 +507,11 @@ let WpSmsMetaBox = {
         }.bind(this));
     },
 
-    insertShortcode: function() {
-        this.fields.short_codes.element.find("code").each(function(index) {
+    insertShortcode: function () {
+        this.fields.short_codes.element.find("code").each(function (index) {
             jQuery(this).on('click', function () {
                 var shortCodeValue = ' ' + jQuery(this).text() + ' ';
-                jQuery('#wpsms-text-template').val(function(i , text){
+                jQuery('#wpsms-text-template').val(function (i, text) {
                     const cursorPosition = jQuery(this)[0].selectionStart;
                     return text.substring(0, cursorPosition) + shortCodeValue + text.substring(cursorPosition);
                 })

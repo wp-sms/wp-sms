@@ -82,6 +82,7 @@ class Settings
     {
         $settings = get_option($this->setting_name);
 
+
         // Set default options
         if (!$settings) {
             update_option($this->setting_name, array(
@@ -103,6 +104,8 @@ class Settings
         if (false == get_option($this->setting_name)) {
             add_option($this->setting_name);
         }
+
+
 
         foreach ($this->get_registered_settings() as $tab => $settings) {
             add_settings_section("{$this->setting_name}_{$tab}", __return_null(), '__return_false', "{$this->setting_name}_{$tab}");
@@ -210,6 +213,7 @@ class Settings
 
         // Loop through each setting being saved and pass it through a sanitization filter
         foreach ($input as $key => $value) {
+
             // Get the setting type (checkbox, select, etc)
             $type = isset($settings[$tab][$key]['type']) ? $settings[$tab][$key]['type'] : false;
 
@@ -218,9 +222,11 @@ class Settings
                 $input[$key] = apply_filters("{$this->setting_name}_sanitize_{$type}", $value, $key);
             }
 
+
             // General filter
             $input[$key] = apply_filters("{$this->setting_name}_sanitize", $value, $key);
         }
+
 
         // Loop through the whitelist and unset any that are empty for the tab being saved
         if (!empty($settings[$tab])) {
@@ -338,49 +344,7 @@ class Settings
 
         // Set BuddyPress settings
         if (class_exists('BuddyPress')) {
-            $buddyPressProfileFields = [];
-            if (function_exists('bp_xprofile_get_groups')) {
-                $buddyPressProfileGroups = bp_xprofile_get_groups(['fetch_fields' => true]);
-
-                foreach ($buddyPressProfileGroups as $buddyPressProfileGroup) {
-                    if (isset($buddyPressProfileGroup->fields)) {
-                        foreach ($buddyPressProfileGroup->fields as $field) {
-                            $buddyPressProfileFields[$buddyPressProfileGroup->name][$field->id] = $field->name;
-                        }
-                    }
-                }
-            }
-
             $buddypress_settings = array(
-                'bp_fields'                       => array(
-                    'id'   => 'bp_fields',
-                    'name' => __('General', 'wp-sms'),
-                    'type' => 'header'
-                ),
-                'bp_mobile_field'                 => array(
-                    'id'      => 'bp_mobile_field',
-                    'name'    => __('Choose the field', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => array(
-                        'disable'            => __('Disable (No field)', 'wp-sms'),
-                        'add_new_field'      => __('Add a new mobile field to profile page', 'wp-sms'),
-                        'used_current_field' => __('Use the exists field', 'wp-sms'),
-                    ),
-                    'desc'    => __('Choose from which field you would like to use for mobile field.', 'wp-sms')
-                ),
-                'bp_mobile_field_id'              => array(
-                    'id'      => 'bp_mobile_field_id',
-                    'name'    => __('Choose the exists field', 'wp-sms'),
-                    'type'    => 'advancedselect',
-                    'options' => $buddyPressProfileFields,
-                    'desc'    => __('Select the BuddyPress field', 'wp-sms')
-                ),
-                'bp_sync_fields'                  => array(
-                    'id'   => 'bp_sync_fields',
-                    'name' => __('Sync fields'),
-                    'type' => 'checkbox',
-                    'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
-                ),
                 'bp_welcome_notification'         => array(
                     'id'   => 'bp_welcome_notification',
                     'name' => __('Welcome Notification', 'wp-sms'),
@@ -1082,31 +1046,6 @@ class Settings
 
         // Get Ultimate Member
         if (function_exists('um_user')) {
-            $um_options['um_field_header']            = array(
-                'id'   => 'um_field_header',
-                'name' => __('General', 'wp-sms'),
-                'type' => 'header'
-            );
-            $um_options['um_field']                   = array(
-                'id'   => 'um_field',
-                'name' => __('Mobile number field', 'wp-sms'),
-                'type' => 'checkbox',
-                'desc' => __('Sync Mobile number from Ultimate Member mobile number form field.', 'wp-sms'),
-            );
-            $um_options['um_sync_field_name']         = array(
-                'id'      => 'um_sync_field_name',
-                'name'    => __('Select the purpose field in registration form'),
-                'type'    => 'select',
-                'options' => $this->get_um_register_form_fields(),
-                'std'     => 'mobile_number',
-                'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
-            );
-            $um_options['um_sync_previous_members']   = array(
-                'id'   => 'um_sync_previous_members',
-                'name' => __('Sync old member too?'),
-                'type' => 'checkbox',
-                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
-            );
             $um_options['um_notification_header']     = array(
                 'id'   => 'um_notification_header',
                 'name' => __('Notification', 'wp-sms'),
@@ -1228,6 +1167,19 @@ class Settings
             );
         }
 
+        $buddyPressProfileFields = [];
+        if (function_exists('bp_xprofile_get_groups')) {
+            $buddyPressProfileGroups = bp_xprofile_get_groups(['fetch_fields' => true]);
+
+            foreach ($buddyPressProfileGroups as $buddyPressProfileGroup) {
+                if (isset($buddyPressProfileGroup->fields)) {
+                    foreach ($buddyPressProfileGroup->fields as $field) {
+                        $buddyPressProfileFields[$buddyPressProfileGroup->name][$field->id] = $field->name;
+                    }
+                }
+            }
+        }
+
         $settings = apply_filters('wp_sms_registered_settings', array(
             /**
              * General fields
@@ -1254,12 +1206,12 @@ class Settings
                 ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
-                    'name' => __('Mobile field', 'wp-sms'),
+                    'name' => __('Mobile Field', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'add_mobile_field'                         => array(
                     'id'      => 'add_mobile_field',
-                    'name'    => __('Mobile field status', 'wp-sms'),
+                    'name'    => __('Mobile Field Status', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => [
                         'WordPress'   => [
@@ -1272,6 +1224,33 @@ class Settings
                         ]
                     ],
                     'desc'    => __('Choose how to set the mobile number video for the user', 'wp-sms')
+                ),
+                'um_sync_field_name'                       => array(
+                    'id'      => 'um_sync_field_name',
+                    'name'    => __('Select the Existing Field'),
+                    'type'    => 'select',
+                    'options' => $this->get_um_register_form_fields(),
+                    'std'     => 'mobile_number',
+                    'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
+                ),
+                'um_sync_previous_members'                 => array(
+                    'id'   => 'um_sync_previous_members',
+                    'name' => __('Sync Old Members Too?'),
+                    'type' => 'checkbox',
+                    'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
+                ),
+                'bp_mobile_field_id'                       => array(
+                    'id'      => 'bp_mobile_field_id',
+                    'name'    => __('Select the Existing Field', 'wp-sms'),
+                    'type'    => 'advancedselect',
+                    'options' => $buddyPressProfileFields,
+                    'desc'    => __('Select the BuddyPress field', 'wp-sms')
+                ),
+                'bp_sync_fields'                           => array(
+                    'id'   => 'bp_sync_fields',
+                    'name' => __('Sync Fields'),
+                    'type' => 'checkbox',
+                    'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
                 'optional_mobile_field'                    => array(
                     'id'      => 'optional_mobile_field',
