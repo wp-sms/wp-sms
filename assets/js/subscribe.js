@@ -46,6 +46,7 @@ let wpSmsSubscribeForm = {
         let messageContainer = element.children().find('.js-wpSmsSubscribeMessage')
         let processingOverlay = element.children().find('.js-wpSmsSubscribeOverlay')
         let firstStep = element.children().find('.js-wpSmsSubscribeStepOne')
+        let firstStepSubmitButton = element.children().find('.js-wpSmsSubmitButton')
         let secondStep = element.children().find('.js-wpSmsSubscribeStepTwo')
         let customFields = element.children().find('.js-wpSmsSubscriberCustomFields')
 
@@ -129,6 +130,7 @@ let wpSmsSubscribeForm = {
             messageContainer.html('<span class="wpsms-subscribe__message wpsms-subscribe__message--success">' + message + '</div>')
 
             if (requestBody.type === 'subscribe' && $this.mandatoryVerify === '1') {
+                firstStepSubmitButton.prop('disabled', true)
                 secondStep.show()
             }
         })
