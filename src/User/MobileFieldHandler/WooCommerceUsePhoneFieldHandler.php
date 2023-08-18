@@ -22,6 +22,15 @@ class WooCommerceUsePhoneFieldHandler
             $mobileNumber = get_user_meta($userId, '_billing_phone', true);
         }
 
+        // backward compatibility
+        if (!$mobileNumber) {
+            $customerSessionData = WC()->session->get('customer');
+
+            if (isset($customerSessionData['phone'])) {
+                $mobileNumber = $customerSessionData['phone'];
+            }
+        }
+
         return apply_filters('wp_sms_user_mobile_number', $mobileNumber, $userId);
     }
 
@@ -39,7 +48,7 @@ class WooCommerceUsePhoneFieldHandler
             if (Option::getOption('optional_mobile_field') === 'optional') {
                 $fields['billing']['billing_phone']['required'] = false;
             }
-            
+
             $fields['billing']['billing_phone']['class'][] = 'wp-sms-input-mobile';
         }
 
