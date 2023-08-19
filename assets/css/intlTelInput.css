@@ -1,6 +1,6 @@
 .iti {
   position: relative;
-  display: inline-block; }
+  display: block; }
   .iti * {
     box-sizing: border-box; }
   .iti__hide {
