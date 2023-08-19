@@ -124,7 +124,10 @@ let WpSMSGeneral = {
             },
             buddyPressSyncFields: {
                 element: jQuery('#wpsms_settings\\[bp_sync_fields\\]'),
-            }
+            },
+            pmproFieldSelector: {
+                element: jQuery('#wpsms_settings\\[pmpro_mobile_field_id\\]'),
+            },
         }
     },
 
@@ -177,6 +180,7 @@ let WpSMSGeneral = {
         this.fields.buddyPressSyncFields.element.closest("tr").hide()
         this.fields.ultimateMemberFieldSelector.element.closest("tr").hide()
         this.fields.ultimateMemberSyncOldMembersField.element.closest("tr").hide()
+        this.fields.pmproFieldSelector.element.closest("tr").hide()
 
         // Secondly show fields based on the selected mobile field status option
         switch (mobileFieldValue) {
@@ -188,6 +192,10 @@ let WpSMSGeneral = {
             case 'use_buddypress_mobile_field':
                 this.fields.buddyPressFieldSelector.element.closest("tr").show()
                 this.fields.buddyPressSyncFields.element.closest("tr").show()
+                break;
+
+            case 'use_current_field_in_pmpro':
+                this.fields.pmproFieldSelector.element.closest("tr").show()
                 break;
         }
     },
