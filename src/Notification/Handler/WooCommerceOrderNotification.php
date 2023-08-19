@@ -15,6 +15,7 @@ class WooCommerceOrderNotification extends Notification
         '%billing_address%'             => 'getAddress',
         '%order_edit_url%'              => 'getEditOrderUrl',
         '%billing_phone%'               => 'getBillingPhone',
+        '%billing_email%'               => 'getBillingEmail',
         '%order_number%'                => 'getNumber',
         '%order_total%'                 => 'getTotal',
         '%order_total_currency%'        => 'getCurrency',
@@ -84,6 +85,11 @@ class WooCommerceOrderNotification extends Notification
     public function getBillingPhone()
     {
         return $this->order->get_billing_phone();
+    }
+
+    public function getBillingEmail()
+    {
+        return $this->order->get_billing_email();
     }
 
     public function getNumber()
