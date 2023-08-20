@@ -105,8 +105,6 @@ class Settings
             add_option($this->setting_name);
         }
 
-
-
         foreach ($this->get_registered_settings() as $tab => $settings) {
             add_settings_section("{$this->setting_name}_{$tab}", __return_null(), '__return_false', "{$this->setting_name}_{$tab}");
 
@@ -304,6 +302,13 @@ class Settings
                         '<code>%site_name%</code>',
                         '<code>%site_url%</code>'
                     )
+            ),
+            'register_sms'          => array(
+                'id'      => 'register_sms',
+                'name'    => __('Register with phone', 'wp-sms'),
+                'type'    => 'checkbox',
+                'options' => $options,
+                'desc'    => __('Allow user to register via phone when user is not available.', 'wp-sms'),
             ),
             'otp_title'             => array(
                 'id'   => 'otp_title',
