@@ -6,15 +6,12 @@ use WP_SMS\Helper;
 
 class RegisterUserViaPhone
 {
-    public $mobileNumber;
+    private $mobileNumber;
 
     public function __construct($mobileNumber)
     {
-
-        // Sanitize and set mobile_number
-        $mobileNumber       = Helper::sanitizeMobileNumber($mobileNumber);
-        $mobileNumber       = str_replace('+', '', $mobileNumber);
-        $this->mobileNumber = $mobileNumber;
+        // Sanitize and prepare mobile number
+        $this->mobileNumber = str_replace('+', '', Helper::sanitizeMobileNumber($mobileNumber));
     }
 
     /**
@@ -40,7 +37,7 @@ class RegisterUserViaPhone
         /**
          * Allow to modify the username with filter
          */
-        return apply_filters('wp_sms_pro_username_registration', $username, $this->mobileNumber);
+        return apply_filters('wp_sms_registration_username', $username, $this->mobileNumber);
     }
 
     /**
@@ -60,6 +57,6 @@ class RegisterUserViaPhone
         /**
          * Allow to modify the email address with filter
          */
-        return apply_filters('wp_sms_pro_email_registration', $emailAddress, $this->mobileNumber);
+        return apply_filters('wp_sms_registration_email', $emailAddress, $this->mobileNumber);
     }
 }
