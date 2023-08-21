@@ -81,8 +81,8 @@
       margin-right: 0;
       margin-left: 6px; }
   .iti--allow-dropdown input, .iti--allow-dropdown input[type=text], .iti--allow-dropdown input[type=tel], .iti--separate-dial-code input, .iti--separate-dial-code input[type=text], .iti--separate-dial-code input[type=tel] {
-    padding-right: 6px;
-    padding-left: 52px;
+    padding-right: 6px !important;
+    padding-left: 52px !important;
     margin-left: 0; }
     [dir=rtl] .iti--allow-dropdown input, [dir=rtl] .iti--allow-dropdown input[type=text], [dir=rtl] .iti--allow-dropdown input[type=tel], [dir=rtl] .iti--separate-dial-code input, [dir=rtl] .iti--separate-dial-code input[type=text], [dir=rtl] .iti--separate-dial-code input[type=tel] {
       padding-right: 52px;
