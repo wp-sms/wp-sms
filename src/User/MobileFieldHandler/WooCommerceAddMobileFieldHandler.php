@@ -25,6 +25,9 @@ class WooCommerceAddMobileFieldHandler
         add_filter('woocommerce_admin_billing_fields', [$this, 'registerFieldInAdminOrderBillingForm']);
         add_action('woocommerce_process_shop_order_meta', array($this, 'updateCustomerMobileNumberAfterUpdateTheOrder'), 10, 2);
 
+        add_action('user_register', array($this, 'updateMobileNumberCallback'), 999999);
+        add_action('profile_update', array($this, 'updateMobileNumberCallback'));
+
         //add_action('wp_enqueue_scripts', [$this, 'checkoutMobileFieldInlineStyle']);
     }
 
@@ -187,6 +190,16 @@ class WooCommerceAddMobileFieldHandler
 
         if ($userId and $userId != 0) {
             update_user_meta($userId, $this->getUserMobileFieldName(), $mobileNumber);
+        }
+    }
+
+    public function updateMobileNumberCallback($userId)
+    {
+        $mobileNumber = isset($_POST['phone_number']) ? $_POST['phone_number'] : null;
+
+        if ($mobileNumber) {
+            $mobile = Helper::sanitizeMobileNumber($mobileNumber);
+            update_user_meta($userId, $this->getUserMobileFieldName(), $mobile);
         }
     }
 }

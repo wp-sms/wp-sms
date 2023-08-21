@@ -2,6 +2,7 @@
 
 namespace WP_SMS\User\MobileFieldHandler;
 
+use WP_SMS\Helper;
 use WP_SMS\Option;
 
 class WooCommerceUsePhoneFieldHandler
@@ -11,6 +12,9 @@ class WooCommerceUsePhoneFieldHandler
         add_filter('woocommerce_checkout_fields', array($this, 'modifyBillingPhoneAttributes'));
         add_filter('woocommerce_admin_billing_fields', [$this, 'modifyAdminBillingPhoneAttributes']);
         add_filter('woocommerce_customer_meta_fields', [$this, 'modifyAdminCustomerMetaBillingPhoneAttributes']);
+
+        add_action('user_register', array($this, 'updateMobileNumberCallback'), 999999);
+        add_action('profile_update', array($this, 'updateMobileNumberCallback'));
     }
 
     public function getMobileNumberByUserId($userId)
@@ -71,5 +75,15 @@ class WooCommerceUsePhoneFieldHandler
         }
 
         return $fields;
+    }
+
+    public function updateMobileNumberCallback($userId)
+    {
+        $mobileNumber = isset($_POST['phone_number']) ? $_POST['phone_number'] : null;
+
+        if ($mobileNumber) {
+            $mobile = Helper::sanitizeMobileNumber($mobileNumber);
+            update_user_meta($userId, $this->getUserMobileFieldName(), $mobile);
+        }
     }
 }
