@@ -7,6 +7,7 @@ use WP_SMS\Helper;
 class RegisterUserViaPhone
 {
     private $mobileNumber;
+    private $userId;
 
     public function __construct($mobileNumber)
     {
@@ -19,10 +20,29 @@ class RegisterUserViaPhone
      */
     public function register()
     {
-        return register_new_user(
+        $result = $this->registerUser();
+
+        // Store user meta data
+        if (!is_wp_error($result)) {
+            $this->saveMetas();
+        }
+
+        return $result;
+    }
+
+    private function registerUser()
+    {
+        $this->userId = register_new_user(
             $this->generateUniqueUsername(),
             $this->generateUniqueEmail()
         );
+
+        return $this->userId;
+    }
+
+    private function saveMetas()
+    {
+        update_user_meta($this->userId, Helper::getUserMobileFieldName(), $this->mobileNumber);
     }
 
     /**
