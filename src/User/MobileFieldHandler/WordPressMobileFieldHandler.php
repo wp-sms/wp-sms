@@ -101,7 +101,7 @@ class WordPressMobileFieldHandler
      */
     public function updateMobileNumberCallback($user_id)
     {
-        $mobile_number = isset($_POST['mobile']) ? $_POST['mobile'] : (isset($_POST['phone_number']) ? $_POST['phone_number'] : null);
+        $mobile_number = isset($_POST['mobile']) ? $_POST['mobile'] : null;
         if ($mobile_number) {
             $mobile = Helper::sanitizeMobileNumber($mobile_number);
             update_user_meta($user_id, $this->getUserMobileFieldName(), $mobile);
