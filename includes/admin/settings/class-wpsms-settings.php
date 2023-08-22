@@ -1232,7 +1232,7 @@ class Settings
                 ),
                 'um_sync_field_name'                       => array(
                     'id'      => 'um_sync_field_name',
-                    'name'    => __('Select the Existing Field'),
+                    'name'    => __('Select the Existing Field', 'wp-sms'),
                     'type'    => 'select',
                     'options' => $this->get_um_register_form_fields(),
                     'std'     => 'mobile_number',
@@ -1240,7 +1240,7 @@ class Settings
                 ),
                 'um_sync_previous_members'                 => array(
                     'id'   => 'um_sync_previous_members',
-                    'name' => __('Sync Old Members Too?'),
+                    'name' => __('Sync Old Members Too?', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
                 ),
@@ -1253,7 +1253,7 @@ class Settings
                 ),
                 'bp_sync_fields'                           => array(
                     'id'   => 'bp_sync_fields',
-                    'name' => __('Sync Fields'),
+                    'name' => __('Sync Fields', 'wp-sms'),
                     'type' => 'checkbox',
                     'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
