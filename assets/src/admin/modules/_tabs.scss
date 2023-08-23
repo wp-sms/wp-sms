@@ -331,7 +331,22 @@ tr.tr-header td {
 
   @media screen and (max-width: 990px) {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
+
+    .wpsms-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      li {
+        flex: 0 0 48%;
+      }
+
+      .tab-company-logo {
+        display: none;
+      }
+    }
 
     .wpsms-tab,
     .wpsms-tab-content {
@@ -347,6 +362,12 @@ tr.tr-header td {
       form {
         max-width: calc(100% - 24px);
       }
+    }
+  }
+
+  @media screen and (max-width: 580px) {
+    .wpsms-tab li {
+      flex: 0 0 100%;
     }
   }
 }
