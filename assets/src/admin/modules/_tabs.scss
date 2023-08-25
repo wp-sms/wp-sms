@@ -191,21 +191,6 @@
   margin-top: 16px;
 }
 
-.wpsms-tab .tab-company-logo {
-  text-align: center;
-  margin-top: 16px;
-}
-
-.wpsms-tab .tab-company-logo a {
-  padding: 0;
-  display: inline-grid;
-}
-
-.wpsms-tab .tab-company-logo img {
-  filter: contrast(0.5);
-  width: 124px;
-}
-
 .wpsms-tab li a {
   display: flex;
   align-items: center;
@@ -341,10 +326,6 @@ tr.tr-header td {
 
       li {
         flex: 0 0 48%;
-      }
-
-      .tab-company-logo {
-        display: none;
       }
     }
 

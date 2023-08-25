@@ -2354,8 +2354,6 @@ class Settings
                                 echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
                             }
                         } ?>
-
-                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab . '_settings_tab' ?>">
