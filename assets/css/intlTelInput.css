@@ -52,13 +52,16 @@
     white-space: nowrap;
     max-height: 200px;
     overflow-y: scroll;
+    border-radius: 8px;
     -webkit-overflow-scrolling: touch; }
     .iti__country-list--dropup {
       bottom: 100%;
       margin-bottom: -1px; }
     @media (max-width: 500px) {
       .iti__country-list {
-        white-space: normal; } }
+        white-space: normal;
+          width: 85vw;
+      } }
   .iti__flag-box {
     display: inline-block;
     width: 20px; }
@@ -76,7 +79,9 @@
   .iti__country.iti__highlight {
     background-color: rgba(0, 0, 0, 0.05); }
   .iti__flag-box, .iti__country-name {
-    margin-right: 6px; }
+    margin-right: 6px;
+    font-size: 14px;
+  }
     [dir=rtl] .iti__flag-box, [dir=rtl] .iti__country-name {
       margin-right: 0;
       margin-left: 6px; }
@@ -97,13 +102,17 @@
   .iti--allow-dropdown .iti__flag-container:hover {
     cursor: pointer; }
     .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
-      background-color: rgba(0, 0, 0, 0.05); }
+      background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 8px 0 0 8px;
+    }
   .iti--allow-dropdown input[disabled] + .iti__flag-container:hover,
   .iti--allow-dropdown input[readonly] + .iti__flag-container:hover {
     cursor: default; }
     .iti--allow-dropdown input[disabled] + .iti__flag-container:hover .iti__selected-flag,
     .iti--allow-dropdown input[readonly] + .iti__flag-container:hover .iti__selected-flag {
-      background-color: transparent; }
+      background-color: transparent;
+      border-radius: 8px 0 0 8px;
+    }
   .iti--separate-dial-code .iti__selected-flag {
     background-color: rgba(0, 0, 0, 0.05); }
   .iti--separate-dial-code.iti--show-flags .iti__selected-dial-code {
@@ -930,7 +939,9 @@
   background-image: url("../img/flags.png");
   background-repeat: no-repeat;
   background-color: #DBDBDB;
-  background-position: 20px 0; }
+  background-position: 20px 0;
+    border-radius:2px;
+}
   @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     .iti__flag {
       background-image: url("../img/flags@2x.png"); } }
