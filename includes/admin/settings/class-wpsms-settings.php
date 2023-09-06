@@ -2291,7 +2291,7 @@ class Settings
         }
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input type="text" class="%1$s-text wpsms_upload_field" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button-secondary" value="%4$s"/></span><p class="description"> %5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), __('Upload File', 'wpsms'), wp_kses_post($args['desc']));
+        $html = sprintf('<input type="text" class="%1$s-text wpsms_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button-secondary" value="%4$s"/></span><p class="description"> %5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), __('Upload File', 'wpsms'), wp_kses_post($args['desc']));
 
         echo $html;
     }
@@ -2305,7 +2305,7 @@ class Settings
         }
 
         $default = isset($args['std']) ? $args['std'] : '';
-        $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
+        $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . $this->setting_name . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
 
         echo $html;
     }
@@ -2341,11 +2341,11 @@ class Settings
 
                             if ($IsProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . WP_SMS_SITE . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
                             }
 
-                            echo '<li class="tab-' . $tab_id . $IsProTab . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . $active . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo $tab_name;
                             echo '</a>' . $proLockIcon . '</li>';
 
@@ -2356,7 +2356,7 @@ class Settings
                         } ?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
-                    <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab . '_settings_tab' ?>">
+                    <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
                         <form method="post" action="options.php">
                             <table class="form-table">
                                 <?php
