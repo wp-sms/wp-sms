@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use Exception;
+use WP_SMS\Helper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -360,6 +361,9 @@ class Gateway
 
         // Add Filters
         add_filter('wp_sms_to', array($this, 'modify_bulk_send'));
+
+        // If there is error in sending sms send and email to admin
+        add_action('wp_sms_log_after_save', array($this, 'mail_admin_sms_stopped'), 10, 7);
     }
 
     /**
@@ -1471,5 +1475,29 @@ class Gateway
         }
 
         return $strResult;
+    }
+
+    function mail_admin_sms_stopped($result, $sender, $message, $to, $response, $status, $media)
+    {
+
+        if ($status == 'error') {
+            $admin_email = get_option('admin_email');
+            $site_name   = get_bloginfo('name');
+            $subject     = sprintf(__('SMS service has stopped on %s', 'wp-sms'), $site_name);
+            $content     = sprintf(__('SMS service has stopped on %s. You could check any requirements to see what happened! It has the following error: <br /> %s', 'wp-sms'), $site_name, $response);
+
+            $message = Helper::loadTemplate('email\default.php', [
+                'email_title' => 'Dear Admin',
+                'content'     => $content,
+                'site_url'    => home_url(),
+                'site_name'   => $site_name,
+                'cta_title'   => __('Open Admin', 'wp-sms'),
+                'cta_link'    => admin_url(),
+            ]);
+
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+
+            wp_mail($admin_email, $subject, $message, $headers);
+        }
     }
 }
