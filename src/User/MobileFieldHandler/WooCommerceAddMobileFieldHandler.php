@@ -103,7 +103,7 @@ class WooCommerceAddMobileFieldHandler
         $args['billing']['fields'][$this->getUserMobileFieldName()] = array(
             'label'       => __('Mobile Number', 'wp-sms'),
             'description' => __('Mobile Number for getting SMS notification', 'wp-sms'),
-            'class'       => 'wp-sms-input-mobile regular-text'
+            'class'       => 'wp-sms-input-mobile regular-text ltr'
         );
 
         return $args;

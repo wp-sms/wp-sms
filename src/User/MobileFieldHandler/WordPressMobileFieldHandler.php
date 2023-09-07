@@ -50,7 +50,7 @@ class WordPressMobileFieldHandler
         $fields['mobile'] = [
             'id'      => 'mobile',
             'title'   => __('Mobile', 'wp-sms'),
-            'content' => '<input class="wp-sms-input-mobile regular-text" type="text" name="mobile" value="' . esc_attr($currentValue) . '">'
+            'content' => '<input class="wp-sms-input-mobile regular-text ltr" type="text" name="mobile" value="' . esc_attr($currentValue) . '">'
         ];
 
         return $fields;

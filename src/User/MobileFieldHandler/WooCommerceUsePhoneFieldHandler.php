@@ -59,7 +59,7 @@ class WooCommerceUsePhoneFieldHandler
     public function modifyAdminBillingPhoneAttributes($fields)
     {
         if (isset($fields['phone']['class'])) {
-            $fields['phone']['class'][] = 'wp-sms-input-mobile';
+            $fields['phone']['class'][] = 'wp-sms-input-mobile ltr';
         }
 
         return $fields;
@@ -68,7 +68,7 @@ class WooCommerceUsePhoneFieldHandler
     public function modifyAdminCustomerMetaBillingPhoneAttributes($fields)
     {
         if (isset($fields['billing']['fields'])) {
-            $fields['billing']['fields']['billing_phone']['class'] = 'wp-sms-input-mobile';
+            $fields['billing']['fields']['billing_phone']['class'] = 'wp-sms-input-mobile ltr';
         }
 
         return $fields;
