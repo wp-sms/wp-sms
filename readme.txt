@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.2.3
+Stable tag: 6.2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,6 +240,18 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.2.4 - **.09.2023 =
+* Feature: Administrator Email notification once the send SMS faced error
+* Fixed: Send SMS Verification Twice in Safari Autofill
+* Fixed: Add support for `%billing_email%` variable in WooCommerce order notification
+* Fixed: International Mobile number issue showing flags styles and improvement on International input CSS
+* Improvement: Update Oursms, EbulkSMS, and support `template_id` for gateway.sa
+* Improvement: Mobile Number Backward Compatibility for Customer Sessions
+* Improvement: Mobile field handler functionality and improvement
+* Improvement: Minor styles and settings
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.2.3 - 10.08.2023 =
 * Improvement: Refined Woocommerce customers query, limited to 1000, and optimized MySQL performance using filters.
 * Development: Introduced new filters - `wp_sms_mobile_filed_handler`, `wpsms_unsubscribe_csrf_enabled`, `wp_sms_request_arguments`, and `wp_sms_request_params`.
@@ -250,8 +262,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Fixes: Resolved placeholder issue.
 * Fixes: Fixed character truncation during trimming.
 * Feature: New attribute `groups` now supported in `[wp_sms_subscriber_form]` shortcode.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.2.2 - 26.07.2023 =
 * Improvement: Admin header and styles updated to display licenses status more effectively.

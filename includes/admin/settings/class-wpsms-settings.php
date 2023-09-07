@@ -86,7 +86,8 @@ class Settings
         // Set default options
         if (!$settings) {
             update_option($this->setting_name, array(
-                'add_mobile_field' => 'add_mobile_field_in_profile'
+                'add_mobile_field'             => 'add_mobile_field_in_profile',
+                'notify_errors_to_admin_email' => 'enable'
             ));
         }
 
@@ -1446,7 +1447,7 @@ class Settings
                 ),
                 'notify_errors_to_admin_email' => array(
                     'id'      => 'notify_errors_to_admin_email',
-                    'name'    => __('Email Errors', 'wp-sms'),
+                    'name'    => __('Email Errors Notifications', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Automatically notify the admin email address in the event of an error during SMS transmission.', 'wp-sms')
