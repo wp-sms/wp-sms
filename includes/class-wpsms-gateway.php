@@ -1480,7 +1480,7 @@ class Gateway
     function mail_admin_sms_stopped($result, $sender, $message, $to, $response, $status, $media)
     {
 
-        if ($status == 'error') {
+        if ($status == 'error' and $this->options['notify_errors_to_admin_email']) {
             $admin_email = get_option('admin_email');
             $site_name   = get_bloginfo('name');
             $subject     = sprintf(__('SMS service has stopped on %s', 'wp-sms'), $site_name);
