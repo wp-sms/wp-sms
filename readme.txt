@@ -240,15 +240,15 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.2.4 - **.09.2023 =
+= v6.2.4 - 08.09.2023 =
 * Feature: Administrator Email notification once the send SMS faced error
+* Feature: Add support for `%billing_email%` variable in WooCommerce order notification
 * Fixed: Send SMS Verification Twice in Safari Autofill
-* Fixed: Add support for `%billing_email%` variable in WooCommerce order notification
 * Fixed: International Mobile number issue showing flags styles and improvement on International input CSS
 * Improvement: Update Oursms, EbulkSMS, and support `template_id` for gateway.sa
 * Improvement: Mobile Number Backward Compatibility for Customer Sessions
 * Improvement: Mobile field handler functionality and improvement
-* Improvement: Minor styles and settings
+* Improvement: Minor styles, RTL issues and settings
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 

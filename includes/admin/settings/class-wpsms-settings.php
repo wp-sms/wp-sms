@@ -1428,7 +1428,7 @@ class Settings
                 // Message header
                 'message_title'                => array(
                     'id'   => 'message_title',
-                    'name' => __('Message Options', 'wp-sms'),
+                    'name' => __('Miscellaneous Options', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'send_unicode'                 => array(
