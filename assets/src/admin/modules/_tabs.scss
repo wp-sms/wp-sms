@@ -191,21 +191,6 @@
   margin-top: 16px;
 }
 
-.wpsms-tab .tab-company-logo {
-  text-align: center;
-  margin-top: 16px;
-}
-
-.wpsms-tab .tab-company-logo a {
-  padding: 0;
-  display: inline-grid;
-}
-
-.wpsms-tab .tab-company-logo img {
-  filter: contrast(0.5);
-  width: 124px;
-}
-
 .wpsms-tab li a {
   display: flex;
   align-items: center;
@@ -331,7 +316,18 @@ tr.tr-header td {
 
   @media screen and (max-width: 990px) {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
+
+    .wpsms-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      li {
+        flex: 0 0 48%;
+      }
+    }
 
     .wpsms-tab,
     .wpsms-tab-content {
@@ -347,6 +343,12 @@ tr.tr-header td {
       form {
         max-width: calc(100% - 24px);
       }
+    }
+  }
+
+  @media screen and (max-width: 580px) {
+    .wpsms-tab li {
+      flex: 0 0 100%;
     }
   }
 }

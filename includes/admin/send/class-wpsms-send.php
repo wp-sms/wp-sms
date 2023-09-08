@@ -39,8 +39,8 @@ class SMS_Send
         }
 
         $buddyPressMobileNumbers = [];
-        if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
-            $buddyPressMobileNumbers = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
+        if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress')) {
+            $buddyPressMobileNumbers = \WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress::getTotalMobileNumbers();
         }
 
         echo Helper::loadTemplate('admin/send-sms.php', [

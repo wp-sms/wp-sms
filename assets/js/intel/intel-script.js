@@ -1,11 +1,11 @@
 jQuery(document).ready(function () {
-    var $inputTell = document.querySelectorAll(".wp-sms-input-mobile, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
+    var inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
 
-    for (var i = 0; i < $inputTell.length; i++) {
-        if ($inputTell[i]) {
-            $inputTell[i].setAttribute('dir', 'ltr')
-
-            window.intlTelInput($inputTell[i], {
+    for (var i = 0; i < inputTells.length; i++) {
+        if (inputTells[i] && inputTells[i].nodeName == 'INPUT') {
+            
+            inputTells[i].setAttribute('dir', 'ltr')
+            window.intlTelInput(inputTells[i], {
                 autoInsertDialCode: true,
                 onlyCountries: wp_sms_intel_tel_input.only_countries,
                 preferredCountries: wp_sms_intel_tel_input.preferred_countries,
@@ -18,12 +18,12 @@ jQuery(document).ready(function () {
         }
     }
 
-    var $inputTell = document.querySelector("#job_mobile, #_job_mobile");
+    var inputTell = document.querySelector("#job_mobile, #_job_mobile");
 
-    if ($inputTell && !$inputTell.getAttribute('placeholder')) {
-        $inputTell.setAttribute('dir', 'ltr')
+    if (inputTell && !inputTell.getAttribute('placeholder')) {
+        inputTell.setAttribute('dir', 'ltr')
 
-        window.intlTelInput($inputTell, {
+        window.intlTelInput(inputTell, {
             autoInsertDialCode: true,
             onlyCountries: wp_sms_intel_tel_input.only_countries,
             preferredCountries: wp_sms_intel_tel_input.preferred_countries,

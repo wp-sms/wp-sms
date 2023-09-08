@@ -7,7 +7,7 @@ use WP_Error;
 
 class oursms extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.oursms.com";
+    private $wsdl_link = "https://api.oursms.com/api-a";
     public $tariff = "https://www.oursms.net";
     public $unitrial = false;
     public $unit;
@@ -22,12 +22,17 @@ class oursms extends \WP_SMS\Gateway
         $this->validateNumber = "Separate numbers between them with comma ( , ) Numbers must be entered in international format 966500000000 and international messages without 00 or +";
         $this->help           = "To get API token, <a href='https://www.youtube.com/watch?v=UfZlQ4wq3JA' target='_blank'>watch This video</a>";
         $this->gatewayFields  = [
-            'has_key' => [
+            'username' => [
+                'id'   => 'gateway_username',
+                'name' => 'API username',
+                'desc' => 'Enter API username of gateway',
+            ],
+            'has_key'  => [
                 'id'   => 'gateway_key',
                 'name' => 'API Token',
                 'desc' => 'Please enter API token of gateway. You can avail it from your control panel.',
             ],
-            'from'    => [
+            'from'     => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Sender Name',
                 'desc' => 'Please enter your Sender Name or sender ID.',
@@ -69,30 +74,26 @@ class oursms extends \WP_SMS\Gateway
 
         try {
 
-            if (empty($this->from)) {
+            if (!$this->from) {
                 $this->from = 'OurSms';
             }
 
-            // +9661234
-            // 009661234
-            // 09661234
-            // 9661234
-
-            $to        = $this->cleanNumbers($this->to);
-            $arguments = array(
-                'headers' => [
-                    'Authorization' => "Bearer {$this->has_key}",
-                    'Content-Type'  => 'application/json'
-                ],
-                'body'    => json_encode([
-                    'src'   => $this->from,
-                    'dests' => $to,
-                    'body'  => $this->msg,
-                ])
-            );
+            $arguments = [
+                'username' => $this->username,
+                'token'    => $this->has_key,
+                'src'      => $this->from,
+                'dests'    => implode(',', $this->to),
+                'body'     => $this->msg,
+                'priority' => 0,
+                'delay'    => 0,
+                'validity' => 0,
+                'maxParts' => 0,
+                'dlr'      => 0,
+                'prevDups' => 0,
+            ];
 
             // Get Send SMS Response
-            $response = $this->request('POST', "{$this->wsdl_link}/msgs/sms", [], $arguments);
+            $response = $this->request('GET', "{$this->wsdl_link}/msgs", $arguments);
 
             // Error Handler
             if (isset($response->errorCode)) {
@@ -132,14 +133,13 @@ class oursms extends \WP_SMS\Gateway
                 return new WP_Error('account-credit', __('API Token is required.', 'wp-sms'));
             }
 
-            $params = array(
-                'headers' => [
-                    'Authorization' => "Bearer {$this->has_key}"
-                ]
+            $args = array(
+                'username' => $this->username,
+                'token'    => $this->has_key,
             );
 
             // Get Credit Response
-            $response = $this->request('GET', "{$this->wsdl_link}/billing/credits", [], $params);
+            $response = $this->request('GET', "{$this->wsdl_link}/billing/credits", $args);
 
             if (isset($response->errorCode)) {
                 throw new Exception($response->message);

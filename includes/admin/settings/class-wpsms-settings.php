@@ -82,10 +82,12 @@ class Settings
     {
         $settings = get_option($this->setting_name);
 
+
         // Set default options
         if (!$settings) {
             update_option($this->setting_name, array(
-                'add_mobile_field' => 'add_mobile_field_in_profile'
+                'add_mobile_field'             => 'add_mobile_field_in_profile',
+                'notify_errors_to_admin_email' => 'enable'
             ));
         }
 
@@ -210,6 +212,7 @@ class Settings
 
         // Loop through each setting being saved and pass it through a sanitization filter
         foreach ($input as $key => $value) {
+
             // Get the setting type (checkbox, select, etc)
             $type = isset($settings[$tab][$key]['type']) ? $settings[$tab][$key]['type'] : false;
 
@@ -218,9 +221,11 @@ class Settings
                 $input[$key] = apply_filters("{$this->setting_name}_sanitize_{$type}", $value, $key);
             }
 
+
             // General filter
             $input[$key] = apply_filters("{$this->setting_name}_sanitize", $value, $key);
         }
+
 
         // Loop through the whitelist and unset any that are empty for the tab being saved
         if (!empty($settings[$tab])) {
@@ -299,6 +304,13 @@ class Settings
                         '<code>%site_url%</code>'
                     )
             ),
+            'register_sms'          => array(
+                'id'      => 'register_sms',
+                'name'    => __('Register with phone', 'wp-sms'),
+                'type'    => 'checkbox',
+                'options' => $options,
+                'desc'    => __('Allow user to register via phone when user is not available.', 'wp-sms'),
+            ),
             'otp_title'             => array(
                 'id'   => 'otp_title',
                 'name' => __('Two-Factor Authentication SMS', 'wp-sms'),
@@ -338,49 +350,7 @@ class Settings
 
         // Set BuddyPress settings
         if (class_exists('BuddyPress')) {
-            $buddyPressProfileFields = [];
-            if (function_exists('bp_xprofile_get_groups')) {
-                $buddyPressProfileGroups = bp_xprofile_get_groups(['fetch_fields' => true]);
-
-                foreach ($buddyPressProfileGroups as $buddyPressProfileGroup) {
-                    if (isset($buddyPressProfileGroup->fields)) {
-                        foreach ($buddyPressProfileGroup->fields as $field) {
-                            $buddyPressProfileFields[$buddyPressProfileGroup->name][$field->id] = $field->name;
-                        }
-                    }
-                }
-            }
-
             $buddypress_settings = array(
-                'bp_fields'                       => array(
-                    'id'   => 'bp_fields',
-                    'name' => __('General', 'wp-sms'),
-                    'type' => 'header'
-                ),
-                'bp_mobile_field'                 => array(
-                    'id'      => 'bp_mobile_field',
-                    'name'    => __('Choose the field', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => array(
-                        'disable'            => __('Disable (No field)', 'wp-sms'),
-                        'add_new_field'      => __('Add a new mobile field to profile page', 'wp-sms'),
-                        'used_current_field' => __('Use the exists field', 'wp-sms'),
-                    ),
-                    'desc'    => __('Choose from which field you would like to use for mobile field.', 'wp-sms')
-                ),
-                'bp_mobile_field_id'              => array(
-                    'id'      => 'bp_mobile_field_id',
-                    'name'    => __('Choose the exists field', 'wp-sms'),
-                    'type'    => 'advancedselect',
-                    'options' => $buddyPressProfileFields,
-                    'desc'    => __('Select the BuddyPress field', 'wp-sms')
-                ),
-                'bp_sync_fields'                  => array(
-                    'id'   => 'bp_sync_fields',
-                    'name' => __('Sync fields'),
-                    'type' => 'checkbox',
-                    'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
-                ),
                 'bp_welcome_notification'         => array(
                     'id'   => 'bp_welcome_notification',
                     'name' => __('Welcome Notification', 'wp-sms'),
@@ -1082,31 +1052,6 @@ class Settings
 
         // Get Ultimate Member
         if (function_exists('um_user')) {
-            $um_options['um_field_header']            = array(
-                'id'   => 'um_field_header',
-                'name' => __('General', 'wp-sms'),
-                'type' => 'header'
-            );
-            $um_options['um_field']                   = array(
-                'id'   => 'um_field',
-                'name' => __('Mobile number field', 'wp-sms'),
-                'type' => 'checkbox',
-                'desc' => __('Sync Mobile number from Ultimate Member mobile number form field.', 'wp-sms'),
-            );
-            $um_options['um_sync_field_name']         = array(
-                'id'      => 'um_sync_field_name',
-                'name'    => __('Select the purpose field in registration form'),
-                'type'    => 'select',
-                'options' => $this->get_um_register_form_fields(),
-                'std'     => 'mobile_number',
-                'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
-            );
-            $um_options['um_sync_previous_members']   = array(
-                'id'   => 'um_sync_previous_members',
-                'name' => __('Sync old member too?'),
-                'type' => 'checkbox',
-                'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
-            );
             $um_options['um_notification_header']     = array(
                 'id'   => 'um_notification_header',
                 'name' => __('Notification', 'wp-sms'),
@@ -1228,6 +1173,19 @@ class Settings
             );
         }
 
+        $buddyPressProfileFields = [];
+        if (function_exists('bp_xprofile_get_groups')) {
+            $buddyPressProfileGroups = bp_xprofile_get_groups(['fetch_fields' => true]);
+
+            foreach ($buddyPressProfileGroups as $buddyPressProfileGroup) {
+                if (isset($buddyPressProfileGroup->fields)) {
+                    foreach ($buddyPressProfileGroup->fields as $field) {
+                        $buddyPressProfileFields[$buddyPressProfileGroup->name][$field->id] = $field->name;
+                    }
+                }
+            }
+        }
+
         $settings = apply_filters('wp_sms_registered_settings', array(
             /**
              * General fields
@@ -1254,12 +1212,12 @@ class Settings
                 ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
-                    'name' => __('Mobile field', 'wp-sms'),
+                    'name' => __('Mobile Field', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'add_mobile_field'                         => array(
                     'id'      => 'add_mobile_field',
-                    'name'    => __('Mobile field status', 'wp-sms'),
+                    'name'    => __('Mobile Field Status', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => [
                         'WordPress'   => [
@@ -1272,6 +1230,33 @@ class Settings
                         ]
                     ],
                     'desc'    => __('Choose how to set the mobile number video for the user', 'wp-sms')
+                ),
+                'um_sync_field_name'                       => array(
+                    'id'      => 'um_sync_field_name',
+                    'name'    => __('Select the Existing Field', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => $this->get_um_register_form_fields(),
+                    'std'     => 'mobile_number',
+                    'desc'    => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
+                ),
+                'um_sync_previous_members'                 => array(
+                    'id'   => 'um_sync_previous_members',
+                    'name' => __('Sync Old Members Too?', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'desc' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
+                ),
+                'bp_mobile_field_id'                       => array(
+                    'id'      => 'bp_mobile_field_id',
+                    'name'    => __('Select the Existing Field', 'wp-sms'),
+                    'type'    => 'advancedselect',
+                    'options' => $buddyPressProfileFields,
+                    'desc'    => __('Select the BuddyPress field', 'wp-sms')
+                ),
+                'bp_sync_fields'                           => array(
+                    'id'   => 'bp_sync_fields',
+                    'name' => __('Sync Fields', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'desc' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
                 'optional_mobile_field'                    => array(
                     'id'      => 'optional_mobile_field',
@@ -1341,99 +1326,99 @@ class Settings
              */
             'gateway'              => apply_filters('wp_sms_gateway_settings', array(
                 // Gateway
-                'gateway_title'             => array(
+                'gateway_title'                => array(
                     'id'   => 'gateway_title',
                     'name' => __('SMS Gateway Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'gateway_name'              => array(
+                'gateway_name'                 => array(
                     'id'      => 'gateway_name',
                     'name'    => __('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => Gateway::gateway(),
                     'desc'    => __('Select the SMS Gateway from which you want to send the SMS.', 'wp-sms')
                 ),
-                'gateway_help'              => array(
+                'gateway_help'                 => array(
                     'id'      => 'gateway_help',
                     'name'    => __('Gateway Guide', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::help(),
                 ),
-                'gateway_username'          => array(
+                'gateway_username'             => array(
                     'id'   => 'gateway_username',
                     'name' => __('API Username', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API username of gateway', 'wp-sms')
                 ),
-                'gateway_password'          => array(
+                'gateway_password'             => array(
                     'id'   => 'gateway_password',
                     'name' => __('API Password', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API password of gateway', 'wp-sms')
                 ),
-                'gateway_sender_id'         => array(
+                'gateway_sender_id'            => array(
                     'id'   => 'gateway_sender_id',
                     'name' => __('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
                     'desc' => __('Sender number or sender ID', 'wp-sms')
                 ),
-                'gateway_key'               => array(
+                'gateway_key'                  => array(
                     'id'   => 'gateway_key',
                     'name' => __('API Key', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API key of gateway', 'wp-sms')
                 ),
                 // Gateway status
-                'gateway_status_title'      => array(
+                'gateway_status_title'         => array(
                     'id'   => 'gateway_status_title',
                     'name' => __('Gateway Overview', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'account_credit'            => array(
+                'account_credit'               => array(
                     'id'      => 'account_credit',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::status(),
                 ),
-                'account_response'          => array(
+                'account_response'             => array(
                     'id'      => 'account_response',
                     'name'    => __('Balance / Credit', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
-                'incoming_message'          => array(
+                'incoming_message'             => array(
                     'id'      => 'incoming_message',
                     'name'    => __('Incoming Message'),
                     'type'    => 'html',
                     'options' => Gateway::incoming_message_status(),
                 ),
-                'bulk_send'                 => array(
+                'bulk_send'                    => array(
                     'id'      => 'bulk_send',
                     'name'    => __('Send Bulk SMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::bulk_status(),
                 ),
-                'media_support'             => array(
+                'media_support'                => array(
                     'id'      => 'media_support',
                     'name'    => __('Send MMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::mms_status(),
                 ),
                 // Account credit
-                'account_credit_title'      => array(
+                'account_credit_title'         => array(
                     'id'   => 'account_credit_title',
                     'name' => __('Account Balance', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'account_credit_in_menu'    => array(
+                'account_credit_in_menu'       => array(
                     'id'      => 'account_credit_in_menu',
                     'name'    => __('Show in admin menu', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Show your account credit in admin menu.', 'wp-sms')
                 ),
-                'account_credit_in_sendsms' => array(
+                'account_credit_in_sendsms'    => array(
                     'id'      => 'account_credit_in_sendsms',
                     'name'    => __('Show in send SMS page', 'wp-sms'),
                     'type'    => 'checkbox',
@@ -1441,24 +1426,31 @@ class Settings
                     'desc'    => __('Show your account credit in send SMS page.', 'wp-sms')
                 ),
                 // Message header
-                'message_title'             => array(
+                'message_title'                => array(
                     'id'   => 'message_title',
-                    'name' => __('Message Options', 'wp-sms'),
+                    'name' => __('Miscellaneous Options', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'send_unicode'              => array(
+                'send_unicode'                 => array(
                     'id'      => 'send_unicode',
                     'name'    => __('Send as Unicode', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms')
                 ),
-                'clean_numbers'             => array(
+                'clean_numbers'                => array(
                     'id'      => 'clean_numbers',
                     'name'    => __('Clean The Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
+                ),
+                'notify_errors_to_admin_email' => array(
+                    'id'      => 'notify_errors_to_admin_email',
+                    'name'    => __('Email Errors Notifications', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Automatically notify the admin email address in the event of an error during SMS transmission.', 'wp-sms')
                 )
             )),
 
@@ -2307,7 +2299,7 @@ class Settings
         }
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input type="text" class="%1$s-text wpsms_upload_field" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button-secondary" value="%4$s"/></span><p class="description"> %5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), __('Upload File', 'wpsms'), wp_kses_post($args['desc']));
+        $html = sprintf('<input type="text" class="%1$s-text wpsms_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button-secondary" value="%4$s"/></span><p class="description"> %5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), __('Upload File', 'wpsms'), wp_kses_post($args['desc']));
 
         echo $html;
     }
@@ -2321,7 +2313,7 @@ class Settings
         }
 
         $default = isset($args['std']) ? $args['std'] : '';
-        $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
+        $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . $this->setting_name . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
 
         echo $html;
     }
@@ -2357,11 +2349,11 @@ class Settings
 
                             if ($IsProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . WP_SMS_SITE . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
                             }
 
-                            echo '<li class="tab-' . $tab_id . $IsProTab . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . $active . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo $tab_name;
                             echo '</a>' . $proLockIcon . '</li>';
 
@@ -2370,11 +2362,9 @@ class Settings
                                 echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
                             }
                         } ?>
-
-                        <li class="tab-company-logo"><a target="_blank" href="https://veronalabs.com/?utm_source=wp_sms&utm_medium=display&utm_campaign=wordpress"><img src="<?php echo plugins_url('wp-sms/assets/images/veronalabs.svg'); ?>"/></a></li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
-                    <div class="wpsms-tab-content<?php echo $contentRestricted ? ' pro-not-installed' : ''; ?> <?php echo $active_tab . '_settings_tab' ?>">
+                    <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
                         <form method="post" action="options.php">
                             <table class="form-table">
                                 <?php

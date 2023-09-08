@@ -20,7 +20,7 @@ class gateway extends \WP_SMS\Gateway
         $this->bulk_send      = true;
         $this->has_key        = true;
         $this->validateNumber = "+966556xxxxxx";
-        $this->help           = "";
+        $this->help           = 'For passing the Template ID in your message, please add |templateid after your messages, example: Hello|909';
         $this->gatewayFields  = [
             'has_key'  => [
                 'id'   => 'gateway_key',
@@ -89,7 +89,7 @@ class gateway extends \WP_SMS\Gateway
                 $encoding = 'UFS';
             }
 
-            $response = $this->request('GET', "{$this->wsdl_link}/SendSMSMulti", [
+            $arguments = [
                 'api_id'       => $this->has_key,
                 'api_password' => $this->password,
                 'sms_type'     => 'T',
@@ -97,8 +97,17 @@ class gateway extends \WP_SMS\Gateway
                 'sender_id'    => $this->from,
                 'phonenumber'  => implode(',', $this->to),
                 'textmessage'  => $this->msg
-            ], []);
-            
+            ];
+
+            $template = $this->getTemplateIdAndMessageBody();
+
+            if (isset($template['template_id'])) {
+                $arguments['template_id'] = $template['template_id'];
+                $this->msg                = $template['message'];
+            }
+
+            $response = $this->request('GET', "{$this->wsdl_link}/SendSMSMulti", $arguments, []);
+
             if (isset($response->status) && $response->status == 'F') {
                 throw new Exception($response->remarks);
             }

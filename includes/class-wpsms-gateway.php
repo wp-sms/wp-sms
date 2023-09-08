@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use Exception;
+use WP_SMS\Helper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -360,6 +361,9 @@ class Gateway
 
         // Add Filters
         add_filter('wp_sms_to', array($this, 'modify_bulk_send'));
+
+        // If there is error in sending sms send and email to admin
+        add_action('wp_sms_log_after_save', array($this, 'mail_admin_sms_stopped'), 10, 7);
     }
 
     /**
@@ -1471,5 +1475,28 @@ class Gateway
         }
 
         return $strResult;
+    }
+
+    public function mail_admin_sms_stopped($result, $sender, $message, $to, $response, $status, $media)
+    {
+        if ($status == 'error' and (isset($this->options['notify_errors_to_admin_email']) && $this->options['notify_errors_to_admin_email'])) {
+            $admin_email = get_option('admin_email');
+            $site_name   = get_bloginfo('name');
+            $subject     = sprintf(__('%s - WP SMS Plugin SMS Gateway Error', 'wp-sms'), $site_name);
+            $content     = sprintf(__('The WP SMS plugin has encountered an issue, and you need to look at it. The error message that received is: <p><code>%s</code></p>', 'wp-sms'), $response);
+
+            $message = Helper::loadTemplate('email/default.php', [
+                'email_title' => __('SMS Delivery Issue', 'wp-sms'),
+                'content'     => $content,
+                'site_url'    => home_url(),
+                'site_name'   => $site_name,
+                'cta_title'   => __('Check SMS gateway configuration', 'wp-sms'),
+                'cta_link'    => admin_url('admin.php?page=wp-sms-settings'),
+            ]);
+
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+
+            wp_mail($admin_email, $subject, $message, $headers);
+        }
     }
 }
