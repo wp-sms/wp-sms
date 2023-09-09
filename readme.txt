@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.2.4
+Stable tag: 6.2.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -240,6 +240,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.2.4.1 - 09.09.2023 =
+* Fixed: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
+
 = v6.2.4 - 08.09.2023 =
 * Feature: Administrator Email notification once the send SMS faced error
 * Feature: Add support for `%billing_email%` variable in WooCommerce order notification

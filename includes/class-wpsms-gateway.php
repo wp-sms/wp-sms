@@ -1491,7 +1491,7 @@ class Gateway
                 'site_url'    => home_url(),
                 'site_name'   => $site_name,
                 'cta_title'   => __('Check SMS gateway configuration', 'wp-sms'),
-                'cta_link'    => admin_url('admin.php?page=wp-sms-settings'),
+                'cta_link'    => admin_url('admin.php?page=wp-sms-settings&tab=gateway'),
             ]);
 
             $headers = array('Content-Type: text/html; charset=UTF-8');
