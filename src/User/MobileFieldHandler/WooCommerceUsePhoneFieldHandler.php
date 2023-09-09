@@ -24,7 +24,7 @@ class WooCommerceUsePhoneFieldHandler
         }
 
         // backward compatibility
-        if (!$mobileNumber) {
+        if (!$mobileNumber && isset(WC()->session)) {
             $customerSessionData = WC()->session->get('customer');
 
             if (isset($customerSessionData['phone'])) {
