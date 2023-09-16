@@ -439,4 +439,13 @@ class Helper
             exit;
         }
     }
+
+    public static function sendMail($subject, $args)
+    {
+        $adminEmail = get_option('admin_email');
+        $message    = self::loadTemplate('email/default.php', $args);
+        $headers    = array('Content-Type: text/html; charset=UTF-8');
+
+        return wp_mail($adminEmail, $subject, $message, $headers);
+    }
 }

@@ -226,6 +226,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 15. SMS Subscribers Form
 16. Gravity Forms Settings page
 17. SMS Send/Receive stats widget
+18. Email Notification for failed SMS
 
 == Upgrade Notice ==
 = v6.1 =
