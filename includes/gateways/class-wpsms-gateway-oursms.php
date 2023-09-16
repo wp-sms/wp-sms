@@ -83,7 +83,7 @@ class oursms extends \WP_SMS\Gateway
                 'token'    => $this->has_key,
                 'src'      => $this->from,
                 'dests'    => implode(',', $this->to),
-                'body'     => $this->msg,
+                'body'     => urlencode($this->msg),
                 'priority' => 0,
                 'delay'    => 0,
                 'validity' => 0,

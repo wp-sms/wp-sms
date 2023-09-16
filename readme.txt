@@ -1,5 +1,5 @@
 ﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
-Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn, rezathriii
+Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 4.1
@@ -243,6 +243,8 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 = v6.2.4.1 - 09.09.2023 =
 * Fixed: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
 
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.2.4 - 08.09.2023 =
 * Feature: Administrator Email notification once the send SMS faced error
 * Feature: Add support for `%billing_email%` variable in WooCommerce order notification
@@ -252,8 +254,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Improvement: Mobile Number Backward Compatibility for Customer Sessions
 * Improvement: Mobile field handler functionality and improvement
 * Improvement: Minor styles, RTL issues and settings
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.2.3 - 10.08.2023 =
 * Improvement: Refined Woocommerce customers query, limited to 1000, and optimized MySQL performance using filters.
