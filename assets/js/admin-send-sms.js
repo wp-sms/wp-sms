@@ -1,19 +1,12 @@
 ﻿jQuery(document).ready(function () {
     wpsmsRepeatingMessages.init()
 
-    jQuery(".wpsms-value").hide();
-    jQuery(".wpsms-group").show();
-
-    jQuery("select#select_sender").on('change', function () {
-        recipientsSelect();
-    });
-
-
     jQuery("#wp_get_message").counter({
         count: 'up',
         goal: 'sky',
         msg: WpSmsSendSmsTemplateVar.messageMsg
     });
+
     if (WpSmsSendSmsTemplateVar.proIsActive) {
         jQuery("#datepicker").flatpickr({
             enableTime: true,
@@ -52,11 +45,23 @@
         isRtl("#wp_get_message", ".preview__message__message");
     });
 
-    jQuery('input[name="SendSMS"]').on('click', function (e) {
+
+    // For receivers in message preview
+    function updateReceiverPreview() {
+        let toFieldValue = jQuery("#select_sender").find('option:selected').text();
+        jQuery(".preview__message__receiver").text(toFieldValue);
+    }
+
+    updateReceiverPreview();
+
+    jQuery("#select_sender").on('change', function () {
+        updateReceiverPreview();
+    });
+
+    jQuery('button[name="SendSMS"]').on('click', function (e) {
         e.preventDefault();
         sendSMS();
     });
-
 
     /**
      * Upload Media
@@ -97,6 +102,336 @@
         $imageElement.val('')
         $uploadButton.html('Upload image')
     });
+
+
+    /**
+     * Manage Send SMS New Page
+     */
+    let WpSendSMSPageManager = {
+
+        getFields: function () {
+            this.fields = {
+                contentTab: {
+                    element: jQuery('.wpsms-sendsms .tab#content'),
+                },
+                receiverTab: {
+                    element: jQuery('.wpsms-sendsms .tab#receiver'),
+                },
+                optionsTab: {
+                    element: jQuery('.wpsms-sendsms .tab#options'),
+                },
+                sendTab: {
+                    element: jQuery('.wpsms-sendsms .tab#send'),
+                },
+                allTab: {
+                    element: jQuery('.wpsms-sendsms .tab'),
+                },
+                fromField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .from-field'),
+                },
+                toField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .to-field'),
+                },
+                groupField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .wpsms-group-field'),
+                },
+                usersField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .wpsms-users-field'),
+                },
+                searchUserField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .wpsms-search-user-field'),
+                },
+                numbersField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .wpsms-numbers-field'),
+                },
+                bulkField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .bulk-field'),
+                },
+                contentField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .content-field'),
+                },
+                mmsMediaField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .mms-media-field'),
+                },
+                scheduleField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .schedule-field'),
+                },
+                setDateField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .set-date-field'),
+                },
+                repeatField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .repeat-field'),
+                },
+                repeatEveryField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .repeat-every-field'),
+                },
+                repeatEndField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .repeat-end-field'),
+                },
+                flashField: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .flash-field'),
+                },
+                summary: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .summary'),
+                },
+                submitButton: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .sendsms-button'),
+                },
+                nextButton: {
+                    element: jQuery('#wpbody-content .next-button'),
+                },
+                prevButton: {
+                    element: jQuery('#wpbody-content .previous-button'),
+                }
+            }
+        },
+
+        addEventListener: function () {
+            let self = this;
+            self.manageNavigationKeys()
+
+            self.fields.allTab.element.on('click', function () {
+                self.fields.allTab.element.removeClass('active passed')
+                jQuery(this).addClass('active')
+
+                let prevElements = jQuery(this).prevAll()
+                prevElements.addClass('passed')
+                self.manageFieldsVisibility()
+                self.manageNavigationKeys()
+            });
+
+
+            self.fields.nextButton.element.on('click', function () {
+                let activeTab = jQuery('.wpsms-sendsms .tab.active')
+                let nextTab = activeTab.next('.tab')
+
+                if (nextTab.length > 0) {
+                    self.fields.allTab.element.removeClass('active passed')
+                    nextTab.addClass('active');
+                    let prevElements = nextTab.prevAll()
+                    prevElements.addClass('passed')
+                    self.manageFieldsVisibility()
+                }
+                self.manageNavigationKeys()
+            });
+
+            self.fields.prevButton.element.on('click', function () {
+                let activeTab = jQuery('.wpsms-sendsms .tab.active')
+                let prevTab = activeTab.prev('.tab')
+
+                if (prevTab.length > 0) {
+                    self.fields.allTab.element.removeClass('active passed')
+                    prevTab.addClass('active');
+                    let prevElements = prevTab.prevAll()
+                    prevElements.addClass('passed')
+                    self.manageFieldsVisibility()
+                }
+                self.manageNavigationKeys()
+            });
+
+            self.fields.toField.element.find('select').on('change', function () {
+                self.manageRecipients()
+            });
+
+            self.fields.scheduleField.element.find('input[type="checkbox"]').on('change', function () {
+                self.manageProOptions()
+            });
+
+            self.fields.repeatField.element.find('input[type="checkbox"]').on('change', function () {
+                self.manageProOptions()
+            });
+        },
+
+        manageProOptions: function () {
+            let activeTab = jQuery('.wpsms-sendsms .tab.active')
+            let activeTabId = activeTab.attr("id")
+            let scheduleFieldState = jQuery("#schedule_status").is(":checked")
+            let repeatFieldState = jQuery("#wpsms_repeat_status").is(":checked")
+
+            if (activeTabId == 'options' && scheduleFieldState) {
+                this.fields.setDateField.element.fadeIn()
+                this.fields.repeatField.element.fadeIn()
+            } else {
+                this.fields.setDateField.element.hide()
+                this.fields.repeatField.element.hide()
+            }
+
+            if (activeTabId == 'options' && scheduleFieldState && repeatFieldState) {
+                this.fields.repeatEveryField.element.fadeIn()
+                this.fields.repeatEndField.element.fadeIn()
+            } else {
+                this.fields.repeatEveryField.element.hide()
+                this.fields.repeatEndField.element.hide()
+            }
+        },
+
+        manageNavigationKeys: function () {
+            let activeTab = jQuery('.wpsms-sendsms .tab.active')
+            let prevTab = activeTab.prev('.tab')
+            let prevTabs = activeTab.prevAll()
+
+            let nextTab = activeTab.next('.tab')
+            let nextTabs = activeTab.nextAll()
+
+            if (nextTabs.length < 1) {
+                this.fields.nextButton.element.addClass('inactive')
+            } else {
+                this.fields.nextButton.element.removeClass('inactive')
+            }
+
+            if (prevTabs.length < 1) {
+                this.fields.prevButton.element.addClass('inactive')
+            } else {
+                this.fields.prevButton.element.removeClass('inactive')
+            }
+        },
+
+        manageFieldsVisibility: function () {
+            let activeTab = jQuery('.wpsms-sendsms .tab.active')
+            let activeTabId = activeTab.attr("id")
+
+
+            // Firstly hide all fields
+            const fields = [
+                this.fields.fromField,
+                this.fields.toField,
+                this.fields.searchUserField,
+                this.fields.groupField,
+                this.fields.usersField,
+                this.fields.numbersField,
+                this.fields.bulkField,
+                this.fields.contentField,
+                this.fields.mmsMediaField,
+                this.fields.scheduleField,
+                this.fields.setDateField,
+                this.fields.repeatField,
+                this.fields.repeatEveryField,
+                this.fields.repeatEndField,
+                this.fields.flashField,
+                this.fields.summary,
+                this.fields.submitButton
+            ];
+
+            // Loop through the fields and hide each one
+            for (const field of fields) {
+                field.element.hide();
+            }
+
+            // Secondly show fields based on the selected tab
+            switch (activeTabId) {
+                case 'content':
+                    this.fields.contentField.element.fadeIn()
+                    break;
+
+                case 'receiver':
+                    this.fields.fromField.element.fadeIn()
+                    this.fields.toField.element.fadeIn()
+                    this.manageRecipients()
+                    break;
+
+                case 'options':
+                    this.fields.bulkField.element.fadeIn()
+                    this.fields.mmsMediaField.element.fadeIn()
+                    this.fields.scheduleField.element.fadeIn()
+                    this.fields.flashField.element.fadeIn()
+                    this.manageProOptions()
+                    break;
+
+                case 'send':
+                    this.fields.summary.element.fadeIn()
+                    this.fields.submitButton.element.fadeIn()
+                    break;
+            }
+        },
+
+        manageRecipients: function () {
+            let activeTabId = jQuery('.wpsms-sendsms .tab.active').attr("id")
+            let toFieldState = this.fields.toField.element.find('select option:selected').attr("id")
+            if (activeTabId !== 'receiver') {
+                return
+            }
+
+            // Firstly hide all the related fields
+            jQuery(".wpsms-value").hide();
+
+            switch (toFieldState) {
+                case 'wp_subscribe_username':
+                    jQuery(".wpsms-group").fadeIn();
+                    break;
+
+                case 'wp_roles':
+                    jQuery(".wpsms-roles").fadeIn();
+                    break;
+
+                case 'wp_users':
+                    jQuery(".wpsms-users").fadeIn();
+                    break;
+
+                case 'wc_users':
+                    jQuery(".wpsms-wc-users").fadeIn();
+                    break;
+
+                case 'bp_users':
+                    jQuery(".wpsms-bp-users").fadeIn();
+                    jQuery(".wpsms-search-user-field").fadeIn();
+                    break;
+
+                case 'wp_tellephone':
+                    jQuery(".wpsms-numbers").fadeIn();
+                    jQuery("#wp_get_number").focus();
+                    break;
+
+                case 'wp_role':
+                    jQuery(".wprole-group").fadeIn();
+                    break;
+            }
+        },
+
+        addSearchUserEventListener: function () {
+            let typingTimer;
+            let doneTypingInterval = 600;
+
+            jQuery('.wpsms-sendsms .wpsms-search-user textarea').on('keyup', function () {
+                clearTimeout(typingTimer);
+                let searchUserKeyword = jQuery(this).val();
+                let selectElement = jQuery('.wpsms-sendsms .wpsms-search-user select.js-wpsms-select2');
+
+                // Set a new timer to send the query after a delay
+                typingTimer = setTimeout(function () {
+                    jQuery.ajax({
+                        url: '/' + WpSmsSendSmsTemplateVar.siteName + '/wp-json/wp/v2/users',
+                        method: 'GET',
+                        data: {
+                            search: searchUserKeyword,
+                        },
+                        dataType: 'json',
+                        headers: {
+                            'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
+                        },
+                        success: function (users) {
+                            // Populate the Select2 element with the retrieved users
+                            users.forEach(function (user) {
+                                if (user.id && user.id > 0) {
+                                    let option = new Option(user.slug, user.slug, false, false);
+                                    selectElement.append(option);
+                                }
+                            });
+                        },
+                    });
+                }, doneTypingInterval);
+            });
+        },
+
+        init: function () {
+            this.getFields();
+            this.addEventListener();
+            this.addSearchUserEventListener();
+            this.manageFieldsVisibility();
+        }
+    }
+
+    WpSendSMSPageManager.init();
+
 });
 
 function isRtl(input, output) {
@@ -108,11 +443,11 @@ function isRtl(input, output) {
                 const RTL_Regex = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
                 const isRTL = RTL_Regex.test(String.fromCharCode(e.which));
                 const Direction = isRTL ? 'rtl' : 'ltr';
-                jQuery(input).css({ 'direction': Direction });
+                jQuery(input).css({'direction': Direction});
                 if (isRTL) {
-                    jQuery(output).css({ 'direction': 'rtl' });
+                    jQuery(output).css({'direction': 'rtl'});
                 } else {
-                    jQuery(output).css({ 'direction': 'ltr' });
+                    jQuery(output).css({'direction': 'ltr'});
                 }
             }
         });
@@ -120,11 +455,11 @@ function isRtl(input, output) {
 }
 
 function scrollToTop() {
-    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    jQuery('html, body').animate({scrollTop: 0}, 1000);
 }
 
 function closeNotice() {
-    jQuery(".wpsms-wrap__main__notice").removeClass('not-hidden');
+    jQuery(".wpsms-sendsms-result").fadeOut();
 }
 
 function clearForm() {
@@ -134,17 +469,19 @@ function clearForm() {
 
 function sendSMS() {
     let smsFrom = jQuery("#wp_get_sender").val(),
-        smsTo = { type: jQuery("select[name='wp_send_to'] option:selected").val() },
+        smsTo = {type: jQuery("select[name='wp_send_to'] option:selected").val()},
         smsMessage = jQuery("#wp_get_message").val(),
         smsMedia = jQuery(".wpsms-mms-image").val(),
-        smsScheduled = { scheduled: jQuery("#schedule_status").is(":checked") },
+        smsScheduled = {scheduled: jQuery("#schedule_status").is(":checked")},
         smsRepeating = wpsmsRepeatingMessages.getData(),
         smsFlash = jQuery('[name="wp_flash"]:checked').val();
 
     if (smsTo.type === "subscribers") {
         smsTo.groups = jQuery('.wpsms-group select[name="wpsms_groups[]"]').val();
-    } else if (smsTo.type === "users") {
+    } else if (smsTo.type === "roles") {
         smsTo.roles = jQuery('select[name="wpsms_roles[]"]').val();
+    } else if (smsTo.type === "users") {
+        smsTo.users = jQuery('select[name="wpsms_users[]"]').val();
     } else if (smsTo.type === "numbers") {
         smsTo.numbers = jQuery('textarea[name="wp_get_number"]').val();
         smsTo.numbers = smsTo.numbers.replace(/\n/g, ",").split(",");
@@ -159,6 +496,7 @@ function sendSMS() {
         recipients: smsTo.type,
         group_ids: smsTo.groups,
         role_ids: smsTo.roles,
+        users: smsTo.users,
         message: smsMessage,
         numbers: smsTo.numbers,
         flash: smsFlash,
@@ -169,18 +507,18 @@ function sendSMS() {
 
     requestBody = wp.hooks.applyFilters('wp_sms_send_request_body', requestBody);
 
-    jQuery('.wpsms-wrap__main__notice').removeClass('not-hidden');
+    jQuery('.wpsms-sendsms-result').fadeOut();
 
     jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',
         {
-            headers: { 'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce },
+            headers: {'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce},
             dataType: 'json',
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify(requestBody),
             beforeSend: function () {
                 jQuery(".wpsms-sendsms__overlay").css('display', 'flex');
-                jQuery('input[name="SendSMS"]').attr('disabled', 'disabled');
+                jQuery('button[name="SendSMS"]').addClass('inactive');
             },
             success: function (data, status, xhr) {
                 Object.keys(smsTo).forEach(key => {
@@ -193,56 +531,24 @@ function sendSMS() {
                 jQuery(".wpsms-remove-button").trigger('click');
                 scrollToTop();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('input[name="SendSMS"]').prop('disabled', false);
-                jQuery('.wpsms-wrap__main__notice').removeClass('notice-error');
-                jQuery('.wpsms-wrap__main__notice').addClass('notice-success');
-                jQuery('.wpsms-wrap__notice__text').html(data.message);
-                jQuery('.wpsms-wrap__account-balance').html('Your account credit: ' + data.data.balance);
-                jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
-                jQuery(".wpsms-sendsms__overlay").css('display', 'none');
+                jQuery('button[name="SendSMS"]').removeClass('inactive')
+                jQuery('.wpsms-sendsms-result').removeClass('error');
+                jQuery('.wpsms-sendsms-result').addClass('success');
+                jQuery('.wpsms-sendsms-result p').html(data.message);
+                jQuery('#wpsms_account_credit').html(data.data.balance);
+                jQuery('.wpsms-sendsms-result').fadeIn();
                 clearForm();
             },
             error: function (data, status, xhr) {
                 scrollToTop();
-                jQuery('.wpsms-wrap__main__notice').removeClass('notice-success');
-                jQuery('.wpsms-wrap__main__notice').addClass('notice-error');
-                jQuery('.wpsms-wrap__notice__text').html(data.responseJSON.error.message);
-                jQuery('.wpsms-wrap__main__notice').addClass('not-hidden');
+                jQuery('.wpsms-sendsms-result').removeClass('success');
+                jQuery('.wpsms-sendsms-result').addClass('error');
+                jQuery('.wpsms-sendsms-result p').html(data.responseJSON.error.message);
+                jQuery('.wpsms-sendsms-result').fadeIn();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('input[name="SendSMS"]').prop('disabled', false);
+                jQuery('button[name="SendSMS"]').removeClass('inactive')
             }
         });
-}
-
-function recipientsSelect() {
-    jQuery(".js-wpsms-select2").val([]).trigger('change');
-    jQuery("#wp_get_number").val('').trigger('change');
-    var get_method = "";
-    jQuery("select#select_sender option:selected").each(
-        function () {
-            get_method += jQuery(this).attr('id');
-        }
-    );
-    if (get_method == 'wp_subscribe_username') {
-        jQuery(".wpsms-value").hide();
-        jQuery(".wpsms-group").fadeIn();
-    } else if (get_method == 'wp_users') {
-        jQuery(".wpsms-value").hide();
-        jQuery(".wpsms-users").fadeIn();
-    } else if (get_method == 'wc_users') {
-        jQuery(".wpsms-value").hide();
-        jQuery(".wpsms-wc-users").fadeIn();
-    } else if (get_method == 'bp_users') {
-        jQuery(".wpsms-value").hide();
-        jQuery(".wpsms-bp-users").fadeIn();
-    } else if (get_method == 'wp_tellephone') {
-        jQuery(".wpsms-value").hide();
-        jQuery(".wpsms-numbers").fadeIn();
-        jQuery("#wp_get_number").focus();
-    } else if (get_method == 'wp_role') {
-        jQuery(".wpsms-value").hide();
-        jQuery(".wprole-group").fadeIn();
-    }
 }
 
 function messageAutoScroll() {

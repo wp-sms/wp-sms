@@ -1,10 +1,6 @@
 /**
 Send SMS page
  */
-.wpsms-sendsms__container .wpsms-group {
-  margin-top: 11px;
-  width: 100%;
-}
 
 .send-sms-post {
   label {
@@ -27,6 +23,7 @@ Send SMS page
     border: 1px solid #d0d1d6;
     padding: 10px 10px;
     height: 180px;
+    width: 100px;
   }
 
   select,
@@ -85,23 +82,6 @@ Send SMS page
   }
 }
 
-.wpsms-sendsms__container .wpsms-group .js-wpsms-select2 {
-  width: 65%;
-}
-
-.wpsms-sendsms__container textarea {
-  width: 65% !important;
-}
-
-.wpsms-sendsms__container {
-  #repeat-interval {
-    width: 100px;
-  }
-
-  #repeat_ends_on {
-    background-color: #fff;
-  }
-}
 
 /**
 Select2
@@ -157,21 +137,6 @@ Select2
 .wpsms-settings-description-header .dashicons {
   font-size: 15px;
   display: inherit;
-}
-
-.wpsms-sendsms {
-  display: flex;
-
-  @media screen and (max-width: 768px) {
-    flex-wrap: wrap;
-  }
-}
-
-.wpsms-sendsms__container {
-  .inside {
-    padding-top: 40px;
-    position: relative;
-  }
 }
 
 .wpsms-sendsms__preview {
@@ -263,16 +228,22 @@ Select2
   background-color: rgba(255, 255, 255, 0.7);
   position: absolute;
   width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
   z-index: 3;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
+  top: 0;
+  left: 0;
 }
 
+
 .wpsms-sendsms__overlay__spinner {
-  width: 7%;
+  width: 100px;
+  margin: auto;
+  display: block;
+  background: 0 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .wpsms-wrap .wpsms-wrap__main__notice {
@@ -299,29 +270,14 @@ Select2
 
   .preview__message__date,
   .preview__message__number {
-    text-align: left;
+    direction: ltr;
+    text-align: right;
   }
 }
 
 // Mobile
 @media screen and (max-width: 768px) {
   .wpsms-wrap__main {
-    .postbox {
-      max-width: 100%;
-    }
-
-    .wpsms-sendsms__container .inside {
-      padding-top: 10px;
-    }
-
-    .postbox table tr th {
-      padding: 14px 0 10px 0 !important;
-    }
-
-    .postbox table tr td {
-      padding: 0 0 18px 0 !important;
-    }
-
     .select2-container {
       width: 100% !important;
     }
@@ -335,3 +291,733 @@ Select2
     max-width: 100% !important;
   }
 }
+
+/**
+New styles for new version of the page
+ */
+.wpsms-sendsms {
+  background-color: white;
+  position: relative;
+  padding: 20px 20px;
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+  }
+
+  $dark-gray: #222222;
+  $brand-orange: #f26c2d;
+  $brand-highlight: #ff8349;
+  $borders-color: #828282;
+
+  .sendsms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    position: relative;
+
+    .budget {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      .icon {
+        margin-right: 7px;
+        width: 25px;
+        height: 25px;
+        background: url("../images/icons/box-icon.png") no-repeat center center / contain;
+      }
+
+      p {
+        color: $dark-gray;
+        font-weight: 300;
+        font-size: 15px;
+
+        span {
+          font-weight: 600;
+        }
+      }
+    }
+
+    .pro-button {
+      color: $brand-orange;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      .icon {
+        margin-left: 5px;
+        width: 12px;
+        height: 12px;
+        background: url("../images/icons/orange-chev.png") no-repeat center center / contain;
+      }
+
+      &.is-pro {
+        .icon {
+          background: url("../images/icons/orange-star.png") no-repeat center center / contain;
+          width: 15px;
+          height: 15px;
+          transform: translateY(-2px);
+        }
+      }
+    }
+
+    .rtl & {
+      .pro-button {
+        .icon {
+          margin-left: 0;
+          margin-right: 5px;
+          transform: scaleX(-1);
+        }
+      }
+
+      .budget {
+        .icon {
+          margin-left: 7px;
+          margin-right: 0px;
+        }
+      }
+    }
+
+    @media (max-width: 400px) {
+      margin-top: 40px;
+      flex-wrap: wrap;
+      padding: 0;
+
+      .pro-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        .rtl & {
+          right: auto;
+          left: 0;
+        }
+      }
+    }
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 600;
+    color: $dark-gray;
+    margin: 0;
+
+    @media (max-width: 400px) {
+      margin: 10px 0 30px 0;
+    }
+  }
+
+  .sendsms-tabs {
+    max-width: 500px;
+    margin: 40px auto 0px auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .tab {
+      font-size: 15px;
+      font-weight: 500;
+      color: $dark-gray;
+      text-align: center;
+      position: relative;
+      display: block;
+      flex: 0 0 25%;
+      cursor: pointer;
+      padding: 10px 0;
+      transition: .3s all ease-out;
+
+      &.active::before,
+      &.passed::before {
+        content: "";
+        width: 100%;
+        height: 3px;
+        position: absolute;
+        background-color: $brand-orange;
+        top: 61px;
+        left: 50%;
+        transform: translateX(-50%);
+        //transition: .3s all ease-out;
+      }
+
+      &.active::before {
+        width: 100%;
+        left: 0;
+      }
+
+      &#content::before {
+        transform: translateX(0);
+      }
+
+      &#content.active::before {
+        width: 0;
+      }
+
+      &::after {
+        content: "";
+        background: url("../images/icons/next-step-outline.png") no-repeat center center / contain;
+        width: 18px;
+        height: 18px;
+        position: absolute;
+        top: 53px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        transition: .3s all ease-out;
+      }
+
+      &.passed::after,
+      &.active::after {
+        background: url("../images/icons/next-step-fill.png") no-repeat center center / contain;
+      }
+
+      &.active {
+        color: $brand-orange;
+      }
+    }
+
+    .rtl & {
+      .tab::after {
+        transform: scaleX(-1) translateX(50%);
+      }
+
+      .tab.passed::before,
+      .tab.active::before {
+        left: auto;
+        right: 50%;
+        transform: translateX(50%);
+      }
+
+      .tab.active::before {
+        left: auto;
+        right: 0;
+      }
+    }
+
+    @media (max-width: 400px) {
+      margin-top: 0px;
+
+      .tab {
+        font-size: 14px;
+
+        &.passed::before,
+        &.active::before {
+          top: 49px;
+        }
+
+        &::after {
+          top: 42px;
+        }
+      }
+    }
+  }
+
+  .sendsms-tabs-line {
+    width: 100%;
+    height: 2px;
+    background-color: #f0f0f1;
+    margin-bottom: 80px;
+    margin-top: 24px;
+
+    @media (max-width: 400px) {
+      margin-bottom: 30px;
+      margin-top: 12px;
+    }
+  }
+
+  .sendsms-content {
+    max-width: 500px;
+    margin: auto;
+
+    .wpsms-sendsms-result {
+      padding: 10px 15px;
+      border: 1px solid #f0f0f1;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      display: none;
+      transition: .3s all ease-out;
+
+      p {
+        color: $dark-gray;
+        line-height: 1.8 !important;
+        font-size: 16px;
+        text-align: justify;
+        display: inline;
+      }
+
+      .icon {
+        display: inline-block;
+        transform: translateY(5px);
+        width: 20px;
+        height: 20px;
+        margin-right: 6px;
+        transition: .3s all ease-out;
+      }
+
+      &.success .icon {
+        background: url("../images/icons/green-check-fill.png") no-repeat center center / contain;
+      }
+
+      &.error .icon {
+        background: url("../images/icons/red-alert.png") no-repeat center center / contain;
+      }
+
+      .rtl & {
+        .icon {
+          margin-right: 0px;
+          margin-left: 8px;
+        }
+      }
+    }
+
+    .content-field,
+    .mms-media-field,
+    .bulk-field,
+    .from-field,
+    .repeat-field,
+    .repeat-every-field,
+    .wpsms-users-field,
+    .wpsms-group-field,
+    .repeat-end-field,
+    .other-scheduled-field,
+    .flash-field,
+    .to-field,
+    .set-date-field,
+    .schedule-field {
+      margin: 30px 0;
+
+      @media (max-width: 400px) {
+        margin: 20px 0;
+      }
+    }
+
+    .mms-media-field .wpsms-upload-button {
+      margin: 10px 0;
+    }
+
+    .flash-field {
+      margin-top: 40px;
+
+      .radio-options {
+        display: block;
+        margin: 20px 0;
+
+        input[type="radio"]:checked {
+          transform: translateY(1px);
+
+          &::before {
+            transform: translateX(1px);
+          }
+
+          @media (max-width: 400px) {
+            &::before {
+              transform: translateX(0);
+            }
+          }
+        }
+      }
+    }
+
+    .repeat-end-field {
+      display: flex;
+      align-items: center;
+
+      .date-picker {
+        flex: 0 0 60%;
+      }
+
+      .repeat-forever {
+        margin-left: 20px;
+        transform: translateY(7px);
+      }
+
+      .rtl & {
+        .repeat-forever {
+          margin-left: 0px;
+          margin-right: 20px;
+        }
+      }
+    }
+
+    label {
+      text-transform: uppercase;
+      text-align: left;
+      color: $dark-gray;
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    textarea {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      max-width: none;
+    }
+
+    span.select2 {
+      display: block;
+      max-width: none;
+      margin: 10px 0;
+    }
+
+    input[type="text"] {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      display: block;
+
+      .rtl & {
+        direction: ltr;
+        text-align: left;
+      }
+    }
+
+    .repeat-every-field {
+      select {
+        display: inline-block;
+        width: 80px;
+        margin-left: 10px;
+      }
+
+      input {
+        display: inline-block;
+        width: 80px;
+      }
+
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .rtl & {
+        select {
+          margin-left: 0;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    input[type="select"] {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    select {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      display: block;
+      max-width: none;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      background-color: $brand-orange;
+      border: none !important;
+      margin-right: 10px;
+      transform: translateY(2px);
+
+      &:checked {
+        background-color: $brand-orange;
+
+        &::before {
+          height: 20px !important;
+          width: 20px !important;
+          transform: translate(1px, 1px);
+
+          .rtl & {
+            transform: translate(-2px, 2px);
+          }
+        }
+      }
+
+      .rtl & {
+        margin-right: 0px;
+        margin-left: 5px;
+      }
+    }
+
+    .field-description {
+      color: #545454;
+      font-size: 15px;
+      text-align: justify;
+      line-height: 1.8 !important;
+      margin-bottom: 10px;
+
+      a {
+        color: #0b84b2;
+      }
+    }
+
+    .pro-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .pro {
+        border-radius: 3px;
+        background-color: #ffcc00;
+        padding: 2px 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        text-transform: uppercase;
+        transition: 0.3s all ease-out;
+        font-size: 12px;
+        font-weight: 400;
+
+        .icon {
+          width: 11px;
+          height: 11px;
+          margin-right: 3px;
+          background: url("../images/icons/star.png") no-repeat center center /
+            contain;
+          transition: 0.3s all ease-out;
+        }
+
+        &.not-pro .icon {
+          background: url("../images/icons/dark-lock.png") no-repeat center center / contain;
+        }
+
+        &:hover {
+          background-color: black;
+          color: white;
+
+          .icon {
+            background: url("../images/icons/white-star.png") no-repeat center center / contain;
+          }
+
+          &.not-pro .icon {
+            background: url("../images/icons/white-lock.png") no-repeat center center / contain;
+          }
+        }
+      }
+
+      .rtl & {
+        .pro .icon {
+          margin-right: 0;
+          margin-left: 3px;
+        }
+      }
+    }
+
+    .summary {
+      margin: 40px 0;
+
+      h4 {
+        text-align: left;
+        font-weight: 600;
+        color: $dark-gray;
+        margin: 5px 0;
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 15px;
+        font-weight: 400;
+        color: #545454;
+        line-height: 1.8 !important;
+        margin-bottom: 20px;
+
+        &.preview__message__message {
+
+          .icon {
+            width: 17px;
+            height: 17px;
+            display: inline-block;
+            transform: translateY(3px);
+            margin-right: 5px;
+            background: url("../images/icons/orange-alert.png") no-repeat center center / contain;
+          }
+
+          .empty-content {
+            color: $brand-orange;
+          }
+        }
+      }
+
+      .receiver {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        p {
+          margin: 5px 0;
+
+          &::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: url("../images/icons/send-icon.png") no-repeat center center/ contain;
+            display: inline-block;
+            transform: translateY(2px);
+            margin-right: 7px;
+          }
+        }
+
+        span {
+          font-size: 15px;
+          display: inline-block;
+        }
+      }
+
+      .rtl & {
+        h4 {
+          text-align: right;
+        }
+
+        p.preview__message__message {
+          .icon {
+            margin-right: 0px;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+
+    .sendsms-button {
+      background-color: $brand-orange;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 400;
+      margin: 50px 0;
+      transition: all 0.3s ease-out;
+      border-radius: 8px;
+      padding: 10px 10px;
+      color: white;
+      cursor: pointer;
+      outline: none;
+      width: 100%;
+      border: none;
+
+      &:hover {
+        background-color: $brand-highlight;
+      }
+
+      &.inactive {
+        background-color: #f9f9f9;
+        color: #a1a1a1;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+
+    @media (max-width: 400px) {
+      padding: 10px 10px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    padding: 10px 10px;
+  }
+}
+
+#wpbody-content:has(.wpsms-sendsms) {
+  padding-bottom: 0px;
+  min-height: 100vh;
+  position: relative;
+
+  .previous-button,
+  .next-button {
+    z-index: 1;
+    position: absolute;
+    bottom: 50px;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s all ease-out;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &.inactive {
+      background-color: #f9f9f9;
+      color: #d9d9d9;
+      cursor: auto;
+    }
+
+    span {
+      width: 20px;
+      height: 15px;
+    }
+  }
+
+  .previous-button {
+    left: 20px;
+
+    span {
+      background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
+      margin-right: 8px;
+    }
+
+    &.inactive span {
+      background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+    }
+  }
+
+  .next-button {
+    right: 20px;
+
+    span {
+      background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
+      margin-left: 8px;
+    }
+
+    &.inactive span {
+      background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+    }
+  }
+
+  .rtl & {
+    .previous-button {
+      span {
+        background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
+        margin-right: 0;
+        margin-left: 8px;
+      }
+
+      &.inactive span {
+        background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+      }
+    }
+
+    .next-button {
+      span {
+        background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
+        margin-left: 0px;
+        margin-right: 8px;
+      }
+
+      &.inactive span {
+        background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+      }
+    }
+  }
+}
+
+body.wp-admin:has(.wpsms-sendsms) {
+  background-color: white;
+}
+
