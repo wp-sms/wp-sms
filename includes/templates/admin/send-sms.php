@@ -14,7 +14,7 @@
             <div class="budget"><span class="icon"></span>
                 <p><?php echo __('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo $gatewayCredit; ?></span></p>
             </div>
-            <a target="_blank" href="<?php echo $proIsActive ? WP_SMS_SITE : WP_SMS_SITE . '/buy'; ?>" class="pro-button <?php echo $proIsActive ? 'is-pro' : '' ?> "><?php !$proIsActive ? _e('Go Pro', 'wp-sms') : _e('Using Pro', 'wp-sms'); ?><span class="icon"></span></a>
+            <a style="<?php echo $proIsActive ? 'display:none;' : '' ?>" target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>" class="pro-button '' ?> "><?php _e('Go Pro', 'wp-sms'); ?><span class="icon"></span></a>
         </div>
 
         <h1><?php _e('Send SMS', 'wp-sms'); ?></h1>
@@ -256,9 +256,10 @@
                 <button type="submit" class="sendsms-button" name="SendSMS"><?php _e('Send SMS', 'wp-sms'); ?></button>
             </form>
 
+            <div class="previous-button"><span></span><?php _e('Prev', 'wp-sms') ?></div>
+            <div class="next-button"><?php _e('Next', 'wp-sms') ?><span></span></div>
         </div>
     </div>
 </div>
 
-<div class="previous-button"><span></span><?php _e('Prev', 'wp-sms') ?></div>
-<div class="next-button"><?php _e('Next', 'wp-sms') ?><span></span></div>
+

@@ -1,5 +1,5 @@
 ﻿jQuery(document).ready(function () {
-    wpsmsRepeatingMessages.init()
+    wpsmsRepeatingMessages.init();
 
     jQuery("#wp_get_message").counter({
         count: 'up',
@@ -531,12 +531,14 @@ function sendSMS() {
                 jQuery(".wpsms-remove-button").trigger('click');
                 scrollToTop();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('button[name="SendSMS"]').removeClass('inactive')
+                jQuery('button[name="SendSMS"]').html(WpSmsSendSmsTemplateVar.sendSMSAgainTitle);
+                jQuery('button[name="SendSMS"]').removeClass('inactive');
                 jQuery('.wpsms-sendsms-result').removeClass('error');
                 jQuery('.wpsms-sendsms-result').addClass('success');
                 jQuery('.wpsms-sendsms-result p').html(data.message);
                 jQuery('#wpsms_account_credit').html(data.data.balance);
                 jQuery('.wpsms-sendsms-result').fadeIn();
+                sendAgainEventListener();
                 clearForm();
             },
             error: function (data, status, xhr) {
@@ -549,6 +551,13 @@ function sendSMS() {
                 jQuery('button[name="SendSMS"]').removeClass('inactive')
             }
         });
+}
+
+function sendAgainEventListener() {
+    jQuery('button[name="SendSMS"]').on('click', function () {
+        jQuery('.sendsms-content .summary').fadeOut();
+        jQuery('#content').trigger('click');
+    });
 }
 
 function messageAutoScroll() {

@@ -283,12 +283,13 @@ class Admin
         wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), WP_SMS_VERSION, true);
         wp_enqueue_script('wp-sms-send-page');
         wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
-            'restRootUrl'     => esc_url_raw(rest_url()),
-            'nonce'           => wp_create_nonce('wp_rest'),
-            'messageMsg'      => __('characters', 'wp-sms'),
-            'currentDateTime' => WP_SMS_CURRENT_DATE,
-            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
-            'siteName'     => get_bloginfo('name'),
+            'restRootUrl'       => esc_url_raw(rest_url()),
+            'nonce'             => wp_create_nonce('wp_rest'),
+            'messageMsg'        => __('characters', 'wp-sms'),
+            'currentDateTime'   => WP_SMS_CURRENT_DATE,
+            'proIsActive'       => \WP_SMS\Version::pro_is_active(),
+            'siteName'          => get_bloginfo('name'),
+            'sendSMSAgainTitle' => __('Send SMS Again', 'wp-sms')
         ));
     }
 

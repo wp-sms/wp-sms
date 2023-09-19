@@ -533,6 +533,9 @@ New styles for new version of the page
   .sendsms-content {
     max-width: 500px;
     margin: auto;
+    position: relative;
+    min-height: 40vh;
+    margin-bottom: 100px;
 
     .wpsms-sendsms-result {
       padding: 10px 15px;
@@ -920,9 +923,101 @@ New styles for new version of the page
       }
     }
 
+    .previous-button,
+    .next-button {
+      z-index: 1;
+      position: absolute;
+      bottom: -80px;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      transition: 0.3s all ease-out;
+      padding: 10px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &.inactive {
+        background-color: #f9f9f9;
+        color: #d9d9d9;
+        cursor: auto;
+      }
+
+      span {
+        width: 20px;
+        height: 15px;
+      }
+    }
+
+    .previous-button {
+      left: 0;
+
+      span {
+        background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
+        margin-right: 8px;
+      }
+
+      &.inactive span {
+        background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+      }
+    }
+
+    .next-button {
+      right: 0;
+
+      span {
+        background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
+        margin-left: 8px;
+      }
+
+      &.inactive span {
+        background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+      }
+    }
+
+    .rtl & {
+      .previous-button {
+        span {
+          background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
+          margin-right: 0;
+          margin-left: 8px;
+        }
+
+        &.inactive span {
+          background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+        }
+      }
+
+      .next-button {
+        span {
+          background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
+          margin-left: 0px;
+          margin-right: 8px;
+        }
+
+        &.inactive span {
+          background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+        }
+      }
+    }
+
+
     @media (max-width: 400px) {
       padding: 10px 10px;
+
+      .previous-button {
+        left: 10px;
+      }
+
+      .next-button {
+        right: 10px;
+      }
     }
+
+
   }
 
   @media (max-width: 400px) {
@@ -934,87 +1029,6 @@ New styles for new version of the page
   padding-bottom: 0px;
   min-height: 100vh;
   position: relative;
-
-  .previous-button,
-  .next-button {
-    z-index: 1;
-    position: absolute;
-    bottom: 50px;
-    background-color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 16px;
-    font-weight: 500;
-    transition: 0.3s all ease-out;
-    padding: 10px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &.inactive {
-      background-color: #f9f9f9;
-      color: #d9d9d9;
-      cursor: auto;
-    }
-
-    span {
-      width: 20px;
-      height: 15px;
-    }
-  }
-
-  .previous-button {
-    left: 20px;
-
-    span {
-      background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
-      margin-right: 8px;
-    }
-
-    &.inactive span {
-      background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
-    }
-  }
-
-  .next-button {
-    right: 20px;
-
-    span {
-      background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
-      margin-left: 8px;
-    }
-
-    &.inactive span {
-      background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
-    }
-  }
-
-  .rtl & {
-    .previous-button {
-      span {
-        background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
-        margin-right: 0;
-        margin-left: 8px;
-      }
-
-      &.inactive span {
-        background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
-      }
-    }
-
-    .next-button {
-      span {
-        background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
-        margin-left: 0px;
-        margin-right: 8px;
-      }
-
-      &.inactive span {
-        background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
-      }
-    }
-  }
 }
 
 body.wp-admin:has(.wpsms-sendsms) {
