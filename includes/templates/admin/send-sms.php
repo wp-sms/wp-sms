@@ -23,7 +23,7 @@
             <div class="tab active" id="content"><?php _e('Content', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="receiver"><?php _e('Receiver', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="options"><?php _e('Options', 'wp-sms'); ?><span class="icon"></div>
-            <div class="tab " id="send"><?php _e('Send', 'wp-sms'); ?><span class="icon"></div>
+            <div class="tab " id="send"><?php _e('Preview & Fire!', 'wp-sms'); ?><span class="icon"></div>
         </div>
         <div class="sendsms-tabs-line"></div>
 
@@ -157,8 +157,7 @@
                                 <a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a>
                             </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
                         <?php else: ?>
-                            <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?>
-                            </p>
+                            <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways'); ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -187,14 +186,10 @@
                     <div>
                         <input type="number" name="wpsms_repeat-interval" id="repeat-interval" min=1 value=1>
                         <select name="wpsms_repeat-interval-unit" id="repeat-interval-unit">
-                            <option value="day"><?php _e('Day', 'wp-sms') ?>
-                            </option>
-                            <option value="week"><?php _e('Week', 'wp-sms') ?>
-                            </option>
-                            <option value="month"><?php _e('Month', 'wp-sms') ?>
-                            </option>
-                            <option value="year"><?php _e('Year', 'wp-sms') ?>
-                            </option>
+                            <option value="day"><?php _e('Day', 'wp-sms') ?></option>
+                            <option value="week"><?php _e('Week', 'wp-sms') ?></option>
+                            <option value="month"><?php _e('Month', 'wp-sms') ?></option>
+                            <option value="year"><?php _e('Year', 'wp-sms') ?></option>
                         </select>
                     </div>
                 </div>
@@ -244,7 +239,7 @@
                         <h4><?php _e('Content', 'wp-sms') ?></h4>
                         <p class="preview__message__message">
                             <span class="icon"></span>
-                            <span class="empty-content"><?php _e('It is empty yet!', 'wp-sms') ?></span>
+                            <span class="empty-content"><?php _e('Sill empty!', 'wp-sms') ?></span>
                         </p>
                     </div>
                     <div>
