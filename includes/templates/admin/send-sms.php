@@ -23,7 +23,7 @@
             <div class="tab active" id="content"><?php _e('Content', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="receiver"><?php _e('Receiver', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="options"><?php _e('Options', 'wp-sms'); ?><span class="icon"></div>
-            <div class="tab " id="send"><?php _e('Preview & Fire!', 'wp-sms'); ?><span class="icon"></div>
+            <div class="tab " id="send"><?php _e('Preview & Send', 'wp-sms'); ?><span class="icon"></div>
         </div>
         <div class="sendsms-tabs-line"></div>
 
