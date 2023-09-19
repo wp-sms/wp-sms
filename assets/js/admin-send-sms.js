@@ -412,7 +412,7 @@
                             // Populate the Select2 element with the retrieved users
                             users.forEach(function (user) {
                                 if (user.id && user.id > 0) {
-                                    let option = new Option(user.slug, user.slug, false, false);
+                                    let option = new Option(user.slug, user.id, false, false);
                                     selectElement.append(option);
                                 }
                             });

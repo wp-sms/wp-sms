@@ -107,7 +107,7 @@
                     <select id="wpsms_search_user" name="wpsms_users[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please search for specific users', 'wp-sms'); ?>">
                     </select>
                     <p class="field-description wpsms-users">
-                        <?php _e('Send SMS to users who has mobile number.', 'wp-sms'); ?>
+                        <?php _e('Search for users by their usernames.', 'wp-sms'); ?>
                     </p>
                 </div>
 

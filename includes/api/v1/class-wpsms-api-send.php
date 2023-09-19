@@ -79,8 +79,6 @@ class SendSmsApi extends \WP_SMS\RestApi
      */
     public function sendSmsCallback(WP_REST_Request $request)
     {
-
-        $t = $request->get_param('recipients');
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
             $mediaUrls        = array_filter($request->get_param('media_urls'));

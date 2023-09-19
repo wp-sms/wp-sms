@@ -98,10 +98,11 @@ class Helper
 
     /**
      * @param $roleId
+     * @param array $userIds
      *
      * @return array
      */
-    public static function getUsersMobileNumbers($roleId = false, $userNames = array())
+    public static function getUsersMobileNumbers($roleId = false, $userIds = array())
     {
         $mobileFieldKey = self::getUserMobileFieldName();
 
@@ -121,9 +122,9 @@ class Helper
             $args['role'] = $roleId;
         }
 
-        // Add user_login names to include in the query
-        if (count($userNames) > 0) {
-            $args['login__in'] = $userNames;
+        // Add user IDs to include in the query
+        if (count($userIds) > 0) {
+            $args['include'] = $userIds;
         }
 
         $args  = apply_filters('wp_sms_mobile_numbers_query_args', $args);
