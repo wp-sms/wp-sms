@@ -8,18 +8,11 @@ if (!defined('ABSPATH')) {
 
 class Integrations
 {
-
-    public $sms;
-    public $date;
     public $options;
     public $cf7_data;
 
     public function __construct()
     {
-        global $sms;
-
-        $this->sms     = $sms;
-        $this->date    = WP_SMS_CURRENT_DATE;
         $this->options = Option::getOptions();
 
         // Contact Form 7
@@ -77,15 +70,15 @@ class Integrations
 
             switch ($cf7_options['recipient']) {
                 case 'subscriber':
-                    $this->sms->to = Newsletter::getSubscribers($cf7_options['groups'], true);
+                    $to = Newsletter::getSubscribers($cf7_options['groups'], true);
                     break;
 
                 default:
-                    $this->sms->to = explode(',', $cf7_options['phone']);
+                    $to = explode(',', $cf7_options['phone']);
                     break;
             }
 
-            $this->sms->msg = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
+            $message = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
                 foreach ($matches as $item) {
                     if (isset($this->cf7_data[$item])) {
                         return $this->cf7_data[$item];
@@ -93,7 +86,9 @@ class Integrations
                 }
             }, $cf7_options['message']);
 
-            $this->sms->SendSMS();
+            if ($to && $message) {
+                wp_sms_send($to, $message);
+            }
         }
 
         /**
@@ -127,16 +122,18 @@ class Integrations
                 $to = explode('|', $to);
             }
 
-            $this->sms->to = is_array($to) ? $to : array($to);
-
-            $this->sms->msg = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
+            $to      = is_array($to) ? $to : array($to);
+            $message = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
                 foreach ($matches as $item) {
                     if (isset($this->cf7_data[$item])) {
                         return $this->cf7_data[$item];
                     }
                 }
             }, $cf7_options_field['message']);
-            $this->sms->SendSMS();
+
+            if ($to && $message) {
+                wp_sms_send($to, $message);
+            }
         }
     }
 
