@@ -98,6 +98,7 @@ class WP_SMS
         // Utility classes.
         $this->include('src/Helper.php');
         $this->include('src/Utils/CsvHelper.php');
+        $this->include('src/Utils/GenerateReport.php');
 
         // MobileFieldHandler
         $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
@@ -138,6 +139,11 @@ class WP_SMS
         $this->include('src/Subscriber/SubscriberManager.php');
         $subscriberManager = new \WP_SMS\Subscriber\SubscriberManager();
         $subscriberManager->init();
+
+        // CronJobs
+        $this->include('src/CronJobs/CronJobs.php');
+        $cronJobs = new \WP_SMS\CronJobs\CronJobs();
+        $cronJobs->init();
 
         // Blocks
         $this->include('src/BlockAbstract.php');
