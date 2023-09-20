@@ -1482,10 +1482,10 @@ class Gateway
         if ($status == 'error' and (isset($this->options['notify_errors_to_admin_email']) && $this->options['notify_errors_to_admin_email'])) {
             $siteName = get_bloginfo('name');
             $subject  = sprintf(__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
-            $content  = Helper::loadTemplate('email/email-sms-delivery-issue.php', [
-                'message' => $message,
+            $content  = Helper::loadTemplate('email/sms-delivery-issue.php', [
+                'message'  => $message,
                 'response' => $response,
-                'to'      => $to,
+                'to'       => $to,
             ]);
 
             Helper::sendMail($subject, [

@@ -3,6 +3,7 @@
 namespace WP_SMS\Utils;
 
 use WP_SMS\Helper;
+use WP_SMS\Version;
 
 class GenerateReport
 {
@@ -19,30 +20,37 @@ class GenerateReport
             return;
         }
 
+        // Gather report data
         $smsData          = $this->getSMSData();
         $subscriptionData = $this->getSubscriptionData();
         $loginData        = $this->getLoginData();
         $duration         = $this->getTheDuration();
 
-        $siteName = get_bloginfo('name');
-        $args     = [
-            'email_title'      => __('SMS Delivery Issue', 'wp-sms'),
-            'content'          => 'hi world!',
-            'site_url'         => home_url(),
-            'smsData'          => $smsData,
-            'subscriptionData' => $subscriptionData,
-            'loginData'        => $loginData,
-            'duration'         => $duration,
-            'site_url'         => home_url(),
-            'site_name'        => $siteName,
-        ];
+        // Get email needed templates and variables
+        $reportData       = apply_filters('wpsms_report_email_data', Helper::loadTemplate('email/report-data.php', [
+            'sms_data'          => $smsData,
+            'subscription_data' => $subscriptionData,
+            'login_data'        => $loginData,
+            'duration'          => $duration
+        ]));
+        $content          = apply_filters('wpsms_report_email_content', Helper::loadTemplate('email/report-content.php'));
+        $proAdvertisement = Helper::loadTemplate('email/pro-advertisement.php');
+        $siteName         = get_bloginfo('name');
+        $subject          = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
 
-        $subject    = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
-        $adminEmail = get_option('admin_email');
-        $message    = Helper::loadTemplate('email/report.php', $args);
-        $headers    = array('Content-Type: text/html; charset=UTF-8');
+        // Do this action before sending report email
+        do_action('wpsms_before_report_email', $reportData, $content);
 
-        return wp_mail($adminEmail, $subject, $message, $headers);
+        // Send Email
+        Helper::sendMail($subject, [
+            'email_title'       => __('SMS Report', 'wp-sms'),
+            'content'           => $content,
+            'report_data'       => $reportData,
+            'pro_advertisement' => $proAdvertisement,
+            'site_url'          => home_url(),
+            'site_name'         => $siteName,
+            'pro_is_active'     => Version::pro_is_active(),
+        ]);
     }
 
     public function getLoginData()

@@ -140,10 +140,10 @@ class WP_SMS
         $subscriberManager = new \WP_SMS\Subscriber\SubscriberManager();
         $subscriberManager->init();
 
-        // CronJobs
-        $this->include('src/CronJobs/CronJobs.php');
-        $cronJobs = new \WP_SMS\CronJobs\CronJobs();
-        $cronJobs->init();
+        // Cron Jobs
+        $this->include('src/CronJobs/CronJobManager.php');
+        $cronJobManager = new \WP_SMS\CronJob\CronJobManager();
+        $cronJobManager->init();
 
         // Blocks
         $this->include('src/BlockAbstract.php');

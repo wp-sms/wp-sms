@@ -1,11 +1,11 @@
 <?php
 
-namespace WP_SMS\CronJobs;
+namespace WP_SMS\CronJob;
 
 use WP_SMS\Option;
 use WP_SMS\Utils\GenerateReport;
 
-class CronJobs
+class CronJobManager
 {
     public function init()
     {
