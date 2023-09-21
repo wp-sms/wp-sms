@@ -27,19 +27,19 @@ class GenerateReport
         $duration         = $this->getTheDuration();
 
         // Get email needed templates and variables
-        $reportData       = apply_filters('wpsms_report_email_data', Helper::loadTemplate('email/report-data.php', [
+        $reportData       = apply_filters('wp_sms_report_email_data', Helper::loadTemplate('email/report-data.php', [
             'sms_data'          => $smsData,
             'subscription_data' => $subscriptionData,
             'login_data'        => $loginData,
             'duration'          => $duration
         ]));
-        $content          = apply_filters('wpsms_report_email_content', Helper::loadTemplate('email/report-content.php'));
+        $content          = apply_filters('wp_sms_report_email_content', Helper::loadTemplate('email/report-content.php'));
         $proAdvertisement = Helper::loadTemplate('email/pro-advertisement.php');
         $siteName         = get_bloginfo('name');
         $subject          = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
 
         // Do this action before sending report email
-        do_action('wpsms_before_report_email', $reportData, $content);
+        do_action('wp_sms_before_report_email', $reportData, $content);
 
         // Send Email
         Helper::sendMail($subject, [
