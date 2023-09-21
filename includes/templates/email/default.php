@@ -27,7 +27,7 @@
         <?php echo isset($report_data) ? wp_kses_post($report_data) : ''; ?>
     </div>
 
-    <?php echo isset($pro_advertisement) && isset($pro_is_active) && !$pro_is_active ? wp_kses_post($pro_advertisement) : ''; ?>
+    <?php echo isset($footer_suggestion) && isset($pro_is_active) && !$pro_is_active ? wp_kses_post($footer_suggestion) : ''; ?>
 
     <div class="footer-links">
         <p><?php _e('This email automatically has been sent from ', 'wp-sms'); ?><a href="<?php echo esc_url($site_url); ?>"><?php echo esc_html($site_name); ?></a></p>

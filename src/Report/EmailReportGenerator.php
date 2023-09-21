@@ -1,11 +1,11 @@
 <?php
 
-namespace WP_SMS\Utils;
+namespace WP_SMS\Report;
 
 use WP_SMS\Helper;
 use WP_SMS\Version;
 
-class GenerateReport
+class EmailReportGenerator
 {
     public $lastWeek;
 
@@ -27,14 +27,14 @@ class GenerateReport
         $duration         = $this->getTheDuration();
 
         // Get email needed templates and variables
-        $reportData       = apply_filters('wp_sms_report_email_data', Helper::loadTemplate('email/report-data.php', [
+        $reportData       = apply_filters('wp_sms_report_email_data', Helper::loadTemplate('email/partials/report-data.php', [
             'sms_data'          => $smsData,
             'subscription_data' => $subscriptionData,
             'login_data'        => $loginData,
             'duration'          => $duration
         ]));
-        $content          = apply_filters('wp_sms_report_email_content', Helper::loadTemplate('email/report-content.php'));
-        $proAdvertisement = Helper::loadTemplate('email/pro-advertisement.php');
+        $content          = apply_filters('wp_sms_report_email_content', Helper::loadTemplate('email/partials/report-content.php'));
+        $footerSuggestion = Helper::loadTemplate('email/partials/footer-suggestion.php');
         $siteName         = get_bloginfo('name');
         $subject          = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
 
@@ -46,7 +46,7 @@ class GenerateReport
             'email_title'       => __('SMS Report', 'wp-sms'),
             'content'           => $content,
             'report_data'       => $reportData,
-            'pro_advertisement' => $proAdvertisement,
+            'footer_suggestion' => $footerSuggestion,
             'site_url'          => home_url(),
             'site_name'         => $siteName,
             'pro_is_active'     => Version::pro_is_active(),
