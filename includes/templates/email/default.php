@@ -2,7 +2,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title><?php echo esc_html($email_title); ?></title>
     <style type="text/css">
-        <?php echo file_get_contents(WP_SMS_URL . 'assets/css/mail.css'); ?>
+        <?php echo file_get_contents(WP_SMS_DIR . 'assets/css/mail.css'); ?>
     </style>
 </head>
 

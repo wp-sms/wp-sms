@@ -8,10 +8,14 @@ use WP_SMS\Version;
 class EmailReportGenerator
 {
     public $lastWeek;
+    private $db;
 
     public function __construct()
     {
+        global $wpdb;
+
         $this->lastWeek = date('Y-m-d H:i:s', strtotime('-1 week'));
+        $this->db       = $wpdb;
     }
 
     public function generate()
@@ -21,7 +25,7 @@ class EmailReportGenerator
         }
 
         // Gather report data
-        $smsData          = $this->getSMSData();
+        $smsData          = $this->getSmsData();
         $subscriptionData = $this->getSubscriptionData();
         $loginData        = $this->getLoginData();
         $duration         = $this->getTheDuration();
@@ -33,7 +37,7 @@ class EmailReportGenerator
             'login_data'        => $loginData,
             'duration'          => $duration
         ]));
-        $content          = apply_filters('wp_sms_report_email_content', Helper::loadTemplate('email/partials/report-content.php'));
+        $content          = apply_filters('wp_sms_report_email_content', '');
         $footerSuggestion = Helper::loadTemplate('email/partials/footer-suggestion.php');
         $siteName         = get_bloginfo('name');
         $subject          = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
@@ -61,13 +65,12 @@ class EmailReportGenerator
             'total'   => 0
         ];
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'sms_otp_attempts';
+        $table_name = $this->db->prefix . 'sms_otp_attempts';
         $lastWeek   = strtotime('-1 week');
 
         // SQL query to select rows from the last week
-        $query   = $wpdb->prepare("SELECT * FROM $table_name WHERE time >= %d AND time <= %d", $lastWeek, current_time('timestamp'));
-        $results = $wpdb->get_results($query);
+        $query   = $this->db->prepare("SELECT * FROM $table_name WHERE time >= %d AND time <= %d", $lastWeek, current_time('timestamp'));
+        $results = $this->db->get_results($query);
 
         foreach ($results as $result) {
             if ($result->result == 0) {
@@ -89,14 +92,13 @@ class EmailReportGenerator
             'deactiveSubscribers' => 0,
         ];
 
-        global $wpdb;
-        $table_subscribes = $wpdb->prefix . 'sms_subscribes';
-        $table_groups     = $wpdb->prefix . 'sms_subscribes_group';
+        $table_subscribes = $this->db->prefix . 'sms_subscribes';
+        $table_groups     = $this->db->prefix . 'sms_subscribes_group';
 
         // SQL query to select rows from the last week and join with the groups table
-        $query = $wpdb->prepare("  SELECT s.*, g.name  FROM $table_subscribes AS s  LEFT JOIN $table_groups AS g ON s.group_ID = g.ID  WHERE s.date >= %s AND s.date <= %s  ", $this->lastWeek, current_time('mysql'));
+        $query = $this->db->prepare("SELECT s.*, g.name  FROM $table_subscribes AS s  LEFT JOIN $table_groups AS g ON s.group_ID = g.ID  WHERE s.date >= %s AND s.date <= %s  ", $this->lastWeek, current_time('mysql'));
 
-        $results = $wpdb->get_results($query);
+        $results = $this->db->get_results($query);
 
         foreach ($results as $result) {
             $groupID = $result->group_ID;
@@ -124,7 +126,7 @@ class EmailReportGenerator
         return $subscriptionData;
     }
 
-    public function getSMSData()
+    public function getSmsData()
     {
         $smsData = [
             'success' => 0,
@@ -132,12 +134,11 @@ class EmailReportGenerator
             'total'   => 0,
         ];
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'sms_send';
+        $table_name = $this->db->prefix . 'sms_send';
 
         // SQL query to select rows from the last week
-        $query   = $wpdb->prepare(" SELECT * FROM $table_name WHERE date >= %s AND date <= %s", $this->lastWeek, current_time('mysql'));
-        $results = $wpdb->get_results($query);
+        $query   = $this->db->prepare(" SELECT * FROM $table_name WHERE date >= %s AND date <= %s", $this->lastWeek, current_time('mysql'));
+        $results = $this->db->get_results($query);
 
         foreach ($results as $result) {
             if ($result->status === 'success') {
@@ -152,12 +153,12 @@ class EmailReportGenerator
 
     public function getTheDuration()
     {
-        $first_day_option = get_option('start_of_week', 0);
+        $firstDayOption = get_option('start_of_week', 0);
 
         // Calculate the first and last day of the previous week
         $now                = current_time('timestamp');
-        $firstDayOfLastWeek = strtotime('last sunday', $now) - ($first_day_option * 86400);
-        $lastDayOfLastWeek  = strtotime('last saturday', $now) - ($first_day_option * 86400);
+        $firstDayOfLastWeek = strtotime('last sunday', $now) - ($firstDayOption * 86400);
+        $lastDayOfLastWeek  = strtotime('last saturday', $now) - ($firstDayOption * 86400);
 
         // Convert Unix timestamps to the desired date format
         return ['startDate' => date('j M', $firstDayOfLastWeek), 'endDate' => date('j M', $lastDayOfLastWeek)];

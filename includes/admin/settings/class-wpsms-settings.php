@@ -87,7 +87,8 @@ class Settings
         if (!$settings) {
             update_option($this->setting_name, array(
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
-                'notify_errors_to_admin_email' => 'enable'
+                'notify_errors_to_admin_email' => 'enable',
+                'report_wpsms_statistics'      => 'enable'
             ));
         }
 
