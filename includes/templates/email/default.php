@@ -15,14 +15,17 @@
         </div>
         <div class="content">
             <h2><?php echo esc_html($email_title); ?></h2>
-            <p><?php _e('Hello,', 'wp-sms'); ?></p>
-            <p><?php echo wp_kses_post($content); ?></p>
+
+            <?php if (isset($content) && strlen($content) > 0): ?>
+                <p><?php _e('Hello,', 'wp-sms'); ?></p>
+                <p><?php echo wp_kses_post($content); ?></p>
+                <p style="margin-top:30px;"><?php _e('Best regards,', 'wp-sms'); ?></p>
+            <?php endif; ?>
 
             <?php if (isset($cta_title)): ?>
                 <p style="text-align:center;"><a href="<?php echo esc_url($cta_link); ?>" class="button"><?php echo esc_html($cta_title); ?></a></p>
             <?php endif; ?>
 
-            <p style="margin-top:30px;"><?php _e('Best regards,', 'wp-sms'); ?></p>
         </div>
         <?php echo isset($report_data) ? wp_kses_post($report_data) : ''; ?>
     </div>
