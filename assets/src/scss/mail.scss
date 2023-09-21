@@ -84,6 +84,27 @@
         }
       }
 
+      ul {
+        list-style: none;
+        text-align: left;
+        margin-top: 20px;
+
+        li {
+          color: #222222;
+          text-align: justify;
+          line-height: 1.7 !important;
+          margin-bottom: 8px;
+          font-weight: 400;
+          font-size: 15px;
+
+          span {
+            font-weight: 500;
+            margin-right: 5px;
+            display: inline;
+          }
+        }
+      }
+
       code {
         background-color: #F0F0F1;
         border-radius: 8px;

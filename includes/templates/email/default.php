@@ -17,16 +17,17 @@
             <h2><?php echo esc_html($email_title); ?></h2>
             <p><?php _e('Hello,', 'wp-sms'); ?></p>
             <p><?php echo wp_kses_post($content); ?></p>
+
             <?php if (isset($cta_title)): ?>
                 <p style="text-align:center;"><a href="<?php echo esc_url($cta_link); ?>" class="button"><?php echo esc_html($cta_title); ?></a></p>
             <?php endif; ?>
-            <p><?php _e('Best regards,', 'wp-sms'); ?></p>
-        </div>
 
-        <?php echo $report_data ? wp_kses_post($report_data) : ''; ?>
+            <p style="margin-top:30px;"><?php _e('Best regards,', 'wp-sms'); ?></p>
+        </div>
+        <?php echo isset($report_data) ? wp_kses_post($report_data) : ''; ?>
     </div>
 
-    <?php echo $pro_advertisement && !$pro_is_active ? wp_kses_post($pro_advertisement) : ''; ?>
+    <?php echo isset($pro_advertisement) && isset($pro_is_active) && !$pro_is_active ? wp_kses_post($pro_advertisement) : ''; ?>
 
     <div class="footer-links">
         <p><?php _e('This email automatically has been sent from ', 'wp-sms'); ?><a href="<?php echo esc_url($site_url); ?>"><?php echo esc_html($site_name); ?></a></p>
