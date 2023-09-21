@@ -38,7 +38,7 @@ class EmailReportGenerator
             'duration'          => $duration
         ]));
         $content          = apply_filters('wp_sms_report_email_content', '');
-        $footerSuggestion = Helper::loadTemplate('email/partials/footer-suggestion.php');
+        $footerSuggestion = !Version::pro_is_active() ? Helper::loadTemplate('email/partials/footer-suggestion.php') : '';
         $siteName         = get_bloginfo('name');
         $subject          = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
 
