@@ -74,12 +74,17 @@ class Admin
             wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-export', WP_SMS_URL . 'assets/js/admin-export.js', true, WP_SMS_VERSION);
             wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
-                    'restRootUrl'         => esc_url_raw(rest_url()),
-                    'nonce'               => wp_create_nonce('wp_rest'),
-                    'senderID'            => $sms->from,
-                    'exportAjaxUrl'       => \WP_SMS\Controller\ExportAjax::url(),
-                    'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
-                    'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
+                    'restUrls' => array(
+                        'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
+                        'users'   => get_rest_url(null, 'wp/v2/users')
+                    ),
+                    'ajaxUrls' => array(
+                        'export'              => \WP_SMS\Controller\ExportAjax::url(),
+                        'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
+                        'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
+                    ),
+                    'nonce'    => wp_create_nonce('wp_rest'),
+                    'senderID' => $sms->from,
                 )
             );
 
@@ -283,7 +288,6 @@ class Admin
         wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), WP_SMS_VERSION, true);
         wp_enqueue_script('wp-sms-send-page');
         wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
-            'restRootUrl'       => esc_url_raw(rest_url()),
             'nonce'             => wp_create_nonce('wp_rest'),
             'messageMsg'        => __('characters', 'wp-sms'),
             'currentDateTime'   => WP_SMS_CURRENT_DATE,

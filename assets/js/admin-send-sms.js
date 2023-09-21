@@ -399,7 +399,7 @@
                 // Set a new timer to send the query after a delay
                 typingTimer = setTimeout(function () {
                     jQuery.ajax({
-                        url: '/' + WpSmsSendSmsTemplateVar.siteName + '/wp-json/wp/v2/users',
+                        url: wpSmsGlobalTemplateVar.restUrls.users,
                         method: 'GET',
                         data: {
                             search: searchUserKeyword,
@@ -509,7 +509,7 @@ function sendSMS() {
 
     jQuery('.wpsms-sendsms-result').fadeOut();
 
-    jQuery.ajax(WpSmsSendSmsTemplateVar.restRootUrl + 'wpsms/v1/send',
+    jQuery.ajax(wpSmsGlobalTemplateVar.restUrls.sendSms,
         {
             headers: {'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce},
             dataType: 'json',

@@ -40,7 +40,7 @@ let wpSmsExport = {
 
             // send AJAX request
             jQuery.ajax({
-                url: wpSmsGlobalTemplateVar.exportAjaxUrl,
+                url: wpSmsGlobalTemplateVar.ajaxUrls.export,
                 type: 'GET',
                 xhrFields: {
                     responseType: 'blob'

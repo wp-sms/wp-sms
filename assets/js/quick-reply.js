@@ -66,7 +66,7 @@ let quickReply = {
             }
 
             jQuery.ajax({
-                url: wpSmsGlobalTemplateVar.restRootUrl + 'wpsms/v1/send',
+                url: wpSmsGlobalTemplateVar.restUrls.sendSms,
                 headers: {'X-WP-Nonce': wpSmsGlobalTemplateVar.nonce},
                 dataType: 'json',
                 type: 'POST',
