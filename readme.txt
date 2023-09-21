@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.2.4.1
+Stable tag: 6.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,24 +209,21 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 	} );
 
 == Screenshots ==
-1. General Settings page
-2. Gateway Settings page
-3. SMS Newsletter Settings page
-4. Two-Factor Authentication SMS (2FA) Login Settings page
-5. BuddyPress Settings page
-6. WooCommerce Settings page
-7. Send SMS/MMS page
-8. Outbox SMS/MMS page
-9. Scheduled page
-10. Subscribers page
-11. Groups page
-12. Privacy page
-13. Login With Mobile
-14. Login With Mobile
-15. SMS Subscribers Form
-16. Gravity Forms Settings page
-17. SMS Send/Receive stats widget
-18. Email Notification for failed SMS
+1. Send SMS Page
+2. Send SMS Page: Receiver
+3. Send SMS Page: Options
+4. Outbox
+5. Inbox
+6. Subscribers Management Page
+7. Login With SMS
+8. SMS Subscriber Widget
+9. SMS Stats Dashboard Widget
+10. Email Notification SMS Failed Delivery
+11. Settings
+12. Settings: Gateway Configuration
+13. Settings: Advanced
+14. Settings: OTP & 2FA
+15. Settings: WooCommerce
 
 == Upgrade Notice ==
 = v6.1 =
@@ -241,10 +238,13 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.2.4.1 - 09.09.2023 =
-* Fixed: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
+= v6.3 - **.09.2023 =
+*
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
+= v6.2.4.1 - 09.09.2023 =
+* Fixed: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
 
 = v6.2.4 - 08.09.2023 =
 * Feature: Administrator Email notification once the send SMS faced error
