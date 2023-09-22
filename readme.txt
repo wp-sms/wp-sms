@@ -239,18 +239,22 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 == Changelog ==
 = v6.3 - **.09.2023 =
-*
+* Feature: Redesigned Send SMS page and added search user option!
+* Feature: Weekly SMS Stats Report via mail! Now you can track total sent, successful, and failed SMS, total OTP usage, and total subscribers.
+* Fixes: Resolved the URI issue on oursms.com.
+* Fixes: Prevented the sending of blank SMS in CF7.
+* Improvement: Made minor improvements and optimizations for better performance.
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.2.4.1 - 09.09.2023 =
-* Fixed: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
+* Fixes: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
 
 = v6.2.4 - 08.09.2023 =
 * Feature: Administrator Email notification once the send SMS faced error
 * Feature: Add support for `%billing_email%` variable in WooCommerce order notification
-* Fixed: Send SMS Verification Twice in Safari Autofill
-* Fixed: International Mobile number issue showing flags styles and improvement on International input CSS
+* Fixes: Send SMS Verification Twice in Safari Autofill
+* Fixes: International Mobile number issue showing flags styles and improvement on International input CSS
 * Improvement: Update Oursms, EbulkSMS, and support `template_id` for gateway.sa
 * Improvement: Mobile Number Backward Compatibility for Customer Sessions
 * Improvement: Mobile field handler functionality and improvement
