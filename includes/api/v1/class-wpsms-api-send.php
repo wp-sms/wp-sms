@@ -25,7 +25,7 @@ class SendSmsApi extends \WP_SMS\RestApi
 {
     private $sendSmsArguments = [
         'sender'     => array('required' => true, 'type' => 'string'),
-        'recipients' => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'wc-customers', 'bp-users', 'numbers']),
+        'recipients' => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'roles', 'wc-customers', 'bp-users', 'numbers']),
         'group_ids'  => array('required' => false, 'type' => 'array'),
         'role_ids'   => array('required' => false, 'type' => 'array'),
         'numbers'    => array('required' => false, 'type' => 'array', 'format' => 'uri'),
@@ -206,15 +206,27 @@ class SendSmsApi extends \WP_SMS\RestApi
                 break;
 
             /**
-             * Users
+             * Roles
              */
-            case 'users':
+            case 'roles':
 
                 if (!$request->get_param('role_ids')) {
                     throw new Exception(__('Parameter role_ids is required', 'wp-sms'));
                 }
 
                 $recipients = Helper::getUsersMobileNumbers($request->get_param('role_ids'));
+                break;
+
+            /**
+             * Users
+             */
+            case 'users':
+
+                if (!$request->get_param('users')) {
+                    throw new Exception(__('Parameter users is required', 'wp-sms'));
+                }
+
+                $recipients = Helper::getUsersMobileNumbers(false, $request->get_param('users'));
                 break;
 
             /**

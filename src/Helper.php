@@ -98,13 +98,15 @@ class Helper
 
     /**
      * @param $roleId
+     * @param array $userIds
      *
      * @return array
      */
-    public static function getUsersMobileNumbers($roleId = false)
+    public static function getUsersMobileNumbers($roleId = false, $userIds = array())
     {
         $mobileFieldKey = self::getUserMobileFieldName();
-        $args           = array(
+
+        $args = array(
             'meta_query'  => array(
                 array(
                     'key'     => $mobileFieldKey,
@@ -112,7 +114,7 @@ class Helper
                     'compare' => '!=',
                 ),
             ),
-            'count_total' => 'false',
+            'count_total' => false,
             'number'      => 1000
         );
 
@@ -120,8 +122,14 @@ class Helper
             $args['role'] = $roleId;
         }
 
-        $args          = apply_filters('wp_sms_mobile_numbers_query_args', $args);
-        $users         = get_users($args);
+        // Add user IDs to include in the query
+        if (count($userIds) > 0) {
+            $args['include'] = $userIds;
+        }
+
+        $args  = apply_filters('wp_sms_mobile_numbers_query_args', $args);
+        $users = get_users($args);
+
         $mobileNumbers = [];
 
         foreach ($users as $user) {
@@ -438,5 +446,14 @@ class Helper
             wp_redirect($redirect);
             exit;
         }
+    }
+
+    public static function sendMail($subject, $args)
+    {
+        $adminEmail = get_option('admin_email');
+        $message    = self::loadTemplate('email/default.php', $args);
+        $headers    = array('Content-Type: text/html; charset=UTF-8');
+
+        return wp_mail($adminEmail, $subject, $message, $headers);
     }
 }

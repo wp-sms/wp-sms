@@ -38,8 +38,7 @@ class AddOns
     public function prepareResponse()
     {
         foreach ($this->addOns as $addOn) {
-            $pluginSlug                    = sanitize_title($addOn->name);
-            $plugin                        = "{$pluginSlug}/{$pluginSlug}.php";
+            $plugin                        = "{$addOn->slug}/{$addOn->slug}.php";
             $addOn->meta['activate_url']   = add_query_arg(['action' => 'activate', 'plugin' => $plugin, '_wpnonce' => wp_create_nonce("activate-plugin_{$plugin}")], admin_url('plugins.php'));
             $addOn->meta['deactivate_url'] = add_query_arg(['action' => 'deactivate', 'plugin' => $plugin, '_wpnonce' => wp_create_nonce("deactivate-plugin_{$plugin}")], admin_url('plugins.php'));
 
