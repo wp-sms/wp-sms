@@ -239,12 +239,14 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.3 - **.09.2023 =
+= v6.3 - 23.09.2023 =
 * Feature: Redesigned Send SMS page and added search user option!
 * Feature: Weekly SMS Stats Report via mail! Now you can track total sent, successful, and failed SMS, total OTP usage, and total subscribers.
 * Fixes: Resolved the URI issue on oursms.com.
 * Fixes: Prevented the sending of blank SMS in CF7.
 * Improvement: Made minor improvements and optimizations for better performance.
+
+[Read more](https://wp-sms-pro.com/23630/new-update-wp-sms-plugin-v6-3/) to see more information about release.]
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
