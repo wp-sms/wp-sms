@@ -218,12 +218,13 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 7. Login With SMS
 8. SMS Subscriber Widget
 9. SMS Stats Dashboard Widget
-10. Email Notification SMS Failed Delivery
+10. Email Notification: SMS Failed Delivery
 11. Settings
 12. Settings: Gateway Configuration
 13. Settings: Advanced
 14. Settings: OTP & 2FA
 15. Settings: WooCommerce
+10. Email Notification: SMS Stats
 
 == Upgrade Notice ==
 = v6.1 =
