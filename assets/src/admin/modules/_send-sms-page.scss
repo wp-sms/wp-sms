@@ -288,7 +288,7 @@ Select2
   }
 
   .wpsms-header-banner {
-    max-width: 100% !important;
+    max-width: 100%;
   }
 }
 
@@ -417,7 +417,7 @@ New styles for new version of the page
     margin: 40px auto 0px auto;
 
     display: flex;
-    align-items: center;
+    //align-items: center;
     justify-content: space-between;
 
     .tab {
@@ -431,6 +431,14 @@ New styles for new version of the page
       cursor: pointer;
       padding: 10px 0;
       transition: .3s all ease-out;
+
+      &#send.send-mobile {
+        display: none;
+      }
+
+      &#send.send-wide {
+        display: block;
+      }
 
       &.active::before,
       &.passed::before {
@@ -504,6 +512,14 @@ New styles for new version of the page
 
       .tab {
         font-size: 14px;
+
+        &#send.send-mobile {
+          display: block;
+        }
+
+        &#send.send-wide {
+          display: none;
+        }
 
         &.passed::before,
         &.active::before {

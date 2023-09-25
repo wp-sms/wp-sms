@@ -1,5 +1,5 @@
 <?php $option = get_option('wpsms_settings'); ?>
-<div class="wpsms-header-banner">
+<div class="wpsms-header-banner" style="<?php echo isset($full_width_banner) && $full_width_banner ? 'margin-left: -20px; width: auto; max-width: none;' : ''; ?>">
     <div class="wpsms-header-logo"></div>
 
     <?php

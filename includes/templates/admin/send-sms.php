@@ -1,4 +1,5 @@
 <div class="wrap wpsms-wrap">
+    <?php echo \WP_SMS\Helper::loadTemplate('header.php'); ?>
 
     <div class="wpsms-sendsms">
 
@@ -23,7 +24,8 @@
             <div class="tab active" id="content"><?php _e('Content', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="receiver"><?php _e('Receiver', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="options"><?php _e('Options', 'wp-sms'); ?><span class="icon"></div>
-            <div class="tab " id="send"><?php _e('Preview & Send', 'wp-sms'); ?><span class="icon"></div>
+            <div class="tab send-mobile" id="send"><?php _e('Send', 'wp-sms'); ?><span class="icon"></div>
+            <div class="tab send-wide" id="send"><?php _e('Preview & Send', 'wp-sms'); ?><span class="icon"></div>
         </div>
         <div class="sendsms-tabs-line"></div>
 

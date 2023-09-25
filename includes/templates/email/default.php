@@ -10,9 +10,18 @@
 <div class="mail-body">
 
     <div class="main-section">
-        <div class="header" style="background-image: url(<?php echo esc_url(WP_SMS_URL . 'assets/images/email-background.jpg'); ?>);">
-            <a href="<?php echo esc_url(WP_SMS_SITE); ?>" target="_blank" class="wp-sms-logo"><img src="<?php echo WP_SMS_URL . '/assets/images/email-logo.png'; ?>" alt=""></a>
-        </div>
+
+        <table class="header" style="background-image: url(<?php echo esc_url(WP_SMS_URL . 'assets/images/email-background.jpg'); ?>);">
+            <tr>
+                <td></td>
+                <td style="vertical-align: bottom; width:35%;">
+                    <a href="<?php echo esc_url(WP_SMS_SITE); ?>" target="_blank" class="wp-sms-logo">
+                        <img src="<?php echo WP_SMS_URL . '/assets/images/email-logo.png'; ?>">
+                    </a>
+                </td>
+            </tr>
+        </table>
+
         <div class="content">
             <h2><?php echo esc_html($email_title); ?></h2>
 
