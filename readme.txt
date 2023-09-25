@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.3
+Stable tag: 6.3.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -60,7 +60,7 @@ The list of supported gateways and integrated plugins are available in FAQ.
 * Scheduled SMS/MMS sending
 * The ability to set up repeating SMS/MMS messages
 * URL shortening through Bitly
-* Login, 2FA and OTP with SMS
+* Login and register with SMS, OTP and 2FA SMS
 * Integration with WooCommerce, Easy Digital Downloads, BuddyPress, GravityForms, QuForm, WP Job Manager, Awesome Support and Ultimate Members
 * Compatibility with Bitly.com for shortening URLs in SMS messages.
 
@@ -137,9 +137,9 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 * Zain.im
 
 = What are the differences between Free and Pro Pack versions? =
-* Login, 2FA and OTP with SMS
+* Login, Register, 2FA and OTP with SMS
 * Scheduled sending SMS
-* Professional support & ticketing
+* Premium support
 * More supported gateways (listed above)
 * Compatibility with Bitly.com for shortening URLs in SMS messages.
 * Integrations with more plugins as listed below:
@@ -239,6 +239,11 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.3.1 - 25.09.2023 =
+* Improvement: Email template styles and minot improvements.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.3 - 23.09.2023 =
 * Feature: Redesigned Send SMS page and added search user option!
 * Feature: Weekly SMS Stats Report via mail! Now you can track total sent, successful, and failed SMS, total OTP usage, and total subscribers.
@@ -246,9 +251,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Fixes: Prevented the sending of blank SMS in CF7.
 * Improvement: Made minor improvements and optimizations for better performance.
 
-[Read more](https://wp-sms-pro.com/23630/new-update-wp-sms-plugin-v6-3/) to see more information about release.]
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+[Read more](https://wp-sms-pro.com/23630/new-update-wp-sms-plugin-v6-3/) to see more information about release.
 
 = v6.2.4.1 - 09.09.2023 =
 * Fixes: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
