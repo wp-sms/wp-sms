@@ -1,5 +1,5 @@
 <?php $option = get_option('wpsms_settings'); ?>
-<div class="wpsms-header-banner" <?php echo isset($banner_styles) ? $banner_styles : ''; ?>>
+<div class="wpsms-header-banner" style="<?php echo isset($banner_styles) ? esc_attr($banner_styles) : ''; ?>">
     <div class="wpsms-header-logo"></div>
 
     <?php
