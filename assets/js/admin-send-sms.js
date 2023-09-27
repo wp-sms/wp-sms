@@ -488,7 +488,7 @@ function sendSMS() {
     }
 
     if (smsScheduled.scheduled) {
-        smsScheduled.date = jQuery("#schedule_date .flatpickr-input").val();
+        smsScheduled.date = jQuery("#datepicker").val();
     }
 
     let requestBody = {
