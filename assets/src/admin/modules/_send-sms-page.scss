@@ -896,7 +896,8 @@ New styles for new version of the page
       }
     }
 
-    .sendsms-button {
+    .sendsms-button,
+    .sendsms-again-button {
       background-color: $brand-orange;
       text-align: center;
       font-size: 16px;
@@ -910,6 +911,15 @@ New styles for new version of the page
       outline: none;
       width: 100%;
       border: none;
+
+      &#SendSMSAgain {
+        display: block;
+        background-color: black;
+      }
+
+      &.send-again {
+        display: none;
+      }
 
       &:hover {
         background-color: $brand-highlight;

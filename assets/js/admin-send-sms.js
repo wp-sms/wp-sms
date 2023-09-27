@@ -63,6 +63,21 @@
         sendSMS();
     });
 
+    jQuery('#SendSMSAgain').on('click', function () {
+        jQuery('.sendsms-content .summary').fadeOut();
+        jQuery('#content').trigger('click');
+        jQuery('button[name="SendSMS"]').removeClass('inactive');
+        hideResult();
+    });
+
+    function hideResult() {
+        jQuery('.wpsms-sendsms-result').fadeOut();
+    }
+
+    jQuery('.sendsms-content .previous-button').on('click', hideResult);
+    jQuery('.sendsms-content .next-button').on('click', hideResult);
+    jQuery('.sendsms-tabs .tab').on('click', hideResult);
+
     /**
      * Upload Media
      */
@@ -176,6 +191,9 @@
                 },
                 submitButton: {
                     element: jQuery('.wpsms-sendsms .sendsms-content .sendsms-button'),
+                },
+                sendAgainButton: {
+                    element: jQuery('.wpsms-sendsms .sendsms-content .sendsms-again-button'),
                 },
                 nextButton: {
                     element: jQuery('#wpbody-content .next-button'),
@@ -309,7 +327,8 @@
                 this.fields.repeatEndField,
                 this.fields.flashField,
                 this.fields.summary,
-                this.fields.submitButton
+                this.fields.submitButton,
+                this.fields.sendAgainButton
             ];
 
             // Loop through the fields and hide each one
@@ -463,8 +482,16 @@ function closeNotice() {
 }
 
 function clearForm() {
-    jQuery(".preview__message__humber").html('')
     jQuery(".preview__message__message").html('')
+    jQuery("#repeat-interval").val(1);
+    jQuery("#repeat-forever").prop("checked", false);
+    jQuery("#schedule_status").prop("checked", false);
+    jQuery("#wpsms_repeat_status").prop("checked", false);
+    jQuery("#repeat-interval-unit").val("day");
+    jQuery(".wpsms-mms-image").val([]).trigger('change');
+    jQuery(".js-wpsms-select2").val([]).trigger('change');
+    jQuery("#wp_get_number").val('').trigger('change');
+    jQuery("#wp_get_message").val('').trigger('change');
 }
 
 function sendSMS() {
@@ -518,46 +545,33 @@ function sendSMS() {
             data: JSON.stringify(requestBody),
             beforeSend: function () {
                 jQuery(".wpsms-sendsms__overlay").css('display', 'flex');
-                jQuery('button[name="SendSMS"]').addClass('inactive');
+                jQuery('button[name="SendSMS"]').fadeOut();
             },
             success: function (data, status, xhr) {
                 Object.keys(smsTo).forEach(key => {
                     delete smsTo[key];
                 })
-                jQuery(".wpsms-mms-image").val([]).trigger('change');
-                jQuery(".js-wpsms-select2").val([]).trigger('change');
-                jQuery("#wp_get_number").val('').trigger('change');
-                jQuery("#wp_get_message").val('').trigger('change');
                 jQuery(".wpsms-remove-button").trigger('click');
-                scrollToTop();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('button[name="SendSMS"]').html(WpSmsSendSmsTemplateVar.sendSMSAgainTitle);
-                jQuery('button[name="SendSMS"]').removeClass('inactive');
                 jQuery('.wpsms-sendsms-result').removeClass('error');
                 jQuery('.wpsms-sendsms-result').addClass('success');
                 jQuery('.wpsms-sendsms-result p').html(data.message);
                 jQuery('#wpsms_account_credit').html(data.data.balance);
                 jQuery('.wpsms-sendsms-result').fadeIn();
-                sendAgainEventListener();
+                jQuery('#SendSMSAgain').fadeIn();
                 clearForm();
+                scrollToTop();
             },
             error: function (data, status, xhr) {
-                scrollToTop();
                 jQuery('.wpsms-sendsms-result').removeClass('success');
                 jQuery('.wpsms-sendsms-result').addClass('error');
                 jQuery('.wpsms-sendsms-result p').html(data.responseJSON.error.message);
                 jQuery('.wpsms-sendsms-result').fadeIn();
                 jQuery(".wpsms-sendsms__overlay").css('display', 'none');
-                jQuery('button[name="SendSMS"]').removeClass('inactive')
+                jQuery('button[name="SendSMS"]').removeClass('inactive');
+                scrollToTop();
             }
         });
-}
-
-function sendAgainEventListener() {
-    jQuery('button[name="SendSMS"]').on('click', function () {
-        jQuery('.sendsms-content .summary').fadeOut();
-        jQuery('#content').trigger('click');
-    });
 }
 
 function messageAutoScroll() {

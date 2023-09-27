@@ -249,6 +249,7 @@
                     </div>
                 </div>
 
+                <a class="sendsms-again-button" id="SendSMSAgain"><?php _e('Send Again', 'wp-sms'); ?></a>
                 <button type="submit" class="sendsms-button" name="SendSMS"><?php _e('Send SMS', 'wp-sms'); ?></button>
             </form>
 
