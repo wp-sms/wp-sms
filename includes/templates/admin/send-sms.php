@@ -24,8 +24,7 @@
             <div class="tab active" id="content"><?php _e('Content', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="receiver"><?php _e('Receiver', 'wp-sms'); ?><span class="icon"></div>
             <div class="tab " id="options"><?php _e('Options', 'wp-sms'); ?><span class="icon"></div>
-            <div class="tab send-mobile" id="send"><?php _e('Send', 'wp-sms'); ?><span class="icon"></div>
-            <div class="tab send-wide" id="send"><?php _e('Preview & Send', 'wp-sms'); ?><span class="icon"></div>
+            <div class="tab" id="send"><?php _e('Send', 'wp-sms'); ?><span class="icon"></div>
         </div>
         <div class="sendsms-tabs-line"></div>
 
@@ -250,6 +249,7 @@
                     </div>
                 </div>
 
+                <a class="sendsms-again-button" id="SendSMSAgain"><?php _e('Send Again', 'wp-sms'); ?></a>
                 <button type="submit" class="sendsms-button" name="SendSMS"><?php _e('Send SMS', 'wp-sms'); ?></button>
             </form>
 

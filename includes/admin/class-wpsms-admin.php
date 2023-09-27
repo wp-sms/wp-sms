@@ -292,8 +292,7 @@ class Admin
             'messageMsg'        => __('characters', 'wp-sms'),
             'currentDateTime'   => WP_SMS_CURRENT_DATE,
             'proIsActive'       => \WP_SMS\Version::pro_is_active(),
-            'siteName'          => get_bloginfo('name'),
-            'sendSMSAgainTitle' => __('Send SMS Again', 'wp-sms')
+            'siteName'          => get_bloginfo('name')
         ));
     }
 

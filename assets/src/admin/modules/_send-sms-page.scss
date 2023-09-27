@@ -432,14 +432,6 @@ New styles for new version of the page
       padding: 10px 0;
       transition: .3s all ease-out;
 
-      &#send.send-mobile {
-        display: none;
-      }
-
-      &#send.send-wide {
-        display: block;
-      }
-
       &.active::before,
       &.passed::before {
         content: "";
@@ -512,14 +504,6 @@ New styles for new version of the page
 
       .tab {
         font-size: 14px;
-
-        &#send.send-mobile {
-          display: block;
-        }
-
-        &#send.send-wide {
-          display: none;
-        }
 
         &.passed::before,
         &.active::before {
@@ -912,7 +896,8 @@ New styles for new version of the page
       }
     }
 
-    .sendsms-button {
+    .sendsms-button,
+    .sendsms-again-button {
       background-color: $brand-orange;
       text-align: center;
       font-size: 16px;
@@ -926,6 +911,15 @@ New styles for new version of the page
       outline: none;
       width: 100%;
       border: none;
+
+      &#SendSMSAgain {
+        display: block;
+        background-color: black;
+      }
+
+      &.send-again {
+        display: none;
+      }
 
       &:hover {
         background-color: $brand-highlight;
