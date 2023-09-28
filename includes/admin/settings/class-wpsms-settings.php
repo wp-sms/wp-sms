@@ -307,10 +307,10 @@ class Settings
             ),
             'register_sms'          => array(
                 'id'      => 'register_sms',
-                'name'    => __('Register with phone', 'wp-sms'),
+                'name'    => __('User Registration on Login', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('Allow user to register via phone when user is not available.', 'wp-sms'),
+                'desc'    => __('Make a user account using SMS during login if the user isn\'t already registered.', 'wp-sms'),
             ),
             'otp_title'             => array(
                 'id'   => 'otp_title',
