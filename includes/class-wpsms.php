@@ -98,7 +98,13 @@ class WP_SMS
         // Utility classes.
         $this->include('src/Helper.php');
         $this->include('src/Utils/CsvHelper.php');
+        $this->include('src/Utils/RemoteRequest.php');
+        $this->include('src/Utils/Logger.php');
         $this->include('src/Report/EmailReportGenerator.php');
+
+        // Third-party libraries
+        $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
+        $this->include('includes/libraries/wp-background-processing/wp-background-process.php');
 
         // MobileFieldHandler
         $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
@@ -107,10 +113,16 @@ class WP_SMS
         $this->include('src/User/MobileFieldHandler/WordPressMobileFieldHandler.php');
         $this->include('src/User/RegisterUserViaPhone.php');
         $this->include('src/User/MobileFieldManager.php');
+
         add_action('init', function () {
             $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
             $mobileFieldManager->init();
         });
+
+        // Background Processing
+        $this->include('src/BackgroundProcess/BackgroundProcessFactory.php');
+        $this->include('src/BackgroundProcess/Async/RemoteRequestAsync.php');
+        $this->include('src/BackgroundProcess/Queues/RemoteRequestQueue.php');
 
         // Notification classes
         $this->include('src/Notification/Notification.php');
