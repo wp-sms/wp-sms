@@ -3,7 +3,6 @@
 namespace WP_SMS;
 
 use Exception;
-use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\BackgroundProcessFactory;
 use WP_SMS\Utils\Logger;
 use WP_SMS\Utils\RemoteRequest;
@@ -1081,13 +1080,13 @@ class Gateway
      * @param string $url The URL of the remote resource.
      * @param array $arguments Any additional arguments to be passed to the request.
      * @param array $params Any additional parameters to be passed to the request.
-     * @return void
+     * @return array|false|Library\BackgroundProcessing\WP_Error
      */
     protected function requestAsync($method, $url, $arguments = [], $params = [])
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return $this->test
+        return BackgroundProcessFactory::remoteRequestAsync()
             ->data(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $this->to])
             ->dispatch();
     }
@@ -1105,7 +1104,7 @@ class Gateway
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return $this->remoteRequestQueue
+        return BackgroundProcessFactory::remoteRequestAsync()
             ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $this->to])
             ->save()
             ->dispatch();
