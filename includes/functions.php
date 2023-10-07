@@ -507,7 +507,7 @@ function wp_sms_render_mobile_field($args)
 {
     $placeHolder = wp_sms_get_option('mobile_terms_field_place_holder');
     $defaults    = array(
-        'type'        => 'tel',
+        'type'        => 'text',
         'placeholder' => $placeHolder ? $placeHolder : __('Phone Number...', 'wp-sms'),
         'min'         => '',
         'max'         => '',
@@ -530,7 +530,7 @@ function wp_sms_render_mobile_field($args)
 
     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo sprintf(
-        '<input id="%s" type="tel" name="%s" placeholder="%s" class="%s" value="%s" required="%s" minlength="%s" maxlength="%s" %s/>',
+        '<input id="%s" type="text" name="%s" placeholder="%s" class="%s" value="%s" required="%s" minlength="%s" maxlength="%s" %s/>',
         $args['id'],
         $args['name'],
         $args['placeholder'],
