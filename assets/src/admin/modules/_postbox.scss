@@ -272,6 +272,11 @@
   z-index: 1;
 }
 
+body.rtl #screen-meta-links {
+    left: 0;
+    right: unset;
+}
+
 #screen-meta-links + .wpsms-wrap .wpsms-header-banner,
 .privacy_page .wpsms-header-banner,
 #screen-meta-links + input[type="hidden"] + .wpsms-wrap .wpsms-header-banner {
