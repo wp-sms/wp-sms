@@ -240,7 +240,8 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 == Changelog ==
 = v6.3.3 - 09.10.2023 =
-*
+* Fixes: Some tweak form-submitting issues in sending SMS page and improvement the repeating issue
+* Fixes: Some tweak styles and RTL issues in send SMS page
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
