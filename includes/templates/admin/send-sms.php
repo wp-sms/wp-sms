@@ -135,13 +135,11 @@
                     <?php endif; ?>
                 </div>
 
-
                 <div class="bulk-field">
                     <?php if (!$smsObject->bulk_send) : ?>
                         <?php _e('This gateway doesn\'t support the bulk SMS and will use the first number while sending a group of numbers.', 'wp-sms'); ?>
                     <?php endif; ?>
                 </div>
-
 
                 <div class="content-field">
                     <label for="wp_get_message"><?php _e('Message', 'wp-sms'); ?></label>
@@ -205,7 +203,6 @@
                         <label for="repeat-forever"><?php _e('Repeat Forever', 'wp-sms') ?></label>
                     </div>
                 </div>
-
 
                 <?php if ($smsObject->flash == "enable") : ?>
                     <div class="flash-field">

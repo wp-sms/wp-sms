@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 5.6
-Stable tag: 6.3.2
+Stable tag: 6.3.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -239,11 +239,15 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.3.3 - 09.10.2023 =
+* Fixes: Some tweak form-submitting issues in sending SMS page and improvement the repeating issue
+* Fixes: Some tweak styles and RTL issues in send SMS page
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.3.2 - 27.09.2023 =
 * Fixes: Sending Scheduled SMS issue has been fixed.
 * Improvement: Email template styles and minor improvements.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.3 - 23.09.2023 =
 * Feature: Redesigned Send SMS page and added search user option!

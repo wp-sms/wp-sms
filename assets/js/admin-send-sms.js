@@ -336,6 +336,9 @@
                 field.element.hide();
             }
 
+            // Disable send sms button
+            this.fields.submitButton.element.prop('disabled', true);
+
             // Secondly show fields based on the selected tab
             switch (activeTabId) {
                 case 'content':
@@ -359,6 +362,7 @@
                 case 'send':
                     this.fields.summary.element.fadeIn()
                     this.fields.submitButton.element.fadeIn()
+                    this.fields.submitButton.element.prop('disabled', false);
                     break;
             }
         },
