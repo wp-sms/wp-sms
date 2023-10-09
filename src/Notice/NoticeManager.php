@@ -38,7 +38,7 @@ class NoticeManager extends AbstractNotice
     {
         $this->registerStaticNotices();
 
-        do_action('wp_sms_before_register_notice');
+        do_action('wp_sms_before_register_notice', $this);
 
         $this->action();
     }
