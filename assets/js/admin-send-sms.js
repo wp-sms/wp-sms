@@ -413,11 +413,26 @@
         addSearchUserEventListener: function () {
             let typingTimer;
             let doneTypingInterval = 600;
+            var selectedOptions = [];
+
+            let selectElement = jQuery('.wpsms-sendsms .wpsms-search-user select.js-wpsms-select2');
+
+            // Store selected options when an option is selected
+            selectElement.on('select2:select', function (e) {
+                let selectedOption = e.params.data;
+                if (selectedOption) {
+
+                    // Check if the selected option is not already in the selectedOptions array
+                    const index = selectedOptions.findIndex(option => option.id == selectedOption.id);
+                    if (index == -1) {
+                        selectedOptions.push(selectedOption);
+                    }
+                }
+            });
 
             jQuery('.wpsms-sendsms .wpsms-search-user textarea').on('keyup', function () {
                 clearTimeout(typingTimer);
                 let searchUserKeyword = jQuery(this).val();
-                let selectElement = jQuery('.wpsms-sendsms .wpsms-search-user select.js-wpsms-select2');
 
                 // Set a new timer to send the query after a delay
                 typingTimer = setTimeout(function () {
@@ -432,13 +447,29 @@
                             'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
                         },
                         success: function (users) {
+                            // Clear existing options in the Select2 dropdown
+                            selectElement.empty();
+
+                            // Append selected options back to the dropdown
+                            selectedOptions.forEach(function (selectedOption) {
+                                let option = new Option(selectedOption.text, selectedOption.id, false, true);
+                                selectElement.append(option);
+                            });
+
                             // Populate the Select2 element with the retrieved users
                             users.forEach(function (user) {
                                 if (user.id && user.id > 0) {
-                                    let option = new Option(user.slug, user.id, false, false);
-                                    selectElement.append(option);
+                                    // Check if the user is not already in the selectedOptions array
+                                    const index = selectedOptions.findIndex(option => option.id == user.id);
+                                    if (index == -1) {
+                                        let option = new Option(user.slug, user.id, false, false);
+                                        selectElement.append(option);
+                                    }
                                 }
                             });
+
+                            selectElement.trigger('change');
+                            selectElement.trigger('select2:open');
                         },
                     });
                 }, doneTypingInterval);
