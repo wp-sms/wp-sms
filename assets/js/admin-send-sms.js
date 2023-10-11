@@ -430,6 +430,20 @@
                 }
             });
 
+            // Remove unselected option when an option is unselected
+            selectElement.on('select2:unselect', function (e) {
+                let unselectedOption = e.params.data;
+                if (unselectedOption) {
+
+                    // Check if the selected option is not already in the selectedOptions array
+                    const indexToRemove = selectedOptions.findIndex(option => option.id == unselectedOption.id);
+                    if (indexToRemove !== -1) {
+                        selectedOptions.splice(indexToRemove, 1)
+                    }
+                }
+            });
+
+
             jQuery('.wpsms-sendsms .wpsms-search-user textarea').on('keyup', function () {
                 clearTimeout(typingTimer);
                 let searchUserKeyword = jQuery(this).val();
@@ -459,10 +473,17 @@
                             // Populate the Select2 element with the retrieved users
                             users.forEach(function (user) {
                                 if (user.id && user.id > 0) {
+
+                                    // Check if a user has been found with the name
+                                    optionText = user.slug;
+                                    if (user.name.toLowerCase().includes(searchUserKeyword.toLowerCase())) {
+                                        optionText = user.name;
+                                    }
+
                                     // Check if the user is not already in the selectedOptions array
                                     const index = selectedOptions.findIndex(option => option.id == user.id);
                                     if (index == -1) {
-                                        let option = new Option(user.slug, user.id, false, false);
+                                        let option = new Option(optionText, user.id, false, false);
                                         selectElement.append(option);
                                     }
                                 }
