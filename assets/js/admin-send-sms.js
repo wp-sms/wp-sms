@@ -411,10 +411,7 @@
         },
 
         addSearchUserEventListener: function () {
-            let typingTimer;
-            let doneTypingInterval = 600;
             var selectedOptions = [];
-
             let selectElement = jQuery('.wpsms-sendsms .wpsms-search-user select.js-wpsms-select2');
 
             // Store selected options when an option is selected
@@ -443,57 +440,51 @@
                 }
             });
 
+            selectElement.select2({
+                ajax: {
+                    url: wpSmsGlobalTemplateVar.restUrls.users,
+                    method: 'GET',
+                    dataType: 'json',
+                    headers: {
+                        'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
+                    },
+                    data: function (params) {
+                        return {
+                            search: params.term,
+                        };
+                    },
 
-            jQuery('.wpsms-sendsms .wpsms-search-user textarea').on('keyup', function () {
-                clearTimeout(typingTimer);
-                let searchUserKeyword = jQuery(this).val();
-
-                // Set a new timer to send the query after a delay
-                typingTimer = setTimeout(function () {
-                    jQuery.ajax({
-                        url: wpSmsGlobalTemplateVar.restUrls.users,
-                        method: 'GET',
-                        data: {
-                            search: searchUserKeyword,
-                        },
-                        dataType: 'json',
-                        headers: {
-                            'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
-                        },
-                        success: function (users) {
-                            // Clear existing options in the Select2 dropdown
-                            selectElement.empty();
-
-                            // Append selected options back to the dropdown
-                            selectedOptions.forEach(function (selectedOption) {
-                                let option = new Option(selectedOption.text, selectedOption.id, false, true);
-                                selectElement.append(option);
-                            });
-
-                            // Populate the Select2 element with the retrieved users
-                            users.forEach(function (user) {
-                                if (user.id && user.id > 0) {
-
-                                    // Check if a user has been found with the name
-                                    optionText = user.slug;
-                                    if (user.name.toLowerCase().includes(searchUserKeyword.toLowerCase())) {
-                                        optionText = user.name;
-                                    }
-
-                                    // Check if the user is not already in the selectedOptions array
-                                    const index = selectedOptions.findIndex(option => option.id == user.id);
-                                    if (index == -1) {
-                                        let option = new Option(optionText, user.id, false, false);
-                                        selectElement.append(option);
-                                    }
+                    processResults: function (users) {
+                        let results = [];
+                        // Process each user
+                        users.forEach(function (user) {
+                            if (user.id && user.id > 0) {
+                                optionTitle = user.slug + ' ( ' + user.name + ' )';
+                                // Check if the user is not already in the selectedOptions array
+                                const index = selectedOptions.findIndex(option => option.id == user.id);
+                                if (index == -1) {
+                                    results.push({
+                                        id: user.id,
+                                        text: optionTitle,
+                                    });
                                 }
-                            });
+                            }
+                        });
 
-                            selectElement.trigger('change');
-                            selectElement.trigger('select2:open');
-                        },
-                    });
-                }, doneTypingInterval);
+                        // Return the processed results
+                        return {
+                            results: results,
+                        };
+                    },
+                },
+
+                templateResult: function (result) {
+                    return jQuery('<span>' + result.text + '</span>');
+                },
+
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
             });
         },
 
