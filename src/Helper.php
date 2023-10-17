@@ -2,7 +2,6 @@
 
 namespace WP_SMS;
 
-
 /**
  * Class WP_SMS
  * @package WP_SMS
@@ -72,10 +71,10 @@ class Helper
      *
      * @return mixed
      */
-    public static function getUserMobileNumberByUserId($userId)
+    public static function getUserMobileNumberByUserId($userId, $args = [])
     {
         $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
-        return $mobileFieldManager->getHandler()->getMobileNumberByUserId($userId);
+        return $mobileFieldManager->getHandler()->getMobileNumberByUserId($userId, $args);
     }
 
     /**
@@ -194,7 +193,7 @@ class Helper
         $userId = get_post_meta($orderId, '_customer_user', true);
 
         if ($userId) {
-            $customerMobileNumber = self::getUserMobileNumberByUserId($userId);
+            $customerMobileNumber = self::getUserMobileNumberByUserId($userId, ['order_id' => $orderId]);
 
             if ($customerMobileNumber) {
                 return $customerMobileNumber;
@@ -206,6 +205,15 @@ class Helper
         // Backward compatibility, the context of order meta is different with customer
         if (!$mobile) {
             $mobile = get_post_meta($orderId, '_' . self::getUserMobileFieldName(), true);
+        }
+
+        // Backward compatibility with new custom WooCommerce order table.
+        if (!$mobile) {
+            $order = wc_get_order($orderId);
+
+            if ($order && method_exists($order, 'get_billing_phone')) {
+                $mobile = $order->get_billing_phone();
+            }
         }
 
         return $mobile;

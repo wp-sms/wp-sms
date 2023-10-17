@@ -2,7 +2,6 @@
 
 namespace WP_SMS\User\MobileFieldHandler;
 
-use WP_SMS\Helper;
 use WP_SMS\Option;
 
 class WooCommerceUsePhoneFieldHandler
@@ -14,7 +13,7 @@ class WooCommerceUsePhoneFieldHandler
         add_filter('woocommerce_customer_meta_fields', [$this, 'modifyAdminCustomerMetaBillingPhoneAttributes']);
     }
 
-    public function getMobileNumberByUserId($userId)
+    public function getMobileNumberByUserId($userId, $args = [])
     {
         $mobileNumber = get_user_meta($userId, $this->getUserMobileFieldName(), true);
 
@@ -29,6 +28,15 @@ class WooCommerceUsePhoneFieldHandler
 
             if (isset($customerSessionData['phone'])) {
                 $mobileNumber = $customerSessionData['phone'];
+            }
+        }
+
+        // Backward compatibility with new custom WooCommerce order table.
+        if (!$mobileNumber and isset($args['order_id'])) {
+            $order = wc_get_order($args['order_id']);
+
+            if ($order && method_exists($order, 'get_billing_phone')) {
+                $mobileNumber = $order->get_billing_phone();
             }
         }
 
