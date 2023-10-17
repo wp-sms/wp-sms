@@ -137,7 +137,7 @@ class Helper
             }
         }
 
-        return $mobileNumbers;
+        return array_unique($mobileNumbers);
     }
 
     /**
@@ -178,7 +178,7 @@ class Helper
             $numbers[] = $customer->$fieldKey;
         }
 
-        return $numbers;
+        return array_unique($numbers);
     }
 
     /**

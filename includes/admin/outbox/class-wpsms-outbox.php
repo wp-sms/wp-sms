@@ -78,7 +78,7 @@ class Outbox_List_Table extends \WP_List_Table
             'label' => ($item['status'] == 'success' ? __('Success', 'wp-sms') : __('Failed', 'wp-sms'))
         ));
 
-        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, __('View response', 'wp-sms'), $item['response']);
+        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, __('API Response', 'wp-sms'), $item['response']);
     }
 
     function column_sender($item)
