@@ -11,6 +11,7 @@ use WP_SMS\Notification\Handler\WordPressPostNotification;
 use WP_SMS\Notification\Handler\WordPressUserNotification;
 use WP_SMS\Notification\Handler\WooCommerceCouponNotification;
 use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
+use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 
 class NotificationFactory
 {
@@ -66,6 +67,15 @@ class NotificationFactory
     public static function getUser($userId = false)
     {
         return new WordPressUserNotification($userId);
+    }
+
+    /**
+     * @param $userId
+     * @return AwesomeSupportTicketNotification
+     */
+    public static function getAwesomeSupportTicket($ticketId = false)
+    {
+        return new AwesomeSupportTicketNotification($ticketId);
     }
 
     /**

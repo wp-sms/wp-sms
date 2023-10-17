@@ -6,7 +6,7 @@ use WP_Error;
 
 class altiria extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://www.altiria.net/api/http";
+    private $wsdl_link = "https://www.altiria.net:8443/apirest/ws";
     public $tariff = "http://www.altiria.net";
     public $unitrial = true;
     public $unit;
@@ -48,41 +48,23 @@ class altiria extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
         $body = array(
-            'cmd'      => 'sendsms',
-            'login'    => $this->username,
-            'passwd'   => $this->password,
-            'msg'      => stripslashes($this->msg),
-            'senderId' => $this->from,
-            'source'   => 'wpsms'
+            'credentials' => [
+                'login'  => $this->username,
+                'passwd' => $this->password,
+            ],
+            'destination' => $this->to,
+            'message'     => [
+                'msg'      => substr($this->msg, 0, 160),
+                'senderId' => $this->from,
+            ],
         );
 
-        if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
-            $body['encoding'] = true;
-        }
-
-        $destination = '';
-        foreach ($this->to as $number) {
-            $destination .= '&dest=' . $number;
-        }
-
-        $destination = ltrim($destination, '&');
-        $response    = wp_remote_post($this->wsdl_link . '?' . $destination, [
+        $response = wp_remote_post($this->wsdl_link . '/sendSms', [
             'headers' => array(
-                'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8'
+                'Content-Type' => 'application/json;charset=UTF-8'
             ),
-            'body'    => $body
+            'body'    => json_encode($body)
         ]);
 
         if (is_wp_error($response)) {
@@ -90,50 +72,32 @@ class altiria extends \WP_SMS\Gateway
         }
 
         if (200 != wp_remote_retrieve_response_code($response)) {
-            return new WP_Error('account-credit', $response['body']);
+            return new WP_Error('send-sms', $response['body']);
         }
 
-        $arrayResponse = explode("\n", $response['body']);
-        foreach ($arrayResponse as $item) {
-            if ($item == '') continue;
+        $response = json_decode($response['body']);
 
-            $to = [$this->getDestinationFromString($item)];
-
-            if (strstr($item, 'ERROR')) {
-                $errorNumber  = $this->getErrorNumberFromString($item);
-                $errorMessage = $this->getErrorMessage($errorNumber);
-
-                $this->log($this->from, $this->msg, $to, $errorMessage, 'error');
-            } else {
-                $this->log($this->from, $this->msg, $to, $item);
-
-                /**
-                 * Run hook after send sms.
-                 *
-                 * @param string $result result output.
-                 * @since 2.4
-                 *
-                 */
-                do_action('wp_sms_send', $response['body']);
-            }
+        if ($response->status != '000') {
+            return new WP_Error('send-sms', $this->getErrorMessage($response->status));
         }
 
-        return $response['body'];
+        return $response;
     }
 
     public function GetCredit()
     {
         $body = array(
-            'cmd'    => 'getcredit',
-            'login'  => $this->username,
-            'passwd' => $this->password,
+            'credentials' => [
+                'login'  => $this->username,
+                'passwd' => $this->password,
+            ],
         );
 
-        $response = wp_remote_post($this->wsdl_link, [
+        $response = wp_remote_post($this->wsdl_link . '/getCredit', [
             'headers' => array(
-                'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8'
+                'Content-Type' => 'application/json;charset=UTF-8'
             ),
-            'body'    => $body
+            'body'    => json_encode($body)
         ]);
 
         if (is_wp_error($response)) {
@@ -144,84 +108,81 @@ class altiria extends \WP_SMS\Gateway
             return new WP_Error('account-credit', $response['body']);
         }
 
-        if (strstr($response['body'], 'ERROR')) {
-            $errorMessage = $this->getErrorNumberFromString($response['body']);
-            return new WP_Error('account-credit', $this->getErrorMessage($errorMessage));
+        $response = json_decode($response['body']);
+
+        if ($response->status != '000') {
+            return new WP_Error('account-credit', $this->getErrorMessage($response->status));
         }
 
-        preg_match('/.*OK credit\(0\):(.*?)$/', $response['body'], $match);
-
-        if (isset($match[1])) {
-            return $match[1];
-        }
-
-        return $response['body'];
+        return $response->credit;
     }
 
-    private function getErrorNumberFromString($string)
+    private function getErrorMessage($errorCode)
     {
-        preg_match('/errNum:([\d]+)/', $string, $matches);
-        return isset($matches[1]) ? $matches[1] : null;
-    }
-
-    private function getDestinationFromString($string)
-    {
-        preg_match('/dest:([a-zA-Z0-9_.-]+)/', $string, $matches);
-        return isset($matches[1]) ? $matches[1] : null;
-    }
-
-    private function getErrorMessage($responseError)
-    {
-        switch ($responseError) {
-            case '001':
-                $message = 'Internal error. Please contact technical support';
+        switch ($errorCode) {
+            case "000":
+                return "E ́xito";
                 break;
-            case '010':
-                $message = 'Error in the telephone number format';
+            case "001":
+                return "Error interno. Contactar con el soporte t ́ecnico";
                 break;
-            case '011':
-                $message = 'Error in sending of the command parameters or incorrect codification The length of the message exceeds the maximum allowed length The HTTP request uses an invalid character codification There are not valid recipients to send the message Duplicated recipient';
+            case "002":
+                return "Error de acceso al puerto seguro 443. Contactar con el soporte t ́ecnico";
                 break;
-            case '013':
-                $message = 'The length of the message exceeds the maximum allowed length';
+            case "010":
+                return "Error en el formato del nu ́mero de tel ́efono";
                 break;
-            case '014':
-                $message = 'The HTTP request uses an invalid character codification';
+            case "011":
+                return "Error en el env ́ıo de los par ́ametros de la petici ́on o codificaci ́on incorrecta.";
                 break;
-            case '015':
-                $message = 'There are not valid recipients to send the message';
+            case "013":
+                return "El mensaje excede la longitud m ́axima permitida";
                 break;
-            case '016':
-                $message = 'Duplicated recipient';
+            case "014":
+                return "La petici ́on HTTP usa una codificaci ́on de caracteres inv ́alida";
                 break;
-            case '017':
-                $message = 'Empty message';
+            case "015":
+                return "No hay destinatarios v ́alidos para enviar el mensaje";
                 break;
-            case '020':
-                $message = 'Authentication error';
+            case "016":
+                return "Destinatario duplicado";
                 break;
-            case '022':
-                $message = 'The selected originator for the message is not valid';
+            case "017":
+                return "Mensaje vac ́ıo";
                 break;
-            case '030':
-                $message = 'The URL and the message exceed the maximum allowed length';
+            case "018":
+                return "Se ha excedido el m ́aximo nu ́mero de destinatarios autorizado";
                 break;
-            case '031':
-                $message = 'The length of the URL is incorrect';
+            case "019":
+                return "Se ha excedido el m ́aximo nu ́mero de mensajes autorizado";
                 break;
-            case '032':
-                $message = 'The URL contains not allowed characters';
+            case "020":
+                return "Error en la autentificaci ́on";
                 break;
-            case '033':
-                $message = 'The SMS destination port is incorrect';
+            case "033":
+                return "El puerto destino del SMS es incorrecto";
                 break;
-            case '034':
-                $message = 'The SMS source port is incorrect';
+            case "034":
+                return "El puerto origen del SMS es incorrecto";
+                break;
+            case "035":
+                return "La web m ́ovil enlazada en el mensaje no pertenece al usuario";
+                break;
+            case "036":
+                return "La web m ́ovil enlazada en el mensaje no existe";
+                break;
+            case "037":
+                return "Se ha excedido el m ́aximo nu ́mero de webs m ́oviles enlazadas en el mensaje Error de sintaxis en la definici ́on del env ́ıo con enlace a web m ́ovil";
+                break;
+            case "038":
+                return "Error de sintaxis en la definici ́on del env ́ıo con enlace a web m ́ovil";
+                break;
+            case "039":
+                return "Error de sintaxis en la definici ́on de los par ́ametros de la web m ́ovil parametrizada";
                 break;
             default:
-                $message = $responseError;
+                return "Invalid error code";
                 break;
         }
-        return $message;
     }
 }

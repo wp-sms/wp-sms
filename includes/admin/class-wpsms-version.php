@@ -101,6 +101,8 @@ class Version
             return false;
         }
 
+        return true;
+
         $licenseKey    = wp_sms_get_license_key('wp-sms-pro');
         $licenseStatus = Option::getOption('license_wp-sms-pro_status');
 

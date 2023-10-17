@@ -123,6 +123,7 @@ class WP_SMS
         $this->include('src/Notification/Handler/WordPressCommentNotification.php');
         $this->include('src/Notification/Handler/SubscriberNotification.php');
         $this->include('src/Notification/Handler/CustomNotification.php');
+        $this->include('src/Notification/Handler/AwesomeSupportTicketNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
 
         // Legacy classes.

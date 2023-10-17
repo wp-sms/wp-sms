@@ -894,13 +894,7 @@ class Settings
                     'id'   => 'as_notify_open_ticket_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms'),
-                            '<code>%ticket_content%</code>',
-                            '<code>%ticket_title%</code>',
-                            '<code>%ticket_username%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables()
                 ),
                 'as_notify_admin_reply_ticket'         => array(
                     'id'   => 'as_notify_admin_reply_ticket',
@@ -918,13 +912,7 @@ class Settings
                     'id'   => 'as_notify_admin_reply_ticket_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Ticket Content: %s, Ticket Title: %s, Replied by: %s', 'wp-sms'),
-                            '<code>%reply_content%</code>',
-                            '<code>%reply_title%</code>',
-                            '<code>%reply_username%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables()
                 ),
                 'as_notify_user_reply_ticket'          => array(
                     'id'   => 'as_notify_user_reply_ticket',
@@ -942,13 +930,43 @@ class Settings
                     'id'   => 'as_notify_user_reply_ticket_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms'),
-                            '<code>%reply_content%</code>',
-                            '<code>%reply_title%</code>',
-                            '<code>%reply_username%</code>'
-                        )
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables()
+                ),
+                'as_notify_update_ticket'              => array(
+                    'id'   => 'as_notify_update_ticket',
+                    'name' => __('Notify user for the ticket status update', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'as_notify_update_ticket_status'       => array(
+                    'id'      => 'as_notify_update_ticket_status',
+                    'name'    => __('Send SMS', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Send SMS to user when the ticket status updates', 'wp-sms')
+                ),
+                'as_notify_update_ticket_message'      => array(
+                    'id'   => 'as_notify_update_ticket_message',
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables()
+                ),
+                'as_notify_close_ticket'               => array(
+                    'id'   => 'as_notify_close_ticket',
+                    'name' => __('Notify user when the ticket is closed', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'as_notify_close_ticket_status'        => array(
+                    'id'      => 'as_notify_close_ticket_status',
+                    'name'    => __('Send SMS', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Send SMS to user when the ticket is closed', 'wp-sms')
+                ),
+                'as_notify_close_ticket_message'       => array(
+                    'id'   => 'as_notify_close_ticket_message',
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables()
                 )
             );
         } else {

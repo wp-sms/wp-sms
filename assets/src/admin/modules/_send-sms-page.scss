@@ -316,7 +316,7 @@ New styles for new version of the page
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 20px;
+    padding-bottom: 20px;
     position: relative;
 
     .budget {
@@ -384,9 +384,7 @@ New styles for new version of the page
     }
 
     @media (max-width: 400px) {
-      margin-top: 40px;
       flex-wrap: wrap;
-      padding: 0;
 
       .pro-button {
         position: absolute;
@@ -1014,7 +1012,6 @@ New styles for new version of the page
       }
     }
 
-
     @media (max-width: 400px) {
       padding: 10px 10px;
 
@@ -1026,12 +1023,10 @@ New styles for new version of the page
         right: 10px;
       }
     }
-
-
   }
 
   @media (max-width: 400px) {
-    padding: 10px 10px;
+    padding: 20px 10px;
   }
 }
 

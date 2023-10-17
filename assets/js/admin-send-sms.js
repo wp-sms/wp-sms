@@ -411,37 +411,80 @@
         },
 
         addSearchUserEventListener: function () {
-            let typingTimer;
-            let doneTypingInterval = 600;
+            var selectedOptions = [];
+            let selectElement = jQuery('.wpsms-sendsms .wpsms-search-user select.js-wpsms-select2');
 
-            jQuery('.wpsms-sendsms .wpsms-search-user textarea').on('keyup', function () {
-                clearTimeout(typingTimer);
-                let searchUserKeyword = jQuery(this).val();
-                let selectElement = jQuery('.wpsms-sendsms .wpsms-search-user select.js-wpsms-select2');
+            // Store selected options when an option is selected
+            selectElement.on('select2:select', function (e) {
+                let selectedOption = e.params.data;
+                if (selectedOption) {
 
-                // Set a new timer to send the query after a delay
-                typingTimer = setTimeout(function () {
-                    jQuery.ajax({
-                        url: wpSmsGlobalTemplateVar.restUrls.users,
-                        method: 'GET',
-                        data: {
-                            search: searchUserKeyword,
-                        },
-                        dataType: 'json',
-                        headers: {
-                            'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
-                        },
-                        success: function (users) {
-                            // Populate the Select2 element with the retrieved users
-                            users.forEach(function (user) {
-                                if (user.id && user.id > 0) {
-                                    let option = new Option(user.slug, user.id, false, false);
-                                    selectElement.append(option);
+                    // Check if the selected option is not already in the selectedOptions array
+                    const index = selectedOptions.findIndex(option => option.id == selectedOption.id);
+                    if (index == -1) {
+                        selectedOptions.push(selectedOption);
+                    }
+                }
+            });
+
+            // Remove unselected option when an option is unselected
+            selectElement.on('select2:unselect', function (e) {
+                let unselectedOption = e.params.data;
+                if (unselectedOption) {
+
+                    // Check if the selected option is not already in the selectedOptions array
+                    const indexToRemove = selectedOptions.findIndex(option => option.id == unselectedOption.id);
+                    if (indexToRemove !== -1) {
+                        selectedOptions.splice(indexToRemove, 1)
+                    }
+                }
+            });
+
+            selectElement.select2({
+                ajax: {
+                    url: wpSmsGlobalTemplateVar.restUrls.users,
+                    method: 'GET',
+                    dataType: 'json',
+                    headers: {
+                        'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
+                    },
+                    data: function (params) {
+                        return {
+                            search: params.term,
+                        };
+                    },
+
+                    processResults: function (users) {
+                        let results = [];
+                        // Process each user
+                        users.forEach(function (user) {
+                            if (user.id && user.id > 0) {
+                                optionTitle = user.slug + ' ( ' + user.name + ' )';
+                                // Check if the user is not already in the selectedOptions array
+                                const index = selectedOptions.findIndex(option => option.id == user.id);
+                                if (index == -1) {
+                                    results.push({
+                                        id: user.id,
+                                        text: optionTitle,
+                                    });
                                 }
-                            });
-                        },
-                    });
-                }, doneTypingInterval);
+                            }
+                        });
+
+                        // Return the processed results
+                        return {
+                            results: results,
+                        };
+                    },
+                },
+
+                templateResult: function (result) {
+                    return jQuery('<span>' + result.text + '</span>');
+                },
+
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
             });
         },
 
