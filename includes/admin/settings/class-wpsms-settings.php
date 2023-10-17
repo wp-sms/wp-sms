@@ -878,19 +878,19 @@ class Settings
         // Set Awesome settings
         if (class_exists('Awesome_Support')) {
             $as_settings = array(
-                'as_notify_new_ticket'                 => array(
+                'as_notify_new_ticket'                   => array(
                     'id'   => 'as_notify_new_ticket',
                     'name' => __('Notify for new ticket', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'as_notify_open_ticket_status'         => array(
+                'as_notify_open_ticket_status'           => array(
                     'id'      => 'as_notify_open_ticket_status',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to admin when the user opened a new ticket.', 'wp-sms')
                 ),
-                'as_notify_open_ticket_message'        => array(
+                'as_notify_open_ticket_message'          => array(
                     'id'   => 'as_notify_open_ticket_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -902,19 +902,19 @@ class Settings
                             '<code>%ticket_username%</code>'
                         )
                 ),
-                'as_notify_admin_reply_ticket'         => array(
+                'as_notify_admin_reply_ticket'           => array(
                     'id'   => 'as_notify_admin_reply_ticket',
                     'name' => __('Notify admin for get reply', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'as_notify_admin_reply_ticket_status'  => array(
+                'as_notify_admin_reply_ticket_status'    => array(
                     'id'      => 'as_notify_admin_reply_ticket_status',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to admin when the user replied the ticket.', 'wp-sms')
                 ),
-                'as_notify_admin_reply_ticket_message' => array(
+                'as_notify_admin_reply_ticket_message'   => array(
                     'id'   => 'as_notify_admin_reply_ticket_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
@@ -926,25 +926,76 @@ class Settings
                             '<code>%reply_username%</code>'
                         )
                 ),
-                'as_notify_user_reply_ticket'          => array(
+                'as_notify_user_reply_ticket'            => array(
                     'id'   => 'as_notify_user_reply_ticket',
                     'name' => __('Notify user for get reply', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'as_notify_user_reply_ticket_status'   => array(
+                'as_notify_user_reply_ticket_status'     => array(
                     'id'      => 'as_notify_user_reply_ticket_status',
                     'name'    => __('Send SMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Send SMS to user when the admin replied the ticket. Please make sure the "Add Mobile number field" option is enabled in the Settings > Features', 'wp-sms')
                 ),
-                'as_notify_user_reply_ticket_message'  => array(
+                'as_notify_user_reply_ticket_message'    => array(
                     'id'   => 'as_notify_user_reply_ticket_message',
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
                             __('Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms'),
+                            '<code>%reply_content%</code>',
+                            '<code>%reply_title%</code>',
+                            '<code>%reply_username%</code>'
+                        )
+                ),
+                'as_notify_update_ticket'                => array(
+                    'id'   => 'as_notify_update_ticket',
+                    'name' => __('Notify user for the ticket status update', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'as_notify_update_ticket_status'         => array(
+                    'id'      => 'as_notify_update_ticket_status',
+                    'name'    => __('Send SMS', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Send SMS to user when the ticket status updates', 'wp-sms')
+                ),
+                'as_notify_update_ticket_message'        => array(
+                    'id'   => 'as_notify_update_ticket_message',
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                        sprintf(
+                            __('Ticket Old Status: %s, Ticket New Status: %s, Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms'),
+                            '<code>%ticket_old_status%</code>',
+                            '<code>%ticket_new_status%</code>',
+                            '<code>%reply_content%</code>',
+                            '<code>%reply_title%</code>',
+                            '<code>%reply_username%</code>'
+                        )
+                ),
+                'as_notify_close_and_open_ticket'        => array(
+                    'id'   => 'as_notify_close_and_open_ticket',
+                    'name' => __('Notify user for the ticket is closed or opened', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'as_notify_close_and_open_ticket_status' => array(
+                    'id'      => 'as_notify_close_and_open_ticket_status',
+                    'name'    => __('Send SMS', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Send SMS to user when the ticket is closed or opened', 'wp-sms')
+                ),
+                'as_notify_close_ticket_message'         => array(
+                    'id'   => 'as_notify_close_ticket_message',
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                        sprintf(
+                            __('Ticked Open and Close Status: %s, Ticket Content: %s, Ticket Title: %s, Created by: %s', 'wp-sms'),
+                            '<code>%close_open_status%</code>',
                             '<code>%reply_content%</code>',
                             '<code>%reply_title%</code>',
                             '<code>%reply_username%</code>'
