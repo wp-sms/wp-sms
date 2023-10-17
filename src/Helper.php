@@ -178,6 +178,14 @@ class Helper
             $numbers[] = $customer->$fieldKey;
         }
 
+        // Backward compatibility with new custom WooCommerce order table.
+        if (get_option('woocommerce_custom_orders_table_enabled')) {
+            global $wpdb;
+            $tableName           = \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_addresses_table_name();
+            $numbersFromNewTable = $wpdb->get_col("SELECT `phone` from {$tableName} where `phone` !=''");
+            $numbers             = array_merge($numbers, $numbersFromNewTable);
+        }
+
         return array_unique($numbers);
     }
 
