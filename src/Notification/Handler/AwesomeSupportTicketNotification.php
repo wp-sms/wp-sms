@@ -29,7 +29,7 @@ class AwesomeSupportTicketNotification extends Notification
 
     public function getTicketTitle()
     {
-        if (!is_null($this->ticket->post_parent)) {
+        if ($this->ticket->post_parent) {
             $parentTicket = get_post($this->ticket->post_parent);
             return $parentTicket->post_title;
         } else {
@@ -39,7 +39,7 @@ class AwesomeSupportTicketNotification extends Notification
 
     public function getTicketCreator()
     {
-        if (!is_null($this->ticket->post_parent)) {
+        if ($this->ticket->post_parent) {
             $parentTicket = get_post($this->ticket->post_parent);
             $user         = get_userdata($parentTicket->post_author);
         } else {
