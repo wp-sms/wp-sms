@@ -5,7 +5,7 @@ namespace WP_SMS\Gateway;
 class cellsynt extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://se-1.cellsynt.net/sms.php";
-    public $tariff = "http://www.cellsynt.net/";
+    public $tariff = "https://www.cellsynt.com/";
     public $unitrial = false;
     public $unit;
     public $flash = "enable";
@@ -60,7 +60,7 @@ class cellsynt extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to     = implode($this->to, ",");
+        $to     = implode(',', $this->to);
         $msg    = urlencode($this->msg);
         $result = file_get_contents($this->wsdl_link . "?username=" . $this->username . "&password=" . $this->password . "&destination=" . $to . "&type=text&charset=UTF-8&text=" . $msg . "&originatortype=alpha&originator=" . $this->from);
 
