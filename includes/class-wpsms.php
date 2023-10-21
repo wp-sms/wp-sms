@@ -190,6 +190,7 @@ class WP_SMS
         $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();
+        $this->include('src/Services/WooCommerce/OrderViewManager.php');
 
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');

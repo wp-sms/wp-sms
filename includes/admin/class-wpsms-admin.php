@@ -41,6 +41,7 @@ class Admin
     public function admin_assets()
     {
         global $sms;
+        $nonce = wp_create_nonce('wp_rest');
 
         // Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
@@ -83,12 +84,26 @@ class Admin
                         'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
                         'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
                     ),
-                    'nonce'    => wp_create_nonce('wp_rest'),
+                    'nonce'    => $nonce,
                     'senderID' => $sms->from,
                 )
             );
 
             wp_enqueue_style('wpsms-admin');
+
+            // Enqueue wp-sms woocommerce admin styles
+            wp_enqueue_script('wpsms-woocommerce-admin', WP_SMS_URL . 'assets/js/admin-order-view.js', ['jquery', 'jquery-ui-spinner'], WP_SMS_VERSION);
+            wp_localize_script('wpsms-woocommerce-admin', 'wpSmsWooCommerceTemplateVar', array(
+                    'restUrls' => array(
+                        'sendSms' => get_rest_url(null, 'wpsms/v1/send')
+                    ),
+                    'ajaxUrls' => array(
+                        'export' => \WP_SMS\Controller\ExportAjax::url(),
+                    ),
+                    'nonce'    => $nonce,
+                    'senderID' => $sms->from,
+                )
+            );
 
             if (is_rtl()) {
                 wp_enqueue_style('wpsms-rtl', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION);
@@ -288,11 +303,11 @@ class Admin
         wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), WP_SMS_VERSION, true);
         wp_enqueue_script('wp-sms-send-page');
         wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
-            'nonce'             => wp_create_nonce('wp_rest'),
-            'messageMsg'        => __('characters', 'wp-sms'),
-            'currentDateTime'   => WP_SMS_CURRENT_DATE,
-            'proIsActive'       => \WP_SMS\Version::pro_is_active(),
-            'siteName'          => get_bloginfo('name')
+            'nonce'           => wp_create_nonce('wp_rest'),
+            'messageMsg'      => __('characters', 'wp-sms'),
+            'currentDateTime' => WP_SMS_CURRENT_DATE,
+            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
+            'siteName'        => get_bloginfo('name')
         ));
     }
 

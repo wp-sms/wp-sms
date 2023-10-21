@@ -9,6 +9,7 @@ use DateInterval;
 use WP_SMS\Gateway;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
+use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Pro\Scheduled;
 use WP_SMS\Pro\RepeatingMessages;
 
@@ -24,16 +25,18 @@ if (!defined('ABSPATH')) {
 class SendSmsApi extends \WP_SMS\RestApi
 {
     private $sendSmsArguments = [
-        'sender'     => array('required' => true, 'type' => 'string'),
-        'recipients' => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'roles', 'wc-customers', 'bp-users', 'numbers']),
-        'group_ids'  => array('required' => false, 'type' => 'array'),
-        'role_ids'   => array('required' => false, 'type' => 'array'),
-        'numbers'    => array('required' => false, 'type' => 'array', 'format' => 'uri'),
-        'message'    => array('required' => true, 'type' => 'string'),
-        'flash'      => array('required' => false, 'type' => 'boolean'),
-        'media_urls' => array('required' => false, 'type' => 'array'),
-        'schedule'   => array('required' => false, 'type' => 'string', 'format' => 'date-time'),
-        'repeat'     => array('required' => false, 'type' => 'object')
+        'sender'               => array('required' => true, 'type' => 'string'),
+        'recipients'           => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'roles', 'wc-customers', 'bp-users', 'numbers']),
+        'group_ids'            => array('required' => false, 'type' => 'array'),
+        'role_ids'             => array('required' => false, 'type' => 'array'),
+        'numbers'              => array('required' => false, 'type' => 'array', 'format' => 'uri'),
+        'message'              => array('required' => true, 'type' => 'string'),
+        'flash'                => array('required' => false, 'type' => 'boolean'),
+        'media_urls'           => array('required' => false, 'type' => 'array'),
+        'schedule'             => array('required' => false, 'type' => 'string', 'format' => 'date-time'),
+        'repeat'               => array('required' => false, 'type' => 'object'),
+        'notification_handler' => array('required' => false, 'type' => 'string', 'enum' => ['WooCommerceOrderNotification', 'WooCommerceProductNotification', 'WooCommerceCouponNotification', 'WooCommerceCustomerNotification', 'WordPressPostNotification', 'WordPressUserNotification', 'AwesomeSupportTicketNotification', 'WordPressCommentNotification', 'SubscriberNotification']),
+        'handler_id'           => array('required' => false, 'type' => 'int'),
     ];
 
     public function __construct()
@@ -148,13 +151,21 @@ class SendSmsApi extends \WP_SMS\RestApi
             /*
              * Regular SMS
              */
-            $response = wp_sms_send(
-                $recipientNumbers,
-                $message,
-                $request->get_param('flash'),
-                $request->get_param('sender'),
-                $mediaUrls
-            );
+            $notificationHandler   = $request->get_param('notification_handler');
+            $notificationHandlerId = $request->get_param('handler_id');
+
+            if ($notificationHandler) {
+                $notification = NotificationFactory::getHandler($notificationHandler, $notificationHandlerId);
+                $response     = $notification->send($message, $recipientNumbers);
+            } else {
+                $response = wp_sms_send(
+                    $recipientNumbers,
+                    $message,
+                    $request->get_param('flash'),
+                    $request->get_param('sender'),
+                    $mediaUrls
+                );
+            }
 
             if (is_wp_error($response)) {
                 throw new Exception($response->get_error_message());

@@ -15,6 +15,14 @@ use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 
 class NotificationFactory
 {
+    public function getHandler($handlerName, $handlerId = false)
+    {
+        $fullClassName = 'WP_SMS\Notification\Handler\\' . $handlerName;
+        if (class_exists($fullClassName)) {
+            return new $fullClassName($handlerId);
+        }
+    }
+
     /**
      * @param $orderId
      * @return WooCommerceOrderNotification
