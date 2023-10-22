@@ -24,7 +24,7 @@
 
     <div class="wpsms-orderSmsMetabox__variables">
         <div class="wpsms-orderSmsMetabox__variables__header">
-            <label><?php _e('Use Variables', 'wp-sms') ?></label>
+            <label><?php _e('Variables', 'wp-sms') ?></label>
             <span class="wpsms-orderSmsMetabox__variables__icon"></span>
         </div>
 
