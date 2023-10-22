@@ -3,6 +3,7 @@
 namespace WP_SMS\Notification;
 
 use WP_SMS\Notification\Handler\CustomNotification;
+use WP_SMS\Notification\Handler\DefaultNotification;
 use WP_SMS\Notification\Handler\SubscriberNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
@@ -15,12 +16,17 @@ use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 
 class NotificationFactory
 {
-    public function getHandler($handlerName, $handlerId = false)
+    public function getHandler($handlerName = false, $handlerId = false)
     {
-        $fullClassName = 'WP_SMS\Notification\Handler\\' . $handlerName;
-        if (class_exists($fullClassName)) {
-            return new $fullClassName($handlerId);
+        if ($handlerName) {
+            $className = 'WP_SMS\Notification\Handler\\' . $handlerName;
+
+            if (class_exists($className)) {
+                return new $className($handlerId);
+            }
         }
+
+        return new DefaultNotification();
     }
 
     /**

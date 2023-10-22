@@ -126,6 +126,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $recipientNumbers,
                     $mediaUrls
                 );
+
                 return self::response(__('Repeating SMS is scheduled successfully!', 'wp-sms'));
             }
 
@@ -154,18 +155,14 @@ class SendSmsApi extends \WP_SMS\RestApi
             $notificationHandler   = $request->get_param('notification_handler');
             $notificationHandlerId = $request->get_param('handler_id');
 
-            if ($notificationHandler) {
-                $notification = NotificationFactory::getHandler($notificationHandler, $notificationHandlerId);
-                $response     = $notification->send($message, $recipientNumbers);
-            } else {
-                $response = wp_sms_send(
-                    $recipientNumbers,
-                    $message,
-                    $request->get_param('flash'),
-                    $request->get_param('sender'),
-                    $mediaUrls
-                );
-            }
+            $notification = NotificationFactory::getHandler($notificationHandler, $notificationHandlerId);
+            $response     = $notification->send(
+                $message,
+                $recipientNumbers,
+                $mediaUrls,
+                $request->get_param('flash'),
+                $request->get_param('sender')
+            );
 
             if (is_wp_error($response)) {
                 throw new Exception($response->get_error_message());
