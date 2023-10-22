@@ -43,7 +43,7 @@ jQuery(function ($) {
                     parent.find('.wpsms-orderSmsMetabox__result__report').removeClass('success');
                     parent.find('.wpsms-orderSmsMetabox__result__report').addClass('error');
                     parent.find('.wpsms-orderSmsMetabox__result__report p').html(data.responseJSON.error.message);
-                    parent.find(' .wpsms-orderSmsMetabox__result').fadeIn();
+                    parent.find('.wpsms-orderSmsMetabox__result').fadeIn();
                 }
             });
     }
