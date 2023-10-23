@@ -84,6 +84,7 @@ class smsto extends \WP_SMS\Gateway
         $opts = [
             CURLOPT_URL            => $apiURL,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_ENCODING       => "",
             CURLOPT_MAXREDIRS      => 10,
             CURLOPT_TIMEOUT        => 15,
