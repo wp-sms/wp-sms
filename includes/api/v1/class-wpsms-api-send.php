@@ -99,6 +99,11 @@ class SendSmsApi extends \WP_SMS\RestApi
              */
             $message = Helper::makeUrlsShorter($request->get_param('message'));
 
+            /**
+             * Filter to modify message
+             */
+            $message = apply_filters('wp_sms_api_message_content', $message, $request->get_params());
+
             /*
              * Repeating SMS
              */
