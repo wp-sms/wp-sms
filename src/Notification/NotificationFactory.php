@@ -16,7 +16,7 @@ use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 
 class NotificationFactory
 {
-    public function getHandler($handlerName = false, $handlerId = false)
+    public static function getHandler($handlerName = false, $handlerId = false)
     {
         if ($handlerName) {
             $className = 'WP_SMS\Notification\Handler\\' . $handlerName;
