@@ -42,7 +42,8 @@
     <?php echo isset($footer_suggestion) && isset($pro_is_active) && !$pro_is_active ? wp_kses_post($footer_suggestion) : ''; ?>
 
     <div class="footer-links">
-        <p><?php _e('This email automatically has been sent from ', 'wp-sms'); ?><a href="<?php echo esc_url($site_url); ?>"><?php echo esc_html($site_name); ?></a></p>
+        <p><?php echo sprintf('This email automatically has been sent from <a href="%s">%s</a>.', esc_url($site_url), esc_html($site_name)) ?></p>
+        <p style="margin-top: 5px;"><?php echo sprintf('<a href="%s">Manage Email Notifications</a>', admin_url('admin.php?page=wp-sms-settings&tab=advanced')) ?></p>
     </div>
 
 </div>
