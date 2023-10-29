@@ -3,6 +3,7 @@
 namespace WP_SMS\Report;
 
 use WP_SMS\Helper;
+use WP_SMS\Option;
 use WP_SMS\Version;
 
 class EmailReportGenerator
@@ -20,7 +21,7 @@ class EmailReportGenerator
 
     public function generate()
     {
-        if (isset($this->options['report_wpsms_statistics']) && !$this->options['report_wpsms_statistics']) {
+        if (!Option::getOption('report_wpsms_statistics')) {
             return;
         }
 
