@@ -13,12 +13,15 @@ class SubscriberShortcode
 
     public function registerSubscriberShortcodeCallback($attributes)
     {
-        $attrs = $attributes;
+        $attrs = shortcode_atts([
+            'groups' => '',
+            'fields' => '',
+        ], $attributes);
 
-        if (isset($attributes['groups'])) {
+        if (isset($attrs['groups'])) {
             $attrs['groups'] = $this->retrieveGroupsData($attributes);
         }
-        if (isset($attributes['fields'])) {
+        if (isset($attrs['fields'])) {
             $attrs['fields'] = $this->retrieveFieldsData($attributes);
         }
 
@@ -47,15 +50,21 @@ class SubscriberShortcode
 
         foreach ($custom_fields as $custom_field) {
             $field          = explode(':', $custom_field);
-            $label          = strtolower(ltrim($field[0]));
+            $label          = $this->_sanitizeFiledAttr(strtolower(ltrim($field[0])));
+            $description    = isset($field[1]) ? $this->_sanitizeFiledAttr($field[1]) : '';
             $fields[$label] = array(
                 'label'       => $label,
                 'type'        => 'text',
-                'description' => isset($field[1]) ? $field[1] : '',
+                'description' => $description,
             );
         }
 
         return $fields;
+    }
+
+    private function _sanitizeFiledAttr($attr)
+    {
+        return preg_replace('/[^a-zA-Z0-9 ]/', '', $attr);
     }
 
     public static function explodeData($string)
