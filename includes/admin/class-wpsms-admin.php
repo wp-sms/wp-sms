@@ -59,7 +59,7 @@ class Admin
         /**
          * Whole setting page's assets
          */
-        if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
+        if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign' or $screen->id == 'woocommerce_page_wc-orders') {
             wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
 
@@ -90,20 +90,6 @@ class Admin
             );
 
             wp_enqueue_style('wpsms-admin');
-
-            // Enqueue wp-sms woocommerce admin styles
-            wp_enqueue_script('wpsms-woocommerce-admin', WP_SMS_URL . 'assets/js/admin-order-view.js', ['jquery', 'jquery-ui-spinner'], WP_SMS_VERSION);
-            wp_localize_script('wpsms-woocommerce-admin', 'wpSmsWooCommerceTemplateVar', array(
-                    'restUrls' => array(
-                        'sendSms' => get_rest_url(null, 'wpsms/v1/send')
-                    ),
-                    'ajaxUrls' => array(
-                        'export' => \WP_SMS\Controller\ExportAjax::url(),
-                    ),
-                    'nonce'    => $nonce,
-                    'senderID' => $sms->from,
-                )
-            );
 
             if (is_rtl()) {
                 wp_enqueue_style('wpsms-rtl', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION);

@@ -11,7 +11,26 @@ class OrderViewManager
 
     public function init()
     {
-        add_action('add_meta_boxes', [$this, 'registerMetaBoxes']);
+        add_action('add_meta_boxes', array($this, 'registerMetaBoxes'));
+        add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
+    }
+
+    // Enqueue wp-sms woocommerce admin scripts
+    function admin_scripts()
+    {
+        global $sms;
+        $nonce = wp_create_nonce('wp_rest');
+
+        wp_enqueue_script('wpsms-woocommerce-admin', WP_SMS_URL . 'assets/js/admin-order-view.js', ['jquery', 'jquery-ui-spinner'], WP_SMS_VERSION);
+        wp_localize_script('wpsms-woocommerce-admin', 'wpSmsWooCommerceTemplateVar', array(
+                'restUrls'   => array(
+                    'sendSms' => get_rest_url(null, 'wpsms/v1/send')
+                ),
+                'nonce'      => $nonce,
+                'senderID'   => $sms->from,
+                'flashState' => $sms->flash,
+            )
+        );
     }
 
     /**
@@ -22,7 +41,7 @@ class OrderViewManager
         $screenId = wc_get_page_screen_id('shop-order');
 
         if ($post_type == $screenId) {
-            add_meta_box('wp-sms-woocommerce-send-sms', __('Send SMS', 'wp-sms'), [$this, 'renderSendSmsMetaBox'], $screenId, 'side', 'core');
+            add_meta_box('wpsms-woocommerceSendSMS', __('Send SMS', 'wp-sms'), [$this, 'renderSendSmsMetaBox'], $screenId, 'side', 'core');
         }
     }
 
