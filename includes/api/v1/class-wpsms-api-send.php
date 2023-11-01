@@ -227,7 +227,15 @@ class SendSmsApi extends \WP_SMS\RestApi
                     throw new Exception(__('Parameter role_ids is required', 'wp-sms'));
                 }
 
-                $recipients = Helper::getUsersMobileNumbers($request->get_param('role_ids'));
+                $recipients = array();
+                $roleIds    = $request->get_param('role_ids');
+
+                foreach ($roleIds as $roleId) {
+                    $mobileNumbers = Helper::getUsersMobileNumbers(array($roleId));
+                    $recipients    = array_merge($recipients, $mobileNumbers);
+                }
+
+                $recipients = array_unique($recipients);
                 break;
 
             /**
