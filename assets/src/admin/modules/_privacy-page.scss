@@ -1,16 +1,134 @@
-
 /* Privacy Page */
-.privacy_page input[type=tel] {
-  margin-top: 15px;
-  height: 35px;
-  min-width: 250px;
-}
 
-.privacy_page #universal-message-container {
-  padding: 2px 0px 17px 0px;
-}
+.privacy_page {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-.privacy_page .text-lead {
-  line-height: 26px;
-  text-align: justify;
+  .wpsms-wrap__main {
+    max-width: 780px;
+    margin: auto;
+
+    #poststuff {
+      width: 100%;
+      min-width: auto;
+    }
+
+    .postbox {
+      margin-bottom: 25px;
+
+      .inside {
+        padding: 20px;
+        margin: 0 !important;
+      }
+    }
+  }
+
+  #universal-message-container {
+    p {
+      text-align: justify;
+      line-height: 1.6 !important;
+      font-size: 15px;
+      color: #7e7e7e;
+      font-weight: 400;
+      margin-bottom: 20px;
+    }
+
+    .wpsms-privacyPostboxOptions {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      .wpsms-privacyPostboxField {
+        flex: 0 0 78%;
+
+        label {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: 600;
+          color: #222222;
+          font-size: 14px;
+        }
+
+        input {
+          border-radius: 5px;
+          width: 100%;
+        }
+      }
+
+      input[type='submit'] {
+        border-radius: 5px;
+        box-shadow: none;
+        flex: 0 0 20%;
+        padding: 13px;
+      }
+    }
+  }
+
+  .wpsms-privacyGdprContainer {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    img {
+      margin-right: 20px;
+      height: 120px;
+      width: 120px;
+    }
+
+    .text-lead {
+      text-align: justify;
+      line-height: 1.6 !important;
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 780px) {
+
+    #universal-message-container {
+      .wpsms-privacyPostboxOptions {
+        input[type='submit'] {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .wpsms-privacyGdprContainer {
+      margin-top: 40px;
+      display: block;
+
+      img {
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  @media (max-width: 420px) {
+    .wpsms-wrap__main {
+      padding: 12px;
+      margin-top: 0 !important;
+    }
+
+    #universal-message-container {
+      p {
+        text-align: left;
+
+        .rtl & {
+          text-align: right;
+        }
+      }
+
+      .wpsms-privacyPostboxOptions {
+        .wpsms-privacyPostboxField {
+          flex: 0 0 70%;
+        }
+      }
+    }
+  }
 }

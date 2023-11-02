@@ -18,7 +18,7 @@ class Privacy
     /*
      * Gdpr Text Metabox
      */
-    public static function privacy_meta_html_gdpr()
+    public static function privacy_html_gdpr()
     {
         echo '<p style="text-align: center;"><img src="' . WP_SMS_URL . '/assets/images/gdpr.png" alt="GDPR"></p>';
         echo '<p class="text-lead">';
@@ -34,18 +34,21 @@ class Privacy
         ?>
         <form method="post" action="">
             <div id="universal-message-container">
-                <div class="options">
-                    <p>
+
+                <p><?php _e('Gain access to and maintain control over the information we have on file about you, ensuring that we adhere to stringent data protection regulations and respect your privacy.', 'wp-sms'); ?></p>
+                <div class="wpsms-privacyPostboxOptions">
+
+                    <div class="wpsms-privacyPostboxField">
                         <label><?php _e('User’s Mobile Number', 'wp-sms'); ?></label>
-                        <br/>
                         <input type="tel" name="mobile-number-export" value=""/>
-                    </p>
+                    </div>
+                    <?php submit_button(__('Export'), 'primary', 'submit', false); ?>
+
                 </div>
-                <?php submit_button(__('Export'), 'primary', 'submit', false); ?>
             </div>
+
             <input type="hidden" name="wp_sms_nonce_privacy" value="<?php echo wp_create_nonce('wp_sms_nonce_privacy'); ?>">
         </form>
-        <div class="clear"></div>
         <?php
     }
 
@@ -57,21 +60,24 @@ class Privacy
     {
         ?>
         <form method="post" action="">
+
             <div id="universal-message-container">
-                <div class="options">
-                    <p>
+                <p><?php _e('Safeguard your privacy by requesting the removal of your personal information from our records, following GDPR guidelines.', 'wp-sms'); ?></p>
+
+                <div class="wpsms-privacyPostboxOptions">
+
+                    <div class="wpsms-privacyPostboxField">
                         <label><?php _e('Enter User’s Mobile Number', 'wp-sms'); ?></label>
-                        <br/>
                         <input type="tel" name="mobile-number-delete" value=""/>
-                        <br/>
-                        <span class="description"><?php _e('Note: You cannot undo these actions.', 'wp-sms'); ?></span>
-                    </p>
-                </div><!-- #universal-message-container -->
-                <?php submit_button(__('Delete'), 'primary', 'submit', false); ?>
+                    </div><!-- #universal-message-container -->
+
+                    <?php submit_button(__('Delete'), 'primary', 'submit', false); ?>
+                </div>
+                <span class="description"><?php _e('Note: You cannot undo these actions.', 'wp-sms'); ?></span>
             </div>
+
             <input type="hidden" name="wp_sms_nonce_privacy" value="<?php echo wp_create_nonce('wp_sms_nonce_privacy'); ?>">
         </form>
-        <div class="clear"></div>
         <?php
     }
 
@@ -92,13 +98,13 @@ class Privacy
                     <input type="hidden" name="action" value="save_<?php echo $this->metabox; ?>"/>
                 </form>
                 <div id="poststuff">
-                    <div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
-                        <div id="postbox-container-1" class="postbox-container">
-                            <?php do_meta_boxes($this->pagehook, 'side', ''); ?>
+                    <div id="post-body" class="metabox-holder">
+                        <div class="wpsms-privacyPostboxContainer">
+                            <?php do_meta_boxes($this->pagehook, 'normal', ''); ?>
                         </div>
 
-                        <div id="postbox-container-2" class="postbox-container">
-                            <?php do_meta_boxes($this->pagehook, 'normal', ''); ?>
+                        <div class="wpsms-privacyGdprContainer">
+                            <?php self::privacy_html_gdpr(); ?>
                         </div>
                     </div><!-- #post-body --><br class="clear">
                 </div><!-- #poststuff -->
