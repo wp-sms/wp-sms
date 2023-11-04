@@ -14,8 +14,10 @@ class SubscriberShortcode
     public function registerSubscriberShortcodeCallback($attributes)
     {
         $attrs = shortcode_atts([
-            'groups' => '',
-            'fields' => '',
+            'title'       => 'Subscribe SMS',
+            'description' => '',
+            'groups'      => '',
+            'fields'      => '',
         ], $attributes);
 
         if (isset($attrs['groups'])) {
