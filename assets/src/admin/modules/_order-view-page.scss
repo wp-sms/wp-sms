@@ -51,7 +51,7 @@ Order View Page
   select,
   textarea {
     border: 1px solid #828282;
-    border-radius: 3px;
+    border-radius: 2px;
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -59,7 +59,6 @@ Order View Page
     font-weight: normal;
     font-size: 14px;
     line-height: 20px;
-    border: 1px solid #5B5B5B !important;
     background-color: #fff;
     color: #2c3338;
 
@@ -71,9 +70,10 @@ Order View Page
   }
 
   .wpsms-orderSmsMetabox__variables {
-    background-color: #F9F9F9;
-    border-radius: 8px;
+    background-color: white;
+    border-radius: 2px;
     padding: 12px;
+    border: 1px solid #828282;
 
     .wpsms-orderSmsMetabox__variables__header {
       display: flex;
@@ -110,9 +110,8 @@ Order View Page
 
       code {
         display: block;
-        background-color: white;
-        border: 1px solid #222222;
-        color: #222222;
+        background: rgba(0, 0, 0, .07);
+        color: #5b5b5b;
         border-radius: 6px;
         padding: 3px 7px;
         font-size: 13px;
@@ -121,8 +120,7 @@ Order View Page
         transition: .3s all ease-out;
 
         &:hover {
-          background-color: #222222;
-          color: white;
+          background: rgba(0, 0, 0, .2);
         }
       }
     }
@@ -130,22 +128,23 @@ Order View Page
 
   button[name='send_sms'] {
     text-decoration: none;
-    background-color: #f26c2d;
+    background: #F88E40;
     text-align: center;
     font-size: 16px;
     font-weight: 400;
     margin-top: 25px;
     transition: all 0.3s ease-out;
-    border-radius: 8px;
+    border-radius: 2px;
     padding: 10px 10px;
     color: white;
     cursor: pointer;
     outline: none;
     width: 100%;
     border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
     &:hover {
-      background-color: black;
+      background-color: #EF771F;
     }
 
     &.sending {
@@ -164,6 +163,28 @@ Order View Page
     display: none;
     width: 100%;
     padding: 12px;
+
+    .wpsms-orderSmsMetabox__result__tryAgain {
+      text-decoration: none;
+      background: #F88E40;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 400;
+      margin-top: 25px;
+      transition: all 0.3s ease-out;
+      border-radius: 2px;
+      padding: 10px 10px;
+      color: white;
+      cursor: pointer;
+      outline: none;
+      width: 100%;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        background-color: #EF771F;
+      }
+    }
 
     .wpsms-orderSmsMetabox__result__receiver,
     .wpsms-orderSmsMetabox__result__message {

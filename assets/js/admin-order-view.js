@@ -39,9 +39,9 @@ let wooCommerceOrderPage = {
                 contentType: 'application/json',
                 data: JSON.stringify(requestBody),
                 beforeSend: function () {
-                    this.parent.find('button[name="send_sms"]').html('Sending...');
                     this.parent.find('.wpsms-orderSmsMetabox__overlay').css('display', 'flex');
                     this.parent.find('.wpsms-orderSmsMetabox__variables__shortCodes').slideUp();
+                    this.parent.find('.wpsms-orderSmsMetabox__result__tryAgain').hide();
                 }.bind(this),
                 success: function (data, status, xhr) {
                     this.parent.find('.wpsms-orderSmsMetabox').fadeOut();
@@ -57,12 +57,21 @@ let wooCommerceOrderPage = {
                     this.parent.find('.wpsms-orderSmsMetabox__result__report').removeClass('success');
                     this.parent.find('.wpsms-orderSmsMetabox__result__report').addClass('error');
                     this.parent.find('.wpsms-orderSmsMetabox__result__report p').html(data.responseJSON.error.message);
+                    this.parent.find('.wpsms-orderSmsMetabox__result__tryAgain').show();
                     this.parent.find('.wpsms-orderSmsMetabox__result').fadeIn();
                 }.bind(this)
             });
     },
 
     addEventListeners: function () {
+        // Try again
+        this.parent.find('.wpsms-orderSmsMetabox__result__tryAgain').on('click', (event) => {
+            event.preventDefault();
+            this.parent.find('.wpsms-orderSmsMetabox__result').fadeOut();
+            this.parent.find('.wpsms-orderSmsMetabox__overlay').css('display', 'none');
+            this.parent.find('.wpsms-orderSmsMetabox').fadeIn();
+        });
+
         // Set event listener for the send sms button
         this.parent.find('button[name="send_sms"]').on('click', (event) => {
             event.preventDefault();

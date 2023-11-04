@@ -53,4 +53,6 @@
         <h6><?php _e('Content', 'wp-sms') ?></h6>
         <p></p>
     </div>
+
+    <button class="wpsms-orderSmsMetabox__result__tryAgain"><?php _e('Try Again', 'wp-sms'); ?></button>
 </div>
