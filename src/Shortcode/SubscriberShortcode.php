@@ -47,18 +47,21 @@ class SubscriberShortcode
 
     public function retrieveFieldsData($attrs)
     {
-        $fields        = array();
-        $custom_fields = explode('|', $attrs['fields']);
+        $fields = array();
 
-        foreach ($custom_fields as $custom_field) {
-            $field          = explode(':', $custom_field);
-            $label          = $this->_sanitizeFiledAttr(strtolower(ltrim($field[0])));
-            $description    = isset($field[1]) ? $this->_sanitizeFiledAttr($field[1]) : '';
-            $fields[$label] = array(
-                'label'       => $label,
-                'type'        => 'text',
-                'description' => $description,
-            );
+        if (isset($attrs['fields'])) {
+            $custom_fields = explode('|', $attrs['fields']);
+
+            foreach ($custom_fields as $custom_field) {
+                $field          = explode(':', $custom_field);
+                $label          = $this->_sanitizeFiledAttr(strtolower(ltrim($field[0])));
+                $description    = isset($field[1]) ? $this->_sanitizeFiledAttr($field[1]) : '';
+                $fields[$label] = array(
+                    'label'       => $label,
+                    'type'        => 'text',
+                    'description' => $description,
+                );
+            }
         }
 
         return $fields;
