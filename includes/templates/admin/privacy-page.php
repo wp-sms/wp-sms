@@ -11,7 +11,7 @@
         <form class="wpsms-privacyPage__Form" action="" method="post">
             <h2><?php _e('Export Data', 'wp-sms'); ?></h2>
             <div class="wpsms-privacyPage__ExportData">
-                <p><?php _e('Gain access to and maintain control over the information we have on file about you, ensuring that we adhere to stringent data protection regulations and respect your privacy.', 'wp-sms'); ?></p>
+                <p><?php _e("This section allows you to export all of the SMS data associated with a specific user's mobile number. This data includes the user's name, phone number, and all of the SMS messages that they have sent and received.", 'wp-sms'); ?></p>
                 <div class="wpsms-privacyPage__options">
                     <div class="wpsms-privacyPage__options__field">
                         <label><?php _e('Enter User’s Mobile Number', 'wp-sms'); ?></label>

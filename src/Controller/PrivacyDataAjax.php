@@ -2,7 +2,6 @@
 
 namespace WP_SMS\Controller;
 
-use Exception;
 use WP_SMS\Helper;
 
 class PrivacyDataAjax extends AjaxControllerAbstract
@@ -61,18 +60,24 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         global $wpdb;
         $result = array();
 
-        /*
-         * Check in WordPress User
-         */
-        $get_user = get_users(array('meta_key' => 'mobile', 'meta_value' => $mobile, 'meta_compare' => ' = ', 'fields' => 'all_with_meta'));
+        $get_user = get_users([
+            'meta_key'   => Helper::getUserMobileFieldName(),
+            'meta_value' => Helper::prepareMobileNumberQuery($mobile)
+        ]);
+
         if (count($get_user) > 0) {
             foreach ($get_user as $user) {
-                //Get User Data
-                $result[] = array("FullName" => $user->first_name . " " . $user->last_name, "Mobile" => $user->mobile, "RegisterDate" => $user->user_registered);
+                $result[] = array(
+                    'ID'           => $user->ID,
+                    'table'        => "{$wpdb->prefix}users",
+                    'FullName'     => $user->first_name . " " . $user->last_name,
+                    'Mobile'       => $mobile,
+                    'RegisterDate' => $user->user_registered
+                );
 
                 //Remove User data if Delete Request
                 if ($this->type === 'delete') {
-                    delete_user_meta($user->ID, 'mobile');
+                    delete_user_meta($user->ID, Helper::getUserMobileFieldName());
                 }
             }
         }
@@ -84,7 +89,13 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         if (count($get_user) > 0) {
             foreach ($get_user as $user) {
                 //Get User Data
-                $result[] = array("FullName" => $user['name'], "Mobile" => $user['mobile'], "RegisterDate" => $user['date']);
+                $result[] = array(
+                    'ID'           => $user->ID,
+                    'table'        => "{$wpdb->prefix}sms_subscribes",
+                    'FullName'     => $user['name'],
+                    'Mobile'       => $user['mobile'],
+                    'RegisterDate' => $user['date']
+                );
 
                 //Remove User data if Delete Request
                 if ($this->type === 'delete') {
