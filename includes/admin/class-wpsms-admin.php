@@ -376,14 +376,15 @@ class Admin
      */
     public function privacy_assets()
     {
-        $pagehook = get_current_screen()->id;
-
         wp_enqueue_script('common');
         wp_enqueue_script('wp-lists');
         wp_enqueue_script('postbox');
 
-        add_meta_box('privacy-meta-1', __('Export User’s Data related to WP SMS', 'wp-sms'), array(Privacy::class, 'privacy_meta_html_export'), $pagehook, 'normal', 'core');
-        add_meta_box('privacy-meta-2', __('Erase User’s Data related to WP SMS', 'wp-sms'), array(Privacy::class, 'privacy_meta_html_delete'), $pagehook, 'normal', 'core');
+        wp_register_script('wp-sms-privacy-data', WP_SMS_URL . 'assets/js/privacy-data.js', array('jquery'), null, true);
+        wp_enqueue_script('wp-sms-privacy-data');
+        wp_localize_script('wp-sms-privacy-data', 'wp_sms_privacy_page_ajax_vars', array(
+            'url' => \WP_SMS\Controller\PrivacyDataAjax::url()
+        ));
     }
 
     /**

@@ -13,6 +13,7 @@ class ControllerManager
     {
         SubscriberFormAjax::listen();
         GroupFormAjax::listen();
+        PrivacyDataAjax::listen();
         ExportAjax::listen();
         UploadSubscriberCsv::listen();
         ImportSubscriberCsv::listen();

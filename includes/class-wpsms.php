@@ -162,6 +162,7 @@ class WP_SMS
         $this->include('src/Controller/GroupFormAjax.php');
         $this->include('src/Controller/ExportAjax.php');
         $this->include('src/Controller/UploadSubscriberCsv.php');
+        $this->include('src/Controller/PrivacyDataAjax.php');
         $this->include('src/Controller/ImportSubscriberCsv.php');
         $this->include('src/Controller/ControllerManager.php');
 
@@ -207,7 +208,6 @@ class WP_SMS
             $this->include('includes/admin/class-wpsms-admin-helper.php');
             $this->include('includes/admin/outbox/class-wpsms-outbox.php');
             $this->include('includes/admin/inbox/class-wpsms-inbox.php');
-            $this->include('includes/admin/privacy/class-wpsms-privacy-actions.php');
             $this->include('includes/admin/send/class-wpsms-send.php');
             $this->include('includes/admin/add-ons/class-add-ons.php');
 
