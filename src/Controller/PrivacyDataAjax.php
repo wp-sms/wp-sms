@@ -27,12 +27,12 @@ class PrivacyDataAjax extends AjaxControllerAbstract
     public function processForm()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Sorry, you do not have permission to perform this action!', 'wp-sms')), 400);
+            wp_send_json_error(array('message' => Helper::notice(__('Sorry, you do not have permission to perform this action!', 'wp - sms'), 'error', false, '', true)), 400);
         }
 
         //Is Empty Mobile Number
         if (empty($this->mobile)) {
-            wp_send_json_error(array('message' => __('Please enter the mobile number!', 'wp-sms')), 400);
+            wp_send_json_error(array('message' => Helper::notice(__('Please enter the mobile number!', 'wp - sms'), 'error', false, '', true)), 400);
         }
 
         //Check User Not Exist
@@ -49,7 +49,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
          * Delete type
          */
         if ($this->type === 'delete') {
-            wp_send_json_success(sprintf(__('User with %s mobile number is removed completely!', 'wp-sms'), $this->mobile));
+            wp_send_json_success(array('message' => Helper::notice(sprintf(__('User with % s mobile number is removed completely!', 'wp - sms'), $this->mobile), 'success', false, '', true)), 400);
         }
     }
 
@@ -64,7 +64,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         /*
          * Check in WordPress User
          */
-        $get_user = get_users(array('meta_key' => 'mobile', 'meta_value' => $mobile, 'meta_compare' => '=', 'fields' => 'all_with_meta'));
+        $get_user = get_users(array('meta_key' => 'mobile', 'meta_value' => $mobile, 'meta_compare' => ' = ', 'fields' => 'all_with_meta'));
         if (count($get_user) > 0) {
             foreach ($get_user as $user) {
                 //Get User Data
@@ -88,13 +88,13 @@ class PrivacyDataAjax extends AjaxControllerAbstract
 
                 //Remove User data if Delete Request
                 if ($this->type === 'delete') {
-                    $wpdb->delete($wpdb->prefix . 'sms_subscribes', array('ID' => $user['ID']), array('%d'));
+                    $wpdb->delete($wpdb->prefix . 'sms_subscribes', array('ID' => $user['ID']), array(' % d'));
                 }
             }
         }
 
         if (empty($result)) {
-            wp_send_json_error(array('message' => __('User with this mobile number was not found!', 'wp-sms')), 400);
+            wp_send_json_error(array('message' => Helper::notice(__('User with this mobile number was not found!', 'wp - sms'), 'error', false, '', true)), 400);
         }
 
         return $result;
@@ -115,7 +115,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         $uploads_directory = $upload_dir['basedir'];
         $filepath          = $uploads_directory . '/' . $filename . '.csv';
 
-        $fp = fopen($filepath, 'w+');
+        $fp = fopen($filepath, 'w + ');
 
         $i = 0;
         foreach ($data as $fields) {
@@ -129,9 +129,11 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         $file_url = $upload_dir['baseurl'] . '/' . $filename . '.csv';
 
         wp_send_json_success([
-            'message'  => __('The CSV file generated successfully!', 'wp-sms'),
+            'message'  => Helper::notice(__('The CSV file generated successfully!', 'wp - sms'), 'success', false, '', true),
             'file_url' => $file_url
         ]);
+
         unlink($filepath);
+        exit();
     }
 }

@@ -6,44 +6,8 @@
     max-width: 780px;
     margin: auto;
 
-    .wpsms-privacyPage__Result {
-      padding: 10px 15px;
-      border: 1px solid #f0f0f1;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      display: none;
-      transition: .3s all ease-out;
-      background-color: white;
-
-      p {
-        color: #222222;
-        font-size: 16px;
-        display: inline;
-      }
-
-      span {
-        display: inline-block;
-        transform: translateY(5px);
-        width: 20px;
-        height: 20px;
-        margin-right: 6px;
-        transition: .3s all ease-out;
-      }
-
-      &.success span {
-        background: url("../images/icons/green-check-fill.png") no-repeat center center / contain;
-      }
-
-      &.error span {
-        background: url("../images/icons/red-alert.png") no-repeat center center / contain;
-      }
-
-      .rtl & {
-        span {
-          margin-right: 0px;
-          margin-left: 8px;
-        }
-      }
+    .wpsms-privacyPage__Form {
+      margin-top: 20px;
     }
 
     h2 {
@@ -53,19 +17,18 @@
       background-color: #FBFBFB;
       padding: 20px 20px;
       border: 1px solid #E8E8EB;
+      margin: 0;
     }
 
     h1 {
       color: #1d2327;
       font-size: 1.3em;
-      margin: 1em 0;
+      margin-top: 1em;
       display: block;
       font-weight: 600;
     }
 
     * {
-      margin: 0;
-      padding: 0;
       box-sizing: border-box;
     }
   }
@@ -84,6 +47,7 @@
       font-size: 14px;
       color: #242A31;
       font-weight: 400;
+      margin: 0;
       margin-bottom: 15px;
     }
 
@@ -148,17 +112,23 @@
     align-items: center;
     justify-content: flex-start;
 
+    p {
+      margin: 0;
+
+      &.text-lead {
+        text-align: justify;
+        line-height: 1.7 !important;
+        font-size: 15px;
+      }
+    }
+
     img {
       margin-right: 20px;
       height: 70px;
       width: 70px;
     }
 
-    .text-lead {
-      text-align: justify;
-      line-height: 1.7 !important;
-      font-size: 15px;
-    }
+
   }
 
   @media (max-width: 780px) {

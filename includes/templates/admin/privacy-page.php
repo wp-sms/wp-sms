@@ -5,13 +5,9 @@
         <h1><?php echo esc_html($title); ?></h1>
 
         <!-- results section -->
-        <div class="wpsms-privacyPage__Result error">
-            <span></span>
-            <p></p>
-        </div>
+        <div class="wpsms-privacyPage__Result__Container"></div>
 
         <input type="hidden" name="wp_sms_nonce_privacy" value="<?php echo wp_create_nonce('wp_sms_nonce_privacy'); ?>">
-
         <form class="wpsms-privacyPage__Form" action="" method="post">
             <h2><?php _e('Export Data', 'wp-sms'); ?></h2>
             <div class="wpsms-privacyPage__ExportData">
@@ -33,7 +29,7 @@
                         <label><?php _e('Enter User’s Mobile Number', 'wp-sms'); ?></label>
                         <input type="tel" name="mobile-number-delete" value=""/>
                     </div>
-                    <input name="delete" type="submit" value="<?php _e('Export', 'wp-sms'); ?>">
+                    <input name="delete" type="submit" value="<?php _e('Delete', 'wp-sms'); ?>">
                 </div>
                 <span class="description"><?php _e('Note: You cannot undo these actions.', 'wp-sms'); ?></span>
             </div>
