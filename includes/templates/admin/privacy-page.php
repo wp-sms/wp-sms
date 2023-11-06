@@ -23,7 +23,7 @@
 
             <h2><?php _e('Delete Data', 'wp-sms'); ?></h2>
             <div class="wpsms-privacyPage__DeleteData">
-                <p><?php _e('Safeguard your privacy by requesting the removal of your personal information from our records, following GDPR guidelines.', 'wp-sms'); ?></p>
+                <p><?php _e("This section allows you to delete all of the SMS data associated with a specific user's mobile number. This is a permanent action, so be sure to back up your data before proceeding.", 'wp-sms'); ?></p>
                 <div class="wpsms-privacyPage__options">
                     <div class="wpsms-privacyPage__options__field">
                         <label><?php _e('Enter User’s Mobile Number', 'wp-sms'); ?></label>

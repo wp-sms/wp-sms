@@ -20,7 +20,7 @@ let wpSmsPrivacyPage = {
                 url: wp_sms_privacy_page_ajax_vars.url, method: 'POST', contentType: false, cache: false, processData: false, data: formData,
 
                 beforeSend: function () {
-                    jQuery('.wpsms-privacyPage__Result__Container').fadeOut();
+                    jQuery('.wpsms-privacyPage__Result__Container').hide();
                     jQuery('.wpsms-privacyPage__Result__Container').empty();
 
                 }, success: function (data, response, xhr) {
@@ -31,11 +31,11 @@ let wpSmsPrivacyPage = {
                     } else {
                         jQuery('.wpsms-privacyPage__Result__Container').html(data);
                     }
-                    jQuery('.wpsms-privacyPage__Result__Container').fadeIn();
+                    jQuery('.wpsms-privacyPage__Result__Container').show();
 
                 }, error: function (data, response, xhr) {
                     jQuery('.wpsms-privacyPage__Result__Container').html(data.responseJSON.data.message);
-                    jQuery('.wpsms-privacyPage__Result__Container').fadeIn();
+                    jQuery('.wpsms-privacyPage__Result__Container').show();
                 }
             });
         });

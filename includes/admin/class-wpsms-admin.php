@@ -380,7 +380,7 @@ class Admin
         wp_enqueue_script('wp-lists');
         wp_enqueue_script('postbox');
 
-        wp_register_script('wp-sms-privacy-data', WP_SMS_URL . 'assets/js/privacy-data.js', array('jquery'), null, true);
+        wp_register_script('wp-sms-privacy-data', WP_SMS_URL . 'assets/js/admin-privacy-data.js', array('jquery'), null, true);
         wp_enqueue_script('wp-sms-privacy-data');
         wp_localize_script('wp-sms-privacy-data', 'wp_sms_privacy_page_ajax_vars', array(
             'url' => \WP_SMS\Controller\PrivacyDataAjax::url()
