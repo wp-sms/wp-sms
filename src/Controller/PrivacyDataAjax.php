@@ -68,11 +68,11 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         if (count($get_user) > 0) {
             foreach ($get_user as $user) {
                 $result[] = array(
-                    'ID'           => $user->ID,
-                    'table'        => "{$wpdb->prefix}users",
-                    'FullName'     => $user->first_name . " " . $user->last_name,
-                    'Mobile'       => $mobile,
-                    'RegisterDate' => $user->user_registered
+                    'ID'            => $user->ID,
+                    'Table'         => "{$wpdb->prefix}users",
+                    'Display Name'  => $user->first_name . " " . $user->last_name,
+                    'Mobile Number' => $mobile,
+                    'Created At'    => $user->user_registered
                 );
 
                 //Remove User data if Delete Request
@@ -90,11 +90,11 @@ class PrivacyDataAjax extends AjaxControllerAbstract
             foreach ($get_user as $user) {
                 //Get User Data
                 $result[] = array(
-                    'ID'           => $user->ID,
-                    'table'        => "{$wpdb->prefix}sms_subscribes",
-                    'FullName'     => $user['name'],
-                    'Mobile'       => $user['mobile'],
-                    'RegisterDate' => $user['date']
+                    'ID'            => $user->ID,
+                    'Table'         => "{$wpdb->prefix}sms_subscribes",
+                    'Display Name'  => $user['name'],
+                    'Mobile Number' => $user['mobile'],
+                    'Created At'    => $user['date']
                 );
 
                 //Remove User data if Delete Request

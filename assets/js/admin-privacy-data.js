@@ -26,7 +26,7 @@ let wpSmsPrivacyPage = {
                 }, success: function (data, response, xhr) {
                     // If the file is generated
                     if (data.data.file_url) {
-                        window.open(data.data.file_url, '_blank');
+                        window.open(data.data.file_url);
                         jQuery('.wpsms-privacyPage__Result__Container').html(data.data.message);
                     } else {
                         jQuery('.wpsms-privacyPage__Result__Container').html(data);

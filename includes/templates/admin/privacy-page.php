@@ -7,7 +7,6 @@
         <!-- results section -->
         <div class="wpsms-privacyPage__Result__Container"></div>
 
-        <input type="hidden" name="wp_sms_nonce_privacy" value="<?php echo wp_create_nonce('wp_sms_nonce_privacy'); ?>">
         <form class="wpsms-privacyPage__Form" action="" method="post">
             <h2><?php _e('Export Data', 'wp-sms'); ?></h2>
             <div class="wpsms-privacyPage__ExportData">
@@ -36,7 +35,7 @@
         </form>
 
         <div class="wpsms-privacyGdpr">
-            <p style="text-align: center;"><img src="<?php echo WP_SMS_URL . '/assets/images/gdpr.svg'; ?>" alt="GDPR"></p>
+            <p style="text-align: center;"><img src="<?php echo esc_url(WP_SMS_URL) . '/assets/images/gdpr.svg'; ?>" alt="GDPR"></p>
             <p class="text-lead">
                 <?php echo __('WP SMS plugin is GDPR-compliant, enabling users to export or delete their plugin-related data as per Article 17 of GDPR. To manage personal data site-wide, use the "Export Personal Data" or "Erase Personal Data" pages.', 'wp-sms'); ?>
             </p>
