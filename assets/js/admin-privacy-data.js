@@ -28,11 +28,9 @@ let wpSmsPrivacyPage = {
                     if (data.data.file_url) {
                         window.open(data.data.file_url);
                         jQuery('.wpsms-privacyPage__Result__Container').html(data.data.message);
-                    } else {
-                        jQuery('.wpsms-privacyPage__Result__Container').html(data);
                     }
+                    jQuery('.wpsms-privacyPage__Result__Container').html(data.data.message);
                     jQuery('.wpsms-privacyPage__Result__Container').show();
-
                 }, error: function (data, response, xhr) {
                     jQuery('.wpsms-privacyPage__Result__Container').html(data.responseJSON.data.message);
                     jQuery('.wpsms-privacyPage__Result__Container').show();
@@ -41,4 +39,3 @@ let wpSmsPrivacyPage = {
         });
     }
 };
-
