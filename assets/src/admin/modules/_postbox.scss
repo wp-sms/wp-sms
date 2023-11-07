@@ -39,7 +39,7 @@
 }
 
 .wpsms-wrap .notice {
-  padding: 2px 14px;
+  padding: 8px 14px;
   border-radius: 4px;
   color: #242a31;
   font-weight: normal;
@@ -56,9 +56,6 @@
   position: relative;
 
   &.wpsms-newsletter__notice {
-    padding-top: 8px;
-    padding-bottom: 8px;
-
     form {
       display: flex;
       width: 100%;
@@ -73,17 +70,8 @@
     }
   }
 
-  &.wpsms-admin-notice {
-    padding-top: 8px;
-    padding-bottom: 8px;
-
-    &::before {
-      margin-top: 3px;
-    }
-
-    .notice-dismiss {
-      margin: 0 !important;
-    }
+  .notice-dismiss {
+    margin: 0 !important;
   }
 }
 
@@ -94,15 +82,14 @@
   display: inline-block;
   vertical-align: middle;
   margin-right: 10px;
-  margin-top: 2px;
+  margin-top: 3px;
   background: center center/auto no-repeat;
   background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10C20 7.34784 18.9464 4.8043 17.0711 2.92893C15.1957 1.05357 12.6522 0 10 0ZM11 13.5C11 13.7761 10.7761 14 10.5 14H9.5C9.22386 14 9 13.7761 9 13.5V12.5C9 12.2239 9.22386 12 9.5 12H10.5C10.7761 12 11 12.2239 11 12.5V13.5ZM10.53 10C10.6572 10.0009 10.7647 9.90624 10.78 9.78L11.18 6.56C11.1972 6.41735 11.1523 6.27417 11.0566 6.16698C10.9609 6.05979 10.8237 5.99896 10.68 6H9.32C9.17631 5.99896 9.03912 6.05979 8.94342 6.16698C8.84771 6.27417 8.80275 6.41735 8.82 6.56L9.22 9.78C9.23526 9.90624 9.34284 10.0009 9.47 10H10.53Z' fill='%23F2BB08'/%3E%3C/svg%3E%0A");
-  margin-top: 12px;
 }
 
 .wpsms-wrap .notice > p,
 .wpsms-wrap .notice > span {
-  padding: 3px 0;
+  padding: 3px 0 !important;
   margin: 0;
 }
 
@@ -138,7 +125,7 @@
 
 .wpsms-wrap .settings-error {
   p {
-    padding: 10px 0 !important;
+    padding: 10px 0;
   }
 
   .notice-dismiss {
@@ -273,8 +260,8 @@
 }
 
 body.rtl #screen-meta-links {
-    left: 0;
-    right: unset;
+  left: 0;
+  right: unset;
 }
 
 #screen-meta-links + .wpsms-wrap .wpsms-header-banner,
