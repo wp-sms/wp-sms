@@ -356,7 +356,7 @@ class Gateway
         }
 
         // Check option for send only to local numbers
-        if (isset($this->options['international_mobile_only_local_numbers']) and $this->options['international_mobile_only_local_numbers']) {
+        if (isset($this->options['send_only_local_numbers']) and $this->options['send_only_local_numbers']) {
             add_filter('wp_sms_to', array($this, 'onlyLocalNumbers'), 20);
         }
 
@@ -568,10 +568,8 @@ class Gateway
      */
     public function onlyLocalNumbers($recipients = array())
     {
-        $onlyLocalNumbersOption = $this->options['international_mobile_only_local_numbers'];
-        $countryCode            = $this->options['mobile_county_code'];
-
-        if (!$countryCode || !$onlyLocalNumbersOption) {
+        $countryCode = $this->options['mobile_county_code'];
+        if (!$countryCode) {
             return $recipients;
         }
 

@@ -1228,13 +1228,6 @@ class Settings
                     'options'    => array_merge(['0' => __('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
-                'international_mobile_only_local_numbers'  => array(
-                    'id'      => 'international_mobile_only_local_numbers',
-                    'name'    => __('Send Only to Local Numbers', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => __('Active this option to send SMS only to your country local numbers and save international SMS fee.', 'wp-sms')
-                ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
                     'name' => __('Mobile Field', 'wp-sms'),
@@ -1469,6 +1462,13 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
+                ),
+                'send_only_local_numbers' => array(
+                    'id'      => 'send_only_local_numbers',
+                    'name'    => __('Send Only to Local Numbers', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Active this option to send SMS only to your country local numbers and save international SMS fees.', 'wp-sms')
                 )
             )),
 
