@@ -355,6 +355,11 @@ class Gateway
             add_filter('wp_sms_to', array($this, 'applyCountryCode'), 20);
         }
 
+        // Check option for send only to local numbers
+        if (isset($this->options['international_mobile_only_local_numbers']) and $this->options['international_mobile_only_local_numbers']) {
+            add_filter('wp_sms_to', array($this, 'onlyLocalNumbers'), 20);
+        }
+
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
             //add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
         }
@@ -553,6 +558,34 @@ class Gateway
 
         return $finalNumbers;
     }
+
+    /**
+     * Send SMS only to local numbers
+     *
+     * @param $recipients
+     *
+     * @return array
+     */
+    public function onlyLocalNumbers($recipients = array())
+    {
+        $onlyLocalNumbersOption = $this->options['international_mobile_only_local_numbers'];
+        $countryCode            = $this->options['mobile_county_code'];
+
+        if (!$countryCode || !$onlyLocalNumbersOption) {
+            return $recipients;
+        }
+
+        $finalNumbers = [];
+        foreach ($recipients as $recipient) {
+            // Check if the number starts with the specified country code
+            if (strpos($recipient, $countryCode) === 0) {
+                $finalNumbers[] = $recipient;
+            }
+        }
+
+        return $finalNumbers;
+    }
+
 
     /**
      * Clean the before sending them to API.

@@ -246,7 +246,6 @@ class Settings
         $output = array_merge($this->options, $input);
 
         add_settings_error('wpsms-notices', '', __('Settings updated', 'wp-sms'), 'updated');
-
         return $output;
     }
 
@@ -1228,6 +1227,13 @@ class Settings
                     'desc'       => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
                     'options'    => array_merge(['0' => __('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
+                ),
+                'international_mobile_only_local_numbers'  => array(
+                    'id'      => 'international_mobile_only_local_numbers',
+                    'name'    => __('Send Only to Local Numbers', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Active this option to send SMS only to your country local numbers and save international SMS fee.', 'wp-sms')
                 ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',

@@ -95,6 +95,12 @@ let WpSMSGeneral = {
             onlyCountries: {
                 element: jQuery('#wpsms_settings\\[international_mobile_only_countries\\]'),
             },
+            countryCodePrefix: {
+                element: jQuery('#wpsms_settings\\[mobile_county_code\\]'),
+            },
+            onlyLocalNumbers: {
+                element: jQuery('#wpsms_settings\\[international_mobile_only_local_numbers\\]'),
+            },
             preferredCountries: {
                 element: jQuery('#wpsms_settings\\[international_mobile_preferred_countries\\]'),
             },
@@ -153,9 +159,20 @@ let WpSMSGeneral = {
             this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
             this.fields.newsletterFormDefaultGroup.element.closest("tr").hide();
         }
+
+        var selectedValue = this.fields.countryCodePrefix.element.val();
+        if (selectedValue !== '0') {
+            this.fields.onlyLocalNumbers.element.closest("tr").show();
+        } else {
+            this.fields.onlyLocalNumbers.element.closest("tr").hide();
+        }
     },
 
     addEventListener: function () {
+        this.fields.countryCodePrefix.element.on('change', function () {
+            this.hideOrShowFields();
+        }.bind(this));
+
         this.fields.internatioanlMode.element.on('change', function () {
             this.hideOrShowFields();
         }.bind(this));
@@ -259,7 +276,6 @@ let WpSmsNotifications = {
         this.hideOrShowFields();
         this.addEventListener();
     }
-
 }
 
 
