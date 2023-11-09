@@ -357,7 +357,7 @@ class Gateway
 
         // Check option for send only to local numbers
         if (isset($this->options['send_only_local_numbers']) and $this->options['send_only_local_numbers']) {
-            add_filter('wp_sms_to', array($this, 'onlyLocalNumbers'), 20);
+            add_filter('wp_sms_to', array($this, 'sendOnlyLocalNumbers'), 20);
         }
 
         if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
@@ -566,24 +566,26 @@ class Gateway
      *
      * @return array
      */
-    public function onlyLocalNumbers($recipients = array())
+    public function sendOnlyLocalNumbers($recipients = array())
     {
-        $countryCode = $this->options['mobile_county_code'];
-        if (!$countryCode) {
+        $onlyCountriesOption = Option::getOption('only_local_numbers_countries');
+
+        if (!$onlyCountriesOption) {
             return $recipients;
         }
 
-        $finalNumbers = [];
-        foreach ($recipients as $recipient) {
-            // Check if the number starts with the specified country code
-            if (strpos($recipient, $countryCode) === 0) {
-                $finalNumbers[] = $recipient;
+        $finalNumbers = array_filter($recipients, function ($recipient) use ($onlyCountriesOption) {
+            // Check if the recipient's number starts with any of the allowed country codes
+            foreach ($onlyCountriesOption as $countryCode) {
+                if (strpos($recipient, $countryCode) === 0) {
+                    return true;
+                }
             }
-        }
+            return false;
+        });
 
         return $finalNumbers;
     }
-
 
     /**
      * Clean the before sending them to API.

@@ -128,6 +128,12 @@ let WpSMSGeneral = {
             pmproFieldSelector: {
                 element: jQuery('#wpsms_settings\\[pmpro_mobile_field_id\\]'),
             },
+            onlyLocalNumbers: {
+                element: jQuery('#wpsms_settings\\[send_only_local_numbers\\]'),
+            },
+            onlyLocalNumbersCountries: {
+                element: jQuery('#wpsms_settings\\[only_local_numbers_countries\\]'),
+            },
         }
     },
 
@@ -153,17 +159,20 @@ let WpSMSGeneral = {
             this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
             this.fields.newsletterFormDefaultGroup.element.closest("tr").hide();
         }
+
+        if (this.fields.onlyLocalNumbers.element.is(":checked")) {
+            this.fields.onlyLocalNumbersCountries.element.closest("tr").show();
+        } else {
+            this.fields.onlyLocalNumbersCountries.element.closest("tr").hide();
+        }
     },
 
     addEventListener: function () {
-        this.fields.internatioanlMode.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
-
-        this.fields.newsletterFormGroups.element.on("change", function () {
+        ["internatioanlMode", "newsletterFormGroups", "onlyLocalNumbers"].forEach(field => {
+            this.fields[field].element.on("change", () => {
                 this.hideOrShowFields();
-            }.bind(this)
-        );
+            });
+        });
 
         // Add event listener for mobile field status
         this.fields.mobileFieldStatus.element.on("change", function () {
