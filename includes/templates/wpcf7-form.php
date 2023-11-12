@@ -18,7 +18,7 @@
                 <th scope="row"><label for="wpcf7-sms-recipient-number"><?php _e('Numbers', 'wp-sms'); ?>:</label></th>
                 <td>
                     <input type="text" value="<?php echo $cf7_options['phone'] ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms[phone]" id="wpcf7-sms-recipient-number">
-                    <p class="description"><?php _e('<b>Note:</b> To send more than one number, separate the numbers with a comma. (e.g. 10000000001,10000000002)', 'wp-sms'); ?></p>
+                    <p class="description"><?php _e('<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002.', 'wp-sms'); ?></p>
                 </td>
             </tr>
 
@@ -52,7 +52,7 @@
         </table>
 
         <h3><?php _e('Send to form', 'wp-sms'); ?></h3>
-        <legend><?php _e('After submit form you can send a sms message to field', 'wp-sms'); ?><br></legend>
+        <legend><?php _e('After submitting the form, you have the option to send an SMS message to the specified field:', 'wp-sms'); ?><br></legend>
         <table class="form-table">
             <tr>
                 <th scope="row"><label for="wpcf7-sms-sender-form"><?php _e('Send to field', 'wp-sms'); ?>:</label>
