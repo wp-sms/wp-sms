@@ -91,7 +91,7 @@
                     <label><?php _e('Activation code', 'wp-sms'); ?></label>
                     <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
-                <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activation', 'wp-sms'); ?></button>
+                <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activate', 'wp-sms'); ?></button>
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo wp_sms_get_option('newsletter_form_verify'); ?>">
             </div>
 

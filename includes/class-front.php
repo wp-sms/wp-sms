@@ -44,7 +44,7 @@ class Front
             'unknown_error'     => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
             'loading_text'      => __('Loading...', 'wp-sms'),
             'subscribe_text'    => __('Subscribe', 'wp-sms'),
-            'activation_text'   => __('Activation', 'wp-sms'),
+            'activation_text'   => __('Activate', 'wp-sms'),
         ));
     }
 
