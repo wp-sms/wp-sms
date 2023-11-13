@@ -114,6 +114,7 @@ class WP_SMS
 
         // Notification classes
         $this->include('src/Notification/Notification.php');
+        $this->include('src/Notification/Handler/DefaultNotification.php');
         $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
         $this->include('src/Notification/Handler/WooCommerceCouponNotification.php');
         $this->include('src/Notification/Handler/WooCommerceCustomerNotification.php');
@@ -161,6 +162,7 @@ class WP_SMS
         $this->include('src/Controller/GroupFormAjax.php');
         $this->include('src/Controller/ExportAjax.php');
         $this->include('src/Controller/UploadSubscriberCsv.php');
+        $this->include('src/Controller/PrivacyDataAjax.php');
         $this->include('src/Controller/ImportSubscriberCsv.php');
         $this->include('src/Controller/ControllerManager.php');
 
@@ -190,6 +192,7 @@ class WP_SMS
         $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();
+        $this->include('src/Services/WooCommerce/OrderViewManager.php');
 
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
@@ -205,7 +208,6 @@ class WP_SMS
             $this->include('includes/admin/class-wpsms-admin-helper.php');
             $this->include('includes/admin/outbox/class-wpsms-outbox.php');
             $this->include('includes/admin/inbox/class-wpsms-inbox.php');
-            $this->include('includes/admin/privacy/class-wpsms-privacy-actions.php');
             $this->include('includes/admin/send/class-wpsms-send.php');
             $this->include('includes/admin/add-ons/class-add-ons.php');
 

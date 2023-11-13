@@ -13,12 +13,17 @@ class SubscriberShortcode
 
     public function registerSubscriberShortcodeCallback($attributes)
     {
-        $attrs = $attributes;
+        $attrs = shortcode_atts([
+            'title'       => __('Subscribe SMS', 'wp-sms'),
+            'description' => '',
+            'groups'      => '',
+            'fields'      => '',
+        ], $attributes);
 
-        if (isset($attributes['groups'])) {
+        if (isset($attrs['groups'])) {
             $attrs['groups'] = $this->retrieveGroupsData($attributes);
         }
-        if (isset($attributes['fields'])) {
+        if (isset($attrs['fields'])) {
             $attrs['fields'] = $this->retrieveFieldsData($attributes);
         }
 
@@ -42,20 +47,29 @@ class SubscriberShortcode
 
     public function retrieveFieldsData($attrs)
     {
-        $fields        = array();
-        $custom_fields = explode('|', $attrs['fields']);
+        $fields = array();
 
-        foreach ($custom_fields as $custom_field) {
-            $field          = explode(':', $custom_field);
-            $label          = strtolower(ltrim($field[0]));
-            $fields[$label] = array(
-                'label'       => $label,
-                'type'        => 'text',
-                'description' => isset($field[1]) ? $field[1] : '',
-            );
+        if (isset($attrs['fields'])) {
+            $custom_fields = explode('|', $attrs['fields']);
+
+            foreach ($custom_fields as $custom_field) {
+                $field          = explode(':', $custom_field);
+                $label          = $this->_sanitizeFiledAttr(strtolower(ltrim($field[0])));
+                $description    = isset($field[1]) ? $this->_sanitizeFiledAttr($field[1]) : '';
+                $fields[$label] = array(
+                    'label'       => $label,
+                    'type'        => 'text',
+                    'description' => $description,
+                );
+            }
         }
 
         return $fields;
+    }
+
+    private function _sanitizeFiledAttr($attr)
+    {
+        return preg_replace('/[^a-zA-Z0-9 ]/', '', $attr);
     }
 
     public static function explodeData($string)

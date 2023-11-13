@@ -86,7 +86,7 @@ class Integrations
                 }
             }, $cf7_options['message']);
 
-            if ($to && $message) {
+            if ($to && count($to) && $message) {
                 wp_sms_send($to, $message);
             }
         }
@@ -131,7 +131,7 @@ class Integrations
                 }
             }, $cf7_options_field['message']);
 
-            if ($to && $message) {
+            if ($to && count($to) && $message) {
                 wp_sms_send($to, $message);
             }
         }

@@ -122,7 +122,7 @@ class WooCommerceAddMobileFieldHandler
             'label'       => __('Mobile Number', 'wp-sms'),
             'required'    => !(Option::getOption('optional_mobile_field') == 'optional'),
             'clear'       => false,
-            'type'        => 'text',
+            'type'        => 'tel',
             'input_class' => array('wp-sms-input-mobile')
         ];
     }

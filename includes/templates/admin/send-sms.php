@@ -143,7 +143,7 @@
 
                 <div class="content-field">
                     <label for="wp_get_message"><?php _e('Message', 'wp-sms'); ?></label>
-                    <textarea rows="5" name="wp_get_message wpsms-input" id="wp_get_message" placeholder="Write your SMS message here ..."></textarea>
+                    <textarea rows="5" name="wp_get_message wpsms-input" id="wp_get_message" placeholder="<?php _e('Write your SMS message here ...', 'wp-sms'); ?>"></textarea>
                 </div>
 
                 <div class="mms-media-field">
@@ -223,7 +223,7 @@
                 <?php endif; ?>
 
                 <div class="summary">
-                    <!-- Results goes here -->
+                    <!-- results section -->
                     <div class="wpsms-sendsms-result success">
                         <span class="icon"></span>
                         <p></p>

@@ -246,7 +246,6 @@ class Settings
         $output = array_merge($this->options, $input);
 
         add_settings_error('wpsms-notices', '', __('Settings updated', 'wp-sms'), 'updated');
-
         return $output;
     }
 
@@ -1345,99 +1344,99 @@ class Settings
              */
             'gateway'              => apply_filters('wp_sms_gateway_settings', array(
                 // Gateway
-                'gateway_title'             => array(
+                'gateway_title'                => array(
                     'id'   => 'gateway_title',
                     'name' => __('SMS Gateway Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'gateway_name'              => array(
+                'gateway_name'                 => array(
                     'id'      => 'gateway_name',
                     'name'    => __('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => Gateway::gateway(),
                     'desc'    => __('Select the SMS Gateway from which you want to send the SMS.', 'wp-sms')
                 ),
-                'gateway_help'              => array(
+                'gateway_help'                 => array(
                     'id'      => 'gateway_help',
                     'name'    => __('Gateway Guide', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::help(),
                 ),
-                'gateway_username'          => array(
+                'gateway_username'             => array(
                     'id'   => 'gateway_username',
                     'name' => __('API Username', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API username of gateway', 'wp-sms')
                 ),
-                'gateway_password'          => array(
+                'gateway_password'             => array(
                     'id'   => 'gateway_password',
                     'name' => __('API Password', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API password of gateway', 'wp-sms')
                 ),
-                'gateway_sender_id'         => array(
+                'gateway_sender_id'            => array(
                     'id'   => 'gateway_sender_id',
                     'name' => __('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
                     'desc' => __('Sender number or sender ID', 'wp-sms')
                 ),
-                'gateway_key'               => array(
+                'gateway_key'                  => array(
                     'id'   => 'gateway_key',
                     'name' => __('API Key', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter API key of gateway', 'wp-sms')
                 ),
                 // Gateway status
-                'gateway_status_title'      => array(
+                'gateway_status_title'         => array(
                     'id'   => 'gateway_status_title',
                     'name' => __('Gateway Overview', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'account_credit'            => array(
+                'account_credit'               => array(
                     'id'      => 'account_credit',
                     'name'    => __('Status', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::status(),
                 ),
-                'account_response'          => array(
+                'account_response'             => array(
                     'id'      => 'account_response',
                     'name'    => __('Balance / Credit', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::response(),
                 ),
-                'incoming_message'          => array(
+                'incoming_message'             => array(
                     'id'      => 'incoming_message',
                     'name'    => __('Incoming Message'),
                     'type'    => 'html',
                     'options' => Gateway::incoming_message_status(),
                 ),
-                'bulk_send'                 => array(
+                'bulk_send'                    => array(
                     'id'      => 'bulk_send',
                     'name'    => __('Send Bulk SMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::bulk_status(),
                 ),
-                'media_support'             => array(
+                'media_support'                => array(
                     'id'      => 'media_support',
                     'name'    => __('Send MMS', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::mms_status(),
                 ),
                 // Account credit
-                'account_credit_title'      => array(
+                'account_credit_title'         => array(
                     'id'   => 'account_credit_title',
                     'name' => __('Account Balance', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'account_credit_in_menu'    => array(
+                'account_credit_in_menu'       => array(
                     'id'      => 'account_credit_in_menu',
                     'name'    => __('Show in admin menu', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Show your account credit in admin menu.', 'wp-sms')
                 ),
-                'account_credit_in_sendsms' => array(
+                'account_credit_in_sendsms'    => array(
                     'id'      => 'account_credit_in_sendsms',
                     'name'    => __('Show in send SMS page', 'wp-sms'),
                     'type'    => 'checkbox',
@@ -1445,24 +1444,40 @@ class Settings
                     'desc'    => __('Show your account credit in send SMS page.', 'wp-sms')
                 ),
                 // Message header
-                'message_title'             => array(
+                'message_title'                => array(
                     'id'   => 'message_title',
                     'name' => __('Miscellaneous Options', 'wp-sms'),
                     'type' => 'header'
                 ),
-                'send_unicode'              => array(
+                'send_unicode'                 => array(
                     'id'      => 'send_unicode',
                     'name'    => __('Send as Unicode', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms')
                 ),
-                'clean_numbers'             => array(
+                'clean_numbers'                => array(
                     'id'      => 'clean_numbers',
                     'name'    => __('Clean The Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
+                ),
+                'send_only_local_numbers'      => array(
+                    'id'      => 'send_only_local_numbers',
+                    'name'    => __('Send Only to Local Numbers', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Active this option to send SMS only to your country local numbers and save international SMS fees.', 'wp-sms')
+                ),
+                'only_local_numbers_countries' => array(
+                    'id'      => 'only_local_numbers_countries',
+                    'name'    => __('Countries Whitelist', 'wp-sms'),
+                    'type'    => 'multiselect',
+                    'options' => array_map(function ($key, $value) {
+                        return [$key => $value];
+                    }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
+                    'desc'    => __('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
                 )
             )),
 

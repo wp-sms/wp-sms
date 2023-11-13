@@ -2,6 +2,7 @@
 
 namespace WP_SMS\CronJob;
 
+use WP_SMS\Option;
 use WP_SMS\Report\EmailReportGenerator;
 
 class WeeklyReport
@@ -14,7 +15,7 @@ class WeeklyReport
 
     public function registerSendReportCronJob()
     {
-        if (isset($this->options['report_wpsms_statistics']) && !$this->options['report_wpsms_statistics']) {
+        if (!Option::getOption('report_wpsms_statistics')) {
             return;
         }
 

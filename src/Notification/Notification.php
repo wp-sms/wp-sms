@@ -10,10 +10,12 @@ class Notification
     /**
      * @param $message
      * @param $to
-     * @param $mediaUrls
+     * @param array $mediaUrls
+     * @param bool $isFlash
+     * @param bool $senderId
      * @return string|\WP_Error
      */
-    public function send($message, $to, $mediaUrls = [])
+    public function send($message, $to, $mediaUrls = [], $isFlash = false, $senderId = false)
     {
         // Backward compatibility
         if (!is_array($to)) {
@@ -28,7 +30,7 @@ class Notification
             return;
         }
 
-        $response = wp_sms_send($to, $this->getOutputMessage($message), false, null, $mediaUrls);
+        $response = wp_sms_send($to, $this->getOutputMessage($message), $isFlash, $senderId, $mediaUrls);
 
         /**
          * If response is true, call success method

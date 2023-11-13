@@ -16,7 +16,7 @@ class NoticeManager extends AbstractNotice
 
         // Static notices
         add_action('admin_init', [$this, 'initStaticNotice']);
-        add_action('wp_sms_settings_page', array($this, 'displayStaticNotices'));
+        add_action('admin_notices', array($this, 'displayStaticNotices'));
 
         // Flash notices
         add_action('admin_notices', array($this, 'displayFlashNotices'));
@@ -39,7 +39,6 @@ class NoticeManager extends AbstractNotice
         $this->registerStaticNotices();
 
         do_action('wp_sms_before_register_notice', $this);
-
         $this->action();
     }
 
@@ -66,6 +65,9 @@ class NoticeManager extends AbstractNotice
     {
         $nonce   = wp_create_nonce('wp_sms_notice');
         $notices = get_option($this->staticNoticeOption, []);
+        if (!is_array($notices)) {
+            $notices = [];
+        }
 
         foreach ($this->notices as $id => $notice) {
             $dismissed = array_key_exists($id, $notices);

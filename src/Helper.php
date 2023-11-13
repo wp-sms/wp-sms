@@ -438,14 +438,20 @@ class Helper
     /**
      * Show Admin Notice
      */
-    public static function notice($message, $type = 'info', $dismiss = false, $link = '')
+    public static function notice($message, $type = 'info', $dismiss = false, $link = '', $return = false)
     {
-        echo self::loadTemplate('admin/notice.php', [
+        $output = self::loadTemplate('admin/notice.php', [
             'message' => $message,
             'type'    => $type,
             'dismiss' => $dismiss,
             'link'    => $link
         ]);
+
+        if ($return) {
+            return $output;
+        } else {
+            echo $output;
+        }
     }
 
     /**

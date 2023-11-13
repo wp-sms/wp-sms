@@ -40,10 +40,10 @@ let wpSmsImportSubscriber = {
             event.preventDefault()
 
             let fileData = jQuery('#wp-sms-input-file')[0].files
-            let fromData = new FormData()
+            let formData = new FormData()
 
             if (fileData.length > 0) {
-                fromData.append('file', fileData[0])
+                formData.append('file', fileData[0])
             }
 
             // check whether the file has header
@@ -57,7 +57,7 @@ let wpSmsImportSubscriber = {
             jQuery.ajax({
                 url: wpSmsGlobalTemplateVar.ajaxUrls.uploadSubscriberCsv + '&hasHeader=' + hasHeader,
                 method: 'post',
-                data: fromData,
+                data: formData,
                 contentType: false,
                 cache: false,
                 processData: false,
