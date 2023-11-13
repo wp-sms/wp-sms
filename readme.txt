@@ -255,13 +255,13 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Fixes: Addressed notice styles and RTL issues for a more consistent visual experience.
 * Fixes: Resolved the issue of sending the SMS report even when the corresponding option is disabled.
 
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.3.4 - 17.10.2023 =
 * Improvement: Backward compatibility with new custom WooCommerce order table and HPOS.
 * Improvement: Search users in send SMS page.
 * Improvement: Gateway altiria.net updated to the latest version.
 * Improvement: Made minor improvements and optimizations for better performance.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.3.3 - 09.10.2023 =
 * Fixes: Some tweak form-submitting issues in sending SMS page and improvement the repeating issue

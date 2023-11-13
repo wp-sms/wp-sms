@@ -165,7 +165,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $message,
                 $recipientNumbers,
                 $mediaUrls,
-                false,
+                $request->get_param('flash'),
                 $request->get_param('sender')
             );
 
