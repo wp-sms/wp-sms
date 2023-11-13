@@ -28,7 +28,6 @@ let wooCommerceOrderPage = {
             notification_handler: 'WooCommerceOrderNotification',
             handler_id: orderId,
             sender: wpSmsWooCommerceTemplateVar.senderID,
-            flash: wpSmsWooCommerceTemplateVar.flashState,
         };
 
         jQuery.ajax(wpSmsWooCommerceTemplateVar.restUrls.sendSms,

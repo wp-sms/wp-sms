@@ -23,12 +23,11 @@ class OrderViewManager
 
         wp_enqueue_script('wpsms-woocommerce-admin', WP_SMS_URL . 'assets/js/admin-order-view.js', ['jquery', 'jquery-ui-spinner'], WP_SMS_VERSION);
         wp_localize_script('wpsms-woocommerce-admin', 'wpSmsWooCommerceTemplateVar', array(
-                'restUrls'   => array(
+                'restUrls' => array(
                     'sendSms' => get_rest_url(null, 'wpsms/v1/send')
                 ),
-                'nonce'      => $nonce,
-                'senderID'   => $sms->from,
-                'flashState' => $sms->flash,
+                'nonce'    => $nonce,
+                'senderID' => $sms->from
             )
         );
     }
