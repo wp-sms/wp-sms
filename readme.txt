@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, wordpress, send, subscribe, message, register, notification, webservice, API, woocommerce, subscribes-sms, EDD, twilio, bulksms, clockworksms, nexmo, whatsapp
 Requires at least: 4.1
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.3.4
+Stable tag: 6.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -239,6 +239,22 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.4 - 13.11.2023 =
+* Improvement: Compatibility improved with WordPress v6.4.
+* Improvement: Gateways Cellsynt and Sms.to.
+* Improvement: Default handler now used in the Send SMS REST API for improved efficiency.
+* Improvement: Added filter `wp_sms_api_message_content` for customizable message content.
+* Improvement: Ensured a non-empty recipients array before initiating SMS sending.
+* Improvement: Field labels and descriptions for Subscribe Form now sanitized for increased security.
+* Improvement: Privacy Page design enhanced for a more polished appearance.
+* Improvement: Default values added to subscriber form shortcode attributes for increased customization.
+* Improvement: Minor improvements and optimizations made for better overall performance.
+* Feature: Added the ability to send SMS only to local numbers.
+* Feature: Included an Opt-Out link in the footer of SMS report email for easier unsubscribing.
+* Fixes: Fixed a bug related to selecting multiple roles for sending SMS.
+* Fixes: Addressed notice styles and RTL issues for a more consistent visual experience.
+* Fixes: Resolved the issue of sending the SMS report even when the corresponding option is disabled.
+
 = v6.3.4 - 17.10.2023 =
 * Improvement: Backward compatibility with new custom WooCommerce order table and HPOS.
 * Improvement: Search users in send SMS page.

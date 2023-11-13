@@ -14,7 +14,7 @@ class SubscriberShortcode
     public function registerSubscriberShortcodeCallback($attributes)
     {
         $attrs = shortcode_atts([
-            'title'       => 'Subscribe SMS',
+            'title'       => __('Subscribe SMS', 'wp-sms'),
             'description' => '',
             'groups'      => '',
             'fields'      => '',
