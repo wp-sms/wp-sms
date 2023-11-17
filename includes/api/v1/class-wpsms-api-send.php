@@ -235,7 +235,6 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $recipients    = array_merge($recipients, $mobileNumbers);
                 }
 
-                $recipients = array_unique($recipients);
                 break;
 
             /**
@@ -288,6 +287,9 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $recipients = $request->get_param('numbers');
                 break;
         }
+
+        // Remove duplicate numbers.
+        $recipients = array_unique($recipients);
 
         return apply_filters('wp_sms_api_recipients_numbers', $recipients, $request->get_param('recipients'), $request);
     }
