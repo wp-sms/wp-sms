@@ -15,13 +15,13 @@ let wooCommerceOrderPage = {
     },
 
     setFields: function () {
-        this.SMSMetabox = jQuery('#wpsms-woocommerceSendSMS');
+        this.SmsMetabox = jQuery('#wpsms-woocommerceSendSMS');
         this.NotesMetabox = jQuery('#woocommerce-order-notes');
     },
 
     sendSMS: function () {
-        let receiver = this.SMSMetabox.find('select[name="phone_number"]').val();
-        let message = this.SMSMetabox.find('textarea[name="message_content"]').val();
+        let receiver = this.SmsMetabox.find('select[name="phone_number"]').val();
+        let message = this.SmsMetabox.find('textarea[name="message_content"]').val();
         let orderId = wpSmsWooCommerceTemplateVar.order_id;
 
         let requestBody = {
@@ -41,48 +41,48 @@ let wooCommerceOrderPage = {
                 contentType: 'application/json',
                 data: JSON.stringify(requestBody),
                 beforeSend: function () {
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__overlay').css('display', 'flex');
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__variables__shortCodes').slideUp();
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__tryAgain').hide();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__overlay').css('display', 'flex');
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__variables__shortCodes').slideUp();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__tryAgain').hide();
                 }.bind(this),
                 success: function (data, status, xhr) {
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox').fadeOut();
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__report p').html(data.message);
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__report').removeClass('error');
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__report').addClass('success');
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__receiver p').html(receiver);
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__message p').html(message);
-                    this.SMSMetabox.find(' .wpsms-orderSmsMetabox__result').fadeIn();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox').fadeOut();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__report p').html(data.message);
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__report').removeClass('error');
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__report').addClass('success');
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__receiver p').html(receiver);
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__message p').html(message);
+                    this.SmsMetabox.find(' .wpsms-orderSmsMetabox__result').fadeIn();
                 }.bind(this),
                 error: function (data, status, xhr) {
                     var errorMessage = data.responseJSON.message ? data.responseJSON.message : data.responseJSON.error.message;
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox').fadeOut();
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__report').removeClass('success');
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__report').addClass('error');
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__report p').html(errorMessage);
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__tryAgain').show();
-                    this.SMSMetabox.find('.wpsms-orderSmsMetabox__result').fadeIn();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox').fadeOut();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__report').removeClass('success');
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__report').addClass('error');
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__report p').html(errorMessage);
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__tryAgain').show();
+                    this.SmsMetabox.find('.wpsms-orderSmsMetabox__result').fadeIn();
                 }.bind(this)
             });
     },
 
     addSendSMSEventListeners: function () {
         // Try again
-        this.SMSMetabox.find('.wpsms-orderSmsMetabox__result__tryAgain').on('click', (event) => {
+        this.SmsMetabox.find('.wpsms-orderSmsMetabox__result__tryAgain').on('click', (event) => {
             event.preventDefault();
-            this.SMSMetabox.find('.wpsms-orderSmsMetabox__result').fadeOut();
-            this.SMSMetabox.find('.wpsms-orderSmsMetabox__overlay').css('display', 'none');
-            this.SMSMetabox.find('.wpsms-orderSmsMetabox').fadeIn();
+            this.SmsMetabox.find('.wpsms-orderSmsMetabox__result').fadeOut();
+            this.SmsMetabox.find('.wpsms-orderSmsMetabox__overlay').css('display', 'none');
+            this.SmsMetabox.find('.wpsms-orderSmsMetabox').fadeIn();
         });
 
         // Set event listener for the send sms button
-        this.SMSMetabox.find('button[name="send_sms"]').on('click', (event) => {
+        this.SmsMetabox.find('button[name="send_sms"]').on('click', (event) => {
             event.preventDefault();
             this.sendSMS();
         });
 
         // Set event listener for shortcode blocks
-        this.SMSMetabox.find('.wpsms-orderSmsMetabox__variables__shortCodes code').on('click', function () {
+        this.SmsMetabox.find('.wpsms-orderSmsMetabox__variables__shortCodes code').on('click', function () {
             var codeValue = jQuery(this).text();
             var textarea = document.getElementById('message_content');
 
@@ -102,7 +102,7 @@ let wooCommerceOrderPage = {
         });
 
         // Set event listener for shortcodes collapsable
-        this.SMSMetabox.find('.wpsms-orderSmsMetabox__variables__header').on('click', function () {
+        this.SmsMetabox.find('.wpsms-orderSmsMetabox__variables__header').on('click', function () {
             jQuery(this).next('.wpsms-orderSmsMetabox__variables__shortCodes').slideToggle();
             jQuery(this).find('.wpsms-orderSmsMetabox__variables__icon').toggleClass('expanded');
         });
@@ -113,22 +113,28 @@ let wooCommerceOrderPage = {
         this.NotesMetabox.find('button.add_note').on('click', (event) => {
             this.sendNoteSMS();
         });
+
+        // Show and hide sms to customer elements
+        this.NotesMetabox.find('select[name=order_note_type]').on('change', () => {
+            let noteType = this.NotesMetabox.find('select[name=order_note_type]').val();
+            this.NotesMetabox.find('.wpsms-addNoteMetabox__elements').toggle(noteType === 'customer');
+        });
     },
 
     setupNotesMetabox: function () {
         // Set up needed fields in the order notes metabox
-        jQuery('#woocommerce-order-notes div.add_note').prepend(
-            '<div class="wpsms-addNoteMetabox__result__report">' +
-            '<span class="wpsms-addNoteMetabox__result__icon"></span>' +
-            '<p></p>' +
-            '</div>'
-        );
-
-        jQuery('#add_order_note').after('<label for="wpsms_note_send">' +
+        jQuery('#woocommerce-order-notes div.add_note').append(
+            '<div class="wpsms-addNoteMetabox__elements">' +
+            '<label for="wpsms_note_send">' +
             '<input type="checkbox" id="wpsms_note_send" name="wpsms_note_send">'
             + wpSmsWooCommerceTemplateVar.lang.checkbox_label
             + '</label>' +
-            '<p>' + wpSmsWooCommerceTemplateVar.lang.checkbox_desc + '</p>');
+            '<div class="wpsms-addNoteMetabox__result__report">' +
+            '<span class="wpsms-addNoteMetabox__result__icon"></span>' +
+            '<p></p>' +
+            '</div>' +
+            '</div>'
+        );
     },
 
     sendNoteSMS: function () {

@@ -243,6 +243,15 @@ Order View Page
 }
 
 #woocommerce-order-notes {
+  .wpsms-addNoteMetabox__elements {
+    display: none;
+  }
+
+  label[for="wpsms_note_send"] {
+    margin-bottom: 15px;
+    display: block;
+  }
+
   .wpsms-addNoteMetabox__result__report {
     padding: 10px 15px;
     border: 1px solid #f0f0f1;
