@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.4
+Stable tag: 6.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -239,6 +239,10 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.4.1 - 19.11.2023 =
+* Fixes: WooCommerce order page issues & send sms in note metabox
+* Improvement: Add possibility to remove duplicate numbers
+
 = v6.4 - 13.11.2023 =
 * Improvement: Compatibility improved with WordPress v6.4.
 * Improvement: Gateways Cellsynt and Sms.to.
@@ -255,13 +259,13 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Fixes: Addressed notice styles and RTL issues for a more consistent visual experience.
 * Fixes: Resolved the issue of sending the SMS report even when the corresponding option is disabled.
 
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.3.4 - 17.10.2023 =
 * Improvement: Backward compatibility with new custom WooCommerce order table and HPOS.
 * Improvement: Search users in send SMS page.
 * Improvement: Gateway altiria.net updated to the latest version.
 * Improvement: Made minor improvements and optimizations for better performance.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.3.3 - 09.10.2023 =
 * Fixes: Some tweak form-submitting issues in sending SMS page and improvement the repeating issue

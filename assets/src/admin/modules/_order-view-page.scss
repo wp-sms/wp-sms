@@ -241,3 +241,50 @@ Order View Page
     }
   }
 }
+
+#woocommerce-order-notes {
+  .wpsms-addNoteMetabox__elements {
+    display: none;
+  }
+
+  label[for="wpsms_note_send"] {
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  .wpsms-addNoteMetabox__result__report {
+    padding: 10px 15px;
+    border: 1px solid #f0f0f1;
+    border-radius: 8px;
+    margin: 10px 0;
+    transition: .3s all ease-out;
+    display: none;
+
+    .wpsms-addNoteMetabox__result__icon {
+      display: inline-block;
+      transform: translateY(5px);
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+      transition: .3s all ease-out;
+    }
+
+    &.success .wpsms-addNoteMetabox__result__icon {
+      background: url("../images/icons/green-check-fill.png") no-repeat center center / contain;
+    }
+
+    &.error .wpsms-addNoteMetabox__result__icon {
+      background: url("../images/icons/red-alert.png") no-repeat center center / contain;
+    }
+
+    p {
+      font-size: 15px;
+      font-weight: 400;
+      color: #545454;
+      line-height: 1.8 !important;
+      margin-bottom: 20px;
+      text-align: justify;
+      display: inline;
+    }
+  }
+}
