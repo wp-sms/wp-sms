@@ -33,7 +33,6 @@
         </div>
     </div>
 
-    <input type="hidden" name="send_sms_box_order_id" value="<?php echo esc_attr($order_id); ?>">
     <button name="send_sms"><?php _e('Send SMS', 'wp-sms'); ?></button>
 </div>
 
