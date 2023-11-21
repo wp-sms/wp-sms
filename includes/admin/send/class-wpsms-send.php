@@ -43,6 +43,11 @@ class SMS_Send
             $buddyPressMobileNumbers = \WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress::getTotalMobileNumbers();
         }
 
+        $credit = false;
+        if (isset($this->options['account_credit_in_sendsms']) and !is_object($this->sms::credit()) and !is_array($this->sms::credit())) {
+            $credit = $this->sms::credit();
+        }
+
         echo Helper::loadTemplate('admin/send-sms.php', [
             'get_group_result'        => Newsletter::getGroups(),
             'get_users_mobile'        => Helper::getUsersMobileNumbers(),
@@ -51,7 +56,7 @@ class SMS_Send
             'buddyPressMobileNumbers' => $buddyPressMobileNumbers,
             'wpsms_list_of_role'      => Helper::getListOfRoles(),
             'smsObject'               => $this->sms,
-            'gatewayCredit'           => $this->sms::credit(),
+            'gatewayCredit'           => $credit
         ]);
     }
 }
