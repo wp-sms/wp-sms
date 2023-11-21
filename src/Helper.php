@@ -216,8 +216,8 @@ class Helper
         }
 
         // Backward compatibility with new custom WooCommerce order table.
-        if (!$mobile) {
-            $order = wc_get_order($orderId);
+        if (!$mobile && function_exists('wc_get_order')) {
+            $order = \wc_get_order($orderId);
 
             if ($order && method_exists($order, 'get_billing_phone')) {
                 $mobile = $order->get_billing_phone();
