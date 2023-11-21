@@ -113,12 +113,12 @@ class websmscy extends \WP_SMS\Gateway
             'password'  => $this->password,
         );
 
-        $ws = new \WebsmsClient($cfg);
-
         try {
+            $ws      = new \WebsmsClient($cfg);
             $credits = $ws->getCredits();
 
             return $credits;
+
         } catch (\Exception $e) {
             return new \WP_Error('account-credit', $e->getMessage());
         }
