@@ -130,7 +130,7 @@ class oursms extends \WP_SMS\Gateway
 
             // Check username and password
             if (!$this->has_key) {
-                return new WP_Error('account-credit', __('API Token is required.', 'wp-sms'));
+                throw new Exception('API Token is required.');
             }
 
             $args = array(
