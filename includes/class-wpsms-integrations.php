@@ -77,12 +77,18 @@ class Integrations
                     $to = explode(',', $cf7_options['phone']);
                     break;
             }
-
+            
             $message = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
-                foreach ($matches as $item) {
-                    if (isset($this->cf7_data[$item])) {
-                        return $this->cf7_data[$item];
-                    }
+                $cf7_tags  = ['_post_id', '_post_title', '_post_url', '_post_name', '_site_url', '_site_title'];
+                $form_tags = $this->cf7_data;
+                $tag       = $matches[1];
+
+                if (in_array($tag, $cf7_tags)) {
+                    return apply_filters('wpcf7_special_mail_tags', null, $tag, false);
+                } elseif (array_key_exists($tag, $form_tags)) {
+                    return $this->cf7_data[$tag];
+                } else {
+                    return $matches[0];
                 }
             }, $cf7_options['message']);
 
