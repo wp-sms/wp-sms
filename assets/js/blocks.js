@@ -255,8 +255,7 @@ let wpSmsSendSmsBlockForm = {
             event.preventDefault();
 
             if (self.hasReachedMaxCount) {
-                self.SBResult.text(wpsms_ajax_object.exceeded_max_count_text);
-                self.SBResult.fadeIn();
+                self.SBResult.text(wpsms_ajax_object.exceeded_max_count_text).fadeIn().addClass('failed');
                 return;
             }
 

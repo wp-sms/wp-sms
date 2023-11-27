@@ -86,7 +86,7 @@ class BlockAbstract
          */
         if ($this->script) {
             wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->ajaxData());
-            wp_enqueue_script("wp-sms-blocks-subscribe");
+            wp_enqueue_script("wpSms{$this->blockName}BlockData");
         }
 
         /**

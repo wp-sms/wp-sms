@@ -3,9 +3,7 @@
 namespace WP_SMS\Blocks;
 
 use WP_SMS;
-use WP_SMS\Option;
 use WP_SMS\Newsletter;
-use WP_SMS\Helper;
 
 class SendSmsBlock extends BlockAbstract
 {
@@ -32,7 +30,7 @@ class SendSmsBlock extends BlockAbstract
 
         // Create ab array of subscribe group options
         $groups        = Newsletter::getGroups();
-        $group_options = array(['label' => __('Select a group', 'wp-sms'), 'value' => '']);
+        $group_options = array(['label' => __('Select a group', 'wp-sms'), 'value' => ''], ['label' => __('General', 'wp-sms'), 'value' => 0]);
         foreach ($groups as $group) {
             $group_options[] = array(
                 'value' => $group->ID,
