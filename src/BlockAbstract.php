@@ -4,6 +4,7 @@ namespace WP_SMS\Blocks;
 
 use WP_Block;
 use WP_SMS\Helper;
+use WP_SMS\Newsletter;
 
 class BlockAbstract
 {
@@ -42,9 +43,34 @@ class BlockAbstract
     {
         $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
 
-        register_block_type($blockPath, array(
+        // Define a base config for all blocks.
+        $baseConfig = [
             'render_callback' => [$this, 'renderCallback'],
-        ));
+        ];
+
+        // Define additional attributes for the SendSms block.
+        $sendSmsAttributes = [
+            'attributes' => [
+                'title'           => ['type' => 'string', 'default' => ''],
+                'description'     => ['type' => 'string', 'default' => ''],
+                'onlyLoggedUsers' => ['type' => 'boolean', 'default' => false],
+                'userRole'        => ['type' => 'string', 'default' => 'all'],
+                'maxCharacters'   => ['type' => 'number', 'default' => 60],
+                'receiver'        => ['type' => 'string', 'default' => 'admin'],
+                'subscriberGroup' => ['type' => 'string', 'default' => '']
+            ],
+        ];
+
+        // Check if the block is the SendSms block.
+        if (strpos($this->blockName, 'SendSms') !== false) {
+            // Merge the base config with the SendSms-specific attributes.
+            $config = array_merge($baseConfig, $sendSmsAttributes);
+        } else {
+            // Use the base config for blocks without specific attributes.
+            $config = $baseConfig;
+        }
+
+        register_block_type($blockPath, $config);
     }
 
     /**
@@ -59,16 +85,9 @@ class BlockAbstract
          * Enqueue the script and data
          */
         if ($this->script) {
-            wp_enqueue_script("wp-sms-blocks-subscribe", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
+            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->ajaxData());
+            wp_enqueue_script("wp-sms-blocks-subscribe");
         }
-
-        wp_localize_script(
-            "wp-sms-blocks-{$this->blockName}",
-            'pluginAssetsUrl',
-            [
-                'imagesFolder' => Helper::getPluginAssetUrl("images/"),
-            ]
-        );
 
         /**
          * Render the output

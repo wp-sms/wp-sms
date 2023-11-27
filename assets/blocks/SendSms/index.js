@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./assets/src/blocks/Subscribe/edit.js":
-/*!*********************************************!*\
-  !*** ./assets/src/blocks/Subscribe/edit.js ***!
-  \*********************************************/
+/***/ "./assets/src/blocks/SendSms/edit.js":
+/*!*******************************************!*\
+  !*** ./assets/src/blocks/SendSms/edit.js ***!
+  \*******************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -25,6 +25,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /**
  * Edit function.
  *
@@ -34,53 +35,114 @@ __webpack_require__.r(__webpack_exports__);
  */
 function edit(_ref) {
   let {
-    className,
     attributes,
     setAttributes
   } = _ref;
+  // Destructure your attributes
   const {
     title,
-    description
+    description,
+    onlyLoggedUsers,
+    userRole,
+    maxCharacters,
+    receiver,
+    subscriberGroup
   } = attributes;
-  const onChangeTitle = val => {
+
+  // Define states
+  const [showSubscriberGroup, setShowSubscriberGroup] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(receiver == 'subscribers');
+  const [showUserRoles, setShowUserRoles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(onlyLoggedUsers);
+
+  // Handlers to update attributes
+  const onChangeTitle = val => setAttributes({
+    title: val
+  });
+  const onChangeDescription = val => setAttributes({
+    description: val
+  });
+  const onChangeUserRole = val => setAttributes({
+    userRole: val
+  });
+  const onChangeMaxCharacters = val => setAttributes({
+    maxCharacters: val
+  });
+  const onChangeSubscriberGroup = val => setAttributes({
+    subscriberGroup: val
+  });
+  const onChangeReceiver = function (val) {
+    val == 'subscribers' ? setShowSubscriberGroup(true) : setShowSubscriberGroup(false);
     setAttributes({
-      title: val
+      receiver: val
     });
   };
-  const onChangeDescription = val => {
+  const toggleLoggedUsers = function (val) {
+    val ? setShowUserRoles(true) : setShowUserRoles(false);
     setAttributes({
-      description: val
+      onlyLoggedUsers: !onlyLoggedUsers
     });
   };
-  const TitleTextInput = () => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Title', 'wp-sms'),
-      value: title,
-      onChange: onChangeTitle
-    });
-  };
-  const DescriptionTextareaInput = () => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Description', 'wp-sms'),
-      value: description,
-      onChange: onChangeDescription
-    });
-  };
-  return [(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "wp-sms-block wp-sms-block--subscribe"
+
+  // Define the controls for block settings
+  const blockSettings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'wp-sms'),
+    initialOpen: true
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only for logged in users', 'wp-sms'),
+    checked: onlyLoggedUsers,
+    onChange: toggleLoggedUsers
+  }), showUserRoles && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select Role', 'wp-sms'),
+    selected: userRole,
+    options: wpSmsSendSmsBlockData.userRoleOptions,
+    onChange: onChangeUserRole
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Characters', 'wp-sms'),
+    value: maxCharacters,
+    onChange: onChangeMaxCharacters,
+    type: "number"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Receiver', 'wp-sms'),
+    value: receiver,
+    options: [{
+      label: 'Custom Number',
+      value: 'numbers'
+    }, {
+      label: 'Admin',
+      value: 'admin'
+    }, {
+      label: 'Subscribers',
+      value: 'subscribers'
+    }],
+    onChange: onChangeReceiver
+  }), showSubscriberGroup && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Subscriber Group', 'wp-sms'),
+    value: subscriberGroup,
+    options: wpSmsSendSmsBlockData.subscriberGroups,
+    onChange: onChangeSubscriberGroup
+  })));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, blockSettings, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wp-sms-block wp-sms-block--sendSms"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
     className: "wp-sms-block__title"
-  }, "Subscribe"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "Send SMS"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-sms-block__main"
-  }, TitleTextInput(), DescriptionTextareaInput())))];
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Title', 'wp-sms'),
+    value: title,
+    onChange: onChangeTitle
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextareaControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Description', 'wp-sms'),
+    value: description,
+    onChange: onChangeDescription
+  })))));
 }
 
 /***/ }),
 
-/***/ "./assets/src/blocks/Subscribe/index.css":
-/*!***********************************************!*\
-  !*** ./assets/src/blocks/Subscribe/index.css ***!
-  \***********************************************/
+/***/ "./assets/src/blocks/SendSms/index.css":
+/*!*********************************************!*\
+  !*** ./assets/src/blocks/SendSms/index.css ***!
+  \*********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -139,13 +201,13 @@ module.exports = window["wp"]["i18n"];
 
 /***/ }),
 
-/***/ "./assets/src/blocks/Subscribe/block.json":
-/*!************************************************!*\
-  !*** ./assets/src/blocks/Subscribe/block.json ***!
-  \************************************************/
+/***/ "./assets/src/blocks/SendSms/block.json":
+/*!**********************************************!*\
+  !*** ./assets/src/blocks/SendSms/block.json ***!
+  \**********************************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp-sms-blocks/subscribe","title":"Subscribe","category":"wp-sms-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","attributes":{"title":{"type":"string"},"description":{"type":"string"}},"example":{"attributes":{"title":"Subscribe","description":"Be the first one to get new offers."}}}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp-sms-blocks/send-sms","title":"Send SMS","category":"wp-sms-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","attributes":{"title":{"type":"string"},"description":{"type":"string"}},"example":{"attributes":{"title":"Send SMS","description":"Send SMS"}}}');
 
 /***/ })
 
@@ -220,20 +282,20 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 !function() {
-/*!**********************************************!*\
-  !*** ./assets/src/blocks/Subscribe/index.js ***!
-  \**********************************************/
+/*!********************************************!*\
+  !*** ./assets/src/blocks/SendSms/index.js ***!
+  \********************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./index.css */ "./assets/src/blocks/Subscribe/index.css");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./assets/src/blocks/Subscribe/edit.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./assets/src/blocks/Subscribe/block.json");
+/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./index.css */ "./assets/src/blocks/SendSms/index.css");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./assets/src/blocks/SendSms/edit.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./assets/src/blocks/SendSms/block.json");
 
 /**
- * Subscribe
+ * Send SMS
  */
 
 

@@ -1,14 +1,14 @@
 jQuery(document).ready(function () {
     wpSmsSubscribeForm.init();
+    wpSmsSendSmsBlockForm.init();
 });
 
 let wpSmsSubscribeForm = {
-
     init: function () {
         this.info = Array()
 
         this.setFields()
-        this.EventListener()
+        this.setEventListener()
     },
 
     // Extract group_id from newsletter form
@@ -55,10 +55,7 @@ let wpSmsSubscribeForm = {
         processingOverlay.css('display', 'flex')
 
         let requestBody = {
-            name: element.children().find(".js-wpSmsSubscriberName input").val(),
-            mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(),
-            group_id: this.getGroupId(element),
-            type: element.children().find(".js-wpSmsSubscribeType:checked").val()
+            name: element.children().find(".js-wpSmsSubscriberName input").val(), mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(), group_id: this.getGroupId(element), type: element.children().find(".js-wpSmsSubscribeType:checked").val()
         }
 
         if (customFields.length) {
@@ -85,16 +82,13 @@ let wpSmsSubscribeForm = {
         })
 
         if (requestBody.type === 'subscribe') {
-            var endpointUrl = wpsms_ajax_object.rest_endpoint_url
+            var endpointUrl = wpsms_ajax_object.newsletter_endpoint_url
         } else {
-            var endpointUrl = wpsms_ajax_object.rest_endpoint_url + '/unsubscribe'
+            var endpointUrl = wpsms_ajax_object.newsletter_endpoint_url + '/unsubscribe'
         }
 
         var ajax = jQuery.ajax({
-            type: 'POST',
-            url: endpointUrl,
-            contentType: 'application/json',
-            data: JSON.stringify(requestBody)
+            type: 'POST', url: endpointUrl, contentType: 'application/json', data: JSON.stringify(requestBody)
         })
 
         ajax.fail(function (data) {
@@ -164,10 +158,7 @@ let wpSmsSubscribeForm = {
         })
 
         var ajax = jQuery.ajax({
-            type: 'POST',
-            url: wpsms_ajax_object.rest_endpoint_url + '/verify',
-            contentType: 'application/json',
-            data: JSON.stringify($this.info)
+            type: 'POST', url: wpsms_ajax_object.newsletter_endpoint_url + '/verify', contentType: 'application/json', data: JSON.stringify($this.info)
         })
 
         ajax.fail(function (data) {
@@ -201,7 +192,7 @@ let wpSmsSubscribeForm = {
 
     },
 
-    EventListener: function ($this = this) {
+    setEventListener: function ($this = this) {
 
         // GDPR Confirmation
         // Enable and disable the form submit button by changing the status of GDPR checkbox
@@ -233,7 +224,80 @@ let wpSmsSubscribeForm = {
                 $this.sendActivationCode(jQuery(this).parents('.js-wpSmsSubscribeForm'))
             }
         })
-
     }
-
 }
+
+let wpSmsSendSmsBlockForm = {
+    init: function () {
+        this.setSendSmsBlockFields();
+        this.setSendSmsBlockEventListeners();
+        this.hasReachedMaxCount = false;
+    },
+
+    setSendSmsBlockFields: function () {
+        // SB is abbreviation for SendSMS Block
+        this.SBForm = jQuery('.wpsms-sendSmsForm');
+        this.SBSubscriberGroup = this.SBForm.find('input[name=subscriberGroup]');
+        this.SBSubmit = this.SBForm.find('input[type=submit]');
+        this.SBMessage = this.SBForm.find('textarea.wpsms-sendSmsForm__messageField');
+        this.SBReceiver = this.SBForm.find('input[name=receiver]');
+        this.SBPhoneNumber = this.SBForm.find('input.wpsms-sendSmsForm__receiverField');
+        this.SBMessageAlert = this.SBForm.find('p.wpsms-sendSmsForm__messageField__alert');
+        this.SBResult = this.SBForm.find('div.wpsms-sendSmsForm__resultMessage');
+        this.SBOverlay = this.SBForm.find('div.wpsms-sendSmsForm__overlay');
+    },
+
+    setSendSmsBlockEventListeners: function () {
+        var self = this;
+
+        // Add event listener for send sms
+        this.SBSubmit.on('click', function (event) {
+            event.preventDefault();
+
+            if (self.hasReachedMaxCount) {
+                self.SBResult.text(wpsms_ajax_object.exceeded_max_count_text);
+                self.SBResult.fadeIn();
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('sender', wpsms_ajax_object.sender);
+            formData.append('recipients', self.SBReceiver.val());
+            formData.append('message', self.SBMessage.val());
+            formData.append('group_ids', self.SBSubscriberGroup.val());
+            formData.append('numbers', self.SBPhoneNumber.val());
+            formData.append('nonce', wpsms_ajax_object.nonce);
+
+            jQuery.ajax({
+                url: wpsms_ajax_object.front_sms_endpoint_url, method: 'POST', contentType: false, cache: false, processData: false, data: formData,
+
+                beforeSend: function () {
+                    self.SBResult.text('').fadeOut().removeClass('failed success');
+                    self.SBOverlay.fadeIn();
+                }, success: function (data, status, xhr) {
+                    self.SBResult.text(data.data).fadeIn().addClass('success');
+                    self.SBOverlay.fadeOut();
+                }, error: function (data, status, xhr) {
+                    self.SBResult.text(data.responseJSON.data.message).fadeIn().addClass('failed');
+                    self.SBOverlay.fadeOut();
+                }
+            });
+        });
+
+        // Add event listener for max characters
+        this.SBMessage.on('input', function () {
+            let currentCharacterCount = jQuery(this).val().length;
+            let maxCharacterCount = jQuery(this).data('max');
+            let remainingCharacterCount = maxCharacterCount - currentCharacterCount;
+
+            self.hasReachedMaxCount = remainingCharacterCount < 0 ? true : false;
+
+            if (currentCharacterCount >= maxCharacterCount - 5) {
+                self.SBMessageAlert.fadeIn();
+                self.SBMessageAlert.find('span').text(remainingCharacterCount);
+            } else {
+                self.SBMessageAlert.fadeOut();
+            }
+        });
+    },
+};

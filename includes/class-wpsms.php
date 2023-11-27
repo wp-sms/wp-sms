@@ -151,6 +151,7 @@ class WP_SMS
         // Blocks
         $this->include('src/BlockAbstract.php');
         $this->include('src/Blocks/SubscribeBlock.php');
+        $this->include('src/Blocks/SendSmsBlock.php');
         $this->include('src/BlockAssetsManager.php');
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();

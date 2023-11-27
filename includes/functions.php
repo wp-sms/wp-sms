@@ -430,6 +430,19 @@ function wp_sms_subscriber_form($attributes = array())
     );
 }
 
+function wp_sms_send_sms_form($attributes = array())
+{
+    $block_visibility = apply_filters('wp_sms_send_sms_block_visibility', __return_false());
+    $current_user     = wp_get_current_user();
+
+    if (!$attributes['onlyLoggedUsers'] || ($attributes['onlyLoggedUsers'] && $current_user->ID !== 0 && ($attributes['userRole'] == 'all' || in_array($attributes['userRole'], $current_user->roles)))) {
+        return \WP_SMS\Helper::loadTemplate('send-sms-form.php', [
+            'attributes' => $attributes,
+            'visibility' => $block_visibility
+        ]);
+    }
+}
+
 /**
  * Get option value.
  *

@@ -22,6 +22,9 @@ class Front
      */
     public function front_assets()
     {
+        global $sms;
+        $nonce               = wp_create_nonce('wpsms_ajax');
+        $send_front_sms_ajax = apply_filters('wp_sms_send_front_sms_ajax', null);
 
         //Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
@@ -31,20 +34,24 @@ class Front
 
         // Check if "Disable Style" in frontend is active or not
         if (!wp_sms_get_option('disable_style_in_front')) {
-            wp_register_style('wpsms-subscribe', WP_SMS_URL . 'assets/css/subscribe.css', true, WP_SMS_VERSION);
-            wp_enqueue_style('wpsms-subscribe');
+            wp_register_style('wpsms-front', WP_SMS_URL . 'assets/css/front-styles.css', true, WP_SMS_VERSION);
+            wp_enqueue_style('wpsms-front');
         }
 
         // Register subscriber form script
-        wp_register_script('wp-sms-subscriber-script', WP_SMS_URL . 'assets/js/subscribe.js', ['jquery'], WP_SMS_VERSION, true);
-        wp_enqueue_script('wp-sms-subscriber-script');
+        wp_register_script('wp-sms-blocks-script', WP_SMS_URL . 'assets/js/blocks.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_enqueue_script('wp-sms-blocks-script');
 
-        wp_localize_script("wp-sms-subscriber-script", 'wpsms_ajax_object', array(
-            'rest_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
-            'unknown_error'     => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-            'loading_text'      => __('Loading...', 'wp-sms'),
-            'subscribe_text'    => __('Subscribe', 'wp-sms'),
-            'activation_text'   => __('Activate', 'wp-sms'),
+        wp_localize_script("wp-sms-blocks-script", 'wpsms_ajax_object', array(
+            'newsletter_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
+            'unknown_error'           => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
+            'loading_text'            => __('Loading...', 'wp-sms'),
+            'subscribe_text'          => __('Subscribe', 'wp-sms'),
+            'activation_text'         => __('Activate', 'wp-sms'),
+            'exceeded_max_count_text' => __('The text you have entered exceeds the maximum character count.', 'wp-sms'),
+            'nonce'                   => $nonce,
+            'sender'                  => $sms->from,
+            'front_sms_endpoint_url'  => $send_front_sms_ajax
         ));
     }
 
