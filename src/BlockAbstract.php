@@ -71,16 +71,7 @@ class BlockAbstract
         }
 
         register_block_type($blockPath, $config);
-    }
 
-    /**
-     * @param $attributes
-     * @param $content
-     * @param WP_Block $block
-     * @return mixed
-     */
-    public function renderCallback($attributes, $content, $block)
-    {
         /**
          * Enqueue the script and data
          */
@@ -88,10 +79,17 @@ class BlockAbstract
             wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->buildBlockAjaxData());
             wp_enqueue_script("wpSms{$this->blockName}BlockData");
         }
+    }
 
-        /**
-         * Render the output
-         */
+    /**
+     * Render the output
+     * @param $attributes
+     * @param $content
+     * @param WP_Block $block
+     * @return mixed
+     */
+    public function renderCallback($attributes, $content, $block)
+    {
         return $this->output($attributes);
     }
 }
