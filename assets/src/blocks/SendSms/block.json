@@ -7,13 +7,17 @@
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "attributes": {
-    "title": { "type": "string" },
-    "description": { "type": "string" }
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
   },
   "example": {
     "attributes": {
       "title": "Send SMS",
-      "description": "Send SMS"
+      "description": "Send SMS message for visitors"
     }
   }
 }

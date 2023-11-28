@@ -16,7 +16,7 @@ class SendSmsBlock extends BlockAbstract
         return wp_sms_send_sms_form($attributes);
     }
 
-    public function ajaxData()
+    public function buildBlockAjaxData()
     {
         // Create an array of role options
         $all_roles    = wp_roles()->get_names();

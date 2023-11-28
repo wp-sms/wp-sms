@@ -85,7 +85,7 @@ class BlockAbstract
          * Enqueue the script and data
          */
         if ($this->script) {
-            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->ajaxData());
+            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->buildBlockAjaxData());
             wp_enqueue_script("wpSms{$this->blockName}BlockData");
         }
 

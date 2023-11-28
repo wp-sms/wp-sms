@@ -23,8 +23,6 @@ class Front
     public function front_assets()
     {
         global $sms;
-        $nonce               = wp_create_nonce('wpsms_ajax');
-        $send_front_sms_ajax = apply_filters('wp_sms_send_front_sms_ajax', null);
 
         //Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
@@ -48,10 +46,8 @@ class Front
             'loading_text'            => __('Loading...', 'wp-sms'),
             'subscribe_text'          => __('Subscribe', 'wp-sms'),
             'activation_text'         => __('Activate', 'wp-sms'),
-            'exceeded_max_count_text' => __('The text you have entered exceeds the maximum character count.', 'wp-sms'),
-            'nonce'                   => $nonce,
             'sender'                  => $sms->from,
-            'front_sms_endpoint_url'  => $send_front_sms_ajax
+            'front_sms_endpoint_url'  => apply_filters('wp_sms_send_front_sms_ajax', null)
         ));
     }
 

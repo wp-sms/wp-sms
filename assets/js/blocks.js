@@ -1,6 +1,9 @@
 jQuery(document).ready(function () {
     wpSmsSubscribeForm.init();
-    wpSmsSendSmsBlockForm.init();
+
+    jQuery('.wpsms-sendSmsForm').each(function () {
+        wpSmsSendSmsBlockForm.init(this);
+    });
 });
 
 let wpSmsSubscribeForm = {
@@ -228,74 +231,68 @@ let wpSmsSubscribeForm = {
 }
 
 let wpSmsSendSmsBlockForm = {
-    init: function () {
-        this.setSendSmsBlockFields();
-        this.setSendSmsBlockEventListeners();
-        this.hasReachedMaxCount = false;
+    // SB is abbreviation for SendSMS Block
+    init: function (SBForm) {
+        SBForm = jQuery(SBForm);
+        this.setSendSmsBlockFields(SBForm);
     },
 
-    setSendSmsBlockFields: function () {
-        // SB is abbreviation for SendSMS Block
-        this.SBForm = jQuery('.wpsms-sendSmsForm');
-        this.SBSubscriberGroup = this.SBForm.find('input[name=subscriberGroup]');
-        this.SBSubmit = this.SBForm.find('input[type=submit]');
-        this.SBMessage = this.SBForm.find('textarea.wpsms-sendSmsForm__messageField');
-        this.SBReceiver = this.SBForm.find('input[name=receiver]');
-        this.SBPhoneNumber = this.SBForm.find('input.wpsms-sendSmsForm__receiverField');
-        this.SBMessageAlert = this.SBForm.find('p.wpsms-sendSmsForm__messageField__alert');
-        this.SBResult = this.SBForm.find('div.wpsms-sendSmsForm__resultMessage');
-        this.SBOverlay = this.SBForm.find('div.wpsms-sendSmsForm__overlay');
+    setSendSmsBlockFields: function (SBForm) {
+        SBSubscriberGroup = SBForm.find('input[name=subscriberGroup]');
+        SBSubmit = SBForm.find('input[type=submit]');
+        SBMessage = SBForm.find('textarea.wpsms-sendSmsForm__messageField');
+        SBReceiver = SBForm.find('input[name=receiver]');
+        SBPhoneNumber = SBForm.find('input.wpsms-sendSmsForm__receiverField');
+        SBMessageAlert = SBForm.find('p.wpsms-sendSmsForm__messageField__alert');
+        SBResult = SBForm.find('div.wpsms-sendSmsForm__resultMessage');
+        SBOverlay = SBForm.find('div.wpsms-sendSmsForm__overlay');
+        SBMaxCount = SBMessage.data('max');
+
+        let elements = {SBSubscriberGroup, SBSubmit, SBMessage, SBReceiver, SBPhoneNumber, SBMessageAlert, SBResult, SBOverlay, SBMaxCount};
+        this.setSendSmsBlockEventListeners(elements);
     },
 
-    setSendSmsBlockEventListeners: function () {
-        var self = this;
+    setSendSmsBlockEventListeners: function (elements) {
 
         // Add event listener for send sms
-        this.SBSubmit.on('click', function (event) {
+        jQuery(elements.SBSubmit).on('click', function (event) {
             event.preventDefault();
-
-            if (self.hasReachedMaxCount) {
-                self.SBResult.text(wpsms_ajax_object.exceeded_max_count_text).fadeIn().addClass('failed');
-                return;
-            }
 
             var formData = new FormData();
             formData.append('sender', wpsms_ajax_object.sender);
-            formData.append('recipients', self.SBReceiver.val());
-            formData.append('message', self.SBMessage.val());
-            formData.append('group_ids', self.SBSubscriberGroup.val());
-            formData.append('numbers', self.SBPhoneNumber.val());
-            formData.append('nonce', wpsms_ajax_object.nonce);
+            formData.append('recipients', elements.SBReceiver.val());
+            formData.append('message', elements.SBMessage.val());
+            formData.append('group_ids', elements.SBSubscriberGroup.val());
+            formData.append('numbers', elements.SBPhoneNumber.val());
+            formData.append('maxCount', elements.SBMaxCount);
 
             jQuery.ajax({
                 url: wpsms_ajax_object.front_sms_endpoint_url, method: 'POST', contentType: false, cache: false, processData: false, data: formData,
 
                 beforeSend: function () {
-                    self.SBResult.text('').fadeOut().removeClass('failed success');
-                    self.SBOverlay.fadeIn();
+                    jQuery(elements.SBResult).text('').fadeOut().removeClass('failed success');
+                    jQuery(elements.SBOverlay).fadeIn();
                 }, success: function (data, status, xhr) {
-                    self.SBResult.text(data.data).fadeIn().addClass('success');
-                    self.SBOverlay.fadeOut();
+                    jQuery(elements.SBResult).text(data.data).fadeIn().addClass('success');
+                    jQuery(elements.SBMessage).val('').trigger('input');
+                    jQuery(elements.SBOverlay).fadeOut();
                 }, error: function (data, status, xhr) {
-                    self.SBResult.text(data.responseJSON.data.message).fadeIn().addClass('failed');
-                    self.SBOverlay.fadeOut();
+                    jQuery(elements.SBResult).text(data.responseJSON.data.message).fadeIn().addClass('failed');
+                    jQuery(elements.SBOverlay).fadeOut();
                 }
             });
         });
 
         // Add event listener for max characters
-        this.SBMessage.on('input', function () {
+        jQuery(elements.SBMessage).on('input', function () {
             let currentCharacterCount = jQuery(this).val().length;
-            let maxCharacterCount = jQuery(this).data('max');
-            let remainingCharacterCount = maxCharacterCount - currentCharacterCount;
+            let remainingCharacterCount = elements.SBMaxCount - currentCharacterCount;
 
-            self.hasReachedMaxCount = remainingCharacterCount < 0 ? true : false;
-
-            if (currentCharacterCount >= maxCharacterCount - 5) {
-                self.SBMessageAlert.fadeIn();
-                self.SBMessageAlert.find('span').text(remainingCharacterCount);
+            if (currentCharacterCount >= elements.SBMaxCount - 8) {
+                jQuery(elements.SBMessageAlert).fadeIn();
+                jQuery(elements.SBMessageAlert).find('span').text(remainingCharacterCount);
             } else {
-                self.SBMessageAlert.fadeOut();
+                jQuery(elements.SBMessageAlert).fadeOut();
             }
         });
     },

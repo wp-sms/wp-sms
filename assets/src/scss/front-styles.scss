@@ -43,24 +43,29 @@
     border-radius: 15px;
     background: url("../images/send-sms-background.jpg") no-repeat center center/contain;
     position: relative;
-    box-shadow: 6px 4px 25px rgba(0, 0, 0, 0.03);
 
     .wpsms-sendSmsForm__deactiveBlock__content {
       position: absolute;
       top: 54%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80%;
+      background-color: white;
+      padding: 20px;
+      width: 70%;
+      text-align: center;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 
       h6 {
-        color: #F88E40;
-        font-weight: 600;
+        color: #222;
         text-align: center;
-        font-size: 22px;
+        font-size: 23px;
+        font-weight: 400;
+        line-height: 1.3;
+        margin-bottom: 8px;
       }
 
       p {
-        font-size: 16px;
+        font-size: 13px;
         margin-bottom: 20px;
         color: #222;
         text-align: center;
@@ -72,16 +77,29 @@
         text-align: center;
         text-decoration: none;
         color: white;
-        font-weight: 550;
-        font-size: 15px;
-        border-radius: 8px;
+        font-weight: 600;
         background-color: #F88E40;
-        padding: 12px 10px;
         width: 100%;
         transition: .3s all ease-out;
+        font-size: 14px;
+        line-height: 17px;
+        padding: 15px;
+        border-radius: 2px;
+        border-color: #F88E40;
 
         &:hover {
           background-color: #EF771F;
+        }
+      }
+    }
+
+    @media (max-width: 399px) {
+      .wpsms-sendSmsForm__deactiveBlock__content {
+        padding: 15px;
+        width: 90%;
+
+        a {
+          padding: 10px;
         }
       }
     }

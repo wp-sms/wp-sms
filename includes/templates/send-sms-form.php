@@ -3,9 +3,9 @@
     <?php if (!$visibility): ?>
         <div class="wpsms-sendSmsForm__deactiveBlock">
             <div class="wpsms-sendSmsForm__deactiveBlock__content">
-                <h6><?php _e('Send SMS', 'wp-sms'); ?></h6>
-                <p><?php _e('Upgrade to pro to use this feature!', 'wp-sms'); ?></p>
-                <a target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>"><?php _e('Upgrade and Unlock', 'wp-sms'); ?></a>
+                <h6><?php _e('Send SMS Messages from Your Website', 'wp-sms'); ?></h6>
+                <p><?php _e('Give your website visitors the power to send SMS messages directly from your site.', 'wp-sms'); ?></p>
+                <a target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>"><?php _e('Upgrade to WP SMS Pro', 'wp-sms'); ?></a>
             </div>
         </div>
     <?php else: ?>

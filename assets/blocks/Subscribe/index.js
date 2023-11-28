@@ -145,7 +145,7 @@ module.exports = window["wp"]["i18n"];
   \************************************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp-sms-blocks/subscribe","title":"Subscribe","category":"wp-sms-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","attributes":{"title":{"type":"string"},"description":{"type":"string"}},"example":{"attributes":{"title":"Subscribe","description":"Be the first one to get new offers."}}}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp-sms-blocks/subscribe","title":"Subscribe","category":"wp-sms-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","attributes":{"title":{"type":"string"},"description":{"type":"string"}},"example":{"attributes":{"title":"Subscribe","description":"SMS newsletter form"}}}');
 
 /***/ })
 
