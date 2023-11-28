@@ -50,7 +50,7 @@ class OrderViewManager
      */
     public function registerMetaBoxes($post_type)
     {
-        $screenId = \wc_get_page_screen_id('shop-order');
+        $screenId = wc_get_page_screen_id('shop-order');
 
         if ($post_type == $screenId) {
             add_meta_box('wpsms-woocommerceSendSMS', __('Send SMS', 'wp-sms'), [$this, 'renderSendSmsMetaBox'], $screenId, 'side', 'core');
