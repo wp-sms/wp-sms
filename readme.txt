@@ -155,6 +155,30 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
 
+= What is the integrations of the WP SMS? =
+WP SMS also integrated with some of the popular WordPress plugins.[See the integrations here](https://wp-sms-pro.com/integrations/)
+
+= Does plugin support Scheduling SMS? =
+Yes. You can schedule SMS sending on the Send SMS page.
+
+= Does the plugin support MMS as well? =
+Yes. However to use MMS you need to make sure that the gateway you are using supports MMS.
+
+= Can I have two-way communication with a customer? =
+With [WP SMS Two-Way Add-on](https://wp-sms-pro.com/product/wp-sms-two-way/) you can both send and receive SMS with 7 gateways.
+
+= Can I try the plugin for free? =
+You can see the features which WP SMS Pro provides on the [Demo Website](https://demo.wp-sms-pro.com/wp-login.php).
+
+= How many SMS can I send? =
+The WP SMS plugin does not have any limitations for sending SMS even on the characters. This only depends on limitations of the gateway you use. 
+
+= Can I send a text message under my company’s name? =
+SMS can be sent with any number or name you set on your gateway.
+
+= Can I use shortcodes in WP SMS? =
+You can use shortcodes for [SMS Subscriber Form](https://wp-sms-pro.com/resources/add-sms-subscriber-form/).
+
 = Is the plugin compatible with PHP v8? =
 Yes! WP SMS is compatible with PHP version v5.6 up to v8.2
 
