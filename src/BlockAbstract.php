@@ -4,9 +4,8 @@ namespace WP_SMS\Blocks;
 
 use WP_Block;
 use WP_SMS\Helper;
-use WP_SMS\Newsletter;
 
-class BlockAbstract
+abstract class BlockAbstract
 {
     /**
      * Whether block name
@@ -16,16 +15,9 @@ class BlockAbstract
     protected $blockName;
 
     /**
-     * Widget class name
-     *
-     * @var $widgetClassName
-     */
-    protected $widgetClassName;
-
-    /**
      * Front-end script
      *
-     * @var bool $script
+     * @var string $script
      */
     protected $script = false;
 
@@ -54,8 +46,8 @@ class BlockAbstract
          * Enqueue the script and data
          */
         if ($this->script) {
-            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->buildBlockAjaxData());
             wp_enqueue_script("wpSms{$this->blockName}BlockData");
+            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->buildBlockAjaxData());
         }
     }
 
@@ -70,4 +62,22 @@ class BlockAbstract
     {
         return $this->output($attributes);
     }
+
+    /**
+     * Build the Ajax data for the block.
+     *
+     * This method should be implemented in the child class.
+     *
+     * @return array An array containing the Ajax data for the block.
+     */
+    abstract public function buildBlockAjaxData();
+
+    /**
+     * Build the block attributes
+     *
+     * This method must be implemented by the child classes to build and return the block attributes.
+     *
+     * @return array The block attributes
+     */
+    abstract function buildBlockAttributes($config);
 }

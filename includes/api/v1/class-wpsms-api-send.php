@@ -84,8 +84,8 @@ class SendSmsApi extends \WP_SMS\RestApi
     {
         try {
             $recipientNumbers = $this->getRecipientsFromRequest($request);
+            $mediaUrls        = [];
 
-            $mediaUrls = [];
             if ($request->get_param('media_urls') and is_array($request->get_param('media_urls'))) {
                 $mediaUrls = array_filter($request->get_param('media_urls'));
             }
