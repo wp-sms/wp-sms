@@ -46,7 +46,10 @@
                 <th scope="row"><label for="wpcf7-sms-message"><?php _e('Message body', 'wp-sms'); ?>:</label></th>
                 <td>
                     <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms[message]" id="wpcf7-sms-message"><?php echo $cf7_options['message'] ?? ''; ?></textarea>
-                    <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: %your-name% %_post_title%', 'wp-sms'); ?></p>
+                    <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
+                        <?php _e('You can also use the following contact form 7 tags in the message body:', 'wp-sms'); ?>
+                        <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>
+                    </p>
                 </td>
             </tr>
         </table>
@@ -59,7 +62,7 @@
                 </th>
                 <td>
                     <input type="text" value="<?php echo $cf7_options_field['phone'] ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms-form[phone]" id="wpcf7-sms-sender-form">
-                    <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: %your-mobile%', 'wp-sms'); ?></p>
+                    <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?></p>
                 </td>
             </tr>
 
@@ -68,7 +71,10 @@
                 </th>
                 <td>
                     <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms-form[message]" id="wpcf7-sms-message-form"><?php echo $cf7_options_field['message'] ?? ''; ?></textarea>
-                    <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: %your-name% %_post_title%', 'wp-sms'); ?></p>
+                    <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
+                        <?php _e('You can also use the following contact form 7 tags in the message body:', 'wp-sms'); ?>
+                        <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>
+                    </p>
                 </td>
             </tr>
             </tbody>
