@@ -17,7 +17,7 @@
   "example": {
     "attributes": {
       "title": "Send SMS",
-      "description": "Send SMS message for visitors"
+      "description": "Please use this form for sending SMS"
     }
   }
 }

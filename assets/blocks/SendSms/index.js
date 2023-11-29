@@ -207,7 +207,7 @@ module.exports = window["wp"]["i18n"];
   \**********************************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp-sms-blocks/send-sms","title":"Send SMS","category":"wp-sms-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","attributes":{"title":{"type":"string"},"description":{"type":"string"}},"example":{"attributes":{"title":"Send SMS","description":"Send SMS message for visitors"}}}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"wp-sms-blocks/send-sms","title":"Send SMS","category":"wp-sms-blocks","editorScript":"file:./index.js","editorStyle":"file:./index.css","attributes":{"title":{"type":"string"},"description":{"type":"string"}},"example":{"attributes":{"title":"Send SMS","description":"Please use this form for sending SMS"}}}');
 
 /***/ })
 

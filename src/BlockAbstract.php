@@ -44,32 +44,10 @@ class BlockAbstract
         $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
 
         // Define a base config for all blocks.
-        $baseConfig = [
-            'render_callback' => [$this, 'renderCallback'],
-        ];
-
-        // Define additional attributes for the SendSms block.
-        $sendSmsAttributes = [
-            'attributes' => [
-                'title'           => ['type' => 'string', 'default' => ''],
-                'description'     => ['type' => 'string', 'default' => ''],
-                'onlyLoggedUsers' => ['type' => 'boolean', 'default' => false],
-                'userRole'        => ['type' => 'string', 'default' => 'all'],
-                'maxCharacters'   => ['type' => 'number', 'default' => 60],
-                'receiver'        => ['type' => 'string', 'default' => 'admin'],
-                'subscriberGroup' => ['type' => 'string', 'default' => '']
-            ],
-        ];
-
-        // Check if the block is the SendSms block.
-        if (strpos($this->blockName, 'SendSms') !== false) {
-            // Merge the base config with the SendSms-specific attributes.
-            $config = array_merge($baseConfig, $sendSmsAttributes);
-        } else {
-            // Use the base config for blocks without specific attributes.
-            $config = $baseConfig;
+        $config = ['render_callback' => [$this, 'renderCallback']];
+        if (method_exists($this, 'buildBlockAttributes')) {
+            $config = $this->buildBlockAttributes($config);
         }
-
         register_block_type($blockPath, $config);
 
         /**
