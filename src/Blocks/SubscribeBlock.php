@@ -3,9 +3,6 @@
 namespace WP_SMS\Blocks;
 
 use WP_SMS;
-use WP_SMS\Option;
-use WP_SMS\Newsletter;
-use WP_SMS\Helper;
 
 class SubscribeBlock extends BlockAbstract
 {
@@ -15,5 +12,14 @@ class SubscribeBlock extends BlockAbstract
     protected function output($attributes)
     {
         return wp_sms_subscriber_form($attributes);
+    }
+
+    public function buildBlockAjaxData()
+    {
+    }
+
+    public function buildBlockAttributes($baseConfig)
+    {
+        return $baseConfig;
     }
 }

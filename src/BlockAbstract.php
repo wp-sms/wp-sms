@@ -36,10 +36,9 @@ abstract class BlockAbstract
         $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
 
         // Define a base config for all blocks.
-        $config = ['render_callback' => [$this, 'renderCallback']];
-        if (method_exists($this, 'buildBlockAttributes')) {
-            $config = $this->buildBlockAttributes($config);
-        }
+        $baseConfig = ['render_callback' => [$this, 'renderCallback']];
+        $config     = $this->buildBlockAttributes($baseConfig);
+
         register_block_type($blockPath, $config);
 
         /**
