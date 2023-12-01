@@ -12,7 +12,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 == Description ==
-This plugin adds the ability to send SMS to your WordPress through more than 250 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+This plugin adds the ability to send SMS to your WordPress through more than 300 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
 With this plugin, you can also send SMS/MMS notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
@@ -88,53 +88,7 @@ If you need more information, please [click here](https://wp-sms-pro.com/resourc
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
-You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are some of popular gateways:
-
-* Twilio.com
-* Plivo.com
-* Clickatell.com
-* Bulksms.com
-* Infobip.com
-* Vonage.com (Nexmo)
-* Clockworksms.com
-* Messagebird.com
-* Clicksend.com
-* Octopush.com
-* BulkGate.com
-* WhatsApp Business API
-* Sms.to
-* Mitto.ch
-* Smsapi.com
-* Dsms.in
-* Esms.vn
-* Slinteractive.com.au
-* Reach-interactive.com
-* Msg91.com
-* Msg360.in
-* Isms.com.my
-* Sms4marketing.it
-* Magicdeal4u.com
-* Alfa-cell.com
-* Moceansms.com
-* Global-voice.net
-* Livesms.eu
-* Ozioma.net
-* Pswin.com
-* Ra.sa
-* Smsfactor.com
-* Textmarketer.co.uk
-* Smslive247.com
-* Sendsms247.com
-* Ssdindia.com
-* Viensms.com
-* Vsms.club
-* Websms.at
-* Smstrade.de
-* Bulksmshyderabad.co.in
-* Yamamah.com
-* Cellsynt.net
-* Cmtelecom.com
-* Zain.im
+You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways).
 
 = What are the differences between Free and Pro Pack versions? =
 * Login, Register, 2FA and OTP with SMS
