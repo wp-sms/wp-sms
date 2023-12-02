@@ -25,14 +25,14 @@
         <form>
             <div class="wpsms-sendSmsForm__fieldContainer">
                 <label><?php _e('Message', 'wp-sms'); ?></label>
-                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php _e('write your message content...', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php _e('Write your message content...', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
                 <p class="wpsms-sendSmsForm__messageField__alert"><?php _e('Max remaining characters: ', 'wp-sms'); ?><span></span></p>
             </div>
 
             <?php if ($attributes['receiver'] == 'numbers'): ?>
                 <div class="wpsms-sendSmsForm__fieldContainer">
                     <label><?php _e('Receiver', 'wp-sms'); ?></label>
-                    <input type="tel" placeholder="<?php _e('write your message content...', 'wp-sms'); ?>" class="wpsms-sendSmsForm__receiverField"/>
+                    <?php wp_sms_render_mobile_field(['class' => ['wpsms-sendSmsForm__receiverField']]); ?>
                 </div>
             <?php endif; ?>
 
