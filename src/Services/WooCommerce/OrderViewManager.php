@@ -23,12 +23,14 @@ class OrderViewManager
             return;
         }
         global $sms;
-        $nonce = wp_create_nonce('wp_rest');
+
+        $nonce    = wp_create_nonce('wp_rest');
+        $order_id = 0;
 
         // Backward compatibility with new custom WooCommerce order table.
-        if (isset($_GET['page']) && $_GET['page'] == 'wc-orders') {
+        if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['id'])) {
             $order_id = sanitize_text_field($_GET['id']);
-        } else {
+        } elseif (isset($_GET['post']) && $_GET['post']) {
             $order_id = sanitize_text_field($_GET['post']);
         }
 
