@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.5
+Stable tag: 6.4.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,8 +218,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.5 - 02.12.2023 =
-* Addition: New Send SMS Gutenberg block for websites. [Read more](https://wp-sms-pro.com/24549/wp-sms-v6-5-new-send-sms-feature-in-gutenberg-block/)
+= v6.4.2 - 03.12.2023 =
 * Addition: New SMS gateways, including SmsBuddy.
 * Addition: Contact Form 7 tags now supported for SMS notifications.
 * Improvement: Updated EasySendSms gateway.
