@@ -38,6 +38,7 @@ Main plugin's features
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7
 * Integration with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
+* Providing a widget/Gutenberg block/Shortcode for showing Send SMS form in website
 * Providing a widget/Gutenberg block/Shortcode for displaying an SMS newsletter form
 * Supporting Webhooks
 * Supporting WP REST API
