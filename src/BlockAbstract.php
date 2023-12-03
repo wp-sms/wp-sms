@@ -5,7 +5,7 @@ namespace WP_SMS\Blocks;
 use WP_Block;
 use WP_SMS\Helper;
 
-class BlockAbstract
+abstract class BlockAbstract
 {
     /**
      * Whether block name
@@ -15,16 +15,9 @@ class BlockAbstract
     protected $blockName;
 
     /**
-     * Widget class name
-     *
-     * @var $widgetClassName
-     */
-    protected $widgetClassName;
-
-    /**
      * Front-end script
      *
-     * @var bool $script
+     * @var string $script
      */
     protected $script = false;
 
@@ -42,12 +35,23 @@ class BlockAbstract
     {
         $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
 
-        register_block_type($blockPath, array(
-            'render_callback' => [$this, 'renderCallback'],
-        ));
+        // Define a base config for all blocks.
+        $baseConfig = ['render_callback' => [$this, 'renderCallback']];
+        $config     = $this->buildBlockAttributes($baseConfig);
+
+        register_block_type($blockPath, $config);
+
+        /**
+         * Enqueue the script and data
+         */
+        if ($this->script) {
+            wp_enqueue_script("wpSms{$this->blockName}BlockData");
+            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->buildBlockAjaxData());
+        }
     }
 
     /**
+     * Render the output
      * @param $attributes
      * @param $content
      * @param WP_Block $block
@@ -55,24 +59,24 @@ class BlockAbstract
      */
     public function renderCallback($attributes, $content, $block)
     {
-        /**
-         * Enqueue the script and data
-         */
-        if ($this->script) {
-            wp_enqueue_script("wp-sms-blocks-subscribe", Helper::getPluginAssetUrl($this->script), ['jquery'], $this->blockVersion, true);
-        }
-
-        wp_localize_script(
-            "wp-sms-blocks-{$this->blockName}",
-            'pluginAssetsUrl',
-            [
-                'imagesFolder' => Helper::getPluginAssetUrl("images/"),
-            ]
-        );
-
-        /**
-         * Render the output
-         */
         return $this->output($attributes);
     }
+
+    /**
+     * Build the Ajax data for the block.
+     *
+     * This method should be implemented in the child class.
+     *
+     * @return array An array containing the Ajax data for the block.
+     */
+    abstract public function buildBlockAjaxData();
+
+    /**
+     * Build the block attributes
+     *
+     * This method must be implemented by the child classes to build and return the block attributes.
+     *
+     * @return array The block attributes
+     */
+    abstract function buildBlockAttributes($config);
 }

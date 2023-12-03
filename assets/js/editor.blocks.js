@@ -115,7 +115,7 @@ eval("module.exports = __webpack_require__.p + \"css/admin.css\";\n\n//# sourceU
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("module.exports = __webpack_require__.p + \"css/subscribe.css\";\n\n//# sourceURL=webpack:///./assets/src/scss/subscribe.scss?");
+eval("module.exports = __webpack_require__.p + \"css/front-styles.css\";\n\n//# sourceURL=webpack:///./assets/src/scss/subscribe.scss?");
 
 /***/ }),
 

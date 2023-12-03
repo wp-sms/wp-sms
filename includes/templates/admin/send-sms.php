@@ -12,9 +12,11 @@
         </div>
 
         <div class="sendsms-header">
-            <div class="budget"><span class="icon"></span>
-                <p><?php echo __('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo $gatewayCredit; ?></span></p>
-            </div>
+            <?php if ($gatewayCredit): ?>
+                <div class="budget"><span class="icon"></span>
+                    <p><?php echo __('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo $gatewayCredit; ?></span></p>
+                </div>
+            <?php endif; ?>
             <a style="<?php echo $proIsActive ? 'display:none;' : '' ?>" target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>" class="pro-button '' ?> "><?php _e('Go Pro', 'wp-sms'); ?><span class="icon"></span></a>
         </div>
 

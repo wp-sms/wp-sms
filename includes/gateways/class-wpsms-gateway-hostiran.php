@@ -83,7 +83,7 @@ class hostiran extends \WP_SMS\Gateway
                 'headers' => [
                     'token' => $this->has_key
                 ],
-                'body'   => [
+                'body'    => [
                     'username' => $this->username,
                     'password' => $this->password,
                     'to'       => implode(',', $this->to),
@@ -131,7 +131,7 @@ class hostiran extends \WP_SMS\Gateway
                 'headers' => [
                     'token' => $this->has_key
                 ],
-                'body'   => [
+                'body'    => [
                     'username' => $this->username,
                     'password' => $this->password
                 ]
@@ -143,7 +143,8 @@ class hostiran extends \WP_SMS\Gateway
                 throw new Exception($response->StrRetStatus);
             }
 
-            return $response;
+            $credit = $response->Value;
+            return $credit;
 
         } catch (Exception $e) {
             return new WP_Error('account-credit', $e->getMessage());

@@ -5,7 +5,8 @@ namespace WP_SMS\Blocks;
 class BlockAssetsManager
 {
     private $blocks = [
-        \WP_SMS\Blocks\SubscribeBlock::class
+        \WP_SMS\Blocks\SubscribeBlock::class,
+        \WP_SMS\Blocks\SendSmsBlock::class
     ];
 
     public function init()

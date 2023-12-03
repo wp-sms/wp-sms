@@ -5,14 +5,14 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.4.1
+Stable tag: 6.4.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
 == Description ==
-This plugin adds the ability to send SMS to your WordPress through more than 250 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
+This plugin adds the ability to send SMS to your WordPress through more than 300 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
 
 With this plugin, you can also send SMS/MMS notifications to your subscribers, users, and WooCommerce customers about their orders, new posts, products, and more.
 
@@ -38,6 +38,7 @@ Main plugin's features
  * When users are registered to subscribe in forms
 * Integration with Contact Form 7
 * Integration with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
+* Providing a widget/Gutenberg block/Shortcode for showing Send SMS form in website
 * Providing a widget/Gutenberg block/Shortcode for displaying an SMS newsletter form
 * Supporting Webhooks
 * Supporting WP REST API
@@ -88,53 +89,7 @@ If you need more information, please [click here](https://wp-sms-pro.com/resourc
 
 == Frequently Asked Questions ==
 = What gateways are supported in the plugin? =
-You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways). More gateways are supported in the Pro. The followings are some of popular gateways:
-
-* Twilio.com
-* Plivo.com
-* Clickatell.com
-* Bulksms.com
-* Infobip.com
-* Vonage.com (Nexmo)
-* Clockworksms.com
-* Messagebird.com
-* Clicksend.com
-* Octopush.com
-* BulkGate.com
-* WhatsApp Business API
-* Sms.to
-* Mitto.ch
-* Smsapi.com
-* Dsms.in
-* Esms.vn
-* Slinteractive.com.au
-* Reach-interactive.com
-* Msg91.com
-* Msg360.in
-* Isms.com.my
-* Sms4marketing.it
-* Magicdeal4u.com
-* Alfa-cell.com
-* Moceansms.com
-* Global-voice.net
-* Livesms.eu
-* Ozioma.net
-* Pswin.com
-* Ra.sa
-* Smsfactor.com
-* Textmarketer.co.uk
-* Smslive247.com
-* Sendsms247.com
-* Ssdindia.com
-* Viensms.com
-* Vsms.club
-* Websms.at
-* Smstrade.de
-* Bulksmshyderabad.co.in
-* Yamamah.com
-* Cellsynt.net
-* Cmtelecom.com
-* Zain.im
+You can see the list of all supported gateways [through this link](https://wp-sms-pro.com/gateways).
 
 = What are the differences between Free and Pro Pack versions? =
 * Login, Register, 2FA and OTP with SMS
@@ -154,6 +109,30 @@ You can see the list of all supported gateways [through this link](https://wp-sm
 
 = How to buy? =
 You can buy the Pro pack version [through this link](http://wp-sms-pro.com/buy/)
+
+= What is the integrations of the WP SMS? =
+WP SMS also integrated with some of the popular WordPress plugins.[See the integrations here](https://wp-sms-pro.com/integrations/)
+
+= Does plugin support Scheduling SMS? =
+Yes. You can schedule SMS sending on the Send SMS page.
+
+= Does the plugin support MMS as well? =
+Yes. However to use MMS you need to make sure that the gateway you are using supports MMS.
+
+= Can I have two-way communication with a customer? =
+With [WP SMS Two-Way Add-on](https://wp-sms-pro.com/product/wp-sms-two-way/) you can both send and receive SMS with 7 gateways.
+
+= Can I try the plugin for free? =
+You can see the features which WP SMS Pro provides on the [Demo Website](https://demo.wp-sms-pro.com/wp-login.php).
+
+= How many SMS can I send? =
+The WP SMS plugin does not have any limitations for sending SMS even on the characters. This only depends on limitations of the gateway you use. 
+
+= Can I send a text message under my company’s name? =
+SMS can be sent with any number or name you set on your gateway.
+
+= Can I use shortcodes in WP SMS? =
+You can use shortcodes for [SMS Subscriber Form](https://wp-sms-pro.com/resources/add-sms-subscriber-form/).
 
 = Is the plugin compatible with PHP v8? =
 Yes! WP SMS is compatible with PHP version v5.6 up to v8.2
@@ -239,6 +218,15 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.4.2 - 03.12.2023 =
+* Addition: Contact Form 7 tags now supported for SMS notifications.
+* Improvement: Updated EasySendSms gateway.
+* Improvement: System performance enhancements.
+* Fixes: Fixed `array_filter` bug on WooCommerce order page and improved backward compatibility.
+* Fixes: Resolved SMS credit display issue on Send SMS page.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.4.1 - 19.11.2023 =
 * Fixes: WooCommerce order page issues & send sms in note metabox
 * Improvement: Add possibility to remove duplicate numbers
@@ -258,8 +246,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Fixes: Fixed a bug related to selecting multiple roles for sending SMS.
 * Fixes: Addressed notice styles and RTL issues for a more consistent visual experience.
 * Fixes: Resolved the issue of sending the SMS report even when the corresponding option is disabled.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.3.4 - 17.10.2023 =
 * Improvement: Backward compatibility with new custom WooCommerce order table and HPOS.
