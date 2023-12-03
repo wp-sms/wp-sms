@@ -219,7 +219,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 == Changelog ==
 = v6.4.2 - 03.12.2023 =
-* Addition: New SMS gateways, including SmsBuddy.
 * Addition: Contact Form 7 tags now supported for SMS notifications.
 * Improvement: Updated EasySendSms gateway.
 * Improvement: System performance enhancements.
