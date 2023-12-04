@@ -1098,14 +1098,15 @@ class Gateway
      * @param string $url The URL of the remote resource.
      * @param array $arguments Any additional arguments to be passed to the request.
      * @param array $params Any additional parameters to be passed to the request.
+     * @param string $receiverNumber The phone number of the receiver
      * @return void
      */
-    protected function requestQueue($method, $url, $arguments = [], $params = [])
+    protected function requestQueue($method, $url, $arguments = [], $params = [], $receiverNumber)
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return BackgroundProcessFactory::remoteRequestAsync()
-            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $this->to])
+        return BackgroundProcessFactory::remoteRequestQueue()
+            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $receiverNumber])
             ->save()
             ->dispatch();
     }
