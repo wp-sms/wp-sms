@@ -203,7 +203,8 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 13. Settings: Advanced
 14. Settings: OTP & 2FA
 15. Settings: WooCommerce
-10. Email Notification: SMS Stats
+16. Email Notification: SMS Stats
+17. Send SMS form (Gutenberg block)
 
 == Upgrade Notice ==
 = v6.1 =
