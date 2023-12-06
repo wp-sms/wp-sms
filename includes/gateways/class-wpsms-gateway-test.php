@@ -59,34 +59,15 @@ class test extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
+//        foreach ($this->to as $number) {
+//            $this->requestQueue('GET', 'http://localhost/endpoint', ['text' => 'hi there', 'to' => [$number]]);
+//        }
 
-        try {
+        $this->requestAsync('GET', 'http://localhost/endpoint', ['foo' => 'bar']);
 
-            $response = [
-                'messageId' => rand(111111, 999999),
-                'message'   => $this->msg,
-                'status'    => 'Success',
-            ];
-
-            //log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
-
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $response);
-
-            return $response;
-
-        } catch (Exception $e) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-
-            return new WP_Error('send-sms', $e->getMessage());
-        }
+        add_filter('wp_sms_send_async_sms', function () {
+            return true;
+        });
     }
 
     public function GetCredit()

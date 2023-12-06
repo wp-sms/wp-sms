@@ -3,7 +3,6 @@
 namespace WP_SMS;
 
 use Exception;
-use WP_SMS\BackgroundProcess\BackgroundProcessFactory;
 use WP_SMS\Utils\Logger;
 use WP_SMS\Utils\RemoteRequest;
 use WP_SMS\Utils\Request;
@@ -1086,7 +1085,7 @@ class Gateway
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return BackgroundProcessFactory::remoteRequestAsync()
+        return WPSms()->getRemoteRequestAsync()
             ->data(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $this->to])
             ->dispatch();
     }
@@ -1101,12 +1100,12 @@ class Gateway
      * @param string $receiverNumber The phone number of the receiver
      * @return void
      */
-    protected function requestQueue($method, $url, $arguments = [], $params = [], $receiverNumber)
+    protected function requestQueue($method, $url, $arguments = [], $params = [])
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return BackgroundProcessFactory::remoteRequestQueue()
-            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $receiverNumber])
+        return WPSms()->getRemoteRequestQueue()
+            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $arguments['to']])
             ->save()
             ->dispatch();
     }

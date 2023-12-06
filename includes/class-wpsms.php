@@ -56,6 +56,13 @@ class WP_SMS
         add_action('init', array($this, 'load_textdomain'));
 
         $this->includes();
+        $this->setCronJobs();
+    }
+
+    private function setCronJobs()
+    {
+        $this->remoteRequestAsync = new \WP_SMS\BackgroundProcess\Async\RemoteRequestAsync();
+        $this->remoteRequestQueue = new \WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue();
     }
 
     /**
@@ -120,7 +127,6 @@ class WP_SMS
         });
 
         // Background Processing
-        $this->include('src/BackgroundProcess/BackgroundProcessFactory.php');
         $this->include('src/BackgroundProcess/Async/RemoteRequestAsync.php');
         $this->include('src/BackgroundProcess/Queues/RemoteRequestQueue.php');
 
@@ -272,5 +278,15 @@ class WP_SMS
     public function notice()
     {
         return \WP_SMS\Notice\NoticeManager::getInstance();
+    }
+
+    public function getRemoteRequestAsync()
+    {
+        return $this->remoteRequestAsync;
+    }
+
+    public function getRemoteRequestQueue()
+    {
+        return $this->remoteRequestQueue;
     }
 }

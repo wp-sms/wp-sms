@@ -41,7 +41,7 @@ class RemoteRequestQueue extends WP_Background_Process
             $response = $request->execute();
 
             // log the response
-            Logger::logOutbox($item['from'], $item['msg'], $item['to'], $response);
+            Logger::logOutbox($item['from'], $item['msg'], $item['to'], $response, 'success');
 
             /**
              * Run hook after send sms.

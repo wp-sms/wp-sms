@@ -4,15 +4,6 @@ namespace WP_SMS\Utils;
 
 class Logger
 {
-    public static $db;
-
-    public function __construct()
-    {
-        global $wpdb;
-
-        self::$db = $wpdb;
-    }
-
     /**
      * @param $sender
      * @param $message
@@ -22,7 +13,7 @@ class Logger
      * @param $media
      * @return bool|int|\mysqli_result|resource|null
      */
-    public static function logOutbox($sender, $message, $to, $response, $status, $media = array())
+    public static function logOutbox($sender, $message, $to, $response, $status = 'success', $media = array())
     {
         /**
          * Backward compatibility
@@ -32,7 +23,8 @@ class Logger
             $sender = substr($sender, 0, 20);
         }
 
-        $result = self::$db->insert(self::$db->prefix . "sms_send", array(
+        global $wpdb;
+        $result = $wpdb->insert($wpdb->prefix . "sms_send", array(
             'date'      => WP_SMS_CURRENT_DATE,
             'sender'    => $sender,
             'message'   => $message,
