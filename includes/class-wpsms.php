@@ -1,6 +1,8 @@
 <?php
 
 use WP_SMS\Admin\Widget\WidgetsManager;
+use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
+use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -15,6 +17,16 @@ class WP_SMS
      * @type object
      */
     protected static $instance = null;
+
+    /**
+     * @var RemoteRequestAsync $remoteRequestAsync
+     */
+    private $remoteRequestAsync;
+
+    /**
+     * @var RemoteRequestQueue $remoteRequestQueue
+     */
+    private $remoteRequestQueue;
 
     public function __construct()
     {
@@ -56,13 +68,13 @@ class WP_SMS
         add_action('init', array($this, 'load_textdomain'));
 
         $this->includes();
-        $this->setCronJobs();
+        $this->setupBackgroundProcess();
     }
 
-    private function setCronJobs()
+    private function setupBackgroundProcess()
     {
-        $this->remoteRequestAsync = new \WP_SMS\BackgroundProcess\Async\RemoteRequestAsync();
-        $this->remoteRequestQueue = new \WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue();
+        $this->remoteRequestAsync = new RemoteRequestAsync();
+        $this->remoteRequestQueue = new RemoteRequestQueue();
     }
 
     /**
