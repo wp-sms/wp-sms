@@ -484,7 +484,7 @@ function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = []
         $sms->from = $from;
     }
 
-    return $sms->SendSMS();
+    return $sms->handleTest();
 }
 
 /**

@@ -1054,6 +1054,27 @@ class Gateway
         return $to;
     }
 
+    protected function handleRequest($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
+    {
+        $requestType = $this->options['']; // todo
+
+        switch ($requestType) {
+            case 'immediate-send':
+                $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
+                break;
+
+            case 'async-request':
+                $this->requestAsync($method, $url, $arguments, $params);
+                break;
+
+            case 'background-queue':
+                foreach ($this->to as $number) { // todo
+                    $this->requestQueue($method, $url, $arguments, $params, $number);
+                }
+                break;
+        }
+    }
+
     /**
      * Executes a remote HTTP request.
      *
@@ -1108,12 +1129,12 @@ class Gateway
      * @param string $receiverNumber The phone number of the receiver
      * @return void
      */
-    protected function requestQueue($method, $url, $arguments = [], $params = [])
+    protected function requestQueue($method, $url, $arguments = [], $params = [], $receiverNumber)
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
         return WPSms()->getRemoteRequestQueue()
-            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $arguments['to']])
+            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $receiverNumber])
             ->save()
             ->dispatch();
     }

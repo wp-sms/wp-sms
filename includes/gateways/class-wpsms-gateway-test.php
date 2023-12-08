@@ -59,11 +59,11 @@ class test extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-//        foreach ($this->to as $number) {
-//            $this->requestQueue('GET', 'http://localhost/endpoint', ['text' => 'hi there', 'to' => [$number]]);
-//        }
-
-        $this->requestAsync('GET', 'http://localhost/endpoint', ['foo' => 'bar']);
+        $this->handleRequest('GET', 'http://localhost/endpoint', [
+            'from'    => $this->from,
+            'to'      => $this->to,
+            'message' => $this->msg,
+        ]);
 
         // Not good solution. should be remove.
         add_filter('wp_sms_send_async_sms', function () {
