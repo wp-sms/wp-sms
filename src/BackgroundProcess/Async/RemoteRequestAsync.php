@@ -29,13 +29,21 @@ class RemoteRequestAsync extends WP_Async_Request
     {
         try {
 
-            /** @var RemoteRequest $request */
-            $request = unserialize($_POST['request']);
+            // Get data from input
+            $requestData = $_POST['requestData'];
+
+            // Make remote request
+            $request = new RemoteRequest(
+                sanitize_text_field($requestData['method']),
+                sanitize_url($requestData['url']),
+                isset($requestData['arguments']) ? wp_sms_sanitize_array($requestData['arguments']) : [],
+                isset($requestData['params']) ? wp_sms_sanitize_array($requestData['params']) : []
+            );
 
             $response = $request->execute();
 
             // log the response
-            Logger::logOutbox($_POST['from'], $_POST['msg'], $_POST['to'], $response, 'success');
+            Logger::logOutbox($_POST['from'], $_POST['msg'], $_POST['to'], $response);
 
             /**
              * Run hook after send sms.

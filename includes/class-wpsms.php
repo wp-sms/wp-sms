@@ -292,11 +292,17 @@ class WP_SMS
         return \WP_SMS\Notice\NoticeManager::getInstance();
     }
 
+    /**
+     * @return RemoteRequestAsync
+     */
     public function getRemoteRequestAsync()
     {
         return $this->remoteRequestAsync;
     }
 
+    /**
+     * @return RemoteRequestQueue
+     */
     public function getRemoteRequestQueue()
     {
         return $this->remoteRequestQueue;

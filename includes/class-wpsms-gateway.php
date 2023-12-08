@@ -1083,10 +1083,18 @@ class Gateway
      */
     protected function requestAsync($method, $url, $arguments = [], $params = [])
     {
-        $request = new RemoteRequest($method, $url, $arguments, $params);
-
         return WPSms()->getRemoteRequestAsync()
-            ->data(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $this->to])
+            ->data([
+                'requestData' => [
+                    'method'    => $method,
+                    'url'       => $url,
+                    'arguments' => $arguments,
+                    'params'    => $params,
+                ],
+                'from'        => $this->from,
+                'msg'         => $this->msg,
+                'to'          => $this->to
+            ])
             ->dispatch();
     }
 

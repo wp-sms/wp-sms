@@ -65,6 +65,7 @@ class test extends \WP_SMS\Gateway
 
         $this->requestAsync('GET', 'http://localhost/endpoint', ['foo' => 'bar']);
 
+        // Not good solution. should be remove.
         add_filter('wp_sms_send_async_sms', function () {
             return true;
         });
