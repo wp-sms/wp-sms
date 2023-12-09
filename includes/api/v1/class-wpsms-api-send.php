@@ -160,7 +160,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception($response->get_error_message());
             }
 
-            $response = apply_filters('wp_sms_send_async_sms', false) ? __('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms') : __('Successfully send SMS!', 'wp-sms');
+            $response = apply_filters('wp_sms_send_sms_response', __('Successfully send SMS!', 'wp-sms'));
             return self::response($response, 200, [
                 'balance' => Gateway::credit()
             ]);

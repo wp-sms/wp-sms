@@ -254,11 +254,18 @@ class Gateway
     public $documentUrl = false;
 
     /**
-     * Whether the bulk is supported.
+     * Whether bulk SMS sending is supported
      *
      * @var bool
      */
     public $bulk_send = true;
+
+    /**
+     * Whether asynchronous SMS sending supported
+     *
+     * @var bool
+     */
+    public $async_support = false;
 
     /**
      * From/Sender ID
@@ -1054,23 +1061,22 @@ class Gateway
         return $to;
     }
 
-    protected function handleRequest($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
+    public function handleRequest($method, $url, $arguments = [], $params = [], $requestType = 'immediate-send', $receiverNumber = [], $throwFailedHttpCodeResponse = true)
     {
-        $requestType = $this->options['']; // todo
-
         switch ($requestType) {
             case 'immediate-send':
                 $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
                 break;
 
             case 'async-request':
-                $this->requestAsync($method, $url, $arguments, $params);
+                $this->requestAsync($method, $url, $arguments, $params, $receiverNumber);
                 break;
 
             case 'background-queue':
-                foreach ($this->to as $number) { // todo
-                    $this->requestQueue($method, $url, $arguments, $params, $number);
-                }
+                $this->requestQueue($method, $url, $arguments, $params, $receiverNumber);
+                add_filter('wp_sms_send_sms_response', function () {
+                    return __('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms');
+                });
                 break;
         }
     }
@@ -1100,9 +1106,10 @@ class Gateway
      * @param string $url The URL of the remote resource.
      * @param array $arguments Any additional arguments to be passed to the request.
      * @param array $params Any additional parameters to be passed to the request.
+     * @param string $receiverNumber The phone number of the receiver
      * @return array|false|Library\BackgroundProcessing\WP_Error
      */
-    protected function requestAsync($method, $url, $arguments = [], $params = [])
+    protected function requestAsync($method, $url, $arguments = [], $params = [], $receiverNumber)
     {
         return WPSms()->getRemoteRequestAsync()
             ->data([
@@ -1114,7 +1121,7 @@ class Gateway
                 ],
                 'from'        => $this->from,
                 'msg'         => $this->msg,
-                'to'          => $this->to
+                'to'          => $receiverNumber
             ])
             ->dispatch();
     }

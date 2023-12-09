@@ -28,6 +28,9 @@ class RemoteRequestAsync extends WP_Async_Request
     protected function handle()
     {
         try {
+            $from = sanitize_text_field($_POST['from']);
+            $msg  = sanitize_text_field($_POST['msg']);
+            $to   = sanitize_text_field($_POST['to']);
 
             // Get data from input
             $requestData = $_POST['requestData'];
@@ -43,7 +46,7 @@ class RemoteRequestAsync extends WP_Async_Request
             $response = $request->execute();
 
             // log the response
-            Logger::logOutbox($_POST['from'], $_POST['msg'], $_POST['to'], $response);
+            Logger::logOutbox($from, $msg, $to, $response);
 
             /**
              * Run hook after send sms.
@@ -55,7 +58,7 @@ class RemoteRequestAsync extends WP_Async_Request
             do_action('wp_sms_send', $response);
 
         } catch (Exception $e) {
-            Logger::logOutbox($_POST['from'], $_POST['msg'], $_POST['to'], $e->getMessage(), 'error');
+            Logger::logOutbox($from, $msg, $to, $e->getMessage(), 'error');
         }
     }
 }

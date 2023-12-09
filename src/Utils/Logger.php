@@ -23,6 +23,10 @@ class Logger
             $sender = substr($sender, 0, 20);
         }
 
+        if (!is_array($to)) {
+            $to = [$to];
+        }
+
         global $wpdb;
         $result = $wpdb->insert($wpdb->prefix . "sms_send", array(
             'date'      => WP_SMS_CURRENT_DATE,

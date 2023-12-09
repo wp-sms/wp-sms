@@ -258,6 +258,7 @@ class Settings
      */
     public function get_registered_settings()
     {
+        global $sms;
         $options = array(
             'enable'  => __('Enable', 'wp-sms'),
             'disable' => __('Disable', 'wp-sms')
@@ -1894,6 +1895,24 @@ class Settings
                 'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms')
             );
         }
+
+        /*
+         * Async SMS sending option
+         */
+        if ($sms->async_support) {
+            $settings['gateway']['async_send_status'] = array(
+                'id'      => 'async_send_status',
+                'name'    => __('SMS Async Sending', 'wp-sms'),
+                'type'    => 'select',
+                'options' => array(
+                    'immediate-send'   => __('Immediate Send: Sends messages as soon as they are created', 'wp-sms'),
+                    'async-request'    => __('Async Send: Send messages in accordance with scheduled synchronization times', 'wp-sms'),
+                    'background-queue' => __('Background Queue: Puts messages in a queue, optimize for bulk SMS', 'wp-sms'),
+                ),
+                'desc'    => __('Please select your preferred method for sending SMS: Immediate Send, Sync Send, or Background Queue. ', 'wp-sms')
+            );
+        }
+
         return $settings;
     }
 

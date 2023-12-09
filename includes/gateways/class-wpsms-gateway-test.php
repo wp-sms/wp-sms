@@ -5,6 +5,7 @@ namespace WP_SMS\Gateway;
 use Exception;
 use WP_Error;
 
+
 class test extends \WP_SMS\Gateway
 {
     private $wsdl_link = '';
@@ -13,9 +14,13 @@ class test extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
+    public $options;
+    public $async_support = true;
 
     public function __construct()
     {
+        $this->options = \WP_SMS\Option::getOptions();
+
         parent::__construct();
         $this->help           = "";
         $this->validateNumber = "09xxxxxxxx";
@@ -59,16 +64,13 @@ class test extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $this->handleRequest('GET', 'http://localhost/endpoint', [
-            'from'    => $this->from,
-            'to'      => $this->to,
-            'message' => $this->msg,
-        ]);
-
-        // Not good solution. should be remove.
-        add_filter('wp_sms_send_async_sms', function () {
-            return true;
-        });
+        foreach ($this->to as $number) {
+            $this->handleRequest('GET', 'http://localhost/endpoint', [
+                'from'    => $this->from,
+                'to'      => $number,
+                'message' => $this->msg,
+            ], [], $this->options['async_send_status'], $number);
+        }
     }
 
     public function GetCredit()
