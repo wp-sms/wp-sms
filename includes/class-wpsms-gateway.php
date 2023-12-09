@@ -1056,26 +1056,26 @@ class Gateway
 
     public function handleRequest($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
     {
-        $requestType = $this->options['async_send_status'];
+        $requestType = Option::getOption('sms_delivery_method');
 
-        switch ($requestType) {
-            case 'async-request':
-                $this->requestAsync($method, $url, $arguments, $params);
-                break;
+        if ($requestType == 'api_async_send') {
 
-            case 'background-queue':
-                foreach ($this->to as $number) {
-                    $this->requestQueue($method, $url, $arguments, $params, $number);
-                }
-                add_filter('wp_sms_send_sms_response', function () {
-                    return __('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms');
-                });
-                break;
+            $this->requestAsync($method, $url, $arguments, $params);
 
-            case 'immediate-send':
-            default:
-                $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
-                break;
+        } elseif ($requestType == 'api_queued_send' or count($this->to) > 10) {
+
+            foreach ($this->to as $number) {
+                $this->requestQueue($method, $url, $arguments, $params, $number);
+            }
+
+            add_filter('wp_sms_send_sms_response', function () {
+                return __('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms');
+            });
+
+        } else {
+
+            $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
+
         }
     }
 

@@ -2,10 +2,6 @@
 
 namespace WP_SMS\Gateway;
 
-use Exception;
-use WP_Error;
-
-
 class test extends \WP_SMS\Gateway
 {
     private $wsdl_link = '';
@@ -68,8 +64,7 @@ class test extends \WP_SMS\Gateway
         ]);
     }
 
-    public
-    function GetCredit()
+    public function GetCredit()
     {
         return '143 USD';
     }
