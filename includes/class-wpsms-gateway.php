@@ -261,13 +261,6 @@ class Gateway
     public $bulk_send = true;
 
     /**
-     * Whether asynchronous SMS sending supported
-     *
-     * @var bool
-     */
-    public $async_support = false;
-
-    /**
      * From/Sender ID
      *
      * @var string
@@ -1061,22 +1054,27 @@ class Gateway
         return $to;
     }
 
-    public function handleRequest($method, $url, $arguments = [], $params = [], $requestType = 'immediate-send', $receiverNumber = [], $throwFailedHttpCodeResponse = true)
+    public function handleRequest($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
     {
-        switch ($requestType) {
-            case 'immediate-send':
-                $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
-                break;
+        $requestType = $this->options['async_send_status'];
 
+        switch ($requestType) {
             case 'async-request':
-                $this->requestAsync($method, $url, $arguments, $params, $receiverNumber);
+                $this->requestAsync($method, $url, $arguments, $params);
                 break;
 
             case 'background-queue':
-                $this->requestQueue($method, $url, $arguments, $params, $receiverNumber);
+                foreach ($this->to as $number) {
+                    $this->requestQueue($method, $url, $arguments, $params, $number);
+                }
                 add_filter('wp_sms_send_sms_response', function () {
                     return __('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms');
                 });
+                break;
+
+            case 'immediate-send':
+            default:
+                $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
                 break;
         }
     }

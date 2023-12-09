@@ -1433,6 +1433,17 @@ class Settings
                     'name' => __('Miscellaneous Options', 'wp-sms'),
                     'type' => 'header'
                 ),
+                'async_send_status'         => array(
+                    'id'      => 'async_send_status',
+                    'name'    => __('SMS Async Sending', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'immediate-send'   => __('Immediate Send: Sends messages as soon as they are created', 'wp-sms'),
+                        'async-request'    => __('Async Send: Send messages in accordance with scheduled synchronization times', 'wp-sms'),
+                        'background-queue' => __('Background Queue: Puts messages in a queue, optimize for bulk SMS', 'wp-sms'),
+                    ),
+                    'desc'    => __('Please select your preferred method for sending SMS: Immediate Send, Sync Send, or Background Queue. ', 'wp-sms')
+                ),
                 'send_unicode'              => array(
                     'id'      => 'send_unicode',
                     'name'    => __('Send as Unicode', 'wp-sms'),
@@ -1893,23 +1904,6 @@ class Settings
                 'name' => __('GDPR Compliance', 'wp-sms'),
                 'type' => 'notice',
                 'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms')
-            );
-        }
-
-        /*
-         * Async SMS sending option
-         */
-        if ($sms->async_support) {
-            $settings['gateway']['async_send_status'] = array(
-                'id'      => 'async_send_status',
-                'name'    => __('SMS Async Sending', 'wp-sms'),
-                'type'    => 'select',
-                'options' => array(
-                    'immediate-send'   => __('Immediate Send: Sends messages as soon as they are created', 'wp-sms'),
-                    'async-request'    => __('Async Send: Send messages in accordance with scheduled synchronization times', 'wp-sms'),
-                    'background-queue' => __('Background Queue: Puts messages in a queue, optimize for bulk SMS', 'wp-sms'),
-                ),
-                'desc'    => __('Please select your preferred method for sending SMS: Immediate Send, Sync Send, or Background Queue. ', 'wp-sms')
             );
         }
 

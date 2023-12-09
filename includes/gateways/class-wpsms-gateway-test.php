@@ -15,12 +15,9 @@ class test extends \WP_SMS\Gateway
     public $flash = "false";
     public $isflash = false;
     public $options;
-    public $async_support = true;
 
     public function __construct()
     {
-        $this->options = \WP_SMS\Option::getOptions();
-
         parent::__construct();
         $this->help           = "";
         $this->validateNumber = "09xxxxxxxx";
@@ -64,16 +61,15 @@ class test extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        foreach ($this->to as $number) {
-            $this->handleRequest('GET', 'http://localhost/endpoint', [
-                'from'    => $this->from,
-                'to'      => $number,
-                'message' => $this->msg,
-            ], [], $this->options['async_send_status'], $number);
-        }
+        $this->handleRequest('GET', 'http://localhost/endpoint', [
+            'from'    => $this->from,
+            'to'      => $this->to,
+            'message' => $this->msg,
+        ]);
     }
 
-    public function GetCredit()
+    public
+    function GetCredit()
     {
         return '143 USD';
     }
