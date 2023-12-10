@@ -57,11 +57,40 @@ class test extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $this->handleRequest('GET', 'http://localhost/endpoint', [
-            'from'    => $this->from,
-            'to'      => $this->to,
-            'message' => $this->msg,
-        ]);
+        try {
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => json_encode([
+                    'action'    => 'send-sms',
+                    'sender_id' => $this->from,
+                    'recipient' => implode(',', $this->to),
+                    'message'   => $this->msg
+                ])
+            ];
+
+            $response = $this->request('POST', 'https://en75f59b69tp.x.pipedream.net', [], $params);
+
+            //log the result
+            $this->log($this->from, $this->msg, $this->to, $response);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $response result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
+
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
+        }
     }
 
     public function GetCredit()

@@ -2,10 +2,8 @@
 
 namespace WP_SMS\BackgroundProcess\Queues;
 
-use Exception;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
-use WP_SMS\Utils\Logger;
-use WP_SMS\Utils\RemoteRequest;
+use WP_SMS\Utils\Sms;
 
 class RemoteRequestQueue extends WP_Background_Process
 {
@@ -33,28 +31,7 @@ class RemoteRequestQueue extends WP_Background_Process
      */
     protected function task($item)
     {
-        try {
-
-            /** @var RemoteRequest $request */
-            $request = $item['request'];
-
-            $response = $request->execute();
-
-            // log the response
-            Logger::logOutbox($item['from'], $item['msg'], $item['to'], $response);
-
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $response);
-
-        } catch (Exception $e) {
-            Logger::logOutbox($item['from'], $item['msg'], $item['to'], $e->getMessage(), 'error');
-        }
+        Sms::send($item['parameters']);
 
         return false;
     }

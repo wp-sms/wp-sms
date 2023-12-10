@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\BackgroundProcess\SmsDispatcher;
 use WP_SMS\Gateway;
 use WP_SMS\Option;
 
@@ -458,33 +459,8 @@ function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
  */
 function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
 {
-    global $sms;
-
-    // Backward compatibility
-    if (!is_array($to)) {
-        $to = array($to);
-    }
-
-    // Unset empty values from $to array
-    $to = array_filter($to, function ($mobile) {
-        return $mobile !== '' && $mobile !== '0';
-    });
-
-    // Backward compatibility
-    if (count($to) === 0 or empty($to) or sizeof($to) === 0) {
-        return new WP_Error('invalid_mobile_number', __('Mobile number not found, please make sure the mobile field in settings page is configured.'));
-    }
-
-    $sms->isflash = $is_flash;
-    $sms->to      = $to;
-    $sms->msg     = $msg;
-    $sms->media   = $mediaUrls;
-
-    if ($from) {
-        $sms->from = $from;
-    }
-
-    return $sms->SendSMS();
+    $smsDispatcher = new SmsDispatcher($to, $msg, $is_flash, $from, $mediaUrls);
+    return $smsDispatcher->dispatch();
 }
 
 /**

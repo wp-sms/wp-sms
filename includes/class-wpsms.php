@@ -116,6 +116,7 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
+        $this->include('src/Utils/Sms.php');
         $this->include('src/Utils/CsvHelper.php');
         $this->include('src/Utils/RemoteRequest.php');
         $this->include('src/Utils/Logger.php');
@@ -141,6 +142,7 @@ class WP_SMS
         // Background Processing
         $this->include('src/BackgroundProcess/Async/RemoteRequestAsync.php');
         $this->include('src/BackgroundProcess/Queues/RemoteRequestQueue.php');
+        $this->include('src/BackgroundProcess/SmsDispatcher.php');
 
         // Notification classes
         $this->include('src/Notification/Notification.php');

@@ -1054,31 +1054,6 @@ class Gateway
         return $to;
     }
 
-    public function handleRequest($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
-    {
-        $requestType = Option::getOption('sms_delivery_method');
-
-        if ($requestType == 'api_async_send') {
-
-            $this->requestAsync($method, $url, $arguments, $params);
-
-        } elseif ($requestType == 'api_queued_send' or count($this->to) > 10) {
-
-            foreach ($this->to as $number) {
-                $this->requestQueue($method, $url, $arguments, $params, $number);
-            }
-
-            add_filter('wp_sms_send_sms_response', function () {
-                return __('SMS delivery is in progress as a background task; please review the Outbox for updates.', 'wp-sms');
-            });
-
-        } else {
-
-            $this->request($method, $url, $arguments, $params, $throwFailedHttpCodeResponse);
-
-        }
-    }
-
     /**
      * Executes a remote HTTP request.
      *
@@ -1095,53 +1070,6 @@ class Gateway
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
         return $request->execute($throwFailedHttpCodeResponse);
-    }
-
-    /**
-     * Executes a remote HTTP request asynchronously.
-     *
-     * @param string $method The HTTP request method (GET, POST, PUT, PATCH, DELETE, etc.).
-     * @param string $url The URL of the remote resource.
-     * @param array $arguments Any additional arguments to be passed to the request.
-     * @param array $params Any additional parameters to be passed to the request.
-     * @param string $receiverNumber The phone number of the receiver
-     * @return array|false|Library\BackgroundProcessing\WP_Error
-     */
-    protected function requestAsync($method, $url, $arguments = [], $params = [], $receiverNumber)
-    {
-        return WPSms()->getRemoteRequestAsync()
-            ->data([
-                'requestData' => [
-                    'method'    => $method,
-                    'url'       => $url,
-                    'arguments' => $arguments,
-                    'params'    => $params,
-                ],
-                'from'        => $this->from,
-                'msg'         => $this->msg,
-                'to'          => $receiverNumber
-            ])
-            ->dispatch();
-    }
-
-    /**
-     * Queues a remote HTTP request for later execution.
-     *
-     * @param string $method The HTTP request method (GET, POST, PUT, PATCH, DELETE, etc.).
-     * @param string $url The URL of the remote resource.
-     * @param array $arguments Any additional arguments to be passed to the request.
-     * @param array $params Any additional parameters to be passed to the request.
-     * @param string $receiverNumber The phone number of the receiver
-     * @return void
-     */
-    protected function requestQueue($method, $url, $arguments = [], $params = [], $receiverNumber)
-    {
-        $request = new RemoteRequest($method, $url, $arguments, $params);
-
-        return WPSms()->getRemoteRequestQueue()
-            ->push_to_queue(['request' => $request, 'from' => $this->from, 'msg' => $this->msg, 'to' => $receiverNumber])
-            ->save()
-            ->dispatch();
     }
 
     /**

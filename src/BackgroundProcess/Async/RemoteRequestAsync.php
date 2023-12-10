@@ -2,10 +2,8 @@
 
 namespace WP_SMS\BackgroundProcess\Async;
 
-use Exception;
 use WP_SMS\Library\BackgroundProcessing\WP_Async_Request;
-use WP_SMS\Utils\Logger;
-use WP_SMS\Utils\RemoteRequest;
+use WP_SMS\Utils\Sms;
 
 class RemoteRequestAsync extends WP_Async_Request
 {
@@ -27,38 +25,9 @@ class RemoteRequestAsync extends WP_Async_Request
      */
     protected function handle()
     {
-        try {
-            $from = sanitize_text_field($_POST['from']);
-            $msg  = sanitize_text_field($_POST['msg']);
-            $to   = sanitize_text_field($_POST['to']);
+        // Get data from input
+        $parameters = wp_sms_sanitize_array($_POST['parameters']);
 
-            // Get data from input
-            $requestData = $_POST['requestData'];
-
-            // Make remote request
-            $request = new RemoteRequest(
-                sanitize_text_field($requestData['method']),
-                sanitize_url($requestData['url']),
-                isset($requestData['arguments']) ? wp_sms_sanitize_array($requestData['arguments']) : [],
-                isset($requestData['params']) ? wp_sms_sanitize_array($requestData['params']) : []
-            );
-
-            $response = $request->execute();
-
-            // log the response
-            Logger::logOutbox($from, $msg, $to, $response);
-
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $response);
-
-        } catch (Exception $e) {
-            Logger::logOutbox($from, $msg, $to, $e->getMessage(), 'error');
-        }
+        Sms::send($parameters);
     }
 }
