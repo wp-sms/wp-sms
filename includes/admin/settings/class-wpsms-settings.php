@@ -257,6 +257,7 @@ class Settings
      */
     public function get_registered_settings()
     {
+        global $sms;
         $options = array(
             'enable'  => __('Enable', 'wp-sms'),
             'disable' => __('Disable', 'wp-sms')
@@ -1449,6 +1450,17 @@ class Settings
                     'name' => __('Miscellaneous Options', 'wp-sms'),
                     'type' => 'header'
                 ),
+                'sms_delivery_method'          => array(
+                    'id'      => 'sms_delivery_method',
+                    'name'    => __('SMS Delivery Method', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'api_direct_send' => __('Direct API Dispatch: Immediately triggers the API to send SMS messages upon creation', 'wp-sms'),
+                        'api_async_send'  => __('Async API Call: Schedules API requests to dispatch SMS messages at specified intervals', 'wp-sms'),
+                        'api_queued_send' => __('Queued API Processing: Enqueues messages for batch processing, optimizing API calls for bulk SMS dispatch', 'wp-sms'),
+                    ),
+                    'desc'    => __('Select the method for API-based SMS delivery: Direct dispatch, Async scheduling, or Queued processing for bulk operations. Note: If the number of SMS recipients exceeds 20, the system will automatically use the Queued API Processing method.', 'wp-sms')
+                ),
                 'send_unicode'                 => array(
                     'id'      => 'send_unicode',
                     'name'    => __('Send as Unicode', 'wp-sms'),
@@ -1927,6 +1939,7 @@ class Settings
                 'desc' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms')
             );
         }
+
         return $settings;
     }
 

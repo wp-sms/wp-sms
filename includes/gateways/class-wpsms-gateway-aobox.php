@@ -14,6 +14,7 @@ class aobox extends \WP_SMS\Gateway
     public $flash = "disable";
     public $isflash = false;
     public $gateway_route;
+    public $route;
 
     public function __construct()
     {
@@ -45,7 +46,7 @@ class aobox extends \WP_SMS\Gateway
         ];
     }
 
-    public function SendSMS(): WP_Error|string
+    public function SendSMS()
     {
         /**
          * Modify sender number
@@ -76,14 +77,6 @@ class aobox extends \WP_SMS\Gateway
 
         try {
 
-            // Get the credit.
-            $credit = $this->GetCredit();
-
-            // Check gateway credit
-            if (is_wp_error($credit)) {
-                throw new Exception($credit->get_error_message());
-            }
-
             $params = [
                 'version'  => '3',
                 'username' => $this->username,
@@ -98,6 +91,10 @@ class aobox extends \WP_SMS\Gateway
 
             if (isset($response->statuscode) && $response->statuscode !== 0) {
                 throw new Exception($response);
+            }
+
+            if (strpos($response, 'error')) {
+                throw new \Exception($response);
             }
 
             //log the result

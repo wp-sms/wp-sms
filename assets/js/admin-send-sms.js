@@ -606,7 +606,7 @@ function sendSMS() {
                 jQuery('#wpsms_account_credit').html(data.data.balance);
                 jQuery('.wpsms-sendsms-result').fadeIn();
                 jQuery('#SendSMSAgain').fadeIn();
-                clearForm();
+                // clearForm();
                 scrollToTop();
             },
             error: function (data, status, xhr) {
