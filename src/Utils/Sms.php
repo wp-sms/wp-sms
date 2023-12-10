@@ -4,8 +4,28 @@ namespace WP_SMS\Utils;
 
 use WP_SMS\BackgroundProcess\WP_Error;
 
+/**
+ * Class Sms
+ *
+ * This class is responsible for sending SMS messages.
+ */
 class Sms
 {
+    /**
+     * Sends an SMS message.
+     *
+     * @param array $parameters An array containing the parameters for sending the SMS message.
+     *                          The array should have the following keys:
+     *                          - to (required) : The recipient(s) of the SMS. This can be either a single mobile number or an array of mobile numbers.
+     *                          - is_flash : Optional. A boolean indicating whether the SMS is a flash message. Default is false.
+     *                          - msg (required) : The content of the SMS message.
+     *                          - mediaUrls : Optional. An array of URLs of media files to be included in the SMS.
+     *                          - from : Optional. The sender of the SMS.
+     *
+     * @return mixed The result of sending the SMS message.
+     *               If the SMS is sent successfully, the response from the SMS service provider is returned.
+     *               If there is an error in sending the SMS, a WP_Error object with the 'invalid_mobile_number' code is returned.
+     */
     public static function send($parameters)
     {
         global $sms;

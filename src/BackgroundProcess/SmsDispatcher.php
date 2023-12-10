@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Class SmsDispatcher
+ *
+ * This class is responsible for dispatching SMS messages based on the configured method.
+ */
+
 namespace WP_SMS\BackgroundProcess;
 
 use WP_SMS\Option;
@@ -27,14 +33,18 @@ class SmsDispatcher
         ];
     }
 
+    /**
+     * Dispatches the SMS delivery based on the configured method.
+     *
+     * @return boolean Whether the SMS was dispatched successfully.
+     */
     public function dispatch()
     {
         $requestType = Option::getOption('sms_delivery_method');
 
         if ($requestType == 'api_async_send') {
 
-            return WPSms()
-                ->getRemoteRequestAsync()
+            return WPSms()->getRemoteRequestAsync()
                 ->data(['parameters' => $this->smsArguments])
                 ->dispatch();
 
@@ -42,6 +52,7 @@ class SmsDispatcher
 
             foreach ($this->smsArguments['to'] as $number) {
 
+                // 'to' is being replaced with a single number from an array of recipients
                 $this->smsArguments['to'] = $number;
 
                 WPSms()->getRemoteRequestQueue()

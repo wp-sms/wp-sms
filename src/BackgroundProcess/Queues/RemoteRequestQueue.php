@@ -5,6 +5,12 @@ namespace WP_SMS\BackgroundProcess\Queues;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
 use WP_SMS\Utils\Sms;
 
+/**
+ * Class RemoteRequestQueue
+ *
+ * This class extends the WP_Background_Process class and represents a queue for remote requests.
+ * It is responsible for processing queued items and performing necessary actions on each item.
+ */
 class RemoteRequestQueue extends WP_Background_Process
 {
     /**

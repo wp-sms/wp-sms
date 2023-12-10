@@ -446,16 +446,15 @@ function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
 }
 
 /**
- * Send SMS.
+ * Send an SMS message.
  *
- * @param array $to
- * @param $msg $pro
- * @param bool $is_flash
- * @param array $mediaUrls
+ * @param string $to The recipient phone number.
+ * @param string $msg The message content.
+ * @param bool $is_flash (optional) Whether the message should be sent as a flash message. Defaults to false.
+ * @param string|null $from (optional) The sender phone number. Defaults to null.
+ * @param array $mediaUrls (optional) An array of media URLs to be sent along with the message. Defaults to an empty array.
  *
- * @param bool $from
- *
- * @return string | WP_Error
+ * @return bool Whether the SMS message was successfully sent.
  */
 function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
 {

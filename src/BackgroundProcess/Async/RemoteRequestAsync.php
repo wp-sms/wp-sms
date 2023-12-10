@@ -5,6 +5,11 @@ namespace WP_SMS\BackgroundProcess\Async;
 use WP_SMS\Library\BackgroundProcessing\WP_Async_Request;
 use WP_SMS\Utils\Sms;
 
+/**
+ * Class RemoteRequestAsync
+ *
+ * Represents a remote asynchronous request.
+ */
 class RemoteRequestAsync extends WP_Async_Request
 {
     /**
@@ -25,9 +30,6 @@ class RemoteRequestAsync extends WP_Async_Request
      */
     protected function handle()
     {
-        // Get data from input
-        $parameters = wp_sms_sanitize_array($_POST['parameters']);
-
-        Sms::send($parameters);
+        Sms::send(wp_sms_sanitize_array($_POST['parameters']));
     }
 }
