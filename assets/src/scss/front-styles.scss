@@ -173,7 +173,7 @@
     transition: 0.2s ease-in-out;
     text-shadow: none;
     -webkit-appearance: none;
-    min-width: 200px;
+    width: 100%;
 
     &:hover {
       background: #EF771F;
@@ -208,12 +208,12 @@
       background-color: #fff;
       border: 1px solid #d9d9d9;
       box-sizing: border-box;
-      padding: 15px;
+      padding: 15px 10px;
       color: #43454b;
       -webkit-appearance: none;
       font-weight: 400;
-      box-shadow: none;
       border-radius: 8px;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .125);
 
       &:focus {
         border: 1px solid #f88e40;
@@ -231,8 +231,13 @@
       display: block;
       color: #222222;
       font-size: 14px;
-      padding: 0 8px;
       margin-bottom: 5px;
+      padding-left: 10px;
+
+      .rtl & {
+        padding-left: 0;
+        padding-right: 10px;
+      }
     }
   }
 }

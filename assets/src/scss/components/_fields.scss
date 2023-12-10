@@ -44,25 +44,24 @@
     display: inline-flex;
     align-items: center;
     position: relative;
+    cursor: pointer;
   }
 
   input[type="radio"] {
-    margin-left: 0;
     appearance: none;
     width: 20px;
     height: 20px;
-    max-width: 20px;
-    max-height: 20px;
     border-radius: 8px;
     vertical-align: middle;
     padding: unset !important;
-    margin-right: 5px;
     border: 1px solid #222222 !important;
     position: relative;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    margin-right: 5px;
+    margin-left: 0;
     margin-top: 0;
 
     &::after {
@@ -104,7 +103,12 @@
     color: #222222;
     font-size: 14px;
     margin-bottom: 5px;
-    padding: 0 8px;
+    padding-left: 10px;
+
+    .rtl & {
+      padding-left: 0;
+      padding-right: 10px;
+    }
   }
 
   input:not([type="checkbox"]),
@@ -116,7 +120,7 @@
     border: 1px solid #d9d9d9;
     box-sizing: border-box;
     border-radius: 8px;
-    padding: 15px !important;
+    padding: 15px 10px !important;
 
     &:focus {
       border: 1px solid #f88e40;
@@ -146,16 +150,6 @@
 
   input::placeholder {
     color: #5b5b5b;
-  }
-}
-
-.wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio {
-  label {
-    cursor: pointer;
-  }
-
-  input {
-    margin-right: 0px;
   }
 }
 
