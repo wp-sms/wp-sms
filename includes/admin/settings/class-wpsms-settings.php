@@ -257,7 +257,6 @@ class Settings
      */
     public function get_registered_settings()
     {
-        global $sms;
         $options = array(
             'enable'  => __('Enable', 'wp-sms'),
             'disable' => __('Disable', 'wp-sms')
