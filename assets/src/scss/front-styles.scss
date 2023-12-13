@@ -208,7 +208,7 @@
       background-color: #fff;
       border: 1px solid #d9d9d9;
       box-sizing: border-box;
-      padding: 15px 10px;
+      padding: 15px;
       color: #43454b;
       -webkit-appearance: none;
       font-weight: 400;
@@ -231,13 +231,7 @@
       display: block;
       color: #222222;
       font-size: 14px;
-      margin-bottom: 5px;
-      padding-left: 10px;
-
-      .rtl & {
-        padding-left: 0;
-        padding-right: 10px;
-      }
+      margin-bottom: 6px;
     }
   }
 }
