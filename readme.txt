@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.4.2
+Stable tag: 6.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -219,14 +219,19 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.5 - 19.12.2023 =
+* Addition: Introducing Background Processing! You can now send SMS in bulk to thousands of numbers without disrupting the user experience, [click here](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/) to more information.
+* Improvement: Improved visibility of form labels on white backgrounds, ensuring they are clearly readable regardless of theme or background color.
+* Fixes: Resolved an issue with the group assignment in the subscriber shortcode, enhancing reliability and user management.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.4.2 - 03.12.2023 =
 * Addition: Contact Form 7 tags now supported for SMS notifications.
 * Improvement: Updated EasySendSms gateway.
 * Improvement: System performance enhancements.
 * Fixes: Fixed `array_filter` bug on WooCommerce order page and improved backward compatibility.
 * Fixes: Resolved SMS credit display issue on Send SMS page.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.4.1 - 19.11.2023 =
 * Fixes: WooCommerce order page issues & send sms in note metabox
