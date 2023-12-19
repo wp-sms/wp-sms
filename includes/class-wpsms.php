@@ -1,6 +1,8 @@
 <?php
 
 use WP_SMS\Admin\Widget\WidgetsManager;
+use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
+use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -15,6 +17,16 @@ class WP_SMS
      * @type object
      */
     protected static $instance = null;
+
+    /**
+     * @var RemoteRequestAsync $remoteRequestAsync
+     */
+    private $remoteRequestAsync;
+
+    /**
+     * @var RemoteRequestQueue $remoteRequestQueue
+     */
+    private $remoteRequestQueue;
 
     public function __construct()
     {
@@ -56,6 +68,13 @@ class WP_SMS
         add_action('init', array($this, 'load_textdomain'));
 
         $this->includes();
+        $this->setupBackgroundProcess();
+    }
+
+    private function setupBackgroundProcess()
+    {
+        $this->remoteRequestAsync = new RemoteRequestAsync();
+        $this->remoteRequestQueue = new RemoteRequestQueue();
     }
 
     /**
@@ -97,8 +116,15 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
+        $this->include('src/Utils/Sms.php');
         $this->include('src/Utils/CsvHelper.php');
+        $this->include('src/Utils/RemoteRequest.php');
+        $this->include('src/Utils/Logger.php');
         $this->include('src/Report/EmailReportGenerator.php');
+
+        // Third-party libraries
+        $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
+        $this->include('includes/libraries/wp-background-processing/wp-background-process.php');
 
         // MobileFieldHandler
         $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
@@ -107,10 +133,16 @@ class WP_SMS
         $this->include('src/User/MobileFieldHandler/WordPressMobileFieldHandler.php');
         $this->include('src/User/RegisterUserViaPhone.php');
         $this->include('src/User/MobileFieldManager.php');
+
         add_action('init', function () {
             $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
             $mobileFieldManager->init();
         });
+
+        // Background Processing
+        $this->include('src/BackgroundProcess/Async/RemoteRequestAsync.php');
+        $this->include('src/BackgroundProcess/Queues/RemoteRequestQueue.php');
+        $this->include('src/BackgroundProcess/SmsDispatcher.php');
 
         // Notification classes
         $this->include('src/Notification/Notification.php');
@@ -264,5 +296,21 @@ class WP_SMS
     public function notice()
     {
         return \WP_SMS\Notice\NoticeManager::getInstance();
+    }
+
+    /**
+     * @return RemoteRequestAsync
+     */
+    public function getRemoteRequestAsync()
+    {
+        return $this->remoteRequestAsync;
+    }
+
+    /**
+     * @return RemoteRequestQueue
+     */
+    public function getRemoteRequestQueue()
+    {
+        return $this->remoteRequestQueue;
     }
 }

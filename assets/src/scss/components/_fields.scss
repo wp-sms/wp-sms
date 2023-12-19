@@ -3,7 +3,7 @@
 }
 
 .wpsms-subscribe__form__field {
-  margin: 0 0 30px;
+  margin: 0 0 14px;
 
   .iti--allow-dropdown {
     width: 100%;
@@ -44,25 +44,24 @@
     display: inline-flex;
     align-items: center;
     position: relative;
+    cursor: pointer;
   }
 
   input[type="radio"] {
-    margin-left: 0;
     appearance: none;
     width: 20px;
     height: 20px;
-    max-width: 20px;
-    max-height: 20px;
     border-radius: 8px;
     vertical-align: middle;
     padding: unset !important;
-    margin-right: 5px;
     border: 1px solid #222222 !important;
     position: relative;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    margin-right: 5px;
+    margin-left: 0;
     margin-top: 0;
 
     &::after {
@@ -96,20 +95,6 @@
   margin-top: 30px;
 }
 
-.js-wpSmsSubscriberName,
-.js-wpSmsSubscriberMobile,
-.js-wpSmsSubscriberGroupId,
-.js-wpSmsSubscribeFormField {
-  label {
-    position: absolute;
-    top: -10px;
-    left: 8px;
-    padding: 0 8px;
-    background: white;
-    border-radius: 4px;
-  }
-}
-
 .wpsms-subscribe__form__field {
   min-width: 200px;
   position: relative;
@@ -117,7 +102,7 @@
   label {
     color: #222222;
     font-size: 14px;
-    z-index: 1;
+    margin-bottom: 6px;
   }
 
   input:not([type="checkbox"]),
@@ -159,16 +144,6 @@
 
   input::placeholder {
     color: #5b5b5b;
-  }
-}
-
-.wpsms-subscribe__form__field.wpsms-subscribe__form__field--radio {
-  label {
-    cursor: pointer;
-  }
-
-  input {
-    margin-right: 0px;
   }
 }
 

@@ -2,9 +2,6 @@
 
 namespace WP_SMS\Gateway;
 
-use Exception;
-use WP_Error;
-
 class test extends \WP_SMS\Gateway
 {
     private $wsdl_link = '';
@@ -13,6 +10,7 @@ class test extends \WP_SMS\Gateway
     public $unit;
     public $flash = "false";
     public $isflash = false;
+    public $options;
 
     public function __construct()
     {
@@ -59,14 +57,20 @@ class test extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-
         try {
-
-            $response = [
-                'messageId' => rand(111111, 999999),
-                'message'   => $this->msg,
-                'status'    => 'Success',
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => json_encode([
+                    'action'    => 'send-sms',
+                    'sender_id' => $this->from,
+                    'recipient' => implode(',', $this->to),
+                    'message'   => $this->msg
+                ])
             ];
+
+            $response = $this->request('POST', 'https://en75f59b69tp.x.pipedream.net', [], $params);
 
             //log the result
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -82,10 +86,10 @@ class test extends \WP_SMS\Gateway
 
             return $response;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
-            return new WP_Error('send-sms', $e->getMessage());
+            return new \WP_Error('send-sms', $e->getMessage());
         }
     }
 

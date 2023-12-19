@@ -17,7 +17,7 @@
             <div class="wpsms-form-step-one js-wpSmsSubscribeStepOne">
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
                     <label><?php _e('Your Name', 'wp-sms'); ?></label>
-                    <input type="text" placeholder="<?php _e('Full Name...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <input type="text" placeholder="<?php _e('Full Name', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberMobile">
@@ -52,7 +52,7 @@
 
                 <?php if (isset($attributes['fields'])) : ?><?php foreach ($attributes['fields'] as $key => $field) : ?>
                     <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberCustomFields" data-field-name=<?php echo esc_html(ucfirst($field['label'])); ?>>
-                        <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?>:</label>
+                        <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?></label>
                         <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
                     </div>
                 <?php endforeach; ?><?php endif; ?>
@@ -89,7 +89,7 @@
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField">
                     <label><?php _e('Activation code', 'wp-sms'); ?></label>
-                    <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code...', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php _e('Activation code', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
                 <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php _e('Activate', 'wp-sms'); ?></button>
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo wp_sms_get_option('newsletter_form_verify'); ?>">

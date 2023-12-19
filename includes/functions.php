@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\BackgroundProcess\SmsDispatcher;
 use WP_SMS\Gateway;
 use WP_SMS\Option;
 
@@ -458,46 +459,20 @@ function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
 }
 
 /**
- * Send SMS.
+ * Send an SMS message.
  *
- * @param array $to
- * @param $msg $pro
- * @param bool $is_flash
- * @param array $mediaUrls
+ * @param string $to The recipient phone number.
+ * @param string $msg The message content.
+ * @param bool $is_flash (optional) Whether the message should be sent as a flash message. Defaults to false.
+ * @param string|null $from (optional) The sender phone number. Defaults to null.
+ * @param array $mediaUrls (optional) An array of media URLs to be sent along with the message. Defaults to an empty array.
  *
- * @param bool $from
- *
- * @return string | WP_Error
+ * @return bool Whether the SMS message was successfully sent.
  */
 function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
 {
-    global $sms;
-
-    // Backward compatibility
-    if (!is_array($to)) {
-        $to = array($to);
-    }
-
-    // Unset empty values from $to array
-    $to = array_filter($to, function ($mobile) {
-        return $mobile !== '' && $mobile !== '0';
-    });
-
-    // Backward compatibility
-    if (count($to) === 0 or empty($to) or sizeof($to) === 0) {
-        return new WP_Error('invalid_mobile_number', __('Mobile number not found, please make sure the mobile field in settings page is configured.'));
-    }
-
-    $sms->isflash = $is_flash;
-    $sms->to      = $to;
-    $sms->msg     = $msg;
-    $sms->media   = $mediaUrls;
-
-    if ($from) {
-        $sms->from = $from;
-    }
-
-    return $sms->SendSMS();
+    $smsDispatcher = new SmsDispatcher($to, $msg, $is_flash, $from, $mediaUrls);
+    return $smsDispatcher->dispatch();
 }
 
 /**
@@ -521,7 +496,7 @@ function wp_sms_render_mobile_field($args)
     $placeHolder = wp_sms_get_option('mobile_terms_field_place_holder');
     $defaults    = array(
         'type'        => 'tel',
-        'placeholder' => $placeHolder ? $placeHolder : __('Phone Number...', 'wp-sms'),
+        'placeholder' => $placeHolder ? $placeHolder : __('Phone Number', 'wp-sms'),
         'min'         => '',
         'max'         => '',
         'required'    => false,

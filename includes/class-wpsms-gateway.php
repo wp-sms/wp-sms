@@ -3,7 +3,9 @@
 namespace WP_SMS;
 
 use Exception;
-use WP_SMS\Helper;
+use WP_SMS\Utils\Logger;
+use WP_SMS\Utils\RemoteRequest;
+use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -255,7 +257,7 @@ class Gateway
     public $documentUrl = false;
 
     /**
-     * Whether the bulk is supported.
+     * Whether bulk SMS sending is supported
      *
      * @var bool
      */
@@ -501,30 +503,7 @@ class Gateway
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
-        /**
-         * Backward compatibility
-         * @todo Remove this if the length of the sender is increased in database
-         */
-        if (strlen($sender) > 20) {
-            $sender = substr($sender, 0, 20);
-        }
-
-        $result = $this->db->insert("{$this->tb_prefix}sms_send", array(
-            'date'      => WP_SMS_CURRENT_DATE,
-            'sender'    => $sender,
-            'message'   => $message,
-            'recipient' => implode(',', $to),
-            'response'  => var_export($response, true),
-            'media'     => serialize($media),
-            'status'    => $status,
-        ));
-
-        /**
-         * Fire after send sms
-         */
-        do_action('wp_sms_log_after_save', $result, $sender, $message, $to, $response, $status, $media);
-
-        return $result;
+        return Logger::logOutbox($sender, $message, $to, $response, $status, $media);
     }
 
     /**
@@ -1112,64 +1091,21 @@ class Gateway
     }
 
     /**
-     * @param $url
-     * @param array $arguments
-     * @param array $params
-     * @param string $method
+     * Executes a remote HTTP request.
      *
-     * @return string
-     * @throws Exception
+     * @param string $method The HTTP request method (GET, POST, PUT, PATCH, DELETE, etc.).
+     * @param string $url The URL of the remote resource.
+     * @param array $arguments Any additional arguments to be passed to the request.
+     * @param array $params Any additional parameters to be passed to the request.
+     * @param bool $throwFailedHttpCodeResponse Whether or not to throw an exception if the request returns a failed HTTP code.
+     * @return string The response body of the remote request.
+     * @throws Exception If the request fails and $throwFailedHttpCodeResponse is true.
      */
     protected function request($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
     {
-        /**
-         * Filter to modify arguments
-         */
-        $arguments = apply_filters('wp_sms_request_arguments', $arguments);
+        $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        /**
-         * Build request URL
-         */
-        $requestUrl = add_query_arg($arguments, $url);
-
-        /**
-         * Filter to modify params
-         */
-        $params = apply_filters('wp_sms_request_params', $params);
-
-        /**
-         * Prepare the arguments
-         */
-        $parsedParams = wp_parse_args($params, [
-            'method' => $method
-        ]);
-
-        /**
-         * Execute the request
-         */
-        $response = wp_remote_request($requestUrl, $parsedParams);
-
-        if (is_wp_error($response)) {
-            throw new Exception($response->get_error_message());
-        }
-
-        $responseCode = wp_remote_retrieve_response_code($response);
-        $responseBody = wp_remote_retrieve_body($response);
-
-        if ($throwFailedHttpCodeResponse) {
-            if (in_array($responseCode, [200, 201, 202]) === false) {
-
-                if (Helper::isJson($responseBody)) {
-                    $responseBody = json_decode($responseBody, true);
-                }
-
-                throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
-            }
-        }
-
-        $responseJson = json_decode($responseBody);
-
-        return ($responseJson == null) ? $responseBody : $responseJson;
+        return $request->execute($throwFailedHttpCodeResponse);
     }
 
     /**

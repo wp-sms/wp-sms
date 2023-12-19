@@ -25,7 +25,7 @@
         <form>
             <div class="wpsms-sendSmsForm__fieldContainer">
                 <label><?php _e('Message', 'wp-sms'); ?></label>
-                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php _e('Write your message content...', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php _e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
                 <p class="wpsms-sendSmsForm__messageField__alert"><?php _e('Max remaining characters: ', 'wp-sms'); ?><span></span></p>
             </div>
 
@@ -40,7 +40,7 @@
             <input type="hidden" name="subscriberGroup" value="<?php echo isset($attributes['subscriberGroup']) ? esc_html($attributes['subscriberGroup']) : ''; ?>"/>
             <input class="wpsms-sendSmsForm__submit" type="submit" value="<?php _e('Send Message', 'wp-sms'); ?>"/>
         </form>
-        <div class="wpsms-sendSmsForm__resultMessage">result goes here</div>
+        <div class="wpsms-sendSmsForm__resultMessage"></div>
 
     <?php endif; ?>
 </div>

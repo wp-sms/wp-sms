@@ -30,19 +30,20 @@ class SubscriberShortcode
         return wp_sms_subscriber_form($attrs);
     }
 
-
     public function retrieveGroupsData($attrs)
     {
-        $groups           = self::explodeData($attrs['groups']);
-        $newsletterGroups = Newsletter::getGroups();
+        if (isset($attrs['groups'])) {
+            $groups           = self::explodeData($attrs['groups']);
+            $newsletterGroups = Newsletter::getGroups();
 
-        foreach ($newsletterGroups as $key => $group) {
-            if (!in_array($group->ID, $groups)) {
-                unset($newsletterGroups[$key]);
+            foreach ($newsletterGroups as $key => $group) {
+                if (!in_array($group->ID, $groups)) {
+                    unset($newsletterGroups[$key]);
+                }
             }
-        }
 
-        return $newsletterGroups;
+            return $newsletterGroups;
+        }
     }
 
     public function retrieveFieldsData($attrs)
@@ -63,7 +64,6 @@ class SubscriberShortcode
                 );
             }
         }
-
         return $fields;
     }
 
