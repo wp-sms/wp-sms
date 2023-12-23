@@ -68,12 +68,13 @@ class Subscribers_List_Table extends \WP_List_Table
         /**
          * Sanitize the input
          */
-        $page = sanitize_text_field($_REQUEST['page']);
+        $page  = sanitize_text_field($_REQUEST['page']);
+        $nonce = wp_create_nonce('wp_sms_subscriber');
 
         //Build row actions
         $actions = array(
             'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_subscriber(%s)">' . __('Edit', 'wp-sms') . '</a>', $item['ID']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
+            'delete' => sprintf('<a href="%s">' . __('Delete', 'wp-sms') . '</a>', add_query_arg(array('page' => $page, 'action' => 'delete', 'ID' => $item['ID'], '_wpnonce' => $nonce), '')),
         );
 
         //Return the title contents
@@ -192,6 +193,11 @@ class Subscribers_List_Table extends \WP_List_Table
 
         // Single delete action
         if ('delete' == $current_action) {
+            if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'wp_sms_subscriber')) {
+                \WP_SMS\Helper::flashNotice(__('Nonce check failed', 'wp-sms'), 'error', $this->adminUrl);
+                exit;
+            }
+
             $get_id = sanitize_text_field($_GET['ID']);
             $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
