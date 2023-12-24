@@ -194,7 +194,7 @@ class Subscribers_List_Table extends \WP_List_Table
         // Single delete action
         if ('delete' == $current_action) {
             if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'wp_sms_subscriber')) {
-                \WP_SMS\Helper::flashNotice(__('Nonce check failed', 'wp-sms'), 'error', $this->adminUrl);
+                \WP_SMS\Helper::flashNotice(__('Access denied.', 'wp-sms'), 'error', $this->adminUrl);
                 exit;
             }
 
