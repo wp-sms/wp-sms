@@ -16,6 +16,11 @@ class SmsDispatcher
 
     public function __construct($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
     {
+        // Backward compatibility
+        if (!is_array($to)) {
+            $to = array($to);
+        }
+
         $this->smsArguments = [
             'to'        => $to,
             'msg'       => $msg,
