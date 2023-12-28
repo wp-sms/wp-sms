@@ -225,7 +225,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 [Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
-
 = v6.5 - 19.12.2023 =
 * Addition: Introducing Background Processing! You can now send SMS in bulk to thousands of numbers without disrupting the user experience, [click here](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/) to more information.
 * Improvement: Improved visibility of form labels on white backgrounds, ensuring they are clearly readable regardless of theme or background color.
