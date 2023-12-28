@@ -68,12 +68,13 @@ class Subscribers_List_Table extends \WP_List_Table
         /**
          * Sanitize the input
          */
-        $page = sanitize_text_field($_REQUEST['page']);
+        $page  = sanitize_text_field($_REQUEST['page']);
+        $nonce = wp_create_nonce('wp_sms_subscriber');
 
         //Build row actions
         $actions = array(
             'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_subscriber(%s)">' . __('Edit', 'wp-sms') . '</a>', $item['ID']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
+            'delete' => sprintf('<a href="%s">' . __('Delete', 'wp-sms') . '</a>', add_query_arg(array('page' => $page, 'action' => 'delete', 'ID' => $item['ID'], '_wpnonce' => $nonce), '')),
         );
 
         //Return the title contents
@@ -168,12 +169,13 @@ class Subscribers_List_Table extends \WP_List_Table
     public function process_bulk_action()
     {
         $current_action = $this->current_action();
-        //Detect when a bulk action is being triggered...
+        // Detect when a bulk action is being triggered
+
         // Search action
         if (isset($_GET['s']) and $_GET['s']) {
             $metaValue   = Helper::prepareMobileNumberQuery($this->db->esc_like($_GET['s']));
             $metaValue   = "'" . implode("','", $metaValue) . "'";
-            $prepare     = $this->db->prepare("SELECT * from `{$this->tb_prefix}sms_subscribes` WHERE name LIKE %s OR mobile IN ({$metaValue})", '%' . $this->db->esc_like($_GET['s']) . '%');
+            $prepare     = $this->db->prepare("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE name LIKE %s OR mobile IN ({$metaValue})", '%' . $this->db->esc_like($_GET['s']) . '%');
             $this->data  = $this->get_data($prepare);
             $this->count = $this->get_total($prepare);
         }
@@ -191,6 +193,11 @@ class Subscribers_List_Table extends \WP_List_Table
 
         // Single delete action
         if ('delete' == $current_action) {
+            if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'wp_sms_subscriber')) {
+                \WP_SMS\Helper::flashNotice(__('Access denied.', 'wp-sms'), 'error', $this->adminUrl);
+                exit;
+            }
+
             $get_id = sanitize_text_field($_GET['ID']);
             $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
@@ -312,12 +319,13 @@ class Subscribers_List_Table extends \WP_List_Table
         return ($order === 'asc') ? $result : -$result; //Send final sort direction to usort
     }
 
-    //set $per_page item as int number
+    // Set $per_page item as int number
     public function get_data($query = '')
     {
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
         $orderby     = "ORDER BY {$this->tb_prefix}sms_subscribes.date DESC";
         $where       = "";
+        $params      = array();
 
         if (isset($_REQUEST['orderby'])) {
             $orderby = "ORDER BY {$this->tb_prefix}sms_subscribes.{$_REQUEST['orderby']} {$_REQUEST['order']}";
@@ -326,29 +334,35 @@ class Subscribers_List_Table extends \WP_List_Table
         if (!$query) {
             if (isset($_GET['group_id']) && $_GET['group_id']) {
                 $group_id = sanitize_text_field($_GET['group_id']);
-                $where    = "WHERE group_ID = {$group_id}";
+                $where    = "WHERE group_ID = %d";
+                $params[] = intval($group_id);
             }
 
             if (isset($_GET['country_code']) && $_GET['country_code']) {
                 $country_code = sanitize_text_field($_GET['country_code']);
 
                 if ($where) {
-                    $where .= " AND mobile LIKE '{$country_code}%'";
+                    $where .= " AND mobile LIKE %s";
                 } else {
-                    $where = "WHERE mobile LIKE '{$country_code}%'";
+                    $where = "WHERE mobile LIKE %s";
                 }
+
+                $params[] = $country_code . '%';
             }
-            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$where} {$orderby} LIMIT %d OFFSET %d", $this->limit, $page_number);
+
+            $params[] = $this->limit;
+            $params[] = $page_number;
+
+            $query = $this->db->prepare("SELECT * FROM {$this->tb_prefix}sms_subscribes {$where} {$orderby} LIMIT %d OFFSET %d", $params);
         } else {
             $query .= $this->db->prepare(" LIMIT %d OFFSET %d", $this->limit, $page_number);
         }
 
         $result = $this->db->get_results($query, ARRAY_A);
-
         return $result;
     }
 
-    //get total items on different Queries
+    // Get total items on different Queries
     public function get_total($query = '')
     {
         if (!$query) {
