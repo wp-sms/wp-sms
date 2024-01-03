@@ -2533,21 +2533,22 @@ class Settings
     {
         $ultimate_member_forms = get_posts(['post_type' => 'um_form']);
 
-        $return_value = array();
         foreach ($ultimate_member_forms as $form) {
-            $form_role = get_post_meta($form->ID, '_um_mode');
+            $form_role = get_post_meta($form->ID, '_um_core');
 
             if (in_array('register', $form_role)) {
                 $form_fields = get_post_meta($form->ID, '_um_custom_fields');
 
+                $return_value = [];
                 foreach ($form_fields[0] as $field) {
                     if (isset($field['title']) && isset($field['metakey'])) {
                         $return_value[$field['metakey']] = $field['title'];
                     }
                 }
+                return $return_value;
             }
         }
-        return $return_value;
+        return [];
     }
 
     /**
