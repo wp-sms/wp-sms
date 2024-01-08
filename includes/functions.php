@@ -522,7 +522,7 @@ function wp_sms_render_mobile_field($args)
         $args['id'],
         $args['type'],
         $args['name'],
-        $args['placeholder'],
+        esc_attr($args['placeholder']),
         implode(' ', $args['class']),
         esc_attr($args['value']),
         $args['required'],
