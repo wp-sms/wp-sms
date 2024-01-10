@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.5.1
+Stable tag: 6.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -219,11 +219,16 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.5.2 - 10.01.2024 =
+* Fixes: Fixed class not found error in by correcting `WP_Error` namespace
+* Fixes: Fixed gathering Ultimate Members registration forms data
+* Improvement: Escape the mobile place holder and hardened plugin security
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.5.1 - 28.12.2023 =
 * Fixes: Backward compatibility while the is not array in SmsDispatcher
 * Improvement: Enhance plugin security by adding a nonce to the delete subscriber function.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.5 - 19.12.2023 =
 * Addition: Introducing Background Processing! You can now send SMS in bulk to thousands of numbers without disrupting the user experience, [click here](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/) to more information.

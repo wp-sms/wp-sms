@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Utils;
 
-use WP_SMS\BackgroundProcess\WP_Error;
+use WP_Error;
 
 /**
  * Class Sms
