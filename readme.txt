@@ -220,7 +220,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 
 == Changelog ==
 = v6.5.2 - 10.01.2024 =
-* Fixes: Fixed class not found error in by correcting `WP_Error` namespace
+* Fixes: Fixed class not found error by correcting `WP_Error` namespace
 * Fixes: Fixed gathering Ultimate Members registration forms data
 * Improvement: Escape the mobile place holder and hardened plugin security
 
