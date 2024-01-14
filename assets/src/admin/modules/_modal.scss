@@ -29,6 +29,10 @@
 
   .promotion-modal__screenshot {
     text-align: center;
+
+    img{
+      max-height: 242px;
+    }
   }
 }
 
@@ -70,7 +74,7 @@
   font-size: 16px;
   display: flex;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 11px;
 
 
   span {
@@ -89,7 +93,7 @@
 
 .promotion-modal__actions {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 20px;
 
   p {
     margin-top: 30px;
