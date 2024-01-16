@@ -68,13 +68,13 @@ class Subscribers_List_Table extends \WP_List_Table
         /**
          * Sanitize the input
          */
-        $page  = sanitize_text_field($_REQUEST['page']);
+        $page  = wp_unslash(sanitize_text_field($_REQUEST['page']));
         $nonce = wp_create_nonce('wp_sms_subscriber');
 
         //Build row actions
         $actions = array(
             'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_subscriber(%s)">' . __('Edit', 'wp-sms') . '</a>', $item['ID']),
-            'delete' => sprintf('<a href="%s">' . __('Delete', 'wp-sms') . '</a>', add_query_arg(array('page' => $page, 'action' => 'delete', 'ID' => $item['ID'], '_wpnonce' => $nonce), '')),
+            'delete' => sprintf('<a href="%s">' . __('Delete', 'wp-sms') . '</a>', add_query_arg(array('page' => esc_attr($page), 'action' => 'delete', 'ID' => $item['ID'], '_wpnonce' => $nonce), '')),
         );
 
         //Return the title contents

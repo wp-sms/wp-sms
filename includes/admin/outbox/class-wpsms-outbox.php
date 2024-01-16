@@ -86,12 +86,12 @@ class Outbox_List_Table extends \WP_List_Table
         /**
          * Sanitize the input
          */
-        $page = sanitize_text_field($_REQUEST['page']);
+        $page = wp_unslash(sanitize_text_field($_REQUEST['page']));
 
         //Build row actions
         $actions = array(
-            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Resend', 'wp-sms') . '</a>', $page, 'resend', $item['ID']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
+            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Resend', 'wp-sms') . '</a>', esc_attr($page), 'resend', $item['ID']),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
         );
 
         //Return the title contents
