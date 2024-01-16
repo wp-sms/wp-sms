@@ -8,9 +8,7 @@
     "start": "concurrently \"wp-scripts start --webpack-copy-php --webpack-src-dir=assets/src/blocks --output-path=assets/blocks\" \"npm run dev\"",
     "watch": "watch \"npm run sass-compile\" ./assets/src",
     "sass-compile": "concurrently \"node-sass assets/src/scss/front-styles.scss assets/css/front-styles.css --output-style compressed\" \"node-sass assets/src/scss/mail.scss assets/css/mail.css --output-style compressed\" \"node-sass assets/src/admin/admin.scss assets/css/admin.css --output-style compressed\"",
-    "dev": "concurrently \"npm run watch\" \"npm run sass-compile\"",
-    "build-scripts": "rimraf ./assets/src/scripts/admin.min.js && webpack --config webpack.config.js",
-    "watch-scripts": "webpack serve --config webpack.config.js"
+    "dev": "concurrently \"npm run watch\" \"npm run sass-compile\""
   },
   "keywords": [],
   "author": "",
@@ -22,16 +20,11 @@
     "@wordpress/components": "^22.0.0",
     "@wordpress/env": "^5.7.0",
     "@wordpress/scripts": "^23.0.0",
-    "babel-loader": "^9.1.3",
     "breakpoint-sass": "^2.7.1",
     "concurrently": "^7.5.0",
     "copy-webpack-plugin": "^10.2.4",
     "node-sass": "^8.0.0",
-    "rimraf": "^5.0.5",
-    "watch": "^1.0.2",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "watch": "^1.0.2"
   },
   "dependencies": {
     "@wordpress/block-editor": "^10.5.0"
