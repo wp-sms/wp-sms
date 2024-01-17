@@ -219,7 +219,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.5.3 - 16.01.2024 =
+= v6.5.3 - 17.01.2024 =
 * Improvement: Improved page sanitization and overall security in `WP_List_Tables`.
 * Improvement: Fixed label styling in the subscriber multi-group select field.
 * Improvement: Added EuroSms gateway help and improved number display in outbox.
