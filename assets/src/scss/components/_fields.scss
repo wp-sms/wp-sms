@@ -153,91 +153,78 @@ input.wpsms-type-unsubscribe {
 
 .wpsms-subscribe__form__field--gdpr {
   margin: 0 0 24px;
-  border: 1px solid #d9d9d9;
-  box-sizing: border-box;
-  border-radius: 8px;
-  padding: 20px 15px !important;
-  position: relative;
+
+  .wpsms-subscribe__form__field--gdpr__box {
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    padding: 15px;
+    box-sizing: border-box;
+
+    label {
+      margin-bottom: 8px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      input[type="checkbox"] {
+        appearance: none !important;
+        border: 1px solid #222222 !important;
+        position: relative;
+        border-radius: 8px;
+        vertical-align: middle;
+        margin-right: 5px;
+        top: 0 !important;
+        width: 20px;
+        height: 20px;
+        box-shadow: none;
+        outline: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transform: translateY(-1px);
+
+        &::after {
+          content: "";
+          transform: rotate(0) translateY(-1px);
+        }
+
+        &::before {
+          content: "";
+        }
+
+        &:focus {
+          box-shadow: none;
+          outline: none;
+        }
+
+        &::selection {
+          background-color: #f88e40;
+          border-color: #f88e40 !important;
+          color: #fff;
+        }
+
+        &:checked {
+          border: 1px solid #222222 !important;
+          background-color: #222222;
+
+          &::before {
+            content: "";
+          }
+
+          &::after {
+            content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
+            transform: rotate(0) translateY(-1px);
+          }
+        }
+      }
+    }
+  }
 
   label {
-    color: #000;
-    cursor: pointer;
-    position: relative;
-    color: #000;
-    cursor: pointer;
-    display: block;
-    top: 0;
-    left: 0;
-    margin-bottom: 8px;
-
-    &:last-child {
-      margin-bottom: 0px;
-    }
-  }
-
-  p {
-    position: absolute;
-    top: -16px;
-    left: 8px;
-    background: white;
-    border-radius: 4px;
     color: #222222;
     font-size: 14px;
-    margin: 0 !important;
-    padding: 0 8px !important;
-  }
-
-  input[type="checkbox"] {
-    appearance: none !important;
-    border: 1px solid #222222 !important;
-    position: relative;
-    border-radius: 8px;
-    vertical-align: middle;
-    margin-right: 5px;
-    top: 0 !important;
-    width: 20px;
-    height: 20px;
-    box-shadow: none;
-    outline: none;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(-1px);
-
-    &::after {
-      content: "";
-      transform: rotate(0) translateY(-1px);
-    }
-
-    &::before {
-      content: "";
-    }
-
-    &:focus {
-      box-shadow: none;
-      outline: none;
-    }
-
-    &::selection {
-      background-color: #f88e40;
-      border-color: #f88e40 !important;
-      color: #fff;
-    }
-
-    &:checked {
-      border: 1px solid #222222 !important;
-      background-color: #222222;
-
-      &::before {
-        content: "";
-      }
-
-      &::after {
-        content: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.77749 0L2.77748 3.72336L1.22258 2.27614L0 3.4144L2.7775 6L8 1.13828L6.77749 0Z' fill='white'/%3E%3C/svg%3E%0A") !important;
-        transform: rotate(0) translateY(-1px);
-      }
-    }
+    display: block;
   }
 }
 

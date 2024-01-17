@@ -64,12 +64,12 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         /**
          * Sanitize the input
          */
-        $page = sanitize_text_field($_REQUEST['page']);
+        $page = wp_unslash(wp_unslash(sanitize_text_field($_REQUEST['page'])));
 
         //Build row actions
         $actions = array(
             'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . __('Edit', 'wp-sms') . '</a>', $item['ID'], esc_attr($item['name'])),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', $page, 'delete', $item['ID']),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
         );
 
         //Return the title contents

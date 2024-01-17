@@ -15,7 +15,7 @@ class eurosms extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->validateNumber = "Číslo pre SMSku na Slovensko má tvar: 09xxYYYYYY (napr. 0988123456)." . PHP_EOL . "Tvar čísla do sveta: +KrajinaOperátorČíslo. Napr. +421988987654" . PHP_EOL . "oddeliť každé číslo čiarkou , . Dĺžka celého čísla (vrátane znaku +) je 14.";
-        $this->help           = 'Fill the API Username as your Integration ID and the API Password with Integration KEY.';
+        $this->help           = 'Fill the API Username as your Integration ID and the API Password with Integration KEY. The SENDER ID also should be max 11 char spaces included.';
     }
 
     public function SendSMS()
@@ -109,7 +109,7 @@ class eurosms extends \WP_SMS\Gateway
             if (!isset($result->err_code)) {
 
                 // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result);
+                $this->log($this->from, $this->msg, $numbers, $result);
 
                 /**
                  * Run hook after send sms.
@@ -124,7 +124,7 @@ class eurosms extends \WP_SMS\Gateway
                 return $result;
             } else {
                 // Log the result
-                $this->log($this->from, $this->msg, $this->to, 'Error Code: ' . $result->err_list[0]->err_code . '. Description: ' . $result->err_list[0]->err_desc, 'error');
+                $this->log($this->from, $this->msg, $numbers, 'Error Code: ' . $result->err_list[0]->err_code . '. Description: ' . $result->err_list[0]->err_desc, 'error');
 
                 return new \WP_Error('send-sms', 'Error Code: \'' . $result->err_list[0]->err_code . '\'. Description: \'' . $result->err_list[0]->err_desc . '\'');
             }
