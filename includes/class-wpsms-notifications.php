@@ -310,24 +310,22 @@ class Notifications
             $notification->send($message, $receiver);
         }
 
-        $userMobileNumberFromRequest = apply_filters('wp_sms_user_notify_registration', sanitize_text_field($_REQUEST['mobile']));
-        $userMobileNumber            = Helper::getUserMobileNumberByUserId($user_id);
+        $userMobileNumber = Helper::getUserMobileNumberByUserId($user_id);
+        $receiver         = [];
 
         /**
          * Send SMS to user
          */
-        if ($userMobileNumber or $userMobileNumberFromRequest) {
+        if ($userMobileNumber) {
+            $receiver = array($userMobileNumber);
+        } else if (isset($_REQUEST['mobile'])) {
+            $userMobileNumberFromRequest = apply_filters('wp_sms_user_notify_registration', sanitize_text_field($_REQUEST['mobile']));
+            $receiver                    = array($userMobileNumberFromRequest);
+        }
 
-            $message  = Option::getOption('notif_register_new_user_template');
-            $receiver = [];
-
-            if ($userMobileNumber) {
-                $receiver = array($userMobileNumber);
-            } else if ($userMobileNumberFromRequest) {
-                $receiver = array($userMobileNumberFromRequest);
-            }
-
-            // Fire notification
+        // Fire notification
+        if ($receiver) {
+            $message      = Option::getOption('notif_register_new_user_template');
             $notification = NotificationFactory::getUser($user_id);
             $notification->send($message, $receiver);
         }

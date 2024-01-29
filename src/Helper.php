@@ -79,7 +79,7 @@ class Helper
 
     /**
      * @param $number
-     * @return mixed|void|null
+     * @return \WP_User|null
      */
     public static function getUserByPhoneNumber($number)
     {
