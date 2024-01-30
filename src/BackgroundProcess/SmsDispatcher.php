@@ -35,12 +35,12 @@ class SmsDispatcher
         $requestType       = Option::getOption('sms_delivery_method');
         $bulkDispatchLimit = apply_filters('wp_sms_bulk_dispatch_limit', 20);
 
-        if ($requestType == 'api_async_send') {
-            return $this->dispatchAsyncSend();
-        }
-
         if ($requestType == 'api_queued_send' or count($this->smsArguments['to']) >= $bulkDispatchLimit) {
             return $this->dispatchQueuedSend();
+        }
+
+        if ($requestType == 'api_async_send') {
+            return $this->dispatchAsyncSend();
         }
 
         return Sms::send($this->smsArguments);
