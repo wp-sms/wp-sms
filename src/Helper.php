@@ -182,9 +182,19 @@ class Helper
         if (get_option('woocommerce_custom_orders_table_enabled')) {
             global $wpdb;
             $tableName           = \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_addresses_table_name();
-            $numbersFromNewTable = $wpdb->get_col("SELECT `phone` from {$tableName} where `phone` !=''");
+            $numbersFromNewTable = $wpdb->get_col("SELECT DISTINCT `phone` from {$tableName} where `phone` !=''");
             $numbers             = array_merge($numbers, $numbersFromNewTable);
         }
+
+        $normalizedNumbers = [];
+        foreach ($numbers as $number) {
+            $normalizedNumber = self::normalizeNumber($number);
+            // Use normalized number as key to avoid duplicates
+            $normalizedNumbers[$normalizedNumber] = $number;
+        }
+
+        // Convert associative array back to indexed array
+        $numbers = array_values($normalizedNumbers);
 
         return array_unique($numbers);
     }
@@ -477,5 +487,22 @@ class Helper
         $headers    = array('Content-Type: text/html; charset=UTF-8');
 
         return wp_mail($adminEmail, $subject, $message, $headers);
+    }
+
+    public static function normalizeNumber($number)
+    {
+        // Remove all non-digits except leading +
+        $number = preg_replace('/[^\d+]/', '', $number);
+
+        // Attempt to remove common country codes if present, or assume no country code
+        // This is a basic heuristic and might need adjustments
+        // Here we assume that a number starting with + and having more than 10 digits could have a country code
+        if (strpos($number, '+') === 0 && strlen($number) > 10) {
+            // Remove the country code assuming it's 3 digits long after the + sign
+            // This is a simplification; real logic might be more complex
+            $number = substr($number, 4);
+        }
+
+        return $number;
     }
 }
