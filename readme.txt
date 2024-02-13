@@ -108,7 +108,8 @@ You can see the list of all supported gateways [through this link](https://wp-sm
  * Integration with Bitly.com for make the URLs shorter
 
 = Does WP SMS support bulk SMS sending for a large number of subscribers? =
-Absolutely, WP SMS is optimized for bulk messaging and can efficiently manage large-scale SMS campaigns. Our plugin has been enhanced with the latest update, WP SMS 6.5, which introduces background processing technology. This advancement enables the delivery of SMS to a vast number of subscribers, suitable for lists with over 10,000 contacts and beyond. This powerful feature ensures that your bulk SMS campaigns are delivered reliably and effectively when using Twilio or any other supported SMS gateway. To learn more about our bulk SMS capabilities and the background processing technology, check out the details on our [new feature update page](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/).
+Absolutely, WP SMS is optimized for bulk messaging and can efficiently manage large-scale SMS campaigns. Our plugin has been enhanced with the latest update, WP SMS 6.5, which introduces background processing technology. This advancement enables the delivery of SMS to a vast number of subscribers, suitable for lists with over 10,000 contacts and beyond. This powerful feature ensures that your bulk SMS campaigns are delivered reliably and effectively when using Twilio or any other supported SMS gateway.
+To learn more about our bulk SMS capabilities and the background processing technology, check out the details on our [new feature update page](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/).
 
 = What is the integrations of the WP SMS? =
 WP SMS also integrated with some of the popular WordPress plugins.[See the integrations here](https://wp-sms-pro.com/integrations/)
