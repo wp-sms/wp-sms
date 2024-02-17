@@ -667,7 +667,12 @@ class Settings
                     'id'   => 'wc_notify_by_status_content',
                     'name' => __('Order Status & Message', 'wp-sms'),
                     'type' => 'repeater',
-                    'desc' => __('Add Order Status & Write Message Body Per Order Status', 'wp-sms')
+                    'desc' => __('Add Order Status & Write Message Body Per Order Status', 'wp-sms'),
+                    'options' => [
+                        'template'       => 'admin/field-wc-status-repeater.php',
+                        'order_statuses' => wc_get_order_statuses(),
+                        'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
+                    ]
                 )
             );
         } else {
@@ -2037,11 +2042,10 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        echo Helper::loadTemplate('admin/field-wc-status-repeater.php', array(
-            'args'           => $args,
-            'value'          => $value,
-            'order_statuses' => wc_get_order_statuses(),
-            'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
+        echo Helper::loadTemplate($args['options']['template'], array(
+            'args'    => $args,
+            'value'   => $value,
+            'options' => $args['options'],
         ));
     }
 

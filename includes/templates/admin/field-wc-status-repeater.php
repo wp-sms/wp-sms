@@ -11,7 +11,7 @@
                     <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
                         <select name="order_status" style="display: block; width: 100%;">
                             <option value="">- Please Choose -</option>
-                            <?php foreach ($order_statuses as $status_key => $status_name) : ?>
+                            <?php foreach ($args['options']['order_statuses'] as $status_key => $status_name) : ?>
                                 <?php $key = str_replace('wc-', '', $status_key) ?>
                                 <option value="<?php echo $key ?>" <?php echo ($order_status == $key) ? 'selected' : '' ?>><?php echo $status_name ?></option>
                             <?php endforeach; ?>
@@ -29,7 +29,7 @@
                     <div style="display: block; width: 100%; margin-bottom: 15px;">
                         <textarea name="message" rows="3" style="display: block; width: 100%;"><?php echo $message ?></textarea>
                         <p class="description">Enter the contents of the SMS message.</p>
-                        <p class="description"><?php echo $variables; ?></p>
+                        <p class="description"><?php echo $args['options']['variables']; ?></p>
                     </div>
                     <div>
                         <input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
@@ -42,7 +42,7 @@
                     <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
                         <select name="order_status" style="display: block; width: 100%;">
                             <option value="">- Please Choose -</option>
-                            <?php foreach ($order_statuses as $status_key => $status_name) : ?>
+                            <?php foreach ($args['options']['order_statuses'] as $status_key => $status_name) : ?>
                                 <?php $key = str_replace('wc-', '', $status_key) ?>
                                 <option value="<?php echo $key ?>"><?php echo $status_name ?></option>
                             <?php endforeach; ?>
@@ -60,7 +60,7 @@
                     <div style="display: block; width: 100%; margin-bottom: 15px;">
                         <textarea name="message" rows="3" style="display: block; width: 100%;"></textarea>
                         <p class="description">Enter the contents of the SMS message.</p>
-                        <p class="description"><?php echo $variables; ?></p>
+                        <p class="description"><?php echo $args['options']['variables']; ?></p>
                     </div>
                     <div>
                         <input type="button" value="Delete" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
