@@ -53,16 +53,22 @@ class prosms extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
+            $postBody = [
+                'receiver'   => implode(',', $this->to),
+                'senderName' => $this->from,
+                'message'    => $this->msg
+            ];
+
+            if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
+                $postBody['encoding'] = 'utf8';
+            }
+
             $arguments = array(
                 'headers' => array(
                     'Content-Type'  => 'application/json',
                     'Authorization' => "Bearer $this->has_key",
                 ),
-                'body'    => json_encode(array(
-                    'receiver'   => implode(',', $this->to),
-                    'senderName' => $this->from,
-                    'message'    => $this->msg
-                ))
+                'body'    => json_encode($postBody)
             );
 
             $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $arguments, false);
