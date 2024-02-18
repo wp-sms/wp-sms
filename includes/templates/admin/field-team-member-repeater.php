@@ -22,8 +22,8 @@
                         </div>
                         <div style="margin-bottom: 15px; display: block; width: 100%; float: left;">
                             <div style="display: block; width: 100%;">
-                                <input type="text" class="wpsms_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" value="<?php echo esc_attr($member_photo) ?>" name="member_photo"/>
-                                <span><input type="button" class="button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
+                                <input id="member_photo_field" type="text" class="wpsms_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" value="<?php echo esc_attr($member_photo) ?>" name="member_photo"/>
+                                <span><input type="button" data-target="member_photo_field" class="wpsms_settings_upload_button button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
                             </div>
                             <p class="description"><?php _e('Upload a photo for the team member.', 'wp-sms') ?></p>
                         </div>

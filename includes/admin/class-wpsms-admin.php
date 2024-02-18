@@ -71,8 +71,12 @@ class Admin
             if (stristr($screen->id, 'subscribers')) {
                 wp_enqueue_script('wpsms-import-subscriber', WP_SMS_URL . 'assets/js/import-subscriber.js', true, WP_SMS_VERSION);
             }
+            
+            if (!did_action('wp_enqueue_media')) {
+                wp_enqueue_media();
+            }
 
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', ['jquery'], WP_SMS_VERSION);
             wp_enqueue_script('wpsms-export', WP_SMS_URL . 'assets/js/admin-export.js', true, WP_SMS_VERSION);
             wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
                     'restUrls' => array(
@@ -111,16 +115,7 @@ class Admin
             wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-admin');
             wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
-        }
-
-        /**
-         * Send SMS page's assets
-         */
-        if ($screen->id === 'toplevel_page_wp-sms') {
-            if (!did_action('wp_enqueue_media')) {
-                wp_enqueue_media();
-            }
-        }
+        }        
     }
 
     /**

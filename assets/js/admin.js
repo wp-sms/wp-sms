@@ -72,6 +72,24 @@
             isFirstItemUndeletable: true
         });
     }
+
+    $('.wpsms_settings_upload_button').on('click', e => {
+        const mediaUploader = wp.media({
+            library: {
+                type: 'image',
+            },
+            multiple: false,
+        });
+    
+        mediaUploader.open();
+    
+        mediaUploader.on( 'select', function() {
+            const attachment = mediaUploader.state().get('selection').first().toJSON();
+            const targetInput = document.getElementById(e.target.dataset.target);
+            targetInput.value = attachment.url;
+            $(targetInput).trigger( 'change' );
+        });
+    });
 });
 
 
