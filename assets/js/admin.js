@@ -85,6 +85,7 @@
         });
     }
 
+    // Open WordPress media library when user clicks on upload button
     $(document).on('click', '.wpsms_settings_upload_button', e => {
         const mediaUploader = wp.media({
             library: {
