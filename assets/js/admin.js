@@ -58,6 +58,11 @@
         $('input[name="submit"]').click();
     });
 
+    //Initiate Color Picker
+    if ($('.wpsms-color-picker').length) {
+        $('.wpsms-color-picker').wpColorPicker();
+    };
+
     if ($('.repeater').length) {
         $('.repeater').repeater({
             initEmpty: false,

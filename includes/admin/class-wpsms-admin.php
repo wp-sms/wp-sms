@@ -60,6 +60,9 @@ class Admin
          * Whole setting page's assets
          */
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign' or $screen->id == 'woocommerce_page_wc-orders') {
+            wp_enqueue_style('wp-color-picker');
+            wp_enqueue_script('wp-color-picker');
+
             wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
 
@@ -76,7 +79,7 @@ class Admin
                 wp_enqueue_media();
             }
 
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', ['jquery'], WP_SMS_VERSION);
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', ['jquery', 'wp-color-picker'], WP_SMS_VERSION);
             wp_enqueue_script('wpsms-export', WP_SMS_URL . 'assets/js/admin-export.js', true, WP_SMS_VERSION);
             wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
                     'restUrls' => array(
