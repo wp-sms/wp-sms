@@ -12,7 +12,7 @@
                             <input placeholder="<?php _e('Resource Link Title', 'wp-sms') ?>" type="text" name="resource_link_title" style="display: block; width: 99%;" value="<?php echo esc_attr($resource_link_title) ?>" />
                         </div>
                         <div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
-                            <input placeholder="<?php _e('Resource Link URL', 'wp-sms') ?>" type="text" name="resource_link_url" style="display: block; width: 99%;" value="<?php echo esc_attr($resource_link_url) ?>" />
+                            <input placeholder="<?php _e('Resource Link URL', 'wp-sms') ?>" type="text" name="resource_link_url" style="display: block; width: 99%;" value="<?php echo esc_url($resource_link_url) ?>" />
                         </div>
                         <div>
                             <input type="button" value="<?php _e('Delete', 'wp-sms') ?>" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
