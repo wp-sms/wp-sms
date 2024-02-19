@@ -1,5 +1,5 @@
 <div class="repeater">
-    <div data-repeater-list="wpsms_settings[<?php echo $args['id'] ?>]">
+    <div data-repeater-list="wpsms_settings[<?php echo esc_attr($args['id']) ?>]">
         <?php if (is_array($value) && count($value)) : ?>
             <?php foreach ($value as $key => $data) : ?>
                 <?php 
@@ -22,24 +22,24 @@
                         </div>
                         <div style="margin-bottom: 15px; display: block; width: 100%; float: left;">
                             <div style="display: block; width: 100%;">
-                                <input id="member_photo_field[<?php echo $key ?>]" type="text" class="wpsms_settings_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" value="<?php echo esc_attr($member_photo) ?>" name="member_photo"/>
-                                <span><input type="button" data-target="member_photo_field[<?php echo $key ?>]" class="wpsms_settings_upload_button button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
+                                <input id="member_photo_field[<?php echo esc_attr($key) ?>]" type="text" class="wpsms_settings_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" value="<?php echo esc_attr($member_photo) ?>" name="member_photo"/>
+                                <span><input type="button" data-target="member_photo_field[<?php echo esc_attr($key) ?>]" class="wpsms_settings_upload_button button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
                             </div>
                             <p class="description"><?php _e('Upload a photo for the team member.', 'wp-sms') ?></p>
                         </div>
                         <div style="display: block; width: 100%; float: left; margin-bottom: 15px;">
-                            <input id="member-availability[<?php echo $key ?>]" type="checkbox" <?php echo esc_attr($member_availability) ?> name="member_availability"/>
-                            <label for="member-availability[<?php echo $key ?>]"><?php _e('Availability', 'wp-sms') ?></label>
+                            <input id="member-availability[<?php echo esc_attr($key) ?>]" type="checkbox" <?php echo esc_attr($member_availability) ?> name="member_availability"/>
+                            <label for="member-availability[<?php echo esc_attr($key) ?>]"><?php _e('Availability', 'wp-sms') ?></label>
                             <p class="description"><?php _e('Indicate when the team member is available to chat.', 'wp-sms') ?></p>
                         </div>
                         <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
                             <select name="member_contact_type" style="display: block; width: 99%;">
                                 <option value=""><?php _e('Contact Type', 'wp-sms') ?></option>
-                                <option value="whatsapp" <?php echo ($member_contact_type == 'whatsapp') ? 'selected' : '' ?>><?php _e('WhatsApp', 'wp-sms') ?></option>
-                                <option value="call" <?php echo ($member_contact_type == 'call') ? 'selected' : '' ?>><?php _e('Phone Call', 'wp-sms') ?></option>
-                                <option value="facebook" <?php echo ($member_contact_type == 'facebook') ? 'selected' : '' ?>><?php _e('Facebook Messenger', 'wp-sms') ?></option>
-                                <option value="telegram" <?php echo ($member_contact_type == 'telegram') ? 'selected' : '' ?>><?php _e('Telegram', 'wp-sms') ?></option>
-                                <option value="sms" <?php echo ($member_contact_type == 'sms') ? 'selected' : '' ?>><?php _e('SMS', 'wp-sms') ?></option>
+                                <option value="whatsapp" <?php selected($member_contact_type, 'whatsapp') ?>><?php _e('WhatsApp', 'wp-sms') ?></option>
+                                <option value="call" <?php selected($member_contact_type, 'call') ?>><?php _e('Phone Call', 'wp-sms') ?></option>
+                                <option value="facebook" <?php selected($member_contact_type, 'facebook') ?>><?php _e('Facebook Messenger', 'wp-sms') ?></option>
+                                <option value="telegram" <?php selected($member_contact_type, 'telegram') ?>><?php _e('Telegram', 'wp-sms') ?></option>
+                                <option value="sms" <?php selected($member_contact_type, 'sms') ?>><?php _e('SMS', 'wp-sms') ?></option>
                             </select>
                             <p class="description"><?php _e('Choose the team member\'s contact method (WhatsApp, Phone Call, Facebook Messenger, Telegram, SMS).', 'wp-sms') ?></p>
                         </div>

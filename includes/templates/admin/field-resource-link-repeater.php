@@ -1,5 +1,5 @@
 <div class="repeater">
-    <div data-repeater-list="wpsms_settings[<?php echo $args['id'] ?>]">
+    <div data-repeater-list="wpsms_settings[<?php echo esc_attr($args['id']) ?>]">
         <?php if (is_array($value) && count($value)) : ?>
             <?php foreach ($value as $data) : ?>
                 <?php 
