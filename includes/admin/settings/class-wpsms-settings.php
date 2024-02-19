@@ -670,7 +670,7 @@ class Settings
                     'type' => 'repeater',
                     'desc' => __('Add Order Status & Write Message Body Per Order Status', 'wp-sms'),
                     'options' => [
-                        'template'       => 'admin/field-wc-status-repeater.php',
+                        'template'       => 'admin/fields/field-wc-status-repeater.php',
                         'order_statuses' => wc_get_order_statuses(),
                         'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
                     ]
@@ -1645,7 +1645,7 @@ class Settings
                     'name' => __('Team Members', 'wp-sms'),
                     'type' => 'repeater',
                     'options' => [
-                        'template' => 'admin/field-team-member-repeater.php',
+                        'template' => 'admin/fields/field-team-member-repeater.php',
                     ],
                 ),
                 // Miscellaneous settings
@@ -1706,7 +1706,7 @@ class Settings
                     'name' => __('Resource Link', 'wp-sms'),
                     'type' => 'repeater',
                     'options' => [
-                        'template' => 'admin/field-resource-link-repeater.php',
+                        'template' => 'admin/fields/field-resource-link-repeater.php',
                     ],
                 ),
             )),
