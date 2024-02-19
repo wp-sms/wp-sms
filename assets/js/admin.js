@@ -63,6 +63,18 @@
             initEmpty: false,
             show: function () {
                 $(this).slideDown();
+
+                // Check if repeater has upload filed
+                const uploadField = $(this).find('.wpsms_settings_upload_field');
+                const uploadButton = $(this).find('.wpsms_settings_upload_button');
+                if (uploadField.length && uploadButton.length) {
+                    // Create unique ID based on element's index
+                    const newFieldIndex = uploadButton.closest('[data-repeater-list]').children().length - 1;
+                    const newFieldID = uploadField.attr('id') + '[' + newFieldIndex + ']';
+                    // Assign a unique ID to upload fields to prevent conflict
+                    uploadField.attr('id', newFieldID);
+                    uploadButton.attr('data-target', newFieldID);
+                }
             },
             hide: function (deleteElement) {
                 if (confirm('Are you sure you want to delete this item?')) {
@@ -73,7 +85,7 @@
         });
     }
 
-    $('.wpsms_settings_upload_button').on('click', e => {
+    $(document).on('click', '.wpsms_settings_upload_button', e => {
         const mediaUploader = wp.media({
             library: {
                 type: 'image',
@@ -87,7 +99,6 @@
             const attachment = mediaUploader.state().get('selection').first().toJSON();
             const targetInput = document.getElementById(e.target.dataset.target);
             targetInput.value = attachment.url;
-            $(targetInput).trigger( 'change' );
         });
     });
 });

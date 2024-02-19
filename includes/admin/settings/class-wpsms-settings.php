@@ -2497,7 +2497,7 @@ class Settings
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
         $html = sprintf(
-            '<input type="text" class="%1$s-text wpsms_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button button-secondary" data-target="' . esc_attr($this->setting_name) . '[%2$s]" value="%4$s"/></span><p class="description"> %5$s</p>', 
+            '<input type="text" class="%1$s-text ' . esc_attr($this->setting_name) . '_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button button-secondary" data-target="' . esc_attr($this->setting_name) . '[%2$s]" value="%4$s"/></span><p class="description"> %5$s</p>', 
             esc_attr($size), 
             esc_attr($args['id']), 
             esc_attr(stripslashes($value)), 

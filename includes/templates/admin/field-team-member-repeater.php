@@ -1,7 +1,7 @@
 <div class="repeater">
     <div data-repeater-list="wpsms_settings[<?php echo $args['id'] ?>]">
         <?php if (is_array($value) && count($value)) : ?>
-            <?php foreach ($value as $data) : ?>
+            <?php foreach ($value as $key => $data) : ?>
                 <?php 
                     $member_name            = isset($data['member_name']) ? $data['member_name'] : '';
                     $member_role            = isset($data['member_role']) ? $data['member_role'] : '';
@@ -22,8 +22,8 @@
                         </div>
                         <div style="margin-bottom: 15px; display: block; width: 100%; float: left;">
                             <div style="display: block; width: 100%;">
-                                <input id="member_photo_field" type="text" class="wpsms_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" value="<?php echo esc_attr($member_photo) ?>" name="member_photo"/>
-                                <span><input type="button" data-target="member_photo_field" class="wpsms_settings_upload_button button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
+                                <input id="member_photo_field[<?php echo $key ?>]" type="text" class="wpsms_settings_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" value="<?php echo esc_attr($member_photo) ?>" name="member_photo"/>
+                                <span><input type="button" data-target="member_photo_field[<?php echo $key ?>]" class="wpsms_settings_upload_button button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
                             </div>
                             <p class="description"><?php _e('Upload a photo for the team member.', 'wp-sms') ?></p>
                         </div>
@@ -66,8 +66,8 @@
                     </div>
                     <div style="margin-bottom: 15px; display: block; width: 100%; float: left;">
                         <div style="display: block; width: 100%;">
-                            <input type="text" class="wpsms_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" name="member_photo"/>
-                            <span><input type="button" class="button button-secondary" value="<?php _e('Upload', 'wp-sms') ?>"/></span>
+                            <input id="member_photo_field" type="text" class="wpsms_settings_upload_field" placeholder="<?php _e('Photo', 'wp-sms') ?>" name="member_photo"/>
+                            <span><input type="button" data-target="member_photo_field" class="wpsms_settings_upload_button button button-secondary" /></span>
                         </div>
                         <p class="description"><?php _e('Upload a photo for the team member.', 'wp-sms') ?></p>
                     </div>
