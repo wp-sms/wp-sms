@@ -31,7 +31,8 @@ class RemoteRequest
          * Prepare the arguments
          */
         $this->parsedParams = wp_parse_args($params, [
-            'method' => $method
+            'method' => $method,
+            'timeout' => 10
         ]);
     }
 
