@@ -28,8 +28,8 @@
                             <p class="description"><?php _e('Upload a photo for the team member.', 'wp-sms') ?></p>
                         </div>
                         <div style="display: block; width: 100%; float: left; margin-bottom: 15px;">
-                            <input type="checkbox" <?php echo esc_attr($member_availability) ?> name="member_availability"/>
-                            <label><?php _e('Availability', 'wp-sms') ?></label>
+                            <input id="member-availability[<?php echo $key ?>]" type="checkbox" <?php echo esc_attr($member_availability) ?> name="member_availability"/>
+                            <label for="member-availability[<?php echo $key ?>]"><?php _e('Availability', 'wp-sms') ?></label>
                             <p class="description"><?php _e('Indicate when the team member is available to chat.', 'wp-sms') ?></p>
                         </div>
                         <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
@@ -72,8 +72,8 @@
                         <p class="description"><?php _e('Upload a photo for the team member.', 'wp-sms') ?></p>
                     </div>
                     <div style="display: block; width: 100%; float: left; margin-bottom: 15px;">
-                        <input type="checkbox" name="member_availability"/>
-                        <label><?php _e('Availability', 'wp-sms') ?></label>
+                        <input id="member-availability" type="checkbox" name="member_availability"/>
+                        <label for="member-availability"><?php _e('Availability', 'wp-sms') ?></label>
                         <p class="description"><?php _e('Indicate when the team member is available to chat.', 'wp-sms') ?></p>
                     </div>
                     <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">

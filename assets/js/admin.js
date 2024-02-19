@@ -69,9 +69,9 @@
             show: function () {
                 $(this).slideDown();
 
-                // Check if repeater has upload filed
                 const uploadField = $(this).find('.wpsms_settings_upload_field');
                 const uploadButton = $(this).find('.wpsms_settings_upload_button');
+                // Check if repeater has upload filed
                 if (uploadField.length && uploadButton.length) {
                     // Create unique ID based on element's index
                     const newFieldIndex = uploadButton.closest('[data-repeater-list]').children().length - 1;
@@ -79,6 +79,19 @@
                     // Assign a unique ID to upload fields to prevent conflict
                     uploadField.attr('id', newFieldID);
                     uploadButton.attr('data-target', newFieldID);
+                }
+
+                const checkbox = $(this).find('[type="checkbox"]');
+                // Check if repeater has checkbox
+                if (checkbox.length) {
+                    // Create unique ID based on element's index
+                    const newFieldIndex = checkbox.closest('[data-repeater-list]').children().length - 1;
+                    const newFieldID = checkbox.attr('id') + '[' + newFieldIndex + ']';
+                    // Assign a unique ID to checkbox fields to prevent conflict
+                    checkbox.attr('id', newFieldID);
+                    if (checkbox.next().is('label')) {
+                        checkbox.next().attr('for', newFieldID);
+                    }
                 }
             },
             hide: function (deleteElement) {
