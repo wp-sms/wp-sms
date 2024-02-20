@@ -6,17 +6,53 @@ class smsozone extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://smsozone.com/api/mt/";
     public $tariff = "http://ozonecmc.com/";
-    public $unitrial = true;
+    public $unitrial = false;
     public $unit;
-    public $flash = "disable";
+    public $flash = "enable";
     public $isflash = false;
+    public $entity_id = '';
+    public $dlt_template_id;
+    public $channel = 'Trans';
 
     public function __construct()
     {
         parent::__construct();
+        $this->bulk_send      = true;
         $this->validateNumber = "e.g. 91989xxxxxxx";
-        $this->has_key        = true;
-        $this->help           = "Enter the route id in this API key field. Click Here (https://smsozone.com/Web/MT/MyRoutes.aspx) for more information regarding your routeid.";
+        $this->help           = "Please enter your API Key and DLT Template ID";
+        $this->has_key = true;
+        $this->gatewayFields = [
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => __('API Key', 'wp-sms'),
+                'desc' => __('Enter API key of gateway.', 'wp-sms'),
+            ],
+            'from'     => [
+                'id'   => 'gateway_sender_id',
+                'name' => __('Approved Sender ID', 'wp-sms'),
+                'desc' => __('Enter sender ID of gateway.', 'wp-sms'),
+            ],
+            'dlt_template_id'  => [
+                'id'   => 'dlt_template_id',
+                'name' => __('Registered DLT Template ID', 'wp-sms'),
+                'desc' => __('Enter your Registered DLT Template ID.', 'wp-sms'),
+            ],
+            'entity_id'  => [
+                'id'   => 'entity_id',
+                'name' => __('DLT Entity ID', 'wp-sms'),
+                'desc' => __('Enter your Registered Entity ID. This field is optional.', 'wp-sms'),
+            ],
+            'channel' => [
+                'id'      => 'channel',
+                'name'    => __('SMS Channel', 'wp-sms'),
+                'desc'    => __('Please select SMS channel.', 'wp-sms'),
+                'type'    => 'select',
+                'options' => [
+                    'Trans' => __('Transactional', 'wp-sms'),
+                    'Promo' => __('Promotional', 'wp-sms'),
+                ]
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -49,90 +85,73 @@ class smsozone extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
+            $dcs = isset($this->options['send_unicode']) ? '0' : '8';
+            $flash_sms = $this->isflash ? '1' : '0';
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $params = [
+                'APIKey' => $this->has_key,
+                'senderid' => $this->from,
+                'channel' => $this->channel,
+                'DCS' => $dcs,
+                'flashsms' => $flash_sms,
+                'number' => implode(',',$this->to),
+                'text'=> $this->msg,
+                'route' => '1',
+                'PEID' => $this->entity_id,
+                'DLTTemplateId' => $this->dlt_template_id
+            ];
 
-            return $credit;
-        }
+            $response = $this->request('GET', "{$this->wsdl_link}/SendSMS", $params);
 
-        $response = wp_remote_get($this->wsdl_link . "SendSMS?user=" . $this->username . "&password=" . $this->password . "&senderid=" . $this->from . "&channel=Trans&DCS=0&flashsms=0&number=" . implode(',', $this->to) . "&text=" . urlencode($this->msg) . "&route=" . $this->has_key);
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
-
-            return new \WP_Error('send-sms', $response->get_error_message());
-        }
-
-        // Ger response code
-        $response_code = wp_remote_retrieve_response_code($response);
-        $json          = json_decode($response['body']);
-        // Check response code
-        if ($response_code == '200') {
-            if ($json->ErrorCode == 0) {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $json);
-
-                /**
-                 * Run hook after send sms.
-                 *
-                 * @param string $response result output.
-                 * @since 2.4
-                 *
-                 */
-                do_action('wp_sms_send', $json);
-
-                return $json;
-            } else {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $json->ErrorMessage, 'error');
-
-                return new \WP_Error('send-sms', $json->ErrorMessage);
+            if (isset($response->ErrorCode) && $response->ErrorCode !== '000') {
+                throw new \Exception($response->ErrorMessage);
             }
 
-        } else {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $json->ExceptionMessage, 'error');
+            //log the result
+            $this->log ($this->from, $this->msg, $this->to, $response);
 
-            return new \WP_Error('send-sms', $json->ExceptionMessage);
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $response result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
+
+            return $response;
+
+        } catch (\Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('send-sms', $e->getMessage());
         }
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
-        }
-
-        $response = wp_remote_get($this->wsdl_link . "GetBalance?User={$this->username}&Password={$this->password}");
-
-        // Check gateway credit
-        if (is_wp_error($response)) {
-            return new \WP_Error('account-credit', $response->get_error_message());
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-
-        if ($response_code == '200') {
-            $json = json_decode($response['body']);
-
-            if ($json->ErrorCode == 0) {
-                return $json->Balance;
-            } else {
-                return new \WP_Error('account-credit', $json->ErrorMessage);
+        try {
+            // Check gateway API
+            if (!$this->has_key) {
+                throw new \Exception('The API Key for this gateway is not set');
             }
 
-        } else {
-            return new \WP_Error('account-credit', $response['body']);
-        }
+            $params = [
+                'APIKey' => $this->has_key
+            ];
 
-        return true;
+            $response = $this->request('GET', "{$this->wsdl_link}/GetBalance", $params, []);
+
+            if ($response->ErrorCode != 0) {
+                throw new \Exception($response->ErrorMessage);
+            }
+
+            return $response->Balance;
+
+        } catch (\Exception $e) {
+            $error_message = $e->getMessage();
+            return new \WP_Error('account-credit', $error_message);
+        }
     }
 }
