@@ -556,3 +556,10 @@ function wp_sms_render_quick_reply($number, $group_id = false)
 
     return $result;
 }
+
+if (!function_exists('array_key_last')) {
+    function array_key_last(array $array)
+    {
+        return key(array_slice($array, -1, 1, true));
+    }
+}
