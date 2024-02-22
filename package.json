@@ -19,7 +19,7 @@
     "@wordpress/babel-preset-default": "^2.1.0",
     "@wordpress/components": "^22.0.0",
     "@wordpress/env": "^5.7.0",
-    "@wordpress/scripts": "^23.0.0",
+    "@wordpress/scripts": "^27.2.0",
     "breakpoint-sass": "^2.7.1",
     "concurrently": "^7.5.0",
     "copy-webpack-plugin": "^10.2.4",
