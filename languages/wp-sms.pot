@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-22T12:41:45+00:00\n"
+"POT-Creation-Date: 2024-02-24T10:00:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: wp-sms\n"
 
 #. Plugin Name of the plugin
@@ -1146,6 +1146,8 @@ msgid "API Key"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1388
+#: includes/gateways/class-wpsms-gateway-prosms.php:33
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:33
 msgid "Enter API key of gateway"
 msgstr ""
 
@@ -2213,8 +2215,29 @@ msgstr ""
 msgid "The API Key and API Password are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:113
-msgid "API key is required."
+#: includes/gateways/class-wpsms-gateway-prosms.php:21
+msgid "46*********"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosms.php:23
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:23
+msgid "Note: that you need to get every 'Sender Name' approved before you can use it as 'Sender Name'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosms.php:27
+#: includes/gateways/class-wpsms-gateway-prosms.php:28
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:27
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:28
+msgid "Sender Name"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosms.php:32
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:32
+msgid "API Iey"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:21
+msgid "45*********"
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-revesms.php:134
