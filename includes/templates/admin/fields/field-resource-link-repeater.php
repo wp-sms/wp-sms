@@ -13,7 +13,7 @@
                             <p class="description"><?php _e('Add titles and URLs for your resource links, e.g., \'FAQs\' or \'Contact Us\'', 'wp-sms') ?></p>
                         </div>
                         <div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
-                            <input placeholder="<?php _e('Link URL', 'wp-sms') ?>" type="text" name="chatbox_link_url" style="display: block; width: 99%;" value="<?php echo esc_attr($chatbox_link_url) ?>" />
+                            <input placeholder="<?php _e('Link URL', 'wp-sms') ?>" type="text" name="chatbox_link_url" style="display: block; width: 99%;" value="<?php echo esc_url($chatbox_link_url) ?>" />
                         </div>
                         <div>
                             <input type="button" value="<?php _e('Delete', 'wp-sms') ?>" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
