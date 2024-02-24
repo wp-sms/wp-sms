@@ -12,6 +12,7 @@ class smsgatewayhub extends \WP_SMS\Gateway
     public $isflash = false;
     public $entity_id = '';
     public $dlt_template_id;
+    public $channel = 'Trans';
 
     public function __construct()
     {
@@ -40,7 +41,17 @@ class smsgatewayhub extends \WP_SMS\Gateway
                 'id'   => 'entity_id',
                 'name' => 'Registered Entity ID',
                 'desc' => 'Enter your Registered Entity ID. This field is optional.',
-            ]
+            ],
+            'channel' => [
+                'id'      => 'channel',
+                'name'    => __('SMS Channel', 'wp-sms'),
+                'desc'    => __('Please select SMS channel.', 'wp-sms'),
+                'type'    => 'select',
+                'options' => [
+                    'Trans' => __('Transactional', 'wp-sms'),
+                    'Promo' => __('Promotional', 'wp-sms'),
+                ]
+            ],
         ];
     }
 
@@ -74,39 +85,30 @@ class smsgatewayhub extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-
-            // Get the Credit.
-            $credit = $this->GetCredit();
-
-            // Check gateway credit
-            if (is_wp_error($credit)) {
-                throw new \Exception($credit->get_error_message());
-            }
-
             $dcs = isset($this->options['send_unicode']) ? '0' : '8';
             $flash_sms = $this->isflash ? '1' : '0';
 
             $params = [
-                'APIKey' => $this->has_key,
-                'senderid' => $this->from,
-                'channel' => '2',
-                'DCS' => $dcs,
-                'flashsms' => $flash_sms,
-                'number' => implode(',',$this->to),
-                'text'=> $this->msg,
-                'route' => '1',
-                'EntityId' => $this->entity_id,
-                'dlttemplateid' => $this->dlt_template_id
+                'APIKey'        => $this->has_key,
+                'senderid'      => $this->from,
+                'channel'       => $this->channel,
+                'DCS'           => $dcs,
+                'flashsms'      => $flash_sms,
+                'number'        => implode(',', $this->to),
+                'text'          => $this->msg,
+                'route'         => '1',
+                'PEID'          => $this->entity_id,
+                'DLTTemplateId' => $this->dlt_template_id
             ];
 
-            $response = $this->request('POST', "{$this->wsdl_link}/SendSMS", $params, []);
+            $response = $this->request('GET', "{$this->wsdl_link}/SendSMS", $params);
 
             if (isset($response->ErrorCode) && $response->ErrorCode !== '000') {
                 throw new \Exception($response->ErrorMessage);
             }
 
             //log the result
-            $this->log ($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
@@ -140,12 +142,12 @@ class smsgatewayhub extends \WP_SMS\Gateway
 
             $response = $this->request('GET', "{$this->wsdl_link}/GetBalance", $params, []);
 
-            if ($response->ErrorCode !== 0) {
+            if ($response->ErrorCode != 0) {
                 throw new \Exception($response->ErrorMessage);
             }
 
             return $response->Balance;
-
+            
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
             return new \WP_Error('account-credit', $error_message);
