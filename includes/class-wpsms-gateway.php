@@ -694,7 +694,7 @@ class Gateway
                 'cpsms'    => 'cpsms.dk',
                 'cellsynt' => 'cellsynt',
                 'suresms'  => 'suresms.com',
-                'prosmsdk' => 'prosms.se'
+                'prosmsdk' => 'sms.dk'
             ),
             'finland'              => array(
                 'cellsynt' => 'cellsynt',
