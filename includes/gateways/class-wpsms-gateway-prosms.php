@@ -8,9 +8,9 @@ use WP_Error;
 
 class prosms extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "https://api.prosms.se/v1";
-    public $tariff = "https://prosms.se/";
-    public $flash = "false";
+    private $wsdl_link = 'https://api.prosms.se/v1';
+    public $tariff = 'https://prosms.se/';
+    public $flash = false;
     public $isflash = false;
     public $unitrial = true;
     public $unit;
@@ -18,19 +18,19 @@ class prosms extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = '46*********';
+        $this->validateNumber = __('46*********', 'wp-sms');
         $this->has_key        = true;
-        $this->help           = "Note: that you need to get every sendername approved before you can use it as sendername.You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add";
+        $this->help           = __('Note: that you need to get every \'Sender Name\' approved before you can use it as \'Sender Name\'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add', 'wp-sms');
         $this->gatewayFields  = [
             'from'    => [
                 'id'   => 'gateway_sender_name',
-                'name' => 'Sender name',
-                'desc' => 'Sender name',
+                'name' => __('Sender Name', 'wp-sms'),
+                'desc' => __('Sender Name', 'wp-sms'),
             ],
             'has_key' => [
                 'id'   => 'gateway_key',
-                'name' => 'API key',
-                'desc' => 'Enter API key of gateway'
+                'name' => __('API Iey', 'wp-sms'),
+                'desc' => __('Enter API key of gateway', 'wp-sms')
             ]
         ];
     }
@@ -53,25 +53,21 @@ class prosms extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            $postBody = [
-                'receiver'   => implode(',', $this->to),
-                'senderName' => $this->from,
-                'message'    => $this->msg
-            ];
-
-            if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
-                $postBody['encoding'] = 'utf8';
-            }
-
-            $arguments = array(
-                'headers' => array(
+            $args = [
+                'headers' => [
                     'Content-Type'  => 'application/json',
                     'Authorization' => "Bearer $this->has_key",
-                ),
-                'body'    => json_encode($postBody)
-            );
+                ],
+                'body'    => json_encode([
+                    'receiver'   => implode(',', $this->to),
+                    'senderName' => $this->from,
+                    'message'    => $this->msg,
+                    'format'     => !empty($this->options['send_unicode']) ? 'UNICODE' : 'gsm',
+                    'encoding'   => 'utf8'
+                ])
+            ];
 
-            $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $arguments, false);
+            $response = $this->request('POST', "{$this->wsdl_link}/sms/send", [], $args, false);
 
             //check sender name
             if ($response->messageCode == '1017') {
@@ -116,9 +112,9 @@ class prosms extends \WP_SMS\Gateway
             }
 
             $arguments = [
-                'headers' => array(
+                'headers' => [
                     'Authorization' => "Bearer $this->has_key",
-                )
+                ]
             ];
 
             $response = $this->request('GET', "{$this->wsdl_link}/user/getcreditvalue", [], $arguments, false);
