@@ -1587,18 +1587,18 @@ class Settings
                     'name' => __('Chatbox Configuration', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'chatbox_title' => array(
-                    'id'      => 'chatbox_title',
-                    'name'    => __('Title', 'wp-sms'),
-                    'type'    => 'text',
-                    'desc'    => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
-                ),
                 'chatbox_message_button' => array(
                     'id'      => 'chatbox_message_button',
                     'name'    => __('Message Button', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Switch on to display the Message Button on your site or off to hide it.', 'wp-sms')
+                ),
+                'chatbox_title' => array(
+                    'id'      => 'chatbox_title',
+                    'name'    => __('Title', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
                 ),
                 // Button settings
                 'chatbox_button'   => array(
