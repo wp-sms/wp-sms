@@ -1578,70 +1578,70 @@ class Settings
             )),
 
             /**
-             * Message button fields
+             * Message button setting fields
              */
             'message_button'        => apply_filters('wp_sms_message_button_settings', array(
-                // General settings
-                'general'   => array(
-                    'id'   => 'general',
-                    'name' => __('General Settings', 'wp-sms'),
+                // Chatbox configuration
+                'chatbox'   => array(
+                    'id'   => 'chatbox',
+                    'name' => __('Chatbox Configuration', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'title' => array(
-                    'id'      => 'title',
+                'chatbox_title' => array(
+                    'id'      => 'chatbox_title',
                     'name'    => __('Title', 'wp-sms'),
                     'type'    => 'text',
-                    'desc'    => __('Enter the main title for your chatbox.', 'wp-sms')
+                    'desc'    => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
                 ),
-                'enable_disable' => array(
-                    'id'      => 'enable_disable',
-                    'name'    => __('Enable Chatbox', 'wp-sms'),
+                'chatbox_message_button' => array(
+                    'id'      => 'chatbox_message_button',
+                    'name'    => __('Message Button', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Check this to enable or disable the chatbox feature.', 'wp-sms')
+                    'desc'    => __('Switch on to display the Message Button on your site or off to hide it.', 'wp-sms')
                 ),
                 // Button settings
-                'button'   => array(
-                    'id'   => 'button',
-                    'name' => __('Button Settings', 'wp-sms'),
+                'chatbox_button'   => array(
+                    'id'   => 'chatbox_button',
+                    'name' => __('Button Appearance', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'button_text' => array(
-                    'id'      => 'button_text',
-                    'name'    => __('Button Text', 'wp-sms'),
+                'chatbox_button_text' => array(
+                    'id'      => 'chatbox_button_text',
+                    'name'    => __('Text', 'wp-sms'),
                     'type'    => 'text',
-                    'desc'    => __('Set the text that appears on the chat button.', 'wp-sms')
+                    'desc'    => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
                 ),
-                'button_color' => array(
-                    'id'      => 'button_color',
-                    'name'    => __('Button Color', 'wp-sms'),
+                'chatbox_button_color' => array(
+                    'id'      => 'chatbox_button_color',
+                    'name'    => __('Color', 'wp-sms'),
                     'type'    => 'color',
-                    'desc'    => __('Choose the color for your chat button.', 'wp-sms')
+                    'desc'    => __('Choose your chat button\'s background color.', 'wp-sms')
                 ),
-                'button_text_color' => array(
-                    'id'      => 'button_text_color',
-                    'name'    => __('Button Text Color', 'wp-sms'),
+                'chatbox_button_text_color' => array(
+                    'id'      => 'chatbox_button_text_color',
+                    'name'    => __('Text Color', 'wp-sms'),
                     'type'    => 'color',
-                    'desc'    => __('Pick the color for the text on your chat button.', 'wp-sms')
+                    'desc'    => __('Select the color for your button\'s text.', 'wp-sms')
                 ),
-                'button_position' => array(
-                    'id'      => 'button_position',
-                    'name'    => __('Button Position', 'wp-sms'),
+                'chatbox_button_position' => array(
+                    'id'      => 'chatbox_button_position',
+                    'name'    => __('Position', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
                         'bottom_right'  => __('Bottom Right', 'wp-sms'),
                         'bottom_left'   => __('Bottom Left', 'wp-sms'),
                     ),
-                    'desc'    => __('Select the position for the chat button on your site.', 'wp-sms')
+                    'desc'    => __('Choose where the chat button appears on your site.', 'wp-sms')
                 ),
                 // Team member settings
-                'team_member'   => array(
-                    'id'   => 'team_member',
-                    'name' => __('Team Member Settings', 'wp-sms'),
+                'chatbox_team_member'   => array(
+                    'id'   => 'chatbox_team_member',
+                    'name' => __('Support Team Profiles', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'team_members'   => array(
-                    'id'   => 'team_members',
+                'chatbox_team_members'   => array(
+                    'id'   => 'chatbox_team_members',
                     'name' => __('Team Members', 'wp-sms'),
                     'type' => 'repeater',
                     'options' => [
@@ -1649,61 +1649,62 @@ class Settings
                     ],
                 ),
                 // Miscellaneous settings
-                'miscellaneous'   => array(
-                    'id'   => 'miscellaneous',
-                    'name' => __('Miscellaneous Settings', 'wp-sms'),
+                'chatbox_miscellaneous'   => array(
+                    'id'   => 'chatbox_miscellaneous',
+                    'name' => __('Additional Chatbox Options', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'footer_text' => array(
-                    'id'      => 'footer_text',
+                'chatbox_footer_text' => array(
+                    'id'      => 'chatbox_footer_text',
                     'name'    => __('Footer Text', 'wp-sms'),
                     'type'    => 'text',
-                    'desc'    => __('Input text for the chatbox footer, like disclaimers or additional info.', 'wp-sms')
+                    'desc'    => __('Text displayed in the chatbox footer, such as \'All rights reserved.\'', 'wp-sms')
                 ),
-                'footer_text_color' => array(
-                    'id'      => 'footer_text_color',
+                'chatbox_footer_text_color' => array(
+                    'id'      => 'chatbox_footer_text_color',
                     'name'    => __('Footer Text Color', 'wp-sms'),
                     'type'    => 'color',
-                    'desc'    => __('Choose the color for your footer text.', 'wp-sms')
+                    'desc'    => __('Select your footer text color.', 'wp-sms')
                 ),
-                'footer_link' => array(
-                    'id'      => 'footer_link',
+                'chatbox_footer_link' => array(
+                    'id'      => 'chatbox_footer_link',
                     'name'    => __('Footer Link', 'wp-sms'),
                     'type'    => 'text',
-                    'desc'    => __('Enter a link for more information, displayed in the footer.', 'wp-sms')
+                    'desc'    => __('Include a link for more information in the chatbox footer, e.g., \'Learn More\'', 'wp-sms')
                 ),
-                'animation_effect' => array(
-                    'id'      => 'animation_effect',
+                'chatbox_animation_effect' => array(
+                    'id'      => 'chatbox_animation_effect',
                     'name'    => __('Animation Effect', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        'none'      => __('None', 'wp-sms'),
+                        ''      => __('None', 'wp-sms'),
                         'fade_in'   => __('Fade In', 'wp-sms'),
                         'slide_up'  => __('Slide Up', 'wp-sms'),
                     ),
-                    'desc'    => __('Select an animation effect for the chatbox\'s appearance or hover state.', 'wp-sms')
+                    'desc'    => __('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms')
                 ),
-                // Resource link settings
-                'resource_link'   => array(
-                    'id'   => 'resource_link',
-                    'name' => __('Resource Link Settings', 'wp-sms'),
+                // Informational link settings
+                'chatbox_link'   => array(
+                    'id'   => 'chatbox_link',
+                    'name' => __('Informational Links', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'resource_links_enabled' => array(
-                    'id'      => 'resource_links_enabled',
-                    'name'    => __('Enable Resource Links', 'wp-sms'),
-                    'type'    => 'text',
-                    'desc'    => __('Switch this on to display a list of resource links in the chatbox.', 'wp-sms')
+                'chatbox_links_enabled' => array(
+                    'id'      => 'chatbox_links_enabled',
+                    'name'    => __('Resource Links', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Turn on to show resource links in the chatbox.', 'wp-sms')
                 ),
-                'resource_links_section_title' => array(
-                    'id'      => 'resource_links_section_title',
+                'chatbox_links_title' => array(
+                    'id'      => 'chatbox_links_title',
                     'name'    => __('Section Title', 'wp-sms'),
                     'type'    => 'text',
-                    'desc'    => __('Give a title for your resource links section.', 'wp-sms')
+                    'desc'    => __('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms')
                 ),
-                'resource_links'   => array(
-                    'id'   => 'resource_links',
-                    'name' => __('Resource Link', 'wp-sms'),
+                'chatbox_links'   => array(
+                    'id'   => 'chatbox_links',
+                    'name' => __('Links', 'wp-sms'),
                     'type' => 'repeater',
                     'options' => [
                         'template' => 'admin/fields/field-resource-link-repeater.php',
