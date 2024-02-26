@@ -499,13 +499,13 @@ class Helper
 
         // Check if the number starts with + sign 
         if (strpos($number, '+') === 0) {
-            // Remove the + sign from beginning of each numbers
+            // Remove the + sign from the beginning of each number
             $number = substr($number, 1);
         }
 
         // Check if the number starts with the default country code
         if (!empty($countryCode) && strpos($number, $countryCode) === 0) {
-            // Remove the country code from beginning of each numbers
+            // Remove the country code from the beginning of each number
             $number = substr($number, strlen($countryCode));
         }
 
