@@ -494,13 +494,19 @@ class Helper
         // Remove all non-digits except leading +
         $number = preg_replace('/[^\d+]/', '', $number);
 
-        // Attempt to remove common country codes if present, or assume no country code
-        // This is a basic heuristic and might need adjustments
-        // Here we assume that a number starting with + and having more than 10 digits could have a country code
-        if (strpos($number, '+') === 0 && strlen($number) > 10) {
-            // Remove the country code assuming it's 3 digits long after the + sign
-            // This is a simplification; real logic might be more complex
-            $number = substr($number, 4);
+        // Get the default country code without leading + sign
+        $countryCode = substr(Option::getOption('mobile_county_code'), 1);
+
+        // Check if the number starts with + sign 
+        if (strpos($number, '+') === 0) {
+            // Remove the + sign from the beginning of each number
+            $number = substr($number, 1);
+        }
+
+        // Check if the number starts with the default country code
+        if (!empty($countryCode) && strpos($number, $countryCode) === 0) {
+            // Remove the country code from the beginning of each number
+            $number = substr($number, strlen($countryCode));
         }
 
         return $number;
