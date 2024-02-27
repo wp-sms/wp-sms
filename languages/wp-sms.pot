@@ -2,16 +2,16 @@
 # This file is distributed under the same license as the WP SMS plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP SMS 6.5.2\n"
+"Project-Id-Version: WP SMS 6.5.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-13T18:34:49+00:00\n"
+"POT-Creation-Date: 2024-02-24T10:00:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: wp-sms\n"
 
 #. Plugin Name of the plugin
@@ -117,7 +117,7 @@ msgid "Groups"
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:190
-#: includes/admin/privacy/class-wpsms-privacy.php:20
+#: includes/admin/privacy/class-wpsms-privacy.php:22
 #: includes/admin/settings/class-wpsms-settings.php:1328
 msgid "Privacy"
 msgstr ""
@@ -1141,10 +1141,13 @@ msgid "Sender number or sender ID"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1386
+#: includes/gateways/class-wpsms-gateway-smsozone.php:27
 msgid "API Key"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1388
+#: includes/gateways/class-wpsms-gateway-prosms.php:33
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:33
 msgid "Enter API key of gateway"
 msgstr ""
 
@@ -1396,7 +1399,7 @@ msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1649
 #: includes/class-front.php:48
-#: includes/templates/subscribe-form.php:94
+#: includes/templates/subscribe-form.php:96
 msgid "Activate"
 msgstr ""
 
@@ -1725,9 +1728,9 @@ msgid "Loading..."
 msgstr ""
 
 #: includes/class-front.php:47
-#: includes/templates/subscribe-form.php:62
-#: includes/templates/subscribe-form.php:63
-#: includes/templates/subscribe-form.php:82
+#: includes/templates/subscribe-form.php:64
+#: includes/templates/subscribe-form.php:65
+#: includes/templates/subscribe-form.php:84
 msgid "Subscribe"
 msgstr ""
 
@@ -1955,7 +1958,7 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-sunwaysms.php:129
 #: includes/gateways/class-wpsms-gateway-tablighsmsi.php:93
 #: includes/gateways/class-wpsms-gateway-tcisms.php:96
-#: includes/gateways/class-wpsms-gateway-textanywhere.php:112
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:226
 #: includes/gateways/class-wpsms-gateway-textsms.php:96
 #: includes/gateways/class-wpsms-gateway-tgfsms.php:96
 #: includes/gateways/class-wpsms-gateway-unisender.php:113
@@ -2021,7 +2024,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-smshosting.php:122
 #: includes/gateways/class-wpsms-gateway-smsline.php:93
 #: includes/gateways/class-wpsms-gateway-smsmaster.php:101
-#: includes/gateways/class-wpsms-gateway-smsozone.php:111
 #: includes/gateways/class-wpsms-gateway-smsservice.php:100
 #: includes/gateways/class-wpsms-gateway-torpedos.php:121
 #: includes/gateways/class-wpsms-gateway-tripadasmsbox.php:117
@@ -2213,8 +2215,29 @@ msgstr ""
 msgid "The API Key and API Password are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:113
-msgid "API key is required."
+#: includes/gateways/class-wpsms-gateway-prosms.php:21
+msgid "46*********"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosms.php:23
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:23
+msgid "Note: that you need to get every 'Sender Name' approved before you can use it as 'Sender Name'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosms.php:27
+#: includes/gateways/class-wpsms-gateway-prosms.php:28
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:27
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:28
+msgid "Sender Name"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosms.php:32
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:32
+msgid "API Iey"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:21
+msgid "45*********"
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-revesms.php:134
@@ -2245,7 +2268,55 @@ msgstr ""
 msgid "The API Key or API Secret for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-textanywhere.php:123
+#: includes/gateways/class-wpsms-gateway-smsozone.php:28
+msgid "Enter API key of gateway."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:32
+msgid "Approved Sender ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:33
+msgid "Enter sender ID of gateway."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:37
+msgid "Registered DLT Template ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:38
+msgid "Enter your Registered DLT Template ID."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:42
+msgid "DLT Entity ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:43
+msgid "Enter your Registered Entity ID. This field is optional."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:47
+msgid "SMS Channel"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:48
+msgid "Please select SMS channel."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:51
+msgid "Transactional"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:52
+msgid "Promotional"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:194
+msgid "Username and API password are required."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:237
 msgid "The <code>%s</code> function is not active in your server."
 msgstr ""
 
@@ -2473,19 +2544,39 @@ msgid "View Inbox / Incoming Messages"
 msgstr ""
 
 #: includes/templates/admin/inbox.php:13
-msgid "Store Received Messages"
+msgid "Keep a record of all incoming messages without hassle."
+msgstr ""
+
+#: includes/templates/admin/inbox.php:13
+msgid "Store Incoming Messages"
 msgstr ""
 
 #: includes/templates/admin/inbox.php:14
-msgid "Create Specific Commands"
+msgid "Set up specific commands to trigger actions or automated responses."
+msgstr ""
+
+#: includes/templates/admin/inbox.php:14
+msgid "Custom Commands"
 msgstr ""
 
 #: includes/templates/admin/inbox.php:15
-msgid "Do Actions"
+msgid "Take immediate action, such as canceling orders, directly from the chat."
+msgstr ""
+
+#: includes/templates/admin/inbox.php:15
+msgid "Direct Actions"
 msgstr ""
 
 #: includes/templates/admin/inbox.php:18
-msgid "Display as Conversation"
+msgid "View messages in context with the conversation display."
+msgstr ""
+
+#: includes/templates/admin/inbox.php:18
+msgid "Maintain Conversations"
+msgstr ""
+
+#: includes/templates/admin/inbox.php:19
+msgid "Integration: Perfectly sync with your WooCommerce orders for streamlined management."
 msgstr ""
 
 #: includes/templates/admin/inbox.php:19
@@ -2493,11 +2584,15 @@ msgid "WooCommerce Compatibility"
 msgstr ""
 
 #: includes/templates/admin/inbox.php:20
-msgid "Subscriber Compatibility"
+msgid "Ensure your subscriber lists are always up to date."
+msgstr ""
+
+#: includes/templates/admin/inbox.php:20
+msgid "Subscriber Sync"
 msgstr ""
 
 #: includes/templates/admin/inbox.php:24
-msgid "More Info about WP SMS Two Way!"
+msgid "Discover More About WP SMS Two Way!"
 msgstr ""
 
 #: includes/templates/admin/order-view-metabox.php:12
@@ -2960,29 +3055,28 @@ msgid "Full Name"
 msgstr ""
 
 #: includes/templates/subscribe-form.php:32
-msgid "Select the groups"
-msgstr ""
-
-#: includes/templates/subscribe-form.php:41
-#: src/Blocks/SendSmsBlock.php:51
-msgid "Select a group"
+msgid "Select the Groups"
 msgstr ""
 
 #: includes/templates/subscribe-form.php:43
+msgid "Select a Group"
+msgstr ""
+
+#: includes/templates/subscribe-form.php:45
 msgid "Please select the group"
 msgstr ""
 
-#: includes/templates/subscribe-form.php:67
-#: includes/templates/subscribe-form.php:68
+#: includes/templates/subscribe-form.php:69
+#: includes/templates/subscribe-form.php:70
 msgid "Unsubscribe"
 msgstr ""
 
-#: includes/templates/subscribe-form.php:75
+#: includes/templates/subscribe-form.php:77
 msgid "I agree to receive SMS based on my data"
 msgstr ""
 
-#: includes/templates/subscribe-form.php:91
-#: includes/templates/subscribe-form.php:92
+#: includes/templates/subscribe-form.php:93
+#: includes/templates/subscribe-form.php:94
 msgid "Activation code"
 msgstr ""
 
@@ -3081,6 +3175,10 @@ msgid "All Roles"
 msgstr ""
 
 #: src/Blocks/SendSmsBlock.php:51
+msgid "Select a group"
+msgstr ""
+
+#: src/Blocks/SendSmsBlock.php:51
 msgid "No Group"
 msgstr ""
 
@@ -3116,16 +3214,16 @@ msgstr ""
 msgid "File uploaded successfully."
 msgstr ""
 
-#: src/Helper.php:300
+#: src/Helper.php:310
 msgid "Invalid Mobile Number"
 msgstr ""
 
-#: src/Helper.php:313
+#: src/Helper.php:323
 msgid "The mobile number doesn't contain the country code."
 msgstr ""
 
-#: src/Helper.php:354
-#: src/Helper.php:369
+#: src/Helper.php:364
+#: src/Helper.php:379
 msgid "This mobile is already registered, please choose another one."
 msgstr ""
 
@@ -3181,6 +3279,10 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
+#: src/Services/WooCommerce/WooCommerceCheckout.php:45
+msgid "I would like to get notification about any change in my order via SMS."
+msgstr ""
+
 #: src/SmsOtp/Generator.php:109
 msgid "Provided $length argument must be between 4 and 10."
 msgstr ""
@@ -3203,7 +3305,7 @@ msgstr ""
 msgid "Mobile Number for getting SMS notification"
 msgstr ""
 
-#: src/Utils/RemoteRequest.php:73
+#: src/Utils/RemoteRequest.php:74
 #: src/Webhook/WebhookAbstract.php:75
 msgid "Failed to get success response, %s"
 msgstr ""

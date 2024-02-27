@@ -14,6 +14,8 @@ class Privacy
     /*
       * Render Privacy Page
       */
+    public $pagehook;
+
     public function render_page()
     {
         echo Helper::loadTemplate('admin/privacy-page.php', array(

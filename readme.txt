@@ -5,7 +5,7 @@ Tags: sms, wordpress, send, subscribe, message, register, notification, webservi
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.5.4
+Stable tag: 6.5.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -108,7 +108,8 @@ You can see the list of all supported gateways [through this link](https://wp-sm
  * Integration with Bitly.com for make the URLs shorter
 
 = Does WP SMS support bulk SMS sending for a large number of subscribers? =
-Absolutely, WP SMS is optimized for bulk messaging and can efficiently manage large-scale SMS campaigns. Our plugin has been enhanced with the latest update, WP SMS 6.5, which introduces background processing technology. This advancement enables the delivery of SMS to a vast number of subscribers, suitable for lists with over 10,000 contacts and beyond. This powerful feature ensures that your bulk SMS campaigns are delivered reliably and effectively when using Twilio or any other supported SMS gateway. To learn more about our bulk SMS capabilities and the background processing technology, check out the details on our [new feature update page](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/).
+Absolutely, WP SMS is optimized for bulk messaging and can efficiently manage large-scale SMS campaigns. Our plugin has been enhanced with the latest update, WP SMS 6.5, which introduces background processing technology. This advancement enables the delivery of SMS to a vast number of subscribers, suitable for lists with over 10,000 contacts and beyond. This powerful feature ensures that your bulk SMS campaigns are delivered reliably and effectively when using Twilio or any other supported SMS gateway.
+To learn more about our bulk SMS capabilities and the background processing technology, check out the details on our [new feature update page](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/).
 
 = What is the integrations of the WP SMS? =
 WP SMS also integrated with some of the popular WordPress plugins.[See the integrations here](https://wp-sms-pro.com/integrations/)
@@ -218,6 +219,16 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.5.5 - 27.02.2024 =
+* Update: Added support for SMS Gateways OzoneSMS and SMSGatewayHub, and included supported encoding for ProSMS.
+* Update: Refreshed POT files and strings for better localization.
+* Improvement: Resolved Deprecated Dynamic Property Creation issue in WP_SMS\Privacy Class.
+* Improvement: Enhanced number normalization logic for better accuracy.
+* Improvement: Extended timeout of HTTP requests to 10 seconds for improved reliability.
+* Improvement: Implemented minor enhancements for better performance and ensured backward compatibility.
+
+[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
+
 = v6.5.4 - 12.02.2024 =
 * Improvement: Responsive admin table lists fixed.
 * Improvement: Notifications improved and notice issues fixed.
@@ -230,8 +241,6 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * Improvement: Added EuroSms gateway help and improved number display in outbox.
 * Improvement: Updated the POT file for better translations.
 * Fixes: Display issue with the feedback button in admin area.
-
-[Feature suggestions that are not listed above are welcome!](https://wp-sms-pro.com/contact)
 
 = v6.5.2 - 10.01.2024 =
 * Fixes: Fixed class not found error by correcting `WP_Error` namespace

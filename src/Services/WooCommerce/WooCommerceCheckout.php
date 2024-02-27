@@ -42,7 +42,7 @@ class WooCommerceCheckout
             'label_class' => ['woocommerce-form__label woocommerce-form__label-for-checkbox checkbox'],
             'input_class' => ['woocommerce-form__input woocommerce-form__input-checkbox input-checkbox'],
             'required'    => false,
-            'label'       => __('I would like to get notification about any change in my order via SMS.', 'wp-sms-woocommerce-pro')
+            'label'       => __('I would like to get notification about any change in my order via SMS.', 'wp-sms')
         ], 1);
     }
 
