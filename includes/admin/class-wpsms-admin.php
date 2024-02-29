@@ -66,6 +66,11 @@ class Admin
             if (stristr($screen->id, 'wp-sms')) {
                 wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION);
                 wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION);
+
+                // tooltip
+                wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', true, WP_SMS_VERSION);
+                wp_enqueue_style('wpsms-tooltip-theme', WP_SMS_URL . 'assets/css/tooltipster-sideTip-borderless.min.css', true, WP_SMS_VERSION);
+                wp_enqueue_script('wpsms-tooltip', WP_SMS_URL . 'assets/js/tooltipster.bundle.js', true, WP_SMS_VERSION);
             }
 
             if (stristr($screen->id, 'subscribers')) {

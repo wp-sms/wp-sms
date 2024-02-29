@@ -72,6 +72,12 @@
             isFirstItemUndeletable: true
         });
     }
+
+    if ($('.wpsms-tooltip').length) {
+        $('.wpsms-tooltip').tooltipster({
+            theme: 'tooltipster-borderless'
+        });
+    }
 });
 
 

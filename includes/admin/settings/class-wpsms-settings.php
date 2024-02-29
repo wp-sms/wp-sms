@@ -1327,9 +1327,11 @@ class Settings
                 ),
                 'admin_title_privacy'                      => array(
                     'id'   => 'admin_title_privacy',
-                    'name' => __('Data Protection Settings', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        __('Data Protection Settings', 'wp-sms'),
+                        __('Enhance user privacy with GDPR-focused settings. Activate to ensure compliance with data protection regulations and provide users with transparency and control over their personal information.', 'wp-sms')
+                    ),
                     'type' => 'header',
-                    'desc' => __('Enhance user privacy with GDPR-focused settings. Activate to ensure compliance with data protection regulations and provide users with transparency and control over their personal information.', 'wp-sms'),
                 ),
                 'gdpr_compliance'                          => array(
                     'id'      => 'gdpr_compliance',
@@ -2605,5 +2607,27 @@ class Settings
         }
 
         return $settings;
+    }
+
+    /**
+     * This private method is used to render the header of an option.
+     * It accepts two parameters: the title of the option and an optional tooltip.
+     * If a tooltip is provided, it is appended to the title inside a span with the class "tooltip".
+     * The method returns the final title string.
+     *
+     * @param string $title The title of the option.
+     * @param string|bool $tooltip Optional. The tooltip to be appended to the title. Default is false.
+     * @return string The final title string.
+     */
+    private function renderOptionHeader($title, $tooltip = false)
+    {
+        // Check if a tooltip is provided
+        if ($tooltip) {
+            // If a tooltip is provided, append it to the title inside a span with the class "tooltip"
+            $title .= '&nbsp;' . sprintf('<span class="wpsms-tooltip" title="%s"><i class="wpsms-tooltip-icon"></i></span>', $tooltip);
+        }
+
+        // Return the final title string
+        return $title;
     }
 }
