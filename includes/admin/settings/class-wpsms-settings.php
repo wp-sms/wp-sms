@@ -1211,31 +1211,31 @@ class Settings
             'general'              => apply_filters('wp_sms_general_settings', array(
                 'admin_title'                              => array(
                     'id'   => 'admin_title',
-                    'name' => __('Administrator', 'wp-sms'),
+                    'name' => __('Administrator Notifications', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'admin_mobile_number'                      => array(
                     'id'   => 'admin_mobile_number',
                     'name' => __('Admin Mobile Number', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => __('Admin mobile number for get any sms notifications', 'wp-sms')
+                    'desc' => __('Mobile number where the administrator will receive notifications.', 'wp-sms')
                 ),
                 'mobile_county_code'                       => array(
                     'id'         => 'mobile_county_code',
                     'name'       => __('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
-                    'desc'       => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
+                    'desc'       => __('If the administrator\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
                     'options'    => array_merge(['0' => __('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
-                    'name' => __('Mobile Field', 'wp-sms'),
+                    'name' => __('Mobile Field Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'add_mobile_field'                         => array(
                     'id'      => 'add_mobile_field',
-                    'name'    => __('Mobile Field Status', 'wp-sms'),
+                    'name'    => __('Mobile Number Field Source', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => [
                         'WordPress'   => [
@@ -1247,7 +1247,7 @@ class Settings
                             'use_phone_field_in_wc_billing'  => __('Use the exist phone field in billing address', 'wp-sms')
                         ]
                     ],
-                    'desc'    => __('Choose how to set the mobile number video for the user', 'wp-sms')
+                    'desc'    => __('Create a new mobile number field or use an existing phone field.', 'wp-sms')
                 ),
                 'um_sync_field_name'                       => array(
                     'id'      => 'um_sync_field_name',
@@ -1284,20 +1284,20 @@ class Settings
                         '0'        => __('Required', 'wp-sms'),
                         'optional' => __('Optional', 'wp-sms')
                     ),
-                    'desc'    => __('The mobile number field is typically required by default, but would you prefer it to be optional?', 'wp-sms')
+                    'desc'    => __('Set the mobile number field as optional or required.', 'wp-sms')
                 ),
                 'mobile_terms_field_place_holder'          => array(
                     'id'   => 'mobile_terms_field_place_holder',
                     'name' => __('Mobile Field Placeholder', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => __('Help your clients to enter their mobile number in a correct format by choosing a proper placeholder.', 'wp-sms')
+                    'desc' => __('Enter a sample format for the mobile number that users will see. Example: "e.g., +1234567890".', 'wp-sms')
                 ),
                 'international_mobile'                     => array(
                     'id'      => 'international_mobile',
-                    'name'    => __('International Telephone Input', 'wp-sms'),
+                    'name'    => __('International Number Input', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Adds a flag dropdown to any mobile number input field', 'wp-sms')
+                    'desc'    => __('Add a flag dropdown for international format support in the mobile number input field.', 'wp-sms')
                 ),
                 'international_mobile_only_countries'      => array(
                     'id'      => 'international_mobile_only_countries',
@@ -1316,26 +1316,27 @@ class Settings
                 'mobile_terms_minimum'                     => array(
                     'id'   => 'mobile_terms_minimum',
                     'name' => __('Minimum Length Number', 'wp-sms'),
-                    'type' => 'number'
+                    'type' => 'number',
+                    'desc' => __('Specify the shortest allowed mobile number.', 'wp-sms'),
                 ),
                 'mobile_terms_maximum'                     => array(
                     'id'   => 'mobile_terms_maximum',
                     'name' => __('Maximum Length Number', 'wp-sms'),
-                    'type' => 'number'
+                    'type' => 'number',
+                    'desc' => __('Specify the longest allowed mobile number.', 'wp-sms'),
                 ),
                 'admin_title_privacy'                      => array(
                     'id'   => 'admin_title_privacy',
-                    'name' => __('Privacy', 'wp-sms'),
+                    'name' => __('Data Protection Settings', 'wp-sms'),
                     'type' => 'header',
-                    'doc'  => '/6064/gdpr-compliant-in-wp-sms/',
-                    'desc' => __('GDPR Compliant', 'wp-sms'),
+                    'desc' => __('Enhance user privacy with GDPR-focused settings. Activate to ensure compliance with data protection regulations and provide users with transparency and control over their personal information.', 'wp-sms'),
                 ),
                 'gdpr_compliance'                          => array(
                     'id'      => 'gdpr_compliance',
-                    'name'    => __('GDPR Enhancements', 'wp-sms'),
+                    'name'    => __('GDPR Compliance Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR-related features.', 'wp-sms')
+                    'desc'    => __('Implements GDPR adherence by enabling user data export and deletion via mobile number and adding a consent checkbox for SMS newsletter subscriptions.', 'wp-sms')
                 ),
             )),
 
