@@ -120,6 +120,7 @@ class WP_SMS
         $this->include('src/Utils/CsvHelper.php');
         $this->include('src/Utils/RemoteRequest.php');
         $this->include('src/Utils/Logger.php');
+        $this->include('src/Components/Assets.php');
         $this->include('src/Report/EmailReportGenerator.php');
 
         // Third-party libraries
