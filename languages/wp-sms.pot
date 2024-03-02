@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-24T08:12:58+00:00\n"
+"POT-Creation-Date: 2024-03-02T20:48:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-sms\n"
 
 #. Plugin Name of the plugin
@@ -348,7 +348,7 @@ msgid "Notifications"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:165
-#: includes/admin/settings/class-wpsms-settings.php:1598
+#: includes/admin/settings/class-wpsms-settings.php:1592
 msgid "Message Button"
 msgstr ""
 
@@ -1332,10 +1332,14 @@ msgid "Check this to disable all included styling of SMS Newsletter form element
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1587
-msgid "Chatbox Configuration"
+msgid "Message Button Configuration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1592
+#: includes/admin/settings/class-wpsms-settings.php:1595
+msgid "Switch on to display the Message Button on your site or off to hide it."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:1599
 #: includes/templates/widget.php:2
 #: assets/blocks/SendSms/index.js:1
 #: assets/blocks/Subscribe/index.js:1
@@ -1344,12 +1348,8 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1594
-msgid "Main title for your chatbox, e.g., 'Chat with Us!'"
-msgstr ""
-
 #: includes/admin/settings/class-wpsms-settings.php:1601
-msgid "Switch on to display the Message Button on your site or off to hide it."
+msgid "Main title for your chatbox, e.g., 'Chat with Us!'"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1606

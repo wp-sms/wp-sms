@@ -1581,10 +1581,10 @@ class Settings
              * Message button setting fields
              */
             'message_button'        => apply_filters('wp_sms_message_button_settings', array(
-                // Chatbox configuration
+                // Message Button Configuration
                 'chatbox'   => array(
                     'id'   => 'chatbox',
-                    'name' => __('Chatbox Configuration', 'wp-sms'),
+                    'name' => __('Message Button Configuration', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'chatbox_message_button' => array(
