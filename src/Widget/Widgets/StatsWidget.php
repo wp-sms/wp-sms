@@ -13,7 +13,6 @@ class StatsWidget extends AbstractWidget
 {
     protected $id = 'wp-sms-stats-widget';
     protected $name = 'WP SMS Stats';
-    protected $version = '1.0';
 
     /**
      * Preparations before rendering
