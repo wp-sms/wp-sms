@@ -17,6 +17,7 @@ class MessageButtonManager
     /**
      * Get message button scripts
      * 
+     * @todo Enqueue scripts using Assets class
      * @return void
      */
     public function enqueueScripts()
@@ -30,7 +31,7 @@ class MessageButtonManager
      * 
      * @return array
      */
-    static public function getOptions() {
+    private function getOptions() {
         $options = [
             'title'                 => Option::getOption('chatbox_title'),
             'chatbox_color'         => Option::getOption('chatbox_color'),
@@ -57,7 +58,7 @@ class MessageButtonManager
      */
     public function renderChatBox()
     {
-        $options = self::getOptions();
+        $options = $this->getOptions();
         $chatbox = new ChatBox($options);
         $chatbox->render();
     }
