@@ -1622,7 +1622,7 @@ class Settings
                     'id'      => 'chatbox_text_color',
                     'name'    => __('Text Color', 'wp-sms'),
                     'type'    => 'color',
-                    'desc'    => __('Select the color for your button\'s text.', 'wp-sms')
+                    'desc'    => __('Select the color for your button and header text.', 'wp-sms')
                 ),
                 'chatbox_button_position' => array(
                     'id'      => 'chatbox_button_position',
