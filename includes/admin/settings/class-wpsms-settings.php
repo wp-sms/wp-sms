@@ -1612,14 +1612,14 @@ class Settings
                     'type'    => 'text',
                     'desc'    => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
                 ),
-                'chatbox_button_color' => array(
-                    'id'      => 'chatbox_button_color',
+                'chatbox_color' => array(
+                    'id'      => 'chatbox_color',
                     'name'    => __('Color', 'wp-sms'),
                     'type'    => 'color',
-                    'desc'    => __('Choose your chat button\'s background color.', 'wp-sms')
+                    'desc'    => __('Choose your chat button\'s background color and header color.', 'wp-sms')
                 ),
-                'chatbox_button_text_color' => array(
-                    'id'      => 'chatbox_button_text_color',
+                'chatbox_text_color' => array(
+                    'id'      => 'chatbox_text_color',
                     'name'    => __('Text Color', 'wp-sms'),
                     'type'    => 'color',
                     'desc'    => __('Select the color for your button\'s text.', 'wp-sms')
@@ -1666,11 +1666,17 @@ class Settings
                     'type'    => 'color',
                     'desc'    => __('Select your footer text color.', 'wp-sms')
                 ),
-                'chatbox_footer_link' => array(
-                    'id'      => 'chatbox_footer_link',
-                    'name'    => __('Footer Link', 'wp-sms'),
+                'chatbox_footer_link_title' => array(
+                    'id'      => 'chatbox_footer_link_title',
+                    'name'    => __('Footer Link Title', 'wp-sms'),
                     'type'    => 'text',
                     'desc'    => __('Include a link for more information in the chatbox footer, e.g., \'Learn More\'', 'wp-sms')
+                ),
+                'chatbox_footer_link_url' => array(
+                    'id'      => 'chatbox_footer_link_url',
+                    'name'    => __('Footer Link URL', 'wp-sms'),
+                    'type'    => 'text',
+                    'desc'    => __('Enter the URL of the chatbox footer link.', 'wp-sms')
                 ),
                 'chatbox_animation_effect' => array(
                     'id'      => 'chatbox_animation_effect',
