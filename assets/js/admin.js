@@ -105,9 +105,11 @@
 
     if ($('.wpsms-tooltip').length) {
         $('.wpsms-tooltip').tooltipster({
-            theme: 'tooltipster-borderless'
+            theme: 'tooltipster-borderless',
+            maxWidth: 400,
         });
     }
+
     // Open WordPress media library when user clicks on upload button
     $(document).on('click', '.wpsms_settings_upload_button', e => {
         const mediaUploader = wp.media({

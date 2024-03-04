@@ -61,6 +61,10 @@
 
 .wpsms-tooltip {
   position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
 }
 
 .wpsms-tooltip-icon {
@@ -73,5 +77,5 @@
   height: 20px;
   text-align: center;
   position: absolute;
-  top: -3px;
+  top: -2px;
 }
