@@ -1684,8 +1684,8 @@ class Settings
                     'type'    => 'select',
                     'options' => array(
                         ''      => __('None', 'wp-sms'),
-                        'fade_in'   => __('Fade In', 'wp-sms'),
-                        'slide_up'  => __('Slide Up', 'wp-sms'),
+                        'fade'   => __('Fade In', 'wp-sms'),
+                        'slide'  => __('Slide Up', 'wp-sms'),
                     ),
                     'desc'    => __('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms')
                 ),

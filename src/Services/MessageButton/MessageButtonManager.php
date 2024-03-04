@@ -22,8 +22,8 @@ class MessageButtonManager
      */
     public function enqueueScripts()
     {
-        wp_enqueue_style('wp-sms-chatbox', WP_SMS_URL . 'assets/css/chatbox.css', [], WP_SMS_VERSION);
-        wp_enqueue_script('wp-sms-chatbox', WP_SMS_URL . 'assets/js/chatbox.js', [], WP_SMS_VERSION, true);
+        wp_enqueue_style('wp-sms-chatbox', WP_SMS_URL . 'assets/css/chatbox.min.css', [], WP_SMS_VERSION);
+        wp_enqueue_script('wp-sms-chatbox', WP_SMS_URL . 'assets/js/chatbox.min.js', [], WP_SMS_VERSION, true);
     }
 
     /**
@@ -34,6 +34,7 @@ class MessageButtonManager
     private function getOptions() {
         $options = [
             'title'                 => Option::getOption('chatbox_title'),
+            'chatbox_animation'     => Option::getOption('chatbox_animation_effect'),
             'chatbox_color'         => Option::getOption('chatbox_color'),
             'chatbox_text_color'    => Option::getOption('chatbox_text_color'),
             'button_text'           => Option::getOption('chatbox_button_text'),
