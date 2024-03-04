@@ -60,7 +60,8 @@ class Settings
             update_option($this->setting_name, array());
         }
 
-        if (isset($_GET['page']) and $_GET['page'] == 'wp-sms-settings' or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
+        // wp-sms-intgration added as part of the hole setting but in diffrent submenu
+        if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-settings', 'wp-sms-integration']) or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
             add_action('admin_init', array($this, 'register_settings'));
         }
 
@@ -163,7 +164,7 @@ class Settings
             'newsletter'           => __('SMS Newsletter', 'wp-sms'),
             'notifications'        => __('Notifications', 'wp-sms'),
             'advanced'             => __('Advanced', 'wp-sms'),
-            'contact_form7'        => __('Contact Form 7', 'wp-sms'),
+            // 'contact_form7'        => __('Contact Form 7', 'wp-sms'),
 
             /*
              * Licenses tab
@@ -174,14 +175,14 @@ class Settings
              * Pro Pack tabs
              */
             'pro_wordpress'        => __('2FA & Login', 'wp-sms'),
-            'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
-            'pro_woocommerce'      => __('WooCommerce', 'wp-sms'),
-            'pro_gravity_forms'    => __('Gravity Forms', 'wp-sms'),
-            'pro_quform'           => __('Quform', 'wp-sms'),
-            'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
-            'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
-            'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
-            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
+            // 'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
+            // 'pro_woocommerce'      => __('WooCommerce', 'wp-sms'),
+            // 'pro_gravity_forms'    => __('Gravity Forms', 'wp-sms'),
+            // 'pro_quform'           => __('Quform', 'wp-sms'),
+            // 'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
+            // 'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
+            // 'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
+            // 'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
 
         );
 
@@ -1944,7 +1945,7 @@ class Settings
 
     private function isCurrentTab($tab)
     {
-        return isset($_REQUEST['page']) && $_REQUEST['page'] == 'wp-sms-settings' && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
+        return isset($_REQUEST['page']) && in_array($_REQUEST['page'], ['wp-sms-settings', 'wp-sms-integration']) && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
     }
 
     /*
@@ -2375,6 +2376,8 @@ class Settings
 
         echo $html;
     }
+
+
 
     public function render_settings()
     {

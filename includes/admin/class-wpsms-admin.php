@@ -191,6 +191,9 @@ class Admin
         }
 
         add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array($this->settings, 'render_settings'), 6);
+        add_submenu_page('wp-sms', __('Integration', 'wp-sms'), __('Integration', 'wp-sms'), 'wpsms_setting', 'wp-sms-integration', function(){
+            return (new SettingsIntegration)->render_settings();
+        }, 7);
         add_submenu_page('wp-sms', __('Add-Ons', 'wp-sms'), sprintf(__('%sAdd-Ons%s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
 
         // Add styles to menu pages

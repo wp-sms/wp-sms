@@ -237,6 +237,7 @@ class WP_SMS
         if (is_admin()) {
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
+            $this->include('includes/admin/settings/class-wpsms-settings-integration.php');
             $this->include('includes/admin/class-wpsms-admin.php');
             $this->include('includes/admin/class-wpsms-admin-helper.php');
             $this->include('includes/admin/outbox/class-wpsms-outbox.php');
