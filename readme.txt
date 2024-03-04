@@ -5,7 +5,7 @@ Tags: sms, mms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.5.5
+Stable tag: 6.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -219,12 +219,10 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.5.5 - 27.02.2024 =
-* Update: Added support for SMS Gateways OzoneSMS and SMSGatewayHub, and included supported encoding for ProSMS.
-* Update: Refreshed POT files and strings for better localization.
-* Improvement: Resolved Deprecated Dynamic Property Creation issue in WP_SMS\Privacy Class.
-* Improvement: Enhanced number normalization logic for better accuracy.
-* Improvement: Extended timeout of HTTP requests to 10 seconds for improved reliability.
-* Improvement: Implemented minor enhancements for better performance and ensured backward compatibility.
+= v6.6 - **.03.2024 =
+* Feature: Introducing the Message Button - a new chatbox feature added to expand communication options on your website. The Message Button allows visitors to easily connect via WhatsApp, Facebook Messenger, SMS, phone call, and Telegram, enhancing interaction between you and your audience. This feature is included for free to extend the functionality of WP SMS, providing more ways for users to engage with your site.
+* Improvement: Updated admin copies for better clarity and user experience.
+* Enhancement: Implemented various minor improvements to boost performance and overall usability.
+* Development: Added filter `wp_sms_mobile_number_numeric_check` for enhanced customization options.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
