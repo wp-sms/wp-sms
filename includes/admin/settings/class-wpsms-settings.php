@@ -1612,18 +1612,6 @@ class Settings
                     'type'    => 'text',
                     'desc'    => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
                 ),
-                'chatbox_color' => array(
-                    'id'      => 'chatbox_color',
-                    'name'    => __('Color', 'wp-sms'),
-                    'type'    => 'color',
-                    'desc'    => __('Choose your chat button\'s background color and header color.', 'wp-sms')
-                ),
-                'chatbox_text_color' => array(
-                    'id'      => 'chatbox_text_color',
-                    'name'    => __('Text Color', 'wp-sms'),
-                    'type'    => 'color',
-                    'desc'    => __('Select the color for your button and header text.', 'wp-sms')
-                ),
                 'chatbox_button_position' => array(
                     'id'      => 'chatbox_button_position',
                     'name'    => __('Position', 'wp-sms'),
@@ -1648,11 +1636,23 @@ class Settings
                         'template' => 'admin/fields/field-team-member-repeater.php',
                     ],
                 ),
-                // Miscellaneous settings
+                // Additional settings
                 'chatbox_miscellaneous'   => array(
                     'id'   => 'chatbox_miscellaneous',
                     'name' => __('Additional Chatbox Options', 'wp-sms'),
                     'type' => 'header',
+                ),
+                'chatbox_color' => array(
+                    'id'      => 'chatbox_color',
+                    'name'    => __('Chatbox Color', 'wp-sms'),
+                    'type'    => 'color',
+                    'desc'    => __('Choose your chat button\'s background color and header color.', 'wp-sms')
+                ),
+                'chatbox_text_color' => array(
+                    'id'      => 'chatbox_text_color',
+                    'name'    => __('Chatbox Text Color', 'wp-sms'),
+                    'type'    => 'color',
+                    'desc'    => __('Select the color for your button and header text.', 'wp-sms')
                 ),
                 'chatbox_footer_text' => array(
                     'id'      => 'chatbox_footer_text',
