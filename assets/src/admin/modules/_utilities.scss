@@ -80,6 +80,22 @@
   top: -2px;
 }
 
-.tooltipster-sidetip.tooltipster-borderless .tooltipster-arrow{
-  bottom: -2px !important;
+.tooltipster-flat {
+  .tooltipster-box {
+    border-color: #222;
+    background: #222;
+    border-radius: 6px;
+  }
+
+  .tooltipster-arrow {
+    bottom: -2px !important;
+
+    .tooltipster-arrow-border {
+      border-top-color: #222;
+    }
+
+    .tooltipster-arrow-background {
+      border-top-color: #222;
+    }
+  }
 }

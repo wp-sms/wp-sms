@@ -61,7 +61,8 @@
     //Initiate Color Picker
     if ($('.wpsms-color-picker').length) {
         $('.wpsms-color-picker').wpColorPicker();
-    };
+    }
+    ;
 
     if ($('.repeater').length) {
         $('.repeater').repeater({
@@ -105,7 +106,7 @@
 
     if ($('.wpsms-tooltip').length) {
         $('.wpsms-tooltip').tooltipster({
-            theme: 'tooltipster-borderless',
+            theme: 'tooltipster-flat',
             maxWidth: 400,
         });
     }
@@ -118,10 +119,10 @@
             },
             multiple: false,
         });
-    
+
         mediaUploader.open();
-    
-        mediaUploader.on( 'select', function() {
+
+        mediaUploader.on('select', function () {
             const attachment = mediaUploader.state().get('selection').first().toJSON();
             const targetInput = document.getElementById(e.target.dataset.target);
             targetInput.value = attachment.url;

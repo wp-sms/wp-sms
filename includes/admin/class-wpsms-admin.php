@@ -72,7 +72,6 @@ class Admin
 
                 // tooltip
                 wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', true, WP_SMS_VERSION);
-                wp_enqueue_style('wpsms-tooltip-theme', WP_SMS_URL . 'assets/css/tooltipster-sideTip-borderless.min.css', true, WP_SMS_VERSION);
                 wp_enqueue_script('wpsms-tooltip', WP_SMS_URL . 'assets/js/tooltipster.bundle.js', true, WP_SMS_VERSION);
             }
 
