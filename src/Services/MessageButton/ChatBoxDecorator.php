@@ -117,9 +117,11 @@ class ChatBoxDecorator
         //}
 
         foreach ($teamData as $teamMember) {
-            $teamMember['contact_link'] = $this->generateContactLink($teamMember['member_contact_type'], $teamMember['member_contact_value']);
-            $teamMember['member_photo'] = $teamMember['member_photo'] ?? WP_SMS_URL . 'assets/images/avatar.png';
-            $processedTeam[]            = $teamMember;
+            $teamMember['contact_link']      = $this->generateContactLink($teamMember['member_contact_type'], $teamMember['member_contact_value']);
+            $teamMember['contact_link_icon'] = ''; // @todo -> The icon should change based on the contact type.
+            $teamMember['member_photo']      = $teamMember['member_photo'] ?? WP_SMS_URL . 'assets/images/avatar.png';
+
+            $processedTeam[] = $teamMember;
         }
 
         return $processedTeam;
