@@ -13,7 +13,7 @@ class ChatBoxDecorator
         return !empty($value) ? $value : $default;
     }
 
-    public function getEnabled()
+    public function isEnabled()
     {
         return $this->getData('chatbox_message_button');
     }

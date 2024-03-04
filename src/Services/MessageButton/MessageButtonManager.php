@@ -15,7 +15,7 @@ class MessageButtonManager
     {
         $this->chatBoxDecorator = new ChatBoxDecorator();
 
-        if ($this->chatBoxDecorator->getEnabled()) {
+        if ($this->chatBoxDecorator->isEnabled()) {
             add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
             add_action('wp_footer', [$this, 'renderChatBox']);
             add_action('admin_init', [$this, 'renderPreviewInAdmin']);
