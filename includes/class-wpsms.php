@@ -224,9 +224,15 @@ class WP_SMS
 
         // Services
         $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
+        $this->include('src/Services/WooCommerce/OrderViewManager.php');
+        $this->include('src/Services/MessageButton/MessageButtonManager.php');
+        $this->include('src/Services/MessageButton/ChatBox.php');
+
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();
-        $this->include('src/Services/WooCommerce/OrderViewManager.php');
+
+        $messageButtonManager = new \WP_SMS\Services\MessageButton\MessageButtonManager();
+        $messageButtonManager->init();
 
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
