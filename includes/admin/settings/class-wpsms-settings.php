@@ -1246,11 +1246,11 @@ class Settings
                     'options' => [
                         'WordPress'   => [
                             'disable'                     => __('Disable', 'wp-sms'),
-                            'add_mobile_field_in_profile' => __('Add a new field in profile', 'wp-sms')
+                            'add_mobile_field_in_profile' => __('Insert a mobile number field into user profiles', 'wp-sms')
                         ],
                         'WooCommerce' => [
-                            'add_mobile_field_in_wc_billing' => __('Add a new field in billing address and checkout', 'wp-sms'),
-                            'use_phone_field_in_wc_billing'  => __('Use the exist phone field in billing address', 'wp-sms')
+                            'add_mobile_field_in_wc_billing' => __('Add a mobile number field to billing and checkout pages', 'wp-sms'),
+                            'use_phone_field_in_wc_billing'  => __('Use the existing billing phone field', 'wp-sms')
                         ]
                     ],
                     'desc'    => __('Create a new mobile number field or use an existing phone field.', 'wp-sms')
