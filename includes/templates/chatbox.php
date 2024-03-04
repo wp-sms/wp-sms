@@ -18,7 +18,7 @@ $footer_color       = !empty($footer_text_color) ? sprintf('color: %s;', $footer
         </span>
     </button>
 
-    <div class="wpsms-chatbox__content <?php echo !empty($chatbox_animation) && $chatbox_animation === 'fade'  ? 'wpsms-chatbox__content--fade' : 'wpsms-chatbox__content--slide'; ?>" style="<?php echo isset($button_position) && $button_position === 'bottom_right' ? 'left: unset; right: 0.5rem' : '' ?>">
+    <div class="wpsms-chatbox__content <?php echo !empty($chatbox_animation) ? 'wpsms-chatbox__content--' . esc_attr($chatbox_animation) : '' ?>" style="<?php echo isset($button_position) && $button_position === 'bottom_right' ? 'left: unset; right: 0.5rem' : '' ?>">
         <div class="wpsms-chatbox__header" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
             <h2 style="<?php echo esc_attr($general_color) ?>">
                 <?php echo !empty($title) ? esc_html($title) : __('Meet Our Team', 'wp-sms'); ?>
