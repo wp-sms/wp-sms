@@ -25,7 +25,7 @@ class ChatBoxDecorator
 
     public function getButtonText()
     {
-        return $this->getData('chatbox_button_text', __('How Can I Help You?', 'wp-sms'));
+        return $this->getData('chatbox_button_text', __('Talk to Us', 'wp-sms'));
     }
 
     public function getFooterText()
@@ -40,7 +40,7 @@ class ChatBoxDecorator
 
     public function getFooterLinkTitle()
     {
-        return $this->getData('chatbox_footer_link_title');
+        return $this->getData('chatbox_footer_link_title', __('Learn More', 'wp-sms'));
     }
 
     public function getFooterTextColor()
@@ -70,7 +70,7 @@ class ChatBoxDecorator
 
     public function getLinkTitle()
     {
-        return $this->getData('chatbox_links_title', __('Related Articles', 'wp-sms'));
+        return $this->getData('chatbox_links_title', __('Quick Links', 'wp-sms'));
     }
 
     public function getButtonPosition()
