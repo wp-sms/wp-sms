@@ -39,6 +39,7 @@
                                 <option value="facebook" <?php selected($member_contact_type, 'facebook') ?>><?php _e('Facebook Messenger', 'wp-sms') ?></option>
                                 <option value="telegram" <?php selected($member_contact_type, 'telegram') ?>><?php _e('Telegram', 'wp-sms') ?></option>
                                 <option value="sms" <?php selected($member_contact_type, 'sms') ?>><?php _e('SMS', 'wp-sms') ?></option>
+                                <option value="email" <?php selected($member_contact_type, 'email') ?>><?php _e('E-mail', 'wp-sms') ?></option>
                             </select>
                             <p class="description"><?php _e('Set visitor communication methods, e.g., WhatsApp, Email.', 'wp-sms') ?></p>
                         </div>
@@ -82,6 +83,7 @@
                             <option value="facebook"><?php _e('Facebook Messenger', 'wp-sms') ?></option>
                             <option value="telegram"><?php _e('Telegram', 'wp-sms') ?></option>
                             <option value="sms"><?php _e('SMS', 'wp-sms') ?></option>
+                            <option value="email"><?php _e('E-mail', 'wp-sms') ?></option>
                         </select>
                         <p class="description"><?php _e('Set visitor communication methods, e.g., WhatsApp, Email.', 'wp-sms') ?></p>
                     </div>

@@ -222,7 +222,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 = v6.6 - **.03.2024 =
 * Feature: Introducing the Message Button - a new chatbox feature added to expand communication options on your website. The Message Button allows visitors to easily connect via WhatsApp, Facebook Messenger, SMS, phone call, and Telegram, enhancing interaction between you and your audience. This feature is included for free to extend the functionality of WP SMS, providing more ways for users to engage with your site.
 * Improvement: Updated admin copies for better clarity and user experience.
-* Enhancement: Implemented various minor improvements to boost performance and overall usability.
+* Improvement: Implemented various minor improvements to boost performance and overall usability.
 * Development: Added filter `wp_sms_mobile_number_numeric_check` for enhanced customization options.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

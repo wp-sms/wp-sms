@@ -36,7 +36,7 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $ch
                     <?php foreach ($chatbox->fetchTeamMembers() as $member) : ?>
                         <?php if (empty($member['member_name']) || empty($member['member_role'])) continue; ?>
 
-                        <a href="<?php echo esc_attr($contact_link['contact_link']) ?>" target="_blank" class="wpsms-chatbox__team">
+                        <a href="<?php echo esc_attr($member['contact_link']) ?>" target="_blank" class="wpsms-chatbox__team">
                             <div class="wpsms-chatbox__team-avatar">
                                 <span class="wpsms-chatbox__team-icon messenger" style="<?php echo esc_attr($general_background) ?>">
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12px" height="12px" viewBox="0 0 12 12" version="1.1"><g id="surface1"><path fill="<?php echo esc_attr($general_fill_color) ?>" style="stroke:none;fill-rule:nonzero;fill-opacity:1;"

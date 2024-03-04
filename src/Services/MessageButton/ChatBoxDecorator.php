@@ -83,6 +83,39 @@ class ChatBoxDecorator
         $teamData      = $this->getData('chatbox_team_members');
         $processedTeam = [];
 
+        //if (!$teamData) { // todo this is not working since multidimensional array
+        $teamData = [
+            [
+                'member_name'          => 'Emily Brown',
+                'member_role'          => 'Marketing Manager',
+                'member_availability'  => 'Available',
+                'member_contact_type'  => 'email',
+                'member_contact_value' => 'emily@example.com',
+            ],
+            [
+                'member_name'          => 'Michael Johnson',
+                'member_role'          => 'Sales Representative',
+                'member_availability'  => 'Busy',
+                'member_contact_type'  => 'whatsapp',
+                'member_contact_value' => '+1122334455',
+            ],
+            [
+                'member_name'          => 'Sophia Lee',
+                'member_role'          => 'Customer Support',
+                'member_availability'  => 'Available',
+                'member_contact_type'  => 'sms',
+                'member_contact_value' => '+1987654322',
+            ],
+            [
+                'member_name'          => 'David Smith',
+                'member_role'          => 'Software Engineer',
+                'member_availability'  => 'Available',
+                'member_contact_type'  => 'tel',
+                'member_contact_value' => '+1987654321',
+            ]
+        ];
+        //}
+
         foreach ($teamData as $teamMember) {
             $teamMember['contact_link'] = $this->generateContactLink($teamMember['member_contact_type'], $teamMember['member_contact_value']);
             $teamMember['member_photo'] = $teamMember['member_photo'] ?? WP_SMS_URL . 'assets/images/avatar.png';
@@ -104,6 +137,8 @@ class ChatBoxDecorator
             $linkUrl = 'https://me.me/' . $value;
         } else if ($type === 'sms') {
             $linkUrl = 'sms:' . $value;
+        } else if ($type === 'email') {
+            $linkUrl = 'mailto:' . $value;
         } else {
             $linkUrl = 'tel:' . $value;
         }
