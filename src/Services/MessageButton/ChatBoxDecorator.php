@@ -88,7 +88,7 @@ class ChatBoxDecorator
             [
                 'member_name'          => 'Emily Brown',
                 'member_role'          => 'Marketing Manager',
-                'member_availability'  => 'Available',
+                'member_availability'  => 'Available 10AM-5PM PST',
                 'member_contact_type'  => 'email',
                 'member_contact_value' => 'emily@example.com',
             ],
@@ -102,14 +102,14 @@ class ChatBoxDecorator
             [
                 'member_name'          => 'Sophia Lee',
                 'member_role'          => 'Customer Support',
-                'member_availability'  => 'Available',
+                'member_availability'  => 'Available 11AM-6PM PST',
                 'member_contact_type'  => 'sms',
                 'member_contact_value' => '+1122334466',
             ],
             [
                 'member_name'          => 'David Smith',
                 'member_role'          => 'Software Engineer',
-                'member_availability'  => 'Available',
+                'member_availability'  => 'Available 5PM-10PM PST',
                 'member_contact_type'  => 'tel',
                 'member_contact_value' => '+11223344777',
             ]
