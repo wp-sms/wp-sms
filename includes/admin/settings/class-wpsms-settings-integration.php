@@ -23,7 +23,7 @@ class SettingsIntegration extends Settings
     */
     public function get_tabs()
     {
-        return [
+        return apply_filters('wp_sms_registered_integration_tabs', [
             'contact_form7'        => __('Contact Form 7', 'wp-sms'),
             // pro tabs
             'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
@@ -34,8 +34,7 @@ class SettingsIntegration extends Settings
             'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
             'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
             'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
-
-        ];
+        ]);
     }
 
 
