@@ -13,6 +13,14 @@
         WpSmsContactForm7.init();
     }
 
+    if (jQuery('.js-wpsms-chatbox-preview').length) {
+        jQuery('.wpsms-chatbox').hide();
+        $('.js-wpsms-chatbox-preview').click(function (e) {
+            e.preventDefault();
+            $('.wpsms-chatbox').fadeToggle();
+        });
+    }
+
     let WpSmsSelect2 = $('.js-wpsms-select2')
     let WpSmsExportForm = $('.js-wpSmsExportForm')
 

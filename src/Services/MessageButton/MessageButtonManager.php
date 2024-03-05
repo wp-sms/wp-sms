@@ -18,8 +18,9 @@ class MessageButtonManager
         if ($this->chatBoxDecorator->isEnabled()) {
             add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
             add_action('wp_footer', [$this, 'renderChatBox']);
-            add_action('admin_init', [$this, 'initAdminPreview']);
         }
+
+        add_action('admin_init', [$this, 'initAdminPreview']);
     }
 
     public function initAdminPreview()

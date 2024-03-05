@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the WP SMS plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP SMS 6.5.5\n"
+"Project-Id-Version: WP SMS 6.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-04T10:14:11+00:00\n"
+"POT-Creation-Date: 2024-03-05T06:53:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-sms\n"
@@ -53,24 +53,24 @@ msgstr ""
 msgid "Not installed"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:151
-#: includes/admin/class-wpsms-admin.php:182
+#: includes/admin/class-wpsms-admin.php:150
+#: includes/admin/class-wpsms-admin.php:181
 #: includes/class-front.php:74
 #: includes/templates/admin/fields/field-team-member-repeater.php:41
-#: includes/templates/admin/fields/field-team-member-repeater.php:84
+#: includes/templates/admin/fields/field-team-member-repeater.php:85
 #: includes/templates/admin/user-profile-fields.php:1
 msgid "SMS"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:165
+#: includes/admin/class-wpsms-admin.php:164
 msgid "%s Subscriber"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:167
+#: includes/admin/class-wpsms-admin.php:166
 msgid "%s SMS Credit"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:183
+#: includes/admin/class-wpsms-admin.php:182
 #: includes/admin/settings/class-wpsms-settings.php:387
 #: includes/admin/settings/class-wpsms-settings.php:413
 #: includes/admin/settings/class-wpsms-settings.php:438
@@ -98,83 +98,83 @@ msgstr ""
 msgid "Send SMS"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:185
+#: includes/admin/class-wpsms-admin.php:184
 msgid "Outbox"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:186
+#: includes/admin/class-wpsms-admin.php:185
 msgid "Inbox"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:188
+#: includes/admin/class-wpsms-admin.php:187
 #: includes/admin/settings/class-wpsms-settings.php:1857
 #: includes/templates/admin/send-sms.php:47
 #: includes/templates/admin/subscribers.php:10
 msgid "Subscribers"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:189
+#: includes/admin/class-wpsms-admin.php:188
 #: includes/templates/admin/groups.php:8
 msgid "Groups"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:193
+#: includes/admin/class-wpsms-admin.php:192
 #: includes/admin/privacy/class-wpsms-privacy.php:22
 msgid "Privacy"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:196
+#: includes/admin/class-wpsms-admin.php:195
 #: includes/admin/settings/class-wpsms-settings.php:2544
 #: assets/blocks/SendSms/index.js:1
 #: assets/src/blocks/SendSms/edit.js:51
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:197
+#: includes/admin/class-wpsms-admin.php:196
 msgid "Add-Ons"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:197
+#: includes/admin/class-wpsms-admin.php:196
 msgid "%sAdd-Ons%s"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:296
+#: includes/admin/class-wpsms-admin.php:295
 msgid "characters"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:312
-#: includes/admin/class-wpsms-admin.php:327
-#: includes/admin/class-wpsms-admin.php:342
-#: includes/admin/class-wpsms-admin.php:364
+#: includes/admin/class-wpsms-admin.php:311
+#: includes/admin/class-wpsms-admin.php:326
+#: includes/admin/class-wpsms-admin.php:341
+#: includes/admin/class-wpsms-admin.php:363
 msgid "Number of items per page"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:351
+#: includes/admin/class-wpsms-admin.php:350
 msgid "Edit Subscriber"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:373
+#: includes/admin/class-wpsms-admin.php:372
 msgid "Edit Group"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:405
-#: includes/admin/class-wpsms-admin.php:408
+#: includes/admin/class-wpsms-admin.php:404
+#: includes/admin/class-wpsms-admin.php:407
 msgid "Click here to rate and review this plugin on WordPress.org"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:405
+#: includes/admin/class-wpsms-admin.php:404
 msgid "Rate this plugin"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:408
+#: includes/admin/class-wpsms-admin.php:407
 msgid "Subscribe to our Email Newsletter"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:464
+#: includes/admin/class-wpsms-admin.php:463
 msgid "Feedback"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:465
+#: includes/admin/class-wpsms-admin.php:464
 msgid "Feel free to share your thoughts!"
 msgstr ""
 
@@ -216,8 +216,8 @@ msgstr ""
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:158
 #: includes/templates/admin/fields/field-resource-link-repeater.php:19
 #: includes/templates/admin/fields/field-resource-link-repeater.php:35
-#: includes/templates/admin/fields/field-team-member-repeater.php:50
-#: includes/templates/admin/fields/field-team-member-repeater.php:93
+#: includes/templates/admin/fields/field-team-member-repeater.php:51
+#: includes/templates/admin/fields/field-team-member-repeater.php:95
 #: includes/templates/admin/fields/field-wc-status-repeater.php:35
 #: includes/templates/admin/fields/field-wc-status-repeater.php:66
 #: includes/templates/admin/privacy-page.php:31
@@ -1006,15 +1006,15 @@ msgid "Mobile Number Field Source"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1249
-msgid "Add a new field in profile"
+msgid "Insert a mobile number field into user profiles"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1252
-msgid "Add a new field in billing address and checkout"
+msgid "Add a mobile number field to billing and checkout pages"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1253
-msgid "Use the exist phone field in billing address"
+msgid "Use the existing billing phone field"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1256
@@ -1350,7 +1350,7 @@ msgid "Message Button Configuration"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1598
-msgid "Switch on to display the Message Button on your site or off to hide it."
+msgid "Switch on to display the Message Button on your site or off to hide it. <a href=\"#\" class=\"js-wpsms-chatbox-preview\">Preview</a>"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1602
@@ -2685,92 +2685,97 @@ msgid "Add another link"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:16
-#: includes/templates/admin/fields/field-team-member-repeater.php:59
+#: includes/templates/admin/fields/field-team-member-repeater.php:60
 msgid "Member"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:17
-#: includes/templates/admin/fields/field-team-member-repeater.php:60
+#: includes/templates/admin/fields/field-team-member-repeater.php:61
 msgid "Team member's name, e.g., 'Jane Doe'"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:20
-#: includes/templates/admin/fields/field-team-member-repeater.php:63
+#: includes/templates/admin/fields/field-team-member-repeater.php:64
 msgid "Role"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:21
-#: includes/templates/admin/fields/field-team-member-repeater.php:64
+#: includes/templates/admin/fields/field-team-member-repeater.php:65
 msgid "Team member's department or role, e.g., 'Customer Support'"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:25
-#: includes/templates/admin/fields/field-team-member-repeater.php:68
+#: includes/templates/admin/fields/field-team-member-repeater.php:69
 msgid "Photo"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:26
-#: includes/templates/admin/fields/field-team-member-repeater.php:69
+#: includes/templates/admin/fields/field-team-member-repeater.php:70
 #: includes/templates/admin/import-subscriber-form.php:70
 msgid "Upload"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:28
-#: includes/templates/admin/fields/field-team-member-repeater.php:71
+#: includes/templates/admin/fields/field-team-member-repeater.php:72
 msgid "Upload team member's photo."
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:31
-#: includes/templates/admin/fields/field-team-member-repeater.php:74
+#: includes/templates/admin/fields/field-team-member-repeater.php:75
 msgid "Availability"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:32
-#: includes/templates/admin/fields/field-team-member-repeater.php:75
+#: includes/templates/admin/fields/field-team-member-repeater.php:76
 msgid "State team member's chat hours, e.g., 'Available 10AM-5PM PST.'"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:36
-#: includes/templates/admin/fields/field-team-member-repeater.php:79
+#: includes/templates/admin/fields/field-team-member-repeater.php:80
 msgid "Contact Type"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:37
-#: includes/templates/admin/fields/field-team-member-repeater.php:80
+#: includes/templates/admin/fields/field-team-member-repeater.php:81
 msgid "WhatsApp"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:38
-#: includes/templates/admin/fields/field-team-member-repeater.php:81
+#: includes/templates/admin/fields/field-team-member-repeater.php:82
 msgid "Phone Call"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:39
-#: includes/templates/admin/fields/field-team-member-repeater.php:82
+#: includes/templates/admin/fields/field-team-member-repeater.php:83
 msgid "Facebook Messenger"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:40
-#: includes/templates/admin/fields/field-team-member-repeater.php:83
+#: includes/templates/admin/fields/field-team-member-repeater.php:84
 msgid "Telegram"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:43
+#: includes/templates/admin/fields/field-team-member-repeater.php:42
 #: includes/templates/admin/fields/field-team-member-repeater.php:86
+msgid "E-mail"
+msgstr ""
+
+#: includes/templates/admin/fields/field-team-member-repeater.php:44
+#: includes/templates/admin/fields/field-team-member-repeater.php:88
 msgid "Set visitor communication methods, e.g., WhatsApp, Email."
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:46
-#: includes/templates/admin/fields/field-team-member-repeater.php:89
+#: includes/templates/admin/fields/field-team-member-repeater.php:47
+#: includes/templates/admin/fields/field-team-member-repeater.php:91
 msgid "Contact Info"
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:47
-#: includes/templates/admin/fields/field-team-member-repeater.php:90
+#: includes/templates/admin/fields/field-team-member-repeater.php:48
+#: includes/templates/admin/fields/field-team-member-repeater.php:92
 msgid "Provide contact details for the chosen method."
 msgstr ""
 
-#: includes/templates/admin/fields/field-team-member-repeater.php:100
+#: includes/templates/admin/fields/field-team-member-repeater.php:102
 msgid "Add another member"
 msgstr ""
 
@@ -3184,22 +3189,6 @@ msgstr ""
 msgid "Manage Groups"
 msgstr ""
 
-#: includes/templates/chatbox.php:17
-msgid "How Can I Help You?"
-msgstr ""
-
-#: includes/templates/chatbox.php:24
-msgid "Meet Our Team"
-msgstr ""
-
-#: includes/templates/chatbox.php:81
-msgid "Related Articles"
-msgstr ""
-
-#: includes/templates/chatbox.php:102
-msgid "All rights reserved."
-msgstr ""
-
 #: includes/templates/email/default.php:29
 msgid "Hello,"
 msgstr ""
@@ -3578,6 +3567,26 @@ msgstr ""
 
 #: src/Report/EmailReportGenerator.php:51
 msgid "SMS Report"
+msgstr ""
+
+#: src/Services/MessageButton/ChatBoxDecorator.php:23
+msgid "Chat with Us!"
+msgstr ""
+
+#: src/Services/MessageButton/ChatBoxDecorator.php:28
+msgid "Talk to Us"
+msgstr ""
+
+#: src/Services/MessageButton/ChatBoxDecorator.php:33
+msgid "All rights reserved."
+msgstr ""
+
+#: src/Services/MessageButton/ChatBoxDecorator.php:43
+msgid "Learn More"
+msgstr ""
+
+#: src/Services/MessageButton/ChatBoxDecorator.php:73
+msgid "Quick Links"
 msgstr ""
 
 #: src/Services/WooCommerce/OrderViewManager.php:49
