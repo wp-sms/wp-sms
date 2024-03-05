@@ -75,7 +75,7 @@ class ChatBoxDecorator
 
     public function getButtonPosition()
     {
-        return $this->getData('chatbox_button_position');
+        return $this->getData('chatbox_button_position', 'bottom_right');
     }
 
     public function fetchTeamMembers()
