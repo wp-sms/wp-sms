@@ -83,7 +83,7 @@ class ChatBoxDecorator
         $teamData      = $this->getData('chatbox_team_members');
         $processedTeam = [];
 
-        //if (!$teamData) { // todo this is not working since multidimensional array
+        //if (!$teamData) { // todo this is not working since the multidimensional array should have values
         $teamData = [
             [
                 'member_name'          => 'Emily Brown',
@@ -104,14 +104,14 @@ class ChatBoxDecorator
                 'member_role'          => 'Customer Support',
                 'member_availability'  => 'Available',
                 'member_contact_type'  => 'sms',
-                'member_contact_value' => '+1987654322',
+                'member_contact_value' => '+1122334466',
             ],
             [
                 'member_name'          => 'David Smith',
                 'member_role'          => 'Software Engineer',
                 'member_availability'  => 'Available',
                 'member_contact_type'  => 'tel',
-                'member_contact_value' => '+1987654321',
+                'member_contact_value' => '+11223344777',
             ]
         ];
         //}
