@@ -190,7 +190,9 @@ class Admin
             $hook_suffix['privacy'] = add_submenu_page('wp-sms', __('Privacy', 'wp-sms'), __('Privacy', 'wp-sms'), 'wpsms_setting', 'wp-sms-subscribers-privacy', array($this, 'privacy_callback'), 5);
         }
 
-        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array($this->settings, 'render_settings'), 6);
+        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', function(){
+            return $this->settings->render_settings('general');
+        }, 6);
         add_submenu_page('wp-sms', __('Integration', 'wp-sms'), __('Integration', 'wp-sms'), 'wpsms_setting', 'wp-sms-integration', function(){
             return (new SettingsIntegration)->render_settings("contact_form7");
         }, 7);
