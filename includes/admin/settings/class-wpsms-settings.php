@@ -162,6 +162,7 @@ class Settings
             'gateway'              => __('SMS Gateway', 'wp-sms'),
             'newsletter'           => __('SMS Newsletter', 'wp-sms'),
             'notifications'        => __('Notifications', 'wp-sms'),
+            'message_button'       => __('Message Button', 'wp-sms'),
             'advanced'             => __('Advanced', 'wp-sms'),
             'contact_form7'        => __('Contact Form 7', 'wp-sms'),
 
@@ -664,10 +665,15 @@ class Settings
                     'desc'    => __('Send SMS to customer by order status', 'wp-sms')
                 ),
                 'wc_notify_by_status_content'               => array(
-                    'id'   => 'wc_notify_by_status_content',
-                    'name' => __('Order Status & Message', 'wp-sms'),
-                    'type' => 'repeater',
-                    'desc' => __('Add Order Status & Write Message Body Per Order Status', 'wp-sms')
+                    'id'      => 'wc_notify_by_status_content',
+                    'name'    => __('Order Status & Message', 'wp-sms'),
+                    'type'    => 'repeater',
+                    'desc'    => __('Add Order Status & Write Message Body Per Order Status', 'wp-sms'),
+                    'options' => [
+                        'template'       => 'admin/fields/field-wc-status-repeater.php',
+                        'order_statuses' => wc_get_order_statuses(),
+                        'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
+                    ]
                 )
             );
         } else {
@@ -1211,43 +1217,43 @@ class Settings
             'general'              => apply_filters('wp_sms_general_settings', array(
                 'admin_title'                              => array(
                     'id'   => 'admin_title',
-                    'name' => __('Administrator', 'wp-sms'),
+                    'name' => __('Administrator Notifications', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'admin_mobile_number'                      => array(
                     'id'   => 'admin_mobile_number',
                     'name' => __('Admin Mobile Number', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => __('Admin mobile number for get any sms notifications', 'wp-sms')
+                    'desc' => __('Mobile number where the administrator will receive notifications.', 'wp-sms')
                 ),
                 'mobile_county_code'                       => array(
                     'id'         => 'mobile_county_code',
                     'name'       => __('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
-                    'desc'       => __('Choices the mobile country code if you want to append that code before the numbers while sending the SMS, you can leave it if the recipients is not belong to a specific country', 'wp-sms'),
+                    'desc'       => __('If the administrator\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
                     'options'    => array_merge(['0' => __('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
-                    'name' => __('Mobile Field', 'wp-sms'),
+                    'name' => __('Mobile Field Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'add_mobile_field'                         => array(
                     'id'      => 'add_mobile_field',
-                    'name'    => __('Mobile Field Status', 'wp-sms'),
+                    'name'    => __('Mobile Number Field Source', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => [
                         'WordPress'   => [
                             'disable'                     => __('Disable', 'wp-sms'),
-                            'add_mobile_field_in_profile' => __('Add a new field in profile', 'wp-sms')
+                            'add_mobile_field_in_profile' => __('Insert a mobile number field into user profiles', 'wp-sms')
                         ],
                         'WooCommerce' => [
-                            'add_mobile_field_in_wc_billing' => __('Add a new field in billing address and checkout', 'wp-sms'),
-                            'use_phone_field_in_wc_billing'  => __('Use the exist phone field in billing address', 'wp-sms')
+                            'add_mobile_field_in_wc_billing' => __('Add a mobile number field to billing and checkout pages', 'wp-sms'),
+                            'use_phone_field_in_wc_billing'  => __('Use the existing billing phone field', 'wp-sms')
                         ]
                     ],
-                    'desc'    => __('Choose how to set the mobile number video for the user', 'wp-sms')
+                    'desc'    => __('Create a new mobile number field or use an existing phone field.', 'wp-sms')
                 ),
                 'um_sync_field_name'                       => array(
                     'id'      => 'um_sync_field_name',
@@ -1284,20 +1290,20 @@ class Settings
                         '0'        => __('Required', 'wp-sms'),
                         'optional' => __('Optional', 'wp-sms')
                     ),
-                    'desc'    => __('The mobile number field is typically required by default, but would you prefer it to be optional?', 'wp-sms')
+                    'desc'    => __('Set the mobile number field as optional or required.', 'wp-sms')
                 ),
                 'mobile_terms_field_place_holder'          => array(
                     'id'   => 'mobile_terms_field_place_holder',
                     'name' => __('Mobile Field Placeholder', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => __('Help your clients to enter their mobile number in a correct format by choosing a proper placeholder.', 'wp-sms')
+                    'desc' => __('Enter a sample format for the mobile number that users will see. Example: "e.g., +1234567890".', 'wp-sms')
                 ),
                 'international_mobile'                     => array(
                     'id'      => 'international_mobile',
-                    'name'    => __('International Telephone Input', 'wp-sms'),
+                    'name'    => __('International Number Input', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Adds a flag dropdown to any mobile number input field', 'wp-sms')
+                    'desc'    => __('Add a flag dropdown for international format support in the mobile number input field.', 'wp-sms')
                 ),
                 'international_mobile_only_countries'      => array(
                     'id'      => 'international_mobile_only_countries',
@@ -1316,26 +1322,29 @@ class Settings
                 'mobile_terms_minimum'                     => array(
                     'id'   => 'mobile_terms_minimum',
                     'name' => __('Minimum Length Number', 'wp-sms'),
-                    'type' => 'number'
+                    'type' => 'number',
+                    'desc' => __('Specify the shortest allowed mobile number.', 'wp-sms'),
                 ),
                 'mobile_terms_maximum'                     => array(
                     'id'   => 'mobile_terms_maximum',
                     'name' => __('Maximum Length Number', 'wp-sms'),
-                    'type' => 'number'
+                    'type' => 'number',
+                    'desc' => __('Specify the longest allowed mobile number.', 'wp-sms'),
                 ),
                 'admin_title_privacy'                      => array(
                     'id'   => 'admin_title_privacy',
-                    'name' => __('Privacy', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        __('Data Protection Settings', 'wp-sms'),
+                        __('Enhance user privacy with GDPR-focused settings. Activate to ensure compliance with data protection regulations and provide users with transparency and control over their personal information.', 'wp-sms')
+                    ),
                     'type' => 'header',
-                    'doc'  => '/6064/gdpr-compliant-in-wp-sms/',
-                    'desc' => __('GDPR Compliant', 'wp-sms'),
                 ),
                 'gdpr_compliance'                          => array(
                     'id'      => 'gdpr_compliance',
-                    'name'    => __('GDPR Enhancements', 'wp-sms'),
+                    'name'    => __('GDPR Compliance Enhancements', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Enable GDPR-related features.', 'wp-sms')
+                    'desc'    => __('Implements GDPR adherence by enabling user data export and deletion via mobile number and adding a consent checkbox for SMS newsletter subscriptions.', 'wp-sms')
                 ),
             )),
 
@@ -1569,6 +1578,154 @@ class Settings
                     'type' => 'checkbox',
                     'desc' => __('Check this to disable all included styling of SMS Newsletter form elements.', 'wp-sms')
                 )
+            )),
+
+            /**
+             * Message button setting fields
+             */
+            'message_button'       => apply_filters('wp_sms_message_button_settings', array(
+                // Message Button Configuration
+                'chatbox'                     => array(
+                    'id'   => 'chatbox',
+                    'name' => __('Message Button Configuration', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'chatbox_message_button'      => array(
+                    'id'      => 'chatbox_message_button',
+                    'name'    => __('Message Button', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => sprintf(__('Switch on to display the Message Button on your site or off to hide it. <a href="#" class="js-wpsms-chatbox-preview">Preview</a>', 'wp-sms'))
+                ),
+                'chatbox_title'               => array(
+                    'id'   => 'chatbox_title',
+                    'name' => __('Title', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
+                ),
+                // Button settings
+                'chatbox_button'              => array(
+                    'id'   => 'chatbox_button',
+                    'name' => __('Button Appearance', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'chatbox_button_text'         => array(
+                    'id'   => 'chatbox_button_text',
+                    'name' => __('Text', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
+                ),
+                'chatbox_button_position'     => array(
+                    'id'      => 'chatbox_button_position',
+                    'name'    => __('Position', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'bottom_right' => __('Bottom Right', 'wp-sms'),
+                        'bottom_left'  => __('Bottom Left', 'wp-sms'),
+                    ),
+                    'desc'    => __('Choose where the chat button appears on your site.', 'wp-sms')
+                ),
+                // Team member settings
+                'chatbox_team_member'         => array(
+                    'id'   => 'chatbox_team_member',
+                    'name' => __('Support Team Profiles', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'chatbox_team_members'        => array(
+                    'id'      => 'chatbox_team_members',
+                    'name'    => __('Team Members', 'wp-sms'),
+                    'type'    => 'repeater',
+                    'options' => [
+                        'template' => 'admin/fields/field-team-member-repeater.php',
+                    ],
+                ),
+                // Additional settings
+                'chatbox_miscellaneous'       => array(
+                    'id'   => 'chatbox_miscellaneous',
+                    'name' => __('Additional Chatbox Options', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'chatbox_color'               => array(
+                    'id'   => 'chatbox_color',
+                    'name' => __('Chatbox Color', 'wp-sms'),
+                    'type' => 'color',
+                    'desc' => __('Choose your chat button\'s background color and header color.', 'wp-sms')
+                ),
+                'chatbox_text_color'          => array(
+                    'id'   => 'chatbox_text_color',
+                    'name' => __('Chatbox Text Color', 'wp-sms'),
+                    'type' => 'color',
+                    'desc' => __('Select the color for your button and header text.', 'wp-sms')
+                ),
+                'chatbox_footer_text'         => array(
+                    'id'   => 'chatbox_footer_text',
+                    'name' => __('Footer Text', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Text displayed in the chatbox footer, such as \'All rights reserved.\'', 'wp-sms')
+                ),
+                'chatbox_footer_text_color'   => array(
+                    'id'   => 'chatbox_footer_text_color',
+                    'name' => __('Footer Text Color', 'wp-sms'),
+                    'type' => 'color',
+                    'desc' => __('Select your footer text color.', 'wp-sms')
+                ),
+                'chatbox_footer_link_title'   => array(
+                    'id'   => 'chatbox_footer_link_title',
+                    'name' => __('Footer Link Title', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Include a link for more information in the chatbox footer, e.g., \'Learn More\'', 'wp-sms')
+                ),
+                'chatbox_footer_link_url'     => array(
+                    'id'   => 'chatbox_footer_link_url',
+                    'name' => __('Footer Link URL', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Enter the URL of the chatbox footer link.', 'wp-sms')
+                ),
+                'chatbox_animation_effect'    => array(
+                    'id'      => 'chatbox_animation_effect',
+                    'name'    => __('Animation Effect', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        ''      => __('None', 'wp-sms'),
+                        'fade'  => __('Fade In', 'wp-sms'),
+                        'slide' => __('Slide Up', 'wp-sms'),
+                    ),
+                    'desc'    => __('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms')
+                ),
+                'chatbox_disable_logo' => array(
+                    'id'      => 'chatbox_disable_logo',
+                    'name'    => __('Disable WP SMS Logo', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Check this box to disable the WP SMS logo in the footer of the chatbox.', 'wp-sms')
+                ),
+                // Informational link settings
+                'chatbox_link'                => array(
+                    'id'   => 'chatbox_link',
+                    'name' => __('Informational Links', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'chatbox_links_enabled'       => array(
+                    'id'      => 'chatbox_links_enabled',
+                    'name'    => __('Resource Links', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Turn on to show resource links in the chatbox.', 'wp-sms')
+                ),
+                'chatbox_links_title'         => array(
+                    'id'   => 'chatbox_links_title',
+                    'name' => __('Section Title', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms')
+                ),
+                'chatbox_links'               => array(
+                    'id'      => 'chatbox_links',
+                    'name'    => __('Links', 'wp-sms'),
+                    'type'    => 'repeater',
+                    'options' => [
+                        'template' => 'admin/fields/field-resource-link-repeater.php',
+                    ],
+                ),
             )),
 
             /**
@@ -2037,11 +2194,10 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        echo Helper::loadTemplate('admin/field-wc-status-repeater.php', array(
-            'args'           => $args,
-            'value'          => $value,
-            'order_statuses' => wc_get_order_statuses(),
-            'variables'      => NotificationFactory::getWooCommerceOrder()->printVariables()
+        echo Helper::loadTemplate($args['options']['template'], array(
+            'args'    => $args,
+            'value'   => $value,
+            'options' => $args['options'],
         ));
     }
 
@@ -2357,7 +2513,14 @@ class Settings
         }
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input type="text" class="%1$s-text wpsms_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button-secondary" value="%4$s"/></span><p class="description"> %5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), __('Upload File', 'wpsms'), wp_kses_post($args['desc']));
+        $html = sprintf(
+            '<input type="text" class="%1$s-text ' . esc_attr($this->setting_name) . '_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button button-secondary" data-target="' . esc_attr($this->setting_name) . '[%2$s]" value="%4$s"/></span><p class="description"> %5$s</p>',
+            esc_attr($size),
+            esc_attr($args['id']),
+            esc_attr(stripslashes($value)),
+            __('Upload File', 'wpsms'),
+            wp_kses_post($args['desc'])
+        );
 
         echo $html;
     }
@@ -2604,5 +2767,27 @@ class Settings
         }
 
         return $settings;
+    }
+
+    /**
+     * This private method is used to render the header of an option.
+     * It accepts two parameters: the title of the option and an optional tooltip.
+     * If a tooltip is provided, it is appended to the title inside a span with the class "tooltip".
+     * The method returns the final title string.
+     *
+     * @param string $title The title of the option.
+     * @param string|bool $tooltip Optional. The tooltip to be appended to the title. Default is false.
+     * @return string The final title string.
+     */
+    private function renderOptionHeader($title, $tooltip = false)
+    {
+        // Check if a tooltip is provided
+        if ($tooltip) {
+            // If a tooltip is provided, append it to the title inside a span with the class "tooltip"
+            $title .= '&nbsp;' . sprintf('<span class="wpsms-tooltip" title="%s"><i class="wpsms-tooltip-icon"></i></span>', $tooltip);
+        }
+
+        // Return the final title string
+        return $title;
     }
 }

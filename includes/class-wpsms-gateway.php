@@ -725,7 +725,8 @@ class Gateway
                 'smsozone'                => 'ozonesms.com',
                 'msgwow'                  => 'msgwow.com',
                 'tripadasmsbox'           => 'tripadasmsbox.com',
-                'callifony'               => 'callifony.com'
+                'callifony'               => 'callifony.com',
+                'fast2sms'                => 'fast2sms.com'
             ),
             'iran'                 => array(
                 'iransmspanel'   => 'iransmspanel.ir',
@@ -1098,7 +1099,7 @@ class Gateway
      * @param array $arguments Any additional arguments to be passed to the request.
      * @param array $params Any additional parameters to be passed to the request.
      * @param bool $throwFailedHttpCodeResponse Whether or not to throw an exception if the request returns a failed HTTP code.
-     * @return string The response body of the remote request.
+     * @return object The response body of the remote request.
      * @throws Exception If the request fails and $throwFailedHttpCodeResponse is true.
      */
     protected function request($method, $url, $arguments = [], $params = [], $throwFailedHttpCodeResponse = true)
