@@ -37,10 +37,10 @@ class Front
         }
 
         // Register subscriber form script
-        wp_register_script('wp-sms-blocks-script', WP_SMS_URL . 'assets/js/blocks.js', ['jquery'], WP_SMS_VERSION, true);
-        wp_enqueue_script('wp-sms-blocks-script');
+        wp_register_script('wp-sms-front-script', WP_SMS_URL . 'assets/src/scripts/frontend.min.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_enqueue_script('wp-sms-front-script');
 
-        wp_localize_script("wp-sms-blocks-script", 'wpsms_ajax_object', array(
+        wp_localize_script("wp-sms-front-script", 'wpsms_ajax_object', array(
             'newsletter_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
             'unknown_error'           => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
             'loading_text'            => __('Loading...', 'wp-sms'),

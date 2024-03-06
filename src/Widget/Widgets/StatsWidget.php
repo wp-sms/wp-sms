@@ -22,8 +22,7 @@ class StatsWidget extends AbstractWidget
     protected function prepare()
     {
         Assets::registerScript('chartjs', 'js/chart.min.js', [], '3.7.1');
-        Assets::script('dashboard-widget-stats-script', 'js/admin-dashboard-stats-widget.js', ['wp-sms-chartjs'], apply_filters('wp_sms_stats_widget_data', $this->getLocalizationData()));
-    }
+     }
 
     /**
      * Render the widget
