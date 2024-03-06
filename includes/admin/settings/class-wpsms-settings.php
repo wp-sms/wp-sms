@@ -2378,14 +2378,19 @@ class Settings
     }
 
 
-
-    public function render_settings($default = "general")
+    /**
+     * args[] : header_template  
+     */
+    public function render_settings($default = "general", $args = array())
     {
         $active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
-            <?php echo Helper::loadTemplate('header.php'); ?>
+            <?php echo  isset($args['header_template']) ?
+                Helper::loadTemplate($args['header_template']) :
+                Helper::loadTemplate('header.php');
+            ?>
             <div class="wpsms-wrap__main">
                 <?php do_action('wp_sms_settings_page'); ?>
                 <h2><?php _e('Settings', 'wp-sms') ?></h2>
