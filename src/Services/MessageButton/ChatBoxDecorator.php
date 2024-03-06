@@ -143,6 +143,22 @@ class ChatBoxDecorator
 
     public function fetchLinks()
     {
-        return $this->getData('chatbox_links', []);
+        $links         = $this->getData('chatbox_links');
+        $processedLink = [];
+
+        // Loop through each team member
+        foreach ($links as &$teamMember) {
+            // Check and replace empty values with sample data
+            if ($teamMember['chatbox_link_title'] == '') {
+                $teamMember['chatbox_link_title'] = 'Contact Us';
+            }
+            if ($teamMember['chatbox_link_url'] == '') {
+                $teamMember['chatbox_link_url'] = site_url('contact');
+            }
+
+            $processedLink[] = $teamMember;
+        }
+
+        return $processedLink;
     }
 }
