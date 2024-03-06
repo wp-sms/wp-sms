@@ -13,11 +13,11 @@
                 <div class="repeater-item" data-repeater-item>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; border-bottom: 1px solid #ccc; margin-bottom: 15px;">
                         <div>
-                            <input type="text" placeholder="<?php _e('Member', 'wp-sms') ?>" name="member_name" value="<?php echo esc_attr($member_name) ?>" style="display: block; width: 99%;" />
+                            <input type="text" placeholder="<?php _e('Emily Brown', 'wp-sms') ?>" name="member_name" value="<?php echo esc_attr($member_name) ?>" style="display: block; width: 99%;" />
                             <p class="description"><?php _e('Team member\'s name, e.g., \'Jane Doe\'', 'wp-sms') ?></p>
                         </div>
                         <div>
-                            <input type="text" placeholder="<?php _e('Role', 'wp-sms') ?>" name="member_role" value="<?php echo esc_attr($member_role) ?>" style="display: block; width: 99%;" />
+                            <input type="text" placeholder="<?php _e('Marketing Manager', 'wp-sms') ?>" name="member_role" value="<?php echo esc_attr($member_role) ?>" style="display: block; width: 99%;" />
                             <p class="description"><?php _e('Team member\'s department or role, e.g., \'Customer Support\'', 'wp-sms') ?></p>
                         </div>
                         <div>
@@ -28,7 +28,7 @@
                             <p class="description"><?php _e('Upload team member\'s photo.', 'wp-sms') ?></p>
                         </div>
                         <div>
-                            <input type="text" placeholder="<?php _e('Availability', 'wp-sms') ?>" value="<?php echo esc_attr($member_availability) ?>" name="member_availability" style="width: 100%;" />
+                            <input type="text" placeholder="<?php _e('Available 10AM-5PM PST', 'wp-sms') ?>" value="<?php echo esc_attr($member_availability) ?>" name="member_availability" style="width: 100%;" />
                             <p class="description"><?php _e('State team member\'s chat hours, e.g., \'Available 10AM-5PM PST.\'', 'wp-sms') ?></p>
                         </div>
                         <div>
@@ -44,7 +44,7 @@
                             <p class="description"><?php _e('Set visitor communication methods, e.g., WhatsApp, Email.', 'wp-sms') ?></p>
                         </div>
                         <div>
-                            <input type="text" placeholder="<?php _e('Contact Info', 'wp-sms') ?>" name="member_contact_value" value="<?php echo esc_attr($member_contact_value) ?>" style="display: block; width: 99%;"/>
+                            <input type="text" placeholder="<?php _e('+1122334455', 'wp-sms') ?>" name="member_contact_value" value="<?php echo esc_attr($member_contact_value) ?>" style="display: block; width: 99%;"/>
                             <p class="description"><?php _e('Provide contact details for the chosen method.', 'wp-sms') ?></p>
                         </div>
                         <div>
@@ -57,11 +57,11 @@
             <div class="repeater-item" data-repeater-item>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; border-bottom: 1px solid #ccc; margin-bottom: 15px;">
                     <div>
-                        <input type="text" placeholder="<?php _e('Member', 'wp-sms') ?>" name="member_name" style="display: block; width: 100%;" />
+                        <input type="text" placeholder="<?php _e('Emily Brown', 'wp-sms') ?>" name="member_name" style="display: block; width: 100%;" />
                         <p class="description"><?php _e('Team member\'s name, e.g., \'Jane Doe\'', 'wp-sms') ?></p>
                     </div>
                     <div>
-                        <input type="text" placeholder="<?php _e('Role', 'wp-sms') ?>" name="member_role" style="display: block; width: 100%;" />
+                        <input type="text" placeholder="<?php _e('Marketing Manager', 'wp-sms') ?>" name="member_role" style="display: block; width: 100%;" />
                         <p class="description"><?php _e('Team member\'s department or role, e.g., \'Customer Support\'', 'wp-sms') ?></p>
                     </div>
                     <div>
@@ -72,7 +72,7 @@
                         <p class="description"><?php _e('Upload team member\'s photo.', 'wp-sms') ?></p>
                     </div>
                     <div>
-                        <input type="text" placeholder="<?php _e('Availability', 'wp-sms') ?>" name="member_availability" style="width: 100%;" />
+                        <input type="text" placeholder="<?php _e('Available 10AM-5PM PST', 'wp-sms') ?>" name="member_availability" style="width: 100%;" />
                         <p class="description"><?php _e('State team member\'s chat hours, e.g., \'Available 10AM-5PM PST.\'', 'wp-sms') ?></p>
                     </div>
                     <div>
@@ -88,7 +88,7 @@
                         <p class="description"><?php _e('Set visitor communication methods, e.g., WhatsApp, Email.', 'wp-sms') ?></p>
                     </div>
                     <div>
-                        <input type="text" placeholder="<?php _e('Contact Info', 'wp-sms') ?>" name="member_contact_value" style="display: block; width: 100%;"/>
+                        <input type="text" placeholder="<?php _e('+1122334455', 'wp-sms') ?>" name="member_contact_value" style="display: block; width: 100%;"/>
                         <p class="description"><?php _e('Provide contact details for the chosen method.', 'wp-sms') ?></p>
                     </div>
                     <div>

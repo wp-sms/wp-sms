@@ -68,6 +68,11 @@ class ChatBoxDecorator
         return $this->getData('chatbox_links_enabled');
     }
 
+    public function isFooterLogoEnabled()
+    {
+        return $this->getData('chatbox_disable_logo', 'enable') == 'enable';
+    }
+
     public function getLinkTitle()
     {
         return $this->getData('chatbox_links_title', __('Quick Links', 'wp-sms'));
@@ -80,46 +85,34 @@ class ChatBoxDecorator
 
     public function fetchTeamMembers()
     {
-        $teamData      = $this->getData('chatbox_team_members');
+        $teams         = $this->getData('chatbox_team_members');
         $processedTeam = [];
 
-        //if (!$teamData) { // todo this is not working since the multidimensional array should have values
-        $teamData = [
-            [
-                'member_name'          => 'Emily Brown',
-                'member_role'          => 'Marketing Manager',
-                'member_availability'  => 'Available 10AM-5PM PST',
-                'member_contact_type'  => 'email',
-                'member_contact_value' => 'emily@example.com',
-            ],
-            [
-                'member_name'          => 'Michael Johnson',
-                'member_role'          => 'Sales Representative',
-                'member_availability'  => 'Busy',
-                'member_contact_type'  => 'whatsapp',
-                'member_contact_value' => '+1122334455',
-            ],
-            [
-                'member_name'          => 'Sophia Lee',
-                'member_role'          => 'Customer Support',
-                'member_availability'  => 'Available 11AM-6PM PST',
-                'member_contact_type'  => 'sms',
-                'member_contact_value' => '+1122334466',
-            ],
-            [
-                'member_name'          => 'David Smith',
-                'member_role'          => 'Software Engineer',
-                'member_availability'  => 'Available 5PM-10PM PST',
-                'member_contact_type'  => 'tel',
-                'member_contact_value' => '+11223344777',
-            ]
-        ];
-        //}
+        // Loop through each team member
+        foreach ($teams as &$teamMember) {
+            // Check and replace empty values with sample data
+            if ($teamMember['member_name'] == '') {
+                $teamMember['member_name'] = 'Emily Brown';
+            }
+            if ($teamMember['member_role'] == '') {
+                $teamMember['member_role'] = 'Marketing Manager';
+            }
+            if ($teamMember['member_availability'] == '') {
+                $teamMember['member_availability'] = 'Available 10AM-5PM PST';
+            }
+            if ($teamMember['member_photo'] == '') {
+                $teamMember['member_photo'] = WP_SMS_URL . 'assets/images/avatar.png';
+            }
+            if ($teamMember['member_contact_value'] == '') {
+                $teamMember['member_contact_value'] = '+1122334455';
+            }
+            if ($teamMember['member_contact_type'] == '') {
+                $teamMember['member_contact_type'] = 'whatsapp';
+            }
 
-        foreach ($teamData as $teamMember) {
+            // Process each team member
             $teamMember['contact_link']      = $this->generateContactLink($teamMember['member_contact_type'], $teamMember['member_contact_value']);
-            $teamMember['contact_link_icon'] = ''; // @todo -> The icon should change based on the contact type.
-            $teamMember['member_photo']      = $teamMember['member_photo'] ?? WP_SMS_URL . 'assets/images/avatar.png';
+            $teamMember['contact_link_icon'] = sprintf('%s/assets/images/chatbox/icon-%s.svg', WP_SMS_URL, $teamMember['member_contact_type']);
 
             $processedTeam[] = $teamMember;
         }

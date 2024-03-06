@@ -205,6 +205,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 15. Settings: WooCommerce
 16. Email Notification: SMS Stats
 17. Send SMS form (Gutenberg block)
+18. Message Button
 
 == Upgrade Notice ==
 = v6.1 =
