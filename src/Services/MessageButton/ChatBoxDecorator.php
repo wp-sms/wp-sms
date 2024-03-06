@@ -30,7 +30,7 @@ class ChatBoxDecorator
 
     public function getFooterText()
     {
-        return $this->getData('chatbox_footer_text', __('All rights reserved.', 'wp-sms'));
+        return $this->getData('chatbox_footer_text', __('Chat with us on WhatsApp for instant support!', 'wp-sms'));
     }
 
     public function getFooterLinkUrl()
@@ -40,7 +40,7 @@ class ChatBoxDecorator
 
     public function getFooterLinkTitle()
     {
-        return $this->getData('chatbox_footer_link_title', __('Learn More', 'wp-sms'));
+        return $this->getData('chatbox_footer_link_title', __('Related Articles', 'wp-sms'));
     }
 
     public function getFooterTextColor()
@@ -150,10 +150,10 @@ class ChatBoxDecorator
         foreach ($links as &$teamMember) {
             // Check and replace empty values with sample data
             if ($teamMember['chatbox_link_title'] == '') {
-                $teamMember['chatbox_link_title'] = 'Contact Us';
+                $teamMember['chatbox_link_title'] = 'Troubleshooting Common Issues';
             }
             if ($teamMember['chatbox_link_url'] == '') {
-                $teamMember['chatbox_link_url'] = site_url('contact');
+                $teamMember['chatbox_link_url'] = site_url('troubleshooting');
             }
 
             $processedLink[] = $teamMember;

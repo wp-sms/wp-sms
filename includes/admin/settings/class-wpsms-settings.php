@@ -1661,7 +1661,7 @@ class Settings
                     'id'   => 'chatbox_footer_text',
                     'name' => __('Footer Text', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => __('Text displayed in the chatbox footer, such as \'All rights reserved.\'', 'wp-sms')
+                    'desc' => __('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms')
                 ),
                 'chatbox_footer_text_color'   => array(
                     'id'   => 'chatbox_footer_text_color',
@@ -1673,7 +1673,7 @@ class Settings
                     'id'   => 'chatbox_footer_link_title',
                     'name' => __('Footer Link Title', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => __('Include a link for more information in the chatbox footer, e.g., \'Learn More\'', 'wp-sms')
+                    'desc' => __('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms')
                 ),
                 'chatbox_footer_link_url'     => array(
                     'id'   => 'chatbox_footer_link_url',
