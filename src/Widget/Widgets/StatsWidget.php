@@ -39,7 +39,7 @@ class StatsWidget extends AbstractWidget
      *
      * @return void
      */
-    private function getLocalizationData()
+    public function getLocalizationData()
     {
         $widgetData['localization'] = [
             'successful' => __('Successful', 'wp-sms'),

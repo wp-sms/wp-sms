@@ -101,7 +101,10 @@ class Admin
         $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
 
 
-        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/src/scripts/admin.min.js', ['jquery', 'wp-color-picker','jquery-ui-spinner'], WP_SMS_VERSION,null,true);
+        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/src/scripts/admin.min.js', ['jquery', 'wp-color-picker','jquery-ui-spinner'], WP_SMS_VERSION);
+
+        $statsWidget = new \WP_SMS\Widget\Widgets\StatsWidget();
+        wp_localize_script('wpsms-admin', 'WP_Sms_Dashboard_Widget_Stats_Script_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
 
         wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
                 'restUrls' => array(
