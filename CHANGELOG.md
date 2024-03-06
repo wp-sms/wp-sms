@@ -1,8 +1,8 @@
-= v6.6 - **.03.2024 =
-* Feature: Introducing the Message Button - a new chatbox feature added to expand communication options on your website. The Message Button allows visitors to easily connect via WhatsApp, Facebook Messenger, SMS, phone call, and Telegram, enhancing interaction between you and your audience. This feature is included for free to extend the functionality of WP SMS, providing more ways for users to engage with your site.
-* Improvement: Updated admin copies for better clarity and user experience.
-* Improvement: Implemented various minor improvements to boost performance and overall usability.
-* Development: Added filter `wp_sms_mobile_number_numeric_check` for enhanced customization options.
+= v6.6 - 06.03.2024 =
+* Addition: Messaging Button for direct visitor communication via WhatsApp, SMS, and other platforms. [More info](https://wp-sms-pro.com/25841/whats-new-in-wp-sms-6-6-better-faster-and-more-customizable/)
+* Improvement: Admin area texts for clearer instructions and settings management.
+* Improvement: Various performance tweaks for a smoother plugin experience.
+* Development: New `wp_sms_mobile_number_numeric_check` filter for developer-specific number handling customization.
 
 = v6.5.5 - 27.02.2024 =
 * Update: Added support for SMS Gateways OzoneSMS and SMSGatewayHub, and included supported encoding for ProSMS.
