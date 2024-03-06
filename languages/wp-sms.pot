@@ -9,12 +9,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-05T06:53:28+00:00\n"
+"POT-Creation-Date: 2024-03-06T12:42:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: wp-sms\n"
 
 #. Plugin Name of the plugin
+#: includes/templates/chatbox.php:95
 #: src/BlockAssetsManager.php:45
 msgid "WP SMS"
 msgstr ""
@@ -1171,6 +1172,7 @@ msgid "Sender number or sender ID"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1395
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:32
 #: includes/gateways/class-wpsms-gateway-smsozone.php:27
 msgid "API Key"
 msgstr ""
@@ -1772,7 +1774,7 @@ msgid "To get more option for GDPR, you should enable that in the general tab."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:2111
-#: includes/class-wpsms-gateway.php:950
+#: includes/class-wpsms-gateway.php:951
 msgid "Activated"
 msgstr ""
 
@@ -1917,37 +1919,37 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:938
+#: includes/class-wpsms-gateway.php:939
 #: includes/templates/admin/subscriber-form.php:45
 #: includes/templates/admin/subscriber-form.php:48
 msgid "Deactivate"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:974
+#: includes/class-wpsms-gateway.php:975
 msgid "%s <a href=\"%s\" target=\"_blank\">Documentation</a>"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1000
-#: includes/class-wpsms-gateway.php:1022
-#: includes/class-wpsms-gateway.php:1042
+#: includes/class-wpsms-gateway.php:1001
+#: includes/class-wpsms-gateway.php:1023
+#: includes/class-wpsms-gateway.php:1043
 msgid "Supported"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1006
-#: includes/class-wpsms-gateway.php:1028
-#: includes/class-wpsms-gateway.php:1048
+#: includes/class-wpsms-gateway.php:1007
+#: includes/class-wpsms-gateway.php:1029
+#: includes/class-wpsms-gateway.php:1049
 msgid "Not Supported"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1456
+#: includes/class-wpsms-gateway.php:1457
 msgid "%s - SMS Sending Alert"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1464
+#: includes/class-wpsms-gateway.php:1465
 msgid "SMS Delivery Issue"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1468
+#: includes/class-wpsms-gateway.php:1469
 msgid "Check SMS gateway configuration"
 msgstr ""
 
@@ -2361,6 +2363,75 @@ msgstr ""
 msgid "The Username/API key for this gateway is not set."
 msgstr ""
 
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:26
+msgid "Enter number without country code."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:27
+msgid "Please enter your API Key and DLT Template ID. For DLT messages, send variables in the message body separated via \"|\" symbol. e.g. Rahul|8888888888|6695"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:33
+#: includes/gateways/class-wpsms-gateway-smsozone.php:28
+msgid "Enter API key of gateway."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:37
+#: includes/gateways/class-wpsms-gateway-smsozone.php:32
+msgid "Approved Sender ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:38
+#: includes/gateways/class-wpsms-gateway-smsozone.php:33
+msgid "Enter sender ID of gateway."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:42
+msgid "Approved Message ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:43
+msgid "Enter your message ID."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:47
+#: includes/gateways/class-wpsms-gateway-smsozone.php:37
+msgid "Registered DLT Template ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:48
+#: includes/gateways/class-wpsms-gateway-smsozone.php:38
+msgid "Enter your Registered DLT Template ID."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:52
+msgid "Entity ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:53
+msgid "Enter your Registered Entity ID."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:57
+msgid "Route"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:58
+msgid "Please select SMS route."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:61
+msgid "DLT SMS"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:62
+msgid "DLT Manual SMS"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:63
+msgid "Quick SMS"
+msgstr ""
+
 #: includes/gateways/class-wpsms-gateway-globalvoice.php:125
 msgid "Token is not entered."
 msgstr ""
@@ -2469,26 +2540,6 @@ msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-smsglobal.php:144
 msgid "The API Key or API Secret for this gateway is not set"
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-smsozone.php:28
-msgid "Enter API key of gateway."
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-smsozone.php:32
-msgid "Approved Sender ID"
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-smsozone.php:33
-msgid "Enter sender ID of gateway."
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-smsozone.php:37
-msgid "Registered DLT Template ID"
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-smsozone.php:38
-msgid "Enter your Registered DLT Template ID."
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-smsozone.php:42
@@ -2686,7 +2737,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:16
 #: includes/templates/admin/fields/field-team-member-repeater.php:60
-msgid "Member"
+msgid "Emily Brown"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:17
@@ -2696,7 +2747,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:20
 #: includes/templates/admin/fields/field-team-member-repeater.php:64
-msgid "Role"
+msgid "Marketing Manager"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:21
@@ -2722,7 +2773,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:31
 #: includes/templates/admin/fields/field-team-member-repeater.php:75
-msgid "Availability"
+msgid "Available 10AM-5PM PST"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:32
@@ -2767,7 +2818,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:47
 #: includes/templates/admin/fields/field-team-member-repeater.php:91
-msgid "Contact Info"
+msgid "+1122334455"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:48
@@ -3187,6 +3238,10 @@ msgstr ""
 
 #: includes/templates/admin/subscribers.php:14
 msgid "Manage Groups"
+msgstr ""
+
+#: includes/templates/chatbox.php:96
+msgid "Powered By"
 msgstr ""
 
 #: includes/templates/email/default.php:29
