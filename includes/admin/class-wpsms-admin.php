@@ -79,65 +79,7 @@ class Admin
             }
 
 
-            $order_id = 0;
 
-            // Backward compatibility with new custom WooCommerce order table.
-            if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['id'])) {
-                $order_id = sanitize_text_field($_GET['id']);
-            } elseif (isset($_GET['post']) && $_GET['post']) {
-                $order_id = sanitize_text_field($_GET['post']);
-            }
-            $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
-
-
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/src/scripts/admin.min.js', ['jquery', 'wp-color-picker','jquery-ui-spinner'], WP_SMS_VERSION,null,true);
-
-            wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
-                    'restUrls' => array(
-                        'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
-                        'users'   => get_rest_url(null, 'wp/v2/users')
-                    ),
-                    'ajaxUrls' => array(
-                        'export'              => \WP_SMS\Controller\ExportAjax::url(),
-                        'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
-                        'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
-                    ),
-                    'nonce'    => $nonce,
-                    'senderID' => $sms->from,
-                )
-            );
-            wp_localize_script('wpsms-admin', 'WpSmsSendSmsTemplateVar', array(
-                'nonce'           => wp_create_nonce('wp_rest'),
-                'messageMsg'      => __('characters', 'wp-sms'),
-                'currentDateTime' => WP_SMS_CURRENT_DATE,
-                'proIsActive'     => \WP_SMS\Version::pro_is_active(),
-                'siteName'        => get_bloginfo('name')
-            ));
-            wp_localize_script('wpsms-admin', 'wp_sms_edit_subscribe_ajax_vars', array(
-                'tb_show_url' => \WP_SMS\Controller\SubscriberFormAjax::url(),
-                'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
-            ));
-            wp_localize_script('wpsms-admin', 'wp_sms_edit_group_ajax_vars', array(
-                'tb_show_url' => \WP_SMS\Controller\GroupFormAjax::url(),
-                'tb_show_tag' => __('Edit Group', 'wp-sms')
-            ));
-            wp_localize_script('wpsms-admin', 'wp_sms_privacy_page_ajax_vars', array(
-                'url' => \WP_SMS\Controller\PrivacyDataAjax::url()
-            ));
-            wp_localize_script('wpsms-admin', 'wpSmsWooCommerceTemplateVar', array(
-                    'rest_urls' => array(
-                        'send_sms' => get_rest_url(null, 'wpsms/v1/send')
-                    ),
-                    'nonce'     => $nonce,
-                    'sender_id' => $sms->from,
-                    'receiver'  => $customer_mobile,
-                    'order_id'  => $order_id,
-                    'lang'      => array(
-                        'checkbox_label' => __('Send SMS?', 'wp-sms'),
-                        'checkbox_desc'  => __('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
-                    ),
-                )
-            );
 
 
 
@@ -148,6 +90,65 @@ class Admin
             }
         }
 
+        $order_id = 0;
+
+        // Backward compatibility with new custom WooCommerce order table.
+        if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['id'])) {
+            $order_id = sanitize_text_field($_GET['id']);
+        } elseif (isset($_GET['post']) && $_GET['post']) {
+            $order_id = sanitize_text_field($_GET['post']);
+        }
+        $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
+
+
+        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/src/scripts/admin.min.js', ['jquery', 'wp-color-picker','jquery-ui-spinner'], WP_SMS_VERSION,null,true);
+
+        wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
+                'restUrls' => array(
+                    'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
+                    'users'   => get_rest_url(null, 'wp/v2/users')
+                ),
+                'ajaxUrls' => array(
+                    'export'              => \WP_SMS\Controller\ExportAjax::url(),
+                    'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
+                    'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
+                ),
+                'nonce'    => $nonce,
+                'senderID' => $sms->from,
+            )
+        );
+        wp_localize_script('wpsms-admin', 'WpSmsSendSmsTemplateVar', array(
+            'nonce'           => wp_create_nonce('wp_rest'),
+            'messageMsg'      => __('characters', 'wp-sms'),
+            'currentDateTime' => WP_SMS_CURRENT_DATE,
+            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
+            'siteName'        => get_bloginfo('name')
+        ));
+        wp_localize_script('wpsms-admin', 'wp_sms_edit_subscribe_ajax_vars', array(
+            'tb_show_url' => \WP_SMS\Controller\SubscriberFormAjax::url(),
+            'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
+        ));
+        wp_localize_script('wpsms-admin', 'wp_sms_edit_group_ajax_vars', array(
+            'tb_show_url' => \WP_SMS\Controller\GroupFormAjax::url(),
+            'tb_show_tag' => __('Edit Group', 'wp-sms')
+        ));
+        wp_localize_script('wpsms-admin', 'wp_sms_privacy_page_ajax_vars', array(
+            'url' => \WP_SMS\Controller\PrivacyDataAjax::url()
+        ));
+        wp_localize_script('wpsms-admin', 'wpSmsWooCommerceTemplateVar', array(
+                'rest_urls' => array(
+                    'send_sms' => get_rest_url(null, 'wpsms/v1/send')
+                ),
+                'nonce'     => $nonce,
+                'sender_id' => $sms->from,
+                'receiver'  => $customer_mobile,
+                'order_id'  => $order_id,
+                'lang'      => array(
+                    'checkbox_label' => __('Send SMS?', 'wp-sms'),
+                    'checkbox_desc'  => __('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
+                ),
+            )
+        );
         /**
          * Dashboard widgets
          */
