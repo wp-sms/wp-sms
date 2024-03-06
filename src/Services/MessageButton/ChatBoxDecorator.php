@@ -68,6 +68,11 @@ class ChatBoxDecorator
         return $this->getData('chatbox_links_enabled');
     }
 
+    public function isFooterLogoEnabled()
+    {
+        return $this->getData('chatbox_disable_logo', 'enable') == 'enable';
+    }
+
     public function getLinkTitle()
     {
         return $this->getData('chatbox_links_title', __('Quick Links', 'wp-sms'));
@@ -102,7 +107,7 @@ class ChatBoxDecorator
                 $teamMember['member_contact_value'] = '+1122334455';
             }
             if ($teamMember['member_contact_type'] == '') {
-                $teamMember['member_contact_type']  = 'whatsapp';
+                $teamMember['member_contact_type'] = 'whatsapp';
             }
 
             // Process each team member
