@@ -227,6 +227,13 @@ class WP_SMS
         $wooCommerceCheckout->init();
         $this->include('src/Services/WooCommerce/OrderViewManager.php');
 
+        $this->include('src/Services/Forminator/ForminatorManager.php');
+        $this->include('src/Services/Forminator/Forminator.php');
+        $forminatorManager = new \WP_SMS\Services\Forminator\ForminatorManager();
+        $forminator = new \WP_SMS\Services\Forminator\Forminator();
+        $forminator->init();
+        $forminatorManager->init();
+        
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
         $this->include('src/Shortcode/SubscriberShortcode.php');
