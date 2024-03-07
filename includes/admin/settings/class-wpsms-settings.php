@@ -2397,12 +2397,11 @@ class Settings
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
-                        foreach ($this->get_tabs() as $tab_id => $tab_name) {
+                        $addOns = collect($this->get_tabs())->filter(function($t, $id){
+                            if(str_contains($id,'addon')) return $t; 
+                        })->toArray();
 
-                            // Skip showing licenses in side tabs
-                            if ($tab_id == 'licenses') {
-                                continue;
-                            }
+                        $tabCheck = function($tab_id, $tab_name) use ($active_tab) {
 
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
@@ -2418,16 +2417,36 @@ class Settings
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
                             }
-
+                            
+                            
                             echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo $tab_name;
                             echo '</a>' . $proLockIcon . '</li>';
+                        };
 
-                            // Show Add-Ons label
-                            if ($tab_id == end($this->proTabs) && $tab_id !== array_key_last($this->get_tabs())) {
-                                echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
+                        foreach ($this->get_tabs() as $tab_id => $tab_name) {
+
+                            // Skip showing licenses in side tabs
+                            if ($tab_id == 'licenses') {
+                                continue;
                             }
-                        } ?>
+
+                            if(array_key_exists($tab_id, $addOns)) continue;
+
+                            $tabCheck($tab_id, $tab_name);
+                        } 
+                        
+                        // Show Add-Ons label
+                        if($addOns)
+                        {
+                            echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
+
+                            foreach($addOns as $tab_id => $tab_name ){
+                                $tabCheck($tab_id, $tab_name);
+                            }
+                        }
+
+                        ?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
@@ -2449,6 +2468,10 @@ class Settings
         </div>
         <?php
         echo ob_get_clean();
+    }
+
+    private function isActiveTab(){
+
     }
 
     /*
