@@ -1,7 +1,7 @@
 ﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, mms, notification, woocommerce, twilio, whatsapp
+Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
