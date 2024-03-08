@@ -1,3 +1,7 @@
+= v6.6.1 - 08.03.2024 =
+* Improvement: Replaced `move_uploaded_file` with `wp_handle_upload`.
+* Improvement: Sanitized and Escaped the rest of the inputs/outputs and hardened plugin security.
+
 = v6.6 - 06.03.2024 =
 * Addition: Messaging Button for direct visitor communication via WhatsApp, SMS, and other platforms. [More info](https://wp-sms-pro.com/25841/whats-new-in-wp-sms-6-6-better-faster-and-more-customizable/)
 * Improvement: Admin area texts for clearer instructions and settings management.
