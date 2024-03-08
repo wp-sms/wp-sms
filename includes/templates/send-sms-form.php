@@ -5,7 +5,7 @@
             <div class="wpsms-sendSmsForm__deactiveBlock__content">
                 <h6><?php _e('Send SMS Messages from Your Website', 'wp-sms'); ?></h6>
                 <p><?php _e('Give your website visitors the power to send SMS messages directly from your site.', 'wp-sms'); ?></p>
-                <a target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>"><?php _e('Upgrade to WP SMS Pro', 'wp-sms'); ?></a>
+                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php _e('Upgrade to WP SMS Pro', 'wp-sms'); ?></a>
             </div>
         </div>
     <?php else: ?>

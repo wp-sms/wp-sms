@@ -13,11 +13,11 @@
                                 </div>
                             <?php endif; ?>
                             <div class="addon-card__header">
-                                <a target="_blank" href="<?php echo $plugin->permalink; ?>" class="thickbox open-plugin-details-modal">
+                                <a target="_blank" href="<?php echo esc_attr($plugin->permalink); ?>" class="thickbox open-plugin-details-modal">
                                     <?php if ($plugin->images) : ?>
-                                        <img src="<?php echo $plugin->images[0]->src; ?>" class="addon-icon" alt="<?php echo $plugin->name; ?>">
+                                        <img src="<?php echo esc_url($plugin->images[0]->src); ?>" class="addon-icon" alt="<?php echo esc_attr($plugin->name); ?>">
                                     <?php endif; ?>
-                                    <h3><?php echo $plugin->name; ?></h3>
+                                    <h3><?php echo esc_html($plugin->name); ?></h3>
                                 </a>
                             </div>
                             <div class="addon-card__main">
@@ -28,21 +28,21 @@
                             <div class="addon-card__footer">
                                 <?php if ($plugin->meta['status'] == 'not-installed') : ?>
                                     <div class="addon-card__footer__price">
-                                        <strong><?php echo $plugin->price_html; ?></strong>
+                                        <strong><?php echo wp_kses_post($plugin->price_html); ?></strong>
                                     </div>
                                 <?php else : ?>
                                     <div class="addon-card__footer__status">
                                         <?php _e('Status:', 'wp-sms'); ?>
-                                        <strong><?php echo $plugin->meta['status_label']; ?></strong>
+                                        <strong><?php echo wp_kses_post($plugin->meta['status_label']); ?></strong>
                                     </div>
                                 <?php endif; ?>
                                 <div class="addon-card__footer__action">
                                     <?php if ($plugin->meta['status'] == 'active') : ?>
-                                        <a class="button" href="<?php echo $plugin->meta['deactivate_url']; ?>"><?php _e('Deactivate Add-On', 'wp-sms'); ?></a>
+                                        <a class="button" href="<?php echo esc_url($plugin->meta['deactivate_url']); ?>"><?php _e('Deactivate Add-On', 'wp-sms'); ?></a>
                                     <?php elseif ($plugin->meta['status'] == 'inactive') : ?>
-                                        <a class="button" href="<?php echo $plugin->meta['activate_url']; ?>"><?php _e('Activate Add-On', 'wp-sms'); ?></a>
+                                        <a class="button" href="<?php echo esc_url($plugin->meta['activate_url']); ?>"><?php _e('Activate Add-On', 'wp-sms'); ?></a>
                                     <?php else : ?>
-                                        <a class="button-primary" target="_blank" href="<?php echo $plugin->permalink; ?>"><?php _e('Buy Add-On', 'wp-sms'); ?></a>
+                                        <a class="button-primary" target="_blank" href="<?php echo esc_url($plugin->permalink); ?>"><?php _e('Buy Add-On', 'wp-sms'); ?></a>
                                     <?php endif; ?>
                                 </div>
                             </div>

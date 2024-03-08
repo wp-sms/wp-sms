@@ -465,9 +465,9 @@ class Gateway
                     if ($sms->{$key} !== false) {
                         $gatewayFields[$value['id']] = [
                             'id'      => $value['id'],
-                            'name'    => __($value['name'], 'wp-sms'),
+                            'name'    => $value['name'],
                             'type'    => isset($value['type']) ? $value['type'] : 'text',
-                            'desc'    => __($value['desc'], 'wp-sms'),
+                            'desc'    => $value['desc'],
                             'options' => isset($value['options']) ? $value['options'] : array()
                         ];
                     }

@@ -1,6 +1,6 @@
 <form action="" method="post">
     <?php if (isset($subscriber_id)) : ?>
-        <input type="hidden" name="ID" value="<?php echo $subscriber_id; ?>"/>
+        <input type="hidden" name="ID" value="<?php echo esc_attr($subscriber_id); ?>"/>
     <?php endif; ?>
 
     <table>
