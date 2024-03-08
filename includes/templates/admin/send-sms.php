@@ -95,7 +95,7 @@
                     <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Role', 'wp-sms'); ?>">
                         <?php foreach ($wpsms_list_of_role as $key_item => $val_item): ?>
                             <option value="<?php echo $key_item; ?>"
-                                <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php _e($val_item['name'], 'wp-sms'); ?>
+                                <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php echo esc_html($val_item['name']); ?>
                                 (<?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), $val_item['count']); ?>)
                             </option>
                         <?php endforeach; ?>

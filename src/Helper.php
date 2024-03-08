@@ -337,11 +337,11 @@ class Helper
             $max_length = Option::getOption('mobile_terms_maximum');
 
             if ($max_length and strlen($mobileNumber) > $max_length) {
-                return new WP_Error('invalid_number', __("Your mobile number must have up to {$max_length} characters.", 'wp-sms'));
+                return new WP_Error('invalid_number', sprintf(__('Your mobile number must have up to %s characters.', 'wp-sms'), $max_length));
             }
 
             if ($min_length and strlen($mobileNumber) < $min_length) {
-                return new WP_Error('invalid_number', __("Your mobile number must have at least {$min_length} characters.", 'wp-sms'));
+                return new WP_Error('invalid_number', sprintf(__('Your mobile number must have at least %s characters.', 'wp-sms'), $min_length));
             }
         }
 

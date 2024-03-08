@@ -2666,7 +2666,7 @@ class Settings
 
             if (isset($terms)) {
                 foreach ($terms as $term) {
-                    $result[$taxonomy][$term->term_id] = __(ucfirst($term->name), 'wp-sms');
+                    $result[$taxonomy][$term->term_id] = ucfirst($term->name);
                 }
             }
 

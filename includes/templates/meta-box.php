@@ -57,7 +57,7 @@
                             }
                         }
                         ?>>
-                            <?php _e($val_item['name'], 'wp-sms'); ?>
+                            <?php echo esc_html($val_item['name']); ?>
                             (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>)
                         </option>
                     <?php endforeach; ?>
