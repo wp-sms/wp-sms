@@ -3,10 +3,10 @@
     <?php foreach ($fields as $field): ?>
         <tr>
             <th>
-                <?= isset($field['title']) ? $field['title'] : '' ?>
+                <?php echo isset($field['title']) ? esc_html($field['title']) : '' ?>
             </th>
             <td>
-                <?= isset($field['content']) ? $field['content'] : '' ?>
+                <?php echo isset($field['content']) ? $field['content'] : '' ?>
             </td>
         </tr>
     <?php endforeach; ?>
