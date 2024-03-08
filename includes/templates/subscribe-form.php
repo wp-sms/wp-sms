@@ -74,7 +74,7 @@
                     <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField wpsms-subscribe__form__field--gdpr">
                         <label>
                             <input class="wpsms-gdpr-confirmation js-wpSmsGdprConfirmation" type="checkbox" <?php echo $subscribe_form_gdpr_confirm_checkbox == 'checked' ? 'checked="checked"' : ''; ?>>
-                            <?php echo $subscribe_form_gdpr_text ? $subscribe_form_gdpr_text : __('I agree to receive SMS based on my data', 'wp-sms'); ?>
+                            <?php echo $subscribe_form_gdpr_text ? wp_kses_post($subscribe_form_gdpr_text) : __('I agree to receive SMS based on my data', 'wp-sms'); ?>
                         </label>
                     </div>
                 <?php } ?>

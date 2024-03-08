@@ -17,7 +17,7 @@
             <tr id="wp-sms-recipient-numbers">
                 <th scope="row"><label for="wpcf7-sms-recipient-number"><?php _e('Numbers', 'wp-sms'); ?>:</label></th>
                 <td>
-                    <input type="text" value="<?php echo $cf7_options['phone'] ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms[phone]" id="wpcf7-sms-recipient-number">
+                    <input type="text" value="<?php echo esc_attr($cf7_options['phone']) ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms[phone]" id="wpcf7-sms-recipient-number">
                     <p class="description"><?php _e('<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002.', 'wp-sms'); ?></p>
                 </td>
             </tr>
@@ -30,8 +30,8 @@
                             <?php
                             if (isset($get_group_result)):
                                 foreach ($get_group_result as $items): ?>
-                                    <option value="<?php echo $items->ID; ?>" <?php if (isset($cf7_options['groups']) && in_array($items->ID, $cf7_options['groups'])): echo 'selected'; endif; ?>>
-                                        <?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?>
+                                    <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($cf7_options['groups']) && in_array($items->ID, $cf7_options['groups'])): echo 'selected'; endif; ?>>
+                                        <?php echo sprintf(__('Group %s', 'wp-sms'), esc_attr($items->name)); ?>
                                     </option>
                                 <?php
                                 endforeach;
@@ -45,7 +45,7 @@
             <tr id="wp-sms-cf7-message-body">
                 <th scope="row"><label for="wpcf7-sms-message"><?php _e('Message body', 'wp-sms'); ?>:</label></th>
                 <td>
-                    <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms[message]" id="wpcf7-sms-message"><?php echo $cf7_options['message'] ?? ''; ?></textarea>
+                    <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms[message]" id="wpcf7-sms-message"><?php echo esc_html($cf7_options['message']) ?? ''; ?></textarea>
                     <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
                         <?php _e('You can also use the following contact form 7 tags in the message body:', 'wp-sms'); ?>
                         <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>
@@ -61,7 +61,7 @@
                 <th scope="row"><label for="wpcf7-sms-sender-form"><?php _e('Send to field', 'wp-sms'); ?>:</label>
                 </th>
                 <td>
-                    <input type="text" value="<?php echo $cf7_options_field['phone'] ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms-form[phone]" id="wpcf7-sms-sender-form">
+                    <input type="text" value="<?php echo esc_attr($cf7_options_field['phone']) ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms-form[phone]" id="wpcf7-sms-sender-form">
                     <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?></p>
                 </td>
             </tr>
@@ -70,7 +70,7 @@
                 <th scope="row"><label for="wpcf7-sms-message-form"><?php _e('Message body', 'wp-sms'); ?>:</label>
                 </th>
                 <td>
-                    <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms-form[message]" id="wpcf7-sms-message-form"><?php echo $cf7_options_field['message'] ?? ''; ?></textarea>
+                    <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms-form[message]" id="wpcf7-sms-message-form"><?php echo esc_html($cf7_options_field['message']) ?? ''; ?></textarea>
                     <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
                         <?php _e('You can also use the following contact form 7 tags in the message body:', 'wp-sms'); ?>
                         <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>

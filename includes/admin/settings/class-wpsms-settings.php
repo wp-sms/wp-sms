@@ -2180,7 +2180,7 @@ class Settings
 
         if ($args['doc']) {
             $documentUrl = WP_SMS_SITE . $args['doc'];
-            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', $documentUrl);
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', esc_url($documentUrl));
         }
 
         echo "<div class='wpsms-settings-header-field'>{$html}</div>";
@@ -2208,13 +2208,13 @@ class Settings
 
     public function notice_callback($args)
     {
-        echo sprintf('%s', $args['desc']);
+        echo sprintf('%s', wp_kses_post($args['desc']));
     }
 
     public function checkbox_callback($args)
     {
         $checked = isset($this->options[$args['id']]) ? checked(1, $this->options[$args['id']], false) : '';
-        $html    = sprintf('<input type="checkbox" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]" value="1" %2$s /><label for="' . $this->setting_name . '[%1$s]"> ' . __('Active', 'wp-sms') . '</label><p class="description">%3$s</p>', esc_attr($args['id']), esc_attr($checked), wp_kses_post($args['desc']));
+        $html    = sprintf('<input type="checkbox" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]" value="1" %2$s /><label for="' . esc_attr($this->setting_name) . '[%1$s]"> ' . __('Active', 'wp-sms') . '</label><p class="description">%3$s</p>', esc_attr($args['id']), esc_attr($checked), wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -2244,7 +2244,7 @@ class Settings
             } elseif (isset($args['std']) && $args['std'] == $key && !isset($this->options[$args['id']])) {
                 $checked = true;
             }
-            $html .= sprintf('<input name="' . $this->setting_name . '[%1$s]"" id="' . $this->setting_name . '[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="' . $this->setting_name . '[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
+            $html .= sprintf('<input name="' . esc_attr($this->setting_name) . '[%1$s]"" id="' . esc_attr($this->setting_name) . '[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="' . esc_attr($this->setting_name) . '[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
         endforeach;
         $html .= sprintf('<p class="description">%1$s</p>', wp_kses_post($args['desc']));
         echo $html;
@@ -2260,7 +2260,7 @@ class Settings
 
         $after_input = (isset($args['after_input']) && !is_null($args['after_input'])) ? $args['after_input'] : '';
         $size        = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html        = sprintf('<input dir="auto" type="text" class="%1$s-text" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
+        $html        = sprintf('<input dir="auto" type="text" class="%1$s-text" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -2277,7 +2277,7 @@ class Settings
         $step = isset($args['step']) ? $args['step'] : 1;
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input dir="auto" type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s-text" id="' . $this->setting_name . '[%5$s]" name="' . $this->setting_name . '[%5$s]" value="%6$s"/><p class="description"> %7$s</p>', esc_attr($step), esc_attr($max), esc_attr($min), esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), wp_kses_post($args['desc']));
+        $html = sprintf('<input dir="auto" type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s-text" id="' . esc_attr($this->setting_name) . '[%5$s]" name="' . esc_attr($this->setting_name) . '[%5$s]" value="%6$s"/><p class="description"> %7$s</p>', esc_attr($step), esc_attr($max), esc_attr($min), esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -2289,7 +2289,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = sprintf('<textarea dir="auto" class="large-text" cols="50" rows="5" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
+        $html = sprintf('<textarea dir="auto" class="large-text" cols="50" rows="5" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
         echo $html;
     }
 
@@ -2302,7 +2302,7 @@ class Settings
         }
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
-        $html = sprintf('<input type="password" class="%1$s-text" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><p class="description"> %4$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr($value), wp_kses_post($args['desc']));
+        $html = sprintf('<input type="password" class="%1$s-text" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]" value="%3$s"/><p class="description"> %4$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr($value), wp_kses_post($args['desc']));
 
         echo $html;
     }
@@ -2326,7 +2326,7 @@ class Settings
             return sprintf('%s="%s"', $key, $value);
         }, array_keys($args['attributes']), array_values($args['attributes']));
 
-        $html = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]" %2$s>', esc_attr($args['id']), implode(' ', $attributes));
+        $html = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]" %2$s>', esc_attr($args['id']), implode(' ', $attributes));
 
         foreach ($args['options'] as $option => $name) {
             $selected = selected($option, $value, false);
@@ -2346,7 +2346,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $k => $name) :
@@ -2375,7 +2375,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
@@ -2403,7 +2403,7 @@ class Settings
         }
 
         $class_name = 'js-wpsms-select2';
-        $html       = sprintf('<select class="%1$s" id="' . $this->setting_name . '[%2$s]" name="' . $this->setting_name . '[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
+        $html       = sprintf('<select class="%1$s" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $key)));
@@ -2437,7 +2437,7 @@ class Settings
         }
 
 //        $class_name = 'js-wpsms-select2';
-        $html     = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $k => $v) :
@@ -2469,7 +2469,7 @@ class Settings
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html = sprintf('<select id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]">', esc_attr($args['id']));
+        $html = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">', esc_attr($args['id']));
 
         foreach ($args['options'] as $option => $color) :
             $selected = selected($option, $value, false);
@@ -2496,7 +2496,7 @@ class Settings
         if ($wp_version >= 3.3 && function_exists('wp_editor')) {
             $html = wp_editor(stripslashes($value), "$this->setting_name[$id]", array('textarea_name' => "$this->setting_name[$id]"));
         } else {
-            $html = sprintf('<textarea class="large-text" rows="10" id="' . $this->setting_name . '[%1$s]" name="' . $this->setting_name . '[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
+            $html = sprintf('<textarea class="large-text" rows="10" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
         }
 
         $html .= sprintf('<p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -2514,7 +2514,7 @@ class Settings
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
         $html = sprintf(
-            '<input type="text" class="%1$s-text ' . esc_attr($this->setting_name) . '_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . $this->setting_name . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . $this->setting_name . '_upload_button button button-secondary" data-target="' . esc_attr($this->setting_name) . '[%2$s]" value="%4$s"/></span><p class="description"> %5$s</p>',
+            '<input type="text" class="%1$s-text ' . esc_attr($this->setting_name) . '_upload_field" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]" value="%3$s"/><span>&nbsp;<input type="button" class="' . esc_attr($this->setting_name) . '_upload_button button button-secondary" data-target="' . esc_attr($this->setting_name) . '[%2$s]" value="%4$s"/></span><p class="description"> %5$s</p>',
             esc_attr($size),
             esc_attr($args['id']),
             esc_attr(stripslashes($value)),
@@ -2534,7 +2534,7 @@ class Settings
         }
 
         $default = isset($args['std']) ? $args['std'] : '';
-        $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . $this->setting_name . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
+        $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
 
         echo $html;
     }
@@ -2575,7 +2575,7 @@ class Settings
                             }
 
                             echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
-                            echo $tab_name;
+                            echo esc_html($tab_name);
                             echo '</a>' . $proLockIcon . '</li>';
 
                             // Show Add-Ons label

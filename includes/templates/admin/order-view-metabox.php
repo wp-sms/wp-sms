@@ -29,7 +29,7 @@
         </div>
 
         <div class="wpsms-orderSmsMetabox__variables__shortCodes">
-            <?php echo $variables; ?>
+            <?php echo wp_kses_post($variables); ?>
         </div>
     </div>
 

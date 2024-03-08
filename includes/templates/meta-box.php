@@ -48,7 +48,7 @@
                     foreach ($wpsms_list_of_role as $key_item => $val_item) :
                         ?>
                         <!--echo Roles-->
-                        <option value="<?php echo $key_item; ?>" <?php
+                        <option value="<?php echo esc_attr($key_item); ?>" <?php
                         if ($val_item['count'] < 1) {
                             echo " disabled";
                         } else {
@@ -58,7 +58,7 @@
                         }
                         ?>>
                             <?php echo esc_html($val_item['name']); ?>
-                            (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), $val_item['count']); ?>)
+                            (<?php echo sprintf(__('<b>%s</b> Users have mobile number.', 'wp-sms'), esc_attr($val_item['count'])); ?>)
                         </option>
                     <?php endforeach; ?>
                 </select>
