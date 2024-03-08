@@ -6,8 +6,8 @@ Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
 Stable tag: 6.6
-License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License: GPL-2.0+
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
