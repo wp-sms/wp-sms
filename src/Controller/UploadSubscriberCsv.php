@@ -40,7 +40,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
         }
 
         // check whether file includes header
-        $has_header = $_GET['hasHeader'];
+        $has_header = sanitize_text_field($_GET['hasHeader']);
 
         // if the file contains header, skip the first line and if not,
         // choose the first line as an index to show to client
