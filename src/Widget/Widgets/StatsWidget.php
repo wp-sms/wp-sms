@@ -19,10 +19,6 @@ class StatsWidget extends AbstractWidget
      *
      * @return void
      */
-    protected function prepare()
-    {
-        Assets::registerScript('chartjs', 'js/chart.min.js', [], '3.7.1');
-     }
 
     /**
      * Render the widget

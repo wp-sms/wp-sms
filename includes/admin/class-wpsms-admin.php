@@ -43,6 +43,9 @@ class Admin
         global $sms;
         $nonce = wp_create_nonce('wp_rest');
 
+        wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION);
+        wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION);
+
         // Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
             wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION);
@@ -323,18 +326,8 @@ class Admin
         $page->init();
     }
 
-    /**
-     * Load send SMS page assets
-     */
-    public function send_sms_assets()
-    {
-        if (\WP_SMS\Version::pro_is_active()) {
-            wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION);
-            wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION);
-        }
 
 
-    }
 
     /**
      * Load outbox page assets
