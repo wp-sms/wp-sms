@@ -6,7 +6,7 @@ $general_fill_color = $chatbox->getTextColor('#FFF');
 $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $chatbox->getFooterTextColor()) : '';
 ?>
 
-<div class="wpsms-chatbox wpsms-chatbox--ltr  wpsms-chatbox--orange-theme <?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'wpsms-chatbox--right-side' : 'wpsms-chatbox--left-side' ?>" style="<?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'left: unset; right: 1rem' : '' ?>">
+<div class="wpsms-chatbox wpsms-chatbox--ltr  wpsms-chatbox--orange-theme <?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'wpsms-chatbox--right-side' : 'wpsms-chatbox--left-side' ?>">
     <button class="wpsms-chatbox__button js-wpsms-chatbox__button wpsms-chatbox__button--rounded wpsms-chatbox__button--rounded wpsms-chatbox__button--has-arrow wpsms-chatbox--bobbles" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
         <span class="wpsms-chatbox__button-arrow">
            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" fill="none"><g clip-path="url(#a)"><path stroke="<?php echo esc_attr($general_fill_color) ?>" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m11 1.5-5 5-5-5"/></g><defs><clipPath id="a"><path fill="<?php echo esc_attr($general_fill_color) ?>" d="M0 .5h12v7H0z"/></clipPath></defs></svg>
@@ -19,7 +19,7 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $ch
         </span>
     </button>
 
-    <div class="wpsms-chatbox__content <?php echo $chatbox->getAnimationEffect() ? 'wpsms-chatbox__content--' . esc_attr($chatbox->getAnimationEffect()) : '' ?>" style="<?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'left: unset; right: 0.5rem' : '' ?>">
+    <div class="wpsms-chatbox__content <?php echo $chatbox->getAnimationEffect() ? 'wpsms-chatbox__content--' . esc_attr($chatbox->getAnimationEffect()) : '' ?>">
         <div class="wpsms-chatbox__header" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
             <h2 style="<?php echo esc_attr($general_color) ?>">
                 <?php echo esc_html($chatbox->getTitle()); ?>
@@ -113,6 +113,6 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $ch
                 </div>
             <?php endif; ?>
         </div>
-        <span class="wpsms-chatbox__arrow" style="<?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'left: unset; right: 2rem' : '' ?>"><i></i></span>
+        <span class="wpsms-chatbox__arrow"><i></i></span>
     </div>
 </div>
