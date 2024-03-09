@@ -31,6 +31,9 @@ class Settings
     private $proIsInstalled;
     private $wooProIsInstalled;
 
+    private $active_tab;
+    private $contentRestricted;
+
     /**
      * @return string
      */
@@ -2378,8 +2381,16 @@ class Settings
 
     public function render_settings()
     {
-        $active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
-        $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
+        
+        $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
+        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && !$this->proIsInstalled;
+        $args = [
+            'setting' => true,
+            'template'  => '' //must be a callable function
+        ];
+        $args = apply_filters('wp_sms_settings_render_'. $this->active_tab, $args);
+
+
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo Helper::loadTemplate('header.php'); ?>
@@ -2401,7 +2412,7 @@ class Settings
                                 'tab'              => $tab_id
                             ));
 
-                            $active      = $active_tab == $tab_id ? 'active' : '';
+                            $active      = $this->active_tab == $tab_id ? 'active' : '';
                             $IsProTab    = in_array($tab_id, $this->proTabs) ? ' is-pro-tab' : '';
                             $proLockIcon = '';
 
@@ -2422,19 +2433,17 @@ class Settings
                         } ?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
-                    <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
-                        <form method="post" action="options.php">
-                            <table class="form-table">
-                                <?php
-                                settings_fields($this->setting_name);
-                                do_settings_fields("{$this->setting_name}_{$active_tab}", "{$this->setting_name}_{$active_tab}"); ?>
-                            </table>
-
-                            <?php
-                            if (!$contentRestricted) {
-                                submit_button();
-                            } ?>
-                        </form>
+                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                        <?php 
+                            if(isset($args['setting']) && $args['setting'] == true)
+                            {
+                                $this->renderWpSetting();   
+                            } 
+                            else if(isset($args['template']) && $args['template'] != "")
+                            {
+                                call_user_func($args['template'], []);
+                            }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -2442,6 +2451,25 @@ class Settings
         <?php
         echo ob_get_clean();
     }
+
+    private function renderWpSetting()
+    {
+        ?>
+        <form method="post" action="options.php">
+            <table class="form-table">
+                <?php
+                settings_fields($this->setting_name);
+                do_settings_fields("{$this->setting_name}_{$this->active_tab}", "{$this->setting_name}_{$this->active_tab}"); ?>
+            </table>
+
+            <?php
+            if (!$this->contentRestricted) {
+                submit_button();
+            } ?>
+        </form>   
+        <?php
+    } 
+
 
     /*
      * Get list Post Type
