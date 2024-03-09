@@ -1,30 +1,30 @@
 <!--    Graphical Report    -->
 <div class="graphical-reports">
-    <h4><?php echo sprintf(__('From %s to %s 2023', 'wp-sms'), $duration['startDate'], $duration['endDate']); ?></h4>
+    <h4><?php echo sprintf(__('From %s to %s 2023', 'wp-sms'), esc_html($duration['startDate']), esc_html($duration['endDate'])); ?></h4>
     <h5><?php _e('At a glance', 'wp-sms'); ?></h5>
 
     <table>
         <tr>
             <td>
-                <img src="<?php echo WP_SMS_URL . 'assets/images/icons/success-sms.png'; ?>" class="icon"/>
-                <span class="value"><?php echo $sms_data['success']; ?></span>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/success-sms.png'); ?>" class="icon"/>
+                <span class="value"><?php echo esc_html($sms_data['success']); ?></span>
                 <span class="name"><?php _e('Successful SMS', 'wp-sms'); ?></span>
             </td>
             <td>
-                <img src="<?php echo WP_SMS_URL . 'assets/images/icons/failed-sms.png'; ?>" class="icon"/>
-                <span class="value"><?php echo $sms_data['failed']; ?></span>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/failed-sms.png'); ?>" class="icon"/>
+                <span class="value"><?php echo esc_html($sms_data['failed']); ?></span>
                 <span class="name"><?php _e('Failed SMS', 'wp-sms'); ?></span>
             </td>
         </tr>
         <tr>
             <td>
-                <img src="<?php echo WP_SMS_URL . 'assets/images/icons/active-user.png'; ?>" class="icon"/>
-                <span class="value"><?php echo $subscription_data['activeSubscribers']; ?></span>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/active-user.png'); ?>" class="icon"/>
+                <span class="value"><?php echo esc_html($subscription_data['activeSubscribers']); ?></span>
                 <span class="name"><?php _e('New Active Subscribers SMS', 'wp-sms'); ?></span>
             </td>
             <td>
-                <img src="<?php echo WP_SMS_URL . 'assets/images/icons/added-user.png'; ?>" class="icon"/>
-                <span class="value"><?php echo $subscription_data['deactiveSubscribers']; ?></span>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/added-user.png'); ?>" class="icon"/>
+                <span class="value"><?php echo esc_html($subscription_data['deactiveSubscribers']); ?></span>
                 <span class="name"><?php _e('New Deactive Subscribers', 'wp-sms'); ?></span>
             </td>
         </tr>
@@ -45,15 +45,15 @@
         <tbody>
         <tr>
             <td style="text-align: left"><?php _e('Failed SMS', 'wp-sms'); ?></td>
-            <td style="text-align: right"><?php echo $sms_data['failed']; ?></td>
+            <td style="text-align: right"><?php echo esc_html($sms_data['failed']); ?></td>
         </tr>
         <tr>
             <td style="text-align: left"><?php _e('Successful SMS', 'wp-sms'); ?></td>
-            <td style="text-align: right"><?php echo $sms_data['success']; ?></td>
+            <td style="text-align: right"><?php echo esc_html($sms_data['success']); ?></td>
         </tr>
         <tr>
             <td class="total" style="text-align: left"><?php _e('Total', 'wp-sms'); ?></td>
-            <td colspan="2" class="total" style="text-align: right"><?php echo $sms_data['total']; ?></td>
+            <td colspan="2" class="total" style="text-align: right"><?php echo esc_html($sms_data['total']); ?></td>
         </tr>
         </tbody>
     </table>
@@ -82,7 +82,7 @@
 
         <tr>
             <td style="text-align: left" class="total"><?php _e('Total', 'wp-sms'); ?></td>
-            <td colspan="2" class="total" style="text-align: right"><?php echo $subscription_data['total']; ?></td>
+            <td colspan="2" class="total" style="text-align: right"><?php echo esc_html($subscription_data['total']); ?></td>
         </tr>
         </tbody>
     </table>
@@ -99,15 +99,15 @@
         <tbody>
         <tr>
             <td style="text-align: left"><?php _e('Failed', 'wp-sms'); ?></td>
-            <td style="text-align: right"><?php echo $login_data['failed']; ?></td>
+            <td style="text-align: right"><?php echo esc_html($login_data['failed']); ?></td>
         </tr>
         <tr>
             <td style="text-align: left"><?php _e('Successful', 'wp-sms'); ?></td>
-            <td style="text-align: right"><?php echo $login_data['success']; ?></td>
+            <td style="text-align: right"><?php echo esc_html($login_data['success']); ?></td>
         </tr>
         <tr>
             <td style="text-align: left" class="total"><?php _e('Total', 'wp-sms'); ?></td>
-            <td colspan="2" class="total" style="text-align: right"><?php echo $login_data['total']; ?></td>
+            <td colspan="2" class="total" style="text-align: right"><?php echo esc_html($login_data['total']); ?></td>
         </tr>
         </tbody>
     </table>

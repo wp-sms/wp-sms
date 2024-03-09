@@ -1,13 +1,13 @@
 ﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, mms, notification, woocommerce, twilio, whatsapp
+Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.6
-License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+Stable tag: 6.6.1
+License: GPL-2.0+
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 The Best WordPress SMS Messaging and Notification Plugin for WordPress!
 
@@ -44,6 +44,7 @@ Main plugin's features
 * Supporting WP REST API
 * Meeting GDPR compliance requirements
 * Importing and exporting subscribers
+* [Messaging Button](https://wp-sms-pro.com/25838/meet-wp-sms-new-messaging-button-connect-with-just-a-click/): A newly added feature allowing visitors to connect with your team directly through preferred platforms such as SMS, WhatsApp, or Telegram, with just one click on your website.
 * And much more!
 
 This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
@@ -220,10 +221,8 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.6 - **.03.2024 =
-* Feature: Introducing the Message Button - a new chatbox feature added to expand communication options on your website. The Message Button allows visitors to easily connect via WhatsApp, Facebook Messenger, SMS, phone call, and Telegram, enhancing interaction between you and your audience. This feature is included for free to extend the functionality of WP SMS, providing more ways for users to engage with your site.
-* Improvement: Updated admin copies for better clarity and user experience.
-* Improvement: Implemented various minor improvements to boost performance and overall usability.
-* Development: Added filter `wp_sms_mobile_number_numeric_check` for enhanced customization options.
+= v6.6.1 - 08.03.2024 =
+* Improvement: Replaced `move_uploaded_file` with `wp_handle_upload`.
+* Improvement: Sanitized and Escaped the rest of the inputs/outputs and hardened plugin security.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
