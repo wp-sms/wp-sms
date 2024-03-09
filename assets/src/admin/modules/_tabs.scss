@@ -181,6 +181,10 @@
   background-size: 20px;
 }
 
+.wpsms-tab .tab-addon_forminator_integration a::before {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='20' viewBox='0 0 16 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H1C0.447715 0 0 0.447715 0 1V7C0 7.55228 0.447715 8 1 8H15C15.5523 8 16 7.55228 16 7V1C16 0.447715 15.5523 0 15 0ZM13 10.5V12H15C15.5523 12 16 12.4477 16 13V19C16 19.5523 15.5523 20 15 20H1C0.447715 20 0 19.5523 0 19V13C0 12.4477 0.447715 12 1 12H3V10.5C3 10.2239 3.22386 10 3.5 10H5.5C5.77614 10 6 10.2239 6 10.5V12H10V10.5C10 10.2239 10.2239 10 10.5 10H12.5C12.7761 10 13 10.2239 13 10.5ZM2 18H14V14H2V18ZM2 6H14V2H2V6Z' fill='%23000'/%3E%3C/svg%3E%0A");
+}
+
 .wpsms-tab .tab-section-header {
   padding: 13px 14px;
   font-weight: 500;

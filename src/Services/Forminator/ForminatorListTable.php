@@ -1,6 +1,10 @@
 <?php 
 namespace WP_SMS\Services\Forminator;
 
+if (!class_exists('WP_List_Table')) {
+    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+}
+
 use Forminator_API;
 
 class ForminatorListTable extends \WP_List_Table 
@@ -90,7 +94,7 @@ class ForminatorListTable extends \WP_List_Table
     public    function usort_reorder($a, $b)
         {
             // If no sort, default to user_login
-            $orderby = (!empty($_GET['orderby'])) ? $_GET['orderby'] : 'user_login';
+            $orderby = (!empty($_GET['orderby'])) ? $_GET['orderby'] : 'id';
     
             // If no order, default to asc
             $order = (!empty($_GET['order'])) ? $_GET['order'] : 'asc';

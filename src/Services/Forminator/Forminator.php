@@ -1,7 +1,6 @@
 <?php 
 namespace WP_SMS\Services\Forminator;
 
-use Forminator_Select;
 use WP_SMS\Newsletter;
 
 class Forminator
@@ -11,17 +10,18 @@ class Forminator
 
     public function init()
     {
-        add_action("forminator_custom_form_mail_before_send_mail", array($this, 'handle_sms'), 10, 4);  
+        add_action("forminator_form_draft_after_save_entry", array($this, 'handle_sms'), 10, 2);  
+        add_action("forminator_form_after_save_entry", array($this, 'handle_sms'), 10, 2);  
+        // add_action("forminator_custom_form_mail_before_send_mail", array($this, 'handle_sms'), 10, 4);  
         // add_filter('forminator_form_admin_data', array($this, 'test2'), 10, 3);
         // add_filter("forminator_custom_form_admin_page_entries", array($this,"test3"),10,3);
     }
 
 
-    public function handle_sms($mail, $form, $data, $entry)
-    {
-
+    public function handle_sms($form, $res)
+    {       
         //forminator-sms-from &&‌  forminator-sms
-        $sms_options       = get_option('wp_sms_forminator_form' . $form->id);
+        $sms_options       = get_option('wp_sms_forminator_form' . $form);
         $to_options = $sms_options['forminator-sms']; 
         $from_options = $sms_options['forminator-sms-from']; 
         $this->set_data();
@@ -30,7 +30,7 @@ class Forminator
          * Send SMS to the specific number or subscribers' group
          */
         if ((isset($to_options['phone']) || isset($to_options['recipient'])) && isset($to_options['message'])) {
-
+            
             switch ($to_options['recipient']) {
                 case 'subscriber':
                     $to = Newsletter::getSubscribers($to_options['groups'], true);
@@ -40,7 +40,7 @@ class Forminator
                     $to = explode(',', $to_options['phone']);
                     break;
             }
-            
+
             $message = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
                 $form_tags = $this->data;
                 $tag       = $matches[1];

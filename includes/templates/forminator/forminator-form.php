@@ -1,5 +1,8 @@
 <div id="forminator-wpsms" class="contact-form-editor-wpsms">
-    <h3><?php _e('SMS Recipient Form '. $form->name .' (' . $form->id . ')' , 'wp-sms'); ?> </h3>
+    <div class="head-with-back">
+        <h3><?php _e('SMS Recipient Form '. $form->name .' (' . $form->id . ')' , 'wp-sms'); ?> </h3>
+        <a title="Back" href="<?= esc_url( remove_query_arg( 'form' ) ); ?>"><span class="dashicons dashicons-undo"></span> </a>
+    </div>
     
     <form  method="post">
         <input name="submit_action" type="hidden" value="forminator_form_sms_data">
@@ -19,8 +22,7 @@
                         </select>
                     </td>
                 </tr>
-
-                <tr id="wp-sms-recipient-numbers">
+                <tr id="wp-sms-recipient-numbers" class="<?= $sms_data['forminator-sms']['recipient'] == 'subscriber' ? 'display-none' : '' ?>">
                     <th scope="row"><label for="forminator-sms-recipient-number"><?php _e('Numbers', 'wp-sms'); ?>:</label></th>
                     <td>
                         <input type="text" value="<?php echo $sms_data['forminator-sms']['phone'] ?? ''; ?>" size="70" class="large-text code" name="forminator-sms[phone]" id="forminator-sms-recipient-number">
@@ -28,7 +30,7 @@
                     </td>
                 </tr>
 
-                <tr id="wp-sms-recipient-groups" class="display-none">
+                <tr id="wp-sms-recipient-groups" class="<?= $sms_data['forminator-sms']['recipient'] == 'number' ? 'display-none' : '' ?>">
                     <th scope="row"><label for="forminator-sms-recipient-subscriber"><?php _e('Subscriber Group', 'wp-sms'); ?>:</label></th>
                     <td>
                         <div class="wpsms-value wpsms-group">
@@ -51,9 +53,8 @@
                 <tr id="wp-sms-cf7-message-body">
                     <th scope="row"><label for="forminator-sms-message"><?php _e('Message body', 'wp-sms'); ?>:</label></th>
                     <td>
-                        <textarea class="large-text" rows="4" cols="100" name="forminator-sms[message]" id="forminator-sms-message"><?php echo $sms_data['forminator-sms-from']['message'] ?? ''; ?></textarea>
+                        <textarea class="large-text" rows="4" cols="100" name="forminator-sms[message]" id="forminator-sms-message"><?php echo $sms_data['forminator-sms']['message'] ?? ''; ?></textarea>
                         <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
-                            <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>
                         </p>
                     </td>
                 </tr>
@@ -96,6 +97,13 @@
 <style>
 .display-none{
     display: none;
+}
+.head-with-back
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 </style>
 
