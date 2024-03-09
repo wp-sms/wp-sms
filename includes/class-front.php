@@ -37,7 +37,7 @@ class Front
         }
 
         // Register subscriber form script
-        wp_register_script('wp-sms-front-script', WP_SMS_URL . 'assets/src/scripts/frontend.min.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_register_script('wp-sms-front-script', WP_SMS_URL . 'assets/js/frontend.min.js', ['jquery'], WP_SMS_VERSION, true);
         wp_enqueue_script('wp-sms-front-script');
 
         wp_localize_script("wp-sms-front-script", 'wpsms_ajax_object', array(

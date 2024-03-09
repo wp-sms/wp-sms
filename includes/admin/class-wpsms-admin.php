@@ -104,7 +104,7 @@ class Admin
         $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
 
 
-        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/src/scripts/admin.min.js', ['jquery', 'wp-color-picker','jquery-ui-spinner'], WP_SMS_VERSION);
+        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', ['jquery', 'wp-color-picker','jquery-ui-spinner'], WP_SMS_VERSION);
 
         $statsWidget = new \WP_SMS\Widget\Widgets\StatsWidget();
         wp_localize_script('wpsms-admin', 'WP_Sms_Dashboard_Widget_Stats_Script_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
@@ -169,7 +169,7 @@ class Admin
             wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-admin');
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/src/scripts/admin.min.js', true, WP_SMS_VERSION);
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', true, WP_SMS_VERSION);
         }        
     }
 
