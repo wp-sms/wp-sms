@@ -454,8 +454,8 @@ class Admin
             $screen = get_current_screen();
 
             if (stristr($screen->id, 'wp-sms')) {
-                wp_enqueue_script('feedbackbird-app-script', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
-                wp_add_inline_script('feedbackbird-app-script', sprintf('var feedbackBirdObject = %s;', json_encode([
+                wp_enqueue_script('feedbackbird-widget', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
+                wp_add_inline_script('feedbackbird-widget', sprintf('var feedbackBirdObject = %s;', json_encode([
                     'user_email' => function_exists('wp_get_current_user') ? wp_get_current_user()->user_email : '',
                     'platform'   => 'wordpress-admin',
                     'config'     => [
@@ -476,7 +476,7 @@ class Admin
                 ])));
 
                 add_filter('script_loader_tag', function ($tag, $handle, $src) {
-                    if ('feedbackbird-app-script' === $handle) {
+                    if ('feedbackbird-widget' === $handle) {
                         return preg_replace('/^<script /i', '<script type="module" crossorigin="crossorigin" ', $tag);
                     }
                     return $tag;
