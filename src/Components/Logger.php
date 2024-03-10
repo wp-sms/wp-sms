@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Utils;
+namespace WP_SMS\Components;
 
 class Logger
 {

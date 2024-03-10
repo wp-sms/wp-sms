@@ -116,10 +116,10 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
-        $this->include('src/Utils/Sms.php');
         $this->include('src/Utils/CsvHelper.php');
-        $this->include('src/Utils/RemoteRequest.php');
-        $this->include('src/Utils/Logger.php');
+        $this->include('src/Components/Sms.php');
+        $this->include('src/Components/RemoteRequest.php');
+        $this->include('src/Components/Logger.php');
         $this->include('src/Components/Assets.php');
         $this->include('src/Report/EmailReportGenerator.php');
 
