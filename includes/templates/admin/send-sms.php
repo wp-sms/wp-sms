@@ -14,10 +14,10 @@
         <div class="sendsms-header">
             <?php if ($gatewayCredit): ?>
                 <div class="budget"><span class="icon"></span>
-                    <p><?php echo __('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo $gatewayCredit; ?></span></p>
+                    <p><?php echo __('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo esc_html($gatewayCredit); ?></span></p>
                 </div>
             <?php endif; ?>
-            <a style="<?php echo $proIsActive ? 'display:none;' : '' ?>" target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>" class="pro-button '' ?> "><?php _e('Go Pro', 'wp-sms'); ?><span class="icon"></span></a>
+            <a style="<?php echo $proIsActive ? 'display:none;' : '' ?>" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" class="pro-button '' ?> "><?php _e('Go Pro', 'wp-sms'); ?><span class="icon"></span></a>
         </div>
 
         <h1><?php _e('Send SMS', 'wp-sms'); ?></h1>
@@ -36,7 +36,7 @@
 
                 <div class="from-field">
                     <label for="wp_get_sender"><?php _e('From', 'wp-sms'); ?></label>
-                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo $smsObject->from; ?>" maxlength="18"/>
+                    <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo esc_html($smsObject->from); ?>" maxlength="18"/>
                 </div>
 
 
@@ -74,8 +74,8 @@
                     <?php if (count($get_group_result)) : ?>
                         <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Group', 'wp-sms'); ?>">
                             <?php foreach ($get_group_result as $items): ?>
-                                <option value="<?php echo $items->ID; ?>">
-                                    <?php echo sprintf(__('Group %s', 'wp-sms'), $items->name); ?>
+                                <option value="<?php echo esc_attr($items->ID); ?>">
+                                    <?php echo sprintf(__('Group %s', 'wp-sms'), esc_attr($items->name)); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -84,7 +84,7 @@
                             <?php
                             global $wpdb;
                             $username_active = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
-                            echo sprintf(__('<b>%s</b> Subscribers.', 'wp-sms'), $username_active);
+                            echo sprintf(__('<b>%s</b> Subscribers.', 'wp-sms'), esc_html($username_active));
                             ?>
                         </p>
                     <?php endif; ?>
@@ -94,9 +94,9 @@
                     <label for="wpsms_roles"><?php _e('Select The Role', 'wp-sms'); ?></label>
                     <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the Role', 'wp-sms'); ?>">
                         <?php foreach ($wpsms_list_of_role as $key_item => $val_item): ?>
-                            <option value="<?php echo $key_item; ?>"
-                                <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php _e($val_item['name'], 'wp-sms'); ?>
-                                (<?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), $val_item['count']); ?>)
+                            <option value="<?php echo esc_attr($key_item); ?>"
+                                <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php echo esc_html($val_item['name']); ?>
+                                (<?php echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count'])); ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -132,8 +132,7 @@
                     <div style="font-size: 14px"><?php _e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?>
                     </div>
                     <?php if ($smsObject->validateNumber) : ?>
-                        <div style="margin-top: 10px"><?php echo sprintf(__('Gateway description: <code>%s</code>', 'wp-sms'), $smsObject->validateNumber); ?>
-                        </div>
+                        <div style="margin-top: 10px"><?php echo sprintf(__('Gateway description: <code>%s</code>', 'wp-sms'), wp_kses_post($smsObject->validateNumber)); ?></div>
                     <?php endif; ?>
                 </div>
 
@@ -168,7 +167,7 @@
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php _e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a target="_blank" href="<?php echo WP_SMS_SITE . '/buy'; ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go PRO</a>
+                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go PRO</a>
                 </div>
 
                 <div class="set-date-field">

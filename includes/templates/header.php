@@ -28,8 +28,9 @@
 
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
-        <a class="documentation" target="_blank" href="<?php echo WP_SMS_SITE; ?>/documentation/"><span class="icon"></span><?php _e('Documentation', 'wp-sms'); ?></a>
-        <a class="gateway" target="_blank" href="<?php echo WP_SMS_SITE; ?>/gateways/"><span class="icon"></span><?php _e('Gateways Directory', 'wp-sms'); ?></a>
+        <a class="documentation" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/documentation/'); ?>"><span class="icon"></span><?php _e('Documentation', 'wp-sms'); ?></a>
+        <a class="gateway" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/gateways/'); ?>"><span class="icon"></span><?php _e('Gateways Directory', 'wp-sms'); ?></a>
+        <a class="zapier" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/zapier-integration'); ?>"><span class="icon"></span><?php _e('Zapier Integration', 'wp-sms'); ?></a>
         <a class="licenses<?php echo ' ' . esc_attr($active); ?>" href="<?php echo esc_url($tab_url); ?>"><span class="icon"></span><?php _e('Manage Licenses', 'wp-sms'); ?></a>
     </div>
 

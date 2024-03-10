@@ -13,6 +13,14 @@
         WpSmsContactForm7.init();
     }
 
+    if (jQuery('.js-wpsms-chatbox-preview').length) {
+        jQuery('.wpsms-chatbox').hide();
+        $('.js-wpsms-chatbox-preview').click(function (e) {
+            e.preventDefault();
+            $('.wpsms-chatbox').fadeToggle();
+        });
+    }
+
     let WpSmsSelect2 = $('.js-wpsms-select2')
     let WpSmsExportForm = $('.js-wpSmsExportForm')
 
@@ -58,11 +66,42 @@
         $('input[name="submit"]').click();
     });
 
+    //Initiate Color Picker
+    if ($('.wpsms-color-picker').length) {
+        $('.wpsms-color-picker').wpColorPicker();
+    }
+    ;
+
     if ($('.repeater').length) {
         $('.repeater').repeater({
             initEmpty: false,
             show: function () {
                 $(this).slideDown();
+
+                const uploadField = $(this).find('.wpsms_settings_upload_field');
+                const uploadButton = $(this).find('.wpsms_settings_upload_button');
+                // Check if repeater has upload filed
+                if (uploadField.length && uploadButton.length) {
+                    // Create unique ID based on element's index
+                    const newFieldIndex = uploadButton.closest('[data-repeater-list]').children().length - 1;
+                    const newFieldID = uploadField.attr('id') + '[' + newFieldIndex + ']';
+                    // Assign a unique ID to upload fields to prevent conflict
+                    uploadField.attr('id', newFieldID);
+                    uploadButton.attr('data-target', newFieldID);
+                }
+
+                const checkbox = $(this).find('[type="checkbox"]');
+                // Check if repeater has checkbox
+                if (checkbox.length) {
+                    // Create unique ID based on element's index
+                    const newFieldIndex = checkbox.closest('[data-repeater-list]').children().length - 1;
+                    const newFieldID = checkbox.attr('id') + '[' + newFieldIndex + ']';
+                    // Assign a unique ID to checkbox fields to prevent conflict
+                    checkbox.attr('id', newFieldID);
+                    if (checkbox.next().is('label')) {
+                        checkbox.next().attr('for', newFieldID);
+                    }
+                }
             },
             hide: function (deleteElement) {
                 if (confirm('Are you sure you want to delete this item?')) {
@@ -72,6 +111,31 @@
             isFirstItemUndeletable: true
         });
     }
+
+    if ($('.wpsms-tooltip').length) {
+        $('.wpsms-tooltip').tooltipster({
+            theme: 'tooltipster-flat',
+            maxWidth: 400,
+        });
+    }
+
+    // Open WordPress media library when user clicks on upload button
+    $(document).on('click', '.wpsms_settings_upload_button', e => {
+        const mediaUploader = wp.media({
+            library: {
+                type: 'image',
+            },
+            multiple: false,
+        });
+
+        mediaUploader.open();
+
+        mediaUploader.on('select', function () {
+            const attachment = mediaUploader.state().get('selection').first().toJSON();
+            const targetInput = document.getElementById(e.target.dataset.target);
+            targetInput.value = attachment.url;
+        });
+    });
 });
 
 

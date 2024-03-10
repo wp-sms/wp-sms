@@ -16,7 +16,7 @@
                 <td></td>
                 <td style="vertical-align: bottom; width:35%;">
                     <a href="<?php echo esc_url(WP_SMS_SITE); ?>" target="_blank" class="wp-sms-logo">
-                        <img src="<?php echo WP_SMS_URL . '/assets/images/email-logo.png'; ?>">
+                        <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/email-logo.png'); ?>">
                     </a>
                 </td>
             </tr>

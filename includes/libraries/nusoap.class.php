@@ -3996,15 +3996,15 @@ class nusoap_server extends nusoap_base
         global $HTTP_SERVER_VARS;
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
-            $rm = $_SERVER['REQUEST_METHOD'];
+            $rm = sanitize_text_field($_SERVER['REQUEST_METHOD']);
         } elseif (isset($HTTP_SERVER_VARS['REQUEST_METHOD'])) {
-            $rm = $HTTP_SERVER_VARS['REQUEST_METHOD'];
+            $rm = sanitize_text_field($HTTP_SERVER_VARS['REQUEST_METHOD']);
         } else {
             $rm = '';
         }
 
         if (isset($_SERVER['QUERY_STRING'])) {
-            $qs = $_SERVER['QUERY_STRING'];
+            $qs = sanitize_text_field($_SERVER['QUERY_STRING']);
         } elseif (isset($HTTP_SERVER_VARS['QUERY_STRING'])) {
             $qs = $HTTP_SERVER_VARS['QUERY_STRING'];
         } else {
@@ -4771,7 +4771,7 @@ class nusoap_server extends nusoap_base
         }
         if (false == $soapaction) {
             if (isset($_SERVER)) {
-                $SERVER_NAME = $_SERVER['SERVER_NAME'];
+                $SERVER_NAME = sanitize_text_field($_SERVER['SERVER_NAME']);
                 $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
                 $HTTPS       = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : (isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off');
             } elseif (isset($HTTP_SERVER_VARS)) {
@@ -4849,9 +4849,9 @@ class nusoap_server extends nusoap_base
         global $HTTP_SERVER_VARS;
 
         if (isset($_SERVER)) {
-            $SERVER_NAME = $_SERVER['SERVER_NAME'];
-            $SERVER_PORT = $_SERVER['SERVER_PORT'];
-            $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+            $SERVER_NAME = sanitize_text_field($_SERVER['SERVER_NAME']);
+            $SERVER_PORT = sanitize_text_field($_SERVER['SERVER_PORT']);
+            $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? sanitize_text_field($_SERVER['PHP_SELF']) : $_SERVER['SCRIPT_NAME'];
             $HTTPS       = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : (isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off');
         } elseif (isset($HTTP_SERVER_VARS)) {
             $SERVER_NAME = $HTTP_SERVER_VARS['SERVER_NAME'];
@@ -5721,7 +5721,7 @@ class wsdl extends nusoap_base
         global $HTTP_SERVER_VARS;
 
         if (isset($_SERVER)) {
-            $PHP_SELF = $_SERVER['PHP_SELF'];
+            $PHP_SELF = sanitize_text_field($_SERVER['PHP_SELF']);
         } elseif (isset($HTTP_SERVER_VARS)) {
             $PHP_SELF = $HTTP_SERVER_VARS['PHP_SELF'];
         } else {
