@@ -61,7 +61,7 @@ class Settings
         }
 
         // wp-sms-intgration added as part of the hole setting but in diffrent submenu
-        if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-settings', 'wp-sms-integration']) or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
+        if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-settings', 'wp-sms-integrations']) or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
             add_action('admin_init', array($this, 'register_settings'));
         }
 
@@ -2102,7 +2102,7 @@ class Settings
 
     private function isCurrentTab($tab)
     {
-        return isset($_REQUEST['page']) && in_array($_REQUEST['page'], ['wp-sms-settings', 'wp-sms-integration']) && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
+        return isset($_REQUEST['page']) && in_array($_REQUEST['page'], ['wp-sms-settings', 'wp-sms-integrations']) && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
     }
 
     /*
@@ -2580,7 +2580,6 @@ class Settings
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
                                 }
                             }
-                            
                             
                             echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);

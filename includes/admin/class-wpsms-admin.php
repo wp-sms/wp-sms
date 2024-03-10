@@ -192,13 +192,13 @@ class Admin
             $hook_suffix['privacy'] = add_submenu_page('wp-sms', __('Privacy', 'wp-sms'), __('Privacy', 'wp-sms'), 'wpsms_setting', 'wp-sms-subscribers-privacy', array($this, 'privacy_callback'), 5);
         }
 
-        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', function(){
+        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', function () {
             return $this->settings->render_settings('general');
         }, 6);
-        add_submenu_page('wp-sms', __('Integration', 'wp-sms'), __('Integration', 'wp-sms'), 'wpsms_setting', 'wp-sms-integration', function(){
-            return (new SettingsIntegration)->render_settings("contact_form7",
-                    array('header_template' => 'header-integration-setting.php')
-                    );
+        add_submenu_page('wp-sms', __('Integrations', 'wp-sms'), __('Integrations', 'wp-sms'), 'wpsms_setting', 'wp-sms-integrations', function () {
+            return (new SettingsIntegration)->render_settings('contact_form7',
+                array('header_template' => 'header-integration-setting.php')
+            );
         }, 7);
         add_submenu_page('wp-sms', __('Add-Ons', 'wp-sms'), sprintf(__('%sAdd-Ons%s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
 
@@ -536,7 +536,7 @@ class Admin
     public function modify_admin_body_classes($classes)
     {
         // Add class for the admin body only for plugin's pages
-        if (isset($_GET['page']) && in_array($_GET['page'], array('wp-sms', 'wp-sms-outbox', 'wp-sms-inbox', 'wp-sms-scheduled', 'wp-sms-subscribers', 'wp-sms-subscribers-group', 'wp-sms-subscribers-privacy', 'wp-sms-settings' , 'wp-sms-integration', 'wp-sms-add-ons'))) {
+        if (isset($_GET['page']) && in_array($_GET['page'], array('wp-sms', 'wp-sms-outbox', 'wp-sms-inbox', 'wp-sms-scheduled', 'wp-sms-subscribers', 'wp-sms-subscribers-group', 'wp-sms-subscribers-privacy', 'wp-sms-settings', 'wp-sms-integrations', 'wp-sms-add-ons'))) {
             $classes .= ' sms_page_wp-sms';
         }
 
