@@ -3,7 +3,7 @@
 namespace WP_SMS\CronJob;
 
 use WP_SMS\Option;
-use WP_SMS\Report\EmailReportGenerator;
+use WP_SMS\Services\Report\EmailReportGenerator;
 
 class WeeklyReport
 {
