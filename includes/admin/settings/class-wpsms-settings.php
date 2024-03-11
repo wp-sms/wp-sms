@@ -1030,6 +1030,9 @@ class Settings
                             __('Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms'),
                             '<code>%title%</code>',
                             '<code>%ip%</code>',
+                            '<code>%source_url%</code>',
+                            '<code>%user_agent%</code>',
+                            '<code>%content%</code>'
                         ) . $more_fields
                 );
 
