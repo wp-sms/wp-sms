@@ -2556,7 +2556,7 @@ class Settings
             ?>
             <div class="wpsms-wrap__main">
                 <?php do_action('wp_sms_settings_page'); ?>
-                <h2><?php _e('Settings', 'wp-sms') ?><span class="wpsms-tooltip" title="Settings title"><i class="wpsms-tooltip-icon"></i></span></h2>
+                <h2><?php _e('Settings', 'wp-sms') ?><span class="wpsms-tooltip" title="<?php _e('Settings title', 'wp-sms') ?>"><i class="wpsms-tooltip-icon"></i></span></h2>
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
@@ -2609,20 +2609,7 @@ class Settings
                         }
 
                         ?>
-                        <li class="tab-zapier">
-                            <div class="tab-zapier-elements">
-                                <div>
-                                    <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/zapier-logo.svg'); ?>" alt="Zapier">
-                                    <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/integration-zapier.svg'); ?>" alt="WP SMS integrates with Zapier">
-                                </div>
-                                <p>WP SMS seamlessly integrates with Zapier, enabling connections to 5000+ apps worldwide.</p>
-                                <a target="_blank" title="Read more" href="<?php echo WP_SMS_SITE; ?>/zapier-integration" class="button-primary">
-                                    Read more
-                                    <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/icons/chevron-right.svg'); ?>" alt="Read more">
-                                </a>
-                            </div>
-
-                        </li>
+                        <?php echo \WP_SMS\Helper::loadTemplate('zapier-section.php'); ?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
