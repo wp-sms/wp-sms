@@ -175,16 +175,16 @@ class WP_SMS
         $subscriberManager->init();
 
         // Cron Jobs
-        $this->include('src/CronJobs/WeeklyReport.php');
-        $this->include('src/CronJobs/CronJobManager.php');
-        $cronJobManager = new \WP_SMS\CronJob\CronJobManager();
+        $this->include('src/Services/CronJobs/WeeklyReport.php');
+        $this->include('src/Services/CronJobs/CronJobManager.php');
+        $cronJobManager = new \WP_SMS\Services\CronJobs\CronJobManager();
         $cronJobManager->init();
 
         // Blocks
-        $this->include('src/BlockAbstract.php');
+        $this->include('src/Blocks/BlockAbstract.php');
         $this->include('src/Blocks/SubscribeBlock.php');
         $this->include('src/Blocks/SendSmsBlock.php');
-        $this->include('src/BlockAssetsManager.php');
+        $this->include('src/Blocks/BlockAssetsManager.php');
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
