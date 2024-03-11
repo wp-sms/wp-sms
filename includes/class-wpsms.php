@@ -3,6 +3,8 @@
 use WP_SMS\Admin\Widget\WidgetsManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
+use WP_SMS\Services\Formidable\Formidable;
+use WP_SMS\Services\Formidable\FormidableManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -234,6 +236,16 @@ class WP_SMS
 
         $messageButtonManager = new \WP_SMS\Services\MessageButton\MessageButtonManager();
         $messageButtonManager->init();
+
+
+
+
+                
+        //formidable
+        $this->include('src/Services/Formidable/Formidable.php');
+        $this->include('src/Services/Formidable/FormidableManager.php');
+        (new FormidableManager())->init();
+        (new Formidable())->init();
 
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
