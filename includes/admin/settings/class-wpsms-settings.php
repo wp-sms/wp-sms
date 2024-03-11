@@ -2176,12 +2176,12 @@ class Settings
     {
         $html = '';
         if (isset($args['desc'])) {
-            $html .= $args['desc'];
+            $html .= '<div class="wpsms-settings-description-title">'.$args['desc'].'</div>';
         }
 
         if ($args['doc']) {
             $documentUrl = WP_SMS_SITE . $args['doc'];
-            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', esc_url($documentUrl));
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">Documentation <span class="dashicons dashicons-external"></span></a></div>', esc_url($documentUrl));
         }
 
         echo "<div class='wpsms-settings-header-field'>{$html}</div>";
@@ -2556,7 +2556,7 @@ class Settings
             ?>
             <div class="wpsms-wrap__main">
                 <?php do_action('wp_sms_settings_page'); ?>
-                <h2><?php _e('Settings', 'wp-sms') ?></h2>
+                <h2><?php _e('Settings', 'wp-sms') ?><span class="wpsms-tooltip" title="Settings title"><i class="wpsms-tooltip-icon"></i></span></h2>
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
@@ -2577,7 +2577,7 @@ class Settings
 
                             if ($IsProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank">PRO</a></span></li>';
                                 }
                             }
                             
@@ -2609,6 +2609,20 @@ class Settings
                         }
 
                         ?>
+                        <li class="tab-zapier">
+                            <div class="tab-zapier-elements">
+                                <div>
+                                    <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/zapier-logo.svg'); ?>" alt="Zapier">
+                                    <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/integration-zapier.svg'); ?>" alt="WP SMS integrates with Zapier">
+                                </div>
+                                <p>WP SMS seamlessly integrates with Zapier, enabling connections to 5000+ apps worldwide.</p>
+                                <a target="_blank" title="Read more" href="<?php echo WP_SMS_SITE; ?>/zapier-integration" class="button-primary">
+                                    Read more
+                                    <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/icons/chevron-right.svg'); ?>" alt="Read more">
+                                </a>
+                            </div>
+
+                        </li>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
