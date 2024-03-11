@@ -2556,7 +2556,26 @@ class Settings
             ?>
             <div class="wpsms-wrap__main">
                 <?php do_action('wp_sms_settings_page'); ?>
-                <h2><?php _e('Settings', 'wp-sms') ?><span class="wpsms-tooltip" title="<?php _e('Settings title', 'wp-sms') ?>"><i class="wpsms-tooltip-icon"></i></span></h2>
+                <?php
+                if (isset($_GET['page'])) {
+                    switch ($_GET['page']) {
+                        case 'wp-sms-integrations':
+                            $pageTitle = __('Integrations', 'wp-sms');
+                            $tooltip   = __('Integrations title', 'wp-sms');
+                            break;
+                        case 'wp-sms-settings':
+                            $pageTitle = __('Settings', 'wp-sms');
+                            break;
+                        default:
+                            $pageTitle = '';
+                            break;
+                    }
+                }
+                if (!empty($pageTitle)) :
+                    ?>
+                    <h2><?php echo esc_html($pageTitle); ?><?php if (isset($tooltip)) : ?><span class="wpsms-tooltip" title="<?php echo esc_attr($tooltip); ?>"><i class="wpsms-tooltip-icon"></i></span><?php endif; ?></h2>
+                <?php endif; ?>
+
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
@@ -2609,7 +2628,10 @@ class Settings
                         }
 
                         ?>
-                        <?php echo \WP_SMS\Helper::loadTemplate('zapier-section.php'); ?>
+
+                        <?php if (isset($_GET['page']) and in_array($_GET['page'], [ 'wp-sms-integrations'])) {
+                            echo \WP_SMS\Helper::loadTemplate('zapier-section.php');
+                        }?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo esc_attr($contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($active_tab) . '_settings_tab' ?>">
