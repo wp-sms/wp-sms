@@ -17,7 +17,7 @@ let wpSmsPrivacyPage = {
             formData.append('type', type);
 
             jQuery.ajax({
-                url: wp_sms_privacy_page_ajax_vars.url, method: 'POST', contentType: false, cache: false, processData: false, data: formData,
+                url: WP_Sms_Admin_Object.ajaxUrls.privacyData, method: 'POST', contentType: false, cache: false, processData: false, data: formData,
 
                 beforeSend: function () {
                     jQuery('.wpsms-privacyPage__Result__Container').hide();

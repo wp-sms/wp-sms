@@ -98,57 +98,43 @@ class Admin
         wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION);
 
 
-        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', ['jquery', 'wp-color-picker', 'jquery-ui-spinner'], WP_SMS_VERSION);
+        $admin_script_deps = ['jquery', 'wp-color-picker', 'jquery-ui-spinner'];
+        $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
 
-        $statsWidget = new \WP_SMS\Widget\Widgets\StatsWidget();
-        wp_localize_script('wpsms-admin', 'WP_Sms_Dashboard_Widget_Stats_Script_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
-
-        wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
-                'restUrls' => array(
+        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', $admin_script_deps, WP_SMS_VERSION);
+        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
+        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Object', array(
+                'restUrls'        => array(
                     'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
                     'users'   => get_rest_url(null, 'wp/v2/users')
                 ),
-                'ajaxUrls' => array(
+                'ajaxUrls'        => array(
                     'export'              => \WP_SMS\Controller\ExportAjax::url(),
                     'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
                     'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
+                    'privacyData'         => \WP_SMS\Controller\PrivacyDataAjax::url(),
+                    'subscribe'           => \WP_SMS\Controller\SubscriberFormAjax::url(),
+                    'group'               => \WP_SMS\Controller\GroupFormAjax::url(),
                 ),
-                'nonce'    => $nonce,
-                'senderID' => $sms->from,
-            )
-        );
-        wp_localize_script('wpsms-admin', 'WpSmsSendSmsTemplateVar', array(
-            'nonce'           => wp_create_nonce('wp_rest'),
-            'messageMsg'      => __('characters', 'wp-sms'),
-            'currentDateTime' => WP_SMS_CURRENT_DATE,
-            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
-            'siteName'        => get_bloginfo('name')
-        ));
-        wp_localize_script('wpsms-admin', 'wp_sms_edit_subscribe_ajax_vars', array(
-            'tb_show_url' => \WP_SMS\Controller\SubscriberFormAjax::url(),
-            'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
-        ));
-        wp_localize_script('wpsms-admin', 'wp_sms_edit_group_ajax_vars', array(
-            'tb_show_url' => \WP_SMS\Controller\GroupFormAjax::url(),
-            'tb_show_tag' => __('Edit Group', 'wp-sms')
-        ));
-        wp_localize_script('wpsms-admin', 'wp_sms_privacy_page_ajax_vars', array(
-            'url' => \WP_SMS\Controller\PrivacyDataAjax::url()
-        ));
-        wp_localize_script('wpsms-admin', 'wpSmsWooCommerceTemplateVar', array(
-                'rest_urls' => array(
-                    'send_sms' => get_rest_url(null, 'wpsms/v1/send')
-                ),
-                'nonce'     => $nonce,
-                'sender_id' => $sms->from,
-                'receiver'  => $customer_mobile,
-                'order_id'  => $order_id,
-                'lang'      => array(
+                'lang'            => array(
                     'checkbox_label' => __('Send SMS?', 'wp-sms'),
                     'checkbox_desc'  => __('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
                 ),
+                'tag'             => array(
+                    'subscribe' => __('Edit Subscriber', 'wp-sms'),
+                    'group'     => __('Edit Group', 'wp-sms')
+                ),
+                'nonce'           => $nonce,
+                'senderID'        => $sms->from,
+                'receiver'        => $customer_mobile,
+                'order_id'        => $order_id,
+                'siteName'        => get_bloginfo('name'),
+                'messageMsg'      => __('characters', 'wp-sms'),
+                'currentDateTime' => WP_SMS_CURRENT_DATE,
+                'proIsActive'     => \WP_SMS\Version::pro_is_active(),
             )
         );
+
         /**
          * Dashboard widgets
          */
