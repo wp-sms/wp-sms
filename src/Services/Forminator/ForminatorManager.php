@@ -2,95 +2,107 @@
 namespace WP_SMS\Services\Forminator;
 
 use Forminator_API;
-use WP_SMS\Helper;
-use WP_SMS\Newsletter;
-
-include "ForminatorListTable.php";
 
 class ForminatorManager
 {    
     public function init()
     {   
-        
-        add_filter('wp_sms_settings_render_addon_forminator_integration', function($args){
-            $args['setting'] = false;
-            $args['template'] = $this->forminator_panel_callback();
-            return $args;
-        });
-
-        add_filter('wp_sms_registered_integration_tabs', function ($tabs) {
-            $tabs['addon_forminator_integration'] = __('Forminator', 'wp-sms');
+    
+        add_filter('wp_sms_registered_tabs', function ($tabs) {
+            $tabs['forminator'] = __('Forminator', 'wp-sms');
             return $tabs;
         });
 
-        add_action( 'wp_ajax_forminator_form_sms_data', 'wp_ajax_forminator_form_sms_data' );
-
+        add_filter('wp_sms_forminator_settings', array($this, 'setting_fields'));
     }
 
-    public function forminator_panel_callback()
+    public function setting_fields($options)
     {
-        return function()
-        {
-            if(isset($_GET['form']) && ($form = wp_sms_sanitize_array($_GET['form']))){
+        $forminator_forms            = array();
 
-            
-                if($_POST && wp_sms_sanitize_array($_POST['submit_action']) == 'forminator_form_sms_data' && 
-                wp_verify_nonce(wp_sms_sanitize_array($_POST['_wpnonce'])) )
-                {
-    
-                    $this->wp_ajax_forminator_form_sms_data($form);
-    
+        if(class_exists('Forminator'))
+        {
+            $forms       = Forminator_API::get_forms(null, 1, 20, "publish");
+            $more_fields = '';
+            foreach ($forms as $form) {
+                $form_fields = Forminator_API::get_form_fields($form->id);
+                if (is_array($form_fields) && count($form_fields)) {
+                    $more_fields = ', ';
+                    foreach ($form_fields as $key => $value) {
+                        $more_fields .= "Field {$value->slug}: <code>%field-{$value->slug}%</code>, ";
+                    }
+
+                    $more_fields = rtrim($more_fields, ', ');
                 }
-                ob_start();
-                
-                $form = Forminator_API::get_form($form);
-    
-                $get_group_result = Newsletter::getGroups();
-                $sms_data = get_option('wp_sms_forminator_form' . $form->id);
-                
-                echo Helper::loadTemplate('forminator/forminator-form.php', [
-                    'form' => $form,
-                    'sms_data' => $sms_data,
-                    'get_group_result' => $get_group_result
-                ]);
-                
-                
-            }
-            else
-            {
-                // $forms = Forminator_API::get_forms();
-                $formTable = new ForminatorListTable();
-                $formTable->prepare_items();
-                echo Helper::loadTemplate('forminator/forminator-list.php', ['list_table' => $formTable]);
-            
-            }
-        };
-    }
 
-    public function admin_notif()
-    {   
-        if($_POST && $_POST['submit_action'] == 'forminator_form_sms_data' && wp_verify_nonce( $_POST['_wpnonce']))
-        {
-            $class = 'notice notice-success';
-            $message = __( 'Form ('. $_GET['form'] .  ') Sms details has been updated successfuly.', 'sample-text-domain' );
-            printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+                $forminator_forms['forminator_notify_form_' . $form->id]          = array(
+                    'id'   => 'forminator_notify_form_' . $form->id,
+                    'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->name),
+                    'type' => 'header',
+                    'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->name),
+                    'doc'  => '',
+                );
+                $forminator_forms['forminator_notify_enable_form_' . $form->id]   = array(
+                    'id'      => 'forminator_notify_enable_form_' . $form->id,
+                    'name'    => __('Send SMS to a number', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                );
+                $forminator_forms['forminator_notify_receiver_form_' . $form->id] = array(
+                    'id'   => 'forminator_notify_receiver_form_' . $form->id,
+                    'name' => __('Phone number(s)', 'wp-sms'),
+                    'type' => 'text',
+                    'desc' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms')
+                );
+                $forminator_forms['forminator_notify_message_form_' . $form->id]  = array(
+                    'id'   => 'forminator_notify_message_form_' . $form->id,
+                    'name' => __('Message body', 'wp-sms'),
+                    'type' => 'textarea',
+                    'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
+                        sprintf(
+                            __('site name: %s, site url: %s', 'wp-sms'),
+                            '<code>%site_name%</code>',
+                            '<code>%site_url%</code>',
+                        ) . $more_fields
+                );
+
+                if ($form_fields) {
+                    $forminator_forms['forminator_notify_enable_field_form_' . $form->id]   = array(
+                        'id'      => 'forminator_notify_enable_field_form_' . $form->id,
+                        'name'    => __('Send SMS to field', 'wp-sms'),
+                        'type'    => 'checkbox',
+                        'options' => $options,
+                    );
+                    $forminator_forms['forminator_notify_receiver_field_form_' . $form->id] = array(
+                        'id'      => 'forminator_notify_receiver_field_form_' . $form->id,
+                        'name'    => __('A field of the form', 'wp-sms'),
+                        'type'    => 'select',
+                        'options' => Forminator::formFields($form->id),
+                        'desc'    => __('Select the field of your form.', 'wp-sms')
+                    );
+                    $forminator_forms['forminator_notify_message_field_form_' . $form->id]  = array(
+                        'id'   => 'forminator_notify_message_field_form_' . $form->id,
+                        'name' => __('Message body', 'wp-sms'),
+                        'type' => 'textarea',
+                        'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
+                            sprintf(
+                                __('site name: %s, site url: %s', 'wp-sms'),
+                                '<code>%site_name%</code>',
+                                '<code>%site_url%</code>',
+                            ) . $more_fields
+                    );
+                }
+            }
+        }else{
+            $forminator_forms['forminator_notify_form'] = array(
+                'id'   => 'forminator_notify_form',
+                'name' => __('Not active', 'wp-sms'),
+                'type' => 'notice',
+                'desc' => __('Forminator plugin should be enable to run this tab', 'wp-sms')
+            );
         }
-    }
 
-    /**
-     * This proccess should be ajax 
-     * This is the temperory implementations
-     *
-     * @return void
-     */
-    private function wp_ajax_forminator_form_sms_data($formID)
-    {
-        $form = wp_sms_sanitize_array($_POST);
-        $data = collect($form)->only('forminator-sms', 'forminator-sms-from')->toArray();
-        if($data)
-            update_option('wp_sms_forminator_form'.$formID, $data);
-     
-        return;
+        return $forminator_forms;
     }
 
 }

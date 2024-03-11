@@ -158,6 +158,7 @@ class WP_SMS
         $this->include('src/Notification/Handler/CustomNotification.php');
         $this->include('src/Notification/Handler/AwesomeSupportTicketNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
+        $this->include('src/Notification/ForminatorNotification.php');
 
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');

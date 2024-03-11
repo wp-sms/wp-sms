@@ -2,7 +2,9 @@
 
 namespace WP_SMS;
 
+use Forminator_API;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Services\Forminator\Forminator;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -167,6 +169,7 @@ class Settings
             'notifications'        => __('Notifications', 'wp-sms'),
             'advanced'             => __('Advanced', 'wp-sms'),
             'contact_form7'        => __('Contact Form 7', 'wp-sms'),
+            
 
             /*
              * Licenses tab
@@ -277,6 +280,7 @@ class Settings
             }
         }
 
+        
         $gf_forms               = array();
         $qf_forms               = array();
         $um_options             = array();
@@ -1026,9 +1030,6 @@ class Settings
                             __('Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms'),
                             '<code>%title%</code>',
                             '<code>%ip%</code>',
-                            '<code>%source_url%</code>',
-                            '<code>%user_agent%</code>',
-                            '<code>%content%</code>'
                         ) . $more_fields
                 );
 
@@ -1206,6 +1207,8 @@ class Settings
                 }
             }
         }
+
+
 
         $settings = apply_filters('wp_sms_registered_settings', array(
             /**
@@ -1889,6 +1892,10 @@ class Settings
                     'desc'    => __('This option adds SMS Notification tab in the edit forms.', 'wp-sms')
                 ),
             )),
+
+
+            'forminator'           => apply_filters('wp_sms_forminator_settings', [], $options),
+
 
             /*
              * Pro fields
