@@ -1,13 +1,13 @@
-<?php 
+<?php
+
 namespace WP_SMS\Services\Forminator;
 
 use Forminator_API;
 
 class ForminatorManager
-{    
+{
     public function init()
-    {   
-    
+    {
         add_filter('wp_sms_registered_tabs', function ($tabs) {
             $tabs['forminator'] = __('Forminator', 'wp-sms');
             return $tabs;
@@ -18,10 +18,9 @@ class ForminatorManager
 
     public function setting_fields($options)
     {
-        $forminator_forms            = array();
+        $forminator_forms = array();
 
-        if(class_exists('Forminator'))
-        {
+        if (class_exists('Forminator')) {
             $forms       = Forminator_API::get_forms(null, 1, 20, "publish");
             $more_fields = '';
             foreach ($forms as $form) {
@@ -93,7 +92,7 @@ class ForminatorManager
                     );
                 }
             }
-        }else{
+        } else {
             $forminator_forms['forminator_notify_form'] = array(
                 'id'   => 'forminator_notify_form',
                 'name' => __('Not active', 'wp-sms'),

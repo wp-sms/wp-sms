@@ -4,6 +4,7 @@ namespace WP_SMS\Notification;
 
 use WP_SMS\Notification\Handler\CustomNotification;
 use WP_SMS\Notification\Handler\DefaultNotification;
+use WP_SMS\Notification\Handler\ForminatorNotification;
 use WP_SMS\Notification\Handler\SubscriberNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
