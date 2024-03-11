@@ -116,12 +116,11 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
-        $this->include('src/Utils/Sms.php');
         $this->include('src/Utils/CsvHelper.php');
-        $this->include('src/Utils/RemoteRequest.php');
-        $this->include('src/Utils/Logger.php');
+        $this->include('src/Components/Sms.php');
+        $this->include('src/Components/RemoteRequest.php');
+        $this->include('src/Components/Logger.php');
         $this->include('src/Components/Assets.php');
-        $this->include('src/Report/EmailReportGenerator.php');
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
@@ -171,8 +170,8 @@ class WP_SMS
         $this->include('includes/admin/class-wpsms-version.php');
 
         // Newsletter
-        $this->include('src/Subscriber/SubscriberManager.php');
-        $subscriberManager = new \WP_SMS\Subscriber\SubscriberManager();
+        $this->include('src/Services/Subscriber/SubscriberManager.php');
+        $subscriberManager = new \WP_SMS\Services\Subscriber\SubscriberManager();
         $subscriberManager->init();
 
         // Cron Jobs
@@ -228,6 +227,7 @@ class WP_SMS
         $this->include('src/Services/MessageButton/ChatBoxDecorator.php');
         $this->include('src/Services/MessageButton/MessageButtonManager.php');
         $this->include('src/Services/MessageButton/ChatBox.php');
+        $this->include('src/Services/Report/EmailReportGenerator.php');
 
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Report;
+namespace WP_SMS\Services\Report;
 
 use WP_SMS\Helper;
 use WP_SMS\Option;
