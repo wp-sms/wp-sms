@@ -57,7 +57,7 @@ let quickReply = {
 
             //generating request body
             let requestBody = {
-                sender: wpSmsGlobalTemplateVar.senderID,
+                sender: WP_Sms_Admin_Object.senderID,
                 recipients: data.recipient,
                 message: this.replyMessage.val(),
                 numbers: data.numbers,
@@ -66,8 +66,8 @@ let quickReply = {
             }
 
             jQuery.ajax({
-                url: wpSmsGlobalTemplateVar.restUrls.sendSms,
-                headers: {'X-WP-Nonce': wpSmsGlobalTemplateVar.nonce},
+                url: WP_Sms_Admin_Object.restUrls.sendSms,
+                headers: {'X-WP-Nonce': WP_Sms_Admin_Object.nonce},
                 dataType: 'json',
                 type: 'POST',
                 contentType: 'application/json',

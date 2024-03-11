@@ -55,7 +55,7 @@ let wpSmsImportSubscriber = {
 
             // send AJAX request
             jQuery.ajax({
-                url: wpSmsGlobalTemplateVar.ajaxUrls.uploadSubscriberCsv + '&hasHeader=' + hasHeader,
+                url: WP_Sms_Admin_Object.ajaxUrls.uploadSubscriberCsv + '&hasHeader=' + hasHeader,
                 method: 'post',
                 data: formData,
                 contentType: false,
@@ -234,7 +234,7 @@ let wpSmsImportSubscriber = {
         $this.requestBody.startPoint = startPoint
 
         jQuery.ajax({
-            url: wpSmsGlobalTemplateVar.ajaxUrls.importSubscriberCsv,
+            url: WP_Sms_Admin_Object.ajaxUrls.importSubscriberCsv,
             method: 'GET',
             data: $this.requestBody,
 
