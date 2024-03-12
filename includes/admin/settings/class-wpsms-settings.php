@@ -2546,7 +2546,11 @@ class Settings
      */
     public function render_settings($default = "general", $args = array())
     {
-        $active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
+        $active_tab        = isset($_GET['tab']) && 
+        array_key_exists($_GET['tab'], $this->get_tabs()) ? 
+        sanitize_text_field($_GET['tab']) : 
+        $default;
+        
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
@@ -2558,7 +2562,7 @@ class Settings
                 <?php do_action('wp_sms_settings_page'); 
                     
                  if(isset($args['title'])){
-                     echo '<h2>'.$args['title'].'</h2>';
+                     echo '<h2>'. esc_html($args['title']) .'</h2>';
                  }   
                 ?>
 
