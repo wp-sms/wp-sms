@@ -60,7 +60,8 @@ class Settings
             update_option($this->setting_name, array());
         }
 
-        if (isset($_GET['page']) and $_GET['page'] == 'wp-sms-settings' or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
+        // wp-sms-intgration added as part of the hole setting but in diffrent submenu
+        if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-settings', 'wp-sms-integrations']) or isset($_POST['option_page']) and in_array($_POST['option_page'], $this->optionNames)) {
             add_action('admin_init', array($this, 'register_settings'));
         }
 
@@ -158,31 +159,31 @@ class Settings
             /*
              * Main plugin tabs
              */
-            'general'              => __('General', 'wp-sms'),
-            'gateway'              => __('SMS Gateway', 'wp-sms'),
-            'newsletter'           => __('SMS Newsletter', 'wp-sms'),
-            'notifications'        => __('Notifications', 'wp-sms'),
-            'message_button'       => __('Message Button', 'wp-sms'),
-            'advanced'             => __('Advanced', 'wp-sms'),
-            'contact_form7'        => __('Contact Form 7', 'wp-sms'),
+            'general'        => __('General', 'wp-sms'),
+            'gateway'        => __('SMS Gateway', 'wp-sms'),
+            'newsletter'     => __('SMS Newsletter', 'wp-sms'),
+            'notifications'  => __('Notifications', 'wp-sms'),
+            'message_button' => __('Message Button', 'wp-sms'),
+            'advanced'       => __('Advanced', 'wp-sms'),
+            // 'contact_form7'        => __('Contact Form 7', 'wp-sms'),
 
             /*
              * Licenses tab
              */
-            'licenses'             => __('Licenses', 'wp-sms'),
+            'licenses'       => __('Licenses', 'wp-sms'),
 
             /*
              * Pro Pack tabs
              */
-            'pro_wordpress'        => __('2FA & Login', 'wp-sms'),
-            'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
-            'pro_woocommerce'      => __('WooCommerce', 'wp-sms'),
-            'pro_gravity_forms'    => __('Gravity Forms', 'wp-sms'),
-            'pro_quform'           => __('Quform', 'wp-sms'),
-            'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
-            'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
-            'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
-            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
+            'pro_wordpress'  => __('2FA & Login', 'wp-sms'),
+            // 'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
+            // 'pro_woocommerce'      => __('WooCommerce', 'wp-sms'),
+            // 'pro_gravity_forms'    => __('Gravity Forms', 'wp-sms'),
+            // 'pro_quform'           => __('Quform', 'wp-sms'),
+            // 'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
+            // 'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
+            // 'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
+            // 'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
 
         );
 
@@ -1585,37 +1586,37 @@ class Settings
              */
             'message_button'       => apply_filters('wp_sms_message_button_settings', array(
                 // Message Button Configuration
-                'chatbox'                     => array(
+                'chatbox'                   => array(
                     'id'   => 'chatbox',
                     'name' => __('Message Button Configuration', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'chatbox_message_button'      => array(
+                'chatbox_message_button'    => array(
                     'id'      => 'chatbox_message_button',
                     'name'    => __('Message Button', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => sprintf(__('Switch on to display the Message Button on your site or off to hide it. <a href="#" class="js-wpsms-chatbox-preview">Preview</a>', 'wp-sms'))
                 ),
-                'chatbox_title'               => array(
+                'chatbox_title'             => array(
                     'id'   => 'chatbox_title',
                     'name' => __('Title', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
                 ),
                 // Button settings
-                'chatbox_button'              => array(
+                'chatbox_button'            => array(
                     'id'   => 'chatbox_button',
                     'name' => __('Button Appearance', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'chatbox_button_text'         => array(
+                'chatbox_button_text'       => array(
                     'id'   => 'chatbox_button_text',
                     'name' => __('Text', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
                 ),
-                'chatbox_button_position'     => array(
+                'chatbox_button_position'   => array(
                     'id'      => 'chatbox_button_position',
                     'name'    => __('Position', 'wp-sms'),
                     'type'    => 'select',
@@ -1626,12 +1627,12 @@ class Settings
                     'desc'    => __('Choose where the chat button appears on your site.', 'wp-sms')
                 ),
                 // Team member settings
-                'chatbox_team_member'         => array(
+                'chatbox_team_member'       => array(
                     'id'   => 'chatbox_team_member',
                     'name' => __('Support Team Profiles', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'chatbox_team_members'        => array(
+                'chatbox_team_members'      => array(
                     'id'      => 'chatbox_team_members',
                     'name'    => __('Team Members', 'wp-sms'),
                     'type'    => 'repeater',
@@ -1640,48 +1641,48 @@ class Settings
                     ],
                 ),
                 // Additional settings
-                'chatbox_miscellaneous'       => array(
+                'chatbox_miscellaneous'     => array(
                     'id'   => 'chatbox_miscellaneous',
                     'name' => __('Additional Chatbox Options', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'chatbox_color'               => array(
+                'chatbox_color'             => array(
                     'id'   => 'chatbox_color',
                     'name' => __('Chatbox Color', 'wp-sms'),
                     'type' => 'color',
                     'desc' => __('Choose your chat button\'s background color and header color.', 'wp-sms')
                 ),
-                'chatbox_text_color'          => array(
+                'chatbox_text_color'        => array(
                     'id'   => 'chatbox_text_color',
                     'name' => __('Chatbox Text Color', 'wp-sms'),
                     'type' => 'color',
                     'desc' => __('Select the color for your button and header text.', 'wp-sms')
                 ),
-                'chatbox_footer_text'         => array(
+                'chatbox_footer_text'       => array(
                     'id'   => 'chatbox_footer_text',
                     'name' => __('Footer Text', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms')
                 ),
-                'chatbox_footer_text_color'   => array(
+                'chatbox_footer_text_color' => array(
                     'id'   => 'chatbox_footer_text_color',
                     'name' => __('Footer Text Color', 'wp-sms'),
                     'type' => 'color',
                     'desc' => __('Select your footer text color.', 'wp-sms')
                 ),
-                'chatbox_footer_link_title'   => array(
+                'chatbox_footer_link_title' => array(
                     'id'   => 'chatbox_footer_link_title',
                     'name' => __('Footer Link Title', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms')
                 ),
-                'chatbox_footer_link_url'     => array(
+                'chatbox_footer_link_url'   => array(
                     'id'   => 'chatbox_footer_link_url',
                     'name' => __('Footer Link URL', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('Enter the URL of the chatbox footer link.', 'wp-sms')
                 ),
-                'chatbox_animation_effect'    => array(
+                'chatbox_animation_effect'  => array(
                     'id'      => 'chatbox_animation_effect',
                     'name'    => __('Animation Effect', 'wp-sms'),
                     'type'    => 'select',
@@ -1692,7 +1693,7 @@ class Settings
                     ),
                     'desc'    => __('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms')
                 ),
-                'chatbox_disable_logo' => array(
+                'chatbox_disable_logo'      => array(
                     'id'      => 'chatbox_disable_logo',
                     'name'    => __('Disable WP SMS Logo', 'wp-sms'),
                     'type'    => 'checkbox',
@@ -1700,25 +1701,25 @@ class Settings
                     'desc'    => __('Check this box to disable the WP SMS logo in the footer of the chatbox.', 'wp-sms')
                 ),
                 // Informational link settings
-                'chatbox_link'                => array(
+                'chatbox_link'              => array(
                     'id'   => 'chatbox_link',
                     'name' => __('Informational Links', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'chatbox_links_enabled'       => array(
+                'chatbox_links_enabled'     => array(
                     'id'      => 'chatbox_links_enabled',
                     'name'    => __('Resource Links', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Turn on to show resource links in the chatbox.', 'wp-sms')
                 ),
-                'chatbox_links_title'         => array(
+                'chatbox_links_title'       => array(
                     'id'   => 'chatbox_links_title',
                     'name' => __('Section Title', 'wp-sms'),
                     'type' => 'text',
                     'desc' => __('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms')
                 ),
-                'chatbox_links'               => array(
+                'chatbox_links'             => array(
                     'id'      => 'chatbox_links',
                     'name'    => __('Links', 'wp-sms'),
                     'type'    => 'repeater',
@@ -2101,7 +2102,7 @@ class Settings
 
     private function isCurrentTab($tab)
     {
-        return isset($_REQUEST['page']) && $_REQUEST['page'] == 'wp-sms-settings' && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
+        return isset($_REQUEST['page']) && in_array($_REQUEST['page'], ['wp-sms-settings', 'wp-sms-integrations']) && isset($_REQUEST['tab']) && $_REQUEST['tab'] == $tab;
     }
 
     /*
@@ -2175,12 +2176,12 @@ class Settings
     {
         $html = '';
         if (isset($args['desc'])) {
-            $html .= $args['desc'];
+            $html .= '<div class="wpsms-settings-description-title">' . $args['desc'] . '</div>';
         }
 
         if ($args['doc']) {
             $documentUrl = WP_SMS_SITE . $args['doc'];
-            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">document <span class="dashicons dashicons-external"></span></a></div>', esc_url($documentUrl));
+            $html        .= sprintf('<div class="wpsms-settings-description-header"><a href="%s" target="_blank">Documentation <span class="dashicons dashicons-external"></span></a></div>', esc_url($documentUrl));
         }
 
         echo "<div class='wpsms-settings-header-field'>{$html}</div>";
@@ -2539,26 +2540,40 @@ class Settings
         echo $html;
     }
 
-    public function render_settings()
+
+    /**
+     * args[] : header_template
+     */
+    public function render_settings($default = "general", $args = array())
     {
-        $active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
+        $active_tab = isset($_GET['tab']) &&
+        array_key_exists($_GET['tab'], $this->get_tabs()) ?
+            sanitize_text_field($_GET['tab']) :
+            $default;
+
         $contentRestricted = in_array($active_tab, $this->proTabs) && !$this->proIsInstalled;
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
-            <?php echo Helper::loadTemplate('header.php'); ?>
+            <?php echo isset($args['header_template']) ?
+                Helper::loadTemplate($args['header_template']) :
+                Helper::loadTemplate('header.php');
+            ?>
             <div class="wpsms-wrap__main">
-                <?php do_action('wp_sms_settings_page'); ?>
-                <h2><?php _e('Settings', 'wp-sms') ?></h2>
+                <?php do_action('wp_sms_settings_page');
+
+                if (isset($args['title'])) {
+                    echo '<h2>' . esc_html($args['title']) . '</h2>';
+                }
+                ?>
+
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
-                        foreach ($this->get_tabs() as $tab_id => $tab_name) {
+                        $addOns = array_filter($this->get_tabs(), function ($t, $id) {
+                            if (strpos($id, 'addon_') !== false) return $t;
+                        }, ARRAY_FILTER_USE_BOTH);
 
-                            // Skip showing licenses in side tabs
-                            if ($tab_id == 'licenses') {
-                                continue;
-                            }
-
+                        $tabCheck = function ($tab_id, $tab_name) use ($active_tab) {
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
                                 'tab'              => $tab_id
@@ -2570,18 +2585,40 @@ class Settings
 
                             if ($IsProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank"><span class="dashicons dashicons-lock"></span> Pro</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank">PRO</a></span></li>';
                                 }
                             }
 
                             echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
                             echo '</a>' . $proLockIcon . '</li>';
+                        };
 
-                            // Show Add-Ons label
-                            if ($tab_id == end($this->proTabs) && $tab_id !== array_key_last($this->get_tabs())) {
-                                echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
+                        foreach ($this->get_tabs() as $tab_id => $tab_name) {
+
+                            // Skip showing licenses in side tabs
+                            if ($tab_id == 'licenses') {
+                                continue;
                             }
+
+                            if (array_key_exists($tab_id, $addOns)) continue;
+
+                            $tabCheck($tab_id, $tab_name);
+                        }
+
+                        // Show Add-Ons label
+                        if ($addOns) {
+                            echo '<li class="tab-section-header">' . __('ADD-ONS', 'wp-sms') . '</li>';
+
+                            foreach ($addOns as $tab_id => $tab_name) {
+                                $tabCheck($tab_id, $tab_name);
+                            }
+                        }
+
+                        ?>
+
+                        <?php if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-integrations'])) {
+                            echo \WP_SMS\Helper::loadTemplate('zapier-section.php');
                         } ?>
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
@@ -2604,6 +2641,11 @@ class Settings
         </div>
         <?php
         echo ob_get_clean();
+    }
+
+    private function isActiveTab()
+    {
+
     }
 
     /*
