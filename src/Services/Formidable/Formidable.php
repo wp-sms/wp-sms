@@ -26,6 +26,7 @@ class Formidable
 
         $formidableNotification = NotificationFactory::getFormidable($this->data['form_id'], $this->data);
 
+
         if (!isset($base_options["formidable_metabox"])) return;
         if (
             isset($sms_options['phone']) &&
@@ -38,12 +39,13 @@ class Formidable
         }
 
         if (
-            isset($sms_options['phone']) &&
-            isset($sms_options['message'])
+            isset($sms_options['field']['phone']) &&
+            isset($sms_options['field']['message']) &&
+            isset($this->data[$sms_options['field']['phone']])
         ) {
             $formidableNotification->send(
                 $sms_options['field']['message'],
-                $sms_options['field']['phone']
+                $this->data[$sms_options['field']['phone']]
             );
         }
     }

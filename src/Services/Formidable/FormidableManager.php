@@ -77,6 +77,7 @@ class FormidableManager
         echo Helper::loadTemplate('formidable/formidable-form.php', [
             'form'  => $values['id'],
             'sms_data'  => $sms_data,
+            'formFields' =>  $this->formfileds($values['id']),
             'fieldGroup'    => NotificationFactory::getFormidable($values['id'])->printVariables()
         ]);
     }
