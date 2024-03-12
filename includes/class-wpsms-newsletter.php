@@ -160,7 +160,9 @@ class Newsletter
     public static function getSubscriber($id)
     {
         global $wpdb;
-        $result = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE ID = '" . $id . "'");
+
+        $sql    = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE ID = %s", $id);
+        $result = $wpdb->get_row($sql);
 
         if ($result) {
             return $result;
@@ -172,8 +174,14 @@ class Newsletter
         global $wpdb;
 
         $metaValue = Helper::prepareMobileNumberQuery($number);
-        $metaValue = "'" . implode("','", $metaValue) . "'";
-        $sql       = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$metaValue})";
+
+        // Prepare each value in $metaValue
+        foreach ($metaValue as &$value) {
+            $value = $wpdb->prepare('%s', $value);
+        }
+
+        $placeholders = implode(', ', $metaValue);
+        $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
         $result = $wpdb->get_row($sql);
 
@@ -330,14 +338,16 @@ class Newsletter
         global $wpdb;
         $where = '';
 
-        if (is_array($groupIds) && !empty($groupIds)) {
-            $groups = implode(',', wp_sms_sanitize_array($groupIds));
-            $where  .= "`ID` IN ({$groups}) ";
+        if ($groupIds && is_array($groupIds)) {
+            $placeholders       = implode(', ', array_fill(0, count($groupIds), '%d'));
+            $prepared_group_ids = $wpdb->prepare($placeholders, $groupIds);
+            $where              .= "`ID` IN ({$prepared_group_ids}) ";
         }
 
-        $where = !empty($where) ? "WHERE {$where}" : '';
+        $where = $where ? "WHERE {$where}" : '';
+        $sql   = "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where;
 
-        return $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where);
+        return $wpdb->get_results($sql);
     }
 
     /**
@@ -508,15 +518,16 @@ class Newsletter
         $where = '';
 
         if ($group_ids) {
-            $groups = implode(',', wp_sms_sanitize_array($group_ids));
-            $where  .= "`group_ID` IN ({$groups}) ";
+            $placeholders       = implode(', ', array_fill(0, count($group_ids), '%d'));
+            $prepared_group_ids = $wpdb->prepare($placeholders, $group_ids);
+            $where              .= "`group_ID` IN ({$prepared_group_ids}) ";
         }
 
         if ($only_active) {
             if ($where) {
-                $where .= "AND `status` = '1' ";
+                $where .= $wpdb->prepare("AND `status` = %s ", '1');
             } else {
-                $where .= "`status` = '1' ";
+                $where .= $wpdb->prepare("`status` = %s ", '1');
             }
         }
 
@@ -602,7 +613,7 @@ class Newsletter
         $country_codes = wp_sms_get_countries();
 
         foreach ($country_codes as $country_code => $country_name) {
-            $query       = "SELECT COUNT(mobile) AS 'total' FROM {$wpdb->prefix}sms_subscribes WHERE mobile LIKE '$country_code%'";
+            $query       = $wpdb->prepare("SELECT COUNT(mobile) AS 'total' FROM {$wpdb->prefix}sms_subscribes WHERE mobile LIKE %s", $country_code . '%');
             $temp_result = $wpdb->get_results($query);
 
             if ($temp_result[0]->total != '0') {

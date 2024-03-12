@@ -25,9 +25,9 @@ const WPSmsStatsWidget = {
     },
 
     checkIfTwoWayIsActive: function () {
-        if (typeof WP_Sms_Dashboard_Widget_Stats_Script_Object['received-messages-stats'] == 'undefined') {
+        if (typeof WP_Sms_Admin_Dashboard_Object['received-messages-stats'] == 'undefined') {
             this.twoWayIsNotActive = true
-            WP_Sms_Dashboard_Widget_Stats_Script_Object['received-messages-stats'] = WP_Sms_Dashboard_Widget_Stats_Script_Object['send-messages-stats']
+            WP_Sms_Admin_Dashboard_Object['received-messages-stats'] = WP_Sms_Admin_Dashboard_Object['send-messages-stats']
         }
     },
 
@@ -48,8 +48,8 @@ const WPSmsStatsWidget = {
 
         const timeFrame = this.elements.timeFrameSelect.val()
         const direction = this.elements.smsDirection.val()
-        const datasets = (timeFrame && direction) ? WP_Sms_Dashboard_Widget_Stats_Script_Object[direction][timeFrame] : null
-        const localization = WP_Sms_Dashboard_Widget_Stats_Script_Object.localization
+        const datasets = (timeFrame && direction) ? WP_Sms_Admin_Dashboard_Object[direction][timeFrame] : null
+        const localization = WP_Sms_Admin_Dashboard_Object.localization
 
         switch (direction) {
             case 'send-messages-stats':
@@ -113,8 +113,8 @@ const WPSmsStatsWidget = {
     calculateCounts() {
         const timeFrame = this.elements.timeFrameSelect.val()
         const direction = this.elements.smsDirection.val()
-        const datasets = (timeFrame && direction) ? WP_Sms_Dashboard_Widget_Stats_Script_Object[direction][timeFrame] : null
-        const localization = WP_Sms_Dashboard_Widget_Stats_Script_Object.localization
+        const datasets = (timeFrame && direction) ? WP_Sms_Admin_Dashboard_Object[direction][timeFrame] : null
+        const localization = WP_Sms_Admin_Dashboard_Object.localization
 
         let totals = {}
         for (const key in datasets) {

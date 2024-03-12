@@ -386,13 +386,13 @@ class Subscribers_List_Table extends \WP_List_Table
                 // Filter by Group
                 echo Helper::loadTemplate('admin/group-filter.php', array(
                     'groups'   => Newsletter::getGroups(),
-                    'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
+                    'selected' => (isset($_GET['group_id']) ? sanitize_text_field($_GET['group_id']) : '')
                 ));
 
                 // Filter by Country
                 echo Helper::loadTemplate('admin/country-filter.php', array(
                     'countries' => Newsletter::filterSubscribersByCountry(),
-                    'selected'  => (isset($_GET['country_code']) ? $_GET['country_code'] : '')
+                    'selected'  => (isset($_GET['country_code']) ? sanitize_text_field($_GET['country_code']) : '')
                 ));
 
                 break;

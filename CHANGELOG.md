@@ -1,3 +1,9 @@
+= v6.6.2 - 12.03.2024 =
+* Improvement: Refinements to Chatbox styles and issue resolution.
+* Improvement: Unified asset loading, frontend styles, and contact administration into single CSS and JS files.
+* Improvement: Hardened plugin security and improvements.
+* Improvement: Optimized performance with minor improvements.
+
 = v6.6.1 - 08.03.2024 =
 * Improvement: Replaced `move_uploaded_file` with `wp_handle_upload`.
 * Improvement: Sanitized and Escaped the rest of the inputs/outputs and hardened plugin security.
