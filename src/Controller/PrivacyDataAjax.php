@@ -85,7 +85,9 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         /*
          * Check in Subscribes Table
          */
-        $get_user = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = '$mobile'", ARRAY_A);
+        $sql      = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $mobile);
+        $get_user = $wpdb->get_results($sql, ARRAY_A);
+
         if (count($get_user) > 0) {
             foreach ($get_user as $user) {
                 //Get User Data
