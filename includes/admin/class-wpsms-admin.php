@@ -235,11 +235,11 @@ class Admin
         }
 
         add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', function () {
-            return $this->settings->render_settings('general');
+            return $this->settings->render_settings('general', array('title' => 'Settings'));
         }, 6);
         add_submenu_page('wp-sms', __('Integrations', 'wp-sms'), __('Integrations', 'wp-sms'), 'wpsms_setting', 'wp-sms-integrations', function () {
             return (new SettingsIntegration)->render_settings('contact_form7',
-                array('header_template' => 'header-integration-setting.php')
+                array('header_template' => 'header-integration-setting.php', 'title' => 'Integrations')
             );
         }, 7);
         add_submenu_page('wp-sms', __('Add-Ons', 'wp-sms'), sprintf(__('%sAdd-Ons%s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);

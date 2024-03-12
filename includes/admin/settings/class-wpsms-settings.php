@@ -2555,36 +2555,23 @@ class Settings
                 Helper::loadTemplate('header.php');
             ?>
             <div class="wpsms-wrap__main">
-                <?php do_action('wp_sms_settings_page'); ?>
-                <?php
-                if (isset($_GET['page'])) {
-                    switch ($_GET['page']) {
-                        case 'wp-sms-integrations':
-                            $pageTitle = __('Integrations', 'wp-sms');
-                            $tooltip   = __('Integrations title', 'wp-sms');
-                            break;
-                        case 'wp-sms-settings':
-                            $pageTitle = __('Settings', 'wp-sms');
-                            break;
-                        default:
-                            $pageTitle = '';
-                            break;
-                    }
-                }
-                if (!empty($pageTitle)) :
-                    ?>
-                    <h2><?php echo esc_html($pageTitle); ?><?php if (isset($tooltip)) : ?><span class="wpsms-tooltip" title="<?php echo esc_attr($tooltip); ?>"><i class="wpsms-tooltip-icon"></i></span><?php endif; ?></h2>
-                <?php endif; ?>
+                <?php do_action('wp_sms_settings_page'); 
+                    
+                 if(isset($args['title'])){
+                     echo '<h2>'.$args['title'].'</h2>';
+                 }   
+                ?>
+
+
 
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
-                        $addOns = collect($this->get_tabs())->filter(function($t, $id){
-                            if(str_contains($id,'addon')) return $t; 
-                        })->toArray();
+                        $addOns = array_filter($this->get_tabs(), function($t, $id){
+                            if(strpos($id, 'addon_') !== false) return $t;
+                        }, ARRAY_FILTER_USE_BOTH);
 
                         $tabCheck = function($tab_id, $tab_name) use ($active_tab) {
-
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
                                 'tab'              => $tab_id
