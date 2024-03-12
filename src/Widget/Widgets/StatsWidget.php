@@ -19,11 +19,6 @@ class StatsWidget extends AbstractWidget
      *
      * @return void
      */
-    protected function prepare()
-    {
-        Assets::registerScript('chartjs', 'js/chart.min.js', [], '3.7.1');
-        Assets::script('dashboard-widget-stats-script', 'js/admin-dashboard-stats-widget.js', ['wp-sms-chartjs'], apply_filters('wp_sms_stats_widget_data', $this->getLocalizationData()));
-    }
 
     /**
      * Render the widget
@@ -40,7 +35,7 @@ class StatsWidget extends AbstractWidget
      *
      * @return void
      */
-    private function getLocalizationData()
+    public function getLocalizationData()
     {
         $widgetData['localization'] = [
             'successful' => __('Successful', 'wp-sms'),

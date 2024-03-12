@@ -25,32 +25,10 @@ class OrderViewManager
         global $sms;
 
         $nonce    = wp_create_nonce('wp_rest');
-        $order_id = 0;
 
-        // Backward compatibility with new custom WooCommerce order table.
-        if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['id'])) {
-            $order_id = sanitize_text_field($_GET['id']);
-        } elseif (isset($_GET['post']) && $_GET['post']) {
-            $order_id = sanitize_text_field($_GET['post']);
-        }
 
-        $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
 
-        wp_enqueue_script('wpsms-woocommerce-admin', WP_SMS_URL . 'assets/js/admin-order-view.js', ['jquery', 'jquery-ui-spinner'], WP_SMS_VERSION);
-        wp_localize_script('wpsms-woocommerce-admin', 'wpSmsWooCommerceTemplateVar', array(
-                'rest_urls' => array(
-                    'send_sms' => get_rest_url(null, 'wpsms/v1/send')
-                ),
-                'nonce'     => $nonce,
-                'sender_id' => $sms->from,
-                'receiver'  => $customer_mobile,
-                'order_id'  => $order_id,
-                'lang'      => array(
-                    'checkbox_label' => __('Send SMS?', 'wp-sms'),
-                    'checkbox_desc'  => __('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
-                ),
-            )
-        );
+
     }
 
     /**

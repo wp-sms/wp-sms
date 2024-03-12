@@ -3,9 +3,8 @@
 namespace WP_SMS;
 
 use Exception;
-use WP_SMS\Utils\Logger;
-use WP_SMS\Utils\RemoteRequest;
-use WP_SMS\Utils\Request;
+use WP_SMS\Components\Logger;
+use WP_SMS\Components\RemoteRequest;
 
 if (!defined('ABSPATH')) {
     exit;

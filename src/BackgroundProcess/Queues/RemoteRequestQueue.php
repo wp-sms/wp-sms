@@ -2,8 +2,8 @@
 
 namespace WP_SMS\BackgroundProcess\Queues;
 
+use WP_SMS\Components\Sms;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
-use WP_SMS\Utils\Sms;
 
 /**
  * Class RemoteRequestQueue

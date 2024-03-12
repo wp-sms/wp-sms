@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\CronJob;
+namespace WP_SMS\Services\CronJobs;
 
 class CronJobManager
 {
