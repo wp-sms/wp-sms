@@ -1,4 +1,5 @@
 <?php
+
 namespace WP_SMS;
 
 use WP_SMS\Notification\NotificationFactory;
@@ -20,7 +21,7 @@ class SettingsIntegration extends Settings
      *
      * @return              array Tabs list
      * @since               2.0
-    */
+     */
     public function get_tabs()
     {
         return apply_filters('wp_sms_registered_integration_tabs', [
@@ -36,8 +37,4 @@ class SettingsIntegration extends Settings
             'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
         ]);
     }
-
-
-
-    
 }
