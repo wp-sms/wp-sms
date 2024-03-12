@@ -112,6 +112,18 @@ class NotificationFactory
     }
 
     /**
+     * getForminator function
+     *
+     * @param [type] $form_id
+     * @param [type] $data
+     * @return ForminatorNotification
+     */
+    public static function getForminator($form_id, $data = [])
+    {
+        return new ForminatorNotification($form_id, $data);
+    }
+
+    /**
      * @return CustomNotification
      */
     public static function getCustom()

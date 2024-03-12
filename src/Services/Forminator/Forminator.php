@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\Forminator;
 
 use Forminator_API;
-use WP_SMS\Notification\Handler\ForminatorNotification;
+use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Option;
 
 class Forminator
@@ -18,18 +18,20 @@ class Forminator
 
     public function handle_sms($form, $res)
     {
-        //forminator-sms-from && forminator-sms
         $sms_options = Option::getOptions();
         $this->set_data();
 
+
+        $forminatorNotification = NotificationFactory::getForminator($form, $this->data);
         /**
          * Send SMS to the specific number or subscribers' group
          */
         if ((isset($sms_options['forminator_notify_enable_form_' . $form]) ||
                 isset($sms_options['forminator_notify_receiver_form_' . $form])) &&
-            isset($sms_options['forminator_notify_message_form_' . $form])) {
+            isset($sms_options['forminator_notify_message_form_' . $form])
+        ) {
 
-            (new ForminatorNotification($form, $this->data))->send(
+            $forminatorNotification->send(
                 $sms_options['forminator_notify_message_form_' . $form],
                 $sms_options['forminator_notify_receiver_form_' . $form]
             );
@@ -37,25 +39,25 @@ class Forminator
 
         if ((isset($sms_options['forminator_notify_enable_field_form_' . $form]) ||
                 isset($sms_options['forminator_notify_receiver_field_form_' . $form])) &&
-            isset($sms_options['forminator_notify_message_field_form_' . $form])) {
+            isset($sms_options['forminator_notify_message_field_form_' . $form])
+        ) {
 
             if (isset($this->data[$sms_options['forminator_notify_receiver_field_form_' . $form]])) {
-                (new ForminatorNotification($form, $this->data))->send(
+                $forminatorNotification->send(
                     $sms_options['forminator_notify_message_field_form_' . $form],
                     $this->data[$sms_options['forminator_notify_receiver_field_form_' . $form]]
                 );
             }
         }
-
     }
 
     private function set_data()
     {
-        foreach ($_POST as $index => $key) {
+        foreach (wp_sms_sanitize_array($_POST) as $index => $key) {
             if (is_array($key)) {
-                $this->data[$index] = implode(', ', $key); // @todo Sanitize
+                $this->data[$index] = implode(', ', $key);
             } else {
-                $this->data[$index] = $key;  // @todo Sanitize
+                $this->data[$index] = $key;
             }
         }
     }

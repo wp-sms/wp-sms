@@ -3,6 +3,7 @@
 namespace WP_SMS\Services\Forminator;
 
 use Forminator_API;
+use WP_SMS\Notification\NotificationFactory;
 
 class ForminatorManager
 {
@@ -22,18 +23,8 @@ class ForminatorManager
 
         if (class_exists('Forminator')) {
             $forms       = Forminator_API::get_forms(null, 1, 20, "publish");
-            $more_fields = '';
             foreach ($forms as $form) {
-                $form_fields = Forminator_API::get_form_fields($form->id);
-                if (is_array($form_fields) && count($form_fields)) {
-                    $more_fields = ', ';
-                    foreach ($form_fields as $key => $value) {
-                        $more_fields .= "Field {$value->slug}: <code>%field-{$value->slug}%</code>, ";
-                    }
-
-                    $more_fields = rtrim($more_fields, ', ');
-                }
-
+                $formFields = Forminator::formFields($form->id);
                 $forminator_forms['forminator_notify_form_' . $form->id]          = array(
                     'id'   => 'forminator_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->name),
@@ -62,10 +53,10 @@ class ForminatorManager
                             __('site name: %s, site url: %s', 'wp-sms'),
                             '<code>%site_name%</code>',
                             '<code>%site_url%</code>',
-                        ) . $more_fields
+                        ) . NotificationFactory::getForminator($form->id)->printVariables()
                 );
 
-                if ($form_fields) {
+                if ($formFields) {
                     $forminator_forms['forminator_notify_enable_field_form_' . $form->id]   = array(
                         'id'      => 'forminator_notify_enable_field_form_' . $form->id,
                         'name'    => __('Send SMS to field', 'wp-sms'),
@@ -76,7 +67,7 @@ class ForminatorManager
                         'id'      => 'forminator_notify_receiver_field_form_' . $form->id,
                         'name'    => __('A field of the form', 'wp-sms'),
                         'type'    => 'select',
-                        'options' => Forminator::formFields($form->id),
+                        'options' => $formFields,
                         'desc'    => __('Select the field of your form.', 'wp-sms')
                     );
                     $forminator_forms['forminator_notify_message_field_form_' . $form->id]  = array(
@@ -88,7 +79,7 @@ class ForminatorManager
                                 __('site name: %s, site url: %s', 'wp-sms'),
                                 '<code>%site_name%</code>',
                                 '<code>%site_url%</code>',
-                            ) . $more_fields
+                            ) . NotificationFactory::getForminator($form->id)->printVariables()
                     );
                 }
             }
@@ -100,8 +91,6 @@ class ForminatorManager
                 'desc' => __('Forminator plugin should be enable to run this tab', 'wp-sms')
             );
         }
-
         return $forminator_forms;
     }
-
 }
