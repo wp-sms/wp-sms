@@ -20,12 +20,7 @@
                     <td>
                         <textarea class="large-text" rows="4" cols="100" name="formidable-sms[message]" id="formidable-sms-message"><?php echo $sms_data['message'] ?? ''; ?></textarea>
                         <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
-                        <code>%site_url%</code> <code>%site_name%</code> <?php
-                            foreach($fieldGroup as $key => $value)
-                            {
-                                echo "<code>%field-$value%</code>";
-                            } 
-                            ?>
+                            <?= $fieldGroup?>
                         </p>
                     </td>
                 </tr>
@@ -38,7 +33,7 @@
                     <th scope="row"><label for="formidable-sms-sender-form"><?php _e('Send to field', 'wp-sms'); ?>:</label>
                     </th>
                     <td>
-                        <input type="text" value="<?php echo $sms_data['formidable-sms']['field']['phone'] ?? ''; ?>" size="70" class="large-text code" name="formidable-sms[field][phone]" id="formidable-sms-sender-form">
+                        <input type="text" value="<?php echo $sms_data['field']['phone'] ?? ''; ?>" size="70" class="large-text code" name="formidable-sms[field][phone]" id="formidable-sms-sender-form">
                         <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?></p>
                     </td>
                 </tr>
@@ -47,8 +42,9 @@
                     <th scope="row"><label for="formidable-sms-message-form"><?php _e('Message body', 'wp-sms'); ?>:</label>
                     </th>
                     <td>
-                        <textarea class="large-text" rows="4" cols="100" name="formidable-sms[field][message]" id="formidable-sms-message-form"><?php echo $sms_data['formidable-sms']['field']['message'] ?? ''; ?></textarea>
+                        <textarea class="large-text" rows="4" cols="100" name="formidable-sms[field][message]" id="formidable-sms-message-form"><?php echo $sms_data['field']['message'] ?? ''; ?></textarea>
                         <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
+                            <?= $fieldGroup?>
                         </p>
                     </td>
                 </tr>

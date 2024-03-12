@@ -13,6 +13,7 @@ use WP_SMS\Notification\Handler\WordPressUserNotification;
 use WP_SMS\Notification\Handler\WooCommerceCouponNotification;
 use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
 use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
+use WP_SMS\Notification\Handler\FormidableNotification;
 
 class NotificationFactory
 {
@@ -117,4 +118,13 @@ class NotificationFactory
     {
         return new CustomNotification();
     }
+
+    /**
+     * @return FormidableNotification
+     */
+    public static function getFormidable($form, $data = [])
+    {
+        return new FormidableNotification($form, $data);
+    }
+
 }

@@ -2,7 +2,6 @@
 
 namespace WP_SMS\Notification\Handler;
 
-use FrmField;
 use WP_SMS\Notification\Notification;
 use WP_SMS\Services\Formidable\Formidable;
 
@@ -16,19 +15,16 @@ class FormidableNotification extends Notification
         '%site_url%'     => 'getSiteUrl',
     ];
 
-    public function __construct($fields, $data)
+    public function __construct($form, $data = [])
     {
         $this->data = $data;
 
-        if($this->data)
-        {
-            foreach($fields as $key => $value)
-            {
+        if ($form) {
+            $fields = (Formidable::get_form_fields($form));
+            foreach ($fields as $key => $value) {
                 $this->variables["%field-$value%"] = "getFormField_$value";
             }
         }
-
-
     }
 
     public function getSiteName()
@@ -44,12 +40,11 @@ class FormidableNotification extends Notification
 
     public function __call($method, $args)
     {
-        if(!method_exists($this, $method)){
-            if(str_contains($method, "getFormField_")){
+        if (!method_exists($this, $method)) {
+            if (strpos($method, "getFormField_") !== false) {
                 $field = str_replace("getFormField_", "", $method);
                 return $this->data[$field];
             }
         }
     }
-    
 }
