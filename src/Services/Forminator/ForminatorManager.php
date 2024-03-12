@@ -49,11 +49,7 @@ class ForminatorManager
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
-                        sprintf(
-                            __('site name: %s, site url: %s', 'wp-sms'),
-                            '<code>%site_name%</code>',
-                            '<code>%site_url%</code>',
-                        ) . NotificationFactory::getForminator($form->id)->printVariables()
+                        NotificationFactory::getForminator($form->id)->printVariables()
                 );
 
                 if ($formFields) {
@@ -75,11 +71,7 @@ class ForminatorManager
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
                         'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
-                            sprintf(
-                                __('site name: %s, site url: %s', 'wp-sms'),
-                                '<code>%site_name%</code>',
-                                '<code>%site_url%</code>',
-                            ) . NotificationFactory::getForminator($form->id)->printVariables()
+                            NotificationFactory::getForminator($form->id)->printVariables()
                     );
                 }
             }
