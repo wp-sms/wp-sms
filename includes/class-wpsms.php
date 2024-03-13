@@ -3,6 +3,8 @@
 use WP_SMS\Admin\Widget\WidgetsManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
+use WP_SMS\Services\Formidable\Formidable;
+use WP_SMS\Services\Formidable\FormidableManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -157,6 +159,7 @@ class WP_SMS
         $this->include('src/Notification/Handler/SubscriberNotification.php');
         $this->include('src/Notification/Handler/CustomNotification.php');
         $this->include('src/Notification/Handler/AwesomeSupportTicketNotification.php');
+        $this->include('src/Notification/Handler/FormidableNotification.php');
         $this->include('src/Notification/Handler/ForminatorNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
         $this->include('src/Notification/ForminatorNotification.php');
@@ -236,6 +239,11 @@ class WP_SMS
 
         $messageButtonManager = new \WP_SMS\Services\MessageButton\MessageButtonManager();
         $messageButtonManager->init();
+
+        $this->include('src/Services/Formidable/Formidable.php');
+        $this->include('src/Services/Formidable/FormidableManager.php');
+        (new FormidableManager())->init();
+        (new Formidable())->init();
 
         $this->include('src/Services/Forminator/ForminatorManager.php');
         $this->include('src/Services/Forminator/Forminator.php');

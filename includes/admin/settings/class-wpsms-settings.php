@@ -1902,6 +1902,7 @@ class Settings
                     'desc'    => esc_html__('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
                 ),
                 'notif_publish_new_send_mms'              => array(
+
                     'id'      => 'notif_publish_new_send_mms',
                     'name'    => esc_html__('Send MMS?', 'wp-sms'),
                     'type'    => 'checkbox',
@@ -2051,8 +2052,10 @@ class Settings
                 ),
             )),
 
+            'formidable'           => apply_filters('wp_sms_formidable_settings', []),
+          
             'forminator'           => apply_filters('wp_sms_forminator_settings', [], $options),
-
+          
             /*
              * Pro fields
              */
