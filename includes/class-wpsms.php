@@ -118,12 +118,11 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
-        $this->include('src/Utils/Sms.php');
         $this->include('src/Utils/CsvHelper.php');
-        $this->include('src/Utils/RemoteRequest.php');
-        $this->include('src/Utils/Logger.php');
+        $this->include('src/Components/Sms.php');
+        $this->include('src/Components/RemoteRequest.php');
+        $this->include('src/Components/Logger.php');
         $this->include('src/Components/Assets.php');
-        $this->include('src/Report/EmailReportGenerator.php');
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
@@ -161,7 +160,9 @@ class WP_SMS
         $this->include('src/Notification/Handler/CustomNotification.php');
         $this->include('src/Notification/Handler/AwesomeSupportTicketNotification.php');
         $this->include('src/Notification/Handler/FormidableNotification.php');
+        $this->include('src/Notification/Handler/ForminatorNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
+        $this->include('src/Notification/ForminatorNotification.php');
 
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');
@@ -174,21 +175,21 @@ class WP_SMS
         $this->include('includes/admin/class-wpsms-version.php');
 
         // Newsletter
-        $this->include('src/Subscriber/SubscriberManager.php');
-        $subscriberManager = new \WP_SMS\Subscriber\SubscriberManager();
+        $this->include('src/Services/Subscriber/SubscriberManager.php');
+        $subscriberManager = new \WP_SMS\Services\Subscriber\SubscriberManager();
         $subscriberManager->init();
 
         // Cron Jobs
-        $this->include('src/CronJobs/WeeklyReport.php');
-        $this->include('src/CronJobs/CronJobManager.php');
-        $cronJobManager = new \WP_SMS\CronJob\CronJobManager();
+        $this->include('src/Services/CronJobs/WeeklyReport.php');
+        $this->include('src/Services/CronJobs/CronJobManager.php');
+        $cronJobManager = new \WP_SMS\Services\CronJobs\CronJobManager();
         $cronJobManager->init();
 
         // Blocks
-        $this->include('src/BlockAbstract.php');
+        $this->include('src/Blocks/BlockAbstract.php');
         $this->include('src/Blocks/SubscribeBlock.php');
         $this->include('src/Blocks/SendSmsBlock.php');
-        $this->include('src/BlockAssetsManager.php');
+        $this->include('src/Blocks/BlockAssetsManager.php');
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
@@ -231,6 +232,7 @@ class WP_SMS
         $this->include('src/Services/MessageButton/ChatBoxDecorator.php');
         $this->include('src/Services/MessageButton/MessageButtonManager.php');
         $this->include('src/Services/MessageButton/ChatBox.php');
+        $this->include('src/Services/Report/EmailReportGenerator.php');
 
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();
@@ -238,16 +240,18 @@ class WP_SMS
         $messageButtonManager = new \WP_SMS\Services\MessageButton\MessageButtonManager();
         $messageButtonManager->init();
 
-
-
-
-                
-        //formidable
         $this->include('src/Services/Formidable/Formidable.php');
         $this->include('src/Services/Formidable/FormidableManager.php');
         (new FormidableManager())->init();
         (new Formidable())->init();
 
+        $this->include('src/Services/Forminator/ForminatorManager.php');
+        $this->include('src/Services/Forminator/Forminator.php');
+        $forminatorManager = new \WP_SMS\Services\Forminator\ForminatorManager();
+        $forminator = new \WP_SMS\Services\Forminator\Forminator();
+        $forminator->init();
+        $forminatorManager->init();
+        
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
         $this->include('src/Shortcode/SubscriberShortcode.php');
@@ -258,6 +262,7 @@ class WP_SMS
         if (is_admin()) {
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
+            $this->include('includes/admin/settings/class-wpsms-settings-integration.php');
             $this->include('includes/admin/class-wpsms-admin.php');
             $this->include('includes/admin/class-wpsms-admin-helper.php');
             $this->include('includes/admin/outbox/class-wpsms-outbox.php');

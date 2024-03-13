@@ -91,7 +91,7 @@ class esms24 extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
         return true;

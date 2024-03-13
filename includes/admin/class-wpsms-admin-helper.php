@@ -11,12 +11,12 @@ class Helper
     public static function notice($text, $model = "info", $close_button = true, $echo = true, $style_extra = 'padding:10px 0')
     {
         $text = '
-        <div class="notice notice-' . $model . '' . ($close_button === true ? " is-dismissible" : "") . '">
-           <div style="' . $style_extra . '">' . $text . '</div>
+        <div class="notice notice-' . esc_attr($model) . '' . ($close_button === true ? " is-dismissible" : "") . '">
+           <div style="' . esc_attr($style_extra) . '">' . esc_html($text) . '</div>
         </div>
         ';
         if ($echo) {
-            echo $text;
+            echo $text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } else {
             return $text;
         }

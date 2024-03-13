@@ -106,7 +106,7 @@ final class Generator
     public function createCode($length)
     {
         if ($length < 4 || $length > 10) {
-            throw new Exceptions\InvalidArgumentException(__('Provided $length argument must be between 4 and 10.', 'wp-sms'));
+            throw new Exceptions\InvalidArgumentException(esc_html__('Provided $length argument must be between 4 and 10.', 'wp-sms'));
         }
 
         $hash = bin2hex(openssl_random_pseudo_bytes(16));
@@ -143,7 +143,7 @@ final class Generator
         $result = (int) $wpdb->get_var($query);
 
         if ($result >= $this->getRateLimitCount()) {
-            throw new Exceptions\OtpLimitExceededException(__('OTPs generated for this number has reached its limit, please try some other time.', 'wp-sms'));
+            throw new Exceptions\OtpLimitExceededException(esc_html__('OTPs generated for this number has reached its limit, please try some other time.', 'wp-sms'));
         }
     }
 

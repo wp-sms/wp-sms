@@ -2,8 +2,8 @@
 
 namespace WP_SMS\BackgroundProcess\Async;
 
+use WP_SMS\Components\Sms;
 use WP_SMS\Library\BackgroundProcessing\WP_Async_Request;
-use WP_SMS\Utils\Sms;
 
 /**
  * Class RemoteRequestAsync

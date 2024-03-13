@@ -39,7 +39,7 @@ class ImportSubscriberCsv extends AjaxControllerAbstract
         if ($start_point == 0) {
             // Check whether file uploaded
             if (empty($data)) {
-                throw new Exception(__('There is no file to import. Please try again to upload the file.', 'wp-sms'));
+                throw new Exception(esc_html__('There is no file to import. Please try again to upload the file.', 'wp-sms'));
             }
 
             if ($state == 'new_group') {

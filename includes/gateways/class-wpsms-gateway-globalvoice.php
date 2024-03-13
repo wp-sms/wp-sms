@@ -122,7 +122,7 @@ class globalvoice extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('Token is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('Token is not entered.', 'wp-sms'));
         }
 
         $args     = array(

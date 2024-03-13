@@ -112,7 +112,7 @@ class jusibe extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('The Username/Password for this gateway is not set', 'wp-sms'));
         }
         $headers  = array(
             'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),

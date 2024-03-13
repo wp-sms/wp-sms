@@ -37,15 +37,15 @@ class Front
         }
 
         // Register subscriber form script
-        wp_register_script('wp-sms-blocks-script', WP_SMS_URL . 'assets/js/blocks.js', ['jquery'], WP_SMS_VERSION, true);
-        wp_enqueue_script('wp-sms-blocks-script');
+        wp_register_script('wp-sms-front-script', WP_SMS_URL . 'assets/js/frontend.min.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_enqueue_script('wp-sms-front-script');
 
-        wp_localize_script("wp-sms-blocks-script", 'wpsms_ajax_object', array(
+        wp_localize_script("wp-sms-front-script", 'wpsms_ajax_object', array(
             'newsletter_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
-            'unknown_error'           => __('Unknown Error! Check your connection and try again.', 'wp-sms'),
-            'loading_text'            => __('Loading...', 'wp-sms'),
-            'subscribe_text'          => __('Subscribe', 'wp-sms'),
-            'activation_text'         => __('Activate', 'wp-sms'),
+            'unknown_error'           => esc_html__('Unknown Error! Check your connection and try again.', 'wp-sms'),
+            'loading_text'            => esc_html__('Loading...', 'wp-sms'),
+            'subscribe_text'          => esc_html__('Subscribe', 'wp-sms'),
+            'activation_text'         => esc_html__('Activate', 'wp-sms'),
             'sender'                  => $sms->from,
             'front_sms_endpoint_url'  => apply_filters('wp_sms_send_front_sms_ajax', null)
         ));
@@ -71,7 +71,7 @@ class Front
         $wp_admin_bar->add_menu(array(
             'id'     => 'wp-send-sms',
             'parent' => 'new-content',
-            'title'  => __('SMS', 'wp-sms'),
+            'title'  => esc_html__('SMS', 'wp-sms'),
             'href'   => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms'
         ));
     }

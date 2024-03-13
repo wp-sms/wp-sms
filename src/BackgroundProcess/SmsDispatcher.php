@@ -2,8 +2,8 @@
 
 namespace WP_SMS\BackgroundProcess;
 
+use WP_SMS\Components\Sms;
 use WP_SMS\Option;
-use WP_SMS\Utils\Sms;
 
 /**
  * Class SmsDispatcher

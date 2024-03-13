@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_SMS\CronJob;
+namespace WP_SMS\Services\CronJobs;
 
 use WP_SMS\Option;
-use WP_SMS\Report\EmailReportGenerator;
+use WP_SMS\Services\Report\EmailReportGenerator;
 
 class WeeklyReport
 {

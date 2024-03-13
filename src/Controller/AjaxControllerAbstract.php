@@ -32,14 +32,14 @@ abstract class AjaxControllerAbstract
 
             // Check CSRF
             if (!wp_verify_nonce($action->get('_nonce'), $action->action)) {
-                throw new \Exception(__('Access denied.', 'wp-sms'));
+                throw new \Exception(esc_html__('Access denied.', 'wp-sms'));
             }
 
             // Check required parameters
             if ($action->requiredFields) {
                 foreach ($action->requiredFields as $item) {
                     if ($action->get($item) == null) {
-                        throw new \Exception(sprintf(__('Field %s is required.', 'wp-sms'), ucfirst($item)));
+                        throw new \Exception(sprintf(esc_html__('Field %s is required.', 'wp-sms'), ucfirst($item)));
                     }
                 }
             }
@@ -86,7 +86,7 @@ abstract class AjaxControllerAbstract
         $action     = $reflection->newInstanceWithoutConstructor();
 
         if (!isset($action->action)) {
-            throw new Exception(sprintf(__('Public property %s not provided', 'wp-sms'), $class));
+            throw new Exception(sprintf(esc_html__('Public property %s not provided', 'wp-sms'), esc_html($class)));
         }
 
         return $action->action;

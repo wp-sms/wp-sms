@@ -22,7 +22,7 @@ let wooCommerceOrderPage = {
     sendSMS: function () {
         let receiver = this.SmsMetabox.find('select[name="phone_number"]').val();
         let message = this.SmsMetabox.find('textarea[name="message_content"]').val();
-        let orderId = wpSmsWooCommerceTemplateVar.order_id;
+        let orderId = WP_Sms_Admin_Object.order_id;
 
         let requestBody = {
             message: message,
@@ -30,12 +30,12 @@ let wooCommerceOrderPage = {
             numbers: [receiver],
             notification_handler: 'WooCommerceOrderNotification',
             handler_id: orderId,
-            sender: wpSmsWooCommerceTemplateVar.sender_id,
+            sender: WP_Sms_Admin_Object.sender_id,
         };
 
-        jQuery.ajax(wpSmsWooCommerceTemplateVar.rest_urls.send_sms,
+        jQuery.ajax(WP_Sms_Admin_Object.rest_urls.send_sms,
             {
-                headers: {'X-WP-Nonce': wpSmsWooCommerceTemplateVar.nonce},
+                headers: {'X-WP-Nonce': WP_Sms_Admin_Object.nonce},
                 dataType: 'json',
                 type: 'post',
                 contentType: 'application/json',
@@ -127,7 +127,7 @@ let wooCommerceOrderPage = {
             '<div class="wpsms-addNoteMetabox__elements">' +
             '<label for="wpsms_note_send">' +
             '<input type="checkbox" id="wpsms_note_send" name="wpsms_note_send">'
-            + wpSmsWooCommerceTemplateVar.lang.checkbox_label
+            + WP_Sms_Admin_Object.lang.checkbox_label
             + '</label>' +
             '<div class="wpsms-addNoteMetabox__result__report">' +
             '<span class="wpsms-addNoteMetabox__result__icon"></span>' +
@@ -141,8 +141,8 @@ let wooCommerceOrderPage = {
         let message = this.NotesMetabox.find('textarea[name=order_note]').val();
         let sendSMS = this.NotesMetabox.find('input[name=wpsms_note_send]').prop('checked');
         let noteType = this.NotesMetabox.find('select[name=order_note_type]').val();
-        let receiver = wpSmsWooCommerceTemplateVar.receiver;
-        let orderId = wpSmsWooCommerceTemplateVar.order_id;
+        let receiver = WP_Sms_Admin_Object.receiver;
+        let orderId = WP_Sms_Admin_Object.order_id;
 
         if (!sendSMS || !message || noteType !== 'customer') {
             return;
@@ -154,12 +154,12 @@ let wooCommerceOrderPage = {
             numbers: [receiver],
             notification_handler: 'WooCommerceOrderNotification',
             handler_id: orderId,
-            sender: wpSmsWooCommerceTemplateVar.sender_id,
+            sender: WP_Sms_Admin_Object.sender_id,
         };
 
-        jQuery.ajax(wpSmsWooCommerceTemplateVar.rest_urls.send_sms,
+        jQuery.ajax(WP_Sms_Admin_Object.rest_urls.send_sms,
             {
-                headers: {'X-WP-Nonce': wpSmsWooCommerceTemplateVar.nonce},
+                headers: {'X-WP-Nonce': WP_Sms_Admin_Object.nonce},
                 dataType: 'json',
                 type: 'post',
                 contentType: 'application/json',

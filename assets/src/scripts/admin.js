@@ -59,6 +59,7 @@
     }
 
     // Select2
+    window.WpSmsSelect2 = WpSmsSelect2;
     WpSmsSelect2.select2(WpSmsSelect2Options);
 
     // Auto submit the gateways form, after changing value

@@ -73,8 +73,8 @@ class Subscribers_List_Table extends \WP_List_Table
 
         //Build row actions
         $actions = array(
-            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_subscriber(%s)">' . __('Edit', 'wp-sms') . '</a>', $item['ID']),
-            'delete' => sprintf('<a href="%s">' . __('Delete', 'wp-sms') . '</a>', add_query_arg(array('page' => esc_attr($page), 'action' => 'delete', 'ID' => $item['ID'], '_wpnonce' => $nonce), '')),
+            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_subscriber(%s)">' . esc_html__('Edit', 'wp-sms') . '</a>', $item['ID']),
+            'delete' => sprintf('<a href="%s">' . esc_html__('Delete', 'wp-sms') . '</a>', add_query_arg(array('page' => esc_attr($page), 'action' => 'delete', 'ID' => $item['ID'], '_wpnonce' => $nonce), '')),
         );
 
         //Return the title contents
@@ -92,7 +92,7 @@ class Subscribers_List_Table extends \WP_List_Table
     {
         return Helper::loadTemplate('admin/label-button.php', array(
             'type'  => ($item['status'] == '1' ? 'active' : 'inactive'),
-            'label' => ($item['status'] == '1' ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms'))
+            'label' => ($item['status'] == '1' ? esc_html__('Active', 'wp-sms') : esc_html__('Inactive', 'wp-sms'))
         ));
     }
 
@@ -102,7 +102,7 @@ class Subscribers_List_Table extends \WP_List_Table
 
         if (is_array($customFields)) {
             foreach ($customFields as $key => $value) {
-                printf('<div class="wpsms-custom-field"><strong>%s</strong>: %s</div>', $key, $value);
+                printf('<div class="wpsms-custom-field"><strong>%s</strong>: %s</div>', esc_html($key), esc_html($value));
             }
         }
     }
@@ -122,13 +122,13 @@ class Subscribers_List_Table extends \WP_List_Table
     {
         $columns = array(
             'cb'            => '<input type="checkbox" />', //Render a checkbox instead of text
-            'name'          => __('Name', 'wp-sms'),
-            'mobile'        => __('Mobile', 'wp-sms'),
-            'group_ID'      => __('Group', 'wp-sms'),
-            'date'          => __('Date', 'wp-sms'),
-            'activate_key'  => __('Activate code', 'wp-sms'),
-            'status'        => __('Status', 'wp-sms'),
-            'custom_fields' => __('Custom Fields', 'wp-sms'),
+            'name'          => esc_html__('Name', 'wp-sms'),
+            'mobile'        => esc_html__('Mobile', 'wp-sms'),
+            'group_ID'      => esc_html__('Group', 'wp-sms'),
+            'date'          => esc_html__('Date', 'wp-sms'),
+            'activate_key'  => esc_html__('Activate code', 'wp-sms'),
+            'status'        => esc_html__('Status', 'wp-sms'),
+            'custom_fields' => esc_html__('Custom Fields', 'wp-sms'),
         );
 
         return $columns;
@@ -155,7 +155,7 @@ class Subscribers_List_Table extends \WP_List_Table
 
     public function get_bulk_actions()
     {
-        $actions = ['bulk_delete' => __('Delete', 'wp-sms')];
+        $actions = ['bulk_delete' => esc_html__('Delete', 'wp-sms')];
 
         $groups = $this->db->get_results("SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`", ARRAY_A);
         if (count($groups)) {
@@ -188,13 +188,13 @@ class Subscribers_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Helper::flashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(esc_html__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
         if ('delete' == $current_action) {
             if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'wp_sms_subscriber')) {
-                \WP_SMS\Helper::flashNotice(__('Access denied.', 'wp-sms'), 'error', $this->adminUrl);
+                \WP_SMS\Helper::flashNotice(esc_html__('Access denied.', 'wp-sms'), 'error', $this->adminUrl);
                 exit;
             }
 
@@ -202,7 +202,7 @@ class Subscribers_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(esc_html__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         if (false !== strpos($current_action, 'move_to_') && isset($_GET['id']) && is_array($_GET['id'])) {
@@ -384,16 +384,18 @@ class Subscribers_List_Table extends \WP_List_Table
             case 'top':
 
                 // Filter by Group
-                echo Helper::loadTemplate('admin/group-filter.php', array(
+                $group_filter_args = [
                     'groups'   => Newsletter::getGroups(),
-                    'selected' => (isset($_GET['group_id']) ? $_GET['group_id'] : '')
-                ));
+                    'selected' => (isset($_GET['group_id']) ? sanitize_text_field($_GET['group_id']) : '')
+                ];
+                echo Helper::loadTemplate('admin/group-filter.php', $group_filter_args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
                 // Filter by Country
-                echo Helper::loadTemplate('admin/country-filter.php', array(
+                $country_filter_args = [
                     'countries' => Newsletter::filterSubscribersByCountry(),
-                    'selected'  => (isset($_GET['country_code']) ? $_GET['country_code'] : '')
-                ));
+                    'selected'  => (isset($_GET['country_code']) ? sanitize_text_field($_GET['country_code']) : '')
+                ];
+                echo Helper::loadTemplate('admin/country-filter.php', $country_filter_args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
                 break;
         }

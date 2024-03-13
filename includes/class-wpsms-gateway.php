@@ -3,9 +3,8 @@
 namespace WP_SMS;
 
 use Exception;
-use WP_SMS\Utils\Logger;
-use WP_SMS\Utils\RemoteRequest;
-use WP_SMS\Utils\Request;
+use WP_SMS\Components\Logger;
+use WP_SMS\Components\RemoteRequest;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -445,9 +444,9 @@ class Gateway
 
         // Check unit credit gateway
         if ($sms->unitrial == true) {
-            $sms->unit = __('Credit', 'wp - sms');
+            $sms->unit = esc_html__('Credit', 'wp - sms');
         } else {
-            $sms->unit = __('SMS', 'wp - sms');
+            $sms->unit = esc_html__('SMS', 'wp - sms');
         }
 
         // Unset gateway key field if not available in the current gateway class.
@@ -593,7 +592,7 @@ class Gateway
     {
         $gateways = array(
             ''                     => array(
-                'default' => __('Please select your gateway', 'wp-sms'),
+                'default' => esc_html__('Please select your gateway', 'wp-sms'),
             ),
             'global'               => array(
                 'reachinteractive' => 'reach-interactive.com',
@@ -936,7 +935,7 @@ class Gateway
 
                 return Helper::loadTemplate('admin/label-button.php', array(
                     'type'  => 'inactive',
-                    'label' => __('Deactivate', 'wp-sms')
+                    'label' => esc_html__('Deactivate', 'wp-sms')
                 ));
             }
             // Update credit
@@ -948,7 +947,7 @@ class Gateway
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => __('Activated', 'wp-sms')
+                'label' => esc_html__('Activated', 'wp-sms')
             ));
         }
     }
@@ -972,7 +971,7 @@ class Gateway
         $help     = $sms->help;
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
 
-        return $document ? sprintf(__('%s <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
+        return $document ? sprintf(esc_html__('%s <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
 
     /**
@@ -998,13 +997,13 @@ class Gateway
         if ($sms->supportIncoming === true) {
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, __('Supported', 'wp-sms'))
+                'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, esc_html__('Supported', 'wp-sms'))
             ));
         }
 
         return Helper::loadTemplate('admin/label-button.php', array(
             'type'  => 'inactive',
-            'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, __('Not Supported', 'wp-sms'))
+            'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, esc_html__('Not Supported', 'wp-sms'))
         ));
     }
 
@@ -1020,13 +1019,13 @@ class Gateway
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => __('Supported', 'wp-sms')
+                'label' => esc_html__('Supported', 'wp-sms')
             ));
         } else {
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
-                'label' => __('Not Supported', 'wp-sms')
+                'label' => esc_html__('Not Supported', 'wp-sms')
             ));
         }
     }
@@ -1040,13 +1039,13 @@ class Gateway
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => __('Supported', 'wp-sms')
+                'label' => esc_html__('Supported', 'wp-sms')
             ));
         } else {
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
-                'label' => __('Not Supported', 'wp-sms')
+                'label' => esc_html__('Not Supported', 'wp-sms')
             ));
         }
     }
@@ -1454,7 +1453,7 @@ class Gateway
     {
         if ($status == 'error' and (isset($this->options['notify_errors_to_admin_email']) && $this->options['notify_errors_to_admin_email'])) {
             $siteName = get_bloginfo('name');
-            $subject  = sprintf(__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
+            $subject  = sprintf(esc_html__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
             $content  = Helper::loadTemplate('email/partials/sms-delivery-issue.php', [
                 'message'  => $message,
                 'response' => $response,
@@ -1462,11 +1461,11 @@ class Gateway
             ]);
 
             Helper::sendMail($subject, [
-                'email_title' => __('SMS Delivery Issue', 'wp-sms'),
+                'email_title' => esc_html__('SMS Delivery Issue', 'wp-sms'),
                 'content'     => $content,
                 'site_url'    => home_url(),
                 'site_name'   => $siteName,
-                'cta_title'   => __('Check SMS gateway configuration', 'wp-sms'),
+                'cta_title'   => esc_html__('Check SMS gateway configuration', 'wp-sms'),
                 'cta_link'    => admin_url('admin.php?page=wp-sms-settings&tab=gateway'),
             ]);
         }

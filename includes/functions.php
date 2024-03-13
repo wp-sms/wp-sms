@@ -496,7 +496,7 @@ function wp_sms_render_mobile_field($args)
     $placeHolder = wp_sms_get_option('mobile_terms_field_place_holder');
     $defaults    = array(
         'type'        => 'tel',
-        'placeholder' => $placeHolder ? $placeHolder : __('Phone Number', 'wp-sms'),
+        'placeholder' => $placeHolder ? $placeHolder : esc_html__('Phone Number', 'wp-sms'),
         'min'         => '',
         'max'         => '',
         'required'    => false,
@@ -519,16 +519,16 @@ function wp_sms_render_mobile_field($args)
     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo sprintf(
         '<input id="%s" type="%s" name="%s" placeholder="%s" class="%s" value="%s" required="%s" minlength="%s" maxlength="%s" %s/>',
-        $args['id'],
-        $args['type'],
-        $args['name'],
+        esc_attr($args['id']),
+        esc_attr($args['type']),
+        esc_attr($args['name']),
         esc_attr($args['placeholder']),
-        implode(' ', $args['class']),
+        esc_attr(implode(' ', $args['class'])),
         esc_attr($args['value']),
-        $args['required'],
-        $args['min'],
-        $args['max'],
-        implode(' ', $args['attributes'])
+        esc_attr($args['required']),
+        esc_attr($args['min']),
+        esc_attr($args['max']),
+        esc_attr(implode(' ', $args['attributes']))
     );
 }
 

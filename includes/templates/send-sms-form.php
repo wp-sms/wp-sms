@@ -3,9 +3,9 @@
     <?php if (!$visibility): ?>
         <div class="wpsms-sendSmsForm__deactiveBlock">
             <div class="wpsms-sendSmsForm__deactiveBlock__content">
-                <h6><?php _e('Send SMS Messages from Your Website', 'wp-sms'); ?></h6>
-                <p><?php _e('Give your website visitors the power to send SMS messages directly from your site.', 'wp-sms'); ?></p>
-                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php _e('Upgrade to WP SMS Pro', 'wp-sms'); ?></a>
+                <h6><?php esc_html_e('Send SMS Messages from Your Website', 'wp-sms'); ?></h6>
+                <p><?php esc_html_e('Give your website visitors the power to send SMS messages directly from your site.', 'wp-sms'); ?></p>
+                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php esc_html_e('Upgrade to WP SMS Pro', 'wp-sms'); ?></a>
             </div>
         </div>
     <?php else: ?>
@@ -19,26 +19,26 @@
             </svg>
         </div>
 
-        <h2 class="wpsms-sendSmsForm__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : __('Send SMS', 'wp-sms'); ?></h2>
+        <h2 class="wpsms-sendSmsForm__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
         <p class="wpsms-sendSmsForm__description"><?php echo isset($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
 
         <form>
             <div class="wpsms-sendSmsForm__fieldContainer">
-                <label><?php _e('Message', 'wp-sms'); ?></label>
-                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php _e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
-                <p class="wpsms-sendSmsForm__messageField__alert"><?php _e('Max remaining characters: ', 'wp-sms'); ?><span></span></p>
+                <label><?php esc_html_e('Message', 'wp-sms'); ?></label>
+                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                <p class="wpsms-sendSmsForm__messageField__alert"><?php esc_html_e('Max remaining characters: ', 'wp-sms'); ?><span></span></p>
             </div>
 
             <?php if ($attributes['receiver'] == 'numbers'): ?>
                 <div class="wpsms-sendSmsForm__fieldContainer">
-                    <label><?php _e('Receiver', 'wp-sms'); ?></label>
+                    <label><?php esc_html_e('Receiver', 'wp-sms'); ?></label>
                     <?php wp_sms_render_mobile_field(['class' => ['wpsms-sendSmsForm__receiverField']]); ?>
                 </div>
             <?php endif; ?>
 
             <input type="hidden" name="receiver" value="<?php echo esc_html($attributes['receiver']); ?>"/>
             <input type="hidden" name="subscriberGroup" value="<?php echo isset($attributes['subscriberGroup']) ? esc_html($attributes['subscriberGroup']) : ''; ?>"/>
-            <input class="wpsms-sendSmsForm__submit" type="submit" value="<?php _e('Send Message', 'wp-sms'); ?>"/>
+            <input class="wpsms-sendSmsForm__submit" type="submit" value="<?php esc_html_e('Send Message', 'wp-sms'); ?>"/>
         </form>
         <div class="wpsms-sendSmsForm__resultMessage"></div>
 

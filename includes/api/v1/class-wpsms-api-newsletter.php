@@ -115,7 +115,7 @@ class Newsletter extends RestApi
 
         //  If admin enabled groups and user did not select any group, then return error
         if ($groups_enabled && !$group_id) {
-            return self::response(__('Please select a specific group.', 'wp-sms'), 400);
+            return self::response(esc_html__('Please select a specific group.', 'wp-sms'), 400);
         }
 
         $result = self::subscribe($params['name'], $number, $group_id, $customFields);
@@ -136,7 +136,7 @@ class Newsletter extends RestApi
 
         foreach ($groupIds as $groupId) {
             if (!\WP_SMS\Newsletter::getGroup($groupId)) {
-                return new \WP_Error('subscribe', sprintf(__('Group ID #%s is not valid', 'wp-sms'), $groupId));
+                return new \WP_Error('subscribe', sprintf(esc_html__('Group ID #%s is not valid', 'wp-sms'), $groupId));
             }
         }
 
@@ -170,7 +170,7 @@ class Newsletter extends RestApi
 
         //  If admin enabled groups and user did not select any group, then return error
         if ($groups_enabled && !$group_id) {
-            return self::response(__('Please select a specific group.', 'wp-sms'), 400);
+            return self::response(esc_html__('Please select a specific group.', 'wp-sms'), 400);
         }
 
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
@@ -183,7 +183,7 @@ class Newsletter extends RestApi
             }
         }
 
-        return self::response(__('Your mobile number has been successfully unsubscribed.', 'wp-sms'));
+        return self::response(esc_html__('Your mobile number has been successfully unsubscribed.', 'wp-sms'));
     }
 
     /**
@@ -213,7 +213,7 @@ class Newsletter extends RestApi
             }
         }
 
-        return self::response(__('Your mobile number has been successfully subscribed.', 'wp-sms'));
+        return self::response(esc_html__('Your mobile number has been successfully subscribed.', 'wp-sms'));
     }
 
     /**

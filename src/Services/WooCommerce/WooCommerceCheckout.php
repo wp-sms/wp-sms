@@ -23,11 +23,11 @@ class WooCommerceCheckout
      */
     public function registerOrderUpdateCheckbox($order)
     {
-        echo sprintf("<p style='margin-bottom: 0'><strong>%s</strong></p>", __('Status Update SMS Notifications:', 'wp-sms'));
+        echo sprintf("<p style='margin-bottom: 0'><strong>%s</strong></p>", esc_html__('Status Update SMS Notifications:', 'wp-sms'));
         if ($order->get_meta('wpsms_woocommerce_order_notification') && $order->get_meta('wpsms_woocommerce_order_notification') == 'yes') {
-            echo __('Enabled', 'wp-sms');
+            echo esc_html__('Enabled', 'wp-sms');
         } else {
-            echo __('Disabled', 'wp-sms');
+            echo esc_html__('Disabled', 'wp-sms');
         }
     }
 

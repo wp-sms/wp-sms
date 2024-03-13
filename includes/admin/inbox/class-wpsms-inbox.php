@@ -15,7 +15,7 @@ class Inbox
     public function render_page()
     {
         $renderCallback = apply_filters('wp_sms_admin_inbox_render_callback', function () {
-            echo Helper::loadTemplate('admin/inbox.php');
+            echo Helper::loadTemplate('admin/inbox.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         });
 
         call_user_func($renderCallback);

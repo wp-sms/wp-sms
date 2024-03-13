@@ -87,6 +87,9 @@ Build the assets
 ```bash
 npm run sass-compile
 ```
+```bash
+npm run js-compile
+```
 
 
 ### Unit Tests

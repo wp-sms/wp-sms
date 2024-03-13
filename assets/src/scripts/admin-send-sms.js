@@ -4,18 +4,18 @@
     jQuery("#wp_get_message").counter({
         count: 'up',
         goal: 'sky',
-        msg: WpSmsSendSmsTemplateVar.messageMsg
+        msg: WP_Sms_Admin_Object.messageMsg
     });
 
-    if (WpSmsSendSmsTemplateVar.proIsActive) {
+    if (WP_Sms_Admin_Object.proIsActive) {
         jQuery("#datepicker").flatpickr({
             enableTime: true,
             dateFormat: "Y-m-d H:i:00",
             time_24hr: true,
             minuteIncrement: "10",
-            minDate: WpSmsSendSmsTemplateVar.currentDateTime,
+            minDate: WP_Sms_Admin_Object.currentDateTime,
             disableMobile: true,
-            defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
+            defaultDate: WP_Sms_Admin_Object.currentDateTime
         });
 
         jQuery("#schedule_status").on('change', function () {
@@ -442,11 +442,11 @@
 
             selectElement.select2({
                 ajax: {
-                    url: wpSmsGlobalTemplateVar.restUrls.users,
+                    url: WP_Sms_Admin_Object.restUrls.users,
                     method: 'GET',
                     dataType: 'json',
                     headers: {
-                        'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce,
+                        'X-WP-Nonce': WP_Sms_Admin_Object.nonce,
                     },
                     data: function (params) {
                         return {
@@ -583,9 +583,9 @@ function sendSMS() {
 
     jQuery('.wpsms-sendsms-result').fadeOut();
 
-    jQuery.ajax(wpSmsGlobalTemplateVar.restUrls.sendSms,
+    jQuery.ajax(WP_Sms_Admin_Object.restUrls.sendSms,
         {
-            headers: {'X-WP-Nonce': WpSmsSendSmsTemplateVar.nonce},
+            headers: {'X-WP-Nonce': WP_Sms_Admin_Object.nonce},
             dataType: 'json',
             type: 'post',
             contentType: 'application/json',
@@ -627,7 +627,7 @@ function messageAutoScroll() {
 
 const wpsmsRepeatingMessages = {
     init: function () {
-        if (!WpSmsSendSmsTemplateVar.proIsActive) return
+        if (!WP_Sms_Admin_Object.proIsActive) return
         this.setElements()
         this.initElements()
         this.handleFieldsVisibility()
@@ -653,9 +653,9 @@ const wpsmsRepeatingMessages = {
             dateFormat: "Y-m-d H:i:00",
             time_24hr: true,
             minuteIncrement: "10",
-            minDate: WpSmsSendSmsTemplateVar.currentDateTime,
+            minDate: WP_Sms_Admin_Object.currentDateTime,
             disableMobile: true,
-            defaultDate: WpSmsSendSmsTemplateVar.currentDateTime
+            defaultDate: WP_Sms_Admin_Object.currentDateTime
         })
     },
 

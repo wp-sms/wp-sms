@@ -9,10 +9,12 @@ class GroupFormAjax extends AjaxControllerAbstract {
 	protected $action = 'wp_sms_edit_group';
 
 	protected function run() {
-		echo Helper::loadTemplate( '/admin/group-form.php', array(
-			'group_id'   => $this->get( 'group_id' ),
-			'group_name' => $this->get( 'group_name' )
-		) );
+        $args = [
+            'group_id'   => $this->get( 'group_id' ),
+            'group_name' => $this->get( 'group_name' )
+        ];
+
+		echo Helper::loadTemplate( '/admin/group-form.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		exit;
 	}
