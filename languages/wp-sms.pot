@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-12T21:30:59+00:00\n"
+"POT-Creation-Date: 2024-03-13T14:41:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-sms\n"
@@ -37,10 +37,10 @@ msgid "https://veronalabs.com/"
 msgstr ""
 
 #: includes/admin/add-ons/class-add-ons.php:47
-#: includes/admin/settings/class-wpsms-settings.php:2218
+#: includes/admin/settings/class-wpsms-settings.php:2220
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:95
-#: includes/templates/admin/subscriber-form.php:44
-#: includes/templates/admin/subscriber-form.php:47
+#: includes/templates/admin/subscriber-form.php:45
+#: includes/templates/admin/subscriber-form.php:48
 #: includes/templates/email/partials/report-data.php:68
 msgid "Active"
 msgstr ""
@@ -333,7 +333,7 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:2008
 #: includes/admin/settings/class-wpsms-settings.php:2041
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:130
-#: includes/templates/admin/subscriber-form.php:41
+#: includes/templates/admin/subscriber-form.php:42
 #: includes/templates/email/partials/report-data.php:42
 msgid "Status"
 msgstr ""
@@ -1618,7 +1618,7 @@ msgid "Site Key"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1817
-msgid "Please enter your v2 reCAPTCHA site key here, <a href=\"https://www.google.com/recaptcha/admin\">https://www.google.com/recaptcha/admin</a>"
+msgid "Please enter your v2 reCAPTCHA site key here, "
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1822
@@ -1626,7 +1626,7 @@ msgid "Secret Key"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1824
-msgid "Please enter your v2 reCAPTCHA secret key here, <a href=\"https://www.google.com/recaptcha/admin\">https://www.google.com/recaptcha/admin</a>"
+msgid "Please enter your v2 reCAPTCHA secret key here, "
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1836
@@ -1718,7 +1718,11 @@ msgid "Author of the post"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1928
-msgid "Send an SMS to the author of the post when that post is published.<br>Make sure the \"Add Mobile number field\" option is enabled in the Settings > Features"
+msgid "Send an SMS to the author of the post when that post is published."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:1928
+msgid "Make sure the \"Add Mobile number field\" option is enabled in the Settings > Features"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1946
@@ -1803,27 +1807,32 @@ msgstr ""
 msgid "Deactivated"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2417
+#: includes/admin/settings/class-wpsms-settings.php:2184
+#: includes/templates/header.php:31
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:2419
 msgid "- (Pro Pack)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2611
+#: includes/admin/settings/class-wpsms-settings.php:2610
 msgid "ADD-ONS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2784
+#: includes/admin/settings/class-wpsms-settings.php:2783
 msgid "No Pro Pack or Add-On found"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2798
+#: includes/admin/settings/class-wpsms-settings.php:2797
 msgid "License key is used to get access to automatic updates and support."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2804
+#: includes/admin/settings/class-wpsms-settings.php:2803
 msgid "License Key"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2807
+#: includes/admin/settings/class-wpsms-settings.php:2806
 msgid "To get the license, please go to <a href=\"%s\" target=\"_blank\">your account</a>."
 msgstr ""
 
@@ -1854,6 +1863,7 @@ msgid "Move to «%s»"
 msgstr ""
 
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:197
+#: includes/class-wpsms-newsletter.php:64
 #: src/Controller/AjaxControllerAbstract.php:35
 msgid "Access denied."
 msgstr ""
@@ -1941,8 +1951,8 @@ msgid "Subscribe"
 msgstr ""
 
 #: includes/class-wpsms-gateway.php:938
-#: includes/templates/admin/subscriber-form.php:45
-#: includes/templates/admin/subscriber-form.php:48
+#: includes/templates/admin/subscriber-form.php:46
+#: includes/templates/admin/subscriber-form.php:49
 msgid "Deactivate"
 msgstr ""
 
@@ -1977,6 +1987,12 @@ msgstr ""
 #: includes/class-wpsms-integrations.php:30
 #: includes/class-wpsms-notifications.php:106
 msgid "SMS Notification"
+msgstr ""
+
+#: includes/class-wpsms-newsletter.php:64
+#: includes/class-wpsms-newsletter.php:81
+#: includes/class-wpsms-newsletter.php:89
+msgid "SMS newsletter"
 msgstr ""
 
 #: includes/class-wpsms-newsletter.php:65
@@ -2112,7 +2128,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-joghataysms.php:106
 #: includes/gateways/class-wpsms-gateway-labsmobile.php:115
 #: includes/gateways/class-wpsms-gateway-loginpanel.php:103
-#: includes/gateways/class-wpsms-gateway-malath.php:128
 #: includes/gateways/class-wpsms-gateway-markazpayamak.php:102
 #: includes/gateways/class-wpsms-gateway-mdpanel.php:106
 #: includes/gateways/class-wpsms-gateway-mediana.php:107
@@ -2579,6 +2594,10 @@ msgstr ""
 msgid "The <code>%s</code> function is not active in your server."
 msgstr ""
 
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:320
+msgid "Invalid get token response "
+msgstr ""
+
 #: includes/gateways/class-wpsms-gateway-uwaziimobile.php:125
 msgid "The username/password is not entered."
 msgstr ""
@@ -2732,9 +2751,7 @@ msgid "Please select the group(s)."
 msgstr ""
 
 #: includes/templates/admin/export-subscriber-form.php:27
-#: includes/templates/admin/send-sms.php:78
-#: includes/templates/wpcf7-form.php:34
-msgid "Group %s"
+msgid "Group "
 msgstr ""
 
 #: includes/templates/admin/fields/field-resource-link-repeater.php:12
@@ -2876,22 +2893,23 @@ msgid "Filter by group"
 msgstr ""
 
 #: includes/templates/admin/group-form.php:15
-#: includes/templates/admin/subscriber-form.php:57
+#: includes/templates/admin/subscriber-form.php:58
 msgid "Update"
 msgstr ""
 
 #: includes/templates/admin/group-form.php:17
-#: includes/templates/admin/subscriber-form.php:59
+#: includes/templates/admin/subscriber-form.php:35
+#: includes/templates/admin/subscriber-form.php:60
 msgid "Add"
 msgstr ""
 
-#: includes/templates/admin/groups.php:14
+#: includes/templates/admin/groups.php:12
 msgid "Add Group"
 msgstr ""
 
-#: includes/templates/admin/groups.php:23
+#: includes/templates/admin/groups.php:21
 #: includes/templates/admin/outbox.php:21
-#: includes/templates/admin/subscribers.php:38
+#: includes/templates/admin/subscribers.php:31
 msgid "Search"
 msgstr ""
 
@@ -3106,8 +3124,13 @@ msgstr ""
 msgid "Please select the Group"
 msgstr ""
 
+#: includes/templates/admin/send-sms.php:78
+#: includes/templates/wpcf7-form.php:34
+msgid "Group %s"
+msgstr ""
+
 #: includes/templates/admin/send-sms.php:87
-msgid "<b>%s</b> Subscribers."
+msgid "Subscribers."
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:94
@@ -3120,6 +3143,9 @@ msgid "Please select the Role"
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:99
+msgid "Users have the mobile number."
+msgstr ""
+
 #: includes/templates/admin/send-sms.php:104
 msgid "<b>%s</b> Users have the mobile number."
 msgstr ""
@@ -3137,11 +3163,11 @@ msgid "Search for users by their usernames."
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:118
-msgid "<b>%s</b> Customers have the mobile number."
+msgid "Customers have the mobile number."
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:122
-msgid "<b>%s</b> Users have the mobile number in their profile."
+msgid "Users have the mobile number in their profile."
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:128
@@ -3153,7 +3179,7 @@ msgid "Separate the numbers with comma (,) or enter in each lines."
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:135
-msgid "Gateway description: <code>%s</code>"
+msgid "Gateway description: %s"
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:141
@@ -3249,7 +3275,7 @@ msgid "Next"
 msgstr ""
 
 #: includes/templates/admin/subscriber-form.php:34
-msgid "There is no group! <a href=\"%s\"> Add</a> "
+msgid "There is no group!"
 msgstr ""
 
 #: includes/templates/admin/subscribers.php:13
@@ -3374,10 +3400,6 @@ msgstr ""
 msgid "License Status: %s of %s Activated."
 msgstr ""
 
-#: includes/templates/header.php:31
-msgid "Documentation"
-msgstr ""
-
 #: includes/templates/header.php:32
 msgid "Gateways Directory"
 msgstr ""
@@ -3399,7 +3421,7 @@ msgid "Separate numbers with commas"
 msgstr ""
 
 #: includes/templates/meta-box.php:61
-msgid "<b>%s</b> Users have mobile number."
+msgid " Users have mobile number."
 msgstr ""
 
 #: includes/templates/meta-box.php:78
@@ -3516,17 +3538,25 @@ msgid "Numbers"
 msgstr ""
 
 #: includes/templates/wpcf7-form.php:21
-msgid "<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002."
+#: includes/templates/wpcf7-form.php:41
+#: includes/templates/wpcf7-form.php:49
+#: includes/templates/wpcf7-form.php:65
+#: includes/templates/wpcf7-form.php:74
+msgid "Note: "
+msgstr ""
+
+#: includes/templates/wpcf7-form.php:21
+msgid "When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002."
 msgstr ""
 
 #: includes/templates/wpcf7-form.php:41
-msgid "<b>Note:</b> Multiple groups can be chosen."
+msgid "Multiple groups can be chosen."
 msgstr ""
 
 #: includes/templates/wpcf7-form.php:49
 #: includes/templates/wpcf7-form.php:65
 #: includes/templates/wpcf7-form.php:74
-msgid "<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>"
+msgid "Use %% Instead of [], for example: "
 msgstr ""
 
 #: includes/templates/wpcf7-form.php:50
@@ -3572,7 +3602,7 @@ msgid "WP SMS: The \"register_block_type\" function is not supported in this ver
 msgstr ""
 
 #: src/Blocks/BlockAssetsManager.php:31
-msgid "WP SMS: Widget encountered an error, class <b>%s</b> could not be loaded."
+msgid "WP SMS: Widget encountered an error, class %s could not be loaded."
 msgstr ""
 
 #: src/Blocks/SendSmsBlock.php:40
@@ -3730,8 +3760,8 @@ msgid "Too many verification attempts, please try some other time."
 msgstr ""
 
 #: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:72
-#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:82
-#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:123
+#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:84
+#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:125
 msgid "<strong>ERROR</strong>: You must enter the mobile number."
 msgstr ""
 

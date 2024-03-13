@@ -54,6 +54,7 @@
 
         <tr>
             <td colspan="2" style="padding-top: 20px;">
+                <?php wp_nonce_field('wp_sms_subscriber_action'); ?>
                 <?php if (isset($subscriber_id)) : ?>
                     <input type="submit" class="button-primary" name="wp_update_subscribe" value="<?php esc_html_e('Update', 'wp-sms'); ?>"/>
                 <?php else : ?>

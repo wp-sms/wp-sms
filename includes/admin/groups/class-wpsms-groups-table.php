@@ -68,8 +68,20 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
         //Build row actions
         $actions = array(
-            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . esc_html__('Edit', 'wp-sms') . '</a>', $item['ID'], esc_attr($item['name'])),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . esc_html__('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
+            'edit'   => sprintf(
+                '<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')">%s</a>',
+                $item['ID'],
+                esc_attr($item['name']),
+                esc_html__('Edit', 'wp-sms')
+            ),
+            'delete' => sprintf(
+                '<a href="%s">%s</a>',
+                wp_nonce_url(
+                    admin_url(sprintf('admin.php?page=%s&action=%s&ID=%s', esc_attr($page), 'delete', $item['ID'])),
+                    'delete_sms_group_' . $item['ID']
+                ),
+                esc_html__('Delete', 'wp-sms')
+            ),
         );
 
         //Return the title contents
@@ -151,9 +163,17 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         // Single delete action
         if ('delete' == $this->current_action()) {
             $get_id = sanitize_text_field($_GET['ID']);
+
+            if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'delete_sms_group_' . $get_id)) {
+                \WP_SMS\Helper::flashNotice(esc_html__('Access denied.', 'wp-sms'), 'error', $this->adminUrl);
+                exit;
+            }
+
             $this->db->delete($this->tb_prefix . "sms_subscribes_group", array('ID' => intval($get_id)), ['%d']);
+
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
+
             \WP_SMS\Helper::flashNotice(esc_html__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
