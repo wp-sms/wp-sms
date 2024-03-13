@@ -151,7 +151,7 @@ class onewaysms extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('The Username/Password for this gateway is not set', 'wp-sms'));
         }
 
         $response = wp_remote_get("{$this->gatewayBalanceApiUrl}?apiusername={$this->username}&apipassword={$this->password}");

@@ -28,17 +28,17 @@
 
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
-        <a class="zapier" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/zapier-integration'); ?>"><span class="icon"></span><?php _e('Zapier Integration', 'wp-sms'); ?></a>
+        <a class="zapier" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/zapier-integration'); ?>"><span class="icon"></span><?php esc_html_e('Zapier Integration', 'wp-sms'); ?></a>
     </div>
 
     <!-- Activated Licenses Status -->
     <?php if (count($addons) == 0) : ?>
         <div class="license-status license-status--free">
-            <a href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php _e('Unlock More Features!', 'wp-sms'); ?></a></span>
+            <a href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php esc_html_e('Unlock More Features!', 'wp-sms'); ?></a></span>
         </div>
     <?php else : ?>
         <div class="license-status license-status--valid">
-            <span><?php echo sprintf(__('License Status: %s of %s Activated.', 'wp-sms'), count(array_filter($addons)), count($addons)); ?></span>
+            <span><?php echo sprintf(esc_html__('License Status: %s of %s Activated.', 'wp-sms'), count(array_filter($addons)), count($addons)); ?></span>
         </div>
     <?php endif; ?>
 

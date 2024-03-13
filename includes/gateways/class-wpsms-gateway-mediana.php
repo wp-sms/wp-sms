@@ -20,7 +20,7 @@ class mediana extends \WP_SMS\Gateway
         $this->validateNumber = "09xxxxxxxx";
 
         if (!class_exists('SoapClient')) {
-            return new \WP_Error('required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
+            return new \WP_Error('required-class', esc_html__('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
         }
 
         $this->client = new \SoapClient($this->wsdl_link, ['exceptions' => false, 'encoding' => 'UTF-8']);
@@ -104,7 +104,7 @@ class mediana extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
         $params = [

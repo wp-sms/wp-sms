@@ -90,7 +90,7 @@ class bearsms extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
         $result     = file_get_contents($this->wsdl_link . '&u=' . $this->username . '&h=' . $this->password . '&op=cr');

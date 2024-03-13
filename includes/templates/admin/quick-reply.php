@@ -11,17 +11,17 @@
         <div class="wp-sms-popup-messages"></div>
     </div>
 
-    <form method="post" class="js-wpSmsQuickReply" <?php if (isset($reload)) : echo 'data-reload=' . $reload; endif; ?>>
+    <form method="post" class="js-wpSmsQuickReply" <?php if (isset($reload)) : echo 'data-reload=' . esc_attr($reload); endif; ?>>
         <table>
             <tr>
                 <td style="padding-top: 10px;">
-                    <label for="wpsms-quick-reply-to"><?php _e('To', 'wp-sms'); ?></label>
+                    <label for="wpsms-quick-reply-to"><?php esc_html_e('To', 'wp-sms'); ?></label>
                     <input type="text" id="wpsms-quick-reply-to" class="js-wpSmsQuickReplyTo" name="wpsms_quick_reply_message" value="" readonly style="display: block; width: 100%"/>
                 </td>
             </tr>
             <tr>
                 <td style="padding-top: 10px;">
-                    <label for="wpsms-quick-reply-message"><?php _e('Message', 'wp-sms-two-way'); ?></label>
+                    <label for="wpsms-quick-reply-message"><?php esc_html_e('Message', 'wp-sms-two-way'); ?></label>
                     <textarea id="wpsms-quick-reply-message" class="js-wpSmsQuickReplyMessage" name="wpsms_quick_reply_message" cols="60" rows="10" wrap="hard" dir="auto" style="width: 100%"></textarea>
                 </td>
             </tr>
@@ -30,7 +30,7 @@
     </form>
     <div class="quick-reply-submit">
         <p class="submit" style="padding: 0;">
-            <input type="submit" class="button-primary" name="SendSMS" value="<?php _e('Reply', 'wp-sms'); ?>"/>
+            <input type="submit" class="button-primary" name="SendSMS" value="<?php esc_html_e('Reply', 'wp-sms'); ?>"/>
         </p>
     </div>
 </div>

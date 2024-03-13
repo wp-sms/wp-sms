@@ -56,8 +56,10 @@ class Subscribers
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
-        echo \WP_SMS\Helper::loadTemplate('admin/subscribers.php', [
+        $args = [
             'list_table' => $list_table,
-        ]);
+        ];
+
+        echo \WP_SMS\Helper::loadTemplate('admin/subscribers.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

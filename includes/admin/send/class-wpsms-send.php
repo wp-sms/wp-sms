@@ -48,7 +48,7 @@ class SMS_Send
             $credit = $this->sms::credit();
         }
 
-        echo Helper::loadTemplate('admin/send-sms.php', [
+        $args = [
             'get_group_result'        => Newsletter::getGroups(),
             'get_users_mobile'        => Helper::getUsersMobileNumbers(),
             'proIsActive'             => Version::pro_is_active(),
@@ -57,6 +57,8 @@ class SMS_Send
             'wpsms_list_of_role'      => Helper::getListOfRoles(),
             'smsObject'               => $this->sms,
             'gatewayCredit'           => $credit
-        ]);
+        ];
+
+        echo Helper::loadTemplate('admin/send-sms.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

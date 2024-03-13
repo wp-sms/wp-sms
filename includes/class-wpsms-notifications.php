@@ -19,7 +19,7 @@ class Notifications
     /**
      * WordPress Database
      *
-     * @var string
+     * @var $wpdb
      */
     protected $db;
 
@@ -58,7 +58,7 @@ class Notifications
                     if (get_option('wp_last_send_notification') == false) {
 
                         $receiver     = array($this->options['admin_mobile_number']);
-                        $message_body = sprintf(__('WordPress %s is available! Please update now', 'wp-sms'), $update[1]->current);
+                        $message_body = sprintf(esc_html__('WordPress %s is available! Please update now', 'wp-sms'), $update[1]->current);
                         $notification = NotificationFactory::getCustom();
                         $notification->send($message_body, $receiver);
 
@@ -103,7 +103,7 @@ class Notifications
     public function notification_meta_box()
     {
         foreach ($this->extractPostTypeFromOption('notif_publish_new_post_type') as $postType) {
-            add_meta_box('subscribe-meta-box', __('SMS Notification', 'wp-sms'), array($this, 'notification_meta_box_handler'), $postType, 'normal', 'high');
+            add_meta_box('subscribe-meta-box', esc_html__('SMS Notification', 'wp-sms'), array($this, 'notification_meta_box_handler'), $postType, 'normal', 'high');
         }
     }
 
@@ -120,7 +120,7 @@ class Notifications
         $defaultGroup     = isset($this->options['notif_publish_new_post_default_group']) ? $this->options['notif_publish_new_post_default_group'] : false;
         $selected_roles   = isset($this->options['notif_publish_new_post_users']) ? $this->options['notif_publish_new_post_users'] : false;
 
-        echo Helper::loadTemplate('meta-box.php', [
+        $args = [
             'get_group_result'   => $get_group_result,
             'selected_roles'     => $selected_roles,
             'username_active'    => $username_active,
@@ -128,7 +128,9 @@ class Notifications
             'defaultGroup'       => $defaultGroup,
             'wpsms_list_of_role' => Helper::getListOfRoles(),
             'get_users_mobile'   => Helper::getUsersMobileNumbers(),
-        ]);
+        ];
+
+        echo Helper::loadTemplate('meta-box.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**

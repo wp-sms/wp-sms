@@ -91,7 +91,7 @@ class adpdigital extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
         $result = file_get_contents("{$this->wsdl_link}balance?username={$this->username}&password={$this->password}&facility=send");

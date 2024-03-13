@@ -27,7 +27,7 @@ class Default_Gateway extends Gateway
 
     public function SendSMS()
     {
-        $errorMessage = __('The SMS gateway in the plugin is not configured yet.', 'wp-sms');
+        $errorMessage = esc_html__('The SMS gateway in the plugin is not configured yet.', 'wp-sms');
 
         return new \WP_Error('send-sms', $errorMessage);
     }

@@ -147,7 +147,7 @@ class eazismspro extends \WP_SMS\Gateway
     {
         // Check api key
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "balance?key={$this->options['gateway_key']}");

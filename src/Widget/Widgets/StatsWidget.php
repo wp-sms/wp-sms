@@ -27,7 +27,7 @@ class StatsWidget extends AbstractWidget
      */
     public function render()
     {
-        echo Helper::loadTemplate('admin/dashboard-widget.php');
+        echo Helper::loadTemplate('admin/dashboard-widget.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**
@@ -38,9 +38,9 @@ class StatsWidget extends AbstractWidget
     public function getLocalizationData()
     {
         $widgetData['localization'] = [
-            'successful' => __('Successful', 'wp-sms'),
-            'failed'     => __('Failed', 'wp-sms'),
-            'plain'      => __('Plain', 'wp-sms'),
+            'successful' => esc_html__('Successful', 'wp-sms'),
+            'failed'     => esc_html__('Failed', 'wp-sms'),
+            'plain'      => esc_html__('Plain', 'wp-sms'),
         ];
 
         /**

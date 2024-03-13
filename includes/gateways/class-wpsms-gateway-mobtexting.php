@@ -119,7 +119,7 @@ class Mobtexting extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
         $api_end_point = $this->wsdl_link . "/account/balance";
         $api_args      = array(
@@ -135,7 +135,7 @@ class Mobtexting extends \WP_SMS\Gateway
 
         if ($response_code == '200') {
             if (!$response['body']) {
-                return new \WP_Error('account-credit', __('Server API Unavailable', 'wp-sms'));
+                return new \WP_Error('account-credit', esc_html__('Server API Unavailable', 'wp-sms'));
             }
 
             $result = json_decode($response['body']);

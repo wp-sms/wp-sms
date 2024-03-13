@@ -117,7 +117,7 @@ class msgwow extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "balance.php?authkey=" . $this->has_key . "&type=4", array('timeout' => 30));
@@ -131,7 +131,7 @@ class msgwow extends \WP_SMS\Gateway
 
         if ($response_code == '200') {
             if (!$response['body']) {
-                return new \WP_Error('account-credit', __('Server API Unavailable', 'wp-sms'));
+                return new \WP_Error('account-credit', esc_html__('Server API Unavailable', 'wp-sms'));
             }
 
             $result = json_decode($response['body']);

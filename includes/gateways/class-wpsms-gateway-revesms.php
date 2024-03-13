@@ -131,7 +131,7 @@ class revesms extends \WP_SMS\Gateway
 
             // Check username and password
             if (!$this->has_key or !$this->password) {
-                throw new \Exception(__('The API Key/Secret Key for this gateway is not set.', 'wp-sms'));
+                throw new \Exception(esc_html__('The API Key/Secret Key for this gateway is not set.', 'wp-sms'));
             }
 
             return 1;

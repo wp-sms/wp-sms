@@ -23,8 +23,10 @@ class ChatBox
      */
     public function render()
     {
-        echo Helper::loadTemplate('chatbox.php', [
+        $args = [
             'chatbox' => $this->chatBoxDecorator
-        ]);
+        ];
+
+        echo Helper::loadTemplate('chatbox.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

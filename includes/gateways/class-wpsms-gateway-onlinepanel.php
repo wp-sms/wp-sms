@@ -105,11 +105,11 @@ class onlinepanel extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
         if (!class_exists('SoapClient')) {
-            return new \WP_Error('required-class', __('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
+            return new \WP_Error('required-class', esc_html__('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
         }
 
         try {

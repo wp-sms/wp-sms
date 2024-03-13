@@ -90,7 +90,7 @@ class sendappWhatsApp extends \WP_SMS\Gateway
     {
         try {
             if (!$this->has_key) {
-                throw new \Exception(__('The API Key Key for this gateway is not set.', 'wp-sms'));
+                throw new \Exception(esc_html__('The API Key Key for this gateway is not set.', 'wp-sms'));
             }
 
             return 1;
@@ -112,7 +112,7 @@ class sendappWhatsApp extends \WP_SMS\Gateway
         ]);
 
         if ($response->status == 'error') {
-            throw new \Exception($response->message);
+            throw new \Exception(esc_html($response->message));
         }
 
         return $response->data;

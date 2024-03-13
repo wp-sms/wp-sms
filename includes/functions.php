@@ -496,7 +496,7 @@ function wp_sms_render_mobile_field($args)
     $placeHolder = wp_sms_get_option('mobile_terms_field_place_holder');
     $defaults    = array(
         'type'        => 'tel',
-        'placeholder' => $placeHolder ? $placeHolder : __('Phone Number', 'wp-sms'),
+        'placeholder' => $placeHolder ? $placeHolder : esc_html__('Phone Number', 'wp-sms'),
         'min'         => '',
         'max'         => '',
         'required'    => false,

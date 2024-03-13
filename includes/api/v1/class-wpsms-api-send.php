@@ -91,11 +91,11 @@ class SendSmsApi extends \WP_SMS\RestApi
             }
 
             if (count($recipientNumbers) === 0) {
-                throw new Exception(__('Could not find any mobile numbers.', 'wp-sms'));
+                throw new Exception(esc_html__('Could not find any mobile numbers.', 'wp-sms'));
             }
 
             if (!$request->get_param('message')) {
-                throw new Exception(__('The message body can not be empty.', 'wp-sms'));
+                throw new Exception(esc_html__('The message body can not be empty.', 'wp-sms'));
             }
 
             /**
@@ -118,11 +118,11 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $interval  = $data['interval'];
 
                 if ($startDate->getTimestamp() < time()) {
-                    return self::response(__('Selected start date must be in future', 'wp-sms'), 400);
+                    return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
                 }
 
                 if (isset($endDate) && $endDate->getTimestamp() < $startDate->getTimestamp()) {
-                    return self::response(__('Selected end date must be after start date', 'wp-sms'), 400);
+                    return self::response(esc_html__('Selected end date must be after start date', 'wp-sms'), 400);
                 }
 
                 RepeatingMessages::add(
@@ -136,7 +136,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $mediaUrls
                 );
 
-                return self::response(__('Repeating SMS is scheduled successfully!', 'wp-sms'));
+                return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'));
             }
 
             /**
@@ -144,7 +144,7 @@ class SendSmsApi extends \WP_SMS\RestApi
              */
             if ($request->has_param('schedule')) {
                 if ((new DateTime(get_gmt_from_date($request->get_param('schedule'))))->getTimestamp() < time()) {
-                    return self::response(__('Selected start date must be in future', 'wp-sms'), 400);
+                    return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
                 }
 
                 Scheduled::add(
@@ -177,7 +177,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception($response->get_error_message());
             }
 
-            $response = apply_filters('wp_sms_send_sms_response', __('Successfully send SMS!', 'wp-sms'));
+            $response = apply_filters('wp_sms_send_sms_response', esc_html__('Successfully send SMS!', 'wp-sms'));
             return self::response($response, 200, [
                 'balance' => Gateway::credit()
             ]);
@@ -205,18 +205,18 @@ class SendSmsApi extends \WP_SMS\RestApi
                 // Check there is group or not
                 if ($groups) {
                     if (!$request->get_param('group_ids')) {
-                        throw new Exception(__('Parameter group_ids is required', 'wp-sms'));
+                        throw new Exception(esc_html__('Parameter group_ids is required', 'wp-sms'));
                     }
 
                     // Check group validity
                     foreach ($group_ids as $group_id) {
                         if (!Newsletter::getGroup($group_id)) {
-                            $group_validity_error[] = sprintf(__('The group ID %s is not valid', 'wp-sms'), $group_id);
+                            $group_validity_error[] = sprintf(esc_html__('The group ID %s is not valid', 'wp-sms'), $group_id);
                         }
                     }
 
                     if (isset($group_validity_error) && !empty($group_validity_error)) {
-                        throw new Exception($group_validity_error);
+                        throw new Exception(esc_html($group_validity_error));
                     }
                 }
 
@@ -229,7 +229,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             case 'roles':
 
                 if (!$request->get_param('role_ids')) {
-                    throw new Exception(__('Parameter role_ids is required', 'wp-sms'));
+                    throw new Exception(esc_html__('Parameter role_ids is required', 'wp-sms'));
                 }
 
                 $recipients = array();
@@ -248,7 +248,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             case 'users':
 
                 if (!$request->get_param('users')) {
-                    throw new Exception(__('Parameter users is required', 'wp-sms'));
+                    throw new Exception(esc_html__('Parameter users is required', 'wp-sms'));
                 }
 
                 $recipients = Helper::getUsersMobileNumbers(false, $request->get_param('users'));
@@ -262,7 +262,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 if (class_exists('woocommerce')) {
                     $recipients = \WP_SMS\Helper::getWooCommerceCustomersNumbers();
                 } else {
-                    throw new Exception(__('WooCommerce or WP-SMS Pro is not enabled', 'wp-sms-pro'));
+                    throw new Exception(esc_html__('WooCommerce or WP-SMS Pro is not enabled', 'wp-sms-pro'));
                 }
 
                 break;
@@ -275,7 +275,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                 if (class_exists('BuddyPress') and class_exists('WP_SMS\Pro\BuddyPress')) {
                     $recipients = \WP_SMS\Pro\BuddyPress::getTotalMobileNumbers();
                 } else {
-                    throw new Exception(__('BuddyPress or WP SMS Pro is not enabled', 'wp-sms-pro'));
+                    throw new Exception(esc_html__('BuddyPress or WP SMS Pro is not enabled', 'wp-sms-pro'));
                 }
 
                 break;
@@ -286,7 +286,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             case 'numbers':
 
                 if (!$request->get_param('numbers')) {
-                    throw new Exception(__('Parameter numbers is required', 'wp-sms'));
+                    throw new Exception(esc_html__('Parameter numbers is required', 'wp-sms'));
                 }
 
                 $recipients = $request->get_param('numbers');

@@ -145,7 +145,7 @@ class infodomain extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
         $response      = wp_remote_get($this->wsdl_link . "/creditsLeft.aspx?username=" . $this->username . "&password=" . $this->password);
@@ -154,7 +154,7 @@ class infodomain extends \WP_SMS\Gateway
         if ($response_code == '200') {
             return $response['body'];
         } else {
-            return new \WP_Error('account-credit', __('Username/Password is not valid.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('Username/Password is not valid.', 'wp-sms'));
         }
     }
 }

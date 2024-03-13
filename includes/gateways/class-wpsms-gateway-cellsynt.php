@@ -91,7 +91,7 @@ class cellsynt extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('The username/password for this gateway is not set', 'wp-sms-pro'));
+            return new \WP_Error('account-credit', esc_html__('The username/password for this gateway is not set', 'wp-sms-pro'));
         }
 
         return true;

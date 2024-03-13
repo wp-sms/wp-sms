@@ -111,7 +111,7 @@ class _ebulksms extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->has_key) {
-            return new \WP_Error('account-credit', __('The Username/Password for this gateway is not set', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('The Username/Password for this gateway is not set', 'wp-sms'));
         }
 
         // Get response

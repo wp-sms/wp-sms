@@ -80,7 +80,7 @@ class RestApi
     public static function subscribe($name, $mobile, $group = false, $customFields = array())
     {
         if (empty($name) or empty($mobile)) {
-            return new \WP_Error('subscribe', __('Name and Mobile Number are required!', 'wp-sms'));
+            return new \WP_Error('subscribe', esc_html__('Name and Mobile Number are required!', 'wp-sms'));
         }
 
         // Delete inactive subscribes with this number
@@ -93,7 +93,7 @@ class RestApi
             // Check gateway setting
             if (!$gateway_name) {
                 // Return response
-                return new \WP_Error('subscribe', __('Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms'));
+                return new \WP_Error('subscribe', esc_html__('Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms'));
             }
 
             $key = rand(1000, 9999);
@@ -107,10 +107,10 @@ class RestApi
                 }
             }
 
-            wp_sms_send($mobile, sprintf(__('Your activation code: %s', 'wp-sms'), $key));
+            wp_sms_send($mobile, sprintf(esc_html__('Your activation code: %s', 'wp-sms'), $key));
 
             // Return response
-            return __('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
+            return esc_html__('To activate your subscription, the activation has been sent to your number.', 'wp-sms');
         } else {
             foreach ($groupIds as $groupId) {
                 // Add subscribe to database
@@ -122,7 +122,7 @@ class RestApi
             }
 
             // Return response
-            return __('Your mobile number has been successfully subscribed.', 'wp-sms');
+            return esc_html__('Your mobile number has been successfully subscribed.', 'wp-sms');
         }
     }
 
@@ -138,7 +138,7 @@ class RestApi
     public static function unSubscribe($name, $mobile, $group = false)
     {
         if (empty($name) or empty($mobile)) {
-            return new \WP_Error('unsubscribe', __('Name and Mobile Number are required!', 'wp-sms'));
+            return new \WP_Error('unsubscribe', esc_html__('Name and Mobile Number are required!', 'wp-sms'));
         }
 
         // Delete subscriber
@@ -167,7 +167,7 @@ class RestApi
         global $wpdb;
 
         if (empty($name) or empty($mobile) or empty($activation)) {
-            return new \WP_Error('unsubscribe', __('The required parameters must be valued!', 'wp-sms'));
+            return new \WP_Error('unsubscribe', esc_html__('The required parameters must be valued!', 'wp-sms'));
         }
 
         // Check the mobile number is string or integer
@@ -193,7 +193,7 @@ class RestApi
 
             if ($activation != $check_mobile->activate_key) {
                 // Return response
-                return new \WP_Error('verify_subscriber', __('Activation code is wrong!', 'wp-sms'));
+                return new \WP_Error('verify_subscriber', esc_html__('Activation code is wrong!', 'wp-sms'));
             }
 
             // Check the mobile number is string or integer
@@ -207,11 +207,11 @@ class RestApi
                 do_action('wp_sms_verify_subscriber', $name, $mobile, 1, $check_mobile->ID);
 
                 // Return response
-                return __('Your subscription done successfully!', 'wp-sms');
+                return esc_html__('Your subscription done successfully!', 'wp-sms');
             }
         }
 
-        return new \WP_Error('verify_subscriber', __('Not found the number!', 'wp-sms'));
+        return new \WP_Error('verify_subscriber', esc_html__('Not found the number!', 'wp-sms'));
     }
 }
 

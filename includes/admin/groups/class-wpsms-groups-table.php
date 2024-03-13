@@ -68,8 +68,8 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
         //Build row actions
         $actions = array(
-            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . __('Edit', 'wp-sms') . '</a>', $item['ID'], esc_attr($item['name'])),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
+            'edit'   => sprintf('<a href="#" onclick="wp_sms_edit_group(%d, \'%s\')" />' . esc_html__('Edit', 'wp-sms') . '</a>', $item['ID'], esc_attr($item['name'])),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . esc_html__('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
         );
 
         //Return the title contents
@@ -98,9 +98,9 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
     {
         $columns = array(
             'cb'                => '<input type="checkbox" />', //Render a checkbox instead of text
-            'ID'                => __('Group ID', 'wp-sms'),
-            'name'              => __('Name', 'wp-sms'),
-            'total_subscribers' => __('Total subscribers', 'wp-sms'),
+            'ID'                => esc_html__('Group ID', 'wp-sms'),
+            'name'              => esc_html__('Name', 'wp-sms'),
+            'total_subscribers' => esc_html__('Total subscribers', 'wp-sms'),
         );
 
         return $columns;
@@ -119,7 +119,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
     function get_bulk_actions()
     {
         $actions = array(
-            'bulk_delete' => __('Delete', 'wp-sms')
+            'bulk_delete' => esc_html__('Delete', 'wp-sms')
         );
 
         return $actions;
@@ -145,7 +145,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Helper::flashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(esc_html__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -154,7 +154,7 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_subscribes_group", array('ID' => intval($get_id)), ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(esc_html__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         if (!empty($_GET['_wp_http_referer'])) {

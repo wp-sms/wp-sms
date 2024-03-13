@@ -9,7 +9,7 @@
     </div>
 
     <div class="wpsms-orderSmsMetabox__toField">
-        <label for="phone_number"><?php _e('Receiver', 'wp-sms') ?></label>
+        <label for="phone_number"><?php esc_html_e('Receiver', 'wp-sms') ?></label>
         <select name="phone_number" id="phone_number">
             <?php foreach ($numbers as $number): ?>
                 <option value="<?php echo esc_attr($number); ?>"><?php echo esc_html($number); ?></option>
@@ -18,13 +18,13 @@
     </div>
 
     <div class="wpsms-orderSmsMetabox__messageField">
-        <label for="message_content"><?php _e('Message', 'wp-sms') ?></label>
-        <textarea placeholder="<?php _e('Write your SMS message here ...', 'wp-sms'); ?>" id="message_content" name="message_content" rows="5"></textarea>
+        <label for="message_content"><?php esc_html_e('Message', 'wp-sms') ?></label>
+        <textarea placeholder="<?php esc_html_e('Write your SMS message here ...', 'wp-sms'); ?>" id="message_content" name="message_content" rows="5"></textarea>
     </div>
 
     <div class="wpsms-orderSmsMetabox__variables">
         <div class="wpsms-orderSmsMetabox__variables__header">
-            <label><?php _e('Variables', 'wp-sms') ?></label>
+            <label><?php esc_html_e('Variables', 'wp-sms') ?></label>
             <span class="wpsms-orderSmsMetabox__variables__icon"></span>
         </div>
 
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <button name="send_sms"><?php _e('Send SMS', 'wp-sms'); ?></button>
+    <button name="send_sms"><?php esc_html_e('Send SMS', 'wp-sms'); ?></button>
 </div>
 
 <!-- results section -->
@@ -44,14 +44,14 @@
     </div>
 
     <div class="wpsms-orderSmsMetabox__result__receiver">
-        <h6><?php _e('Receiver', 'wp-sms') ?></h6>
+        <h6><?php esc_html_e('Receiver', 'wp-sms') ?></h6>
         <p></p>
     </div>
 
     <div class="wpsms-orderSmsMetabox__result__message">
-        <h6><?php _e('Content', 'wp-sms') ?></h6>
+        <h6><?php esc_html_e('Content', 'wp-sms') ?></h6>
         <p></p>
     </div>
 
-    <button class="wpsms-orderSmsMetabox__result__tryAgain"><?php _e('Try Again', 'wp-sms'); ?></button>
+    <button class="wpsms-orderSmsMetabox__result__tryAgain"><?php esc_html_e('Try Again', 'wp-sms'); ?></button>
 </div>

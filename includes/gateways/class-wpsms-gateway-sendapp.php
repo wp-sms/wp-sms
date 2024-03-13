@@ -106,7 +106,7 @@ class sendapp extends \WP_SMS\Gateway
     {
         try {
             if (!$this->has_key) {
-                throw new Exception(__('The API Key required.', 'wp-sms'));
+                throw new Exception(esc_html__('The API Key required.', 'wp-sms'));
             }
 
             $params = [
