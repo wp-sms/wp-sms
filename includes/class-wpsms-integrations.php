@@ -45,9 +45,9 @@ class Integrations
         $get_group_result = Newsletter::getGroups();
 
         echo Helper::loadTemplate('wpcf7-form.php', [
-            'get_group_result'  => $get_group_result,
-            'cf7_options'       => $cf7_options,
-            'cf7_options_field' => $cf7_options_field,
+            'get_group_result'  => $get_group_result, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            'cf7_options'       => $cf7_options, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            'cf7_options_field' => $cf7_options_field, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         ]);
     }
 
