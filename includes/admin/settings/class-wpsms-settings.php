@@ -164,13 +164,13 @@ class Settings
             /*
              * Main plugin tabs
              */
-            'general'              => esc_html__('General', 'wp-sms'),
-            'gateway'              => esc_html__('SMS Gateway', 'wp-sms'),
-            'newsletter'           => esc_html__('SMS Newsletter', 'wp-sms'),
-            'notifications'        => esc_html__('Notifications', 'wp-sms'),
-            'advanced'             => esc_html__('Advanced', 'wp-sms'),
-            'contact_form7'        => esc_html__('Contact Form 7', 'wp-sms'),
-            
+            'general'        => esc_html__('General', 'wp-sms'),
+            'gateway'        => esc_html__('SMS Gateway', 'wp-sms'),
+            'newsletter'     => esc_html__('SMS Newsletter', 'wp-sms'),
+            'notifications'  => esc_html__('Notifications', 'wp-sms'),
+            'message_button' => esc_html__('Message Button', 'wp-sms'),
+            'advanced'       => esc_html__('Advanced', 'wp-sms'),
+
             /*
              * Licenses tab
              */
@@ -280,7 +280,7 @@ class Settings
             }
         }
 
-        
+
         $gf_forms               = array();
         $qf_forms               = array();
         $um_options             = array();
@@ -1217,12 +1217,11 @@ class Settings
         }
 
 
-
         $settings = apply_filters('wp_sms_registered_settings', array(
             /**
              * General fields
              */
-            'general'              => apply_filters('wp_sms_general_settings', array(
+            'general'        => apply_filters('wp_sms_general_settings', array(
                 'admin_title'                              => array(
                     'id'   => 'admin_title',
                     'name' => esc_html__('Administrator Notifications', 'wp-sms'),
@@ -1359,7 +1358,7 @@ class Settings
             /**
              * Gateway fields
              */
-            'gateway'              => apply_filters('wp_sms_gateway_settings', array(
+            'gateway'        => apply_filters('wp_sms_gateway_settings', array(
                 // Gateway
                 'gateway_title'                => array(
                     'id'   => 'gateway_title',
@@ -1512,7 +1511,7 @@ class Settings
             /**
              * SMS Newsletter fields
              */
-            'newsletter'           => apply_filters('wp_sms_newsletter_settings', array(
+            'newsletter'     => apply_filters('wp_sms_newsletter_settings', array(
                 // SMS Newsletter
                 'newsletter_title'                 => array(
                     'id'   => 'newsletter_title',
@@ -1591,7 +1590,7 @@ class Settings
             /**
              * Message button setting fields
              */
-            'message_button'       => apply_filters('wp_sms_message_button_settings', array(
+            'message_button' => apply_filters('wp_sms_message_button_settings', array(
                 // Message Button Configuration
                 'chatbox'                   => array(
                     'id'   => 'chatbox',
@@ -1739,7 +1738,7 @@ class Settings
             /**
              * Feature fields
              */
-            'advanced'             => apply_filters('wp_sms_feature_settings', array(
+            'advanced'       => apply_filters('wp_sms_feature_settings', array(
                 'admin_reports'                => array(
                     'id'   => 'admin_reports',
                     'name' => esc_html__('Admin Reports', 'wp-sms'),
@@ -1836,7 +1835,7 @@ class Settings
             /**
              * Notifications fields
              */
-            'notifications'        => apply_filters('wp_sms_notifications_settings', array(
+            'notifications'  => apply_filters('wp_sms_notifications_settings', array(
                 // Publish new post
                 'notif_publish_new_post_title'            => array(
                     'id'   => 'notif_publish_new_post_title',
@@ -2035,7 +2034,7 @@ class Settings
             /**
              * Contact form 7 fields
              */
-            'contact_form7'        => apply_filters('wp_sms_contact_form7_settings', array(
+            'contact_form7'  => apply_filters('wp_sms_contact_form7_settings', array(
                 'cf7_title'   => array(
                     'id'   => 'cf7_title',
                     'name' => esc_html__('SMS Notification Metabox', 'wp-sms'),
@@ -2052,9 +2051,7 @@ class Settings
                 ),
             )),
 
-
             'forminator'           => apply_filters('wp_sms_forminator_settings', [], $options),
-
 
             /*
              * Pro fields
@@ -2558,17 +2555,18 @@ class Settings
      * args[] : header_template
      */
     public function render_settings($default = "general", $args = array())
-    {        
-        $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : 'general';
+    {
+        $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
         $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && !$this->proIsInstalled;
-        $args = [
-            'setting' => true,
-            'template'  => '' //must be a callable function
-        ];
-        $args = apply_filters('wp_sms_settings_render_'. $this->active_tab, $args);
+        $args                    = wp_parse_args($args, [
+            'setting'  => true,
+            'template' => '' //must be a callable function
+        ]);
+        $args                    = apply_filters('wp_sms_settings_render_' . $this->active_tab, $args);
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
-            <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            ?>
             <div class="wpsms-wrap__main">
                 <?php do_action('wp_sms_settings_page');
 
@@ -2584,23 +2582,23 @@ class Settings
                             if (strpos($id, 'addon_') !== false) return $t;
                         }, ARRAY_FILTER_USE_BOTH);
 
-                        $tabCheck = function ($tab_id, $tab_name) use ($active_tab) {
+                        $tabCheck = function ($tab_id, $tab_name) {
                             $tab_url = add_query_arg(array(
                                 'settings-updated' => false,
                                 'tab'              => $tab_id
                             ));
 
                             $active      = $this->active_tab == $tab_id ? 'active' : '';
-                            $IsProTab    = in_array($tab_id, $this->proTabs) ? ' is-pro-tab' : '';
+                            $isProTab    = in_array($tab_id, $this->proTabs) ? ' is-pro-tab' : '';
                             $proLockIcon = '';
 
-                            if ($IsProTab) {
+                            if ($isProTab) {
                                 if (!$this->proIsInstalled) {
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank">PRO</a></span></li>';
                                 }
                             }
 
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($IsProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
                             echo '</a>' . $proLockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         };
@@ -2634,15 +2632,12 @@ class Settings
                     </ul>
                     <?php echo settings_errors('wpsms-notices'); ?>
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
-                        <?php 
-                            if(isset($args['setting']) && $args['setting'] == true)
-                            {
-                                $this->renderWpSetting();   
-                            } 
-                            else if(isset($args['template']) && $args['template'] != "")
-                            {
-                                call_user_func($args['template'], []);
-                            }
+                        <?php
+                        if (isset($args['setting']) && $args['setting'] == true) {
+                            $this->renderWpSetting();
+                        } else if (isset($args['template']) && $args['template'] != "") {
+                            call_user_func($args['template'], []);
+                        }
                         ?>
                     </div>
                 </div>
@@ -2671,9 +2666,9 @@ class Settings
             if (!$this->contentRestricted) {
                 submit_button();
             } ?>
-        </form>   
+        </form>
         <?php
-    } 
+    }
 
 
     /*

@@ -9,7 +9,7 @@ class ForminatorManager
 {
     public function init()
     {
-        add_filter('wp_sms_registered_tabs', function ($tabs) {
+        add_filter('wp_sms_registered_integration_tabs', function ($tabs) {
             $tabs['forminator'] = __('Forminator', 'wp-sms');
             return $tabs;
         });
