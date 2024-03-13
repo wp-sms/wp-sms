@@ -111,7 +111,7 @@ class signalads extends \WP_SMS\Gateway
 
             // Check API key
             if (!$this->has_key) {
-                return new WP_Error('account-credit', __('The API Key is required.', 'wp-sms'));
+                return new WP_Error('account-credit', esc_html__('The API Key is required.', 'wp-sms'));
             }
 
             $arguments = [

@@ -35,7 +35,7 @@ class WordPressMobileFieldHandler
     // add mobile field input to add user admin page
     public function add_mobile_field_to_newuser_form()
     {
-        echo Helper::loadTemplate('mobile-field.php');
+        echo Helper::loadTemplate('mobile-field.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**
@@ -49,7 +49,7 @@ class WordPressMobileFieldHandler
 
         $fields['mobile'] = [
             'id'      => 'mobile',
-            'title'   => __('Mobile', 'wp-sms'),
+            'title'   => esc_html__('Mobile', 'wp-sms'),
             'content' => '<input class="wp-sms-input-mobile regular-text ltr" type="tel" name="mobile" value="' . esc_attr($currentValue) . '">'
         ];
 
@@ -61,9 +61,11 @@ class WordPressMobileFieldHandler
     {
         $mobile = (isset($_POST['mobile'])) ? Helper::sanitizeMobileNumber($_POST['mobile']) : '';
 
-        echo Helper::loadTemplate('mobile-field-register.php', array(
+        $args = [
             'mobile' => $mobile
-        ));
+        ];
+
+        echo Helper::loadTemplate('mobile-field-register.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**

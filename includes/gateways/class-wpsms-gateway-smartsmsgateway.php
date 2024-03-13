@@ -115,7 +115,7 @@ class smartsmsgateway extends \WP_SMS\Gateway
 
             // Check username and password
             if (!$this->username or !$this->password) {
-                throw new \Exception(__('The Username/Password for this gateway is not set.', 'wp-sms'));
+                throw new \Exception(esc_html__('The Username/Password for this gateway is not set.', 'wp-sms'));
             }
 
             $params = [

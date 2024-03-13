@@ -44,21 +44,23 @@ class AddOns
 
             if (is_plugin_active($plugin)) {
                 $addOn->meta['status']       = 'active';
-                $addOn->meta['status_label'] = __('Active', 'wp-sms');
+                $addOn->meta['status_label'] = esc_html__('Active', 'wp-sms');
             } else if (file_exists(WP_PLUGIN_DIR . "/{$plugin}")) {
                 $addOn->meta['status']       = 'inactive';
-                $addOn->meta['status_label'] = __('Inactive', 'wp-sms');
+                $addOn->meta['status_label'] = esc_html__('Inactive', 'wp-sms');
             } else {
                 $addOn->meta['status']       = 'not-installed';
-                $addOn->meta['status_label'] = __('Not installed', 'wp-sms');
+                $addOn->meta['status_label'] = esc_html__('Not installed', 'wp-sms');
             }
         }
     }
 
     public function renderPage()
     {
-        echo Helper::loadTemplate('admin/add-ons.php', [
+        $args = [ 
             'addOns' => $this->addOns
-        ]);
+        ];
+        
+        echo Helper::loadTemplate('admin/add-ons.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

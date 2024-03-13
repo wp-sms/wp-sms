@@ -82,9 +82,11 @@ class OrderViewManager
             $numbers = array_unique($numbers);
         }
 
-        echo Helper::loadTemplate('admin/order-view-metabox.php', [
+        $args = [
             'variables' => NotificationFactory::getWooCommerceOrder()->printVariables(),
             'numbers'   => apply_filters('wpsms_woocommerce_order_view_mobile_numbers', $numbers, $order)
-        ]);
+        ];
+
+        echo Helper::loadTemplate('admin/order-view-metabox.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

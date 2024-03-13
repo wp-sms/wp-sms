@@ -140,12 +140,12 @@ class msegat extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username) {
-            return new \WP_Error('account-credit', __('The Username for this gateway is not set', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('The Username for this gateway is not set', 'wp-sms'));
         }
 
         // Check api key
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('The API Key for this gateway is not set', 'wp-sms'));
         }
 
         $args = array(

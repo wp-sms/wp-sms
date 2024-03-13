@@ -18,9 +18,11 @@ class Privacy
 
     public function render_page()
     {
-        echo Helper::loadTemplate('admin/privacy-page.php', array(
-            'title' => __('Privacy', 'wp-sms'),
-        ));
+        $args = [
+            'title' => esc_html__('Privacy', 'wp-sms'),
+        ];
+
+        echo Helper::loadTemplate('admin/privacy-page.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
 

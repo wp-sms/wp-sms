@@ -161,7 +161,7 @@ class bulkgate extends \WP_SMS\Gateway
         try {
             // Check Api key
             if (!$this->from or !$this->has_key) {
-                throw new Exception(__('Application id and Application token for this gateway are require.', 'wp-sms'));
+                throw new Exception(esc_html__('Application id and Application token for this gateway are require.', 'wp-sms'));
             }
 
             $arguments = [

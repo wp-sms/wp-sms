@@ -114,7 +114,7 @@ class oxemis extends \WP_SMS\Gateway
 
             // Check API key and API Password
             if (!$this->username || !$this->password) {
-                return new WP_Error('account-credit', __('The API Key and API Password are required.', 'wp-sms'));
+                return new WP_Error('account-credit', esc_html__('The API Key and API Password are required.', 'wp-sms'));
             }
 
             $params = array(

@@ -48,7 +48,7 @@ class Outbox_List_Table extends \WP_List_Table
                 return $item[$column_name];
             case 'recipient':
                 $html = '<details>
-						  <summary>' . __('View more...', 'wp-sms') . '</summary>
+						  <summary>' . esc_html__('View more...', 'wp-sms') . '</summary>
 						  <p>' . wp_sms_render_quick_reply($item[$column_name]) . '</p>
 						</details>';
 
@@ -75,10 +75,10 @@ class Outbox_List_Table extends \WP_List_Table
     {
         $status = Helper::loadTemplate('admin/label-button.php', array(
             'type'  => ($item['status'] == 'success' ? 'active' : 'inactive'),
-            'label' => ($item['status'] == 'success' ? __('Success', 'wp-sms') : __('Failed', 'wp-sms'))
+            'label' => ($item['status'] == 'success' ? esc_html__('Success', 'wp-sms') : esc_html__('Failed', 'wp-sms'))
         ));
 
-        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, __('API Response', 'wp-sms'), $item['response']);
+        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, esc_html__('API Response', 'wp-sms'), $item['response']);
     }
 
     function column_sender($item)
@@ -90,8 +90,8 @@ class Outbox_List_Table extends \WP_List_Table
 
         //Build row actions
         $actions = array(
-            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Resend', 'wp-sms') . '</a>', esc_attr($page), 'resend', $item['ID']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . __('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
+            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . esc_html__('Resend', 'wp-sms') . '</a>', esc_attr($page), 'resend', $item['ID']),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . esc_html__('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
         );
 
         //Return the title contents
@@ -121,12 +121,12 @@ class Outbox_List_Table extends \WP_List_Table
     {
         return array(
             'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
-            'sender'    => __('Sender', 'wp-sms'),
-            'date'      => __('Date', 'wp-sms'),
-            'message'   => __('Message', 'wp-sms'),
-            'recipient' => __('Recipient', 'wp-sms'),
-            'media'     => __('Media', 'wp-sms'),
-            'status'    => __('Status', 'wp-sms'),
+            'sender'    => esc_html__('Sender', 'wp-sms'),
+            'date'      => esc_html__('Date', 'wp-sms'),
+            'message'   => esc_html__('Message', 'wp-sms'),
+            'recipient' => esc_html__('Recipient', 'wp-sms'),
+            'media'     => esc_html__('Media', 'wp-sms'),
+            'status'    => esc_html__('Status', 'wp-sms'),
         );
     }
 
@@ -147,7 +147,7 @@ class Outbox_List_Table extends \WP_List_Table
     function get_bulk_actions()
     {
         $actions = array(
-            'bulk_delete' => __('Delete', 'wp-sms')
+            'bulk_delete' => esc_html__('Delete', 'wp-sms')
         );
 
         return $actions;
@@ -172,7 +172,7 @@ class Outbox_List_Table extends \WP_List_Table
             }
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Helper::flashNotice(__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(esc_html__('Items removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Single delete action
@@ -181,7 +181,7 @@ class Outbox_List_Table extends \WP_List_Table
             $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
             $this->count = $this->get_total();
-            \WP_SMS\Helper::flashNotice(__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
+            \WP_SMS\Helper::flashNotice(esc_html__('Item removed.', 'wp-sms'), 'success', $this->adminUrl);
         }
 
         // Resend sms
@@ -199,7 +199,7 @@ class Outbox_List_Table extends \WP_List_Table
             if (is_wp_error($error)) {
                 \WP_SMS\Helper::flashNotice(esc_html($error->get_error_message()), 'error', $this->adminUrl);
             } else {
-                \WP_SMS\Helper::flashNotice(__('The SMS sent successfully.', 'wp-sms'), 'success', $this->adminUrl);
+                \WP_SMS\Helper::flashNotice(esc_html__('The SMS sent successfully.', 'wp-sms'), 'success', $this->adminUrl);
             }
 
             $this->data  = $this->get_data();
@@ -360,9 +360,10 @@ class Outbox
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo Helper::loadTemplate('admin/outbox.php', [
-            'list_table' => $list_table, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        ]);
+        $args = [
+            'list_table' => $list_table, 
+        ];
+
+        echo Helper::loadTemplate('admin/outbox.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

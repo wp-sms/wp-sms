@@ -18,13 +18,13 @@
         <table>
             <tr>
                 <td style="padding-top: 10px;">
-                    <p> <?php _e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
+                    <p> <?php esc_html_e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 
             <tr>
                 <td colspan="2" style="padding-top: 10px;">
-                    <input type="submit" class="button-primary js-wpSmsExportButton" value="<?php _e('Export', 'wp-sms'); ?>"/>
+                    <input type="submit" class="button-primary js-wpSmsExportButton" value="<?php esc_html_e('Export', 'wp-sms'); ?>"/>
                 </td>
             </tr>
         </table>

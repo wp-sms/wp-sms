@@ -463,7 +463,7 @@ class Helper
         if ($return) {
             return $output;
         } else {
-            echo $output;
+            echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
 

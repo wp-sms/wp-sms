@@ -163,7 +163,7 @@ final class Verifier
         $result = (int) $wpdb->get_var($query);
 
         if ($result >= $this->getRateLimitCount()) {
-            throw new Exceptions\TooManyAttemptsException(__('Too many verification attempts, please try some other time.', 'wp-sms'));
+            throw new Exceptions\TooManyAttemptsException(esc_html__('Too many verification attempts, please try some other time.', 'wp-sms'));
         }
     }
 

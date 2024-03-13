@@ -58,7 +58,7 @@ class RemoteRequest
         );
 
         if (is_wp_error($response)) {
-            throw new Exception($response->get_error_message());
+            throw new Exception(esc_html($response->get_error_message()));
         }
 
         $responseCode = wp_remote_retrieve_response_code($response);
@@ -71,7 +71,7 @@ class RemoteRequest
                     $responseBody = json_decode($responseBody, true);
                 }
 
-                throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
+                throw new Exception(sprintf(esc_html__('Failed to get success response, %s', 'wp-sms'), esc_html(print_r($responseBody, 1))));
             }
         }
 

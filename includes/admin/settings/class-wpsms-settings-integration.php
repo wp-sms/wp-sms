@@ -25,16 +25,16 @@ class SettingsIntegration extends Settings
     public function get_tabs()
     {
         return apply_filters('wp_sms_registered_integration_tabs', [
-            'contact_form7'        => __('Contact Form 7', 'wp-sms'),
+            'contact_form7'        => esc_html__('Contact Form 7', 'wp-sms'),
             // pro tabs
-            'pro_buddypress'       => __('BuddyPress', 'wp-sms'),
-            'pro_woocommerce'      => __('WooCommerce', 'wp-sms'),
-            'pro_gravity_forms'    => __('Gravity Forms', 'wp-sms'),
-            'pro_quform'           => __('Quform', 'wp-sms'),
-            'pro_edd'              => __('Easy Digital Downloads', 'wp-sms'),
-            'pro_wp_job_manager'   => __('WP Job Manager', 'wp-sms'),
-            'pro_awesome_support'  => __('Awesome Support', 'wp-sms'),
-            'pro_ultimate_members' => __('Ultimate Member', 'wp-sms')
+            'pro_buddypress'       => esc_html__('BuddyPress', 'wp-sms'),
+            'pro_woocommerce'      => esc_html__('WooCommerce', 'wp-sms'),
+            'pro_gravity_forms'    => esc_html__('Gravity Forms', 'wp-sms'),
+            'pro_quform'           => esc_html__('Quform', 'wp-sms'),
+            'pro_edd'              => esc_html__('Easy Digital Downloads', 'wp-sms'),
+            'pro_wp_job_manager'   => esc_html__('WP Job Manager', 'wp-sms'),
+            'pro_awesome_support'  => esc_html__('Awesome Support', 'wp-sms'),
+            'pro_ultimate_members' => esc_html__('Ultimate Member', 'wp-sms')
         ]);
     }
 }

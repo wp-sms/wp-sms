@@ -12,11 +12,13 @@ class SubscriberFormAjax extends AjaxControllerAbstract {
 	protected function run() {
 		$subscriber_id = $this->get( 'subscriber_id' );
 
-		echo Helper::loadTemplate( 'admin/subscriber-form.php', array(
-			'subscriber_id' => $subscriber_id,
-			'subscriber'    => Newsletter::getSubscriber( $subscriber_id ),
-			'groups'        => Newsletter::getGroups()
-		) );
+        $args = [
+            'subscriber_id' => $subscriber_id,
+            'subscriber'    => Newsletter::getSubscriber( $subscriber_id ),
+            'groups'        => Newsletter::getGroups()
+        ];
+
+		echo Helper::loadTemplate( 'admin/subscriber-form.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		exit;
 	}

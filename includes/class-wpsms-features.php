@@ -35,9 +35,11 @@ class Features
                 return;
             }
 
-            echo Helper::loadTemplate('admin/user-profile-fields.php', [
+            $args = [
                 'fields' => $fields,
-            ]);
+            ];
+
+            echo Helper::loadTemplate('admin/user-profile-fields.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         };
 
         add_action('show_user_profile', $renderFields);

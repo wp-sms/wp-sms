@@ -116,7 +116,7 @@ class africastalking extends \WP_SMS\Gateway
         try {
             // Check username and password
             if (!$this->username or !$this->has_key) {
-                return new \WP_Error('account-credit', __('Username and API key are required.', 'wp-sms'));
+                return new \WP_Error('account-credit', esc_html__('Username and API key are required.', 'wp-sms'));
             }
 
             return 1;
