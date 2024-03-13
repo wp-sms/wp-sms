@@ -61,9 +61,9 @@ class Newsletter
         // Check CSRF
         if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {
             if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'wp_sms_unsubscribe')) {
-                wp_die('Access denied.', __('SMS newsletter'), [
-                    'link_text' => __('Home page', 'wp-sms'),
-                    'link_url'  => get_bloginfo('url'),
+                wp_die(esc_html__('Access denied.', 'wp-sms'), esc_html__('SMS newsletter', 'wp-sms'), [
+                    'link_text' => esc_html__('Home page', 'wp-sms'),
+                    'link_url'  => esc_url(get_bloginfo('url')),
                     'response'  => 200,
                 ]);
             }
@@ -78,17 +78,17 @@ class Newsletter
             do_action('wp_sms_number_unsubscribed_through_url', $number);
 
             if ($response['result'] == 'success') {
-                wp_die($response['message'], __('SMS newsletter'), [
-                    'link_text' => __('Home page', 'wp-sms'),
-                    'link_url'  => get_bloginfo('url'),
+                wp_die(esc_html($response['message']), esc_html__('SMS newsletter', 'wp-sms'), [
+                    'link_text' => esc_html__('Home page', 'wp-sms'),
+                    'link_url'  => esc_url(get_bloginfo('url')),
                     'response'  => 200,
                 ]);
             }
         }
 
-        wp_die($response['message'], __('SMS newsletter'), [
-            'link_text' => __('Home page', 'wp-sms'),
-            'link_url'  => get_bloginfo('url'),
+        wp_die(esc_html($response['message']), esc_html__('SMS newsletter', 'wp-sms'), [
+            'link_text' => esc_html__('Home page', 'wp-sms'),
+            'link_url'  => esc_url(get_bloginfo('url')),
             'response'  => 200,
         ]);
     }
@@ -143,9 +143,9 @@ class Newsletter
              */
             do_action('wp_sms_add_subscriber', $name, $mobile, $status, $wpdb->insert_id);
 
-            return array('result' => 'success', 'message' => __('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
+            return array('result' => 'success', 'message' => esc_html__('Subscriber successfully added.', 'wp-sms'), 'id' => $wpdb->insert_id);
         } else {
-            return array('result' => 'error', 'message' => __('Failed to add subscriber, please deactivate and then activate WP SMS and then try again.', 'wp-sms'));
+            return array('result' => 'error', 'message' => esc_html__('Failed to add subscriber, please deactivate and then activate WP SMS and then try again.', 'wp-sms'));
         }
     }
 
@@ -231,7 +231,7 @@ class Newsletter
         $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
 
         if (!$result) {
-            return array('result' => 'error', 'message' => __('The mobile number does not exist!', 'wp-sms'));
+            return array('result' => 'error', 'message' => esc_html__('The mobile number does not exist!', 'wp-sms'));
         }
 
         /**
@@ -244,7 +244,7 @@ class Newsletter
          */
         do_action('wp_sms_delete_subscriber', $result);
 
-        return array('result' => 'success', 'message' => __('Successfully canceled the subscription!', 'wp-sms'));
+        return array('result' => 'success', 'message' => esc_html__('Successfully canceled the subscription!', 'wp-sms'));
     }
 
 
@@ -264,7 +264,7 @@ class Newsletter
         global $wpdb;
 
         if (empty($id) or empty($name) or empty($mobile)) {
-            return array('result' => 'error', 'message' => __('The fields must be valued.', 'wp-sms'));
+            return array('result' => 'error', 'message' => esc_html__('The fields must be valued.', 'wp-sms'));
         }
 
         // Check mobile validity
@@ -299,9 +299,9 @@ class Newsletter
              */
             do_action('wp_sms_update_subscriber', $result);
 
-            return array('result' => 'success', 'message' => __('Subscriber successfully updated.', 'wp-sms'));
+            return array('result' => 'success', 'message' => esc_html__('Subscriber successfully updated.', 'wp-sms'));
         } else {
-            return array('result' => 'error', 'message' => __('No change has been occurred.', 'wp-sms'));
+            return array('result' => 'error', 'message' => esc_html__('No change has been occurred.', 'wp-sms'));
         }
     }
 
@@ -401,7 +401,7 @@ class Newsletter
         if (empty($name)) {
             return array(
                 'result'  => 'error',
-                'message' => __('Name is empty!', 'wp-sms')
+                'message' => esc_html__('Name is empty!', 'wp-sms')
             );
         }
 
@@ -411,7 +411,7 @@ class Newsletter
         if ($count) {
             return array(
                 'result'  => 'error',
-                'message' => sprintf(__('Group Name "%s" exists!', 'wp-sms'), $name)
+                'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
             $result           = $wpdb->insert(
@@ -437,7 +437,7 @@ class Newsletter
 
                 return array(
                     'result'  => 'success',
-                    'message' => __('Group successfully added.', 'wp-sms'),
+                    'message' => esc_html__('Group successfully added.', 'wp-sms'),
                     'data'    => array(
                         'group_ID' => $group_id[0]->ID
                     )
@@ -470,7 +470,7 @@ class Newsletter
         if ($count) {
             return array(
                 'result'  => 'error',
-                'message' => sprintf(__('Group Name "%s" exists!', 'wp-sms'), $name)
+                'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
             $result = $wpdb->update(
@@ -495,11 +495,11 @@ class Newsletter
                  */
                 do_action('wp_sms_update_group', $result);
 
-                return array('result' => 'success', 'message' => __('Group successfully updated.', 'wp-sms'));
+                return array('result' => 'success', 'message' => esc_html__('Group successfully updated.', 'wp-sms'));
             } else {
                 return array(
                     'result'  => 'error',
-                    'message' => sprintf(__('Group Name "%s" exists!', 'wp-sms'), $name)
+                    'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
                 );
             }
         }

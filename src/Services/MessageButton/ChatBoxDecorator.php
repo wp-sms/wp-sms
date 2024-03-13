@@ -92,13 +92,13 @@ class ChatBoxDecorator
         foreach ($teams as &$teamMember) {
             // Check and replace empty values with sample data
             if ($teamMember['member_name'] == '') {
-                $teamMember['member_name'] = 'Emily Brown';
+                $teamMember['member_name'] = __('Emily Brown', 'wp-sms');
             }
             if ($teamMember['member_role'] == '') {
-                $teamMember['member_role'] = 'Marketing Manager';
+                $teamMember['member_role'] = __('Marketing Manager', 'wp-sms');
             }
             if ($teamMember['member_availability'] == '') {
-                $teamMember['member_availability'] = 'Available 10AM-5PM PST';
+                $teamMember['member_availability'] = __('Available 10AM-5PM PST', 'wp-sms');
             }
             if ($teamMember['member_photo'] == '') {
                 $teamMember['member_photo'] = WP_SMS_URL . 'assets/images/avatar.png';
@@ -138,7 +138,7 @@ class ChatBoxDecorator
             $linkUrl = 'tel:' . $value;
         }
 
-        return $linkUrl;
+        return apply_filters('wp_sms_chatbox_contact_link', $linkUrl, $type, $value);
     }
 
     public function fetchLinks()
@@ -150,7 +150,7 @@ class ChatBoxDecorator
         foreach ($links as &$teamMember) {
             // Check and replace empty values with sample data
             if ($teamMember['chatbox_link_title'] == '') {
-                $teamMember['chatbox_link_title'] = 'Troubleshooting Common Issues';
+                $teamMember['chatbox_link_title'] = __('Troubleshooting Common Issues', 'wp-sms');
             }
             if ($teamMember['chatbox_link_url'] == '') {
                 $teamMember['chatbox_link_url'] = site_url('troubleshooting');

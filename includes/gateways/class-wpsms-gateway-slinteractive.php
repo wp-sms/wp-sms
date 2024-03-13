@@ -99,7 +99,7 @@ class slinteractive extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API Key is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API Key is not entered.', 'wp-sms'));
         }
 
         return 1;

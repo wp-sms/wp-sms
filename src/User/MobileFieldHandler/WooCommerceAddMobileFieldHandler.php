@@ -138,7 +138,7 @@ class WooCommerceAddMobileFieldHandler
         $mobile  = get_post_meta($orderId, $this->getUserMobileFieldName(), true);
 
         $billingFields[$this->getUserMobileFieldName()] = [
-            'label' => __('Mobile Number', 'wp-sms'),
+            'label' => esc_html__('Mobile Number', 'wp-sms'),
             'class' => 'wp-sms-input-mobile',
             'value' => $mobile
         ];

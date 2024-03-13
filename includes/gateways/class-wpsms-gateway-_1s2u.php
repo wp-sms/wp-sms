@@ -139,7 +139,7 @@ class _1s2u extends \WP_SMS\Gateway
         try {
             // Check username and password
             if (!$this->username || !$this->password) {
-                throw new Exception(__('Username and password are required.', 'wp-sms'));
+                throw new Exception(esc_html__('Username and password are required.', 'wp-sms'));
             }
 
             $arguments = [
@@ -185,60 +185,60 @@ class _1s2u extends \WP_SMS\Gateway
     {
         switch ($errorCode) {
             case $errorCode === '0000':
-                $message = __('Service Not Available or Down Temporary', 'wp-sms');
+                $message = esc_html__('Service Not Available or Down Temporary', 'wp-sms');
                 break;
 
             case $errorCode === '00':
-                $message = __('Invalid username/password.', 'wp-sms');
+                $message = esc_html__('Invalid username/password.', 'wp-sms');
                 break;
 
             case $errorCode === '0005':
-                $message = __('Invalid server', 'wp-sms');
+                $message = esc_html__('Invalid server', 'wp-sms');
                 break;
 
             case $errorCode === '0010':
-                $message = __('Username not provided.', 'wp-sms');
+                $message = esc_html__('Username not provided.', 'wp-sms');
                 break;
 
             case $errorCode === '0011':
-                $message = __('Password not provided.', 'wp-sms');
+                $message = esc_html__('Password not provided.', 'wp-sms');
                 break;
 
             case $errorCode === '0':
             case $errorCode === '0020':
-                $message = __('Insufficient Credits', 'wp-sms');
+                $message = esc_html__('Insufficient Credits', 'wp-sms');
                 break;
 
             case $errorCode === '0030':
-                $message = __('Invalid Sender ID', 'wp-sms');
+                $message = esc_html__('Invalid Sender ID', 'wp-sms');
                 break;
 
             case $errorCode === '0040':
-                $message = __('Mobile number not provided.', 'wp-sms');
+                $message = esc_html__('Mobile number not provided.', 'wp-sms');
                 break;
 
             case $errorCode === '0041':
-                $message = __('Invalid mobile number', 'wp-sms');
+                $message = esc_html__('Invalid mobile number', 'wp-sms');
                 break;
 
             case $errorCode === '0042':
-                $message = __('Network not supported.', 'wp-sms');
+                $message = esc_html__('Network not supported.', 'wp-sms');
                 break;
 
             case $errorCode === '0050':
-                $message = __('Invalid message.', 'wp-sms');
+                $message = esc_html__('Invalid message.', 'wp-sms');
                 break;
 
             case $errorCode === '0060':
-                $message = __('Invalid quantity specified.', 'wp-sms');
+                $message = esc_html__('Invalid quantity specified.', 'wp-sms');
                 break;
 
             case $errorCode === '0066':
-                $message = __('Network not supported', 'wp-sms');
+                $message = esc_html__('Network not supported', 'wp-sms');
                 break;
 
             default:
-                $message = __("Something's wrong. Please contact the SMS gateway provider support team.", 'wp-sms');
+                $message = esc_html__("Something's wrong. Please contact the SMS gateway provider support team.", 'wp-sms');
         }
 
         return $message;

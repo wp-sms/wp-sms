@@ -24,19 +24,19 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
         );
 
         if (empty($_FILES["file"]["name"])) {
-            throw new Exception(__('Choose a *.csv file, first.', 'wp-sms'));
+            throw new Exception(esc_html__('Choose a *.csv file, first.', 'wp-sms'));
         }
 
         // Validate whether selected file is a CSV file
         if (!in_array($_FILES['file']['type'], $file_mimes)) {
-            throw new Exception(__("Only *.csv files are allowed.", 'wp-sms'));
+            throw new Exception(esc_html__("Only *.csv files are allowed.", 'wp-sms'));
         }
 
         // Open uploaded CSV file with read-only mode
         $csvFile = fopen($_FILES['file']['tmp_name'], 'r');
 
         if (empty(file($_FILES['file']['tmp_name']))) {
-            throw new Exception(__("The uploaded file doesn't contain any data.", 'wp-sms'));
+            throw new Exception(esc_html__("The uploaded file doesn't contain any data.", 'wp-sms'));
         }
 
         // check whether file includes header
@@ -58,7 +58,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
 
         // Check if there's an error during upload
         if (isset($upload_result['error'])) {
-            throw new Exception("Error uploading file: " . $upload_result['error']);
+            throw new Exception("Error uploading file: " . esc_html($upload_result['error']));
         }
 
         // Get the uploaded file path
@@ -78,7 +78,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
         add_option('wp_sms_import_file', basename($uploaded_file_path));
 
         // Send JSON response
-        wp_send_json_success(__('File uploaded successfully.', 'wp-sms'));
+        wp_send_json_success(esc_html__('File uploaded successfully.', 'wp-sms'));
     }
 
 }

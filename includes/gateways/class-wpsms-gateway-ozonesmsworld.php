@@ -96,7 +96,7 @@ class ozonesmsworld extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username && !$this->has_key) {
-            return new \WP_Error('account-credit', __('The Username/API Key for this gateway is not set', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('The Username/API Key for this gateway is not set', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "/?action=balance&username=" . $this->username . "&api_key=" . $this->has_key);

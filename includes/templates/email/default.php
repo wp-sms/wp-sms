@@ -26,9 +26,9 @@
             <h2><?php echo esc_html($email_title); ?></h2>
 
             <?php if (isset($content) && strlen($content) > 0): ?>
-                <p><?php _e('Hello,', 'wp-sms'); ?></p>
+                <p><?php esc_html_e('Hello,', 'wp-sms'); ?></p>
                 <p><?php echo wp_kses_post($content); ?></p>
-                <p style="margin-top:30px;"><?php _e('Best regards,', 'wp-sms'); ?></p>
+                <p style="margin-top:30px;"><?php esc_html_e('Best regards,', 'wp-sms'); ?></p>
             <?php endif; ?>
 
             <?php if (isset($cta_title)): ?>
@@ -43,7 +43,7 @@
 
     <div class="footer-links">
         <p><?php echo sprintf('This email automatically has been sent from <a href="%s">%s</a>.', esc_url($site_url), esc_html($site_name)) ?></p>
-        <p style="margin-top: 5px;"><?php echo sprintf('<a href="%s">Manage Email Notifications</a>', admin_url('admin.php?page=wp-sms-settings&tab=advanced')) ?></p>
+        <p style="margin-top: 5px;"><?php echo sprintf('<a href="%s">Manage Email Notifications</a>', esc_url(admin_url('admin.php?page=wp-sms-settings&tab=advanced'))) ?></p>
     </div>
 
 </div>

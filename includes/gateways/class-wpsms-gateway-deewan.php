@@ -127,7 +127,7 @@ class deewan extends \WP_SMS\Gateway
         try {
             // Check username and password
             if (!$this->username || !$this->has_key) {
-                throw new Exception(__('Username and password are required.', 'wp-sms'));
+                throw new Exception(esc_html__('Username and password are required.', 'wp-sms'));
             }
 
             $token  = $this->getGeneratedToken();
@@ -168,7 +168,7 @@ class deewan extends \WP_SMS\Gateway
         $response = $this->request('POST', "{$this->wsdl_link}/auth/v1/signin", [], $params, false);
 
         if (isset($response->error)) {
-            throw new Exception($response->error->description);
+            throw new Exception(esc_html($response->error->description));
         }
 
         return $response->data->access_token;

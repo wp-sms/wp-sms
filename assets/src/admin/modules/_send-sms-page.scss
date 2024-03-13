@@ -125,11 +125,49 @@ Select2
   font-weight: normal;
   color: #7f7f7f;
   white-space: normal;
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  @media screen and (max-width: 768px) {
+    align-items: self-end;
+    flex-direction: column;
+  }
+  .wpsms-settings-description-title{
+    margin-left: 0;
+    margin-right: auto;
+   }
 }
-
+.rtl .wpsms-settings-header-field .wpsms-settings-description-title {
+  margin-right: 0;
+  margin-left: auto;
+}
 .wpsms-settings-description-header {
   display: inline-block;
-  margin: 0 6px;
+  a{
+    color:#F88E40;
+    background:#f1e6df;
+    text-decoration: none;
+    line-height: 24px;
+    font-size: 11px;
+    border-radius: 2px;
+    font-weight: 600;
+    padding: 0  7px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    box-shadow:none!important;
+     .dashicons{
+       font-size: 12px;
+       width: 12px;
+       height: 12px;
+     }
+    &:hover{
+      color:#EF771F;
+      background: #f3dfd2;
+    }
+  }
 }
 
 .wpsms-settings-description-header .dashicons {
@@ -274,6 +312,7 @@ Select2
 }
 
 // Mobile
+
 @media screen and (max-width: 768px) {
   .wpsms-wrap__main {
     .select2-container {

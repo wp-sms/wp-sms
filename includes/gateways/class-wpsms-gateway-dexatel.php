@@ -99,7 +99,7 @@ class dexatel extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->has_key) {
-            return new \WP_Error('account-credit', __('API key is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API key is not entered.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . '/get_balance', [
