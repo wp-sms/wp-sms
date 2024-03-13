@@ -9,12 +9,9 @@ use WP_SMS\Option;
 
 class FormidableManager
 {
-
-
     public function init()
     {
-
-        add_filter('wp_sms_registered_tabs', function ($tabs) {
+        add_filter('wp_sms_registered_integration_tabs', function ($tabs) {
             $tabs['formidable'] = __('Formidable', 'wp-sms');
             return $tabs;
         });
@@ -25,12 +22,15 @@ class FormidableManager
             add_filter('frm_add_form_settings_section', array($this, "frm_add_new_settings_tab"), 10, 2);
             add_filter('frm_form_options_before_update', array($this, 'frm_save_new_settings_tab'), 20, 2);
         }
+
+        $Formidable = new Formidable();
+        $Formidable->init();
     }
 
     public function setting_fields($options)
     {
 
-        $formidable_array            = array();
+        $formidable_array = array();
 
         if (is_plugin_active('formidable/formidable.php')) {
             $formidable_array['formidable_title']   = array(
@@ -62,9 +62,9 @@ class FormidableManager
     public function frm_add_new_settings_tab($sections, $values)
     {
         $sections[] = array(
-            'name'        => __('WP‌ SMS', 'wp-sms'),
-            'anchor'    => 'wp_sms_notification',
-            'function'    => 'get_wp_sms_settings',
+            'name'     => __('WP SMS', 'wp-sms'),
+            'anchor'   => 'wp_sms_notification',
+            'function' => 'get_wp_sms_settings',
             'class'    => $this
         );
         return $sections;
@@ -72,13 +72,13 @@ class FormidableManager
 
     public function get_wp_sms_settings($values)
     {
-        $values = wp_sms_sanitize_array($values);
+        $values   = wp_sms_sanitize_array($values);
         $sms_data = Option::getOption("formdiable_wp_sms_options_" . $values['id']);
         echo Helper::loadTemplate('formidable/formidable-form.php', [
-            'form'  => $values['id'],
-            'sms_data'  => $sms_data,
-            'formFields' =>  $this->formfileds($values['id']),
-            'fieldGroup'    => NotificationFactory::getFormidable($values['id'])->printVariables()
+            'form'       => $values['id'],
+            'sms_data'   => $sms_data,
+            'formFields' => $this->formfileds($values['id']),
+            'fieldGroup' => NotificationFactory::getFormidable($values['id'])->printVariables()
         ]);
     }
 
@@ -94,7 +94,7 @@ class FormidableManager
 
     protected function formfileds($form)
     {
-        $final = array();
+        $final  = array();
         $fields = FrmField::get_all_for_form($form);
 
         foreach ($fields as $field) {

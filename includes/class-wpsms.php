@@ -5,6 +5,7 @@ use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Services\Formidable\Formidable;
 use WP_SMS\Services\Formidable\FormidableManager;
+use WP_SMS\Services\Forminator\ForminatorManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -242,16 +243,14 @@ class WP_SMS
 
         $this->include('src/Services/Formidable/Formidable.php');
         $this->include('src/Services/Formidable/FormidableManager.php');
-        (new FormidableManager())->init();
-        (new Formidable())->init();
+        $formidableManager = new FormidableManager();
+        $formidableManager->init();
 
         $this->include('src/Services/Forminator/ForminatorManager.php');
         $this->include('src/Services/Forminator/Forminator.php');
-        $forminatorManager = new \WP_SMS\Services\Forminator\ForminatorManager();
-        $forminator = new \WP_SMS\Services\Forminator\Forminator();
-        $forminator->init();
+        $forminatorManager = new ForminatorManager();
         $forminatorManager->init();
-        
+
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
         $this->include('src/Shortcode/SubscriberShortcode.php');

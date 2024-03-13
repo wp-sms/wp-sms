@@ -15,6 +15,9 @@ class ForminatorManager
         });
 
         add_filter('wp_sms_forminator_settings', array($this, 'setting_fields'));
+
+        $forminator = new Forminator();
+        $forminator->init();
     }
 
     public function setting_fields($options)
@@ -22,9 +25,9 @@ class ForminatorManager
         $forminator_forms = array();
 
         if (class_exists('Forminator')) {
-            $forms       = Forminator_API::get_forms(null, 1, 20, "publish");
+            $forms = Forminator_API::get_forms(null, 1, 20, "publish");
             foreach ($forms as $form) {
-                $formFields = Forminator::formFields($form->id);
+                $formFields                                                       = Forminator::formFields($form->id);
                 $forminator_forms['forminator_notify_form_' . $form->id]          = array(
                     'id'   => 'forminator_notify_form_' . $form->id,
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->name),

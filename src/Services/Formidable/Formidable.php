@@ -18,16 +18,15 @@ class Formidable
         add_action("frm_after_create_entry", array($this, 'handle_sms'), 30, 2);
     }
 
-
     public function handle_sms($entry_id, $form_id)
     {
-        $base_options       = Option::getOptions();
-        $sms_options       =  $base_options["formdiable_wp_sms_options_" . $this->data['form_id']];
+        $base_options = Option::getOptions();
+        $sms_options  = $base_options["formdiable_wp_sms_options_" . $this->data['form_id']];
 
         $formidableNotification = NotificationFactory::getFormidable($this->data['form_id'], $this->data);
 
-
         if (!isset($base_options["formidable_metabox"])) return;
+
         if (
             isset($sms_options['phone']) &&
             isset($sms_options['message'])
@@ -52,8 +51,8 @@ class Formidable
 
     public function pre_create($values)
     {
-        $values = wp_sms_sanitize_array($values);
-        $data = [];
+        $values          = wp_sms_sanitize_array($values);
+        $data            = [];
         $data['form_id'] = $values['form_id'];
         if (isset($values['item_meta'])) {
             $this->fields = $this->get_form_fields($values['form_id']);
@@ -71,7 +70,7 @@ class Formidable
 
     public static function get_form_fields($form_id)
     {
-        $final = [];
+        $final  = [];
         $fields = FrmField::get_all_for_form($form_id);
 
         foreach ($fields as $field) {

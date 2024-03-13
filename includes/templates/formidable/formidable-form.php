@@ -6,24 +6,24 @@
             <table class="form-table">
                 <tbody>
 
-                    <tr id="wp-sms-recipient-numbers">
-                        <th scope="row"><label for="formidable-sms-recipient-number"><?php _e('Numbers', 'wp-sms'); ?>:</label></th>
-                        <td>
-                            <input type="text" value="<?php echo esc_attr($sms_data['phone']) ?? ''; ?>" size="70" class="large-text code" name="formidable-sms[phone]" id="formidable-sms-recipient-number">
-                            <p class="description"><?php _e('<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002.', 'wp-sms'); ?></p>
-                        </td>
-                    </tr>
+                <tr id="wp-sms-recipient-numbers">
+                    <th scope="row"><label for="formidable-sms-recipient-number"><?php _e('Numbers', 'wp-sms'); ?>:</label></th>
+                    <td>
+                        <input type="text" value="<?php echo esc_attr($sms_data['phone']) ?? ''; ?>" size="70" class="large-text code" name="formidable-sms[phone]" id="formidable-sms-recipient-number">
+                        <p class="description"><?php _e('<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002.', 'wp-sms'); ?></p>
+                    </td>
+                </tr>
 
 
-                    <tr id="wp-sms-cf7-message-body">
-                        <th scope="row"><label for="formidable-sms-message"><?php _e('Message body', 'wp-sms'); ?>:</label></th>
-                        <td>
-                            <textarea class="large-text" rows="4" cols="100" name="formidable-sms[message]" id="formidable-sms-message"><?php echo esc_html($sms_data['message']) ?? ''; ?></textarea>
-                            <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
-                                <?php echo esc_html($fieldGroup)  ?>
-                            </p>
-                        </td>
-                    </tr>
+                <tr id="wp-sms-cf7-message-body">
+                    <th scope="row"><label for="formidable-sms-message"><?php _e('Message body', 'wp-sms'); ?>:</label></th>
+                    <td>
+                        <textarea class="large-text" rows="4" cols="100" name="formidable-sms[message]" id="formidable-sms-message"><?php echo esc_html($sms_data['message']) ?? ''; ?></textarea>
+                        <p class="description"><?php _e('<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>', 'wp-sms'); ?><br>
+                            <?php echo esc_html($fieldGroup) ?>
+                        </p>
+                    </td>
+                </tr>
             </table>
 
             <h3><?php _e('Send to form', 'wp-sms'); ?></h3>
@@ -38,7 +38,7 @@
 
                             foreach ($formFields as $field) {
                                 $selected = $sms_data['field']['phone'] == $field ? 'selected="selected"' : '';
-                                echo  "<option value=" . esc_attr($field) . " " .  esc_attr($selected) . ">"  . esc_html($field). " </option>";
+                                echo "<option value=" . esc_attr($field) . " " . esc_attr($selected) . ">" . esc_html($field) . " </option>";
                             }
                             ?>
                         </select>
@@ -59,7 +59,7 @@
                     <th scope="row"><label for="formidable-sms-message-form"></label>
                     </th>
                     <td>
-                        <button type="submit" class="button button-primary">submit</button>
+                        <button type="submit" class="button button-primary"><?php _e('Submit', 'wp-sms'); ?></button>
                     </td>
                 </tr>
                 </tbody>
@@ -82,7 +82,7 @@
 </style>
 
 <script>
-    jQuery('#formidable-sms-recipient').on('change', function(e) {
+    jQuery('#formidable-sms-recipient').on('change', function (e) {
         var number = document.getElementById('wp-sms-recipient-numbers');
         var subscriber = document.getElementById('wp-sms-recipient-groups');
         if (this.value == 'subscriber') {
