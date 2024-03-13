@@ -72,7 +72,7 @@ abstract class WebhookAbstract
             $responseBody = wp_remote_retrieve_body($response);
 
             if (in_array($responseCode, [200, 201, 202]) === false) {
-                throw new Exception(sprintf(__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
+                throw new Exception(sprintf(esc_html__('Failed to get success response, %s', 'wp-sms'), print_r($responseBody, 1)));
             }
 
         } catch (\Throwable $e) {

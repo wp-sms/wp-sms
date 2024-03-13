@@ -145,7 +145,7 @@ class directsend extends \WP_SMS\Gateway
         try {
             // Check username and password
             if (!$this->username or !$this->has_key) {
-                throw new Exception(__('The Username/API key for this gateway is not set.', 'wp-sms'));
+                throw new Exception(esc_html__('The Username/API key for this gateway is not set.', 'wp-sms'));
             }
             return 1;
 

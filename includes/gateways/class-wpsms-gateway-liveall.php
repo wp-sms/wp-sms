@@ -120,7 +120,7 @@ class liveall extends \WP_SMS\Gateway
 
             // Check API key
             if (!$this->has_key) {
-                throw new \Exception(__('The API Token for this gateway is not set.', 'wp-sms'));
+                throw new \Exception(esc_html__('The API Token for this gateway is not set.', 'wp-sms'));
             }
 
             return 1;

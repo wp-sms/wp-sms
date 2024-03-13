@@ -20,24 +20,24 @@
                 <td style="padding-top: 10px;">
                     <?php if (count($groups)) : ?>
                         <div class="wpsms-value wpsms-group">
-                            <p class="thickbox-description"><?php _e("You can choose to export a specific group(s) by selecting them, or export all subscribers by leaving the input form blank.", 'wp-sms') ?></p>
-                            <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php _e('Please select the group(s).', 'wp-sms'); ?>" style="width: 100% !important;">
+                            <p class="thickbox-description"><?php esc_html_e("You can choose to export a specific group(s) by selecting them, or export all subscribers by leaving the input form blank.", 'wp-sms') ?></p>
+                            <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the group(s).', 'wp-sms'); ?>" style="width: 100% !important;">
                                 <?php foreach ($groups as $group): ?>
-                                    <option value="<?php echo $group->ID; ?>">
-                                        <?php echo sprintf(__('Group %s', 'wp-sms'), $group->name); ?>
+                                    <option value="<?php echo esc_attr($group->ID); ?>">
+                                        <?php echo esc_html__('Group ', 'wp-sms') . esc_html($group->name); ?>
                                     </option>
 
                                 <?php endforeach; ?>
                             </select>
                         </div>
                     <?php endif; ?>
-                    <p> <?php _e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
+                    <p> <?php esc_html_e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 
             <tr>
                 <td colspan="2" style="padding-top: 10px;">
-                    <input type="submit" class="button-primary js-wpSmsExportButton" value="<?php _e('Export', 'wp-sms'); ?>"/>
+                    <input type="submit" class="button-primary js-wpSmsExportButton" value="<?php esc_html_e('Export', 'wp-sms'); ?>"/>
                 </td>
             </tr>
         </table>

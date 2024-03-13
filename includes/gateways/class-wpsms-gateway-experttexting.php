@@ -145,7 +145,7 @@ class experttexting extends \WP_SMS\Gateway
     {
         // Check username and password
         if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
         $response = wp_remote_get($this->wsdl_link . "json/Account/Balance?username={$this->username}&api_key={$this->password}&api_secret={$this->has_key}", array('timeout' => 30));

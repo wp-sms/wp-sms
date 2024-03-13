@@ -309,7 +309,7 @@ class textanywhere extends \WP_SMS\Gateway
         $response = $this->request('GET', "{$this->wsdl_link_new}/token", [], $params, false);
 
         if (isset($response->error_message)) {
-            throw new Exception($response->error_message);
+            throw new Exception(esc_html($response->error_message));
         }
 
         $parts = explode(";", $response);
@@ -317,7 +317,7 @@ class textanywhere extends \WP_SMS\Gateway
         if (is_array($parts)) {
             return $parts;
         } else {
-            throw new Exception('Invalid get token response ' . $response);
+            throw new Exception(esc_html__('Invalid get token response ', 'wp-sms') . esc_html($response));
         }
     }
 }

@@ -124,7 +124,7 @@ class aobox extends \WP_SMS\Gateway
 
             // Check username and password
             if (!$this->username or !$this->password) {
-                throw new Exception(__('The username/password for this gateway is not set.', 'wp-sms'));
+                throw new Exception(esc_html__('The username/password for this gateway is not set.', 'wp-sms'));
             }
 
             $params = [

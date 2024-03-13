@@ -21,31 +21,43 @@ class Subscribers
 
         // Add subscriber
         if (isset($_POST['wp_add_subscribe'])) {
-            $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
-            $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
-            $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
+            // Verify nonce
+            if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'wp_sms_subscriber_action')) {
+                $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
+                $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
+                $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
 
-            if ($group) {
-                $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
+                if ($group) {
+                    $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
+                } else {
+                    $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
+                }
+
+                // Print notice
+                Helper::notice($result['message'], $result['result']);
             } else {
-                $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
+                // Nonce verification failed
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), false);
             }
-
-            // Print notice
-            Helper::notice($result['message'], $result['result']);
         }
 
         // Edit subscriber page
         if (isset($_POST['wp_update_subscribe'])) {
-            $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
-            $ID                  = isset($_POST['ID']) ? sanitize_text_field($_POST['ID']) : '';
-            $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
-            $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
-            $subscribe_status    = isset($_POST['wpsms_subscribe_status']) ? sanitize_text_field($_POST['wpsms_subscribe_status']) : '';
-            $result              = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
+            // Verify nonce
+            if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'wp_sms_subscriber_action')) {
+                $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
+                $ID                  = isset($_POST['ID']) ? sanitize_text_field($_POST['ID']) : '';
+                $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
+                $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
+                $subscribe_status    = isset($_POST['wpsms_subscribe_status']) ? sanitize_text_field($_POST['wpsms_subscribe_status']) : '';
+                $result              = Newsletter::updateSubscriber($ID, $wp_subscribe_name, $wp_subscribe_mobile, $group, $subscribe_status);
 
-            // Print notice
-            Helper::notice($result['message'], $result['result']);
+                // Print notice
+                Helper::notice($result['message'], $result['result']);
+            } else {
+                // Nonce verification failed
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), false);
+            }
         }
 
         include_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';
@@ -56,8 +68,10 @@ class Subscribers
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
-        echo \WP_SMS\Helper::loadTemplate('admin/subscribers.php', [
+        $args = [
             'list_table' => $list_table,
-        ]);
+        ];
+
+        echo \WP_SMS\Helper::loadTemplate('admin/subscribers.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

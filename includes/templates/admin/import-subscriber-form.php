@@ -29,23 +29,23 @@
 
         <div class="js-WpSmsImportStep1" style="padding-top: 10px;">
             <input type="file" accept="text/csv" id="wp-sms-input-file">
-            <p><?php _e('The only acceptable format is <code>*.csv</code>', 'wp-sms'); ?></p>
+            <p><?php esc_html_e('The only acceptable format is <code>*.csv</code>', 'wp-sms'); ?></p>
         </div>
 
         <div class="js-WpSmsImportStep1" style="padding-top: 10px;">
             <input type="checkbox" id="file-has-header" class="js-wpSmsFileHasHeader">
-            <label for="file-has-header"><?php _e('Check the box if the file includes headers.', 'wp-sms'); ?> </label>
+            <label for="file-has-header"><?php esc_html_e('Check the box if the file includes headers.', 'wp-sms'); ?> </label>
         </div>
 
-        <p id="first-row-label" class="js-WpSmsImportStep2" style="display: none"><?php _e('Now, please specify data type of each column.', 'wp-sms'); ?></p>
+        <p id="first-row-label" class="js-WpSmsImportStep2" style="display: none"><?php esc_html_e('Now, please specify data type of each column.', 'wp-sms'); ?></p>
 
         <table class="js-WpSmsImportStep2">
             <tr id="wp-sms-group-select" class="js-wpSmsGroupSelect" style="display: none">
                 <td colspan="2" style="padding-top: 20px;">
-                    <p><?php _e('Choose or add a group:', 'wp-sms'); ?></p>
+                    <p><?php esc_html_e('Choose or add a group:', 'wp-sms'); ?></p>
                     <select>
-                        <option value="0"><?php _e('Please Select', 'wp-sms'); ?></option>
-                        <option value="new_group"><?php _e('Add a new group', 'wp-sms'); ?></option>
+                        <option value="0"><?php esc_html_e('Please Select', 'wp-sms'); ?></option>
+                        <option value="new_group"><?php esc_html_e('Add a new group', 'wp-sms'); ?></option>
                         <?php
                         if ($groups) :
                             foreach ($groups as $group) :
@@ -67,9 +67,9 @@
         </table>
 
         <div style="padding-top: 20px;">
-            <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php _e('Upload', 'wp-sms'); ?>"/>
-            <input type="submit" class="js-wpSmsImportButton button-primary" style="display: none;" value="<?php _e('Import', 'wp-sms'); ?>"/>
-            <input type="submit" class="js-wpSmsRefreshButton button-primary" style="display: none;" value="<?php _e('Refresh', 'wp-sms'); ?>"/>
+            <input type="submit" class="js-wpSmsUploadButton button-primary" value="<?php esc_html_e('Upload', 'wp-sms'); ?>"/>
+            <input type="submit" class="js-wpSmsImportButton button-primary" style="display: none;" value="<?php esc_html_e('Import', 'wp-sms'); ?>"/>
+            <input type="submit" class="js-wpSmsRefreshButton button-primary" style="display: none;" value="<?php esc_html_e('Refresh', 'wp-sms'); ?>"/>
         </div>
 
     </form>

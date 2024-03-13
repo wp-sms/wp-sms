@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Widget\Widgets;
 
+use WP_SMS\Components\Assets;
 use WP_SMS\Widget\AbstractWidget;
 use WP_SMS\Helper;
 use DateTime;
@@ -12,19 +13,12 @@ class StatsWidget extends AbstractWidget
 {
     protected $id = 'wp-sms-stats-widget';
     protected $name = 'WP SMS Stats';
-    protected $version = '1.0';
 
     /**
      * Preparations before rendering
      *
      * @return void
      */
-    protected function prepare()
-    {
-        wp_register_script('wp-sms-chartjs', Helper::getPluginAssetUrl('js/chart.min.js'), [], '3.7.1');
-        wp_enqueue_script('wp-sms-dashboard-widget-stats-script', Helper::getPluginAssetUrl('js/admin-dashboard-stats-widget.js'), ['wp-sms-chartjs'], $this->version);
-        wp_localize_script('wp-sms-dashboard-widget-stats-script', 'WPSmsStatsData', apply_filters('wp_sms_stats_widget_data', $this->getLocalizationData()));
-    }
 
     /**
      * Render the widget
@@ -33,7 +27,7 @@ class StatsWidget extends AbstractWidget
      */
     public function render()
     {
-        echo Helper::loadTemplate('admin/dashboard-widget.php');
+        echo Helper::loadTemplate('admin/dashboard-widget.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**
@@ -41,12 +35,12 @@ class StatsWidget extends AbstractWidget
      *
      * @return void
      */
-    private function getLocalizationData()
+    public function getLocalizationData()
     {
         $widgetData['localization'] = [
-            'successful'        => __('Successful', 'wp-sms'),
-            'failed'            => __('Failed', 'wp-sms'),
-            'plain'             => __('Plain', 'wp-sms'),
+            'successful' => esc_html__('Successful', 'wp-sms'),
+            'failed'     => esc_html__('Failed', 'wp-sms'),
+            'plain'      => esc_html__('Plain', 'wp-sms'),
         ];
 
         /**
@@ -61,9 +55,9 @@ class StatsWidget extends AbstractWidget
 
             $datasets = [];
 
-            for ($i = 0; $i < sizeof($dates)-1 ; $i++) {
+            for ($i = 0; $i < sizeof($dates) - 1; $i++) {
                 $firstDate  = $dates[$i];
-                $secondDate = $dates[$i+1];
+                $secondDate = $dates[$i + 1];
 
                 $label = $firstDate->format($format);
 
@@ -76,21 +70,21 @@ class StatsWidget extends AbstractWidget
                 }
 
                 $datasets['successful'][$label] = $results['success'] ?? 0;
-                $datasets['failure'][$label] = $results['error'] ?? 0;
+                $datasets['failure'][$label]    = $results['error'] ?? 0;
             }
 
             return $datasets;
         };
 
-        $sentMessages['last_7_days'] = $getResults(
+        $sentMessages['last_7_days']   = $getResults(
             new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
             'd D'
         );
-        $sentMessages['last_30_days'] = $getResults(
+        $sentMessages['last_30_days']  = $getResults(
             new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 30),
             'd M'
         );
-        $sentMessages['this_year'] = $getResults(
+        $sentMessages['this_year']     = $getResults(
             new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
             'M'
         );

@@ -18,19 +18,19 @@ class prosms extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = __('46*********', 'wp-sms');
+        $this->validateNumber = esc_html__('46*********', 'wp-sms');
         $this->has_key        = true;
-        $this->help           = __('Note: that you need to get every \'Sender Name\' approved before you can use it as \'Sender Name\'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add', 'wp-sms');
+        $this->help           = esc_html__('Note: that you need to get every \'Sender Name\' approved before you can use it as \'Sender Name\'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add', 'wp-sms');
         $this->gatewayFields  = [
             'from'    => [
                 'id'   => 'gateway_sender_name',
-                'name' => __('Sender Name', 'wp-sms'),
-                'desc' => __('Sender Name', 'wp-sms'),
+                'name' => esc_html__('Sender Name', 'wp-sms'),
+                'desc' => esc_html__('Sender Name', 'wp-sms'),
             ],
             'has_key' => [
                 'id'   => 'gateway_key',
-                'name' => __('API Iey', 'wp-sms'),
-                'desc' => __('Enter API key of gateway', 'wp-sms')
+                'name' => esc_html__('API Iey', 'wp-sms'),
+                'desc' => esc_html__('Enter API key of gateway', 'wp-sms')
             ]
         ];
     }
@@ -108,7 +108,7 @@ class prosms extends \WP_SMS\Gateway
         try {
             // Check Api key
             if (!$this->has_key or !isset($this->has_key)) {
-                throw new Exception(__('Api key for this gateway is required.', 'wp-sms-pro'));
+                throw new Exception(esc_html__('Api key for this gateway is required.', 'wp-sms-pro'));
             }
 
             $arguments = [

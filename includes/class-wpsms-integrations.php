@@ -27,7 +27,7 @@ class Integrations
     {
         $new_page = array(
             'wpsms' => array(
-                'title'    => __('SMS Notification', 'wp-sms'),
+                'title'    => esc_html__('SMS Notification', 'wp-sms'),
                 'callback' => array($this, 'cf7_setup_form')
             )
         );
@@ -44,11 +44,13 @@ class Integrations
 
         $get_group_result = Newsletter::getGroups();
 
-        echo Helper::loadTemplate('wpcf7-form.php', [
-            'get_group_result'  => $get_group_result,
-            'cf7_options'       => $cf7_options,
-            'cf7_options_field' => $cf7_options_field,
-        ]);
+        $args = [
+            'get_group_result'  => $get_group_result, 
+            'cf7_options'       => $cf7_options, 
+            'cf7_options_field' => $cf7_options_field, 
+        ];
+
+        echo Helper::loadTemplate('wpcf7-form.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function wpcf7_save_form($form)

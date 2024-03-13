@@ -43,6 +43,9 @@ class Admin
         global $sms;
         $nonce = wp_create_nonce('wp_rest');
 
+        wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION);
+        wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION);
+
         // Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
             wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION);
@@ -51,8 +54,6 @@ class Admin
 
         $screen = get_current_screen();
 
-        wp_register_script('wpsms-quick-reply', WP_SMS_URL . 'assets/js/quick-reply.js', true, WP_SMS_VERSION);
-
         // Register main plugin style
         wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', true, WP_SMS_VERSION);
 
@@ -60,34 +61,20 @@ class Admin
          * Whole setting page's assets
          */
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign' or $screen->id == 'woocommerce_page_wc-orders') {
-            wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
-            wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
+            wp_enqueue_style('wp-color-picker');
+            wp_enqueue_script('wp-color-picker');
+
 
             if (stristr($screen->id, 'wp-sms')) {
-                wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION);
                 wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION);
+                // tooltip
+                wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', true, WP_SMS_VERSION);
+                wp_enqueue_script('wpsms-tooltip', WP_SMS_URL . 'assets/js/tooltipster.bundle.js', true, WP_SMS_VERSION);
             }
 
-            if (stristr($screen->id, 'subscribers')) {
-                wp_enqueue_script('wpsms-import-subscriber', WP_SMS_URL . 'assets/js/import-subscriber.js', true, WP_SMS_VERSION);
+            if (!did_action('wp_enqueue_media')) {
+                wp_enqueue_media();
             }
-
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
-            wp_enqueue_script('wpsms-export', WP_SMS_URL . 'assets/js/admin-export.js', true, WP_SMS_VERSION);
-            wp_localize_script('wpsms-admin', 'wpSmsGlobalTemplateVar', array(
-                    'restUrls' => array(
-                        'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
-                        'users'   => get_rest_url(null, 'wp/v2/users')
-                    ),
-                    'ajaxUrls' => array(
-                        'export'              => \WP_SMS\Controller\ExportAjax::url(),
-                        'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
-                        'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
-                    ),
-                    'nonce'    => $nonce,
-                    'senderID' => $sms->from,
-                )
-            );
 
             wp_enqueue_style('wpsms-admin');
 
@@ -95,6 +82,58 @@ class Admin
                 wp_enqueue_style('wpsms-rtl', WP_SMS_URL . 'assets/css/rtl.css', true, WP_SMS_VERSION);
             }
         }
+
+        $order_id = 0;
+
+        // Backward compatibility with new custom WooCommerce order table.
+        if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['id'])) {
+            $order_id = sanitize_text_field($_GET['id']);
+        } elseif (isset($_GET['post']) && $_GET['post']) {
+            $order_id = sanitize_text_field($_GET['post']);
+        }
+        $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
+
+        wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
+        wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
+        wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', true, WP_SMS_VERSION);
+
+
+        $admin_script_deps = ['jquery', 'wp-color-picker', 'jquery-ui-spinner'];
+        $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
+
+        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', $admin_script_deps, WP_SMS_VERSION);
+        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
+        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Object', array(
+                'restUrls'        => array(
+                    'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
+                    'users'   => get_rest_url(null, 'wp/v2/users')
+                ),
+                'ajaxUrls'        => array(
+                    'export'              => \WP_SMS\Controller\ExportAjax::url(),
+                    'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
+                    'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
+                    'privacyData'         => \WP_SMS\Controller\PrivacyDataAjax::url(),
+                    'subscribe'           => \WP_SMS\Controller\SubscriberFormAjax::url(),
+                    'group'               => \WP_SMS\Controller\GroupFormAjax::url(),
+                ),
+                'lang'            => array(
+                    'checkbox_label' => esc_html__('Send SMS?', 'wp-sms'),
+                    'checkbox_desc'  => esc_html__('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
+                ),
+                'tag'             => array(
+                    'subscribe' => esc_html__('Edit Subscriber', 'wp-sms'),
+                    'group'     => esc_html__('Edit Group', 'wp-sms')
+                ),
+                'nonce'           => $nonce,
+                'senderID'        => $sms->from,
+                'receiver'        => $customer_mobile,
+                'order_id'        => $order_id,
+                'siteName'        => get_bloginfo('name'),
+                'messageMsg'      => esc_html__('characters', 'wp-sms'),
+                'currentDateTime' => WP_SMS_CURRENT_DATE,
+                'proIsActive'     => \WP_SMS\Version::pro_is_active(),
+            )
+        );
 
         /**
          * Dashboard widgets
@@ -110,16 +149,7 @@ class Admin
             wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', true, WP_SMS_VERSION);
             wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-admin');
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.js', true, WP_SMS_VERSION);
-        }
-
-        /**
-         * Send SMS page's assets
-         */
-        if ($screen->id === 'toplevel_page_wp-sms') {
-            if (!did_action('wp_enqueue_media')) {
-                wp_enqueue_media();
-            }
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', true, WP_SMS_VERSION);
         }
     }
 
@@ -145,7 +175,7 @@ class Admin
             $wp_admin_bar->add_menu(array(
                 'id'     => 'wp-send-sms',
                 'parent' => 'new-content',
-                'title'  => __('SMS', 'wp-sms'),
+                'title'  => esc_html__('SMS', 'wp-sms'),
                 'href'   => WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms'
             ));
         }
@@ -159,9 +189,9 @@ class Admin
         $subscribe = $this->db->get_var("SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes");
         $credit    = get_option('wpsms_gateway_credit');
 
-        echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(__('%s Subscriber', 'wp-sms'), $subscribe) . "</a></li>";
+        echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(esc_html__('%s Subscriber', 'wp-sms'), esc_html($subscribe)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         if (!is_object($credit)) {
-            echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf(__('%s SMS Credit', 'wp-sms'), $credit) . "</a></li>";
+            echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf(esc_html__('%s SMS Credit', 'wp-sms'), esc_html($credit)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
 
@@ -176,22 +206,29 @@ class Admin
         $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
         $notificationBubble  = $unreadMessagesCount ? sprintf(' <span class="awaiting-mod">%d</span>', $unreadMessagesCount) : '';
 
-        add_menu_page(__('SMS', 'wp-sms'), __('SMS', 'wp-sms') . $notificationBubble, 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
-        $hook_suffix['send_sms'] = add_submenu_page('wp-sms', __('Send SMS', 'wp-sms'), __('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 1);
+        add_menu_page(esc_html__('SMS', 'wp-sms'), esc_html__('SMS', 'wp-sms') . $notificationBubble, 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
+        $hook_suffix['send_sms'] = add_submenu_page('wp-sms', esc_html__('Send SMS', 'wp-sms'), esc_html__('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 1);
 
-        $hook_suffix['outbox'] = add_submenu_page('wp-sms', __('Outbox', 'wp-sms'), __('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array($this, 'outbox_callback'), 2);
-        $hook_suffix['inbox']  = add_submenu_page('wp-sms', __('Inbox', 'wp-sms'), __('Inbox', 'wp-sms') . $notificationBubble, 'wpsms_inbox', 'wp-sms-inbox', array($this, 'inbox_callback'), 3);
+        $hook_suffix['outbox'] = add_submenu_page('wp-sms', esc_html__('Outbox', 'wp-sms'), esc_html__('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array($this, 'outbox_callback'), 2);
+        $hook_suffix['inbox']  = add_submenu_page('wp-sms', esc_html__('Inbox', 'wp-sms'), esc_html__('Inbox', 'wp-sms') . $notificationBubble, 'wpsms_inbox', 'wp-sms-inbox', array($this, 'inbox_callback'), 3);
 
-        $hook_suffix['subscribers'] = add_submenu_page('wp-sms', __('Subscribers', 'wp-sms'), __('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array($this, 'subscribers_callback'), 4);
-        $hook_suffix['groups']      = add_submenu_page('wp-sms', __('Groups', 'wp-sms'), __('Groups', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers-group', array($this, 'groups_callback'), 5);
+        $hook_suffix['subscribers'] = add_submenu_page('wp-sms', esc_html__('Subscribers', 'wp-sms'), esc_html__('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array($this, 'subscribers_callback'), 4);
+        $hook_suffix['groups']      = add_submenu_page('wp-sms', esc_html__('Groups', 'wp-sms'), esc_html__('Groups', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers-group', array($this, 'groups_callback'), 5);
 
         // Check GDPR compliance for Privacy menu
         if (isset($this->options['gdpr_compliance']) and $this->options['gdpr_compliance'] == 1) {
-            $hook_suffix['privacy'] = add_submenu_page('wp-sms', __('Privacy', 'wp-sms'), __('Privacy', 'wp-sms'), 'wpsms_setting', 'wp-sms-subscribers-privacy', array($this, 'privacy_callback'), 5);
+            $hook_suffix['privacy'] = add_submenu_page('wp-sms', esc_html__('Privacy', 'wp-sms'), esc_html__('Privacy', 'wp-sms'), 'wpsms_setting', 'wp-sms-subscribers-privacy', array($this, 'privacy_callback'), 5);
         }
 
-        add_submenu_page('wp-sms', __('Settings', 'wp-sms'), __('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', array($this->settings, 'render_settings'), 6);
-        add_submenu_page('wp-sms', __('Add-Ons', 'wp-sms'), sprintf(__('%sAdd-Ons%s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
+        add_submenu_page('wp-sms', esc_html__('Settings', 'wp-sms'), esc_html__('Settings', 'wp-sms'), 'wpsms_setting', 'wp-sms-settings', function () {
+            return $this->settings->render_settings('general', array('title' => esc_html__('Settings', 'wp-sms')));
+        }, 6);
+        add_submenu_page('wp-sms', esc_html__('Integrations', 'wp-sms'), esc_html__('Integrations', 'wp-sms'), 'wpsms_setting', 'wp-sms-integrations', function () {
+            return (new SettingsIntegration)->render_settings('contact_form7',
+                array('header_template' => 'header-integration-setting.php', 'title' => esc_html__('Integrations', 'wp-sms'))
+            );
+        }, 7);
+        add_submenu_page('wp-sms', esc_html__('Add-Ons', 'wp-sms'), sprintf(esc_html__('%sAdd-Ons%s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
 
         // Add styles to menu pages
         foreach ($hook_suffix as $menu => $hook) {
@@ -276,26 +313,6 @@ class Admin
         $page->init();
     }
 
-    /**
-     * Load send SMS page assets
-     */
-    public function send_sms_assets()
-    {
-        if (\WP_SMS\Version::pro_is_active()) {
-            wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', true, WP_SMS_VERSION);
-            wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION);
-        }
-
-        wp_register_script('wp-sms-send-page', WP_SMS_URL . 'assets/js/admin-send-sms.js', array('jquery'), WP_SMS_VERSION, true);
-        wp_enqueue_script('wp-sms-send-page');
-        wp_localize_script('wp-sms-send-page', 'WpSmsSendSmsTemplateVar', array(
-            'nonce'           => wp_create_nonce('wp_rest'),
-            'messageMsg'      => __('characters', 'wp-sms'),
-            'currentDateTime' => WP_SMS_CURRENT_DATE,
-            'proIsActive'     => \WP_SMS\Version::pro_is_active(),
-            'siteName'        => get_bloginfo('name')
-        ));
-    }
 
     /**
      * Load outbox page assets
@@ -306,7 +323,7 @@ class Admin
          * Add per page option.
          */
         add_screen_option('per_page', array(
-            'label'   => __('Number of items per page', 'wp-sms'),
+            'label'   => esc_html__('Number of items per page', 'wp-sms'),
             'default' => 20,
             'option'  => 'wp_sms_outbox_per_page',
         ));
@@ -321,7 +338,7 @@ class Admin
          * Add per page option.
          */
         add_screen_option('per_page', array(
-            'label'   => __('Number of items per page', 'wp-sms'),
+            'label'   => esc_html__('Number of items per page', 'wp-sms'),
             'default' => 20,
             'option'  => 'wp_sms_inbox_per_page',
         ));
@@ -336,17 +353,11 @@ class Admin
          * Add per page option.
          */
         add_screen_option('per_page', array(
-            'label'   => __('Number of items per page', 'wp-sms'),
+            'label'   => esc_html__('Number of items per page', 'wp-sms'),
             'default' => 20,
             'option'  => 'wp_sms_subscriber_per_page',
         ));
 
-        wp_register_script('wp-sms-edit-subscriber', WP_SMS_URL . 'assets/js/edit-subscriber.js', array('jquery'), null, true);
-        wp_enqueue_script('wp-sms-edit-subscriber');
-        wp_localize_script('wp-sms-edit-subscriber', 'wp_sms_edit_subscribe_ajax_vars', array(
-            'tb_show_url' => \WP_SMS\Controller\SubscriberFormAjax::url(),
-            'tb_show_tag' => __('Edit Subscriber', 'wp-sms')
-        ));
     }
 
     /**
@@ -358,17 +369,12 @@ class Admin
          * Add per page option.
          */
         add_screen_option('per_page', array(
-            'label'   => __('Number of items per page', 'wp-sms'),
+            'label'   => esc_html__('Number of items per page', 'wp-sms'),
             'default' => 20,
             'option'  => 'wp_sms_group_per_page',
         ));
 
-        wp_register_script('wp-sms-edit-group', WP_SMS_URL . 'assets/js/edit-group.js', array('jquery'), null, true);
-        wp_enqueue_script('wp-sms-edit-group');
-        wp_localize_script('wp-sms-edit-group', 'wp_sms_edit_group_ajax_vars', array(
-            'tb_show_url' => \WP_SMS\Controller\GroupFormAjax::url(),
-            'tb_show_tag' => __('Edit Group', 'wp-sms')
-        ));
+
     }
 
     /**
@@ -380,11 +386,6 @@ class Admin
         wp_enqueue_script('wp-lists');
         wp_enqueue_script('postbox');
 
-        wp_register_script('wp-sms-privacy-data', WP_SMS_URL . 'assets/js/admin-privacy-data.js', array('jquery'), null, true);
-        wp_enqueue_script('wp-sms-privacy-data');
-        wp_localize_script('wp-sms-privacy-data', 'wp_sms_privacy_page_ajax_vars', array(
-            'url' => \WP_SMS\Controller\PrivacyDataAjax::url()
-        ));
     }
 
     /**
@@ -399,10 +400,10 @@ class Admin
     {
         if ($file == 'wp-sms/wp-sms.php') {
             $rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
-            $links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . __('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . __('Rate this plugin', 'wp-sms') . '</a>';
+            $links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . esc_html__('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . esc_html__('Rate this plugin', 'wp-sms') . '</a>';
 
             $newsletter_url = WP_SMS_SITE . '/newsletter';
-            $links[]        = '<a href="' . $newsletter_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . __('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . __('Subscribe to our Email Newsletter', 'wp-sms') . '</a>';
+            $links[]        = '<a href="' . $newsletter_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . esc_html__('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . esc_html__('Subscribe to our Email Newsletter', 'wp-sms') . '</a>';
         }
 
         return $links;
@@ -452,14 +453,14 @@ class Admin
             $screen = get_current_screen();
 
             if (stristr($screen->id, 'wp-sms')) {
-                wp_enqueue_script('feedbackbird-app-script', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
-                wp_add_inline_script('feedbackbird-app-script', sprintf('var feedbackBirdObject = %s;', json_encode([
+                wp_enqueue_script('feedbackbird-widget', 'https://cdn.jsdelivr.net/gh/feedbackbird/assets@master/wp/app.js?uid=01H1V6WNG62AXA1JV5X8X76XZR');
+                wp_add_inline_script('feedbackbird-widget', sprintf('var feedbackBirdObject = %s;', json_encode([
                     'user_email' => function_exists('wp_get_current_user') ? wp_get_current_user()->user_email : '',
                     'platform'   => 'wordpress-admin',
                     'config'     => [
                         'color'    => '#ec7c43',
-                        'button'   => __('Feedback', 'wp-sms'),
-                        'subtitle' => __('Feel free to share your thoughts!', 'wp-sms'),
+                        'button'   => esc_html__('Feedback', 'wp-sms'),
+                        'subtitle' => esc_html__('Feel free to share your thoughts!', 'wp-sms'),
                     ],
                     'meta'       => [
                         'php_version'    => PHP_VERSION,
@@ -474,7 +475,7 @@ class Admin
                 ])));
 
                 add_filter('script_loader_tag', function ($tag, $handle, $src) {
-                    if ('feedbackbird-app-script' === $handle) {
+                    if ('feedbackbird-widget' === $handle) {
                         return preg_replace('/^<script /i', '<script type="module" crossorigin="crossorigin" ', $tag);
                     }
                     return $tag;
@@ -527,7 +528,7 @@ class Admin
     public function modify_admin_body_classes($classes)
     {
         // Add class for the admin body only for plugin's pages
-        if (isset($_GET['page']) && in_array($_GET['page'], array('wp-sms', 'wp-sms-outbox', 'wp-sms-inbox', 'wp-sms-scheduled', 'wp-sms-subscribers', 'wp-sms-subscribers-group', 'wp-sms-subscribers-privacy', 'wp-sms-settings', 'wp-sms-add-ons'))) {
+        if (isset($_GET['page']) && in_array($_GET['page'], array('wp-sms', 'wp-sms-outbox', 'wp-sms-inbox', 'wp-sms-scheduled', 'wp-sms-subscribers', 'wp-sms-subscribers-group', 'wp-sms-subscribers-privacy', 'wp-sms-settings', 'wp-sms-integrations', 'wp-sms-add-ons'))) {
             $classes .= ' sms_page_wp-sms';
         }
 

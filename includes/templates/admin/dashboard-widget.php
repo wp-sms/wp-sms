@@ -1,14 +1,14 @@
 <div class='wp-sms-widgets stats-widget'>
     <div class="controls">
         <select class='sms-direction'>
-            <option value="send-messages-stats"><?php _e('Sent SMS', 'wp-sms') ?></option>
-            <option value="received-messages-stats"><?php _e('Received SMS', 'wp-sms') ?></option>
+            <option value="send-messages-stats"><?php esc_html_e('Sent SMS', 'wp-sms') ?></option>
+            <option value="received-messages-stats"><?php esc_html_e('Received SMS', 'wp-sms') ?></option>
         </select>
         <select class='time-frame'>
-            <option value="last_7_days"><?php _e('Last 7 days', 'wp-sms') ?></option>
-            <option value="last_30_days"><?php _e('Last 30 days', 'wp-sms') ?></option>
-            <option value="last_12_month"><?php _e('Last 12 month', 'wp-sms') ?></option>
-            <option value="this_year"><?php _e('This year', 'wp-sms') ?></option>
+            <option value="last_7_days"><?php esc_html_e('Last 7 days', 'wp-sms') ?></option>
+            <option value="last_30_days"><?php esc_html_e('Last 30 days', 'wp-sms') ?></option>
+            <option value="last_12_month"><?php esc_html_e('Last 12 month', 'wp-sms') ?></option>
+            <option value="this_year"><?php esc_html_e('This year', 'wp-sms') ?></option>
         </select>
     </div>
     <table class="totals">
@@ -19,8 +19,8 @@
     </div>
 
     <div class="two-way-promotion">
-        <h2><?php _e('View incoming messages activity inside WordPress Dashboard 🤩', 'wp-sms'); ?></h2>
-        <p><?php _e('Store Incoming Messages, Create new Commands for your customers, do actions, and more!', 'wp-sms'); ?></p>
-        <p><a href="<?php echo WP_SMS_SITE ?>/product/wp-sms-two-way/" class="button-primary" target="_blank"><?php _e('Read More WP SMS Two Way!', 'wp-sms'); ?></a></p>
+        <h2><?php esc_html_e('View incoming messages activity inside WordPress Dashboard 🤩', 'wp-sms'); ?></h2>
+        <p><?php esc_html_e('Store Incoming Messages, Create new Commands for your customers, do actions, and more!', 'wp-sms'); ?></p>
+        <p><a href="<?php echo esc_url(WP_SMS_SITE . '/product/wp-sms-two-way/'); ?>" class="button-primary" target="_blank"><?php esc_html_e('Read More WP SMS Two Way!', 'wp-sms'); ?></a></p>
     </div>
 </div>
