@@ -157,7 +157,9 @@ class WP_SMS
         $this->include('src/Notification/Handler/SubscriberNotification.php');
         $this->include('src/Notification/Handler/CustomNotification.php');
         $this->include('src/Notification/Handler/AwesomeSupportTicketNotification.php');
+        $this->include('src/Notification/Handler/ForminatorNotification.php');
         $this->include('src/Notification/NotificationFactory.php');
+        $this->include('src/Notification/ForminatorNotification.php');
 
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');
@@ -235,6 +237,13 @@ class WP_SMS
         $messageButtonManager = new \WP_SMS\Services\MessageButton\MessageButtonManager();
         $messageButtonManager->init();
 
+        $this->include('src/Services/Forminator/ForminatorManager.php');
+        $this->include('src/Services/Forminator/Forminator.php');
+        $forminatorManager = new \WP_SMS\Services\Forminator\ForminatorManager();
+        $forminator = new \WP_SMS\Services\Forminator\Forminator();
+        $forminator->init();
+        $forminatorManager->init();
+        
         // Shortcode
         $this->include('src/Shortcode/ShortcodeManager.php');
         $this->include('src/Shortcode/SubscriberShortcode.php');

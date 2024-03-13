@@ -4,6 +4,7 @@ namespace WP_SMS\Notification;
 
 use WP_SMS\Notification\Handler\CustomNotification;
 use WP_SMS\Notification\Handler\DefaultNotification;
+use WP_SMS\Notification\Handler\ForminatorNotification;
 use WP_SMS\Notification\Handler\SubscriberNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
@@ -108,6 +109,18 @@ class NotificationFactory
     public static function getSubscriber($subscriberId = false)
     {
         return new SubscriberNotification($subscriberId);
+    }
+
+    /**
+     * getForminator function
+     *
+     * @param [type] $form_id
+     * @param [type] $data
+     * @return ForminatorNotification
+     */
+    public static function getForminator($form_id, $data = [])
+    {
+        return new ForminatorNotification($form_id, $data);
     }
 
     /**
