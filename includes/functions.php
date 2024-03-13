@@ -523,12 +523,12 @@ function wp_sms_render_mobile_field($args)
         esc_attr($args['type']),
         esc_attr($args['name']),
         esc_attr($args['placeholder']),
-        implode(' ', $args['class']),
+        esc_attr(implode(' ', $args['class'])),
         esc_attr($args['value']),
         esc_attr($args['required']),
         esc_attr($args['min']),
         esc_attr($args['max']),
-        implode(' ', $args['attributes'])
+        esc_attr(implode(' ', $args['attributes']))
     );
 }
 

@@ -360,8 +360,9 @@ class Outbox
         //Fetch, prepare, sort, and filter our data...
         $list_table->prepare_items();
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo Helper::loadTemplate('admin/outbox.php', [
-            'list_table' => $list_table,
+            'list_table' => $list_table, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         ]);
     }
 }

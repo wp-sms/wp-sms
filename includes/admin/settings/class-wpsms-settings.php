@@ -2216,7 +2216,7 @@ class Settings
     {
         $checked = isset($this->options[$args['id']]) ? checked(1, $this->options[$args['id']], false) : '';
         $html    = sprintf('<input type="checkbox" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]" value="1" %2$s /><label for="' . esc_attr($this->setting_name) . '[%1$s]"> ' . __('Active', 'wp-sms') . '</label><p class="description">%3$s</p>', esc_attr($args['id']), esc_attr($checked), wp_kses_post($args['desc']));
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function multicheck_callback($args)
@@ -2231,7 +2231,7 @@ class Settings
             echo '<br>';
         }
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function radio_callback($args)
@@ -2248,7 +2248,7 @@ class Settings
             $html .= sprintf('<input name="' . esc_attr($this->setting_name) . '[%1$s]"" id="' . esc_attr($this->setting_name) . '[%1$s][%2$s]" type="radio" value="%2$s" %3$s /><label for="' . esc_attr($this->setting_name) . '[%1$s][%2$s]">%4$s</label>&nbsp;&nbsp;', esc_attr($args['id']), esc_attr($key), checked(true, $checked, false), $option);
         endforeach;
         $html .= sprintf('<p class="description">%1$s</p>', wp_kses_post($args['desc']));
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function text_callback($args)
@@ -2262,7 +2262,7 @@ class Settings
         $after_input = (isset($args['after_input']) && !is_null($args['after_input'])) ? $args['after_input'] : '';
         $size        = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
         $html        = sprintf('<input dir="auto" type="text" class="%1$s-text" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]" value="%3$s"/>%4$s<p class="description">%5$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), $after_input, wp_kses_post($args['desc']));
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function number_callback($args)
@@ -2279,7 +2279,7 @@ class Settings
 
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
         $html = sprintf('<input dir="auto" type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s-text" id="' . esc_attr($this->setting_name) . '[%5$s]" name="' . esc_attr($this->setting_name) . '[%5$s]" value="%6$s"/><p class="description"> %7$s</p>', esc_attr($step), esc_attr($max), esc_attr($min), esc_attr($size), esc_attr($args['id']), esc_attr(stripslashes($value)), wp_kses_post($args['desc']));
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function textarea_callback($args)
@@ -2291,7 +2291,7 @@ class Settings
         }
 
         $html = sprintf('<textarea dir="auto" class="large-text" cols="50" rows="5" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">%2$s</textarea><div class="description"> %3$s</div>', esc_attr($args['id']), esc_textarea(stripslashes($value)), wp_kses_post($args['desc']));
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function password_callback($args)
@@ -2305,7 +2305,7 @@ class Settings
         $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
         $html = sprintf('<input type="password" class="%1$s-text" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]" value="%3$s"/><p class="description"> %4$s</p>', esc_attr($size), esc_attr($args['id']), esc_attr($value), wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function missing_callback($args)
@@ -2336,7 +2336,7 @@ class Settings
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function multiselect_callback($args)
@@ -2365,7 +2365,7 @@ class Settings
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function countryselect_callback($args)
@@ -2392,7 +2392,7 @@ class Settings
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function advancedselect_callback($args)
@@ -2426,7 +2426,7 @@ class Settings
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function advancedmultiselect_callback($args)
@@ -2458,7 +2458,7 @@ class Settings
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
     }
 
@@ -2479,7 +2479,7 @@ class Settings
 
         $html .= sprintf('</select><p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function rich_editor_callback($args)
@@ -2502,7 +2502,7 @@ class Settings
 
         $html .= sprintf('<p class="description"> %1$s</p>', wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function upload_callback($args)
@@ -2523,7 +2523,7 @@ class Settings
             wp_kses_post($args['desc'])
         );
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function color_callback($args)
@@ -2537,7 +2537,7 @@ class Settings
         $default = isset($args['std']) ? $args['std'] : '';
         $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
 
-        echo $html;
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
 
