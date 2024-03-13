@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.6.2
+Stable tag: 6.6.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -221,10 +221,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.6.2 - 12.03.2024 =
-* Improvement: Refinements to Chatbox styles and issue resolution.
-* Improvement: Unified asset loading, frontend styles, and contact administration into single CSS and JS files.
-* Improvement: Hardened plugin security and improvements.
-* Improvement: Optimized performance with minor improvements.
+= v6.6.3 - 13.03.2024 =
+* Addition: Introduced Integration menu; now integrations are conveniently placed under this menu for enhanced accessibility.
+* Improvement: Hardened plugin security and improvements by adding CSRF (nonce) for create and update subscribers and groups.
+* Development: Added filter `wp_sms_chatbox_contact_link` for advanced customization options.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
