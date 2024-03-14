@@ -54,16 +54,19 @@ class Formidable
         $values          = wp_sms_sanitize_array($values);
         $data            = [];
         $data['form_id'] = $values['form_id'];
+
         if (isset($values['item_meta'])) {
             $this->fields = $this->get_form_fields($values['form_id']);
+
             foreach ($values['item_meta'] as $key => $value) {
 
                 if (isset($this->fields[$key])) {
 
                     $data[$this->fields[$key]] = $value;
-                };
+                }
             }
         }
+
         $this->data = $data;
         return;
     }
@@ -76,6 +79,7 @@ class Formidable
         foreach ($fields as $field) {
             $final[$field->id] = strtolower(str_replace(' ', '-', $field->name));
         }
+
         return $final;
     }
 }

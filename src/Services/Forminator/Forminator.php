@@ -21,8 +21,8 @@ class Forminator
         $sms_options = Option::getOptions();
         $this->set_data();
 
-
         $forminatorNotification = NotificationFactory::getForminator($form, $this->data);
+
         /**
          * Send SMS to the specific number or subscribers' group
          */

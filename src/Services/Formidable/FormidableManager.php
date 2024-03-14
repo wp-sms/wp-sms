@@ -18,6 +18,7 @@ class FormidableManager
         add_filter('wp_sms_formidable_settings', array($this, 'setting_fields'));
 
         $wp_sms_options = Option::getOptions();
+
         if (isset($wp_sms_options['formidable_metabox']) && $wp_sms_options['formidable_metabox']) {
             add_filter('frm_add_form_settings_section', array($this, "frm_add_new_settings_tab"), 10, 2);
             add_filter('frm_form_options_before_update', array($this, 'frm_save_new_settings_tab'), 20, 2);
@@ -29,7 +30,6 @@ class FormidableManager
 
     public function setting_fields($options)
     {
-
         $formidable_array = array();
 
         if (is_plugin_active('formidable/formidable.php')) {
@@ -67,6 +67,7 @@ class FormidableManager
             'function' => 'get_wp_sms_settings',
             'class'    => $this
         );
+
         return $sections;
     }
 
@@ -74,6 +75,8 @@ class FormidableManager
     {
         $values   = wp_sms_sanitize_array($values);
         $sms_data = Option::getOption("formdiable_wp_sms_options_" . $values['id']);
+
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo Helper::loadTemplate('formidable/formidable-form.php', [
             'form'       => $values['id'],
             'sms_data'   => $sms_data,
@@ -85,10 +88,12 @@ class FormidableManager
     public function frm_save_new_settings_tab($options, $values)
     {
         $values = wp_sms_sanitize_array($values);
+
         if (isset($values['id'])) {
             $id = $values['id'];
             Option::updateOption("formdiable_wp_sms_options_$id", wp_sms_sanitize_array($values['formidable-sms']));
         }
+
         return $options;
     }
 
@@ -100,6 +105,7 @@ class FormidableManager
         foreach ($fields as $field) {
             $final[$field->id] = strtolower(str_replace(' ', '-', $field->name));
         }
+
         return $final;
     }
 }
