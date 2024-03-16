@@ -118,7 +118,7 @@ class Admin
                 ),
                 'lang'            => array(
                     'checkbox_label' => esc_html__('Send SMS?', 'wp-sms'),
-                    'checkbox_desc'  => esc_html__('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
+                    'checkbox_desc'  => __('The SMS will be sent if the <b>Note to the customer</b> is selected.', 'wp-sms')
                 ),
                 'tag'             => array(
                     'subscribe' => esc_html__('Edit Subscriber', 'wp-sms'),
