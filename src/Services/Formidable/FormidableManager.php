@@ -47,7 +47,7 @@ class FormidableManager
                 'name'    => __('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('This option adds SMS Notification tab in the edit forms.', 'wp-sms')
+                'desc'    => __('This option adds SMS Notification tab in the Settings forms.', 'wp-sms')
             );
         } else {
             $formidable_array['formidable_notify_form'] = array(
@@ -64,7 +64,7 @@ class FormidableManager
     public function frm_add_new_settings_tab($sections, $values)
     {
         $sections[] = array(
-            'name'     => __('WP SMS', 'wp-sms'),
+            'name'     => __('SMS Notifications', 'wp-sms'),
             'anchor'   => 'wp_sms_notification',
             'function' => 'get_wp_sms_settings',
             'class'    => $this
