@@ -52,7 +52,9 @@ class ForminatorManager
                     'name' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
-                        NotificationFactory::getForminator($form->id)->printVariables()
+                        $this->printVariables(
+                            NotificationFactory::getForminator($form->id)->getVariables()
+                        )
                 );
 
                 if ($formFields) {
@@ -74,7 +76,9 @@ class ForminatorManager
                         'name' => __('Message body', 'wp-sms'),
                         'type' => 'textarea',
                         'desc' => __('Enter your message content.', 'wp-sms') . '<br>' .
-                            NotificationFactory::getForminator($form->id)->printVariables()
+                            $this->printVariables(
+                                NotificationFactory::getForminator($form->id)->getVariables()
+                            )
                     );
                 }
             }
@@ -87,5 +91,16 @@ class ForminatorManager
             );
         }
         return $forminator_forms;
+    }
+
+    private function printVariables($variables)
+    {
+        $result = "";
+        foreach ($variables as $key => $value) {
+            preg_match("/(%field-|%)(.+)*\%/", $key, $match);
+            $label = $match[1] ? $match[2] : "";
+            $result .= esc_html($label) . ": <code>" . esc_html($key) . "</code> ";
+        }
+        return $result;
     }
 }

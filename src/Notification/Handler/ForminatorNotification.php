@@ -50,8 +50,7 @@ class ForminatorNotification extends Notification
     public function __call($method, $args)
     {
         if (!method_exists($this, $method)) {
-
-            if (strpos("getFormField_", $method) !== false) {
+            if (strpos($method, "getFormField_") !== false) {
                 $field = str_replace("getFormField_", "", $method);
                 return $this->data[$field];
             }
