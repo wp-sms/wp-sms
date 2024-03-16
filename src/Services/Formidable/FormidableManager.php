@@ -9,8 +9,10 @@ use WP_SMS\Option;
 
 class FormidableManager
 {
+    
     public function init()
     {
+
         add_filter('wp_sms_registered_integration_tabs', function ($tabs) {
             $tabs['formidable'] = __('Formidable', 'wp-sms');
             return $tabs;
@@ -75,19 +77,19 @@ class FormidableManager
     {
         $values   = wp_sms_sanitize_array($values);
         $sms_data = Option::getOption("formdiable_wp_sms_options_" . $values['id']);
-
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo Helper::loadTemplate('formidable/formidable-form.php', [
             'form'       => $values['id'],
             'sms_data'   => $sms_data,
             'formFields' => $this->formfileds($values['id']),
-            'fieldGroup' => NotificationFactory::getFormidable($values['id'])->printVariables()
+            'fieldGroup' => NotificationFactory::getFormidable($values['id'])->getVariables()
         ]);
     }
 
     public function frm_save_new_settings_tab($options, $values)
     {
         $values = wp_sms_sanitize_array($values);
+
 
         if (isset($values['id'])) {
             $id = $values['id'];
