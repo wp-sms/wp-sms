@@ -221,9 +221,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.6.3 - 13.03.2024 =
-* Addition: Introduced Integration menu; now integrations are conveniently placed under this menu for enhanced accessibility.
-* Improvement: Hardened plugin security and improvements by adding CSRF (nonce) for create and update subscribers and groups.
-* Development: Added filter `wp_sms_chatbox_contact_link` for advanced customization options.
+= v6.7 - 16.03.2024 =
+* Addition: Integration with Formidable and Forminator now includes SMS notifications for enhanced functionality.
+* Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
+* Improvement: Made minor improvements and optimizations for better performance.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
