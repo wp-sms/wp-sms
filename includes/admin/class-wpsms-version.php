@@ -101,8 +101,6 @@ class Version
             return false;
         }
 
-        return true;
-
         $licenseKey    = wp_sms_get_license_key('wp-sms-pro');
         $licenseStatus = Option::getOption('license_wp-sms-pro_status');
 
@@ -172,9 +170,9 @@ class Version
     public function license_notice()
     {
         $url         = admin_url('admin.php?page=wp-sms-settings&tab=licenses');
-        $purchaseUrl = WP_SMS_SITE . '/buy';
+        $purchaseUrl = WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=not_active_notice&utm_campaign=settings';
 
-        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), $url, $purchaseUrl), 'error');
+        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), esc_url($url), esc_url($purchaseUrl)), 'error');
     }
 
     /**
