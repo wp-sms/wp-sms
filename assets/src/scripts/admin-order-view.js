@@ -30,10 +30,10 @@ let wooCommerceOrderPage = {
             numbers: [receiver],
             notification_handler: 'WooCommerceOrderNotification',
             handler_id: orderId,
-            sender: WP_Sms_Admin_Object.sender_id,
+            sender: WP_Sms_Admin_Object.senderID,
         };
 
-        jQuery.ajax(WP_Sms_Admin_Object.rest_urls.send_sms,
+        jQuery.ajax(WP_Sms_Admin_Object.restUrls.sendSms,
             {
                 headers: {'X-WP-Nonce': WP_Sms_Admin_Object.nonce},
                 dataType: 'json',
@@ -154,10 +154,10 @@ let wooCommerceOrderPage = {
             numbers: [receiver],
             notification_handler: 'WooCommerceOrderNotification',
             handler_id: orderId,
-            sender: WP_Sms_Admin_Object.sender_id,
+            sender: WP_Sms_Admin_Object.senderID,
         };
 
-        jQuery.ajax(WP_Sms_Admin_Object.rest_urls.send_sms,
+        jQuery.ajax(WP_Sms_Admin_Object.restUrls.sendSms,
             {
                 headers: {'X-WP-Nonce': WP_Sms_Admin_Object.nonce},
                 dataType: 'json',

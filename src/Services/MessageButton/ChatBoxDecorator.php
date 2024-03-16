@@ -85,7 +85,7 @@ class ChatBoxDecorator
 
     public function fetchTeamMembers()
     {
-        $teams         = $this->getData('chatbox_team_members');
+        $teams         = $this->getData('chatbox_team_members', []);
         $processedTeam = [];
 
         // Loop through each team member
@@ -143,7 +143,7 @@ class ChatBoxDecorator
 
     public function fetchLinks()
     {
-        $links         = $this->getData('chatbox_links');
+        $links         = $this->getData('chatbox_links', []);
         $processedLink = [];
 
         // Loop through each team member

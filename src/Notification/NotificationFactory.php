@@ -4,6 +4,7 @@ namespace WP_SMS\Notification;
 
 use WP_SMS\Notification\Handler\CustomNotification;
 use WP_SMS\Notification\Handler\DefaultNotification;
+use WP_SMS\Notification\Handler\ForminatorNotification;
 use WP_SMS\Notification\Handler\SubscriberNotification;
 use WP_SMS\Notification\Handler\WooCommerceOrderNotification;
 use WP_SMS\Notification\Handler\WooCommerceProductNotification;
@@ -13,6 +14,7 @@ use WP_SMS\Notification\Handler\WordPressUserNotification;
 use WP_SMS\Notification\Handler\WooCommerceCouponNotification;
 use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
 use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
+use WP_SMS\Notification\Handler\FormidableNotification;
 
 class NotificationFactory
 {
@@ -111,10 +113,31 @@ class NotificationFactory
     }
 
     /**
+     * getForminator function
+     *
+     * @param [type] $form_id
+     * @param [type] $data
+     * @return ForminatorNotification
+     */
+    public static function getForminator($form_id, $data = [])
+    {
+        return new ForminatorNotification($form_id, $data);
+    }
+
+    /**
      * @return CustomNotification
      */
     public static function getCustom()
     {
         return new CustomNotification();
     }
+
+    /**
+     * @return FormidableNotification
+     */
+    public static function getFormidable($form, $data = [])
+    {
+        return new FormidableNotification($form, $data);
+    }
+
 }

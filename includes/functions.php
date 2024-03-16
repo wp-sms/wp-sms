@@ -31,11 +31,10 @@ function wp_sms_sanitize_array($array_or_string)
             if (is_array($value)) {
                 $value = wp_sms_sanitize_array($value);
             } else {
-                $value = filter_var($value, FILTER_SANITIZE_STRING);
+                $value = htmlspecialchars($value);
             }
         }
     }
-
     return $array_or_string;
 }
 
