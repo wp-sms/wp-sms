@@ -141,7 +141,7 @@ class Settings
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
-                        'class'       => "tr-{$option['type']} {$readonly}",
+                        'class'       => isset($option['className']) ? $option['className'] . " tr-{$option['type']} {$readonly} " : "tr-{$option['type']} {$readonly} ",
                         'label_for'   => true,
                         'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
                     )
@@ -1313,30 +1313,34 @@ class Settings
                     'desc'    => esc_html__('Add a flag dropdown for international format support in the mobile number input field.', 'wp-sms')
                 ),
                 'international_mobile_only_countries'      => array(
-                    'id'      => 'international_mobile_only_countries',
-                    'name'    => esc_html__('Only Countries', 'wp-sms'),
-                    'type'    => 'countryselect',
-                    'options' => $this->getCountriesList(),
-                    'desc'    => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
+                    'id'        => 'international_mobile_only_countries',
+                    'name'      => esc_html__('Only Countries', 'wp-sms'),
+                    'type'      => 'countryselect',
+                    'className' => 'js-wpsms-show_if_international_mobile_enabled',
+                    'options'   => $this->getCountriesList(),
+                    'desc'      => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
                 ),
                 'international_mobile_preferred_countries' => array(
-                    'id'      => 'international_mobile_preferred_countries',
-                    'name'    => esc_html__('Preferred Countries', 'wp-sms'),
-                    'type'    => 'countryselect',
-                    'options' => $this->getCountriesList(),
-                    'desc'    => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
+                    'id'        => 'international_mobile_preferred_countries',
+                    'name'      => esc_html__('Preferred Countries', 'wp-sms'),
+                    'type'      => 'countryselect',
+                    'className' => 'js-wpsms-show_if_international_mobile_enabled',
+                    'options'   => $this->getCountriesList(),
+                    'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
                 'mobile_terms_minimum'                     => array(
-                    'id'   => 'mobile_terms_minimum',
-                    'name' => esc_html__('Minimum Length Number', 'wp-sms'),
-                    'type' => 'number',
-                    'desc' => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
+                    'id'        => 'mobile_terms_minimum',
+                    'name'      => esc_html__('Minimum Length Number', 'wp-sms'),
+                    'type'      => 'number',
+                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'desc'      => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
                 ),
                 'mobile_terms_maximum'                     => array(
-                    'id'   => 'mobile_terms_maximum',
-                    'name' => esc_html__('Maximum Length Number', 'wp-sms'),
-                    'type' => 'number',
-                    'desc' => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
+                    'id'        => 'mobile_terms_maximum',
+                    'name'      => esc_html__('Maximum Length Number', 'wp-sms'),
+                    'type'      => 'number',
+                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'desc'      => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
                 ),
                 'admin_title_privacy'                      => array(
                     'id'   => 'admin_title_privacy',
@@ -1498,13 +1502,14 @@ class Settings
                     'desc'    => esc_html__('Active this option to send SMS only to your country local numbers and save international SMS fees.', 'wp-sms')
                 ),
                 'only_local_numbers_countries' => array(
-                    'id'      => 'only_local_numbers_countries',
-                    'name'    => esc_html__('Countries Whitelist', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => array_map(function ($key, $value) {
+                    'id'        => 'only_local_numbers_countries',
+                    'name'      => esc_html__('Countries Whitelist', 'wp-sms'),
+                    'type'      => 'multiselect',
+                    'options'   => array_map(function ($key, $value) {
                         return [$key => $value];
                     }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
-                    'desc'    => esc_html__('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
+                    'className' => 'js-wpsms-show_if_send_only_local_numbers_enabled',
+                    'desc'      => esc_html__('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
                 )
             )),
 
@@ -1527,26 +1532,29 @@ class Settings
                     'desc' => esc_html__('Enable showing Groups on Form.', 'wp-sms')
                 ),
                 'newsletter_form_multiple_select'  => array(
-                    'id'   => 'newsletter_form_multiple_select',
-                    'name' => esc_html__('Multiple Select', 'wp-sms'),
-                    'type' => 'checkbox',
-                    'desc' => esc_html__('Select multiple groups by enabling this option.', 'wp-sms')
+                    'id'        => 'newsletter_form_multiple_select',
+                    'name'      => esc_html__('Multiple Select', 'wp-sms'),
+                    'type'      => 'checkbox',
+                    'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
+                    'desc'      => esc_html__('Select multiple groups by enabling this option.', 'wp-sms')
                 ),
                 'newsletter_form_specified_groups' => array(
-                    'id'      => 'newsletter_form_specified_groups',
-                    'name'    => esc_html__('Display groups', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => array_map(function ($value) {
+                    'id'        => 'newsletter_form_specified_groups',
+                    'name'      => esc_html__('Display groups', 'wp-sms'),
+                    'type'      => 'multiselect',
+                    'options'   => array_map(function ($value) {
                         return [$value->ID => $value->name];
                     }, Newsletter::getGroups()),
-                    'desc'    => esc_html__('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
+                    'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
+                    'desc'      => esc_html__('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
                 ),
                 'newsletter_form_default_group'    => array(
-                    'id'      => 'newsletter_form_default_group',
-                    'name'    => esc_html__('Default group', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $subscribe_groups,
-                    'desc'    => esc_html__('Choice the default group', 'wp-sms')
+                    'id'        => 'newsletter_form_default_group',
+                    'name'      => esc_html__('Default group', 'wp-sms'),
+                    'type'      => 'select',
+                    'options'   => $subscribe_groups,
+                    'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
+                    'desc'      => esc_html__('Choice the default group', 'wp-sms')
                 ),
                 'newsletter_form_verify'           => array(
                     'id'   => 'newsletter_form_verify',
@@ -2052,10 +2060,10 @@ class Settings
                 ),
             )),
 
-            'formidable'           => apply_filters('wp_sms_formidable_settings', []),
-          
+            'formidable' => apply_filters('wp_sms_formidable_settings', []),
+
             'forminator'           => apply_filters('wp_sms_forminator_settings', [], $options),
-          
+
             /*
              * Pro fields
              */

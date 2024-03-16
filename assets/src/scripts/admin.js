@@ -148,33 +148,6 @@ let WpSMSGeneral = {
 
     getFields: function () {
         this.fields = {
-            internatioanlMode: {
-                element: jQuery('#wpsms_settings\\[international_mobile\\]'),
-            },
-            mobileMinimumChar: {
-                element: jQuery('#wpsms_settings\\[mobile_terms_minimum\\]'),
-            },
-            mobileMaximumChar: {
-                element: jQuery('#wpsms_settings\\[mobile_terms_maximum\\]'),
-            },
-            onlyCountries: {
-                element: jQuery('#wpsms_settings\\[international_mobile_only_countries\\]'),
-            },
-            preferredCountries: {
-                element: jQuery('#wpsms_settings\\[international_mobile_preferred_countries\\]'),
-            },
-            newsletterFormGroups: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_groups\\]"),
-            },
-            newsletterFormMultipleSelect: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_multiple_select\\]"),
-            },
-            newsletterFormSpecifiedGroups: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_specified_groups\\]"),
-            },
-            newsletterFormDefaultGroup: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_default_group\\]"),
-            },
             mobileFieldStatus: {
                 element: jQuery("#wpsms_settings\\[add_mobile_field\\]"),
             },
@@ -192,52 +165,11 @@ let WpSMSGeneral = {
             },
             pmproFieldSelector: {
                 element: jQuery('#wpsms_settings\\[pmpro_mobile_field_id\\]'),
-            },
-            onlyLocalNumbers: {
-                element: jQuery('#wpsms_settings\\[send_only_local_numbers\\]'),
-            },
-            onlyLocalNumbersCountries: {
-                element: jQuery('#wpsms_settings\\[only_local_numbers_countries\\]'),
-            },
-        }
-    },
-
-    hideOrShowFields: function () {
-        if (this.fields.internatioanlMode.element.is(':checked')) {
-            this.fields.onlyCountries.element.closest('tr').show()
-            this.fields.preferredCountries.element.closest('tr').show()
-            this.fields.mobileMinimumChar.element.closest('tr').hide()
-            this.fields.mobileMaximumChar.element.closest('tr').hide()
-        } else {
-            this.fields.onlyCountries.element.closest('tr').hide()
-            this.fields.preferredCountries.element.closest('tr').hide()
-            this.fields.mobileMinimumChar.element.closest('tr').show()
-            this.fields.mobileMaximumChar.element.closest('tr').show()
-        }
-
-        if (this.fields.newsletterFormGroups.element.is(":checked")) {
-            this.fields.newsletterFormMultipleSelect.element.closest("tr").show();
-            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").show();
-            this.fields.newsletterFormDefaultGroup.element.closest("tr").show();
-        } else {
-            this.fields.newsletterFormMultipleSelect.element.closest("tr").hide();
-            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
-            this.fields.newsletterFormDefaultGroup.element.closest("tr").hide();
-        }
-
-        if (this.fields.onlyLocalNumbers.element.is(":checked")) {
-            this.fields.onlyLocalNumbersCountries.element.closest("tr").show();
-        } else {
-            this.fields.onlyLocalNumbersCountries.element.closest("tr").hide();
+            }
         }
     },
 
     addEventListener: function () {
-        ["internatioanlMode", "newsletterFormGroups", "onlyLocalNumbers"].forEach(field => {
-            this.fields[field].element.on("change", () => {
-                this.hideOrShowFields();
-            });
-        });
 
         // Add event listener for mobile field status
         this.fields.mobileFieldStatus.element.on("change", function () {
@@ -276,7 +208,6 @@ let WpSMSGeneral = {
 
     init: function () {
         this.getFields();
-        this.hideOrShowFields();
         this.addEventListener();
         this.manageMobileFieldsVisibility();
     }
@@ -601,3 +532,97 @@ let WpSmsMetaBox = {
         })
     },
 }
+
+
+class ShowIfEnabled {
+    constructor() {
+        this.initialize();
+    }
+
+    initialize() {
+        const elements = document.querySelectorAll('[class^="js-wpsms-show_if_"]');
+        // Loop through each element
+        elements.forEach(element => {
+            const classListString = Array.from(element.classList).join(' ');
+
+            if (classListString.includes('_enabled')) {
+                const id = this.extractId(element);
+                const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                if (checkbox && checkbox.checked) {
+                    element.style.display = 'table-row';
+                } else {
+                    element.style.display = 'none';
+                }
+                if (checkbox) {
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            element.style.display = 'table-row';
+                        } else {
+                            element.style.display = 'none';
+                        }
+                    });
+                }
+            }
+            if (classListString.includes('_equal_')) {
+                const {id, value} = this.extractIdAndValue(element);
+                if (id && value) {
+                    const item = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                    if (item && item.type === 'checkbox') {
+                        if (item.checked == value) {
+                            element.style.display = 'table-row';
+                        } else {
+                            element.style.display = 'none';
+                        }
+                        item.addEventListener('change', () => {
+                            if (!item.checked) {
+                                element.style.display = 'table-row';
+                            } else {
+                                element.style.display = 'none';
+                            }
+                        });
+                    }
+                    if (item && item.type === 'select') {
+                        let itemValue = item.val();
+                        switch (itemValue) {
+
+                        }
+
+                    }
+                }
+
+            }
+        });
+    }
+
+    extractId(element) {
+        // Extract the ID from the class name
+        const classes = element.className.split(' ');
+        for (const className of classes) {
+            if (className.startsWith('js-wpsms-show_if_') && className.endsWith('_enabled')) {
+                return className.replace('js-wpsms-show_if_', '').replace('_enabled', '');
+            }
+        }
+        return null;
+    }
+
+    extractIdAndValue(element) {
+        const classes = element.className.split(' ');
+        let id, value;
+        for (const className of classes) {
+            if (className.startsWith('js-wpsms-show_if_')) {
+                const parts = className.split('_');
+                const indexOfEqual = parts.indexOf('equal');
+                if (indexOfEqual !== -1 && indexOfEqual > 2 && indexOfEqual < parts.length - 1) {
+                    id = parts.slice(2, indexOfEqual).join('_');
+                    value = parts.slice(indexOfEqual + 1).join('_');
+                    break;
+                }
+            }
+        }
+        return {id, value};
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new ShowIfEnabled();
+});
