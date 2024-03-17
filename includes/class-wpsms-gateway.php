@@ -972,7 +972,7 @@ class Gateway
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
 
         // translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-        return $document ? sprintf(esc_html__('%1$s <a href="%2$s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
+        return $document ? sprintf(__('%1$s <a href="%2$s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
 
     /**
