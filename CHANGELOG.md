@@ -1,3 +1,8 @@
+= v6.7 - 16.03.2024 =
+* Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wp-sms-pro.com/25942/formidable-forms-and-forminator-integration-now-available/)
+* Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
+* Improvement: Made minor improvements and optimizations for better performance.
+
 = v6.6.3 - 13.03.2024 =
 * Addition: Introduced Integration menu; now integrations are conveniently placed under this menu for enhanced accessibility.
 * Improvement: Hardened plugin security and improvements by adding CSRF (nonce) for create and update subscribers and groups.

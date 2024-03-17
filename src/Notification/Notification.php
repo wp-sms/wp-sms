@@ -104,4 +104,9 @@ class Notification
     {
         return "<code>" . implode("</code> <code>", array_keys($this->variables)) . "</code>";
     }
+
+    public function getVariables()
+    {
+        return $this->variables;
+    }
 }

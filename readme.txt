@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 6.6.3
+Stable tag: 6.7
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,7 +36,7 @@ Main plugin's features
  * When new comments are posted
  * When users are logged into the WordPress
  * When users are registered to subscribe in forms
-* Integration with Contact Form 7
+* Integration with [Contact Form 7](https://wordpress.org/plugins/contact-form-7/), [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/)
 * Integration with [Zapier](https://wp-sms-pro.com/zapier-integration) for connecting more than +5000 apps
 * Providing a widget/Gutenberg block/Shortcode for showing Send SMS form in website
 * Providing a widget/Gutenberg block/Shortcode for displaying an SMS newsletter form
@@ -221,9 +221,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.6.3 - 13.03.2024 =
-* Addition: Introduced Integration menu; now integrations are conveniently placed under this menu for enhanced accessibility.
-* Improvement: Hardened plugin security and improvements by adding CSRF (nonce) for create and update subscribers and groups.
-* Development: Added filter `wp_sms_chatbox_contact_link` for advanced customization options.
+= v6.7 - 16.03.2024 =
+* Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wp-sms-pro.com/25942/formidable-forms-and-forminator-integration-now-available/)
+* Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
+* Improvement: Made minor improvements and optimizations for better performance.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

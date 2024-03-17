@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP SMS 6.6.3\n"
+"Project-Id-Version: WP SMS 6.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-13T18:53:08+00:00\n"
+"POT-Creation-Date: 2024-03-16T15:02:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-sms\n"
@@ -17,7 +17,6 @@ msgstr ""
 #. Plugin Name of the plugin
 #: includes/templates/chatbox.php:105
 #: src/Blocks/BlockAssetsManager.php:45
-#: src/Services/Formidable/FormidableManager.php:65
 msgid "WP SMS"
 msgstr ""
 
@@ -347,7 +346,7 @@ msgstr ""
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:130
 #: includes/templates/admin/subscriber-form.php:42
 #: includes/templates/email/partials/report-data.php:42
-#: src/Services/Formidable/FormidableManager.php:45
+#: src/Services/Formidable/FormidableManager.php:47
 msgid "Status"
 msgstr ""
 
@@ -485,12 +484,12 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:2003
 #: includes/admin/settings/class-wpsms-settings.php:2029
 #: includes/templates/formidable/formidable-form.php:19
-#: includes/templates/formidable/formidable-form.php:49
+#: includes/templates/formidable/formidable-form.php:56
 #: includes/templates/meta-box.php:74
 #: includes/templates/wpcf7-form.php:46
 #: includes/templates/wpcf7-form.php:70
 #: src/Services/Forminator/ForminatorManager.php:52
-#: src/Services/Forminator/ForminatorManager.php:74
+#: src/Services/Forminator/ForminatorManager.php:76
 msgid "Message body"
 msgstr ""
 
@@ -633,8 +632,8 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:1077
 #: includes/admin/settings/class-wpsms-settings.php:1105
 #: includes/admin/settings/class-wpsms-settings.php:1200
-#: src/Services/Formidable/FormidableManager.php:53
-#: src/Services/Forminator/ForminatorManager.php:84
+#: src/Services/Formidable/FormidableManager.php:55
+#: src/Services/Forminator/ForminatorManager.php:88
 msgid "Not active"
 msgstr ""
 
@@ -948,7 +947,7 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:1150
 #: includes/admin/settings/class-wpsms-settings.php:1178
 #: src/Services/Forminator/ForminatorManager.php:54
-#: src/Services/Forminator/ForminatorManager.php:76
+#: src/Services/Forminator/ForminatorManager.php:78
 msgid "Enter your message content."
 msgstr ""
 
@@ -959,19 +958,19 @@ msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1047
 #: includes/admin/settings/class-wpsms-settings.php:1163
-#: src/Services/Forminator/ForminatorManager.php:61
+#: src/Services/Forminator/ForminatorManager.php:63
 msgid "Send SMS to field"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1053
 #: includes/admin/settings/class-wpsms-settings.php:1169
-#: src/Services/Forminator/ForminatorManager.php:67
+#: src/Services/Forminator/ForminatorManager.php:69
 msgid "A field of the form"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1056
 #: includes/admin/settings/class-wpsms-settings.php:1172
-#: src/Services/Forminator/ForminatorManager.php:70
+#: src/Services/Forminator/ForminatorManager.php:72
 msgid "Select the field of your form."
 msgstr ""
 
@@ -1795,17 +1794,16 @@ msgid "Send an SMS to you When user is login."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:2041
-#: src/Services/Formidable/FormidableManager.php:38
+#: src/Services/Formidable/FormidableManager.php:40
 msgid "SMS Notification Metabox"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:2044
-#: src/Services/Formidable/FormidableManager.php:41
+#: src/Services/Formidable/FormidableManager.php:43
 msgid "By this option you can add SMS notification tools in all edit forms."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:2051
-#: src/Services/Formidable/FormidableManager.php:48
 msgid "This option adds SMS Notification tab in the edit forms."
 msgstr ""
 
@@ -2011,8 +2009,8 @@ msgid "Check SMS gateway configuration"
 msgstr ""
 
 #: includes/class-wpsms-integrations.php:30
-#: includes/class-wpsms-notifications.php:106
-msgid "SMS Notification"
+#: src/Services/Formidable/FormidableManager.php:67
+msgid "SMS Notifications"
 msgstr ""
 
 #: includes/class-wpsms-newsletter.php:64
@@ -2077,6 +2075,10 @@ msgstr ""
 msgid "WordPress %s is available! Please update now"
 msgstr ""
 
+#: includes/class-wpsms-notifications.php:106
+msgid "SMS Notification"
+msgstr ""
+
 #: includes/class-wpsms-rest-api.php:83
 #: includes/class-wpsms-rest-api.php:141
 msgid "Name and Mobile Number are required!"
@@ -2110,7 +2112,7 @@ msgstr ""
 msgid "Not found the number!"
 msgstr ""
 
-#: includes/functions.php:499
+#: includes/functions.php:498
 #: includes/templates/subscribe-form.php:24
 msgid "Phone Number"
 msgstr ""
@@ -3420,27 +3422,22 @@ msgstr ""
 msgid "<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002."
 msgstr ""
 
-#: includes/templates/formidable/formidable-form.php:22
-#: includes/templates/formidable/formidable-form.php:53
-msgid "<b>Note:</b> Use %% Instead of [], for example: <code>%your-mobile%</code>"
-msgstr ""
-
-#: includes/templates/formidable/formidable-form.php:29
+#: includes/templates/formidable/formidable-form.php:35
 #: includes/templates/wpcf7-form.php:57
 msgid "Send to form"
 msgstr ""
 
-#: includes/templates/formidable/formidable-form.php:30
+#: includes/templates/formidable/formidable-form.php:36
 #: includes/templates/wpcf7-form.php:58
 msgid "After submitting the form, you have the option to send an SMS message to the specified field:"
 msgstr ""
 
-#: includes/templates/formidable/formidable-form.php:33
+#: includes/templates/formidable/formidable-form.php:39
 #: includes/templates/wpcf7-form.php:61
 msgid "Send to field"
 msgstr ""
 
-#: includes/templates/formidable/formidable-form.php:62
+#: includes/templates/formidable/formidable-form.php:74
 msgid "Submit"
 msgstr ""
 
@@ -3746,11 +3743,15 @@ msgstr ""
 msgid "This number has opted out of receiving SMS notifications."
 msgstr ""
 
-#: src/Services/Formidable/FormidableManager.php:15
+#: src/Services/Formidable/FormidableManager.php:17
 msgid "Formidable"
 msgstr ""
 
-#: src/Services/Formidable/FormidableManager.php:55
+#: src/Services/Formidable/FormidableManager.php:50
+msgid "This option adds SMS Notification tab in the Settings forms."
+msgstr ""
+
+#: src/Services/Formidable/FormidableManager.php:57
 msgid "Formidable plugin should be enable to run this tab"
 msgstr ""
 
@@ -3758,7 +3759,7 @@ msgstr ""
 msgid "Forminator"
 msgstr ""
 
-#: src/Services/Forminator/ForminatorManager.php:86
+#: src/Services/Forminator/ForminatorManager.php:90
 msgid "Forminator plugin should be enable to run this tab"
 msgstr ""
 

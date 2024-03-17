@@ -9,8 +9,10 @@ use WP_SMS\Option;
 
 class FormidableManager
 {
+    
     public function init()
     {
+
         add_filter('wp_sms_registered_integration_tabs', function ($tabs) {
             $tabs['formidable'] = __('Formidable', 'wp-sms');
             return $tabs;
@@ -45,7 +47,7 @@ class FormidableManager
                 'name'    => __('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('This option adds SMS Notification tab in the edit forms.', 'wp-sms')
+                'desc'    => __('This option adds SMS Notification tab in the Settings forms.', 'wp-sms')
             );
         } else {
             $formidable_array['formidable_notify_form'] = array(
@@ -62,7 +64,7 @@ class FormidableManager
     public function frm_add_new_settings_tab($sections, $values)
     {
         $sections[] = array(
-            'name'     => __('WP SMS', 'wp-sms'),
+            'name'     => __('SMS Notifications', 'wp-sms'),
             'anchor'   => 'wp_sms_notification',
             'function' => 'get_wp_sms_settings',
             'class'    => $this
@@ -75,19 +77,19 @@ class FormidableManager
     {
         $values   = wp_sms_sanitize_array($values);
         $sms_data = Option::getOption("formdiable_wp_sms_options_" . $values['id']);
-
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo Helper::loadTemplate('formidable/formidable-form.php', [
             'form'       => $values['id'],
             'sms_data'   => $sms_data,
             'formFields' => $this->formfileds($values['id']),
-            'fieldGroup' => NotificationFactory::getFormidable($values['id'])->printVariables()
+            'fieldGroup' => NotificationFactory::getFormidable($values['id'])->getVariables()
         ]);
     }
 
     public function frm_save_new_settings_tab($options, $values)
     {
         $values = wp_sms_sanitize_array($values);
+
 
         if (isset($values['id'])) {
             $id = $values['id'];
