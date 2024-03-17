@@ -14,7 +14,7 @@
                 </td>
             </tr>
 
-            <tr id="wp-sms-recipient-numbers">
+            <tr id="wp-sms-recipient-numbers" class="js-wpsms-show_if_wpcf7-sms-recipient_equal_number">
                 <th scope="row"><label for="wpcf7-sms-recipient-number"><?php esc_html_e('Numbers', 'wp-sms'); ?>:</label></th>
                 <td>
                     <input type="text" value="<?php echo esc_attr($cf7_options['phone']) ?? ''; ?>" size="70" class="large-text code" name="wpcf7-sms[phone]" id="wpcf7-sms-recipient-number">
@@ -22,7 +22,7 @@
                 </td>
             </tr>
 
-            <tr id="wp-sms-recipient-groups">
+            <tr id="wp-sms-recipient-groups" class="js-wpsms-show_if_wpcf7-sms-recipient_equal_subscriber">
                 <th scope="row"><label for="wpcf7-sms-recipient-subscriber"><?php esc_html_e('Subscriber Group', 'wp-sms'); ?>:</label></th>
                 <td>
                     <div class="wpsms-value wpsms-group">
@@ -42,7 +42,7 @@
                 </td>
             </tr>
 
-            <tr id="wp-sms-cf7-message-body">
+            <tr id="wp-sms-cf7-message-body" class="js-wpsms-show_if_wpcf7-sms-recipient_equal_number js-wpsms-show_if_wpcf7-sms-recipient_equal_subscriber">
                 <th scope="row"><label for="wpcf7-sms-message"><?php esc_html_e('Message body', 'wp-sms'); ?>:</label></th>
                 <td>
                     <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms[message]" id="wpcf7-sms-message"><?php echo esc_html($cf7_options['message']) ?? ''; ?></textarea>

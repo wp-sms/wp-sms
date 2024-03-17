@@ -141,7 +141,7 @@ class Settings
                         'options'     => isset($option['options']) ? $option['options'] : '',
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
-                        'class'       => "tr-{$option['type']} {$readonly}",
+                        'class'       => isset($option['className']) ? $option['className'] . " tr-{$option['type']} {$readonly} " : "tr-{$option['type']} {$readonly} ",
                         'label_for'   => true,
                         'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
                     )
@@ -533,18 +533,20 @@ class Settings
                     'desc'    => esc_html__('Please select the receiver of SMS', 'wp-sms')
                 ),
                 'wc_notify_product_cat'                     => array(
-                    'id'      => 'wc_notify_product_cat',
-                    'name'    => esc_html__('Subscribe group', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $subscribe_groups,
-                    'desc'    => esc_html__('If you select the Subscribe users, can select the group for send sms', 'wp-sms')
+                    'id'        => 'wc_notify_product_cat',
+                    'name'      => esc_html__('Subscribe group', 'wp-sms'),
+                    'type'      => 'select',
+                    'options'   => $subscribe_groups,
+                    'className' => 'js-wpsms-show_if_wc_notify_product_receiver_equal_subscriber',
+                    'desc'      => esc_html__('If you select the Subscribe users, can select the group for send sms', 'wp-sms')
                 ),
                 'wc_notify_product_roles'                   => array(
-                    'id'      => 'wc_notify_product_roles',
-                    'name'    => esc_html__('Specific roles', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => $this->getRoles(),
-                    'desc'    => esc_html__('Select the role of the user you want to receive the SMS.', 'wp-sms')
+                    'id'        => 'wc_notify_product_roles',
+                    'name'      => esc_html__('Specific roles', 'wp-sms'),
+                    'type'      => 'multiselect',
+                    'options'   => $this->getRoles(),
+                    'className' => 'js-wpsms-show_if_wc_notify_product_receiver_equal_users',
+                    'desc'      => esc_html__('Select the role of the user you want to receive the SMS.', 'wp-sms')
                 ),
                 'wc_notify_product_message'                 => array(
                     'id'   => 'wc_notify_product_message',
@@ -817,17 +819,19 @@ class Settings
                     'desc'    => esc_html__('Please select the SMS receiver(s).', 'wp-sms')
                 ),
                 'job_notify_receiver_subscribers' => array(
-                    'id'      => 'job_notify_receiver_subscribers',
-                    'name'    => esc_html__('Subscribe group', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $subscribe_groups,
-                    'desc'    => esc_html__('Please select the group of subscribers that you want to receive the SMS.', 'wp-sms')
+                    'id'        => 'job_notify_receiver_subscribers',
+                    'name'      => esc_html__('Subscribe group', 'wp-sms'),
+                    'type'      => 'select',
+                    'options'   => $subscribe_groups,
+                    'className' => 'js-wpsms-show_if_job_notify_receiver_equal_subscriber',
+                    'desc'      => esc_html__('Please select the group of subscribers that you want to receive the SMS.', 'wp-sms')
                 ),
                 'job_notify_receiver_numbers'     => array(
-                    'id'   => 'job_notify_receiver_numbers',
-                    'name' => esc_html__('Number(s)', 'wp-sms'),
-                    'type' => 'text',
-                    'desc' => esc_html__('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                    'id'        => 'job_notify_receiver_numbers',
+                    'name'      => esc_html__('Number(s)', 'wp-sms'),
+                    'type'      => 'text',
+                    'className' => 'js-wpsms-show_if_job_notify_receiver_equal_number',
+                    'desc'      => esc_html__('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
                 'job_notify_message'              => array(
                     'id'   => 'job_notify_message',
@@ -1263,31 +1267,35 @@ class Settings
                     'desc'    => esc_html__('Create a new mobile number field or use an existing phone field.', 'wp-sms')
                 ),
                 'um_sync_field_name'                       => array(
-                    'id'      => 'um_sync_field_name',
-                    'name'    => esc_html__('Select the Existing Field', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $this->get_um_register_form_fields(),
-                    'std'     => 'mobile_number',
-                    'desc'    => esc_html__('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
+                    'id'        => 'um_sync_field_name',
+                    'name'      => esc_html__('Select the Existing Field', 'wp-sms'),
+                    'type'      => 'select',
+                    'options'   => $this->get_um_register_form_fields(),
+                    'std'       => 'mobile_number',
+                    'className' => 'js-wpsms-show_if_add_mobile_field_equal_use_ultimate_member_mobile_field',
+                    'desc'      => esc_html__('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms')
                 ),
                 'um_sync_previous_members'                 => array(
-                    'id'   => 'um_sync_previous_members',
-                    'name' => esc_html__('Sync Old Members Too?', 'wp-sms'),
-                    'type' => 'checkbox',
-                    'desc' => esc_html__('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
+                    'id'        => 'um_sync_previous_members',
+                    'name'      => esc_html__('Sync Old Members Too?', 'wp-sms'),
+                    'type'      => 'checkbox',
+                    'className' => 'js-wpsms-show_if_add_mobile_field_equal_use_ultimate_member_mobile_field',
+                    'desc'      => esc_html__('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
                 ),
                 'bp_mobile_field_id'                       => array(
-                    'id'      => 'bp_mobile_field_id',
-                    'name'    => esc_html__('Select the Existing Field', 'wp-sms'),
-                    'type'    => 'advancedselect',
-                    'options' => $buddyPressProfileFields,
-                    'desc'    => esc_html__('Select the BuddyPress field', 'wp-sms')
+                    'id'        => 'bp_mobile_field_id',
+                    'name'      => esc_html__('Select the Existing Field', 'wp-sms'),
+                    'type'      => 'advancedselect',
+                    'options'   => $buddyPressProfileFields,
+                    'className' => 'js-wpsms-show_if_add_mobile_field_equal_use_buddypress_mobile_field',
+                    'desc'      => esc_html__('Select the BuddyPress field', 'wp-sms')
                 ),
                 'bp_sync_fields'                           => array(
-                    'id'   => 'bp_sync_fields',
-                    'name' => esc_html__('Sync Fields', 'wp-sms'),
-                    'type' => 'checkbox',
-                    'desc' => esc_html__('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
+                    'id'        => 'bp_sync_fields',
+                    'name'      => esc_html__('Sync Fields', 'wp-sms'),
+                    'type'      => 'checkbox',
+                    'className' => 'js-wpsms-show_if_add_mobile_field_equal_use_buddypress_mobile_field',
+                    'desc'      => esc_html__('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms')
                 ),
                 'optional_mobile_field'                    => array(
                     'id'      => 'optional_mobile_field',
@@ -1313,30 +1321,34 @@ class Settings
                     'desc'    => esc_html__('Add a flag dropdown for international format support in the mobile number input field.', 'wp-sms')
                 ),
                 'international_mobile_only_countries'      => array(
-                    'id'      => 'international_mobile_only_countries',
-                    'name'    => esc_html__('Only Countries', 'wp-sms'),
-                    'type'    => 'countryselect',
-                    'options' => $this->getCountriesList(),
-                    'desc'    => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
+                    'id'        => 'international_mobile_only_countries',
+                    'name'      => esc_html__('Only Countries', 'wp-sms'),
+                    'type'      => 'countryselect',
+                    'className' => 'js-wpsms-show_if_international_mobile_enabled',
+                    'options'   => $this->getCountriesList(),
+                    'desc'      => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
                 ),
                 'international_mobile_preferred_countries' => array(
-                    'id'      => 'international_mobile_preferred_countries',
-                    'name'    => esc_html__('Preferred Countries', 'wp-sms'),
-                    'type'    => 'countryselect',
-                    'options' => $this->getCountriesList(),
-                    'desc'    => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
+                    'id'        => 'international_mobile_preferred_countries',
+                    'name'      => esc_html__('Preferred Countries', 'wp-sms'),
+                    'type'      => 'countryselect',
+                    'className' => 'js-wpsms-show_if_international_mobile_enabled',
+                    'options'   => $this->getCountriesList(),
+                    'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
                 'mobile_terms_minimum'                     => array(
-                    'id'   => 'mobile_terms_minimum',
-                    'name' => esc_html__('Minimum Length Number', 'wp-sms'),
-                    'type' => 'number',
-                    'desc' => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
+                    'id'        => 'mobile_terms_minimum',
+                    'name'      => esc_html__('Minimum Length Number', 'wp-sms'),
+                    'type'      => 'number',
+                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'desc'      => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
                 ),
                 'mobile_terms_maximum'                     => array(
-                    'id'   => 'mobile_terms_maximum',
-                    'name' => esc_html__('Maximum Length Number', 'wp-sms'),
-                    'type' => 'number',
-                    'desc' => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
+                    'id'        => 'mobile_terms_maximum',
+                    'name'      => esc_html__('Maximum Length Number', 'wp-sms'),
+                    'type'      => 'number',
+                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'desc'      => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
                 ),
                 'admin_title_privacy'                      => array(
                     'id'   => 'admin_title_privacy',
@@ -1498,13 +1510,14 @@ class Settings
                     'desc'    => esc_html__('Active this option to send SMS only to your country local numbers and save international SMS fees.', 'wp-sms')
                 ),
                 'only_local_numbers_countries' => array(
-                    'id'      => 'only_local_numbers_countries',
-                    'name'    => esc_html__('Countries Whitelist', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => array_map(function ($key, $value) {
+                    'id'        => 'only_local_numbers_countries',
+                    'name'      => esc_html__('Countries Whitelist', 'wp-sms'),
+                    'type'      => 'multiselect',
+                    'options'   => array_map(function ($key, $value) {
                         return [$key => $value];
                     }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
-                    'desc'    => esc_html__('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
+                    'className' => 'js-wpsms-show_if_send_only_local_numbers_enabled',
+                    'desc'      => esc_html__('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
                 )
             )),
 
@@ -1527,26 +1540,29 @@ class Settings
                     'desc' => esc_html__('Enable showing Groups on Form.', 'wp-sms')
                 ),
                 'newsletter_form_multiple_select'  => array(
-                    'id'   => 'newsletter_form_multiple_select',
-                    'name' => esc_html__('Multiple Select', 'wp-sms'),
-                    'type' => 'checkbox',
-                    'desc' => esc_html__('Select multiple groups by enabling this option.', 'wp-sms')
+                    'id'        => 'newsletter_form_multiple_select',
+                    'name'      => esc_html__('Multiple Select', 'wp-sms'),
+                    'type'      => 'checkbox',
+                    'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
+                    'desc'      => esc_html__('Select multiple groups by enabling this option.', 'wp-sms')
                 ),
                 'newsletter_form_specified_groups' => array(
-                    'id'      => 'newsletter_form_specified_groups',
-                    'name'    => esc_html__('Display groups', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => array_map(function ($value) {
+                    'id'        => 'newsletter_form_specified_groups',
+                    'name'      => esc_html__('Display groups', 'wp-sms'),
+                    'type'      => 'multiselect',
+                    'options'   => array_map(function ($value) {
                         return [$value->ID => $value->name];
                     }, Newsletter::getGroups()),
-                    'desc'    => esc_html__('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
+                    'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
+                    'desc'      => esc_html__('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
                 ),
                 'newsletter_form_default_group'    => array(
-                    'id'      => 'newsletter_form_default_group',
-                    'name'    => esc_html__('Default group', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $subscribe_groups,
-                    'desc'    => esc_html__('Choice the default group', 'wp-sms')
+                    'id'        => 'newsletter_form_default_group',
+                    'name'      => esc_html__('Default group', 'wp-sms'),
+                    'type'      => 'select',
+                    'options'   => $subscribe_groups,
+                    'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
+                    'desc'      => esc_html__('Choice the default group', 'wp-sms')
                 ),
                 'newsletter_form_verify'           => array(
                     'id'   => 'newsletter_form_verify',
@@ -1875,24 +1891,27 @@ class Settings
                     'desc'    => esc_html__('Please select the receiver of SMS Notification', 'wp-sms')
                 ),
                 'notif_publish_new_post_default_group'    => array(
-                    'id'      => 'notif_publish_new_post_default_group',
-                    'name'    => esc_html__('Subscribe group', 'wp-sms'),
-                    'type'    => 'select',
-                    'options' => $subscribe_groups,
-                    'desc'    => esc_html__('Choice the default group to send the SMS', 'wp-sms')
+                    'id'        => 'notif_publish_new_post_default_group',
+                    'name'      => esc_html__('Subscribe group', 'wp-sms'),
+                    'type'      => 'select',
+                    'options'   => $subscribe_groups,
+                    'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_subscriber',
+                    'desc'      => esc_html__('Choice the default group to send the SMS', 'wp-sms')
                 ),
                 'notif_publish_new_post_users'            => array(
-                    'id'      => 'notif_publish_new_post_users',
-                    'name'    => esc_html__('Specific Roles', 'wp-sms'),
-                    'type'    => 'multiselect',
-                    'options' => $this->getRoles(),
-                    'desc'    => esc_html__('Select the roles of the user that you want to get notification while login.', 'wp-sms')
+                    'id'        => 'notif_publish_new_post_users',
+                    'name'      => esc_html__('Specific Roles', 'wp-sms'),
+                    'type'      => 'multiselect',
+                    'options'   => $this->getRoles(),
+                    'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_users',
+                    'desc'      => esc_html__('Select the roles of the user that you want to get notification while login.', 'wp-sms')
                 ),
                 'notif_publish_new_post_numbers'          => array(
-                    'id'   => 'notif_publish_new_post_numbers',
-                    'name' => esc_html__('Number(s)', 'wp-sms'),
-                    'type' => 'text',
-                    'desc' => esc_html__('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                    'id'        => 'notif_publish_new_post_numbers',
+                    'name'      => esc_html__('Number(s)', 'wp-sms'),
+                    'type'      => 'text',
+                    'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_numbers',
+                    'desc'      => esc_html__('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
                 ),
                 'notif_publish_new_post_force'            => array(
                     'id'      => 'notif_publish_new_post_force',
@@ -2052,10 +2071,10 @@ class Settings
                 ),
             )),
 
-            'formidable'           => apply_filters('wp_sms_formidable_settings', []),
-          
+            'formidable' => apply_filters('wp_sms_formidable_settings', []),
+
             'forminator'           => apply_filters('wp_sms_forminator_settings', [], $options),
-          
+
             /*
              * Pro fields
              */
