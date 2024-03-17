@@ -189,8 +189,10 @@ class Admin
         $subscribe = $this->db->get_var("SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes");
         $credit    = get_option('wpsms_gateway_credit');
 
+        // translators: %s: Number of subscribers
         echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(esc_html__('%s Subscriber', 'wp-sms'), esc_html($subscribe)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         if (!is_object($credit)) {
+            // translators: %s: SMS credit 
             echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf(esc_html__('%s SMS Credit', 'wp-sms'), esc_html($credit)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
@@ -228,7 +230,9 @@ class Admin
                 array('header_template' => 'header-integration-setting.php', 'title' => esc_html__('Integrations', 'wp-sms'))
             );
         }, 7);
-        add_submenu_page('wp-sms', esc_html__('Add-Ons', 'wp-sms'), sprintf(esc_html__('%sAdd-Ons%s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
+
+        // translators: %1$s: Starting span tag, %2$s: Closing span tag 
+        add_submenu_page('wp-sms', esc_html__('Add-Ons', 'wp-sms'), sprintf(esc_html__('%1$sAdd-Ons%2$s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
 
         // Add styles to menu pages
         foreach ($hook_suffix as $menu => $hook) {

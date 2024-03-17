@@ -24,7 +24,12 @@
         <td colspan="2" id="wpsms-select-subscriber-group">
             <label for="wps-subscribe-group"><?php esc_html_e('Subscribe group', 'wp-sms'); ?></label>
             <select name="wps_subscribe_group" id="wps-subscribe-group">
-                <option value="all"><?php echo sprintf(esc_html__('All (%s subscribers active)', 'wp-sms'), esc_html($username_active)); ?></option>
+                <option value="all">
+                    <?php 
+                        // translators: %s: Number of active subscribers
+                        echo sprintf(esc_html__('All (%s subscribers active)', 'wp-sms'), esc_html($username_active)); 
+                    ?>
+                </option>
                 <?php foreach ($get_group_result as $items) : ?>
                     <option value="<?php echo esc_attr($items->ID); ?>" <?php selected($defaultGroup, $items->ID); ?>><?php echo esc_attr($items->name); ?></option>
                 <?php endforeach; ?>

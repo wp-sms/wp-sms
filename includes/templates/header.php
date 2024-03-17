@@ -41,7 +41,12 @@
         </div>
     <?php else : ?>
         <div class="license-status license-status--valid">
-            <span><?php echo sprintf(esc_html__('License Status: %s of %s Activated.', 'wp-sms'), count(array_filter($addons)), count($addons)); ?></span>
+            <span>
+                <?php 
+                    // translators: %1$s: Active licenses, %2$s: Total licenses
+                    echo sprintf(esc_html__('License Status: %1$s of %2$s Activated.', 'wp-sms'), count(array_filter($addons)), count($addons)); 
+                ?>
+            </span>
         </div>
     <?php endif; ?>
 

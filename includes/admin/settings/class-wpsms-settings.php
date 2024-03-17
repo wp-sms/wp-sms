@@ -303,7 +303,8 @@ class Settings
                 'type' => 'textarea',
                 'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
-                        esc_html__('Mobile code: %s, User name: %s, Full Name: %s, Site Name: %s, Site Url: %s', 'wp-sms'),
+                        // translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
+                        esc_html__('Mobile code: %1$s, User name: %2$s, Full Name: %3$s, Site Name: %4$s, Site Url: %5$s', 'wp-sms'),
                         '<code>%code%</code>',
                         '<code>%user_name%</code>',
                         '<code>%full_name%</code>',
@@ -346,7 +347,8 @@ class Settings
                 'type' => 'textarea',
                 'desc' => esc_html__('Enter the contents of the 2FA SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
-                        esc_html__('Mobile code: %s, User name: %s, First Name: %s, Last Name: %s', 'wp-sms'),
+                        // translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
+                        esc_html__('Mobile code: %1$s, User name: %2$s, First Name: %3$s, Last Name: %4$s', 'wp-sms'),
                         '<code>%otp%</code>',
                         '<code>%user_name%</code>',
                         '<code>%first_name%</code>',
@@ -377,7 +379,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('User login: %s, User email: %s, User display name: %s', 'wp-sms'),
+                            // translators: %1$s: User login, %2$s: User email, %3$s: User display name
+                            esc_html__('User login: %1$s, User email: %2$s, User display name: %3$s', 'wp-sms'),
                             '<code>%user_login%</code>',
                             '<code>%user_email%</code>',
                             '<code>%display_name%</code>'
@@ -401,7 +404,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Posted user display name: %s, User profile permalink: %s, Time: %s, Message: %s, Receiver user display name: %s', 'wp-sms'),
+                            // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
+                            esc_html__('Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%primary_link%</code>',
                             '<code>%time%</code>',
@@ -427,7 +431,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Sender display name: %s, Subject: %s, Message: %s, Message URL: %s', 'wp-sms'),
+                            // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
+                            esc_html__('Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s', 'wp-sms'),
                             '<code>%sender_display_name%</code>',
                             '<code>%subject%</code>',
                             '<code>%message%</code>',
@@ -452,7 +457,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Posted user display name: %s, Comment content: %s, Receiver user display name: %s', 'wp-sms'),
+                            // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
+                            esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%comment%</code>',
                             '<code>%receiver_user_display_name%</code>'
@@ -476,7 +482,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Posted user display name: %s, Comment content: %s, Receiver user display name: %s', 'wp-sms'),
+                            // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
+                            esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%comment%</code>',
                             '<code>%receiver_user_display_name%</code>'
@@ -731,7 +738,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Email: %s, First name: %s, Last name: %s', 'wp-sms'),
+                            // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                            esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
                             '<code>%edd_email%</code>',
                             '<code>%edd_first%</code>',
                             '<code>%edd_last%</code>'
@@ -755,7 +763,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Email: %s, First name: %s, Last name: %s', 'wp-sms'),
+                            // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                            esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
                             '<code>%edd_email%</code>',
                             '<code>%edd_first%</code>',
                             '<code>%edd_last%</code>'
@@ -835,7 +844,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Company Mobile: %s, Company Name: %s, Company Website: %s', 'wp-sms'),
+                            // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                            esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
                             '<code>%job_id%</code>',
                             '<code>%job_title%</code>',
                             '<code>%job_description%</code>',
@@ -864,7 +874,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Job ID: %s, Job Title: %s, Job Description: %s, Job Location: %s, Job Type: %s, Company Name: %s, Company Website: %s', 'wp-sms'),
+                            // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                            esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
                             '<code>%job_id%</code>',
                             '<code>%job_title%</code>',
                             '<code>%job_description%</code>',
@@ -1009,8 +1020,10 @@ class Settings
 
                 $gf_forms['gf_notify_form_' . $form->id]          = array(
                     'id'   => 'gf_notify_form_' . $form->id,
+                    // translators: %s: Form title
                     'name' => sprintf(esc_html__('Form notifications (%s)', 'wp-sms'), $form->title),
                     'type' => 'header',
+                    // translators: %s: Form title
                     'desc' => sprintf(esc_html__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->title),
                     'doc'  => '/resources/integrate-wp-sms-pro-with-gravity-forms/',
                 );
@@ -1032,7 +1045,8 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                         sprintf(
-                            esc_html__('Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms'),
+                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
+                            esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
                             '<code>%title%</code>',
                             '<code>%ip%</code>',
                             '<code>%source_url%</code>',
@@ -1061,7 +1075,8 @@ class Settings
                         'type' => 'textarea',
                         'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                esc_html__('Form name: %s, IP: %s, Form url: %s, User agent: %s, Content form: %s', 'wp-sms'),
+                                // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
+                                esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
                                 '<code>%title%</code>',
                                 '<code>%ip%</code>',
                                 '<code>%source_url%</code>',
@@ -1126,8 +1141,10 @@ class Settings
 
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
                         'id'   => 'qf_notify_form_' . $form['id'],
+                        // translators: %s: Form name
                         'name' => sprintf(esc_html__('Form notifications: (%s)', 'wp-sms'), $form['name']),
                         'type' => 'header',
+                        // translators: %s: Form name
                         'desc' => sprintf(esc_html__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form['name']),
                         'doc'  => '/resources/integrate-wp-sms-pro-with-quform/',
                     );
@@ -1149,7 +1166,8 @@ class Settings
                         'type' => 'textarea',
                         'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                esc_html__('Form name: %s, Form url: %s, Referring url: %s, Form content: %s', 'wp-sms'),
+                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
+                                esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
                                 '<code>%referring_url%</code>',
@@ -1177,7 +1195,8 @@ class Settings
                             'type' => 'textarea',
                             'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                                 sprintf(
-                                    esc_html__('Form name: %s, Form url: %s, Referring url: %s, Form content: %s', 'wp-sms'),
+                                    // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
+                                    esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
                                     '<code>%referring_url%</code>',
@@ -2830,6 +2849,7 @@ class Settings
                 'name'        => esc_html__('License Key', 'wp-sms'),
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
+                // translators: %s: Account link
                 'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'))
             );
         }

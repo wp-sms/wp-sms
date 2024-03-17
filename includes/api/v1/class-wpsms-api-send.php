@@ -211,6 +211,7 @@ class SendSmsApi extends \WP_SMS\RestApi
                     // Check group validity
                     foreach ($group_ids as $group_id) {
                         if (!Newsletter::getGroup($group_id)) {
+                            // translators: %s: Group ID
                             $group_validity_error[] = sprintf(esc_html__('The group ID %s is not valid', 'wp-sms'), $group_id);
                         }
                     }
