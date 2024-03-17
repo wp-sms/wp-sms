@@ -75,7 +75,10 @@
                         <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
                             <?php foreach ($get_group_result as $items): ?>
                                 <option value="<?php echo esc_attr($items->ID); ?>">
-                                    <?php echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name)); ?>
+                                    <?php 
+                                        // translators: %s: Group name
+                                        echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name)); 
+                                    ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -96,12 +99,18 @@
                         <?php foreach ($wpsms_list_of_role as $key_item => $val_item): ?>
                             <option value="<?php echo esc_attr($key_item); ?>"
                                 <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php echo esc_html($val_item['name']); ?>
-                                (<?php echo sprintf('<b>%s</b> ' . esc_html__('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count'])); ?>)
+                                (<?php 
+                                    // translators: %s: Number of users
+                                    echo sprintf('<b>%s</b> ' . esc_html__('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count'])); 
+                                ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
                     <p class="field-description wpsms-users">
-                        <?php echo sprintf(esc_html__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); ?></>
+                        <?php 
+                            // translators: %s: Number of users
+                            echo sprintf(esc_html__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); 
+                        ?>
                     </p>
                 </div>
 
@@ -132,7 +141,12 @@
                     <div style="font-size: 14px"><?php esc_html_e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?>
                     </div>
                     <?php if ($smsObject->validateNumber) : ?>
-                        <div style="margin-top: 10px"><?php echo sprintf(esc_html__('Gateway description: %s', 'wp-sms'), '<code>' . wp_kses_post($smsObject->validateNumber) . '</code>'); ?></div>
+                        <div style="margin-top: 10px">
+                            <?php 
+                                // translators: %s: Gateway description
+                                echo sprintf(esc_html__('Gateway description: %s', 'wp-sms'), '<code>' . wp_kses_post($smsObject->validateNumber) . '</code>'); 
+                            ?>
+                        </div>
                     <?php endif; ?>
                 </div>
 
@@ -157,7 +171,12 @@
                                 <a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a>
                             </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
                         <?php else: ?>
-                            <p><?php echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+                            <p>
+                                <?php 
+                                    // translators: %s: Supported gateways link
+                                    echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+                                ?>
+                            </p>
                         <?php endif; ?>
                     </div>
                 </div>

@@ -136,6 +136,7 @@ class Newsletter extends RestApi
 
         foreach ($groupIds as $groupId) {
             if (!\WP_SMS\Newsletter::getGroup($groupId)) {
+                // translators: %s: Group ID
                 return new \WP_Error('subscribe', sprintf(esc_html__('Group ID #%s is not valid', 'wp-sms'), $groupId));
             }
         }

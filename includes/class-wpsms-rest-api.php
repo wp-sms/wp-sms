@@ -107,6 +107,7 @@ class RestApi
                 }
             }
 
+            // translators: %s: Activation code
             wp_sms_send($mobile, sprintf(esc_html__('Your activation code: %s', 'wp-sms'), $key));
 
             // Return response

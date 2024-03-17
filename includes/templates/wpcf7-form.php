@@ -31,7 +31,10 @@
                             if (isset($get_group_result)):
                                 foreach ($get_group_result as $items): ?>
                                     <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($cf7_options['groups']) && in_array($items->ID, $cf7_options['groups'])): echo 'selected'; endif; ?>>
-                                        <?php echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name)); ?>
+                                        <?php 
+                                            // translators: %s: Group name
+                                            echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name)); 
+                                        ?>
                                     </option>
                                 <?php
                                 endforeach;

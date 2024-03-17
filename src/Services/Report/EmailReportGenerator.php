@@ -41,6 +41,7 @@ class EmailReportGenerator
         $content          = apply_filters('wp_sms_report_email_content', '');
         $footerSuggestion = !Version::pro_is_active() ? Helper::loadTemplate('email/partials/footer-suggestion.php') : '';
         $siteName         = get_bloginfo('name');
+        // translators: %s: Site name
         $subject          = sprintf(__('%s - SMS Report', 'wp-sms'), $siteName);
 
         // Do this action before sending report email

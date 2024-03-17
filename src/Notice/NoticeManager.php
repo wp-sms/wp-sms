@@ -55,6 +55,7 @@ class NoticeManager extends AbstractNotice
             $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
         }
 
+        // translators: %s: Newsletter link
         $this->registerNotice('marketing_newsletter', sprintf(__('Stay informed and receive exclusive offers, <a href="%s" target="_blank">Subscribe to our newsletter here</a>!', 'wp-sms'), 'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share'), true, 'admin.php?page=wp-sms-settings');
     }
 

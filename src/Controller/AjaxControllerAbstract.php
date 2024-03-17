@@ -39,6 +39,7 @@ abstract class AjaxControllerAbstract
             if ($action->requiredFields) {
                 foreach ($action->requiredFields as $item) {
                     if ($action->get($item) == null) {
+                        // translators: %s: Field name
                         throw new \Exception(sprintf(esc_html__('Field %s is required.', 'wp-sms'), ucfirst($item)));
                     }
                 }
@@ -86,6 +87,7 @@ abstract class AjaxControllerAbstract
         $action     = $reflection->newInstanceWithoutConstructor();
 
         if (!isset($action->action)) {
+            // translators: %s: Class name
             throw new Exception(sprintf(esc_html__('Public property %s not provided', 'wp-sms'), esc_html($class)));
         }
 

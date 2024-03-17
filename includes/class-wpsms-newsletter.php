@@ -411,6 +411,7 @@ class Newsletter
         if ($count) {
             return array(
                 'result'  => 'error',
+                // translators: %s: Group name
                 'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
@@ -470,6 +471,7 @@ class Newsletter
         if ($count) {
             return array(
                 'result'  => 'error',
+                // translators: %s: Group name
                 'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
@@ -499,6 +501,7 @@ class Newsletter
             } else {
                 return array(
                     'result'  => 'error',
+                    // translators: %s: Group name
                     'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
                 );
             }

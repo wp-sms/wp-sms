@@ -234,6 +234,7 @@ class textanywhere extends \WP_SMS\Gateway
             }
 
             if (!function_exists('simplexml_load_string')) {
+                // translators: %s: Function name
                 return new WP_Error('account-credit', sprintf(__('The <code>%s</code> function is not active in your server.', 'wp-sms'), 'simplexml_load_string'));
             }
 
