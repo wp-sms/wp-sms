@@ -462,9 +462,10 @@ class Admin
                     'user_email' => function_exists('wp_get_current_user') ? wp_get_current_user()->user_email : '',
                     'platform'   => 'wordpress-admin',
                     'config'     => [
-                        'color'    => '#ec7c43',
-                        'button'   => esc_html__('Feedback', 'wp-sms'),
-                        'subtitle' => esc_html__('Feel free to share your thoughts!', 'wp-sms'),
+                        'color'         => '#ec7c43',
+                        'button'        => esc_html__('Feedback', 'wp-sms'),
+                        'subtitle'      => esc_html__('Feel free to share your thoughts!', 'wp-sms'),
+                        'opening_style' => 'modal',
                     ],
                     'meta'       => [
                         'php_version'    => PHP_VERSION,
