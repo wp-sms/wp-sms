@@ -66,7 +66,7 @@ class oxemis extends \WP_SMS\Gateway
                     'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
                     'Content-Type'  => 'application/json',
                 ],
-                'body'    => [
+                'body'    => json_encode([
                     'Options'    => $options,
                     'Message'    => [
                         'Sender' => $this->from,
@@ -77,7 +77,7 @@ class oxemis extends \WP_SMS\Gateway
                             'PhoneNumber' => $number,
                         ];
                     }, $this->to),
-                ],
+                ]),
             );
 
             $response = $this->request('POST', "{$this->wsdl_link}/send", [], $params, false);
