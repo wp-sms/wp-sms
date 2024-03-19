@@ -20,28 +20,21 @@ class Formidable
 
     public function handle_sms($entry_id, $form_id)
     {
-        $base_options = Option::getOptions();
-        $sms_options  = $base_options["formdiable_wp_sms_options_" . $this->data['form_id']];
+        $base_options = Option::getOption('formidable_metabox');
+        $sms_options  = Option::getOption('formdiable_wp_sms_options_' . $this->data['form_id']);
 
         $formidableNotification = NotificationFactory::getFormidable($this->data['form_id'], $this->data);
 
-        if (!isset($base_options["formidable_metabox"])) return;
+        if (!$base_options) return;
 
-        if (
-            isset($sms_options['phone']) &&
-            isset($sms_options['message'])
-        ) {
+        if (isset($sms_options['phone']) && isset($sms_options['message'])) {
             $formidableNotification->send(
                 $sms_options['message'],
                 $sms_options['phone']
             );
         }
 
-        if (
-            isset($sms_options['field']['phone']) &&
-            isset($sms_options['field']['message']) &&
-            isset($this->data[$sms_options['field']['phone']])
-        ) {
+        if (isset($sms_options['field']['phone']) && isset($sms_options['field']['message']) && isset($this->data[$sms_options['field']['phone']])) {
             $formidableNotification->send(
                 $sms_options['field']['message'],
                 $this->data[$sms_options['field']['phone']]
