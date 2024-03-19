@@ -1359,14 +1359,14 @@ class Settings
                     'id'        => 'mobile_terms_minimum',
                     'name'      => esc_html__('Minimum Length Number', 'wp-sms'),
                     'type'      => 'number',
-                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'className' => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'      => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
                 ),
                 'mobile_terms_maximum'                     => array(
                     'id'        => 'mobile_terms_maximum',
                     'name'      => esc_html__('Maximum Length Number', 'wp-sms'),
                     'type'      => 'number',
-                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'className' => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'      => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
                 ),
                 'admin_title_privacy'                      => array(

@@ -180,81 +180,91 @@ class ShowIfEnabled {
     initialize() {
         const elements = document.querySelectorAll('[class^="js-wpsms-show_if_"]');
         elements.forEach(element => {
-            const classListString = [...element.classList].join(' ');
+            const classListArray = [...element.className.split(' ')];
 
-            if (classListString.includes('_enabled')) {
-                this.toggleDisplay(element);
-                const id = this.extractId(element);
-                const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
-                if (checkbox) {
-                    checkbox.addEventListener('change', () => {
-                        if (checkbox.checked) {
-                            this.toggleDisplay(element);
-                        } else {
-                            element.style.display = 'none';
+            for (let i = 0; i < classListArray.length; i++) {
+                const className = classListArray[i];
+                if (className.includes('_enabled') || className.includes('_disabled')) {
+                    const id = this.extractId(element);
+                    const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+
+                    if (checkbox) {
+                        if (checkbox && className.includes('_enabled')) {
+                            const toggleElement = () => {
+                                if (checkbox.checked) {
+                                    this.toggleDisplay(element);
+                                } else {
+                                    element.style.display = 'none';
+                                }
+                            }
+                            toggleElement()
+                            checkbox.addEventListener('change', toggleElement);
                         }
-                    });
-                }
-            }
+                        if (checkbox && className.includes('_disabled')) {
+                            const toggleElement = () => {
+                                if (checkbox.checked) {
+                                    element.style.display = 'none';
+                                } else {
+                                    this.toggleDisplay(element);
+                                }
+                            }
+                            toggleElement()
+                            checkbox.addEventListener('change', toggleElement);
+                        }
+                    }
 
-            if (classListString.includes('_equal_')) {
-                const {id, value} = this.extractIdAndValue(element);
-                if (id && value) {
-                    const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
-                    if (item && (item.type === 'checkbox' || item.type === 'select-one')) {
-                        this.handleCheckboxOrSelectChange(item, element, value);
+                }
+                if (className.includes('_equal_')) {
+                    const {id, value} = this.extractIdAndValue(className);
+                    if (id && value) {
+                        const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                        item.addEventListener('change', () => {
+                            this.initialize();
+                        });
+                        if (item && item.type === 'select-one') {
+                            if (item.value == value) {
+                                this.toggleDisplay(element);
+                                break;
+                            } else {
+                                element.style.display = 'none';
+                            }
+                        }
                     }
                 }
             }
         });
     }
 
+
     toggleDisplay(element) {
         const displayType = element.tagName.toLowerCase() === 'tr' ? 'table-row' : 'table-cell';
         element.style.display = displayType;
     }
 
-    handleCheckboxOrSelectChange(item, element, value) {
-        const itemValue = item.type === 'checkbox' ? item.checked : item.value;
-        if (itemValue == value) {
-            this.toggleDisplay(element);
-        } else {
-            element.style.display = 'none';
-        }
-        item.addEventListener('change', () => {
-            const newValue = item.type === 'checkbox' ? item.checked : item.value;
-            if (newValue == value) {
-                this.toggleDisplay(element);
-            } else {
-                element.style.display = 'none';
-            }
-        });
-    }
-
     extractId(element) {
         const classes = element.className.split(' ');
         for (const className of classes) {
-            if (className.startsWith('js-wpsms-show_if_') && className.endsWith('_enabled')) {
-                return className.replace('js-wpsms-show_if_', '').replace('_enabled', '');
+            if (className.startsWith('js-wpsms-show_if_')) {
+                const id = className.replace('js-wpsms-show_if_', '').replace('_enabled', '').replace('_disabled', '');
+                if (id) {
+                    return id;
+                }
             }
         }
         return null;
     }
 
-    extractIdAndValue(element) {
-        const classes = element.className.split(' ');
+    extractIdAndValue(className) {
         let id, value;
-        for (const className of classes) {
-            if (className.startsWith('js-wpsms-show_if_')) {
-                const parts = className.split('_');
-                const indexOfEqual = parts.indexOf('equal');
-                if (indexOfEqual !== -1 && indexOfEqual > 2 && indexOfEqual < parts.length - 1) {
-                    id = parts.slice(2, indexOfEqual).join('_');
-                    value = parts.slice(indexOfEqual + 1).join('_');
-                    break;
-                }
+        if (className.startsWith('js-wpsms-show_if_')) {
+            const parts = className.split('_');
+            const indexOfEqual = parts.indexOf('equal');
+            if (indexOfEqual !== -1 && indexOfEqual > 2 && indexOfEqual < parts.length - 1) {
+                id = parts.slice(2, indexOfEqual).join('_');
+                value = parts.slice(indexOfEqual + 1).join('_');
             }
         }
+
         return {id, value};
     }
 }
