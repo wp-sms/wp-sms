@@ -54,7 +54,6 @@ class Formidable
             foreach ($values['item_meta'] as $key => $value) {
 
                 if (isset($this->fields[$key])) {
-
                     $data[$this->fields[$key]] = $value;
                 }
             }
