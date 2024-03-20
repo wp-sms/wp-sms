@@ -14,7 +14,7 @@ class Formidable
 
     public function init()
     {
-        add_action("frm_pre_create_entry", array($this, 'pre_create'), 30, 2);
+        add_filter("frm_pre_create_entry", array($this, 'pre_create'), 30, 2);
         add_action("frm_after_create_entry", array($this, 'handle_sms'), 30, 2);
     }
 
@@ -60,7 +60,8 @@ class Formidable
         }
 
         $this->data = $data;
-        return;
+
+        return $values;
     }
 
     public static function get_form_fields($form_id)
