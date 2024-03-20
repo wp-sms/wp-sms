@@ -30,8 +30,10 @@ class ForminatorManager
                 $formFields                                                       = Forminator::formFields($form->id);
                 $forminator_forms['forminator_notify_form_' . $form->id]          = array(
                     'id'   => 'forminator_notify_form_' . $form->id,
+                    // translators: %s: Form name
                     'name' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->name),
                     'type' => 'header',
+                    // translators: %s: Form name
                     'desc' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->name),
                     'doc'  => '',
                 );

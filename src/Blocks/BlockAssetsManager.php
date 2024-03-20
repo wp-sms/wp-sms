@@ -28,6 +28,7 @@ class BlockAssetsManager
                 $block->registerBlockType();
             } else {
                 add_action('admin_notices', function () use ($item) {
+                    // translators: %s: Class name
                     echo '<div class="notice notice-error"><p>' . sprintf(esc_html__('WP SMS: Widget encountered an error, class %s could not be loaded.', 'wp-sms'), '<b>' . esc_html($item) . '</b>') . '</p></div>';
                 });
             }

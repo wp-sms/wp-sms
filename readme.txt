@@ -3,9 +3,9 @@ Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 6.7
+Stable tag: 6.7.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -221,9 +221,11 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.7 - 16.03.2024 =
-* Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wp-sms-pro.com/25942/formidable-forms-and-forminator-integration-now-available/)
-* Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
-* Improvement: Made minor improvements and optimizations for better performance.
+= v6.7.1 - 20.03.2024 =
+* Fixes: Improved visibility of settings page fields.
+* Fixes: Addressed JavaScript error handling in Send SMS block.
+* Fixes: Resolved errors and optimized performance with Formidable integration and entity issues.
+* Improvement: Refactored Oxemis SMS gateway body payload to utilize JSON encoding.
+* Improvement: Implemented minor enhancements.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

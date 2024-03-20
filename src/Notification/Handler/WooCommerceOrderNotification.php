@@ -46,6 +46,7 @@ class WooCommerceOrderNotification extends Notification
     protected function success($to)
     {
         $this->order->add_order_note(
+            // translators: %s: Phone numbers
             sprintf(__('Successfully send SMS notification to %s', 'wp-sms'), implode(',', $to))
         );
     }
@@ -53,7 +54,8 @@ class WooCommerceOrderNotification extends Notification
     protected function failed($to, $response)
     {
         $this->order->add_order_note(
-            sprintf(__('Failed to send SMS notification to %s. Error: %s', 'wp-sms'), implode(',', $to), $response->get_error_message())
+            // translators: %1$s: Phone number, %2$s: Error message
+            sprintf(__('Failed to send SMS notification to %1$s. Error: %2$s', 'wp-sms'), implode(',', $to), $response->get_error_message())
         );
     }
 

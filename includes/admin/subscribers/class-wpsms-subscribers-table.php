@@ -56,7 +56,8 @@ class Subscribers_List_Table extends \WP_List_Table
                 }
 
             case 'date':
-                return sprintf(__('%s <span class="wpsms-time">%s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i', strtotime($item[$column_name])));
+                // translators: %1$s: Date, %2$s: Time
+                return sprintf(__('%1$s <span class="wpsms-time">%2$s</span>', 'wp-sms'), date_i18n('Y-m-d', strtotime($item[$column_name])), date_i18n('H:i', strtotime($item[$column_name])));
 
             default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
@@ -160,6 +161,7 @@ class Subscribers_List_Table extends \WP_List_Table
         $groups = $this->db->get_results("SELECT * FROM `{$this->tb_prefix}sms_subscribes_group`", ARRAY_A);
         if (count($groups)) {
             foreach ($groups as $value) {
+                // translators: %s: Group name
                 $actions['move_to_' . $value['ID']] = sprintf(__('Move to «%s»', 'wp-sms'), $value['name']);
             }
         }
@@ -215,6 +217,7 @@ class Subscribers_List_Table extends \WP_List_Table
                 }
                 $this->data  = $this->get_data();
                 $this->count = $this->get_total();
+                // translators: %s: Group name
                 \WP_SMS\Helper::flashNotice(sprintf(__('Items moved to «%s» group.', 'wp-sms'), $new_group->name), 'success', $this->adminUrl);
             }
         }

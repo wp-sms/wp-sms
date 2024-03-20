@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-16T15:02:01+00:00\n"
+"POT-Creation-Date: 2024-03-17T09:26:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: wp-sms\n"
 
 #. Plugin Name of the plugin
@@ -75,7 +75,7 @@ msgid "characters"
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:178
-#: includes/admin/class-wpsms-admin.php:209
+#: includes/admin/class-wpsms-admin.php:211
 #: includes/class-front.php:74
 #: includes/templates/admin/fields/field-team-member-repeater.php:41
 #: includes/templates/admin/fields/field-team-member-repeater.php:85
@@ -83,15 +83,17 @@ msgstr ""
 msgid "SMS"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:192
+#. translators: %s: Number of subscribers
+#: includes/admin/class-wpsms-admin.php:193
 msgid "%s Subscriber"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:194
+#. translators: %s: SMS credit
+#: includes/admin/class-wpsms-admin.php:196
 msgid "%s SMS Credit"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:210
+#: includes/admin/class-wpsms-admin.php:212
 #: includes/admin/settings/class-wpsms-settings.php:393
 #: includes/admin/settings/class-wpsms-settings.php:419
 #: includes/admin/settings/class-wpsms-settings.php:444
@@ -119,83 +121,87 @@ msgstr ""
 msgid "Send SMS"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:212
+#: includes/admin/class-wpsms-admin.php:214
 msgid "Outbox"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:213
+#: includes/admin/class-wpsms-admin.php:215
 msgid "Inbox"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:215
+#: includes/admin/class-wpsms-admin.php:217
 #: includes/admin/settings/class-wpsms-settings.php:1871
 #: includes/templates/admin/send-sms.php:47
 #: includes/templates/admin/subscribers.php:10
 msgid "Subscribers"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:216
+#: includes/admin/class-wpsms-admin.php:218
 #: includes/templates/admin/groups.php:8
 msgid "Groups"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:220
+#: includes/admin/class-wpsms-admin.php:222
 #: includes/admin/privacy/class-wpsms-privacy.php:22
 msgid "Privacy"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:223
-#: includes/admin/class-wpsms-admin.php:224
+#: includes/admin/class-wpsms-admin.php:225
+#: includes/admin/class-wpsms-admin.php:226
 #: assets/blocks/SendSms/index.js:1
 #: assets/src/blocks/SendSms/edit.js:51
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:226
 #: includes/admin/class-wpsms-admin.php:228
+#: includes/admin/class-wpsms-admin.php:230
 msgid "Integrations"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:231
+#. translators: %1$s: Starting span tag, %2$s: Closing span tag
+#: includes/admin/class-wpsms-admin.php:235
 msgid "Add-Ons"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:231
-msgid "%sAdd-Ons%s"
+#. translators: %1$s: Starting span tag, %2$s: Closing span tag
+#: includes/admin/class-wpsms-admin.php:235
+msgid "%1$sAdd-Ons%2$s"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:326
-#: includes/admin/class-wpsms-admin.php:341
-#: includes/admin/class-wpsms-admin.php:356
-#: includes/admin/class-wpsms-admin.php:372
+#: includes/admin/class-wpsms-admin.php:330
+#: includes/admin/class-wpsms-admin.php:345
+#: includes/admin/class-wpsms-admin.php:360
+#: includes/admin/class-wpsms-admin.php:376
 msgid "Number of items per page"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:403
-#: includes/admin/class-wpsms-admin.php:406
+#: includes/admin/class-wpsms-admin.php:407
+#: includes/admin/class-wpsms-admin.php:410
 msgid "Click here to rate and review this plugin on WordPress.org"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:403
+#: includes/admin/class-wpsms-admin.php:407
 msgid "Rate this plugin"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:406
+#: includes/admin/class-wpsms-admin.php:410
 msgid "Subscribe to our Email Newsletter"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:462
+#: includes/admin/class-wpsms-admin.php:466
 msgid "Feedback"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:463
+#: includes/admin/class-wpsms-admin.php:467
 msgid "Feel free to share your thoughts!"
 msgstr ""
 
-#: includes/admin/class-wpsms-version.php:123
+#. translators: %s: Link URL
+#: includes/admin/class-wpsms-version.php:122
 msgid "<b><a href=\"%s\" target=\"_blank\" class=\"wpsms-plugin-meta-link wp-sms-pro\" title=\"Get professional package!\">Get professional package!</a></b>"
 msgstr ""
 
+#. translators: %s: Plugin version
 #: includes/admin/class-wpsms-version.php:135
 msgid "<p>WP SMS Pro v%s</p>"
 msgstr ""
@@ -205,15 +211,17 @@ msgstr ""
 msgid "Please select your gateway"
 msgstr ""
 
-#: includes/admin/class-wpsms-version.php:166
-msgid "The <a href=\"%s\" target=\"_blank\">WP SMS Pro</a> is out of date and not compatible with new version of WP SMS, Please update the plugin to the <a href=\"%s\" target=\"_blank\">latest version</a>."
+#. translators: %1$s: WP SMS website URL, %2$s: WP SMS PRO download link
+#: includes/admin/class-wpsms-version.php:167
+msgid "The <a href=\"%1$s\" target=\"_blank\">WP SMS Pro</a> is out of date and not compatible with new version of WP SMS, Please update the plugin to the <a href=\"%2$s\" target=\"_blank\">latest version</a>."
 msgstr ""
 
-#: includes/admin/class-wpsms-version.php:177
+#. translators: %1$s: WP SMS Pro activation link, %2$s: WP SMS Pro purchase link
+#: includes/admin/class-wpsms-version.php:179
 msgid "Please <a href=\"%s\">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href=\"%s\" target=\"_blank\">Purchase one now!</a>"
 msgstr ""
 
-#: includes/admin/class-wpsms-version.php:209
+#: includes/admin/class-wpsms-version.php:211
 msgid "Monthly"
 msgstr ""
 

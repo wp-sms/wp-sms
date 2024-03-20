@@ -71,6 +71,7 @@ class RemoteRequest
                     $responseBody = json_decode($responseBody, true);
                 }
 
+                // translators: %s: Response message
                 throw new Exception(sprintf(esc_html__('Failed to get success response, %s', 'wp-sms'), esc_html(print_r($responseBody, 1))));
             }
         }

@@ -1,17 +1,10 @@
 ﻿jQuery(document).ready(function ($) {
 
-    WpSMSGeneral.init();
-    WpSmsNotifications.init();
-    WpSmsWoocommerce.init();
-    WpSmsJobManager.init();
 
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
     }
 
-    if (jQuery('#wpcf7-contact-form-editor').length && jQuery('#wpsms-tab').length) {
-        WpSmsContactForm7.init();
-    }
 
     if (jQuery('.js-wpsms-chatbox-preview').length) {
         jQuery('.wpsms-chatbox').hide();
@@ -141,376 +134,8 @@
 
 
 /**
- * General
- * @type {{init: WpSMSGeneral.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSMSGeneral.getFields}}
- */
-let WpSMSGeneral = {
-
-    getFields: function () {
-        this.fields = {
-            internatioanlMode: {
-                element: jQuery('#wpsms_settings\\[international_mobile\\]'),
-            },
-            mobileMinimumChar: {
-                element: jQuery('#wpsms_settings\\[mobile_terms_minimum\\]'),
-            },
-            mobileMaximumChar: {
-                element: jQuery('#wpsms_settings\\[mobile_terms_maximum\\]'),
-            },
-            onlyCountries: {
-                element: jQuery('#wpsms_settings\\[international_mobile_only_countries\\]'),
-            },
-            preferredCountries: {
-                element: jQuery('#wpsms_settings\\[international_mobile_preferred_countries\\]'),
-            },
-            newsletterFormGroups: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_groups\\]"),
-            },
-            newsletterFormMultipleSelect: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_multiple_select\\]"),
-            },
-            newsletterFormSpecifiedGroups: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_specified_groups\\]"),
-            },
-            newsletterFormDefaultGroup: {
-                element: jQuery("#wpsms_settings\\[newsletter_form_default_group\\]"),
-            },
-            mobileFieldStatus: {
-                element: jQuery("#wpsms_settings\\[add_mobile_field\\]"),
-            },
-            ultimateMemberFieldSelector: {
-                element: jQuery('#wpsms_settings\\[um_sync_field_name\\]'),
-            },
-            ultimateMemberSyncOldMembersField: {
-                element: jQuery('#wpsms_settings\\[um_sync_previous_members\\]'),
-            },
-            buddyPressFieldSelector: {
-                element: jQuery('#wpsms_settings\\[bp_mobile_field_id\\]'),
-            },
-            buddyPressSyncFields: {
-                element: jQuery('#wpsms_settings\\[bp_sync_fields\\]'),
-            },
-            pmproFieldSelector: {
-                element: jQuery('#wpsms_settings\\[pmpro_mobile_field_id\\]'),
-            },
-            onlyLocalNumbers: {
-                element: jQuery('#wpsms_settings\\[send_only_local_numbers\\]'),
-            },
-            onlyLocalNumbersCountries: {
-                element: jQuery('#wpsms_settings\\[only_local_numbers_countries\\]'),
-            },
-        }
-    },
-
-    hideOrShowFields: function () {
-        if (this.fields.internatioanlMode.element.is(':checked')) {
-            this.fields.onlyCountries.element.closest('tr').show()
-            this.fields.preferredCountries.element.closest('tr').show()
-            this.fields.mobileMinimumChar.element.closest('tr').hide()
-            this.fields.mobileMaximumChar.element.closest('tr').hide()
-        } else {
-            this.fields.onlyCountries.element.closest('tr').hide()
-            this.fields.preferredCountries.element.closest('tr').hide()
-            this.fields.mobileMinimumChar.element.closest('tr').show()
-            this.fields.mobileMaximumChar.element.closest('tr').show()
-        }
-
-        if (this.fields.newsletterFormGroups.element.is(":checked")) {
-            this.fields.newsletterFormMultipleSelect.element.closest("tr").show();
-            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").show();
-            this.fields.newsletterFormDefaultGroup.element.closest("tr").show();
-        } else {
-            this.fields.newsletterFormMultipleSelect.element.closest("tr").hide();
-            this.fields.newsletterFormSpecifiedGroups.element.closest("tr").hide();
-            this.fields.newsletterFormDefaultGroup.element.closest("tr").hide();
-        }
-
-        if (this.fields.onlyLocalNumbers.element.is(":checked")) {
-            this.fields.onlyLocalNumbersCountries.element.closest("tr").show();
-        } else {
-            this.fields.onlyLocalNumbersCountries.element.closest("tr").hide();
-        }
-    },
-
-    addEventListener: function () {
-        ["internatioanlMode", "newsletterFormGroups", "onlyLocalNumbers"].forEach(field => {
-            this.fields[field].element.on("change", () => {
-                this.hideOrShowFields();
-            });
-        });
-
-        // Add event listener for mobile field status
-        this.fields.mobileFieldStatus.element.on("change", function () {
-                this.manageMobileFieldsVisibility();
-            }.bind(this)
-        );
-    },
-
-    manageMobileFieldsVisibility: function () {
-        let mobileFieldValue = this.fields.mobileFieldStatus.element.val()
-
-        // Firstly hide all related fields
-        this.fields.buddyPressFieldSelector.element.closest("tr").hide()
-        this.fields.buddyPressSyncFields.element.closest("tr").hide()
-        this.fields.ultimateMemberFieldSelector.element.closest("tr").hide()
-        this.fields.ultimateMemberSyncOldMembersField.element.closest("tr").hide()
-        this.fields.pmproFieldSelector.element.closest("tr").hide()
-
-        // Secondly show fields based on the selected mobile field status option
-        switch (mobileFieldValue) {
-            case 'use_ultimate_member_mobile_field':
-                this.fields.ultimateMemberFieldSelector.element.closest("tr").show()
-                this.fields.ultimateMemberSyncOldMembersField.element.closest("tr").show()
-                break;
-
-            case 'use_buddypress_mobile_field':
-                this.fields.buddyPressFieldSelector.element.closest("tr").show()
-                this.fields.buddyPressSyncFields.element.closest("tr").show()
-                break;
-
-            case 'use_current_field_in_pmpro':
-                this.fields.pmproFieldSelector.element.closest("tr").show()
-                break;
-        }
-    },
-
-    init: function () {
-        this.getFields();
-        this.hideOrShowFields();
-        this.addEventListener();
-        this.manageMobileFieldsVisibility();
-    }
-}
-
-
-/**
- * Notifications
- * @type {{init: WpSmsNotifications.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsNotifications.getFields}}
- */
-let WpSmsNotifications = {
-
-    getFields: function () {
-        this.fields = {
-            receiverField: {
-                element: jQuery('#wpsms_settings\\[notif_publish_new_post_receiver\\]'),
-            },
-            subscriberField: {
-                element: jQuery('#wpsms_settings\\[notif_publish_new_post_default_group\\]'),
-            },
-            numbersField: {
-                element: jQuery('#wpsms_settings\\[notif_publish_new_post_numbers\\]'),
-            },
-            usersField: {
-                element: jQuery('#wpsms_settings\\[notif_publish_new_post_users\\]'),
-            }
-        }
-    },
-
-    hideOrShowFields: function () {
-        if (this.fields.receiverField.element.val() === 'subscriber') {
-            this.fields.subscriberField.element.closest('tr').show()
-            this.fields.numbersField.element.closest('tr').hide()
-            this.fields.usersField.element.closest('tr').hide()
-        } else if (this.fields.receiverField.element.val() === 'numbers') {
-            this.fields.subscriberField.element.closest('tr').hide()
-            this.fields.numbersField.element.closest('tr').show()
-            this.fields.usersField.element.closest('tr').hide()
-        } else if (this.fields.receiverField.element.val() === 'users') {
-            this.fields.subscriberField.element.closest('tr').hide()
-            this.fields.numbersField.element.closest('tr').hide()
-            this.fields.usersField.element.closest('tr').show()
-        }
-    },
-
-    addEventListener: function () {
-        this.fields.receiverField.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
-    },
-
-    init: function () {
-        this.getFields();
-        this.hideOrShowFields();
-        this.addEventListener();
-    }
-
-}
-
-
-/**
- * Woocommerce
- * @type {{init: WpSmsWoocommerce.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsWoocommerce.getFields}}
- */
-let WpSmsWoocommerce = {
-
-    getFields: function () {
-        this.fields = {
-            newProductSmsReceiverField: {
-                element: jQuery('#wps_pp_settings\\[wc_notify_product_receiver\\]'),
-            },
-            newProductSubscriberField: {
-                element: jQuery('#wps_pp_settings\\[wc_notify_product_cat\\]'),
-            },
-            newProductNumbersField: {
-                element: jQuery('#wps_pp_settings\\[wc_notify_product_roles\\]'),
-            },
-            checkoutMobileField: {
-                element: jQuery('#wps_pp_settings\\[wc_mobile_field\\]'),
-            },
-            mobileFieldNecessity: {
-                element: jQuery('#wps_pp_settings\\[wc_mobile_field_optional\\]'),
-            }
-        }
-    },
-
-    hideOrShowNewProductSmsReceiver: function () {
-        if (this.fields.newProductSmsReceiverField.element.val() === 'subscriber') {
-            this.fields.newProductSubscriberField.element.closest('tr').show()
-            this.fields.newProductNumbersField.element.closest('tr').hide()
-        } else {
-            this.fields.newProductSubscriberField.element.closest('tr').hide()
-            this.fields.newProductNumbersField.element.closest('tr').show()
-        }
-    },
-
-    hideOrShowCheckoutMobileField: function () {
-        if (this.fields.checkoutMobileField.element.val() === 'add_new_field') {
-            this.fields.mobileFieldNecessity.element.closest('tr').show()
-        } else {
-            this.fields.mobileFieldNecessity.element.closest('tr').hide()
-        }
-    },
-
-    newProductSmsReceiverEventListener: function () {
-        this.fields.newProductSmsReceiverField.element.on('change', function () {
-            this.hideOrShowNewProductSmsReceiver();
-        }.bind(this));
-    },
-
-    checkoutMobileFieldEventListener: function () {
-        this.fields.checkoutMobileField.element.on('change', function () {
-            this.hideOrShowCheckoutMobileField();
-        }.bind(this));
-    },
-
-    init: function () {
-        this.getFields();
-        this.hideOrShowNewProductSmsReceiver();
-        this.hideOrShowCheckoutMobileField();
-        this.newProductSmsReceiverEventListener();
-        this.checkoutMobileFieldEventListener();
-    }
-
-}
-
-/**
- * Job Manager
- * @type {{init: WpSmsJobManager.init, alreadyEnabled: ((function(): (boolean|undefined))|*), getFields: WpSmsJobManager.getFields}}
- */
-let WpSmsJobManager = {
-
-    getFields: function () {
-        this.fields = {
-            receiverField: {
-                element: jQuery('#wps_pp_settings\\[job_notify_receiver\\]'),
-            },
-            subscriberField: {
-                element: jQuery('#wps_pp_settings\\[job_notify_receiver_subscribers\\]'),
-            },
-            numbersField: {
-                element: jQuery('#wps_pp_settings\\[job_notify_receiver_numbers\\]'),
-            }
-        }
-    },
-
-    hideOrShowFields: function () {
-        if (this.fields.receiverField.element.val() === 'subscriber') {
-            this.fields.subscriberField.element.closest('tr').show()
-            this.fields.numbersField.element.closest('tr').hide()
-        } else {
-            this.fields.subscriberField.element.closest('tr').hide()
-            this.fields.numbersField.element.closest('tr').show()
-        }
-    },
-
-    addEventListener: function () {
-        this.fields.receiverField.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
-    },
-
-    init: function () {
-        this.getFields();
-        this.hideOrShowFields();
-        this.addEventListener();
-    }
-
-}
-
-
-/**
- * Contact Form 7
- * @type {{init: WpSmsContactForm7.init, hideOrShowFields: WpSmsContactForm7.hideOrShowFields, setFields: WpSmsContactForm7.setFields, addEventListener: WpSmsContactForm7.addEventListener}}
- */
-let WpSmsContactForm7 = {
-
-    /**
-     * Initialize Functions
-     */
-    init: function () {
-        this.setFields()
-        this.hideOrShowFields()
-        this.addEventListener()
-    },
-
-    /**
-     * Initialize jQuery Selectors
-     */
-    setFields: function () {
-        this.fields = {
-            recipient: {
-                element: jQuery('#wpcf7-sms-recipient')
-            },
-            recipient_numbers: {
-                element: jQuery('#wp-sms-recipient-numbers')
-            },
-            recipient_groups: {
-                element: jQuery('#wp-sms-recipient-groups')
-            },
-            message_body: {
-                element: jQuery('#wp-sms-cf7-message-body')
-            }
-        }
-    },
-
-    /**
-     *  Show or Hide content by changing the Select HTMl tag
-     */
-    hideOrShowFields: function () {
-        if (this.fields.recipient.element.val() === 'number') {
-            this.fields.recipient_numbers.element.show()
-            this.fields.recipient_groups.element.hide()
-            this.fields.message_body.element.show()
-
-        } else {
-            this.fields.recipient_numbers.element.hide()
-            this.fields.recipient_groups.element.show()
-            this.fields.message_body.element.show()
-
-        }
-    },
-
-    addEventListener: function () {
-        this.fields.recipient.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
-    },
-
-}
-
-/**
  * Meta Box
- * @type {{init: WpSmsMetaBox.init, hideOrShowFields: WpSmsMetaBox.hideOrShowFields, setFields: WpSmsMetaBox.setFields, addEventListener: WpSmsMetaBox.addEventListener}}
+ * @type {{init: WpSmsMetaBox.init, setFields: WpSmsMetaBox.setFields}}
  */
 let WpSmsMetaBox = {
 
@@ -519,8 +144,6 @@ let WpSmsMetaBox = {
      */
     init: function () {
         this.setFields()
-        this.hideOrShowFields()
-        this.addEventListener()
         this.insertShortcode()
     },
 
@@ -529,64 +152,10 @@ let WpSmsMetaBox = {
      */
     setFields: function () {
         this.fields = {
-            recipient: {
-                element: jQuery('#wps-send-to'),
-
-                subscriber: {
-                    element: jQuery('#wpsms-select-subscriber-group'),
-                },
-
-                numbers: {
-                    element: jQuery('#wpsms-select-numbers'),
-                },
-
-                users: {
-                    element: jQuery('#wpsms-select-users'),
-                }
-            },
-            message_body: {
-                element: jQuery('#wpsms-custom-text'),
-            },
             short_codes: {
                 element: jQuery('#wpsms-short-codes'),
             }
         }
-    },
-
-    /**
-     *  Show or Hide content by changing the Select HTMl tag
-     */
-    hideOrShowFields: function () {
-        if (this.fields.recipient.element.val() === 'subscriber') {
-            this.fields.recipient.subscriber.element.show()
-            this.fields.recipient.numbers.element.hide()
-            this.fields.recipient.users.element.hide()
-            this.fields.message_body.element.show()
-
-        } else if (this.fields.recipient.element.val() === 'numbers') {
-            this.fields.recipient.subscriber.element.hide()
-            this.fields.recipient.numbers.element.show()
-            this.fields.recipient.users.element.hide()
-            this.fields.message_body.element.show()
-
-        } else if (this.fields.recipient.element.val() === 'users') {
-            this.fields.recipient.subscriber.element.hide()
-            this.fields.recipient.numbers.element.hide()
-            this.fields.recipient.users.element.show()
-            this.fields.message_body.element.show()
-
-        } else {
-            this.fields.recipient.subscriber.element.hide()
-            this.fields.recipient.numbers.element.hide()
-            this.fields.recipient.users.element.hide()
-            this.fields.message_body.element.hide()
-        }
-    },
-
-    addEventListener: function () {
-        this.fields.recipient.element.on('change', function () {
-            this.hideOrShowFields();
-        }.bind(this));
     },
 
     insertShortcode: function () {
@@ -601,3 +170,95 @@ let WpSmsMetaBox = {
         })
     },
 }
+
+
+class ShowIfEnabled {
+    constructor() {
+        this.initialize();
+    }
+
+    initialize() {
+        const elements = document.querySelectorAll('[class^="js-wpsms-show_if_"]');
+        elements.forEach(element => {
+            const classListString = [...element.classList].join(' ');
+
+            if (classListString.includes('_enabled')) {
+                this.toggleDisplay(element);
+                const id = this.extractId(element);
+                const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                if (checkbox) {
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            this.toggleDisplay(element);
+                        } else {
+                            element.style.display = 'none';
+                        }
+                    });
+                }
+            }
+
+            if (classListString.includes('_equal_')) {
+                const {id, value} = this.extractIdAndValue(element);
+                if (id && value) {
+                    const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                    if (item && (item.type === 'checkbox' || item.type === 'select-one')) {
+                        this.handleCheckboxOrSelectChange(item, element, value);
+                    }
+                }
+            }
+        });
+    }
+
+    toggleDisplay(element) {
+        const displayType = element.tagName.toLowerCase() === 'tr' ? 'table-row' : 'table-cell';
+        element.style.display = displayType;
+    }
+
+    handleCheckboxOrSelectChange(item, element, value) {
+        const itemValue = item.type === 'checkbox' ? item.checked : item.value;
+        if (itemValue == value) {
+            this.toggleDisplay(element);
+        } else {
+            element.style.display = 'none';
+        }
+        item.addEventListener('change', () => {
+            const newValue = item.type === 'checkbox' ? item.checked : item.value;
+            if (newValue == value) {
+                this.toggleDisplay(element);
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    }
+
+    extractId(element) {
+        const classes = element.className.split(' ');
+        for (const className of classes) {
+            if (className.startsWith('js-wpsms-show_if_') && className.endsWith('_enabled')) {
+                return className.replace('js-wpsms-show_if_', '').replace('_enabled', '');
+            }
+        }
+        return null;
+    }
+
+    extractIdAndValue(element) {
+        const classes = element.className.split(' ');
+        let id, value;
+        for (const className of classes) {
+            if (className.startsWith('js-wpsms-show_if_')) {
+                const parts = className.split('_');
+                const indexOfEqual = parts.indexOf('equal');
+                if (indexOfEqual !== -1 && indexOfEqual > 2 && indexOfEqual < parts.length - 1) {
+                    id = parts.slice(2, indexOfEqual).join('_');
+                    value = parts.slice(indexOfEqual + 1).join('_');
+                    break;
+                }
+            }
+        }
+        return {id, value};
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new ShowIfEnabled();
+});

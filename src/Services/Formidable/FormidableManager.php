@@ -9,7 +9,7 @@ use WP_SMS\Option;
 
 class FormidableManager
 {
-    
+
     public function init()
     {
 
@@ -90,8 +90,7 @@ class FormidableManager
     {
         $values = wp_sms_sanitize_array($values);
 
-
-        if (isset($values['id'])) {
+        if (isset($values['id']) && isset($values['formidable-sms'])) {
             $id = $values['id'];
             Option::updateOption("formdiable_wp_sms_options_$id", wp_sms_sanitize_array($values['formidable-sms']));
         }

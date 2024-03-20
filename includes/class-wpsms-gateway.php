@@ -971,7 +971,8 @@ class Gateway
         $help     = $sms->help;
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
 
-        return $document ? sprintf(esc_html__('%s <a href="%s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
+        // translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
+        return $document ? sprintf(__('%1$s <a href="%2$s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
     }
 
     /**
@@ -1453,6 +1454,7 @@ class Gateway
     {
         if ($status == 'error' and (isset($this->options['notify_errors_to_admin_email']) && $this->options['notify_errors_to_admin_email'])) {
             $siteName = get_bloginfo('name');
+            // translators: %s: Site name
             $subject  = sprintf(esc_html__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
             $content  = Helper::loadTemplate('email/partials/sms-delivery-issue.php', [
                 'message'  => $message,

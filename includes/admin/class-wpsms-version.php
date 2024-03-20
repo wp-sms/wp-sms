@@ -118,7 +118,8 @@ class Version
     public function pro_meta_links($links, $file)
     {
         if ($file == 'wp-sms/wp-sms.php') {
-            $links[] = sprintf(__('<b><a href="%s" target="_blank" class="wpsms-plugin-meta-link wp-sms-pro" title="Get professional package!">Get professional package!</a></b>', 'wp-sms'), WP_SMS_SITE . '/buy');
+            // translators: %s: Link URL
+            $links[] = '<b>' . sprintf(__('<a href="%s" target="_blank" class="wpsms-plugin-meta-link wp-sms-pro" title="Get professional package!">Get professional package!</a>', 'wp-sms'), WP_SMS_SITE . '/buy') . '</b>';
         }
 
         return $links;
@@ -130,7 +131,8 @@ class Version
      */
     public function pro_setting_title()
     {
-        echo sprintf(__('<p>WP SMS Pro v%s</p>', 'wp-sms'), WP_SMS_PRO_VERSION); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        // translators: %s: Plugin version
+        echo '<p>' . sprintf(__('WP SMS Pro v%s', 'wp-sms'), WP_SMS_PRO_VERSION) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**
@@ -161,7 +163,8 @@ class Version
      */
     public function version_notice()
     {
-        Helper::notice(sprintf(__('The <a href="%s" target="_blank">WP SMS Pro</a> is out of date and not compatible with new version of WP SMS, Please update the plugin to the <a href="%s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
+        // translators: %1$s: WP SMS website URL, %2$s: WP SMS PRO download link
+        Helper::notice(sprintf(__('The <a href="%1$s" target="_blank">WP SMS Pro</a> is out of date and not compatible with new version of WP SMS, Please update the plugin to the <a href="%2$s" target="_blank">latest version</a>.', 'wp-sms'), WP_SMS_SITE, 'https://wp-sms-pro.com/my-account/downloads/'), 'error');
     }
 
     /**
@@ -172,7 +175,8 @@ class Version
         $url         = admin_url('admin.php?page=wp-sms-settings&tab=licenses');
         $purchaseUrl = WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=not_active_notice&utm_campaign=settings';
 
-        Helper::notice(sprintf(__('Please <a href="%s">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%s" target="_blank">Purchase one now!</a>', 'wp-sms'), esc_url($url), esc_url($purchaseUrl)), 'error');
+        // translators: %1$s: WP SMS Pro activation link, %2$s: WP SMS Pro purchase link
+        Helper::notice(sprintf(__('Please <a href="%1$s">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href="%2$s" target="_blank">Purchase one now!</a>', 'wp-sms'), esc_url($url), esc_url($purchaseUrl)), 'error');
     }
 
     /**
