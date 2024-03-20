@@ -1,3 +1,10 @@
+= v6.7.1 - 20.03.2024 =
+* Fixes: Improved visibility of settings page fields.
+* Fixes: Addressed JavaScript error handling in Send SMS block.
+* Fixes: Resolved errors and optimized performance with Formidable integration and entity issues.
+* Improvement: Refactored Oxemis SMS gateway body payload to utilize JSON encoding.
+* Improvement: Implemented minor enhancements.
+
 = v6.7 - 16.03.2024 =
 * Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wp-sms-pro.com/25942/formidable-forms-and-forminator-integration-now-available/)
 * Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
