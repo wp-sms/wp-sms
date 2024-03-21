@@ -12,6 +12,8 @@ class WooCommerceCouponNotification extends Notification
         '%coupon_code%'   => 'getCode',
         '%coupon_amount%' => 'getAmount',
         '%coupon_name%'   => 'getName',
+        '%cart_url%'      => 'getCartUrl',
+        '%checkout_url%'  => 'getCheckoutUrl',
     ];
 
     public function __construct($couponId = false)
@@ -34,5 +36,15 @@ class WooCommerceCouponNotification extends Notification
     public function getName()
     {
         return get_the_title($this->coupon->get_id());
+    }
+
+    public function getCartUrl()
+    {
+        return wc_get_cart_url();
+    }
+
+    public function getCheckoutUrl()
+    {
+        return wc_get_checkout_url();
     }
 }
