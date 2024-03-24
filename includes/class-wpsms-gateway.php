@@ -463,11 +463,12 @@ class Gateway
                 foreach ($sms->gatewayFields as $key => $value) {
                     if ($sms->{$key} !== false) {
                         $gatewayFields[$value['id']] = [
-                            'id'      => $value['id'],
-                            'name'    => $value['name'],
-                            'type'    => isset($value['type']) ? $value['type'] : 'text',
-                            'desc'    => $value['desc'],
-                            'options' => isset($value['options']) ? $value['options'] : array()
+                            'id'        => $value['id'],
+                            'className' => isset($value['className']) ? $value['className'] : '',
+                            'name'      => $value['name'],
+                            'type'      => isset($value['type']) ? $value['type'] : 'text',
+                            'desc'      => $value['desc'],
+                            'options'   => isset($value['options']) ? $value['options'] : array()
                         ];
                     }
                 }
