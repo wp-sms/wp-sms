@@ -24,7 +24,7 @@ class Admin
 
         // Add Actions
         add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
-        add_action('admin_bar_menu', array($this, 'admin_bar'));
+        add_action('admin_bar_menu', array($this, 'admin_bar'), 40);
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('init', array($this, 'do_output_buffer'));

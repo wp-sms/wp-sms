@@ -1393,7 +1393,7 @@ class Settings
                 // Gateway
                 'gateway_title'                => array(
                     'id'   => 'gateway_title',
-                    'name' => esc_html__('SMS Gateway Configuration', 'wp-sms'),
+                    'name' => esc_html__('SMS Gateway Setup', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'gateway_name'                 => array(
@@ -1401,7 +1401,7 @@ class Settings
                     'name'    => esc_html__('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => Gateway::gateway(),
-                    'desc'    => esc_html__('Select the SMS Gateway from which you want to send the SMS.', 'wp-sms')
+                    'desc'    => esc_html__('Select your preferred SMS Gateway to send messages.', 'wp-sms')
                 ),
                 'gateway_help'                 => array(
                     'id'      => 'gateway_help',
@@ -1473,70 +1473,70 @@ class Settings
                 // Account credit
                 'account_credit_title'         => array(
                     'id'   => 'account_credit_title',
-                    'name' => esc_html__('Account Balance', 'wp-sms'),
+                    'name' => esc_html__('Account Balance Visibility', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit_in_menu'       => array(
                     'id'      => 'account_credit_in_menu',
-                    'name'    => esc_html__('Show in admin menu', 'wp-sms'),
+                    'name'    => esc_html__('Admin Menu Display', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Show your account credit in admin menu.', 'wp-sms')
+                    'desc'    => esc_html__('Shows account credit in the admin menu.', 'wp-sms')
                 ),
                 'account_credit_in_sendsms'    => array(
                     'id'      => 'account_credit_in_sendsms',
-                    'name'    => esc_html__('Show in send SMS page', 'wp-sms'),
+                    'name'    => esc_html__('SMS Page Display', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Show your account credit in send SMS page.', 'wp-sms')
+                    'desc'    => esc_html__('Displays account credit on the SMS sending page.', 'wp-sms')
                 ),
                 // Message header
                 'message_title'                => array(
                     'id'   => 'message_title',
-                    'name' => esc_html__('Miscellaneous Options', 'wp-sms'),
+                    'name' => esc_html__('SMS Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'sms_delivery_method'          => array(
                     'id'      => 'sms_delivery_method',
-                    'name'    => esc_html__('SMS Delivery Method', 'wp-sms'),
+                    'name'    => esc_html__('Delivery Method', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        'api_direct_send' => esc_html__('Direct API Dispatch: Immediately triggers the API to send SMS messages upon creation', 'wp-sms'),
-                        'api_async_send'  => esc_html__('Async API Call: Schedules API requests to dispatch SMS messages at specified intervals', 'wp-sms'),
-                        'api_queued_send' => esc_html__('Queued API Processing: Enqueues messages for batch processing, optimizing API calls for bulk SMS dispatch', 'wp-sms'),
+                        'api_direct_send' => esc_html__('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.', 'wp-sms'),
+                        'api_async_send'  => esc_html__('Scheduled SMS Delivery: Configures API to send messages at predetermined times.', 'wp-sms'),
+                        'api_queued_send' => esc_html__('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.', 'wp-sms'),
                     ),
-                    'desc'    => esc_html__('Select the method for API-based SMS delivery: Direct dispatch, Async scheduling, or Queued processing for bulk operations. Note: If the number of SMS recipients exceeds 20, the system will automatically use the Queued API Processing method.', 'wp-sms')
+                    'desc'    => esc_html__('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.', 'wp-sms')
                 ),
                 'send_unicode'                 => array(
                     'id'      => 'send_unicode',
-                    'name'    => esc_html__('Send as Unicode', 'wp-sms'),
+                    'name'    => esc_html__('Unicode Messaging', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms')
+                    'desc'    => esc_html__('Send messages in languages that use non-English characters, like Persian, Arabic, Chinese, or Cyrillic.', 'wp-sms')
                 ),
                 'clean_numbers'                => array(
                     'id'      => 'clean_numbers',
-                    'name'    => esc_html__('Clean The Numbers', 'wp-sms'),
+                    'name'    => esc_html__('Number Formatting', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
+                    'desc'    => esc_html__('Strips spaces from phone numbers before sending.', 'wp-sms')
                 ),
                 'send_only_local_numbers'      => array(
                     'id'      => 'send_only_local_numbers',
-                    'name'    => esc_html__('Send Only to Local Numbers', 'wp-sms'),
+                    'name'    => esc_html__('Restrict to Local Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Active this option to send SMS only to your country local numbers and save international SMS fees.', 'wp-sms')
+                    'desc'    => esc_html__('Send messages to numbers within the same country to avoid international fees.', 'wp-sms')
                 ),
                 'only_local_numbers_countries' => array(
                     'id'        => 'only_local_numbers_countries',
-                    'name'      => esc_html__('Countries Whitelist', 'wp-sms'),
+                    'name'      => esc_html__('Allowed Countries for SMS', 'wp-sms'),
                     'type'      => 'multiselect',
                     'options'   => array_map(function ($key, $value) {
                         return [$key => $value];
                     }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
                     'className' => 'js-wpsms-show_if_send_only_local_numbers_enabled',
-                    'desc'      => esc_html__('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
+                    'desc'      => esc_html__('Specify countries allowed for SMS delivery. Only listed countries will receive messages.', 'wp-sms')
                 )
             )),
 

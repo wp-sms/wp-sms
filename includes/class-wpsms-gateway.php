@@ -935,7 +935,7 @@ class Gateway
 
                 return Helper::loadTemplate('admin/label-button.php', array(
                     'type'  => 'inactive',
-                    'label' => esc_html__('Deactivate', 'wp-sms')
+                    'label' => esc_html__('Inactive', 'wp-sms')
                 ));
             }
             // Update credit
@@ -947,7 +947,7 @@ class Gateway
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => esc_html__('Activated', 'wp-sms')
+                'label' => esc_html__('Active', 'wp-sms')
             ));
         }
     }
@@ -972,7 +972,7 @@ class Gateway
         $document = isset($sms->documentUrl) ? $sms->documentUrl : false;
 
         // translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-        return $document ? sprintf(__('%1$s <a href="%2$s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : $help;
+        return $document ? sprintf(__('%1$s <a href="%2$s" target="_blank">Documentation</a>', 'wp-sms'), $help, $document) : (!empty($help) ? $help : __('N/A', 'wp-sms'));
     }
 
     /**
@@ -998,13 +998,13 @@ class Gateway
         if ($sms->supportIncoming === true) {
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, esc_html__('Supported', 'wp-sms'))
+                'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, esc_html__('Available', 'wp-sms'))
             ));
         }
 
         return Helper::loadTemplate('admin/label-button.php', array(
             'type'  => 'inactive',
-            'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, esc_html__('Not Supported', 'wp-sms'))
+            'label' => sprintf('<a href="%s" target="_blank">%s</a>', $link, esc_html__('Not Available', 'wp-sms'))
         ));
     }
 
@@ -1020,13 +1020,13 @@ class Gateway
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => esc_html__('Supported', 'wp-sms')
+                'label' => esc_html__('Available', 'wp-sms')
             ));
         } else {
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
-                'label' => esc_html__('Not Supported', 'wp-sms')
+                'label' => esc_html__('Not Available', 'wp-sms')
             ));
         }
     }
@@ -1040,13 +1040,13 @@ class Gateway
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'active',
-                'label' => esc_html__('Supported', 'wp-sms')
+                'label' => esc_html__('Available', 'wp-sms')
             ));
         } else {
             // Return html
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
-                'label' => esc_html__('Not Supported', 'wp-sms')
+                'label' => esc_html__('Not Available', 'wp-sms')
             ));
         }
     }

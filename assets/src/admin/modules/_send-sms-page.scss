@@ -104,8 +104,8 @@ Select2
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-  top: 8px;
-  right: 7px;
+  top: 8px !important;
+  right: 7px !important;
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
