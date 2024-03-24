@@ -319,6 +319,9 @@ class Helper
         // check whether the first character of mobile number is +
         $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
 
+        // check whether the mobile number is in international mobile only countries
+        $international_mobile_only_countries = Option::getOption('international_mobile_only_countries');
+
         /**
          * 1. Check whether international mode is on and the number is NOT started with +
          */
@@ -382,6 +385,28 @@ class Helper
             // If result is not empty, raise an error
             if ($result) {
                 return new WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+            }
+        }
+
+        /**
+         * 4. Check whether the number country is valid or not
+         */
+        if ($international_mode && $international_mobile_only_countries) {
+            $countryCallingCodes = wp_sms_get_calling_codes();
+            $onlyCountries       = array_filter($countryCallingCodes, function ($code) use ($international_mobile_only_countries) {
+                return in_array($code, $international_mobile_only_countries);
+            }, ARRAY_FILTER_USE_KEY);
+            $isValid             = false;
+            foreach ($onlyCountries as $code) {
+                $countryLength = strlen($code);
+                $prefix        = substr($mobileNumber, 0, $countryLength);
+                if ($prefix === $code) {
+                    $isValid = true;
+                    break;
+                }
+            }
+            if (!$isValid) {
+                return new WP_Error('invalid_number', __('The mobile number is not valid for your country.', 'wp-sms'));
             }
         }
 
