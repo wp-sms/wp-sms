@@ -27,31 +27,6 @@ class fast2sms extends Gateway
         $this->help           = esc_html__('Please enter your API Key and DLT Template ID. For DLT messages, send variables in the message body separated via "|" symbol. e.g. Rahul|8888888888|6695', 'wp-sms');
         $this->has_key = true;
         $this->gatewayFields = [
-            'has_key'  => [
-                'id'   => 'gateway_key',
-                'name' => esc_html__('API Key', 'wp-sms'),
-                'desc' => esc_html__('Enter API key of gateway.', 'wp-sms'),
-            ],
-            'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => esc_html__('Approved Sender ID', 'wp-sms'),
-                'desc' => esc_html__('Enter sender ID of gateway.', 'wp-sms'),
-            ],
-            'message_id'  => [
-                'id'   => 'message_id',
-                'name' => esc_html__('Approved Message ID', 'wp-sms'),
-                'desc' => esc_html__('Enter your message ID.', 'wp-sms'),
-            ],
-            'dlt_template_id'  => [
-                'id'   => 'dlt_template_id',
-                'name' => esc_html__('Registered DLT Template ID', 'wp-sms'),
-                'desc' => esc_html__('Enter your Registered DLT Template ID.', 'wp-sms'),
-            ],
-            'entity_id'  => [
-                'id'   => 'entity_id',
-                'name' => esc_html__('Entity ID', 'wp-sms'),
-                'desc' => esc_html__('Enter your Registered Entity ID.', 'wp-sms'),
-            ],
             'route' => [
                 'id'      => 'route',
                 'name'    => esc_html__('Route', 'wp-sms'),
@@ -63,6 +38,35 @@ class fast2sms extends Gateway
                     "q"             => esc_html__('Quick SMS', 'wp-sms')
                 ]
             ],
+            'has_key'  => [
+                'id'   => 'gateway_key',
+                'name' => esc_html__('API Key', 'wp-sms'),
+                'desc' => esc_html__('Enter API key of gateway.', 'wp-sms'),
+            ],
+            'from'     => [
+                'id'        => 'gateway_sender_id',
+                'name'      => esc_html__('Approved Sender ID', 'wp-sms'),
+                'desc'      => esc_html__('Enter sender ID of gateway.', 'wp-sms'),
+                'className' => 'js-wpsms-show_if_route_equal_dlt js-wpsms-show_if_route_equal_dlt_manual'
+            ],
+            'message_id'  => [
+                'id'        => 'message_id',
+                'name'      => esc_html__('Approved Message ID', 'wp-sms'),
+                'desc'      => esc_html__('Enter your message ID.', 'wp-sms'),
+                'className' => 'js-wpsms-show_if_route_equal_dlt'
+            ],
+            'dlt_template_id'  => [
+                'id'        => 'dlt_template_id',
+                'name'      => esc_html__('Registered DLT Template ID', 'wp-sms'),
+                'desc'      => esc_html__('Enter your Registered DLT Template ID.', 'wp-sms'),
+                'className' => 'js-wpsms-show_if_route_equal_dlt_manual'
+            ],
+            'entity_id'  => [
+                'id'        => 'entity_id',
+                'name'      => esc_html__('Entity ID', 'wp-sms'),
+                'desc'      => esc_html__('Enter your Registered Entity ID.', 'wp-sms'),
+                'className' => 'js-wpsms-show_if_route_equal_dlt_manual'
+            ]
         ];
     }
 
