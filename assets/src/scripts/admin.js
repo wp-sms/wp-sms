@@ -182,56 +182,64 @@ class ShowIfEnabled {
         elements.forEach(element => {
             const classListArray = [...element.className.split(' ')];
 
-            for (let i = 0; i < classListArray.length; i++) {
-                const className = classListArray[i];
-                if (className.includes('_enabled') || className.includes('_disabled')) {
-                    const id = this.extractId(element);
-                    const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
-
-                    if (checkbox) {
-                        if (checkbox && className.includes('_enabled')) {
-                            const toggleElement = () => {
-                                if (checkbox.checked) {
-                                    this.toggleDisplay(element);
-                                } else {
-                                    element.style.display = 'none';
-                                }
-                            }
-                            toggleElement()
-                            checkbox.addEventListener('change', toggleElement);
-                        }
-                        if (checkbox && className.includes('_disabled')) {
-                            const toggleElement = () => {
-                                if (checkbox.checked) {
-                                    element.style.display = 'none';
-                                } else {
-                                    this.toggleDisplay(element);
-                                }
-                            }
-                            toggleElement()
-                            checkbox.addEventListener('change', toggleElement);
-                        }
-                    }
-
-                }
-                if (className.includes('_equal_')) {
-                    const {id, value} = this.extractIdAndValue(className);
-                    if (id && value) {
-                        const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
-                        item.addEventListener('change', () => {
-                            this.initialize();
-                        });
-                        if (item && item.type === 'select-one') {
-                            if (item.value == value) {
+            const toggleElement = () => {
+                let displayed = false;
+                classListArray.forEach(className => {
+                    if (className.includes('_enabled') || className.includes('_disabled')) {
+                        const id = this.extractId(element);
+                        const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                        if (checkbox) {
+                            if (checkbox.checked && className.includes('_enabled')) {
                                 this.toggleDisplay(element);
-                                break;
+
+                            } else if (!checkbox.checked && className.includes('_disabled')) {
+                                this.toggleDisplay(element);
                             } else {
                                 element.style.display = 'none';
                             }
                         }
+                    } else if (className.includes('_equal_')) {
+                        const {id, value} = this.extractIdAndValue(className);
+                        if (id && value) {
+                            const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                            if (item && item.type === 'select-one') {
+                                if (item.value == value) {
+                                    if (!displayed) {
+                                        this.toggleDisplay(element);
+                                        displayed = true
+                                    }
+
+                                }
+                                if (item.value != value) {
+                                    if (!displayed) {
+                                        element.style.display = 'none';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            toggleElement();
+
+            classListArray.forEach(className => {
+                if (className.includes('_enabled') || className.includes('_disabled')) {
+                    const id = this.extractId(element);
+                    const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                    if (checkbox) {
+                        checkbox.addEventListener('change', toggleElement);
+                    }
+                } else if (className.includes('_equal_')) {
+                    const {id} = this.extractIdAndValue(className);
+                    if (id) {
+                        const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                        if (item && item.type === 'select-one') {
+                            item.addEventListener('change', toggleElement);
+                        }
                     }
                 }
-            }
+            });
         });
     }
 
