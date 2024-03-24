@@ -126,7 +126,7 @@ class Gateway
             'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'     => array(
-            'dianahost' => 'dianahost.com',
+            'esmsbd'    => 'esms.com.bd',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
