@@ -392,7 +392,7 @@ class Helper
          * 4. Check whether the number country is valid or not
          */
         if ($international_mode && $international_mobile_only_countries) {
-            $countryCallingCodes = wp_sms_get_calling_codes();
+            $countryCallingCodes = wp_json_file_decode(WP_SMS_DIR . 'assets/countries-code.json', ['associative' => true]);
             $onlyCountries       = array_filter($countryCallingCodes, function ($code) use ($international_mobile_only_countries) {
                 return in_array($code, $international_mobile_only_countries);
             }, ARRAY_FILTER_USE_KEY);
