@@ -2,7 +2,7 @@
 
   #wpcontent {
     padding: 0;
-  }
+   }
 
   .wpsms-wrap {
     margin: 0;
@@ -190,6 +190,55 @@
   .select2-container .select2-search--inline .select2-search__field {
     margin-left: 0;
     margin-right: 5px;
+  }
+}
+
+.footer-left-wpsms{
+  font-weight: 400;
+  text-decoration: none!important;
+  color:#50575E!important
+}
+
+.wp-sms-woo-commerce-pro-settings{
+  textarea, .select2-container{
+    max-width: 100%!important;
+  }
+}
+//Mobile header
+@media screen and (max-width: 1280px){
+  .wpsms-header-items-side{
+    display: none!important;
+  }
+  #screen-meta-links #feedback-bird-app{
+    position: relative!important;
+    top:10px!important
+  }
+}
+.sms_page_wp-sms{
+
+}
+@media screen and (max-width: 667px){
+  .wpsms-header-banner .wpsms-header-items-flex{
+    display: none!important;
+  }
+  .sms_page_wp-sms #show-settings-link{
+    color: transparent!important;
+    width: 31px;
+     overflow: hidden;
+    &:after{
+      position: absolute;
+      color: #646970;
+    }
+  }
+  .sms_page_wp-sms-subscribers .wpsms-wrap__top{
+    flex-direction: column;
+    text-align: left;
+    align-items: flex-start;
+    .wpsms-button-group{
+      max-width: 100%;
+      overflow: auto;
+      padding-bottom: 5px;
+    }
   }
 }
 

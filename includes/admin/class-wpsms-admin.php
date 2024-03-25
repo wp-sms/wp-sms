@@ -28,6 +28,8 @@ class Admin
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('init', array($this, 'do_output_buffer'));
+        add_action('admin_footer_text',array($this, 'wpsms_custom_footer'),999) ;
+        add_action('update_footer' ,array($this, 'wpsms_update_footer'),999) ;
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
@@ -35,6 +37,25 @@ class Admin
         add_filter('admin_body_class', array($this, 'modify_admin_body_classes'));
     }
 
+    /**
+     * Include footer
+     */
+    public function wpsms_custom_footer($footer_text)
+    {
+        $custom_footer_html = ' Please rate <a href="'. esc_url(WP_SMS_SITE).'" title="'. esc_url(WP_SMS_SITE).'" class="footer-left-wpsms" target="_blank">WP SMS</a> <a href="https://wordpress.org/plugins/wp-sms/" title="rate" target="_blank">★★★★★</a>   on. <a href="https://wordpress.org/" target="_blank">WordPress.org</a> to help us spread the word. Thank you!';
+        return $custom_footer_html;
+    }
+    public function wpsms_update_footer()
+    {
+        global $wp_version;
+        $plugin_data = get_plugin_data(WP_SMS_DIR . 'wp-sms.php');
+        $plugin_version = $plugin_data['Version'];
+        printf('<p id="footer-upgrade" class="alignright">%s | %s %s</p>',
+            esc_html__('WordPress', 'wp-sms') . ' ' . esc_html($wp_version),
+            esc_html($plugin_data['Name']),
+            esc_html($plugin_version)
+        );
+    }
     /**
      * Include admin assets
      */

@@ -1,3 +1,50 @@
+
+.sms_page_wp-sms #wpcontent .wpsms-wrap__top{
+  position: relative;
+  .wpsms-tab-group {
+    padding: 0;
+  }
+  .rabbit-admin-notice.notice-success{
+    position: absolute!important;
+    left: 0;
+    top: calc(100% + 10px);
+    background: #fff;
+    padding-right: 40px!important;
+    margin: 0 20px !important;
+  }
+  .wpsms-tab li a{
+    opacity: 1;
+    color:#56585A;
+    font-size: 13px;
+    line-height: 24px;
+    &.active{
+      color: #C24225;
+      box-shadow:none;
+      border-bottom: 2px solid;
+      border-radius: 0;
+    }
+  }
+}
+.wpsms-wrap-woo-pro{
+  .woo-nav-tab-wrapper{
+    border-bottom: none;
+    padding-top:0;
+    .nav-tab{
+      background: transparent!important;
+      border:none;
+      color:#56585A;
+      font-size: 13px;
+      line-height: 24px;
+      font-weight: 500;
+      outline: none!important;
+      box-shadow: none!important;
+    }
+    .nav-tab-active, .nav-tab-active:focus, .nav-tab-active:focus:active, .nav-tab-active:hover{
+      color:#C24225;
+      border-bottom: 2px solid #C24225;
+    }
+  }
+}
 .wpsms-tab-group {
   padding: 6px;
   display: block;
