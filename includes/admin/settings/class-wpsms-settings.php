@@ -1547,78 +1547,82 @@ class Settings
                 // SMS Newsletter
                 'newsletter_title'                 => array(
                     'id'   => 'newsletter_title',
-                    'name' => esc_html__('SMS Newsletter', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('SMS Newsletter Configuration', 'wp-sms'),
+                        esc_html__('Configure how visitors subscribe to your SMS notifications.', 'wp-sms')
+                    ),
                     'type' => 'header',
-                    'desc' => esc_html__('SMS Newsletter is a feature that allows you to collect mobile numbers from your website visitors and send them SMS.', 'wp-sms'),
                     'doc'  => '/resources/add-sms-subscriber-form/'
                 ),
                 'newsletter_form_groups'           => array(
                     'id'   => 'newsletter_form_groups',
-                    'name' => esc_html__('Show Groups', 'wp-sms'),
+                    'name' => esc_html__('Group Visibility in Form', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Enable showing Groups on Form.', 'wp-sms')
+                    'desc' => esc_html__('Show available groups on the subscription form.', 'wp-sms')
                 ),
                 'newsletter_form_multiple_select'  => array(
                     'id'        => 'newsletter_form_multiple_select',
-                    'name'      => esc_html__('Multiple Select', 'wp-sms'),
+                    'name'      => esc_html__('Group Selection', 'wp-sms'),
                     'type'      => 'checkbox',
                     'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
-                    'desc'      => esc_html__('Select multiple groups by enabling this option.', 'wp-sms')
+                    'desc'      => esc_html__('Allow subscribers to join multiple groups from the form.', 'wp-sms')
                 ),
                 'newsletter_form_specified_groups' => array(
                     'id'        => 'newsletter_form_specified_groups',
-                    'name'      => esc_html__('Display groups', 'wp-sms'),
+                    'name'      => esc_html__('Groups to Display', 'wp-sms'),
                     'type'      => 'multiselect',
                     'options'   => array_map(function ($value) {
                         return [$value->ID => $value->name];
                     }, Newsletter::getGroups()),
                     'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
-                    'desc'      => esc_html__('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
+                    'desc'      => esc_html__('Choose which groups appear on the subscription form.', 'wp-sms')
                 ),
                 'newsletter_form_default_group'    => array(
                     'id'        => 'newsletter_form_default_group',
-                    'name'      => esc_html__('Default group', 'wp-sms'),
+                    'name'      => esc_html__('Default Group for New Subscribers', 'wp-sms'),
                     'type'      => 'select',
                     'options'   => $subscribe_groups,
                     'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
-                    'desc'      => esc_html__('Choice the default group', 'wp-sms')
+                    'desc'      => esc_html__('Set a group that all new subscribers will join by default.', 'wp-sms')
                 ),
                 'newsletter_form_verify'           => array(
                     'id'   => 'newsletter_form_verify',
-                    'name' => esc_html__('Verify Subscriber', 'wp-sms'),
+                    'name' => esc_html__('Subscription Confirmation', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Subscribers will receive an activation code by SMS', 'wp-sms')
+                    'desc' => esc_html__('Subscribers must enter a code received by SMS to complete their subscription.', 'wp-sms')
                 ),
                 'welcome'                          => array(
                     'id'   => 'welcome',
-                    'name' => esc_html__('Welcome SMS', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Welcome SMS Setup', 'wp-sms'),
+                        esc_html__('Set up automatic SMS messages for new subscribers.', 'wp-sms'),
+                    ),
                     'type' => 'header',
-                    'desc' => esc_html__('By enabling this option you can send welcome SMS to subscribers'),
                     'doc'  => '/resources/send-welcome-sms-to-new-subscribers/',
                 ),
                 'newsletter_form_welcome'          => array(
                     'id'   => 'newsletter_form_welcome',
                     'name' => esc_html__('Status', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Enable or Disable welcome SMS.', 'wp-sms')
+                    'desc' => esc_html__('Sends a welcome SMS to new subscribers when they sign up.', 'wp-sms')
                 ),
                 'newsletter_form_welcome_text'     => array(
                     'id'   => 'newsletter_form_welcome_text',
-                    'name' => esc_html__('SMS text', 'wp-sms'),
+                    'name' => esc_html__('Welcome Message Content', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message. if you would like to send unsubscribe link, check out the document.', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
+                    'desc' => esc_html__('Customize the SMS message sent to new subscribers. Use placeholders for personalized details: ', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
                 ),
                 //Style Setting
                 'style'                            => array(
                     'id'   => 'style',
-                    'name' => esc_html__('Style', 'wp-sms'),
+                    'name' => esc_html__('Appearance Customization', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'disable_style_in_front'           => array(
                     'id'   => 'disable_style_in_front',
-                    'name' => esc_html__('Disable Frontend Style', 'wp-sms'),
+                    'name' => esc_html__('Disable Default Form Styling', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Check this to disable all included styling of SMS Newsletter form elements.', 'wp-sms')
+                    'desc' => esc_html__('Remove the plugin\'s default styling from the subscription form if preferred.', 'wp-sms')
                 )
             )),
 
@@ -2120,22 +2124,26 @@ class Settings
         if (Option::getOption('gdpr_compliance')) {
             $settings['newsletter']['newsletter_gdpr'] = array(
                 'id'   => 'newsletter_gdpr',
-                'name' => esc_html__('GDPR Compliance', 'wp-sms'),
+                'name' => $this->renderOptionHeader(
+                    esc_html__('Data Protection Settings', 'wp-sms'),
+                    esc_html__('Set up how you comply with data protection regulations', 'wp-sms'),
+                ),
                 'type' => 'header'
             );
 
             $settings['newsletter']['newsletter_form_gdpr_text'] = array(
                 'id'   => 'newsletter_form_gdpr_text',
-                'name' => esc_html__('Confirmation text', 'wp-sms'),
-                'type' => 'textarea'
+                'name' => esc_html__('Consent Text', 'wp-sms'),
+                'type' => 'textarea',
+                'desc' => esc_html__('Provide a clear message that informs subscribers how their data will be used and that their consent is required. For example: "I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy."', 'wp-sms'),
             );
 
             $settings['newsletter']['newsletter_form_gdpr_confirm_checkbox'] = array(
                 'id'      => 'newsletter_form_gdpr_confirm_checkbox',
-                'name'    => esc_html__('Confirmation Checkbox status', 'wp-sms'),
+                'name'    => esc_html__('Checkbox Default', 'wp-sms'),
                 'type'    => 'select',
                 'options' => array('checked' => 'Checked', 'unchecked' => 'Unchecked'),
-                'desc'    => esc_html__('Checked or Unchecked GDPR checkbox as default form load.', 'wp-sms')
+                'desc'    => esc_html__('Leave the consent checkbox unchecked by default to comply with privacy laws, which require active, explicit consent from users.', 'wp-sms')
             );
         } else {
             $settings['newsletter']['newsletter_gdpr'] = array(
