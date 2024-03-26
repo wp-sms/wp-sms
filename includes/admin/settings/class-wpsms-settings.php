@@ -1878,7 +1878,10 @@ class Settings
                 // Publish new post
                 'notif_publish_new_post_title'            => array(
                     'id'   => 'notif_publish_new_post_title',
-                    'name' => esc_html__('Published new posts', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('New Post Alerts', 'wp-sms'),
+                        esc_html__('Configure SMS notifications to inform subscribers about newly published content.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_publish_new_post'                  => array(
@@ -1886,40 +1889,40 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to subscribers When published new posts.', 'wp-sms')
+                    'desc'    => esc_html__('Send SMS for new posts.', 'wp-sms')
                 ),
                 'notif_publish_new_post_type'             => array(
                     'id'      => 'notif_publish_new_post_type',
                     'name'    => esc_html__('Post Types', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
-                    'desc'    => esc_html__('Select post types that you want to use this option.', 'wp-sms')
+                    'desc'    => esc_html__('Specify which types of content trigger notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_taxonomy_and_term'     => array(
                     'id'      => 'notif_publish_new_taxonomy_and_term',
                     'name'    => esc_html__('Taxonomies and Terms', 'wp-sms'),
                     'type'    => 'advancedmultiselect',
                     'options' => $this->getTaxonomiesAndTerms(),
-                    'desc'    => esc_html__('Select taxonomies that you want to use this option.', 'wp-sms')
+                    'desc'    => esc_html__('Choose categories or tags to associate with alerts.', 'wp-sms')
                 ),
                 'notif_publish_new_post_receiver'         => array(
                     'id'      => 'notif_publish_new_post_receiver',
-                    'name'    => esc_html__('Send Notification to?', 'wp-sms'),
+                    'name'    => esc_html__('Notification Recipients', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
                         'subscriber' => esc_html__('Subscribers', 'wp-sms'),
                         'numbers'    => esc_html__('Number(s)', 'wp-sms'),
                         'users'      => esc_html__('WordPress Users', 'wp-sms')
                     ),
-                    'desc'    => esc_html__('Please select the receiver of SMS Notification', 'wp-sms')
+                    'desc'    => esc_html__('Select who receives notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_post_default_group'    => array(
                     'id'        => 'notif_publish_new_post_default_group',
-                    'name'      => esc_html__('Subscribe group', 'wp-sms'),
+                    'name'      => esc_html__('Subscribe Group', 'wp-sms'),
                     'type'      => 'select',
                     'options'   => $subscribe_groups,
                     'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_subscriber',
-                    'desc'      => esc_html__('Choice the default group to send the SMS', 'wp-sms')
+                    'desc'      => esc_html__('Set the default group to receive notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_post_users'            => array(
                     'id'        => 'notif_publish_new_post_users',
@@ -1938,35 +1941,38 @@ class Settings
                 ),
                 'notif_publish_new_post_force'            => array(
                     'id'      => 'notif_publish_new_post_force',
-                    'name'    => esc_html__('Force to Send?', 'wp-sms'),
+                    'name'    => esc_html__('Force Send', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
+                    'desc'    => esc_html__('Use to send notifications without additional confirmation during publishing. Compatible with WP-REST API.', 'wp-sms')
                 ),
                 'notif_publish_new_send_mms'              => array(
 
                     'id'      => 'notif_publish_new_send_mms',
-                    'name'    => esc_html__('Send MMS?', 'wp-sms'),
+                    'name'    => esc_html__('Send MMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('By enabling this option, the post featured image will be sent as an MMS if your gateway supports it', 'wp-sms')
+                    'desc'    => esc_html__('Sends the featured image of the post as an MMS if supported by your SMS gateway.', 'wp-sms')
                 ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
+                    'desc' => esc_html__('Define the SMS format.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 'notif_publish_new_post_words_count'      => array(
                     'id'   => 'notif_publish_new_post_words_count',
-                    'name' => esc_html__('Post content words count', 'wp-sms'),
+                    'name' => esc_html__('Post Content Words Limit', 'wp-sms'),
                     'type' => 'number',
-                    'desc' => esc_html__('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
+                    'desc' => esc_html__('Set maximum word count for post excerpts in notifications. Default: 10.', 'wp-sms')
                 ),
                 // Publish new post
                 'notif_publish_new_post_author_title'     => array(
                     'id'   => 'notif_publish_new_post_author_title',
-                    'name' => esc_html__('Author of the post', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Post Author Notification', 'wp-sms'),
+                        esc_html__('Set up notifications for post authors when their content is published. Ensure the mobile number field is added to user profiles under Settings > General > Mobile Number Field Source.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_publish_new_post_author'           => array(
@@ -1974,25 +1980,28 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to the author of the post when that post is published.', 'wp-sms') . '<br>' . esc_html__('Make sure the "Add Mobile number field" option is enabled in the Settings > Features', 'wp-sms')
+                    'desc'    => esc_html__('Alerts post authors via SMS after publishing their posts.', 'wp-sms')
                 ),
                 'notif_publish_new_post_author_post_type' => array(
                     'id'      => 'notif_publish_new_post_author_post_type',
                     'name'    => esc_html__('Post Types', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
-                    'desc'    => esc_html__('Select post types that you want to use this option.', 'wp-sms')
+                    'desc'    => esc_html__('Define which content types trigger author notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_post_author_template'  => array(
                     'id'   => 'notif_publish_new_post_author_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
+                    'desc' => esc_html__('Customize the SMS message to authors using placeholders for post details.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 // Publish new wp version
                 'notif_publish_new_wpversion_title'       => array(
                     'id'   => 'notif_publish_new_wpversion_title',
-                    'name' => esc_html__('The new release of WordPress', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('The new release of WordPress', 'wp-sms'),
+                        esc_html__('Configure notifications to be sent via SMS to the Admin Mobile Number regarding new releases of WordPress.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_publish_new_wpversion'             => array(
@@ -2000,12 +2009,15 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you When the new release of WordPress.', 'wp-sms')
+                    'desc'    => esc_html__('Notifications for new WordPress releases.', 'wp-sms')
                 ),
                 // Register new user
                 'notif_register_new_user_title'           => array(
                     'id'   => 'notif_register_new_user_title',
-                    'name' => esc_html__('Register a new user', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Register a new user', 'wp-sms'),
+                        esc_html__('Set up SMS notifications for admin and new user upon registration.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_register_new_user'                 => array(
@@ -2013,24 +2025,27 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you and user when register on WordPress.', 'wp-sms')
+                    'desc'    => esc_html__('SMS notifications for new user registrations.', 'wp-sms')
                 ),
                 'notif_register_new_user_admin_template'  => array(
                     'id'   => 'notif_register_new_user_admin_template',
-                    'name' => esc_html__('Message body for admin', 'wp-sms'),
+                    'name' => esc_html__('Message Body for Admin', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    'desc' => esc_html__('Customize the SMS template sent to the Admin Mobile Number for new user registrations using placeholders for user details.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 'notif_register_new_user_template'        => array(
                     'id'   => 'notif_register_new_user_template',
-                    'name' => esc_html__('Message body for user', 'wp-sms'),
+                    'name' => esc_html__('Message Body for User', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    'desc' => esc_html__('Customize the SMS template sent to the user upon registration using placeholders for personal details.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 // New comment
                 'notif_new_comment_title'                 => array(
                     'id'   => 'notif_new_comment_title',
-                    'name' => esc_html__('New comment', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('New Comment Notification', 'wp-sms'),
+                        esc_html__('Receive SMS alerts on the Admin Mobile Number when a new comment is posted.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_new_comment'                       => array(
@@ -2038,18 +2053,21 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you When get a new comment.', 'wp-sms')
+                    'desc'    => esc_html__('Receiving SMS alerts on the Admin Mobile Number for each new comment.', 'wp-sms')
                 ),
                 'notif_new_comment_template'              => array(
                     'id'   => 'notif_new_comment_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
+                    'desc' => esc_html__('Create the SMS message for new comment alerts. Include details using placeholders:', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
                 ),
                 // User login
                 'notif_user_login_title'                  => array(
                     'id'   => 'notif_user_login_title',
-                    'name' => esc_html__('User login', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('User Login Notification', 'wp-sms'),
+                        esc_html__('Configure SMS notifications to be sent to the Admin Mobile Number whenever a user logs in.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_user_login'                        => array(
@@ -2057,20 +2075,20 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you When user is login.', 'wp-sms')
+                    'desc'    => esc_html__('SMS notifications to be sent to the Admin Mobile Number on user login.', 'wp-sms')
                 ),
                 'notif_user_login_roles'                  => array(
                     'id'      => 'notif_user_login_roles',
-                    'name'    => esc_html__('Specific roles', 'wp-sms'),
+                    'name'    => esc_html__('Specific Roles', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->getRoles(),
-                    'desc'    => esc_html__('Select the roles of the user that you want to get notification while login.', 'wp-sms')
+                    'desc'    => esc_html__('Choose user roles that trigger login notifications.', 'wp-sms')
                 ),
                 'notif_user_login_template'               => array(
                     'id'   => 'notif_user_login_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    'desc' => esc_html__('Format the SMS message sent upon user login. Utilize placeholders to include user details:', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 )
             )),
 
