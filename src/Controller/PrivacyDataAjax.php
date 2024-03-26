@@ -85,8 +85,10 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         /*
          * Check in Subscribes Table
          */
-        $sql      = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $mobile);
-        $get_user = $wpdb->get_results($sql, ARRAY_A);
+        $get_user = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $mobile),
+            ARRAY_A
+        );
 
         if (count($get_user) > 0) {
             foreach ($get_user as $user) {
@@ -128,7 +130,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         $uploads_directory = $upload_dir['basedir'];
         $filepath          = $uploads_directory . '/' . $filename . '.csv';
 
-        $fp = fopen($filepath, 'w + ');
+        $fp = fopen($filepath, 'w + '); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 
         $i = 0;
         foreach ($data as $fields) {
@@ -138,7 +140,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
             fputcsv($fp, array_values($fields));
             $i++;
         }
-        fclose($fp);
+        fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         $file_url = $upload_dir['baseurl'] . '/' . $filename . '.csv';
 
         wp_send_json_success([

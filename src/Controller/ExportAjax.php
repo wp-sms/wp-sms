@@ -64,14 +64,16 @@ class ExportAjax extends AjaxControllerAbstract {
 				break;
 
 			case 'outbox':
-				$prepare    = $wpdb->prepare( "SELECT * from {$wpdb->prefix}sms_send" );
-				$collection = $wpdb->get_results( $prepare );
+				$collection = $wpdb->get_results(
+                    $wpdb->prepare( "SELECT * from {$wpdb->prefix}sms_send" )
+                );
 
 				break;
 
 			case 'inbox':
-				$prepare    = $wpdb->prepare( "SELECT * from {$wpdb->prefix}sms_two_way_incoming_messages" );
-				$collection = $wpdb->get_results( $prepare );
+				$collection = $wpdb->get_results(
+                    $wpdb->prepare( "SELECT * from {$wpdb->prefix}sms_two_way_incoming_messages" )
+                );
 
 				break;
 		}
@@ -79,7 +81,7 @@ class ExportAjax extends AjaxControllerAbstract {
 		if ( isset( $collection ) && $collection ) {
 
 			// convert object to array
-			$collection      = json_decode( json_encode( $collection ), true );
+			$collection      = json_decode( wp_json_encode( $collection ), true );
 			$columns_array[] = $columns;
 			$collection      = array_merge_recursive( $columns_array, $collection );
 			$current_time    = gmdate( 'Y-m-d-H-i-s' );

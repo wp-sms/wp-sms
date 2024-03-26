@@ -61,8 +61,9 @@ class StatsWidget extends AbstractWidget
 
                 $label = $firstDate->format($format);
 
-                $query   = $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'));
-                $results = $wpdb->get_results($query);
+                $results = $wpdb->get_results(
+                    $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'))
+                );
 
                 foreach ($results as $key => $result) {
                     $results[$result->status] = $result->count;

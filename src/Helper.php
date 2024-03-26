@@ -365,7 +365,7 @@ class Helper
                 $sql .= $wpdb->prepare(" AND id != %s", $subscribeId);
             }
 
-            $result = $wpdb->get_row($sql);
+            $result = $wpdb->get_row($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
             // If result has active status, raise an error
             if ($result && $result->status == '1') {
@@ -379,8 +379,9 @@ class Helper
                 $where = $wpdb->prepare('AND user_id != %s', $userId);
             }
 
-            $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
-            $result = $wpdb->get_results($sql);
+            $result = $wpdb->get_results(
+                $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber)
+            );
 
             // If result is not empty, raise an error
             if ($result) {

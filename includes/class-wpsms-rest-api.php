@@ -96,7 +96,7 @@ class RestApi
                 return new \WP_Error('subscribe', esc_html__('Service provider is not available for send activate key to your mobile. Please contact with site.', 'wp-sms'));
             }
 
-            $key = rand(1000, 9999);
+            $key = wp_rand(1000, 9999);
 
             foreach ($groupIds as $groupId) {
                 // Add subscribe to database
@@ -188,7 +188,7 @@ class RestApi
             $updateCondition['group_ID'] = $groupId;
         }
 
-        $check_mobile = $wpdb->get_row($db_prepare);
+        $check_mobile = $wpdb->get_row($db_prepare); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared	
 
         if ($check_mobile) {
 

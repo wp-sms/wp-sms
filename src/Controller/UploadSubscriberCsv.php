@@ -33,7 +33,7 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
         }
 
         // Open uploaded CSV file with read-only mode
-        $csvFile = fopen($_FILES['file']['tmp_name'], 'r');
+        $csvFile = fopen($_FILES['file']['tmp_name'], 'r'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 
         if (empty(file($_FILES['file']['tmp_name']))) {
             throw new Exception(esc_html__("The uploaded file doesn't contain any data.", 'wp-sms'));
@@ -65,9 +65,9 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
         $uploaded_file_path = $upload_result['file'];
 
         // Close opened CSV file
-        fclose($csvFile);
+        fclose($csvFile); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 
-        $first_row = json_encode($first_row);
+        $first_row = wp_json_encode($first_row);
 
         header("X-FirstRow-content: {$first_row}");
 

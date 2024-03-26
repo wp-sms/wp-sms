@@ -161,8 +161,9 @@ class Newsletter
     {
         global $wpdb;
 
-        $sql    = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE ID = %s", $id);
-        $result = $wpdb->get_row($sql);
+        $result = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE ID = %s", $id)
+        );
 
         if ($result) {
             return $result;
@@ -181,9 +182,10 @@ class Newsletter
         }
 
         $placeholders = implode(', ', $metaValue);
-        $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
-        $result = $wpdb->get_row($sql);
+        $result = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN (%s)", $placeholders)
+        );
 
         if ($result) {
             return $result;
@@ -196,8 +198,9 @@ class Newsletter
     public static function deleteInactiveSubscribersByMobile($mobile)
     {
         global $wpdb;
-        $sql     = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s AND status = '0'", $mobile);
-        $results = $wpdb->get_results($sql);
+        $results = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s AND status = '0'", $mobile)
+        );
 
         if ($results) {
             foreach ($results as $row) {
@@ -316,8 +319,9 @@ class Newsletter
     {
         global $wpdb;
 
-        $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id);
-        $result     = $wpdb->get_row($db_prepare);
+        $result     = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id)
+        );
 
         if ($result) {
             return $result;
@@ -421,8 +425,9 @@ class Newsletter
                     'name' => $name,
                 )
             );
-            $prepare_group_id = $wpdb->prepare("SELECT ID FROM {$table} WHERE `name` = %s", $name);
-            $group_id         = $wpdb->get_results($prepare_group_id);
+            $group_id = $wpdb->get_results(
+                $wpdb->prepare("SELECT ID FROM {$table} WHERE `name` = %s", $name)
+            );
 
             if ($result) {
 
@@ -465,8 +470,9 @@ class Newsletter
         }
 
         $table   = $wpdb->prefix . 'sms_subscribes_group';
-        $prepare = $wpdb->prepare("SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name);
-        $count   = $wpdb->get_var($prepare);
+        $count   = $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name)
+        );
 
         if ($count) {
             return array(
@@ -616,8 +622,9 @@ class Newsletter
         $country_codes = wp_sms_get_countries();
 
         foreach ($country_codes as $country_code => $country_name) {
-            $query       = $wpdb->prepare("SELECT COUNT(mobile) AS 'total' FROM {$wpdb->prefix}sms_subscribes WHERE mobile LIKE %s", $country_code . '%');
-            $temp_result = $wpdb->get_results($query);
+            $temp_result = $wpdb->get_results(
+                $wpdb->prepare("SELECT COUNT(mobile) AS 'total' FROM {$wpdb->prefix}sms_subscribes WHERE mobile LIKE %s", $country_code . '%')
+            );
 
             if ($temp_result[0]->total != '0') {
                 $result[] = [
