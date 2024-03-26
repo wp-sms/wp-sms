@@ -95,7 +95,8 @@ class Gateway
             'sendinblue'     => 'sendinblue.com',
             'whatsappapi'    => 'app.whatsapp-api.net',
             'rapidsms'       => 'rapidsms.net',
-            'apifon'         => 'apifon.com'
+            'apifon'         => 'apifon.com',
+            'awssns'         => 'aws.amazon.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
