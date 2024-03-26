@@ -63,7 +63,7 @@ class sms77 extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $result = @file_get_contents($this->wsdl_link . '?p=' . urlencode($this->has_key) . '&text=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&type=quality&from=' . urlencode($this->from));
+        $result = $this->request('GET', $this->wsdl_link . '?p=' . urlencode($this->has_key) . '&text=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&type=quality&from=' . urlencode($this->from));
 
         if ($error = $this->get_error($result)) {
             return new \WP_Error('send-sms', $error);
@@ -83,11 +83,6 @@ class sms77 extends \WP_SMS\Gateway
         do_action('wp_sms_send', $result);
 
         return $result;
-
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $result, 'error');
-
-        return new \WP_Error('send-sms', $result);
     }
 
     public function GetCredit()

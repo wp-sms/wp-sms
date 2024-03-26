@@ -98,7 +98,7 @@ class gatewayapi extends \WP_SMS\Gateway
          */
         $res = wp_remote_request($this->wsdl_link . '/mtsms', [
             'method'  => 'POST',
-            'body'    => json_encode($payload),
+            'body'    => wp_json_encode($payload),
             'headers' => array(
                 'Authorization' => 'Basic ' . base64_encode("$this->has_key:"),
                 'Accept'        => 'application/json, text/javascript',

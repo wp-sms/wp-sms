@@ -68,7 +68,7 @@ class nesssolution extends \WP_SMS\Gateway
                 'headers' => [
                     'Content-Type' => 'application/json'
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'APIKey'     => $this->has_key,
                     'Command'    => 'Send',
                     'Sender'     => $this->from,

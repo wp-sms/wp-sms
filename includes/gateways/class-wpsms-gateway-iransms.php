@@ -62,7 +62,7 @@ class iransms extends \WP_SMS\Gateway
         }
 
         foreach ($this->to as $number) {
-            $result = file_get_contents('http://www.iransms.co/URLSend.aspx?Username=' . $this->username . '&Password=' . $this->password . '&PortalCode=' . $this->has_key . '&Mobile=' . $number . '&Message=' . urlencode($this->msg) . '&Flash=0');
+            $result = $this->request('GET', 'http://www.iransms.co/URLSend.aspx?Username=' . $this->username . '&Password=' . $this->password . '&PortalCode=' . $this->has_key . '&Mobile=' . $number . '&Message=' . urlencode($this->msg) . '&Flash=0');
         }
 
         // Log the result

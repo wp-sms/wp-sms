@@ -58,7 +58,7 @@ class prosms extends \WP_SMS\Gateway
                     'Content-Type'  => 'application/json',
                     'Authorization' => "Bearer $this->has_key",
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'receiver'   => implode(',', $this->to),
                     'senderName' => $this->from,
                     'message'    => $this->msg,

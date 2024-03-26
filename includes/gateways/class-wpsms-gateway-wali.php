@@ -92,7 +92,7 @@ class wali extends \WP_SMS\Gateway
                     'Token'        => $this->token,
                     'Content-Type' => 'application/json'
                 ],
-                'body'    => json_encode($postBody)
+                'body'    => wp_json_encode($postBody)
             );
 
             $response = $this->request('POST', $this->wsdl_link . '/messages', [], $params, false);
@@ -150,7 +150,7 @@ class wali extends \WP_SMS\Gateway
                     'Token'        => $this->token,
                     'Content-Type' => 'application/json'
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'url' => $fileUrl
                 ])
             );

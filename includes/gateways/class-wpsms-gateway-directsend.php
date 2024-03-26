@@ -111,7 +111,7 @@ class directsend extends \WP_SMS\Gateway
             $arguments['body']['message']          = $this->msg;
             $arguments['body']['sender']           = $from_explode[0];
 
-            $arguments['body'] = json_encode($arguments['body']);
+            $arguments['body'] = wp_json_encode($arguments['body']);
 
             $response = $this->request('POST', "$apiUrl", [], $arguments);
 

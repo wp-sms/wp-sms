@@ -62,7 +62,7 @@ class smsgatewayat extends \WP_SMS\Gateway
 
         $msg = urlencode($this->msg);
 
-        $result = file_get_contents("{$this->wsdl_link}sendsms.php?username={$this->username}&validpass={$this->password}&absender={$this->from}&number[]={$to}&message={$msg}&receipt=1");
+        $result = $this->request('GET', "{$this->wsdl_link}sendsms.php?username={$this->username}&validpass={$this->password}&absender={$this->from}&number[]={$to}&message={$msg}&receipt=1");
 
         if ($result) {
             // Log the result

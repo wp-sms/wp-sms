@@ -61,7 +61,7 @@ class wifisms extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $result = @file_get_contents($this->wsdl_link . '?action=SMS_SEND&username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&api=1&text=' . urlencode($this->msg) . '&to=' . implode(",", $this->to) . '&FLASH=0&from=' . urlencode($this->from));
+        $result = $this->request('GET', $this->wsdl_link . '?action=SMS_SEND&username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&api=1&text=' . urlencode($this->msg) . '&to=' . implode(",", $this->to) . '&FLASH=0&from=' . urlencode($this->from));
 
         if ($result) {
             // Log the result
@@ -91,7 +91,7 @@ class wifisms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $result = @file_get_contents($this->wsdl_link . '?action=CHECK_CREDIT&username=' . urlencode($this->username) . '&password=' . urlencode($this->password));
+        $result = $this->request('GET', $this->wsdl_link . '?action=CHECK_CREDIT&username=' . urlencode($this->username) . '&password=' . urlencode($this->password));
 
         return $result;
     }
