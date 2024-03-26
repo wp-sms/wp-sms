@@ -28,15 +28,40 @@
 
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
-        <a class="send-sms" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms'); ?>"><span class="icon"></span><?php esc_html_e('Send SMS', 'wp-sms'); ?></a>
-        <a class="inbox" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-inbox'); ?>"><span class="icon"></span><?php esc_html_e('Inbox', 'wp-sms'); ?> <span class="badge">2</span></a>
-        <a class="outbox" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-outbox'); ?>"><span class="icon"></span><?php esc_html_e('Outbox', 'wp-sms'); ?></a>
-        <a class="integrations" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations'); ?>"><span class="icon"></span><?php esc_html_e('Integrations', 'wp-sms'); ?></a>
+
+        <?php
+        if (!function_exists('generate_menu_link')) {
+            function generate_menu_link($page_slug, $link_text, $icon_class, $badge_count = null)
+            {
+                $class = '';
+                if (isset($_GET['page']) && $_GET['page'] === $page_slug) {
+                    $class = 'active';
+                }
+
+                $href = esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=' . $page_slug);
+
+                $badge = '';
+                if ($badge_count !== null) {
+                    $badge = '<span class="badge">' . esc_html($badge_count) . '</span>';
+                }
+
+                $link = '<a class="' . esc_attr($icon_class) . ' ' . esc_attr($class) . '" href="' . $href . '">';
+                $link .= '<span class="icon"></span>' . esc_html($link_text) . ' ' . $badge;
+                $link .= '</a>';
+
+                echo $link;
+            }
+        }
+        generate_menu_link('wp-sms', __('Send SMS', 'wp-sms'), 'send-sms');
+        generate_menu_link('wp-sms-inbox', __('Inbox', 'wp-sms'), 'inbox', 2);
+        generate_menu_link('wp-sms-outbox', __('Outbox', 'wp-sms'), 'outbox');
+        generate_menu_link('wp-sms-integrations', __('Integrations', 'wp-sms'), 'integrations');
+        ?>
     </div>
     <div class="wpsms-header-items-side">
-         <?php if (count($addons) == 0) : ?>
+        <?php if (count($addons) == 0) : ?>
             <div class="license-status license-status--free">
-                <a href="<?php echo esc_url(WP_SMS_SITE); ?>/buy" target="_blank"><span><?php esc_html_e('Upgrade To PRO', 'wp-sms'); ?></a></span>
+                <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php esc_html_e('UPGRADE TO PRO', 'wp-sms'); ?></span></a>
             </div>
         <?php else : ?>
             <div class="license-status license-status--valid">
@@ -45,13 +70,15 @@
                     // translators: %1$s: Active licenses, %2$s: Total licenses
                     echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons));
                     ?>
-                    <a class="upgrade<?php echo ' ' . esc_attr($active); ?>" target="_blank" href="<?php echo esc_url(WP_SMS_SITE); ?>/buy"><?php esc_html_e('UPGRADE', 'wp-sms'); ?></a>
+                    <a class="upgrade" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php esc_html_e('UPGRADE', 'wp-sms'); ?></a>
                 </span>
             </div>
         <?php endif; ?>
-        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="setting" class="setting"></a>
-        <a href="<?php echo esc_url(WP_SMS_SITE); ?>/support" target="_blank" title="support" class="support"></a>
+        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('setting', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
+            echo 'active';
+        } ?>"></a>
+        <a href="<?php echo esc_url(WP_SMS_SITE . '/support'); ?>" target="_blank" title="<?php esc_html_e('support', 'wp-sms'); ?>" class="support"></a>
 
-     </div>
+    </div>
 
 </div>

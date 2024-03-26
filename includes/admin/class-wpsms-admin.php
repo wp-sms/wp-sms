@@ -28,34 +28,50 @@ class Admin
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('init', array($this, 'do_output_buffer'));
-        add_action('admin_footer_text',array($this, 'wpsms_custom_footer'),999) ;
-        add_action('update_footer' ,array($this, 'wpsms_update_footer'),999) ;
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
         add_filter('set-screen-option', array($this, 'set_screen_option'), 10, 3);
         add_filter('admin_body_class', array($this, 'modify_admin_body_classes'));
+        add_filter('admin_footer_text', array($this, 'wpsms_custom_footer'), 999);
+        add_filter('update_footer', array($this, 'wpsms_update_footer'), 999);
     }
 
     /**
      * Include footer
      */
-    public function wpsms_custom_footer($footer_text)
+    public function wpsms_custom_footer($text)
     {
-        $custom_footer_html = ' Please rate <a href="'. esc_url(WP_SMS_SITE).'" title="'. esc_url(WP_SMS_SITE).'" class="footer-left-wpsms" target="_blank">WP SMS</a> <a href="https://wordpress.org/plugins/wp-sms/" title="rate" target="_blank">★★★★★</a>   on. <a href="https://wordpress.org/" target="_blank">WordPress.org</a> to help us spread the word. Thank you!';
-        return $custom_footer_html;
+        $screen = get_current_screen();
+        if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
+            $text = sprintf(
+                __('Please rate <a href="%1$s" title="%2$s" class="footer-left-wpsms" target="_blank">WP SMS</a> <a href="%3$s" title="%4$s" target="_blank">★★★★★</a> on <a href="%5$s" target="_blank">WordPress.org</a> to help us spread the word. Thank you!', 'wp-sms'),
+                esc_url(WP_SMS_SITE),
+                esc_html__('WP SMS', 'wp-sms'),
+                'https://wordpress.org/plugins/wp-sms/',
+                esc_html__('rate', 'wp-sms'),
+                'https://wordpress.org/'
+            );
+        }
+        return $text;
     }
-    public function wpsms_update_footer()
+
+    public function wpsms_update_footer($content)
     {
-        global $wp_version;
-        $plugin_data = get_plugin_data(WP_SMS_DIR . 'wp-sms.php');
-        $plugin_version = $plugin_data['Version'];
-        printf('<p id="footer-upgrade" class="alignright">%s | %s %s</p>',
-            esc_html__('WordPress', 'wp-sms') . ' ' . esc_html($wp_version),
-            esc_html($plugin_data['Name']),
-            esc_html($plugin_version)
-        );
+        $screen = get_current_screen();
+        if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
+            global $wp_version;
+            $plugin_data    = get_plugin_data(WP_SMS_DIR . 'wp-sms.php');
+            $plugin_version = $plugin_data['Version'];
+            $content        = sprintf('<p id="footer-upgrade" class="alignright">%s | %s %s</p>',
+                esc_html__('WordPress', 'wp-sms') . ' ' . esc_html($wp_version),
+                esc_html($plugin_data['Name']),
+                esc_html($plugin_version)
+            );
+        }
+        return $content;
     }
+
     /**
      * Include admin assets
      */
@@ -84,7 +100,6 @@ class Admin
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign' or $screen->id == 'woocommerce_page_wc-orders') {
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
-
 
             if (stristr($screen->id, 'wp-sms')) {
                 wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', true, WP_SMS_VERSION);
