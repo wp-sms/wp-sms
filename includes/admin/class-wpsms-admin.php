@@ -263,7 +263,7 @@ class Admin
         }, 6);
         add_submenu_page('wp-sms', esc_html__('Integrations', 'wp-sms'), esc_html__('Integrations', 'wp-sms'), 'wpsms_setting', 'wp-sms-integrations', function () {
             return (new SettingsIntegration)->render_settings('contact_form7',
-                array('header_template' => 'header-integration-setting.php', 'title' => esc_html__('Integrations', 'wp-sms'))
+                array('header_template' => 'header.php', 'title' => esc_html__('Integrations', 'wp-sms'))
             );
         }, 7);
 
@@ -498,7 +498,7 @@ class Admin
                     'user_email' => function_exists('wp_get_current_user') ? wp_get_current_user()->user_email : '',
                     'platform'   => 'wordpress-admin',
                     'config'     => [
-                        'color'         => '#ec7c43',
+                        'color'         => '#fff',
                         'button'        => esc_html__('Feedback', 'wp-sms'),
                         'subtitle'      => esc_html__('Feel free to share your thoughts!', 'wp-sms'),
                         'opening_style' => 'modal',

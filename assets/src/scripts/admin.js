@@ -280,3 +280,26 @@ class ShowIfEnabled {
 document.addEventListener('DOMContentLoaded', () => {
     new ShowIfEnabled();
 });
+
+/**
+ * FeedbackBird position
+ * */
+function moveFeedbackBird() {
+    let windowWidth = window.outerWidth || document.documentElement.clientWidth;
+    const feedbackBird = document.getElementById('feedback-bird-app');
+    const license = document.querySelector('.wpsms-menu-content .wpsms-license');
+    const support = document.querySelector('.wpsms-header-items-side');
+    if (feedbackBird) {
+        if (windowWidth  <= 900) {
+            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
+            license.parentNode.insertBefore(cutDiv, license);
+        } else {
+            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
+            support.appendChild(cutDiv);
+        }
+        feedbackBird.style.display = 'block';
+    }
+}
+
+window.onload = moveFeedbackBird;
+window.addEventListener('resize', moveFeedbackBird);
