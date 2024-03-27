@@ -22,7 +22,7 @@ class fast2sms extends Gateway
         parent::__construct();
         $this->bulk_send      = true;
         $this->validateNumber = esc_html__('Enter number without country code.', 'wp-sms');
-        $this->help           = esc_html__('Please enter your API Key and DLT Template ID. For DLT messages, send variables in the message body separated via "|" symbol. e.g. Rahul|8888888888|6695', 'wp-sms');
+        $this->help           = __('For <b>DLT</b> messages, send variables and message id in this format: <b>var1|var2|message_id</b>. <br> For <b>DLT Manual</b> messages, send message and template id in the same way. e.g. <b>message|template_id</b>', 'wp-sms');
         $this->has_key = true;
         $this->gatewayFields = [
             'route' => [
