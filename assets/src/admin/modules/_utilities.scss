@@ -266,7 +266,7 @@
     display: flex;
     padding: 12px;
     position: relative;
-
+    align-items: center;
     &.active, &:hover {
       background: #F3F3F5;
     }

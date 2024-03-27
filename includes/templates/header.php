@@ -67,8 +67,9 @@ if (!function_exists('generate_menu_link')) {
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
         <?php
+        $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
         generate_menu_link('wp-sms', __('Send SMS', 'wp-sms'), 'send-sms');
-        generate_menu_link('wp-sms-inbox', __('Inbox', 'wp-sms'), 'inbox', 2);
+        generate_menu_link('wp-sms-inbox', __('Inbox', 'wp-sms'), 'inbox', $unreadMessagesCount);
         generate_menu_link('wp-sms-outbox', __('Outbox', 'wp-sms'), 'outbox');
         generate_menu_link('wp-sms-integrations', __('Integrations', 'wp-sms'), 'integrations');
         ?>
@@ -90,7 +91,7 @@ if (!function_exists('generate_menu_link')) {
                     <div class="menu-bar"></div>
                     <div class="menu-bar"></div>
                 </div>
-                <span>Menu</span>
+                <span><?php esc_html_e('Menu', 'wp-sms'); ?></span>
             </label>
             <div class="wpsms-menu-content">
                 <?php

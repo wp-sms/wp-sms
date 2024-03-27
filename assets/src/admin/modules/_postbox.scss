@@ -209,6 +209,35 @@
   }
 }
 
+.rtl .wpsms-header-items-side {
+  left: 20px;
+  right: auto!important;
+}
+.rtl .wpsms-header-banner .wpsms-header-items-flex a span.badge{
+  margin-right: 5px;
+  margin-left: 0;
+}
+.rtl .wpsms-header-banner .license-status--valid a.upgrade{
+  margin: 0 5px 0 0;
+}
+.rtl .wpsms-header-banner .license-status--valid a.upgrade::after{
+  transform: rotate(180deg);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.rtl .wpsms-menu-content{
+  left: 0;
+  right: auto!important;
+}
+body.rtl #feedback-bird-app{
+  float: none!important;
+  margin:0!important;
+}
+.rtl .wpsms-header-banner .wpsms-header-items-side .wpsms-menu-content a span.icon ,
+.rtl .wpsms-mobile-menu #feedback-bird-app .c-fbb-btn--default>span:before{
+  margin-right: 0!important;
+  margin-left: 10px;
+}
 .wpsms-header-banner {
   display: flex;
   justify-content: flex-start;
@@ -444,8 +473,7 @@ body.rtl #screen-meta-links {
 
 .rtl .wpsms-header-banner {
   justify-content: flex-start;
-  align-items: center;
-}
+ }
 
 .wpsms-header-banner .license-status {
   transition: 0.3s all ease-out;
