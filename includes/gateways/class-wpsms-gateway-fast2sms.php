@@ -15,7 +15,6 @@ class fast2sms extends Gateway
     public $flash = "enable";
     public $isflash = false;
     public $entity_id = '';
-    public $dlt_template_id;
     public $route = 'dlt_manual';
 
     public function __construct()
@@ -47,12 +46,6 @@ class fast2sms extends Gateway
                 'name'      => esc_html__('Approved Sender ID', 'wp-sms'),
                 'desc'      => esc_html__('Enter sender ID of gateway.', 'wp-sms'),
                 'className' => 'js-wpsms-show_if_route_equal_dlt js-wpsms-show_if_route_equal_dlt_manual'
-            ],
-            'dlt_template_id'  => [
-                'id'        => 'dlt_template_id',
-                'name'      => esc_html__('Registered DLT Template ID', 'wp-sms'),
-                'desc'      => esc_html__('Enter your Registered DLT Template ID.', 'wp-sms'),
-                'className' => 'js-wpsms-show_if_route_equal_dlt_manual'
             ],
             'entity_id'  => [
                 'id'        => 'entity_id',
