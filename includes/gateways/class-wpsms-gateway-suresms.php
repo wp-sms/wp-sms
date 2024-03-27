@@ -114,7 +114,7 @@ class suresms extends \WP_SMS\Gateway
         }
 
         // Convert to array
-        $arr = json_decode(json_encode($xml), 1);
+        $arr = json_decode(wp_json_encode($xml), 1);
 
         return $arr['Balance'];
     }

@@ -75,7 +75,7 @@ class liveall extends \WP_SMS\Gateway
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'apitoken' => $this->has_key,
                     'senderid' => $this->from,
                     'messages' => array_map(function ($number) {

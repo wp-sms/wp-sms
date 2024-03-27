@@ -61,9 +61,9 @@ class dot4all extends \WP_SMS\Gateway
         $to  = implode(',', $this->to);
         $msg = urlencode($this->msg);
 
-        $result = file_get_contents("{$this->wsdl_link}batch.php?user={$this->username}&pass={$this->password}&rcpt={$to}&data={$msg}&sender={$this->from}&qty=n");
+        $result = $this->request('GET', "{$this->wsdl_link}batch.php?user={$this->username}&pass={$this->password}&rcpt={$to}&data={$msg}&sender={$this->from}&qty=n", [], [], false);
 
-        if ($result == 1) {
+        if ($result) {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
 
@@ -92,10 +92,10 @@ class dot4all extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $result = file_get_contents("{$this->wsdl_link}credit.php?user={$this->username}&pass={$this->password}");
+        $result = $this->request('GET', "{$this->wsdl_link}credit.php?user={$this->username}&pass={$this->password}", [], [], false);
 
-        if (strchr($result, 'OK')) {
-            return preg_replace('/[^0-9]+/', '', $result);
+        if (strchr(wp_json_encode($result), 'OK')) {
+            return preg_replace('/[^0-9]+/', '', wp_json_encode($result));
         } else {
             return new \WP_Error('account-credit', $result);
         }

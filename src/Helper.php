@@ -90,8 +90,8 @@ class Helper
         }
 
         $users = get_users([
-            'meta_key'   => self::getUserMobileFieldName(),
-            'meta_value' => self::prepareMobileNumberQuery($number)
+            'meta_key'   => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_value' => self::prepareMobileNumberQuery($number) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
@@ -108,7 +108,7 @@ class Helper
         $mobileFieldKey = self::getUserMobileFieldName();
 
         $args = array(
-            'meta_query'  => array(
+            'meta_query'  => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 array(
                     'key'     => $mobileFieldKey,
                     'value'   => '',
@@ -151,7 +151,7 @@ class Helper
     {
         $fieldKey = self::getUserMobileFieldName();
         $args     = array(
-            'meta_query' => array(
+            'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 'relation' => 'OR',
                 array(
                     'key'     => $fieldKey,
@@ -365,7 +365,7 @@ class Helper
                 $sql .= $wpdb->prepare(" AND id != %s", $subscribeId);
             }
 
-            $result = $wpdb->get_row($sql);
+            $result = $wpdb->get_row($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
             // If result has active status, raise an error
             if ($result && $result->status == '1') {
@@ -379,8 +379,9 @@ class Helper
                 $where = $wpdb->prepare('AND user_id != %s', $userId);
             }
 
-            $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
-            $result = $wpdb->get_results($sql);
+            $result = $wpdb->get_results(
+                $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber)
+            );
 
             // If result is not empty, raise an error
             if ($result) {

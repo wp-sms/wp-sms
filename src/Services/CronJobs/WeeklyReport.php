@@ -21,7 +21,7 @@ class WeeklyReport
 
         // Get the current time and day of the week
         $now       = current_time('timestamp');
-        $dayOfWeek = date('w', $now);
+        $dayOfWeek = date('w', $now); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date	
 
         // Get the WordPress option for the first day of the week
         $firstDayOption = get_option('start_of_week');

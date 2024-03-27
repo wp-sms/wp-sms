@@ -15,7 +15,7 @@ class EmailReportGenerator
     {
         global $wpdb;
 
-        $this->lastWeek = date('Y-m-d H:i:s', strtotime('-1 week'));
+        $this->lastWeek = date('Y-m-d H:i:s', strtotime('-1 week')); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date	
         $this->db       = $wpdb;
     }
 
@@ -163,6 +163,6 @@ class EmailReportGenerator
         $lastDayOfLastWeek  = strtotime('last saturday', $now) - ($firstDayOption * 86400);
 
         // Convert Unix timestamps to the desired date format
-        return ['startDate' => date('j M', $firstDayOfLastWeek), 'endDate' => date('j M', $lastDayOfLastWeek)];
+        return ['startDate' => date('j M', $firstDayOfLastWeek), 'endDate' => date('j M', $lastDayOfLastWeek)]; // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
     }
 }

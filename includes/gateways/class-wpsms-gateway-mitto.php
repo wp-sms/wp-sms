@@ -77,7 +77,7 @@ class mitto extends \WP_SMS\Gateway
                 'X-Mitto-API-Key' => $this->has_key,
                 'Content-Type'    => 'application/json',
             ),
-            'body'    => json_encode([
+            'body'    => wp_json_encode([
                 'from' => $this->from,
                 'to'   => $this->to,
                 'text' => $this->msg,

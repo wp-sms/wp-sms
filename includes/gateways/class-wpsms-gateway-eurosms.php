@@ -82,7 +82,7 @@ class eurosms extends \WP_SMS\Gateway
                 'headers' => array(
                     'Content-Type' => 'application/json; charset=UTF-8'
                 ),
-                'body'    => json_encode(
+                'body'    => wp_json_encode(
                     array(
                         'iid'   => $this->username,
                         'sgn'   => $this->calcSignature($sgn),

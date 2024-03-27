@@ -62,9 +62,9 @@ class cellsynt extends \WP_SMS\Gateway
 
         $to     = implode(',', $this->to);
         $msg    = urlencode($this->msg);
-        $result = file_get_contents($this->wsdl_link . "?username=" . $this->username . "&password=" . $this->password . "&destination=" . $to . "&type=text&charset=UTF-8&text=" . $msg . "&originatortype=alpha&allowconcat=6&originator=" . $this->from);
+        $result = $this->request('GET', $this->wsdl_link . "?username=" . $this->username . "&password=" . $this->password . "&destination=" . $to . "&type=text&charset=UTF-8&text=" . $msg . "&originatortype=alpha&allowconcat=6&originator=" . $this->from, [], [], false);
 
-        if (substr($result, 0, 4) == "OK: ") {
+        if (substr(wp_json_encode($result), 0, 4) == "OK: ") {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
 

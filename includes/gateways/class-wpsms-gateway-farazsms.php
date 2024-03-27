@@ -67,7 +67,7 @@ class farazsms extends \WP_SMS\Gateway
                 'pass'    => $this->password,
                 'from'    => $this->from,
                 'message' => $this->msg,
-                'to'      => json_encode($this->to),
+                'to'      => wp_json_encode($this->to),
                 'op'      => 'send'
             )
         );

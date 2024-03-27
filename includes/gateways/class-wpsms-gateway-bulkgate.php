@@ -131,7 +131,7 @@ class bulkgate extends \WP_SMS\Gateway
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
-                'body'    => json_encode($body)
+                'body'    => wp_json_encode($body)
             ];
 
             $response = $this->request('POST', $apiUrl, [], $params, false);
