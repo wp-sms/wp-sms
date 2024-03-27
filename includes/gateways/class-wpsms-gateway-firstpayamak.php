@@ -63,7 +63,7 @@ class firstpayamak extends \WP_SMS\Gateway
         $msg = urlencode($this->msg);
 
         foreach ($this->to as $number) {
-            $result = $this->request('GET', "http://ui.firstpayamak.ir/tools/urlservice/send/?username={$this->username}&password={$this->password}&from={$this->from}&to={$number}&message={$msg}");
+            $result = $this->request('GET', "http://ui.firstpayamak.ir/tools/urlservice/send/?username={$this->username}&password={$this->password}&from={$this->from}&to={$number}&message={$msg}", [], [], false);
         }
 
         if ($result) {

@@ -109,7 +109,7 @@ class smss extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $result = $this->request('GET', $this->wsdl_link . 'MultiSendAPI/balance&user=' . $this->username . '&password=' . $this->password . '&country_phone_code=' . $this->options['mobile_county_code']);
+        $result = $this->request('GET', $this->wsdl_link . 'MultiSendAPI/balance&user=' . $this->username . '&password=' . $this->password . '&country_phone_code=' . $this->options['mobile_county_code'], [], [], false);
 
         if ($result->success) {
             return $result->sms;

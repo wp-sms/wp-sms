@@ -60,7 +60,7 @@ class shreesms extends \WP_SMS\Gateway
         $msg = urlencode($this->msg);
 
         foreach ($this->to as $number) {
-            $result = $this->request('GET', "{$this->wsdl_link}smsserver/SMS10N.aspx?Userid={$this->username}&UserPassword={$this->password}&PhoneNumber={$number}&Text={$msg}&GSM={$this->from}");
+            $result = $this->request('GET', "{$this->wsdl_link}smsserver/SMS10N.aspx?Userid={$this->username}&UserPassword={$this->password}&PhoneNumber={$number}&Text={$msg}&GSM={$this->from}", [], [], false);
         }
 
         if ($result) {
@@ -91,7 +91,7 @@ class shreesms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
-        $result = $this->request('GET', "{$this->wsdl_link}SMSServer/SMSCnt.asp?ID={$this->username}&pw={$this->password}");
+        $result = $this->request('GET', "{$this->wsdl_link}SMSServer/SMSCnt.asp?ID={$this->username}&pw={$this->password}", [], [], false);
 
         if (preg_replace('/[^0-9]/', '', wp_json_encode($result))) {
             return $result;

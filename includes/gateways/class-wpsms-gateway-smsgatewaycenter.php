@@ -60,7 +60,7 @@ class smsgatewaycenter extends \WP_SMS\Gateway
 
         $msg = urlencode($this->msg);
 
-        $result = $this->request('GET', $this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode(',', $this->to) . "&senderId=" . $this->from . "&msg=" . $msg . "&format=json");
+        $result = $this->request('GET', $this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode(',', $this->to) . "&senderId=" . $this->from . "&msg=" . $msg . "&format=json", [], [], false);
 
         if ($result->status == 'error') {
             // Log the result
@@ -99,7 +99,7 @@ class smsgatewaycenter extends \WP_SMS\Gateway
         if (!$this->username && !$this->password) {
             return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
-        $result     = $this->request('GET', $this->wsdl_link . "balanceValidityCheck?userId=" . $this->username . "&password=" . $this->password . "&format=json");
+        $result = $this->request('GET', $this->wsdl_link . "balanceValidityCheck?userId=" . $this->username . "&password=" . $this->password . "&format=json", [], [], false);
         if ($result->status !== 'success') {
             return new \WP_Error('account-credit', "$result->status | $result->errorCode | $result->reason");
         }

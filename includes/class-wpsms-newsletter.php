@@ -182,10 +182,9 @@ class Newsletter
         }
 
         $placeholders = implode(', ', $metaValue);
+        $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
-        $result = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN (%s)", $placeholders)
-        );
+        $result = $wpdb->get_row($sql);
 
         if ($result) {
             return $result;

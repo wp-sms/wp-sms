@@ -79,7 +79,7 @@ class mtarget extends \WP_SMS\Gateway
                 return;
             }
 
-            $result = $this->request('GET', $this->wsdl_link . '?username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&sender=' . urlencode($this->from) . '&msisdn=' . urlencode($to_list) . '&msg=' . urlencode($this->msg) . '&allowunicode=' . $allowunicode);
+            $result = $this->request('GET', $this->wsdl_link . '?username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&sender=' . urlencode($this->from) . '&msisdn=' . urlencode($to_list) . '&msg=' . urlencode($this->msg) . '&allowunicode=' . $allowunicode, [], [], false);
 
             try {
                 foreach ($result->results as $message) {
@@ -121,7 +121,7 @@ class mtarget extends \WP_SMS\Gateway
         }
 
         // Using a legacy endpoint to check the remaining credit
-        $result = $this->request('GET', "https://smswebservices.mtarget.fr/SmsWebServices/ServletSms?method=getAccountInformation&username=" . $this->username . "&password=" . $this->password);
+        $result = $this->request('GET', "https://smswebservices.mtarget.fr/SmsWebServices/ServletSms?method=getAccountInformation&username=" . $this->username . "&password=" . $this->password, [], [], false);
         preg_match('/<CREDIT>([^<]+)<\/CREDIT>/', wp_json_encode($result), $regex_match);
 
         $credit = (int)$regex_match[1];

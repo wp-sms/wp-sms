@@ -63,7 +63,7 @@ class sms77 extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $result = $this->request('GET', $this->wsdl_link . '?p=' . urlencode($this->has_key) . '&text=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&type=quality&from=' . urlencode($this->from));
+        $result = $this->request('GET', $this->wsdl_link . '?p=' . urlencode($this->has_key) . '&text=' . urlencode($this->msg) . '&to=' . implode(",",$this->to) . '&type=quality&from=' . urlencode($this->from), [], [], false);
 
         if ($error = $this->get_error($result)) {
             return new \WP_Error('send-sms', $error);

@@ -63,7 +63,7 @@ class adpdigital extends \WP_SMS\Gateway
         $to  = str_replace("09", "989", implode(",",$this->to));
         $msg = urlencode($this->msg);
 
-        $result = $this->request('GET', "{$this->wsdl_link}send?username={$this->username}&password={$this->password}&dstaddress={$to}&body={$msg}&clientid={$this->from}&type=text&unicode=1");
+        $result = $this->request('GET', "{$this->wsdl_link}send?username={$this->username}&password={$this->password}&dstaddress={$to}&body={$msg}&clientid={$this->from}&type=text&unicode=1", [], [], false);
 
         if (strstr(wp_json_encode($result), 'ERR')) {
             // Log the result
@@ -94,7 +94,7 @@ class adpdigital extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
-        $result = $this->request('GET', "{$this->wsdl_link}balance?username={$this->username}&password={$this->password}&facility=send");
+        $result = $this->request('GET', "{$this->wsdl_link}balance?username={$this->username}&password={$this->password}&facility=send", [], [], false);
 
         if (strstr(wp_json_encode($result), 'ERR')) {
             return new \WP_Error('account-credit', $result);

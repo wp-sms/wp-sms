@@ -63,7 +63,7 @@ class sms_new extends \WP_SMS\Gateway
         $msg = urlencode($this->msg);
 
         foreach ($this->to as $number) {
-            $result = $this->request('GET', "{$this->wsdl_link}?user={$this->username}&pass={$this->password}&lineNo={$this->from}&to={$number}&text={$msg}");
+            $result = $this->request('GET', "{$this->wsdl_link}?user={$this->username}&pass={$this->password}&lineNo={$this->from}&to={$number}&text={$msg}", [], [], false);
         }
 
         if ($result) {
