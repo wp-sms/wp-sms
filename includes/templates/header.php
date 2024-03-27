@@ -75,7 +75,7 @@ if (!function_exists('generate_menu_link')) {
     </div>
     <div class="wpsms-header-items-side">
         <?php
-        // Generate mobile license status
+        // Generate license status
         generate_license_status($addons);
         ?>
         <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('setting', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
