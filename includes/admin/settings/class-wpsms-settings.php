@@ -2854,7 +2854,7 @@ class Settings
     {
         // Load countries list file
         $file = WP_SMS_DIR . 'assets/countries.json';
-        $file = file_get_contents($file);
+        $file = file_get_contents($file); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
         return json_decode($file, true);
     }

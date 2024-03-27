@@ -64,7 +64,7 @@ class altiria extends \WP_SMS\Gateway
             'headers' => array(
                 'Content-Type' => 'application/json;charset=UTF-8'
             ),
-            'body'    => json_encode($body)
+            'body'    => wp_json_encode($body)
         ]);
 
         if (is_wp_error($response)) {
@@ -97,7 +97,7 @@ class altiria extends \WP_SMS\Gateway
             'headers' => array(
                 'Content-Type' => 'application/json;charset=UTF-8'
             ),
-            'body'    => json_encode($body)
+            'body'    => wp_json_encode($body)
         ]);
 
         if (is_wp_error($response)) {

@@ -62,7 +62,7 @@ class test extends \WP_SMS\Gateway
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'action'    => 'send-sms',
                     'sender_id' => $this->from,
                     'recipient' => implode(',', $this->to),

@@ -75,7 +75,7 @@ class primotexto extends \WP_SMS\Gateway
                             'X-Primotexto-ApiKey' => $api,
                             'Content-Type'        => 'application/json; charset=UTF-8',
                         ),
-                        'body'    => json_encode(
+                        'body'    => wp_json_encode(
                             array(
                                 'number'  => trim($number),
                                 'message' => $msg,

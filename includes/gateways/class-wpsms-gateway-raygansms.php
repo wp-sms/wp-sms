@@ -67,7 +67,7 @@ class raygansms extends \WP_SMS\Gateway
                 'accept'        => 'application/json',
                 'authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
             ),
-            'body'    => json_encode(array(
+            'body'    => wp_json_encode(array(
                 'PhoneNumber'         => $this->from,
                 'Message'             => $this->msg,
                 'Mobiles'             => $this->to,

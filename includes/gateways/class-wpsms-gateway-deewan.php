@@ -81,7 +81,7 @@ class deewan extends \WP_SMS\Gateway
                     'Content-Type'  => 'application/json',
                     'Authorization' => "Bearer $token",
                 ),
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'messageText' => $this->msg,
                     'senderName'  => $this->from,
                     'messageType' => 'text',
@@ -159,7 +159,7 @@ class deewan extends \WP_SMS\Gateway
                 'Content-Type' => 'application/json',
                 'accept'       => 'application/json',
             ),
-            'body'    => json_encode([
+            'body'    => wp_json_encode([
                 'userName' => $this->username,
                 'apiKey'   => $this->has_key,
             ])

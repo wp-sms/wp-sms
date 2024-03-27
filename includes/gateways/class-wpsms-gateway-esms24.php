@@ -62,7 +62,7 @@ class esms24 extends \WP_SMS\Gateway
         $msg = urlencode($this->msg);
 
         foreach ($this->to as $number) {
-            $result = file_get_contents("{$this->wsdl_link}?userName={$this->username}&password={$this->password}&domainName={$this->has_key}&smsText={$msg}&reciverNumber={$number}&senderNumber={$this->from}");
+            $result = $this->request('GET', "{$this->wsdl_link}?userName={$this->username}&password={$this->password}&domainName={$this->has_key}&smsText={$msg}&reciverNumber={$number}&senderNumber={$this->from}", [], [], false);
         }
 
         if ($result) {

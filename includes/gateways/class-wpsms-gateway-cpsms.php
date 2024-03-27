@@ -71,7 +71,7 @@ class cpsms extends \WP_SMS\Gateway
                 'Accept'        => 'application/json, text/javascript',
                 'Content-Type'  => 'application/json'
             ),
-            'body'    => json_encode($body)
+            'body'    => wp_json_encode($body)
         ]);
 
         // Check gateway credit
