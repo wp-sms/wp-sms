@@ -15,16 +15,14 @@ class fast2sms extends Gateway
     public $flash = "enable";
     public $isflash = false;
     public $entity_id = '';
-    public $dlt_template_id;
     public $route = 'dlt_manual';
-    public $message_id;
 
     public function __construct()
     {
         parent::__construct();
         $this->bulk_send      = true;
         $this->validateNumber = esc_html__('Enter number without country code.', 'wp-sms');
-        $this->help           = esc_html__('Please enter your API Key and DLT Template ID. For DLT messages, send variables in the message body separated via "|" symbol. e.g. Rahul|8888888888|6695', 'wp-sms');
+        $this->help           = __('For <b>DLT</b> messages, send variables and message id in this format: <b>var1|var2|message_id</b>. <br> For <b>DLT Manual</b> messages, send message and template id in the same way. e.g. <b>message|template_id</b>', 'wp-sms');
         $this->has_key = true;
         $this->gatewayFields = [
             'route' => [
@@ -48,18 +46,6 @@ class fast2sms extends Gateway
                 'name'      => esc_html__('Approved Sender ID', 'wp-sms'),
                 'desc'      => esc_html__('Enter sender ID of gateway.', 'wp-sms'),
                 'className' => 'js-wpsms-show_if_route_equal_dlt js-wpsms-show_if_route_equal_dlt_manual'
-            ],
-            'message_id'  => [
-                'id'        => 'message_id',
-                'name'      => esc_html__('Approved Message ID', 'wp-sms'),
-                'desc'      => esc_html__('Enter your message ID.', 'wp-sms'),
-                'className' => 'js-wpsms-show_if_route_equal_dlt'
-            ],
-            'dlt_template_id'  => [
-                'id'        => 'dlt_template_id',
-                'name'      => esc_html__('Registered DLT Template ID', 'wp-sms'),
-                'desc'      => esc_html__('Enter your Registered DLT Template ID.', 'wp-sms'),
-                'className' => 'js-wpsms-show_if_route_equal_dlt_manual'
             ],
             'entity_id'  => [
                 'id'        => 'entity_id',
@@ -111,12 +97,22 @@ class fast2sms extends Gateway
                 'numbers'       => implode(',',$this->to),
                 'message'       => $this->msg,
                 'entity_id'     => $this->entity_id,
-                'template_id'   => $this->dlt_template_id
             ];
 
             if ($this->route === 'dlt') {
-                $params['message']          = $this->message_id;
-                $params['variables_values'] = $this->msg;
+                $message        = explode('|', $params['message']);
+                $messageId      = array_pop($message);
+                $variableValues = implode('|', $message);
+
+                $params['message']          = $messageId;
+                $params['variables_values'] = $variableValues;
+            } else if ($this->route === 'dlt_manual') {
+                $message = $this->getTemplateIdAndMessageBody();
+
+                if (isset($message['message'], $message['template_id'])) {
+                    $params['message']      = $message['message'];
+                    $params['template_id']  = $message['template_id'];
+                }
             }
 
             $response = $this->request('GET', "{$this->wsdl_link}/bulkV2", $params, [], false);
