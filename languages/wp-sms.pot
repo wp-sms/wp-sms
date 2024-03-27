@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-26T08:34:35+00:00\n"
+"POT-Creation-Date: 2024-03-27T08:26:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wp-sms\n"
@@ -39,7 +39,7 @@ msgstr ""
 #: includes/admin/add-ons/class-add-ons.php:47
 #: includes/admin/settings/class-wpsms-settings.php:2295
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:951
+#: includes/class-wpsms-gateway.php:952
 #: includes/templates/admin/subscriber-form.php:45
 #: includes/templates/admin/subscriber-form.php:48
 #: includes/templates/email/partials/report-data.php:73
@@ -48,7 +48,7 @@ msgstr ""
 
 #: includes/admin/add-ons/class-add-ons.php:50
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:939
+#: includes/class-wpsms-gateway.php:940
 msgid "Inactive"
 msgstr ""
 
@@ -209,7 +209,7 @@ msgid "WP SMS Pro v%s"
 msgstr ""
 
 #: includes/admin/class-wpsms-version.php:150
-#: includes/class-wpsms-gateway.php:596
+#: includes/class-wpsms-gateway.php:597
 msgid "Please select your gateway"
 msgstr ""
 
@@ -730,7 +730,6 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:628
 #: includes/admin/settings/class-wpsms-settings.php:735
 #: includes/admin/settings/class-wpsms-settings.php:843
-#: includes/admin/settings/class-wpsms-settings.php:1940
 msgid "Please enter mobile number for get sms. You can separate the numbers with the Latin comma."
 msgstr ""
 
@@ -845,8 +844,6 @@ msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:826
 #: includes/admin/settings/class-wpsms-settings.php:840
-#: includes/admin/settings/class-wpsms-settings.php:1914
-#: includes/admin/settings/class-wpsms-settings.php:1937
 #: includes/templates/admin/send-sms.php:66
 #: includes/templates/meta-box.php:41
 msgid "Number(s)"
@@ -1716,8 +1713,13 @@ msgstr ""
 msgid "Notification Recipients"
 msgstr ""
 
+#: includes/admin/settings/class-wpsms-settings.php:1914
+#: includes/admin/settings/class-wpsms-settings.php:1937
+msgid "Individual Numbers"
+msgstr ""
+
 #: includes/admin/settings/class-wpsms-settings.php:1915
-msgid "WordPress Users"
+msgid "User Roles"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1917
@@ -1738,7 +1740,11 @@ msgid "Specific Roles"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1933
-msgid "Select the roles of the user that you want to get notification while login."
+msgid "Assign SMS alerts to specific WordPress user roles."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:1940
+msgid "Enter mobile number(s) here to receive SMS alerts. For multiple numbers, separate them with commas."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1944
@@ -2061,37 +2067,37 @@ msgid "Subscribe"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:976
+#: includes/class-wpsms-gateway.php:977
 msgid "%1$s <a href=\"%2$s\" target=\"_blank\">Documentation</a>"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:976
+#: includes/class-wpsms-gateway.php:977
 msgid "N/A"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1002
-#: includes/class-wpsms-gateway.php:1024
-#: includes/class-wpsms-gateway.php:1044
+#: includes/class-wpsms-gateway.php:1003
+#: includes/class-wpsms-gateway.php:1025
+#: includes/class-wpsms-gateway.php:1045
 msgid "Available"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1008
-#: includes/class-wpsms-gateway.php:1030
-#: includes/class-wpsms-gateway.php:1050
+#: includes/class-wpsms-gateway.php:1009
+#: includes/class-wpsms-gateway.php:1031
+#: includes/class-wpsms-gateway.php:1051
 msgid "Not Available"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/class-wpsms-gateway.php:1459
+#: includes/class-wpsms-gateway.php:1460
 msgid "%s - SMS Sending Alert"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1467
+#: includes/class-wpsms-gateway.php:1468
 msgid "SMS Delivery Issue"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1471
+#: includes/class-wpsms-gateway.php:1472
 msgid "Check SMS gateway configuration"
 msgstr ""
 
@@ -2120,42 +2126,42 @@ msgstr ""
 msgid "Failed to add subscriber, please deactivate and then activate WP SMS and then try again."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:234
+#: includes/class-wpsms-newsletter.php:236
 msgid "The mobile number does not exist!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:247
+#: includes/class-wpsms-newsletter.php:249
 msgid "Successfully canceled the subscription!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:267
+#: includes/class-wpsms-newsletter.php:269
 msgid "The fields must be valued."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:302
+#: includes/class-wpsms-newsletter.php:304
 msgid "Subscriber successfully updated."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:304
+#: includes/class-wpsms-newsletter.php:306
 msgid "No change has been occurred."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:404
+#: includes/class-wpsms-newsletter.php:407
 msgid "Name is empty!"
 msgstr ""
 
 #. translators: %s: Group name
-#: includes/class-wpsms-newsletter.php:415
-#: includes/class-wpsms-newsletter.php:475
-#: includes/class-wpsms-newsletter.php:505
+#: includes/class-wpsms-newsletter.php:418
+#: includes/class-wpsms-newsletter.php:480
+#: includes/class-wpsms-newsletter.php:510
 msgid "Group Name \"%s\" exists!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:441
+#: includes/class-wpsms-newsletter.php:445
 msgid "Group successfully added."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:500
+#: includes/class-wpsms-newsletter.php:505
 msgid "Group successfully updated."
 msgstr ""
 
@@ -2220,7 +2226,7 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-bandarsms.php:106
 #: includes/gateways/class-wpsms-gateway-barmanpayamak.php:102
 #: includes/gateways/class-wpsms-gateway-barzinsms.php:102
-#: includes/gateways/class-wpsms-gateway-bearsms.php:93
+#: includes/gateways/class-wpsms-gateway-bearsms.php:92
 #: includes/gateways/class-wpsms-gateway-bestit.php:115
 #: includes/gateways/class-wpsms-gateway-caffeweb.php:102
 #: includes/gateways/class-wpsms-gateway-callifony.php:106
@@ -2252,7 +2258,7 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-mensatek.php:98
 #: includes/gateways/class-wpsms-gateway-mobiledotnet.php:106
 #: includes/gateways/class-wpsms-gateway-mobtexting.php:122
-#: includes/gateways/class-wpsms-gateway-mtarget.php:121
+#: includes/gateways/class-wpsms-gateway-mtarget.php:120
 #: includes/gateways/class-wpsms-gateway-mydnspanel.php:109
 #: includes/gateways/class-wpsms-gateway-nasrpayam.php:106
 #: includes/gateways/class-wpsms-gateway-navidsoft.php:103
@@ -2354,12 +2360,12 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-sharifpardazan.php:102
 #: includes/gateways/class-wpsms-gateway-shreesms.php:91
 #: includes/gateways/class-wpsms-gateway-sms.class.php:102
-#: includes/gateways/class-wpsms-gateway-sms77.php:97
+#: includes/gateways/class-wpsms-gateway-sms77.php:92
 #: includes/gateways/class-wpsms-gateway-smsban.php:103
 #: includes/gateways/class-wpsms-gateway-smsbartar.php:93
 #: includes/gateways/class-wpsms-gateway-smsclick.php:101
 #: includes/gateways/class-wpsms-gateway-smsde.php:105
-#: includes/gateways/class-wpsms-gateway-smsgatewaycenter.php:103
+#: includes/gateways/class-wpsms-gateway-smsgatewaycenter.php:100
 #: includes/gateways/class-wpsms-gateway-smshosting.php:122
 #: includes/gateways/class-wpsms-gateway-smsline.php:93
 #: includes/gateways/class-wpsms-gateway-smsmaster.php:101
@@ -3826,11 +3832,11 @@ msgid "Your mobile number must have at least %s characters."
 msgstr ""
 
 #: src/Helper.php:372
-#: src/Helper.php:387
+#: src/Helper.php:388
 msgid "This mobile is already registered, please choose another one."
 msgstr ""
 
-#: src/Helper.php:409
+#: src/Helper.php:410
 msgid "The mobile number is not valid for your country."
 msgstr ""
 
@@ -3926,15 +3932,15 @@ msgstr ""
 msgid "I would like to get notification about any change in my order via SMS."
 msgstr ""
 
-#: src/SmsOtp/Generator.php:109
+#: src/SmsOtp/Generator.php:114
 msgid "Provided $length argument must be between 4 and 10."
 msgstr ""
 
-#: src/SmsOtp/Generator.php:146
+#: src/SmsOtp/Generator.php:152
 msgid "OTPs generated for this number has reached its limit, please try some other time."
 msgstr ""
 
-#: src/SmsOtp/Verifier.php:166
+#: src/SmsOtp/Verifier.php:173
 msgid "Too many verification attempts, please try some other time."
 msgstr ""
 

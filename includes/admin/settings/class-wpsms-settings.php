@@ -1911,8 +1911,8 @@ class Settings
                     'type'    => 'select',
                     'options' => array(
                         'subscriber' => esc_html__('Subscribers', 'wp-sms'),
-                        'numbers'    => esc_html__('Number(s)', 'wp-sms'),
-                        'users'      => esc_html__('WordPress Users', 'wp-sms')
+                        'numbers'    => esc_html__('Individual Numbers', 'wp-sms'),
+                        'users'      => esc_html__('User Roles', 'wp-sms')
                     ),
                     'desc'    => esc_html__('Select who receives notifications.', 'wp-sms')
                 ),
@@ -1930,14 +1930,14 @@ class Settings
                     'type'      => 'multiselect',
                     'options'   => $this->getRoles(),
                     'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_users',
-                    'desc'      => esc_html__('Select the roles of the user that you want to get notification while login.', 'wp-sms')
+                    'desc'      => esc_html__('Assign SMS alerts to specific WordPress user roles.', 'wp-sms')
                 ),
                 'notif_publish_new_post_numbers'          => array(
                     'id'        => 'notif_publish_new_post_numbers',
-                    'name'      => esc_html__('Number(s)', 'wp-sms'),
+                    'name'      => esc_html__('Individual Numbers', 'wp-sms'),
                     'type'      => 'text',
                     'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_numbers',
-                    'desc'      => esc_html__('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                    'desc'      => esc_html__('Enter mobile number(s) here to receive SMS alerts. For multiple numbers, separate them with commas.', 'wp-sms')
                 ),
                 'notif_publish_new_post_force'            => array(
                     'id'      => 'notif_publish_new_post_force',
