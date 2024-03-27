@@ -107,7 +107,7 @@ class fast2sms extends Gateway
                 $params['message']          = $messageId;
                 $params['variables_values'] = $variableValues;
             } else if ($this->route === 'dlt_manual') {
-                $message        = $this->getTemplateIdAndMessageBody();
+                $message = $this->getTemplateIdAndMessageBody();
 
                 if (isset($message['message'], $message['template_id'])) {
                     $params['message']      = $message['message'];
