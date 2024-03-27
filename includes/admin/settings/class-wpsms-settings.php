@@ -303,7 +303,7 @@ class Settings
                 'type' => 'textarea',
                 'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
-                        // translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
+                    // translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
                         esc_html__('Mobile code: %1$s, User name: %2$s, Full Name: %3$s, Site Name: %4$s, Site Url: %5$s', 'wp-sms'),
                         '<code>%code%</code>',
                         '<code>%user_name%</code>',
@@ -347,7 +347,7 @@ class Settings
                 'type' => 'textarea',
                 'desc' => esc_html__('Enter the contents of the 2FA SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
-                        // translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
+                    // translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
                         esc_html__('Mobile code: %1$s, User name: %2$s, First Name: %3$s, Last Name: %4$s', 'wp-sms'),
                         '<code>%otp%</code>',
                         '<code>%user_name%</code>',
@@ -379,7 +379,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: User login, %2$s: User email, %3$s: User display name
+                        // translators: %1$s: User login, %2$s: User email, %3$s: User display name
                             esc_html__('User login: %1$s, User email: %2$s, User display name: %3$s', 'wp-sms'),
                             '<code>%user_login%</code>',
                             '<code>%user_email%</code>',
@@ -404,7 +404,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
+                        // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
                             esc_html__('Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%primary_link%</code>',
@@ -431,7 +431,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
+                        // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
                             esc_html__('Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s', 'wp-sms'),
                             '<code>%sender_display_name%</code>',
                             '<code>%subject%</code>',
@@ -457,7 +457,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
+                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
                             esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%comment%</code>',
@@ -482,7 +482,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
+                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
                             esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%comment%</code>',
@@ -740,7 +740,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
                             esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
                             '<code>%edd_email%</code>',
                             '<code>%edd_first%</code>',
@@ -765,7 +765,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
                             esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
                             '<code>%edd_email%</code>',
                             '<code>%edd_first%</code>',
@@ -848,7 +848,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
                             esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
                             '<code>%job_id%</code>',
                             '<code>%job_title%</code>',
@@ -878,7 +878,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
                             esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
                             '<code>%job_id%</code>',
                             '<code>%job_title%</code>',
@@ -1049,7 +1049,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
+                        // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
                             esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
                             '<code>%title%</code>',
                             '<code>%ip%</code>',
@@ -1079,7 +1079,7 @@ class Settings
                         'type' => 'textarea',
                         'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
+                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
                                 esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
                                 '<code>%title%</code>',
                                 '<code>%ip%</code>',
@@ -1170,7 +1170,7 @@ class Settings
                         'type' => 'textarea',
                         'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
+                            // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
                                 esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
@@ -1199,7 +1199,7 @@ class Settings
                             'type' => 'textarea',
                             'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                                 sprintf(
-                                    // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
+                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
                                     esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
@@ -1780,71 +1780,76 @@ class Settings
             'advanced'       => apply_filters('wp_sms_feature_settings', array(
                 'admin_reports'                => array(
                     'id'   => 'admin_reports',
-                    'name' => esc_html__('Admin Reports', 'wp-sms'),
+                    'name' => esc_html__('Administrative Reporting', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'report_wpsms_statistics'      => array(
                     'id'      => 'report_wpsms_statistics',
-                    'name'    => esc_html__('Email Report of SMS Statistics', 'wp-sms'),
+                    'name'    => esc_html__('SMS Performance Reports', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Automatically send SMS statistics reports to the admin Email weekly.', 'wp-sms')
+                    'desc'    => esc_html__('Sends weekly SMS performance statistics to the admin email.', 'wp-sms')
                 ),
                 'notify_errors_to_admin_email' => array(
                     'id'      => 'notify_errors_to_admin_email',
-                    'name'    => esc_html__('Email Errors Notifications', 'wp-sms'),
+                    'name'    => esc_html__('SMS Transmission Error Alerts', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Automatically notify the admin email address in the event of an error during SMS transmission.', 'wp-sms')
+                    'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled ? esc_html__('Bitly Short URL (Pro)', 'wp-sms') : esc_html__('Bitly Short URL', 'wp-sms'),
+                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'             => array(
                     'id'       => 'short_url_status',
-                    'name'     => esc_html__('Make the URLs Shorter?', 'wp-sms'),
+                    'name'     => esc_html__('Shorten URLs', 'wp-sms'),
                     'type'     => 'checkbox',
                     'options'  => $options,
-                    'desc'     => esc_html__('By enabling this option, all URLs will be shorter by Bitly.com', 'wp-sms'),
+                    'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'short_url_api_token'          => array(
                     'id'       => 'short_url_api_token',
-                    'name'     => esc_html__('Access Token', 'wp-sms'),
+                    'name'     => esc_html__('Bitly API Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => esc_html__('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
+                    'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
-                    'name' => esc_html__('Webhooks', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Webhooks Configuration', 'wp-sms'),
+                        esc_html__('Set up your system’s Webhook URLs to integrate with external services.', 'wp-sms')
+                    ),
                     'type' => 'header',
-                    'desc' => esc_html__('Webhooks allow you to receive notifications when a specific event occurs.', 'wp-sms'),
                     'doc'  => '/resources/webhooks/'
                 ),
                 'new_sms_webhook'              => array(
                     'id'   => 'new_sms_webhook',
                     'name' => esc_html__('Outgoing SMS Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                    'desc' => esc_html__('Configure the Webhook URL to which notifications are sent after an SMS dispatch from your system. Please enter a secure URL (HTTPS).', 'wp-sms'),
                 ),
                 'new_subscriber_webhook'       => array(
                     'id'   => 'new_subscriber_webhook',
-                    'name' => esc_html__('New Subscriber Webhook', 'wp-sms'),
+                    'name' => esc_html__('Subscriber Registration Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                    'desc' => esc_html__('Provide the Webhook URL that will be triggered when a new subscriber registers. Ensure the URL uses the HTTPS protocol.', 'wp-sms'),
                 ),
                 'new_incoming_sms_webhook'     => array(
                     'id'   => 'new_incoming_sms_webhook',
-                    'name' => esc_html__('New Incoming SMS Webhook', 'wp-sms'),
+                    'name' => esc_html__('Incoming SMS Handling Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('This required Add-On Two-way', 'wp-sms') . '<br>' . esc_html__('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                    'desc' => esc_html__('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms'),
                 ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
-                    'name' => !$this->proIsInstalled ? esc_html__('Google reCAPTCHA (Pro / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        !$this->proIsInstalled ? esc_html__('Google reCAPTCHA Integration (Pro / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
+                    ),
                     'type' => 'header',
                 ),
                 'g_recaptcha_status'           => array(
@@ -1852,21 +1857,21 @@ class Settings
                     'name'     => esc_html__('Activate', 'wp-sms'),
                     'type'     => 'checkbox',
                     'options'  => $options,
-                    'desc'     => esc_html__('By enabling this option, google reCAPTCHA v2 will be added to request-sms actions.', 'wp-sms'),
+                    'desc'     => esc_html__('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
                 'g_recaptcha_site_key'         => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => esc_html__('Site Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => esc_html__('Please enter your v2 reCAPTCHA site key here, ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>',
+                    'desc'     => esc_html__('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
                 'g_recaptcha_secret_key'       => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => esc_html__('Secret Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => esc_html__('Please enter your v2 reCAPTCHA secret key here, ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>',
+                    'desc'     => esc_html__('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . esc_html__('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
             )),
