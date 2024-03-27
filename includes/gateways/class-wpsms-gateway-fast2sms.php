@@ -97,12 +97,22 @@ class fast2sms extends Gateway
                 'numbers'       => implode(',',$this->to),
                 'message'       => $this->msg,
                 'entity_id'     => $this->entity_id,
-                'template_id'   => $this->dlt_template_id
             ];
 
             if ($this->route === 'dlt') {
-                $params['message']          = $this->message_id;
-                $params['variables_values'] = $this->msg;
+                $message        = explode('|', $params['message']);
+                $messageId      = array_pop($message);
+                $variableValues = implode('|', $message);
+
+                $params['message']          = $messageId;
+                $params['variables_values'] = $variableValues;
+            } else if ($this->route === 'dlt_manual') {
+                $message        = $this->getTemplateIdAndMessageBody();
+
+                if (isset($message['message'], $message['template_id'])) {
+                    $params['message']      = $message['message'];
+                    $params['template_id']  = $message['template_id'];
+                }
             }
 
             $response = $this->request('GET', "{$this->wsdl_link}/bulkV2", $params, [], false);
