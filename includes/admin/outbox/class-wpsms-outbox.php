@@ -91,8 +91,8 @@ class Outbox_List_Table extends \WP_List_Table
 
         //Build row actions
         $actions = array(
-            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . esc_html__('Resend', 'wp-sms') . '</a>', esc_attr($page), 'resend', $item['ID']),
-            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s">' . esc_html__('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID']),
+            'resend' => sprintf('<a href="?page=%s&action=%s&ID=%s&_wpnonce=%s">' . esc_html__('Resend', 'wp-sms') . '</a>', esc_attr($page), 'resend', $item['ID'], wp_create_nonce('wp_sms_outbox_actions')),
+            'delete' => sprintf('<a href="?page=%s&action=%s&ID=%s&_wpnonce=%s">' . esc_html__('Delete', 'wp-sms') . '</a>', esc_attr($page), 'delete', $item['ID'], wp_create_nonce('wp_sms_outbox_actions')),
         );
 
         //Return the title contents
@@ -156,6 +156,7 @@ class Outbox_List_Table extends \WP_List_Table
 
     function process_bulk_action()
     {
+        $nonce = isset($_GET['_wpnonce']) ? $_GET['_wpnonce'] : false;
 
         //Detect when a bulk action is being triggered...
         // Search action
@@ -167,6 +168,13 @@ class Outbox_List_Table extends \WP_List_Table
 
         // Bulk delete action
         if ('bulk_delete' == $this->current_action()) {
+
+            // Check nonce
+            if (!wp_verify_nonce($nonce, "bulk-{$this->_args['plural']}")) {
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), false);
+                exit();
+            }
+
             $get_ids = array_map('sanitize_text_field', $_GET['id']);
             foreach ($get_ids as $id) {
                 $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($id)], ['%d']);
@@ -178,6 +186,13 @@ class Outbox_List_Table extends \WP_List_Table
 
         // Single delete action
         if ('delete' == $this->current_action()) {
+
+            // Check nonce
+            if (!wp_verify_nonce($nonce, 'wp_sms_outbox_actions')) {
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), false);
+                exit();
+            }
+
             $get_id = sanitize_text_field($_GET['ID']);
             $this->db->delete($this->tb_prefix . "sms_send", ['ID' => intval($get_id)], ['%d']);
             $this->data  = $this->get_data();
@@ -188,6 +203,12 @@ class Outbox_List_Table extends \WP_List_Table
         // Resend sms
         if ('resend' == $this->current_action()) {
             global $sms;
+
+            // Check nonce
+            if (!wp_verify_nonce($nonce, 'wp_sms_outbox_actions')) {
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), false);
+                exit();
+            }
 
             $error     = null;
             $get_id    = sanitize_text_field($_GET['ID']);
