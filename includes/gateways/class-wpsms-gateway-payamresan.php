@@ -64,7 +64,7 @@ class payamresan extends \WP_SMS\Gateway
 
         $message = urlencode($this->msg);
 
-        $client = file_get_contents("{$this->wsdl_link}APISend.aspx?Username={$this->username}&Password={$this->password}&From={$this->from}&To={$to}&Text={$message}");
+        $client = $this->request('GET', "{$this->wsdl_link}APISend.aspx?Username={$this->username}&Password={$this->password}&From={$this->from}&To={$to}&Text={$message}", [], [], false);
 
         if ($client) {
             // Log the result
@@ -92,7 +92,7 @@ class payamresan extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
-        $client = file_get_contents("{$this->wsdl_link}Credit.aspx?Username={$this->username}&Password={$this->password}");
+        $client = $this->request('GET', "{$this->wsdl_link}Credit.aspx?Username={$this->username}&Password={$this->password}", [], [], false);
 
         if ($client == 'ERR') {
             return new \WP_Error('account-credit', $client);

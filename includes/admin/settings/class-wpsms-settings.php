@@ -303,7 +303,7 @@ class Settings
                 'type' => 'textarea',
                 'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
-                        // translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
+                    // translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
                         esc_html__('Mobile code: %1$s, User name: %2$s, Full Name: %3$s, Site Name: %4$s, Site Url: %5$s', 'wp-sms'),
                         '<code>%code%</code>',
                         '<code>%user_name%</code>',
@@ -347,7 +347,7 @@ class Settings
                 'type' => 'textarea',
                 'desc' => esc_html__('Enter the contents of the 2FA SMS message.', 'wp-sms') . '<br>' .
                     sprintf(
-                        // translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
+                    // translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
                         esc_html__('Mobile code: %1$s, User name: %2$s, First Name: %3$s, Last Name: %4$s', 'wp-sms'),
                         '<code>%otp%</code>',
                         '<code>%user_name%</code>',
@@ -379,7 +379,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: User login, %2$s: User email, %3$s: User display name
+                        // translators: %1$s: User login, %2$s: User email, %3$s: User display name
                             esc_html__('User login: %1$s, User email: %2$s, User display name: %3$s', 'wp-sms'),
                             '<code>%user_login%</code>',
                             '<code>%user_email%</code>',
@@ -404,7 +404,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
+                        // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
                             esc_html__('Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%primary_link%</code>',
@@ -431,7 +431,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
+                        // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
                             esc_html__('Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s', 'wp-sms'),
                             '<code>%sender_display_name%</code>',
                             '<code>%subject%</code>',
@@ -457,7 +457,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
+                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
                             esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%comment%</code>',
@@ -482,7 +482,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
+                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
                             esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
                             '<code>%posted_user_display_name%</code>',
                             '<code>%comment%</code>',
@@ -740,7 +740,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
                             esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
                             '<code>%edd_email%</code>',
                             '<code>%edd_first%</code>',
@@ -765,7 +765,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
                             esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
                             '<code>%edd_email%</code>',
                             '<code>%edd_first%</code>',
@@ -848,7 +848,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
                             esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
                             '<code>%job_id%</code>',
                             '<code>%job_title%</code>',
@@ -878,7 +878,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
                             esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
                             '<code>%job_id%</code>',
                             '<code>%job_title%</code>',
@@ -1049,7 +1049,7 @@ class Settings
                     'type' => 'textarea',
                     'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                         sprintf(
-                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
+                        // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
                             esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
                             '<code>%title%</code>',
                             '<code>%ip%</code>',
@@ -1079,7 +1079,7 @@ class Settings
                         'type' => 'textarea',
                         'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
+                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
                                 esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
                                 '<code>%title%</code>',
                                 '<code>%ip%</code>',
@@ -1170,7 +1170,7 @@ class Settings
                         'type' => 'textarea',
                         'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                             sprintf(
-                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
+                            // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
                                 esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
                                 '<code>%post_title%</code>',
                                 '<code>%form_url%</code>',
@@ -1199,7 +1199,7 @@ class Settings
                             'type' => 'textarea',
                             'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
                                 sprintf(
-                                    // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
+                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
                                     esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
                                     '<code>%post_title%</code>',
                                     '<code>%form_url%</code>',
@@ -1359,14 +1359,14 @@ class Settings
                     'id'        => 'mobile_terms_minimum',
                     'name'      => esc_html__('Minimum Length Number', 'wp-sms'),
                     'type'      => 'number',
-                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'className' => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'      => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
                 ),
                 'mobile_terms_maximum'                     => array(
                     'id'        => 'mobile_terms_maximum',
                     'name'      => esc_html__('Maximum Length Number', 'wp-sms'),
                     'type'      => 'number',
-                    'className' => 'js-wpsms-show_if_international_mobile_equal_false',
+                    'className' => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'      => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
                 ),
                 'admin_title_privacy'                      => array(
@@ -1393,7 +1393,7 @@ class Settings
                 // Gateway
                 'gateway_title'                => array(
                     'id'   => 'gateway_title',
-                    'name' => esc_html__('SMS Gateway Configuration', 'wp-sms'),
+                    'name' => esc_html__('SMS Gateway Setup', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'gateway_name'                 => array(
@@ -1401,7 +1401,7 @@ class Settings
                     'name'    => esc_html__('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
                     'options' => Gateway::gateway(),
-                    'desc'    => esc_html__('Select the SMS Gateway from which you want to send the SMS.', 'wp-sms')
+                    'desc'    => esc_html__('Select your preferred SMS Gateway to send messages.', 'wp-sms')
                 ),
                 'gateway_help'                 => array(
                     'id'      => 'gateway_help',
@@ -1473,70 +1473,70 @@ class Settings
                 // Account credit
                 'account_credit_title'         => array(
                     'id'   => 'account_credit_title',
-                    'name' => esc_html__('Account Balance', 'wp-sms'),
+                    'name' => esc_html__('Account Balance Visibility', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'account_credit_in_menu'       => array(
                     'id'      => 'account_credit_in_menu',
-                    'name'    => esc_html__('Show in admin menu', 'wp-sms'),
+                    'name'    => esc_html__('Admin Menu Display', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Show your account credit in admin menu.', 'wp-sms')
+                    'desc'    => esc_html__('Shows account credit in the admin menu.', 'wp-sms')
                 ),
                 'account_credit_in_sendsms'    => array(
                     'id'      => 'account_credit_in_sendsms',
-                    'name'    => esc_html__('Show in send SMS page', 'wp-sms'),
+                    'name'    => esc_html__('SMS Page Display', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Show your account credit in send SMS page.', 'wp-sms')
+                    'desc'    => esc_html__('Displays account credit on the SMS sending page.', 'wp-sms')
                 ),
                 // Message header
                 'message_title'                => array(
                     'id'   => 'message_title',
-                    'name' => esc_html__('Miscellaneous Options', 'wp-sms'),
+                    'name' => esc_html__('SMS Configuration', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'sms_delivery_method'          => array(
                     'id'      => 'sms_delivery_method',
-                    'name'    => esc_html__('SMS Delivery Method', 'wp-sms'),
+                    'name'    => esc_html__('Delivery Method', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
-                        'api_direct_send' => esc_html__('Direct API Dispatch: Immediately triggers the API to send SMS messages upon creation', 'wp-sms'),
-                        'api_async_send'  => esc_html__('Async API Call: Schedules API requests to dispatch SMS messages at specified intervals', 'wp-sms'),
-                        'api_queued_send' => esc_html__('Queued API Processing: Enqueues messages for batch processing, optimizing API calls for bulk SMS dispatch', 'wp-sms'),
+                        'api_direct_send' => esc_html__('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.', 'wp-sms'),
+                        'api_async_send'  => esc_html__('Scheduled SMS Delivery: Configures API to send messages at predetermined times.', 'wp-sms'),
+                        'api_queued_send' => esc_html__('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.', 'wp-sms'),
                     ),
-                    'desc'    => esc_html__('Select the method for API-based SMS delivery: Direct dispatch, Async scheduling, or Queued processing for bulk operations. Note: If the number of SMS recipients exceeds 20, the system will automatically use the Queued API Processing method.', 'wp-sms')
+                    'desc'    => esc_html__('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.', 'wp-sms')
                 ),
                 'send_unicode'                 => array(
                     'id'      => 'send_unicode',
-                    'name'    => esc_html__('Send as Unicode', 'wp-sms'),
+                    'name'    => esc_html__('Unicode Messaging', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('You can send SMS messages using Unicode for non-English characters (such as Persian, Arabic, Chinese or Cyrillic characters).', 'wp-sms')
+                    'desc'    => esc_html__('Send messages in languages that use non-English characters, like Persian, Arabic, Chinese, or Cyrillic.', 'wp-sms')
                 ),
                 'clean_numbers'                => array(
                     'id'      => 'clean_numbers',
-                    'name'    => esc_html__('Clean The Numbers', 'wp-sms'),
+                    'name'    => esc_html__('Number Formatting', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('You can enable this option to remove spaces from numbers before sending them to API.', 'wp-sms')
+                    'desc'    => esc_html__('Strips spaces from phone numbers before sending.', 'wp-sms')
                 ),
                 'send_only_local_numbers'      => array(
                     'id'      => 'send_only_local_numbers',
-                    'name'    => esc_html__('Send Only to Local Numbers', 'wp-sms'),
+                    'name'    => esc_html__('Restrict to Local Numbers', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Active this option to send SMS only to your country local numbers and save international SMS fees.', 'wp-sms')
+                    'desc'    => esc_html__('Send messages to numbers within the same country to avoid international fees.', 'wp-sms')
                 ),
                 'only_local_numbers_countries' => array(
                     'id'        => 'only_local_numbers_countries',
-                    'name'      => esc_html__('Countries Whitelist', 'wp-sms'),
+                    'name'      => esc_html__('Allowed Countries for SMS', 'wp-sms'),
                     'type'      => 'multiselect',
                     'options'   => array_map(function ($key, $value) {
                         return [$key => $value];
                     }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
                     'className' => 'js-wpsms-show_if_send_only_local_numbers_enabled',
-                    'desc'      => esc_html__('From this dropdown menu, select the countries to which you want to exclusively send SMS.', 'wp-sms')
+                    'desc'      => esc_html__('Specify countries allowed for SMS delivery. Only listed countries will receive messages.', 'wp-sms')
                 )
             )),
 
@@ -1547,78 +1547,82 @@ class Settings
                 // SMS Newsletter
                 'newsletter_title'                 => array(
                     'id'   => 'newsletter_title',
-                    'name' => esc_html__('SMS Newsletter', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('SMS Newsletter Configuration', 'wp-sms'),
+                        esc_html__('Configure how visitors subscribe to your SMS notifications.', 'wp-sms')
+                    ),
                     'type' => 'header',
-                    'desc' => esc_html__('SMS Newsletter is a feature that allows you to collect mobile numbers from your website visitors and send them SMS.', 'wp-sms'),
                     'doc'  => '/resources/add-sms-subscriber-form/'
                 ),
                 'newsletter_form_groups'           => array(
                     'id'   => 'newsletter_form_groups',
-                    'name' => esc_html__('Show Groups', 'wp-sms'),
+                    'name' => esc_html__('Group Visibility in Form', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Enable showing Groups on Form.', 'wp-sms')
+                    'desc' => esc_html__('Show available groups on the subscription form.', 'wp-sms')
                 ),
                 'newsletter_form_multiple_select'  => array(
                     'id'        => 'newsletter_form_multiple_select',
-                    'name'      => esc_html__('Multiple Select', 'wp-sms'),
+                    'name'      => esc_html__('Group Selection', 'wp-sms'),
                     'type'      => 'checkbox',
                     'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
-                    'desc'      => esc_html__('Select multiple groups by enabling this option.', 'wp-sms')
+                    'desc'      => esc_html__('Allow subscribers to join multiple groups from the form.', 'wp-sms')
                 ),
                 'newsletter_form_specified_groups' => array(
                     'id'        => 'newsletter_form_specified_groups',
-                    'name'      => esc_html__('Display groups', 'wp-sms'),
+                    'name'      => esc_html__('Groups to Display', 'wp-sms'),
                     'type'      => 'multiselect',
                     'options'   => array_map(function ($value) {
                         return [$value->ID => $value->name];
                     }, Newsletter::getGroups()),
                     'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
-                    'desc'      => esc_html__('Select which groups should be showed in the SMS newsletter form.', 'wp-sms')
+                    'desc'      => esc_html__('Choose which groups appear on the subscription form.', 'wp-sms')
                 ),
                 'newsletter_form_default_group'    => array(
                     'id'        => 'newsletter_form_default_group',
-                    'name'      => esc_html__('Default group', 'wp-sms'),
+                    'name'      => esc_html__('Default Group for New Subscribers', 'wp-sms'),
                     'type'      => 'select',
                     'options'   => $subscribe_groups,
                     'className' => 'js-wpsms-show_if_newsletter_form_groups_enabled',
-                    'desc'      => esc_html__('Choice the default group', 'wp-sms')
+                    'desc'      => esc_html__('Set a group that all new subscribers will join by default.', 'wp-sms')
                 ),
                 'newsletter_form_verify'           => array(
                     'id'   => 'newsletter_form_verify',
-                    'name' => esc_html__('Verify Subscriber', 'wp-sms'),
+                    'name' => esc_html__('Subscription Confirmation', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Subscribers will receive an activation code by SMS', 'wp-sms')
+                    'desc' => esc_html__('Subscribers must enter a code received by SMS to complete their subscription.', 'wp-sms')
                 ),
                 'welcome'                          => array(
                     'id'   => 'welcome',
-                    'name' => esc_html__('Welcome SMS', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Welcome SMS Setup', 'wp-sms'),
+                        esc_html__('Set up automatic SMS messages for new subscribers.', 'wp-sms'),
+                    ),
                     'type' => 'header',
-                    'desc' => esc_html__('By enabling this option you can send welcome SMS to subscribers'),
                     'doc'  => '/resources/send-welcome-sms-to-new-subscribers/',
                 ),
                 'newsletter_form_welcome'          => array(
                     'id'   => 'newsletter_form_welcome',
                     'name' => esc_html__('Status', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Enable or Disable welcome SMS.', 'wp-sms')
+                    'desc' => esc_html__('Sends a welcome SMS to new subscribers when they sign up.', 'wp-sms')
                 ),
                 'newsletter_form_welcome_text'     => array(
                     'id'   => 'newsletter_form_welcome_text',
-                    'name' => esc_html__('SMS text', 'wp-sms'),
+                    'name' => esc_html__('Welcome Message Content', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message. if you would like to send unsubscribe link, check out the document.', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
+                    'desc' => esc_html__('Customize the SMS message sent to new subscribers. Use placeholders for personalized details: ', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
                 ),
                 //Style Setting
                 'style'                            => array(
                     'id'   => 'style',
-                    'name' => esc_html__('Style', 'wp-sms'),
+                    'name' => esc_html__('Appearance Customization', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'disable_style_in_front'           => array(
                     'id'   => 'disable_style_in_front',
-                    'name' => esc_html__('Disable Frontend Style', 'wp-sms'),
+                    'name' => esc_html__('Disable Default Form Styling', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Check this to disable all included styling of SMS Newsletter form elements.', 'wp-sms')
+                    'desc' => esc_html__('Remove the plugin\'s default styling from the subscription form if preferred.', 'wp-sms')
                 )
             )),
 
@@ -1776,71 +1780,76 @@ class Settings
             'advanced'       => apply_filters('wp_sms_feature_settings', array(
                 'admin_reports'                => array(
                     'id'   => 'admin_reports',
-                    'name' => esc_html__('Admin Reports', 'wp-sms'),
+                    'name' => esc_html__('Administrative Reporting', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'report_wpsms_statistics'      => array(
                     'id'      => 'report_wpsms_statistics',
-                    'name'    => esc_html__('Email Report of SMS Statistics', 'wp-sms'),
+                    'name'    => esc_html__('SMS Performance Reports', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Automatically send SMS statistics reports to the admin Email weekly.', 'wp-sms')
+                    'desc'    => esc_html__('Sends weekly SMS performance statistics to the admin email.', 'wp-sms')
                 ),
                 'notify_errors_to_admin_email' => array(
                     'id'      => 'notify_errors_to_admin_email',
-                    'name'    => esc_html__('Email Errors Notifications', 'wp-sms'),
+                    'name'    => esc_html__('SMS Transmission Error Alerts', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Automatically notify the admin email address in the event of an error during SMS transmission.', 'wp-sms')
+                    'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled ? esc_html__('Bitly Short URL (Pro)', 'wp-sms') : esc_html__('Bitly Short URL', 'wp-sms'),
+                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'             => array(
                     'id'       => 'short_url_status',
-                    'name'     => esc_html__('Make the URLs Shorter?', 'wp-sms'),
+                    'name'     => esc_html__('Shorten URLs', 'wp-sms'),
                     'type'     => 'checkbox',
                     'options'  => $options,
-                    'desc'     => esc_html__('By enabling this option, all URLs will be shorter by Bitly.com', 'wp-sms'),
+                    'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'short_url_api_token'          => array(
                     'id'       => 'short_url_api_token',
-                    'name'     => esc_html__('Access Token', 'wp-sms'),
+                    'name'     => esc_html__('Bitly API Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => esc_html__('Please enter your Bitly Access token here, you can get it from <a href="https://app.bitly.com/settings/api/">https://app.bitly.com/settings/api/</a>', 'wp-sms'),
+                    'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled
                 ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
-                    'name' => esc_html__('Webhooks', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Webhooks Configuration', 'wp-sms'),
+                        esc_html__('Set up your system’s Webhook URLs to integrate with external services.', 'wp-sms')
+                    ),
                     'type' => 'header',
-                    'desc' => esc_html__('Webhooks allow you to receive notifications when a specific event occurs.', 'wp-sms'),
                     'doc'  => '/resources/webhooks/'
                 ),
                 'new_sms_webhook'              => array(
                     'id'   => 'new_sms_webhook',
                     'name' => esc_html__('Outgoing SMS Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                    'desc' => esc_html__('Configure the Webhook URL to which notifications are sent after an SMS dispatch from your system. Please enter a secure URL (HTTPS).', 'wp-sms'),
                 ),
                 'new_subscriber_webhook'       => array(
                     'id'   => 'new_subscriber_webhook',
-                    'name' => esc_html__('New Subscriber Webhook', 'wp-sms'),
+                    'name' => esc_html__('Subscriber Registration Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                    'desc' => esc_html__('Provide the Webhook URL that will be triggered when a new subscriber registers. Ensure the URL uses the HTTPS protocol.', 'wp-sms'),
                 ),
                 'new_incoming_sms_webhook'     => array(
                     'id'   => 'new_incoming_sms_webhook',
-                    'name' => esc_html__('New Incoming SMS Webhook', 'wp-sms'),
+                    'name' => esc_html__('Incoming SMS Handling Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('This required Add-On Two-way', 'wp-sms') . '<br>' . esc_html__('For each line, enter the webhook URL(s), which should be HTTPS.', 'wp-sms'),
+                    'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
-                    'name' => !$this->proIsInstalled ? esc_html__('Google reCAPTCHA (Pro / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        !$this->proIsInstalled ? esc_html__('Google reCAPTCHA Integration (Pro / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
+                    ),
                     'type' => 'header',
                 ),
                 'g_recaptcha_status'           => array(
@@ -1848,21 +1857,21 @@ class Settings
                     'name'     => esc_html__('Activate', 'wp-sms'),
                     'type'     => 'checkbox',
                     'options'  => $options,
-                    'desc'     => esc_html__('By enabling this option, google reCAPTCHA v2 will be added to request-sms actions.', 'wp-sms'),
+                    'desc'     => esc_html__('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
                 'g_recaptcha_site_key'         => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => esc_html__('Site Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => esc_html__('Please enter your v2 reCAPTCHA site key here, ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>',
+                    'desc'     => esc_html__('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
                 'g_recaptcha_secret_key'       => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => esc_html__('Secret Key', 'wp-sms'),
                     'type'     => 'text',
-                    'desc'     => esc_html__('Please enter your v2 reCAPTCHA secret key here, ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a>',
+                    'desc'     => esc_html__('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . esc_html__('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
                     'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
                 ),
             )),
@@ -1874,7 +1883,10 @@ class Settings
                 // Publish new post
                 'notif_publish_new_post_title'            => array(
                     'id'   => 'notif_publish_new_post_title',
-                    'name' => esc_html__('Published new posts', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('New Post Alerts', 'wp-sms'),
+                        esc_html__('Configure SMS notifications to inform subscribers about newly published content.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_publish_new_post'                  => array(
@@ -1882,40 +1894,40 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to subscribers When published new posts.', 'wp-sms')
+                    'desc'    => esc_html__('Send SMS for new posts.', 'wp-sms')
                 ),
                 'notif_publish_new_post_type'             => array(
                     'id'      => 'notif_publish_new_post_type',
                     'name'    => esc_html__('Post Types', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
-                    'desc'    => esc_html__('Select post types that you want to use this option.', 'wp-sms')
+                    'desc'    => esc_html__('Specify which types of content trigger notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_taxonomy_and_term'     => array(
                     'id'      => 'notif_publish_new_taxonomy_and_term',
                     'name'    => esc_html__('Taxonomies and Terms', 'wp-sms'),
                     'type'    => 'advancedmultiselect',
                     'options' => $this->getTaxonomiesAndTerms(),
-                    'desc'    => esc_html__('Select taxonomies that you want to use this option.', 'wp-sms')
+                    'desc'    => esc_html__('Choose categories or tags to associate with alerts.', 'wp-sms')
                 ),
                 'notif_publish_new_post_receiver'         => array(
                     'id'      => 'notif_publish_new_post_receiver',
-                    'name'    => esc_html__('Send Notification to?', 'wp-sms'),
+                    'name'    => esc_html__('Notification Recipients', 'wp-sms'),
                     'type'    => 'select',
                     'options' => array(
                         'subscriber' => esc_html__('Subscribers', 'wp-sms'),
-                        'numbers'    => esc_html__('Number(s)', 'wp-sms'),
-                        'users'      => esc_html__('WordPress Users', 'wp-sms')
+                        'numbers'    => esc_html__('Individual Numbers', 'wp-sms'),
+                        'users'      => esc_html__('User Roles', 'wp-sms')
                     ),
-                    'desc'    => esc_html__('Please select the receiver of SMS Notification', 'wp-sms')
+                    'desc'    => esc_html__('Select who receives notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_post_default_group'    => array(
                     'id'        => 'notif_publish_new_post_default_group',
-                    'name'      => esc_html__('Subscribe group', 'wp-sms'),
+                    'name'      => esc_html__('Subscribe Group', 'wp-sms'),
                     'type'      => 'select',
                     'options'   => $subscribe_groups,
                     'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_subscriber',
-                    'desc'      => esc_html__('Choice the default group to send the SMS', 'wp-sms')
+                    'desc'      => esc_html__('Set the default group to receive notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_post_users'            => array(
                     'id'        => 'notif_publish_new_post_users',
@@ -1923,46 +1935,49 @@ class Settings
                     'type'      => 'multiselect',
                     'options'   => $this->getRoles(),
                     'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_users',
-                    'desc'      => esc_html__('Select the roles of the user that you want to get notification while login.', 'wp-sms')
+                    'desc'      => esc_html__('Assign SMS alerts to specific WordPress user roles.', 'wp-sms')
                 ),
                 'notif_publish_new_post_numbers'          => array(
                     'id'        => 'notif_publish_new_post_numbers',
-                    'name'      => esc_html__('Number(s)', 'wp-sms'),
+                    'name'      => esc_html__('Individual Numbers', 'wp-sms'),
                     'type'      => 'text',
                     'className' => 'js-wpsms-show_if_notif_publish_new_post_receiver_equal_numbers',
-                    'desc'      => esc_html__('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                    'desc'      => esc_html__('Enter mobile number(s) here to receive SMS alerts. For multiple numbers, separate them with commas.', 'wp-sms')
                 ),
                 'notif_publish_new_post_force'            => array(
                     'id'      => 'notif_publish_new_post_force',
-                    'name'    => esc_html__('Force to Send?', 'wp-sms'),
+                    'name'    => esc_html__('Force Send', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('By enabling this option you don\'t need to enable it while publishing every time, this option make it compatible with WP-REST API as well.', 'wp-sms')
+                    'desc'    => esc_html__('Use to send notifications without additional confirmation during publishing. Compatible with WP-REST API.', 'wp-sms')
                 ),
                 'notif_publish_new_send_mms'              => array(
 
                     'id'      => 'notif_publish_new_send_mms',
-                    'name'    => esc_html__('Send MMS?', 'wp-sms'),
+                    'name'    => esc_html__('Send MMS', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('By enabling this option, the post featured image will be sent as an MMS if your gateway supports it', 'wp-sms')
+                    'desc'    => esc_html__('Sends the featured image of the post as an MMS if supported by your SMS gateway.', 'wp-sms')
                 ),
                 'notif_publish_new_post_template'         => array(
                     'id'   => 'notif_publish_new_post_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
+                    'desc' => esc_html__('Define the SMS format.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 'notif_publish_new_post_words_count'      => array(
                     'id'   => 'notif_publish_new_post_words_count',
-                    'name' => esc_html__('Post content words count', 'wp-sms'),
+                    'name' => esc_html__('Post Content Words Limit', 'wp-sms'),
                     'type' => 'number',
-                    'desc' => esc_html__('The number of word for cropping in send post notification. Default : 10', 'wp-sms')
+                    'desc' => esc_html__('Set maximum word count for post excerpts in notifications. Default: 10.', 'wp-sms')
                 ),
                 // Publish new post
                 'notif_publish_new_post_author_title'     => array(
                     'id'   => 'notif_publish_new_post_author_title',
-                    'name' => esc_html__('Author of the post', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Post Author Notification', 'wp-sms'),
+                        esc_html__('Set up notifications for post authors when their content is published. Ensure the mobile number field is added to user profiles under Settings > General > Mobile Number Field Source.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_publish_new_post_author'           => array(
@@ -1970,25 +1985,28 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to the author of the post when that post is published.', 'wp-sms') . '<br>' . esc_html__('Make sure the "Add Mobile number field" option is enabled in the Settings > Features', 'wp-sms')
+                    'desc'    => esc_html__('Alerts post authors via SMS after publishing their posts.', 'wp-sms')
                 ),
                 'notif_publish_new_post_author_post_type' => array(
                     'id'      => 'notif_publish_new_post_author_post_type',
                     'name'    => esc_html__('Post Types', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->get_list_post_type(array('show_ui' => 1)),
-                    'desc'    => esc_html__('Select post types that you want to use this option.', 'wp-sms')
+                    'desc'    => esc_html__('Define which content types trigger author notifications.', 'wp-sms')
                 ),
                 'notif_publish_new_post_author_template'  => array(
                     'id'   => 'notif_publish_new_post_author_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
+                    'desc' => esc_html__('Customize the SMS message to authors using placeholders for post details.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                 ),
                 // Publish new wp version
                 'notif_publish_new_wpversion_title'       => array(
                     'id'   => 'notif_publish_new_wpversion_title',
-                    'name' => esc_html__('The new release of WordPress', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('The new release of WordPress', 'wp-sms'),
+                        esc_html__('Configure notifications to be sent via SMS to the Admin Mobile Number regarding new releases of WordPress.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_publish_new_wpversion'             => array(
@@ -1996,12 +2014,15 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you When the new release of WordPress.', 'wp-sms')
+                    'desc'    => esc_html__('Notifications for new WordPress releases.', 'wp-sms')
                 ),
                 // Register new user
                 'notif_register_new_user_title'           => array(
                     'id'   => 'notif_register_new_user_title',
-                    'name' => esc_html__('Register a new user', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('Register a new user', 'wp-sms'),
+                        esc_html__('Set up SMS notifications for admin and new user upon registration.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_register_new_user'                 => array(
@@ -2009,24 +2030,27 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you and user when register on WordPress.', 'wp-sms')
+                    'desc'    => esc_html__('SMS notifications for new user registrations.', 'wp-sms')
                 ),
                 'notif_register_new_user_admin_template'  => array(
                     'id'   => 'notif_register_new_user_admin_template',
-                    'name' => esc_html__('Message body for admin', 'wp-sms'),
+                    'name' => esc_html__('Message Body for Admin', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    'desc' => esc_html__('Customize the SMS template sent to the Admin Mobile Number for new user registrations using placeholders for user details.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 'notif_register_new_user_template'        => array(
                     'id'   => 'notif_register_new_user_template',
-                    'name' => esc_html__('Message body for user', 'wp-sms'),
+                    'name' => esc_html__('Message Body for User', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    'desc' => esc_html__('Customize the SMS template sent to the user upon registration using placeholders for personal details.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 ),
                 // New comment
                 'notif_new_comment_title'                 => array(
                     'id'   => 'notif_new_comment_title',
-                    'name' => esc_html__('New comment', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('New Comment Notification', 'wp-sms'),
+                        esc_html__('Receive SMS alerts on the Admin Mobile Number when a new comment is posted.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_new_comment'                       => array(
@@ -2034,18 +2058,21 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you When get a new comment.', 'wp-sms')
+                    'desc'    => esc_html__('Receiving SMS alerts on the Admin Mobile Number for each new comment.', 'wp-sms')
                 ),
                 'notif_new_comment_template'              => array(
                     'id'   => 'notif_new_comment_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
+                    'desc' => esc_html__('Create the SMS message for new comment alerts. Include details using placeholders:', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
                 ),
                 // User login
                 'notif_user_login_title'                  => array(
                     'id'   => 'notif_user_login_title',
-                    'name' => esc_html__('User login', 'wp-sms'),
+                    'name' => $this->renderOptionHeader(
+                        esc_html__('User Login Notification', 'wp-sms'),
+                        esc_html__('Configure SMS notifications to be sent to the Admin Mobile Number whenever a user logs in.', 'wp-sms')
+                    ),
                     'type' => 'header'
                 ),
                 'notif_user_login'                        => array(
@@ -2053,20 +2080,20 @@ class Settings
                     'name'    => esc_html__('Status', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => esc_html__('Send an SMS to you When user is login.', 'wp-sms')
+                    'desc'    => esc_html__('SMS notifications to be sent to the Admin Mobile Number on user login.', 'wp-sms')
                 ),
                 'notif_user_login_roles'                  => array(
                     'id'      => 'notif_user_login_roles',
-                    'name'    => esc_html__('Specific roles', 'wp-sms'),
+                    'name'    => esc_html__('Specific Roles', 'wp-sms'),
                     'type'    => 'multiselect',
                     'options' => $this->getRoles(),
-                    'desc'    => esc_html__('Select the roles of the user that you want to get notification while login.', 'wp-sms')
+                    'desc'    => esc_html__('Choose user roles that trigger login notifications.', 'wp-sms')
                 ),
                 'notif_user_login_template'               => array(
                     'id'   => 'notif_user_login_template',
-                    'name' => esc_html__('Message body', 'wp-sms'),
+                    'name' => esc_html__('Message Body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    'desc' => esc_html__('Format the SMS message sent upon user login. Utilize placeholders to include user details:', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                 )
             )),
 
@@ -2120,22 +2147,26 @@ class Settings
         if (Option::getOption('gdpr_compliance')) {
             $settings['newsletter']['newsletter_gdpr'] = array(
                 'id'   => 'newsletter_gdpr',
-                'name' => esc_html__('GDPR Compliance', 'wp-sms'),
+                'name' => $this->renderOptionHeader(
+                    esc_html__('Data Protection Settings', 'wp-sms'),
+                    esc_html__('Set up how you comply with data protection regulations', 'wp-sms'),
+                ),
                 'type' => 'header'
             );
 
             $settings['newsletter']['newsletter_form_gdpr_text'] = array(
                 'id'   => 'newsletter_form_gdpr_text',
-                'name' => esc_html__('Confirmation text', 'wp-sms'),
-                'type' => 'textarea'
+                'name' => esc_html__('Consent Text', 'wp-sms'),
+                'type' => 'textarea',
+                'desc' => esc_html__('Provide a clear message that informs subscribers how their data will be used and that their consent is required. For example: "I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy."', 'wp-sms'),
             );
 
             $settings['newsletter']['newsletter_form_gdpr_confirm_checkbox'] = array(
                 'id'      => 'newsletter_form_gdpr_confirm_checkbox',
-                'name'    => esc_html__('Confirmation Checkbox status', 'wp-sms'),
+                'name'    => esc_html__('Checkbox Default', 'wp-sms'),
                 'type'    => 'select',
                 'options' => array('checked' => 'Checked', 'unchecked' => 'Unchecked'),
-                'desc'    => esc_html__('Checked or Unchecked GDPR checkbox as default form load.', 'wp-sms')
+                'desc'    => esc_html__('Leave the consent checkbox unchecked by default to comply with privacy laws, which require active, explicit consent from users.', 'wp-sms')
             );
         } else {
             $settings['newsletter']['newsletter_gdpr'] = array(
@@ -2828,7 +2859,7 @@ class Settings
     {
         // Load countries list file
         $file = WP_SMS_DIR . 'assets/countries.json';
-        $file = file_get_contents($file);
+        $file = file_get_contents($file); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
         return json_decode($file, true);
     }

@@ -88,7 +88,7 @@ class smsbox extends \WP_SMS\Gateway
                     'X-Api-Key'    => urlencode($this->has_key),
                     'Content-Type' => 'application/json'
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'from'    => $this->from,
                     'numbers' => implode(', ', $this->to),
                     'message' => urlencode($this->msg),

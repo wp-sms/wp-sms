@@ -84,7 +84,7 @@ class tubelightcommunications extends \WP_SMS\Gateway
                 'headers' => [
                     'Content-Type' => 'application/json'
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'authentication' => [
                         'key'     => $this->has_key,
                         'version' => '1.0',

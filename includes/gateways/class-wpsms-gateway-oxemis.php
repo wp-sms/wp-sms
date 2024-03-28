@@ -66,7 +66,7 @@ class oxemis extends \WP_SMS\Gateway
                     'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
                     'Content-Type'  => 'application/json',
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'Options'    => $options,
                     'Message'    => [
                         'Sender' => $this->from,

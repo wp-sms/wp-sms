@@ -24,12 +24,16 @@ final class Generator
     private $agent;
 
     /**
+<<<<<<< HEAD
      * @var $code
      */
     private $code;
 
     /**
      * @var string $phoneNumber
+=======
+     * @var string
+>>>>>>> 53dd1e35e4f48a448a1679c77a976121e2f8dd76
      */
     private $phoneNumber;
 
@@ -141,16 +145,17 @@ final class Generator
         global $wpdb;
 
         $tableName = $wpdb->prefix . Install::TABLE_OTP;
-        $query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d",
-            [
-                $this->phoneNumber,
-                $this->agent,
-                $this->getRateLimitTimeThreshold()->getTimestamp()
-            ]
-        );
 
-        $result = (int) $wpdb->get_var($query);
+        $result = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d",
+                [
+                    $this->phoneNumber,
+                    $this->agent,
+                    $this->getRateLimitTimeThreshold()->getTimestamp()
+                ]
+            )
+        );
 
         if ($result >= $this->getRateLimitCount()) {
             throw new Exceptions\OtpLimitExceededException(esc_html__('OTPs generated for this number has reached its limit, please try some other time.', 'wp-sms'));

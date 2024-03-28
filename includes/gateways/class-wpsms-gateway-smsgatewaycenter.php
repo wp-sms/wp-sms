@@ -60,18 +60,15 @@ class smsgatewaycenter extends \WP_SMS\Gateway
 
         $msg = urlencode($this->msg);
 
-        $result = file_get_contents($this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode(',', $this->to) . "&senderId=" . $this->from . "&msg=" . $msg . "&format=json");
+        $result = $this->request('GET', $this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode(',', $this->to) . "&senderId=" . $this->from . "&msg=" . $msg . "&format=json", [], [], false);
 
-        $jsonDecode = json_decode($result);
-        error_log($this->wsdl_link . "send?userId=" . $this->username . "&password=" . $this->password . "&sendMethod=simpleMsg&msgType=dynamic&mobile=" . implode(',', str_replace('+', '', $this->to)) . "&senderId=" . $this->from . "&msg=" . $msg . "&format=json");
-        error_log(print_r($jsonDecode, true));
-        if ($jsonDecode->status == 'error') {
+        if ($result->status == 'error') {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result, 'error');
             return false;
         }
 
-        if ($jsonDecode->status == 'success') {
+        if ($result->status == 'success') {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
 
@@ -82,14 +79,14 @@ class smsgatewaycenter extends \WP_SMS\Gateway
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', lcfirst($jsonDecode->status) . ' | ' . $jsonDecode->transactionId);
+            do_action('wp_sms_send', lcfirst($result->status) . ' | ' . $result->transactionId);
 
-            return lcfirst($jsonDecode->status) . ' | ' . $jsonDecode->transactionId;
+            return lcfirst($result->status) . ' | ' . $result->transactionId;
         }
         // Log the result
         $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
-        return new \WP_Error('send-sms', lcfirst($jsonDecode->status) . ' | ' . $jsonDecode->transactionId);
+        return new \WP_Error('send-sms', lcfirst($result->status) . ' | ' . $result->transactionId);
     }
 
     /**
@@ -102,11 +99,10 @@ class smsgatewaycenter extends \WP_SMS\Gateway
         if (!$this->username && !$this->password) {
             return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
-        $result     = file_get_contents($this->wsdl_link . "balanceValidityCheck?userId=" . $this->username . "&password=" . $this->password . "&format=json");
-        $jsonDecode = json_decode($result);
-        if ($jsonDecode->status !== 'success') {
-            return new \WP_Error('account-credit', "$jsonDecode->status | $jsonDecode->errorCode | $jsonDecode->reason");
+        $result = $this->request('GET', $this->wsdl_link . "balanceValidityCheck?userId=" . $this->username . "&password=" . $this->password . "&format=json", [], [], false);
+        if ($result->status !== 'success') {
+            return new \WP_Error('account-credit', "$result->status | $result->errorCode | $result->reason");
         }
-        return $jsonDecode->smsBalance;
+        return $result->smsBalance;
     }
 }

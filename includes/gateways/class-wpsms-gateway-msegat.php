@@ -89,7 +89,7 @@ class msegat extends \WP_SMS\Gateway
             'headers' => array(
                 'Content-Type' => 'application/json'
             ),
-            'body'    => json_encode(array(
+            'body'    => wp_json_encode(array(
                 'userName'     => $this->username,
                 'apiKey'       => $this->has_key,
                 'msgEncoding ' => $encoding,

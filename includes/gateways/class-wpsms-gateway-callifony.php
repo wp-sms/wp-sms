@@ -73,7 +73,7 @@ class callifony extends \WP_SMS\Gateway
                 'token'        => $this->has_key,
                 'Content-Type' => 'application/json'
             ],
-            'body'    => json_encode($postBody),
+            'body'    => wp_json_encode($postBody),
         ];
 
         $response = wp_remote_post("{$this->wsdl_link}/HTTP/api/Client/SendSMS?username={$this->username}&password={$this->password}", $args);

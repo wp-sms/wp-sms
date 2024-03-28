@@ -90,8 +90,8 @@ class Helper
         }
 
         $users = get_users([
-            'meta_key'   => self::getUserMobileFieldName(),
-            'meta_value' => self::prepareMobileNumberQuery($number)
+            'meta_key'   => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_value' => self::prepareMobileNumberQuery($number) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
@@ -108,7 +108,7 @@ class Helper
         $mobileFieldKey = self::getUserMobileFieldName();
 
         $args = array(
-            'meta_query'  => array(
+            'meta_query'  => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 array(
                     'key'     => $mobileFieldKey,
                     'value'   => '',
@@ -151,7 +151,7 @@ class Helper
     {
         $fieldKey = self::getUserMobileFieldName();
         $args     = array(
-            'meta_query' => array(
+            'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 'relation' => 'OR',
                 array(
                     'key'     => $fieldKey,
@@ -319,6 +319,9 @@ class Helper
         // check whether the first character of mobile number is +
         $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
 
+        // check whether the mobile number is in international mobile only countries
+        $international_mobile_only_countries = Option::getOption('international_mobile_only_countries');
+
         /**
          * 1. Check whether international mode is on and the number is NOT started with +
          */
@@ -362,7 +365,7 @@ class Helper
                 $sql .= $wpdb->prepare(" AND id != %s", $subscribeId);
             }
 
-            $result = $wpdb->get_row($sql);
+            $result = $wpdb->get_row($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
             // If result has active status, raise an error
             if ($result && $result->status == '1') {
@@ -376,12 +379,35 @@ class Helper
                 $where = $wpdb->prepare('AND user_id != %s', $userId);
             }
 
-            $sql    = $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber);
-            $result = $wpdb->get_results($sql);
+            $result = $wpdb->get_results(
+                $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber)
+            );
 
             // If result is not empty, raise an error
             if ($result) {
                 return new WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
+            }
+        }
+
+        /**
+         * 4. Check whether the number country is valid or not
+         */
+        if ($international_mode && $international_mobile_only_countries) {
+            $countryCallingCodes = wp_json_file_decode(WP_SMS_DIR . 'assets/countries-code.json', ['associative' => true]);
+            $onlyCountries       = array_filter($countryCallingCodes, function ($code) use ($international_mobile_only_countries) {
+                return in_array($code, $international_mobile_only_countries);
+            }, ARRAY_FILTER_USE_KEY);
+            $isValid             = false;
+            foreach ($onlyCountries as $code) {
+                $countryLength = strlen($code);
+                $prefix        = substr($mobileNumber, 0, $countryLength);
+                if ($prefix === $code) {
+                    $isValid = true;
+                    break;
+                }
+            }
+            if (!$isValid) {
+                return new WP_Error('invalid_number', __('The mobile number is not valid for your country.', 'wp-sms'));
             }
         }
 

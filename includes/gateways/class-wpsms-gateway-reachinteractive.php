@@ -108,7 +108,7 @@ class reachinteractive extends \WP_SMS\Gateway
                 'username'     => $this->username,
                 'password'     => $this->password,
             ),
-            'body'    => json_encode(array(
+            'body'    => wp_json_encode(array(
                 'to'      => implode(',', $numbers),
                 'from'    => $this->from,
                 'message' => $this->msg,
