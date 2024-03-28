@@ -24,6 +24,16 @@ final class Generator
     private $agent;
 
     /**
+     * @var $code
+     */
+    private $code;
+
+    /**
+     * @var string $phoneNumber
+     */
+    private $phoneNumber;
+
+    /**
      * @param string $phoneNumber
      * @param string $agent
      */
