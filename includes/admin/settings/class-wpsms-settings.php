@@ -180,6 +180,7 @@ class Settings
              * Pro Pack tabs
              */
             'pro_wordpress'  => esc_html__('2FA & Login', 'wp-sms'),
+            'integrations'   => esc_html__('Integrations', 'wp-sms'),
             // 'pro_buddypress'       => esc_html__('BuddyPress', 'wp-sms'),
             // 'pro_woocommerce'      => esc_html__('WooCommerce', 'wp-sms'),
             // 'pro_gravity_forms'    => esc_html__('Gravity Forms', 'wp-sms'),
@@ -2669,8 +2670,8 @@ class Settings
                                     $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank">PRO</a></span></li>';
                                 }
                             }
-
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '"><a href="' . esc_url($tab_url) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
+                            $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '"><a href="' . $tabUrl . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
                             echo '</a>' . $proLockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         };
