@@ -296,16 +296,16 @@ class Settings
                 'name'    => esc_html__('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => esc_html__('This option adds login with SMS in the login form.', 'wp-sms'),
+                'desc'    => esc_html__('Allows users to log in with a verification code sent via SMS.', 'wp-sms'),
             ),
             'login_sms_message'     => array(
                 'id'   => 'login_sms_message',
                 'name' => esc_html__('Message body', 'wp-sms'),
                 'type' => 'textarea',
-                'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                'desc' => esc_html__('Specify the SMS message format for login verification. Variables: ', 'wp-sms') . '<br>' .
                     sprintf(
                     // translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
-                        esc_html__('Mobile code: %1$s, User name: %2$s, Full Name: %3$s, Site Name: %4$s, Site Url: %5$s', 'wp-sms'),
+                        esc_html__('%1$s (Verification Code), %2$s (Username), %3$s (Full Name), %4$s (Website Name), %5$s (Website Url)', 'wp-sms'),
                         '<code>%code%</code>',
                         '<code>%user_name%</code>',
                         '<code>%full_name%</code>',
@@ -315,14 +315,14 @@ class Settings
             ),
             'register_sms'          => array(
                 'id'      => 'register_sms',
-                'name'    => esc_html__('User Registration on Login', 'wp-sms'),
+                'name'    => esc_html__('User Account Creation on Login', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => esc_html__('Make a user account using SMS during login if the user isn\'t already registered.', 'wp-sms'),
+                'desc'    => esc_html__('If a user logs in with SMS and does not have an existing account, a new account is created automatically.', 'wp-sms'),
             ),
             'otp_title'             => array(
                 'id'   => 'otp_title',
-                'name' => esc_html__('Two-Factor Authentication SMS', 'wp-sms'),
+                'name' => esc_html__('Two-Factor Authentication with SMS', 'wp-sms'),
                 'type' => 'header'
             ),
             'mobile_verify'         => array(
@@ -330,26 +330,26 @@ class Settings
                 'name'    => esc_html__('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('Verify mobile number in the login form. This feature is only compatible with WordPress default form.<br>The <code>manage_options</code> caps don\'t need to verify in the login form.', 'wp-sms'),
+                'desc'    => __('Allows for SMS verification as part of the login process, without requiring <code>manage_options</code> capability verification.', 'wp-sms'),
             ),
             'mobile_verify_method'  => array(
                 'id'      => 'mobile_verify_method',
-                'name'    => esc_html__('Method', 'wp-sms'),
+                'name'    => esc_html__('Authentication Policy', 'wp-sms'),
                 'type'    => 'select',
                 'options' => array(
                     'optional'  => esc_html__('Optional - Users can enable/disable it in their profile', 'wp-sms'),
                     'force_all' => esc_html__('Enable for All Users', 'wp-sms')
                 ),
-                'desc'    => esc_html__('Choose from which what 2FA method you want to use.', 'wp-sms')
+                'desc'    => esc_html__('Select whether two-factor authentication is a user-toggled feature within their profile settings or a mandatory security measure for all accounts.', 'wp-sms')
             ),
             'mobile_verify_message' => array(
                 'id'   => 'mobile_verify_message',
-                'name' => esc_html__('Message content', 'wp-sms'),
+                'name' => esc_html__('Message Content', 'wp-sms'),
                 'type' => 'textarea',
-                'desc' => esc_html__('Enter the contents of the 2FA SMS message.', 'wp-sms') . '<br>' .
+                'desc' => esc_html__('Set the SMS message format for two-factor authentication. Variables: ', 'wp-sms') . '<br>' .
                     sprintf(
                     // translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
-                        esc_html__('Mobile code: %1$s, User name: %2$s, First Name: %3$s, Last Name: %4$s', 'wp-sms'),
+                        esc_html__('%1$s (One-Time Password), %2$s (Username), %3$s (First Name), %4$s (Last Name).', 'wp-sms'),
                         '<code>%otp%</code>',
                         '<code>%user_name%</code>',
                         '<code>%first_name%</code>',
