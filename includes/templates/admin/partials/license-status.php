@@ -1,13 +1,14 @@
-<?php if (isset($addons)) {
-    if (count($addons) == 0) {
-        echo '<div class="license-status license-status--free">';
-        echo '<a class="upgrade" href="' . esc_url(WP_SMS_SITE . '/buy') . '" target="_blank"><span>' . esc_html__('UPGRADE TO PRO', 'wp-sms') . '</span></a>';
-    } else {
-        echo '<div class="license-status license-status--valid">';
-        echo '<span>';
-        echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons));
-        echo '<a class="upgrade" target="_blank" href="' . esc_url(WP_SMS_SITE . '/buy') . '">' . esc_html__('UPGRADE', 'wp-sms') . '</a>';
-        echo '</span>';
-    }
-    echo '</div>';
-}
+<?php if (isset($addons)): ?>
+    <?php if (count($addons) == 0): ?>
+        <div class="license-status license-status--free">
+            <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php echo esc_html__('UPGRADE TO PRO', 'wp-sms'); ?></span></a>
+        </div>
+    <?php else: ?>
+        <div class="license-status license-status--valid">
+            <span>
+                <?php echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons)); ?>
+                <a class="upgrade" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php echo esc_html__('UPGRADE', 'wp-sms'); ?></a>
+            </span>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
