@@ -289,7 +289,7 @@ function moveFeedbackBird() {
     const feedbackBird = document.getElementById('feedback-bird-app');
     const license = document.querySelector('.wpsms-menu-content .wpsms-license');
     const support = document.querySelector('.wpsms-header-items-side');
-    if (feedbackBird) {
+    if (feedbackBird && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
         if (windowWidth  <= 900) {
             const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
             license.parentNode.insertBefore(cutDiv, license);

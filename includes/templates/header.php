@@ -20,47 +20,6 @@ foreach ($addons as $option_key => $status) {
         $addons[$option_key] = true;
     }
 }
-// Function to generate license status
-if (!function_exists('generate_license_status')) {
-    function generate_license_status($addons)
-    {
-        if (count($addons) == 0) {
-            echo '<div class="license-status license-status--free">';
-            echo '<a class="upgrade" href="' . esc_url(WP_SMS_SITE . '/buy') . '" target="_blank"><span>' . esc_html__('UPGRADE TO PRO', 'wp-sms') . '</span></a>';
-            echo '</div>';
-        } else {
-            echo '<div class="license-status license-status--valid">';
-            echo '<span>';
-            echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons));
-            echo '<a class="upgrade" target="_blank" href="' . esc_url(WP_SMS_SITE . '/buy') . '">' . esc_html__('UPGRADE', 'wp-sms') . '</a>';
-            echo '</span>';
-            echo '</div>';
-        }
-    }
-}
-
-if (!function_exists('generate_menu_link')) {
-    function generate_menu_link($page_slug, $link_text, $icon_class, $badge_count = null)
-    {
-        $class = '';
-        if (isset($_GET['page']) && $_GET['page'] === $page_slug) {
-            $class = 'active';
-        }
-
-        $href = esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=' . $page_slug);
-
-        $badge = '';
-        if ($badge_count !== null) {
-            $badge = '<span class="badge">' . esc_html($badge_count) . '</span>';
-        }
-
-        $link = '<a class="' . esc_attr($icon_class) . ' ' . esc_attr($class) . '" href="' . $href . '">';
-        $link .= '<span class="icon"></span>' . esc_html($link_text) . ' ' . $badge;
-        $link .= '</a>';
-
-        echo $link;
-    }
-}
 ?>
 <div class="wpsms-header-banner" style="<?php echo isset($full_width_banner) && $full_width_banner ? 'margin-left: -20px; width: auto; max-width: none;' : ''; ?>">
     <div class="wpsms-header-logo"></div>
@@ -68,16 +27,16 @@ if (!function_exists('generate_menu_link')) {
     <div class="wpsms-header-items-flex">
         <?php
         $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
-        generate_menu_link('wp-sms', __('Send SMS', 'wp-sms'), 'send-sms');
-        generate_menu_link('wp-sms-inbox', __('Inbox', 'wp-sms'), 'inbox', $unreadMessagesCount);
-        generate_menu_link('wp-sms-outbox', __('Outbox', 'wp-sms'), 'outbox');
-        generate_menu_link('wp-sms-integrations', __('Integrations', 'wp-sms'), 'integrations');
+        echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms', 'link_text' => __('Send SMS', 'wp-sms'), 'icon_class' => 'send-sms', 'badge_count' => null]);
+        echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-inbox', 'link_text' => __('Inbox', 'wp-sms'), 'icon_class' => 'inbox', 'badge_count' => $unreadMessagesCount]);
+        echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-outbox', 'link_text' => __('Outbox', 'wp-sms'), 'icon_class' => 'outbox', 'badge_count' => null]);
+        echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
         ?>
     </div>
     <div class="wpsms-header-items-side">
         <?php
-        // Generate license status
-        generate_license_status($addons);
+        //license status
+        echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons]);
         ?>
         <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('setting', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
             echo 'active';
@@ -95,9 +54,9 @@ if (!function_exists('generate_menu_link')) {
             </label>
             <div class="wpsms-menu-content">
                 <?php
-                generate_menu_link('wp-sms-outbox', __('Outbox', 'wp-sms'), 'outbox');
-                generate_menu_link('wp-sms-integrations', __('Integrations', 'wp-sms'), 'integrations');
-                generate_menu_link('wp-sms-settings', __('Settings', 'wp-sms'), 'settings');
+                echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-outbox', 'link_text' => __('Outbox', 'wp-sms'), 'icon_class' => 'outbox', 'badge_count' => null]);
+                echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
+                echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-settings', 'link_text' => __('Settings', 'wp-sms'), 'icon_class' => 'settings', 'badge_count' => null]);
                 ?>
                 <a href="<?php echo esc_url(WP_SMS_SITE . '/support'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="help">
                     <span class="icon"></span>
@@ -105,8 +64,8 @@ if (!function_exists('generate_menu_link')) {
                 </a>
                 <div class="wpsms-license">
                     <?php
-                    // Generate mobile license status
-                    generate_license_status($addons);
+                    //license status
+                    echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons]);
                     ?>
                 </div>
             </div>
