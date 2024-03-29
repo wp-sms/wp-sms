@@ -983,7 +983,7 @@ class nusoap_base
             $usec = 0;
         }
 
-        return strftime('%Y-%m-%d %H:%M:%S', $sec) . '.' . sprintf('%06d', $usec);
+        return date('%Y-%m-%d %H:%M:%S', $sec) . '.' . sprintf('%06d', $usec);
     }
 
     /**
@@ -2827,7 +2827,7 @@ class soap_transport_http extends nusoap_base
      * @access   public
      * @deprecated
      */
-    function sendHTTPS($data, $timeout = 0, $response_timeout = 30, $cookies)
+    function sendHTTPS($data, $timeout = 0, $response_timeout = 30, $cookies = array())
     {
         return $this->send($data, $timeout, $response_timeout, $cookies);
     }
