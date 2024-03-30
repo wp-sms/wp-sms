@@ -210,7 +210,12 @@
 .sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
   display: none;
 }
-
+.wpsms-wrap__top{
+  h2,  h1{
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
 @media screen and (max-width: 1030px) {
   .wpsms-header-items-side #feedback-bird-app{
     display: none!important;

@@ -4,11 +4,15 @@
   .wpsms-tab-group {
     padding: 0;
   }
+  .wpsms-tab {
+    padding-top: 10px;
+  }
   .wpsms-tab li a{
     opacity: 1;
     color:#56585A;
     font-size: 13px;
     line-height: 24px;
+    padding: 5px 10px;
     &.active{
       color: #C24225;
       box-shadow:none;
@@ -20,7 +24,7 @@
 .wpsms-wrap-woo-pro{
   .woo-nav-tab-wrapper{
     border-bottom: none;
-    padding-top:0;
+    padding-top:10px;
     .nav-tab{
       background: transparent!important;
       border:none;
