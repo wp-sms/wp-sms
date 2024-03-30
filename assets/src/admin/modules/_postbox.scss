@@ -238,6 +238,13 @@ body.rtl #feedback-bird-app{
   margin-right: 0!important;
   margin-left: 10px;
 }
+.wpsms-wrap__top .notice:has(p):not(.e-notice){
+  padding-right: 40px;
+}
+.rtl .wpsms-wrap__top .notice:has(p):not(.e-notice){
+  padding-right: 14px;
+  padding-left: 40px;
+}
 .wpsms-header-banner {
   display: flex;
   justify-content: flex-start;
@@ -303,10 +310,12 @@ body.rtl #feedback-bird-app{
 
       span.badge {
         border-radius: 17px;
-        width: 17px;
+        width: auto;
+        min-width: 17px;
         height: 17px;
+        padding: 2px;
         line-height: 16px;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 500;
         color: #f7f7f7;
         background: #00000066;
