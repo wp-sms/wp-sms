@@ -150,6 +150,11 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
 
         // Bulk delete action
         if ('bulk_delete' == $this->current_action()) {
+            if (!wp_verify_nonce($_REQUEST['_wpnonce'], "bulk-{$this->_args['plural']}")) {
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), 'error');
+                exit();
+            }
+
             $get_ids = array_map('sanitize_text_field', $_GET['id']);
             foreach ($get_ids as $id) {
                 $this->db->delete($this->tb_prefix . "sms_subscribes_group", array('ID' => intval($id)), ['%d']);
