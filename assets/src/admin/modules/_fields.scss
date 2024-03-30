@@ -197,22 +197,24 @@
   width: 1.5rem !important;
 }
 
-.wpsms-wrap textarea {
-  max-width: calc(100% - 45px);
-  background-color: #fff;
-  padding: 8px 14px !important;
-  font-weight: normal;
-  font-size: 14px !important;
-  line-height: 20px !important;
-  border: 1px solid #5b5b5b !important;
-  box-sizing: border-box;
-  border-radius: 2px !important;
+.wpsms-wrap {
+  textarea:not(#feedback-bird-app textarea) {
+    max-width: calc(100% - 45px);
+    background-color: #fff;
+    padding: 8px 14px !important;
+    font-weight: normal;
+    font-size: 14px !important;
+    line-height: 20px !important;
+    border: 1px solid #5b5b5b !important;
+    box-sizing: border-box;
+    border-radius: 2px !important;
 
-  &:focus {
-    border-color: #F88E40 !important;
-    outline: #F88E40 !important;
-    box-shadow: 0 0 0 1px #F88E40 !important;
-    color: #000 !important;
+    &:focus {
+      border-color: #F88E40 !important;
+      outline: #F88E40 !important;
+      box-shadow: 0 0 0 1px #F88E40 !important;
+      color: #000 !important;
+    }
   }
 }
 
