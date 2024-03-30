@@ -97,6 +97,7 @@ class Gateway
             'rapidsms'       => 'rapidsms.net',
             'apifon'         => 'apifon.com',
             'awssns'         => 'aws.amazon.com',
+            'alphasms'       => 'alphasms.net',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
