@@ -193,3 +193,103 @@
   }
 }
 
+.footer-left-wpsms {
+  font-weight: 400;
+  text-decoration: none !important;
+  color: #50575E !important
+}
+
+.wp-sms-woo-commerce-pro-settings {
+  textarea, .select2-container {
+    max-width: 100% !important;
+  }
+}
+
+//Mobile header
+.post-type-wpsms-command #feedback-bird-app, .sms_page_wp-sms #feedback-bird-app, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment #feedback-bird-app,
+.sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
+  display: none;
+}
+
+@media screen and (max-width: 1030px) {
+  .wpsms-header-items-side #feedback-bird-app{
+    display: none!important;
+  }
+  .wpsms-mobile-menu #feedback-bird-app {
+    padding: 12px;
+
+    .c-fbb-btn--default {
+      color: #4E5154 !important;
+      background: none;
+      width: 100%;
+
+      & > span {
+        display: flex !important;
+        align-items: center;
+
+        &:before {
+          content: '';
+          margin-right: 10px;
+          width: 16px;
+          height: 16px;
+          display: inline-flex;
+          background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE2IiBoZWlnaHQ9IjE3IiB2aWV3Qm94PSIwIDAgMTYgMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNC41IDguNUMxNC41IDYuMTg3NSAxMy4yNSA0LjA2MjUgMTEuMjUgMi44NzVDOS4yMTg3NSAxLjcxODc1IDYuNzUgMS43MTg3NSA0Ljc1IDIuODc1QzIuNzE4NzUgNC4wNjI1IDEuNSA2LjE4NzUgMS41IDguNUMxLjUgMTAuODQzOCAyLjcxODc1IDEyLjk2ODggNC43NSAxNC4xNTYyQzYuNzUgMTUuMzEyNSA5LjIxODc1IDE1LjMxMjUgMTEuMjUgMTQuMTU2MkMxMy4yNSAxMi45Njg4IDE0LjUgMTAuODQzOCAxNC41IDguNVpNMCA4LjVDMCA1LjY1NjI1IDEuNSAzLjAzMTI1IDQgMS41OTM3NUM2LjQ2ODc1IDAuMTU2MjUgOS41IDAuMTU2MjUgMTIgMS41OTM3NUMxNC40Njg4IDMuMDMxMjUgMTYgNS42NTYyNSAxNiA4LjVDMTYgMTEuMzc1IDE0LjQ2ODggMTQgMTIgMTUuNDM3NUM5LjUgMTYuODc1IDYuNDY4NzUgMTYuODc1IDQgMTUuNDM3NUMxLjUgMTQgMCAxMS4zNzUgMCA4LjVaTTQuMDYyNSAxMC4zMTI1QzMuOTM3NSA5LjkwNjI1IDQuMjgxMjUgOS41IDQuNzUgOS41SDExLjM3NUMxMS44MTI1IDkuNSAxMi4xODc1IDkuOTA2MjUgMTIuMDMxMiAxMC4zMTI1QzExLjUzMTIgMTIuMDMxMiA5LjkzNzUgMTMuMjUgOC4wNjI1IDEzLjI1QzYuMTg3NSAxMy4yNSA0LjU5Mzc1IDEyLjAzMTIgNC4wNjI1IDEwLjMxMjVaTTQuNSA2LjVDNC41IDUuOTY4NzUgNC45Mzc1IDUuNSA1LjUgNS41QzYuMDYyNSA1LjUgNi41IDUuOTY4NzUgNi41IDYuNUM2LjUgNy4wNjI1IDYuMDYyNSA3LjUgNS41IDcuNUM0LjkzNzUgNy41IDQuNSA3LjA2MjUgNC41IDYuNVpNMTAuNSA1LjVDMTEuMDYyNSA1LjUgMTEuNSA1Ljk2ODc1IDExLjUgNi41QzExLjUgNy4wNjI1IDExLjA2MjUgNy41IDEwLjUgNy41QzkuOTM3NSA3LjUgOS41IDcuMDYyNSA5LjUgNi41QzkuNSA1Ljk2ODc1IDkuOTM3NSA1LjUgMTAuNSA1LjVaIiBmaWxsPSIjNEU1MTU0Ii8+Cjwvc3ZnPgo=") center center/contain no-repeat;
+        }
+      }
+    }
+  }
+  .wpsms-header-items-side {
+    right: 24px !important;
+    bottom: 6px !important;
+
+    .wpsms-mobile-menu {
+      display: block;
+    }
+  }
+  .wpsms-header-items-side {
+    & > .license-status, & > .setting, & > .support {
+      display: none !important;
+    }
+  }
+  .wpsms-wrap-woo-pro a.page-title-action {
+    display: inline-block;
+  }
+  .sms_page_wp-sms #show-settings-link {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 20px;
+    min-height: 33px;
+
+    &:after {
+      bottom: -1px;
+    }
+  }
+  .wpsms-header-banner .wpsms-header-logo {
+    width: 109px !important;
+    height: 30px !important;
+  }
+  .wpsms-header-banner .wpsms-header-items-flex {
+    .outbox, .integrations {
+      display: none !important;
+    }
+  }
+  .wpsms-wrap__top {
+    display: block !important;
+    padding: 20px 19px !important;
+
+    h2, h1 {
+      display: inline !important;
+      margin-right: 18px;
+    }
+
+    .wpsms-button-group {
+      display: inline !important;
+
+      a {
+        margin-bottom: 8px !important;
+        margin-right: 8px;
+      }
+    }
+  }
+}
+

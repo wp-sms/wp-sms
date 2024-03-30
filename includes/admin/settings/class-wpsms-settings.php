@@ -2640,14 +2640,15 @@ class Settings
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             ?>
-            <div class="wpsms-wrap__main">
+            <div class="wpsms-wrap__top">
                 <?php do_action('wp_sms_settings_page');
 
                 if (isset($args['title'])) {
                     echo '<h2>' . esc_html($args['title']) . '</h2>';
                 }
                 ?>
-
+            </div>
+            <div class="wpsms-wrap__main">
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
                         <?php
