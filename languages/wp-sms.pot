@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-27T08:50:05+00:00\n"
+"POT-Creation-Date: 2024-03-29T11:30:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wp-sms\n"
@@ -37,7 +37,7 @@ msgid "https://veronalabs.com/"
 msgstr ""
 
 #: includes/admin/add-ons/class-add-ons.php:47
-#: includes/admin/settings/class-wpsms-settings.php:2300
+#: includes/admin/settings/class-wpsms-settings.php:2301
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
 #: includes/class-wpsms-gateway.php:952
 #: includes/templates/admin/subscriber-form.php:45
@@ -96,25 +96,25 @@ msgid "%s SMS Credit"
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:212
-#: includes/admin/settings/class-wpsms-settings.php:396
-#: includes/admin/settings/class-wpsms-settings.php:423
-#: includes/admin/settings/class-wpsms-settings.php:449
-#: includes/admin/settings/class-wpsms-settings.php:474
-#: includes/admin/settings/class-wpsms-settings.php:527
-#: includes/admin/settings/class-wpsms-settings.php:573
-#: includes/admin/settings/class-wpsms-settings.php:599
-#: includes/admin/settings/class-wpsms-settings.php:619
-#: includes/admin/settings/class-wpsms-settings.php:657
-#: includes/admin/settings/class-wpsms-settings.php:677
-#: includes/admin/settings/class-wpsms-settings.php:726
-#: includes/admin/settings/class-wpsms-settings.php:757
-#: includes/admin/settings/class-wpsms-settings.php:815
-#: includes/admin/settings/class-wpsms-settings.php:870
-#: includes/admin/settings/class-wpsms-settings.php:914
-#: includes/admin/settings/class-wpsms-settings.php:932
-#: includes/admin/settings/class-wpsms-settings.php:950
-#: includes/admin/settings/class-wpsms-settings.php:968
-#: includes/admin/settings/class-wpsms-settings.php:986
+#: includes/admin/settings/class-wpsms-settings.php:397
+#: includes/admin/settings/class-wpsms-settings.php:424
+#: includes/admin/settings/class-wpsms-settings.php:450
+#: includes/admin/settings/class-wpsms-settings.php:475
+#: includes/admin/settings/class-wpsms-settings.php:528
+#: includes/admin/settings/class-wpsms-settings.php:574
+#: includes/admin/settings/class-wpsms-settings.php:600
+#: includes/admin/settings/class-wpsms-settings.php:620
+#: includes/admin/settings/class-wpsms-settings.php:658
+#: includes/admin/settings/class-wpsms-settings.php:678
+#: includes/admin/settings/class-wpsms-settings.php:727
+#: includes/admin/settings/class-wpsms-settings.php:758
+#: includes/admin/settings/class-wpsms-settings.php:816
+#: includes/admin/settings/class-wpsms-settings.php:871
+#: includes/admin/settings/class-wpsms-settings.php:915
+#: includes/admin/settings/class-wpsms-settings.php:933
+#: includes/admin/settings/class-wpsms-settings.php:951
+#: includes/admin/settings/class-wpsms-settings.php:969
+#: includes/admin/settings/class-wpsms-settings.php:987
 #: includes/templates/admin/order-view-metabox.php:36
 #: includes/templates/admin/send-sms.php:23
 #: includes/templates/admin/send-sms.php:270
@@ -132,7 +132,7 @@ msgid "Inbox"
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:217
-#: includes/admin/settings/class-wpsms-settings.php:1918
+#: includes/admin/settings/class-wpsms-settings.php:1919
 #: includes/templates/admin/send-sms.php:47
 #: includes/templates/admin/subscribers.php:10
 msgid "Subscribers"
@@ -157,6 +157,7 @@ msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:228
 #: includes/admin/class-wpsms-admin.php:230
+#: includes/admin/settings/class-wpsms-settings.php:183
 msgid "Integrations"
 msgstr ""
 
@@ -340,20 +341,20 @@ msgid "Media"
 msgstr ""
 
 #: includes/admin/outbox/class-wpsms-outbox.php:130
-#: includes/admin/settings/class-wpsms-settings.php:295
-#: includes/admin/settings/class-wpsms-settings.php:329
-#: includes/admin/settings/class-wpsms-settings.php:371
-#: includes/admin/settings/class-wpsms-settings.php:513
-#: includes/admin/settings/class-wpsms-settings.php:643
-#: includes/admin/settings/class-wpsms-settings.php:1445
-#: includes/admin/settings/class-wpsms-settings.php:1605
-#: includes/admin/settings/class-wpsms-settings.php:1894
-#: includes/admin/settings/class-wpsms-settings.php:1985
-#: includes/admin/settings/class-wpsms-settings.php:2014
-#: includes/admin/settings/class-wpsms-settings.php:2030
-#: includes/admin/settings/class-wpsms-settings.php:2058
-#: includes/admin/settings/class-wpsms-settings.php:2080
-#: includes/admin/settings/class-wpsms-settings.php:2113
+#: includes/admin/settings/class-wpsms-settings.php:296
+#: includes/admin/settings/class-wpsms-settings.php:330
+#: includes/admin/settings/class-wpsms-settings.php:372
+#: includes/admin/settings/class-wpsms-settings.php:514
+#: includes/admin/settings/class-wpsms-settings.php:644
+#: includes/admin/settings/class-wpsms-settings.php:1446
+#: includes/admin/settings/class-wpsms-settings.php:1606
+#: includes/admin/settings/class-wpsms-settings.php:1895
+#: includes/admin/settings/class-wpsms-settings.php:1986
+#: includes/admin/settings/class-wpsms-settings.php:2015
+#: includes/admin/settings/class-wpsms-settings.php:2031
+#: includes/admin/settings/class-wpsms-settings.php:2059
+#: includes/admin/settings/class-wpsms-settings.php:2081
+#: includes/admin/settings/class-wpsms-settings.php:2114
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:131
 #: includes/templates/admin/subscriber-form.php:42
 #: includes/templates/email/partials/report-data.php:47
@@ -419,7 +420,7 @@ msgid "Notifications"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:171
-#: includes/admin/settings/class-wpsms-settings.php:1641
+#: includes/admin/settings/class-wpsms-settings.php:1642
 msgid "Message Button"
 msgstr ""
 
@@ -435,60 +436,60 @@ msgstr ""
 msgid "2FA & Login"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:254
+#: includes/admin/settings/class-wpsms-settings.php:255
 msgid "Settings updated"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:267
+#: includes/admin/settings/class-wpsms-settings.php:268
 #: includes/templates/admin/fields/field-wc-status-repeater.php:24
 #: includes/templates/admin/fields/field-wc-status-repeater.php:55
 msgid "Enable"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:268
-#: includes/admin/settings/class-wpsms-settings.php:1278
+#: includes/admin/settings/class-wpsms-settings.php:269
+#: includes/admin/settings/class-wpsms-settings.php:1279
 #: includes/templates/admin/fields/field-wc-status-repeater.php:25
 #: includes/templates/admin/fields/field-wc-status-repeater.php:56
 msgid "Disable"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:275
+#: includes/admin/settings/class-wpsms-settings.php:276
 msgid "All"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:290
+#: includes/admin/settings/class-wpsms-settings.php:291
 msgid "Login With SMS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:298
-msgid "This option adds login with SMS in the login form."
+#: includes/admin/settings/class-wpsms-settings.php:299
+msgid "Allows users to log in with a verification code sent via SMS."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:302
-#: includes/admin/settings/class-wpsms-settings.php:378
-#: includes/admin/settings/class-wpsms-settings.php:403
-#: includes/admin/settings/class-wpsms-settings.php:430
-#: includes/admin/settings/class-wpsms-settings.php:456
-#: includes/admin/settings/class-wpsms-settings.php:481
-#: includes/admin/settings/class-wpsms-settings.php:560
-#: includes/admin/settings/class-wpsms-settings.php:586
-#: includes/admin/settings/class-wpsms-settings.php:606
-#: includes/admin/settings/class-wpsms-settings.php:632
-#: includes/admin/settings/class-wpsms-settings.php:664
-#: includes/admin/settings/class-wpsms-settings.php:739
-#: includes/admin/settings/class-wpsms-settings.php:764
-#: includes/admin/settings/class-wpsms-settings.php:847
-#: includes/admin/settings/class-wpsms-settings.php:877
-#: includes/admin/settings/class-wpsms-settings.php:921
-#: includes/admin/settings/class-wpsms-settings.php:939
-#: includes/admin/settings/class-wpsms-settings.php:957
-#: includes/admin/settings/class-wpsms-settings.php:975
-#: includes/admin/settings/class-wpsms-settings.php:993
-#: includes/admin/settings/class-wpsms-settings.php:1048
-#: includes/admin/settings/class-wpsms-settings.php:1078
-#: includes/admin/settings/class-wpsms-settings.php:1117
-#: includes/admin/settings/class-wpsms-settings.php:1169
-#: includes/admin/settings/class-wpsms-settings.php:1198
+#: includes/admin/settings/class-wpsms-settings.php:303
+#: includes/admin/settings/class-wpsms-settings.php:379
+#: includes/admin/settings/class-wpsms-settings.php:404
+#: includes/admin/settings/class-wpsms-settings.php:431
+#: includes/admin/settings/class-wpsms-settings.php:457
+#: includes/admin/settings/class-wpsms-settings.php:482
+#: includes/admin/settings/class-wpsms-settings.php:561
+#: includes/admin/settings/class-wpsms-settings.php:587
+#: includes/admin/settings/class-wpsms-settings.php:607
+#: includes/admin/settings/class-wpsms-settings.php:633
+#: includes/admin/settings/class-wpsms-settings.php:665
+#: includes/admin/settings/class-wpsms-settings.php:740
+#: includes/admin/settings/class-wpsms-settings.php:765
+#: includes/admin/settings/class-wpsms-settings.php:848
+#: includes/admin/settings/class-wpsms-settings.php:878
+#: includes/admin/settings/class-wpsms-settings.php:922
+#: includes/admin/settings/class-wpsms-settings.php:940
+#: includes/admin/settings/class-wpsms-settings.php:958
+#: includes/admin/settings/class-wpsms-settings.php:976
+#: includes/admin/settings/class-wpsms-settings.php:994
+#: includes/admin/settings/class-wpsms-settings.php:1049
+#: includes/admin/settings/class-wpsms-settings.php:1079
+#: includes/admin/settings/class-wpsms-settings.php:1118
+#: includes/admin/settings/class-wpsms-settings.php:1170
+#: includes/admin/settings/class-wpsms-settings.php:1199
 #: includes/templates/formidable/formidable-form.php:19
 #: includes/templates/formidable/formidable-form.php:56
 #: includes/templates/meta-box.php:79
@@ -499,927 +500,930 @@ msgstr ""
 msgid "Message body"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:304
-#: includes/admin/settings/class-wpsms-settings.php:380
-#: includes/admin/settings/class-wpsms-settings.php:405
-#: includes/admin/settings/class-wpsms-settings.php:432
-#: includes/admin/settings/class-wpsms-settings.php:458
-#: includes/admin/settings/class-wpsms-settings.php:483
-#: includes/admin/settings/class-wpsms-settings.php:562
-#: includes/admin/settings/class-wpsms-settings.php:588
-#: includes/admin/settings/class-wpsms-settings.php:608
-#: includes/admin/settings/class-wpsms-settings.php:634
-#: includes/admin/settings/class-wpsms-settings.php:666
-#: includes/admin/settings/class-wpsms-settings.php:741
-#: includes/admin/settings/class-wpsms-settings.php:766
-#: includes/admin/settings/class-wpsms-settings.php:849
-#: includes/admin/settings/class-wpsms-settings.php:879
-#: includes/admin/settings/class-wpsms-settings.php:923
-#: includes/admin/settings/class-wpsms-settings.php:941
-#: includes/admin/settings/class-wpsms-settings.php:959
-#: includes/admin/settings/class-wpsms-settings.php:977
-#: includes/admin/settings/class-wpsms-settings.php:995
-#: includes/admin/settings/class-wpsms-settings.php:1119
+#: includes/admin/settings/class-wpsms-settings.php:305
+msgid "Specify the SMS message format for login verification. Variables: "
+msgstr ""
+
+#. translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
+#: includes/admin/settings/class-wpsms-settings.php:308
+msgid "%1$s (Verification Code), %2$s (Username), %3$s (Full Name), %4$s (Website Name), %5$s (Website Url)"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:318
+msgid "User Account Creation on Login"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:321
+msgid "If a user logs in with SMS and does not have an existing account, a new account is created automatically."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:325
+msgid "Two-Factor Authentication with SMS"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:333
+msgid "Allows for SMS verification as part of the login process, without requiring <code>manage_options</code> capability verification."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:337
+msgid "Authentication Policy"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:340
+msgid "Optional - Users can enable/disable it in their profile"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:341
+msgid "Enable for All Users"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:343
+msgid "Select whether two-factor authentication is a user-toggled feature within their profile settings or a mandatory security measure for all accounts."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:347
+msgid "Message Content"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:349
+msgid "Set the SMS message format for two-factor authentication. Variables: "
+msgstr ""
+
+#. translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
+#: includes/admin/settings/class-wpsms-settings.php:352
+msgid "%1$s (One-Time Password), %2$s (Username), %3$s (First Name), %4$s (Last Name)."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:366
+msgid "Welcome Notification"
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:375
+msgid "Send an SMS to user when register on BuddyPress."
+msgstr ""
+
+#: includes/admin/settings/class-wpsms-settings.php:381
+#: includes/admin/settings/class-wpsms-settings.php:406
+#: includes/admin/settings/class-wpsms-settings.php:433
+#: includes/admin/settings/class-wpsms-settings.php:459
+#: includes/admin/settings/class-wpsms-settings.php:484
+#: includes/admin/settings/class-wpsms-settings.php:563
+#: includes/admin/settings/class-wpsms-settings.php:589
+#: includes/admin/settings/class-wpsms-settings.php:609
+#: includes/admin/settings/class-wpsms-settings.php:635
+#: includes/admin/settings/class-wpsms-settings.php:667
+#: includes/admin/settings/class-wpsms-settings.php:742
+#: includes/admin/settings/class-wpsms-settings.php:767
+#: includes/admin/settings/class-wpsms-settings.php:850
+#: includes/admin/settings/class-wpsms-settings.php:880
+#: includes/admin/settings/class-wpsms-settings.php:924
+#: includes/admin/settings/class-wpsms-settings.php:942
+#: includes/admin/settings/class-wpsms-settings.php:960
+#: includes/admin/settings/class-wpsms-settings.php:978
+#: includes/admin/settings/class-wpsms-settings.php:996
+#: includes/admin/settings/class-wpsms-settings.php:1120
 #: includes/templates/admin/fields/field-wc-status-repeater.php:31
 #: includes/templates/admin/fields/field-wc-status-repeater.php:62
 msgid "Enter the contents of the SMS message."
 msgstr ""
 
-#. translators: %1$s: Mobile code, %2$s: Username, %3$s: Full name, %4$s: Site name, %5$s: Site URL
-#: includes/admin/settings/class-wpsms-settings.php:307
-msgid "Mobile code: %1$s, User name: %2$s, Full Name: %3$s, Site Name: %4$s, Site Url: %5$s"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:317
-msgid "User Registration on Login"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:320
-msgid "Make a user account using SMS during login if the user isn't already registered."
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:324
-msgid "Two-Factor Authentication SMS"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:332
-msgid "Verify mobile number in the login form. This feature is only compatible with WordPress default form.<br>The <code>manage_options</code> caps don't need to verify in the login form."
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:336
-msgid "Method"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:339
-msgid "Optional - Users can enable/disable it in their profile"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:340
-msgid "Enable for All Users"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:342
-msgid "Choose from which what 2FA method you want to use."
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:346
-msgid "Message content"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:348
-msgid "Enter the contents of the 2FA SMS message."
-msgstr ""
-
-#. translators: %1$s: Mobile code, %2$s: Username, %3$s: First name, %4$s: Last name
-#: includes/admin/settings/class-wpsms-settings.php:351
-msgid "Mobile code: %1$s, User name: %2$s, First Name: %3$s, Last Name: %4$s"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:365
-msgid "Welcome Notification"
-msgstr ""
-
-#: includes/admin/settings/class-wpsms-settings.php:374
-msgid "Send an SMS to user when register on BuddyPress."
-msgstr ""
-
 #. translators: %1$s: User login, %2$s: User email, %3$s: User display name
-#: includes/admin/settings/class-wpsms-settings.php:383
+#: includes/admin/settings/class-wpsms-settings.php:384
 msgid "User login: %1$s, User email: %2$s, User display name: %3$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:391
+#: includes/admin/settings/class-wpsms-settings.php:392
 msgid "Mention Notification"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:399
+#: includes/admin/settings/class-wpsms-settings.php:400
 msgid "Send SMS to user when someone mentioned. for example @admin"
 msgstr ""
 
 #. translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
-#: includes/admin/settings/class-wpsms-settings.php:408
+#: includes/admin/settings/class-wpsms-settings.php:409
 msgid "Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:418
+#: includes/admin/settings/class-wpsms-settings.php:419
 msgid "Private Message Notification"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:426
+#: includes/admin/settings/class-wpsms-settings.php:427
 msgid "Send SMS notification when user received a private message"
 msgstr ""
 
 #. translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
-#: includes/admin/settings/class-wpsms-settings.php:435
+#: includes/admin/settings/class-wpsms-settings.php:436
 msgid "Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:444
+#: includes/admin/settings/class-wpsms-settings.php:445
 msgid "User activity comments"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:452
+#: includes/admin/settings/class-wpsms-settings.php:453
 msgid "Send SMS to user when the user get a reply on activity"
 msgstr ""
 
 #. translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-#: includes/admin/settings/class-wpsms-settings.php:461
-#: includes/admin/settings/class-wpsms-settings.php:486
+#: includes/admin/settings/class-wpsms-settings.php:462
+#: includes/admin/settings/class-wpsms-settings.php:487
 msgid "Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:469
+#: includes/admin/settings/class-wpsms-settings.php:470
 msgid "User reply comments"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:477
+#: includes/admin/settings/class-wpsms-settings.php:478
 msgid "Send SMS to user when the user get a reply on comment"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:497
-#: includes/admin/settings/class-wpsms-settings.php:698
-#: includes/admin/settings/class-wpsms-settings.php:780
-#: includes/admin/settings/class-wpsms-settings.php:898
-#: includes/admin/settings/class-wpsms-settings.php:1002
-#: includes/admin/settings/class-wpsms-settings.php:1096
-#: includes/admin/settings/class-wpsms-settings.php:1124
-#: includes/admin/settings/class-wpsms-settings.php:1223
+#: includes/admin/settings/class-wpsms-settings.php:498
+#: includes/admin/settings/class-wpsms-settings.php:699
+#: includes/admin/settings/class-wpsms-settings.php:781
+#: includes/admin/settings/class-wpsms-settings.php:899
+#: includes/admin/settings/class-wpsms-settings.php:1003
+#: includes/admin/settings/class-wpsms-settings.php:1097
+#: includes/admin/settings/class-wpsms-settings.php:1125
+#: includes/admin/settings/class-wpsms-settings.php:1224
 #: src/Services/Formidable/FormidableManager.php:55
 #: src/Services/Forminator/ForminatorManager.php:90
 msgid "Not active"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:499
+#: includes/admin/settings/class-wpsms-settings.php:500
 msgid "BuddyPress plugin should be installed to show the options."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:508
+#: includes/admin/settings/class-wpsms-settings.php:509
 msgid "Order Meta Box"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:516
+#: includes/admin/settings/class-wpsms-settings.php:517
 msgid "Enable send SMS meta box on Orders.<br>Note: You must choose the mobile field first if disable Meta Box will not appear too."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:520
+#: includes/admin/settings/class-wpsms-settings.php:521
 msgid "Notify for new product"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:522
-#: includes/admin/settings/class-wpsms-settings.php:568
-#: includes/admin/settings/class-wpsms-settings.php:594
-#: includes/admin/settings/class-wpsms-settings.php:614
-#: includes/admin/settings/class-wpsms-settings.php:652
-#: includes/admin/settings/class-wpsms-settings.php:672
+#: includes/admin/settings/class-wpsms-settings.php:523
+#: includes/admin/settings/class-wpsms-settings.php:569
+#: includes/admin/settings/class-wpsms-settings.php:595
+#: includes/admin/settings/class-wpsms-settings.php:615
+#: includes/admin/settings/class-wpsms-settings.php:653
+#: includes/admin/settings/class-wpsms-settings.php:673
 msgid "Check the document for get more information about message variables"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:530
+#: includes/admin/settings/class-wpsms-settings.php:531
 msgid "Send SMS when publish new a product"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:534
-#: includes/admin/settings/class-wpsms-settings.php:580
-#: includes/admin/settings/class-wpsms-settings.php:626
-#: includes/admin/settings/class-wpsms-settings.php:733
-#: includes/admin/settings/class-wpsms-settings.php:822
+#: includes/admin/settings/class-wpsms-settings.php:535
+#: includes/admin/settings/class-wpsms-settings.php:581
+#: includes/admin/settings/class-wpsms-settings.php:627
+#: includes/admin/settings/class-wpsms-settings.php:734
+#: includes/admin/settings/class-wpsms-settings.php:823
 msgid "SMS receiver"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:537
+#: includes/admin/settings/class-wpsms-settings.php:538
 msgid "Subscriber"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:538
+#: includes/admin/settings/class-wpsms-settings.php:539
 msgid "Users"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:540
+#: includes/admin/settings/class-wpsms-settings.php:541
 msgid "Please select the receiver of SMS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:544
-#: includes/admin/settings/class-wpsms-settings.php:832
+#: includes/admin/settings/class-wpsms-settings.php:545
+#: includes/admin/settings/class-wpsms-settings.php:833
 #: includes/templates/meta-box.php:25
 msgid "Subscribe group"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:548
+#: includes/admin/settings/class-wpsms-settings.php:549
 msgid "If you select the Subscribe users, can select the group for send sms"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:552
+#: includes/admin/settings/class-wpsms-settings.php:553
 #: includes/templates/meta-box.php:49
 msgid "Specific roles"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:556
+#: includes/admin/settings/class-wpsms-settings.php:557
 msgid "Select the role of the user you want to receive the SMS."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:566
-#: includes/admin/settings/class-wpsms-settings.php:721
+#: includes/admin/settings/class-wpsms-settings.php:567
+#: includes/admin/settings/class-wpsms-settings.php:722
 msgid "Notify for new order"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:576
+#: includes/admin/settings/class-wpsms-settings.php:577
 msgid "Send SMS when submit new order"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:582
-#: includes/admin/settings/class-wpsms-settings.php:628
-#: includes/admin/settings/class-wpsms-settings.php:735
-#: includes/admin/settings/class-wpsms-settings.php:843
+#: includes/admin/settings/class-wpsms-settings.php:583
+#: includes/admin/settings/class-wpsms-settings.php:629
+#: includes/admin/settings/class-wpsms-settings.php:736
+#: includes/admin/settings/class-wpsms-settings.php:844
 msgid "Please enter mobile number for get sms. You can separate the numbers with the Latin comma."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:592
-#: includes/admin/settings/class-wpsms-settings.php:752
+#: includes/admin/settings/class-wpsms-settings.php:593
+#: includes/admin/settings/class-wpsms-settings.php:753
 msgid "Notify to customer order"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:602
+#: includes/admin/settings/class-wpsms-settings.php:603
 msgid "Send SMS to customer when submit the order"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:612
+#: includes/admin/settings/class-wpsms-settings.php:613
 msgid "Notify of stock"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:622
+#: includes/admin/settings/class-wpsms-settings.php:623
 msgid "Send SMS when stock is low"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:638
+#: includes/admin/settings/class-wpsms-settings.php:639
 msgid "Confirmation Checkbox"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:646
+#: includes/admin/settings/class-wpsms-settings.php:647
 msgid "Show the checkbox on the checkout for the customer to confirm receiving notification via SMS."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:650
+#: includes/admin/settings/class-wpsms-settings.php:651
 msgid "Notify of order status"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:660
+#: includes/admin/settings/class-wpsms-settings.php:661
 msgid "Send SMS to customer when status is changed"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:670
+#: includes/admin/settings/class-wpsms-settings.php:671
 msgid "Notify of specific order status"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:680
+#: includes/admin/settings/class-wpsms-settings.php:681
 msgid "Send SMS to customer by order status"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:684
+#: includes/admin/settings/class-wpsms-settings.php:685
 msgid "Order Status & Message"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:686
+#: includes/admin/settings/class-wpsms-settings.php:687
 msgid "Add Order Status & Write Message Body Per Order Status"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:700
+#: includes/admin/settings/class-wpsms-settings.php:701
 msgid "WooCommerce plugin should be installed to show the options."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:709
+#: includes/admin/settings/class-wpsms-settings.php:710
 msgid "Fields"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:714
-#: includes/admin/settings/class-wpsms-settings.php:791
-#: includes/admin/settings/class-wpsms-settings.php:796
+#: includes/admin/settings/class-wpsms-settings.php:715
+#: includes/admin/settings/class-wpsms-settings.php:792
+#: includes/admin/settings/class-wpsms-settings.php:797
 msgid "Mobile field"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:717
+#: includes/admin/settings/class-wpsms-settings.php:718
 msgid "Add mobile field to checkout page"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:729
+#: includes/admin/settings/class-wpsms-settings.php:730
 msgid "Send SMS to number when a payment is marked as complete."
 msgstr ""
 
 #. translators: %1$s: Email, %2$s: First name, %3$s: Last name
-#: includes/admin/settings/class-wpsms-settings.php:744
-#: includes/admin/settings/class-wpsms-settings.php:769
+#: includes/admin/settings/class-wpsms-settings.php:745
+#: includes/admin/settings/class-wpsms-settings.php:770
 msgid "Email: %1$s, First name: %2$s, Last name: %3$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:760
+#: includes/admin/settings/class-wpsms-settings.php:761
 msgid "Send SMS to customer when a payment is marked as complete."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:782
+#: includes/admin/settings/class-wpsms-settings.php:783
 msgid "Easy Digital Downloads plugin should be installed to show the options."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:799
+#: includes/admin/settings/class-wpsms-settings.php:800
 msgid "Add Mobile field to Post a job form"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:803
+#: includes/admin/settings/class-wpsms-settings.php:804
 msgid "Display Mobile"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:806
+#: includes/admin/settings/class-wpsms-settings.php:807
 msgid "Display Mobile number on the single job page"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:810
+#: includes/admin/settings/class-wpsms-settings.php:811
 msgid "Notify for new job"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:818
+#: includes/admin/settings/class-wpsms-settings.php:819
 msgid "Send SMS when submit new job"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:825
+#: includes/admin/settings/class-wpsms-settings.php:826
 msgid "Subscriber(s)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:826
-#: includes/admin/settings/class-wpsms-settings.php:840
+#: includes/admin/settings/class-wpsms-settings.php:827
+#: includes/admin/settings/class-wpsms-settings.php:841
 #: includes/templates/admin/send-sms.php:66
 #: includes/templates/meta-box.php:41
 msgid "Number(s)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:828
+#: includes/admin/settings/class-wpsms-settings.php:829
 msgid "Please select the SMS receiver(s)."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:836
+#: includes/admin/settings/class-wpsms-settings.php:837
 msgid "Please select the group of subscribers that you want to receive the SMS."
 msgstr ""
 
 #. translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
-#: includes/admin/settings/class-wpsms-settings.php:852
-#: includes/admin/settings/class-wpsms-settings.php:882
+#: includes/admin/settings/class-wpsms-settings.php:853
+#: includes/admin/settings/class-wpsms-settings.php:883
 msgid "Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:865
+#: includes/admin/settings/class-wpsms-settings.php:866
 msgid "Notify to Employer"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:873
+#: includes/admin/settings/class-wpsms-settings.php:874
 msgid "Send SMS to employer when the job approved"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:900
+#: includes/admin/settings/class-wpsms-settings.php:901
 msgid "Job Manager plugin should be installed to show the options."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:909
+#: includes/admin/settings/class-wpsms-settings.php:910
 msgid "Notify for new ticket"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:917
+#: includes/admin/settings/class-wpsms-settings.php:918
 msgid "Send SMS to admin when the user opened a new ticket."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:927
+#: includes/admin/settings/class-wpsms-settings.php:928
 msgid "Notify admin for get reply"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:935
+#: includes/admin/settings/class-wpsms-settings.php:936
 msgid "Send SMS to admin when the user replied the ticket."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:945
+#: includes/admin/settings/class-wpsms-settings.php:946
 msgid "Notify user for get reply"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:953
+#: includes/admin/settings/class-wpsms-settings.php:954
 msgid "Send SMS to user when the admin replied the ticket. Please make sure the \"Add Mobile number field\" option is enabled in the Settings > Features"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:963
+#: includes/admin/settings/class-wpsms-settings.php:964
 msgid "Notify user for the ticket status update"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:971
+#: includes/admin/settings/class-wpsms-settings.php:972
 msgid "Send SMS to user when the ticket status updates"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:981
+#: includes/admin/settings/class-wpsms-settings.php:982
 msgid "Notify user when the ticket is closed"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:989
+#: includes/admin/settings/class-wpsms-settings.php:990
 msgid "Send SMS to user when the ticket is closed"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1004
+#: includes/admin/settings/class-wpsms-settings.php:1005
 msgid "Awesome Support plugin should be installed to show the options."
 msgstr ""
 
 #. translators: %s: Form title
 #. translators: %s: Form name
-#: includes/admin/settings/class-wpsms-settings.php:1028
+#: includes/admin/settings/class-wpsms-settings.php:1029
 #: src/Services/Forminator/ForminatorManager.php:34
 msgid "Form notifications (%s)"
 msgstr ""
 
 #. translators: %s: Form title
 #. translators: %s: Form name
-#: includes/admin/settings/class-wpsms-settings.php:1031
-#: includes/admin/settings/class-wpsms-settings.php:1152
+#: includes/admin/settings/class-wpsms-settings.php:1032
+#: includes/admin/settings/class-wpsms-settings.php:1153
 #: src/Services/Forminator/ForminatorManager.php:37
 msgid "By enabling this option you can send SMS notification once the %s form is submitted"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1036
-#: includes/admin/settings/class-wpsms-settings.php:1157
+#: includes/admin/settings/class-wpsms-settings.php:1037
+#: includes/admin/settings/class-wpsms-settings.php:1158
 #: src/Services/Forminator/ForminatorManager.php:42
 msgid "Send SMS to a number"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1042
-#: includes/admin/settings/class-wpsms-settings.php:1163
+#: includes/admin/settings/class-wpsms-settings.php:1043
+#: includes/admin/settings/class-wpsms-settings.php:1164
 #: src/Services/Forminator/ForminatorManager.php:48
 msgid "Phone number(s)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1044
-#: includes/admin/settings/class-wpsms-settings.php:1165
+#: includes/admin/settings/class-wpsms-settings.php:1045
+#: includes/admin/settings/class-wpsms-settings.php:1166
 #: src/Services/Forminator/ForminatorManager.php:50
 msgid "Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1050
-#: includes/admin/settings/class-wpsms-settings.php:1080
-#: includes/admin/settings/class-wpsms-settings.php:1171
-#: includes/admin/settings/class-wpsms-settings.php:1200
+#: includes/admin/settings/class-wpsms-settings.php:1051
+#: includes/admin/settings/class-wpsms-settings.php:1081
+#: includes/admin/settings/class-wpsms-settings.php:1172
+#: includes/admin/settings/class-wpsms-settings.php:1201
 #: src/Services/Forminator/ForminatorManager.php:56
 #: src/Services/Forminator/ForminatorManager.php:80
 msgid "Enter your message content."
 msgstr ""
 
 #. translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
-#: includes/admin/settings/class-wpsms-settings.php:1053
-#: includes/admin/settings/class-wpsms-settings.php:1083
+#: includes/admin/settings/class-wpsms-settings.php:1054
+#: includes/admin/settings/class-wpsms-settings.php:1084
 msgid "Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1065
-#: includes/admin/settings/class-wpsms-settings.php:1185
+#: includes/admin/settings/class-wpsms-settings.php:1066
+#: includes/admin/settings/class-wpsms-settings.php:1186
 #: src/Services/Forminator/ForminatorManager.php:65
 msgid "Send SMS to field"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1071
-#: includes/admin/settings/class-wpsms-settings.php:1191
+#: includes/admin/settings/class-wpsms-settings.php:1072
+#: includes/admin/settings/class-wpsms-settings.php:1192
 #: src/Services/Forminator/ForminatorManager.php:71
 msgid "A field of the form"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1074
-#: includes/admin/settings/class-wpsms-settings.php:1194
+#: includes/admin/settings/class-wpsms-settings.php:1075
+#: includes/admin/settings/class-wpsms-settings.php:1195
 #: src/Services/Forminator/ForminatorManager.php:74
 msgid "Select the field of your form."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1098
+#: includes/admin/settings/class-wpsms-settings.php:1099
 msgid "Gravity Forms plugin should be enable to run this tab"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1106
+#: includes/admin/settings/class-wpsms-settings.php:1107
 msgid "Notification"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1111
+#: includes/admin/settings/class-wpsms-settings.php:1112
 msgid "Send SMS after approval"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1113
+#: includes/admin/settings/class-wpsms-settings.php:1114
 msgid "Send SMS after approval the user"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1126
+#: includes/admin/settings/class-wpsms-settings.php:1127
 msgid "Ultimate Member plugin should be enable to run this tab"
 msgstr ""
 
 #. translators: %s: Form name
-#: includes/admin/settings/class-wpsms-settings.php:1149
+#: includes/admin/settings/class-wpsms-settings.php:1150
 msgid "Form notifications: (%s)"
 msgstr ""
 
 #. translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
-#: includes/admin/settings/class-wpsms-settings.php:1174
-#: includes/admin/settings/class-wpsms-settings.php:1203
+#: includes/admin/settings/class-wpsms-settings.php:1175
+#: includes/admin/settings/class-wpsms-settings.php:1204
 msgid "Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1215
+#: includes/admin/settings/class-wpsms-settings.php:1216
 msgid "No data"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1217
+#: includes/admin/settings/class-wpsms-settings.php:1218
 msgid "There is no form available on Quform plugin, please first add your forms."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1225
+#: includes/admin/settings/class-wpsms-settings.php:1226
 msgid "Quform plugin should be enable to run this tab"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1250
+#: includes/admin/settings/class-wpsms-settings.php:1251
 msgid "Administrator Notifications"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1255
+#: includes/admin/settings/class-wpsms-settings.php:1256
 msgid "Admin Mobile Number"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1257
+#: includes/admin/settings/class-wpsms-settings.php:1258
 msgid "Mobile number where the administrator will receive notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1261
+#: includes/admin/settings/class-wpsms-settings.php:1262
 msgid "Country Code Prefix"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1263
+#: includes/admin/settings/class-wpsms-settings.php:1264
 msgid "If the administrator's mobile number requires a country code, select it from the list. If the number is not specific to any country, select 'No country code (Global)'."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1264
+#: includes/admin/settings/class-wpsms-settings.php:1265
 msgid "No country code (Global)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1269
+#: includes/admin/settings/class-wpsms-settings.php:1270
 msgid "Mobile Field Configuration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1274
+#: includes/admin/settings/class-wpsms-settings.php:1275
 msgid "Mobile Number Field Source"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1279
+#: includes/admin/settings/class-wpsms-settings.php:1280
 msgid "Insert a mobile number field into user profiles"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1282
+#: includes/admin/settings/class-wpsms-settings.php:1283
 msgid "Add a mobile number field to billing and checkout pages"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1283
+#: includes/admin/settings/class-wpsms-settings.php:1284
 msgid "Use the existing billing phone field"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1286
+#: includes/admin/settings/class-wpsms-settings.php:1287
 msgid "Create a new mobile number field or use an existing phone field."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1290
-#: includes/admin/settings/class-wpsms-settings.php:1306
+#: includes/admin/settings/class-wpsms-settings.php:1291
+#: includes/admin/settings/class-wpsms-settings.php:1307
 msgid "Select the Existing Field"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1295
+#: includes/admin/settings/class-wpsms-settings.php:1296
 msgid "Select the field from ultimate member register form that you want to be synced(Default is \"Mobile Number\")."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1299
+#: includes/admin/settings/class-wpsms-settings.php:1300
 msgid "Sync Old Members Too?"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1302
+#: includes/admin/settings/class-wpsms-settings.php:1303
 msgid "Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1310
+#: includes/admin/settings/class-wpsms-settings.php:1311
 msgid "Select the BuddyPress field"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1314
+#: includes/admin/settings/class-wpsms-settings.php:1315
 msgid "Sync Fields"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1317
+#: includes/admin/settings/class-wpsms-settings.php:1318
 msgid "Sync and compatibility the BuddyPress mobile numbers with plugin."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1321
+#: includes/admin/settings/class-wpsms-settings.php:1322
 msgid "Mobile Field Mandatory Status"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1324
+#: includes/admin/settings/class-wpsms-settings.php:1325
 msgid "Required"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1325
+#: includes/admin/settings/class-wpsms-settings.php:1326
 msgid "Optional"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1327
+#: includes/admin/settings/class-wpsms-settings.php:1328
 msgid "Set the mobile number field as optional or required."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1331
+#: includes/admin/settings/class-wpsms-settings.php:1332
 msgid "Mobile Field Placeholder"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1333
+#: includes/admin/settings/class-wpsms-settings.php:1334
 msgid "Enter a sample format for the mobile number that users will see. Example: \"e.g., +1234567890\"."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1337
+#: includes/admin/settings/class-wpsms-settings.php:1338
 msgid "International Number Input"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1340
+#: includes/admin/settings/class-wpsms-settings.php:1341
 msgid "Add a flag dropdown for international format support in the mobile number input field."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1344
+#: includes/admin/settings/class-wpsms-settings.php:1345
 msgid "Only Countries"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1348
+#: includes/admin/settings/class-wpsms-settings.php:1349
 msgid "In the dropdown, display only the countries you specify."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1352
+#: includes/admin/settings/class-wpsms-settings.php:1353
 msgid "Preferred Countries"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1356
+#: includes/admin/settings/class-wpsms-settings.php:1357
 msgid "Specify the countries to appear at the top of the list."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1360
+#: includes/admin/settings/class-wpsms-settings.php:1361
 msgid "Minimum Length Number"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1363
+#: includes/admin/settings/class-wpsms-settings.php:1364
 msgid "Specify the shortest allowed mobile number."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1367
+#: includes/admin/settings/class-wpsms-settings.php:1368
 msgid "Maximum Length Number"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1370
+#: includes/admin/settings/class-wpsms-settings.php:1371
 msgid "Specify the longest allowed mobile number."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1375
-#: includes/admin/settings/class-wpsms-settings.php:2151
+#: includes/admin/settings/class-wpsms-settings.php:1376
+#: includes/admin/settings/class-wpsms-settings.php:2152
 msgid "Data Protection Settings"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1376
+#: includes/admin/settings/class-wpsms-settings.php:1377
 msgid "Enhance user privacy with GDPR-focused settings. Activate to ensure compliance with data protection regulations and provide users with transparency and control over their personal information."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1382
+#: includes/admin/settings/class-wpsms-settings.php:1383
 msgid "GDPR Compliance Enhancements"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1385
+#: includes/admin/settings/class-wpsms-settings.php:1386
 msgid "Implements GDPR adherence by enabling user data export and deletion via mobile number and adding a consent checkbox for SMS newsletter subscriptions."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1396
+#: includes/admin/settings/class-wpsms-settings.php:1397
 msgid "SMS Gateway Setup"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1401
+#: includes/admin/settings/class-wpsms-settings.php:1402
 msgid "Choose the Gateway"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1404
+#: includes/admin/settings/class-wpsms-settings.php:1405
 msgid "Select your preferred SMS Gateway to send messages."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1408
+#: includes/admin/settings/class-wpsms-settings.php:1409
 msgid "Gateway Guide"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1414
+#: includes/admin/settings/class-wpsms-settings.php:1415
 msgid "API Username"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1416
+#: includes/admin/settings/class-wpsms-settings.php:1417
 msgid "Enter API username of gateway"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1420
+#: includes/admin/settings/class-wpsms-settings.php:1421
 msgid "API Password"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1422
+#: includes/admin/settings/class-wpsms-settings.php:1423
 msgid "Enter API password of gateway"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1426
+#: includes/admin/settings/class-wpsms-settings.php:1427
 msgid "Sender ID/Number"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1429
+#: includes/admin/settings/class-wpsms-settings.php:1430
 msgid "Sender number or sender ID"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1433
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:43
+#: includes/admin/settings/class-wpsms-settings.php:1434
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:41
 #: includes/gateways/class-wpsms-gateway-smsozone.php:27
 msgid "API Key"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1435
+#: includes/admin/settings/class-wpsms-settings.php:1436
 #: includes/gateways/class-wpsms-gateway-prosms.php:33
 #: includes/gateways/class-wpsms-gateway-prosmsdk.php:33
 msgid "Enter API key of gateway"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1440
+#: includes/admin/settings/class-wpsms-settings.php:1441
 msgid "Gateway Overview"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1451
+#: includes/admin/settings/class-wpsms-settings.php:1452
 msgid "Balance / Credit"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1463
+#: includes/admin/settings/class-wpsms-settings.php:1464
 msgid "Send Bulk SMS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1469
-#: includes/admin/settings/class-wpsms-settings.php:1957
+#: includes/admin/settings/class-wpsms-settings.php:1470
+#: includes/admin/settings/class-wpsms-settings.php:1958
 msgid "Send MMS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1476
+#: includes/admin/settings/class-wpsms-settings.php:1477
 msgid "Account Balance Visibility"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1481
+#: includes/admin/settings/class-wpsms-settings.php:1482
 msgid "Admin Menu Display"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1484
+#: includes/admin/settings/class-wpsms-settings.php:1485
 msgid "Shows account credit in the admin menu."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1488
+#: includes/admin/settings/class-wpsms-settings.php:1489
 msgid "SMS Page Display"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1491
+#: includes/admin/settings/class-wpsms-settings.php:1492
 msgid "Displays account credit on the SMS sending page."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1496
+#: includes/admin/settings/class-wpsms-settings.php:1497
 msgid "SMS Configuration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1501
+#: includes/admin/settings/class-wpsms-settings.php:1502
 msgid "Delivery Method"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1504
+#: includes/admin/settings/class-wpsms-settings.php:1505
 msgid "Send SMS Instantly: Activates immediate dispatch of messages via API upon request."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1505
+#: includes/admin/settings/class-wpsms-settings.php:1506
 msgid "Scheduled SMS Delivery: Configures API to send messages at predetermined times."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1506
+#: includes/admin/settings/class-wpsms-settings.php:1507
 msgid "Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1508
+#: includes/admin/settings/class-wpsms-settings.php:1509
 msgid "Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1512
+#: includes/admin/settings/class-wpsms-settings.php:1513
 msgid "Unicode Messaging"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1515
+#: includes/admin/settings/class-wpsms-settings.php:1516
 msgid "Send messages in languages that use non-English characters, like Persian, Arabic, Chinese, or Cyrillic."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1519
+#: includes/admin/settings/class-wpsms-settings.php:1520
 msgid "Number Formatting"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1522
+#: includes/admin/settings/class-wpsms-settings.php:1523
 msgid "Strips spaces from phone numbers before sending."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1526
+#: includes/admin/settings/class-wpsms-settings.php:1527
 msgid "Restrict to Local Numbers"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1529
+#: includes/admin/settings/class-wpsms-settings.php:1530
 msgid "Send messages to numbers within the same country to avoid international fees."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1533
+#: includes/admin/settings/class-wpsms-settings.php:1534
 msgid "Allowed Countries for SMS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1539
+#: includes/admin/settings/class-wpsms-settings.php:1540
 msgid "Specify countries allowed for SMS delivery. Only listed countries will receive messages."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1551
+#: includes/admin/settings/class-wpsms-settings.php:1552
 msgid "SMS Newsletter Configuration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1552
+#: includes/admin/settings/class-wpsms-settings.php:1553
 msgid "Configure how visitors subscribe to your SMS notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1559
+#: includes/admin/settings/class-wpsms-settings.php:1560
 msgid "Group Visibility in Form"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1561
+#: includes/admin/settings/class-wpsms-settings.php:1562
 msgid "Show available groups on the subscription form."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1565
+#: includes/admin/settings/class-wpsms-settings.php:1566
 msgid "Group Selection"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1568
+#: includes/admin/settings/class-wpsms-settings.php:1569
 msgid "Allow subscribers to join multiple groups from the form."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1572
+#: includes/admin/settings/class-wpsms-settings.php:1573
 msgid "Groups to Display"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1578
+#: includes/admin/settings/class-wpsms-settings.php:1579
 msgid "Choose which groups appear on the subscription form."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1582
+#: includes/admin/settings/class-wpsms-settings.php:1583
 msgid "Default Group for New Subscribers"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1586
+#: includes/admin/settings/class-wpsms-settings.php:1587
 msgid "Set a group that all new subscribers will join by default."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1590
+#: includes/admin/settings/class-wpsms-settings.php:1591
 msgid "Subscription Confirmation"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1592
+#: includes/admin/settings/class-wpsms-settings.php:1593
 msgid "Subscribers must enter a code received by SMS to complete their subscription."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1597
+#: includes/admin/settings/class-wpsms-settings.php:1598
 msgid "Welcome SMS Setup"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1598
+#: includes/admin/settings/class-wpsms-settings.php:1599
 msgid "Set up automatic SMS messages for new subscribers."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1607
+#: includes/admin/settings/class-wpsms-settings.php:1608
 msgid "Sends a welcome SMS to new subscribers when they sign up."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1611
+#: includes/admin/settings/class-wpsms-settings.php:1612
 msgid "Welcome Message Content"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1613
+#: includes/admin/settings/class-wpsms-settings.php:1614
 msgid "Customize the SMS message sent to new subscribers. Use placeholders for personalized details: "
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1618
+#: includes/admin/settings/class-wpsms-settings.php:1619
 msgid "Appearance Customization"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1623
+#: includes/admin/settings/class-wpsms-settings.php:1624
 msgid "Disable Default Form Styling"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1625
+#: includes/admin/settings/class-wpsms-settings.php:1626
 msgid "Remove the plugin's default styling from the subscription form if preferred."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1636
+#: includes/admin/settings/class-wpsms-settings.php:1637
 msgid "Message Button Configuration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1644
+#: includes/admin/settings/class-wpsms-settings.php:1645
 msgid "Switch on to display the Message Button on your site or off to hide it. <a href=\"#\" class=\"js-wpsms-chatbox-preview\">Preview</a>"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1648
+#: includes/admin/settings/class-wpsms-settings.php:1649
 #: includes/templates/widget.php:2
 #: assets/blocks/SendSms/index.js:1
 #: assets/blocks/Subscribe/index.js:1
@@ -1428,543 +1432,543 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1650
+#: includes/admin/settings/class-wpsms-settings.php:1651
 msgid "Main title for your chatbox, e.g., 'Chat with Us!'"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1655
+#: includes/admin/settings/class-wpsms-settings.php:1656
 msgid "Button Appearance"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1660
+#: includes/admin/settings/class-wpsms-settings.php:1661
 msgid "Text"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1662
+#: includes/admin/settings/class-wpsms-settings.php:1663
 msgid "The message displayed on the chat button, e.g., 'Talk to Us'"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1666
+#: includes/admin/settings/class-wpsms-settings.php:1667
 msgid "Position"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1669
+#: includes/admin/settings/class-wpsms-settings.php:1670
 msgid "Bottom Right"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1670
+#: includes/admin/settings/class-wpsms-settings.php:1671
 msgid "Bottom Left"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1672
+#: includes/admin/settings/class-wpsms-settings.php:1673
 msgid "Choose where the chat button appears on your site."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1677
+#: includes/admin/settings/class-wpsms-settings.php:1678
 msgid "Support Team Profiles"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1682
+#: includes/admin/settings/class-wpsms-settings.php:1683
 msgid "Team Members"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1691
+#: includes/admin/settings/class-wpsms-settings.php:1692
 msgid "Additional Chatbox Options"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1696
+#: includes/admin/settings/class-wpsms-settings.php:1697
 msgid "Chatbox Color"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1698
+#: includes/admin/settings/class-wpsms-settings.php:1699
 msgid "Choose your chat button's background color and header color."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1702
+#: includes/admin/settings/class-wpsms-settings.php:1703
 msgid "Chatbox Text Color"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1704
+#: includes/admin/settings/class-wpsms-settings.php:1705
 msgid "Select the color for your button and header text."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1708
+#: includes/admin/settings/class-wpsms-settings.php:1709
 msgid "Footer Text"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1710
+#: includes/admin/settings/class-wpsms-settings.php:1711
 msgid "Text displayed in the chatbox footer, such as 'Chat with us on WhatsApp for instant support!'"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1714
+#: includes/admin/settings/class-wpsms-settings.php:1715
 msgid "Footer Text Color"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1716
+#: includes/admin/settings/class-wpsms-settings.php:1717
 msgid "Select your footer text color."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1720
+#: includes/admin/settings/class-wpsms-settings.php:1721
 msgid "Footer Link Title"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1722
+#: includes/admin/settings/class-wpsms-settings.php:1723
 msgid "Include a link for more information in the chatbox footer, e.g., 'Related Articles'"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1726
+#: includes/admin/settings/class-wpsms-settings.php:1727
 msgid "Footer Link URL"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1728
+#: includes/admin/settings/class-wpsms-settings.php:1729
 msgid "Enter the URL of the chatbox footer link."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1732
+#: includes/admin/settings/class-wpsms-settings.php:1733
 msgid "Animation Effect"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1735
+#: includes/admin/settings/class-wpsms-settings.php:1736
 msgid "None"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1736
+#: includes/admin/settings/class-wpsms-settings.php:1737
 msgid "Fade In"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1737
+#: includes/admin/settings/class-wpsms-settings.php:1738
 msgid "Slide Up"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1739
+#: includes/admin/settings/class-wpsms-settings.php:1740
 msgid "Choose an effect for the chatbox's entry or hover state."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1743
+#: includes/admin/settings/class-wpsms-settings.php:1744
 msgid "Disable WP SMS Logo"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1746
+#: includes/admin/settings/class-wpsms-settings.php:1747
 msgid "Check this box to disable the WP SMS logo in the footer of the chatbox."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1751
+#: includes/admin/settings/class-wpsms-settings.php:1752
 msgid "Informational Links"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1756
+#: includes/admin/settings/class-wpsms-settings.php:1757
 msgid "Resource Links"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1759
+#: includes/admin/settings/class-wpsms-settings.php:1760
 msgid "Turn on to show resource links in the chatbox."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1763
+#: includes/admin/settings/class-wpsms-settings.php:1764
 msgid "Section Title"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1765
+#: includes/admin/settings/class-wpsms-settings.php:1766
 msgid "The heading for your resource links, e.g., 'Quick Links'"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1769
+#: includes/admin/settings/class-wpsms-settings.php:1770
 msgid "Links"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1783
+#: includes/admin/settings/class-wpsms-settings.php:1784
 msgid "Administrative Reporting"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1788
+#: includes/admin/settings/class-wpsms-settings.php:1789
 msgid "SMS Performance Reports"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1791
+#: includes/admin/settings/class-wpsms-settings.php:1792
 msgid "Sends weekly SMS performance statistics to the admin email."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1795
+#: includes/admin/settings/class-wpsms-settings.php:1796
 msgid "SMS Transmission Error Alerts"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1798
+#: includes/admin/settings/class-wpsms-settings.php:1799
 msgid "Notifies the admin email upon SMS transmission failures."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1802
+#: includes/admin/settings/class-wpsms-settings.php:1803
 msgid "URL Shortening via Bitly (Pro)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1802
+#: includes/admin/settings/class-wpsms-settings.php:1803
 msgid "URL Shortening via Bitly"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1807
+#: includes/admin/settings/class-wpsms-settings.php:1808
 msgid "Shorten URLs"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1810
+#: includes/admin/settings/class-wpsms-settings.php:1811
 msgid "Converts all URLs to shortened versions using <a href=\"https://bitly.com/\" target=\"_blank\">Bitly.com</a>."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1815
+#: includes/admin/settings/class-wpsms-settings.php:1816
 msgid "Bitly API Key"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1817
+#: includes/admin/settings/class-wpsms-settings.php:1818
 msgid "Enter your Bitly API key here. Obtain it from <a href=\"https://app.bitly.com/settings/api/\" target=\"_blank\">Bitly API Settings</a>."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1823
+#: includes/admin/settings/class-wpsms-settings.php:1824
 msgid "Webhooks Configuration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1824
+#: includes/admin/settings/class-wpsms-settings.php:1825
 msgid "Set up your system’s Webhook URLs to integrate with external services."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1831
+#: includes/admin/settings/class-wpsms-settings.php:1832
 msgid "Outgoing SMS Webhook"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1833
+#: includes/admin/settings/class-wpsms-settings.php:1834
 msgid "Configure the Webhook URL to which notifications are sent after an SMS dispatch from your system. Please enter a secure URL (HTTPS)."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1837
+#: includes/admin/settings/class-wpsms-settings.php:1838
 msgid "Subscriber Registration Webhook"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1839
+#: includes/admin/settings/class-wpsms-settings.php:1840
 msgid "Provide the Webhook URL that will be triggered when a new subscriber registers. Ensure the URL uses the HTTPS protocol."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1843
+#: includes/admin/settings/class-wpsms-settings.php:1844
 msgid "Incoming SMS Handling Webhook"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1845
+#: includes/admin/settings/class-wpsms-settings.php:1846
 msgid "Define the Webhook URL for the \"<a href=\"https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings\" target=\"_blank\">Two-Way SMS</a>\" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1845
+#: includes/admin/settings/class-wpsms-settings.php:1846
 msgid "Please provide each Webhook URL on a separate line if you're setting up more than one."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1850
+#: includes/admin/settings/class-wpsms-settings.php:1851
 msgid "Google reCAPTCHA Integration (Pro / WooCommerce Pro)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1850
+#: includes/admin/settings/class-wpsms-settings.php:1851
 msgid "Google reCAPTCHA Integration"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1851
+#: includes/admin/settings/class-wpsms-settings.php:1852
 msgid "Enhance your system's security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1857
+#: includes/admin/settings/class-wpsms-settings.php:1858
 #: includes/class-front.php:48
 #: includes/templates/subscribe-form.php:96
 msgid "Activate"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1860
+#: includes/admin/settings/class-wpsms-settings.php:1861
 msgid "Use Google reCAPTCHA for your SMS requests."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1865
+#: includes/admin/settings/class-wpsms-settings.php:1866
 msgid "Site Key"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1867
+#: includes/admin/settings/class-wpsms-settings.php:1868
 msgid "Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. "
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1872
+#: includes/admin/settings/class-wpsms-settings.php:1873
 msgid "Secret Key"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1874
+#: includes/admin/settings/class-wpsms-settings.php:1875
 msgid "Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. "
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1874
+#: includes/admin/settings/class-wpsms-settings.php:1875
 msgid "Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1887
+#: includes/admin/settings/class-wpsms-settings.php:1888
 msgid "New Post Alerts"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1888
+#: includes/admin/settings/class-wpsms-settings.php:1889
 msgid "Configure SMS notifications to inform subscribers about newly published content."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1897
+#: includes/admin/settings/class-wpsms-settings.php:1898
 msgid "Send SMS for new posts."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1901
-#: includes/admin/settings/class-wpsms-settings.php:1992
+#: includes/admin/settings/class-wpsms-settings.php:1902
+#: includes/admin/settings/class-wpsms-settings.php:1993
 msgid "Post Types"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1904
+#: includes/admin/settings/class-wpsms-settings.php:1905
 msgid "Specify which types of content trigger notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1908
+#: includes/admin/settings/class-wpsms-settings.php:1909
 msgid "Taxonomies and Terms"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1911
+#: includes/admin/settings/class-wpsms-settings.php:1912
 msgid "Choose categories or tags to associate with alerts."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1915
+#: includes/admin/settings/class-wpsms-settings.php:1916
 msgid "Notification Recipients"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1919
-#: includes/admin/settings/class-wpsms-settings.php:1942
+#: includes/admin/settings/class-wpsms-settings.php:1920
+#: includes/admin/settings/class-wpsms-settings.php:1943
 msgid "Individual Numbers"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1920
+#: includes/admin/settings/class-wpsms-settings.php:1921
 msgid "User Roles"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1922
+#: includes/admin/settings/class-wpsms-settings.php:1923
 msgid "Select who receives notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1926
+#: includes/admin/settings/class-wpsms-settings.php:1927
 msgid "Subscribe Group"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1930
+#: includes/admin/settings/class-wpsms-settings.php:1931
 msgid "Set the default group to receive notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1934
-#: includes/admin/settings/class-wpsms-settings.php:2087
+#: includes/admin/settings/class-wpsms-settings.php:1935
+#: includes/admin/settings/class-wpsms-settings.php:2088
 msgid "Specific Roles"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1938
+#: includes/admin/settings/class-wpsms-settings.php:1939
 msgid "Assign SMS alerts to specific WordPress user roles."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1945
+#: includes/admin/settings/class-wpsms-settings.php:1946
 msgid "Enter mobile number(s) here to receive SMS alerts. For multiple numbers, separate them with commas."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1949
+#: includes/admin/settings/class-wpsms-settings.php:1950
 msgid "Force Send"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1952
+#: includes/admin/settings/class-wpsms-settings.php:1953
 msgid "Use to send notifications without additional confirmation during publishing. Compatible with WP-REST API."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1960
+#: includes/admin/settings/class-wpsms-settings.php:1961
 msgid "Sends the featured image of the post as an MMS if supported by your SMS gateway."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1964
-#: includes/admin/settings/class-wpsms-settings.php:1999
-#: includes/admin/settings/class-wpsms-settings.php:2065
-#: includes/admin/settings/class-wpsms-settings.php:2094
+#: includes/admin/settings/class-wpsms-settings.php:1965
+#: includes/admin/settings/class-wpsms-settings.php:2000
+#: includes/admin/settings/class-wpsms-settings.php:2066
+#: includes/admin/settings/class-wpsms-settings.php:2095
 msgid "Message Body"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1966
+#: includes/admin/settings/class-wpsms-settings.php:1967
 msgid "Define the SMS format."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1970
+#: includes/admin/settings/class-wpsms-settings.php:1971
 msgid "Post Content Words Limit"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1972
+#: includes/admin/settings/class-wpsms-settings.php:1973
 msgid "Set maximum word count for post excerpts in notifications. Default: 10."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1978
+#: includes/admin/settings/class-wpsms-settings.php:1979
 msgid "Post Author Notification"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1979
+#: includes/admin/settings/class-wpsms-settings.php:1980
 msgid "Set up notifications for post authors when their content is published. Ensure the mobile number field is added to user profiles under Settings > General > Mobile Number Field Source."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1988
+#: includes/admin/settings/class-wpsms-settings.php:1989
 msgid "Alerts post authors via SMS after publishing their posts."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:1995
+#: includes/admin/settings/class-wpsms-settings.php:1996
 msgid "Define which content types trigger author notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2001
+#: includes/admin/settings/class-wpsms-settings.php:2002
 msgid "Customize the SMS message to authors using placeholders for post details."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2007
+#: includes/admin/settings/class-wpsms-settings.php:2008
 msgid "The new release of WordPress"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2008
+#: includes/admin/settings/class-wpsms-settings.php:2009
 msgid "Configure notifications to be sent via SMS to the Admin Mobile Number regarding new releases of WordPress."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2017
+#: includes/admin/settings/class-wpsms-settings.php:2018
 msgid "Notifications for new WordPress releases."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2023
+#: includes/admin/settings/class-wpsms-settings.php:2024
 msgid "Register a new user"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2024
+#: includes/admin/settings/class-wpsms-settings.php:2025
 msgid "Set up SMS notifications for admin and new user upon registration."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2033
+#: includes/admin/settings/class-wpsms-settings.php:2034
 msgid "SMS notifications for new user registrations."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2037
+#: includes/admin/settings/class-wpsms-settings.php:2038
 msgid "Message Body for Admin"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2039
+#: includes/admin/settings/class-wpsms-settings.php:2040
 msgid "Customize the SMS template sent to the Admin Mobile Number for new user registrations using placeholders for user details."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2043
+#: includes/admin/settings/class-wpsms-settings.php:2044
 msgid "Message Body for User"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2045
+#: includes/admin/settings/class-wpsms-settings.php:2046
 msgid "Customize the SMS template sent to the user upon registration using placeholders for personal details."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2051
+#: includes/admin/settings/class-wpsms-settings.php:2052
 msgid "New Comment Notification"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2052
+#: includes/admin/settings/class-wpsms-settings.php:2053
 msgid "Receive SMS alerts on the Admin Mobile Number when a new comment is posted."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2061
+#: includes/admin/settings/class-wpsms-settings.php:2062
 msgid "Receiving SMS alerts on the Admin Mobile Number for each new comment."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2067
+#: includes/admin/settings/class-wpsms-settings.php:2068
 msgid "Create the SMS message for new comment alerts. Include details using placeholders:"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2073
+#: includes/admin/settings/class-wpsms-settings.php:2074
 msgid "User Login Notification"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2074
+#: includes/admin/settings/class-wpsms-settings.php:2075
 msgid "Configure SMS notifications to be sent to the Admin Mobile Number whenever a user logs in."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2083
+#: includes/admin/settings/class-wpsms-settings.php:2084
 msgid "SMS notifications to be sent to the Admin Mobile Number on user login."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2090
+#: includes/admin/settings/class-wpsms-settings.php:2091
 msgid "Choose user roles that trigger login notifications."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2096
+#: includes/admin/settings/class-wpsms-settings.php:2097
 msgid "Format the SMS message sent upon user login. Utilize placeholders to include user details:"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2106
+#: includes/admin/settings/class-wpsms-settings.php:2107
 #: src/Services/Formidable/FormidableManager.php:40
 msgid "SMS Notification Metabox"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2109
+#: includes/admin/settings/class-wpsms-settings.php:2110
 #: src/Services/Formidable/FormidableManager.php:43
 msgid "By this option you can add SMS notification tools in all edit forms."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2116
+#: includes/admin/settings/class-wpsms-settings.php:2117
 msgid "This option adds SMS Notification tab in the edit forms."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2152
+#: includes/admin/settings/class-wpsms-settings.php:2153
 msgid "Set up how you comply with data protection regulations"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2159
+#: includes/admin/settings/class-wpsms-settings.php:2160
 msgid "Consent Text"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2161
+#: includes/admin/settings/class-wpsms-settings.php:2162
 msgid "Provide a clear message that informs subscribers how their data will be used and that their consent is required. For example: \"I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy.\""
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2166
+#: includes/admin/settings/class-wpsms-settings.php:2167
 msgid "Checkbox Default"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2169
+#: includes/admin/settings/class-wpsms-settings.php:2170
 msgid "Leave the consent checkbox unchecked by default to comply with privacy laws, which require active, explicit consent from users."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2174
+#: includes/admin/settings/class-wpsms-settings.php:2175
 msgid "GDPR Compliance"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2176
+#: includes/admin/settings/class-wpsms-settings.php:2177
 msgid "To get more option for GDPR, you should enable that in the general tab."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2199
+#: includes/admin/settings/class-wpsms-settings.php:2200
 msgid "Activated"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2207
+#: includes/admin/settings/class-wpsms-settings.php:2208
 msgid "Deactivated"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2264
+#: includes/admin/settings/class-wpsms-settings.php:2265
 #: includes/templates/header.php:31
 msgid "Documentation"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2499
+#: includes/admin/settings/class-wpsms-settings.php:2500
 msgid "- (Pro Pack)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2692
+#: includes/admin/settings/class-wpsms-settings.php:2693
 msgid "ADD-ONS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2879
+#: includes/admin/settings/class-wpsms-settings.php:2880
 msgid "No Pro Pack or Add-On found"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2893
+#: includes/admin/settings/class-wpsms-settings.php:2894
 msgid "License key is used to get access to automatic updates and support."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2899
+#: includes/admin/settings/class-wpsms-settings.php:2900
 msgid "License Key"
 msgstr ""
 
 #. translators: %s: Account link
-#: includes/admin/settings/class-wpsms-settings.php:2903
+#: includes/admin/settings/class-wpsms-settings.php:2904
 msgid "To get the license, please go to <a href=\"%s\" target=\"_blank\">your account</a>."
 msgstr ""
 
@@ -2537,72 +2541,54 @@ msgstr ""
 msgid "The Username/API key for this gateway is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:26
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:24
 msgid "Enter number without country code."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:27
-msgid "Please enter your API Key and DLT Template ID. For DLT messages, send variables in the message body separated via \"|\" symbol. e.g. Rahul|8888888888|6695"
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:25
+msgid "For <b>DLT</b> messages, send variables and message id in this format: <b>var1|var2|message_id</b>. <br> For <b>DLT Manual</b> messages, send message and template id in the same way. e.g. <b>message|template_id</b>"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:32
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:30
 msgid "Route"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:33
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:31
 msgid "Please select SMS route."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:36
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:34
 msgid "DLT SMS"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:37
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:35
 msgid "DLT Manual SMS"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:38
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:36
 msgid "Quick SMS"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:44
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:42
 #: includes/gateways/class-wpsms-gateway-smsozone.php:28
 msgid "Enter API key of gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:48
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:46
 #: includes/gateways/class-wpsms-gateway-smsozone.php:32
 msgid "Approved Sender ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:49
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:47
 #: includes/gateways/class-wpsms-gateway-smsozone.php:33
 msgid "Enter sender ID of gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:54
-msgid "Approved Message ID"
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:55
-msgid "Enter your message ID."
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:60
-#: includes/gateways/class-wpsms-gateway-smsozone.php:37
-msgid "Registered DLT Template ID"
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:61
-#: includes/gateways/class-wpsms-gateway-smsozone.php:38
-msgid "Enter your Registered DLT Template ID."
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:66
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:52
 msgid "Entity ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:67
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:53
 msgid "Enter your Registered Entity ID."
 msgstr ""
 
@@ -2714,6 +2700,14 @@ msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-smsglobal.php:144
 msgid "The API Key or API Secret for this gateway is not set"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:37
+msgid "Registered DLT Template ID"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-smsozone.php:38
+msgid "Enter your Registered DLT Template ID."
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-smsozone.php:42
@@ -3946,11 +3940,11 @@ msgstr ""
 msgid "I would like to get notification about any change in my order via SMS."
 msgstr ""
 
-#: src/SmsOtp/Generator.php:114
+#: src/SmsOtp/Generator.php:119
 msgid "Provided $length argument must be between 4 and 10."
 msgstr ""
 
-#: src/SmsOtp/Generator.php:152
+#: src/SmsOtp/Generator.php:157
 msgid "OTPs generated for this number has reached its limit, please try some other time."
 msgstr ""
 
