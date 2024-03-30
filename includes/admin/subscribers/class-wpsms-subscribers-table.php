@@ -184,6 +184,11 @@ class Subscribers_List_Table extends \WP_List_Table
 
         // Bulk delete action
         if ('bulk_delete' == $current_action) {
+            if (!wp_verify_nonce($_REQUEST['_wpnonce'], "bulk-{$this->_args['plural']}")) {
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), false);
+                exit();
+            }
+
             $get_ids = array_map('sanitize_text_field', $_GET['id']);
             foreach ($get_ids as $id) {
                 $this->db->delete($this->tb_prefix . "sms_subscribes", ['ID' => intval($id)], ['%d']);
@@ -208,6 +213,11 @@ class Subscribers_List_Table extends \WP_List_Table
         }
 
         if (false !== strpos($current_action, 'move_to_') && isset($_GET['id']) && is_array($_GET['id'])) {
+            if (!wp_verify_nonce($_REQUEST['_wpnonce'], "bulk-{$this->_args['plural']}")) {
+                Helper::notice(esc_html__('Access denied.', 'wp-sms'), 'error');
+                exit();
+            }
+
             $new_group_id = substr($current_action, 8);
             $new_group    = Newsletter::getGroup($new_group_id);
             if ($new_group) {
