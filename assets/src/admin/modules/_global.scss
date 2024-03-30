@@ -211,9 +211,9 @@
   display: none;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1030px) {
   .wpsms-header-items-side #feedback-bird-app{
-    display: none;
+    display: none!important;
   }
   .wpsms-mobile-menu #feedback-bird-app {
     padding: 12px;

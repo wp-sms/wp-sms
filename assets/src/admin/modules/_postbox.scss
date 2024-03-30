@@ -312,6 +312,7 @@ body.rtl #feedback-bird-app{
         background: #00000066;
         text-align: center;
         margin-left: 3px;
+        margin-right: 0;
       }
 
       &.send-sms span.icon {
@@ -339,6 +340,7 @@ body.rtl #feedback-bird-app{
         margin-left: 3px;
         font-family: 'Roboto', sans-serif;
         padding: 1px;
+        margin-right: 0;
       }
 
       &.integrations span {
@@ -376,9 +378,17 @@ body.rtl #feedback-bird-app{
       }
 
     }
+    @media(max-width: 336px){
+      right: 12px !important;
+    }
   }
 }
-
+@media(max-width: 336px) {
+  .rtl .wpsms-header-banner .wpsms-header-items-side {
+    right: unset !important;
+    left: 12px !important;
+  }
+}
 #feedback-bird-app {
   .c-fbb-btn--default {
     background-color: transparent !important;
@@ -421,7 +431,9 @@ body.rtl #screen-meta-links {
 .privacy_page .wpsms-wrap__main {
   /*margin-top: -31px;*/
 }
-
+.wpsms-wrap__main.wpsms-inbox-page{
+  padding: 0!important;
+}
 .wpsms-wrap__main {
   padding: 20px;
 
@@ -589,6 +601,8 @@ body.rtl #screen-meta-links {
 
 .wpsms-header-banner .license-status--valid a.upgrade {
   margin: 0 0 0 5px;
+  box-shadow: none!important;
+  outline: none!important;
 }
 
 .wpsms-header-banner .license-status--valid a.upgrade::after {
@@ -601,6 +615,10 @@ body.rtl #screen-meta-links {
   background-image: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjciIGhlaWdodD0iMTEiIHZpZXdCb3g9IjAgMCA3IDExIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNNi4yNjU2MiA0Ljk4NDM4QzYuNTcwMzEgNS4yNjU2MiA2LjU3MDMxIDUuNzU3ODEgNi4yNjU2MiA2LjAzOTA2TDEuNzY1NjIgMTAuNTM5MUMxLjQ4NDM4IDEwLjg0MzggMC45OTIxODggMTAuODQzOCAwLjcxMDkzOCAxMC41MzkxQzAuNDA2MjUgMTAuMjU3OCAwLjQwNjI1IDkuNzY1NjIgMC43MTA5MzggOS40ODQzOEw0LjY3MTg4IDUuNUwwLjcxMDkzOCAxLjUzOTA2QzAuNDA2MjUgMS4yNTc4MSAwLjQwNjI1IDAuNzY1NjI1IDAuNzEwOTM4IDAuNDg0Mzc1QzAuOTkyMTg4IDAuMTc5Njg4IDEuNDg0MzggMC4xNzk2ODggMS43NjU2MiAwLjQ4NDM3NUw2LjI2NTYyIDQuOTg0MzhaIiBmaWxsPSIjRUZFQUU4Ii8+Cjwvc3ZnPgo=")
 }
 
+.rtl .wpsms-wrap__top h1.wp-heading-inline{
+  margin-right: 0;
+  margin-left: 18px;
+}
 .rtl .wpsms-header-banner .license-status span::before {
   margin-left: 5px;
   margin-right: 0;

@@ -30,10 +30,13 @@
   color: #C24225;
   border: 1px solid #C24225;
   font-size: 12px;
-  line-height: 14.52px;
+  line-height: 15px;
   text-decoration: none;
   min-height: unset;
   margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 
   &:hover {
     background: rgba(194, 66, 37, 0.1);

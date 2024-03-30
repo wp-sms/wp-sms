@@ -34,7 +34,7 @@ foreach ($addons as $option_key => $status) {
         ?>
     </div>
     <div class="wpsms-header-items-side">
-        <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons]); ?>
+        <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons,'tab_url'=>$tab_url]); ?>
         <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('setting', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
             echo 'active';
         } ?>"></a>
@@ -60,10 +60,7 @@ foreach ($addons as $option_key => $status) {
                     <?php esc_html_e('Help Center', 'wp-sms'); ?>
                 </a>
                 <div class="wpsms-license">
-                    <?php
-                    //license status
-                    echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons]);
-                    ?>
+                    <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons,'tab_url'=>$tab_url]); ?>
                 </div>
             </div>
         </div>

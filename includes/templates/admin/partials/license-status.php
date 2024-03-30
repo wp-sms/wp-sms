@@ -7,7 +7,7 @@
         <div class="license-status license-status--valid">
             <span>
                 <?php echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons)); ?>
-                <a class="upgrade" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php echo esc_html__('UPGRADE', 'wp-sms'); ?></a>
+                <a class="upgrade" href="<?php echo esc_url($tab_url); ?>"><?php echo esc_html__('MANAGE LICENSE', 'wp-sms'); ?></a>
             </span>
         </div>
     <?php endif; ?>
