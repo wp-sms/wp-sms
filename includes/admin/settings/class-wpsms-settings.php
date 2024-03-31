@@ -330,7 +330,7 @@ class Settings
                 'name'    => esc_html__('Status', 'wp-sms'),
                 'type'    => 'checkbox',
                 'options' => $options,
-                'desc'    => __('Allows for SMS verification as part of the login process, without requiring <code>manage_options</code> capability verification.', 'wp-sms'),
+                'desc'    => __('Allows for SMS verification as part of the login process.', 'wp-sms'),
             ),
             'mobile_verify_method'  => array(
                 'id'      => 'mobile_verify_method',
