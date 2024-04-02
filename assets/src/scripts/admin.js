@@ -293,7 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (notices.length > 0) {
         notices.forEach(notice => {
             notice.classList.add('inline');
-        });
+            if (!promotionModal) {
+                notice.style.display = 'flex'
+            }
+        })
     }
     if (notices.length > 0 && topWrap) {
         notices.forEach(notice => {
@@ -308,11 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sendSms.insertAdjacentElement('beforebegin', notice);
         });
     }
-    if (promotionModal) {
-        notices.forEach(notice => {
-            notice.style.display = 'none'
-        });
-    }
+
     new ShowIfEnabled();
 });
 
