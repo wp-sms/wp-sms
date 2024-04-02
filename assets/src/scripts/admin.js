@@ -284,7 +284,7 @@ class ShowIfEnabled {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const notices = document.querySelectorAll('.wpsms-admin-notice.notice ');
+    const notices = document.querySelectorAll('.wpsms-wrap .notice  ');
     const topWrap = document.querySelector('.wpsms-wrap__top');
     const settingsError = document.querySelector('.wpsms-settings-wrap .settings-error');
     const sendSms = document.querySelector('.sendsms-header');
