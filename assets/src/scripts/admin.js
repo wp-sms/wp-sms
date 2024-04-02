@@ -284,15 +284,20 @@ class ShowIfEnabled {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const notices = document.querySelectorAll('.wpsms-wrap .notice  ');
+    const notices = document.querySelectorAll('.notice');
     const topWrap = document.querySelector('.wpsms-wrap__top');
     const settingsError = document.querySelector('.wpsms-settings-wrap .settings-error');
     const sendSms = document.querySelector('.sendsms-header');
     const promotionModal = document.querySelector('.promotion-modal');
     if (settingsError) settingsError.classList.add('inline');
+    if (notices.length > 0) {
+        notices.forEach(notice => {
+            notice.classList.add('inline');
+        });
+    }
     if (notices.length > 0 && topWrap) {
         notices.forEach(notice => {
-            topWrap.insertAdjacentElement('afterend', notice);
+             topWrap.insertAdjacentElement('afterend', notice);
         });
     }
     if (settingsError && topWrap) {
