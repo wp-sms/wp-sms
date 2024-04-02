@@ -98,6 +98,7 @@ class Gateway
             'apifon'         => 'apifon.com',
             'awssns'         => 'aws.amazon.com',
             'alphasms'       => 'alphasms.net',
+            'mailbit'        => 'mailbit.co.th',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
