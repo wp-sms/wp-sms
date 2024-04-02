@@ -618,7 +618,9 @@ body.rtl #screen-meta-links {
   box-shadow: none!important;
   outline: none!important;
 }
-
+.wpsms-header-banner .license-status a.upgrade span span {
+  margin-left: 12px;
+}
 .wpsms-header-banner .license-status--valid a.upgrade::after {
   content: "";
   width: 8px;
@@ -637,7 +639,10 @@ body.rtl #screen-meta-links {
   margin-left: 5px;
   margin-right: 0;
 }
-
+.rtl .wpsms-header-banner .license-status a.upgrade span span {
+  margin-left: unset;
+  margin-right: 12px;
+}
 .rtl .wpsms-header-banner .license-status {
   left: 20px;
   right: auto;

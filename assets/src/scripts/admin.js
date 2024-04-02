@@ -1,9 +1,8 @@
 ﻿jQuery(document).ready(function ($) {
-
-
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
     }
+
     const tablenavPages = document.querySelector('.wpsms-wrap__main .tablenav-pages');
     if (tablenavPages && tablenavPages.classList.contains('no-pages')) {
         // Remove margin and padding
@@ -285,6 +284,30 @@ class ShowIfEnabled {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const notices = document.querySelectorAll('.wpsms-admin-notice.notice ');
+    const topWrap = document.querySelector('.wpsms-wrap__top');
+    const settingsError = document.querySelector('.wpsms-settings-wrap .settings-error');
+    const sendSms = document.querySelector('.sendsms-header');
+    const promotionModal = document.querySelector('.promotion-modal');
+    if (settingsError) settingsError.classList.add('inline');
+    if (notices.length > 0 && topWrap) {
+        notices.forEach(notice => {
+            topWrap.insertAdjacentElement('afterend', notice);
+        });
+    }
+    if (settingsError && topWrap) {
+        topWrap.insertAdjacentElement('afterend', settingsError);
+    }
+    if (notices.length > 0 && sendSms) {
+        notices.forEach(notice => {
+            sendSms.insertAdjacentElement('beforebegin', notice);
+        });
+    }
+    if (promotionModal) {
+        notices.forEach(notice => {
+            notice.style.display = 'none'
+        });
+    }
     new ShowIfEnabled();
 });
 
@@ -297,7 +320,7 @@ function moveFeedbackBird() {
     const license = document.querySelector('.wpsms-menu-content .wpsms-license');
     const support = document.querySelector('.wpsms-header-items-side');
     if (feedbackBird && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
-        if (windowWidth  <= 1030) {
+        if (windowWidth <= 1030) {
             const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
             license.parentNode.insertBefore(cutDiv, license);
         } else {
