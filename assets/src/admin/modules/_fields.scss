@@ -21,7 +21,6 @@
   margin-top: 1px;
 }
 
-
 .wpsms-wrap input[type="text"]:focus, .wpsms-wrap input[type="number"]:focus, .wpsms-wrap select:focus {
   box-shadow: 0 0 0 1px #F88E40;
   border-color: #F88E40 !important;
@@ -69,18 +68,19 @@
 
 
 .wpsms-wrap .search-box input[type="search"] {
-  padding: 8px 14px;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  border-radius: 2px;
-  color: #000000;
-  border: 1px solid #5B5B5B;
+  box-shadow: 0 0 0 transparent;
+  border-radius: 4px;
+  border: 1px solid #8c8f94;
+  background-color: #fff;
+  color: #2c3338;
+  padding: 0 8px;
+  line-height: 2;
+  min-height: 30px;
 }
 
 .wpsms-wrap .search-box input[type="search"]:focus {
-  border-color: #F88E40;
-  box-shadow: 0 0 0 1px #F88E40;
+  border-color: #2271b1;
+  box-shadow: 0 0 0 1px #2271b1;
   outline: 2px solid transparent;
 }
 

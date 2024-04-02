@@ -81,12 +81,48 @@
 }
 
 .wpsms-wrap .tablenav .bulkactions .button {
-  padding: 10px 14px;
-  font-size: 14px;
+  color: #2271b1;
+  border-color: #2271b1;
+  background: #f6f7f7;
+  vertical-align: top;
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 2.15384615;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 10px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-appearance: none;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
+
 }
 
 .wpsms-wrap .search-box .button {
   padding: 10px 14px;
+  &#search-submit{
+    color: #2271b1;
+    border-color: #2271b1;
+    background: #f6f7f7;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
 }
 
 .sms_page_wp-sms-subscribers-privacy .button-primary {

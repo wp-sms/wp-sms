@@ -63,6 +63,7 @@
   gap: 14px;
   display: inline-flex;
   margin-top: 0 !important;
+  margin-left: 30px;
 
   .button {
     padding: 8px 16px !important;
@@ -79,6 +80,7 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
+    background: #fff;
 
     &:hover {
       background: rgba(194, 66, 37, 0.1);
@@ -121,7 +123,10 @@
     }
   }
 }
-
+.rtl .wpsms-wrap .wpsms-wrap__top .wpsms-button-group{
+  margin-left: unset;
+  margin-right: 30px;
+}
 #wpsms-select-subscriber-group {
   display: none;
 }
