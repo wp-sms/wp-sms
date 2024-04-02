@@ -4,6 +4,13 @@
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
     }
+    const tablenavPages = document.querySelector('.wpsms-wrap__main .tablenav-pages');
+    if (tablenavPages && tablenavPages.classList.contains('no-pages')) {
+        // Remove margin and padding
+        tablenavPages.parentElement.style.margin = '0';
+        tablenavPages.parentElement.style.padding = '0';
+        tablenavPages.parentElement.style.height = '0';
+    }
 
 
     if (jQuery('.js-wpsms-chatbox-preview').length) {

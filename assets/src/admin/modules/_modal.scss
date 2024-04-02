@@ -5,12 +5,12 @@
 }
 
 .promotion-modal {
-  position: fixed;
+  position: absolute;
   width: 70%;
-  max-width: 700px;
+  max-width: 556px;
   left: 50%;
   top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translate(-50%,-50%) ;
   background-color: #fff;
   border-radius: 5px;
   padding: 32px;
@@ -37,7 +37,7 @@
   text-align: center;
   letter-spacing: 0.02em;
   margin-top: 0;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 
   @media screen and (max-width: 990px) {
     font-size:18px;

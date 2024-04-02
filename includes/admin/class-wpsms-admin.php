@@ -48,7 +48,7 @@ class Admin
                 __('Please rate <strong>WP SMS</strong> <a href="%2$s" title="%3$s" target="_blank">★★★★★</a> on <a href="%2$s" target="_blank">WordPress.org</a> to help us spread the word. Thank you!', 'wp-sms'),
                 esc_html__('WP SMS', 'wp-sms'),
                 'https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post',
-                esc_html__('rate', 'wp-sms')
+                esc_html__('Rate WP SMS', 'wp-sms')
             );
         }
         return $text;

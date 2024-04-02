@@ -5,10 +5,12 @@
         </div>
     <?php else: ?>
         <div class="license-status license-status--valid">
-            <span>
+            <a class="upgrade" href="<?php echo esc_url($tab_url); ?>">
+                <span>
                 <?php echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons)); ?>
-                <a class="upgrade" href="<?php echo esc_url($tab_url); ?>"><?php echo esc_html__('MANAGE LICENSE', 'wp-sms'); ?></a>
-            </span>
+                    <span><?php echo esc_html__('MANAGE', 'wp-sms'); ?></span>
+                </span>
+            </a>
         </div>
     <?php endif; ?>
 <?php endif; ?>
