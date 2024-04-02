@@ -53,7 +53,7 @@ class NoticeManager extends AbstractNotice
             $this->registerNotice('woocommerce_mobile_field', __('You need to configure the Mobile field option in General settings to send SMS to customers.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_woocommerce');
         }
 
-        if ($mobileFieldStatus or $mobileFieldStatus == 'disable') {
+        if (!$mobileFieldStatus or $mobileFieldStatus == 'disable') {
             $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
         }
 
