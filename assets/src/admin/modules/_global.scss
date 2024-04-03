@@ -217,6 +217,9 @@
   }
 }
 @media screen and (max-width: 1030px) {
+  .rtl .wpsms-wrap__top h2, .rtl .wpsms-wrap__top h1{
+    float: right
+  }
   .wpsms-header-items-side>#feedback-bird-app{
     display: none!important;
   }
@@ -284,14 +287,15 @@
 
     h2, h1 {
       display: inline !important;
-      margin-right: 18px;
+      float: left;
+      margin-top: 10px;
     }
 
     .wpsms-button-group {
       display: inline !important;
 
       a {
-        margin-bottom: 8px !important;
+        margin-top: 8px !important;
         margin-right: 8px;
       }
     }

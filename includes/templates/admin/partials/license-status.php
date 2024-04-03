@@ -1,7 +1,7 @@
 <?php if (isset($addons)): ?>
     <?php if (count($addons) == 0): ?>
         <div class="license-status license-status--free">
-            <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php echo esc_html__('UPGRADE TO PRO', 'wp-sms'); ?></span></a>
+            <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank"><span><?php echo esc_html__('UPGRADE TO PRO', 'wp-sms'); ?></span></a>
         </div>
     <?php else: ?>
         <div class="license-status license-status--valid">
