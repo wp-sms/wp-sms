@@ -27,6 +27,8 @@
   .woo-nav-tab-wrapper{
     border-bottom: none;
     padding-top:20px;
+    display: flex;
+    width: 100%;
     .nav-tab{
       background: transparent!important;
       border:none;

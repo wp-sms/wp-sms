@@ -566,7 +566,9 @@ body.rtl #screen-meta-links {
   align-items: center;
   margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
+  .wpsms-flex{
+    width: 100%;
+  }
   h2, h1 {
     display: inline-flex;
     color: #0C0C0D;
