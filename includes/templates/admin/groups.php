@@ -14,6 +14,7 @@ namespace WP_SMS;
             </div>
         </div>
     </div>
+    <div class="wp-header-end"></div>
     <div class="wpsms-wrap__main">
         <?php echo Helper::loadTemplate('admin/quick-reply.php', ['reload' => true]); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         <form id="subscribers-filter" method="get">

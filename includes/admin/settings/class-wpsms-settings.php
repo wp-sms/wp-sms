@@ -2648,6 +2648,8 @@ class Settings
                 }
                 ?>
             </div>
+            <div class="wp-header-end"></div>
+            <?php echo settings_errors('wpsms-notices'); ?>
             <div class="wpsms-wrap__main">
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
@@ -2704,7 +2706,7 @@ class Settings
                             echo \WP_SMS\Helper::loadTemplate('zapier-section.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         } ?>
                     </ul>
-                    <?php echo settings_errors('wpsms-notices'); ?>
+
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
                         <?php
                         if (isset($args['setting']) && $args['setting'] == true) {
@@ -2713,6 +2715,7 @@ class Settings
                             call_user_func($args['template'], []);
                         }
                         ?>
+
                     </div>
                 </div>
             </div>

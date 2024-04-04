@@ -15,6 +15,7 @@ $groups = Newsletter::getGroups();
             <a name="<?php esc_html_e('Export', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers#TB_inline?&width=400&height=150&inlineId=wp-sms-export-from" class="thickbox button"><span class="dashicons dashicons-redo"></span> <?php esc_html_e('Export', 'wp-sms'); ?></a>
         </div>
     </div>
+    <div class="wp-header-end"></div>
     <div class="wpsms-wrap__main">
         <?php echo Helper::loadTemplate('admin/quick-reply.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         <div id="add-subscriber" style="display:none;">

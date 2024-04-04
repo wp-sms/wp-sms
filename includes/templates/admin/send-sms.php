@@ -10,7 +10,7 @@
                 </circle>
             </svg>
         </div>
-
+        <div class="wp-header-end"></div>
         <div class="sendsms-header">
             <?php if ($gatewayCredit): ?>
                 <div class="budget"><span class="icon"></span>

@@ -285,40 +285,15 @@ class ShowIfEnabled {
 
 document.addEventListener('DOMContentLoaded', () => {
     const notices = document.querySelectorAll('.notice');
-    const topWrap = document.querySelector('.wpsms-wrap__top');
-    const headerBaner = document.querySelector('.wpsms-header-banner');
-    const headerEnd = document.querySelector('.wp-header-end');
-    const settingsError = document.querySelector('.wpsms-settings-wrap .settings-error');
-    const sendSms = document.querySelector('.sendsms-header');
     const promotionModal = document.querySelector('.promotion-modal');
-    if (settingsError) settingsError.classList.add('inline');
      if (notices.length > 0) {
         notices.forEach(notice => {
-            notice.classList.add('inline');
-            if (!promotionModal) {
-                notice.style.display = 'flex'
+            notice.classList.remove('inline');
+            if (promotionModal) {
+                notice.style.display = 'none'
             }
         })
     }
-    if (notices.length > 0 && topWrap) {
-        notices.forEach(notice => {
-              topWrap.insertAdjacentElement('afterend', notice);
-        });
-    }
-    if (notices.length > 0 && headerBaner && headerEnd && !topWrap ) {
-        notices.forEach(notice => {
-            headerEnd.insertAdjacentElement('afterend', notice);
-        });
-    }
-    if (settingsError && topWrap) {
-        topWrap.insertAdjacentElement('afterend', settingsError);
-    }
-    if (notices.length > 0 && sendSms) {
-        notices.forEach(notice => {
-            sendSms.insertAdjacentElement('beforebegin', notice);
-        });
-    }
-
     new ShowIfEnabled();
 });
 
