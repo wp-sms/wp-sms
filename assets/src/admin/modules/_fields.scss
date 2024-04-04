@@ -136,11 +136,13 @@
   height: 8px;
   margin: .30rem !important;
 }
+
 .post-type-wpsms-command .notice, .sms_page_wp-sms .notice, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment .notice,
-.sms-woo-pro_page_wp-sms-woo-pro-settings .notice,.post-type-sms-campaign .notice{
+.sms-woo-pro_page_wp-sms-woo-pro-settings .notice, .post-type-sms-campaign .notice {
   display: none;
 }
-.sms-woo-pro_page_wp-sms-woo-pro-settings .wc_emails_wrapper{
+
+.sms-woo-pro_page_wp-sms-woo-pro-settings .wc_emails_wrapper {
   overflow-x: auto;
 }
 
@@ -206,7 +208,7 @@
 }
 
 
-.wpsms-wrap textarea:not(#feedback-bird-app textarea) {
+.wpsms-wrap textarea:not(#feedback-bird-app textarea):not(.select2-selection textarea) {
   max-width: calc(100% - 45px);
   background-color: #fff;
   padding: 8px 14px !important;
@@ -219,10 +221,10 @@
 }
 
 .wpsms-wrap #feedback-bird-app .o-fbb-input:focus {
-  border-color:#F88E40;
+  border-color: #F88E40;
 }
 
-.wpsms-wrap textarea:not(#feedback-bird-app textarea):focus {
+.wpsms-wrap textarea:not(#feedback-bird-app textarea):not(.select2-selection textarea):focus {
   border-color: #F88E40 !important;
   outline: #F88E40 !important;
   box-shadow: 0 0 0 1px #F88E40 !important;

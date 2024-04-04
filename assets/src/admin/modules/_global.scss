@@ -210,18 +210,20 @@
 .sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
   display: none;
 }
-.wpsms-wrap__top{
-  h2,  h1{
+
+.wpsms-wrap__top {
+  h2, h1 {
     margin-top: 0;
     margin-bottom: 0;
   }
 }
+
 @media screen and (max-width: 1030px) {
-  .rtl .wpsms-wrap__top h2, .rtl .wpsms-wrap__top h1{
+  .rtl .wpsms-wrap__top h2, .rtl .wpsms-wrap__top h1 {
     float: right
   }
-  .wpsms-header-items-side>#feedback-bird-app{
-    display: none!important;
+  .wpsms-header-items-side > #feedback-bird-app {
+    display: none !important;
   }
   .wpsms-mobile-menu #feedback-bird-app {
     padding: 12px;
@@ -230,6 +232,7 @@
       color: #4E5154 !important;
       background: none;
       width: 100%;
+      opacity: 1 !important;
 
       & > span {
         display: flex !important;
@@ -284,6 +287,7 @@
   .wpsms-wrap__top {
     display: block !important;
     padding: 15px 19px !important;
+
     h2, h1 {
       display: inline !important;
       float: left;
