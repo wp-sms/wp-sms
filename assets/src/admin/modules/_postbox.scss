@@ -589,6 +589,12 @@ body.rtl #screen-meta-links {
   }
 }
 
+.wpsms-wrap__top:after {
+  content: '';
+  clear: both;
+  display: block;
+}
+
 .wpsms-header-banner .license-status h3 {
   margin: 0 0 5px;
   font-weight: 600;
