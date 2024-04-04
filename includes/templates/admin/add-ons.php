@@ -1,5 +1,6 @@
 <div class="wrap wpsms-wrap">
     <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <div class="wp-header-end"></div>
     <div id="poststuff" class="wpsms-add-ons">
         <div id="post-body" class="metabox-holder">
             <div class="wp-list-table widefat widefat plugin-install">

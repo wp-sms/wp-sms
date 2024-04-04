@@ -1,6 +1,6 @@
 <div id="wpsms-privacyPage" class="wrap wpsms-wrap privacy_page">
     <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-
+    <div class="wp-header-end"></div>
     <div class="wpsms-wrap__main">
         <h1><?php echo esc_html($title); ?></h1>
 
