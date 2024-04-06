@@ -167,6 +167,9 @@ class Gateway
             'turbosms'   => 'turbosms.ua',
             'smstraffic' => 'smstraffic.eu',
         ),
+        'Malaysia'       => array(
+            'klasiksms' => 'klasiksms.com',
+        ),
         'mexico'         => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
