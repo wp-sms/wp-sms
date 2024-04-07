@@ -71,7 +71,7 @@ class fortytwo extends \WP_SMS\Gateway
                 'Authorization' => 'Token ' . $this->has_key,
                 'Content-Type'  => 'application/json; charset=utf-8',
             ),
-            'body'    => json_encode(array(
+            'body'    => wp_json_encode(array(
                 'destinations' => $to,
                 'sms_content'  => array(
                     'sender_id' => $this->from,

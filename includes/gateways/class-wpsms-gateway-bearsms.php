@@ -61,10 +61,9 @@ class bearsms extends \WP_SMS\Gateway
         $to  = implode(',', $this->to);
         $msg = urlencode($this->msg);
 
-        $result     = file_get_contents($this->wsdl_link . '&u=' . $this->username . '&h=' . $this->password . '&op=pv&to=' . $to . '&msg=' . $msg);
-        $result_arr = json_decode($result);
+        $result = $this->request('GET', $this->wsdl_link . '&u=' . $this->username . '&h=' . $this->password . '&op=pv&to=' . $to . '&msg=' . $msg, [], [], false);
 
-        if ($result_arr->data[0]->status == 'ERR') {
+        if ($result->data[0]->status == 'ERR') {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
@@ -93,13 +92,12 @@ class bearsms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $result     = file_get_contents($this->wsdl_link . '&u=' . $this->username . '&h=' . $this->password . '&op=cr');
-        $result_arr = json_decode($result);
+        $result = $this->request('GET', $this->wsdl_link . '&u=' . $this->username . '&h=' . $this->password . '&op=cr', [], [], false);
 
-        if ($result_arr->status == 'ERR') {
+        if ($result->status == 'ERR') {
             return new \WP_Error('account-credit', $result);
         }
 
-        return $result_arr->credit;
+        return $result->credit;
     }
 }

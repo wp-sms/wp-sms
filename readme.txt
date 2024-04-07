@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 6.7.1
+Stable tag: 6.8
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -221,11 +221,15 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.7.1 - 20.03.2024 =
-* Fixes: Improved visibility of settings page fields.
-* Fixes: Addressed JavaScript error handling in Send SMS block.
-* Fixes: Resolved errors and optimized performance with Formidable integration and entity issues.
-* Improvement: Refactored Oxemis SMS gateway body payload to utilize JSON encoding.
-* Improvement: Implemented minor enhancements.
+= v6.8 - 08.04.2024 =
+* Updated: New admin design with easier navigation and useful links.
+* Updated: Now supports DLT and manual DLT messages in Fast2Sms.
+* Added: `cart_url` and `checkout_url` for WooCommerce coupons.
+* Added: Validation for international phone numbers.
+* Fixed: Notice Error in class SmsOtp generator.
+* Improved: Simplified datetime function and cookie settings in NuSOAP.
+* Improved: Clarified Advanced Settings text.
+* Enhanced: Added security checks and CSRF for outbox and group actions.
+* Enhanced: General improvements for better performance.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

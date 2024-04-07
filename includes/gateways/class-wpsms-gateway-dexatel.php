@@ -67,7 +67,7 @@ class dexatel extends \WP_SMS\Gateway
                 'token'        => $this->has_key,
                 'Content-Type' => 'application/json'
             ],
-            'body'    => json_encode([
+            'body'    => wp_json_encode([
                 'messages' => $messages,
             ])
         ];

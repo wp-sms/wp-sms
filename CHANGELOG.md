@@ -1,3 +1,14 @@
+= v6.8 - 08.04.2024 =
+* Updated: New admin design with easier navigation and useful links.
+* Updated: Now supports DLT and manual DLT messages in Fast2Sms.
+* Added: `cart_url` and `checkout_url` for WooCommerce coupons.
+* Added: Validation for international phone numbers.
+* Fixed: Notice Error in class SmsOtp generator.
+* Improved: Simplified datetime function and cookie settings in NuSOAP.
+* Improved: Clarified Advanced Settings text.
+* Enhanced: Added security checks and CSRF for outbox and group actions.
+* Enhanced: General improvements for better performance.
+
 = v6.7.1 - 20.03.2024 =
 * Fixes: Improved visibility of settings page fields.
 * Fixes: Addressed JavaScript error handling in Send SMS block.

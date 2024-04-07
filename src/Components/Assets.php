@@ -62,13 +62,13 @@ class Assets
      * @param string $handle The style handle.
      * @param string $src The source URL of the style.
      * @param array $deps An array of style dependencies.
-     * @param bool $inFooter Whether to enqueue the style in the footer.
+     * @param string $media The context which style needs to be loaded: all, print, or screen
      * @return void
-     * @example Assets::style('admin', 'dist/admin.css', ['jquery'], true);
+     * @example Assets::style('admin', 'dist/admin.css', ['jquery'], 'all');
      */
-    public static function style($handle, $src, $deps = [], $inFooter = false)
+    public static function style($handle, $src, $deps = [], $media = 'all')
     {
-        wp_enqueue_style(self::getHandle($handle), self::getSrc($src), $deps, WP_SMS_VERSION, $inFooter);
+        wp_enqueue_style(self::getHandle($handle), self::getSrc($src), $deps, WP_SMS_VERSION, $media);
     }
 
     /**

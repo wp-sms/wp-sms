@@ -59,7 +59,7 @@ class tsms extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $messagid     = rand();
+        $messagid     = wp_rand();
         $mclass       = array('');
         $this->client = new \SoapClient($this->wsdl_link);
 

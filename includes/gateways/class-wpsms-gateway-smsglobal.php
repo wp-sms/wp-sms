@@ -78,7 +78,7 @@ class smsglobal extends \WP_SMS\Gateway
             }
 
             $time  = time();
-            $nonce = mt_rand();
+            $nonce = wp_rand();
 
             $mac = array(
                 $time,
@@ -99,7 +99,7 @@ class smsglobal extends \WP_SMS\Gateway
                     'Authorization' => 'MAC id="' . $this->has_key . '", ts="' . $time . '", nonce="' . $nonce . '", mac="' . $mac . '"',
                     'Content-Type'  => 'application/json'
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'destinations' => explode(',', implode(',', $this->to)),
                     'message'      => $this->msg,
                     'origin'       => $this->from,
@@ -145,7 +145,7 @@ class smsglobal extends \WP_SMS\Gateway
             }
 
             $time  = time();
-            $nonce = mt_rand();
+            $nonce = wp_rand();
 
             $mac = array(
                 $time,

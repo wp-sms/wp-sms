@@ -24,6 +24,16 @@ final class Generator
     private $agent;
 
     /**
+     * @var $code
+     */
+    private $code;
+
+    /**
+     * @var string $phoneNumber
+     */
+    private $phoneNumber;
+
+    /**
      * @param string $phoneNumber
      * @param string $agent
      */
@@ -100,8 +110,8 @@ final class Generator
      * Create pass code
      *
      * @param integer $length
-     * @throws Exceptions\InvalidArgumentException
      * @return void
+     * @throws Exceptions\InvalidArgumentException
      */
     public function createCode($length)
     {
@@ -114,33 +124,34 @@ final class Generator
         $values = array_values(unpack('C*', $hash));
 
         $offset = ($values[\count($values) - 1] & 0xF);
-        $code = ($values[$offset + 0] & 0x7F) << 24 | ($values[$offset + 1] & 0xFF) << 16 | ($values[$offset + 2] & 0xFF) << 8 | ($values[$offset + 3] & 0xFF);
-        $otp = $code % (10 ** $length);
+        $code   = ($values[$offset + 0] & 0x7F) << 24 | ($values[$offset + 1] & 0xFF) << 16 | ($values[$offset + 2] & 0xFF) << 8 | ($values[$offset + 3] & 0xFF);
+        $otp    = $code % (10 ** $length);
 
-        $this->code = str_pad((string) $otp, $length, '0', STR_PAD_LEFT);
+        $this->code = str_pad((string)$otp, $length, '0', STR_PAD_LEFT);
     }
 
     /**
      * Limit OTP generation rate
      *
-     * @throws Exceptions\OtpLimitExceededException
      * @return void
+     * @throws Exceptions\OtpLimitExceededException
      */
     public function limitGeneration()
     {
         global $wpdb;
 
         $tableName = $wpdb->prefix . Install::TABLE_OTP;
-        $query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d",
-            [
-                $this->phoneNumber,
-                $this->agent,
-                $this->getRateLimitTimeThreshold()->getTimestamp()
-            ]
-        );
 
-        $result = (int) $wpdb->get_var($query);
+        $result = (int)$wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d",
+                [
+                    $this->phoneNumber,
+                    $this->agent,
+                    $this->getRateLimitTimeThreshold()->getTimestamp()
+                ]
+            )
+        );
 
         if ($result >= $this->getRateLimitCount()) {
             throw new Exceptions\OtpLimitExceededException(esc_html__('OTPs generated for this number has reached its limit, please try some other time.', 'wp-sms'));

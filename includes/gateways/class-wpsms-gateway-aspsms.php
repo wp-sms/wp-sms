@@ -73,7 +73,7 @@ class aspsms extends \WP_SMS\Gateway
             'headers' => array(
                 'Content-Type' => 'application/json; charset=UTF-8'
             ),
-            'body'    => json_encode(
+            'body'    => wp_json_encode(
                 array(
                     'UserName'     => $this->username,
                     'Password'     => $this->password,
@@ -136,7 +136,7 @@ class aspsms extends \WP_SMS\Gateway
             'headers' => array(
                 'Content-Type' => 'application/json; charset=UTF-8'
             ),
-            'body'    => json_encode(
+            'body'    => wp_json_encode(
                 array(
                     'UserName' => $this->username,
                     'Password' => $this->password

@@ -78,7 +78,7 @@ class smssolutions extends \WP_SMS\Gateway
                     'key'          => $this->has_key,
                     'Content-Type' => 'application/json; charset=UTF-8'
                 ],
-                'body'    => json_encode([
+                'body'    => wp_json_encode([
                     'recipient' => $to,
                     'content'   => $text,
                     'mask'      => $this->from,

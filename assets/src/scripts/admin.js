@@ -1,8 +1,14 @@
 ﻿jQuery(document).ready(function ($) {
-
-
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
+    }
+
+    const tablenavPages = document.querySelector('.wpsms-wrap__main .tablenav-pages');
+    if (tablenavPages && tablenavPages.classList.contains('no-pages')) {
+        // Remove margin and padding
+        tablenavPages.parentElement.style.margin = '0';
+        tablenavPages.parentElement.style.padding = '0';
+        tablenavPages.parentElement.style.height = '0';
     }
 
 
@@ -180,85 +186,138 @@ class ShowIfEnabled {
     initialize() {
         const elements = document.querySelectorAll('[class^="js-wpsms-show_if_"]');
         elements.forEach(element => {
-            const classListString = [...element.classList].join(' ');
+            const classListArray = [...element.className.split(' ')];
 
-            if (classListString.includes('_enabled')) {
-                this.toggleDisplay(element);
-                const id = this.extractId(element);
-                const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
-                if (checkbox) {
-                    checkbox.addEventListener('change', () => {
-                        if (checkbox.checked) {
-                            this.toggleDisplay(element);
-                        } else {
-                            element.style.display = 'none';
+            const toggleElement = () => {
+                let displayed = false;
+                classListArray.forEach(className => {
+                    if (className.includes('_enabled') || className.includes('_disabled')) {
+                        const id = this.extractId(element);
+                        const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                        if (checkbox) {
+                            if (checkbox.checked && className.includes('_enabled')) {
+                                this.toggleDisplay(element);
+
+                            } else if (!checkbox.checked && className.includes('_disabled')) {
+                                this.toggleDisplay(element);
+                            } else {
+                                element.style.display = 'none';
+                            }
                         }
-                    });
-                }
-            }
+                    } else if (className.includes('_equal_')) {
+                        const {id, value} = this.extractIdAndValue(className);
+                        if (id && value) {
+                            const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                            if (item && item.type === 'select-one') {
+                                if (item.value == value) {
+                                    if (!displayed) {
+                                        this.toggleDisplay(element);
+                                        displayed = true
+                                    }
 
-            if (classListString.includes('_equal_')) {
-                const {id, value} = this.extractIdAndValue(element);
-                if (id && value) {
-                    const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
-                    if (item && (item.type === 'checkbox' || item.type === 'select-one')) {
-                        this.handleCheckboxOrSelectChange(item, element, value);
+                                }
+                                if (item.value != value) {
+                                    if (!displayed) {
+                                        element.style.display = 'none';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            toggleElement();
+
+            classListArray.forEach(className => {
+                if (className.includes('_enabled') || className.includes('_disabled')) {
+                    const id = this.extractId(element);
+                    const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                    if (checkbox) {
+                        checkbox.addEventListener('change', toggleElement);
+                    }
+                } else if (className.includes('_equal_')) {
+                    const {id} = this.extractIdAndValue(className);
+                    if (id) {
+                        const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                        if (item && item.type === 'select-one') {
+                            item.addEventListener('change', toggleElement);
+                        }
                     }
                 }
-            }
+            });
         });
     }
+
 
     toggleDisplay(element) {
         const displayType = element.tagName.toLowerCase() === 'tr' ? 'table-row' : 'table-cell';
         element.style.display = displayType;
     }
 
-    handleCheckboxOrSelectChange(item, element, value) {
-        const itemValue = item.type === 'checkbox' ? item.checked : item.value;
-        if (itemValue == value) {
-            this.toggleDisplay(element);
-        } else {
-            element.style.display = 'none';
-        }
-        item.addEventListener('change', () => {
-            const newValue = item.type === 'checkbox' ? item.checked : item.value;
-            if (newValue == value) {
-                this.toggleDisplay(element);
-            } else {
-                element.style.display = 'none';
-            }
-        });
-    }
-
     extractId(element) {
         const classes = element.className.split(' ');
         for (const className of classes) {
-            if (className.startsWith('js-wpsms-show_if_') && className.endsWith('_enabled')) {
-                return className.replace('js-wpsms-show_if_', '').replace('_enabled', '');
+            if (className.startsWith('js-wpsms-show_if_')) {
+                const id = className.replace('js-wpsms-show_if_', '').replace('_enabled', '').replace('_disabled', '');
+                if (id) {
+                    return id;
+                }
             }
         }
         return null;
     }
 
-    extractIdAndValue(element) {
-        const classes = element.className.split(' ');
+    extractIdAndValue(className) {
         let id, value;
-        for (const className of classes) {
-            if (className.startsWith('js-wpsms-show_if_')) {
-                const parts = className.split('_');
-                const indexOfEqual = parts.indexOf('equal');
-                if (indexOfEqual !== -1 && indexOfEqual > 2 && indexOfEqual < parts.length - 1) {
-                    id = parts.slice(2, indexOfEqual).join('_');
-                    value = parts.slice(indexOfEqual + 1).join('_');
-                    break;
-                }
+        if (className.startsWith('js-wpsms-show_if_')) {
+            const parts = className.split('_');
+            const indexOfEqual = parts.indexOf('equal');
+            if (indexOfEqual !== -1 && indexOfEqual > 2 && indexOfEqual < parts.length - 1) {
+                id = parts.slice(2, indexOfEqual).join('_');
+                value = parts.slice(indexOfEqual + 1).join('_');
             }
         }
+
         return {id, value};
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const notices = document.querySelectorAll('.notice');
+    const promotionModal = document.querySelector('.promotion-modal');
+     if (notices.length > 0) {
+        notices.forEach(notice => {
+            notice.classList.remove('inline');
+            if (promotionModal) {
+                notice.style.display = 'none'
+            }
+        })
+    }
     new ShowIfEnabled();
 });
+
+/**
+ * FeedbackBird position
+ * */
+function moveFeedbackBird() {
+    let windowWidth = window.outerWidth || document.documentElement.clientWidth;
+    const feedbackBird = document.getElementById('feedback-bird-app');
+    const feedbackBirdTitle = document.querySelector('.c-fbb-widget__header__title');
+    const license = document.querySelector('.wpsms-menu-content .wpsms-license');
+    const support = document.querySelector('.wpsms-header-items-side');
+    if (feedbackBird && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
+        if (windowWidth <= 1030) {
+            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
+            license.parentNode.insertBefore(cutDiv, license);
+        } else {
+            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
+            support.appendChild(cutDiv);
+        }
+        feedbackBird.style.display = 'block';
+        feedbackBird.setAttribute('title',feedbackBirdTitle.innerHTML);
+    }
+}
+
+window.onload = moveFeedbackBird;
+window.addEventListener('resize', moveFeedbackBird);

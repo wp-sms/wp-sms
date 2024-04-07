@@ -83,7 +83,7 @@ class uwaziimobile extends \WP_SMS\Gateway
                     'X-Access-Token' => $token,
                     'Content-Type'   => 'application/json'
                 ],
-                'body'    => json_encode($body)
+                'body'    => wp_json_encode($body)
             );
 
             $response = $this->request('POST', "{$this->wsdl_link}/send", [], $params);
@@ -210,7 +210,7 @@ class uwaziimobile extends \WP_SMS\Gateway
                     'headers' => [
                         'Content-Type' => 'application/json',
                     ],
-                    'body'    => json_encode($body)
+                    'body'    => wp_json_encode($body)
                 ];
 
                 // get authorization code
@@ -230,7 +230,7 @@ class uwaziimobile extends \WP_SMS\Gateway
                     'headers' => [
                         'Content-Type' => 'application/json',
                     ],
-                    'body'    => json_encode($body)
+                    'body'    => wp_json_encode($body)
                 ];
 
                 // get access token

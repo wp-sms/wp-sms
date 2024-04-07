@@ -28,23 +28,33 @@
 
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
-        <a class="zapier" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/zapier-integration'); ?>"><span class="icon"></span><?php esc_html_e('Zapier Integration', 'wp-sms'); ?></a>
+        <a class="send-sms" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms'); ?>"><span class="icon"></span><?php esc_html_e('Send SMS', 'wp-sms'); ?></a>
+        <a class="inbox" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-inbox'); ?>"><span class="icon"></span><?php esc_html_e('Inbox', 'wp-sms'); ?> <span class="badge">2</span></a>
+        <a class="outbox" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-outbox'); ?>"><span class="icon"></span><?php esc_html_e('Outbox', 'wp-sms'); ?></a>
+        <a class="integrations active" href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations'); ?>"><span class="icon"></span><?php esc_html_e('Integrations', 'wp-sms'); ?></a>
     </div>
 
-    <!-- Activated Licenses Status -->
-    <?php if (count($addons) == 0) : ?>
-        <div class="license-status license-status--free">
-            <a href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php esc_html_e('Unlock More Features!', 'wp-sms'); ?></a></span>
-        </div>
-    <?php else : ?>
-        <div class="license-status license-status--valid">
-            <span>
-                <?php 
+    <div class="wpsms-header-items-side">
+        <?php if (count($addons) == 0) : ?>
+            <div class="license-status license-status--free">
+                <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" target="_blank"><span><?php esc_html_e('UPGRADE TO PRO', 'wp-sms'); ?></span></a>
+            </div>
+        <?php else : ?>
+            <div class="license-status license-status--valid">
+                <span>
+                    <?php
                     // translators: %1$s: Active licenses, %2$s: Total licenses
-                    echo sprintf(esc_html__('License Status: %1$s of %2$s Activated.', 'wp-sms'), count(array_filter($addons)), count($addons)); 
-                ?>
-            </span>
-        </div>
-    <?php endif; ?>
+                    echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons));
+                    ?>
+                    <a class="upgrade" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>"><?php esc_html_e('UPGRADE', 'wp-sms'); ?></a>
+                </span>
+            </div>
+        <?php endif; ?>
+        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('setting', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
+            echo 'active';
+        } ?>"></a>
+        <a href="<?php echo esc_url(WP_SMS_SITE . '/support'); ?>" target="_blank" title="<?php esc_html_e('support', 'wp-sms'); ?>" class="support"></a>
+
+    </div>
 
 </div>

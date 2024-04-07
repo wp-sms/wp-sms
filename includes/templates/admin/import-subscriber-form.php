@@ -29,7 +29,7 @@
 
         <div class="js-WpSmsImportStep1" style="padding-top: 10px;">
             <input type="file" accept="text/csv" id="wp-sms-input-file">
-            <p><?php esc_html_e('The only acceptable format is <code>*.csv</code>', 'wp-sms'); ?></p>
+            <p><?php _e('The only acceptable format is <code>*.csv</code>', 'wp-sms'); ?></p>
         </div>
 
         <div class="js-WpSmsImportStep1" style="padding-top: 10px;">

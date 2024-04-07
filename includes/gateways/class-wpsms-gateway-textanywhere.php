@@ -102,7 +102,7 @@ class textanywhere extends \WP_SMS\Gateway
                         'user_key'     => $token[0],
                         'Access_token' => $token[1],
                     ),
-                    'body'    => json_encode([
+                    'body'    => wp_json_encode([
                         'message_type' => 'GP',
                         'message'      => $this->msg,
                         'recipient'    => $this->to,

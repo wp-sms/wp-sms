@@ -24,6 +24,11 @@ final class Verifier
     private $agent;
 
     /**
+     * @var string
+     */
+    private $phoneNumber;
+
+    /**
      * @param string $phoneNumber
      * @param string $agent
      */
@@ -89,16 +94,17 @@ final class Verifier
         global $wpdb;
 
         $otpTable = $wpdb->prefix . Install::TABLE_OTP;
-        $query    = $wpdb->prepare(
-            "SELECT * FROM {$otpTable} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d ORDER BY created_at DESC LIMIT 1",
-            [
-                $this->phoneNumber,
-                $this->agent,
-                $this->getRateLimitTimeThreshold()->getTimestamp()
-            ]
-        );
 
-        $match = $wpdb->get_row($query);
+        $match = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$otpTable} WHERE `phone_number` = %s AND `agent` = %s AND `created_at` > %d ORDER BY created_at DESC LIMIT 1",
+                [
+                    $this->phoneNumber,
+                    $this->agent,
+                    $this->getRateLimitTimeThreshold()->getTimestamp()
+                ]
+            )
+        );
 
         if (!empty($match) && $match->code == md5($code)) {
             self::createVerificationAttemptRecord($code, true);
@@ -115,7 +121,7 @@ final class Verifier
      *
      * @param string $attemptedCode
      * @param boolean $result
-     * @return void
+     * @return mixed
      */
     private function createVerificationAttemptRecord($attemptedCode, $result)
     {
@@ -151,16 +157,17 @@ final class Verifier
         global $wpdb;
 
         $tableName = $wpdb->prefix . Install::TABLE_OTP_ATTEMPTS;
-        $query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `time` > %d AND `result` = 0",
-            [
-                $this->phoneNumber,
-                $this->agent,
-                $this->getRateLimitTimeThreshold()->getTimestamp(),
-            ]
-        );
 
-        $result = (int) $wpdb->get_var($query);
+        $result = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tableName} WHERE `phone_number` = %s AND `agent` = %s AND `time` > %d AND `result` = 0",
+                [
+                    $this->phoneNumber,
+                    $this->agent,
+                    $this->getRateLimitTimeThreshold()->getTimestamp(),
+                ]
+            )
+        );
 
         if ($result >= $this->getRateLimitCount()) {
             throw new Exceptions\TooManyAttemptsException(esc_html__('Too many verification attempts, please try some other time.', 'wp-sms'));
@@ -180,15 +187,16 @@ final class Verifier
         $interval = $interval ?? new DateInterval('PT5M');
 
         $otpTable = $wpdb->prefix . Install::TABLE_OTP_ATTEMPTS;
-        $query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$otpTable} WHERE `phone_number` = %s AND `agent` = %s AND `time` > %d AND `result` = 1",
-            [
-                $this->phoneNumber,
-                $this->agent,
-                (new DateTime())->sub($interval)->getTimestamp(),
-            ]
-        );
 
-        return (bool) $wpdb->get_var($query);
+        return (bool) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$otpTable} WHERE `phone_number` = %s AND `agent` = %s AND `time` > %d AND `result` = 1",
+                [
+                    $this->phoneNumber,
+                    $this->agent,
+                    (new DateTime())->sub($interval)->getTimestamp(),
+                ]
+            )
+        );
     }
 }
