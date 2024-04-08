@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 6.8
+Stable tag: 6.8.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,7 +44,7 @@ Main plugin's features
 * Supporting WP REST API
 * Meeting GDPR compliance requirements
 * Importing and exporting subscribers
-* [Messaging Button](https://wp-sms-pro.com/25838/meet-wp-sms-new-messaging-button-connect-with-just-a-click/): A newly added feature allowing visitors to connect with your team directly through preferred platforms such as SMS, WhatsApp, or Telegram, with just one click on your website.
+* [Messaging Button](https://wp-sms-pro.com/message-button/): A newly added feature allowing visitors to connect with your team directly through preferred platforms such as SMS, WhatsApp, or Telegram, with just one click on your website.
 * And much more!
 
 This plugin is free. You just need to have an account from one of the services in the list of gateways we support.
@@ -221,15 +221,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.8 - 08.04.2024 =
-* Updated: New admin design with easier navigation and useful links.
-* Updated: Now supports DLT and manual DLT messages in Fast2Sms.
-* Added: `cart_url` and `checkout_url` for WooCommerce coupons.
-* Added: Validation for international phone numbers.
-* Fixed: Notice Error in class SmsOtp generator.
-* Improved: Simplified datetime function and cookie settings in NuSOAP.
-* Improved: Clarified Advanced Settings text.
-* Enhanced: Added security checks and CSRF for outbox and group actions.
-* Enhanced: General improvements for better performance.
+= v6.8.1 - 08.04.2024 =
+* Fixes: Admin alerts now display correctly.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
