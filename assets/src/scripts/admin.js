@@ -286,7 +286,7 @@ class ShowIfEnabled {
 document.addEventListener('DOMContentLoaded', () => {
     const notices = document.querySelectorAll('.notice');
     const promotionModal = document.querySelector('.promotion-modal');
-     if (notices.length > 0) {
+     if (notices.length > 0  && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings')) ) {
         notices.forEach(notice => {
             notice.classList.remove('inline');
             if (promotionModal) {
