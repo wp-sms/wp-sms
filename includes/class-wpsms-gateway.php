@@ -76,7 +76,7 @@ class Gateway
             'upsidewireless' => 'upsidewireless.com',
             'orange'         => 'orange.com',
             'proovl'         => 'proovl.com',
-            'releans'         => 'releans.com',
+            'releans'        => 'releans.com',
             'messente'       => 'messente.com',
             'springedge'     => 'springedge.com',
             'bulksmsnigeria' => 'bulksmsnigeria.com',
@@ -344,6 +344,11 @@ class Gateway
      * @var string
      */
     public $payload = '';
+
+    /**
+     * @var bool $isflash
+     */
+    public $isflash = false;
 
     /**
      * @var
@@ -1464,8 +1469,8 @@ class Gateway
         if ($status == 'error' and (isset($this->options['notify_errors_to_admin_email']) && $this->options['notify_errors_to_admin_email'])) {
             $siteName = get_bloginfo('name');
             // translators: %s: Site name
-            $subject  = sprintf(esc_html__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
-            $content  = Helper::loadTemplate('email/partials/sms-delivery-issue.php', [
+            $subject = sprintf(esc_html__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
+            $content = Helper::loadTemplate('email/partials/sms-delivery-issue.php', [
                 'message'  => $message,
                 'response' => $response,
                 'to'       => $to,
