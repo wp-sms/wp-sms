@@ -1,3 +1,6 @@
+= v6.8.1 - 08.04.2024 =
+* Fixes: Admin alerts now display correctly.
+
 = v6.8 - 08.04.2024 =
 * Updated: New admin design with easier navigation and useful links.
 * Updated: Now supports DLT and manual DLT messages in Fast2Sms.
