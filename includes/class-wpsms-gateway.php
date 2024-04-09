@@ -192,7 +192,10 @@ class Gateway
         ),
         'morocco'        => array(
             'bulksmsMa' => 'bulksms.ma'
-        )
+        ),
+        'Philippine'    => array(
+            'semaphore' => 'semaphore.co',
+        ),
     );
 
     /**
