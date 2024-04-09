@@ -229,7 +229,7 @@ class Notifications
                 }
 
                 if (isset($_REQUEST['wpsms_roles'])) {
-                    update_post_meta($postID, 'wp_sms_roles', sanitize_text_field($_REQUEST['wpsms_roles']));
+                    update_post_meta($postID, 'wp_sms_roles', $_REQUEST['wpsms_roles']);
                 }
 
                 if (isset($_REQUEST['wpsms_text_template'])) {

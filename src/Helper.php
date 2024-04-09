@@ -120,7 +120,7 @@ class Helper
         );
 
         if ($roleId) {
-            $args['role'] = $roleId;
+            $args['role__in'] = $roleId;
         }
 
         // Add user IDs to include in the query
