@@ -2,6 +2,7 @@
 
 namespace WP_SMS;
 
+use WC_Blocks_Utils;
 use WP_Error;
 
 /**
@@ -66,6 +67,48 @@ class Helper
         return $mobileFieldHandler instanceof \WP_SMS\User\MobileFieldHandler\WooCommerceAddMobileFieldHandler ?
             $mobileFieldHandler->getUserMobileFieldName() :
             'billing_phone';
+    }
+
+    /**
+     * Get mobile field selector in the checkout page
+     * 
+     * @return string
+     */
+    public static function getWooCommerceCheckoutMobileField()
+    {
+        if (self::checkoutBlockEnabled()) {
+            // If the new checkout block is enabled
+            return '#billing-phone';
+        } else {
+            // If classic checkout mode is enabled
+            return '#billing_phone';
+        }
+    }
+
+    /**
+     * Get submit button element selector in the checkout page
+     * 
+     * @return string
+     */
+    public static function getWooCommerceCheckoutSubmitBtn()
+    {
+        if (self::checkoutBlockEnabled()) {
+            // If the new checkout block is enabled
+            return '.wc-block-components-checkout-place-order-button';
+        } else {
+            // If classic checkout mode is enabled
+            return '#place_order';
+        }
+    }
+
+    /**
+     * Checks if the checkout page is using blocks
+     * 
+     * @return bool
+     */
+    public static function checkoutBlockEnabled() 
+    {
+        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
     }
 
     /**
