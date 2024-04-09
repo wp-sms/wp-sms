@@ -585,4 +585,13 @@ class Helper
 
         return $number;
     }
+
+    public static function removeDuplicateNumbers($numbers)
+    {
+        $numbers = array_map('trim', $numbers);
+        $numbers = array_map('self::normalizeNumber', $numbers);
+        $numbers = array_unique($numbers);
+
+        return $numbers;
+    }
 }
