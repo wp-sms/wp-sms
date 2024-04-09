@@ -167,7 +167,7 @@ class Gateway
             'turbosms'   => 'turbosms.ua',
             'smstraffic' => 'smstraffic.eu',
         ),
-        'Malaysia'       => array(
+        'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
         ),
         'mexico'         => array(
@@ -176,15 +176,15 @@ class Gateway
         'iran'           => array(
             'mehrafraz' => 'mehrafraz.com/fa',
         ),
-        'Indonesia'      => array(
+        'indonesia'      => array(
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
         ),
-        'Taiwan'         => array(
+        'taiwan'         => array(
             'mitake'  => 'mitake.com.tw',
             'every8d' => 'teamplus.tech',
         ),
-        'Thailand'       => array(
+        'thailand'       => array(
             'mailbit' => 'mailbit.co.th',
         ),
         'south korea'    => array(
@@ -193,7 +193,7 @@ class Gateway
         'morocco'        => array(
             'bulksmsMa' => 'bulksms.ma'
         ),
-        'Philippine'    => array(
+        'philippine'    => array(
             'semaphore' => 'semaphore.co',
         ),
     );
