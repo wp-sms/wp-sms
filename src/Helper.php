@@ -589,7 +589,7 @@ class Helper
     public static function removeDuplicateNumbers($numbers)
     {
         $numbers = array_map('trim', $numbers);
-        $numbers = array_map('self::normalizeNumber', $numbers);
+        $numbers = array_map([__CLASS__, 'normalizeNumber'], $numbers);
         $numbers = array_unique($numbers);
 
         return $numbers;
