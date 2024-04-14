@@ -160,7 +160,8 @@ class Gateway
             'smsbroadcast' => 'smsbroadcast.com.au',
             'textteam'     => 'textteam.com.au',
             'messagemedia' => 'messagemedia.com/au',
-            'smscentral'   => 'smscentral.com.au'
+            'smscentral'   => 'smscentral.com.au',
+            'smspapa'      => 'smspapa.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
