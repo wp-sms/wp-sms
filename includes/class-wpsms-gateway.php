@@ -98,6 +98,7 @@ class Gateway
             'apifon'         => 'apifon.com',
             'awssns'         => 'aws.amazon.com',
             'alphasms'       => 'alphasms.net',
+            'smspapa'        => 'smspapa.com.au',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -161,7 +162,6 @@ class Gateway
             'textteam'     => 'textteam.com.au',
             'messagemedia' => 'messagemedia.com/au',
             'smscentral'   => 'smscentral.com.au',
-            'smspapa'      => 'smspapa.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
