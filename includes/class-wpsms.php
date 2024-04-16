@@ -190,6 +190,7 @@ class WP_SMS
         $this->include('src/Blocks/BlockAbstract.php');
         $this->include('src/Blocks/SubscribeBlock.php');
         $this->include('src/Blocks/SendSmsBlock.php');
+        $this->include('src/Blocks/OrderNotification.php');
         $this->include('src/Blocks/BlockAssetsManager.php');
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
