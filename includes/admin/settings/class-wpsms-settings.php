@@ -1261,7 +1261,7 @@ class Settings
                     'id'         => 'mobile_county_code',
                     'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
-                    'desc'       => esc_html__('If the administrator\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
+                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
                     'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
