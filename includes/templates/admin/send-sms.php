@@ -17,7 +17,6 @@
                     <p><?php echo esc_html__('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo esc_html($gatewayCredit); ?></span></p>
                 </div>
             <?php endif; ?>
-            <a style="<?php echo $proIsActive ? 'display:none;' : '' ?>" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" class="pro-button '' ?> "><?php esc_html_e('Go Pro', 'wp-sms'); ?><span class="icon"></span></a>
         </div>
 
         <h1><?php esc_html_e('Send SMS', 'wp-sms'); ?></h1>
