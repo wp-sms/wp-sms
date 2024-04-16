@@ -1257,14 +1257,6 @@ class Settings
                     'type' => 'text',
                     'desc' => esc_html__('Mobile number where the administrator will receive notifications.', 'wp-sms')
                 ),
-                'mobile_county_code'                       => array(
-                    'id'         => 'mobile_county_code',
-                    'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
-                    'type'       => 'select',
-                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
-                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
-                    'attributes' => ['class' => 'js-wpsms-select2'],
-                ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
                     'name' => esc_html__('Mobile Field Configuration', 'wp-sms'),
@@ -1355,6 +1347,15 @@ class Settings
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
                     'options'   => $this->getCountriesList(),
                     'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
+                ),
+                'mobile_county_code'                       => array(
+                    'id'         => 'mobile_county_code',
+                    'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
+                    'type'       => 'select',
+                    'className'  => 'js-wpsms-show_if_international_mobile_disabled',
+                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
+                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
+                    'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_terms_minimum'                     => array(
                     'id'        => 'mobile_terms_minimum',
