@@ -7,7 +7,7 @@ class BlockAssetsManager
     private $blocks = [
         \WP_SMS\Blocks\SubscribeBlock::class,
         \WP_SMS\Blocks\SendSmsBlock::class,
-        \WP_SMS\Blocks\OrderNotificationBlock::class
+        \WP_SMS\Blocks\WooCommerceSmsOptInCheckoutBlock::class
     ];
 
     public function init()

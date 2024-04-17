@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Blocks;
 
-class OrderNotificationBlock extends BlockAbstract
+class WooCommerceSmsOptInCheckoutBlock extends BlockAbstract
 {
     protected $blockName = 'OrderNotification';
     protected $blockVersion = '1.0';
@@ -10,7 +10,7 @@ class OrderNotificationBlock extends BlockAbstract
 
     protected function output($attributes)
     {
-        return \WP_SMS\Helper::loadTemplate('order-notification.php');
+        return \WP_SMS\Helper::loadTemplate('woo-sms-opt-checkout.php');
     }
 
     public function buildBlockAjaxData()
