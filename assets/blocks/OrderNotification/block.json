@@ -5,15 +5,16 @@
   "version": "1.0.0",
   "title": "Order Notification",
   "category": "wp-sms-blocks",
+  "parent": [ "woocommerce/checkout", "woocommerce/checkout-order-summary-block", "woocommerce/checkout-shipping-address-block", "woocommerce/checkout-payment-block", "woocommerce/checkout-terms-block" ],
   "attributes": {
     "lock": {
       "type": "object",
       "default": {
-        "remove": true,
-        "move": true
+        "remove": false,
+        "move": false
       }
     }
   },
-  "textdomain": "wp-sms-pro",
+  "textdomain": "wp-sms",
   "editorScript": "file:./index.js"
 }
