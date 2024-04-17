@@ -10,7 +10,7 @@ class OrderNotificationBlock extends BlockAbstract
 
     protected function output($attributes)
     {
-        return wp_sms_subscriber_form($attributes);
+        return \WP_SMS\Helper::loadTemplate('order-notification.php');
     }
 
     public function buildBlockAjaxData()
