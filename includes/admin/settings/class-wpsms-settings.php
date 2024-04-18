@@ -1495,7 +1495,7 @@ class Settings
                 // Message header
                 'message_title'                => array(
                     'id'   => 'message_title',
-                    'name' => esc_html__('SMS Configuration', 'wp-sms'),
+                    'name' => esc_html__('SMS Dispatch & Number Optimization', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'sms_delivery_method'          => array(
