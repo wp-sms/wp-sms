@@ -14,7 +14,7 @@
                                 </div>
                             <?php endif; ?>
                             <div class="addon-card__header">
-                                <a target="_blank" href="<?php echo esc_attr($plugin->permalink); ?>" class="thickbox open-plugin-details-modal">
+                                <a target="_blank" href="<?php echo esc_url($plugin->permalink); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=add-ons" class="thickbox open-plugin-details-modal">
                                     <?php if ($plugin->images) : ?>
                                         <img src="<?php echo esc_url($plugin->images[0]->src); ?>" class="addon-icon" alt="<?php echo esc_attr($plugin->name); ?>">
                                     <?php endif; ?>
@@ -43,7 +43,7 @@
                                     <?php elseif ($plugin->meta['status'] == 'inactive') : ?>
                                         <a class="button" href="<?php echo esc_url($plugin->meta['activate_url']); ?>"><?php esc_html_e('Activate Add-On', 'wp-sms'); ?></a>
                                     <?php else : ?>
-                                        <a class="button-primary" target="_blank" href="<?php echo esc_url($plugin->permalink); ?>"><?php esc_html_e('Buy Add-On', 'wp-sms'); ?></a>
+                                        <a class="button-primary" target="_blank" href="<?php echo esc_url($plugin->permalink); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=add-ons"><?php esc_html_e('Buy Add-On', 'wp-sms'); ?></a>
                                     <?php endif; ?>
                                 </div>
                             </div>
