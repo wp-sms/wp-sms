@@ -1357,12 +1357,6 @@ class Settings
                     'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
-                'exclude_plus_from_country_code'              => array(
-                    'id'         => 'exclude_plus_from_country_code',
-                    'name'       => esc_html__('Exclude Plus from Country Code', 'wp-sms'),
-                    'type'       => 'checkbox',
-                    'desc'       => esc_html__('Remove the plus sign (+) from the beginning of the country code for all outgoing numbers, ensuring compatibility with SMS gateways that require a numerical prefix without any symbols.', 'wp-sms'),
-                ),
                 'mobile_terms_minimum'                     => array(
                     'id'        => 'mobile_terms_minimum',
                     'name'      => esc_html__('Minimum Length Number', 'wp-sms'),
@@ -1528,6 +1522,12 @@ class Settings
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => esc_html__('Strips spaces from phone numbers before sending.', 'wp-sms')
+                ),
+                'exclude_plus_from_country_code'              => array(
+                    'id'         => 'exclude_plus_from_country_code',
+                    'name'       => esc_html__('Exclude Plus from Country Code', 'wp-sms'),
+                    'type'       => 'checkbox',
+                    'desc'       => esc_html__('Remove the plus sign (+) from the beginning of the country code for all outgoing numbers, ensuring compatibility with SMS gateways that require a numerical prefix without any symbols.', 'wp-sms'),
                 ),
                 'send_only_local_numbers'      => array(
                     'id'      => 'send_only_local_numbers',
