@@ -385,6 +385,11 @@ class Gateway
             //add_filter( 'wp_sms_msg', array( $this, 'applyUnicode' ) );
         }
 
+        // Check option for exclusing plus sign from country code
+        if (isset($this->options['exclude_plus_from_country_code']) && $this->options['exclude_plus_from_country_code']) {
+            add_filter('wp_sms_to', array($this, 'excludePlusFromNumber'), 30);
+        }
+
         // Add Filters
         add_filter('wp_sms_to', array($this, 'modify_bulk_send'));
 
@@ -553,6 +558,24 @@ class Gateway
             }
 
             $finalNumbers[] = $reformattedNumber;
+        }
+
+        return $finalNumbers;
+    }
+
+    /**
+     * Remove leading + sign from recipient numbers
+     *
+     * @param $recipients
+     *
+     * @return array
+     */
+    public function excludePlusFromNumber($recipients = [])
+    {
+        $finalNumbers = [];
+
+        foreach ($recipients as $recipient) {
+            $finalNumbers[] = strpos($recipient, '+') === 0 ? substr($recipient, 1) : $recipient;
         }
 
         return $finalNumbers;
