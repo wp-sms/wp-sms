@@ -15,7 +15,7 @@ class WordPressMobileFieldHandler
         add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
         add_filter('registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
 
-        add_action('user_profile_update_errors', array($this, 'admin_registration_errors'), 10, 3);
+        add_action('user_profile_update_errors', array($this, 'adminRegistrationErrors'), 10, 3);
 
         add_action('user_register', array($this, 'updateMobileNumberCallback'), 999999);
         add_action('profile_update', array($this, 'updateMobileNumberCallback'));
@@ -119,14 +119,16 @@ class WordPressMobileFieldHandler
      *
      * @return void|\WP_Error
      */
-    public function admin_registration_errors($errors, $update, $user)
+    public function adminRegistrationErrors($errors, $update, $user)
     {
-        if (Option::getOption('optional_mobile_field') !== 'optional' && empty($_POST['mobile'])) {
+        $phoneNumber = isset($_POST[$this->getUserMobileFieldName()]) ? $_POST[$this->getUserMobileFieldName()] : null;
+
+        if (Option::getOption('optional_mobile_field') !== 'optional' && empty($phoneNumber)) {
             $errors->add('mobile_number_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
-        if (isset($_POST['mobile']) && $_POST['mobile']) {
-            $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
+        if ($phoneNumber) {
+            $mobile   = Helper::sanitizeMobileNumber($phoneNumber);
             $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
 
             if (is_wp_error($validity)) {
