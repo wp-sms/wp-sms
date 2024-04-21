@@ -3,6 +3,7 @@
 namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Option;
+use WP_SMS\Helper;
 
 class WooCommerceUsePhoneFieldHandler
 {
@@ -11,6 +12,8 @@ class WooCommerceUsePhoneFieldHandler
         add_filter('woocommerce_checkout_fields', array($this, 'modifyBillingPhoneAttributes'));
         add_filter('woocommerce_admin_billing_fields', [$this, 'modifyAdminBillingPhoneAttributes']);
         add_filter('woocommerce_customer_meta_fields', [$this, 'modifyAdminCustomerMetaBillingPhoneAttributes']);
+
+        add_action('user_profile_update_errors', array($this, 'adminRegistrationErrors'), 10, 3);
     }
 
     public function getMobileNumberByUserId($userId, $args = [])
@@ -80,5 +83,41 @@ class WooCommerceUsePhoneFieldHandler
         }
 
         return $fields;
+    }
+
+    /**
+     * Handle the mobile field update errors
+     *
+     * @param $errors
+     * @param $update
+     * @param $user
+     *
+     * @return void|\WP_Error
+    */
+    public function adminRegistrationErrors($errors, $update, $user)
+    {
+        $phoneNumber = isset($_POST[$this->getUserMobileFieldName()]) ? $_POST[$this->getUserMobileFieldName()] : null;
+
+        // Check if the phone is not empty
+        if (Option::getOption('optional_mobile_field') !== 'optional' && empty($phoneNumber)) {
+            $errors->add('mobile_number_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
+        }
+
+        // Validate phone number
+        if ($phoneNumber) {
+            $mobile   = Helper::sanitizeMobileNumber($phoneNumber);
+            $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
+
+            if (is_wp_error($validity)) {
+                $errors->add($validity->get_error_code(), $validity->get_error_message());
+            }
+        }
+
+        // If mobile is invalid, prevent it from being saved
+        if ($errors->has_errors()) {
+            update_user_meta($user->ID, $this->getUserMobileFieldName(), '');
+        }
+
+        return $errors;
     }
 }
