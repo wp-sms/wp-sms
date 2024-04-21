@@ -3,14 +3,18 @@
 namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Option;
+use WP_SMS\Helper;
 
-class WooCommerceUsePhoneFieldHandler
+class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
         add_filter('woocommerce_checkout_fields', array($this, 'modifyBillingPhoneAttributes'));
         add_filter('woocommerce_admin_billing_fields', [$this, 'modifyAdminBillingPhoneAttributes']);
         add_filter('woocommerce_customer_meta_fields', [$this, 'modifyAdminCustomerMetaBillingPhoneAttributes']);
+
+        add_action('user_profile_update_errors', array($this, 'profilePhoneValidationError'), 10, 3);
+        add_action('update_user_metadata', array($this, 'profilePhoneValidation'), 10, 5);
     }
 
     public function getMobileNumberByUserId($userId, $args = [])

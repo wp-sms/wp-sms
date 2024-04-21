@@ -130,6 +130,7 @@ class WP_SMS
         $this->include('includes/libraries/wp-background-processing/wp-background-process.php');
 
         // MobileFieldHandler
+        $this->include('src/User/MobileFieldHandler/AbstractFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/WooCommerceUsePhoneFieldHandler.php');
