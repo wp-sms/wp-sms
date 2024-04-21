@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "title": "Order Notification",
   "category": "wp-sms-blocks",
-  "parent": [ "woocommerce/checkout", "woocommerce/checkout-order-summary-block", "woocommerce/checkout-shipping-address-block", "woocommerce/checkout-payment-block", "woocommerce/checkout-terms-block" ],
+  "parent": [ "woocommerce/checkout", "woocommerce/checkout-contact-information-block" ],
   "attributes": {
     "lock": {
       "type": "object",
