@@ -5,7 +5,7 @@ namespace WP_SMS\User\MobileFieldHandler;
 use WP_SMS\Option;
 use WP_SMS\Helper;
 
-class WooCommerceUsePhoneFieldHandler
+class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
