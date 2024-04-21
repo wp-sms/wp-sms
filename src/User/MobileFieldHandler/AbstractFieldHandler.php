@@ -15,9 +15,35 @@ abstract class AbstractFieldHandler
 
     abstract public function getUserMobileFieldName();
 
+    /**
+     * Validate phone number upon being saved in profile page 
+     *
+     * @return $check
+    */
+    public function profilePhoneValidation($check, $objectId, $metaKey, $metaValue, $prevValue) 
+    {
+        if ($this->getUserMobileFieldName() == $metaKey) {
+            $phoneNumber = $metaValue;
+
+            // Check if the phone is not empty
+            if (Option::getOption('optional_mobile_field') !== 'optional' && empty($phoneNumber)) {
+                return false;
+            }
+
+            // Validate phone number
+            if ($phoneNumber) {
+                $mobile   = Helper::sanitizeMobileNumber($phoneNumber);
+                $validity = Helper::checkMobileNumberValidity($mobile);
+
+                if (is_wp_error($validity)) return false;
+            }
+        }
+        
+        return $check;
+    }
 
     /**
-     * Handle the mobile field validation on user profile page 
+     * Handle the mobile field validation errors on user profile page 
      *
      * @param $errors
      * @param $update
@@ -25,7 +51,7 @@ abstract class AbstractFieldHandler
      *
      * @return void|WP_Error
     */
-    public function profilePhoneValidation($errors, $update, $user)
+    public function profilePhoneValidationError($errors, $update, $user)
     {
         $phoneNumber = isset($_POST[$this->getUserMobileFieldName()]) ? $_POST[$this->getUserMobileFieldName()] : null;
 
@@ -42,11 +68,6 @@ abstract class AbstractFieldHandler
             if (is_wp_error($validity)) {
                 $errors->add($validity->get_error_code(), $validity->get_error_message());
             }
-        }
-
-        // If mobile is invalid, prevent it from being saved
-        if ($errors->has_errors()) {
-            update_user_meta($user->ID, $this->getUserMobileFieldName(), '');
         }
 
         return $errors;

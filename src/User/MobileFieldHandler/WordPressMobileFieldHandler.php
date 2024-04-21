@@ -15,7 +15,8 @@ class WordPressMobileFieldHandler extends AbstractFieldHandler
         add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
         add_filter('registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
 
-        add_action('user_profile_update_errors', array($this, 'profilePhoneValidation'), 10, 3);
+        add_action('user_profile_update_errors', array($this, 'profilePhoneValidationError'), 10, 3);
+        add_action('update_user_metadata', array($this, 'profilePhoneValidation'), 10, 5);
 
         add_action('user_register', array($this, 'updateMobileNumberCallback'), 999999);
         add_action('profile_update', array($this, 'updateMobileNumberCallback'));

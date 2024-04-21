@@ -22,7 +22,8 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
         add_action('woocommerce_checkout_order_processed', array($this, 'updateMobileNumberAfterPlaceTheOrder'), 10, 3);
 
         // Phone number validation
-        add_action('user_profile_update_errors', array($this, 'profilePhoneValidation'), 10, 3);
+        add_action('user_profile_update_errors', array($this, 'profilePhoneValidationError'), 10, 3);
+        add_action('update_user_metadata', array($this, 'profilePhoneValidation'), 10, 5);
 
         // admin order billing address
         add_filter('woocommerce_admin_billing_fields', [$this, 'registerFieldInAdminOrderBillingForm']);
