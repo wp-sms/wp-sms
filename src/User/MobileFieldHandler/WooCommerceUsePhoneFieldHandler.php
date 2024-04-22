@@ -15,6 +15,7 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
 
         add_action('user_profile_update_errors', array($this, 'profilePhoneValidationError'), 10, 3);
         add_action('update_user_metadata', array($this, 'profilePhoneValidation'), 10, 5);
+        add_filter('woocommerce_checkout_posted_data', array($this, 'cleanUpTheNumber'));
     }
 
     public function getMobileNumberByUserId($userId, $args = [])
@@ -84,5 +85,14 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
         }
 
         return $fields;
+    }
+
+    public function cleanUpTheNumber($data)
+    {
+        if (isset($data['billing_phone'])) {
+            $data['billing_phone'] = str_replace(' ', '', $data['billing_phone']);
+        }
+
+        return $data;
     }
 }
