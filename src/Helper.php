@@ -594,4 +594,20 @@ class Helper
 
         return $numbers;
     }
+
+    /**
+     * Remove certain prefixes from recipient numbers like +, or country code
+     *
+     * @param array $prefixes Array of prefixes to remove from numbers
+     * @param array $numbers Array of numbers
+     *
+     * @return array
+     */
+    public static function removeNumbersPrefix($prefix, $numbers)
+    {
+        $prefixPattern = '/^(' . implode('|', array_map('preg_quote', $prefix)) . ')/';
+        return array_map(function ($number) use ($prefixPattern) {
+            return preg_replace($prefixPattern, '', $number, 1);
+        }, $numbers);
+    }
 }
