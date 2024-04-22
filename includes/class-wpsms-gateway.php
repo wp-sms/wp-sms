@@ -143,9 +143,6 @@ class Gateway
         'pakistan'       => array(
             'sendpk' => 'sendpk.com',
         ),
-        'uzbakistan'     => array(
-            'eskiz' => 'eskiz.uz',
-        ),
         'india'          => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
@@ -941,6 +938,9 @@ class Gateway
             'sweden'               => array(
                 'prosms'   => 'prosms.se',
                 'cellsynt' => 'cellsynt',
+            ),
+            'uzbakistan'           => array(
+                'eskiz' => 'eskiz.uz',
             )
 
         );
