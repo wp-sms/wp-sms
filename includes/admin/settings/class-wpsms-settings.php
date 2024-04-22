@@ -1523,12 +1523,6 @@ class Settings
                     'options' => $options,
                     'desc'    => esc_html__('Strips spaces from phone numbers before sending.', 'wp-sms')
                 ),
-                'exclude_plus_from_country_code'              => array(
-                    'id'         => 'exclude_plus_from_country_code',
-                    'name'       => esc_html__('Exclude Plus from Country Code', 'wp-sms'),
-                    'type'       => 'checkbox',
-                    'desc'       => esc_html__('Remove the plus sign (+) from the beginning of the country code for all outgoing numbers, ensuring compatibility with SMS gateways that require a numerical prefix without any symbols.', 'wp-sms'),
-                ),
                 'send_only_local_numbers'      => array(
                     'id'      => 'send_only_local_numbers',
                     'name'    => esc_html__('Restrict to Local Numbers', 'wp-sms'),
