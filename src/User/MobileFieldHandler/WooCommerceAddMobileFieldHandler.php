@@ -182,6 +182,7 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
     private function updateMobileNumber($orderId, $mobileNumber)
     {
         $mobileNumber = sanitize_text_field($mobileNumber);
+        $mobileNumber = str_replace(' ', '', $mobileNumber);
 
         // Update in order meta
         update_post_meta($orderId, $this->getUserMobileFieldName(), $mobileNumber);
