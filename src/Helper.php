@@ -78,10 +78,10 @@ class Helper
     {
         if (self::checkoutBlockEnabled()) {
             // If the new checkout block is enabled
-            return '#billing-phone';
+            return 'billing-phone';
         } else {
             // If classic checkout mode is enabled
-            return '#billing_phone';
+            return self::getWooCommerceCheckoutFieldName();
         }
     }
 
