@@ -3,7 +3,7 @@
     <h4>
         <?php 
             // translators: %1$s: Start date, %2$s: End date
-            echo sprintf(esc_html__('From %1$s to %2$s 2023', 'wp-sms'), esc_html($duration['startDate']), esc_html($duration['endDate'])); 
+            echo sprintf(esc_html__('From %1$s to %2$s', 'wp-sms'), esc_html($duration['startDate']), esc_html($duration['endDate']));
         ?>
     </h4>
     <h5><?php esc_html_e('At a glance', 'wp-sms'); ?></h5>
