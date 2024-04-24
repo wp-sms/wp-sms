@@ -76,7 +76,7 @@ class Gateway
             'upsidewireless' => 'upsidewireless.com',
             'orange'         => 'orange.com',
             'proovl'         => 'proovl.com',
-            'releans'         => 'releans.com',
+            'releans'        => 'releans.com',
             'messente'       => 'messente.com',
             'springedge'     => 'springedge.com',
             'bulksmsnigeria' => 'bulksmsnigeria.com',
@@ -98,6 +98,7 @@ class Gateway
             'apifon'         => 'apifon.com',
             'awssns'         => 'aws.amazon.com',
             'alphasms'       => 'alphasms.net',
+            'smspapa'        => 'smspapa.com.au',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -160,14 +161,14 @@ class Gateway
             'smsbroadcast' => 'smsbroadcast.com.au',
             'textteam'     => 'textteam.com.au',
             'messagemedia' => 'messagemedia.com/au',
-            'smscentral'   => 'smscentral.com.au'
+            'smscentral'   => 'smscentral.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
             'turbosms'   => 'turbosms.ua',
             'smstraffic' => 'smstraffic.eu',
         ),
-        'Malaysia'       => array(
+        'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
         ),
         'mexico'         => array(
@@ -176,15 +177,15 @@ class Gateway
         'iran'           => array(
             'mehrafraz' => 'mehrafraz.com/fa',
         ),
-        'Indonesia'      => array(
+        'indonesia'      => array(
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
         ),
-        'Taiwan'         => array(
+        'taiwan'         => array(
             'mitake'  => 'mitake.com.tw',
             'every8d' => 'teamplus.tech',
         ),
-        'Thailand'       => array(
+        'thailand'       => array(
             'mailbit' => 'mailbit.co.th',
         ),
         'south korea'    => array(
@@ -192,7 +193,10 @@ class Gateway
         ),
         'morocco'        => array(
             'bulksmsMa' => 'bulksms.ma'
-        )
+        ),
+        'philippine'     => array(
+            'semaphore' => 'semaphore.co',
+        ),
     );
 
     /**
@@ -344,6 +348,11 @@ class Gateway
      * @var string
      */
     public $payload = '';
+
+    /**
+     * @var bool $isflash
+     */
+    public $isflash = false;
 
     /**
      * @var
@@ -927,36 +936,44 @@ class Gateway
      */
     public static function status()
     {
-        global $sms;
+        try {
+            global $sms;
 
-        //Check that, Are we in the Gateway WP_SMS tab setting page or not?
-        if (is_admin() and isset($_REQUEST['page']) and isset($_REQUEST['tab']) and $_REQUEST['page'] == 'wp-sms-settings' and $_REQUEST['tab'] == 'gateway') {
+            //Check that, Are we in the Gateway WP_SMS tab setting page or not?
+            if (is_admin() and isset($_REQUEST['page']) and isset($_REQUEST['tab']) and $_REQUEST['page'] == 'wp-sms-settings' and $_REQUEST['tab'] == 'gateway') {
 
-            // Get credit
-            $result = $sms->GetCredit();
+                // Get credit
+                $result = $sms->GetCredit();
 
-            if (is_wp_error($result)) {
-                // Set error message
-                self::$get_response = var_export($result->get_error_message(), true);
+                if (is_wp_error($result)) {
+                    // Set error message
+                    self::$get_response = var_export($result->get_error_message(), true);
 
+                    // Update credit
+                    update_option('wpsms_gateway_credit', 0);
+
+                    return Helper::loadTemplate('admin/label-button.php', array(
+                        'type'  => 'inactive',
+                        'label' => esc_html__('Inactive', 'wp-sms')
+                    ));
+                }
                 // Update credit
-                update_option('wpsms_gateway_credit', 0);
+                if (!is_object($result)) {
+                    update_option('wpsms_gateway_credit', $result);
+                }
+                self::$get_response = var_export($result, true);
 
+                // Return html
                 return Helper::loadTemplate('admin/label-button.php', array(
-                    'type'  => 'inactive',
-                    'label' => esc_html__('Inactive', 'wp-sms')
+                    'type'  => 'active',
+                    'label' => esc_html__('Active', 'wp-sms')
                 ));
             }
-            // Update credit
-            if (!is_object($result)) {
-                update_option('wpsms_gateway_credit', $result);
-            }
-            self::$get_response = var_export($result, true);
-
-            // Return html
+        } catch (Exception $e) {
+            self::$get_response = $e->getMessage();
             return Helper::loadTemplate('admin/label-button.php', array(
-                'type'  => 'active',
-                'label' => esc_html__('Active', 'wp-sms')
+                'type'  => 'inactive',
+                'label' => esc_html__('Inactive', 'wp-sms')
             ));
         }
     }
@@ -1464,8 +1481,8 @@ class Gateway
         if ($status == 'error' and (isset($this->options['notify_errors_to_admin_email']) && $this->options['notify_errors_to_admin_email'])) {
             $siteName = get_bloginfo('name');
             // translators: %s: Site name
-            $subject  = sprintf(esc_html__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
-            $content  = Helper::loadTemplate('email/partials/sms-delivery-issue.php', [
+            $subject = sprintf(esc_html__('%s - SMS Sending Alert', 'wp-sms'), $siteName);
+            $content = Helper::loadTemplate('email/partials/sms-delivery-issue.php', [
                 'message'  => $message,
                 'response' => $response,
                 'to'       => $to,

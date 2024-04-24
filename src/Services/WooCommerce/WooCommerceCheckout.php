@@ -4,7 +4,7 @@ namespace WP_SMS\Services\WooCommerce;
 
 class WooCommerceCheckout
 {
-    public const FIELD_ORDER_NOTIFICATION = 'wpsms_woocommerce_order_notification';
+    const FIELD_ORDER_NOTIFICATION = 'wpsms_woocommerce_order_notification';
 
     public function init()
     {

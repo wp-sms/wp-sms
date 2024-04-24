@@ -3,6 +3,7 @@
 namespace WP_SMS\Components;
 
 use WP_Error;
+use WP_SMS\Helper;
 
 /**
  * Class Sms
@@ -48,7 +49,7 @@ class Sms
         }
 
         $sms->isflash = isset($parameters['is_flash']) ? $parameters['is_flash'] : false;
-        $sms->to      = $to;
+        $sms->to      = Helper::removeDuplicateNumbers($to);
         $sms->msg     = $parameters['msg'];
         $sms->media   = isset($parameters['mediaUrls']) ? $parameters['mediaUrls'] : [];
 

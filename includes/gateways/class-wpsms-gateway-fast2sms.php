@@ -5,6 +5,7 @@ namespace WP_SMS\Gateway;
 use Exception;
 use WP_Error;
 use WP_SMS\Gateway;
+use WP_SMS\Helper;
 
 class fast2sms extends Gateway
 {
@@ -88,6 +89,9 @@ class fast2sms extends Gateway
 
         try {
             $flash_sms = $this->isflash ? '1' : '0';
+
+            // Remove India country code from the beginning of numbers
+            $this->to = Helper::removeNumbersPrefix(['91', '+91', '0091'], $this->to);
 
             $params = [
                 'authorization' => $this->has_key,

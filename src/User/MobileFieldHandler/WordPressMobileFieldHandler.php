@@ -5,7 +5,7 @@ namespace WP_SMS\User\MobileFieldHandler;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
-class WordPressMobileFieldHandler
+class WordPressMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
@@ -15,7 +15,8 @@ class WordPressMobileFieldHandler
         add_action('register_form', array($this, 'add_mobile_field_to_register_form'));
         add_filter('registration_errors', array($this, 'frontend_registration_errors'), 10, 3);
 
-        add_action('user_profile_update_errors', array($this, 'admin_registration_errors'), 10, 3);
+        add_action('user_profile_update_errors', array($this, 'profilePhoneValidationError'), 10, 3);
+        add_action('update_user_metadata', array($this, 'profilePhoneValidation'), 10, 5);
 
         add_action('user_register', array($this, 'updateMobileNumberCallback'), 999999);
         add_action('profile_update', array($this, 'updateMobileNumberCallback'));
@@ -108,32 +109,5 @@ class WordPressMobileFieldHandler
             $mobile = Helper::sanitizeMobileNumber($mobile_number);
             update_user_meta($user_id, $this->getUserMobileFieldName(), $mobile);
         }
-    }
-
-    /**
-     * Handle the mobile field update errors
-     *
-     * @param $errors
-     * @param $update
-     * @param $user
-     *
-     * @return void|\WP_Error
-     */
-    public function admin_registration_errors($errors, $update, $user)
-    {
-        if (Option::getOption('optional_mobile_field') !== 'optional' && empty($_POST['mobile'])) {
-            $errors->add('mobile_number_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
-        }
-
-        if (isset($_POST['mobile']) && $_POST['mobile']) {
-            $mobile   = Helper::sanitizeMobileNumber($_POST['mobile']);
-            $validity = Helper::checkMobileNumberValidity($mobile, isset($user->ID) ? $user->ID : false);
-
-            if (is_wp_error($validity)) {
-                $errors->add($validity->get_error_code(), $validity->get_error_message());
-            }
-        }
-
-        return $errors;
     }
 }

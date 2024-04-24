@@ -2,7 +2,7 @@
 
 namespace WP_SMS\User\MobileFieldHandler;
 
-class DefaultFieldHandler
+class DefaultFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {

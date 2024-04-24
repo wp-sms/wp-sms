@@ -5,7 +5,7 @@ namespace WP_SMS\User\MobileFieldHandler;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
-class WooCommerceAddMobileFieldHandler
+class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
@@ -20,6 +20,10 @@ class WooCommerceAddMobileFieldHandler
         add_filter('woocommerce_checkout_fields', [$this, 'registerFieldInCheckoutBillingForm']);
         add_action('woocommerce_after_checkout_validation', [$this, 'validateMobileNumberInCheckoutCallback'], 10, 2);
         add_action('woocommerce_checkout_order_processed', array($this, 'updateMobileNumberAfterPlaceTheOrder'), 10, 3);
+
+        // Phone number validation
+        add_action('user_profile_update_errors', array($this, 'profilePhoneValidationError'), 10, 3);
+        add_action('update_user_metadata', array($this, 'profilePhoneValidation'), 10, 5);
 
         // admin order billing address
         add_filter('woocommerce_admin_billing_fields', [$this, 'registerFieldInAdminOrderBillingForm']);
@@ -123,7 +127,7 @@ class WooCommerceAddMobileFieldHandler
             'required'    => !(Option::getOption('optional_mobile_field') == 'optional'),
             'clear'       => false,
             'type'        => 'tel',
-            'input_class' => array('wp-sms-input-mobile')
+            'input_class' => array('wp-sms-input-mobile'),
         ];
     }
 
@@ -178,6 +182,7 @@ class WooCommerceAddMobileFieldHandler
     private function updateMobileNumber($orderId, $mobileNumber)
     {
         $mobileNumber = sanitize_text_field($mobileNumber);
+        $mobileNumber = str_replace(' ', '', $mobileNumber);
 
         // Update in order meta
         update_post_meta($orderId, $this->getUserMobileFieldName(), $mobileNumber);

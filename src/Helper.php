@@ -2,6 +2,7 @@
 
 namespace WP_SMS;
 
+use WC_Blocks_Utils;
 use WP_Error;
 
 /**
@@ -69,6 +70,48 @@ class Helper
     }
 
     /**
+     * Get mobile field selector in the checkout page
+     * 
+     * @return string
+     */
+    public static function getWooCommerceCheckoutMobileField()
+    {
+        if (self::checkoutBlockEnabled()) {
+            // If the new checkout block is enabled
+            return 'billing-phone';
+        } else {
+            // If classic checkout mode is enabled
+            return self::getWooCommerceCheckoutFieldName();
+        }
+    }
+
+    /**
+     * Get submit button element selector in the checkout page
+     * 
+     * @return string
+     */
+    public static function getWooCommerceCheckoutSubmitBtn()
+    {
+        if (self::checkoutBlockEnabled()) {
+            // If the new checkout block is enabled
+            return '.wc-block-components-checkout-place-order-button';
+        } else {
+            // If classic checkout mode is enabled
+            return '#place_order';
+        }
+    }
+
+    /**
+     * Checks if the checkout page is using blocks
+     * 
+     * @return bool
+     */
+    public static function checkoutBlockEnabled() 
+    {
+        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
+    }
+
+    /**
      * @param $userId
      *
      * @return mixed
@@ -120,7 +163,7 @@ class Helper
         );
 
         if ($roleId) {
-            $args['role'] = $roleId;
+            $args['role__in'] = $roleId;
         }
 
         // Add user IDs to include in the query
@@ -541,5 +584,30 @@ class Helper
         }
 
         return $number;
+    }
+
+    public static function removeDuplicateNumbers($numbers)
+    {
+        $numbers = array_map('trim', $numbers);
+        $numbers = array_map([__CLASS__, 'normalizeNumber'], $numbers);
+        $numbers = array_unique($numbers);
+
+        return $numbers;
+    }
+
+    /**
+     * Remove certain prefixes from recipient numbers like +, or country code
+     *
+     * @param array $prefixes Array of prefixes to remove from numbers
+     * @param array $numbers Array of numbers
+     *
+     * @return array
+     */
+    public static function removeNumbersPrefix($prefix, $numbers)
+    {
+        $prefixPattern = '/^(' . implode('|', array_map('preg_quote', $prefix)) . ')/';
+        return array_map(function ($number) use ($prefixPattern) {
+            return preg_replace($prefixPattern, '', $number, 1);
+        }, $numbers);
     }
 }
