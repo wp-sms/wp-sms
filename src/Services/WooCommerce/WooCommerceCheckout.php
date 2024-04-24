@@ -16,6 +16,9 @@ class WooCommerceCheckout
                 add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
             }
         });
+
+        add_action('wp_enqueue_scripts', array($this, 'registerSmsOptinCheckoutScript'));
+        add_action('woocommerce_checkout_create_order', array($this, 'registerSmsOptinOnCheckout'));
     }
 
     /**
@@ -58,4 +61,19 @@ class WooCommerceCheckout
             update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'no');
         }
     }
+
+    public function registerSmsOptinCheckoutScript()
+    {
+        wp_register_script('wp-sms-sms-notification-chekcbox', WP_SMS_URL . '/assets/js/appendSmsCheckboxToWooCheckout.js', array('jquery'), '1.0', true);
+        wp_enqueue_script('wp-sms-sms-notification-chekcbox');
+    }
+
+    public function registerSmsOptinOnCheckout($order, $data)
+    {
+        if (isset($_POST['wpsms_woocommerce_order_notification'])) {
+            $order->update_meta_data('custom_field', sanitize_text_field($_POST['wpsms_woocommerce_order_notification']));
+        }
+    }
+
+
 }

@@ -1,7 +1,8 @@
 // Wait for the full page to load, including styles and images
 document.addEventListener('DOMContentLoaded', function() {
     // Define the HTML structure as a string
-    var htmlContent = `
+    setTimeout(function () {
+        const wpSmsOptinCheckbox = `
         <div class="wc-block-components-checkbox">
             <label for="wpsms_woocommerce_order_notification_field">
                 <input name="wpsms_woocommerce_order_notification" id="wpsms_woocommerce_order_notification_field" class="wc-block-components-checkbox__input" value="1" type="checkbox" aria-invalid="false"/>
@@ -16,15 +17,38 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
-    // Try to append the content to the end of the form
-    var form = document.querySelector('.woocommerce-checkout');
-    if (form) {
-        var placeToInsert = form.querySelector('.wc-block-checkout__order-notes');
-        if (placeToInsert) {
-            placeToInsert.insertAdjacentHTML('afterend', htmlContent);
-        } else {
-            // As a fallback, append directly to the form if the specific target isn't found
-            form.insertAdjacentHTML('beforeend', htmlContent);
+        // Try to append the content to the end of the form
+        const checkoutForm = document.querySelector('.woocommerce-checkout');
+        const checkoutBlock = document.querySelector('.wc-block-checkout');
+        const checkoutShortcode = document.querySelector('.woocommerce.wp-block-group .checkout.woocommerce-checkout');
+        const checkoutShortcodeBlock = document.querySelector('.woocommerce .checkout.woocommerce-checkout');
+        if (checkoutForm) {
+            let placeToInsert = checkoutForm.querySelector('.wc-block-checkout__order-notes');
+
+            if (checkoutShortcode) {
+                placeToInsert = checkoutShortcode.querySelector('.woocommerce-additional-fields')
+            } else if (checkoutShortcodeBlock) {
+                placeToInsert = checkoutShortcodeBlock.querySelector('.woocommerce-additional-fields')
+            }
+
+            if (placeToInsert) {
+                placeToInsert.insertAdjacentHTML('afterend', wpSmsOptinCheckbox);
+            } else {
+                // As a fallback, append directly to the form if the specific target isn't found
+                checkoutForm.insertAdjacentHTML('beforeend', wpSmsOptinCheckbox);
+            }
+
+            const smsCheckbox = document.getElementById('wpsms_woocommerce_order_notification_field');
+            if (smsCheckbox) {
+                smsCheckbox.addEventListener('change', function() {
+                    window.wc_order_attribution.fields.wpsms_woocommerce_order_notification = smsCheckbox.checked;
+                });
+            }
         }
+    }, 2000)
+
+    if (typeof window.wc_order_attribution !== 'undefined') {
+        // Add a new field or modify existing fields
+        window.wc_order_attribution.fields.wpsms_woocommerce_order_notification = false;
     }
 });
