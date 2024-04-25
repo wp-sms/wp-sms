@@ -14,7 +14,6 @@ const blocksDir = './assets/src/blocks';
 const blockEntries = {
     'SendSms': './assets/src/blocks/SendSms/index.js',
     'Subscribe': './assets/src/blocks/Subscribe/index.js',
-    'OrderNotification': './assets/src/blocks/OrderNotification/index.js',
     // Add more blocks as needed
 };
 
