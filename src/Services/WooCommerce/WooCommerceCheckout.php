@@ -27,7 +27,7 @@ class WooCommerceCheckout
     public function registerOrderUpdateCheckbox($order)
     {
         echo sprintf("<p style='margin-bottom: 0'><strong>%s</strong></p>", esc_html__('Status Update SMS Notifications:', 'wp-sms'));
-        if ($order->get_meta('wpsms_woocommerce_order_notification') && $order->get_meta('wpsms_woocommerce_order_notification') == 'yes') {
+        if ($order->get_meta(self::FIELD_ORDER_NOTIFICATION) && $order->get_meta(self::FIELD_ORDER_NOTIFICATION) == 'yes') {
             echo esc_html__('Enabled', 'wp-sms');
         } else {
             echo esc_html__('Disabled', 'wp-sms');
@@ -71,7 +71,7 @@ class WooCommerceCheckout
     public function registerSmsOptinOnCheckout($order, $data)
     {
         if (isset($_POST['wpsms_woocommerce_order_notification'])) {
-            $order->update_meta_data('custom_field', sanitize_text_field($_POST['wpsms_woocommerce_order_notification']));
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, sanitize_text_field($_POST['wpsms_woocommerce_order_notification']));
         }
     }
 
