@@ -52,8 +52,11 @@ class WooCommerceCheckout
     }
 
     /**
+     * For Checkout:shortcode
+     *
      * @param $orderId
      * @param $data
+     * @todo, let's check if this `registerSmsOptInOnCheckout` is compatible in both method of checkout, let's use one of them.
      */
     public function registerStoreCheckboxCallback($orderId, $data)
     {
@@ -64,17 +67,24 @@ class WooCommerceCheckout
         }
     }
 
+    /**
+     * For Checkout:block-based
+     *
+     * @param $order
+     * @param $data
+     * @return void
+     */
+    public function registerSmsOptInOnCheckout($order, $data)
+    {
+        if (isset($_POST[self::FIELD_ORDER_NOTIFICATION])) {
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'yes');
+        } else {
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'no');
+        }
+    }
+
     public function registerSmsOptInCheckoutScript()
     {
         Assets::script('woocommerce-checkout', 'js/woocommerce-checkout.js', ['jquery'], [], true);
     }
-
-    public function registerSmsOptInOnCheckout($order, $data)
-    {
-        if (isset($_POST['wpsms_woocommerce_order_notification'])) {
-            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, sanitize_text_field($_POST['wpsms_woocommerce_order_notification']));
-        }
-    }
-
-
 }
