@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Services\WooCommerce;
 
+use WP_SMS\Components\Assets;
+
 class WooCommerceCheckout
 {
     const FIELD_ORDER_NOTIFICATION = 'wpsms_woocommerce_order_notification';
@@ -17,8 +19,8 @@ class WooCommerceCheckout
             }
         });
 
-        add_action('wp_enqueue_scripts', array($this, 'registerSmsOptinCheckoutScript'));
-        add_action('woocommerce_checkout_create_order', array($this, 'registerSmsOptinOnCheckout'));
+        add_action('wp_enqueue_scripts', array($this, 'registerSmsOptInCheckoutScript'));
+        add_action('woocommerce_checkout_create_order', array($this, 'registerSmsOptInOnCheckout'));
     }
 
     /**
@@ -62,13 +64,12 @@ class WooCommerceCheckout
         }
     }
 
-    public function registerSmsOptinCheckoutScript()
+    public function registerSmsOptInCheckoutScript()
     {
-        wp_register_script('wp-sms-sms-notification-chekcbox', WP_SMS_URL . '/assets/js/appendSmsCheckboxToWooCheckout.js', array('jquery'), '1.0', true);
-        wp_enqueue_script('wp-sms-sms-notification-chekcbox');
+        Assets::script('woocommerce-checkout', 'js/woocommerce-checkout.js', ['jquery'], [], true);
     }
 
-    public function registerSmsOptinOnCheckout($order, $data)
+    public function registerSmsOptInOnCheckout($order, $data)
     {
         if (isset($_POST['wpsms_woocommerce_order_notification'])) {
             $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, sanitize_text_field($_POST['wpsms_woocommerce_order_notification']));
