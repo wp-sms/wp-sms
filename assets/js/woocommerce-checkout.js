@@ -17,19 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
-        // Try to append the content to the end of the form
         const checkoutForm = document.querySelector('.woocommerce-checkout');
         const checkoutBlock = document.querySelector('.wc-block-checkout');
-        const checkoutShortcode = document.querySelector('.woocommerce.wp-block-group .checkout.woocommerce-checkout');
-        const checkoutShortcodeBlock = document.querySelector('.woocommerce .checkout.woocommerce-checkout');
-        if (checkoutForm) {
-            let placeToInsert = checkoutForm.querySelector('.wc-block-checkout__order-notes');
 
-            if (checkoutShortcode) {
-                placeToInsert = checkoutShortcode.querySelector('.woocommerce-additional-fields')
-            } else if (checkoutShortcodeBlock) {
-                placeToInsert = checkoutShortcodeBlock.querySelector('.woocommerce-additional-fields')
-            }
+        if (checkoutForm && checkoutBlock) {
+            let placeToInsert = checkoutForm.querySelector('.wc-block-checkout__order-notes');
 
             if (placeToInsert) {
                 placeToInsert.insertAdjacentHTML('afterend', wpSmsOptinCheckbox);
@@ -45,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         }
-    }, 2000)
+    }, 3000)
 
     if (typeof window.wc_order_attribution !== 'undefined') {
         // Add a new field or modify existing fields
