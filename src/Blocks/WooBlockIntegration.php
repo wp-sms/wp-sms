@@ -1,12 +1,12 @@
 <?php
+
 namespace WP_SMS\Blocks;
 
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 use WP_SMS\Helper;
 
-class WooBlockIntegration implements IntegrationInterface {
-
-
+class WooBlockIntegration implements IntegrationInterface
+{
     /**
      * Whether block name
      *
@@ -21,20 +21,21 @@ class WooBlockIntegration implements IntegrationInterface {
      */
     protected $blockVersion;
 
-
     /**
      * The name of the integration.
      *
      * @return string
      */
-    public function get_name() {
+    public function get_name()
+    {
         return $this->blockName; // Updated integration name
     }
 
     /**
      * When called invokes any initialization/setup for the integration.
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->register_block_frontend_scripts();
         $this->register_block_editor_scripts();
     }
@@ -44,8 +45,9 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return string[]
      */
-    public function get_script_handles() {
-        return array( "WpSmsWooBlock{$this->blockName}Frontend" ); // Updated script handle
+    public function get_script_handles()
+    {
+        return array("WpSmsWooBlock{$this->blockName}Frontend"); // Updated script handle
     }
 
     /**
@@ -53,8 +55,9 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return string[]
      */
-    public function get_editor_script_handles() {
-        return array( "WpSmsWooBlock{$this->blockName}" ); // Updated script handle
+    public function get_editor_script_handles()
+    {
+        return array("WpSmsWooBlock{$this->blockName}"); // Updated script handle
     }
 
     /**
@@ -62,7 +65,8 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return array
      */
-    public function get_script_data() {
+    public function get_script_data()
+    {
         return array();
     }
 
@@ -71,15 +75,16 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return void
      */
-    public function register_block_editor_scripts() {
-        $script_path = Helper::getAssetPath("blocks/{$this->blockName}/index.js");
-        $script_url = Helper::getPluginAssetUrl($script_path);
-        $script_asset_path = Helper::getAssetPath("blocks/{$this->blockName}/index.asset.php" );
-        $script_asset = file_exists( $script_asset_path )
+    public function register_block_editor_scripts()
+    {
+        $script_path       = Helper::getAssetPath("blocks/{$this->blockName}/index.js");
+        $script_url        = Helper::getPluginAssetUrl($script_path);
+        $script_asset_path = Helper::getAssetPath("blocks/{$this->blockName}/index.asset.php");
+        $script_asset      = file_exists($script_asset_path)
             ? require $script_asset_path
             : array(
                 'dependencies' => array(),
-                'version' => $this->blockVersion,
+                'version'      => $this->blockVersion,
             );
 
         wp_register_script(
@@ -96,16 +101,17 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return void
      */
-    public function register_block_frontend_scripts() {
-        $script_path = Helper::getAssetPath("blocks/{$this->blockName}/frontend.js");
-        $script_url = Helper::getPluginAssetUrl($script_path);
-        $script_asset_path = Helper::getAssetPath("blocks/{$this->blockName}/index.asset.php" );
+    public function register_block_frontend_scripts()
+    {
+        $script_path       = Helper::getAssetPath("blocks/{$this->blockName}/frontend.js");
+        $script_url        = Helper::getPluginAssetUrl($script_path);
+        $script_asset_path = Helper::getAssetPath("blocks/{$this->blockName}/index.asset.php");
 
-        $script_asset = file_exists( $script_asset_path )
+        $script_asset = file_exists($script_asset_path)
             ? require $script_asset_path
             : array(
                 'dependencies' => array(),
-                'version' => $this->blockVersion,
+                'version'      => $this->blockVersion,
             );
 
         wp_register_script(
@@ -122,10 +128,10 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return array
      */
-    protected function blockDataCallback() {
+    protected function blockDataCallback()
+    {
         return array();
     }
-
 
     /**
      * Callback function to register schema for data.

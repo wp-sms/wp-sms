@@ -2,18 +2,10 @@
 
 namespace WP_SMS\Blocks;
 
-use Automattic\WooCommerce\Internal\Admin\BlockTemplates\Block;
-use Automattic\WooCommerce\StoreApi\StoreApi;
-use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
-use Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema;
-
-class WooSmsOptInBlock extends WooBlockIntegration {
-
+class WooSmsOptInBlock extends WooBlockIntegration
+{
     protected $blockName = "OrderNotification";
     protected $blockVersion = '1.0';
-
-
-
 
     protected function blockDataCallback()
     {
