@@ -122,7 +122,7 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return array
      */
-    protected function blockDataCallback() {
+    static protected function blockDataCallback() {
         return array();
     }
 
@@ -132,7 +132,7 @@ class WooBlockIntegration implements IntegrationInterface {
      *
      * @return array
      */
-    protected function blockSchemaCallback()
+    static protected function blockSchemaCallback()
     {
         return array();
     }
