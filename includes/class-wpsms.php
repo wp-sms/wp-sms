@@ -191,11 +191,17 @@ class WP_SMS
         $this->include('src/Blocks/BlockAbstract.php');
         $this->include('src/Blocks/SubscribeBlock.php');
         $this->include('src/Blocks/SendSmsBlock.php');
-        $this->include('src/Blocks/WooCommerceSmsOptInCheckout.php');
         $this->include('src/Blocks/BlockAssetsManager.php');
 
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
+
+        $this->include('src/Blocks/WooBlockIntegration.php');
+        $this->include('src/Blocks/WooSmsOptInBlock.php');
+        $this->include('src/Blocks/WooBlockManager.php');
+
+        $wooBlockManger = new \WP_SMS\Blocks\WooBlockManager();
+        $wooBlockManger->init();
 
         // Controllers
         $this->include('src/Controller/AjaxControllerAbstract.php');

@@ -19,7 +19,6 @@ class WooCommerceCheckout
             }
         });
 
-        add_action('wp_enqueue_scripts', array($this, 'registerSmsOptInCheckoutScript'));
         add_action('woocommerce_checkout_create_order', array($this, 'registerSmsOptInOnCheckout'));
     }
 
@@ -65,26 +64,5 @@ class WooCommerceCheckout
         } else {
             update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'no');
         }
-    }
-
-    /**
-     * For Checkout:block-based
-     *
-     * @param $order
-     * @param $data
-     * @return void
-     */
-    public function registerSmsOptInOnCheckout($order, $data)
-    {
-        if (isset($_POST[self::FIELD_ORDER_NOTIFICATION])) {
-            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'yes');
-        } else {
-            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'no');
-        }
-    }
-
-    public function registerSmsOptInCheckoutScript()
-    {
-        Assets::script('woocommerce-checkout', 'js/woocommerce-checkout.js', ['jquery'], [], true);
     }
 }
