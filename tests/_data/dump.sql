@@ -441,6 +441,7 @@ CREATE TABLE `wp_sms_subscribes` (
   `mobile` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `status` tinyint(1) DEFAULT NULL,
   `activate_key` int DEFAULT NULL,
+  `custom_fields` TEXT NULL,
   `group_ID` int DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
@@ -452,7 +453,7 @@ CREATE TABLE `wp_sms_subscribes` (
 
 LOCK TABLES `wp_sms_subscribes` WRITE;
 /*!40000 ALTER TABLE `wp_sms_subscribes` DISABLE KEYS */;
-INSERT INTO `wp_sms_subscribes` VALUES (1,'2023-01-11 11:30:53','John','0123456789',1,NULL,0);
+INSERT INTO `wp_sms_subscribes` VALUES (1,'2023-01-11 11:30:53','John','0123456789',1,NULL,NULL,0);
 /*!40000 ALTER TABLE `wp_sms_subscribes` ENABLE KEYS */;
 UNLOCK TABLES;
 
