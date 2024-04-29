@@ -100,7 +100,7 @@
                                 <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php echo esc_html($val_item['name']); ?>
                                 (<?php 
                                     // translators: %s: Number of users
-                                    echo sprintf('<b>%s</b> ' . esc_html__('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count'])); 
+                                    echo sprintf('<b>%s</b> ' . __('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count']));
                                 ?>)
                             </option>
                         <?php endforeach; ?>
@@ -108,7 +108,7 @@
                     <p class="field-description wpsms-users">
                         <?php 
                             // translators: %s: Number of users
-                            echo sprintf(esc_html__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); 
+                            echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile));
                         ?>
                     </p>
                 </div>
