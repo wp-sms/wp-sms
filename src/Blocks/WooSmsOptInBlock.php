@@ -13,16 +13,14 @@ class WooSmsOptInBlock extends WooBlockIntegration {
     protected $blockVersion = '1.0';
 
 
-
-
-    static protected function blockDataCallback()
+    public function blockDataCallback()
     {
         return array(
             'opt_in' => false
         );
     }
 
-    static protected function blockSchemaCallback()
+    public function blockSchemaCallback()
     {
         return array(
             'opt_in' => array(

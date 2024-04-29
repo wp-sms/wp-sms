@@ -16,9 +16,7 @@ class WooBlockManager
     {
         foreach ($this->blocks as $item) {
             if (class_exists($item)) {
-                add_action('woocommerce_blocks_loaded', function() use ($item) {
-                    $this->registerBlockActions($item);
-                });
+                $this->registerBlockActions($item);
             } else {
                 add_action('admin_notices', function () use ($item) {
                     echo '<div class="notice notice-error"><p>' . sprintf(esc_html__('WP SMS: Widget encountered an error, class %s could not be loaded.', 'wp-sms'), '<b>' . esc_html($item) . '</b>') . '</p></div>';
@@ -32,13 +30,13 @@ class WooBlockManager
      */
     public function registerBlockActions($item)
     {
-        add_action('woocommerce_blocks_checkout_block_registration', function ($integration_registry) use ($item) {
-            $this->registerBlock($item, $integration_registry);
-        });
+            add_action('woocommerce_blocks_checkout_block_registration', function ($integration_registry) use ($item) {
+                $this->registerBlock($item, $integration_registry);
+            });
 
-        if (function_exists('woocommerce_store_api_register_endpoint_data')) {
-            $this->registerStoreApiEndpoint($item);
-        }
+            if (function_exists('woocommerce_store_api_register_endpoint_data')) {
+                $this->registerStoreApiEndpoint($item);
+            }
     }
 
     /**
@@ -47,7 +45,6 @@ class WooBlockManager
     protected function registerBlock($item, $integration_registry)
     {
         $block = new $item();
-        $block->initialize();
         $integration_registry->register($block);
     }
 
@@ -56,11 +53,12 @@ class WooBlockManager
      */
     protected function registerStoreApiEndpoint($item)
     {
+        $block = new $item();
         woocommerce_store_api_register_endpoint_data([
             'endpoint' => CheckoutSchema::IDENTIFIER,
             'namespace' => "wp-sms",
-            'data_callback' => [$item, 'blockDataCallback'],
-            'schema_callback' => [$item, 'blockSchemaCallback'],
+            'data_callback' => [$block, 'blockDataCallback'],
+            'schema_callback' => [$block, 'blockSchemaCallback'],
             'schema_type' => ARRAY_A,
         ]);
     }
