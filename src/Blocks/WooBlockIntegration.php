@@ -23,6 +23,14 @@ class WooBlockIntegration implements IntegrationInterface {
 
 
     /**
+     * Pass block data to frontend block script
+     *
+     * @var array $blockData
+     */
+    protected $blockData = array();
+
+
+    /**
      * The name of the integration.
      *
      * @return string
@@ -114,6 +122,11 @@ class WooBlockIntegration implements IntegrationInterface {
             $script_asset['dependencies'],
             $script_asset['version'],
             true
+        );
+        wp_localize_script(
+            "WpSmsWooBlock{$this->blockName}Frontend",
+            'blockData',
+            $this->blockData,
         );
     }
 

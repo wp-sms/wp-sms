@@ -14,7 +14,9 @@ class WooBlockManager
 
     public function __construct()
     {
-        add_action('woocommerce_blocks_loaded', [$this, 'init']);
+        // @todo: Testing the functionality
+        //add_action('woocommerce_blocks_loaded', [$this, 'init']);
+        $this->init();
     }
 
     public function init()

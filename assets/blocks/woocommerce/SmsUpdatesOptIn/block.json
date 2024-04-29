@@ -5,9 +5,7 @@
   "version": "1.0.0",
   "title": "SMS Updates Opt-In",
   "category": "wp-sms-blocks",
-  "parent": [
-    "woocommerce/checkout-contact-information-block"
-  ],
+  "parent": ["woocommerce/checkout-contact-information-block" ],
   "attributes": {
     "lock": {
       "type": "object",
