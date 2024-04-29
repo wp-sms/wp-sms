@@ -572,10 +572,10 @@ class Helper
         $countryCode = substr(Option::getOption('mobile_county_code'), 1);
 
         // Check if the number starts with + sign 
-        if (strpos($number, '+') === 0) {
+        /*if (strpos($number, '+') === 0) {
             // Remove the + sign from the beginning of each number
             $number = substr($number, 1);
-        }
+        }*/
 
         // Check if the number starts with the default country code
         if (!empty($countryCode) && strpos($number, $countryCode) === 0) {
