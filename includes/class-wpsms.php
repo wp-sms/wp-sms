@@ -201,7 +201,6 @@ class WP_SMS
         $this->include('src/Blocks/WooBlockManager.php');
 
         $wooBlockManger = new \WP_SMS\Blocks\WooBlockManager();
-        $wooBlockManger->init();
 
         // Controllers
         $this->include('src/Controller/AjaxControllerAbstract.php');

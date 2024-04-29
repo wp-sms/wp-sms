@@ -11,25 +11,12 @@ function getFolders(srcPath) {
 }
 
 const blocksDir = './assets/src/blocks';
+const blockEntries = {
+    'SendSms': './assets/src/blocks/SendSms/index.js',
+    'Subscribe': './assets/src/blocks/Subscribe/index.js',
+    // Add more blocks as needed
+};
 
-function checkForFrontendJS(srcPath) {
-    const blockFolders = getFolders(srcPath);
-    const entries = {};
-    blockFolders.forEach(folder => {
-        const indexJSPath = path.join(srcPath, folder, 'index.js');
-        const frontendJSPath = path.join(srcPath, "./" + folder, 'frontend.js');
-        if (fs.existsSync(indexJSPath)) {
-            entries[folder] = "./" + indexJSPath;
-        }
-        if (fs.existsSync(frontendJSPath)) {
-            entries[folder + 'Frontend'] = "./" + frontendJSPath;
-        }
-    });
-    return entries;
-}
-
-const blockEntries = checkForFrontendJS(blocksDir);
-console.log(blockEntries)
 // Static entries for admin and frontend
 const staticAssets = {
     admin: [
@@ -51,23 +38,17 @@ const staticAssets = {
 };
 
 const entry = { ...staticAssets, ...blockEntries };
-console.log(entry)
+
 module.exports = {
-    mode: 'production',
+    mode:'production',
     entry: entry,
     output: {
-        path: path.resolve(__dirname, 'assets/src/blocks'),
+        path: path.resolve(__dirname, 'assets/blocks'),
         filename: (pathData) => {
-            const blockName = pathData.chunk.name;
-            if (blockName.endsWith('Frontend')) {
-                // Correct the folder name by removing 'Frontend' and specify the frontend.js file directly
-                return `${blockName.replace('Frontend', '')}/frontend.js`;
-            } else {
-                // Keep other files output as before
-                return `${blockName}/index.js`;
-            }
+            // Do not create separate folders for admin and frontend
+            return Object.keys(blockEntries).includes(pathData.chunk.name) ? `${pathData.chunk.name}/index.js` : `${pathData.chunk.name}.min.js`;
         },
-        publicPath: '/assets/src/blocks/',
+        publicPath: '/assets/blocks/',
     },
 
     module: {
@@ -82,13 +63,14 @@ module.exports = {
                     },
                 },
             },
+
             {
-                test: /\.css$/,
+                test: /\.css$/, // Add this rule for CSS files
                 use: [MiniCssExtractPlugin.loader, 'css-loader']
             },
             {
                 test: /\.svg$/,
-                use: 'svg-inline-loader'
+                use: 'svg-inline-loader'  // This loader transforms SVGs into inline SVGs
             }
         ],
     },
@@ -100,15 +82,16 @@ module.exports = {
             injectPolyfill: true,
             outputFormat: 'php',
             combineAssets: false,
-            outputFilename: '[name]/index.asset.php'
+            outputFilename: (entryName) => {
+                const isStatic = entryName.chunk.name !== "admin" || entryName.chunk.name !== "frontend";
+                return isStatic ? 'dev/null/[name].asset.php' : '[name]/index.asset.php';
+            }
         }),
         new CopyPlugin({
-            patterns: Object.keys(blockEntries)
-                .filter(blockName => !blockName.endsWith('Frontend')) // Filter out the 'Frontend' entries
-                .map(blockName => ({
-                    from: path.resolve(__dirname, blocksDir, blockName, 'block.json'),
-                    to: path.resolve(__dirname, 'assets/blocks', blockName)
-                }))
+            patterns: Object.keys(blockEntries).map(blockName => ({
+                from: path.resolve(__dirname, blocksDir, blockName, 'block.json'),
+                to: path.resolve(__dirname, 'assets/blocks', blockName)
+            }))
         })
     ],
     devServer: {

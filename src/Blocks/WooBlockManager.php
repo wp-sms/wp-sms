@@ -12,6 +12,11 @@ class WooBlockManager
         \WP_SMS\Blocks\WooSmsOptInBlock::class
     ];
 
+    public function __construct()
+    {
+        add_action('woocommerce_blocks_loaded', [$this, 'init']);
+    }
+
     public function init()
     {
         foreach ($this->blocks as $item) {

@@ -1,17 +1,17 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
-  "name": "wp-sms-blocks/order-notification",
+  "name": "wp-sms-blocks/sms-updates-opt-in",
   "version": "1.0.0",
-  "title": "Order Notification",
+  "title": "SMS Updates Opt-In",
   "category": "wp-sms-blocks",
-  "parent": [ "woocommerce/checkout", "woocommerce/checkout-contact-information-block" ],
+  "parent": ["woocommerce/checkout-contact-information-block" ],
   "attributes": {
     "lock": {
       "type": "object",
       "default": {
-        "remove": false,
-        "move": false
+        "remove": true,
+        "move": true
       }
     }
   },

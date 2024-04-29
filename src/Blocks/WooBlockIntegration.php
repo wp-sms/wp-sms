@@ -72,9 +72,9 @@ class WooBlockIntegration implements IntegrationInterface {
      * @return void
      */
     public function register_block_editor_scripts() {
-        $script_path = Helper::getAssetPath("blocks/{$this->blockName}/index.js");
-        $script_url = Helper::getPluginAssetUrl("blocks/{$this->blockName}/index.js");
-        $script_asset_path = Helper::getAssetPath("blocks/{$this->blockName}/index.asset.php" );
+        $script_path = Helper::getAssetPath("blocks/woocommerce/{$this->blockName}/index.js");
+        $script_url = Helper::getPluginAssetUrl("blocks/woocommerce/{$this->blockName}/index.js");
+        $script_asset_path = Helper::getAssetPath("blocks/woocommerce/{$this->blockName}/index.asset.php" );
         $script_asset = file_exists( $script_asset_path )
             ? require $script_asset_path
             : array(
@@ -97,9 +97,9 @@ class WooBlockIntegration implements IntegrationInterface {
      * @return void
      */
     public function register_block_frontend_scripts() {
-        $script_path = Helper::getAssetPath("blocks/{$this->blockName}/frontend.js");
-        $script_url = Helper::getPluginAssetUrl("blocks/{$this->blockName}/frontend.js");
-        $script_asset_path = Helper::getAssetPath("blocks/{$this->blockName}/index.asset.php" );
+        $script_path = Helper::getAssetPath("blocks/woocommerce/{$this->blockName}/frontend.js");
+        $script_url = Helper::getPluginAssetUrl("blocks/woocommerce/{$this->blockName}/frontend.js");
+        $script_asset_path = Helper::getAssetPath("blocks/woocommerce/{$this->blockName}/index.asset.php" );
 
         $script_asset = file_exists( $script_asset_path )
             ? require $script_asset_path

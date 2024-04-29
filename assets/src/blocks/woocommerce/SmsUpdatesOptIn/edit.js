@@ -21,8 +21,8 @@ export default function edit( { className, attributes, setAttributes } ) {
     };
 
     return ([
-        <InspectorControls>
-            {/* Place any additional controls here */}
+        <InspectorControls title={__('SMS Updates Opt-In', 'wp-sms')}>
+
         </InspectorControls>,
         <div {...blockProps}>
             <CheckboxControl
