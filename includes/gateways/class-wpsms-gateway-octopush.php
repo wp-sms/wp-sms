@@ -76,12 +76,6 @@ class octopush extends Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            $credit = $this->GetCredit();
-
-            if (is_wp_error($credit)) {
-                $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-                return $credit;
-            }
 
             $recipients = array_map(function ($number) {
                 return [
@@ -89,35 +83,20 @@ class octopush extends Gateway
                 ];
             }, $this->to);
 
-            $params = wp_json_encode([
-                'text'       => $this->msg,
-                'sender'     => $this->from,
-                'recipients' => $recipients,
-            ]);
-
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL            => $this->wsdl_link . '/sms-campaign/send',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING       => "",
-                CURLOPT_MAXREDIRS      => 10,
-                CURLOPT_TIMEOUT        => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST  => "POST",
-                CURLOPT_POSTFIELDS     => $params,
-                CURLOPT_HTTPHEADER     => [
-                    "Content-Type: application/json",
-                    "cache-control: no-cache",
-                    "api-login: " . $this->api_login,
-                    "api-key: " . $this->api_key,
+            $params = [
+                'headers' => [
+                    'api-login'    => $this->api_login,
+                    'api-key'      => $this->api_key,
+                    'Content-Type' => 'application/json',
                 ],
-            ]);
+                'body'    => wp_json_encode([
+                    'text'       => $this->msg,
+                    'sender'     => $this->from,
+                    'recipients' => $recipients,
+                ]),
+            ];
 
-            $response = curl_exec($curl);
-            curl_close($curl);
-
-            $response = json_decode($response);
+            $response = $this->request('POST', $this->wsdl_link . '/sms-campaign/send', [], $params, false);
 
             if (isset($response->code)) {
                 throw new Exception($response->message);
@@ -150,12 +129,13 @@ class octopush extends Gateway
         }
 
         try {
-            $params   = [
+            $params = [
                 'headers' => [
                     'api-login' => $this->api_login,
                     'api-key'   => $this->api_key,
                 ]
             ];
+
             $response = $this->request('GET', $this->wsdl_link . '/wallet/check-balance', [], $params, false);
 
             if (isset($response->code)) {
