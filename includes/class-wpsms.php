@@ -187,22 +187,6 @@ class WP_SMS
         $cronJobManager = new \WP_SMS\Services\CronJobs\CronJobManager();
         $cronJobManager->init();
 
-        // Blocks
-        $this->include('src/Blocks/BlockAbstract.php');
-        $this->include('src/Blocks/SubscribeBlock.php');
-        $this->include('src/Blocks/SendSmsBlock.php');
-        $this->include('src/Blocks/BlockAssetsManager.php');
-
-        $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
-        $blockManager->init();
-
-        $this->include('src/Blocks/WooBlockIntegration.php');
-        $this->include('src/Blocks/WooSmsOptInBlock.php');
-        $this->include('src/Blocks/WooPhoneBlock.php');
-        $this->include('src/Blocks/WooBlockManager.php');
-
-        $wooBlockManger = new \WP_SMS\Blocks\WooBlockManager();
-
         // Controllers
         $this->include('src/Controller/AjaxControllerAbstract.php');
         $this->include('src/Controller/SubscriberFormAjax.php');
@@ -242,6 +226,22 @@ class WP_SMS
         $this->include('src/Services/MessageButton/MessageButtonManager.php');
         $this->include('src/Services/MessageButton/ChatBox.php');
         $this->include('src/Services/Report/EmailReportGenerator.php');
+
+        // Blocks
+        $this->include('src/Blocks/BlockAbstract.php');
+        $this->include('src/Blocks/SubscribeBlock.php');
+        $this->include('src/Blocks/SendSmsBlock.php');
+        $this->include('src/Blocks/BlockAssetsManager.php');
+
+        $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
+        $blockManager->init();
+
+        $this->include('src/Blocks/WooBlockIntegration.php');
+        $this->include('src/Blocks/WooSmsOptInBlock.php');
+        $this->include('src/Blocks/WooMobileField.php');
+        $this->include('src/Blocks/WooBlockManager.php');
+
+        $wooBlockManger = new \WP_SMS\Blocks\WooBlockManager();
 
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();
