@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "wp-sms-blocks/mobile-field",
+  "version": "1.0.0",
+  "title": "Mobile Field",
+  "category": "wp-sms-blocks",
+  "parent": [ "woocommerce/checkout-shipping-address-block" ],
+  "attributes": {
+    "lock": {
+      "type": "object",
+      "default": {
+        "remove": true,
+        "move": true
+      }
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "wp-sms",
+  "editorScript": "file:./index.js"
+}

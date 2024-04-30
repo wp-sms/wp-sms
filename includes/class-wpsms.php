@@ -198,6 +198,7 @@ class WP_SMS
 
         $this->include('src/Blocks/WooBlockIntegration.php');
         $this->include('src/Blocks/WooSmsOptInBlock.php');
+        $this->include('src/Blocks/WooPhoneBlock.php');
         $this->include('src/Blocks/WooBlockManager.php');
 
         $wooBlockManger = new \WP_SMS\Blocks\WooBlockManager();

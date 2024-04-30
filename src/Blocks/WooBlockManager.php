@@ -9,7 +9,8 @@ use Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema;
 class WooBlockManager
 {
     private $blocks = [
-        \WP_SMS\Blocks\WooSmsOptInBlock::class
+        \WP_SMS\Blocks\WooSmsOptInBlock::class,
+        \WP_SMS\Blocks\WooMobileField::class
     ];
 
     public function __construct()
