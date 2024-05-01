@@ -2883,7 +2883,7 @@ class Settings
                 'id'   => "license_title",
                 'type' => 'notice',
                 'name' => esc_html__('No Pro Pack or Add-On found', 'wp-sms'),
-                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/'))
+                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings'))
             );
 
             return $settings;
@@ -2906,7 +2906,7 @@ class Settings
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
                 // translators: %s: Account link
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'))
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings'))
             );
         }
 
