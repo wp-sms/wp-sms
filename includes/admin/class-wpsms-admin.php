@@ -440,7 +440,7 @@ class Admin
             $rate_url = 'http://wordpress.org/support/view/plugin-reviews/wp-sms?rate=5#postform';
             $links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . esc_html__('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . esc_html__('Rate this plugin', 'wp-sms') . '</a>';
 
-            $newsletter_url = WP_SMS_SITE . '/newsletter?utm_source=wp-sms&utm_medium=link&utm_campaign=header';
+            $newsletter_url = WP_SMS_SITE . '/newsletter?utm_source=wp-sms&utm_medium=link&utm_campaign=newsletter';
             $links[]        = '<a href="' . $newsletter_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . esc_html__('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . esc_html__('Subscribe to our Email Newsletter', 'wp-sms') . '</a>';
         }
 
