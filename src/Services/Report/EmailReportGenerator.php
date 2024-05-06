@@ -22,6 +22,7 @@ class EmailReportGenerator
     public function generate()
     {
         if (!Option::getOption('report_wpsms_statistics')) {
+            wp_clear_scheduled_hook('wp_sms_admin_email_report');
             return;
         }
 
