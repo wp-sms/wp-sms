@@ -1010,6 +1010,15 @@ class Settings
             $forms       = \RGFormsModel::get_forms(null, 'title');
             $more_fields = '';
 
+            if (empty($forms)) {
+                $gf_forms['gf_notify_form'] = array(
+                    'id'   => 'gf_notify_form',
+                    'name' => esc_html__('No data', 'wp-sms'),
+                    'type' => 'notice',
+                    'desc' => esc_html__('There is no form available on Gravity Forms plugin, please first add your forms.', 'wp-sms')
+                );
+            }
+
             foreach ($forms as $form) {
                 $form_fields = Gravityforms::get_field($form->id);
 
