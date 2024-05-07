@@ -32,6 +32,11 @@ class EmailReportGenerator
         $loginData        = $this->getLoginData();
         $duration         = $this->getTheDuration();
 
+        // return if no data
+        if ($smsData['total'] === 0 && $subscriptionData['total'] === 0 && $loginData['total'] === 0) {
+            return;
+        }
+
         // Get email needed templates and variables
         $reportData       = apply_filters('wp_sms_report_email_data', Helper::loadTemplate('email/partials/report-data.php', [
             'sms_data'          => $smsData,
