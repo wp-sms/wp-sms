@@ -80,8 +80,8 @@
         foreach ($subscription_data['groups'] as $group) { ?>
             <tr>
                 <td style="text-align: left"><?php echo esc_html($group['name']); ?></td>
-                <td><?php echo esc_html($group['active']); ?></td>
-                <td style="text-align: right"><?php echo esc_html($group['deactive']); ?></td>
+                <td><?php echo esc_html($group['deactive']); ?></td>
+                <td style="text-align: right"><?php echo esc_html($group['active']); ?></td>
             </tr>
         <?php } ?>
 
