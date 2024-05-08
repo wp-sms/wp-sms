@@ -31,13 +31,13 @@ class custom extends \WP_SMS\Gateway
             'http_headers'    => [
                 'id'   => 'gateway_http_headers',
                 'name' => esc_html__('HTTP Headers', 'wp-sms'),
-                'desc' => esc_html__('Specify any HTTP headers required for API requests. Headers often include authentication details and content specifications. For example: Content-Type:application/json;charset=UTF-8', 'wp-sms'),
+                'desc' => esc_html__('Specify any HTTP headers required for API requests. Headers often include authentication details and content specifications. Each parameter should be on a new line. For example: Content-Type:application/json;charset=UTF-8', 'wp-sms'),
                 'type' => 'textarea',
             ],
             'http_parameters' => [
                 'id'   => 'gateway_http_parameters',
                 'name' => esc_html__('HTTP Parameters', 'wp-sms'),
-                'desc' => esc_html__('List the parameters required by the API for sending SMS messages. These often include fields like the sender, recipient, and message content. Replace {from}, {to}, and {message} with actual values when making a request. For example: from:{from}', 'wp-sms'),
+                'desc' => esc_html__('List the parameters required by the API for sending SMS messages. These often include fields like the sender, recipient, and message content. Replace {from}, {to}, and {message} with actual values when making a request. Each parameter should be on a new line. For example: receptor:{to}', 'wp-sms'),
                 'type' => 'textarea',
             ],
             'is_post_body'    => [
@@ -60,11 +60,6 @@ class custom extends \WP_SMS\Gateway
                     'yes' => 'Yes',
                 ]
             ],
-            'from'            => [
-                'id'   => 'gateway_sender_name',
-                'name' => esc_html__('Sender Name', 'wp-sms'),
-                'desc' => esc_html__('Sender Name', 'wp-sms'),
-            ],
         ];
     }
 
@@ -86,25 +81,26 @@ class custom extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-
-            // Convert the single string to an array based on newline separation
-            $lines   = explode("\n", $this->http_headers);
             $headers = [];
-
-            foreach ($lines as $line) {
-                // Split each line into key and value
-                list($key, $value) = explode(':', $line, 2);
-                $headers[trim($key)] = trim($value);
+            if ($this->http_headers) {
+                // Convert the single string to an array based on newline separation
+                $lines = explode("\n", $this->http_headers);
+                foreach ($lines as $line) {
+                    // Split each line into key and value
+                    list($key, $value) = explode(':', $line, 2);
+                    $headers[trim($key)] = trim($value);
+                }
             }
 
-            // Convert the string to an array based on newline separation
-            $lines         = explode("\n", $this->http_parameters);
             $definedParams = [];
-
-            foreach ($lines as $line) {
-                // Split each line into key and the placeholder value
-                list($key, $value) = explode(':', $line, 2);
-                $definedParams[trim($key)] = trim($value);
+            if ($this->http_parameters) {
+                // Convert the single string to an array based on newline separation
+                $lines = explode("\n", $this->http_parameters);
+                foreach ($lines as $line) {
+                    // Split each line into key and the placeholder value
+                    list($key, $value) = explode(':', $line, 2);
+                    $definedParams[trim($key)] = trim($value);
+                }
             }
 
             if ($this->encode_message && $this->encode_message == 'yes') {
@@ -112,11 +108,10 @@ class custom extends \WP_SMS\Gateway
             }
 
             // Replace placeholders with actual values
-            $finalParams = [
-                'from'    => str_replace('{from}', $this->from, $definedParams['from']),
-                'to'      => str_replace('{to}', implode(',', $this->to), $definedParams['to']),
-                'message' => str_replace('{message}', $this->msg, $definedParams['message'])
-            ];
+            $finalParams = [];
+            foreach ($definedParams as $key => $value) {
+                $finalParams[$key] = str_replace(['{from}', '{to}', '{message}'], [$this->from, implode(',', $this->to), $this->msg], $value);
+            }
 
             $args = [
                 'headers' => $headers
@@ -159,7 +154,7 @@ class custom extends \WP_SMS\Gateway
                 throw new Exception(esc_html__('Please complete the send SMS API URL.', 'wp-sms-pro'));
             }
 
-            return '';
+            return 'Unable to check balance!';
 
         } catch (\Throwable $e) {
             return new \WP_Error('get-credit', $e->getMessage());
