@@ -42,8 +42,11 @@ class WP_SMS
          * Install And Upgrade plugin
          */
         require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
+        // Deactivate & Uninstall plugin
+        require_once WP_SMS_DIR . 'includes/class-wpsms-uninstall.php';
 
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array('\WP_SMS\Install', 'install'));
+        register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array('\WP_SMS\Uninstall', 'deactivate'));
     }
 
     /**
