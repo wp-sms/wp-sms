@@ -11,7 +11,13 @@ class Uninstall
     /**
      * Deactivate plugin
      */
-    public static function deactivate()
+    public function deactivate()
+    {
+        $this->clearEvents();
+        // add more here
+    }
+
+    public function clearEvents()
     {
         // Remove any scheduled cron jobs
         $wpSmsCronEvents = array(
@@ -23,7 +29,4 @@ class Uninstall
             wp_clear_scheduled_hook($event);
         }
     }
-
 }
-
-new Uninstall();
