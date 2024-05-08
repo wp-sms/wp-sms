@@ -60,6 +60,11 @@ class custom extends \WP_SMS\Gateway
                     'yes' => 'Yes',
                 ]
             ],
+            'from'            => [
+                'id'   => 'gateway_sender_name',
+                'name' => esc_html__('Sender Name', 'wp-sms'),
+                'desc' => esc_html__('Sender Name', 'wp-sms'),
+            ],
         ];
     }
 
