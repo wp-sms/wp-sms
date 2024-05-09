@@ -1,4 +1,4 @@
-= v6.8.2 - **.05.2024 =
+= v6.9 - **.05.2024 =
 * Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
 * Updates: Support for MTarget, SMSGatewayHub, and Octopush gateways.
 * Fixes: Issue with SMS report scheduling not clearing when disabled.
