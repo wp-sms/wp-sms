@@ -1,4 +1,4 @@
-﻿=== WP SMS - Messaging & SMS Notification for WordPress, WooCommerce, GravityForms, etc ===
+﻿=== WP SMS - Messaging, SMS & MMS Notifications, 2FA & OTP for WordPress, WooCommerce, GravityForms, etc ===
 Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, notification, woocommerce, twilio, whatsapp
@@ -221,7 +221,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9 - **.05.2024 =
+= v6.9 - 12.05.2024 =
 * Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
 * Updates: Support for MTarget, SMSGatewayHub, and Octopush gateways.
 * Fixes: Issue with SMS report scheduling not clearing when disabled.
