@@ -2,9 +2,21 @@
 
 namespace WP_SMS\Gateway;
 
-class mtarget extends \WP_SMS\Gateway
+use Exception;
+use WP_Error;
+use WP_SMS\Gateway;
+
+/**
+ * mtarget Gateway Class
+ *
+ * Website: https://mtarget.fr/
+ * API Doc: https://developers.mtarget.fr
+ *
+ * @package WP_SMS\Gateway
+ */
+class mtarget extends Gateway
 {
-    private $wsdl_link = "https://api-public.mtarget.fr/api-sms.json";
+    private $wsdl_link = "https://api-public-2.mtarget.fr/";
     public $tariff = "http://mtarget.fr/";
     public $unitrial = true;
     public $unit;
@@ -14,12 +26,13 @@ class mtarget extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "33xxxxxxxxx";
+        $this->bulk_send      = true;
+        $this->validateNumber = esc_html__('Number of the recipient with country code (+44...) or in international format (0044 ...)', 'wp-sms');
+        $this->help           = "The mobile number must include the <b>country code</b>. To automatically add the country code to the number, set the Country Code Prefix option from the Settings - General section. For <b>bulk send</b>, set Delivery Method to Batch SMS Queue.";
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -47,85 +60,103 @@ class mtarget extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-        if (isset($this->options['send_unicode']) and $this->options['send_unicode']) {
-            $allowunicode = 'true';
-        } else {
-            $allowunicode = 'false';
-        }
-
-        $success = true;
-
-        // We want to send as few requests as we can
-        $msisdns_sublists = array_chunk($this->to, 500);
-        foreach ($msisdns_sublists as $sublist) {
-            $to_list = '';
-            foreach ($sublist as $to) {
-                $to_list .= $to . ',';
-            }
-            // Check credit for the gateway
-            if (!$this->GetCredit()) {
-                $this->log($this->from, $this->msg, $this->to, $this->GetCredit(), 'error');
-
-                return;
+        try {
+            // Check for a valid connection to the gateway
+            $credit = $this->GetCredit();
+            if (is_wp_error($credit)) {
+                $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+                return $credit;
             }
 
-            $result = $this->request('GET', $this->wsdl_link . '?username=' . urlencode($this->username) . '&password=' . urlencode($this->password) . '&sender=' . urlencode($this->from) . '&msisdn=' . urlencode($to_list) . '&msg=' . urlencode($this->msg) . '&allowunicode=' . $allowunicode, [], [], false);
+            $allowUnicode = 'false';
+            if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
+                $allowUnicode = 'true';
+            }
 
-            try {
-                foreach ($result->results as $message) {
-                    if ($message->reason !== 'ACCEPTED') {
-                        $success = false;
-                    }
+            $recipients = implode(',', $this->to);
+
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body'    => [
+                    'username'     => $this->username,
+                    'password'     => $this->password,
+                    'sender'       => $this->from,
+                    'msisdn'       => $recipients,
+                    'msg'          => $this->msg,
+                    'allowunicode' => $allowUnicode,
+                ]
+            ];
+
+            $response = $this->request('POST', $this->wsdl_link . 'messages', [], $params, false);
+
+            $succeed = $failed = [];
+            foreach ($response->results as $message) {
+                if ($message->code == 0) {
+                    $succeed[$message->msisdn] = $message;
+                } else {
+                    $failed[$message->msisdn] = $message;
                 }
-            } catch (Exception $e) {
-                $success = false;
             }
 
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result);
+            if (count($succeed) > 0) {
+                $this->log($this->from, $this->msg, array_keys($succeed), $succeed);
+            }
+
+            if (count($failed) > 0) {
+                $this->log($this->from, $this->msg, array_keys($failed), $failed, 'error');
+            }
+
+            if ($failed) {
+                return new WP_Error('send-sms', 'The SMS did not send for this number(s): ' . implode('<br/>', array_keys($failed)) . ' See the response on Outbox.');
+            }
+
+            do_action('wp_sms_send', $response);
+
+            return $response;
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            return new WP_Error('send-sms', $e->getMessage());
         }
-
-        if ($success) {
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $result result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $result);
-
-            return $result;
-        }
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $this->GetCredit(), 'error');
-
-        return new \WP_Error('send-sms', $result);
     }
 
     public function GetCredit()
     {
         // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
+        if (!$this->username || !$this->password) {
+            return new WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
-        // Using a legacy endpoint to check the remaining credit
-        $result = $this->request('GET', "https://smswebservices.mtarget.fr/SmsWebServices/ServletSms?method=getAccountInformation&username=" . $this->username . "&password=" . $this->password, [], [], false);
-        preg_match('/<CREDIT>([^<]+)<\/CREDIT>/', wp_json_encode($result), $regex_match);
+        try {
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body'    => [
+                    'username' => $this->username,
+                    'password' => $this->password,
+                ],
+            ];
 
-        $credit = (int)$regex_match[1];
+            $response = $this->request('POST', $this->wsdl_link . 'balance', [], $params, false);
 
-        return $credit;
+            if (isset($response->error)) {
+                throw new Exception($response->error);
+            }
+
+            if (isset($response->results[0]->reason)) {
+                throw new Exception($response->results[0]->reason);
+            }
+
+            if (!isset($response->amount)) {
+                throw new Exception('Invalid response!');
+            }
+
+            return $response->amount;
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
+        }
     }
 }

@@ -88,13 +88,12 @@ class Settings
     {
         $settings = get_option($this->setting_name);
 
-
         // Set default options
         if (!$settings) {
             update_option($this->setting_name, array(
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
-                'notify_errors_to_admin_email' => 'enable',
-                'report_wpsms_statistics'      => 'enable'
+                'notify_errors_to_admin_email' => 1,
+                'report_wpsms_statistics'      => 1
             ));
         }
 
@@ -1011,6 +1010,15 @@ class Settings
             $forms       = \RGFormsModel::get_forms(null, 'title');
             $more_fields = '';
 
+            if (empty($forms)) {
+                $gf_forms['gf_notify_form'] = array(
+                    'id'   => 'gf_notify_form',
+                    'name' => esc_html__('No data', 'wp-sms'),
+                    'type' => 'notice',
+                    'desc' => esc_html__('There is no form available on Gravity Forms plugin, please first add your forms.', 'wp-sms')
+                );
+            }
+
             foreach ($forms as $form) {
                 $form_fields = Gravityforms::get_field($form->id);
 
@@ -1257,14 +1265,6 @@ class Settings
                     'type' => 'text',
                     'desc' => esc_html__('Mobile number where the administrator will receive notifications.', 'wp-sms')
                 ),
-                'mobile_county_code'                       => array(
-                    'id'         => 'mobile_county_code',
-                    'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
-                    'type'       => 'select',
-                    'desc'       => esc_html__('If the administrator\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
-                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
-                    'attributes' => ['class' => 'js-wpsms-select2'],
-                ),
                 'mobile_field'                             => array(
                     'id'   => 'mobile_field',
                     'name' => esc_html__('Mobile Field Configuration', 'wp-sms'),
@@ -1355,6 +1355,15 @@ class Settings
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
                     'options'   => $this->getCountriesList(),
                     'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
+                ),
+                'mobile_county_code'                       => array(
+                    'id'         => 'mobile_county_code',
+                    'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
+                    'type'       => 'select',
+                    'className'  => 'js-wpsms-show_if_international_mobile_disabled',
+                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
+                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
+                    'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_terms_minimum'                     => array(
                     'id'        => 'mobile_terms_minimum',
@@ -1494,7 +1503,7 @@ class Settings
                 // Message header
                 'message_title'                => array(
                     'id'   => 'message_title',
-                    'name' => esc_html__('SMS Configuration', 'wp-sms'),
+                    'name' => esc_html__('SMS Dispatch & Number Optimization', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'sms_delivery_method'          => array(
@@ -2882,7 +2891,7 @@ class Settings
                 'id'   => "license_title",
                 'type' => 'notice',
                 'name' => esc_html__('No Pro Pack or Add-On found', 'wp-sms'),
-                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/'))
+                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
             );
 
             return $settings;
@@ -2905,7 +2914,7 @@ class Settings
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
                 // translators: %s: Account link
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'))
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
             );
         }
 

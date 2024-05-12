@@ -102,7 +102,7 @@ class Install
      *
      * @param $network_wide
      */
-    public static function install($network_wide)
+    public function install($network_wide)
     {
         global $wp_sms_db_version;
 

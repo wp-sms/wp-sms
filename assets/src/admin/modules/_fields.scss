@@ -21,6 +21,34 @@
   margin-top: 1px;
 }
 
+.wpsms-wrap .form-table td {
+  select, .select2-container {
+    width: 100% !important;
+    @media (min-width: 783px) {
+      width: 25em !important;
+    }
+  }
+  .wp-sms-notify-specific-order {
+    @media (min-width: 783px) {
+      display: flex;
+      justify-content: space-between;
+      max-width: calc(100% - 45px);
+    }
+    div {
+      @media (min-width: 783px) {
+        box-sizing: border-box;
+        width: 49%;
+        display: inline-flex;
+        flex-direction: column;
+      }
+
+      select {
+        width: 100% !important;
+      }
+    }
+  }
+}
+
 .wpsms-wrap input[type="text"]:focus, .wpsms-wrap input[type="number"]:focus, .wpsms-wrap select:focus {
   box-shadow: 0 0 0 1px #F88E40;
   border-color: #F88E40 !important;

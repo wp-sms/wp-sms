@@ -1,5 +1,9 @@
 jQuery(document).ready(function () {
-    var inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
+    setTimeout(() => init(), 500);    
+});
+
+function init() {
+    var inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone, #billing-phone, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
 
     for (var i = 0; i < inputTells.length; i++) {
         if (inputTells[i] && inputTells[i].nodeName == 'INPUT') {
@@ -34,5 +38,4 @@ jQuery(document).ready(function () {
             //initialCountry: 'auto'
         });
     }
-
-});
+}

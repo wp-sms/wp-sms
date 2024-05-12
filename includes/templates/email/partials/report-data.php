@@ -3,7 +3,7 @@
     <h4>
         <?php 
             // translators: %1$s: Start date, %2$s: End date
-            echo sprintf(esc_html__('From %1$s to %2$s 2023', 'wp-sms'), esc_html($duration['startDate']), esc_html($duration['endDate'])); 
+            echo sprintf(esc_html__('From %1$s to %2$s', 'wp-sms'), esc_html($duration['startDate']), esc_html($duration['endDate']));
         ?>
     </h4>
     <h5><?php esc_html_e('At a glance', 'wp-sms'); ?></h5>
@@ -80,8 +80,8 @@
         foreach ($subscription_data['groups'] as $group) { ?>
             <tr>
                 <td style="text-align: left"><?php echo esc_html($group['name']); ?></td>
-                <td><?php echo esc_html($group['active']); ?></td>
-                <td style="text-align: right"><?php echo esc_html($group['deactive']); ?></td>
+                <td><?php echo esc_html($group['deactive']); ?></td>
+                <td style="text-align: right"><?php echo esc_html($group['active']); ?></td>
             </tr>
         <?php } ?>
 

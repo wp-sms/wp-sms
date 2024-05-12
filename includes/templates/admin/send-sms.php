@@ -17,7 +17,6 @@
                     <p><?php echo esc_html__('Account Credit', 'wp-sms'); ?>: <span id="wpsms_account_credit"><?php echo esc_html($gatewayCredit); ?></span></p>
                 </div>
             <?php endif; ?>
-            <a style="<?php echo $proIsActive ? 'display:none;' : '' ?>" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" class="pro-button '' ?> "><?php esc_html_e('Go Pro', 'wp-sms'); ?><span class="icon"></span></a>
         </div>
 
         <h1><?php esc_html_e('Send SMS', 'wp-sms'); ?></h1>
@@ -101,7 +100,7 @@
                                 <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php echo esc_html($val_item['name']); ?>
                                 (<?php 
                                     // translators: %s: Number of users
-                                    echo sprintf('<b>%s</b> ' . esc_html__('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count'])); 
+                                    echo sprintf('<b>%s</b> ' . __('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count']));
                                 ?>)
                             </option>
                         <?php endforeach; ?>
@@ -109,7 +108,7 @@
                     <p class="field-description wpsms-users">
                         <?php 
                             // translators: %s: Number of users
-                            echo sprintf(esc_html__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile)); 
+                            echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile));
                         ?>
                     </p>
                 </div>
@@ -174,7 +173,7 @@
                             <p>
                                 <?php 
                                     // translators: %s: Supported gateways link
-                                    echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+                                    echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 ?>
                             </p>
                         <?php endif; ?>
@@ -186,7 +185,7 @@
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy'); ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go PRO</a>
+                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro'); ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go PRO</a>
                 </div>
 
                 <div class="set-date-field">

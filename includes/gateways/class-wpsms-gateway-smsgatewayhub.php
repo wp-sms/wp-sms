@@ -1,6 +1,7 @@
 <?php
 
 namespace WP_SMS\Gateway;
+use WP_SMS\Helper;
 
 class smsgatewayhub extends \WP_SMS\Gateway
 {
@@ -87,6 +88,9 @@ class smsgatewayhub extends \WP_SMS\Gateway
         try {
             $dcs = isset($this->options['send_unicode']) ? '0' : '8';
             $flash_sms = $this->isflash ? '1' : '0';
+
+            // Remove leading + and 00 sign from the beginning of numbers
+            $this->to = Helper::removeNumbersPrefix(['+', '00'], $this->to);
 
             $params = [
                 'APIKey'        => $this->has_key,

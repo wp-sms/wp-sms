@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="promotion-modal__actions">
-                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/product/wp-sms-two-way/'); ?>" class="button-primary"><?php esc_html_e('Discover More About WP SMS Two Way!', 'wp-sms'); ?></a>
+                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'); ?>" class="button-primary"><?php esc_html_e('Discover More About WP SMS Two Way!', 'wp-sms'); ?></a>
             </div>
         </div>
     </div>

@@ -16,6 +16,7 @@ class WeeklyReport
     public function registerSendReportCronJob()
     {
         if (!Option::getOption('report_wpsms_statistics')) {
+            wp_clear_scheduled_hook('wp_sms_admin_email_report');
             return;
         }
 
@@ -39,6 +40,8 @@ class WeeklyReport
 
         // Schedule the cron job with the calculated delay
         if (!wp_next_scheduled('wp_sms_admin_email_report')) {
+            if ($delay === 0) $delay = 7 * 24 * 60 * 60;
+
             wp_schedule_event(time() + $delay, 'weekly', 'wp_sms_admin_email_report');
         }
     }

@@ -26,6 +26,16 @@ class ForminatorManager
 
         if (class_exists('Forminator')) {
             $forms = Forminator_API::get_forms(null, 1, 20, "publish");
+
+            if (empty($forms)) {
+                $forminator_forms['forminator_notify_form'] = array(
+                    'id'   => 'forminator_notify_form',
+                    'name' => esc_html__('No data', 'wp-sms'),
+                    'type' => 'notice',
+                    'desc' => esc_html__('There is no form available on Forminator plugin, please first add your forms.', 'wp-sms')
+                );
+            }
+
             foreach ($forms as $form) {
                 $formFields                                                       = Forminator::formFields($form->id);
                 $forminator_forms['forminator_notify_form_' . $form->id]          = array(
@@ -100,7 +110,7 @@ class ForminatorManager
         $result = "";
         foreach ($variables as $key => $value) {
             preg_match("/(%field-|%)(.+)*\%/", $key, $match);
-            $label = $match[1] ? $match[2] : "";
+            $label  = $match[1] ? $match[2] : "";
             $result .= esc_html($label) . ": <code>" . esc_html($key) . "</code> ";
         }
         return $result;

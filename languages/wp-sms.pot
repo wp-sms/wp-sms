@@ -2,16 +2,16 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP SMS 6.7.1\n"
+"Project-Id-Version: WP SMS 6.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-31T19:16:45+00:00\n"
+"POT-Creation-Date: 2024-04-16T12:38:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-sms\n"
 
 #. Plugin Name of the plugin
@@ -40,7 +40,7 @@ msgstr ""
 #: includes/admin/add-ons/class-add-ons.php:47
 #: includes/admin/settings/class-wpsms-settings.php:2301
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:953
+#: includes/class-wpsms-gateway.php:969
 #: includes/templates/admin/subscriber-form.php:45
 #: includes/templates/admin/subscriber-form.php:48
 #: includes/templates/email/partials/report-data.php:73
@@ -49,7 +49,8 @@ msgstr ""
 
 #: includes/admin/add-ons/class-add-ons.php:50
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:941
+#: includes/class-wpsms-gateway.php:957
+#: includes/class-wpsms-gateway.php:976
 msgid "Inactive"
 msgstr ""
 
@@ -62,7 +63,7 @@ msgid "Please rate <strong>WP SMS</strong> <a href=\"%2$s\" title=\"%3$s\" targe
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:51
-msgid "rate"
+msgid "Rate WP SMS"
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:65
@@ -170,6 +171,7 @@ msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:259
 #: includes/admin/class-wpsms-admin.php:260
+#: includes/templates/header.php:38
 #: includes/templates/header.php:56
 #: assets/blocks/SendSms/index.js:1
 #: assets/src/blocks/SendSms/edit.js:51
@@ -234,7 +236,7 @@ msgid "WP SMS Pro v%s"
 msgstr ""
 
 #: includes/admin/class-wpsms-version.php:150
-#: includes/class-wpsms-gateway.php:598
+#: includes/class-wpsms-gateway.php:613
 msgid "Please select your gateway"
 msgstr ""
 
@@ -1079,7 +1081,7 @@ msgid "Country Code Prefix"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1264
-msgid "If the administrator's mobile number requires a country code, select it from the list. If the number is not specific to any country, select 'No country code (Global)'."
+msgid "If the user's mobile number requires a country code, select it from the list. If the number is not specific to any country, select 'No country code (Global)'."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1265
@@ -1980,24 +1982,24 @@ msgstr ""
 msgid "- (Pro Pack)"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2694
+#: includes/admin/settings/class-wpsms-settings.php:2696
 msgid "ADD-ONS"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2881
+#: includes/admin/settings/class-wpsms-settings.php:2884
 msgid "No Pro Pack or Add-On found"
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2895
+#: includes/admin/settings/class-wpsms-settings.php:2898
 msgid "License key is used to get access to automatic updates and support."
 msgstr ""
 
-#: includes/admin/settings/class-wpsms-settings.php:2901
+#: includes/admin/settings/class-wpsms-settings.php:2904
 msgid "License Key"
 msgstr ""
 
 #. translators: %s: Account link
-#: includes/admin/settings/class-wpsms-settings.php:2905
+#: includes/admin/settings/class-wpsms-settings.php:2908
 msgid "To get the license, please go to <a href=\"%s\" target=\"_blank\">your account</a>."
 msgstr ""
 
@@ -2114,37 +2116,37 @@ msgid "Subscribe"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:978
+#: includes/class-wpsms-gateway.php:1001
 msgid "%1$s <a href=\"%2$s\" target=\"_blank\">Documentation</a>"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:978
+#: includes/class-wpsms-gateway.php:1001
 msgid "N/A"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1004
-#: includes/class-wpsms-gateway.php:1026
-#: includes/class-wpsms-gateway.php:1046
+#: includes/class-wpsms-gateway.php:1027
+#: includes/class-wpsms-gateway.php:1049
+#: includes/class-wpsms-gateway.php:1069
 msgid "Available"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1010
-#: includes/class-wpsms-gateway.php:1032
-#: includes/class-wpsms-gateway.php:1052
+#: includes/class-wpsms-gateway.php:1033
+#: includes/class-wpsms-gateway.php:1055
+#: includes/class-wpsms-gateway.php:1075
 msgid "Not Available"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/class-wpsms-gateway.php:1461
+#: includes/class-wpsms-gateway.php:1484
 msgid "%s - SMS Sending Alert"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1469
+#: includes/class-wpsms-gateway.php:1492
 msgid "SMS Delivery Issue"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1473
+#: includes/class-wpsms-gateway.php:1496
 msgid "Check SMS gateway configuration"
 msgstr ""
 
@@ -2305,7 +2307,7 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-mensatek.php:98
 #: includes/gateways/class-wpsms-gateway-mobiledotnet.php:106
 #: includes/gateways/class-wpsms-gateway-mobtexting.php:122
-#: includes/gateways/class-wpsms-gateway-mtarget.php:120
+#: includes/gateways/class-wpsms-gateway-mtarget.php:142
 #: includes/gateways/class-wpsms-gateway-mydnspanel.php:109
 #: includes/gateways/class-wpsms-gateway-nasrpayam.php:106
 #: includes/gateways/class-wpsms-gateway-navidsoft.php:103
@@ -2649,6 +2651,10 @@ msgstr ""
 msgid "The API Key for this gateway is not set"
 msgstr ""
 
+#: includes/gateways/class-wpsms-gateway-mtarget.php:30
+msgid "Number of the recipient with country code (+44...) or in international format (0044 ...)"
+msgstr ""
+
 #: includes/gateways/class-wpsms-gateway-octopush.php:109
 #: includes/gateways/class-wpsms-gateway-slinteractive.php:102
 msgid "API username or API Key is not entered."
@@ -2824,23 +2830,23 @@ msgstr ""
 msgid "Something's wrong. Please contact the SMS gateway provider support team."
 msgstr ""
 
-#: includes/templates/admin/add-ons.php:12
+#: includes/templates/admin/add-ons.php:13
 msgid "On Sale!"
 msgstr ""
 
-#: includes/templates/admin/add-ons.php:35
+#: includes/templates/admin/add-ons.php:36
 msgid "Status:"
 msgstr ""
 
-#: includes/templates/admin/add-ons.php:41
+#: includes/templates/admin/add-ons.php:42
 msgid "Deactivate Add-On"
 msgstr ""
 
-#: includes/templates/admin/add-ons.php:43
+#: includes/templates/admin/add-ons.php:44
 msgid "Activate Add-On"
 msgstr ""
 
-#: includes/templates/admin/add-ons.php:45
+#: includes/templates/admin/add-ons.php:46
 msgid "Buy Add-On"
 msgstr ""
 
@@ -3069,9 +3075,9 @@ msgstr ""
 msgid "Add Group"
 msgstr ""
 
-#: includes/templates/admin/groups.php:22
-#: includes/templates/admin/outbox.php:19
-#: includes/templates/admin/subscribers.php:32
+#: includes/templates/admin/groups.php:23
+#: includes/templates/admin/outbox.php:20
+#: includes/templates/admin/subscribers.php:33
 msgid "Search"
 msgstr ""
 
@@ -3202,13 +3208,13 @@ msgid "UPGRADE TO PRO"
 msgstr ""
 
 #. translators: %1$s: Active licenses, %2$s: Total licenses
-#: includes/templates/admin/partials/license-status.php:9
+#: includes/templates/admin/partials/license-status.php:10
 #: includes/templates/header-integration-setting.php:47
 msgid "License: %1$s/%2$s"
 msgstr ""
 
-#: includes/templates/admin/partials/license-status.php:10
-msgid "MANAGE LICENSE"
+#: includes/templates/admin/partials/license-status.php:11
+msgid "MANAGE"
 msgstr ""
 
 #: includes/templates/admin/privacy-page.php:11
@@ -3606,22 +3612,21 @@ msgid "UPGRADE"
 msgstr ""
 
 #: includes/templates/header-integration-setting.php:53
-#: includes/templates/header.php:38
 msgid "setting"
 msgstr ""
 
 #: includes/templates/header-integration-setting.php:56
-#: includes/templates/header.php:41
 msgid "support"
+msgstr ""
+
+#: includes/templates/header.php:41
+#: includes/templates/header.php:58
+#: includes/templates/header.php:60
+msgid "Help Center"
 msgstr ""
 
 #: includes/templates/header.php:50
 msgid "Menu"
-msgstr ""
-
-#: includes/templates/header.php:58
-#: includes/templates/header.php:60
-msgid "Help Center"
 msgstr ""
 
 #: includes/templates/meta-box.php:10
@@ -3826,7 +3831,7 @@ msgstr ""
 msgid "Failed to get success response, %s"
 msgstr ""
 
-#: src/Components/Sms.php:47
+#: src/Components/Sms.php:48
 msgid "Mobile number not found, please make sure the mobile field in settings page is configured."
 msgstr ""
 
@@ -3864,43 +3869,43 @@ msgstr ""
 msgid "File uploaded successfully."
 msgstr ""
 
-#: src/Helper.php:313
+#: src/Helper.php:356
 msgid "Invalid Mobile Number"
 msgstr ""
 
-#: src/Helper.php:329
+#: src/Helper.php:372
 msgid "The mobile number doesn't contain the country code."
 msgstr ""
 
 #. translators: %s: Max length of the number
-#: src/Helper.php:344
+#: src/Helper.php:387
 msgid "Your mobile number must have up to %s characters."
 msgstr ""
 
 #. translators: %s: Min length of the number
-#: src/Helper.php:349
+#: src/Helper.php:392
 msgid "Your mobile number must have at least %s characters."
 msgstr ""
 
-#: src/Helper.php:372
-#: src/Helper.php:388
+#: src/Helper.php:415
+#: src/Helper.php:431
 msgid "This mobile is already registered, please choose another one."
 msgstr ""
 
-#: src/Helper.php:410
+#: src/Helper.php:453
 msgid "The mobile number is not valid for your country."
 msgstr ""
 
-#: src/Notice/NoticeManager.php:51
+#: src/Notice/NoticeManager.php:53
 msgid "You need to configure the Mobile field option in General settings to send SMS to customers."
 msgstr ""
 
-#: src/Notice/NoticeManager.php:55
+#: src/Notice/NoticeManager.php:57
 msgid "You need to configure the Mobile field option to use login with SMS functionality."
 msgstr ""
 
 #. translators: %s: Newsletter link
-#: src/Notice/NoticeManager.php:59
+#: src/Notice/NoticeManager.php:61
 msgid "Stay informed and receive exclusive offers, <a href=\"%s\" target=\"_blank\">Subscribe to our newsletter here</a>!"
 msgstr ""
 
