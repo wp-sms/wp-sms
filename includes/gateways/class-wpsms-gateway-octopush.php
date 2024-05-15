@@ -23,7 +23,7 @@ class octopush extends Gateway
         parent::__construct();
         $this->bulk_send       = true;
         $this->supportMedia    = false;
-        $this->supportIncoming = false;
+        $this->supportIncoming = true;
         $this->validateNumber  = "Mobile with + and country code";
         $this->help            = "The mobile number must include the <b>country code</b>. To automatically add the country code to the number, set the Country Code Prefix option from the Settings - General section. for <b>bulk send</b>, set Delivery Method to Batch SMS Queue.";
         $this->gatewayFields   = [
