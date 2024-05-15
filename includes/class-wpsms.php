@@ -236,7 +236,7 @@ class WP_SMS
         $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
         $blockManager->init();
 
-        $this->include('src/Blocks/WooBlockIntegration.php');
+        $this->include('src/Blocks/WooBlockAbstract.php');
         $this->include('src/Blocks/WooSmsOptInBlock.php');
         $this->include('src/Blocks/WooMobileField.php');
         $this->include('src/Blocks/WooBlockManager.php');

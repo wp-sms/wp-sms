@@ -2,18 +2,20 @@
 
 namespace WP_SMS\Blocks;
 
-use Automattic\WooCommerce\Internal\Admin\BlockTemplates\Block;
-use Automattic\WooCommerce\StoreApi\StoreApi;
-use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
-use Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema;
-use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
+class WooMobileField extends WooBlockAbstract
+{
+    protected $blockName = "wpsms/mobile";
+    protected $blockLocation = "address";
+    protected $blockRequired = false;
+    protected $blockLabel = "Mobile Field";
+    protected $blockOptionalLabel = "Mobile Field";
 
-class WooMobileField extends WooBlockIntegration {
-
-    protected $blockName = "MobileField";
-    protected $blockVersion = '1.0';
-
-    protected $blockData = array(
-        'dataHandler' => 'mobile'
+    protected $blockAttributes = array(
+        'autocomplete'     => '',
+        'aria-describedby' => 'WP SMS Opt-In',
+        'aria-label'       => 'Mobile Field',
+        'pattern'          => '', // A 5-character string of capital letters and numbers.
+        'title'            => 'Mobile',
+        'data-custom'      => 'wpsms_woocommerce_order_notification',
     );
 }
