@@ -610,11 +610,4 @@ class Helper
             return preg_replace($prefixPattern, '', $number, 1);
         }, $numbers);
     }
-
-    public static function invalidateNonceForLoggedOutUsers()
-    {
-        apply_filters('nonce_user_logged_out', function ($uid) {
-            return 0;
-        }, 10, 2);
-    }
 }

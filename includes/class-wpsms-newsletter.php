@@ -39,12 +39,9 @@ class Newsletter
     public static function generateUnSubscribeUrlByNumber($number)
     {
         $unSubscribeUrl = add_query_arg([
-            self::getUnSubscriberQueryString() => $number
+            self::getUnSubscriberQueryString() => $number,
+            'csrf'                             => wp_hash('wp_sms_unsubscribe')
         ], get_bloginfo('url'));
-
-        Helper::invalidateNonceForLoggedOutUsers();
-
-        $unSubscribeUrl = wp_nonce_url($unSubscribeUrl, 'wp_sms_unsubscribe', 'csrf');
 
         return wp_sms_shorturl($unSubscribeUrl);
     }
@@ -63,9 +60,8 @@ class Newsletter
 
         // Check CSRF
         if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {
-            Helper::invalidateNonceForLoggedOutUsers();
 
-            if (!isset($_REQUEST['csrf']) || !wp_verify_nonce($_REQUEST['csrf'], 'wp_sms_unsubscribe')) {
+            if (!isset($_REQUEST['csrf']) || wp_hash('wp_sms_unsubscribe') != $_REQUEST['csrf']) {
                 wp_die(esc_html__('Access denied.', 'wp-sms'), esc_html__('SMS newsletter', 'wp-sms'), [
                     'link_text' => esc_html__('Home page', 'wp-sms'),
                     'link_url'  => esc_url(get_bloginfo('url')),
