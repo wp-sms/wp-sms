@@ -19,18 +19,17 @@ class WooCommerceCheckout
 
         add_action('woocommerce_init', function () {
             if (apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
+                if (Helper::isWooCheckoutBlock()) {
+                    new WooSmsOptInBlock();
+                    return;
+                }
+
                 add_action('woocommerce_review_order_before_submit', array($this, 'registerCheckboxCallback'), 10);
                 add_action('woocommerce_checkout_order_processed', array($this, 'registerStoreCheckboxCallback'), 10, 2);
 
                 add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
-
-                if (Helper::isWooCheckoutBlock()) {
-                    new WooSmsOptInBlock();
-                }
             }
         });
-
-        add_action('woocommerce_checkout_create_order', array($this, 'registerSmsOptInOnCheckout'));
     }
 
     /**
@@ -67,7 +66,6 @@ class WooCommerceCheckout
      *
      * @param $orderId
      * @param $data
-     * @todo, let's check if this `registerSmsOptInOnCheckout` is compatible in both method of checkout, let's use one of them.
      */
     public function registerStoreCheckboxCallback($orderId, $data)
     {

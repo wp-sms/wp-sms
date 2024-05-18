@@ -71,7 +71,7 @@ class Helper
 
     /**
      * Get mobile field selector in the checkout page
-     * 
+     *
      * @return string
      */
     public static function getWooCommerceCheckoutMobileField()
@@ -87,7 +87,7 @@ class Helper
 
     /**
      * Get submit button element selector in the checkout page
-     * 
+     *
      * @return string
      */
     public static function getWooCommerceCheckoutSubmitBtn()
@@ -103,10 +103,10 @@ class Helper
 
     /**
      * Checks if the checkout page is using blocks
-     * 
+     *
      * @return bool
      */
-    public static function checkoutBlockEnabled() 
+    public static function checkoutBlockEnabled()
     {
         return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
     }
@@ -613,6 +613,6 @@ class Helper
 
     public static function isWooCheckoutBlock()
     {
-        return WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' );
+        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout') && function_exists('woocommerce_register_additional_checkout_field');
     }
 }

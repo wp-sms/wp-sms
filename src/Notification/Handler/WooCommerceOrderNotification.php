@@ -38,14 +38,16 @@ class WooCommerceOrderNotification extends Notification
         if ($orderId) {
             $this->order = wc_get_order($orderId);
 
-            // Block-based checkout compatibility.
-            if (Helper::isWooCheckoutBlock() && apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
-                $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION_BLOCK);
-            } else {
-                $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
-            }
+            // Determine the correct meta key based on block-based checkout compatibility.
+            $metaKey = Helper::isWooCheckoutBlock() && apply_filters('wpsms_woocommerce_order_opt_in_notification', false) ?
+                WooCommerceCheckout::FIELD_ORDER_NOTIFICATION_BLOCK :
+                WooCommerceCheckout::FIELD_ORDER_NOTIFICATION;
 
-            if ($optInStatus and $optInStatus == 'no') {
+            // Get the opt-in status from the order metadata.
+            $optInStatus = $this->order->get_meta($metaKey);
+
+            // Set opt-in status based on the retrieved value.
+            if (!$optInStatus || $optInStatus == '0' || strtolower($optInStatus) == 'no') {
                 $this->optIn = false;
             }
         }

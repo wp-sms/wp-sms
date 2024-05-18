@@ -18,7 +18,7 @@ class WooSmsOptInBlock extends WooBlockAbstract
 
     public function __construct()
     {
-        $this->blockLabel         = __('I would like to get notification about any change in my order via SMS.', 'wp-sms');
+        $this->blockLabel         = __('Status Update SMS Notifications', 'wp-sms');
         $this->blockOptionalLabel = __('I would like to get notification about any change in my order via SMS.', 'wp-sms');
 
         parent::__construct();

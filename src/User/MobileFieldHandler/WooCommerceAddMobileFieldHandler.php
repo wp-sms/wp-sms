@@ -12,6 +12,7 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
     {
         if (Helper::isWooCheckoutBlock()) {
             new WooMobileField();
+            return;
         }
 
         // billing address in my account
