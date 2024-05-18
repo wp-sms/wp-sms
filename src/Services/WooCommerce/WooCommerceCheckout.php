@@ -2,15 +2,14 @@
 
 namespace WP_SMS\Services\WooCommerce;
 
-use WP_SMS\Blocks\WooMobileField;
 use WP_SMS\Blocks\WooSmsOptInBlock;
-use WP_SMS\Components\Assets;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
 class WooCommerceCheckout
 {
-    const FIELD_ORDER_NOTIFICATION = 'wpsms_woocommerce_order_notification';
+    const FIELD_ORDER_NOTIFICATION       = 'wpsms_woocommerce_order_notification';
+    const FIELD_ORDER_NOTIFICATION_BLOCK = '_wc_other/wpsms/opt-in';
 
     public function init()
     {

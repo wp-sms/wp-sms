@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Notification\Handler;
 
+use WP_SMS\Helper;
 use WP_SMS\Notification\Notification;
 use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 
@@ -37,10 +38,12 @@ class WooCommerceOrderNotification extends Notification
         if ($orderId) {
             $this->order = wc_get_order($orderId);
 
-            $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
-
-            // @todo: We should check if the value exist or try to get the value from orders_meta table.
-            // - The key of the notification field in WooCommerce checkout block: _wc_other/wpsms/opt-in
+            // Block-based checkout compatibility.
+            if (Helper::isWooCheckoutBlock() && apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
+                $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION_BLOCK);
+            } else {
+                $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
+            }
 
             if ($optInStatus and $optInStatus == 'no') {
                 $this->optIn = false;
