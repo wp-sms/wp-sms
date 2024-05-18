@@ -8,8 +8,7 @@ use WP_SMS\Option;
 
 class WooCommerceCheckout
 {
-    const FIELD_ORDER_NOTIFICATION       = 'wpsms_woocommerce_order_notification';
-    const FIELD_ORDER_NOTIFICATION_BLOCK = '_wc_other/wpsms/opt-in';
+    const FIELD_ORDER_NOTIFICATION = 'wpsms_woocommerce_order_notification';
 
     public function init()
     {
@@ -20,16 +19,27 @@ class WooCommerceCheckout
         add_action('woocommerce_init', function () {
             if (apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
                 if (Helper::isWooCheckoutBlock()) {
-                    new WooSmsOptInBlock();
+                    $this->initBlockBasedCheckout();
                     return;
                 }
 
-                add_action('woocommerce_review_order_before_submit', array($this, 'registerCheckboxCallback'), 10);
-                add_action('woocommerce_checkout_order_processed', array($this, 'registerStoreCheckboxCallback'), 10, 2);
-
-                add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
+                $this->initCheckout();
             }
         });
+    }
+
+    private function initCheckout()
+    {
+        add_action('woocommerce_review_order_before_submit', array($this, 'registerCheckboxCallback'), 10);
+        add_action('woocommerce_checkout_order_processed', array($this, 'registerStoreCheckboxCallback'), 10, 2);
+        add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
+    }
+
+    private function initBlockBasedCheckout()
+    {
+        new WooSmsOptInBlock();
+
+        add_action('woocommerce_set_additional_field_value', [$this, 'registerStoreCheckboxBlockBasedCallback'], 10, 4);
     }
 
     /**
@@ -73,6 +83,22 @@ class WooCommerceCheckout
             update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'yes');
         } else {
             update_post_meta($orderId, self::FIELD_ORDER_NOTIFICATION, 'no');
+        }
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @param $group
+     * @param $order \WC_Order
+     * @return void
+     */
+    public function registerStoreCheckboxBlockBasedCallback($key, $value, $group, $order)
+    {
+        if ($key == 'wpsms/opt-in') {
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'yes', true);
+        } else {
+            $order->update_meta_data(self::FIELD_ORDER_NOTIFICATION, 'no', true);
         }
     }
 }

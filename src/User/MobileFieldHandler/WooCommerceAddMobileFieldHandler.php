@@ -11,6 +11,10 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
     public function register()
     {
         if (Helper::isWooCheckoutBlock()) {
+            //woocommerce_validate_additional_field
+            //woocommerce_set_additional_field_value
+            //woocommerce_blocks_validate_location_address_fields
+
             new WooMobileField();
             return;
         }
