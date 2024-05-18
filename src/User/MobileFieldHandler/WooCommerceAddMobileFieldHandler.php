@@ -230,6 +230,12 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
         }
     }
 
+    /**
+     * @param \WP_Error $errors
+     * @param $fieldKey
+     * @param $fieldValue
+     * @return void
+     */
     public function validateMobileNumberInCheckoutBlockBasedCallback(\WP_Error $errors, $fieldKey, $fieldValue)
     {
         if ('wpsms/mobile' === $fieldKey) {
