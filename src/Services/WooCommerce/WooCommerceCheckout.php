@@ -24,7 +24,7 @@ class WooCommerceCheckout
 
                 add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
 
-                if (Helper::isWooCheckoutBlock() && function_exists('woocommerce_register_additional_checkout_field')) {
+                if (Helper::isWooCheckoutBlock()) {
                     new WooSmsOptInBlock();
                 }
             }

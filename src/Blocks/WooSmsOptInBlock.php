@@ -8,19 +8,19 @@ class WooSmsOptInBlock extends WooBlockAbstract
     protected $blockLocation = "order";
     protected $blockRequired = false;
     protected $blockType = 'checkbox';
+    protected $blockAttributes = array(
+        'autocomplete'     => '',
+        'aria-describedby' => 'SMS Opt-In',
+        'aria-label'       => 'SMS Opt-In',
+        'title'            => 'SMS Opt-In',
+        'data-custom'      => 'optin',
+    );
 
-    public function __construct() {
-        $this->blockLabel = __('I would like to get notification about any change in my order via SMS.', 'wp-sms');
-        $this->blockOptionalLabel = __('I would like to get notification about any change in my order via SMS. (optional)', 'wp-sms');
+    public function __construct()
+    {
+        $this->blockLabel         = __('I would like to get notification about any change in my order via SMS.', 'wp-sms');
+        $this->blockOptionalLabel = __('I would like to get notification about any change in my order via SMS.', 'wp-sms');
 
         parent::__construct();
     }
-
-    protected $blockAttributes = array(
-        'autocomplete'     => '',
-        'aria-describedby' => 'WP SMS Opt-In',
-        'aria-label'       => 'Opt-In',
-        'title'            => 'Opt-In',
-        'data-custom'      => 'optin',
-    );
 }

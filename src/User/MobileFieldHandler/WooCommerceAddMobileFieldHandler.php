@@ -10,7 +10,7 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
-        if (Helper::isWooCheckoutBlock() && function_exists('woocommerce_register_additional_checkout_field')) {
+        if (Helper::isWooCheckoutBlock()) {
             new WooMobileField();
         }
 

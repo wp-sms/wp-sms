@@ -73,17 +73,20 @@ class WooBlockAbstract
 
     public function registerBlock()
     {
-        woocommerce_register_additional_checkout_field(
-            array(
-                'id'            => $this->blockName,
-                'label'         => $this->blockLabel,
-                'type'          => $this->blockType,
-                'optionalLabel' => $this->blockOptionalLabel,
-                'location'      => $this->blockLocation,
-                'required'      => $this->blockRequired,
-                'attributes'    => $this->blockAttributes,
-                'options'       => $this->blockOptions
-            ),
-        );
+        // Backward compatibility for WC less than v8.9
+        if (function_exists('woocommerce_register_additional_checkout_field')) {
+            woocommerce_register_additional_checkout_field(
+                array(
+                    'id'            => $this->blockName,
+                    'label'         => $this->blockLabel,
+                    'type'          => $this->blockType,
+                    'optionalLabel' => $this->blockOptionalLabel,
+                    'location'      => $this->blockLocation,
+                    'required'      => $this->blockRequired,
+                    'attributes'    => $this->blockAttributes,
+                    'options'       => $this->blockOptions
+                ),
+            );
+        }
     }
 }
