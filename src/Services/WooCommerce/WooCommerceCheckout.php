@@ -13,6 +13,10 @@ class WooCommerceCheckout
 
     public function init()
     {
+        if (get_option('wc_checkout_confirmation_checkbox_enabled') == 'yes') {
+            add_filter('wpsms_woocommerce_order_opt_in_notification', '__return_true');
+        }
+
         add_action('woocommerce_init', function () {
             if (apply_filters('wpsms_woocommerce_order_opt_in_notification', false)) {
                 add_action('woocommerce_review_order_before_submit', array($this, 'registerCheckboxCallback'), 10);

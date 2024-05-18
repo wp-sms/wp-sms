@@ -239,7 +239,6 @@ class WP_SMS
         $this->include('src/Blocks/WooBlockAbstract.php');
         $this->include('src/Blocks/WooSmsOptInBlock.php');
         $this->include('src/Blocks/WooMobileField.php');
-        $this->include('src/Blocks/WooBlockManager.php');
 
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();

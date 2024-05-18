@@ -4,11 +4,11 @@ namespace WP_SMS\Blocks;
 
 class WooMobileField extends WooBlockAbstract
 {
-    protected $blockName = "wpsms/mobile";
-    protected $blockLocation = "address";
+    protected $blockName = 'wpsms/mobile';
+    protected $blockLocation = 'address';
     protected $blockRequired = false;
-    protected $blockLabel = "Mobile Field";
-    protected $blockOptionalLabel = "Mobile Field";
+    protected $blockLabel = 'Mobile Field';
+    protected $blockOptionalLabel = 'Mobile Field';
 
     protected $blockAttributes = array(
         'autocomplete'     => '',
