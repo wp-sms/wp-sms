@@ -241,8 +241,6 @@ class WP_SMS
         $this->include('src/Blocks/WooMobileField.php');
         $this->include('src/Blocks/WooBlockManager.php');
 
-       // $wooBlockManger = new \WP_SMS\Blocks\WooBlockManager();
-
         $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
         $wooCommerceCheckout->init();
 
