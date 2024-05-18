@@ -6,6 +6,7 @@ use WP_SMS\Blocks\WooMobileField;
 use WP_SMS\Blocks\WooSmsOptInBlock;
 use WP_SMS\Components\Assets;
 use WP_SMS\Helper;
+use WP_SMS\Option;
 
 class WooCommerceCheckout
 {
@@ -13,7 +14,7 @@ class WooCommerceCheckout
 
     public function init()
     {
-        if (get_option('wc_checkout_confirmation_checkbox_enabled') == 'yes') {
+        if (Option::getOption('wc_checkout_confirmation_checkbox_enabled', true)) {
             add_filter('wpsms_woocommerce_order_opt_in_notification', '__return_true');
         }
 
@@ -24,7 +25,7 @@ class WooCommerceCheckout
 
                 add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
 
-                if (Helper::isWooCheckoutBlock()) {
+                if (Helper::isWooCheckoutBlock() && function_exists('woocommerce_register_additional_checkout_field')) {
                     new WooSmsOptInBlock();
                 }
             }
