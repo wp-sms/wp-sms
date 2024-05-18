@@ -39,6 +39,9 @@ class WooCommerceOrderNotification extends Notification
 
             $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
 
+            // @todo: We should check if the value exist or try to get the value from orders_meta table.
+            // - The key of the notification field in WooCommerce checkout block: _wc_other/wpsms/opt-in
+
             if ($optInStatus and $optInStatus == 'no') {
                 $this->optIn = false;
             }
