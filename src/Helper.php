@@ -76,7 +76,7 @@ class Helper
      */
     public static function getWooCommerceCheckoutMobileField()
     {
-        if (self::checkoutBlockEnabled()) {
+        if (self::isWooCheckoutBlock()) {
             // If the new checkout block is enabled
             return 'billing-phone';
         } else {
@@ -92,7 +92,7 @@ class Helper
      */
     public static function getWooCommerceCheckoutSubmitBtn()
     {
-        if (self::checkoutBlockEnabled()) {
+        if (self::isWooCheckoutBlock()) {
             // If the new checkout block is enabled
             return '.wc-block-components-checkout-place-order-button';
         } else {
@@ -101,12 +101,7 @@ class Helper
         }
     }
 
-    /**
-     * Checks if the checkout page is using blocks
-     *
-     * @return bool
-     */
-    public static function checkoutBlockEnabled()
+    public static function isWooCheckoutBlock()
     {
         return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
     }
@@ -609,10 +604,5 @@ class Helper
         return array_map(function ($number) use ($prefixPattern) {
             return preg_replace($prefixPattern, '', $number, 1);
         }, $numbers);
-    }
-
-    public static function isWooCheckoutBlock()
-    {
-        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout') && function_exists('woocommerce_register_additional_checkout_field');
     }
 }
