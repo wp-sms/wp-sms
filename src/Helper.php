@@ -610,4 +610,9 @@ class Helper
             return preg_replace($prefixPattern, '', $number, 1);
         }, $numbers);
     }
+
+    public static function isWooCheckoutBlock()
+    {
+        return WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' );
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace WP_SMS\User\MobileFieldHandler;
 
+use WP_SMS\Blocks\WooMobileField;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
@@ -9,6 +10,11 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
+        if (Helper::isWooCheckoutBlock()) {
+            new WooMobileField();
+            return;
+        }
+
         // billing address in my account
         add_filter('woocommerce_billing_fields', [$this, 'registerFieldInBillingForm']);
         add_action('woocommerce_after_save_address_validation', [$this, 'validateMobileNumberCallback']);

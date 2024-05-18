@@ -2,7 +2,10 @@
 
 namespace WP_SMS\Services\WooCommerce;
 
+use WP_SMS\Blocks\WooMobileField;
+use WP_SMS\Blocks\WooSmsOptInBlock;
 use WP_SMS\Components\Assets;
+use WP_SMS\Helper;
 
 class WooCommerceCheckout
 {
@@ -16,6 +19,10 @@ class WooCommerceCheckout
                 add_action('woocommerce_checkout_order_processed', array($this, 'registerStoreCheckboxCallback'), 10, 2);
 
                 add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'registerOrderUpdateCheckbox'));
+
+                if (Helper::isWooCheckoutBlock()) {
+                    new WooSmsOptInBlock();
+                }
             }
         });
 

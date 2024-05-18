@@ -20,7 +20,6 @@ class WooSmsOptInBlock extends WooBlockAbstract
         'autocomplete'     => '',
         'aria-describedby' => 'WP SMS Opt-In',
         'aria-label'       => 'Opt-In',
-        'pattern'          => '', // A 5-character string of capital letters and numbers.
         'title'            => 'Opt-In',
         'data-custom'      => 'optin',
     );
