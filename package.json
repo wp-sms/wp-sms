@@ -4,7 +4,6 @@
   "description": "",
   "main": "",
   "scripts": {
-    "build-woo-block": "wp-scripts build --config=webpack.config.blocks.js",
     "build": "wp-scripts build --webpack-src-dir=assets/src/blocks --output-path=assets/blocks && rm -rf assets/blocks/dev",
     "start": "concurrently \"wp-scripts start --webpack-copy-php --webpack-src-dir=assets/src/blocks --output-path=assets/blocks\" \"npm run dev\"",
     "watch": "concurrently \"npm run sass-compile\" \"npm run js-compile\" -- \"watch 'npm run sass-compile' 'npm run js-compile' ./assets/src\"",
