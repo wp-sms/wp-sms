@@ -88,13 +88,12 @@ class Settings
     {
         $settings = get_option($this->setting_name);
 
-
         // Set default options
         if (!$settings) {
             update_option($this->setting_name, array(
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
-                'notify_errors_to_admin_email' => 'enable',
-                'report_wpsms_statistics'      => 'enable'
+                'notify_errors_to_admin_email' => 1,
+                'report_wpsms_statistics'      => 1
             ));
         }
 
@@ -1010,6 +1009,15 @@ class Settings
         if (class_exists('RGFormsModel')) {
             $forms       = \RGFormsModel::get_forms(null, 'title');
             $more_fields = '';
+
+            if (empty($forms)) {
+                $gf_forms['gf_notify_form'] = array(
+                    'id'   => 'gf_notify_form',
+                    'name' => esc_html__('No data', 'wp-sms'),
+                    'type' => 'notice',
+                    'desc' => esc_html__('There is no form available on Gravity Forms plugin, please first add your forms.', 'wp-sms')
+                );
+            }
 
             foreach ($forms as $form) {
                 $form_fields = Gravityforms::get_field($form->id);
@@ -2883,7 +2891,7 @@ class Settings
                 'id'   => "license_title",
                 'type' => 'notice',
                 'name' => esc_html__('No Pro Pack or Add-On found', 'wp-sms'),
-                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/'))
+                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
             );
 
             return $settings;
@@ -2906,7 +2914,7 @@ class Settings
                 'type'        => 'text',
                 'after_input' => $this->getLicenseStatusIcon($addOnKey),
                 // translators: %s: Account link
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/'))
+                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
             );
         }
 

@@ -918,14 +918,14 @@ class Gateway
             'sweden'               => array(
                 'prosms'   => 'prosms.se',
                 'cellsynt' => 'cellsynt',
+            ),
+            'development'          => array(
+                'custom' => __('Custom Gateway', 'wp-sms')
             )
-
         );
 
         if (WP_DEBUG) {
-            $gateways['test'] = [
-                'test' => 'Test'
-            ];
+            $gateways['development']['test'] = __('Test Gateway', 'wp-sms');
         }
 
         return apply_filters('wpsms_gateway_list', $gateways);

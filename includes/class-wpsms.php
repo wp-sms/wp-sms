@@ -38,12 +38,29 @@ class WP_SMS
          */
         add_action('plugins_loaded', array($this, 'plugin_setup'));
 
-        /**
-         * Install And Upgrade plugin
-         */
         require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
+        require_once WP_SMS_DIR . 'includes/class-wpsms-uninstall.php';
 
-        register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array('\WP_SMS\Install', 'install'));
+        register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'activate'));
+        register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'deactivate'));
+    }
+
+    /**
+     * Install And Upgrade plugin
+     */
+    public function activate($network_wide)
+    {
+        $class = new \WP_SMS\Install();
+        $class->install($network_wide);
+    }
+
+    /**
+     * Deactivate & Uninstall plugin
+     */
+    public function deactivate()
+    {
+        $class = new \WP_SMS\Uninstall();
+        $class->deactivate();
     }
 
     /**

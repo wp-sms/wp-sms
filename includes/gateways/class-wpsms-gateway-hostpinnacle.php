@@ -15,9 +15,9 @@ class hostpinnacle extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->bulk_send      = true;
-        $this->has_key = true;
-        $this->validateNumber = "";
-        $this->help           = "If you are using API Key, then you don't need to enter your username and password.";
+        $this->has_key        = true;
+        $this->validateNumber = "Mobile with country code.";
+        $this->help           = "If you are using API Key, then you don't need to enter your username and password. The mobile number must include the country code. To automatically add the country code to the number, set the Country Code Prefix option from the Settings - General section.";
         $this->gatewayFields  = [
             'username' => [
                 'id'   => 'gateway_username',
@@ -134,9 +134,9 @@ class hostpinnacle extends \WP_SMS\Gateway
             }
 
             $params = [
-                'userid' => $this->username,
+                'userid'   => $this->username,
                 'password' => $this->password,
-                'output' => 'json'
+                'output'   => 'json'
             ];
 
             $response = $this->request('POST', "{$this->wsdl_link}/account/readstatus", $params, []);

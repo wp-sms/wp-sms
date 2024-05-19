@@ -119,7 +119,7 @@ class Version
     {
         if ($file == 'wp-sms/wp-sms.php') {
             // translators: %s: Link URL
-            $links[] = '<b>' . sprintf(__('<a href="%s" target="_blank" class="wpsms-plugin-meta-link wp-sms-pro" title="Get professional package!">Get professional package!</a>', 'wp-sms'), WP_SMS_SITE . '/buy') . '</b>';
+            $links[] = '<b>' . sprintf(__('<a href="%s" target="_blank" class="wpsms-plugin-meta-link wp-sms-pro" title="Get Pro!">Get Pro!</a>', 'wp-sms'), WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=link&utm_campaign=header') . '</b>';
         }
 
         return $links;

@@ -1,3 +1,14 @@
+= v6.9 - 12.05.2024 =
+* Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
+* Updates: Support for MTarget, SMSGatewayHub, and Octopush gateways.
+* Fixes: Issue with SMS report scheduling not clearing when disabled.
+* Fixes: Issue with specific WordPress user roles not receiving new post alerts.
+* Fixes: Email report bug that sent emails without data.
+* Improvement: Clearing of plugin schedules upon deactivation.
+* Improvement: Duplicate number removal before sending SMS.
+* Improvement: Mobile number validation and functionality.
+* Improvement: Overall performance.
+
 = v6.8.1 - 08.04.2024 =
 * Fixes: Admin alerts now display correctly.
 
@@ -7,8 +18,8 @@
 * Added: `cart_url` and `checkout_url` for WooCommerce coupons.
 * Added: Validation for international phone numbers.
 * Fixed: Notice Error in class SmsOtp generator.
-* Improved: Simplified datetime function and cookie settings in NuSOAP.
-* Improved: Clarified Advanced Settings text.
+* Improvement: Simplified datetime function and cookie settings in NuSOAP.
+* Improvement: Clarified Advanced Settings text.
 * Enhanced: Added security checks and CSRF for outbox and group actions.
 * Enhanced: General improvements for better performance.
 

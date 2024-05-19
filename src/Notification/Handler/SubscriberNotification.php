@@ -16,6 +16,7 @@ class SubscriberNotification extends Notification
         '%subscriber_group%'         => 'getSubscriberGroup',
         '%subscriber_custom_fields%' => 'getSubscriberCustomFields',
         '%subscriber_date%'          => 'getSubscriberDate',
+        '%unsubscribe_url%'          => 'getUnsubscribeUrl'
     ];
 
     public function __construct($subscriberId = false)
@@ -54,5 +55,10 @@ class SubscriberNotification extends Notification
     public function getSubscriberDate()
     {
         return $this->subscriber->date;
+    }
+
+    public function getUnsubscribeUrl()
+    {
+        return Newsletter::generateUnSubscribeUrlByNumber($this->subscriber->mobile);
     }
 }

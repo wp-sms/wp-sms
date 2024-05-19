@@ -22,6 +22,7 @@ class EmailReportGenerator
     public function generate()
     {
         if (!Option::getOption('report_wpsms_statistics')) {
+            wp_clear_scheduled_hook('wp_sms_admin_email_report');
             return;
         }
 
@@ -30,6 +31,11 @@ class EmailReportGenerator
         $subscriptionData = $this->getSubscriptionData();
         $loginData        = $this->getLoginData();
         $duration         = $this->getTheDuration();
+
+        // return if no data
+        if ($smsData['total'] === 0 && $subscriptionData['total'] === 0 && $loginData['total'] === 0) {
+            return;
+        }
 
         // Get email needed templates and variables
         $reportData       = apply_filters('wp_sms_report_email_data', Helper::loadTemplate('email/partials/report-data.php', [
@@ -155,14 +161,11 @@ class EmailReportGenerator
 
     public function getTheDuration()
     {
-        $firstDayOption = get_option('start_of_week', 0);
-
         // Calculate the first and last day of the previous week
-        $now                = current_time('timestamp');
-        $firstDayOfLastWeek = strtotime('last sunday', $now) - ($firstDayOption * 86400);
-        $lastDayOfLastWeek  = strtotime('last saturday', $now) - ($firstDayOption * 86400);
+        $firstDayOfLastWeek = strtotime($this->lastWeek);
+        $lastDayOfLastWeek  = current_time('timestamp');
 
         // Convert Unix timestamps to the desired date format
-        return ['startDate' => date('j M', $firstDayOfLastWeek), 'endDate' => date('j M', $lastDayOfLastWeek)]; // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+        return ['startDate' => date('j M', $firstDayOfLastWeek), 'endDate' => date('j M Y', $lastDayOfLastWeek)]; // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
     }
 }

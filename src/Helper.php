@@ -100,7 +100,12 @@ class Helper
             return '#place_order';
         }
     }
-
+  
+    /**
+     * Checks if the checkout page is using blocks
+     *
+     * @return bool
+     */
     public static function isWooCheckoutBlock()
     {
         return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
@@ -567,10 +572,10 @@ class Helper
         $countryCode = substr(Option::getOption('mobile_county_code'), 1);
 
         // Check if the number starts with + sign 
-        if (strpos($number, '+') === 0) {
+        /*if (strpos($number, '+') === 0) {
             // Remove the + sign from the beginning of each number
             $number = substr($number, 1);
-        }
+        }*/
 
         // Check if the number starts with the default country code
         if (!empty($countryCode) && strpos($number, $countryCode) === 0) {
