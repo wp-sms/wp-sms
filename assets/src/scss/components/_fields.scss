@@ -265,3 +265,72 @@ input.wpsms-type-unsubscribe {
     }
   }
 }
+
+
+.wp-block-woocommerce-checkout {
+
+  .wc-block-components-address-form__phone, .wc-block-components-address-form__wpsms\/mobile {
+    &:has(.iti__flag-container) {
+
+      input {
+        padding: 1.75em .5em .25em 50px !important;
+
+        &::placeholder {
+          font-size: 13px;
+        }
+      }
+
+      label {
+        top: -14px;
+      }
+
+      .iti__selected-flag {
+        top: 32px;
+        height: 24px;
+        left: 4px;
+      }
+
+      &.is-active {
+
+        label {
+          top: -4px;
+        }
+
+        input {
+          padding: 1.75em .5em .25em 50px !important;
+
+          &::placeholder {
+            font-size: initial;
+          }
+        }
+
+        .iti__selected-flag {
+          top: 24px;
+        }
+      }
+    }
+
+    &:last-child {
+      &:has(.iti__flag-container) {
+
+        label {
+          top: -10px;
+        }
+
+        input {
+          padding: 1.8rem 0.5rem 0.35rem 60px !important;
+        }
+
+        .iti__selected-flag {
+          top: 32px !important;
+        }
+
+        &.is-active {
+          label {
+            top: 0;
+          }
+        }
+      }
+    }
+  }
+}
