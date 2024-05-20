@@ -17,8 +17,8 @@ class WooMobileField extends WooBlockAbstract
 
     public function __construct()
     {
-        $this->blockLabel         = __('Mobile Field', 'wp-sms');
-        $this->blockOptionalLabel = __('Mobile Field', 'wp-sms');
+        $this->blockLabel         = __('Mobile Number', 'wp-sms');
+        $this->blockOptionalLabel = __('Mobile Number', 'wp-sms');
 
         parent::__construct();
     }
