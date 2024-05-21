@@ -7,18 +7,19 @@ function init() {
 
     for (var i = 0; i < inputTells.length; i++) {
         if (inputTells[i] && inputTells[i].nodeName == 'INPUT') {
-            
-            inputTells[i].setAttribute('dir', 'ltr')
+            const body = document.body;
+            const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
+            inputTells[i].setAttribute('dir', direction)
             window.intlTelInput(inputTells[i], {
                 autoInsertDialCode: true,
                 allowDropdown:true,
-                strictMode:true,
+                strictMode:false,
                 autoPlaceholder:"aggressive",
-                dropdownContainer:document.body,
                 onlyCountries: wp_sms_intel_tel_input.only_countries,
                 preferredCountries: wp_sms_intel_tel_input.preferred_countries,
                 //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
                 nationalMode: false,
+                useFullscreenPopup:false,
                 utilsScript: wp_sms_intel_tel_input.util_js,
                 formatOnDisplay: false,
                 // initialCountry: 'auto'
@@ -29,14 +30,16 @@ function init() {
     var inputTell = document.querySelector("#job_mobile, #_job_mobile");
 
     if (inputTell && !inputTell.getAttribute('placeholder')) {
-        inputTell.setAttribute('dir', 'ltr')
+        const body = document.body;
+        const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
+        inputTells[i].setAttribute('dir', direction)
 
         window.intlTelInput(inputTell, {
             autoInsertDialCode: true,
             autoPlaceholder:"aggressive",
             allowDropdown:true,
-            strictMode:true,
-            dropdownContainer:document.body,
+            strictMode:false,
+            useFullscreenPopup:false,
             onlyCountries: wp_sms_intel_tel_input.only_countries,
             preferredCountries: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
