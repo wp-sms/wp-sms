@@ -11,13 +11,17 @@ function init() {
             inputTells[i].setAttribute('dir', 'ltr')
             window.intlTelInput(inputTells[i], {
                 autoInsertDialCode: true,
+                allowDropdown:true,
+                strictMode:true,
+                autoPlaceholder:"aggressive",
+                dropdownContainer:document.body,
                 onlyCountries: wp_sms_intel_tel_input.only_countries,
                 preferredCountries: wp_sms_intel_tel_input.preferred_countries,
                 //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
                 nationalMode: false,
                 utilsScript: wp_sms_intel_tel_input.util_js,
                 formatOnDisplay: false,
-                //initialCountry: 'auto'
+                // initialCountry: 'auto'
             });
         }
     }
@@ -29,6 +33,10 @@ function init() {
 
         window.intlTelInput(inputTell, {
             autoInsertDialCode: true,
+            autoPlaceholder:"aggressive",
+            allowDropdown:true,
+            strictMode:true,
+            dropdownContainer:document.body,
             onlyCountries: wp_sms_intel_tel_input.only_countries,
             preferredCountries: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
