@@ -221,15 +221,12 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9 - 12.05.2024 =
-* Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
-* Updates: Support for MTarget, SMSGatewayHub, and Octopush gateways.
-* Fixes: Issue with SMS report scheduling not clearing when disabled.
-* Fixes: Issue with specific WordPress user roles not receiving new post alerts.
-* Fixes: Email report bug that sent emails without data.
-* Improvement: Clearing of plugin schedules upon deactivation.
-* Improvement: Duplicate number removal before sending SMS.
-* Improvement: Mobile number validation and functionality.
-* Improvement: Overall performance.
+= v6.10 - **.05.2024 =
+* Addition: Added variable `%unsubscribe_url%` in Subscriber Notification
+* Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
+* Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce Checkout Block-based system
+* Improvement: Improved mobile field handler compatibility with WooCommerce Checkout Block-based system
+* Improvement: Fixed and improved issues and styles of the mobile field international flag field
+* Update: Updated Cellsynt integration
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
