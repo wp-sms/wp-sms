@@ -106,7 +106,7 @@ class Helper
             return '#place_order';
         }
     }
-  
+
     /**
      * Checks if the checkout page is using blocks
      *
@@ -114,7 +114,9 @@ class Helper
      */
     public static function isWooCheckoutBlock()
     {
-        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
+        if (class_exists('WooCommerce')) {
+            return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
+        }
     }
 
     /**

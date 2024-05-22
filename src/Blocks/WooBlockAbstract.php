@@ -85,7 +85,7 @@ class WooBlockAbstract
                     'required'      => $this->blockRequired,
                     'attributes'    => $this->blockAttributes,
                     'options'       => $this->blockOptions
-                ),
+                )
             );
         }
     }
