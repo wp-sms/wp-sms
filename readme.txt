@@ -5,11 +5,11 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 6.9
+Stable tag: 6.10
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The Best WordPress SMS Messaging and Notification Plugin for WordPress!
+Send SMS/MMS, 2FA, and OTP from WordPress via 300+ gateways like Twilio, Plivo, WhatsApp. Boost engagement with alerts for orders, posts, and more.
 
 == Description ==
 This plugin adds the ability to send SMS to your WordPress through more than 300 SMS gateways, such as Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Clockworksms, Messagebird, WhatsApp Business API and much more! [See All SMS Gateways](https://wp-sms-pro.com/gateways/)
@@ -224,9 +224,9 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 = v6.10 - **.05.2024 =
 * Addition: Added variable `%unsubscribe_url%` in Subscriber Notification
 * Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
-* Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce Checkout Block-based system
-* Improvement: Improved mobile field handler compatibility with WooCommerce Checkout Block-based system
+* Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce new checkout block-based
+* Improvement: Improved mobile field handler compatibility with WooCommerce new checkout block-based
 * Improvement: Fixed and improved issues and styles of the mobile field international flag field
-* Update: Updated Cellsynt integration
+* Update: Updated Cellsynt SMS gateway
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

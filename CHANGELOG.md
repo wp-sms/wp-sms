@@ -1,10 +1,10 @@
 = v6.10 - **.05.2024 =
 * Addition: Added variable `%unsubscribe_url%` in Subscriber Notification
 * Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
-* Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce Checkout Block-based system
-* Improvement: Improved mobile field handler compatibility with WooCommerce Checkout Block-based system
+* Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce new checkout block-based
+* Improvement: Improved mobile field handler compatibility with WooCommerce new checkout block-based
 * Improvement: Fixed and improved issues and styles of the mobile field international flag field
-* Update: Updated Cellsynt integration
+* Update: Updated Cellsynt SMS gateway
 
 = v6.9 - 12.05.2024 =
 * Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
