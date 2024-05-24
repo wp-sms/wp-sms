@@ -100,6 +100,7 @@ class Gateway
             'alphasms'       => 'alphasms.net',
             'smspapa'        => 'smspapa.com.au',
             'gupshup'        => 'gupshup.io',
+            'telesign'       => 'telesign.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
