@@ -236,22 +236,27 @@
   }
 }
 
-.wc-block-components-text-input .iti--show-flags{
- width: 100%!important;
+.wc-block-components-text-input .iti--show-flags {
+  width: 100% !important;
 }
 
-.wc-block-components-form .wc-block-components-text-input  , .wc-block-components-text-input  {
-  .iti--show-flags {
-     input,  input:focus{
-       padding: 1em var(--iti-input-padding) .5em var(--iti-selected-country-arrow-padding);
-       padding-bottom: 1em;
-       margin-left: 0;
+.wc-block-components-address-form__phone {
+  align-self: flex-start;
+}
 
-      .rtl &{
-        padding-right:var(--iti-selected-country-arrow-padding);
-        padding-left:  var(--iti-input-padding);
+.wc-block-components-form .wc-block-components-text-input, .wc-block-components-text-input {
+  .iti--show-flags, &.is-active .iti--show-flags {
+    input, input:focus {
+      padding: 1em var(--iti-input-padding) .5em var(--iti-selected-country-arrow-padding);
+      padding-bottom: 1em;
+      margin-left: 0;
+
+      .rtl & {
+        padding-right: var(--iti-selected-country-arrow-padding);
+        padding-left: var(--iti-input-padding);
       }
     }
+
     & ~ label {
       display: none;
     }
