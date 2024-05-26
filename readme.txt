@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 6.10
+Stable tag: 6.9.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -221,7 +221,7 @@ Here is the hook that you need to use. Just replace XXXXX with desired path.
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.10 - **.05.2024 =
+= v6.9.1 - **.05.2024 =
 * Addition: Added variable `%unsubscribe_url%` in Subscriber Notification
 * Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
 * Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce new checkout block-based

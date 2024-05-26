@@ -1,4 +1,4 @@
-= v6.10 - **.05.2024 =
+= v6.9.1 - **.05.2024 =
 * Addition: Added variable `%unsubscribe_url%` in Subscriber Notification
 * Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
 * Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce new checkout block-based
