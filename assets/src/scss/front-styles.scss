@@ -243,7 +243,8 @@
 .wc-block-components-form .wc-block-components-text-input  , .wc-block-components-text-input  {
   .iti--show-flags {
      input,  input:focus{
-       padding: 1.5em var(--iti-input-padding) .5em var(--iti-selected-country-arrow-padding);
+       padding: 1em var(--iti-input-padding) .5em var(--iti-selected-country-arrow-padding);
+       padding-bottom: 1em;
        margin-left: 0;
 
       .rtl &{
@@ -252,13 +253,7 @@
       }
     }
     & ~ label {
-      transform: translateY(.5em) scale(0.875);
-      padding-left: 50px!important;
-
-      .rtl &{
-        padding-left: 15px!important;
-        padding-right: 50px!important;
-      }
+      display: none;
     }
   }
 }
