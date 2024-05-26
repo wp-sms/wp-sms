@@ -8,8 +8,19 @@
   .iti--allow-dropdown {
     width: 100%;
 
+    .iti__selected-dial-code {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
     .wp-sms-input-mobile {
-      padding-left: 50px !important;
+      padding-left: 85px !important;
+      line-height: 1.3;
+
+      .rtl & {
+        padding-right: 85px !important;
+        padding-left: 15px !important;
+      }
     }
   }
 

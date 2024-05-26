@@ -64,7 +64,7 @@ class Features
         $preferred_countries_option = Option::getOption('international_mobile_preferred_countries');
 
         if ($only_countries_option) {
-            $tel_intel_vars['only_countries'] = $only_countries_option;
+             $tel_intel_vars['only_countries'] = $only_countries_option;
         } else {
             $tel_intel_vars['only_countries'] = '';
         }

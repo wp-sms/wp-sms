@@ -40,13 +40,19 @@ const staticAssets = {
 const entry = { ...staticAssets, ...blockEntries };
 
 module.exports = {
-    mode:'production',
+    mode: 'production',
     entry: entry,
     output: {
         path: path.resolve(__dirname, 'assets/blocks'),
         filename: (pathData) => {
-            // Do not create separate folders for admin and frontend
-            return Object.keys(blockEntries).includes(pathData.chunk.name) ? `${pathData.chunk.name}/index.js` : `${pathData.chunk.name}.min.js`;
+            const name = pathData.chunk.name;
+            if (Object.keys(blockEntries).includes(name)) {
+                return `${name}/index.js`;
+            } else if (name === 'frontend') {
+                return `../js/${name}.min.js`;
+            } else {
+                return `${name}.min.js`;
+            }
         },
         publicPath: '/assets/blocks/',
     },
@@ -63,7 +69,6 @@ module.exports = {
                     },
                 },
             },
-
             {
                 test: /\.css$/, // Add this rule for CSS files
                 use: [MiniCssExtractPlugin.loader, 'css-loader']

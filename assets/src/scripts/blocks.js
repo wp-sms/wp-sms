@@ -45,6 +45,7 @@ let wpSmsSubscribeForm = {
     },
 
     sendSubscriptionForm: function (element, $this = this) {
+
         let submitButton = element.children().find('.js-wpSmsSubmitButton')
         let messageContainer = element.children().find('.js-wpSmsSubscribeMessage')
         let processingOverlay = element.children().find('.js-wpSmsSubscribeOverlay')
@@ -52,13 +53,20 @@ let wpSmsSubscribeForm = {
         let firstStepSubmitButton = element.children().find('.js-wpSmsSubmitButton')
         let secondStep = element.children().find('.js-wpSmsSubscribeStepTwo')
         let customFields = element.children().find('.js-wpSmsSubscriberCustomFields')
+        let mobileField = element.children().find(".js-wpSmsSubscriberMobile")
 
         submitButton.prop('disabled', true)
         messageContainer.hide()
         processingOverlay.css('display', 'flex')
 
         let requestBody = {
-            name: element.children().find(".js-wpSmsSubscriberName input").val(), mobile: element.children().find(".js-wpSmsSubscriberMobile input").val(), group_id: this.getGroupId(element), type: element.children().find(".js-wpSmsSubscribeType:checked").val()
+            name: element.children().find(".js-wpSmsSubscriberName input").val(), mobile: '', group_id: this.getGroupId(element), type: element.children().find(".js-wpSmsSubscribeType:checked").val()
+        }
+         if (mobileField.find(".iti--show-flags").length > 0  ) {
+            const code = document.querySelector(".iti__selected-dial-code").innerHTML;
+            requestBody.mobile = (code + element.children().find(".js-wpSmsSubscriberMobile input.wp-sms-input-mobile").val()).replace(/[-\s]/g, '');
+        }else {
+            requestBody.mobile = element.children().find(".js-wpSmsSubscriberMobile input").val()
         }
 
         if (customFields.length) {
