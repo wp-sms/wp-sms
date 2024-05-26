@@ -270,6 +270,9 @@ input.wpsms-type-unsubscribe {
 }
 
 .iti {
+  .iti__selected-country{
+    outline: none!important;
+  }
   &.iti--allow-dropdown {
     .iti__country {
       margin: 0 !important;

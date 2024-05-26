@@ -5,29 +5,28 @@ jQuery(document).ready(function () {
 
 
 function init() {
-    var inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone, #billing-phone, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
 
-    if (inputTells && inputTells.length) {
+    // Initialize input fields with intlTelInput
+    function initializeInputs(inputTells) {
+        console.log(inputTells);
         for (var i = 0; i < inputTells.length; i++) {
-            var parentElement = inputTells[i].parentNode;
-            if (inputTells[i] && inputTells[i].nodeName == 'INPUT') {
+            if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
                 const body = document.body;
                 const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
                 inputTells[i].setAttribute('dir', direction);
-
-                window.intlTelInput(inputTells[i], {
-                    separateDialCode: true,
-                    allowDropdown: true,
-                    strictMode: true,
-                    autoPlaceholder: "aggressive",
-                    onlyCountries: wp_sms_intel_tel_input.only_countries,
-                    countryOrder: wp_sms_intel_tel_input.preferred_countries,
-                    //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
-                    nationalMode: false,
-                    useFullscreenPopup: false,
-                    utilsScript: wp_sms_intel_tel_input.util_js,
-                    formatOnDisplay: false,
-                    initialCountry: 'us'
+                 window.intlTelInput(inputTells[i], {
+                     separateDialCode: true,
+                     allowDropdown: true,
+                     strictMode: true,
+                     autoPlaceholder: "aggressive",
+                     onlyCountries: wp_sms_intel_tel_input.only_countries,
+                     countryOrder: wp_sms_intel_tel_input.preferred_countries,
+                     //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
+                     nationalMode: false,
+                     useFullscreenPopup: false,
+                     utilsScript: wp_sms_intel_tel_input.util_js,
+                     formatOnDisplay: false,
+                     initialCountry: 'us'
                 });
             }
         }
@@ -71,9 +70,12 @@ function init() {
     }
 
     // Handle the change event for the checkbox
-    document.querySelector('#shipping-fields .wc-block-checkout__use-address-for-billing input').addEventListener('change', function () {
-        if (document.querySelector('#billing-fields')) {
-            setTimeout(checkAndInitializeInputs, 500);
-        }
-    });
+    const shippingCheckbox = document.querySelector('#shipping-fields .wc-block-checkout__use-address-for-billing input');
+    if (shippingCheckbox) {
+        shippingCheckbox.addEventListener('change', function() {
+            if (document.querySelector('#billing-fields')) {
+                setTimeout(checkAndInitializeInputs, 500);
+            }
+        });
+    }
 }
