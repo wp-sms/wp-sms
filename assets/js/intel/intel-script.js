@@ -36,21 +36,21 @@ function init() {
     if (inputTell && !inputTell.getAttribute('placeholder')) {
         const body = document.body;
         const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
-        inputTells[i].setAttribute('dir', direction)
+        inputTell.setAttribute('dir', direction)
 
         window.intlTelInput(inputTell, {
-            autoInsertDialCode: true,
+             autoInsertDialCode: true,
             autoPlaceholder: "aggressive",
             allowDropdown: true,
-            strictMode: false,
+            strictMode: true,
             useFullscreenPopup: false,
             onlyCountries: wp_sms_intel_tel_input.only_countries,
-            preferredCountries: wp_sms_intel_tel_input.preferred_countries,
+            countryOrder: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
             nationalMode: wp_sms_intel_tel_input.national_mode,
             utilsScript: wp_sms_intel_tel_input.util_js,
             formatOnDisplay: false,
-            //initialCountry: 'auto'
-        });
+            initialCountry: 'us'
+         });
     }
 }
