@@ -244,6 +244,11 @@
   align-self: flex-start;
 }
 
+input.iti__search-input {
+  padding: 9px 12px !important;
+  border: none !important;
+}
+
 .wc-block-components-form .wc-block-components-text-input, .wc-block-components-text-input {
   .iti--show-flags, &.is-active .iti--show-flags {
     input, input:focus {

@@ -28,20 +28,22 @@ function init() {
                 });
              }
 
-             inputTells[i].addEventListener('blur', function() {
-                 let iti = intlTelInput.getInstance(this);
-                 if(this.value==''){
-                      let country=iti.getSelectedCountryData();
-                     this.value = '+'+country.dialCode;
-                 }else{
-                      if(iti.getNumber()){
-                         this.value=iti.getNumber().replace(/[-\s]/g, '')
+            function setDefaultCode(item){
+                 let iti = intlTelInput.getInstance(item);
+                 if(item.value==''){
+                     let country=iti.getSelectedCountryData();
+                     item.value = '+'+country.dialCode;
+                  }else{
+                     if(iti.getNumber()){
+                         item.value=iti.getNumber().replace(/[-\s]/g, '')
                      }else{
-                         this.value=this.value.replace(/[-\s]/g, '')
+                         item.value=item.value.replace(/[-\s]/g, '')
                      }
                  }
+             }
+             inputTells[i].addEventListener('blur', function() {
+                 setDefaultCode(this)
               });
-
          }
     }
 
@@ -49,10 +51,7 @@ function init() {
     function checkAndInitializeInputs() {
         var inputTells = document.querySelectorAll('#billing-wpsms\\/mobile');
         if (!inputTells.length) {
-            inputTells = document.querySelectorAll("#billing-phone");
-        }
-        if (!inputTells.length) {
-            inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone, #billing-phone, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
+            inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone,#billing-phone , #wp-sms-input-mobile, .user-mobile-wrap #mobile");
         }
         initializeInputs(inputTells);
     }
@@ -79,6 +78,22 @@ function init() {
             formatOnDisplay: false,
             initialCountry: 'us'
          });
+        function setDefaultCode(item){
+            let iti = intlTelInput.getInstance(item);
+            if(item.value==''){
+                let country=iti.getSelectedCountryData();
+                item.value = '+'+country.dialCode;
+            }else{
+                if(iti.getNumber()){
+                    item.value=iti.getNumber().replace(/[-\s]/g, '')
+                }else{
+                    item.value=item.value.replace(/[-\s]/g, '')
+                }
+            }
+        }
+        inputTell.addEventListener('blur', function() {
+            setDefaultCode(this)
+        });
     }
 
     // Handle the change event for the checkbox
