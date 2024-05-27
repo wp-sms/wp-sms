@@ -8,28 +8,41 @@ function init() {
 
     // Initialize input fields with intlTelInput
     function initializeInputs(inputTells) {
-        console.log(inputTells);
-        for (var i = 0; i < inputTells.length; i++) {
+         for (var i = 0; i < inputTells.length; i++) {
             if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
-                const body = document.body;
+                 const body = document.body;
                 const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
                 inputTells[i].setAttribute('dir', direction);
                  window.intlTelInput(inputTells[i], {
-                     separateDialCode: true,
+                     separateDialCode: false,
                      allowDropdown: true,
                      strictMode: true,
-                     autoPlaceholder: "aggressive",
                      onlyCountries: wp_sms_intel_tel_input.only_countries,
                      countryOrder: wp_sms_intel_tel_input.preferred_countries,
                      //autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
-                     nationalMode: false,
+                     nationalMode: true,
                      useFullscreenPopup: false,
                      utilsScript: wp_sms_intel_tel_input.util_js,
                      formatOnDisplay: false,
                      initialCountry: 'us'
                 });
-            }
-        }
+             }
+
+             inputTells[i].addEventListener('blur', function() {
+                 let iti = intlTelInput.getInstance(this);
+                 if(this.value==''){
+                      let country=iti.getSelectedCountryData();
+                     this.value = '+'+country.dialCode;
+                 }else{
+                      if(iti.getNumber()){
+                         this.value=iti.getNumber().replace(/[-\s]/g, '')
+                     }else{
+                         this.value=this.value.replace(/[-\s]/g, '')
+                     }
+                 }
+              });
+
+         }
     }
 
     // Check and initialize the main input fields
@@ -38,7 +51,6 @@ function init() {
         if (!inputTells.length) {
             inputTells = document.querySelectorAll("#billing-phone");
         }
-
         if (!inputTells.length) {
             inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone, #billing-phone, #wp-sms-input-mobile, .user-mobile-wrap #mobile");
         }
