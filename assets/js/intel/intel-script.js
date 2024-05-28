@@ -71,6 +71,10 @@ function init() {
 
     function checkAndInitializeInputs() {
         const primaryInput = document.querySelector('#billing-wpsms\\/mobile');
+        const isWooCommerceCheckoubBlock = document.querySelector('.wc-block-checkout ');
+        if (isWooCommerceCheckoubBlock) {
+            return null;
+        }
         if (primaryInput) {
             initializeInput(primaryInput);
         } else {
