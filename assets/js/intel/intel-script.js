@@ -2,12 +2,13 @@ jQuery(document).ready(function () {
     setTimeout(init, 1500);
 });
 
+const body = document.body;
+const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
+
 function init() {
     function initializeInput(input) {
         if (input && input.nodeName === 'INPUT') {
-            const body = document.body;
-            const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
-            input.setAttribute('dir', direction);
+             input.setAttribute('dir', direction);
 
             let iti = window.intlTelInput(input, {
                 separateDialCode: false,
@@ -37,7 +38,7 @@ function init() {
                     let valueWithoutOldCode = value.replace(oldDialCodePattern, '').trim();
 
                     // Set the new value with the new dial code
-                    input.value = `+${newDialCode} ${valueWithoutOldCode}`;
+                    input.value = (`+${newDialCode} ${valueWithoutOldCode}`).replace(/[-\s]/g, '');
 
                     // Update current dial code
                     currentDialCode = newDialCode;
@@ -56,6 +57,7 @@ function init() {
             }
 
             input.addEventListener('blur', function () {
+                input.value=(input.value).replace(/[-\s]/g, '')
                 updateInputWithCountryCode(this, iti.getSelectedCountryData().dialCode);
             });
 
@@ -91,4 +93,43 @@ function init() {
             }
         });
     }
+
+
+
+
+    var inputTell = document.querySelector("#job_mobile, #_job_mobile");
+    if (inputTell && !inputTell.getAttribute('placeholder')) {
+
+        inputTell.setAttribute('dir', direction)
+        window.intlTelInput(inputTell, {
+            separateDialCode: false,
+            allowDropdown: true,
+            strictMode: true,
+            useFullscreenPopup: false,
+            onlyCountries: wp_sms_intel_tel_input.only_countries,
+            countryOrder: wp_sms_intel_tel_input.preferred_countries,
+            autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
+            nationalMode: wp_sms_intel_tel_input.national_mode,
+            utilsScript: wp_sms_intel_tel_input.util_js,
+            formatOnDisplay: false,
+            initialCountry: 'us'
+        });
+        function setDefaultCode(item){
+            let iti = intlTelInput.getInstance(item);
+            if(item.value==''){
+                let country=iti.getSelectedCountryData();
+                item.value = '+'+country.dialCode;
+            }else{
+                if(iti.getNumber()){
+                    item.value=iti.getNumber().replace(/[-\s]/g, '')
+                }else{
+                    item.value=item.value.replace(/[-\s]/g, '')
+                }
+            }
+        }
+        inputTell.addEventListener('blur', function() {
+            setDefaultCode(this)
+        });
+    }
+
 }
