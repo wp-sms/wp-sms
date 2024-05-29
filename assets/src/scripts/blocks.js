@@ -63,7 +63,10 @@ let wpSmsSubscribeForm = {
             name: element.children().find(".js-wpSmsSubscriberName input").val(), mobile: '', group_id: this.getGroupId(element), type: element.children().find(".js-wpSmsSubscribeType:checked").val()
         }
          if (mobileField.find(".iti--show-flags").length > 0  ) {
-             requestBody.mobile = element.children().find(".js-wpSmsSubscriberMobile input.wp-sms-input-mobile").val()
+             let inputElement = element.children().find(".js-wpSmsSubscriberMobile input.wp-sms-input-mobile");
+             inputElement.focus();
+             inputElement.blur();
+             requestBody.mobile = inputElement.val()
         }else {
             requestBody.mobile = element.children().find(".js-wpSmsSubscriberMobile input").val()
         }
