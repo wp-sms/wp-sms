@@ -14,11 +14,11 @@
     }
 
     .wp-sms-input-mobile {
-      padding-left: 85px !important;
+      padding-left: 50px !important;
       line-height: 1.3;
 
       .rtl & {
-        padding-right: 85px !important;
+        padding-right:50px !important;
         padding-left: 15px !important;
       }
     }
@@ -270,6 +270,9 @@ input.wpsms-type-unsubscribe {
 }
 
 .iti {
+  .iti__selected-country{
+    outline: none!important;
+  }
   &.iti--allow-dropdown {
     .iti__country {
       margin: 0 !important;
