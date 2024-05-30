@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP SMS
  * Plugin URI: https://wp-sms-pro.com/
- * Description: Send SMS/MMS, 2FA, and OTP from WordPress via 300+ gateways like Twilio, Plivo, WhatsApp. Boost engagement with alerts for orders, posts, and more.
+ * Description: Ultimate SMS & MMS Notifications, 2FA, OTP, and Integrations with WooCommerce, GravityForms, and More
  * Version: 6.10
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
