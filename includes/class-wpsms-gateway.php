@@ -1498,4 +1498,19 @@ class Gateway
             ]);
         }
     }
+
+	/**
+	 * @return mixed|void
+	 */
+	public static function gatewayregions() {
+		$gatewayregions = array(
+			'Region'               => array(
+                'https://portal.mobtexting.com/' => 'india',
+                'https://ap.cpaas.bics.com/' => 'singapore',
+                'https://eu.cpaas.bics.com/' => 'europe',
+			),
+		);
+
+		return $gatewayregions;
+	}
 }

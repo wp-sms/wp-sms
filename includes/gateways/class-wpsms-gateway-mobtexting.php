@@ -64,6 +64,13 @@ class Mobtexting extends \WP_SMS\Gateway
         $to            = implode(',', $this->to);
         $msg           = $this->msg;
         $api_end_point = $this->wsdl_link . "/sms/send";
+
+        $gatewayregion = get_option('wpsms_settings');
+
+        if( isset($gatewayregion['gateway_region']) and !empty($gatewayregion['gateway_region']) ){
+            $api_end_point = $gatewayregion['gateway_region']. "api/v2/sms/send";
+        }
+
         $api_args      = array(
             'access_token' => $this->has_key,
             'sender'       => $this->from,
@@ -82,31 +89,22 @@ class Mobtexting extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', $response->get_error_message());
         }
 
-        $response_code = wp_remote_retrieve_response_code($response);
         $result        = json_decode($response['body']);
 
-        if ($response_code == '201') {
-            if ($result->status == 'success') {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result);
+        if($result->status == '200'){
+            // Log the result
+            $this->log($this->from, $this->msg, $this->to, $result);
 
-                /**
-                 * Run hook after send sms.
-                 *
-                 * @param string $result result output.
-                 * @since 2.4
-                 *
-                 */
-                do_action('wp_sms_send', $result);
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $result);
 
-                return $result;
-            } else {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result->message, 'error');
-
-                return $result->message;
-            }
-
+            return $result;
         } else {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result->message, 'error');
@@ -121,7 +119,7 @@ class Mobtexting extends \WP_SMS\Gateway
         if (!$this->has_key) {
             return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
-        $api_end_point = $this->wsdl_link . "/account/balance";
+        $api_end_point = $this->wsdl_link . "/finance/balance";
         $api_args      = array(
             'timeout' => 18000
         );
