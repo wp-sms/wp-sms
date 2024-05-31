@@ -71,14 +71,20 @@ class Helper
 
     /**
      * Get mobile field selector in the checkout page
-     * 
+     *
      * @return string
      */
     public static function getWooCommerceCheckoutMobileField()
     {
-        if (self::checkoutBlockEnabled()) {
+        if (self::isWooCheckoutBlock()) {
             // If the new checkout block is enabled
-            return 'billing-phone';
+            if ("use_phone_field_in_wc_billing" === wp_sms_get_option('add_mobile_field')) {
+                return 'billing-phone';
+            }
+
+            if ("add_mobile_field_in_wc_billing" === wp_sms_get_option('add_mobile_field')) {
+                return 'billing-wpsms\\/mobile';
+            }
         } else {
             // If classic checkout mode is enabled
             return self::getWooCommerceCheckoutFieldName();
@@ -87,12 +93,12 @@ class Helper
 
     /**
      * Get submit button element selector in the checkout page
-     * 
+     *
      * @return string
      */
     public static function getWooCommerceCheckoutSubmitBtn()
     {
-        if (self::checkoutBlockEnabled()) {
+        if (self::isWooCheckoutBlock()) {
             // If the new checkout block is enabled
             return '.wc-block-components-checkout-place-order-button';
         } else {
@@ -103,12 +109,14 @@ class Helper
 
     /**
      * Checks if the checkout page is using blocks
-     * 
+     *
      * @return bool
      */
-    public static function checkoutBlockEnabled() 
+    public static function isWooCheckoutBlock()
     {
-        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
+        if (class_exists('WooCommerce')) {
+            return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
+        }
     }
 
     /**

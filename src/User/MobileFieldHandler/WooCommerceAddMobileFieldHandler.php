@@ -2,6 +2,7 @@
 
 namespace WP_SMS\User\MobileFieldHandler;
 
+use WP_SMS\Blocks\WooMobileField;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
@@ -9,6 +10,13 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()
     {
+        if (Helper::isWooCheckoutBlock()) {
+            new WooMobileField();
+
+            add_action('woocommerce_validate_additional_field', [$this, 'validateMobileNumberInCheckoutBlockBasedCallback'], 10, 3);
+            add_action('woocommerce_set_additional_field_value', [$this, 'updateMobileNumberAfterPlaceTheOrderBlockBased'], 10, 4);
+        }
+
         // billing address in my account
         add_filter('woocommerce_billing_fields', [$this, 'registerFieldInBillingForm']);
         add_action('woocommerce_after_save_address_validation', [$this, 'validateMobileNumberCallback']);
@@ -72,11 +80,20 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
      */
     public function validateMobileNumberInCheckoutCallback($data, $errors)
     {
-        if (Option::getOption('optional_mobile_field') != 'optional' && !$_POST[$this->getUserMobileFieldName()]) {
+        $this->handleValidateError($errors, $_POST[$this->getUserMobileFieldName()]);
+    }
+
+    /**
+     * @param $errors \WP_Error
+     * @return void
+     */
+    private function handleValidateError(&$errors, $mobileNumber)
+    {
+        if (Option::getOption('optional_mobile_field') != 'optional' && !$mobileNumber) {
             $errors->add('mobile_number_error', __('<strong>ERROR</strong>: You must enter the mobile number.', 'wp-sms'));
         }
 
-        $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
+        $mobile = Helper::sanitizeMobileNumber($mobileNumber);
 
         if (!empty($mobile)) {
             $validity = Helper::checkMobileNumberValidity($mobile, get_current_user_id());
@@ -95,7 +112,7 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
      */
     public function updateMobileNumberAfterPlaceTheOrder($orderId, $postedData, $order)
     {
-        $userMobile = isset($postedData[$this->getUserMobileFieldName()]) ? sanitize_text_field($postedData[$this->getUserMobileFieldName()]) : '';
+        $userMobile = isset($postedData[$this->getUserMobileFieldName()]) ? Helper::sanitizeMobileNumber($postedData[$this->getUserMobileFieldName()]) : '';
 
         if ($userMobile) {
             $this->updateMobileNumber($orderId, $userMobile);
@@ -181,7 +198,7 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
      */
     private function updateMobileNumber($orderId, $mobileNumber)
     {
-        $mobileNumber = sanitize_text_field($mobileNumber);
+        $mobileNumber = Helper::sanitizeMobileNumber($mobileNumber);
         $mobileNumber = str_replace(' ', '', $mobileNumber);
 
         // Update in order meta
@@ -192,6 +209,37 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 
         if ($userId and $userId != 0) {
             update_user_meta($userId, $this->getUserMobileFieldName(), $mobileNumber);
+        }
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @param $group
+     * @param $order \WC_Order
+     * @return void
+     */
+    public function updateMobileNumberAfterPlaceTheOrderBlockBased($key, $value, $group, $order)
+    {
+        if ($key == 'wpsms/mobile') {
+            $userMobile = Helper::sanitizeMobileNumber($value);
+
+            if ($userMobile) {
+                $this->updateMobileNumber($order->get_id(), $userMobile);
+            }
+        }
+    }
+
+    /**
+     * @param \WP_Error $errors
+     * @param $fieldKey
+     * @param $fieldValue
+     * @return void
+     */
+    public function validateMobileNumberInCheckoutBlockBasedCallback(\WP_Error $errors, $fieldKey, $fieldValue)
+    {
+        if ('wpsms/mobile' === $fieldKey) {
+            $this->handleValidateError($errors, $fieldValue);
         }
     }
 }

@@ -12,23 +12,6 @@ class OrderViewManager
     public function init()
     {
         add_action('add_meta_boxes', array($this, 'registerMetaBoxes'));
-        add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
-    }
-
-    // Enqueue wp-sms woocommerce admin scripts
-    function admin_scripts()
-    {
-        // Check if the page is wc-orders
-        if (isset($_GET['page']) && $_GET['page'] !== 'wc-orders') {
-            return;
-        }
-        global $sms;
-
-        $nonce    = wp_create_nonce('wp_rest');
-
-
-
-
     }
 
     /**

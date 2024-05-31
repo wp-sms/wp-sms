@@ -3,6 +3,7 @@
 namespace WP_SMS\Notification\Handler;
 
 use WP_SMS\Notification\Notification;
+use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 
 class WooCommerceOrderNotification extends Notification
 {
@@ -35,7 +36,7 @@ class WooCommerceOrderNotification extends Notification
     {
         if ($orderId) {
             $this->order = wc_get_order($orderId);
-            $optInStatus = $this->order->get_meta('wpsms_woocommerce_order_notification');
+            $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
 
             if ($optInStatus and $optInStatus == 'no') {
                 $this->optIn = false;
@@ -46,7 +47,7 @@ class WooCommerceOrderNotification extends Notification
     protected function success($to)
     {
         $this->order->add_order_note(
-            // translators: %s: Phone numbers
+        // translators: %s: Phone numbers
             sprintf(__('Successfully send SMS notification to %s', 'wp-sms'), implode(',', $to))
         );
     }
@@ -54,7 +55,7 @@ class WooCommerceOrderNotification extends Notification
     protected function failed($to, $response)
     {
         $this->order->add_order_note(
-            // translators: %1$s: Phone number, %2$s: Error message
+        // translators: %1$s: Phone number, %2$s: Error message
             sprintf(__('Failed to send SMS notification to %1$s. Error: %2$s', 'wp-sms'), implode(',', $to), $response->get_error_message())
         );
     }

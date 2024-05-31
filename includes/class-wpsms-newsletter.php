@@ -26,7 +26,7 @@ class Newsletter
     /**
      * @return mixed|void|null
      */
-    public function getUnSubscriberQueryString()
+    public static function getUnSubscriberQueryString()
     {
         return apply_filters('wpsms_unsubscribe_query_string', 'wpsms_unsubscribe');
     }
@@ -36,11 +36,11 @@ class Newsletter
      *
      * @return string
      */
-    public function generateUnSubscribeUrlByNumber($number)
+    public static function generateUnSubscribeUrlByNumber($number)
     {
         $unSubscribeUrl = add_query_arg([
-            $this->getUnSubscriberQueryString() => $number,
-            'nonce'                             => wp_create_nonce('wp_sms_unsubscribe')
+            self::getUnSubscriberQueryString() => $number,
+            'csrf'                             => wp_hash('wp_sms_unsubscribe')
         ], get_bloginfo('url'));
 
         return wp_sms_shorturl($unSubscribeUrl);
@@ -52,7 +52,7 @@ class Newsletter
      */
     public function unSubscriberNumberByUrlAction()
     {
-        $unSubscriberQueryString = $this->getUnSubscriberQueryString();
+        $unSubscriberQueryString = self::getUnSubscriberQueryString();
 
         if (!isset($_REQUEST[$unSubscriberQueryString]) || !wp_unslash($_REQUEST[$unSubscriberQueryString])) {
             return;
@@ -60,7 +60,8 @@ class Newsletter
 
         // Check CSRF
         if (apply_filters('wpsms_unsubscribe_csrf_enabled', true)) {
-            if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'wp_sms_unsubscribe')) {
+
+            if (!isset($_REQUEST['csrf']) || wp_hash('wp_sms_unsubscribe') != $_REQUEST['csrf']) {
                 wp_die(esc_html__('Access denied.', 'wp-sms'), esc_html__('SMS newsletter', 'wp-sms'), [
                     'link_text' => esc_html__('Home page', 'wp-sms'),
                     'link_url'  => esc_url(get_bloginfo('url')),
@@ -318,7 +319,7 @@ class Newsletter
     {
         global $wpdb;
 
-        $result     = $wpdb->get_row(
+        $result = $wpdb->get_row(
             $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` = %d", $group_id)
         );
 
@@ -418,7 +419,7 @@ class Newsletter
                 'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
             );
         } else {
-            $result           = $wpdb->insert(
+            $result   = $wpdb->insert(
                 $wpdb->prefix . "sms_subscribes_group",
                 array(
                     'name' => $name,
@@ -468,8 +469,8 @@ class Newsletter
             return;
         }
 
-        $table   = $wpdb->prefix . 'sms_subscribes_group';
-        $count   = $wpdb->get_var(
+        $table = $wpdb->prefix . 'sms_subscribes_group';
+        $count = $wpdb->get_var(
             $wpdb->prepare("SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name)
         );
 

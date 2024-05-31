@@ -99,6 +99,8 @@ class Gateway
             'awssns'         => 'aws.amazon.com',
             'alphasms'       => 'alphasms.net',
             'smspapa'        => 'smspapa.com.au',
+            'gupshup'        => 'gupshup.io',
+            'telesign'       => 'telesign.com',
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',

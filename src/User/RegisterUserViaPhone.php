@@ -12,7 +12,7 @@ class RegisterUserViaPhone
     public function __construct($mobileNumber)
     {
         // Sanitize and prepare mobile number
-        $this->mobileNumber = str_replace('+', '', Helper::sanitizeMobileNumber($mobileNumber));
+        $this->mobileNumber = Helper::sanitizeMobileNumber($mobileNumber);
     }
 
     /**
@@ -52,7 +52,7 @@ class RegisterUserViaPhone
      */
     public function generateUniqueUsername()
     {
-        $username = 'phone_' . $this->mobileNumber;
+        $username = 'phone_' . str_replace('+', '', $this->mobileNumber);
 
         /**
          * Allow to modify the username with filter
@@ -72,7 +72,7 @@ class RegisterUserViaPhone
             $siteDomain = $siteDomain . '.' . $siteDomain;
         }
 
-        $emailAddress = $this->mobileNumber . '@' . $siteDomain;
+        $emailAddress = str_replace('+', '', $this->mobileNumber) . '@' . $siteDomain;
 
         /**
          * Allow to modify the email address with filter

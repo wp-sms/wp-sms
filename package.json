@@ -4,7 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
-    "build": "wp-scripts build --webpack-src-dir=assets/src/blocks --output-path=assets/blocks",
+    "build": "wp-scripts build --webpack-src-dir=assets/src/blocks --output-path=assets/blocks && rm -rf assets/blocks/dev",
     "start": "concurrently \"wp-scripts start --webpack-copy-php --webpack-src-dir=assets/src/blocks --output-path=assets/blocks\" \"npm run dev\"",
     "watch": "concurrently \"npm run sass-compile\" \"npm run js-compile\" -- \"watch 'npm run sass-compile' 'npm run js-compile' ./assets/src\"",
     "sass-compile": "concurrently \"node-sass assets/src/scss/front-styles.scss assets/css/front-styles.css --output-style compressed\" \"node-sass assets/src/scss/mail.scss assets/css/mail.css --output-style compressed\" \"node-sass assets/src/admin/admin.scss assets/css/admin.css --output-style compressed\"",
@@ -16,21 +16,28 @@
   "license": "GPLv3",
   "devDependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/preset-react": "^7.24.1",
     "@babel/runtime-corejs2": "^7.0.0",
     "@wordpress/babel-preset-default": "^2.1.0",
-    "@wordpress/components": "^22.0.0",
+    "@wordpress/components": "^23.8.0",
+    "@wordpress/dependency-extraction-webpack-plugin": "^5.6.0",
     "@wordpress/env": "^5.7.0",
-    "@wordpress/scripts": "^27.2.0",
+    "@wordpress/scripts": "^26.0.0",
     "breakpoint-sass": "^2.7.1",
+    "clean-webpack-plugin": "^4.0.0",
     "concurrently": "^7.5.0",
     "copy-webpack-plugin": "^10.2.4",
+    "css-loader": "^7.1.1",
+    "mini-css-extract-plugin": "^2.8.1",
     "node-sass": "^8.0.0",
+    "style-loader": "^4.0.0",
+    "svg-inline-loader": "^0.8.2",
     "terser-webpack-plugin": "^5.3.10",
-    "watch": "^1.0.2",
+    "watch": "^0.13.0",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@wordpress/block-editor": "^10.5.0"
+    "@woocommerce/dependency-extraction-webpack-plugin": "^3.0.0"
   }
 }

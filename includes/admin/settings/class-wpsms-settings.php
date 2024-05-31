@@ -1605,7 +1605,7 @@ class Settings
                     'id'   => 'welcome',
                     'name' => $this->renderOptionHeader(
                         esc_html__('Welcome SMS Setup', 'wp-sms'),
-                        esc_html__('Set up automatic SMS messages for new subscribers.', 'wp-sms'),
+                        esc_html__('Set up automatic SMS messages for new subscribers.', 'wp-sms')
                     ),
                     'type' => 'header',
                     'doc'  => '/resources/send-welcome-sms-to-new-subscribers/',
@@ -2159,7 +2159,7 @@ class Settings
                 'id'   => 'newsletter_gdpr',
                 'name' => $this->renderOptionHeader(
                     esc_html__('Data Protection Settings', 'wp-sms'),
-                    esc_html__('Set up how you comply with data protection regulations', 'wp-sms'),
+                    esc_html__('Set up how you comply with data protection regulations', 'wp-sms')
                 ),
                 'type' => 'header'
             );

@@ -55,9 +55,26 @@ class SmsDispatcher
 
     private function dispatchQueuedSend()
     {
+        $remoteRequestQueue = WPSms()->getRemoteRequestQueue();
+
         foreach ($this->smsArguments['to'] as $number) {
-            $this->sendToSingleNumber($number);
+            $singleArgument       = $this->smsArguments;
+            $singleArgument['to'] = $number;
+
+            /**
+             * Filter to modify the arguments before dispatching the SMS to a single number.
+             * This filter can be used to customize the SMS parameters, such as the recipient's number,
+             * message content, or any other related argument.
+             *
+             * @url https://wp-sms-pro.com/resources/filter-wp_sms_single_dispatch_arguments/
+             * @param array $singleArgument The arguments for sending an SMS.
+             */
+            $singleArgument = apply_filters('wp_sms_single_dispatch_arguments', $singleArgument);
+
+            $remoteRequestQueue->push_to_queue(['parameters' => $singleArgument])->save();
         }
+
+        $remoteRequestQueue->dispatch();
 
         $this->applyResponseFilter();
 
@@ -68,6 +85,16 @@ class SmsDispatcher
     {
         $singleArgument       = $this->smsArguments;
         $singleArgument['to'] = $number;
+
+        /**
+         * Filter to modify the arguments before dispatching the SMS to a single number.
+         * This filter can be used to customize the SMS parameters, such as the recipient's number,
+         * message content, or any other related argument.
+         *
+         * @url https://wp-sms-pro.com/resources/filter-wp_sms_single_dispatch_arguments/
+         * @param array $singleArgument The arguments for sending an SMS.
+         */
+        $singleArgument = apply_filters('wp_sms_single_dispatch_arguments', $singleArgument);
 
         WPSms()->getRemoteRequestQueue()
             ->push_to_queue(['parameters' => $singleArgument])
