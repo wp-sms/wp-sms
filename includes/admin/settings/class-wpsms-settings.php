@@ -1413,6 +1413,13 @@ class Settings
                     'options' => Gateway::gateway(),
                     'desc'    => esc_html__('Select your preferred SMS Gateway to send messages.', 'wp-sms')
                 ),
+                'gateway_region'                 => array(
+                    'id'      => 'gateway_region',
+                    'name'    => esc_html__('Choose the Gateway Region', 'wp-sms'),
+                    'type'    => 'advancedselect',
+                    'options' => Gateway::gatewayregions(),
+                    'desc'    => esc_html__('Select your preferred SMS Gateway Region to send messages.', 'wp-sms')
+                ),                
                 'gateway_help'                 => array(
                     'id'      => 'gateway_help',
                     'name'    => esc_html__('Gateway Guide', 'wp-sms'),
