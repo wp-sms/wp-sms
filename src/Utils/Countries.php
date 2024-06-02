@@ -65,11 +65,15 @@ class Countries
      * @param   string  $field  Pluck the array with this field.
      * @param   string  $key    Which field should be used as key? (Works only when `$field` is not empty)
      *
-     * @return  array           The plucked or the complete array.
+     * @return  array           The plucked or the complete array, or empty array on error.
      */
     public static function getCountries($field = '', $key = '')
     {
-        self::initializeCountries();
+        try {
+            self::initializeCountries();
+        } catch (\Exception $e) {
+            return [];
+        }
 
         if (!empty($field) && !empty($key))
             return wp_list_pluck(self::$countries, $field, $key);
