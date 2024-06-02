@@ -32,13 +32,6 @@ class Countries
      */
     private static function getCountriesFile()
     {
-        if (!file_exists(self::$countriesFileDir)) {
-            add_action('admin_notices', function () {
-                echo '<div class="notice notice-error"><p>' . __('WP SMS: countries.json file not exists!', 'wp-sms') . '</p></div>';
-            });
-            return [];
-        }
-
         $jsonData = wp_json_file_decode(self::$countriesFileDir, ['associative' => true]);
         return $jsonData !== null ? $jsonData : [];
     }
