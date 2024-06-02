@@ -103,4 +103,14 @@ class Countries
     {
         return self::getCountries('fullInfo', 'dialCode');
     }
+
+    /**
+     * Returns country dial codes as an associative array with their codes as the key.
+     *
+     * @return  array   Format: `['dialCode' => 'name', 'dialCode' => 'name', ...]`.
+     */
+    public static function getCountryDialCodeByCode()
+    {
+        return self::getCountries('dialCode', 'code');
+    }
 }

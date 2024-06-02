@@ -4,6 +4,7 @@ namespace WP_SMS;
 
 use WC_Blocks_Utils;
 use WP_Error;
+use WP_SMS\Utils\Countries;
 
 /**
  * Class WP_SMS
@@ -371,6 +372,7 @@ class Helper
         $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
 
         // check whether the mobile number is in international mobile only countries
+        /** @var array */
         $international_mobile_only_countries = Option::getOption('international_mobile_only_countries');
 
         /**
@@ -444,12 +446,13 @@ class Helper
          * 4. Check whether the number country is valid or not
          */
         if ($international_mode && $international_mobile_only_countries) {
-            $countryCallingCodes = wp_json_file_decode(WP_SMS_DIR . 'assets/countries-code.json', ['associative' => true]);
-            $onlyCountries       = array_filter($countryCallingCodes, function ($code) use ($international_mobile_only_countries) {
+            $allCodes = Countries::getCountryDialCodeByCode();
+            $allowedDialCodes = array_filter($allCodes, function ($code) use ($international_mobile_only_countries) {
                 return in_array($code, $international_mobile_only_countries);
             }, ARRAY_FILTER_USE_KEY);
-            $isValid             = false;
-            foreach ($onlyCountries as $code) {
+
+            $isValid = false;
+            foreach ($allowedDialCodes as $code) {
                 $countryLength = strlen($code);
                 $prefix        = substr($mobileNumber, 0, $countryLength);
                 if ($prefix === $code) {
