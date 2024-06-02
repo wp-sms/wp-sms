@@ -5,6 +5,7 @@ namespace WP_SMS;
 use Forminator_API;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
+use WP_SMS\Utils\Countries;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -1345,7 +1346,7 @@ class Settings
                     'name'      => esc_html__('Only Countries', 'wp-sms'),
                     'type'      => 'countryselect',
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => $this->getCountriesList(),
+                    'options'   => Countries::getCountries(),
                     'desc'      => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
                 ),
                 'international_mobile_preferred_countries' => array(
@@ -1353,7 +1354,7 @@ class Settings
                     'name'      => esc_html__('Preferred Countries', 'wp-sms'),
                     'type'      => 'countryselect',
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => $this->getCountriesList(),
+                    'options'   => Countries::getCountries(),
                     'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
                 'mobile_county_code'                       => array(
@@ -2862,20 +2863,6 @@ class Settings
             }
         }
         return $return_value;
-    }
-
-    /**
-     * Get countries list
-     *
-     * @return array|mixed|object
-     */
-    public function getCountriesList()
-    {
-        // Load countries list file
-        $file = WP_SMS_DIR . 'assets/countries.json';
-        $file = file_get_contents($file); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-
-        return json_decode($file, true);
     }
 
     /**
