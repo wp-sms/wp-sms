@@ -446,10 +446,15 @@ class Helper
          * 4. Check whether the number country is valid or not
          */
         if ($international_mode && $international_mobile_only_countries) {
-            $allCodes = Countries::getCountryDialCodeByCode();
-            $allowedDialCodes = array_filter($allCodes, function ($code) use ($international_mobile_only_countries) {
-                return in_array($code, $international_mobile_only_countries);
-            }, ARRAY_FILTER_USE_KEY);
+            $allDialCodes     = Countries::getAllDialCodesByCode();
+            $allowedDialCodes = [];
+            foreach ($international_mobile_only_countries as $code) {
+                if (!empty($allDialCodes[$code])) {
+                    // Some countries have multiple dial codes (e.g. Puerto Rico)
+                    foreach ($allDialCodes[$code] as $dialCode)
+                        $allowedDialCodes[] = $dialCode;
+                }
+            }
 
             $isValid = false;
             foreach ($allowedDialCodes as $code) {

@@ -105,12 +105,12 @@ class Countries
     }
 
     /**
-     * Returns country dial codes as an associative array with their codes as the key.
+     * Returns countries' all dial codes as an associative array with their codes as the key.
      *
-     * @return  array   Format: `['dialCode' => 'name', 'dialCode' => 'name', ...]`.
+     * @return  array   Format: `['code' => 'allDialCodes', 'code' => 'allDialCodes', ...]`.
      */
-    public static function getCountryDialCodeByCode()
+    public static function getAllDialCodesByCode()
     {
-        return self::getCountries('dialCode', 'code');
+        return self::getCountries('allDialCodes', 'code');
     }
 }
