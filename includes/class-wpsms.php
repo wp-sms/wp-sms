@@ -136,6 +136,7 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
+        $this->include('src/Utils/Countries.php');
         $this->include('src/Utils/CsvHelper.php');
         $this->include('src/Components/Sms.php');
         $this->include('src/Components/RemoteRequest.php');

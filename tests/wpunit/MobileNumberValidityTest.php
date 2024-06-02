@@ -1,5 +1,7 @@
 <?php
 
+use WP_SMS\Utils\Countries;
+
 class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
 {
     /**
@@ -105,5 +107,15 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
         foreach ($finalNumbers as $number) {
             $this->assertStringContainsString($correctNumberFormat, $number);
         }
+    }
+
+    public function testValidDialCodes()
+    {
+        $allCounties = Countries::getCountryNamesByDialCode();
+
+        $this->assertEquals($allCounties['+98'], 'Iran');
+        // $this->assertEquals($allCounties['+44'], 'United Kinsgdom (UK)');
+        $this->assertEquals($allCounties['+44'], 'United Kingdom (UK)');
+        $this->assertEquals($allCounties['+49'], 'Germany');
     }
 }
