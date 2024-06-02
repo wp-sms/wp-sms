@@ -136,12 +136,12 @@ class WP_SMS
     {
         // Utility classes.
         $this->include('src/Helper.php');
-        $this->include('src/Utils/Countries.php');
         $this->include('src/Utils/CsvHelper.php');
         $this->include('src/Components/Sms.php');
         $this->include('src/Components/RemoteRequest.php');
         $this->include('src/Components/Logger.php');
         $this->include('src/Components/Assets.php');
+        $this->include('src/Components/Countries.php');
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');

@@ -3,7 +3,7 @@
 use WP_SMS\BackgroundProcess\SmsDispatcher;
 use WP_SMS\Gateway;
 use WP_SMS\Option;
-use WP_SMS\Utils\Countries;
+use WP_SMS\Components\Countries;
 
 if (!defined('ABSPATH')) {
     exit;
