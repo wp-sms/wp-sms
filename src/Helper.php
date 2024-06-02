@@ -4,7 +4,6 @@ namespace WP_SMS;
 
 use WC_Blocks_Utils;
 use WP_Error;
-use WP_SMS\Utils\Countries;
 
 /**
  * Class WP_SMS
@@ -446,7 +445,7 @@ class Helper
          * 4. Check whether the number country is valid or not
          */
         if ($international_mode && $international_mobile_only_countries) {
-            $allDialCodes     = Countries::getAllDialCodesByCode();
+            $allDialCodes     = wp_sms_countries()->getAllDialCodesByCode();
             $allowedDialCodes = [];
             foreach ($international_mobile_only_countries as $code) {
                 if (!empty($allDialCodes[$code])) {

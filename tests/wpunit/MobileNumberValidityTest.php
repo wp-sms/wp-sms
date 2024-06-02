@@ -1,7 +1,5 @@
 <?php
 
-use WP_SMS\Utils\Countries;
-
 class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
 {
     /**
@@ -111,7 +109,7 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
 
     public function testValidDialCodes()
     {
-        $allCounties = Countries::getCountryNamesByDialCode();
+        $allCounties = wp_sms_countries()->getCountryNamesByDialCode();
 
         $this->assertEquals($allCounties['+81'], 'Japan');
         // $this->assertEquals($allCounties['+44'], 'United Kinsgdom (UK)');
@@ -121,7 +119,7 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
 
     public function testCountriesWithMultipleDialCodes()
     {
-        $allDialCodes = Countries::getAllDialCodesByCode();
+        $allDialCodes = wp_sms_countries()->getAllDialCodesByCode();
 
         $this->assertTrue(in_array('+1939', $allDialCodes['PR']));
         $this->assertTrue(!in_array('+34', $allDialCodes['FR']));

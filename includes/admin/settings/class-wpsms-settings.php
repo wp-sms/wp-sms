@@ -5,7 +5,6 @@ namespace WP_SMS;
 use Forminator_API;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
-use WP_SMS\Utils\Countries;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -1346,7 +1345,7 @@ class Settings
                     'name'      => esc_html__('Only Countries', 'wp-sms'),
                     'type'      => 'countryselect',
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => Countries::getCountries(),
+                    'options'   => wp_sms_countries()->getCountries(),
                     'desc'      => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
                 ),
                 'international_mobile_preferred_countries' => array(
@@ -1354,7 +1353,7 @@ class Settings
                     'name'      => esc_html__('Preferred Countries', 'wp-sms'),
                     'type'      => 'countryselect',
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => Countries::getCountries(),
+                    'options'   => wp_sms_countries()->getCountries(),
                     'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
                 'mobile_county_code'                       => array(

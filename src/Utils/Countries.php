@@ -4,25 +4,30 @@ namespace WP_SMS\Utils;
 
 class Countries
 {
-    private static $countries;
-    private static $countriesFileDir = WP_SMS_DIR . 'assets/countries.json';
+    protected static $instance = null;
+
+    private $countries;
+    private $countriesFileDir = WP_SMS_DIR . 'assets/countries.json';
 
     /**
-     * Initializes the `$countries` array.
+     * Returns an instance of this class.
      *
-     * @return  void
-     * @throws  \Exception
+     * @return  Countries
      */
-    private static function initializeCountries()
+    public static function getInstance()
+    {
+        self::$instance === null && self::$instance = new self;
+        return self::$instance;
+    }
+
+    public function __construct()
     {
         // Already initialized
-        if (!empty(self::$countries)) return;
+        if (!empty($this->countries)) return;
 
-        self::$countries = self::getCountriesFile();
-        if (empty(self::$countries))
-            throw new \Exception(__('Invalid countries.json file, check logs!', 'wp-sms'));
+        $this->countries = $this->getCountriesFile();
 
-        self::addFullInfoField();
+        $this->addFullInfoField();
     }
 
     /**
@@ -30,9 +35,9 @@ class Countries
      *
      * @return  array   Countries list as an associative array, or empty array on error.
      */
-    private static function getCountriesFile()
+    private function getCountriesFile()
     {
-        $jsonData = wp_json_file_decode(self::$countriesFileDir, ['associative' => true]);
+        $jsonData = wp_json_file_decode($this->countriesFileDir, ['associative' => true]);
         return $jsonData !== null ? $jsonData : [];
     }
 
@@ -43,11 +48,11 @@ class Countries
      *
      * @return  void
      */
-    private static function addFullInfoField()
+    private function addFullInfoField()
     {
-        if (empty(self::$countries)) return;
+        if (empty($this->countries)) return;
 
-        foreach (self::$countries as $index => $country) {
+        foreach ($this->countries as $index => $country) {
             if (!empty($country['fullInfo'])) continue;
 
             $fullInfo = $country['name'];
@@ -55,7 +60,7 @@ class Countries
                 $fullInfo .= " ({$country['nativeName']})";
             $fullInfo .= ' (' . implode($country['allDialCodes']) . ')';
 
-            self::$countries[$index]['fullInfo'] = $fullInfo;
+            $this->countries[$index]['fullInfo'] = $fullInfo;
         }
     }
 
@@ -67,18 +72,15 @@ class Countries
      *
      * @return  array           The plucked or the complete array, or empty array on error.
      */
-    public static function getCountries($field = '', $key = '')
+    public function getCountries($field = '', $key = '')
     {
-        try {
-            self::initializeCountries();
-        } catch (\Exception $e) {
+        if (empty($this->countries))
             return [];
-        }
 
         if (!empty($field) && !empty($key))
-            return wp_list_pluck(self::$countries, $field, $key);
+            return wp_list_pluck($this->countries, $field, $key);
 
-        return self::$countries;
+        return $this->countries;
     }
 
     /**
@@ -86,9 +88,9 @@ class Countries
      *
      * @return  array   Format: `['dialCode' => 'name', 'dialCode' => 'name', ...]`.
      */
-    public static function getCountryNamesByDialCode()
+    public function getCountryNamesByDialCode()
     {
-        return self::getCountries('name', 'dialCode');
+        return $this->getCountries('name', 'dialCode');
     }
 
     /**
@@ -96,9 +98,9 @@ class Countries
      *
      * @return  array   Format: `['dialCode' => 'name (nativeName) (dialCode)', 'dialCode' => 'name (nativeName) (dialCode)', ...]`.
      */
-    public static function getCountryFullInfoByDialCode()
+    public function getCountryFullInfoByDialCode()
     {
-        return self::getCountries('fullInfo', 'dialCode');
+        return $this->getCountries('fullInfo', 'dialCode');
     }
 
     /**
@@ -106,8 +108,8 @@ class Countries
      *
      * @return  array   Format: `['code' => 'allDialCodes', 'code' => 'allDialCodes', ...]`.
      */
-    public static function getAllDialCodesByCode()
+    public function getAllDialCodesByCode()
     {
-        return self::getCountries('allDialCodes', 'code');
+        return $this->getCountries('allDialCodes', 'code');
     }
 }
