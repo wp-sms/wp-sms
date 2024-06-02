@@ -8,7 +8,20 @@ function init() {
     const body = document.body;
     const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
 
-    // Initialize input fields with intlTelInput
+    const { only_countries, preferred_countries } = wp_sms_intel_tel_input;
+    let defaultCountry;
+
+    if (only_countries.length > 0) {
+        if (preferred_countries.length > 0 && preferred_countries.every(country => only_countries.includes(country))) {
+            defaultCountry = preferred_countries[0];
+        } else {
+            defaultCountry = only_countries[0];
+        }
+    } else {
+        defaultCountry = preferred_countries.length > 0 ? preferred_countries[0] : 'us';
+    }
+
+     // Initialize input fields with intlTelInput
 
     function initializeInputs(inputTells) {
         for (var i = 0; i < inputTells.length; i++) {
@@ -26,7 +39,7 @@ function init() {
                     utilsScript: wp_sms_intel_tel_input.util_js,
                     hiddenInput: () => ({ phone: inputTells[i].name}),
                     formatOnDisplay: false,
-                    initialCountry: wp_sms_intel_tel_input.only_countries.length > 0 ? wp_sms_intel_tel_input.only_countries[0] :  'us'
+                    initialCountry: defaultCountry
                  });
                   function setDefaultCode(item){
                       let iti = intlTelInput.getInstance(item);
@@ -82,7 +95,7 @@ function init() {
             nationalMode: wp_sms_intel_tel_input.national_mode,
             utilsScript: wp_sms_intel_tel_input.util_js,
             formatOnDisplay: false,
-            initialCountry: wp_sms_intel_tel_input.only_countries.length > 0 ? wp_sms_intel_tel_input.only_countries[0] :  'us'
+            initialCountry: defaultCountry
          });
         function setDefaultCode(item){
             let iti = intlTelInput.getInstance(item);
