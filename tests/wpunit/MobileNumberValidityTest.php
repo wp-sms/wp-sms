@@ -113,7 +113,7 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
     {
         $allCounties = Countries::getCountryNamesByDialCode();
 
-        $this->assertEquals($allCounties['+98'], 'Iran');
+        $this->assertEquals($allCounties['+81'], 'Japan');
         // $this->assertEquals($allCounties['+44'], 'United Kinsgdom (UK)');
         $this->assertEquals($allCounties['+44'], 'United Kingdom (UK)');
         $this->assertEquals($allCounties['+49'], 'Germany');
@@ -124,8 +124,8 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
         $allDialCodes = Countries::getAllDialCodesByCode();
 
         $this->assertTrue(in_array('+1939', $allDialCodes['PR']));
-        // $this->assertTrue(in_array('+97', $allDialCodes['IR']));
-        $this->assertTrue(in_array('+98', $allDialCodes['IR']));
+        $this->assertTrue(!in_array('+34', $allDialCodes['FR']));
+        $this->assertTrue(in_array('+33', $allDialCodes['FR']));
         $this->assertTrue(in_array('+1849', $allDialCodes['DO']));
     }
 }
