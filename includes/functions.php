@@ -129,23 +129,13 @@ function wp_sms_render_media_list($media)
 }
 
 /**
- * Get countries component.
+ * Returns countries component.
  *
  * @return  Countries
  */
 function wp_sms_countries()
 {
     return Countries::getInstance();
-}
-
-/**
- * Get countries by code
- *
- * @return string[]
- */
-function wp_sms_get_countries()
-{
-    return wp_sms_countries()->getCountryFullInfoByDialCode();
 }
 
 /**

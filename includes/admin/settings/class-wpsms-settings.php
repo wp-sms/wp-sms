@@ -1362,7 +1362,7 @@ class Settings
                     'type'       => 'select',
                     'className'  => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
-                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
+                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_countries()->getCountryFullInfoByDialCode()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_terms_minimum'                     => array(
@@ -1544,7 +1544,7 @@ class Settings
                     'type'      => 'multiselect',
                     'options'   => array_map(function ($key, $value) {
                         return [$key => $value];
-                    }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
+                    }, array_keys(wp_sms_countries()->getCountryFullInfoByDialCode()), wp_sms_countries()->getCountryFullInfoByDialCode()),
                     'className' => 'js-wpsms-show_if_send_only_local_numbers_enabled',
                     'desc'      => esc_html__('Specify countries allowed for SMS delivery. Only listed countries will receive messages.', 'wp-sms')
                 )

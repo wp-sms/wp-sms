@@ -525,7 +525,7 @@ class Helper
         }
 
         // Remove the country code from prefix of number +144444444 -> 44444444
-        foreach (wp_sms_get_countries() as $countryCode => $countryName) {
+        foreach (wp_sms_countries()->getCountryFullInfoByDialCode() as $countryCode => $countryName) {
             if (strpos($number, $countryCode) === 0) {
                 $metaValue[] = substr($number, strlen($countryCode));
             }
