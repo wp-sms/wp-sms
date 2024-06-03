@@ -106,4 +106,24 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
             $this->assertStringContainsString($correctNumberFormat, $number);
         }
     }
+
+    public function testValidDialCodes()
+    {
+        $allCounties = wp_sms_countries()->getCountryNamesByDialCode();
+
+        $this->assertEquals($allCounties['+81'], 'Japan');
+        // $this->assertEquals($allCounties['+44'], 'United Kinsgdom (UK)');
+        $this->assertEquals($allCounties['+44'], 'United Kingdom (UK)');
+        $this->assertEquals($allCounties['+49'], 'Germany');
+    }
+
+    public function testCountriesWithMultipleDialCodes()
+    {
+        $allDialCodes = wp_sms_countries()->getAllDialCodesByCode();
+
+        $this->assertTrue(in_array('+1939', $allDialCodes['PR']));
+        $this->assertTrue(!in_array('+34', $allDialCodes['FR']));
+        $this->assertTrue(in_array('+33', $allDialCodes['FR']));
+        $this->assertTrue(in_array('+1849', $allDialCodes['DO']));
+    }
 }
