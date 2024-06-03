@@ -2,23 +2,10 @@
 
 namespace WP_SMS\Components;
 
-class Countries
+class Countries extends Singleton
 {
-    protected static $instance = null;
-
     private $countries;
     private $countriesFileDir = WP_SMS_DIR . 'assets/countries.json';
-
-    /**
-     * Returns an instance of this class.
-     *
-     * @return  Countries
-     */
-    public static function getInstance()
-    {
-        self::$instance === null && self::$instance = new self;
-        return self::$instance;
-    }
 
     public function __construct()
     {

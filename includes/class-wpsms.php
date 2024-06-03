@@ -135,6 +135,7 @@ class WP_SMS
     public function includes()
     {
         // Utility classes.
+        $this->include('src/Components/Singleton.php');
         $this->include('src/Helper.php');
         $this->include('src/Utils/CsvHelper.php');
         $this->include('src/Components/Sms.php');
