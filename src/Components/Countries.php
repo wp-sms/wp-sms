@@ -4,7 +4,15 @@ namespace WP_SMS\Components;
 
 class Countries extends Singleton
 {
-    private $countries;
+    private $countries = [];
+
+    /**
+     * Array of countries, where all items with similar dial codes are merged together.
+     *
+     * @var array   Format: `['dialCode' => 'fullInfo', ...]`.
+     */
+    private $countriesMergedBySimilarDialCodes = [];
+
     private $countriesFileDir = WP_SMS_DIR . 'assets/countries.json';
 
     public function __construct()
@@ -68,6 +76,36 @@ class Countries extends Singleton
             return wp_list_pluck($this->countries, $field, $key);
 
         return $this->countries;
+    }
+
+    /**
+     * Initializes and returns the `$countriesMergedBySimilarDialCodes` array (which merges all countries with similar dial codes).
+     *
+     * @return  array   Format: `['dialCode' => 'fullInfo', ...]`.
+     */
+    public function getCountriesMerged()
+    {
+        if (!empty($this->countriesMergedBySimilarDialCodes)) return $this->countriesMergedBySimilarDialCodes;
+
+        foreach ($this->countries as $country) {
+            if (empty($country['fullInfo'])) continue;
+
+            // Add the country if its dialCode not exists in the array:
+            if (!array_key_exists($country['dialCode'], $this->countriesMergedBySimilarDialCodes)) {
+                $this->countriesMergedBySimilarDialCodes[$country['dialCode']] = $country['fullInfo'];
+                continue;
+            }
+            // Else, another country with a similar dialCode exists
+
+            $newInfoToAppend = $country['name'];
+            if ($country['name'] !== $country['nativeName'])
+                $newInfoToAppend .= " ({$country['nativeName']})";
+
+            // Add new country's name and nativeName before the ending parentheses:
+            $this->countriesMergedBySimilarDialCodes[$country['dialCode']] = str_replace('(+', "& $newInfoToAppend (+", $this->countriesMergedBySimilarDialCodes[$country['dialCode']]);
+        }
+
+        return $this->countriesMergedBySimilarDialCodes;
     }
 
     /**

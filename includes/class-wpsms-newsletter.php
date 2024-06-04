@@ -619,7 +619,7 @@ class Newsletter
         global $wpdb;
 
         $result        = [];
-        $country_codes = wp_sms_countries()->getCountryFullInfoByDialCode();
+        $country_codes = wp_sms_countries()->getCountriesMerged();
 
         foreach ($country_codes as $country_code => $country_name) {
             $temp_result = $wpdb->get_results(
