@@ -81,61 +81,61 @@ If you need more information, please [click here](https://wp-sms-pro.com/resourc
 
 == Frequently Asked Questions ==
 = Who should use WP SMS? =
-A: WP SMS is ideal for WordPress site owners who want to enhance their communication with users, customers, and subscribers through SMS/MMS notifications. It's perfect for businesses, bloggers, and e-commerce sites.
+WP SMS is ideal for WordPress site owners who want to enhance their communication with users, customers, and subscribers through SMS/MMS notifications. It's perfect for businesses, bloggers, and e-commerce sites.
 
 = Is technical knowledge required to operate WP SMS? =
-A: No, WP SMS is designed to be user-friendly. You don't need technical knowledge to set up and use the plugin. Detailed documentation and support are available to assist you with any questions.
+No, WP SMS is designed to be user-friendly. You don't need technical knowledge to set up and use the plugin. Detailed documentation and support are available to assist you with any questions.
 
 = Is WP SMS GDPR compliant? =
-A: Yes, WP SMS is GDPR compliant. It includes features to help you manage user data responsibly and in accordance with GDPR regulations.
+Yes, WP SMS is GDPR compliant. It includes features to help you manage user data responsibly and in accordance with GDPR regulations.
 
 = Can I export data? =
-A: Yes, you can easily export your subscriber lists and other relevant data from the WP SMS plugin.
+Yes, you can easily export your subscriber lists and other relevant data from the WP SMS plugin.
 
 = Is there Multi-Site support? =
-A: Yes, WP SMS supports WordPress Multi-Site.
+Yes, WP SMS supports WordPress Multi-Site.
 
 = What gateways are supported in the plugin? =
-A: WP SMS supports over 300 SMS gateways, including popular options like Twilio, Clickatell, BulkSMS, and Plivo. You can find the full list of [supported gateways](https://wp-sms-pro.com/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways) in our documentation.
+WP SMS supports over 300 SMS gateways, including popular options like Twilio, Clickatell, BulkSMS, and Plivo. You can find the full list of [supported gateways](https://wp-sms-pro.com/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways) in our documentation.
 
 = Does WP SMS support bulk SMS sending for a large number of subscribers? =
-A: Yes, WP SMS can handle bulk SMS sending to a large number of subscribers efficiently using asynchronous functions to ensure reliable delivery.
+Yes, WP SMS can handle bulk SMS sending to a large number of subscribers efficiently using asynchronous functions to ensure reliable delivery.
 
 = What integrations does WP SMS offer? =
-A: WP SMS integrates with various popular WordPress plugins such as WooCommerce, GravityForms, Contact Form 7, Formidable, BuddyPress, and many more. Additionally, it supports integration with Zapier for connecting to over 5,000 apps.
+WP SMS integrates with various popular WordPress plugins such as WooCommerce, GravityForms, Contact Form 7, Formidable, BuddyPress, and many more. Additionally, it supports integration with Zapier for connecting to over 5,000 apps.
 
 = Can I have two-way communication with a customer? =
-A: Yes, with the WP SMS Two-Way add-on, you can receive SMS messages from subscribers or clients and manage incoming messages directly on your WordPress site.
+Yes, with the WP SMS Two-Way add-on, you can receive SMS messages from subscribers or clients and manage incoming messages directly on your WordPress site.
 
 = How many SMS can I send? =
-A: The number of SMS you can send depends on your chosen SMS gateway and their respective plans. WP SMS itself does not limit the number of SMS you can send.
+The number of SMS you can send depends on your chosen SMS gateway and their respective plans. WP SMS itself does not limit the number of SMS you can send.
 
 = Can I send a text message under my company’s name? =
-A: Yes, WP SMS allows you to customize the sender ID, so you can send SMS messages under your company’s name, subject to the regulations of your chosen SMS gateway.
+Yes, WP SMS allows you to customize the sender ID, so you can send SMS messages under your company’s name, subject to the regulations of your chosen SMS gateway.
 
 = Can I use shortcodes in WP SMS? =
-A: Yes, WP SMS supports shortcodes, which you can use to easily add SMS subscription forms, send SMS forms, and other functionalities to your WordPress site.
+Yes, WP SMS supports shortcodes, which you can use to easily add SMS subscription forms, send SMS forms, and other functionalities to your WordPress site.
 
 = What features are available in the WP SMS Pro version? =
-A: The WP SMS Pro version includes advanced features such as scheduled SMS/MMS sending, recurring SMS/MMS messages, URL shortening through Bitly, login and registration with SMS, OTP and 2FA, and integration with additional plugins like Easy Digital Downloads, BuddyPress, QuForm, WP Job Manager, Awesome Support, and Ultimate Members.
+The WP SMS Pro version includes advanced features such as scheduled SMS/MMS sending, recurring SMS/MMS messages, URL shortening through Bitly, login and registration with SMS, OTP and 2FA, and integration with additional plugins like Easy Digital Downloads, BuddyPress, QuForm, WP Job Manager, Awesome Support, and Ultimate Members.
 
 = How does WP SMS integrate with WooCommerce? =
-A: WP SMS integrates with WooCommerce to provide SMS notifications for order updates, mobile verification during checkout, marketing campaigns, abandoned cart reminders, and shipping notifications.
+WP SMS integrates with WooCommerce to provide SMS notifications for order updates, mobile verification during checkout, marketing campaigns, abandoned cart reminders, and shipping notifications.
 
 = Can I schedule SMS messages with WP SMS? =
-A: Yes, with WP SMS Pro, you can schedule SMS/MMS messages to be sent at a later time or set up recurring messages for regular updates.
+Yes, with WP SMS Pro, you can schedule SMS/MMS messages to be sent at a later time or set up recurring messages for regular updates.
 
 = How do I set up two-factor authentication (2FA) with WP SMS? =
-A: You can enable two-factor authentication (2FA) and one-time password (OTP) verification from the WP SMS settings. This adds an extra layer of security to your login process.
+You can enable two-factor authentication (2FA) and one-time password (OTP) verification from the WP SMS settings. This adds an extra layer of security to your login process.
 
 = Is there support for webhooks and WP REST API? =
-A: Yes, WP SMS supports webhooks and WP REST API, allowing for advanced integrations and functionality enhancements.
+Yes, WP SMS supports webhooks and WP REST API, allowing for advanced integrations and functionality enhancements.
 
 = What additional features do the premium add-ons offer? =
-A: [Premium add-ons](https://wp-sms-pro.com/product-category/add-ons?utm_source=wporg&utm_medium=link&utm_campaign=add-on) offer specialized features such as booking integrations, fluent integrations, Elementor form support, membership integrations and two-way SMS communication.
+[Premium add-ons](https://wp-sms-pro.com/product-category/add-ons?utm_source=wporg&utm_medium=link&utm_campaign=add-on) offer specialized features such as booking integrations, fluent integrations, Elementor form support, membership integrations and two-way SMS communication.
 
 = How can visitors connect with my team through the WP SMS plugin? =
-A: WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_source=wporg&utm_medium=link&utm_campaign=msg-btn) feature that allows visitors to connect with your team directly through preferred platforms such as SMS, WhatsApp, or Telegram with just one click.
+WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_source=wporg&utm_medium=link&utm_campaign=msg-btn) feature that allows visitors to connect with your team directly through preferred platforms such as SMS, WhatsApp, or Telegram with just one click.
 
 == Screenshots ==
 1. Send SMS Page
