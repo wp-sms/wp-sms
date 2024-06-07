@@ -14,7 +14,8 @@ class smshosting extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "";
+        $this->validateNumber = 'Number of the recipient with country code (eg: +393480000000)';
+        $this->help           = "The mobile number must include the <b>country code</b>.";
     }
 
     public function SendSMS()
