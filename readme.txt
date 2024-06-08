@@ -31,7 +31,7 @@ https://www.youtube.com/watch?v=7r6jObgdQj0
 - **Mobile Number Login:** Enable users to log in using their mobile number if they forget their password.
 - **Admin Alerts:** Notify administrators about important events like new WordPress releases, new user registrations, or specific user logins.
 - **Form Integrations:** Integrate seamlessly with forms such as Contact Form 7, Formidable, and Forminator.
-- **Zapier Integration:** Connect with over 5,000 apps through [Zapier integration](https://wp-sms-pro.com/zapier-integration).
+- **Zapier Integration:** Connect with over 5,000 apps through [Zapier integration](https://wp-sms-pro.com/zapier-integration?utm_source=wporg&utm_medium=link&utm_campaign=zapier).
 - **SMS Form Widgets:** Provide widgets, Gutenberg blocks, and shortcodes for displaying a Send SMS form on your website.
 - **SMS Newsletter Form:** Use widgets, Gutenberg blocks, and shortcodes to display an SMS newsletter subscription form.
 - **Support for Webhooks:** Enhance functionality with webhook support.
@@ -56,7 +56,6 @@ With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommer
 - **URL Shortening:** Shorten URLs in your messages using Bitly.
 - **Secure Login and Registration:** Enable login and registration with SMS, [OTP](https://wp-sms-pro.com/otp-and-2fa-sms-for-wordpress-woocommerce?utm_source=wporg&utm_medium=link&utm_campaign=2fa), and 2FA SMS.
 - **More Integrations:** Integrates with WooCommerce, Easy Digital Downloads, BuddyPress, GravityForms, QuForm, WP Job Manager, Awesome Support, and Ultimate Members.
-- **Bitly Compatibility:** Easily shorten URLs in SMS messages with Bitly.com.
 
 = Here are the other premium add-ons: =
 - **[WooCommerce Pro](https://wp-sms-pro.com/product/wp-sms-woocommerce-pro/?utm_source=wporg&utm_medium=link&utm_campaign=woo-pro)**: Adds advanced SMS functionality to your online store, including login, registration, password recovery, and checkout verification.
