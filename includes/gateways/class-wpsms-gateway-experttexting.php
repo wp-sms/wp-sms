@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+use WP_SMS\Helper;
+
 class experttexting extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://www.experttexting.com/ExptRestApi/sms/";
@@ -92,6 +94,8 @@ class experttexting extends \WP_SMS\Gateway
             $text = urlencode($this->msg);
             $type = "text";
         }
+
+        $this->to = Helper::removeNumbersPrefix(['+'], $this->to);
 
         foreach ($this->to as $to) {
             $response = wp_remote_get($this->wsdl_link . "json/Message/Send?username=" . $this->username . "&api_key=" . $this->password . "&from=" . $this->from . "&api_secret=" . $this->has_key . "&to=" . $to . "&text=" . $text . "&type=" . $type, array('timeout' => 30));
