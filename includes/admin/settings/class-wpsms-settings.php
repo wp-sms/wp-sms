@@ -1345,7 +1345,7 @@ class Settings
                     'name'      => esc_html__('Only Countries', 'wp-sms'),
                     'type'      => 'countryselect',
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => $this->getCountriesList(),
+                    'options'   => wp_sms_countries()->getCountries(),
                     'desc'      => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
                 ),
                 'international_mobile_preferred_countries' => array(
@@ -1353,7 +1353,7 @@ class Settings
                     'name'      => esc_html__('Preferred Countries', 'wp-sms'),
                     'type'      => 'countryselect',
                     'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => $this->getCountriesList(),
+                    'options'   => wp_sms_countries()->getCountries(),
                     'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
                 ),
                 'mobile_county_code'                       => array(
@@ -1362,7 +1362,7 @@ class Settings
                     'type'       => 'select',
                     'className'  => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
-                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_get_countries()),
+                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_countries()->getCountriesMerged()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_terms_minimum'                     => array(
@@ -1544,7 +1544,7 @@ class Settings
                     'type'      => 'multiselect',
                     'options'   => array_map(function ($key, $value) {
                         return [$key => $value];
-                    }, array_keys(wp_sms_get_countries()), wp_sms_get_countries()),
+                    }, array_keys(wp_sms_countries()->getCountriesMerged()), wp_sms_countries()->getCountriesMerged()),
                     'className' => 'js-wpsms-show_if_send_only_local_numbers_enabled',
                     'desc'      => esc_html__('Specify countries allowed for SMS delivery. Only listed countries will receive messages.', 'wp-sms')
                 )
@@ -2862,20 +2862,6 @@ class Settings
             }
         }
         return $return_value;
-    }
-
-    /**
-     * Get countries list
-     *
-     * @return array|mixed|object
-     */
-    public function getCountriesList()
-    {
-        // Load countries list file
-        $file = WP_SMS_DIR . 'assets/countries.json';
-        $file = file_get_contents($file); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-
-        return json_decode($file, true);
     }
 
     /**

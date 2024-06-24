@@ -40,6 +40,10 @@
 
 .wpsms-wrap-woo-pro {
   margin-left: -20px;
+  .rtl &{
+    margin-right: -20px;
+    margin-left:unset;
+  }
 }
 
 .wpsms-wrap {
@@ -530,6 +534,8 @@ body.rtl #screen-meta-links {
 
 .rtl .wpsms-header-banner {
   justify-content: flex-start;
+  margin-left: 0!important;
+  margin-right: -20px!important;
 }
 
 .wpsms-header-banner .license-status {

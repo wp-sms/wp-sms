@@ -106,4 +106,46 @@ class MobileNumberValidityTest extends \Codeception\TestCase\WPTestCase
             $this->assertStringContainsString($correctNumberFormat, $number);
         }
     }
+
+    public function testValidDialCodes()
+    {
+        $allCounties = wp_sms_countries()->getCountryNamesByDialCode();
+
+        $this->assertEquals($allCounties['+81'], 'Japan');
+        // $this->assertEquals($allCounties['+44'], 'United Kinsgdom (UK)');
+        $this->assertEquals($allCounties['+44'], 'United Kingdom (UK)');
+        $this->assertEquals($allCounties['+49'], 'Germany');
+    }
+
+    public function testCountriesWithMultipleDialCodes()
+    {
+        $allDialCodes = wp_sms_countries()->getAllDialCodesByCode();
+
+        $this->assertTrue(in_array('+1939', $allDialCodes['PR']));
+        $this->assertTrue(!in_array('+34', $allDialCodes['FR']));
+        $this->assertTrue(in_array('+33', $allDialCodes['FR']));
+        $this->assertTrue(in_array('+1849', $allDialCodes['DO']));
+    }
+
+    public function testCountriesWithSimilarDialCodes()
+    {
+        $countriesMerged = wp_sms_countries()->getCountriesMerged();
+
+        $this->assertTrue($countriesMerged['+1'] === 'Canada & United States (USA) (+1)');
+
+        $this->assertStringContainsString('Guernsey (Guernési)', $countriesMerged['+44']);
+        $this->assertStringContainsString('Isle of Man', $countriesMerged['+44']);
+        $this->assertStringContainsString('Jersey (Jèrri)', $countriesMerged['+44']);
+        $this->assertStringContainsString('United Kingdom (UK)', $countriesMerged['+44']);
+
+        $this->assertStringContainsString('Bouvetøya', $countriesMerged['+47']);
+        $this->assertStringContainsString('Norge', $countriesMerged['+47']);
+        $this->assertStringContainsString('Svalbard and Jan Mayen', $countriesMerged['+47']);
+
+        $this->assertStringContainsString('Cocos (Keeling) Islands (Pulu Kokos (Keeling))', $countriesMerged['+61']);
+
+        $this->assertStringContainsString('Terres australes et antarctiques françaises', $countriesMerged['+262']);
+        $this->assertStringContainsString('Mayotte', $countriesMerged['+262']);
+        $this->assertStringContainsString('La Réunion', $countriesMerged['+262']);
+    }
 }

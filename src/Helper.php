@@ -371,6 +371,7 @@ class Helper
         $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
 
         // check whether the mobile number is in international mobile only countries
+        /** @var array */
         $international_mobile_only_countries = Option::getOption('international_mobile_only_countries');
 
         /**
@@ -444,12 +445,18 @@ class Helper
          * 4. Check whether the number country is valid or not
          */
         if ($international_mode && $international_mobile_only_countries) {
-            $countryCallingCodes = wp_json_file_decode(WP_SMS_DIR . 'assets/countries-code.json', ['associative' => true]);
-            $onlyCountries       = array_filter($countryCallingCodes, function ($code) use ($international_mobile_only_countries) {
-                return in_array($code, $international_mobile_only_countries);
-            }, ARRAY_FILTER_USE_KEY);
-            $isValid             = false;
-            foreach ($onlyCountries as $code) {
+            $allDialCodes     = wp_sms_countries()->getAllDialCodesByCode();
+            $allowedDialCodes = [];
+            foreach ($international_mobile_only_countries as $code) {
+                if (!empty($allDialCodes[$code])) {
+                    // Some countries have multiple dial codes (e.g. Puerto Rico)
+                    foreach ($allDialCodes[$code] as $dialCode)
+                        $allowedDialCodes[] = $dialCode;
+                }
+            }
+
+            $isValid = false;
+            foreach ($allowedDialCodes as $code) {
                 $countryLength = strlen($code);
                 $prefix        = substr($mobileNumber, 0, $countryLength);
                 if ($prefix === $code) {
@@ -518,7 +525,7 @@ class Helper
         }
 
         // Remove the country code from prefix of number +144444444 -> 44444444
-        foreach (wp_sms_get_countries() as $countryCode => $countryName) {
+        foreach (wp_sms_countries()->getCountriesMerged() as $countryCode => $countryName) {
             if (strpos($number, $countryCode) === 0) {
                 $metaValue[] = substr($number, strlen($countryCode));
             }
