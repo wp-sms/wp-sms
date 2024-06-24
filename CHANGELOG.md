@@ -1,4 +1,10 @@
-= v6.9.1 - 31.05.2024 =
+= 6.9.2 - **.06.2024 =
+* New: Added 160.com.au gateway
+* Fix: Resolved preferred countries issue in mobile field
+* Enhancement: Improved country functionality and performance
+* Enhancement: Minor improvements
+
+= 6.9.1 - 31.05.2024 =
 * New: Added variable `%unsubscribe_url%` in Subscriber Notification
 * Gateway: Updated Cellsynt SMS gateway
 * Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
@@ -7,7 +13,7 @@
 * Improvement: Fixed and improved issues and styles of the mobile field international flag field
 * Improvement: Implemented minor enhancements
 
-= v6.9 - 12.05.2024 =
+= 6.9 - 12.05.2024 =
 * Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
 * Updates: Support for MTarget, SMSGatewayHub, and Octopush gateways.
 * Fixes: Issue with SMS report scheduling not clearing when disabled.
@@ -18,10 +24,10 @@
 * Improvement: Mobile number validation and functionality.
 * Improvement: Overall performance.
 
-= v6.8.1 - 08.04.2024 =
+= 6.8.1 - 08.04.2024 =
 * Fixes: Admin alerts now display correctly.
 
-= v6.8 - 08.04.2024 =
+= 6.8 - 08.04.2024 =
 * Updated: New admin design with easier navigation and useful links.
 * Updated: Now supports DLT and manual DLT messages in Fast2Sms.
 * Added: `cart_url` and `checkout_url` for WooCommerce coupons.
@@ -32,40 +38,40 @@
 * Enhanced: Added security checks and CSRF for outbox and group actions.
 * Enhanced: General improvements for better performance.
 
-= v6.7.1 - 20.03.2024 =
+= 6.7.1 - 20.03.2024 =
 * Fixes: Improved visibility of settings page fields.
 * Fixes: Addressed JavaScript error handling in Send SMS block.
 * Fixes: Resolved errors and optimized performance with Formidable integration and entity issues.
 * Improvement: Refactored Oxemis SMS gateway body payload to utilize JSON encoding.
 * Improvement: Implemented minor enhancements.
 
-= v6.7 - 16.03.2024 =
+= 6.7 - 16.03.2024 =
 * Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wp-sms-pro.com/25942/formidable-forms-and-forminator-integration-now-available/)
 * Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
 * Improvement: Made minor improvements and optimizations for better performance.
 
-= v6.6.3 - 13.03.2024 =
+= 6.6.3 - 13.03.2024 =
 * Addition: Introduced Integration menu; now integrations are conveniently placed under this menu for enhanced accessibility.
 * Improvement: Hardened plugin security and improvements by adding CSRF (nonce) for create and update subscribers and groups.
 * Development: Added filter `wp_sms_chatbox_contact_link` for advanced customization options.
 
-= v6.6.2 - 12.03.2024 =
+= 6.6.2 - 12.03.2024 =
 * Improvement: Refinements to Chatbox styles and issue resolution.
 * Improvement: Unified asset loading, frontend styles, and contact administration into single CSS and JS files.
 * Improvement: Hardened plugin security and improvements.
 * Improvement: Optimized performance with minor improvements.
 
-= v6.6.1 - 08.03.2024 =
+= 6.6.1 - 08.03.2024 =
 * Improvement: Replaced `move_uploaded_file` with `wp_handle_upload`.
 * Improvement: Sanitized and Escaped the rest of the inputs/outputs and hardened plugin security.
 
-= v6.6 - 06.03.2024 =
+= 6.6 - 06.03.2024 =
 * Addition: Messaging Button for direct visitor communication via WhatsApp, SMS, and other platforms. [More info](https://wp-sms-pro.com/25841/whats-new-in-wp-sms-6-6-better-faster-and-more-customizable/)
 * Improvement: Admin area texts for clearer instructions and settings management.
 * Improvement: Various performance tweaks for a smoother plugin experience.
 * Development: New `wp_sms_mobile_number_numeric_check` filter for developer-specific number handling customization.
 
-= v6.5.5 - 27.02.2024 =
+= 6.5.5 - 27.02.2024 =
 * Update: Added support for SMS Gateways OzoneSMS and SMSGatewayHub, and included supported encoding for ProSMS.
 * Update: Refreshed POT files and strings for better localization.
 * Improvement: Resolved Deprecated Dynamic Property Creation issue in WP_SMS\Privacy Class.
@@ -73,45 +79,45 @@
 * Improvement: Extended timeout of HTTP requests to 10 seconds for improved reliability.
 * Improvement: Implemented minor enhancements for better performance and ensured backward compatibility.
 
-= v6.5.4 - 12.02.2024 =
+= 6.5.4 - 12.02.2024 =
 * Improvement: Responsive admin table lists fixed.
 * Improvement: Notifications improved and notice issues fixed.
 * Improvement: Enabled early execution of queued tasks.
 * Improvement: Duplicate WooCommerce numbers fixed by normalization.
 
-= v6.5.3 - 17.01.2024 =
+= 6.5.3 - 17.01.2024 =
 * Improvement: Improved page sanitization and overall security in `WP_List_Tables`.
 * Improvement: Fixed label styling in the subscriber multi-group select field.
 * Improvement: Added EuroSms gateway help and improved number display in outbox.
 * Improvement: Updated the POT file for better translations.
 * Fixes: Display issue with the feedback button in admin area.
 
-= v6.5.2 - 10.01.2024 =
+= 6.5.2 - 10.01.2024 =
 * Fixes: Fixed class not found error by correcting `WP_Error` namespace
 * Fixes: Fixed gathering Ultimate Members registration forms data
 * Improvement: Escape the mobile place holder and hardened plugin security
 
-= v6.5.1 - 28.12.2023 =
+= 6.5.1 - 28.12.2023 =
 * Fixes: Backward compatibility while the is not array in SmsDispatcher
 * Improvement: Enhance plugin security by adding a nonce to the delete subscriber function.
 
-= v6.5 - 19.12.2023 =
+= 6.5 - 19.12.2023 =
 * Addition: Introducing Background Processing! You can now send SMS in bulk to thousands of numbers without disrupting the user experience, [click here](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/) to more information.
 * Improvement: Improved visibility of form labels on white backgrounds, ensuring they are clearly readable regardless of theme or background color.
 * Fixes: Resolved an issue with the group assignment in the subscriber shortcode, enhancing reliability and user management.
 
-= v6.4.2 - 03.12.2023 =
+= 6.4.2 - 03.12.2023 =
 * Addition: Contact Form 7 tags now supported for SMS notifications.
 * Improvement: Updated EasySendSms gateway.
 * Improvement: System performance enhancements.
 * Fixes: Fixed `array_filter` bug on WooCommerce order page and improved backward compatibility.
 * Fixes: Resolved SMS credit display issue on Send SMS page.
 
-= v6.4.1 - 19.11.2023 =
+= 6.4.1 - 19.11.2023 =
 * Fixes: WooCommerce order page issues & send sms in note metabox
 * Improvement: Add possibility to remove duplicate numbers
 
-= v6.4 - 13.11.2023 =
+= 6.4 - 13.11.2023 =
 * Improvement: Compatibility improved with WordPress v6.4.
 * Improvement: Gateways Cellsynt and Sms.to.
 * Improvement: Default handler now used in the Send SMS REST API for improved efficiency.
@@ -127,21 +133,21 @@
 * Fixes: Addressed notice styles and RTL issues for a more consistent visual experience.
 * Fixes: Resolved the issue of sending the SMS report even when the corresponding option is disabled.
 
-= v6.3.4 - 17.10.2023 =
+= 6.3.4 - 17.10.2023 =
 * Improvement: Backward compatibility with new custom WooCommerce order table and HPOS.
 * Improvement: Search users in send SMS page.
 * Improvement: Gateway altiria.net updated to the latest version.
 * Improvement: Made minor improvements and optimizations for better performance.
 
-= v6.3.3 - 09.10.2023 =
+= 6.3.3 - 09.10.2023 =
 * Fixes: Some tweak form-submitting issues in sending SMS page and improvement the repeating issue
 * Fixes: Some tweak styles and RTL issues in send SMS page
 
-= v6.3.2 - 27.09.2023 =
+= 6.3.2 - 27.09.2023 =
 * Fixes: Sending Scheduled SMS issue has been fixed.
 * Improvement: Email template styles and minor improvements.
 
-= v6.3 - 23.09.2023 =
+= 6.3 - 23.09.2023 =
 * Feature: Redesigned Send SMS page and added search user option!
 * Feature: Weekly SMS Stats Report via mail! Now you can track total sent, successful, and failed SMS, total OTP usage, and total subscribers.
 * Fixes: Resolved the URI issue on oursms.com.
@@ -150,10 +156,10 @@
 
 [Read more](https://wp-sms-pro.com/23630/new-update-wp-sms-plugin-v6-3/) to see more information about release.
 
-= v6.2.4.1 - 09.09.2023 =
+= 6.2.4.1 - 09.09.2023 =
 * Fixes: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
 
-= v6.2.4 - 08.09.2023 =
+= 6.2.4 - 08.09.2023 =
 * Feature: Administrator Email notification once the send SMS faced error
 * Feature: Add support for `%billing_email%` variable in WooCommerce order notification
 * Fixes: Send SMS Verification Twice in Safari Autofill
@@ -163,7 +169,7 @@
 * Improvement: Mobile field handler functionality and improvement
 * Improvement: Minor styles, RTL issues and settings
 
-= v6.2.3 - 10.08.2023 =
+= 6.2.3 - 10.08.2023 =
 * Improvement: Refined Woocommerce customers query, limited to 1000, and optimized MySQL performance using filters.
 * Development: Introduced new filters - `wp_sms_mobile_filed_handler`, `wpsms_unsubscribe_csrf_enabled`, `wp_sms_request_arguments`, and `wp_sms_request_params`.
 * Improvement: Condensed spacing for improved auto-fill compatibility.
@@ -174,28 +180,28 @@
 * Fixes: Fixed character truncation during trimming.
 * Feature: New attribute `groups` now supported in `[wp_sms_subscriber_form]` shortcode.
 
-= v6.2.2 - 26.07.2023 =
+= 6.2.2 - 26.07.2023 =
 * Improvement: Admin header and styles updated to display licenses status more effectively.
 * Improvement: Enhanced `wp_sms_send()` function to validate and handle empty strings and '0' more effectively.
 * New: Added support for variable `%shipping_method%` on WooCommerce order notification, enabling more customization options.
 * Fixes: Addressed the issue with automatic conversion of false to an array, which was deprecated.
 * Fixes: Resolved lag in Subscriber Form editing for a smoother user experience.
 
-= v6.2.1 - 17.07.2023 =
+= 6.2.1 - 17.07.2023 =
 * Fixes: Fixed group query and subscriber verification in multi-groups for newsletters.
 * Fixes: Resolved SendApp gateway errors.
 * Fixes: Fixed uncaught error on subscriber page when passing null ID.
 * Improvement: Improved styles and made minor enhancements.
 
-= v6.2.0.2 - 09.07.2023 =
+= 6.2.0.2 - 09.07.2023 =
 * Fixes: The opt-in WooCommerce issue
 
-= v6.2.0.1 - 08.07.2023 =
+= 6.2.0.1 - 08.07.2023 =
 * Addition: Support a new webhook for incoming SMS
 * Improvement: Backward compatibility
 * Improvement: The notice padding
 
-= v6.2.0 - 04.07.2023 =
+= 6.2.0 - 04.07.2023 =
 * Improvement: Updated and cleaned up various mirror and major components.
 * Improvement: Enhanced the styles of the SMS Newsletter form.
 * Improvement: Upgraded the SMS Notification Metabox for better functionality.
@@ -210,7 +216,7 @@
 * Fixes: Resolved the issue of duplicate SMS sending during post updates.
 * Update: Updated Gateways DirectSend, Oxemis, and SmsApi.pl to their latest versions.
 
-= v6.1.5 - 13.05.2023 =
+= 6.1.5 - 13.05.2023 =
 * Added: Users can now filter post notifications by taxonomy/terms
 * Added: Added support for the Deewan.sa gateway
 * Updated: Switched from the paid gateway Cellsynt to the free version
@@ -223,7 +229,7 @@
 * Improved: Removed the mobile field from the WooCommerce checkout page
 * Improved: Quick reply now shows actual error and success response
 
-= v6.1.4 - 16.04.2023 =
+= 6.1.4 - 16.04.2023 =
 * Add: Gateway [WaliChat](https://wali.chat/)
 * Add: Feature to make mobile field optional or required in the settings page
 * Bugfix: Upgraded Library JQuery Character and Word counter plugin to v2.5.1
@@ -232,7 +238,7 @@
 * Improvement: Optimized 1s2u gateway for better performance
 * Improvement: Added filter `wp_sms_notification_woocommerce_order_meta_key_{meta-key}` for greater flexibility in WooCommerce order notifications.
 
-= v6.1.3 - 01.04.2023 =
+= 6.1.3 - 01.04.2023 =
 * Bugfix: Fixed query for getting WooCommerce customer mobile numbers.
 * Bugfix: Improved search functionality to consider phone numbers with and without country codes.
 * Bugfix: Corrected error in [smsapi.pl](http://smsapi.pl/) while sending unicode SMS.
@@ -240,13 +246,13 @@
 * Bugfix: Fixed issue with importer.
 * Bugfix: Fixed query for getting user mobile in WooCommerce by ID.
 
-= v6.1.2 - 21.03.2023 =
+= 6.1.2 - 21.03.2023 =
 * Bugfix: The reset configuration issue has been fixed
 * Bugfix: Fix getting correct value from user object in WordPressUserNotification
 * Improvement: Update BulkGate API to v2 (advanced API)
 * Improvement: Avoid to admin bar if the user does not have the permission
 
-= v6.1.1 - 14.03.2023 =
+= 6.1.1 - 14.03.2023 =
 * Improvement: Make the default the first country in the list in intl-tell-input
 * Improvement: Make `group_id` option in REST API endpoint
 * Improvement: Minor improvements (Special Thanks to Jarko Piironen for testing)
@@ -254,7 +260,7 @@
 * Bugfix: The error response issue in gateway Liveall.eu
 * Bugfix: Getting correct the mobile value in WooCommerceUsePhoneFieldHandler
 
-= v6.1 - 12.03.2023 =
+= 6.1 - 12.03.2023 =
 * Add: SMS gateway ProSMS.se
 * Add: Filters `wp_sms_user_mobile_number` and `wp_sms_mobile_number_validity`
 * Improvement: PHP v8.2 compatibility
@@ -264,28 +270,28 @@
 * Improvement: SMS gateways OurSms, gateway.sa, 1s2u and sms.to
 * Bugfix: The missed close div tag in `subscribe-form.php`
 
-= v6.0.4.1 - 02.03.2023 =
+= 6.0.4.1 - 02.03.2023 =
 * Improvement: Hardened plugin security and improvement
 
-= v6.0.4 - 03.02.2023 =
+= 6.0.4 - 03.02.2023 =
 * Bugfix: Getting the correct mobile value in the user profile
 * Improvement: The importer and showing the importer results
 * Improvement: Minor improvements and cleanups
 * Improvement: The applyCountryCode improvement
 
-= v6.0.3 - 28.01.2023 =
+= 6.0.3 - 28.01.2023 =
 * Bugfix: The custom fields columns to the subscribers table in fresh installation
 * Bugfix: The start session issue
 * Improvement: The OurSms gateway updated
 * Improvement: The applyCountryCode function to remove 0 and 00 from the beginning of numbres
 
-= v6.0.2 - 23.01.2023 =
+= 6.0.2 - 23.01.2023 =
 * Bugfix: Fix sending welcome message for subscribers
 * Bugfix: Fix showing correct response in outbox
 * Improvement: Backward compatibility
 * Improvement: Better showing response
 
-= v6.0.1 - 21.01.2023 =
+= 6.0.1 - 21.01.2023 =
 * New: Shortcode `[wp_sms_subscriber_form]` is back! [Documentation](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
 * New: Support custom fields for subscribers! [Demo](https://demo.wp-sms-pro.com/)
 * New: Implement notification handler
@@ -300,7 +306,7 @@
 * Bugfix: The resend issue on the outbox page
 * Bugfix: The SMS notification issue for scheduled posts
 
-= v5.9.1 - 18.12.2022 =
+= 5.9.1 - 18.12.2022 =
 * New: Filter subscribers by country
 * New: Add helper prepareMobileNumber
 * Improvement: Labels and buttons style
@@ -309,7 +315,7 @@
 * Bugfix: The Alchemymarketing SMS gateway issue
 * Bugfix: Webhooks notices issue
 
-= v5.9 - 13.12.2022 =
+= 5.9 - 13.12.2022 =
 * New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
 * New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
 * New: Support filter by subscribers in Admin → SMS → Subscribers
@@ -327,7 +333,7 @@
 * Bugfix: The Africa stalking SMS gateway issue
 * Bugfix: Send SMS to multiple Groups is now available again
 
-= v5.8.5 - 23.11.2022 =
+= 5.8.5 - 23.11.2022 =
 * Bugfix: The import system has been debugged.
 * Bugfix: Some minor bugfixes have been done.
 * Update: The Alchemymarketing gateway has been updated.
@@ -337,7 +343,7 @@
 * Add: The getTemplateIdFromMessageBody() function has been added. Now the template IDs are fetched from the message body to let customers send SMS through the gateways which have the Template ID as a required parameter.
 * Add: You can now send SMS to multiple subscribers' groups in Contact Form 7 SMS notification panel.
 
-= v5.8.4 - 05.11.2022 =
+= 5.8.4 - 05.11.2022 =
 * Bugfix: Fix force to send issue
 * Bugfix: PHP session notice in WordPress Health panel
 * Improvement: You can now send SMS to all your subscribers, whether they have a group or not
@@ -346,7 +352,7 @@
 * Add: WebPack has been added as the asset builder
 * Add: Order meta key has been implemented
 
-= v5.8.3 - 23.10.2022 =
+= 5.8.3 - 23.10.2022 =
 * Bugfix: Remove jQuery deprecated functions
 * Bugfix: Fix 1s2u gateway issues to improve its performance
 * Bugfix: Fix Uwaziimobile gateway issues to improve its performance
@@ -360,15 +366,15 @@
 * Add: WP SMS now supports SendApp SMS & SendApp Whatsapp gateways
 * Add: AspSms gateway now is available in the free version of WP SMS
 
-= v5.8.2 - 18.09.2022 =
+= 5.8.2 - 18.09.2022 =
 * Bugfix: Fixed query issue while getting subscribers
 
-= v5.8.1 - 16.09.2022 =
+= 5.8.1 - 16.09.2022 =
 * Bugfix: Fixed the Sanitize text in contact form 7 send SMS form
 * Bugfix: Fixed the Select2 dropdown issue in send sms page
 * Improvement: Disabled the sending SMS notification dropdown when updating posts
 
-= v5.8.0 - 11.09.2022 =
+= 5.8.0 - 11.09.2022 =
 * Bugfix: The "Screen Options" on the groups' page has been fixed
 * Feature: Add action `wp_sms_log_after_save`
 * Improvement: A new Export System has been implemented. Now you can export the outbox, the inbox, and the subscribers' data.
@@ -379,14 +385,14 @@
 * Improvement: Mobile Number validity check has been improved
 * Add: Support incoming messages for the SmsGlobal gateway
 
-= v5.7.9 - 19.08.2022 =
+= 5.7.9 - 19.08.2022 =
 * Bugfix: Multiple recipients for the quick reply
 * Improvement: Mobile International Input Functionality
 * Improvement: Mobile number validation in while of the plugin to keep the valid numbers
 * Improvement: Minor & clean-up things
 * Add: Support SMS gateway Ajura Technologies from Bangladesh
 
-= v5.7.8 - 05.08.2022 =
+= 5.7.8 - 05.08.2022 =
 * New: Support Quick reply in admin area for sending quick replies to number(s) or a group
 * New: Ability to change items per page in outbox, inbox, scheduled, and group
 * Bugfix: Sorting function issue in admin pages fixed
@@ -395,21 +401,21 @@
 * Improvement: The separate dial code option removed
 * Improvement: Minor things
 
-= v5.7.7 - 17.07.2022 =
+= 5.7.7 - 17.07.2022 =
 * Bugfix: The general settings page has been fixed
 * Bugfix: The search issue in subscribers and other admin areas has been fixed
 * Bugfix: Fixes select2 inputs and some CSS tweaks
 * Improvement: Add a feature to clear SMS previews after sending
 
-= v5.7.6 - 05.07.2022 =
+= 5.7.6 - 05.07.2022 =
 * Bugfix: SMS gateway UwaziiMobile has been fixed
 * New: SMS gateway Aobox.it has been added
 * New: Filter `wp_sms_output_variables_message` has been added
 
-= v5.7.5.1 - 16.06.2022 =
+= 5.7.5.1 - 16.06.2022 =
 * Bugfix: Bulksms.com gateway issue has been fixed
 
-= v5.7.5 - 12.06.2022 =
+= 5.7.5 - 12.06.2022 =
 * Improvement: Better settings fields organization
 * Improvement: Update the subscriber button label while switching the subscriber action
 * New: Default group option has been added to the SMS newsletter form
@@ -419,7 +425,7 @@
 * Bugfix: WP dashboard margin issue has been fixed
 * Bugfix: Duplicate send SMS when the ForceToSend option is enabled in SMS post notification
 
-= v5.7.4 - 25.05.2022 =
+= 5.7.4 - 25.05.2022 =
 * New: Gateway Hostpinnacle from Kenya
 * New: Gateway Tubelight Communications from India
 * New: Add the possibility to translate the strings in the settings with WPML by custom wpml-config.xml file
@@ -429,10 +435,10 @@
 * Bugfix: Keep the mobile number field after updating the profile
 * Bugfix: Showing display spinner when styles are not loaded
 
-= v5.7.3.1 - 07.05.2022 =
+= 5.7.3.1 - 07.05.2022 =
 * Bugfix: An issue in settings page has been fixed
 
-= v5.7.3 - 05.05.2022 =
+= 5.7.3 - 05.05.2022 =
 * New: Gateway Espay.id has been added
 * New: Support MMS and `%post_thumbnail%` variable in send post notification
 * Bugfix: Fix separating the numbers by comma and space in send sms page
@@ -444,17 +450,17 @@
 * Improvement: Compatible the intlTelInput with RTL languages
 * Improvement: Possibility to select the mobile country code instead of entering them
 
-= v5.7.2.2 - 24.04.2022 =
+= 5.7.2.2 - 24.04.2022 =
 * Bugfix: An issue to register the schedule event has been fixed
 * Bugfix: The warning wp-editor error has been fixed
 * Update: A new SMS gateway from Latvia (texti.fi) has been added.
 * Update: SMS Gateway VFirst has been removed due to not stability of API
 
-= v5.7.2.1 - 15.04.2022 =
+= 5.7.2.1 - 15.04.2022 =
 * Bugfix: The warning error in settings page when the groups empty
 * Improvement: Improvement license updater
 
-= v5.7.2 - 12.04.2022 =
+= 5.7.2 - 12.04.2022 =
 * Feature: The Add-Ons page added! [Checkout New Add-Ons!](https://wp-sms-pro.com/product-category/add-ons/)
 * Feature: The SMS Stats dashboard widget has been added!
 * Feature: The Inbox page added!
@@ -466,14 +472,14 @@
 * Improvement: The Integration tab is renamed to Contact form 7 and also the basic options (WooCommerce and EDD) have been removed since they are available in the Pro pack as well
 * Improvement: The mobile country code functionality has been improved.
 
-= v5.7.1 - 16.03.2022 =
+= 5.7.1 - 16.03.2022 =
 * Bugfix: The issue in media URLs REST API request even the request doesn't have the media URL
 * Bugfix: Separating numbers issue has been fixed in some gateways
 * Feature: New action `wp_sms_number_unsubscribed_through_url` has been added
 * Feature: New method `request()` has been added
 * Improvement: Minors and a couple of typos
 
-= v5.7 - 07.03.2022 =
+= 5.7 - 07.03.2022 =
 * Feature: New Design for Send SMS page!
 * Feature: New filters `wp_sms_user_mobile_field` and `wp_sms_user_mobile_number` has been added.
 * Feature: The Post SMS Notification also supports groups and custom numbers as well
@@ -487,7 +493,7 @@
 * Bugfix: Fix unsubscribing the numbers with mobile country code through URL
 * Bugfix: Compatibility a bunch of gateways with old PHP versions
 
-= v5.6.9 - 16.02.2022 =
+= 5.6.9 - 16.02.2022 =
 * Improvement: The SureSms gateway now supports the Sender ID and Flash
 * Improvement: Compatible the Post SMS Notification with WP-REST API
 * Improvement: The Force to Post SMS Notification and default Subscribe group options added
@@ -495,11 +501,11 @@
 * Improvement: Send flash SMS enabled for eBulkSms.com
 * Improvement: Send flash SMS disabled for Africa's Talking
 
-= v5.6.8.1 - 09.02.2022 =
+= 5.6.8.1 - 09.02.2022 =
 * Feature: Add specific roles option for User login notification
 * Bugfix: Compatibility the setting page with PHP v7.2
 
-= v5.6.8 - 02.02.2022 =
+= 5.6.8 - 02.02.2022 =
 * Update: Tested up to v5.9
 * Update: The SMS Newsletter widget is improvement and redesigned and also is Block based right now! you can also load the SMS Newsletter in Gutenberg editor!
 * Bugfix: An issue with the old version of PHP with the setting page.
@@ -507,41 +513,41 @@
 * Deprecate: Function `wp_sms_subscribes()`. load the SMS newsletter form through Widget or Gutenberg instead.
 * Remove: Shortcode `[wp-sms-subscriber-form]` is removed.
 
-= v5.6.7 - 21.01.2022 =
+= 5.6.7 - 21.01.2022 =
 * Bugfix: The line break issue has been fixed
 * Bugfix: The error in webSMS gateway has been fixed
 * Improvement: Compatibility the setting page with the older version of PHP.
 
-= v5.6.6 - 15.01.2022 =
+= 5.6.6 - 15.01.2022 =
 * Feature: Bitly Short URL has been added in the settings page > feature
 * Update: Compatibility the Setting page with QuForm Child Elements and groups fields and minor improvements.
 * Update: Better naming fields for GravityForms variable fields
 * Updated gateway.sa gateway
 * Updated uwaziimobile gateway
 
-= v5.6.5.2 - 10.12.2021 =
+= 5.6.5.2 - 10.12.2021 =
 * Improvement: A notice error has been fixed in the setting page.
 * Improvement: Compatibility with the older version of PHP.
 
-= v5.6.5 - 07.12.2021 =
+= 5.6.5 - 07.12.2021 =
 * Feature: Selecting the several user groups on send SMS page has been supported
 * Bugfix: The post type & author notification issue has been fixed
 * Enhancement: The setting pages & styles improvement, enjoy the new admin interface!
 * Update: Pro settings page merged to the main settings page
 
-= v5.6.4 - 14.11.2021 =
+= 5.6.4 - 14.11.2021 =
 * Bugfix: Getting credential in ExpertTexting gateway has been fixed
 * Bugfix: Notice errors in OnewaySms gateway has been fixed
 * Enhancement: Minor improvements
 
-= v5.6.3 - 22.10.2021 =
+= 5.6.3 - 22.10.2021 =
 * Feature: Supported Unsubscribing/Opting-Out by URL! the subscribers can Opting-Out by [https://yourdomain.com/?wpsms_unsubscribe=01111111111](https://yourdomain.com/?wpsms_unsubscribe=01111111111)
 * Enhancement: Fixed a notice error in notification class
 * Enhancement: Added the document link in settings
 * Update: Added the MT URL and Credit Balance URL to OneWaySMS gateway
 * Update: Added Callifony (Zen.ae) gateway
 
-= v5.6.2 - 02.10.2021 =
+= 5.6.2 - 02.10.2021 =
 * NEW: MMS supported! now the plugin supports sending MMS, the Twilio & Plivo gateways are supports at the moments.
 * Update: Added the argument `$mediaUrls` to `wp_sms_send()` function.
 * Update: Ability to modify the admin tabs by using the `wpsms_pro_settings_tabs` and `wpsms_settings_tabs` filters.

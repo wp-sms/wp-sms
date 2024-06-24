@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 6.9.1
+Stable tag: 6.9.2
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,13 +169,10 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.1 - 31.05.2024 =
-* New: Added variable `%unsubscribe_url%` in Subscriber Notification
-* Gateway: Updated Cellsynt SMS gateway
-* Improvement: Enhanced CSRF check in the unsubscribe URL for non-logged users
-* Improvement: Ensured compatibility of Opt-in SMS notification with WooCommerce’s new block-based checkout
-* Improvement: Improved mobile field handler compatibility with WooCommerce’s new block-based checkout
-* Improvement: Fixed and improved issues and styles of the mobile field international flag field
-* Improvement: Implemented minor enhancements
+= 6.9.2 - **.06.2024 =
+* New: Added 160.com.au gateway
+* Fix: Resolved preferred countries issue in mobile field
+* Enhancement: Improved country functionality and performance
+* Enhancement: Minor improvements
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
