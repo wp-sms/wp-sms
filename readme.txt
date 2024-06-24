@@ -169,7 +169,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= 6.9.2 - **.06.2024 =
+= 6.9.2 - 24.06.2024 =
 * New: Added 160.com.au gateway
 * Fix: Resolved preferred countries issue in mobile field
 * Enhancement: Improved country functionality and performance

@@ -1,4 +1,4 @@
-= 6.9.2 - **.06.2024 =
+= 6.9.2 - 24.06.2024 =
 * New: Added 160.com.au gateway
 * Fix: Resolved preferred countries issue in mobile field
 * Enhancement: Improved country functionality and performance
