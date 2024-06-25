@@ -43,6 +43,9 @@ class RegisterUserViaPhone
     private function saveMetas()
     {
         update_user_meta($this->userId, Helper::getUserMobileFieldName(), $this->mobileNumber);
+
+        // This will be deleted after the successful login
+        update_user_meta($this->userId, 'wp_sms_user_registered_just_now', '1');
     }
 
     /**
