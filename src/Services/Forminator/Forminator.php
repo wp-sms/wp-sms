@@ -26,19 +26,17 @@ class Forminator
         /**
          * Send SMS to the specific number or subscribers' group
          */
-        if ((isset($sms_options['forminator_notify_enable_form_' . $form]) ||
-                isset($sms_options['forminator_notify_receiver_form_' . $form])) &&
+        if (isset($sms_options['forminator_notify_enable_form_' . $form]) &&
             isset($sms_options['forminator_notify_message_form_' . $form])
         ) {
 
             $forminatorNotification->send(
                 $sms_options['forminator_notify_message_form_' . $form],
-                $sms_options['forminator_notify_receiver_form_' . $form]
+                explode(',', $sms_options['forminator_notify_receiver_form_' . $form])
             );
         }
 
-        if ((isset($sms_options['forminator_notify_enable_field_form_' . $form]) ||
-                isset($sms_options['forminator_notify_receiver_field_form_' . $form])) &&
+        if (isset($sms_options['forminator_notify_enable_field_form_' . $form]) &&
             isset($sms_options['forminator_notify_message_field_form_' . $form])
         ) {
 
