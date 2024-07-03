@@ -19,7 +19,7 @@ class Notification
     {
         // Backward compatibility
         if (!is_array($to)) {
-            $to = array($to);
+            $to = explode(',', $to);
         }
 
         if (!$this->optIn) {
