@@ -24,17 +24,13 @@ class tubelightcommunications extends \WP_SMS\Gateway
             'id'   => 'gateway_sender_id',
             'name' => 'Sender number',
             'desc' => 'Sender number or sender ID',
-        ],
-        'template_id' => [
-            'id'   => 'gateway_template_id',
-            'name' => 'Template ID',
-            'desc' => 'Enter your DLT Template ID (Optional)',
         ]
     ];
 
     public function __construct()
     {
         parent::__construct();
+        $this->help = __('For send messages, send variables and message id in this format: <b>message|template_id</b>', 'wp-sms');
     }
 
     /**
@@ -80,6 +76,8 @@ class tubelightcommunications extends \WP_SMS\Gateway
                 throw new \Exception($credit->get_error_message());
             }
 
+            $message = $this->getTemplateIdAndMessageBody();
+
             $response = $this->request('POST', "{$this->wsdl_link}/sendsms_v1.0/chakra.php", [], [
                 'headers' => [
                     'Content-Type' => 'application/json'
@@ -91,13 +89,13 @@ class tubelightcommunications extends \WP_SMS\Gateway
                         'channel' => '0',
                     ],
                     'message'        => [
-                        'smsdata' => array_map(function ($number) {
+                        'smsdata' => array_map(function ($number) use ($message) {
                             return [
                                 'destination' => $number,
                                 'source'      => $this->from,
                                 'type'        => 'TEXT',
-                                'content'     => urlencode($this->msg),
-                                'tempId'      => $this->template_id,
+                                'content'     => urlencode($message['message']),
+                                'tempId'      => $message['template_id'],
                             ];
                         }, $this->to),
                     ],
