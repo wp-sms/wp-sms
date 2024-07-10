@@ -1,10 +1,18 @@
 <?php
 /** @var \WP_SMS\Services\MessageButton\ChatBoxDecorator $chatbox */
-$general_color      = $chatbox->getTextColor() ? sprintf('color: %s;', $chatbox->getTextColor()) : '';
+$general_color      = $chatbox->getTextColor() ? sprintf('color: %s!important;', $chatbox->getTextColor()) : '';
 $general_background = $chatbox->getColor() ? sprintf('background-color: %s;', $chatbox->getColor()) : '';
 $general_fill_color = $chatbox->getTextColor('#FFF');
-$footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $chatbox->getFooterTextColor()) : '';
+$footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!important;', $chatbox->getFooterTextColor()) : '';
 ?>
+<style>
+    .wpsms-chatbox__header h2{
+    <?php echo esc_attr($general_color) ?>
+    }
+    .wpsms-chatbox__info--text{
+    <?php echo esc_attr($footer_color) ?>
+    }
+</style>
 
 <div class="wpsms-chatbox wpsms-chatbox--ltr  wpsms-chatbox--orange-theme <?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'wpsms-chatbox--right-side' : 'wpsms-chatbox--left-side' ?>">
     <button class="wpsms-chatbox__button js-wpsms-chatbox__button wpsms-chatbox__button--rounded wpsms-chatbox__button--rounded wpsms-chatbox__button--has-arrow wpsms-chatbox--bobbles" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
@@ -21,7 +29,7 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $ch
 
     <div class="wpsms-chatbox__content <?php echo $chatbox->getAnimationEffect() ? 'wpsms-chatbox__content--' . esc_attr($chatbox->getAnimationEffect()) : '' ?>">
         <div class="wpsms-chatbox__header" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
-            <h2 style="<?php echo esc_attr($general_color) ?>">
+            <h2>
                 <?php echo esc_html($chatbox->getTitle()); ?>
             </h2>
             <button class="wpsms-chatbox__close-button js-wpsms-chatbox__close-button">
@@ -91,7 +99,7 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s;', $ch
             </div>
         </div>
         <div class="wpsms-chatbox__info">
-            <div style="<?php echo esc_attr($footer_color) ?>">
+            <div class="wpsms-chatbox__info--text">
                 <?php echo esc_html($chatbox->getFooterText()); ?>
 
                 <?php if ($chatbox->getFooterLinkUrl() && $chatbox->getFooterLinkTitle()) : ?>
