@@ -225,7 +225,7 @@ class Install
     }
 
     /**
-     * Remove Table On Delete Blog Wordpress
+     * Remove Table On Delete Blog WordPress
      *
      * @param $tables
      *

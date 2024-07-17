@@ -1095,7 +1095,7 @@
 * Fixed: return credit in smsglobal webservice.
 
 = 2.7 =
-* Added: Numbers of Wordpress Users to send sms page.
+* Added: Numbers of WordPress Users to send sms page.
 * Added: Mobile validate number to class plugin.
 * Added: Option for Disable/Enable credit account in admin menu.
 * Added: afe.ir webservice.
@@ -1291,7 +1291,7 @@
 * Added: Caffeweb Webservice.
 
 = 1.9.20 =
-* Resolved: add subscriber in from Wordpress Admin->Newsletter subscriber.
+* Resolved: add subscriber in from WordPress Admin->Newsletter subscriber.
 * Added: TCIsms Webservice.
 
 = 1.9.19 =
