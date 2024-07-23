@@ -115,7 +115,9 @@ final class Generator
      */
     public function createCode($length)
     {
-        if ($length < 4 || $length > 10) {
+        $length = apply_filters('wp_sms_sms_otp_length', $length);
+
+        if ($length < 2 || $length > 10) {
             throw new Exceptions\InvalidArgumentException(esc_html__('Provided $length argument must be between 4 and 10.', 'wp-sms'));
         }
 
