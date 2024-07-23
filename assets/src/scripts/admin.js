@@ -1,4 +1,10 @@
 ﻿jQuery(document).ready(function ($) {
+
+    jQuery( 'body' ).on( 'thickbox:removed', function() {
+        jQuery('.iti__country-container').trigger('click');
+    });
+
+
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
     }
