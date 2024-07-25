@@ -94,7 +94,7 @@ function wp_sms_check_remote_license($addOnKey, $licenseKey)
     ), WP_SMS_SITE . '/wp-json/plugins/v1/validate');
 
     $response = wp_remote_get($buildUrl, [
-        'timeout' => 10
+        'timeout' => 25
     ]);
 
     if (is_wp_error($response)) {
@@ -104,6 +104,9 @@ function wp_sms_check_remote_license($addOnKey, $licenseKey)
     $response = json_decode($response['body']);
 
     if (isset($response->status) and $response->status == 200) {
+        // To clear the download transient and sync with download status
+        delete_transient($addOnKey . '_download_info');
+
         return true;
     }
 }
