@@ -240,7 +240,29 @@ function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = []
 if (!function_exists('wp_sms_shorturl')) {
     function wp_sms_shorturl($longUrl = '')
     {
-        return apply_filters('wp_sms_shorturl', $longUrl);
+        // Parse the URL into its components
+        $parsed_url = parse_url($longUrl);
+
+        if (!$parsed_url || !isset($parsed_url['scheme']) || !isset($parsed_url['host'])) {
+            return $longUrl;
+        }
+
+        // Extract components
+        $scheme   = $parsed_url['scheme'];
+        $host     = $parsed_url['host'];
+        $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+        $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+        $query    = isset($parsed_url['query']) ? $parsed_url['query'] : '';
+        $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+
+        // Encode the path and query components separately
+        $encoded_path  = implode('/', array_map('rawurlencode', explode('/', $path)));
+        $encoded_query = $query ? '?' . str_replace('%3D', '=', str_replace('%26', '&', rawurlencode($query))) : '';
+
+        // Reconstruct the URL
+        $encoded_url = $scheme . '://' . $host . $port . $encoded_path . $encoded_query . $fragment;
+
+        return apply_filters('wp_sms_shorturl', $encoded_url);
     }
 }
 
