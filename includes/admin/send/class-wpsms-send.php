@@ -48,13 +48,15 @@ class SMS_Send
             $credit = $this->sms::credit();
         }
 
+        $userMobileResult = Helper::getUsersMobileNumberCountsWithRoleDetails();
+
         $args = [
             'get_group_result'        => Newsletter::getGroups(),
-            'get_users_mobile'        => Helper::getUsersMobileNumbers(),
+            'get_users_mobile'        => $userMobileResult['total']['count'],
             'proIsActive'             => Version::pro_is_active(),
             'woocommerceCustomers'    => $woocommerceCustomers,
             'buddyPressMobileNumbers' => $buddyPressMobileNumbers,
-            'wpsms_list_of_role'      => Helper::getListOfRoles(),
+            'wpsms_list_of_role'      => $userMobileResult['roles'],
             'smsObject'               => $this->sms,
             'gatewayCredit'           => $credit
         ];
