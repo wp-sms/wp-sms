@@ -167,7 +167,6 @@ class Helper
                 ),
             ),
             'count_total' => false,
-            'number'      => 1000
         );
 
         if ($roleId) {
