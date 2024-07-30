@@ -177,6 +177,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * Fix: Resolved an issue with the check attribute in user profile fields.
 * Fix: Fixed Template ID issue in Tubelight Communications gateway.
 * Fix: Corrected bugs related to Forminator receiver and conditions.
+* Fix: Fixed notice errors in CF7 form management.
 * Fix: Fixed the display of the country flag in the subscriber modal.
 * Dev: Added filter `wp_sms_sms_otp_length`.
 
