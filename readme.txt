@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.6
 Requires PHP: 5.6
-Stable tag: 6.9.2
+Stable tag: 6.9.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,10 +169,15 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= 6.9.2 - 24.06.2024 =
-* New: Added 160.com.au gateway
-* Fix: Resolved preferred countries issue in mobile field
-* Enhancement: Improved country functionality and performance
-* Enhancement: Minor improvements
+= 6.9.3 - 30.07.2024 =
+* Enhancement: Enhanced backward compatibility for recipient handling.
+* Enhancement: Improved query for retrieving mobile count per user role.
+* Enhancement: Improved the Chat Box styles.
+* Enhancement: Updated the Add-Ons page and improved license activation status.
+* Fix: Resolved an issue with the check attribute in user profile fields.
+* Fix: Fixed Template ID issue in Tubelight Communications gateway.
+* Fix: Corrected bugs related to Forminator receiver and conditions.
+* Fix: Fixed the display of the country flag in the subscriber modal.
+* Dev: Added filter `wp_sms_sms_otp_length`.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

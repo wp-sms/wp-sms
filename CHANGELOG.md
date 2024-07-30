@@ -1,3 +1,14 @@
+= 6.9.3 - 30.07.2024 =
+* Enhancement: Enhanced backward compatibility for recipient handling.
+* Enhancement: Improved query for retrieving mobile count per user role.
+* Enhancement: Improved the Chat Box styles.
+* Enhancement: Updated the Add-Ons page and improved license activation status.
+* Fix: Resolved an issue with the check attribute in user profile fields.
+* Fix: Fixed Template ID issue in Tubelight Communications gateway.
+* Fix: Corrected bugs related to Forminator receiver and conditions.
+* Fix: Fixed the display of the country flag in the subscriber modal.
+* Dev: Added filter `wp_sms_sms_otp_length`.
+
 = 6.9.2 - 24.06.2024 =
 * New: Added 160.com.au gateway
 * Fix: Resolved preferred countries issue in mobile field
