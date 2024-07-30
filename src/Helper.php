@@ -167,7 +167,6 @@ class Helper
                 ),
             ),
             'count_total' => false,
-            'number'      => 1000
         );
 
         if ($roleId) {
@@ -191,6 +190,65 @@ class Helper
         }
 
         return array_unique($mobileNumbers);
+    }
+
+    /**
+     * Get users mobile number count with role details
+     *
+     * @return array
+     */
+    public static function getUsersMobileNumberCountsWithRoleDetails()
+    {
+        $mobileFieldKey = self::getUserMobileFieldName();
+        $all_roles      = wp_roles()->role_names;
+
+        // Initialize the roles array with role details
+        $roles = [];
+        foreach ($all_roles as $role_key => $role_name) {
+            $roles[$role_key] = [
+                'name'  => $role_name,
+                'count' => 0,
+                // 'numbers' => []
+            ];
+        }
+
+        $total_count = 0;
+
+        $args = array(
+            'meta_query' => array(
+                array(
+                    'key'     => $mobileFieldKey,
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+            ),
+        );
+
+        $args  = apply_filters('wp_sms_mobile_numbers_query_args', $args);
+        $users = get_users($args);
+
+        // $mobileNumbers = [];
+
+        foreach ($users as $user) {
+            if (isset($user->$mobileFieldKey)) {
+                // $mobileNumbers[] = $user->$mobileFieldKey;
+                $total_count++;
+                foreach ($user->roles as $role) {
+                    if (isset($roles[$role])) {
+                        $roles[$role]['count']++;
+                        // $roles[$role]['numbers'][] = $user->$mobileFieldKey;
+                    }
+                }
+            }
+        }
+
+        return array(
+            'total' => [
+                'count' => $total_count,
+                // 'numbers' => array_unique($mobileNumbers),
+            ],
+            'roles' => $roles,
+        );
     }
 
     /**

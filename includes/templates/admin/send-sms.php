@@ -86,7 +86,7 @@
                             <?php
                             global $wpdb;
                             $username_active = $wpdb->query("SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE status = '1'");
-                            echo sprintf('<b>%s</b>' . esc_html__('Subscribers.', 'wp-sms'), esc_html($username_active));
+                            echo sprintf('<b>%s</b> ' . esc_html__('Subscribers.', 'wp-sms'), esc_html($username_active));
                             ?>
                         </p>
                     <?php endif; ?>
@@ -108,7 +108,7 @@
                     <p class="field-description wpsms-users">
                         <?php 
                             // translators: %s: Number of users
-                            echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), count($get_users_mobile));
+                            echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), $get_users_mobile);
                         ?>
                     </p>
                 </div>

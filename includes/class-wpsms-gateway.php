@@ -139,6 +139,9 @@ class Gateway
             'micron'    => 'microntechbd.com',
             'revesms'   => 'smpp.ajuratech.com',
         ),
+        'china'          => array(
+            'juhe' => 'juhe.cn'
+        ),
         'palestine'      => array(
             'htd' => 'htd.ps',
         ),
@@ -680,7 +683,7 @@ class Gateway
             'australia'            => array(
                 'slinteractive' => 'slinteractive.com.au',
                 'smssolutions'  => 'smssolutionsaustralia.com.au',
-                '_160au'         => '160.com.au',
+                '_160au'        => '160.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',

@@ -20,7 +20,20 @@ class AddOns
 
     public function prepareAddOnsFromApi()
     {
-        $response = wp_remote_get(WP_SMS_SITE . '/wp-json/wc/store/products?category=204', ['timeout' => 15]);
+        $transientKey  = 'wp_sms_add_ons';
+        $cacheDuration = WEEK_IN_SECONDS; // 1 week in seconds
+
+        // Check if there's a cached response
+        $cachedResponse = get_transient($transientKey);
+
+        if ($cachedResponse !== false) {
+            // Use the cached response
+            $this->addOns = json_decode($cachedResponse);
+            return;
+        }
+
+        // Fetch response from API
+        $response = wp_remote_get(WP_SMS_SITE . '/wp-json/wc/store/products?category=204', ['timeout' => 35]);
 
         // Check response
         if (is_wp_error($response)) {
@@ -32,7 +45,14 @@ class AddOns
             return;
         }
 
-        $this->addOns = json_decode(wp_remote_retrieve_body($response));
+        // Get the body of the response
+        $body = wp_remote_retrieve_body($response);
+
+        // Decode the response and assign it
+        $this->addOns = json_decode($body);
+
+        // Store the response in a transient
+        set_transient($transientKey, $body, $cacheDuration);
     }
 
     public function prepareResponse()
@@ -57,10 +77,10 @@ class AddOns
 
     public function renderPage()
     {
-        $args = [ 
+        $args = [
             'addOns' => $this->addOns
         ];
-        
+
         echo Helper::loadTemplate('admin/add-ons.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }
