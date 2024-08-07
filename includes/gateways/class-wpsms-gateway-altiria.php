@@ -2,9 +2,12 @@
 
 namespace WP_SMS\Gateway;
 
+use Exception;
 use WP_Error;
+use WP_SMS\Gateway;
+use WP_SMS\Helper;
 
-class altiria extends \WP_SMS\Gateway
+class altiria extends Gateway
 {
     private $wsdl_link = "https://www.altiria.net:8443/apirest/ws";
     public $tariff = "http://www.altiria.net";
@@ -48,40 +51,61 @@ class altiria extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $body = array(
-            'credentials' => [
-                'login'  => $this->username,
-                'passwd' => $this->password,
-            ],
-            'destination' => $this->to,
-            'message'     => [
-                'msg'      => substr($this->msg, 0, 160),
-                'senderId' => $this->from,
-            ],
-        );
+        try {
+            $this->to = Helper::removeNumbersPrefix(['+', '00'], $this->to);
 
-        $response = wp_remote_post($this->wsdl_link . '/sendSms', [
-            'headers' => array(
-                'Content-Type' => 'application/json;charset=UTF-8'
-            ),
-            'body'    => wp_json_encode($body)
-        ]);
+            $body = array(
+                'credentials' => [
+                    'login'  => $this->username,
+                    'passwd' => $this->password,
+                ],
+                'destination' => $this->to,
+                'message'     => [
+                    'msg'      => substr($this->msg, 0, 160),
+                    'senderId' => $this->from,
+                ],
+            );
 
-        if (is_wp_error($response)) {
+            $response = wp_remote_post($this->wsdl_link . '/sendSms', [
+                'headers' => array(
+                    'Content-Type' => 'application/json;charset=UTF-8'
+                ),
+                'body'    => wp_json_encode($body)
+            ]);
+
+            if (is_wp_error($response)) {
+                return $response;
+            }
+
+            if (200 != wp_remote_retrieve_response_code($response)) {
+                throw new Exception($response['body']);
+            }
+
+            $response = json_decode($response['body']);
+
+            if ($response->status != '000') {
+                throw new Exception($this->getErrorMessage($response->status));
+            }
+
+            $this->log($this->from, $this->msg, $this->to, $response);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             *
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
+
             return $response;
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
-
-        if (200 != wp_remote_retrieve_response_code($response)) {
-            return new WP_Error('send-sms', $response['body']);
-        }
-
-        $response = json_decode($response['body']);
-
-        if ($response->status != '000') {
-            return new WP_Error('send-sms', $this->getErrorMessage($response->status));
-        }
-
-        return $response;
     }
 
     public function GetCredit()
