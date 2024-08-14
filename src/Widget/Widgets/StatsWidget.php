@@ -37,20 +37,15 @@ class StatsWidget extends AbstractWidget
      */
     public function getLocalizationData()
     {
-        // Set a transient key and expiration time (e.g., 12 hours)
-        $transientKey = 'wp_sms_dashboard_widget_data';
+        // Set a transient key and expiration time for the query results (e.g., 12 hours)
+        $transientKey = 'wp_sms_dashboard_send_data';
         $expiration   = 12 * HOUR_IN_SECONDS;
 
-        // Check if the transient exists
-        $widgetData = get_transient($transientKey);
+        // Check if the query results transient exists
+        $sentMessages = get_transient($transientKey);
 
-        if ($widgetData === false) {
-            $widgetData                 = [];
-            $widgetData['localization'] = [
-                'successful' => esc_html__('Successful', 'wp-sms'),
-                'failed'     => esc_html__('Failed', 'wp-sms'),
-                'plain'      => esc_html__('Plain', 'wp-sms'),
-            ];
+        if ($sentMessages === false) {
+            // Query results don't exist or have expired, so generate the data
 
             /**
              * @param \DatePeriod $period
@@ -86,6 +81,8 @@ class StatsWidget extends AbstractWidget
                 return $datasets;
             };
 
+            // Generate the sent messages stats
+            $sentMessages                  = [];
             $sentMessages['last_7_days']   = $getResults(
                 new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
                 'd D'
@@ -103,11 +100,19 @@ class StatsWidget extends AbstractWidget
                 'M'
             );
 
-            $widgetData['send-messages-stats'] = $sentMessages;
-
-            // Store the generated data in a transient
-            set_transient($transientKey, $widgetData, $expiration);
+            // Store the query results in a transient
+            set_transient($transientKey, $sentMessages, $expiration);
         }
+
+        // Localization data is generated every time, not cached
+        $widgetData['localization'] = [
+            'successful' => esc_html__('Successful', 'wp-sms'),
+            'failed'     => esc_html__('Failed', 'wp-sms'),
+            'plain'      => esc_html__('Plain', 'wp-sms'),
+        ];
+
+        // Add the query results to the widget data
+        $widgetData['send-messages-stats'] = $sentMessages;
 
         return $widgetData;
     }
