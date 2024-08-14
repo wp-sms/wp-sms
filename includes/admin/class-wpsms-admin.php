@@ -136,7 +136,7 @@ class Admin
         $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
 
         wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', $admin_script_deps, WP_SMS_VERSION, false);
-        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
+        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', []));
         wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Object', array(
                 'restUrls'        => array(
                     'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
@@ -173,6 +173,7 @@ class Admin
          * Dashboard widgets
          */
         if ($screen->id == 'dashboard') {
+            wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
             wp_enqueue_style('wpsms-admin');
         }
 
