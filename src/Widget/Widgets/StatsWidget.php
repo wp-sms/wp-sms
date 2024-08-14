@@ -37,64 +37,77 @@ class StatsWidget extends AbstractWidget
      */
     public function getLocalizationData()
     {
-        $widgetData['localization'] = [
-            'successful' => esc_html__('Successful', 'wp-sms'),
-            'failed'     => esc_html__('Failed', 'wp-sms'),
-            'plain'      => esc_html__('Plain', 'wp-sms'),
-        ];
+        // Set a transient key and expiration time (e.g., 12 hours)
+        $transientKey = 'wp_sms_dashboard_widget_data';
+        $expiration   = 12 * HOUR_IN_SECONDS;
 
-        /**
-         * @param \DatePeriod $period
-         * @param string $format
-         */
-        $getResults = function (DatePeriod $period, string $format) {
-            global $wpdb;
+        // Check if the transient exists
+        $widgetData = get_transient($transientKey);
 
-            $dates = iterator_to_array($period);
-            sort($dates);
+        if ($widgetData === false) {
+            $widgetData                 = [];
+            $widgetData['localization'] = [
+                'successful' => esc_html__('Successful', 'wp-sms'),
+                'failed'     => esc_html__('Failed', 'wp-sms'),
+                'plain'      => esc_html__('Plain', 'wp-sms'),
+            ];
 
-            $datasets = [];
+            /**
+             * @param \DatePeriod $period
+             * @param string $format
+             */
+            $getResults = function (DatePeriod $period, string $format) {
+                global $wpdb;
 
-            for ($i = 0; $i < sizeof($dates) - 1; $i++) {
-                $firstDate  = $dates[$i];
-                $secondDate = $dates[$i + 1];
+                $dates = iterator_to_array($period);
+                sort($dates);
 
-                $label = $firstDate->format($format);
+                $datasets = [];
 
-                $results = $wpdb->get_results(
-                    $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'))
-                );
+                for ($i = 0; $i < sizeof($dates) - 1; $i++) {
+                    $firstDate  = $dates[$i];
+                    $secondDate = $dates[$i + 1];
 
-                foreach ($results as $key => $result) {
-                    $results[$result->status] = $result->count;
-                    unset($results[$key]);
+                    $label = $firstDate->format($format);
+
+                    $results = $wpdb->get_results(
+                        $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'))
+                    );
+
+                    foreach ($results as $key => $result) {
+                        $results[$result->status] = $result->count;
+                        unset($results[$key]);
+                    }
+
+                    $datasets['successful'][$label] = $results['success'] ?? 0;
+                    $datasets['failure'][$label]    = $results['error'] ?? 0;
                 }
 
-                $datasets['successful'][$label] = $results['success'] ?? 0;
-                $datasets['failure'][$label]    = $results['error'] ?? 0;
-            }
+                return $datasets;
+            };
 
-            return $datasets;
-        };
+            $sentMessages['last_7_days']   = $getResults(
+                new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
+                'd D'
+            );
+            $sentMessages['last_30_days']  = $getResults(
+                new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 30),
+                'd M'
+            );
+            $sentMessages['this_year']     = $getResults(
+                new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
+                'M'
+            );
+            $sentMessages['last_12_month'] = $getResults(
+                new DatePeriod(new DateTime('first day of -11 month'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
+                'M'
+            );
 
-        $sentMessages['last_7_days']   = $getResults(
-            new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
-            'd D'
-        );
-        $sentMessages['last_30_days']  = $getResults(
-            new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 30),
-            'd M'
-        );
-        $sentMessages['this_year']     = $getResults(
-            new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
-            'M'
-        );
-        $sentMessages['last_12_month'] = $getResults(
-            new DatePeriod(new DateTime('first day of -11 month'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
-            'M'
-        );
+            $widgetData['send-messages-stats'] = $sentMessages;
 
-        $widgetData['send-messages-stats'] = $sentMessages;
+            // Store the generated data in a transient
+            set_transient($transientKey, $widgetData, $expiration);
+        }
 
         return $widgetData;
     }
