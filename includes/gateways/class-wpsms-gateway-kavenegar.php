@@ -33,11 +33,36 @@ class kavenegar extends Gateway
 
     public function SendSMS()
     {
-        try {
-            $credits = $this->GetCredit();
+        /**
+         * Modify sender number
+         *
+         * @param string $this ->from sender number.
+         * @since 3.4
+         *
+         */
+        $this->from = apply_filters('wp_sms_from', $this->from);
 
-            if (is_wp_error($credits)) {
-                throw new Exception($credits->get_error_message());
+        /**
+         * Modify Receiver number
+         *
+         * @param array $this ->to receiver number
+         * @since 3.4
+         *
+         */
+        $this->to = apply_filters('wp_sms_to', $this->to);
+
+        /**
+         * Modify text message
+         *
+         * @param string $this ->msg text message.
+         * @since 3.4
+         *
+         */
+        $this->msg = apply_filters('wp_sms_msg', $this->msg);
+
+        try {
+            if (empty($this->has_key)) {
+                throw new Exception(__('The API Key for this gateway is not set', 'wp-sms-pro'));
             }
 
             $path = $this->get_path('send');
