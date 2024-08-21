@@ -230,7 +230,8 @@ let wpSmsSendSmsBlockForm = {
                     jQuery(elements.SBOverlay).fadeOut();
                 },
                 error: function (data) {
-                    jQuery(elements.SBResult).text(data.data).fadeIn().addClass('failed');
+                    var message = data.responseJSON.data && data.responseJSON.data.message ? data.responseJSON.data.message : data.responseJSON.data || 'An unexpected error occurred.';
+                    jQuery(elements.SBResult).text(message).fadeIn().addClass('failed');
                     jQuery(elements.SBOverlay).fadeOut();
                 }
             });
