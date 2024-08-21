@@ -1,3 +1,10 @@
+= 6.9.4 - 21.08.2024 =
+* Enhancement: Refactored: Subscriber request handling.
+* Enhancement: Required: `wpsms_subscribers` capability for public REST API endpoints (newsletter/*).
+* Enhancement: Updated: Altiria and Kavebegar gateways.
+* Enhancement: Improved: Performance of the SMS widget chart on the dashboard.
+* Development: Added: Action hook `wp_sms_otp_generated` after OTP generation.
+
 = 6.9.3 - 30.07.2024 =
 * Enhancement: Enhanced backward compatibility for recipient handling.
 * Enhancement: Improved query for retrieving mobile count per user role.
