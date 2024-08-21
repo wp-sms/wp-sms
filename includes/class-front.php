@@ -2,6 +2,10 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Controller\PublicSubscribeAjax;
+use WP_SMS\Controller\PublicUnsubscribeAjax;
+use WP_SMS\Controller\PublicVerifySubscribeAjax;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -41,13 +45,15 @@ class Front
         wp_enqueue_script('wp-sms-front-script');
 
         wp_localize_script("wp-sms-front-script", 'wpsms_ajax_object', array(
-            'newsletter_endpoint_url' => get_rest_url(null, 'wpsms/v1/newsletter'),
-            'unknown_error'           => esc_html__('Unknown Error! Check your connection and try again.', 'wp-sms'),
-            'loading_text'            => esc_html__('Loading...', 'wp-sms'),
-            'subscribe_text'          => esc_html__('Subscribe', 'wp-sms'),
-            'activation_text'         => esc_html__('Activate', 'wp-sms'),
-            'sender'                  => $sms->from,
-            'front_sms_endpoint_url'  => apply_filters('wp_sms_send_front_sms_ajax', null)
+            'subscribe_ajax_url'        => PublicSubscribeAjax::url(),
+            'unsubscribe_ajax_url'      => PublicUnsubscribeAjax::url(),
+            'verify_subscribe_ajax_url' => PublicVerifySubscribeAjax::url(),
+            'unknown_error'             => esc_html__('Unknown Error! Check your connection and try again.', 'wp-sms'),
+            'loading_text'              => esc_html__('Loading...', 'wp-sms'),
+            'subscribe_text'            => esc_html__('Subscribe', 'wp-sms'),
+            'activation_text'           => esc_html__('Activate', 'wp-sms'),
+            'sender'                    => $sms->from,
+            'front_sms_endpoint_url'    => apply_filters('wp_sms_send_front_sms_ajax', null)
         ));
     }
 

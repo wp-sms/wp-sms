@@ -6,16 +6,34 @@ class ControllerManager
 {
     public function init()
     {
-        $this->registerControllers();
+        $this->registerPublicControllers();
+        $this->registerAdminControllers();
     }
 
-    public function registerControllers()
+    /**
+     * Register public controllers
+     *
+     * @return void
+     */
+    private function registerPublicControllers()
     {
-        SubscriberFormAjax::listen();
-        GroupFormAjax::listen();
-        PrivacyDataAjax::listen();
-        ExportAjax::listen();
-        UploadSubscriberCsv::listen();
-        ImportSubscriberCsv::listen();
+        PublicSubscribeAjax::listen();
+        PublicUnsubscribeAjax::listen();
+        PublicVerifySubscribeAjax::listen();
+    }
+
+    /**
+     * Register admin controllers
+     *
+     * @return void
+     */
+    private function registerAdminControllers()
+    {
+        SubscriberFormAjax::listen(false);
+        GroupFormAjax::listen(false);
+        PrivacyDataAjax::listen(false);
+        ExportAjax::listen(false);
+        UploadSubscriberCsv::listen(false);
+        ImportSubscriberCsv::listen(false);
     }
 }

@@ -78,9 +78,6 @@ class Admin
         global $sms;
         $nonce = wp_create_nonce('wp_rest');
 
-        wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', [], WP_SMS_VERSION);
-        wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION, false);
-
         // Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
             wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', [], WP_SMS_VERSION);
@@ -100,6 +97,9 @@ class Admin
             wp_enqueue_script('wp-color-picker');
 
             if (stristr($screen->id, 'wp-sms')) {
+                wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', [], WP_SMS_VERSION);
+                wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION, false);
+                
                 wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', [], WP_SMS_VERSION, false);
                 // tooltip
                 wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', [], WP_SMS_VERSION);
@@ -136,7 +136,7 @@ class Admin
         $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
 
         wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', $admin_script_deps, WP_SMS_VERSION, false);
-        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
+        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', []));
         wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Object', array(
                 'restUrls'        => array(
                     'sendSms' => get_rest_url(null, 'wpsms/v1/send'),
@@ -173,6 +173,7 @@ class Admin
          * Dashboard widgets
          */
         if ($screen->id == 'dashboard') {
+            wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', $statsWidget->getLocalizationData()));
             wp_enqueue_style('wpsms-admin');
         }
 

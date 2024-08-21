@@ -37,63 +37,81 @@ class StatsWidget extends AbstractWidget
      */
     public function getLocalizationData()
     {
+        // Set a transient key and expiration time for the query results (e.g., 12 hours)
+        $transientKey = 'wp_sms_dashboard_send_data';
+        $expiration   = 12 * HOUR_IN_SECONDS;
+
+        // Check if the query results transient exists
+        $sentMessages = get_transient($transientKey);
+
+        if ($sentMessages === false) {
+            // Query results don't exist or have expired, so generate the data
+
+            /**
+             * @param \DatePeriod $period
+             * @param string $format
+             */
+            $getResults = function (DatePeriod $period, string $format) {
+                global $wpdb;
+
+                $dates = iterator_to_array($period);
+                sort($dates);
+
+                $datasets = [];
+
+                for ($i = 0; $i < sizeof($dates) - 1; $i++) {
+                    $firstDate  = $dates[$i];
+                    $secondDate = $dates[$i + 1];
+
+                    $label = $firstDate->format($format);
+
+                    $results = $wpdb->get_results(
+                        $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'))
+                    );
+
+                    foreach ($results as $key => $result) {
+                        $results[$result->status] = $result->count;
+                        unset($results[$key]);
+                    }
+
+                    $datasets['successful'][$label] = $results['success'] ?? 0;
+                    $datasets['failure'][$label]    = $results['error'] ?? 0;
+                }
+
+                return $datasets;
+            };
+
+            // Generate the sent messages stats
+            $sentMessages                  = [];
+            $sentMessages['last_7_days']   = $getResults(
+                new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
+                'd D'
+            );
+            $sentMessages['last_30_days']  = $getResults(
+                new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 30),
+                'd M'
+            );
+            $sentMessages['this_year']     = $getResults(
+                new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
+                'M'
+            );
+            $sentMessages['last_12_month'] = $getResults(
+                new DatePeriod(new DateTime('first day of -11 month'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
+                'M'
+            );
+
+            // Store the query results in a transient
+            set_transient($transientKey, $sentMessages, $expiration);
+        }
+
+        // Localization data is generated every time, not cached
         $widgetData['localization'] = [
             'successful' => esc_html__('Successful', 'wp-sms'),
             'failed'     => esc_html__('Failed', 'wp-sms'),
             'plain'      => esc_html__('Plain', 'wp-sms'),
         ];
 
-        /**
-         * @param \DatePeriod $period
-         * @param string $format
-         */
-        $getResults = function (DatePeriod $period, string $format) {
-            global $wpdb;
-
-            $dates = iterator_to_array($period);
-            sort($dates);
-
-            $datasets = [];
-
-            for ($i = 0; $i < sizeof($dates) - 1; $i++) {
-                $firstDate  = $dates[$i];
-                $secondDate = $dates[$i + 1];
-
-                $label = $firstDate->format($format);
-
-                $results = $wpdb->get_results(
-                    $wpdb->prepare("select `status`, count(*) as count from `{$wpdb->prefix}sms_send` where `date` between DATE(%s) and DATE(%s) group by `status`", $firstDate->format('Y-m-d'), $secondDate->format('Y-m-d'))
-                );
-
-                foreach ($results as $key => $result) {
-                    $results[$result->status] = $result->count;
-                    unset($results[$key]);
-                }
-
-                $datasets['successful'][$label] = $results['success'] ?? 0;
-                $datasets['failure'][$label]    = $results['error'] ?? 0;
-            }
-
-            return $datasets;
-        };
-
-        $sentMessages['last_7_days']   = $getResults(
-            new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 7),
-            'd D'
-        );
-        $sentMessages['last_30_days']  = $getResults(
-            new DatePeriod(new DateTime('tomorrow'), DateInterval::createFromDateString('-1 day'), 30),
-            'd M'
-        );
-        $sentMessages['this_year']     = $getResults(
-            new DatePeriod(new DateTime('first day of jan'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
-            'M'
-        );
-        $sentMessages['last_12_month'] = $getResults(
-            new DatePeriod(new DateTime('first day of -11 month'), DateInterval::createFromDateString('+1 month'), (new DateTime('first day of next month'))->modify('+1 second')),
-            'M'
-        );
-
+        // Add the query results to the widget data
         $widgetData['send-messages-stats'] = $sentMessages;
 
         return $widgetData;

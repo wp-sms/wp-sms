@@ -28,6 +28,10 @@ abstract class AjaxControllerAbstract
         try {
 
             $class  = self::getClassName();
+
+            /**
+             * @var $action AjaxControllerAbstract
+             */
             $action = new $class;
 
             // Check CSRF

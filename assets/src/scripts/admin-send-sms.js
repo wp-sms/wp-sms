@@ -8,16 +8,20 @@
     });
 
     if (WP_Sms_Admin_Object.proIsActive) {
-        jQuery("#datepicker").flatpickr({
-            enableTime: true,
-            dateFormat: "Y-m-d H:i:00",
-            time_24hr: true,
-            minuteIncrement: "10",
-            minDate: WP_Sms_Admin_Object.currentDateTime,
-            disableMobile: true,
-            defaultDate: WP_Sms_Admin_Object.currentDateTime
-        });
+        // Ensure the flatpickr function is available
+        if (typeof jQuery("#datepicker").flatpickr === 'function') {
+            jQuery("#datepicker").flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i:00",
+                time_24hr: true,
+                minuteIncrement: 10, // should be a number, not a string
+                minDate: WP_Sms_Admin_Object.currentDateTime,
+                disableMobile: true,
+                defaultDate: WP_Sms_Admin_Object.currentDateTime
+            });
+        }
 
+        // Event listener for schedule status checkbox
         jQuery("#schedule_status").on('change', function () {
             if (jQuery(this).is(":checked")) {
                 jQuery('#schedule_date').show();
@@ -648,15 +652,18 @@ const wpsmsRepeatingMessages = {
     },
 
     initElements: function () {
-        this.elements.endDatepicker.flatpickr({
-            enableTime: true,
-            dateFormat: "Y-m-d H:i:00",
-            time_24hr: true,
-            minuteIncrement: "10",
-            minDate: WP_Sms_Admin_Object.currentDateTime,
-            disableMobile: true,
-            defaultDate: WP_Sms_Admin_Object.currentDateTime
-        })
+        // Ensure the endDatepicker element exists and flatpickr is a function
+        if (this.elements.endDatepicker && typeof this.elements.endDatepicker.flatpickr === 'function') {
+            this.elements.endDatepicker.flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i:00",
+                time_24hr: true,
+                minuteIncrement: 10, // should be a number, not a string
+                minDate: WP_Sms_Admin_Object.currentDateTime,
+                disableMobile: true,
+                defaultDate: WP_Sms_Admin_Object.currentDateTime
+            });
+        }
     },
 
     handleFieldsVisibility: function () {

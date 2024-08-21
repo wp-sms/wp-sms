@@ -2,7 +2,11 @@
 
 namespace WP_SMS\Gateway;
 
-class kavenegar extends \WP_SMS\Gateway
+use Exception;
+use WP_Error;
+use WP_SMS\Gateway;
+
+class kavenegar extends Gateway
 {
     const APIPATH = "http://api.kavenegar.com/v1/%s/%s/%s.json/";
 
@@ -21,13 +25,14 @@ class kavenegar extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "+xxxxxxxxxxxxx";
         $this->has_key        = true;
+        $this->bulk_send      = true;
+        $this->help           = "Enter your Kavenegar API Key in the API Key field.<br>The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
+        $this->validateNumber = "The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -55,66 +60,64 @@ class kavenegar extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
-        $to       = implode(",",$this->to);
-        $msg      = urlencode($this->msg);
-        $path     = $this->get_path("send");
-        $response = wp_remote_get($path, array(
-            'body' => array(
-                'receptor' => $to,
-                'sender'   => $this->from,
-                'message'  => $msg
-            )
-        ));
-        if (is_array($response) && !is_wp_error($response)) {
-            try {
-                $json = json_decode($response['body']);
-                if ($json && $json->return->status == 200) {
-                    // Log the result
-                    $this->log($this->from, $this->msg, $this->to, $response);
-                    do_action('wp_sms_send', $response);
-
-                    return $response;
-                }
-            } catch (\Exception $ex) {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $response, 'error');
-
-                return new \WP_Error('send-sms', $response);
+        try {
+            if (empty($this->has_key)) {
+                throw new Exception(__('The API Key for this gateway is not set', 'wp-sms-pro'));
             }
-        }
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $response, 'error');
 
-        return new \WP_Error('send-sms', $response);
+            $path = $this->get_path('send');
+
+            $params = [
+                'receptor' => implode(",", $this->to),
+                'sender'   => $this->from,
+                'message'  => urlencode($this->msg),
+            ];
+
+            $response = $this->request('GET', $path, $params);
+
+            if ($response->return->status != 200) {
+                throw new Exception($response->return->message);
+            }
+
+            $this->log($this->from, $this->msg, $this->to, $response);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             * @since 2.4
+             *
+             */
+            do_action('wp_sms_send', $response);
+
+            return $response;
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
+        }
     }
 
     public function GetCredit()
     {
-        $remaincredit = 0;
-        $path         = $this->get_path("info", "account");
-        $response     = wp_remote_get($path);
-        if (is_array($response) && !is_wp_error($response)) {
-            try {
-                $json = json_decode($response['body']);
-                if ($json) {
-                    $remaincredit = $json->entries->remaincredit;
-                }
-            } catch (\Exception $ex) {
-                $remaincredit = 0;
+        try {
+            if (empty($this->has_key)) {
+                return new WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms-pro'));
             }
-        }
 
-        return $remaincredit;
+            $path = $this->get_path('info', 'account');
+
+            $response = $this->request('GET', $path);
+
+            if ($response->return->status != 200) {
+                throw new Exception($response->return->message);
+            }
+
+            return $response->entries->remaincredit;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
+        }
     }
 }

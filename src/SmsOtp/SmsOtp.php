@@ -86,6 +86,11 @@ final class SmsOtp
         $generator->createCode($length);
         $generator->saveIntoDatabase();
 
+        /**
+         * Trigger the custom action after the OTP is generated.
+         */
+        do_action('wp_sms_otp_generated', $generator->getCode(), $this->getPhoneNumber(), $this->getAgent());
+
         return $generator;
     }
 

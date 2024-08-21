@@ -244,9 +244,18 @@
   align-self: flex-start;
 }
 
+.iti--allow-dropdown .iti__country-container:not(:has(+ input[disabled])):not(:has(+ input[readonly])) .iti__selected-country-primary:hover, .iti--allow-dropdown .iti__country-container:not(:has(+ input[disabled])):not(:has(+ input[readonly])) .iti__selected-country:has(+ .iti__dropdown-content:hover) .iti__selected-country-primary{
+  background-color:transparent!important;
+}
+
+button.iti__selected-country:hover{
+  background-color:transparent!important;
+}
+
 input.iti__search-input {
   padding: 9px 12px !important;
   border: none !important;
+  font-size: 13px!important;
 }
 
 .wc-block-components-form .wc-block-components-text-input, .wc-block-components-text-input {
