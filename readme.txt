@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.6
 Requires PHP: 5.6
-Stable tag: 6.9.4
+Stable tag: 6.9.4.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,7 +169,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= 6.9.4 - 21.08.2024 =
+= 6.9.4.1 - 21.08.2024 =
 * Enhancement: Refactored: Subscriber request handling.
 * Enhancement: Required: `wpsms_subscribers` capability for public REST API endpoints (newsletter/*).
 * Enhancement: Updated: Altiria and Kavebegar gateways.
