@@ -59,7 +59,9 @@ class SendSmsApi extends \WP_SMS\RestApi
                 'methods'             => \WP_REST_Server::CREATABLE,
                 'callback'            => array($this, 'sendSmsCallback'),
                 'args'                => $this->sendSmsArguments,
-                'permission_callback' => array($this, 'sendSmsPermission'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
             )
         ));
 
@@ -310,18 +312,6 @@ class SendSmsApi extends \WP_SMS\RestApi
         $query = "SELECT * FROM `{$this->tb_prefix}sms_send`";
 
         return $this->db->get_results($query, ARRAY_A);
-    }
-
-    /**
-     * Check user permission
-     *
-     * @param $request
-     *
-     * @return bool
-     */
-    public function sendSmsPermission($request)
-    {
-        return current_user_can('wpsms_sendsms');
     }
 }
 

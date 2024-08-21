@@ -5,8 +5,10 @@ namespace WP_SMS\Api\V1;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
+use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_SMS\RestApi;
+use WP_SMS\Services\Subscriber\SubscriberUtil;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -53,7 +55,9 @@ class Newsletter extends RestApi
                         'required' => false
                     )
                 ),
-                'permission_callback' => '__return_true'
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_subscribers');
+                },
             ),
             array(
                 'methods'             => WP_REST_Server::READABLE,
@@ -63,7 +67,9 @@ class Newsletter extends RestApi
                         'required' => false,
                     )
                 ),
-                'permission_callback' => array($this, 'getSubscribersPermission')
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_subscribers');
+                },
             )
         ));
 
@@ -78,7 +84,9 @@ class Newsletter extends RestApi
                     'required' => true,
                 )
             ),
-            'permission_callback' => '__return_true'
+            'permission_callback' => function () {
+                return current_user_can('wpsms_subscribers');
+            },
         ));
 
         register_rest_route($this->namespace . '/v1', '/newsletter/verify', array(
@@ -95,7 +103,9 @@ class Newsletter extends RestApi
                     'required' => true,
                 )
             ),
-            'permission_callback' => '__return_true'
+            'permission_callback' => function () {
+                return current_user_can('wpsms_subscribers');
+            },
         ));
     }
 
@@ -108,7 +118,7 @@ class Newsletter extends RestApi
     {
         // Get parameters from request
         $params         = $request->get_params();
-        $number         = self::convertNumber($params['mobile']);
+        $number         = $params['mobile'];
         $customFields   = $request->get_param('custom_fields');
         $group_id       = $request->get_param('group_id');
         $groups_enabled = Option::getOption('newsletter_form_groups');
@@ -118,7 +128,7 @@ class Newsletter extends RestApi
             return self::response(esc_html__('Please select a specific group.', 'wp-sms'), 400);
         }
 
-        $result = self::subscribe($params['name'], $number, $group_id, $customFields);
+        $result = SubscriberUtil::subscribe($params['name'], $number, $group_id, $customFields);
 
         if (is_wp_error($result)) {
             return self::response($result->get_error_message(), 400);
@@ -165,7 +175,7 @@ class Newsletter extends RestApi
     {
         // Get parameters from request
         $params         = $request->get_params();
-        $number         = self::convertNumber($params['mobile']);
+        $number         = Helper::convertNumber($params['mobile']);
         $group_id       = isset($params['group_id']) ? $params['group_id'] : 0;
         $groups_enabled = Option::getOption('newsletter_form_groups');
 
@@ -177,7 +187,7 @@ class Newsletter extends RestApi
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
         foreach ($groupIds as $groupId) {
-            $result = self::unSubscribe($params['name'], $number, $groupId);
+            $result = SubscriberUtil::unSubscribe($params['name'], $number, $groupId);
 
             if (is_wp_error($result)) {
                 return self::response($result->get_error_message(), 400);
@@ -196,7 +206,7 @@ class Newsletter extends RestApi
     {
         // Get parameters from request
         $params = $request->get_params();
-        $number = self::convertNumber($params['mobile']);
+        $number = Helper::convertNumber($params['mobile']);
 
         $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
@@ -207,7 +217,7 @@ class Newsletter extends RestApi
             $activation = trim($params['activation']);
 
             // Add subscribe to database
-            $result = self::verifySubscriber($params['name'], $number, $activation, $groupId);
+            $result = SubscriberUtil::verifySubscriber($params['name'], $number, $activation, $groupId);
 
             if (is_wp_error($result)) {
                 return self::response($result->get_error_message(), 400);
@@ -215,18 +225,6 @@ class Newsletter extends RestApi
         }
 
         return self::response(esc_html__('Your mobile number has been successfully subscribed.', 'wp-sms'));
-    }
-
-    /**
-     * Check user permission
-     *
-     * @param $request
-     *
-     * @return bool
-     */
-    public function getSubscribersPermission($request)
-    {
-        return current_user_can('wpsms_subscribers');
     }
 }
 

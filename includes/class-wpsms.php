@@ -3,7 +3,6 @@
 use WP_SMS\Admin\Widget\WidgetsManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
-use WP_SMS\Services\Formidable\Formidable;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 
@@ -196,6 +195,7 @@ class WP_SMS
         $this->include('includes/admin/class-wpsms-version.php');
 
         // Newsletter
+        $this->include('src/Services/Subscriber/SubscriberUtil.php');
         $this->include('src/Services/Subscriber/SubscriberManager.php');
         $subscriberManager = new \WP_SMS\Services\Subscriber\SubscriberManager();
         $subscriberManager->init();
@@ -208,6 +208,9 @@ class WP_SMS
 
         // Controllers
         $this->include('src/Controller/AjaxControllerAbstract.php');
+        $this->include('src/Controller/PublicSubscribeAjax.php');
+        $this->include('src/Controller/PublicUnsubscribeAjax.php');
+        $this->include('src/Controller/PublicVerifySubscribeAjax.php');
         $this->include('src/Controller/SubscriberFormAjax.php');
         $this->include('src/Controller/GroupFormAjax.php');
         $this->include('src/Controller/ExportAjax.php');

@@ -196,7 +196,3 @@ add_filter('wp_sms_msg', 'wp_sms_modify_message');
 * [Plugin Website](https://wp-sms-pro.com)
 * [Documentation](https://wp-sms-pro.com/resources-category/api-endpoints/)
 * [API Documentation](https://documenter.getpostman.com/view/3239688/UVkqsvCK#019c5b41-5916-4d2c-9661-ba933dd8ec1a)
-
-# Donate
-Would you like to support this project?
-- ![Paypal](https://raw.githubusercontent.com/reek/anti-adblock-killer/gh-pages/images/paypal.png) Paypal: [Donate](https://wp-sms-pro.com/donate)
