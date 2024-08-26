@@ -80,28 +80,33 @@ class _160au extends Gateway
                 throw new Exception($balance->get_error_message());
             }
 
-            $arguments = [
-                'username'    => $this->username,
-                'password'    => $this->password,
-                'messageText' => $this->msg,
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body'    => [
+                    'username' => $this->username,
+                    'password' => $this->password,
+                    'messageText' => $this->msg,
+                ],
             ];
 
             if (!empty($this->from)){
-                $arguments['senderName'] = $this->from;
+                $params['body']['senderName'] = $this->from;
             }
 
             // Conversion for bulk sending
             if (count($this->to) > 1) {
                 foreach ($this->to as $number) {
-                    $arguments["mobileNumber[{$number}]"] = $number;
+                    $params['body']["mobileNumber[{$number}]"] = $number;
                 }
             } else {
-                $arguments['mobileNumber'] = $this->to[0];
+                $params['body']['mobileNumber'] = $this->to[0];
             }
 
-            $response = $this->request('GET', $this->wsdl_link . 'SendMessage', $arguments);
+            $response = $this->request('POST', $this->wsdl_link . 'SendMessage', [], $params, false);
 
-            $response = (array)simplexml_load_string($response);
+            $response = @(array)simplexml_load_string($response);
 
             if (strpos($response[0], 'ERR:') === 0) {
                 throw new Exception($response[0]);
@@ -137,13 +142,19 @@ class _160au extends Gateway
                 return new WP_Error('account-credit', 'Please enter your username and password.');
             }
 
-            $arguments = array(
-                'username' => $this->username,
-                'password' => $this->password,
-            );
-            $response  = $this->request('GET', $this->wsdl_link . 'GetCreditBalance', $arguments);
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body'    => [
+                    'username' => $this->username,
+                    'password' => $this->password,
+                ],
+            ];
 
-            $response = (array)simplexml_load_string($response);
+            $response = $this->request('POST', $this->wsdl_link . 'GetCreditBalance', [], $params, false);
+
+            $response = @(array)simplexml_load_string($response);
 
             if (strpos($response[0], 'ERR:') === 0) {
                 throw new Exception($response[0]);
