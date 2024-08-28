@@ -30,7 +30,7 @@ class Gateway
             'messagebird'    => 'messagebird.com',
             'clicksend'      => 'clicksend.com',
             'smsapicom'      => 'smsapi.com',
-            'whatsappcloud'  => 'business.whatsapp.com',
+            //'whatsappcloud'  => 'business.whatsapp.com',
             'dsms'           => 'dsms.in',
             'esms'           => 'esms.vn',
             'isms'           => 'isms.com.my',
