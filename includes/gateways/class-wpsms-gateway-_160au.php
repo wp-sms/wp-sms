@@ -17,11 +17,12 @@ class _160au extends Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->bulk_send      = true;
-        $this->has_key        = false;
-        $this->validateNumber = "Number of the recipient with country code (eg: +61000000000)";
-        $this->help           = "The mobile number must include the <b>country code</b>";
-        $this->gatewayFields  = [
+        $this->bulk_send       = true;
+        $this->has_key         = false;
+        $this->supportIncoming = true;
+        $this->validateNumber  = "Number of the recipient with country code (eg: +61000000000)";
+        $this->help            = "The mobile number must include the <b>country code</b>";
+        $this->gatewayFields   = [
             'username' => [
                 'id'   => 'username',
                 'name' => 'Username',
@@ -85,13 +86,13 @@ class _160au extends Gateway
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
                 'body'    => [
-                    'username' => $this->username,
-                    'password' => $this->password,
+                    'username'    => $this->username,
+                    'password'    => $this->password,
                     'messageText' => $this->msg,
                 ],
             ];
 
-            if (!empty($this->from)){
+            if (!empty($this->from)) {
                 $params['body']['senderName'] = $this->from;
             }
 
