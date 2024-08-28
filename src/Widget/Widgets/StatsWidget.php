@@ -39,7 +39,7 @@ class StatsWidget extends AbstractWidget
     {
         // Set a transient key and expiration time for the query results (e.g., 12 hours)
         $transientKey = 'wp_sms_dashboard_send_data';
-        $expiration   = 12 * HOUR_IN_SECONDS;
+        $expiration   = HOUR_IN_SECONDS;
 
         // Check if the query results transient exists
         $sentMessages = get_transient($transientKey);
