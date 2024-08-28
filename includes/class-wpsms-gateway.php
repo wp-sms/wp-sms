@@ -684,6 +684,7 @@ class Gateway
                 'slinteractive' => 'slinteractive.com.au',
                 'smssolutions'  => 'smssolutionsaustralia.com.au',
                 '_160au'        => '160.com.au',
+                'gunisms'       => 'gunisms.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',
