@@ -82,13 +82,24 @@ class StatsWidget extends AbstractWidget
             }
 
             // Initialize this year and last 12 months
+            $currentYear  = date('Y');
             $last12Months = new DatePeriod(new DateTime('first day of -11 month'), new DateInterval('P1M'), new DateTime('first day of next month'));
+
             foreach ($last12Months as $date) {
-                $key                                           = $date->format('M');
-                $datasets['this_year']['successful'][$key]     = 0;
-                $datasets['this_year']['failure'][$key]        = 0;
+                $key = $date->format('M');
+
+                // Initialize last 12 months data
                 $datasets['last_12_month']['successful'][$key] = 0;
                 $datasets['last_12_month']['failure'][$key]    = 0;
+
+                // Check if the month belongs to the current year
+                if ($date->format('Y') == $currentYear) {
+                    // Only initialize this_year data for months that have passed
+                    if ($date < new DateTime('first day of this month')) {
+                        $datasets['this_year']['successful'][$key] = 0;
+                        $datasets['this_year']['failure'][$key]    = 0;
+                    }
+                }
             }
 
             $currentYear   = date('Y');
