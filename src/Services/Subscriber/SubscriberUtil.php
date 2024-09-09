@@ -31,7 +31,7 @@ class SubscriberUtil
         // Delete inactive subscribes with this number
         Newsletter::deleteInactiveSubscribersByMobile($mobile);
 
-        $groupIds     = is_array($group) ? $group : array($group);
+        $groupIds     = is_array($group) ? $group : json_decode(stripslashes($group), true);
         $gateway_name = Option::getOption('gateway_name');
 
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
