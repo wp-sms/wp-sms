@@ -659,7 +659,8 @@ class Gateway
                 'sonoratecnologia' => 'sonoratecnologia.com.br',
             ),
             'germany'              => array(
-                'engy' => 'engy.solutions',
+                'engy'     => 'engy.solutions',
+                'smspoint' => 'smspoint.de'
             ),
             'romania'              => array(
                 'globalvoice' => 'global-voice.net',
