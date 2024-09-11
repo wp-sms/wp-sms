@@ -23,27 +23,34 @@ function init() {
 
      // Initialize input fields with intlTelInput
 
+    const useFullscreenPopupOption =  typeof navigator !== "undefined" && typeof window !== "undefined" ? (
+        //* We cannot just test screen size as some smartphones/website meta tags will report desktop resolutions.
+        //* Note: to target Android Mobiles (and not Tablets), we must find 'Android' and 'Mobile'
+        /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+        ) || window.innerWidth <= 500
+    ) : false;
+
     function initializeInputs(inputTells) {
         for (var i = 0; i < inputTells.length; i++) {
               if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
                  inputTells[i].setAttribute('dir', direction);
-                window.intlTelInput(inputTells[i], {
+                  let iti = window.intlTelInput(inputTells[i], {
                     separateDialCode: false,
                     allowDropdown: true,
                     strictMode: true,
                     onlyCountries: wp_sms_intel_tel_input.only_countries,
                     countryOrder: wp_sms_intel_tel_input.preferred_countries,
                      nationalMode: true,
-                    useFullscreenPopup: false,
+                    useFullscreenPopup: useFullscreenPopupOption,
                     dropdownContainer: body.classList.contains('rtl') ? null : body,
                     utilsScript: wp_sms_intel_tel_input.util_js,
                     hiddenInput: () => ({ phone: inputTells[i].name}),
                     formatOnDisplay: false,
                     initialCountry: defaultCountry
-                 });
+                  });
                   function setDefaultCode(item){
-                      let iti = intlTelInput.getInstance(item);
-                      if(item.value==''){
+                       if(item.value==''){
                           let country=iti.getSelectedCountryData();
                           item.value = '+'+country.dialCode;
                       }else{
@@ -82,7 +89,7 @@ function init() {
     var inputTell = document.querySelector("#job_mobile, #_job_mobile");
     if (inputTell && !inputTell.getAttribute('placeholder')) {
         inputTell.setAttribute('dir', direction)
-        window.intlTelInput(inputTell, {
+        let iti_job = window.intlTelInput(inputTell, {
             autoInsertDialCode: true,
             autoPlaceholder: "aggressive",
             allowDropdown: true,
@@ -92,19 +99,18 @@ function init() {
             onlyCountries: wp_sms_intel_tel_input.only_countries,
             countryOrder: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
-            nationalMode: wp_sms_intel_tel_input.national_mode,
+            nationalMode: true,
             utilsScript: wp_sms_intel_tel_input.util_js,
             formatOnDisplay: false,
             initialCountry: defaultCountry
          });
         function setDefaultCode(item){
-            let iti = intlTelInput.getInstance(item);
-            if(item.value==''){
-                let country=iti.getSelectedCountryData();
+             if(item.value==''){
+                let country=iti_job.getSelectedCountryData();
                 item.value = '+'+country.dialCode;
             }else{
-                if(iti.getNumber()){
-                     item.value=iti.getNumber().replace(/[-\s]/g, '')
+                if(iti_job.getNumber()){
+                     item.value=iti_job.getNumber().replace(/[-\s]/g, '')
                 }else{
                     item.value=item.value.replace(/[-\s]/g, '')
                 }
