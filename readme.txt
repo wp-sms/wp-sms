@@ -169,11 +169,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= 6.9.4.1 - 21.08.2024 =
-* Enhancement: Refactored: Subscriber request handling.
-* Enhancement: Required: `wpsms_subscribers` capability for public REST API endpoints (newsletter/*).
-* Enhancement: Updated: Altiria and Kavenegar gateways.
-* Enhancement: Improved: Performance of the SMS widget chart on the dashboard.
-* Development: Added: Action hook `wp_sms_otp_generated` after OTP generation.
+= 6.9.* - **.**.2024 =
+* Fix: Resolved selecting country issue and update Intl Tel Input
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
