@@ -659,7 +659,8 @@ class Gateway
                 'sonoratecnologia' => 'sonoratecnologia.com.br',
             ),
             'germany'              => array(
-                'engy' => 'engy.solutions',
+                'engy'     => 'engy.solutions',
+                'smspoint' => 'smspoint.de'
             ),
             'romania'              => array(
                 'globalvoice' => 'global-voice.net',
@@ -684,6 +685,7 @@ class Gateway
                 'slinteractive' => 'slinteractive.com.au',
                 'smssolutions'  => 'smssolutionsaustralia.com.au',
                 '_160au'        => '160.com.au',
+                'gunisms'       => 'gunisms.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',

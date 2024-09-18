@@ -1,7 +1,13 @@
+= 6.9.5 - 18.09.2024 =
+* New: Added support for new SMS gateways: SmsPoint.de, 160au, and Gunisms.
+* New: Introduced the variable %order_item_meta_{key-name}% for WooCommerce Order Notifications, allowing retrieval of meta data from order line items.
+* Fix: Fixed the issue with country selection and updated the Intl Tel Input library for better accuracy.
+* Improvement: Enhanced performance of incoming message queries in the report widget for faster data retrieval.
+
 = 6.9.4 - 21.08.2024 =
 * Enhancement: Refactored: Subscriber request handling.
 * Enhancement: Required: `wpsms_subscribers` capability for public REST API endpoints (newsletter/*).
-* Enhancement: Updated: Altiria and Kavebegar gateways.
+* Enhancement: Updated: Altiria and Kavenegar gateways.
 * Enhancement: Improved: Performance of the SMS widget chart on the dashboard.
 * Development: Added: Action hook `wp_sms_otp_generated` after OTP generation.
 

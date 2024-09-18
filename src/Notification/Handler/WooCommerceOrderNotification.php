@@ -30,6 +30,7 @@ class WooCommerceOrderNotification extends Notification
         '%status%'                      => 'getStatus',
         '%shipping_method%'             => 'getShippingMethod',
         '%order_meta_{key-name}%'       => 'getMeta',
+        '%order_item_meta_{key-name}%'  => 'getOrderItemMeta',
     ];
 
     public function __construct($orderId = false)
@@ -166,5 +167,25 @@ class WooCommerceOrderNotification extends Notification
     public function getMeta($metaKey)
     {
         return apply_filters("wp_sms_notification_woocommerce_order_meta_key_{$metaKey}", $this->order->get_meta($metaKey));
+    }
+
+    /**
+     * Get order item meta value
+     *
+     * @param string $metaKey
+     * @return string
+     */
+    public function getOrderItemMeta($metaKey)
+    {
+        $itemMetaValues = [];
+
+        foreach ($this->order->get_items() as $itemId => $item) {
+            $metaValue = wc_get_order_item_meta($itemId, $metaKey, true);
+            if ($metaValue) {
+                $itemMetaValues[] = $metaValue;
+            }
+        }
+
+        return implode(', ', $itemMetaValues);
     }
 }
