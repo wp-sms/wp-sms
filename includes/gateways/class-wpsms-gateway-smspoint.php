@@ -86,13 +86,11 @@ class smspoint extends Gateway
                     'Accept'       => 'application/json',
                     'X-Auth-Token' => $this->gateway_token,
                 ],
-                'body'    => json_encode(
-                    [
-                        'senderName' => $this->from,
-                        'body'       => $this->msg,
-                        'phone'      => $this->to[0],
-                    ]
-                ),
+                'body'    => json_encode([
+                    'senderName' => $this->from,
+                    'body'       => $this->msg,
+                    'phone'      => $this->to[0],
+                ]),
             ];
 
             $response = $this->request('POST', $this->wsdl_link, [], $params, false);
