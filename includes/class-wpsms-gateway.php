@@ -101,6 +101,7 @@ class Gateway
             'smspapa'        => 'smspapa.com.au',
             'gupshup'        => 'gupshup.io',
             'telesign'       => 'telesign.com',
+            'mysms'          => 'mysms.com'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
