@@ -31,8 +31,16 @@ class SubscriberUtil
         // Delete inactive subscribes with this number
         Newsletter::deleteInactiveSubscribersByMobile($mobile);
 
-        $groupIds     = is_array($group) ? $group : json_decode(stripslashes($group), true);
-        $groupIds     = !empty($groupIds) ? $groupIds : [0];
+        $groupIds = wp_unslash($group);
+
+        if (!is_null($groupIds))
+            $groupIds = json_decode($groupIds);
+
+        if (!is_array($groupIds))
+            $groupIds = array($groupIds);
+
+        $groupIds = array_map('intval', $groupIds);
+
         $gateway_name = Option::getOption('gateway_name');
 
         if (Option::getOption('newsletter_form_verify') and $gateway_name) {
