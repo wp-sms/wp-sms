@@ -20,7 +20,7 @@
             <tr>
                 <td style="padding-top: 10px;">
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Group', 'wp-sms'); ?></label>
-                    <select name="wpsms_group_name" id="wpsms_group_name" class="wp_sms_subscribers_input_text code">
+                    <select name="wpsms_group_name[]" id="wpsms_group_name" class="wp_sms_subscribers_input_text code" multiple style="height: 100px;">
                         <?php foreach ($groups as $items) : ?>
                             <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>><?php echo esc_attr($items->name); ?></option>
                         <?php endforeach; ?>

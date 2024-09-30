@@ -26,12 +26,12 @@ class PrivacyDataAjax extends AjaxControllerAbstract
     public function processForm()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => Helper::notice(__('Sorry, you do not have permission to perform this action!', 'wp - sms'), 'error', false, '', true)), 400);
+            wp_send_json_error(array('message' => Helper::notice(__('Sorry, you do not have permission to perform this action!', 'wp-sms'), 'error', false, '', true)), 400);
         }
 
         //Is Empty Mobile Number
         if (empty($this->mobile)) {
-            wp_send_json_error(array('message' => Helper::notice(__('Please enter the mobile number!', 'wp - sms'), 'error', false, '', true)), 400);
+            wp_send_json_error(array('message' => Helper::notice(__('Please enter the mobile number!', 'wp-sms'), 'error', false, '', true)), 400);
         }
 
         //Check User Not Exist
@@ -48,7 +48,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
          * Delete type
          */
         if ($this->type === 'delete') {
-            wp_send_json_success(array('message' => Helper::notice(sprintf(__('User with % s mobile number is removed completely!', 'wp - sms'), $this->mobile), 'success', false, '', true)));
+            wp_send_json_success(array('message' => Helper::notice(sprintf(__('User with % s mobile number is removed completely!', 'wp-sms'), $this->mobile), 'success', false, '', true)));
         }
     }
 
@@ -109,7 +109,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         }
 
         if (empty($result)) {
-            wp_send_json_error(array('message' => Helper::notice(__('User with this mobile number was not found!', 'wp - sms'), 'error', false, '', true)), 400);
+            wp_send_json_error(array('message' => Helper::notice(__('User with this mobile number was not found!', 'wp-sms'), 'error', false, '', true)), 400);
         }
 
         return $result;
@@ -144,7 +144,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         $file_url = $upload_dir['baseurl'] . '/' . $filename . '.csv';
 
         wp_send_json_success([
-            'message'  => Helper::notice(__('The CSV file generated successfully!', 'wp - sms'), 'success', false, '', true),
+            'message'  => Helper::notice(__('The CSV file generated successfully!', 'wp-sms'), 'success', false, '', true),
             'file_url' => $file_url
         ]);
 

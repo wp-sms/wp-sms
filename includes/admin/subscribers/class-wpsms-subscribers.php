@@ -2,8 +2,6 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Helper;
-
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -23,12 +21,15 @@ class Subscribers
         if (isset($_POST['wp_add_subscribe'])) {
             // Verify nonce
             if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'wp_sms_subscriber_action')) {
-                $group               = isset($_POST['wpsms_group_name']) ? sanitize_text_field($_POST['wpsms_group_name']) : '';
+                $groupIds            = isset($_POST['wpsms_group_name']) ? wp_sms_sanitize_array($_POST['wpsms_group_name']) : '';
                 $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
                 $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
 
-                if ($group) {
-                    $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $group);
+                if ($groupIds) {
+                    foreach ($groupIds as $groupId) {
+                        $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $groupId);
+                    }
+
                 } else {
                     $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile);
                 }
@@ -72,6 +73,6 @@ class Subscribers
             'list_table' => $list_table,
         ];
 
-        echo \WP_SMS\Helper::loadTemplate('admin/subscribers.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo Helper::loadTemplate('admin/subscribers.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

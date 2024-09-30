@@ -101,6 +101,7 @@ class Gateway
             'smspapa'        => 'smspapa.com.au',
             'gupshup'        => 'gupshup.io',
             'telesign'       => 'telesign.com',
+            'mysms'          => 'mysms.com'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -437,14 +438,14 @@ class Gateway
         if (!empty($sms->gatewayFields)) {
             foreach ($sms->gatewayFields as $key => $value) {
                 if ($sms->{$key} !== false) {
-                    $sms->{$key} = Option::getOption($value['id']);
+                    $sms->{$key} = trim(Option::getOption($value['id']));
                 }
             }
         } else {
             // Set username and password
-            $sms->username = Option::getOption('gateway_username');
-            $sms->password = Option::getOption('gateway_password');
-            $gateway_key   = Option::getOption('gateway_key');
+            $sms->username = trim(Option::getOption('gateway_username'));
+            $sms->password = trim(Option::getOption('gateway_password'));
+            $gateway_key   = trim(Option::getOption('gateway_key'));
 
             // Set api key
             if ($sms->has_key && $gateway_key) {
@@ -453,7 +454,7 @@ class Gateway
 
             // Set sender id
             if (!$sms->from) {
-                $sms->from = Option::getOption('gateway_sender_id');
+                $sms->from = trim(Option::getOption('gateway_sender_id'));
             }
         }
 
@@ -466,9 +467,9 @@ class Gateway
 
         // Check unit credit gateway
         if ($sms->unitrial == true) {
-            $sms->unit = esc_html__('Credit', 'wp - sms');
+            $sms->unit = esc_html__('Credit', 'wp-sms');
         } else {
-            $sms->unit = esc_html__('SMS', 'wp - sms');
+            $sms->unit = esc_html__('SMS', 'wp-sms');
         }
 
         // Unset gateway key field if not available in the current gateway class.

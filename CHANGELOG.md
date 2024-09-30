@@ -1,6 +1,11 @@
+= 6.9.6 - 30.09.2024 =
+* Fix: Resolved the issue with the Subscribe group functionality where arguments were not correctly handled as arrays.
+* Fix: Added support for multiple groups in the subscriber functionality.
+* Enhancement: Removed unnecessary whitespace from all methods globally to ensure no extra spaces are included in SMS requests sent to gateways.
+
 = 6.9.5 - 18.09.2024 =
 * New: Added support for new SMS gateways: SmsPoint.de, 160au, and Gunisms.
-* New: Introduced the variable %order_item_meta_{key-name}% for WooCommerce Order Notifications, allowing retrieval of meta data from order line items.
+* New: Introduced the variable `%order_item_meta_{key-name}%` for WooCommerce Order Notifications, allowing retrieval of meta data from order line items.
 * Fix: Fixed the issue with country selection and updated the Intl Tel Input library for better accuracy.
 * Improvement: Enhanced performance of incoming message queries in the report widget for faster data retrieval.
 
