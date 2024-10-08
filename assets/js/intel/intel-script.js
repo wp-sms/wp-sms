@@ -21,9 +21,9 @@ function init() {
         defaultCountry = preferred_countries.length > 0 ? preferred_countries[0] : 'us';
     }
 
-     // Initialize input fields with intlTelInput
+    // Initialize input fields with intlTelInput
 
-    const useFullscreenPopupOption =  typeof navigator !== "undefined" && typeof window !== "undefined" ? (
+    const useFullscreenPopupOption = typeof navigator !== "undefined" && typeof window !== "undefined" ? (
         //* We cannot just test screen size as some smartphones/website meta tags will report desktop resolutions.
         //* Note: to target Android Mobiles (and not Tablets), we must find 'Android' and 'Mobile'
         /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -33,41 +33,43 @@ function init() {
 
     function initializeInputs(inputTells) {
         for (var i = 0; i < inputTells.length; i++) {
-              if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
-                 inputTells[i].setAttribute('dir', direction);
-                  let iti = window.intlTelInput(inputTells[i], {
+            if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
+                inputTells[i].setAttribute('dir', direction);
+                let iti = window.intlTelInput(inputTells[i], {
                     separateDialCode: false,
                     allowDropdown: true,
                     strictMode: true,
                     onlyCountries: wp_sms_intel_tel_input.only_countries,
                     countryOrder: wp_sms_intel_tel_input.preferred_countries,
-                     nationalMode: true,
+                    nationalMode: true,
                     useFullscreenPopup: useFullscreenPopupOption,
                     dropdownContainer: body.classList.contains('rtl') ? null : body,
                     utilsScript: wp_sms_intel_tel_input.util_js,
-                    hiddenInput: () => ({ phone: inputTells[i].name}),
+                    hiddenInput: () => ({ phone: inputTells[i].name }),
                     formatOnDisplay: false,
                     initialCountry: defaultCountry
-                  });
-                  function setDefaultCode(item){
-                       if(item.value==''){
-                          let country=iti.getSelectedCountryData();
-                          item.value = '+'+country.dialCode;
-                      }else{
-                          if(iti.getNumber()){
-                               item.value=iti.getNumber().replace(/[-\s]/g, '')
-                          }else{
-                              item.value=item.value.replace(/[-\s]/g, '')
-                          }
-                      }
-                  }
-                  setDefaultCode(inputTells[i]);
-                  inputTells[i].addEventListener('blur', function() {
-                      setDefaultCode(this)
-                  });
+                });
+
+                function setDefaultCode(item) {
+                    if (item.value == '') {
+                        let country = iti.getSelectedCountryData();
+                        item.value = '+' + country.dialCode;
+                    } else {
+                        if (iti.getNumber()) {
+                            item.value = iti.getNumber().replace(/[-\s]/g, '')
+                        } else {
+                            item.value = item.value.replace(/[-\s]/g, '')
+                        }
+                    }
+                }
+                setDefaultCode(inputTells[i]);
+
+                inputTells[i].addEventListener('blur', function () {
+                    setDefaultCode(this)
+                });
             }
 
-         }
+        }
     }
 
     // Check and initialize the main input fields
@@ -102,20 +104,20 @@ function init() {
             utilsScript: wp_sms_intel_tel_input.util_js,
             formatOnDisplay: false,
             initialCountry: defaultCountry
-         });
-        function setDefaultCode(item){
-             if(item.value==''){
-                let country=iti_job.getSelectedCountryData();
-                item.value = '+'+country.dialCode;
-            }else{
-                if(iti_job.getNumber()){
-                     item.value=iti_job.getNumber().replace(/[-\s]/g, '')
-                }else{
-                    item.value=item.value.replace(/[-\s]/g, '')
+        });
+        function setDefaultCode(item) {
+            if (item.value == '') {
+                let country = iti_job.getSelectedCountryData();
+                item.value = '+' + country.dialCode;
+            } else {
+                if (iti_job.getNumber()) {
+                    item.value = iti_job.getNumber().replace(/[-\s]/g, '')
+                } else {
+                    item.value = item.value.replace(/[-\s]/g, '')
                 }
             }
         }
-        inputTell.addEventListener('blur', function() {
+        inputTell.addEventListener('blur', function () {
             setDefaultCode(this)
         });
     }
@@ -123,7 +125,7 @@ function init() {
     // Handle the change event for the checkbox
     const shippingCheckbox = document.querySelector('#shipping-fields .wc-block-checkout__use-address-for-billing input');
     if (shippingCheckbox) {
-        shippingCheckbox.addEventListener('change', function() {
+        shippingCheckbox.addEventListener('change', function () {
             if (document.querySelector('#billing-fields')) {
                 setTimeout(checkAndInitializeInputs, 500);
             }
