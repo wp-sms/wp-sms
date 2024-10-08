@@ -73,11 +73,10 @@ function init() {
     // Check and initialize the main input fields
     function checkAndInitializeInputs() {
         const primaryInput = document.querySelectorAll('#billing-wpsms\\/mobile');
-        const isWooCommerceCheckoubBlock = document.querySelector('.wc-block-checkout ');
-        if (isWooCommerceCheckoubBlock) {
-            return null;
-        }
-        if (!primaryInput.length) {
+        const isWooCommerceCheckoutBlock = document.querySelector('.wc-block-checkout ');
+        if (isWooCommerceCheckoutBlock) {
+            inputTells = document.querySelectorAll('#billing-phone');
+        } else if (!primaryInput.length) {
             inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone,#billing-phone , #wp-sms-input-mobile, .user-mobile-wrap #mobile");
         }
         initializeInputs(inputTells);
