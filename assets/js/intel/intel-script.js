@@ -32,6 +32,8 @@ function init() {
     ) : false;
 
     function initializeInputs(inputTells) {
+        const isWooCommerceCheckoutBlock = document.querySelector('.wc-block-checkout ');
+
         for (var i = 0; i < inputTells.length; i++) {
             if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
                 inputTells[i].setAttribute('dir', direction);
@@ -50,6 +52,15 @@ function init() {
                     initialCountry: defaultCountry
                 });
 
+                // Manually create a hidden input field for the phone number in WooCommerce's checkout block
+                if (isWooCommerceCheckoutBlock) {
+                    let hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'billing_phone';
+                    hiddenInput.value = inputTells[i].value;
+                    inputTells[i].parentNode.insertBefore(hiddenInput, inputTells[i].nextSibling);
+                }
+
                 function setDefaultCode(item) {
                     if (item.value == '') {
                         let country = iti.getSelectedCountryData();
@@ -66,6 +77,10 @@ function init() {
 
                 inputTells[i].addEventListener('blur', function () {
                     setDefaultCode(this)
+
+                    if (isWooCommerceCheckoutBlock) {
+                        wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': iti.getNumber() });
+                    }
                 });
             }
 
