@@ -32,8 +32,6 @@ function init() {
     ) : false;
 
     function initializeInputs(inputTells) {
-        const isWooCommerceCheckoutBlock = document.querySelector('.wc-block-checkout ');
-
         for (var i = 0; i < inputTells.length; i++) {
             if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
                 inputTells[i].setAttribute('dir', direction);
@@ -53,7 +51,7 @@ function init() {
                 });
 
                 // Manually create a hidden input field for the phone number in WooCommerce's checkout block
-                if (isWooCommerceCheckoutBlock) {
+                if (wp_sms_intel_tel_input.is_checkout_block) {
                     let hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
                     hiddenInput.name = 'billing_phone';
@@ -78,7 +76,7 @@ function init() {
                 inputTells[i].addEventListener('blur', function () {
                     setDefaultCode(this)
 
-                    if (isWooCommerceCheckoutBlock) {
+                    if (wp_sms_intel_tel_input.is_checkout_block) {
                         wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': iti.getNumber() });
                     }
                 });
@@ -90,8 +88,7 @@ function init() {
     // Check and initialize the main input fields
     function checkAndInitializeInputs() {
         const primaryInput = document.querySelectorAll('#billing-wpsms\\/mobile');
-        const isWooCommerceCheckoutBlock = document.querySelector('.wc-block-checkout ');
-        if (isWooCommerceCheckoutBlock) {
+        if (wp_sms_intel_tel_input.is_checkout_block) {
             inputTells = document.querySelectorAll(`#${wp_sms_intel_tel_input.mobile_field_id}`);
         } else if (!primaryInput.length) {
             inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone,#billing-phone , #wp-sms-input-mobile, .user-mobile-wrap #mobile");
