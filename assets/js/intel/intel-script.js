@@ -62,7 +62,7 @@ function init() {
                 if (wp_sms_intel_tel_input.is_checkout_block) {
                     let hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
-                    hiddenInput.name = 'billing_phone';
+                    hiddenInput.name = sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked ? 'shipping_phone' : 'billing_phone';
                     hiddenInput.value = inputTells[i].value;
                     inputTells[i].parentNode.insertBefore(hiddenInput, inputTells[i].nextSibling);
                 }
@@ -85,7 +85,11 @@ function init() {
                     setDefaultCode(this)
 
                     if (wp_sms_intel_tel_input.is_checkout_block) {
-                        wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': iti.getNumber() });
+                        if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
+                            wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': iti.getNumber() });
+                        } else {
+                            wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': iti.getNumber() });
+                        }
                     }
                 });
 
