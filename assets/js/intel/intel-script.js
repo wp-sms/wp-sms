@@ -67,22 +67,10 @@ function init() {
                     inputTells[i].parentNode.insertBefore(hiddenInput, inputTells[i].nextSibling);
                 }
 
-                function setDefaultCode(item) {
-                    if (item.value == '') {
-                        let country = iti.getSelectedCountryData();
-                        item.value = '+' + country.dialCode;
-                    } else {
-                        if (iti.getNumber()) {
-                            item.value = iti.getNumber().replace(/[-\s]/g, '')
-                        } else {
-                            item.value = item.value.replace(/[-\s]/g, '')
-                        }
-                    }
-                }
-                setDefaultCode(inputTells[i]);
+                setDefaultCode(inputTells[i], iti);
 
                 inputTells[i].addEventListener('blur', function () {
-                    setDefaultCode(this)
+                    setDefaultCode(this, iti);
 
                     if (wp_sms_intel_tel_input.is_checkout_block) {
                         if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
@@ -94,6 +82,19 @@ function init() {
                 });
 
                 allIntlTelInputs.push(iti);
+            }
+        }
+    }
+
+    function setDefaultCode(item, intlTelInputElement) {
+        if (item.value == '') {
+            let country = intlTelInputElement.getSelectedCountryData();
+            item.value = '+' + country.dialCode;
+        } else {
+            if (intlTelInputElement.getNumber()) {
+                item.value = intlTelInputElement.getNumber().replace(/[-\s]/g, '')
+            } else {
+                item.value = item.value.replace(/[-\s]/g, '')
             }
         }
     }
@@ -143,20 +144,9 @@ function init() {
             formatOnDisplay: false,
             initialCountry: defaultCountry
         });
-        function setDefaultCode(item) {
-            if (item.value == '') {
-                let country = iti_job.getSelectedCountryData();
-                item.value = '+' + country.dialCode;
-            } else {
-                if (iti_job.getNumber()) {
-                    item.value = iti_job.getNumber().replace(/[-\s]/g, '')
-                } else {
-                    item.value = item.value.replace(/[-\s]/g, '')
-                }
-            }
-        }
+
         inputTell.addEventListener('blur', function () {
-            setDefaultCode(this)
+            setDefaultCode(this, iti_job);
         });
     }
 
