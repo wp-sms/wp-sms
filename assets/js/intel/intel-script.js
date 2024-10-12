@@ -21,7 +21,7 @@ function init() {
         defaultCountry = preferred_countries.length > 0 ? preferred_countries[0] : 'us';
     }
 
-    // Initialize input fields with intlTelInput
+    const sameAddressForBillingCheckbox = document.querySelector('#shipping-fields .wc-block-checkout__use-address-for-billing input');
 
     const useFullscreenPopupOption = typeof navigator !== "undefined" && typeof window !== "undefined" ? (
         //* We cannot just test screen size as some smartphones/website meta tags will report desktop resolutions.
@@ -31,7 +31,15 @@ function init() {
         ) || window.innerWidth <= 500
     ) : false;
 
+    let allIntlTelInputs = [];
+
+    // Initialize input fields with IntlTelInput
     function initializeInputs(inputTells) {
+        // Remove all IntlTelInput fields
+        allIntlTelInputs.forEach(input => input.destroy());
+        allIntlTelInputs = [];
+
+        // And re-instantiate them again
         for (var i = 0; i < inputTells.length; i++) {
             if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
                 inputTells[i].setAttribute('dir', direction);
@@ -80,22 +88,36 @@ function init() {
                         wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': iti.getNumber() });
                     }
                 });
-            }
 
+                allIntlTelInputs.push(iti);
+            }
         }
     }
 
     // Check and initialize the main input fields
     function checkAndInitializeInputs() {
-        const primaryInput = document.querySelectorAll('#billing-wpsms\\/mobile');
+        let inputTells = [];
         if (wp_sms_intel_tel_input.is_checkout_block) {
-            inputTells = document.querySelectorAll(`#${wp_sms_intel_tel_input.mobile_field_id}`);
-        } else if (!primaryInput.length) {
-            inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone,#billing-phone , #wp-sms-input-mobile, .user-mobile-wrap #mobile");
+            // WooCommerce checkout block
+
+            let inputId = `#${wp_sms_intel_tel_input.mobile_field_id}`;
+
+            // Initialize IntlTelInput on shipping phone fields if "Use same address for billing" is checked
+            if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
+                inputId = inputId.replace('billing', 'shipping');
+            }
+
+            inputTells = document.querySelectorAll(inputId);
+        } else {
+            // Classic checkout
+
+            const primaryInput = document.querySelectorAll('#billing-wpsms\\/mobile');
+            if (!primaryInput.length) {
+                inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone,#billing-phone , #wp-sms-input-mobile, .user-mobile-wrap #mobile");
+            }
         }
         initializeInputs(inputTells);
     }
-
     checkAndInitializeInputs();
 
     // Additional specific input field initialization
@@ -134,13 +156,10 @@ function init() {
         });
     }
 
-    // Handle the change event for the checkbox
-    const shippingCheckbox = document.querySelector('#shipping-fields .wc-block-checkout__use-address-for-billing input');
-    if (shippingCheckbox) {
-        shippingCheckbox.addEventListener('change', function () {
-            if (document.querySelector('#billing-fields')) {
-                setTimeout(checkAndInitializeInputs, 500);
-            }
+    // Handle the change event for "Use same address for billing" checkbox
+    if (sameAddressForBillingCheckbox) {
+        sameAddressForBillingCheckbox.addEventListener('change', function () {
+            setTimeout(checkAndInitializeInputs, 500);
         });
     }
 }
