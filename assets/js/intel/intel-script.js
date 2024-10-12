@@ -69,17 +69,26 @@ function init() {
 
                 setDefaultCode(inputTells[i], iti);
 
-                inputTells[i].addEventListener('blur', function () {
-                    setDefaultCode(this, iti);
-
-                    if (wp_sms_intel_tel_input.is_checkout_block) {
-                        if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
-                            wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': iti.getNumber() });
-                        } else {
-                            wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': iti.getNumber() });
+                // Prevent events from getting registered multiple times on the same element
+                inputTells[i].intlTelInput = iti;
+                if (typeof inputTells[i].hasCheckoutBlockBlur == 'undefined' || !inputTells[i].hasCheckoutBlockBlur) {
+                    inputTells[i].addEventListener('blur', function () {
+                        if (typeof this.intlTelInput == 'undefined') {
+                            return;
                         }
-                    }
-                });
+
+                        setDefaultCode(this, this.intlTelInput);
+    
+                        if (wp_sms_intel_tel_input.is_checkout_block) {
+                            if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
+                                wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': this.intlTelInput.getNumber() });
+                            } else {
+                                wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': this.intlTelInput.getNumber() });
+                            }
+                        }
+                    });
+                    inputTells[i].hasCheckoutBlockBlur = true;
+                }
 
                 allIntlTelInputs.push(iti);
             }
