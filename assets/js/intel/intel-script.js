@@ -114,19 +114,19 @@ function init() {
         if (wp_sms_intel_tel_input.is_checkout_block) {
             // WooCommerce checkout block
 
-            let inputId = `#${wp_sms_intel_tel_input.mobile_field_id}`;
+            let inputIds = wp_sms_intel_tel_input.mobile_field_id;
 
             // Initialize IntlTelInput on shipping phone fields if "Use same address for billing" is checked
             if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
-                inputId = inputId.replace('billing', 'shipping');
+                inputIds = inputIds.replace('billing', 'shipping');
             }
 
-            inputTells = document.querySelectorAll(inputId);
+            inputTells = document.querySelectorAll(inputIds);
         } else {
             // Classic checkout
 
-            const primaryInput = document.querySelectorAll('#billing-wpsms\\/mobile');
-            if (!primaryInput.length) {
+            inputTells = document.querySelectorAll('#billing-wpsms\\/mobile,#billing-wpsms-mobile');
+            if (!inputTells.length) {
                 inputTells = document.querySelectorAll(".wp-sms-input-mobile, .wp-sms-input-mobile #billing_phone,#billing-phone , #wp-sms-input-mobile, .user-mobile-wrap #mobile");
             }
         }

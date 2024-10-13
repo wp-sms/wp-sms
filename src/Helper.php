@@ -79,11 +79,11 @@ class Helper
         if (self::isWooCheckoutBlock()) {
             // If the new checkout block is enabled
             if ("use_phone_field_in_wc_billing" === wp_sms_get_option('add_mobile_field')) {
-                return 'billing-phone';
+                return '#billing-phone';
             }
 
             if ("add_mobile_field_in_wc_billing" === wp_sms_get_option('add_mobile_field')) {
-                return 'billing-wpsms\\/mobile';
+                return '#billing-wpsms\\/mobile,#billing-wpsms-mobile';
             }
         } else {
             // If classic checkout mode is enabled
