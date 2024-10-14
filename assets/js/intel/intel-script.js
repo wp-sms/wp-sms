@@ -83,9 +83,9 @@ function init() {
     
                         if (isWooCommerceCheckoutBlock) {
                             if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
-                                wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': this.intlTelInput.getNumber() });
+                                wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': this.intlTelInput.getNumber(), 'wpsms/mobile': this.intlTelInput.getNumber() });
                             } else {
-                                wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': this.intlTelInput.getNumber() });
+                                wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': this.intlTelInput.getNumber(), 'wpsms/mobile': this.intlTelInput.getNumber() });
                             }
                         }
                     });
