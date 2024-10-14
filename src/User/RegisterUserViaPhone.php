@@ -32,6 +32,10 @@ class RegisterUserViaPhone
 
     private function registerUser()
     {
+        if (!empty(Helper::getUserByPhoneNumber($this->mobileNumber))) {
+            return new \WP_Error('number_exists', __('Another user with this phone number already exists.', 'wp-sms'));
+        }
+
         $this->userId = register_new_user(
             $this->generateUniqueUsername(),
             $this->generateUniqueEmail()
@@ -52,7 +56,8 @@ class RegisterUserViaPhone
      */
     public function generateUniqueUsername()
     {
-        $username = 'phone_' . str_replace('+', '', $this->mobileNumber);
+        $hashedMobile = substr(wp_hash(str_replace('+', '', $this->mobileNumber)), 0, 8);
+        $username     = 'wpsms_' . $hashedMobile;
 
         /**
          * Allow to modify the username with filter
