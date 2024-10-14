@@ -115,7 +115,9 @@ class Helper
     }
 
     /**
-     * Checks if the checkout page is using blocks
+     * Checks if the checkout page is using blocks.
+     *
+     * Dot't forget to use `is_checkout()` together with this method.
      *
      * @return bool
      */
