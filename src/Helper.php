@@ -78,6 +78,7 @@ class Helper
     {
         if (self::isWooCheckoutBlock()) {
             // If the new checkout block is enabled
+
             if ("use_phone_field_in_wc_billing" === wp_sms_get_option('add_mobile_field')) {
                 return '#billing-phone';
             }
@@ -87,7 +88,13 @@ class Helper
             }
         } else {
             // If classic checkout mode is enabled
-            return self::getWooCommerceCheckoutFieldName();
+
+            $mobileFieldId = self::getWooCommerceCheckoutFieldName();
+            if (substr($mobileFieldId, 0, 1) != '#') {
+                $mobileFieldId = "#$mobileFieldId";
+            }
+
+            return $mobileFieldId;
         }
     }
 
