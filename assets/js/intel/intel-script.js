@@ -11,6 +11,8 @@ function init() {
     const { only_countries, preferred_countries } = wp_sms_intel_tel_input;
     let defaultCountry;
 
+    const isWooCommerceCheckoutBlock = document.querySelector('.wc-block-checkout ');
+
     if (only_countries.length > 0) {
         if (preferred_countries.length > 0 && preferred_countries.every(country => only_countries.includes(country))) {
             defaultCountry = preferred_countries[0];
@@ -59,7 +61,7 @@ function init() {
                 });
 
                 // Manually create a hidden input field for the phone number in WooCommerce's checkout block
-                if (wp_sms_intel_tel_input.is_checkout_block) {
+                if (isWooCommerceCheckoutBlock) {
                     let hiddenInput = document.createElement('input');
                     hiddenInput.type = 'hidden';
                     hiddenInput.name = sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked ? 'shipping_phone' : 'billing_phone';
@@ -79,7 +81,7 @@ function init() {
 
                         setDefaultCode(this, this.intlTelInput);
     
-                        if (wp_sms_intel_tel_input.is_checkout_block) {
+                        if (isWooCommerceCheckoutBlock) {
                             if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
                                 wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': this.intlTelInput.getNumber() });
                             } else {
@@ -111,7 +113,7 @@ function init() {
     // Check and initialize the main input fields
     function checkAndInitializeInputs() {
         let inputTells = [];
-        if (wp_sms_intel_tel_input.is_checkout_block) {
+        if (isWooCommerceCheckoutBlock) {
             // WooCommerce checkout block
 
             let inputIds = wp_sms_intel_tel_input.mobile_field_id;
