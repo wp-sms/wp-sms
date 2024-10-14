@@ -7,6 +7,7 @@ use WP_SMS\Helper;
 class RegisterUserViaPhone
 {
     private $mobileNumber;
+    private $hashedUsername;
     private $userId;
 
     public function __construct($mobileNumber)
@@ -62,7 +63,8 @@ class RegisterUserViaPhone
         /**
          * Allow to modify the username with filter
          */
-        return apply_filters('wp_sms_registration_username', $username, $this->mobileNumber);
+        $this->hashedUsername = apply_filters('wp_sms_registration_username', $username, $this->mobileNumber);
+        return $this->hashedUsername;
     }
 
     /**
@@ -70,6 +72,10 @@ class RegisterUserViaPhone
      */
     public function generateUniqueEmail()
     {
+        if (empty($this->hashedUsername)) {
+            $this->generateUniqueUsername();
+        }
+
         $siteUrl    = get_bloginfo('url');
         $siteDomain = parse_url($siteUrl)['host'];
 
@@ -77,7 +83,7 @@ class RegisterUserViaPhone
             $siteDomain = $siteDomain . '.' . $siteDomain;
         }
 
-        $emailAddress = str_replace('+', '', $this->mobileNumber) . '@' . $siteDomain;
+        $emailAddress = $this->hashedUsername . '@' . $siteDomain;
 
         /**
          * Allow to modify the email address with filter
