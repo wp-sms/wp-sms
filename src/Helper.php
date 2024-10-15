@@ -704,4 +704,19 @@ class Helper
     {
         return strtr($number, array('۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4', '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9', '٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4', '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9'));
     }
+
+    /**
+     * Generates a username using the hashed mobile number.
+     *
+     * @param string $mobileNumber
+     *
+     * @return string
+     */
+    public static function generateHashedUsername($mobileNumber)
+    {
+        $hashedMobile = substr(wp_hash(str_replace('+', '', $mobileNumber)), 0, 8);
+        $username     = 'wpsms_' . $hashedMobile;
+
+        return apply_filters('wp_sms_registration_username', $username, $mobileNumber);
+    }
 }

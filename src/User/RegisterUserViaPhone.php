@@ -57,13 +57,7 @@ class RegisterUserViaPhone
      */
     public function generateUniqueUsername()
     {
-        $hashedMobile = substr(wp_hash(str_replace('+', '', $this->mobileNumber)), 0, 8);
-        $username     = 'wpsms_' . $hashedMobile;
-
-        /**
-         * Allow to modify the username with filter
-         */
-        $this->hashedUsername = apply_filters('wp_sms_registration_username', $username, $this->mobileNumber);
+        $this->hashedUsername = Helper::generateHashedUsername($this->mobileNumber);
         return $this->hashedUsername;
     }
 
