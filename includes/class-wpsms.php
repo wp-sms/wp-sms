@@ -154,6 +154,7 @@ class WP_SMS
         $this->include('src/User/MobileFieldHandler/WooCommerceUsePhoneFieldHandler.php');
         $this->include('src/User/MobileFieldHandler/WordPressMobileFieldHandler.php');
         $this->include('src/User/RegisterUserViaPhone.php');
+        $this->include('src/User/UserLoginHandler.php');
         $this->include('src/User/MobileFieldManager.php');
 
         add_action('init', function () {
