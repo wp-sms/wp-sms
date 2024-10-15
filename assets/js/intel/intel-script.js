@@ -120,7 +120,7 @@ function init() {
 
             // Initialize IntlTelInput on shipping phone fields if "Use same address for billing" is checked
             if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
-                inputIds = inputIds.replace('billing', 'shipping');
+                inputIds = inputIds.replaceAll('billing', 'shipping');
             }
 
             inputTells = document.querySelectorAll(inputIds);
