@@ -7,6 +7,7 @@ use WP_SMS\Helper;
 class RegisterUserViaPhone
 {
     private $mobileNumber;
+    private $hashedUsername;
     private $userId;
 
     public function __construct($mobileNumber)
@@ -32,6 +33,10 @@ class RegisterUserViaPhone
 
     private function registerUser()
     {
+        if (!empty(Helper::getUserByPhoneNumber($this->mobileNumber))) {
+            return new \WP_Error('number_exists', __('Another user with this phone number already exists.', 'wp-sms'));
+        }
+
         $this->userId = register_new_user(
             $this->generateUniqueUsername(),
             $this->generateUniqueEmail()
@@ -52,12 +57,8 @@ class RegisterUserViaPhone
      */
     public function generateUniqueUsername()
     {
-        $username = 'phone_' . str_replace('+', '', $this->mobileNumber);
-
-        /**
-         * Allow to modify the username with filter
-         */
-        return apply_filters('wp_sms_registration_username', $username, $this->mobileNumber);
+        $this->hashedUsername = UserHelper::generateHashedUsername($this->mobileNumber);
+        return $this->hashedUsername;
     }
 
     /**
@@ -65,18 +66,10 @@ class RegisterUserViaPhone
      */
     public function generateUniqueEmail()
     {
-        $siteUrl    = get_bloginfo('url');
-        $siteDomain = parse_url($siteUrl)['host'];
-
-        if (strpos($siteDomain, '.') == false) {
-            $siteDomain = $siteDomain . '.' . $siteDomain;
+        if (empty($this->hashedUsername)) {
+            $this->generateUniqueUsername();
         }
 
-        $emailAddress = str_replace('+', '', $this->mobileNumber) . '@' . $siteDomain;
-
-        /**
-         * Allow to modify the email address with filter
-         */
-        return apply_filters('wp_sms_registration_email', $emailAddress, $this->mobileNumber);
+        return UserHelper::generateHashedEmail($this->hashedUsername, $this->mobileNumber);
     }
 }

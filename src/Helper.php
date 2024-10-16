@@ -146,7 +146,7 @@ class Helper
     public static function getUserByPhoneNumber($number)
     {
         if (empty($number)) {
-            return;
+            return null;
         }
 
         $users = get_users([
