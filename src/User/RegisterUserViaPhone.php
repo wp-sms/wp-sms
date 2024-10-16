@@ -57,7 +57,7 @@ class RegisterUserViaPhone
      */
     public function generateUniqueUsername()
     {
-        $this->hashedUsername = Helper::generateHashedUsername($this->mobileNumber);
+        $this->hashedUsername = UserHelper::generateHashedUsername($this->mobileNumber);
         return $this->hashedUsername;
     }
 
@@ -70,6 +70,6 @@ class RegisterUserViaPhone
             $this->generateUniqueUsername();
         }
 
-        return Helper::generateHashedEmail($this->hashedUsername, $this->mobileNumber);
+        return UserHelper::generateHashedEmail($this->hashedUsername, $this->mobileNumber);
     }
 }

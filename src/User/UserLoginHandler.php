@@ -69,8 +69,8 @@ class UserLoginHandler
     {
         // Check if the username starts with 'phone_' (the old format)
         if (substr($this->user->user_login, 0, 6) === 'phone_') {
-            $newUsername = Helper::generateHashedUsername($this->mobileNumber);
-            $newEmail    = Helper::generateHashedEmail($newUsername, $this->mobileNumber);
+            $newUsername = UserHelper::generateHashedUsername($this->mobileNumber);
+            $newEmail    = UserHelper::generateHashedEmail($newUsername, $this->mobileNumber);
 
             if (username_exists($newUsername)) {
                 return;
@@ -82,7 +82,7 @@ class UserLoginHandler
 
             global $wpdb;
             $wpdb->update(
-                $wpdb->users, 
+                $wpdb->users,
                 [
                     'user_login'    => $newUsername,
                     'user_email'    => $newEmail,
