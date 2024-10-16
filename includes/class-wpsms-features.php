@@ -78,6 +78,7 @@ class Features
         $tel_intel_vars['util_js'] = WP_SMS_URL . 'assets/js/intel/utils.js';
 
         $tel_intel_vars['mobile_field_id']   = Helper::getWooCommerceCheckoutMobileField();
+        $tel_intel_vars['add_mobile_field']  = Option::getOption('add_mobile_field');
 
         wp_localize_script('wpsms-intel-script', 'wp_sms_intel_tel_input', $tel_intel_vars);
     }

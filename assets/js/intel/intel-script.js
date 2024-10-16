@@ -80,12 +80,18 @@ function init() {
                         }
 
                         setDefaultCode(this, this.intlTelInput);
-    
+
                         if (isWooCommerceCheckoutBlock) {
+                            let addressObject = { 'phone': this.intlTelInput.getNumber(), 'mobile': this.intlTelInput.getNumber() };
+                            if (wp_sms_intel_tel_input.add_mobile_field === 'add_mobile_field_in_wc_billing') {
+                                addressObject = { 'phone': this.intlTelInput.getNumber(), 'mobile': this.intlTelInput.getNumber(), 'wpsms/mobile': this.intlTelInput.getNumber() };
+                            }
+
                             if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
-                                wp.data.dispatch('wc/store/cart').setShippingAddress({ 'phone': this.intlTelInput.getNumber(), 'wpsms/mobile': this.intlTelInput.getNumber() });
+                                wp.data.dispatch('wc/store/cart').setShippingAddress(addressObject);
+                                wp.data.dispatch('wc/store/cart').setBillingAddress(addressObject);
                             } else {
-                                wp.data.dispatch('wc/store/cart').setBillingAddress({ 'phone': this.intlTelInput.getNumber(), 'wpsms/mobile': this.intlTelInput.getNumber() });
+                                wp.data.dispatch('wc/store/cart').setBillingAddress(addressObject);
                             }
                         }
                     });
