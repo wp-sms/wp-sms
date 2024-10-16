@@ -70,18 +70,6 @@ class RegisterUserViaPhone
             $this->generateUniqueUsername();
         }
 
-        $siteUrl    = get_bloginfo('url');
-        $siteDomain = parse_url($siteUrl)['host'];
-
-        if (strpos($siteDomain, '.') == false) {
-            $siteDomain = $siteDomain . '.' . $siteDomain;
-        }
-
-        $emailAddress = $this->hashedUsername . '@' . $siteDomain;
-
-        /**
-         * Allow to modify the email address with filter
-         */
-        return apply_filters('wp_sms_registration_email', $emailAddress, $this->mobileNumber);
+        return Helper::generateHashedEmail($this->hashedUsername, $this->mobileNumber);
     }
 }
