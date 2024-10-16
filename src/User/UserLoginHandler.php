@@ -72,12 +72,18 @@ class UserLoginHandler
             $newUsername = Helper::generateHashedUsername($this->mobileNumber);
             $newEmail    = Helper::generateHashedEmail($newUsername, $this->mobileNumber);
 
+            // Also change nicename and display name if they're similar to the old username
+            $nicename    = $this->user->user_nicename == $this->user->user_login ? $newUsername : $this->user->user_nicename;
+            $displayName = $this->user->display_name == $this->user->user_login ? $newUsername : $this->user->display_name;
+
             global $wpdb;
             $wpdb->update(
                 $wpdb->users, 
                 [
-                    'user_login' => $newUsername,
-                    'user_email' => $newEmail,
+                    'user_login'    => $newUsername,
+                    'user_email'    => $newEmail,
+                    'user_nicename' => $nicename,
+                    'display_name'  => $displayName,
                 ],
                 ['ID' => $this->user->ID]
             );
