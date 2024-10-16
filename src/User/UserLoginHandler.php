@@ -72,6 +72,10 @@ class UserLoginHandler
             $newUsername = Helper::generateHashedUsername($this->mobileNumber);
             $newEmail    = Helper::generateHashedEmail($newUsername, $this->mobileNumber);
 
+            if (username_exists($newUsername)) {
+                return;
+            }
+
             // Also change nicename and display name if they're similar to the old username
             $nicename    = $this->user->user_nicename == $this->user->user_login ? $newUsername : $this->user->user_nicename;
             $displayName = $this->user->display_name == $this->user->user_login ? $newUsername : $this->user->display_name;
