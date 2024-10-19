@@ -82,12 +82,12 @@ function init() {
                         setDefaultCode(this, this.intlTelInput);
 
                         if (isWooCommerceCheckoutBlock) {
-                            let addressObject = { 'phone': this.intlTelInput.getNumber(), 'mobile': this.intlTelInput.getNumber() };
+                            let addressObject = { 'phone': this.intlTelInput.getNumber() };
                             if (wp_sms_intel_tel_input.add_mobile_field === 'add_mobile_field_in_wc_billing') {
                                 addressObject = { 'phone': this.intlTelInput.getNumber(), 'mobile': this.intlTelInput.getNumber(), 'wpsms/mobile': this.intlTelInput.getNumber() };
                             }
 
-                            if (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
+                            if (wp_sms_intel_tel_input.wc_ship_to_destination === 'billing_only' || (sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked)) {
                                 wp.data.dispatch('wc/store/cart').setShippingAddress(addressObject);
                                 wp.data.dispatch('wc/store/cart').setBillingAddress(addressObject);
                             } else {
