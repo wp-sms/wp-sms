@@ -39,13 +39,26 @@ class UserLoginHandler
      *
      * @param \WP_User $user
      * @param string $redirectUrl URL to redirect to if `redirect_to` was not set.
+     * @param \WP_REST_Request $request
      * @param bool $isNewUser Is this user registered just now?
      *
      * @return string
      */
-    public function getRedirectUrl($user, $redirectUrl, $isNewUser = false)
+    public function getRedirectUrl($user, $redirectUrl, $request, $isNewUser = false)
     {
         $redirectUrl = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : $redirectUrl;
+
+        // Try to fetch redirect URL from the `referer` parameter in request
+        $referer = (string) $request->get_header('referer');
+        if (!empty($referer)) {
+            $referer = parse_url($referer);
+            if (!empty($referer['query'])) {
+                parse_str($referer['query'], $params);
+                if (!empty($params['redirect_to'])) {
+                    $redirectUrl = $params['redirect_to'];
+                }
+            }
+        }
 
         if ($isNewUser) {
             // User has registered just now
