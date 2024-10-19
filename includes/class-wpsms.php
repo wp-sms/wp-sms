@@ -78,13 +78,10 @@ class WP_SMS
 
     /**
      * Constructors plugin Setup
-     *
-     * @param Not param
      */
     public function plugin_setup()
     {
-        // Load text domain
-        add_action('init', array($this, 'load_textdomain'));
+        add_action('init', array($this, 'init'));
 
         $this->includes();
         $this->setupBackgroundProcess();
@@ -96,12 +93,16 @@ class WP_SMS
         $this->remoteRequestQueue = new RemoteRequestQueue();
     }
 
+    public function init()
+    {
+        $this->loadTextDomain();
+        $this->initGateway();
+    }
+
     /**
-     * Load plugin textdomain.
-     *
-     * @since 1.0.0
+     * Load plugin text domain.
      */
-    public function load_textdomain()
+    private function loadTextDomain()
     {
         // Compatibility with WordPress < 5.0
         if (function_exists('determine_locale')) {
@@ -112,6 +113,11 @@ class WP_SMS
         }
 
         load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    }
+
+    private function initGateway()
+    {
+        $GLOBALS['sms'] = wp_sms_initial_gateway();
     }
 
     /*
