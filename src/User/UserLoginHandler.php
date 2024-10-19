@@ -80,6 +80,12 @@ class UserLoginHandler
             $nicename    = $this->user->user_nicename == $this->user->user_login ? $newUsername : $this->user->user_nicename;
             $displayName = $this->user->display_name == $this->user->user_login ? $newUsername : $this->user->display_name;
 
+            // And nickname
+            $nickname = get_user_meta($this->user->ID, 'nickname', true);
+            if (!empty($nickname) && $nickname == $this->user->user_login) {
+                update_user_meta($this->user->ID, 'nickname', $newUsername);
+            }
+
             global $wpdb;
             $wpdb->update(
                 $wpdb->users,
