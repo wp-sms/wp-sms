@@ -1306,9 +1306,9 @@
     "name": "Heard Island and McDonald Islands",
     "nativeName": "Heard Island and McDonald Islands",
     "code": "HM",
-    "dialCode": "+",
+    "dialCode": "+672",
     "allDialCodes": [
-      "+"
+      "+672"
     ],
     "emoji": "🇭🇲",
     "unicode": "U+1F1ED U+1F1F2",
