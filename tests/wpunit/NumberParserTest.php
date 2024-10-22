@@ -2,6 +2,7 @@
 
 use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
+use WP_SMS\Option;
 
 class NumberParserTest extends \Codeception\TestCase\WPTestCase
 {
@@ -65,6 +66,8 @@ class NumberParserTest extends \Codeception\TestCase\WPTestCase
     {
         $numberParser = new NumberParser('+81757317397');
         $this->assertEquals($numberParser->getValidNumber(), '+81757317397');
+
+        Option::updateOption('international_mobile', true);
 
         // Assume invalid country code
         $numberParser = new NumberParser('+99957317397');
