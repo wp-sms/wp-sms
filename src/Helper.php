@@ -4,6 +4,7 @@ namespace WP_SMS;
 
 use WC_Blocks_Utils;
 use WP_Error;
+use WP_SMS\Components\NumberParser;
 
 /**
  * Class WP_SMS
@@ -422,117 +423,22 @@ class Helper
      */
     public static function checkMobileNumberValidity($mobileNumber, $userId = false, $isSubscriber = false, $groupID = false, $subscribeId = false)
     {
-        global $wpdb;
-
-        $mobileNumber  = trim($mobileNumber);
-        $numeric_check = apply_filters('wp_sms_mobile_number_numeric_check', true);
-
-        if ($numeric_check && !is_numeric($mobileNumber)) {
-            return new WP_Error('invalid_number', __('Invalid Mobile Number', 'wp-sms'));
-        }
-
-        // check whether international mode is enabled
-        $international_mode = Option::getOption('international_mobile') ? true : false;
-
-        // check whether the first character of mobile number is +
-        $country_code = substr($mobileNumber, 0, 1) == '+' ? true : false;
-
-        // check whether the mobile number is in international mobile only countries
-        /** @var array */
-        $international_mobile_only_countries = Option::getOption('international_mobile_only_countries');
-
-        /**
-         * 1. Check whether international mode is on and the number is NOT started with +
-         */
-        if ($international_mode and !$country_code) {
-            return new WP_Error('invalid_number', __("The mobile number doesn't contain the country code.", 'wp-sms'));
+        $numberParser = new NumberParser($mobileNumber);
+        $mobileNumber = $numberParser->getValidNumber();
+        if (is_wp_error($mobileNumber)) {
+            return $mobileNumber;
         }
 
         /**
-         * 2. Check whether the min and max length of the number comply
-         */
-        if (!$international_mode) {
-            // get min length of the number if it is set
-            $min_length = Option::getOption('mobile_terms_minimum');
-
-            // get max length of the number if it is set
-            $max_length = Option::getOption('mobile_terms_maximum');
-
-            if ($max_length and strlen($mobileNumber) > $max_length) {
-                // translators: %s: Max length of the number
-                return new WP_Error('invalid_number', sprintf(__('Your mobile number must have up to %s characters.', 'wp-sms'), $max_length));
-            }
-
-            if ($min_length and strlen($mobileNumber) < $min_length) {
-                // translators: %s: Min length of the number
-                return new WP_Error('invalid_number', sprintf(__('Your mobile number must have at least %s characters.', 'wp-sms'), $min_length));
-            }
-        }
-
-        /**
-         * 3. Check whether number is exists in usermeta or sms_subscriber table
+         * Check whether number is exists in usermeta or sms_subscriber table
          */
         if ($isSubscriber) {
-            $sql = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile = %s", $mobileNumber);
-
-            if (isset($groupID)) {
-                $sql .= $wpdb->prepare(" AND group_ID = %s", $groupID);
-            }
-
-            // While updating we should query except the current one.
-            if ($subscribeId) {
-                $sql .= $wpdb->prepare(" AND id != %s", $subscribeId);
-            }
-
-            $result = $wpdb->get_row($sql); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-
-            // If result has active status, raise an error
-            if ($result && $result->status == '1') {
+            if ($numberParser::isDuplicateInSubscribers($mobileNumber, $groupID, $subscribeId)) {
                 return new WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
             }
         } else {
-            $where       = '';
-            $mobileField = self::getUserMobileFieldName();
-
-            if ($userId) {
-                $where = $wpdb->prepare('AND user_id != %s', $userId);
-            }
-
-            $result = $wpdb->get_results(
-                $wpdb->prepare("SELECT * from {$wpdb->prefix}usermeta WHERE meta_key = %s AND meta_value = %s {$where};", $mobileField, $mobileNumber)
-            );
-
-            // If result is not empty, raise an error
-            if ($result) {
+            if ($numberParser::isDuplicateInUsermeta($mobileNumber, $userId)) {
                 return new WP_Error('is_duplicate', __('This mobile is already registered, please choose another one.', 'wp-sms'));
-            }
-        }
-
-        /**
-         * 4. Check whether the number country is valid or not
-         */
-        if ($international_mode && $international_mobile_only_countries) {
-            $allDialCodes     = wp_sms_countries()->getAllDialCodesByCode();
-            $allowedDialCodes = [];
-            foreach ($international_mobile_only_countries as $code) {
-                if (!empty($allDialCodes[$code])) {
-                    // Some countries have multiple dial codes (e.g. Puerto Rico)
-                    foreach ($allDialCodes[$code] as $dialCode)
-                        $allowedDialCodes[] = $dialCode;
-                }
-            }
-
-            $isValid = false;
-            foreach ($allowedDialCodes as $code) {
-                $countryLength = strlen($code);
-                $prefix        = substr($mobileNumber, 0, $countryLength);
-                if ($prefix === $code) {
-                    $isValid = true;
-                    break;
-                }
-            }
-            if (!$isValid) {
-                return new WP_Error('invalid_number', __('The mobile number is not valid for your country.', 'wp-sms'));
             }
         }
 
