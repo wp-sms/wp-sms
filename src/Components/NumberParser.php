@@ -26,7 +26,7 @@ class NumberParser
     }
 
     /**
-     * Returns the validated phone number.
+     * Returns the validated phone number in international format.
      *
      * @return string|\WP_Error
      */
