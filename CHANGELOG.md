@@ -1,3 +1,12 @@
+= 6.9.7 - **.10.2024 =
+- **Enhancement**: Ensured full compatibility with WordPress version 6.7.
+- **Enhancement**: Improved filters for order item meta to handle array meta values in WooCommerce order notifications.
+- **Enhancement**: Improved privacy by hashing usernames during mobile registration and allowing updates to hashed usernames at login.
+- **Enhancement**: Added support for the `redirect_to` parameter in mobile login for better redirection handling.
+- **Enhancement**: Improved number parsing and validation for mobile numbers.
+- **Fix**: Fixed intlTelInput initialization issue in WooCommerce checkout and addressed minor bugs.
+- **Fix**: Resolved conflict with mobile number handling with creating new users in the Admin panel.
+
 = 6.9.6 - 30.09.2024 =
 * Fix: Resolved the issue with the Subscribe group functionality where arguments were not correctly handled as arrays.
 * Fix: Added support for multiple groups in the subscriber functionality.
