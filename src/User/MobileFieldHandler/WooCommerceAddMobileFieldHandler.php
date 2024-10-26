@@ -3,6 +3,7 @@
 namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Blocks\WooMobileField;
+use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
@@ -64,12 +65,10 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
     {
         $mobile = Helper::sanitizeMobileNumber($_POST[$this->getUserMobileFieldName()]);
 
-        if (!empty($mobile)) {
-            $validity = Helper::checkMobileNumberValidity($mobile);
-
-            if (is_wp_error($validity)) {
-                wc_add_notice($validity->get_error_message(), 'error');
-            }
+        $numberParser = new NumberParser($mobile);
+        $mobile       = $numberParser->getValidNumber();
+        if (is_wp_error($mobile)) {
+            wc_add_notice($mobile->get_error_message(), 'error');
         }
     }
 

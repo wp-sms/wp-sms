@@ -148,6 +148,7 @@ class WP_SMS
         $this->include('src/Components/Logger.php');
         $this->include('src/Components/Assets.php');
         $this->include('src/Components/Countries.php');
+        $this->include('src/Components/NumberParser.php');
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
