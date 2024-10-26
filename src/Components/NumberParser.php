@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Components;
 
+use WP_Error;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
@@ -28,7 +29,7 @@ class NumberParser
     /**
      * Returns the validated phone number in international format.
      *
-     * @return string|\WP_Error
+     * @return string|WP_Error
      */
     public function getValidNumber()
     {
@@ -40,14 +41,14 @@ class NumberParser
 
         // Validate the phone number format
         if (!$this->isNumberFormatValid($phoneNumber)) {
-            return new \WP_Error('invalid_number', __('Invalid Mobile Number.', 'wp-sms'));
+            return new WP_Error('invalid_number', __('Invalid Mobile Number.', 'wp-sms'));
         }
 
         // Check leading +
         if (strpos($phoneNumber, '+') !== 0) {
             // Return an error if + doesn't exists and "International Number Input" is enabled
             if ($this->isInternationalInputEnabled) {
-                return new \WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
+                return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
             }
 
             // Otherwise add it manually
@@ -56,13 +57,13 @@ class NumberParser
 
         // Validate length
         if (!$this->isLengthValid($phoneNumber)) {
-            return new \WP_Error('invalid_length', __('The mobile number length is invalid.', 'wp-sms'));
+            return new WP_Error('invalid_length', __('The mobile number length is invalid.', 'wp-sms'));
         }
 
         if ($this->isInternationalInputEnabled) {
             // Validate the country code
             if (!$this->isCountryCodeValid($phoneNumber)) {
-                return new \WP_Error('invalid_country_code', __('The mobile number is not valid for your country.', 'wp-sms'));
+                return new WP_Error('invalid_country_code', __('The mobile number is not valid for your country.', 'wp-sms'));
             }
         } else {
             // Manually add the country code
@@ -216,7 +217,7 @@ class NumberParser
      * @param string $phoneNumber
      * @param int|null $userId
      *
-     * @return bool|\WP_Error
+     * @return bool|WP_Error
      */
     public static function isDuplicateInUsermeta($phoneNumber, $userId = null)
     {
@@ -224,7 +225,7 @@ class NumberParser
 
         $mobileField = Helper::getUserMobileFieldName();
         if (empty($mobileField)) {
-            return new \WP_Error('invalid_mobile_field', __('This user mobile field is invalid.', 'wp-sms'));
+            return new WP_Error('invalid_mobile_field', __('This user mobile field is invalid.', 'wp-sms'));
         }
 
         $query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}usermeta` WHERE `meta_key` = %s AND `meta_value` = %s", $mobileField, $phoneNumber);
