@@ -44,15 +44,9 @@ class NumberParser
             return new WP_Error('invalid_number', __('Invalid Mobile Number.', 'wp-sms'));
         }
 
-        // Check leading +
-        if (strpos($phoneNumber, '+') !== 0) {
-            // Return an error if + doesn't exists and "International Number Input" is enabled
-            if ($this->isInternationalInputEnabled) {
-                return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
-            }
-
-            // Otherwise add it manually
-            $phoneNumber = "+$phoneNumber";
+        // Return an error if + doesn't exists and "International Number Input" is enabled
+        if ($this->isInternationalInputEnabled && strpos($phoneNumber, '+') !== 0) {
+            return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
         }
 
         // Validate length
@@ -197,6 +191,11 @@ class NumberParser
         $selectedCountryCode = Option::getOption('mobile_county_code');
         if (empty($selectedCountryCode)) {
             return $phoneNumber;
+        }
+
+        // Add leading + if not exists
+        if (strpos($phoneNumber, '+') !== 0) {
+            $phoneNumber = "+$phoneNumber";
         }
 
         // Ensure country code hasn't been added already
