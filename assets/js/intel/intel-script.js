@@ -3,7 +3,6 @@ jQuery(document).ready(function () {
     setTimeout(init, 1500);
 });
 
-
 function init() {
     const body = document.body;
     const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
@@ -79,6 +78,8 @@ function init() {
                             return;
                         }
 
+                        fillHiddenPhones(this.intlTelInput.getNumber());
+
                         setDefaultCode(this, this.intlTelInput);
 
                         if (isWooCommerceCheckoutBlock) {
@@ -96,6 +97,8 @@ function init() {
                         }
                     });
                     inputTells[i].hasCheckoutBlockBlur = true;
+
+                    fillHiddenPhones(inputTells[i].value);
                 }
 
                 allIntlTelInputs.push(iti);
@@ -172,5 +175,18 @@ function init() {
         sameAddressForBillingCheckbox.addEventListener('change', function () {
             setTimeout(checkAndInitializeInputs, 500);
         });
+    }
+
+    // Fill hidden phone inputs value on updated_checkout and blur
+    function fillHiddenPhones(value) {
+        let inputId = 'billing_phone';
+        if (isWooCommerceCheckoutBlock && sameAddressForBillingCheckbox && sameAddressForBillingCheckbox.checked) {
+            inputId = 'shipping_phone';
+        }
+
+        const hiddenInputs = document.querySelectorAll(`input[type="hidden"][name="${inputId}"],input[type="hidden"][name="mobile"]`);
+        for (var i = 0; i < hiddenInputs.length; i++) {
+            hiddenInputs[i].value = value;
+        }
     }
 }
