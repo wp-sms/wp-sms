@@ -3,7 +3,7 @@
  * Plugin Name: WP SMS
  * Plugin URI: https://wp-sms-pro.com/
  * Description: Ultimate SMS & MMS Notifications, 2FA, OTP, and Integrations with WooCommerce, GravityForms, and More
- * Version: 6.9.6
+ * Version: 6.9.7
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
@@ -24,17 +24,23 @@ if (!defined('ABSPATH')) {
  */
 include_once __DIR__ . '/includes/defines.php';
 
+// Set the plugin version
+define('WP_SMS_VERSION', '6.9.7');
+
 /**
  * Load plugin Special Functions
  */
 require_once WP_SMS_DIR . 'includes/functions.php';
 
 /**
+ * Load plugin option
+ */
+require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
+
+/**
  * Initial gateway
  */
 require_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
-
-$sms = wp_sms_initial_gateway();
 
 /**
  * Load Plugin
@@ -42,7 +48,7 @@ $sms = wp_sms_initial_gateway();
 require WP_SMS_DIR . 'includes/class-wpsms.php';
 
 /**
- * @return object|WP_SMS|null
+ * @return WP_SMS
  */
 function WPSms()
 {

@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.6
 Requires PHP: 5.6
-Stable tag: 6.9.6
+Stable tag: 6.9.7
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,9 +169,13 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= 6.9.6 - 30.09.2024 =
-* Fix: Resolved the issue with the Subscribe group functionality where arguments were not correctly handled as arrays.
-* Fix: Added support for multiple groups in the subscriber functionality.
-* Enhancement: Removed unnecessary whitespace from all methods globally to ensure no extra spaces are included in SMS requests sent to gateways.
+= v6.9.7 - 2024-10-27 =
+- **Enhancement**: Ensured full compatibility with WordPress version 6.7.
+- **Enhancement**: Improved filters for order item meta to handle array meta values in WooCommerce order notifications.
+- **Enhancement**: Improved privacy by hashing usernames during mobile registration and allowing updates to hashed usernames at login.
+- **Enhancement**: Added support for the `redirect_to` parameter in mobile login for better redirection handling.
+- **Enhancement**: Improved number parsing and validation for mobile numbers.
+- **Fix**: Fixed intlTelInput initialization issue in WooCommerce checkout and addressed minor bugs.
+- **Fix**: Resolved conflict with mobile number handling with creating new users in the Admin panel.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

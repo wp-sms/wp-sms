@@ -30,7 +30,7 @@ class WooCommerceOrderNotification extends Notification
         '%status%'                      => 'getStatus',
         '%shipping_method%'             => 'getShippingMethod',
         '%order_meta_{key-name}%'       => 'getMeta',
-        '%order_item_meta_{key-name}%'  => 'getOrderItemMeta',
+        '%order_item_meta_{key-name}%'  => 'getItemMeta',
     ];
 
     public function __construct($orderId = false)
@@ -166,7 +166,8 @@ class WooCommerceOrderNotification extends Notification
 
     public function getMeta($metaKey)
     {
-        return apply_filters("wp_sms_notification_woocommerce_order_meta_key_{$metaKey}", $this->order->get_meta($metaKey));
+        $metaValue = $this->order->get_meta($metaKey);
+        return apply_filters("wp_sms_notification_woocommerce_order_meta_key_{$metaKey}", $this->processMetaValue($metaValue));
     }
 
     /**
@@ -175,17 +176,32 @@ class WooCommerceOrderNotification extends Notification
      * @param string $metaKey
      * @return string
      */
-    public function getOrderItemMeta($metaKey)
+    public function getItemMeta($metaKey)
     {
         $itemMetaValues = [];
 
-        foreach ($this->order->get_items() as $itemId => $item) {
-            $metaValue = wc_get_order_item_meta($itemId, $metaKey, true);
+        foreach ($this->order->get_items() as $item) {
+            $metaValue = $item->get_meta($metaKey);
             if ($metaValue) {
-                $itemMetaValues[] = $metaValue;
+                $itemMetaValues[] = $this->processMetaValue($metaValue);
             }
         }
 
-        return implode(', ', $itemMetaValues);
+        return apply_filters("wp_sms_notification_woocommerce_order_item_meta_key_{$metaKey}", implode(', ', $itemMetaValues));
+    }
+
+    /**
+     * Process meta value to handle arrays and other data types
+     *
+     * @param mixed $metaValue
+     * @return string
+     */
+    private function processMetaValue($metaValue)
+    {
+        if (is_array($metaValue)) {
+            return implode(', ', $metaValue);
+        }
+
+        return (string)$metaValue;
     }
 }
