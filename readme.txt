@@ -169,7 +169,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.7 - 2024-10-** =
+= v6.9.7 - 2024-10-27 =
 - **Enhancement**: Ensured full compatibility with WordPress version 6.7.
 - **Enhancement**: Improved filters for order item meta to handle array meta values in WooCommerce order notifications.
 - **Enhancement**: Improved privacy by hashing usernames during mobile registration and allowing updates to hashed usernames at login.
