@@ -22,7 +22,7 @@ class directsend extends \WP_SMS\Gateway
         $this->bulk_send      = true;
         $this->has_key        = true;
         $this->validateNumber = "";
-        $this->help           = "";
+        $this->help           = "Note: Please ensure that the server's IP address (the host of this site) is added to the 'Allowed IP' list; otherwise, messages may not be successfully sent. The IP can be added by navigating to [마이페이지 > 회원정보 > 사용자 설정].";
         $this->gatewayFields  = [
             'username'         => [
                 'id'   => 'gateway_username',
