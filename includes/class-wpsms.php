@@ -108,7 +108,7 @@ class WP_SMS
         if (function_exists('determine_locale')) {
             $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
 
-            unload_textdomain('wp-sms');
+            unload_textdomain('wp-sms', true);
             load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
         }
 
