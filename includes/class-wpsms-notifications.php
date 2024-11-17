@@ -130,6 +130,110 @@ class Notifications
     }
 
     /**
+     * Add subscribe meta box to the post
+     */
+    public function notification_meta_box()
+    {
+        foreach ($this->extractPostTypeFromOption('notif_publish_new_post_type') as $postType) {
+            add_meta_box('subscribe-meta-box', esc_html__('SMS Notification', 'wp-sms'), [$this, 'notification_meta_box_handler'], $postType, 'normal', 'high');
+        }
+    }
+
+    /**
+     * New post manual send SMS
+     *
+     * @param WP_Post $post
+     */
+    public function notification_meta_box_handler($post)
+    {
+        $get_group_result = $this->db->get_results("SELECT * FROM {$this->db->prefix}sms_subscribes_group");
+        $username_active  = $this->db->query("SELECT * FROM {$this->db->prefix}sms_subscribes WHERE status = '1'");
+        $forceToSend      = Option::getOption('notif_publish_new_post_force');
+        $defaultGroup     = Option::getOption('notif_publish_new_post_default_group');
+        $selected_roles   = Option::getOption('notif_publish_new_post_users');
+
+        $args = [
+            'get_group_result'   => $get_group_result,
+            'selected_roles'     => $selected_roles,
+            'username_active'    => $username_active,
+            'forceToSend'        => $forceToSend,
+            'defaultGroup'       => $defaultGroup,
+            'wpsms_list_of_role' => Helper::getListOfRoles(),
+            'get_users_mobile'   => Helper::getUsersMobileNumbers(),
+        ];
+
+        echo Helper::loadTemplate('meta-box.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Send SMS notification to subscribers when a new post is published or scheduled.
+     */
+    public function notify_subscribers_for_published_post($postID, $post, $update)
+    {
+        if ($post->post_status !== 'publish' && $post->post_status !== 'future') {
+            return;
+        }
+
+        $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
+
+        if (!in_array($post->post_type, $specified_post_types)) {
+            return;
+        }
+
+        if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
+            return;
+        }
+
+        // Process recipients and send notifications
+        $recipients = $_REQUEST['wps_send_to'];
+        $message    = $_REQUEST['wpsms_text_template'];
+        $receiver   = [];
+
+        switch ($recipients) {
+            case 'subscriber':
+                $receiver = Newsletter::getSubscribers();
+                break;
+            case 'numbers':
+                $receiver = explode(',', $_REQUEST['wps_mobile_numbers']);
+                break;
+            case 'users':
+                $receiver = Helper::getUsersMobileNumbers(Option::getOption('notif_publish_new_post_users'));
+                break;
+        }
+
+        if (!empty($receiver) && $message) {
+            $notification = NotificationFactory::getPost($postID);
+            $notification->send($message, $receiver);
+        }
+    }
+
+    /**
+     * Notify authors of published posts.
+     */
+    public function notify_author_for_published_post($new_status, $old_status, $post)
+    {
+        if ($new_status === 'publish' && $old_status !== 'publish') {
+            $post_types_option = $this->extractPostTypeFromOption('notif_publish_new_post_author_post_type');
+
+            if (in_array($post->post_type, $post_types_option)) {
+                $this->new_post_published($post->ID, $post);
+            }
+        }
+    }
+
+    /**
+     * Notify authors of newly published posts.
+     */
+    public function new_post_published($ID, WP_Post $post)
+    {
+        $message  = Option::getOption('notif_publish_new_post_author_template');
+        $receiver = [get_user_meta($post->post_author, 'mobile', true)];
+
+        $notification = NotificationFactory::getPost($ID);
+        $notification->send($message, $receiver);
+    }
+
+    /**
      * Extract post types from an option.
      *
      * @param string $optionName
@@ -146,9 +250,6 @@ class Notifications
 
         return $specified_post_types;
     }
-
-    // Remaining methods like notification_meta_box(), notify_subscribers_for_published_post(), etc.,
-    // are unchanged except for replacing $this->options with Option::getOption where applicable.
 }
 
 new Notifications();
