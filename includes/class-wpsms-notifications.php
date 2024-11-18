@@ -130,6 +130,88 @@ class Notifications
     }
 
     /**
+     * Handle new user registration notifications.
+     *
+     * @param int $user_id User ID.
+     */
+    public function new_user($user_id)
+    {
+        $adminMobileNumber = Option::getOption('admin_mobile_number');
+
+        // Notify admin about new user registration
+        if ($adminMobileNumber) {
+            $message  = Option::getOption('notif_register_new_user_admin_template');
+            $receiver = apply_filters('wp_sms_admin_notify_registration', [$adminMobileNumber]);
+
+            $notification = NotificationFactory::getUser($user_id);
+            $notification->send($message, $receiver);
+        }
+
+        // Notify the user about registration
+        $userMobileNumber = Helper::getUserMobileNumberByUserId($user_id);
+        $receiver         = [];
+
+        if ($userMobileNumber) {
+            $receiver = [$userMobileNumber];
+        } elseif (isset($_REQUEST['mobile'])) {
+            $userMobileNumberFromRequest = sanitize_text_field($_REQUEST['mobile']);
+            $receiver                    = [$userMobileNumberFromRequest];
+        }
+
+        if ($receiver) {
+            $message      = Option::getOption('notif_register_new_user_template');
+            $notification = NotificationFactory::getUser($user_id);
+            $notification->send($message, $receiver);
+        }
+    }
+
+    /**
+     * Handle new comment notifications.
+     *
+     * @param int $comment_id Comment ID.
+     * @param object $comment_object Comment object.
+     */
+    public function new_comment($comment_id, $comment_object)
+    {
+        // Skip notifications for specific comment types
+        if (in_array($comment_object->comment_type, ['order_note', 'edd_payment_note'])) {
+            return;
+        }
+
+        $message  = Option::getOption('notif_new_comment_template');
+        $receiver = [Option::getOption('admin_mobile_number')];
+
+        $notification = NotificationFactory::getComment($comment_id);
+        $notification->send($message, $receiver);
+    }
+
+    /**
+     * Handle user login notifications.
+     *
+     * @param string $username_login The username used to log in.
+     * @param \WP_User $username The WP_User object.
+     */
+    public function login_user($username_login, $username)
+    {
+        $adminMobileNumber = Option::getOption('admin_mobile_number');
+
+        if ($adminMobileNumber) {
+            $allowedRoles = Option::getOption('notif_user_login_roles') ?: [];
+
+            // Check if user role matches allowed roles
+            if ($allowedRoles && !in_array($username->roles[0], $allowedRoles, true)) {
+                return;
+            }
+
+            $message  = Option::getOption('notif_user_login_template');
+            $receiver = [$adminMobileNumber];
+
+            $notification = NotificationFactory::getUser($username->ID);
+            $notification->send($message, $receiver);
+        }
+    }
+
+    /**
      * Add subscribe meta box to the post
      */
     public function notification_meta_box()
@@ -224,7 +306,7 @@ class Notifications
     /**
      * Notify authors of newly published posts.
      */
-    public function new_post_published($ID, WP_Post $post)
+    public function new_post_published($ID, $post)
     {
         $message  = Option::getOption('notif_publish_new_post_author_template');
         $receiver = [get_user_meta($post->post_author, 'mobile', true)];
