@@ -44,37 +44,44 @@ class Notifications
         $this->addUserLoginHook();
         $this->addPublishNewPostHooks();
         $this->addAuthorNotificationHook();
-        $this->handleCoreUpdateNotifications();
+        $this->addCoreUpdateHook();
+    }
+
+    /**
+     * Add hook for handling core update notifications.
+     */
+    private function addCoreUpdateHook()
+    {
+        if (Option::getOption('notif_publish_new_wpversion')) {
+            add_action('init', [$this, 'handleCoreUpdateNotifications']);
+        }
     }
 
     /**
      * Handle core update notifications.
      */
-    private function handleCoreUpdateNotifications()
+    public function handleCoreUpdateNotifications()
     {
         global $wp_version;
 
-        if (Option::getOption('notif_publish_new_wpversion')) {
-            $update = get_site_transient('update_core');
+        $update = get_site_transient('update_core');
+        $update = is_object($update) && isset($update->updates) ? $update->updates : [];
 
-            $update = is_object($update) && isset($update->updates) ? $update->updates : [];
+        if (isset($update[1]) && $update[1]->current > $wp_version) {
+            if (!get_option('wp_last_send_notification')) {
+                $receiver     = [Option::getOption('admin_mobile_number')];
+                $message_body = sprintf(
+                    esc_html__('WordPress %s is available! Please update now', 'wp-sms'),
+                    $update[1]->current
+                );
 
-            if (isset($update[1]) && $update[1]->current > $wp_version) {
-                if (!get_option('wp_last_send_notification')) {
-                    $receiver     = [Option::getOption('admin_mobile_number')];
-                    $message_body = sprintf(
-                        esc_html__('WordPress %s is available! Please update now', 'wp-sms'),
-                        $update[1]->current
-                    );
+                $notification = NotificationFactory::getCustom();
+                $notification->send($message_body, $receiver);
 
-                    $notification = NotificationFactory::getCustom();
-                    $notification->send($message_body, $receiver);
-
-                    update_option('wp_last_send_notification', true);
-                }
-            } else {
-                update_option('wp_last_send_notification', false);
+                update_option('wp_last_send_notification', true);
             }
+        } else {
+            update_option('wp_last_send_notification', false);
         }
     }
 
