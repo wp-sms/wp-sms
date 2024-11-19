@@ -15,6 +15,7 @@ use WP_SMS\Notification\Handler\WooCommerceCouponNotification;
 use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
 use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 use WP_SMS\Notification\Handler\FormidableNotification;
+use WP_SMS\Notification\Handler\WooCommerceAdminOrderNotification;
 
 class NotificationFactory
 {
@@ -38,6 +39,15 @@ class NotificationFactory
     public static function getWooCommerceOrder($orderId = false)
     {
         return new WooCommerceOrderNotification($orderId);
+    }
+
+    /**
+     * @param $orderId
+     * @return WooCommerceAdminOrderNotification
+     */
+    public static function getWooCommerceAdminOrder($orderId = false)
+    {
+        return new WooCommerceAdminOrderNotification($orderId);
     }
 
     /**

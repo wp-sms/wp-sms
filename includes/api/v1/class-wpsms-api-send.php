@@ -35,7 +35,7 @@ class SendSmsApi extends \WP_SMS\RestApi
         'media_urls'           => array('required' => false, 'type' => 'array'),
         'schedule'             => array('required' => false, 'type' => 'string', 'format' => 'date-time'),
         'repeat'               => array('required' => false, 'type' => 'object'),
-        'notification_handler' => array('required' => false, 'type' => 'string', 'enum' => ['WooCommerceOrderNotification', 'WooCommerceProductNotification', 'WooCommerceCouponNotification', 'WooCommerceCustomerNotification', 'WordPressPostNotification', 'WordPressUserNotification', 'AwesomeSupportTicketNotification', 'WordPressCommentNotification', 'SubscriberNotification']),
+        'notification_handler' => array('required' => false, 'type' => 'string', 'enum' => ['WooCommerceOrderNotification', 'WooCommerceAdminOrderNotification', 'WooCommerceProductNotification', 'WooCommerceCouponNotification', 'WooCommerceCustomerNotification', 'WordPressPostNotification', 'WordPressUserNotification', 'AwesomeSupportTicketNotification', 'WordPressCommentNotification', 'SubscriberNotification']),
         'handler_id'           => array('required' => false, 'type' => 'int'),
     ];
 
