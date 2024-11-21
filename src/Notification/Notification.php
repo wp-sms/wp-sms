@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Notification;
 
+use WP_Error;
+
 class Notification
 {
     protected $variables = [];
@@ -13,7 +15,7 @@ class Notification
      * @param array $mediaUrls
      * @param bool $isFlash
      * @param bool $senderId
-     * @return string|\WP_Error
+     * @return string|WP_Error
      */
     public function send($message, $to, $mediaUrls = [], $isFlash = false, $senderId = false)
     {
@@ -24,7 +26,7 @@ class Notification
 
         if (!$this->optIn) {
             if (is_callable([$this, 'failed'])) {
-                $this->failed($to, new \WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms')));
+                $this->failed($to, new WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms')));
             }
 
             return;
