@@ -47,6 +47,10 @@ class Notification
 
     public function getOutputMessage($message)
     {
+        if (empty($message)) {
+            return $message;
+        }
+
         /**
          * Filters the variables to replace in the message content
          *
@@ -82,8 +86,10 @@ class Notification
                  */
                 preg_match_all("/{$prefix}(.*?)%/", $finalMessage, $match);
 
-                $output       = array_combine($match[0], $match[1]);
-                $finalMessage = str_replace(key($output), $this->$callBack(current($output)), $finalMessage);
+                $output = array_combine($match[0], $match[1]);
+                if ($output) {
+                    $finalMessage = str_replace(key($output), $this->$callBack(current($output)), $finalMessage);
+                }
             }
         }
 
