@@ -21,8 +21,8 @@ class directsend extends \WP_SMS\Gateway
         parent::__construct();
         $this->bulk_send      = true;
         $this->has_key        = true;
-        $this->validateNumber = "";
-        $this->help           = "";
+        $this->validateNumber = "Mobile numbers must start with '0' and should not include the country code.";
+        $this->help           = "Note: Please ensure that the server's IP address (the host of this site) is added to the 'Allowed IP' list; otherwise, messages may not be successfully sent. The IP can be added by navigating to [마이페이지 > 회원정보 > 사용자 설정]. <br> Please note that the correct format for mobile numbers in this gateway does not include the country code and must start with a '0'.";
         $this->gatewayFields  = [
             'username'         => [
                 'id'   => 'gateway_username',
@@ -165,6 +165,11 @@ class directsend extends \WP_SMS\Gateway
     public function clean_number($number)
     {
         $number = str_replace('+82', '', $number);
+
+        if (substr($number, 0, 1) !== '0') {
+            $number = '0' . $number;
+        }
+
         return trim($number);
     }
 

@@ -48,6 +48,11 @@ class Sms
             return new WP_Error('invalid_mobile_number', __('Mobile number not found, please make sure the mobile field in settings page is configured.', 'wp-sms'));
         }
 
+        // Check if the message is empty
+        if (empty($parameters['msg'])) {
+            return new WP_Error('empty_message', __('Message content cannot be empty. Please provide a valid SMS message.', 'wp-sms'));
+        }
+
         $sms->isflash = isset($parameters['is_flash']) ? $parameters['is_flash'] : false;
         $sms->to      = Helper::removeDuplicateNumbers($to);
         $sms->msg     = $parameters['msg'];

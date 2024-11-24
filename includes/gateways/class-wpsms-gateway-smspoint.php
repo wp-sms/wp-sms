@@ -9,7 +9,7 @@ use WP_SMS\Helper;
 
 class smspoint extends Gateway
 {
-    private $wsdl_link = "https://celman.nvt-it.pl/public/api/v1/sms/send";
+    private $wsdl_link = "https://app.smspoint.de/public/api/v1/sms/send";
     public $unitrial = false;
     public $unit;
     public $flash = "disable";
@@ -93,10 +93,10 @@ class smspoint extends Gateway
                 ]),
             ];
 
-            $response = $this->request('POST', $this->wsdl_link, [], $params, false);
+            $response = $this->request('POST', $this->wsdl_link, [], $params);
 
-            if ($response->status !== 200) {
-                throw new Exception($response->detail);
+            if ($response->success != true) {
+                throw new Exception($response);
             }
 
             $this->log($this->from, $this->msg, $this->to, $response);

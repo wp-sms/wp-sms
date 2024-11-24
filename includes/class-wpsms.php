@@ -108,7 +108,7 @@ class WP_SMS
         if (function_exists('determine_locale')) {
             $locale = apply_filters('plugin_locale', determine_locale(), 'wp-sms');
 
-            unload_textdomain('wp-sms');
+            unload_textdomain('wp-sms', true);
             load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
         }
 
@@ -179,6 +179,7 @@ class WP_SMS
         $this->include('src/Notification/Notification.php');
         $this->include('src/Notification/Handler/DefaultNotification.php');
         $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
+        $this->include('src/Notification/Handler/WooCommerceAdminOrderNotification.php');
         $this->include('src/Notification/Handler/WooCommerceCouponNotification.php');
         $this->include('src/Notification/Handler/WooCommerceCustomerNotification.php');
         $this->include('src/Notification/Handler/WooCommerceProductNotification.php');

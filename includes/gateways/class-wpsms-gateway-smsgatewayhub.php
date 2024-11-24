@@ -1,6 +1,7 @@
 <?php
 
 namespace WP_SMS\Gateway;
+
 use WP_SMS\Helper;
 
 class smsgatewayhub extends \WP_SMS\Gateway
@@ -19,31 +20,31 @@ class smsgatewayhub extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->bulk_send      = true;
-        $this->has_key = true;
-        $this->help           = "Please enter your API Key and DLT Template ID";
+        $this->has_key        = true;
+        $this->help           = "Please enter your API Key and DLT Template ID. For <b>other Template IDs</b>, you can specify it <b>message|template_id</b> when sending a message. If nothing is defined when sending the message, the Template ID specified in the settings will be used.";
         $this->validateNumber = "91989xxxxxxx,91999xxxxxxx";
-        $this->gatewayFields = [
-            'has_key'  => [
+        $this->gatewayFields  = [
+            'has_key'         => [
                 'id'   => 'gateway_key',
                 'name' => 'API Key',
                 'desc' => 'Enter API key of gateway.',
             ],
-            'from'     => [
+            'from'            => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Approved Sender ID',
                 'desc' => 'Enter sender ID of gateway.',
             ],
-            'dlt_template_id'  => [
+            'dlt_template_id' => [
                 'id'   => 'dlt_template_id',
                 'name' => 'Registered DLT Template ID',
                 'desc' => 'Enter your Registered DLT Template ID.',
             ],
-            'entity_id'  => [
+            'entity_id'       => [
                 'id'   => 'entity_id',
                 'name' => 'Registered Entity ID',
                 'desc' => 'Enter your Registered Entity ID. This field is optional.',
             ],
-            'channel' => [
+            'channel'         => [
                 'id'      => 'channel',
                 'name'    => __('SMS Channel', 'wp-sms'),
                 'desc'    => __('Please select SMS channel.', 'wp-sms'),
@@ -86,11 +87,21 @@ class smsgatewayhub extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            $dcs = isset($this->options['send_unicode']) ? '0' : '8';
+            $dcs       = isset($this->options['send_unicode']) ? '0' : '8';
             $flash_sms = $this->isflash ? '1' : '0';
 
             // Remove leading + and 00 sign from the beginning of numbers
             $this->to = Helper::removeNumbersPrefix(['+', '00'], $this->to);
+
+            $messageText       = $this->msg;
+            $messageTemplateID = $this->dlt_template_id;
+
+            $message = $this->getTemplateIdAndMessageBody();
+
+            if (isset($message['message'], $message['template_id'])) {
+                $messageText       = $message['message'];
+                $messageTemplateID = $message['template_id'];
+            }
 
             $params = [
                 'APIKey'        => $this->has_key,
@@ -99,10 +110,10 @@ class smsgatewayhub extends \WP_SMS\Gateway
                 'DCS'           => $dcs,
                 'flashsms'      => $flash_sms,
                 'number'        => implode(',', $this->to),
-                'text'          => $this->msg,
+                'text'          => $messageText,
                 'route'         => '1',
                 'PEID'          => $this->entity_id,
-                'DLTTemplateId' => $this->dlt_template_id
+                'DLTTemplateId' => $messageTemplateID
             ];
 
             $response = $this->request('GET', "{$this->wsdl_link}/SendSMS", $params);
@@ -151,7 +162,7 @@ class smsgatewayhub extends \WP_SMS\Gateway
             }
 
             return $response->Balance;
-            
+
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
             return new \WP_Error('account-credit', $error_message);
