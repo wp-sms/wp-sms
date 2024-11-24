@@ -1,4 +1,4 @@
-= v6.9.8 - 2024-11-24 =
+v6.9.8 - 2024-11-24
 - **Enhancement**: Updated SMS Point and DirectSend gateways for improved reliability.
 - **Enhancement**: Added support for sending messages with multiple templates for gateway SmsGatewayHub.
 - **Enhancement**: Refactored Notifications Class; fixed SMS notifications for the latest WordPress version.
