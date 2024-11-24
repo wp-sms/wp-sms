@@ -1,3 +1,11 @@
+= v6.9.8 - 2024-11-24 =
+- **Enhancement**: Updated SMS Point and DirectSend gateways for improved reliability.
+- **Enhancement**: Added support for sending messages with multiple templates for gateway SmsGatewayHub.
+- **Enhancement**: Refactored Notifications Class; fixed SMS notifications for the latest WordPress version.
+- **Enhancement**: Ensured compatibility with PHP 8.3.
+- **Enhancement**: Added validation for empty SMS content to ensure compatibility.
+- **Fix**: Resolved a translation loading issue to maintain compatibility with WordPress v6.7.
+
 v6.9.7 - 2024-10-27
 - **Enhancement**: Ensured full compatibility with WordPress version 6.7.
 - **Enhancement**: Improved filters for order item meta to handle array meta values in WooCommerce order notifications.
