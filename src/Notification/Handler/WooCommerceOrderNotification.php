@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Notification\Handler;
 
+use WC_Order;
+use WC_Order_Item;
 use WP_SMS\Notification\Notification;
 use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 
@@ -147,8 +149,22 @@ class WooCommerceOrderNotification extends Notification
         $currencySymbol = html_entity_decode(get_woocommerce_currency_symbol());
 
         foreach ($this->order->get_items() as $item) {
-            $orderItemData   = $item->get_data();
-            $preparedItems[] = "- {$orderItemData['name']} x {$orderItemData['quantity']} {$currencySymbol}{$orderItemData['total']}";
+            $orderItemData = $item->get_data();
+
+            // Prepare the default item string
+            $itemString = "- {$orderItemData['name']} x {$orderItemData['quantity']} {$currencySymbol}{$orderItemData['total']}";
+
+            /**
+             * Filter each order item string before adding to the prepared items.
+             *
+             * @param string $itemString The prepared string for the order item.
+             * @param array $orderItemData The raw data of the order item.
+             * @param WC_Order_Item $item The WooCommerce order item object.
+             * @param WC_Order $order The current order object.
+             */
+            $itemString = apply_filters('wp_sms_notification_woocommerce_order_item', $itemString, $orderItemData, $item, $this->order);
+
+            $preparedItems[] = $itemString;
         }
 
         return implode('\n', $preparedItems);
