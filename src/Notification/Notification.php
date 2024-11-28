@@ -77,21 +77,15 @@ class Notification
                     $finalMessage = str_replace($variable, $callBack, $finalMessage);
                 }
             }
+        }
 
-            // Then replace meta variables
-            if (strpos($variable, '{')) {
-
-                $prefix = strtok($variable, '{');
-
-                /**
-                 * Filter magic tags output message, like %order_meta_tracking_code%
-                 */
-                preg_match_all("/{$prefix}(.*?)%/", $finalMessage, $match);
-
-                $output = array_combine($match[0], $match[1]);
-                if ($output) {
-                    $finalMessage = str_replace(key($output), $this->$callBack(current($output)), $finalMessage);
-                }
+        // Replace meta variables
+        preg_match_all("/%order_meta_([a-zA-Z0-9_]+)%/", $finalMessage, $matches);
+        foreach ($matches[0] as $index => $metaVariable) {
+            $metaKey   = $matches[1][$index];
+            $metaValue = $this->getMeta($metaKey);
+            if ($metaValue !== null) {
+                $finalMessage = str_replace($metaVariable, $metaValue, $finalMessage);
             }
         }
 
