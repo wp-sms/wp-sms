@@ -102,7 +102,8 @@ class Gateway
             'gupshup'        => 'gupshup.io',
             'telesign'       => 'telesign.com',
             'mysms'          => 'mysms.com',
-            'brevo'          => 'brevo.com'
+            'brevo'          => 'brevo.com',
+            'cloudtalk'      => 'cloudtalk.io'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
