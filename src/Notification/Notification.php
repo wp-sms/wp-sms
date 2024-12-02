@@ -80,12 +80,27 @@ class Notification
         }
 
         // Replace meta variables
-        preg_match_all("/%order_meta_([a-zA-Z0-9_]+)%/", $finalMessage, $matches);
+        preg_match_all("/%order_(meta|item_meta)_([a-zA-Z0-9_]+)%/", $finalMessage, $matches);
+
+        // Map meta types to their corresponding retrieval methods
+        $metaHandlers = [
+            'meta'      => 'getMeta',
+            'item_meta' => 'getItemMeta',
+        ];
+
         foreach ($matches[0] as $index => $metaVariable) {
-            $metaKey   = $matches[1][$index];
-            $metaValue = $this->getMeta($metaKey);
-            if ($metaValue !== null) {
-                $finalMessage = str_replace($metaVariable, $metaValue, $finalMessage);
+            $metaType = $matches[1][$index]; // 'meta' OR 'item_meta'
+            $metaKey  = $matches[2][$index]; // key name
+
+            // Retrieve value using corresponding handler method, if available
+            if (isset($metaHandlers[$metaType]) && method_exists($this, $metaHandlers[$metaType])) {
+                $handlerMethod = $metaHandlers[$metaType];
+                $metaValue     = $this->$handlerMethod($metaKey);
+
+                // Replace the meta variable in the message if value is found
+                if ($metaValue !== null) {
+                    $finalMessage = str_replace($metaVariable, $metaValue, $finalMessage);
+                }
             }
         }
 
