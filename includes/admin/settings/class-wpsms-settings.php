@@ -1119,7 +1119,7 @@ class Settings
                 'id'   => 'um_send_sms_after_approval',
                 'name' => esc_html__('Send SMS after approval', 'wp-sms'),
                 'type' => 'checkbox',
-                'desc' => esc_html__('Send SMS after approval the user', 'wp-sms'),
+                'desc' => esc_html__('Send SMS after the user is approved', 'wp-sms'),
             );
             $um_options['um_message_body']            = array(
                 'id'   => 'um_message_body',
