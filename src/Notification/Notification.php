@@ -80,7 +80,7 @@ class Notification
         }
 
         // Replace meta variables
-        preg_match_all("/%order_(meta|item_meta)_([a-zA-Z0-9_]+)%/", $finalMessage, $matches);
+        preg_match_all("/%order_(meta|item_meta)_(.+?)%/", $finalMessage, $matches);
 
         // Map meta types to their corresponding retrieval methods
         $metaHandlers = [
