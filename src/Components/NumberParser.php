@@ -17,6 +17,13 @@ class NumberParser
     private $isInternationalInputEnabled;
 
     /**
+     * Holds merged country codes and names.
+     * 
+     * @var array
+     */
+    public static $mergedCountries = [];
+
+    /**
      * @param string $phoneNumber
      */
     public function __construct($phoneNumber)
@@ -29,6 +36,7 @@ class NumberParser
     /**
      * Returns the validated phone number in international format.
      *
+     * @todo This should be converted to a static method.
      * @return string|WP_Error
      */
     public function getValidNumber()
@@ -45,7 +53,7 @@ class NumberParser
         }
 
         // Return an error if + doesn't exists and "International Number Input" is enabled
-        if ($this->isInternationalInputEnabled && strpos($phoneNumber, '+') !== 0) {
+        if ($this->isInternationalInputEnabled && ! self::startsWithPlus($phoneNumber)) {
             return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
         }
 
@@ -189,12 +197,13 @@ class NumberParser
     public function addSelectedCountryCode($phoneNumber)
     {
         $selectedCountryCode = Option::getOption('mobile_county_code');
+
         if (empty($selectedCountryCode)) {
-            return $phoneNumber;
+            return $this->detectCountryCode($phoneNumber);
         }
 
         // Add leading + if not exists
-        if (strpos($phoneNumber, '+') !== 0) {
+        if (!self::startsWithPlus($phoneNumber)) {
             $phoneNumber = "+$phoneNumber";
         }
 
@@ -236,6 +245,59 @@ class NumberParser
     }
 
     /**
+     * Extracts or validates the country code from a phone number.
+     * 
+     * @param string $phoneNumber The phone number to process
+     * @param bool $exportNumber If true, returns the number without country code
+     * @return string The country code or number without country code based on $exportNumber
+     */
+    public static function getPhoneNumberCountry( $phoneNumber, $exportNumber = false ) {
+        if (empty(self::$mergedCountries)) {
+            self::$mergedCountries = wp_sms_countries()->getCountriesMerged();
+        }
+        
+        foreach (self::$mergedCountries as $countryCode => $countryName) {
+            if (strpos($phoneNumber, $countryCode) !== 0) {
+                continue;
+            }
+
+            if ( $exportNumber ) {
+                return substr($phoneNumber, strlen($countryCode));
+            }
+
+            return $countryCode;
+        }
+
+        return '';
+    }
+
+    /**
+     * Detects and validates the country code in a phone number.
+     * 
+     * @param string $phoneNumber The phone number to process
+     * @return string|WP_Error Validated phone number or error if invalid
+     */
+    public function detectCountryCode($phoneNumber) {      
+        if (self::startsWithPlus($phoneNumber)) {
+            if (self::getPhoneNumberCountry($phoneNumber)) {
+                return $phoneNumber;
+            }
+
+            return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
+        }
+
+        $phoneNumber = "+$phoneNumber";
+
+        $mainNumber = self::getPhoneNumberCountry($phoneNumber, true);
+        
+        if (! $this->isLengthValid($mainNumber)) {
+            return new WP_Error('invalid_length', __('The mobile number length is invalid.', 'wp-sms'));
+        }
+
+        return $phoneNumber;
+    }
+
+    /**
      * Checks if the phone number exists in the `sms_subscriber` table.
      *
      * @param string $phoneNumber
@@ -260,5 +322,40 @@ class NumberParser
 
         // Check if result exists and it has an active status
         return (!empty($result) && $result->status == '1');
+    }
+
+    /**
+     * Checks if a phone number string starts with a plus sign.
+     * 
+     * @param string|null $number The phone number to check
+     * @return bool Returns true if number starts with '+', false otherwise
+     */
+    public static function startsWithPlus($number) {
+        return !empty($number) && strpos($number, '+') === 0;
+    }
+
+    /**
+     * Prepares phone number variations for database queries.
+     * Creates an array of possible formats of the number for searching.
+     * 
+     * @param string $number The phone number to process
+     * @return array Array of phone number variations
+     */
+    public static function prepareMobileNumberQuery($number)
+    {
+        $metaValue[]    = $number;
+        $numberWithPlus = '+' . $number;
+        
+        // Check if number is international format or not and add country code to meta value
+        if (self::startsWithPlus($number)) {
+            $metaValue[] = $numberWithPlus;
+            $number      = $numberWithPlus;
+        } else {
+            $metaValue[] = ltrim($number, '+');
+        }
+
+        $metaValue[] = self::getPhoneNumberCountry($number, true);
+
+        return $metaValue;
     }
 }

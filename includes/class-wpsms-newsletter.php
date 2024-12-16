@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Components\NumberParser;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -175,7 +177,7 @@ class Newsletter
     {
         global $wpdb;
 
-        $metaValue = Helper::prepareMobileNumberQuery($number);
+        $metaValue = NumberParser::prepareMobileNumberQuery($number);
 
         // Prepare each value in $metaValue
         foreach ($metaValue as &$value) {

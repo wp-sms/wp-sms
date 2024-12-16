@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Controller;
 
+use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
 
 class PrivacyDataAjax extends AjaxControllerAbstract
@@ -62,7 +63,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
 
         $get_user = get_users([
             'meta_key'   => Helper::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            'meta_value' => Helper::prepareMobileNumberQuery($mobile) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'meta_value' => NumberParser::prepareMobileNumberQuery($mobile) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
         ]);
 
         if (count($get_user) > 0) {

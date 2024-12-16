@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Components\NumberParser;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -175,7 +177,7 @@ class Subscribers_List_Table extends \WP_List_Table
 
         // Search action
         if (isset($_GET['s']) and $_GET['s']) {
-            $metaValue   = Helper::prepareMobileNumberQuery($this->db->esc_like($_GET['s']));
+            $metaValue   = NumberParser::prepareMobileNumberQuery($this->db->esc_like($_GET['s']));
             $metaValue   = "'" . implode("','", $metaValue) . "'";
             $prepare     = $this->db->prepare("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE name LIKE %s OR mobile IN ({$metaValue})", '%' . $this->db->esc_like($_GET['s']) . '%');
             $this->data  = $this->get_data($prepare);
