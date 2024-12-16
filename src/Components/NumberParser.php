@@ -25,6 +25,8 @@ class NumberParser
 
     /**
      * @param string $phoneNumber
+     * 
+     * @todo The class needs refactoring to simplify methods and ensure required variables are passed to them.
      */
     public function __construct($phoneNumber)
     {
@@ -36,7 +38,6 @@ class NumberParser
     /**
      * Returns the validated phone number in international format.
      *
-     * @todo This should be converted to a static method.
      * @return string|WP_Error
      */
     public function getValidNumber()
