@@ -347,7 +347,7 @@ class NumberParser
         $numberWithPlus = '+' . $number;
         
         // Check if number is international format or not and add country code to meta value
-        if (self::startsWithPlus($number)) {
+        if (!self::startsWithPlus($number)) {
             $metaValue[] = $numberWithPlus;
             $number      = $numberWithPlus;
         } else {

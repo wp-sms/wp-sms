@@ -29,9 +29,19 @@ class NumberParserTest extends \Codeception\TestCase\WPTestCase
 
     public function testNormalizedNumber()
     {
-        $numberParser = new NumberParser('01 2 3-45sa(678)910');
+        $testCases = [
+            ['01 2 3-45sa(678)910', '12345678910'],
+            ['+1-234-567-8900', '+12345678900'],
+            ['00123456789', '123456789'],
+            ['  +1 (234) 567-8900  ', '+12345678900'],
+            ['', ''],
+            ['abc123def456', '123456']
+        ];
 
-        $this->assertEquals($numberParser->getNormalizedNumber(), '12345678910');
+        foreach ($testCases as [$input, $expected]) {
+            $numberParser = new NumberParser($input);
+            $this->assertEquals($expected, $numberParser->getNormalizedNumber());
+        }
     }
 
     public function testValidNumericNumber()
@@ -83,5 +93,24 @@ class NumberParserTest extends \Codeception\TestCase\WPTestCase
         $validNumber = NumberParser::isDuplicateInUsermeta('+1111111111');
 
         $this->assertTrue($validNumber);
+    }
+
+    public function testPrepareMobileNumberQuery()
+    {
+        // Test number without plus
+        $result = NumberParser::prepareMobileNumberQuery('1234567890');        
+        $this->assertEqualsCanonicalizing([
+            '1234567890',
+            '+1234567890',
+            '234567890'
+        ], $result);
+
+        // Test number with plus
+        $result = NumberParser::prepareMobileNumberQuery('+1234567890');
+        $this->assertEqualsCanonicalizing([
+            '+1234567890',
+            '1234567890',
+            '234567890'
+        ], $result);
     }
 }
