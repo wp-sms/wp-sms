@@ -18,26 +18,38 @@ class Install
     }
 
     /**
+     * Execute a callback on all blogs in a multisite network or the current site.
+     */
+    public static function executeOnSingleOrMultiSite($method)
+    {
+        global $wpdb;
+
+        if (!method_exists(__CLASS__, $method)) {
+            return;
+        }
+
+        if (is_multisite()) {
+            $blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs}");
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
+
+                call_user_func(array(__CLASS__, $method));
+
+                restore_current_blog();
+            }
+        } else {
+            call_user_func(array(__CLASS__, $method));
+        }
+    }
+
+    /**
      * Adding new MYSQL Table in Activation Plugin
      *
      * @param Not param
      */
     public static function create_table($network_wide)
     {
-        global $wpdb;
-
-        if (is_multisite() && $network_wide) {
-            $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
-            foreach ($blog_ids as $blog_id) {
-                switch_to_blog($blog_id);
-
-                self::table_sql();
-
-                restore_current_blog();
-            }
-        } else {
-            self::table_sql();
-        }
+        self::executeOnSingleOrMultiSite("table_sql");
     }
 
     /**
@@ -114,7 +126,7 @@ class Install
         delete_option('wp_notification_new_wp_version');
 
         if (is_admin()) {
-            self::upgrade();
+            self::executeOnSingleOrMultiSite("upgrade");
         }
     }
 
