@@ -20,11 +20,11 @@ class Install
     /**
      * Execute a callback on all blogs in a multisite network or the current site.
      */
-    public static function excecuteOnSingleOrMultiSite($callback)
+    public static function executeOnSingleOrMultiSite($method)
     {
         global $wpdb;
 
-        if (!is_callable($callback)) {
+        if (!method_exists(__CLASS__, $method)) {
             return;
         }
 
@@ -33,12 +33,12 @@ class Install
             foreach ($blog_ids as $blog_id) {
                 switch_to_blog($blog_id);
 
-                call_user_func($callback);
-                
+                call_user_func(array(__CLASS__, $method));
+
                 restore_current_blog();
             }
         } else {
-            call_user_func($callback);
+            call_user_func(array(__CLASS__, $method));
         }
     }
 
@@ -49,9 +49,7 @@ class Install
      */
     public static function create_table($network_wide)
     {
-        self::excecuteOnSingleOrMultiSite(function () {
-            self::table_sql();
-        });
+        self::executeOnSingleOrMultiSite("table_sql");
     }
 
     /**
@@ -128,9 +126,7 @@ class Install
         delete_option('wp_notification_new_wp_version');
 
         if (is_admin()) {
-            self::excecuteOnSingleOrMultiSite(function () {
-                self::upgrade();
-            });
+            self::executeOnSingleOrMultiSite("upgrade");
         }
     }
 
