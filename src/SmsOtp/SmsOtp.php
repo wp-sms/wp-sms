@@ -25,14 +25,15 @@ final class SmsOtp
     private $agent;
 
     /**
-     * @var DateInterval
+     * @var string
+     * Must be an ISO 8601 duration string (e.g., 'PT5M' for 5 minutes).
      */
-    private $rateLimitTimeInterval;
+    private $rateLimitTimeInterval = 'PT5M';
 
     /**
      * @var integer
      */
-    private $rateLimitCount;
+    private $rateLimitCount = 5;
 
     /**
      * @param string $phoneNumber
@@ -151,7 +152,7 @@ final class SmsOtp
      */
     public function getRateLimitTimeInterval()
     {
-        return $this->rateLimitTimeInterval;
+        return apply_filters('wp_sms_rate_limit_time_interval', new DateInterval($this->rateLimitTimeInterval));
     }
 
     /**
@@ -161,6 +162,6 @@ final class SmsOtp
      */
     public function getRateLimitCount()
     {
-        return $this->rateLimitCount;
+        apply_filters('wp_sms_rate_limit_count', $this->rateLimitCount);
     }
 }

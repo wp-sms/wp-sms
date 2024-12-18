@@ -9,14 +9,15 @@ use DateInterval;
 final class Generator
 {
     /**
-     * @var DateInterval
+     * @var string
+     * Must be an ISO 8601 duration string (e.g., 'PT5M' for 5 minutes).
      */
-    private $rateLimitTimeInterval;
+    private $rateLimitTimeInterval = 'PT5M';
 
     /**
      * @var integer
      */
-    private $rateLimitCount;
+    private $rateLimitCount = 5;
 
     /**
      * @var string
@@ -63,7 +64,7 @@ final class Generator
      */
     public function getRateLimitTimeInterval()
     {
-        return $this->rateLimitTimeInterval ?? new DateInterval('PT5M');
+        return apply_filters('wp_sms_rate_limit_time_interval', new DateInterval($this->rateLimitTimeInterval));
     }
 
     /**
@@ -83,7 +84,7 @@ final class Generator
      */
     public function getRateLimitCount()
     {
-        return $this->rateLimitCount ?? 5;
+        return apply_filters('wp_sms_rate_limit_count', $this->rateLimitCount);
     }
 
     /**
