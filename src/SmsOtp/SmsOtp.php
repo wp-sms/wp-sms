@@ -151,7 +151,7 @@ final class SmsOtp
      */
     public function getRateLimitTimeInterval()
     {
-        return apply_filters('wp_sms_rate_limit_time_interval', new DateInterval('PT5M'));
+        return apply_filters('wp_sms_otp_rate_limit_time_interval', new DateInterval('PT5M'));
     }
 
     /**
@@ -161,6 +161,6 @@ final class SmsOtp
      */
     public function getRateLimitCount()
     {
-        apply_filters('wp_sms_rate_limit_count', $this->rateLimitCount);
+        return apply_filters('wp_sms_otp_rate_limit_count', $this->rateLimitCount);
     }
 }
