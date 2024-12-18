@@ -200,6 +200,13 @@ class NumberParser
         $selectedCountryCode = Option::getOption('mobile_county_code');
 
         if (empty($selectedCountryCode)) {
+            if (
+                strpos($this->rawPhoneNumber, '0') === 0 &&
+                substr_count($this->rawPhoneNumber, '0', 0, 2) === 1
+            ) {
+                return $this->rawPhoneNumber;
+            }
+           
             return $this->detectCountryCode($phoneNumber);
         }
 

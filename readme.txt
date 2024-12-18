@@ -171,6 +171,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 == Changelog ==
 = v6.9.9 - 2024-**-** =
 - **Enhancement**: Updated phone numbers to save with country code.
+- **Fix**: Resolved login with sms issue.
 
 = v6.9.8 - 2024-11-24 =
 - **Enhancement**: Updated SMS Point and DirectSend gateways for improved reliability.
