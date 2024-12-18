@@ -25,10 +25,9 @@ final class SmsOtp
     private $agent;
 
     /**
-     * @var string
-     * Must be an ISO 8601 duration string (e.g., 'PT5M' for 5 minutes).
+     * @var DateInterval
      */
-    private $rateLimitTimeInterval = 'PT5M';
+    private $rateLimitTimeInterval;
 
     /**
      * @var integer
@@ -152,7 +151,7 @@ final class SmsOtp
      */
     public function getRateLimitTimeInterval()
     {
-        return apply_filters('wp_sms_rate_limit_time_interval', new DateInterval($this->rateLimitTimeInterval));
+        return apply_filters('wp_sms_rate_limit_time_interval', new DateInterval('PT5M'));
     }
 
     /**
