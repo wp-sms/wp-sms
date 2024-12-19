@@ -1113,7 +1113,8 @@ class Settings
             $um_options['um_notification_header']     = array(
                 'id'   => 'um_notification_header',
                 'name' => esc_html__('Notification', 'wp-sms'),
-                'type' => 'header'
+                'type' => 'header',
+                'doc'  => '/resources/ultimate-member-and-wp-sms-integration/',
             );
             $um_options['um_send_sms_after_approval'] = array(
                 'id'   => 'um_send_sms_after_approval',
