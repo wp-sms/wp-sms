@@ -152,7 +152,7 @@ class Helper
 
         $users = get_users([
             'meta_key'   => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            'meta_value' => self::prepareMobileNumberQuery($number) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'meta_value' => NumberParser::prepareMobileNumberQuery($number) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
@@ -453,7 +453,16 @@ class Helper
      */
     public static function sanitizeMobileNumber($mobile)
     {
-        return apply_filters('wp_sms_sanitize_mobile_number', sanitize_text_field(trim($mobile)));
+        $number = apply_filters('wp_sms_sanitize_mobile_number', sanitize_text_field(trim($mobile)));
+
+        $numberParser = new NumberParser($number);
+        $mobileNumber = $numberParser->getValidNumber();
+        
+        if (is_wp_error($mobileNumber)) {
+            return '';
+        }
+        
+        return $mobileNumber;
     }
 
     /**
@@ -471,6 +480,7 @@ class Helper
      *
      * @param $mobileNumber
      * @return mixed|string
+     * @deprecated
      */
     public static function prepareMobileNumber($mobileNumber)
     {
@@ -484,6 +494,9 @@ class Helper
         return $mobileNumber;
     }
 
+    /**
+     * @deprecated
+     */
     public static function prepareMobileNumberQuery($number)
     {
         $metaValue[]    = $number;

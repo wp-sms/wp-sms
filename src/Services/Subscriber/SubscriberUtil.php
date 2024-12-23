@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Services\Subscriber;
 
+use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\Option;
@@ -31,6 +32,13 @@ class SubscriberUtil
         // Delete inactive subscribes with this number
         Newsletter::deleteInactiveSubscribersByMobile($mobile);
 
+        $numberParser = new NumberParser($mobile);
+        $mobile = $numberParser->getValidNumber();
+        
+        if (is_wp_error($mobile)) {
+            return $mobile;
+        }
+        
         $groupIds = wp_unslash($group);
 
         if (!is_null($groupIds))
