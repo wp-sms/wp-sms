@@ -102,7 +102,8 @@ class Gateway
             'gupshup'        => 'gupshup.io',
             'telesign'       => 'telesign.com',
             'mysms'          => 'mysms.com',
-            'brevo'          => 'brevo.com'
+            'brevo'          => 'brevo.com',
+            'cloudtalk'      => 'cloudtalk.io'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -803,8 +804,7 @@ class Gateway
                 'sarabsms'       => 'sarabsms.ir',
                 'ponishasms'     => 'ponishasms.ir',
                 'payamakalmas'   => 'payamakalmas.ir',
-                'sms'            => 'sms.ir - Old',
-                'sms_new'        => 'sms.ir - New',
+                'sms'            => 'sms.ir',
                 'popaksms'       => 'popaksms.ir',
                 'novin1sms'      => 'novin1sms.ir',
                 '_500sms'        => '500sms.ir',

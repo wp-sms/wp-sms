@@ -16,7 +16,7 @@ final class Generator
     /**
      * @var integer
      */
-    private $rateLimitCount;
+    private $rateLimitCount = 5;
 
     /**
      * @var string
@@ -63,7 +63,7 @@ final class Generator
      */
     public function getRateLimitTimeInterval()
     {
-        return $this->rateLimitTimeInterval ?? new DateInterval('PT5M');
+        return apply_filters('wp_sms_otp_rate_limit_time_interval', new DateInterval('PT5M'));
     }
 
     /**
@@ -83,7 +83,7 @@ final class Generator
      */
     public function getRateLimitCount()
     {
-        return $this->rateLimitCount ?? 5;
+        return apply_filters('wp_sms_otp_rate_limit_count', $this->rateLimitCount);
     }
 
     /**

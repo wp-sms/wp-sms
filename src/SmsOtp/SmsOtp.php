@@ -32,7 +32,7 @@ final class SmsOtp
     /**
      * @var integer
      */
-    private $rateLimitCount;
+    private $rateLimitCount = 5;
 
     /**
      * @param string $phoneNumber
@@ -151,7 +151,7 @@ final class SmsOtp
      */
     public function getRateLimitTimeInterval()
     {
-        return $this->rateLimitTimeInterval;
+        return apply_filters('wp_sms_otp_rate_limit_time_interval', new DateInterval('PT5M'));
     }
 
     /**
@@ -161,6 +161,6 @@ final class SmsOtp
      */
     public function getRateLimitCount()
     {
-        return $this->rateLimitCount;
+        return apply_filters('wp_sms_otp_rate_limit_count', $this->rateLimitCount);
     }
 }

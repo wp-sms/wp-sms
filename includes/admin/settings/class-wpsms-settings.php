@@ -1113,13 +1113,14 @@ class Settings
             $um_options['um_notification_header']     = array(
                 'id'   => 'um_notification_header',
                 'name' => esc_html__('Notification', 'wp-sms'),
-                'type' => 'header'
+                'type' => 'header',
+                'doc'  => '/resources/ultimate-member-and-wp-sms-integration/',
             );
             $um_options['um_send_sms_after_approval'] = array(
                 'id'   => 'um_send_sms_after_approval',
                 'name' => esc_html__('Send SMS after approval', 'wp-sms'),
                 'type' => 'checkbox',
-                'desc' => esc_html__('Send SMS after approval the user', 'wp-sms'),
+                'desc' => esc_html__('Send SMS after the user is approved', 'wp-sms'),
             );
             $um_options['um_message_body']            = array(
                 'id'   => 'um_message_body',
@@ -1361,8 +1362,8 @@ class Settings
                     'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
                     'className'  => 'js-wpsms-show_if_international_mobile_disabled',
-                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global)\'.', 'wp-sms'),
-                    'options'    => array_merge(['0' => esc_html__('No country code (Global)', 'wp-sms')], wp_sms_countries()->getCountriesMerged()),
+                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global / Local)\'.', 'wp-sms'),
+                    'options'    => array_merge(['0' => esc_html__('No country code (Global / Local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged()),
                     'attributes' => ['class' => 'js-wpsms-select2'],
                 ),
                 'mobile_terms_minimum'                     => array(

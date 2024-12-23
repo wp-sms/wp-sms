@@ -1,3 +1,11 @@
+= v6.9.9 - 2024-12-23 =
+- **Fix**: Resolved issue with SMS login functionality.
+- **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.
+- **Dev** Added new filters for developers:
+  - `wp_sms_notification_woocommerce_order_item`
+  - `wp_sms_otp_rate_limit_time_interval`
+  - `wp_sms_otp_rate_limit_count`
+
 v6.9.8 - 2024-11-24
 - **Enhancement**: Updated SMS Point and DirectSend gateways for improved reliability.
 - **Enhancement**: Added support for sending messages with multiple templates for gateway SmsGatewayHub.

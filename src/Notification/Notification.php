@@ -77,20 +77,29 @@ class Notification
                     $finalMessage = str_replace($variable, $callBack, $finalMessage);
                 }
             }
+        }
 
-            // Then replace meta variables
-            if (strpos($variable, '{')) {
+        // Replace meta variables
+        preg_match_all("/%order_(meta|item_meta)_(.+?)%/", $finalMessage, $matches);
 
-                $prefix = strtok($variable, '{');
+        // Map meta types to their corresponding retrieval methods
+        $metaHandlers = [
+            'meta'      => 'getMeta',
+            'item_meta' => 'getItemMeta',
+        ];
 
-                /**
-                 * Filter magic tags output message, like %order_meta_tracking_code%
-                 */
-                preg_match_all("/{$prefix}(.*?)%/", $finalMessage, $match);
+        foreach ($matches[0] as $index => $metaVariable) {
+            $metaType = $matches[1][$index]; // 'meta' OR 'item_meta'
+            $metaKey  = $matches[2][$index]; // key name
 
-                $output = array_combine($match[0], $match[1]);
-                if ($output) {
-                    $finalMessage = str_replace(key($output), $this->$callBack(current($output)), $finalMessage);
+            // Retrieve value using corresponding handler method, if available
+            if (isset($metaHandlers[$metaType]) && method_exists($this, $metaHandlers[$metaType])) {
+                $handlerMethod = $metaHandlers[$metaType];
+                $metaValue     = $this->$handlerMethod($metaKey);
+
+                // Replace the meta variable in the message if value is found
+                if ($metaValue !== null) {
+                    $finalMessage = str_replace($metaVariable, $metaValue, $finalMessage);
                 }
             }
         }
