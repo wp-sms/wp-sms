@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.8
+Stable tag: 6.9.9
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,8 +169,13 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.9 - 2024-**-** =
-- **Fix**: Resolved login with sms issue.
+= v6.9.9 - 2024-12-23 =
+- **Fix**: Resolved issue with SMS login functionality.
+- **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.
+- **Dev** Added new filters for developers:
+  - `wp_sms_notification_woocommerce_order_item`
+  - `wp_sms_otp_rate_limit_time_interval`
+  - `wp_sms_otp_rate_limit_count`
 
 = v6.9.8 - 2024-11-24 =
 - **Enhancement**: Updated SMS Point and DirectSend gateways for improved reliability.
