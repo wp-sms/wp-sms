@@ -232,6 +232,8 @@ class Install
 
             self::table_sql();
 
+            self::upgrade();
+
             restore_current_blog();
         }
     }
