@@ -15,6 +15,9 @@ class Install
     {
         add_action('wpmu_new_blog', array($this, 'add_table_on_create_blog'), 10, 1);
         add_filter('wpmu_drop_tables', array($this, 'remove_table_on_delete_blog'));
+
+        // Upgrade Plugin
+        add_action('plugins_loaded', array($this, 'plugin_upgrades'));
     }
 
     /**
@@ -124,10 +127,14 @@ class Install
 
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
+    }
 
-        if (is_admin()) {
-            self::executeOnSingleOrMultiSite("upgrade");
-        }
+    /**
+     * Plugin Upgrades
+     */
+    public static function plugin_upgrades()
+    {
+        self::executeOnSingleOrMultiSite("upgrade");
     }
 
     /**
