@@ -13,7 +13,7 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
     {
         if (Helper::isWooCheckoutBlock()) {
             add_action('woocommerce_store_api_checkout_update_order_from_request', [$this, 'validateMobileNumberInCheckoutBlockBasedCallback'], 10, 2);
-            add_filter('wp_sms_general_settings', [$this, 'modifyBillingMandatoryOptionToNotice']);
+            add_filter('wp_sms_general_settings', [$this, 'modifyMobileFieldMandatoryStatusToNotice']);
         }
 
         add_filter('woocommerce_checkout_fields', array($this, 'modifyBillingPhoneAttributes'));
@@ -29,9 +29,10 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
         add_action('woocommerce_after_checkout_validation', [$this, 'validateMobileNumberInCheckoutCallback'], 10, 2);
     }
 
-    public function modifyBillingMandatoryOptionToNotice($fields){
+    public function modifyMobileFieldMandatoryStatusToNotice($fields)
+    {
         // changing field type to notice if client is using block-based checkout
-        $fields['optional_mobile_field'] =  array(
+        $fields['optional_mobile_field'] = array(
             'id'   => 'optional_mobile_field',
             'name' => esc_html__('Mobile Field Mandatory Status', 'wp-sms'),
             'type' => 'notice',
