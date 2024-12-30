@@ -163,6 +163,9 @@ class Notifications
         } elseif (isset($_REQUEST['mobile'])) {
             $userMobileNumberFromRequest = sanitize_text_field($_REQUEST['mobile']);
             $receiver                    = [$userMobileNumberFromRequest];
+        } elseif (isset($_REQUEST['phone_number'])) {
+            $userMobileNumberFromRequest = sanitize_text_field($_REQUEST['phone_number']);
+            $receiver                    = [$userMobileNumberFromRequest];
         }
 
         if ($receiver) {
