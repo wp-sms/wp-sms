@@ -20,6 +20,14 @@ abstract class AbstractWidget
     protected $version;
 
     /**
+     * Default capability for accessing the widget.
+     * Subclasses can override this property.
+     *
+     * @var string
+     */
+    protected $capability = 'manage_options';
+
+    /**
      * Render callback
      *
      * @return string html
@@ -28,9 +36,26 @@ abstract class AbstractWidget
 
     public function __construct()
     {
+
         if (method_exists($this, 'onInit')) {
             $this->onInit();
         }
+
+        // Validate $capabilities
+        if (!is_string($this->capability)) {
+            // Ensure the capabilities property is treated as a single string.
+            $this->capability = 'manage_options'; // Default fallback capability
+        }
+    }
+
+    /**
+     * Check if the current user has the required capability.
+     *
+     * @return bool
+     */
+    protected function userHasCapabilities()
+    {
+        return current_user_can($this->capability);
     }
 
     /**
@@ -41,12 +66,14 @@ abstract class AbstractWidget
     public function register()
     {
         add_action('wp_dashboard_setup', function () {
-            wp_add_dashboard_widget($this->id, $this->name, function (...$args) {
-                if (method_exists($this, 'prepare')) {
-                    call_user_func([$this, 'prepare']);
-                }
-                call_user_func([$this, 'render'], ...$args);
-            });
+            if ($this->userHasCapabilities()) {
+                wp_add_dashboard_widget($this->id, $this->name, function (...$args) {
+                    if (method_exists($this, 'prepare')) {
+                        call_user_func([$this, 'prepare']);
+                    }
+                    call_user_func([$this, 'render'], ...$args);
+                });
+            }
         });
     }
 }
