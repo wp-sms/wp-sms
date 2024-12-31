@@ -41,9 +41,8 @@ abstract class AbstractWidget
             $this->onInit();
         }
 
-        // Validate $capabilities
+        // Validate $capability
         if (!is_string($this->capability)) {
-            // Ensure the capabilities property is treated as a single string.
             $this->capability = 'manage_options'; // Default fallback capability
         }
     }
