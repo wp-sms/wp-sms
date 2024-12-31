@@ -24,10 +24,11 @@ class Subscribers
                 $groupIds            = isset($_POST['wpsms_group_name']) ? wp_sms_sanitize_array($_POST['wpsms_group_name']) : '';
                 $wp_subscribe_name   = isset($_POST['wp_subscribe_name']) ? sanitize_text_field($_POST['wp_subscribe_name']) : '';
                 $wp_subscribe_mobile = isset($_POST['wp_subscribe_mobile']) ? sanitize_text_field($_POST['wp_subscribe_mobile']) : '';
+                $subscribe_status    = isset($_POST['wpsms_subscribe_status']) ? sanitize_text_field($_POST['wpsms_subscribe_status']) : '';
 
                 if ($groupIds) {
                     foreach ($groupIds as $groupId) {
-                        $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $groupId);
+                        $result = Newsletter::addSubscriber($wp_subscribe_name, $wp_subscribe_mobile, $groupId, $subscribe_status);
                     }
 
                 } else {
