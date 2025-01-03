@@ -80,46 +80,6 @@ Send SMS page
   }
 }
 
-
-/**
-Select2
- */
-.select2-container {
-  min-width: 350px;
-
-  &:not(.TB_ajaxContent) {
-    min-width: 285px;
-  }
-}
-
-.select2-container .select2-selection--single {
-  height: 45px;
-  border-color: #5b5b5b;
-  border-radius: 2px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-  line-height: 33px;
-  padding-left: 14px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-  top: 8px !important;
-  right: 7px !important;
-}
-
-.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-  background-color: #f88d40;
-}
-
-.select2-container--default .select2-selection--multiple {
-  padding: 3px 2px;
-}
-
-.select2-container .select2-search--inline .select2-search__field {
-  height: 26px;
-}
-
 .wpsms-settings-header-field {
   font-size: 12px;
   font-weight: normal;
@@ -571,6 +531,45 @@ New styles for new version of the page
     position: relative;
     min-height: 40vh;
     margin-bottom: 100px;
+
+    .select2-container {
+      min-width: 350px;
+
+      &:not(.TB_ajaxContent) {
+        min-width: 285px;
+      }
+
+      .select2-selection--single {
+        height: 45px;
+        border-color: #5b5b5b;
+        border-radius: 2px;
+
+        .select2-selection__rendered {
+          line-height: 33px;
+          padding-left: 14px;
+        }
+
+        .select2-selection__arrow {
+          top: 8px !important;
+          right: 7px !important;
+        }
+      }
+
+      .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #f88d40;
+      }
+
+      .select2-selection--multiple {
+        padding: 3px 2px;
+      }
+
+      .select2-search--inline {
+        .select2-search__field {
+          height: 26px;
+        }
+      }
+    }
+
 
     .wpsms-sendsms-result {
       padding: 10px 15px;
