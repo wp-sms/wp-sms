@@ -28,12 +28,14 @@
       width: 25em !important;
     }
   }
+
   .wp-sms-notify-specific-order {
     @media (min-width: 783px) {
       display: flex;
       justify-content: space-between;
       max-width: calc(100% - 45px);
     }
+
     div {
       @media (min-width: 783px) {
         box-sizing: border-box;
