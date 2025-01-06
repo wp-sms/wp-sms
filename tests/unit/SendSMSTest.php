@@ -1,6 +1,7 @@
 <?php
 
 namespace unit;
+
 use WP_UnitTestCase;
 
 class SendSMSTest extends WP_UnitTestCase
