@@ -1,4 +1,4 @@
-= v6.9.10 - 2025-*-* =
+= v6.9.10 =
 - **Fix**: Resolved sendig SMS to registering user in login form.
 
 v6.9.9 - 2024-12-23
