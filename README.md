@@ -90,32 +90,6 @@ npm run sass-compile
 ```bash
 npm run js-compile
 ```
-
-
-### Unit Tests
-The plugin has a suite of unit tests that can be run with PHPUnit. To run the tests, you'll need to install the development dependencies with Composer, then run the tests with [Codeception](https://codeception.com/)
-
-```bash
-composer install
-```
-
-For starting you need to create a database for testing, then copy the `.env.testing.example` file to `.env.testing` and update the database credentials.
-
-Import the database from `tests/_data/dump.sql` in your test database.
-```bash
-wp db import tests/_data/dump.sql
-```
-
-Run the tests
-```bash
-php vendor/bin/codecept run wpunit
-```
-
-Generate new unit test
-```bash
-php vendor/bin/codecept generate:wpunit unit YourTestName
-```
-
 # Actions
 Run the following action when sending SMS with this plugin.
 ```sh
