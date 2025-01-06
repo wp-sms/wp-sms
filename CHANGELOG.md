@@ -1,4 +1,7 @@
-= v6.9.9 - 2024-12-23 =
+= v6.9.10 - 2025-*-* =
+- **Fix**: Resolved sendig SMS to registering user in login form.
+
+v6.9.9 - 2024-12-23
 - **Fix**: Resolved issue with SMS login functionality.
 - **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.
 - **Dev** Added new filters for developers:
