@@ -51,8 +51,8 @@
                 <label for="wpsms_subscribe_status" class="wp_sms_subscribers_label"><?php esc_html_e('Status', 'wp-sms'); ?></label>
                 <select name="wpsms_subscribe_status" id="wpsms_subscribe_status" class="wp_sms_subscribers_input_text code">';
                     <?php if (isset($subscriber)) : ?>
-                        <option value="1" <?php selected($subscriber->status); ?>><?php esc_html_e('Active', 'wp-sms'); ?></option>
-                        <option value="0" <?php selected($subscriber->status, false); ?>><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
+                        <option value="1" <?php selected($subscriber->status, 1); ?>><?php esc_html_e('Active', 'wp-sms'); ?></option>
+                        <option value="0" <?php selected($subscriber->status, 0); ?>><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
                     <?php else : ?>
                         <option value="1" selected="selected"><?php esc_html_e('Active', 'wp-sms'); ?></option>
                         <option value="0"><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
