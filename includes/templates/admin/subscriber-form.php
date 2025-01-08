@@ -29,7 +29,7 @@
                         <?php echo isset($subscriber_id) ? '' : 'multiple="multiple"'; ?>
                         style="<?php echo isset($subscriber_id) ? '' : 'height: 100px;'; ?>">
                         <?php if (isset($subscriber_id)) : ?>
-                            <option value="" disabled selected><?php esc_html_e('Select group', 'wp-sms'); ?></option>
+                            <option value="" selected><?php esc_html_e('Select group', 'wp-sms'); ?></option>
                         <?php endif; ?>
                         <?php foreach ($groups as $items) : ?>
                             <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>>
