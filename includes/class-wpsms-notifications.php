@@ -163,6 +163,10 @@ class Notifications
         } elseif (isset($_REQUEST['mobile'])) {
             $userMobileNumberFromRequest = sanitize_text_field($_REQUEST['mobile']);
             $receiver                    = [$userMobileNumberFromRequest];
+        } elseif (isset($_REQUEST['phone_number'])) {
+            // used for sending SMS to user after registration on LOGIN page.
+            $userMobileNumberFromRequest = sanitize_text_field($_REQUEST['phone_number']);
+            $receiver                    = [$userMobileNumberFromRequest];
         }
 
         if ($receiver) {
