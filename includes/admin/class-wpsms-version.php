@@ -22,7 +22,10 @@ class Version
             $this->init();
         }
 
-        $this->registerCheckLicensesCronJob();
+        // Address the "_load_textdomain_just_in_time was called incorrectly" issue by ensuring proper text domain declaration and loading.
+        add_action('init', function () {
+            $this->registerCheckLicensesCronJob();
+        });
     }
 
     private function init()
