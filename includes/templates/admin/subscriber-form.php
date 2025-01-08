@@ -28,6 +28,9 @@
                         class="wp_sms_subscribers_input_text code"
                         <?php echo isset($subscriber_id) ? '' : 'multiple="multiple"'; ?>
                         style="<?php echo isset($subscriber_id) ? '' : 'height: 100px;'; ?>">
+                        <?php if (isset($subscriber_id)) : ?>
+                            <option value="" disabled selected>Select group</option>
+                        <?php endif; ?>
                         <?php foreach ($groups as $items) : ?>
                             <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>>
                                 <?php echo esc_attr($items->name); ?>
