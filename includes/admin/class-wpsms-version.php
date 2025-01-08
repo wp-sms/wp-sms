@@ -21,8 +21,10 @@ class Version
         if (is_admin()) {
             $this->init();
         }
-
-        $this->registerCheckLicensesCronJob();
+        // Correct the "_load_textdomain_just_in_time was called incorrectly" issue by ensuring the text domain is properly declared, explicitly loaded during initialization, and translation file paths are correctly specified.
+        add_action('init', function () {
+            $this->registerCheckLicensesCronJob();
+        });
     }
 
     private function init()
