@@ -286,9 +286,9 @@ class Notifications
             case 'subscriber':
                 $group = $_REQUEST['wps_subscribe_group'] ?? 'all';
                 if ($group === 'all') {
-                    $receiver = Newsletter::getSubscribers();
+                    $receiver = Newsletter::getSubscribers(null, true);
                 } else {
-                    $receiver = Newsletter::getSubscribers([$group]);
+                    $receiver = Newsletter::getSubscribers([$group], true);
                 }
                 break;
             case 'numbers':
