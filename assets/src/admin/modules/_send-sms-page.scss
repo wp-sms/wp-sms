@@ -80,46 +80,6 @@ Send SMS page
   }
 }
 
-
-/**
-Select2
- */
-.select2-container {
-  min-width: 350px;
-
-  &:not(.TB_ajaxContent) {
-    min-width: 285px;
-  }
-}
-
-.select2-container .select2-selection--single {
-  height: 45px;
-  border-color: #5b5b5b;
-  border-radius: 2px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-  line-height: 33px;
-  padding-left: 14px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-  top: 8px !important;
-  right: 7px !important;
-}
-
-.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-  background-color: #f88d40;
-}
-
-.select2-container--default .select2-selection--multiple {
-  padding: 3px 2px;
-}
-
-.select2-container .select2-search--inline .select2-search__field {
-  height: 26px;
-}
-
 .wpsms-settings-header-field {
   font-size: 12px;
   font-weight: normal;
@@ -133,38 +93,44 @@ Select2
     align-items: self-end;
     flex-direction: column;
   }
-  .wpsms-settings-description-title{
+
+  .wpsms-settings-description-title {
     margin-left: 0;
     margin-right: auto;
-   }
+  }
 }
+
 .rtl .wpsms-settings-header-field .wpsms-settings-description-title {
   margin-right: 0;
   margin-left: auto;
 }
+
 .wpsms-settings-description-header {
   display: inline-block;
-  a{
-    color:#F88E40;
-    background:#f1e6df;
+
+  a {
+    color: #F88E40;
+    background: #f1e6df;
     text-decoration: none;
     line-height: 24px;
     font-size: 11px;
     border-radius: 2px;
     font-weight: 600;
-    padding: 0  7px;
+    padding: 0 7px;
     display: flex;
     gap: 5px;
     align-items: center;
     justify-content: center;
-    box-shadow:none!important;
-     .dashicons{
-       font-size: 12px;
-       width: 12px;
-       height: 12px;
-     }
-    &:hover{
-      color:#EF771F;
+    box-shadow: none !important;
+
+    .dashicons {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    &:hover {
+      color: #EF771F;
       background: #f3dfd2;
     }
   }
@@ -571,6 +537,45 @@ New styles for new version of the page
     position: relative;
     min-height: 40vh;
     margin-bottom: 100px;
+
+    .select2-container {
+      min-width: 350px;
+
+      &:not(.TB_ajaxContent) {
+        min-width: 285px;
+      }
+
+      .select2-selection--single {
+        height: 45px;
+        border-color: #5b5b5b;
+        border-radius: 2px;
+
+        .select2-selection__rendered {
+          line-height: 33px;
+          padding-left: 14px;
+        }
+
+        .select2-selection__arrow {
+          top: 8px !important;
+          right: 7px !important;
+        }
+      }
+
+      .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #f88d40;
+      }
+
+      .select2-selection--multiple {
+        padding: 3px 2px;
+      }
+
+      .select2-search--inline {
+        .select2-search__field {
+          height: 26px;
+        }
+      }
+    }
+
 
     .wpsms-sendsms-result {
       padding: 10px 15px;

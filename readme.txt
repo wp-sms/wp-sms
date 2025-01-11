@@ -169,6 +169,9 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.9.10 =
+- **Enhancement**: Add capability test to show widget.
+
 = v6.9.9 - 2024-12-23 =
 - **Fix**: Resolved issue with SMS login functionality.
 - **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.

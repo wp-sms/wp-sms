@@ -28,12 +28,14 @@
       width: 25em !important;
     }
   }
+
   .wp-sms-notify-specific-order {
     @media (min-width: 783px) {
       display: flex;
       justify-content: space-between;
       max-width: calc(100% - 45px);
     }
+
     div {
       @media (min-width: 783px) {
         box-sizing: border-box;
@@ -256,69 +258,68 @@
 
 
 .wpsms-wrap {
-  .select2 .select2-search__field {
-    height: 26px;
-    border: none !important;
-    padding: 0 !important;
-  }
-}
+  .select2 {
+    .select2-search__field {
+      height: 26px;
+      border: none !important;
+      padding: 0 !important;
+      font-family: 'Segoe UI', Arial !important;
+    }
 
-.wpsms-wrap .select2 {
-
-  .select2-selection {
-    border-color: #5b5b5b;
-    border-radius: 2px;
-    padding: 6px 2px;
-    font-family: 'Segoe UI', Arial;
-  }
-
-  &:focus-within {
     .select2-selection {
-      border-color: #F88E40 !important;
-      box-shadow: 0 0 0 1px #F88E40 !important;
+      border-color: #5b5b5b;
+      border-radius: 2px;
+      padding: 6px 2px;
+      font-family: 'Segoe UI', Arial;
+
+      &:focus-within {
+        border-color: #F88E40 !important;
+        box-shadow: 0 0 0 1px #F88E40 !important;
+      }
+    }
+
+    textarea {
+      font-family: 'Segoe UI', Arial;
+
+      &::placeholder {
+        color: #2c3338;
+      }
+
+      &:focus {
+        border-color: transparent !important;
+        outline: transparent !important;
+        box-shadow: 0 0 0 1px transparent !important;
+      }
+    }
+
+    .select2-search--inline {
+      .select2-search__field {
+        min-width: 100% !important;
+      }
+
+      float: unset !important;
+      clear: both;
+    }
+
+    .select2-selection--multiple {
+      .select2-selection__rendered {
+        display: inline !important;
+      }
+
+      .select2-selection__choice {
+        padding-left: 24px !important;
+      }
     }
   }
 
-  textarea {
-    font-family: 'Segoe UI', Arial;
+  .select2-container--default {
+    .select2-selection--single,
+    .select2-selection--multiple {
+      min-height: 46px !important;
+    }
 
-    &::placeholder {
-      color: #2c3338;
+    .select2-results > .select2-results__options {
+      max-height: 300px !important;
     }
   }
-
-  textarea:focus {
-    border-color: transparent !important;
-    outline: transparent !important;
-    box-shadow: 0 0 0 1px transparent !important;
-  }
-}
-
-.select2-search__field {
-  font-family: 'Segoe UI', Arial !important;
-}
-
-.wpsms-wrap .select2-container .select2-selection--multiple .select2-selection__rendered, .select2-container .select2-selection--multiple .select2-selection__rendered {
-  display: inline !important;
-}
-
-.wpsms-wrap .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--multiple, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--multiple {
-  min-height: 46px !important;
-}
-
-.wpsms-wrap .select2-container--default .select2-selection--multiple .select2-selection__choice, .select2-container--default .select2-selection--multiple .select2-selection__choice {
-  padding-left: 24px !important;
-}
-
-.wpsms-wrap .select2-container .select2-search--inline .select2-search__field, .select2-container .select2-search--inline .select2-search__field {
-  min-width: 100% !important;
-}
-
-.wpsms-wrap .select2-container .select2-search--inline, .select2-container .select2-search--inline {
-  float: unset !important;
-  clear: both;
-}
-
-.select2-container--default .select2-results > .select2-results__options {
-  max-height: 300px !important;
 }
