@@ -284,7 +284,12 @@ class Notifications
 
         switch ($recipients) {
             case 'subscriber':
-                $receiver = Newsletter::getSubscribers();
+                $group = $_REQUEST['wps_subscribe_group'] ?? 'all';
+                if ($group === 'all') {
+                    $receiver = Newsletter::getSubscribers();
+                } else {
+                    $receiver = Newsletter::getSubscribers([$group]);
+                }
                 break;
             case 'numbers':
                 $receiver = explode(',', $_REQUEST['wps_mobile_numbers']);
