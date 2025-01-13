@@ -9,7 +9,7 @@ use WP_SMS\Helper;
 
 class cellcastsms extends Gateway
 {
-    private $wsdl_link = "https://api.cellcast.com.au/api/v1/";
+    private $wsdl_link = "https://api.cellcast.com/api/v1/";
     public $unitrial = false;
     public $unit;
     public $flash = "disable";
