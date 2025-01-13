@@ -689,6 +689,7 @@ class Gateway
                 'smssolutions'  => 'smssolutionsaustralia.com.au',
                 '_160au'        => '160.com.au',
                 'gunisms'       => 'gunisms.com.au',
+                'cellcast'      => 'cellcast.com.au'
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',
