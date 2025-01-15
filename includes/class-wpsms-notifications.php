@@ -278,13 +278,14 @@ class Notifications
         }
 
         // Process recipients and send notifications
-        $recipients = $_REQUEST['wps_send_to'];
-        $message    = $_REQUEST['wpsms_text_template'];
-        $receiver   = [];
+        $recipients = isset($_REQUEST['wps_send_to']) ? sanitize_text_field($_REQUEST['wps_send_to']) : '';
+        $message = isset($_REQUEST['wpsms_text_template']) ? sanitize_text_field($_REQUEST['wpsms_text_template']) : '';
+        $receiver = [];
+
 
         switch ($recipients) {
             case 'subscriber':
-                $group = $_REQUEST['wps_subscribe_group'] ?? 'all';
+                $group = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : 'all';
                 if ($group === 'all') {
                     $receiver = Newsletter::getSubscribers(null, true);
                 } else {
@@ -292,7 +293,8 @@ class Notifications
                 }
                 break;
             case 'numbers':
-                $receiver = explode(',', $_REQUEST['wps_mobile_numbers']);
+                $raw_numbers = isset($_REQUEST['wps_mobile_numbers']) ? sanitize_text_field($_REQUEST['wps_mobile_numbers']) : '';
+                $receiver = explode(',', $raw_numbers);
                 break;
             case 'users':
                 $receiver = Helper::getUsersMobileNumbers(Option::getOption('notif_publish_new_post_users'));
