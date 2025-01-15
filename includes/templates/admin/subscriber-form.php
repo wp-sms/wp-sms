@@ -16,13 +16,25 @@
                 <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? esc_attr($subscriber->mobile) : '')); ?>
             </td>
         </tr>
-        <?php if ($groups) : ?>
+        <?php
+        // groups field does not need to be multiple in edit form.
+        if ($groups) : ?>
             <tr>
                 <td style="padding-top: 10px;">
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Group', 'wp-sms'); ?></label>
-                    <select name="wpsms_group_name[]" id="wpsms_group_name" class="wp_sms_subscribers_input_text code" multiple style="height: 100px;">
+                    <select
+                        name="<?php echo isset($subscriber_id) ? 'wpsms_group_name' : 'wpsms_group_name[]'; ?>"
+                        id="wpsms_group_name"
+                        class="wp_sms_subscribers_input_text code"
+                        <?php echo isset($subscriber_id) ? '' : 'multiple="multiple"'; ?>
+                        style="<?php echo isset($subscriber_id) ? '' : 'height: 100px;'; ?>">
+                        <?php if (isset($subscriber_id)) : ?>
+                            <option value="" selected><?php esc_html_e('Select group', 'wp-sms'); ?></option>
+                        <?php endif; ?>
                         <?php foreach ($groups as $items) : ?>
-                            <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>><?php echo esc_attr($items->name); ?></option>
+                            <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($subscriber)): echo selected($subscriber->group_ID, $items->ID); endif; ?>>
+                                <?php echo esc_attr($items->name); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -42,8 +54,8 @@
                 <label for="wpsms_subscribe_status" class="wp_sms_subscribers_label"><?php esc_html_e('Status', 'wp-sms'); ?></label>
                 <select name="wpsms_subscribe_status" id="wpsms_subscribe_status" class="wp_sms_subscribers_input_text code">';
                     <?php if (isset($subscriber)) : ?>
-                        <option value="1" <?php selected($subscriber->status); ?>><?php esc_html_e('Active', 'wp-sms'); ?></option>
-                        <option value="0" <?php selected($subscriber->status, false); ?>><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
+                        <option value="1" <?php selected($subscriber->status, 1); ?>><?php esc_html_e('Active', 'wp-sms'); ?></option>
+                        <option value="0" <?php selected($subscriber->status, 0); ?>><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
                     <?php else : ?>
                         <option value="1" selected="selected"><?php esc_html_e('Active', 'wp-sms'); ?></option>
                         <option value="0"><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
