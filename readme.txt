@@ -172,6 +172,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 = v6.9.10 - 2025-01-** =
 - **Fix**: Fix subscribers group add and update issues.
 - **Enhancement**: Add capability test to show widget.
+- **Fix**: Address the _load_textdomain_just_in_time notice.
 
 = v6.9.9 - 2024-12-23 =
 - **Fix**: Resolved issue with SMS login functionality.
