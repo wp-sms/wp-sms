@@ -279,9 +279,8 @@ class Notifications
 
         // Process recipients and send notifications
         $recipients = isset($_REQUEST['wps_send_to']) ? sanitize_text_field($_REQUEST['wps_send_to']) : '';
-        $message = isset($_REQUEST['wpsms_text_template']) ? sanitize_text_field($_REQUEST['wpsms_text_template']) : '';
-        $receiver = [];
-
+        $message    = sanitize_text_field($_REQUEST['wpsms_text_template']);
+        $receiver   = [];
 
         switch ($recipients) {
             case 'subscriber':
