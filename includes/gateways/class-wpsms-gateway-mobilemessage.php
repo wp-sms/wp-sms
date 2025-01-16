@@ -78,7 +78,7 @@ class mobilemessage extends Gateway
                 'body'    => wp_json_encode([
                     'messages' => [
                         [
-                            'to'            => $this->to,
+                            'to'            => $this->to[0],
                             'message'       => $this->msg,
                             'sender'        => $this->from,
                         ],
