@@ -8,23 +8,26 @@ use WP_SMS\Gateway;
 
 class mobilemessage extends Gateway
 {
-    private $wsdl_link = "https://api.mobilemessage.com.au";
-    public $unitrial = false;
+    private $wsdl_link      = "https://api.mobilemessage.com.au";
+    public $unitrial        = false;
     public $unit;
-    public $flash = "disable";
-    public $isflash = false;
-    public string $authorization = '';
+    public $flash           = "disable";
+    public $isflash         = false;
+    public $authorization   = '';
 
     public function __construct()
     {
         parent::__construct();
-        $this->bulk_send       = true;
-        $this->supportMedia    = false;
-        $this->supportIncoming = true;
+        $this->bulk_send        = true;
+        $this->supportMedia     = false;
+        $this->supportIncoming  = true;
 
-        $this->username = $this->options['gateway_username'];
-        $this->password = $this->options['gateway_password'];
-        $this->from     = $this->options['from'];
+        $this->help             = 'The message content can be up to a maximum of <b>765 characters</b>. It supports <b>GSM characters</b>, including standard English letters, numbers, and punctuation. However, <b>emojis are not supported</b>';
+        $this->validateNumber   = 'The recipient\'s phone number can be in local Australian format (e.g. 0412345678) or international format (e.g. +61412345678).';
+
+        $this->username         = $this->options['gateway_username'];
+        $this->password         = $this->options['gateway_password'];
+        $this->from             = $this->options['from'];
 
         if (!empty($this->username) && !empty($this->password)) {
             $this->authorization = base64_encode($this->username . ':' . $this->password);
