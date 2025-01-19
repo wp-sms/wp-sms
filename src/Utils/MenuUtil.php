@@ -3,6 +3,7 @@
 namespace WP_SMS\Utils;
 
 use WP_SMS\User\UserHelper;
+use WP_STATISTICS\Option;
 
 class MenuUtil
 {
@@ -47,40 +48,59 @@ class MenuUtil
      */
     public static function registerMenus()
     {
-        // Get the menu list
-        $menuList = self::getMenuList();
+        // Get the read/write capabilities.
+        $capability = $menu['cap'] ?? 'manage_options';
+        //Show Admin Menu List
 
-        foreach ($menuList as $key => $menu) {
-            $capability = $menu['cap'] ?? 'manage_options';
-            $callback   = isset($menu['method']) ? [$menu['method']] : '__return_null';
-            $menuTitle  = $menu['title'] ?? $key;
+        foreach (self::getMenuList() as $key => $menu) {
 
-            // Check if it's a submenu or a main menu
-            if (isset($menu['sub'])) {
-                add_submenu_page(
-                    self::getPageSlug($menu['sub']), // Parent slug
-                    $menu['title'],                 // Page title
-                    $menuTitle,                     // Menu title
-                    $capability,                    // Capability
-                    self::getPageSlug($menu['page_url']), // Slug
-                    $callback                       // Callback
-                );
+            //Check Default variable
+            $method     = 'log';
+            $name       = $menu['title'];
+
+            if (array_key_exists('cap', $menu)) {
+                $capability = $menu['cap'];
+            }
+
+            if (array_key_exists('method', $menu)) {
+                $method = $menu['method'];
+            }
+
+            if (array_key_exists('name', $menu)) {
+                $name = $menu['name'];
+            }
+
+            // Assume '\WP_STATISTICS\\' is a constant base namespace for your classes.
+            $baseNamespace = '\WP_SMS\\';
+
+            // Determine the class name. Use $menu['callback'] if it's set; otherwise, construct the name from $method.
+            $className = $menu['callback'] ?? $baseNamespace . $method . '_page';
+            // Now, ensure that the 'view' method exists in the determined class.
+            if (method_exists($className, 'view')) {
+                $callback = [$className::instance(), 'view'];
             } else {
-                add_menu_page(
-                    $menu['title'],                // Page title
-                    $menuTitle,                    // Menu title
-                    $capability,                   // Capability
-                    self::getPageSlug($menu['page_url']), // Slug
-                    $callback,                     // Callback
-                    $menu['icon'] ?? '',           // Icon (optional)
-                    $menu['priority'] ?? null      // Position (optional)
-                );
+                continue;
+            }
+
+            //Check if SubMenu or Main Menu
+            if (array_key_exists('sub', $menu)) {
+                //Check if add Break Line
+                if (array_key_exists('break', $menu)) {
+                    add_submenu_page(self::getPageSlug($menu['sub']), '', '', $capability, 'wps_break_menu', $callback);
+                }
+
+                //Check Conditions For Show Menu
+                if (OptionUtil::checkOptionRequire($menu) === true) {
+                    add_submenu_page(self::getPageSlug($menu['sub']), $menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback);
+                }
+            } else {
+                add_menu_page($menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback, $menu['icon']);
             }
         }
     }
 
 
-    public static $admin_menu_slug = 'wps_[slug]_page';
+    public static $admin_menu_slug = 'wp-sms-[slug]';
 
     /**
      * Admin Page Load Action Slug
@@ -176,24 +196,7 @@ class MenuUtil
     {
         $manageCap = UserHelper::validateCapability(OptionUtil::get('manage_capability', 'manage_options'));
 
-        $list = [
-            'settings' => [
-                'sub'      => 'overview',
-                'title'    => __('Settings', 'wp-statistics'),
-                'cap'      => $manageCap,
-                'page_url' => 'settings',
-                'method'   => 'settings',
-                'priority' => 100,
-            ],
-            'optimize' => [
-                'sub'      => 'overview',
-                'title'    => __('Optimization', 'wp-statistics'),
-                'cap'      => $manageCap,
-                'page_url' => 'optimization',
-                'method'   => 'optimization',
-                'priority' => 110,
-            ],
-        ];
+        $list = [];
 
         $list = apply_filters('wp_sms_admin_menu_list', $list);
 

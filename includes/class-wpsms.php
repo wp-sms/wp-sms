@@ -252,6 +252,20 @@ class WP_SMS
         $this->include('src/SmsOtp/SmsOtp.php');
 
         // Admin
+        $this->include('src/Admin/LicenseManagement/LicenseManagerDataProvider.php');
+        $this->include('src/Components/View.php');
+        $this->include('src/Abstracts/BaseView.php');
+        $this->include('src/Abstracts/BaseTabView.php');
+        $this->include('src/Admin/LicenseManagement/Views/TabsView.php');
+        $this->include('src/Exceptions/SystemErrorException.php');
+        $this->include('src/Admin/NoticeHandler/Notice.php');
+        $this->include('src/Utils/Request.php');
+        $this->include('src/Utils/AdminHelper.php');
+        $this->include('src/Abstracts/BasePage.php');
+        $this->include('src/Abstracts/MultiViewPage.php');
+        $this->include('src/Admin/LicenseManagement/LicenseManagerPage.php');
+        $this->include('src/Admin/LicenseManagement/Plugin/PluginHelper.php');
+        $this->include('src/Admin/LicenseManagement/LicenseMigration.php');
         $this->include('src/Admin/LicenseManagement/LicenseManagementManager.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginHandler.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginActions.php');

@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Components;
 
+use Exception;
 use WP_SMS\Exceptions\SystemErrorException;
 
 class View
@@ -19,7 +20,7 @@ class View
             $viewList = is_array($view) ? $view : [$view];
 
             foreach ($viewList as $view) {
-                $viewPath = WP_STATISTICS_DIR . '/views/' . $view . '.php';
+                $viewPath = WP_SMS_DIR . '/views/' . $view . '.php';
 
                 if (!file_exists($viewPath)) {
                     throw new SystemErrorException(esc_html__("View file not found: {$viewPath}", 'wp-sms'));

@@ -34,7 +34,8 @@ class PluginHelper
             $apiCommunicator    = new ApiCommunicator();
             $products           = $apiCommunicator->getProducts();
         } catch (Exception $e) {
-            WP_SMS()->log($e->getMessage(), 'error');
+            //todo implement
+//            WPSms::->log($e->getMessage(), 'error');
             $products = [];
         }
 
