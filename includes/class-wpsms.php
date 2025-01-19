@@ -251,6 +251,20 @@ class WP_SMS
         $this->include('src/SmsOtp/Verifier.php');
         $this->include('src/SmsOtp/SmsOtp.php');
 
+        // Admin
+        $this->include('src/Admin/LicenseManagement/LicenseManagementManager.php');
+        $this->include('src/Admin/LicenseManagement/Plugin/PluginHandler.php');
+        $this->include('src/Admin/LicenseManagement/Plugin/PluginActions.php');
+        $this->include('src/Traits/TransientCacheTrait.php');
+        $this->include('src/Admin/LicenseManagement/ApiCommunicator.php');
+        $this->include('src/Admin/LicenseManagement/LicenseHelper.php');
+        $this->include('src/Utils/OptionUtil.php');
+        $this->include('src/Utils/MenuUtil.php');
+
+        \WP_SMS\Utils\MenuUtil::init();
+
+
+
         // Services
         $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
         $this->include('src/Services/WooCommerce/OrderViewManager.php');
@@ -305,6 +319,9 @@ class WP_SMS
             $this->include('includes/admin/inbox/class-wpsms-inbox.php');
             $this->include('includes/admin/send/class-wpsms-send.php');
             $this->include('includes/admin/add-ons/class-add-ons.php');
+
+            // License Manager
+            $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
 
             // Widgets
             $this->include('src/Widget/WidgetsManager.php');
