@@ -180,6 +180,7 @@ class WP_SMS
         (new FormidableManager())->init();
         (new ForminatorManager())->init();
         (new ShortcodeManager())->init();
+        \WP_SMS\Utils\MenuUtil::init();
 
         if (is_admin()) {
             // Admin legacy classes.
@@ -194,6 +195,7 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
+            $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
         }
 
         if (!is_admin()) {
