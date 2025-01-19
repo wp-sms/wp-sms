@@ -79,13 +79,13 @@ class mobilemessage extends Gateway
                     'Authorization' => 'Basic ' . $this->authorization,
                 ],
                 'body'    => wp_json_encode([
-                    'messages' => [
-                        [
-                            'to'            => $this->to[0],
-                            'message'       => $this->msg,
-                            'sender'        => $this->from,
-                        ],
-                    ],
+                    'messages' => array_map(function ($recipient) {
+                        return [
+                            'to'      => $recipient,
+                            'message' => $this->msg,
+                            'sender'  => $this->from,
+                        ];
+                    }, $this->to),
                 ]),
             ];
 
