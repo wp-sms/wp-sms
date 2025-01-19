@@ -241,4 +241,25 @@ class OptionUtil
             update_option($settingName, $options);
         }
     }
+
+    public static function checkOptionRequire($item = array(), $condition_key = 'require')
+    {
+
+        // Default is True
+        $condition = true;
+
+        // Check Require Params
+        if (array_key_exists('require', $item)) {
+            foreach ($item[$condition_key] as $if => $value) {
+
+                // Check Type of Condition
+                if (($value === true and !OptionUtil::get($if)) || ($value === false and OptionUtil::get($if))) {
+                    $condition = false;
+                    break;
+                }
+            }
+        }
+
+        return $condition;
+    }
 }

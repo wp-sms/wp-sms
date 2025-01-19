@@ -4,9 +4,9 @@ namespace WP_SMS\Admin\LicenseManagement\Views;
 
 use Exception;
 use WP_SMS\Components\View;
+use WP_SMS\Utils\AdminHelper;
+use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\Request;
-use WP_STATISTICS\Menus;
-use WP_STATISTICS\Admin_Template;
 use WP_SMS\Abstracts\BaseTabView;
 use WP_SMS\Exceptions\SystemErrorException;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
@@ -139,27 +139,27 @@ class TabsView extends BaseTabView
 
             $args = [
                 'title'      => esc_html__('License Manager', 'wp-sms'),
-                'pageName'   => Menus::get_page_slug('plugins'),
+                'pageName'   => MenuUtil::getPageSlug('plugins'),
                 'custom_get' => ['tab' => $currentTab],
                 'data'       => $data,
                 'tabs'       => [
                     [
-                        'link'  => Menus::admin_url('plugins', ['tab' => 'add-ons']),
+                        'link'  => MenuUtil::getAdminUrl('plugins', ['tab' => 'add-ons']),
                         'title' => esc_html__('Add-Ons', 'wp-sms'),
                         'class' => $this->isTab('add-ons') ? 'current' : '',
                     ],
                     [
-                        'link'  => Menus::admin_url('plugins', ['tab' => 'add-license']),
+                        'link'  => MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']),
                         'title' => esc_html__('Add Your License', 'wp-sms'),
                         'class' => $this->isTab('add-license') ? 'current' : '',
                     ],
                     [
-                        'link'  => Menus::admin_url('plugins', array_merge(['tab' => 'downloads'], $urlParams)),
+                        'link'  => MenuUtil::getAdminUrl('plugins', array_merge(['tab' => 'downloads'], $urlParams)),
                         'title' => esc_html__('Download Add-Ons', 'wp-sms'),
                         'class' => $this->isTab('downloads') ? 'current' : '',
                     ],
                     [
-                        'link'  => Menus::admin_url('plugins', array_merge(['tab' => 'get-started'], $urlParams)),
+                        'link'  => MenuUtil::getAdminUrl('plugins', array_merge(['tab' => 'get-started'], $urlParams)),
                         'title' => esc_html__('Get Started', 'wp-sms'),
                         'class' => $this->isTab('get-started') ? 'current' : '',
                     ],
@@ -171,16 +171,16 @@ class TabsView extends BaseTabView
 
                 if (is_main_site()) {
                     $args['install_addon_btn_txt']  = esc_html__('Install Add-On', 'wp-sms');
-                    $args['install_addon_btn_link'] = esc_url(Menus::admin_url('plugins', ['tab' => 'add-license']));
+                    $args['install_addon_btn_link'] = esc_url(MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']));
                 }
 
-                Admin_Template::get_template(['layout/header', 'layout/title'], $args);
+                AdminHelper::getTemplate(['layout/header', 'layout/title'], $args);
             } else {
-                Admin_Template::get_template(['layout/header', 'layout/addon-header-steps'], $args);
+                AdminHelper::getTemplate(['layout/header', 'layout/addon-header-steps'], $args);
             }
 
             View::load("pages/license-manager/$currentTab", $args);
-            Admin_Template::get_template(['layout/postbox.hide', 'layout/footer'], $args);
+            AdminHelper::getTemplate(['layout/postbox.hide', 'layout/footer'], $args);
         } catch (Exception $e) {
             Notice::renderNotice($e->getMessage(), $e->getCode(), 'error');
         }

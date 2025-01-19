@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Admin\LicenseManagement;
 
-use WP_SMS\Option;
+use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Admin\NoticeHandler\Notice;
 
 class LicenseMigration
@@ -55,7 +55,7 @@ class LicenseMigration
 
         if ($allLicensesMigrated) {
             // All licenses have been migrated successfully without any errors
-            Option::saveOptionGroup('licenses_migrated', true, 'jobs');
+            OptionUtil::saveOptionGroup('licenses_migrated', true, 'jobs');
         }
     }
 
@@ -66,7 +66,7 @@ class LicenseMigration
      */
     public static function hasLicensesAlreadyMigrated()
     {
-        return Option::getOptionGroup('jobs', 'licenses_migrated');
+        return OptionUtil::getOptionGroup('jobs', 'licenses_migrated');
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace WP_SMS\Abstracts;
 
+use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Exceptions\SystemErrorException;
-use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\Request;
 use Exception;
 
@@ -14,7 +14,7 @@ abstract class MultiViewPage extends BasePage
 
     protected function getViews()
     {
-        return apply_filters('wp_statistics_' . str_replace('-', '_', $this->pageSlug) . '_views', $this->views);
+        return apply_filters('wp_sms_' . str_replace('-', '_', $this->pageSlug) . '_views', $this->views);
     }
 
     protected function getCurrentView()
@@ -45,7 +45,6 @@ abstract class MultiViewPage extends BasePage
                     esc_html__('View is not valid.', 'wp-sms')
                 );
             }
-
             // Check if the class does not have render method, throw exception
             if (!method_exists($views[$currentView], 'render')) {
                 throw new SystemErrorException(
@@ -60,4 +59,6 @@ abstract class MultiViewPage extends BasePage
             Notice::renderNotice($e->getMessage(), $e->getCode(), 'error');
         }
     }
+
+
 }

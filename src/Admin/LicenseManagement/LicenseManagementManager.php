@@ -30,10 +30,10 @@ class LicenseManagementManager
     public function addMenuItem($items)
     {
         $items['plugins'] = [
-            'sub'      => 'addons',
+            'sub'      => 'send-sms',
             'title'    => __('Add-Ons', 'wp-sms'),
-            'name'     => '<span class="wps-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
-            'page_url' => 'plugins',
+            'name'     => '<span class="wps-text-warning">' . __('Add-Onssss', 'wp-sms') . '</span>',
+            'page_url' => 'add-ons-1',
             'callback' => LicenseManagerPage::class,
             'cap'      => WP_SMS\User\UserHelper::validateCapability(WP_SMS\Utils\OptionUtil::get('manage_capability', 'manage_options')),
             'priority' => 90,
