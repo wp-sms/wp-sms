@@ -106,7 +106,6 @@ class mobilemessage extends Gateway
             return $response;
 
         } catch (Exception $e) {
-            error_log($e);
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
             return new WP_Error('send-sms', $e->getMessage());
