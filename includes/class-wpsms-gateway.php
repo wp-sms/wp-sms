@@ -166,10 +166,10 @@ class Gateway
             'smseagle' => 'smseagle.eu'
         ),
         'australia'      => array(
-            'smsbroadcast' => 'smsbroadcast.com.au',
-            'textteam'     => 'textteam.com.au',
-            'messagemedia' => 'messagemedia.com/au',
-            'smscentral'   => 'smscentral.com.au',
+            'smsbroadcast'      => 'smsbroadcast.com.au',
+            'textteam'          => 'textteam.com.au',
+            'messagemedia'      => 'messagemedia.com/au',
+            'smscentral'        => 'smscentral.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
@@ -685,10 +685,11 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'australia'            => array(
-                'slinteractive' => 'slinteractive.com.au',
-                'smssolutions'  => 'smssolutionsaustralia.com.au',
-                '_160au'        => '160.com.au',
-                'gunisms'       => 'gunisms.com.au',
+                'mobilemessage'     =>  'mobilemessage.com.au',
+                'slinteractive'     => 'slinteractive.com.au',
+                'smssolutions'      => 'smssolutionsaustralia.com.au',
+                '_160au'            => '160.com.au',
+                'gunisms'           => 'gunisms.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',

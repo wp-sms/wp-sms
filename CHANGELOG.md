@@ -1,5 +1,6 @@
 = v6.9.10 =
 - **Fix**: Resolved sendig SMS to registering user in login form.
+- **New**: Add Mobile Message Gateway (Australia)
 
 v6.9.9 - 2024-12-23
 - **Fix**: Resolved issue with SMS login functionality.
