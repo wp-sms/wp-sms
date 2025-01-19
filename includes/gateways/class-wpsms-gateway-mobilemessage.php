@@ -13,7 +13,6 @@ class mobilemessage extends Gateway
     public $unit;
     public $flash           = "disable";
     public $isflash         = false;
-    public $authorization   = '';
 
     public function __construct()
     {
@@ -24,14 +23,6 @@ class mobilemessage extends Gateway
 
         $this->help             = 'The message content can be up to a maximum of <b>765 characters</b>. It supports <b>GSM characters</b>, including standard English letters, numbers, and punctuation. However, <b>emojis are not supported</b>';
         $this->validateNumber   = 'The recipient\'s phone number can be in local Australian format (e.g. 0412345678) or international format (e.g. +61412345678).';
-
-        $this->username         = $this->options['gateway_username'];
-        $this->password         = $this->options['gateway_password'];
-        $this->from             = $this->options['from'];
-
-        if (!empty($this->username) && !empty($this->password)) {
-            $this->authorization = base64_encode($this->username . ':' . $this->password);
-        }
     }
 
     public function SendSMS()
@@ -68,7 +59,7 @@ class mobilemessage extends Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            if (empty($this->authorization) || empty($this->from)) {
+            if (empty($this->username) || empty($this->password) || empty($this->from)) {
                 return new WP_Error('account-credit', 'Please enter the API username and password, and Sender number.');
             }
 
@@ -76,7 +67,7 @@ class mobilemessage extends Gateway
                 'headers' => [
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
-                    'Authorization' => 'Basic ' . $this->authorization,
+                    'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
                 ],
                 'body'    => wp_json_encode([
                     'messages' => array_map(function ($recipient) {
@@ -116,14 +107,14 @@ class mobilemessage extends Gateway
     public function GetCredit()
     {
         try {
-            if (empty($this->authorization)) {
+            if (empty($this->username) || empty($this->password)) {
                 return new WP_Error('account-credit', 'Please enter the API username and password.');
             }
 
             $params = [
                 'headers' => [
                     'Accept'        => 'application/json',
-                    'Authorization' => 'Basic ' . $this->authorization,
+                    'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
                 ]
             ];
 
