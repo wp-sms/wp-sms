@@ -2,14 +2,14 @@
 
 namespace WP_SMS\Utils;
 
-use WP_STATISTICS\TimeZone;
+use WP_SMS\Utils\TimeZone;
 
 class AdminHelper
 {
 
     public static function validateDateRequest()
     {
-        $default_days = apply_filters('wp_statistics_days_ago_request', 30);
+        $default_days = apply_filters('wp_sms_days_ago_request', 30);
 
         if (!isset($_GET['from']) && !isset($_GET['to'])) {
             return [
@@ -63,5 +63,11 @@ class AdminHelper
         }
 
         return $return ? $output : null;
+    }
+
+    public static function isStringLengthBetween($string, $minLength, $maxLength)
+    {
+        $length = strlen($string);
+        return $length >= $minLength && $length <= $maxLength;
     }
 }

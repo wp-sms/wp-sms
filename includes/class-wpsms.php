@@ -252,7 +252,10 @@ class WP_SMS
         $this->include('src/SmsOtp/SmsOtp.php');
 
         // Admin
+        $this->include('src/Traits/TransientCacheTrait.php');
         $this->include('src/Admin/LicenseManagement/LicenseManagerDataProvider.php');
+        $this->include('src/Exceptions/LicenseException.php');
+        $this->include('src/Admin/LicenseManagement/ApiCommunicator.php');
         $this->include('src/Components/View.php');
         $this->include('src/Abstracts/BaseView.php');
         $this->include('src/Abstracts/BaseTabView.php');

@@ -18,7 +18,7 @@ trait TransientCacheTrait
     public function getCacheKey($input)
     {
         $hash = substr(md5($input), 0, 10);
-        return sprintf('wp_statistics_cache_%s', $hash);
+        return sprintf('wp_sms_cache_%s', $hash);
     }
 
     /**

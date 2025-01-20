@@ -3,7 +3,7 @@ namespace WP_SMS\Admin\LicenseManagement;
 
 use Exception;
 use WP_SMS\Exceptions\LicenseException;
-use WP_STATISTICS\Option;
+use WP_SMS\Utils\OptionUtil;
 
 class LicenseHelper
 {
@@ -17,7 +17,7 @@ class LicenseHelper
      */
     public static function getLicenses($status = 'valid')
     {
-        $licenses = Option::getOptionGroup(self::LICENSE_OPTION_KEY) ?? [];
+        $licenses = OptionUtil::getOptionGroup(self::LICENSE_OPTION_KEY) ?? [];
 
         if (!empty($status) && $status !== 'all') {
             $licenses = array_filter($licenses, function ($license) use ($status) {
@@ -120,7 +120,7 @@ class LicenseHelper
             'products'      => isset($licenseData->products) ? wp_list_pluck($licenseData->products, 'slug') : null,
         ];
 
-        Option::saveOptionGroup($licenseKey, $data, self::LICENSE_OPTION_KEY);
+        OptionUtil::saveOptionGroup($licenseKey, $data, self::LICENSE_OPTION_KEY);
     }
 
     /**
@@ -131,7 +131,7 @@ class LicenseHelper
      */
     public static function updateLicense($licenseKey, $licenseData)
     {
-        Option::saveOptionGroup($licenseKey, $licenseData, self::LICENSE_OPTION_KEY);
+        OptionUtil::saveOptionGroup($licenseKey, $licenseData, self::LICENSE_OPTION_KEY);
     }
 
     /**
@@ -143,7 +143,7 @@ class LicenseHelper
      */
     public static function removeLicense($licenseKey)
     {
-        Option::deleteOptionGroup($licenseKey, self::LICENSE_OPTION_KEY);
+        OptionUtil::deleteOptionGroup($licenseKey, self::LICENSE_OPTION_KEY);
     }
 
     /**
