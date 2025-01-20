@@ -139,6 +139,9 @@ class WP_SMS
      */
     public function includes()
     {
+        // Autoloader
+        require_once WP_SMS_DIR . "vendor/autoload.php";
+
         // Utility classes.
         $this->include('src/Components/Singleton.php');
         $this->include('src/Helper.php');

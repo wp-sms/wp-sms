@@ -40,9 +40,6 @@ nbproject
 #vscode
 .vscode
 
-#vendor
-/vendor
-
 # Testing
 /tests/logs
 .phpunit.result.cache
