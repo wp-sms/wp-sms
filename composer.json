@@ -6,8 +6,13 @@
   },
   "require-dev": {
     "fakerphp/faker": "*"
-  }
-,
+  },
+  "config": {
+    "platform-check": false,
+    "platform": {
+      "php": "7.2"
+    }
+  },
   "scripts": {
     "test": [
       "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"
