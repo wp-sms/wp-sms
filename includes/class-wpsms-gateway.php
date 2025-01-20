@@ -927,8 +927,9 @@ class Gateway
                 'directsend' => 'directsend.co.kr',
             ),
             'sweden'               => array(
-                'prosms'   => 'prosms.se',
-                'cellsynt' => 'cellsynt',
+                'hellosms'      => 'hellosms.se',
+                'prosms'        => 'prosms.se',
+                'cellsynt'      => 'cellsynt',
             ),
             'development'          => array(
                 'custom' => __('Custom Gateway', 'wp-sms')
