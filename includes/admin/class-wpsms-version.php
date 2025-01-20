@@ -146,7 +146,7 @@ class Version
     public static function addProGateways($gateways)
     {
         // Set pro gateways to load in the list as Global.
-        $gateways = array_merge_recursive(Gateway::$proGateways, $gateways);
+        $gateways = array_merge_recursive($gateways, Gateway::$proGateways);
 
         // Fix the first array key value
         unset($gateways['']);
