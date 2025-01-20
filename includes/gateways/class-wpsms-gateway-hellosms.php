@@ -60,7 +60,7 @@ class hellosms extends Gateway
 
         try {
             if (empty($this->username) || empty($this->password)) {
-                return new WP_Error('account-credit', 'Please enter the API username and password, and Sender number.');
+                throw new Exception('Please enter the API username and password.');
             }
 
             $params = [
@@ -104,7 +104,7 @@ class hellosms extends Gateway
     {
         try {
             if (empty($this->username) || empty($this->password)) {
-                return new WP_Error('account-credit', 'Please enter the API username and password.');
+                throw new Exception('Please enter the API username and password.');
             }
 
             $params = [
