@@ -5,7 +5,7 @@ namespace WP_SMS\Admin\LicenseManagement;
 use Exception;
 use WP_SMS\Components\RemoteRequest;
 use WP_SMS\Exceptions\LicenseException;
-use WP_STATISTICS\Helper;
+use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Traits\TransientCacheTrait;
 
 class ApiCommunicator
@@ -97,7 +97,7 @@ class ApiCommunicator
      */
     public function validateLicense($licenseKey, $product = false)
     {
-        if (empty($licenseKey) || !Helper::isStringLengthBetween($licenseKey, 32, 40) || !preg_match('/^[a-zA-Z0-9]+$/', $licenseKey)) {
+        if (empty($licenseKey) || !AdminHelper::isStringLengthBetween($licenseKey, 32, 40) || !preg_match('/^[a-zA-Z0-9]+$/', $licenseKey)) {
             throw new LicenseException(
                 esc_html__('License key is not valid. Please enter a valid license and try again.', 'wp-sms'),
                 'invalid_license'

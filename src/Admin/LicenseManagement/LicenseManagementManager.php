@@ -48,7 +48,7 @@ class LicenseManagementManager
      */
     private function initActionCallbacks()
     {
-        add_filter('wp_statistics_ajax_list', [new PluginActions(), 'registerAjaxCallbacks']);
+        add_filter('wp_sms_ajax_list', [new PluginActions(), 'registerAjaxCallbacks']);
     }
 
     /**

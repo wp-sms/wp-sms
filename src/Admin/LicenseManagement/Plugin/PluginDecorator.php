@@ -6,7 +6,7 @@ use Exception;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
-use WP_SMS\Utils\MenuUtil; // Replacing WP_STATISTICS\Menus
+use WP_SMS\Utils\MenuUtil;
 
 class PluginDecorator
 {

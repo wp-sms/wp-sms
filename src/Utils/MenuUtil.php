@@ -3,7 +3,6 @@
 namespace WP_SMS\Utils;
 
 use WP_SMS\User\UserHelper;
-use WP_STATISTICS\Option;
 
 class MenuUtil
 {
