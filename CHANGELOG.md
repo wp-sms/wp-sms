@@ -2,6 +2,7 @@
 - **Fix**: Resolved sendig SMS to registering user in login form.
 - **New**: Add Mobile Message Gateway (Australia)
 - **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
+- **New**: Add HelloSMS Gateway (Sweden)
 
 v6.9.9 - 2024-12-23
 - **Fix**: Resolved issue with SMS login functionality.
