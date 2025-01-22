@@ -22,7 +22,10 @@ class Version
             $this->init();
         }
 
-        $this->registerCheckLicensesCronJob();
+        // Address the "_load_textdomain_just_in_time was called incorrectly" issue by ensuring proper text domain declaration and loading.
+        add_action('init', function () {
+            $this->registerCheckLicensesCronJob();
+        });
     }
 
     private function init()
@@ -143,7 +146,7 @@ class Version
     public static function addProGateways($gateways)
     {
         // Set pro gateways to load in the list as Global.
-        $gateways = array_merge_recursive(Gateway::$proGateways, $gateways);
+        $gateways = array_merge_recursive($gateways, Gateway::$proGateways);
 
         // Fix the first array key value
         unset($gateways['']);

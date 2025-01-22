@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.9
+Stable tag: 6.9.10
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,15 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.9.10 - 2025-01-22 =
+- **New**: Add **Mobile Message Gateway** (Australia).
+- **New**: Add **HelloSMS Gateway** (Sweden).
+- **Fix**: Resolve issues with adding and updating subscriber groups.
+- **Fix**: Address the `_load_textdomain_just_in_time` notice.
+- **Fix**: Correct SMS sending to registering users in the login form.
+- **Enhancement**: Add capability test for displaying widgets.
+- **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
+
 = v6.9.9 - 2024-12-23 =
 - **Fix**: Resolved issue with SMS login functionality.
 - **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.

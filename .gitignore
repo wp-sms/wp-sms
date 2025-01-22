@@ -44,4 +44,5 @@ nbproject
 /vendor
 
 # Testing
-.env.testing
+/tests/logs
+.phpunit.result.cache
