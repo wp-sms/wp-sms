@@ -1,0 +1,69 @@
+
+name: PHPUnit Testing
+
+on:
+  pull_request:
+    branches:
+      - master
+      - development
+
+jobs:
+  phpunit:
+    name: Run PHPUnit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.3', '8.2', '8.1', '8.0', '7.4']
+    services:
+      database:
+        image: mysql:5.7 # MySQL 5.7 para compatibilidade com WordPress
+        env:
+          MYSQL_DATABASE: wordpress_tests
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpunit-polyfills:1.1
+
+      - name: Wait for Database
+        run: |
+          echo "Waiting for MySQL to start..."
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+              sleep 1
+          done
+          echo "MySQL is up and running."
+
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Setup tests
+        run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 latest true
+
+      - name: Run tests
+        run: |
+          phpunit --testdox --log-junit test-report.xml
+          echo "JUnit report generated at test-report.xml"
+
+      - name: Send Slack notification on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data           '{"text":"🚨 PHPUnit tests failed! Check the logs for details: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'"}'           $SLACK_WEBHOOK_URL
+
+      - name: Generate Test Report
+        if: failure()
+        run: |
+          echo "Tests failed. Please check the logs above for more details."

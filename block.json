@@ -1,0 +1,37 @@
+
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "wp-sms-blocks/send-sms",
+  "title": "Send SMS",
+  "category": "wp-sms-blocks",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "viewScript": "file:./frontend.js",
+  "style": "file:./style.css",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Send SMS"
+    },
+    "description": {
+      "type": "string",
+      "default": "Please use this form for sending SMS"
+    },
+    "phoneNumber": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "align": true,
+    "html": false
+  },
+  "example": {
+    "attributes": {
+      "title": "Send SMS",
+      "description": "Please use this form for sending SMS",
+      "phoneNumber": "123-456-7890"
+    }
+  }
+}

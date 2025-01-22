@@ -1,0 +1,61 @@
+
+:root {
+    --background-color: #fff;
+    --border-color: #e7e7e7;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --border-radius: 2px;
+    --font-color: #333;
+    --font-size-base: 14px;
+    --font-size-title: 16px;
+    --spacing-small: 8px;
+    --spacing-medium: 12px;
+    --spacing-large: 15px;
+}
+
+/* Container Principal */
+.wp-sms-block {
+    background-color: var(--background-color);
+    border: 0;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    color: var(--font-color);
+    padding: var(--spacing-medium);
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* Título */
+.wp-sms-block__title {
+    margin: 0 0 var(--spacing-small);
+    line-height: 1.5;
+    padding: var(--spacing-medium) var(--spacing-large);
+    font-size: var(--font-size-title);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    color: var(--font-color);
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Conteúdo Principal */
+.wp-sms-block__main {
+    padding: var(--spacing-small) var(--spacing-large);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+}
+
+/* Rótulos */
+.wp-sms-block label {
+    font-size: var(--font-size-base);
+    text-transform: capitalize;
+    color: var(--font-color);
+    font-weight: bold;
+    display: block;
+    margin-bottom: var(--spacing-small);
+}
+
+/* Interação ao Hover */
+.wp-sms-block:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+    transform: scale(1.02);
+}
