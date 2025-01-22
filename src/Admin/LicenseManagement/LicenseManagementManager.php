@@ -7,6 +7,7 @@ use WP_SMS;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginActions;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginUpdater;
+use WP_SMS\Components\Assets;
 
 class LicenseManagementManager
 {
@@ -24,15 +25,34 @@ class LicenseManagementManager
         add_action('admin_init', [$this, 'showPluginActivationNotice']);
         add_filter('wp_sms_enable_upgrade_to_bundle', [$this, 'showUpgradeToBundle']);
         add_filter('wp_sms_admin_menu_list', [$this, 'addMenuItem']);
+        add_action('admin_init', [$this, 'initAdminPreview']);
+
     }
 
+    public function initAdminPreview()
+    {
+        // todo change the page address
+        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons-1' && isset($_GET['tab']) && $_GET['tab'] == 'add-license') {
+            add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
+        }
+    }
+
+    public function enqueueScripts()
+    {
+        // todo change it to minified version
+        $localization = [
+            'ajax_url'       => admin_url('admin-ajax.php'),
+            'rest_api_nonce' => wp_create_nonce('wp_rest')
+        ];
+        Assets::script('license-manager', 'src/scripts/license.js', ['jquery'], $localization, true);
+    }
 
     public function addMenuItem($items)
     {
         $items['plugins'] = [
             'sub'      => 'send-sms',
             'title'    => __('Add-Ons', 'wp-sms'),
-            'name'     => '<span class="wps-text-warning">' . __('Add-Onssss', 'wp-sms') . '</span>',
+            'name'     => '<span class="wps-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
             'page_url' => 'add-ons-1',
             'callback' => LicenseManagerPage::class,
             'cap'      => WP_SMS\User\UserHelper::validateCapability(WP_SMS\Utils\OptionUtil::get('manage_capability', 'manage_options')),
@@ -48,7 +68,7 @@ class LicenseManagementManager
      */
     private function initActionCallbacks()
     {
-        add_filter('wp_sms_ajax_list', [new PluginActions(), 'registerAjaxCallbacks']);
+        add_action('init', [new PluginActions(), 'registerAjaxCallbacks']);
     }
 
     /**
@@ -96,6 +116,7 @@ class LicenseManagementManager
             $this->handledPlugins[] = $pluginSlug;
 
         } catch (Exception $e) {
+            //todo
             WP_SMS::log(sprintf('Failed to initialize PluginUpdater for %s: %s', $pluginSlug, $e->getMessage()));
         }
     }

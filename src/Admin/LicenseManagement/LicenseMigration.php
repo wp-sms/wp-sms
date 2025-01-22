@@ -10,13 +10,13 @@ class LicenseMigration
     private $apiCommunicator;
     private $storedLicenses;
     private $optionMap = [
-        'wp-sms-advanced-reporting' => 'wpstatistics_advanced_reporting_settings',
-        'wp-sms-customization'      => 'wpstatistics_customization_settings',
-        'wp-sms-widgets'            => 'wpstatistics_widgets_settings',
-        'wp-sms-realtime-stats'     => 'wpstatistics_realtime_stats_settings',
-        'wp-sms-mini-chart'         => 'wpstatistics_mini_chart_settings',
-        'wp-sms-rest-api'           => 'wpstatistics_rest_api_settings',
-        'wp-sms-data-plus'          => 'wpstatistics_data_plus_settings',
+        'wp-sms-advanced-reporting' => 'wpsms_advanced_reporting_settings',
+        'wp-sms-customization'      => 'wpsms_customization_settings',
+        'wp-sms-widgets'            => 'wpsms_widgets_settings',
+        'wp-sms-realtime-stats'     => 'wpsms_realtime_stats_settings',
+        'wp-sms-mini-chart'         => 'wpsms_mini_chart_settings',
+        'wp-sms-rest-api'           => 'wpsms_rest_api_settings',
+        'wp-sms-data-plus'          => 'wpsms_data_plus_settings',
     ];
 
     public function __construct(ApiCommunicator $apiCommunicator)

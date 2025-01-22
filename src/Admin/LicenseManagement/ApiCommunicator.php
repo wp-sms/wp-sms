@@ -12,7 +12,7 @@ class ApiCommunicator
 {
     use TransientCacheTrait;
 
-    private $apiUrl = WP_SMS_SITE . '/wp-json/wp-license-manager/v1';
+    private $apiUrl = 'https://staging.wp-sms-pro.com' . '/wp-json/wp-license-manager/v1';
 
     /**
      * Get the list of products (add-ons) from the API and cache it for 1 week.

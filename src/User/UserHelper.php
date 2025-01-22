@@ -2,8 +2,6 @@
 
 namespace WP_SMS\User;
 
-use WP_Statistics\Components\DateRange;
-
 class UserHelper
 {
     /**
@@ -61,7 +59,7 @@ class UserHelper
     public static function getUserId()
     {
         $userId = self::isLogin() ? get_current_user_id() : 0;
-        return apply_filters('wp_statistics_user_id', $userId);
+        return apply_filters('wp_sms_user_id', $userId);
     }
 
     /**

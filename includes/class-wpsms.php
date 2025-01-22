@@ -269,9 +269,10 @@ class WP_SMS
         $this->include('src/Admin/LicenseManagement/LicenseManagerPage.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginHelper.php');
         $this->include('src/Admin/LicenseManagement/LicenseMigration.php');
-        $this->include('src/Admin/LicenseManagement/LicenseManagementManager.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginHandler.php');
+        $this->include('src/Admin/LicenseManagement/Plugin/PluginUpdater.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginActions.php');
+        $this->include('src/Admin/LicenseManagement/LicenseManagementManager.php');
         $this->include('src/Traits/TransientCacheTrait.php');
         $this->include('src/Admin/LicenseManagement/ApiCommunicator.php');
         $this->include('src/Admin/LicenseManagement/LicenseHelper.php');

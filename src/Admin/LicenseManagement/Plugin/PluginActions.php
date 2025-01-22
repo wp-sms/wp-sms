@@ -19,8 +19,9 @@ class PluginActions
         $this->pluginHandler   = new PluginHandler();
     }
 
-    public function registerAjaxCallbacks($list)
+    public function registerAjaxCallbacks()
     {
+        $list   = [];
         $list[] = [
             'class'  => $this,
             'action' => 'check_license'
@@ -38,7 +39,20 @@ class PluginActions
             'action' => 'activate_plugin'
         ];
 
-        return $list;
+        foreach ($list as $item) {
+            $class    = $item['class'];
+            $action   = $item['action'];
+            $callback = $action . '_action_callback';
+            $isPublic = isset($item['public']) && $item['public'] == true ? true : false;
+
+            if (method_exists($class, $callback)) {
+                add_action('wp_ajax_wp_sms_' . $action, [$class, $callback]);
+
+                if ($isPublic) {
+                    add_action('wp_ajax_nopriv_wp_sms_' . $action, [$class, $callback]);
+                }
+            }
+        }
     }
 
     public function check_license_action_callback()
