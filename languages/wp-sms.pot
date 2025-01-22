@@ -1,15 +1,15 @@
-# Copyright (C) 2024 VeronaLabs
+# Copyright (C) 2025 VeronaLabs
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP SMS 6.9.9\n"
+"Project-Id-Version: WP SMS 6.9.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-23T09:09:33+00:00\n"
+"POT-Creation-Date: 2025-01-22T07:24:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wp-sms\n"
@@ -45,17 +45,17 @@ msgstr ""
 #: includes/admin/add-ons/class-add-ons.php:67
 #: includes/admin/settings/class-wpsms-settings.php:2311
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:979
-#: includes/templates/admin/subscriber-form.php:45
-#: includes/templates/admin/subscriber-form.php:48
+#: includes/class-wpsms-gateway.php:981
+#: includes/templates/admin/subscriber-form.php:57
+#: includes/templates/admin/subscriber-form.php:60
 #: includes/templates/email/partials/report-data.php:73
 msgid "Active"
 msgstr ""
 
 #: includes/admin/add-ons/class-add-ons.php:70
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:967
-#: includes/class-wpsms-gateway.php:986
+#: includes/class-wpsms-gateway.php:969
+#: includes/class-wpsms-gateway.php:988
 msgid "Inactive"
 msgstr ""
 
@@ -232,31 +232,31 @@ msgid "Feel free to share your thoughts!"
 msgstr ""
 
 #. translators: %s: Link URL
-#: includes/admin/class-wpsms-version.php:122
+#: includes/admin/class-wpsms-version.php:125
 msgid "<a href=\"%s\" target=\"_blank\" class=\"wpsms-plugin-meta-link wp-sms-pro\" title=\"Get Pro!\">Get Pro!</a>"
 msgstr ""
 
 #. translators: %s: Plugin version
-#: includes/admin/class-wpsms-version.php:135
+#: includes/admin/class-wpsms-version.php:138
 msgid "WP SMS Pro v%s"
 msgstr ""
 
-#: includes/admin/class-wpsms-version.php:150
+#: includes/admin/class-wpsms-version.php:153
 #: includes/class-wpsms-gateway.php:621
 msgid "Please select your gateway"
 msgstr ""
 
 #. translators: %1$s: WP SMS website URL, %2$s: WP SMS PRO download link
-#: includes/admin/class-wpsms-version.php:167
+#: includes/admin/class-wpsms-version.php:170
 msgid "The <a href=\"%1$s\" target=\"_blank\">WP SMS Pro</a> is out of date and not compatible with new version of WP SMS, Please update the plugin to the <a href=\"%2$s\" target=\"_blank\">latest version</a>."
 msgstr ""
 
 #. translators: %1$s: WP SMS Pro activation link, %2$s: WP SMS Pro purchase link
-#: includes/admin/class-wpsms-version.php:179
+#: includes/admin/class-wpsms-version.php:182
 msgid "Please <a href=\"%1$s\">enter and activate</a> your license key for WP SMS Pro to enable the features, access automatic updates and support, Need a license key? <a href=\"%2$s\" target=\"_blank\">Purchase one now!</a>"
 msgstr ""
 
-#: includes/admin/class-wpsms-version.php:211
+#: includes/admin/class-wpsms-version.php:214
 msgid "Monthly"
 msgstr ""
 
@@ -341,7 +341,7 @@ msgstr ""
 
 #: includes/admin/outbox/class-wpsms-outbox.php:79
 #: includes/templates/email/partials/report-data.php:106
-#: src/Widget/Widgets/StatsWidget.php:146
+#: src/Widget/Widgets/StatsWidget.php:148
 msgid "Failed"
 msgstr ""
 
@@ -395,7 +395,7 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:2091
 #: includes/admin/settings/class-wpsms-settings.php:2124
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:131
-#: includes/templates/admin/subscriber-form.php:42
+#: includes/templates/admin/subscriber-form.php:54
 #: includes/templates/email/partials/report-data.php:47
 #: src/Services/Formidable/FormidableManager.php:47
 msgid "Status"
@@ -2026,8 +2026,8 @@ msgid "Mobile"
 msgstr ""
 
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:128
-#: includes/templates/admin/subscriber-form.php:22
-#: includes/templates/admin/subscriber-form.php:33
+#: includes/templates/admin/subscriber-form.php:24
+#: includes/templates/admin/subscriber-form.php:45
 #: includes/templates/email/partials/report-data.php:71
 msgid "Group"
 msgstr ""
@@ -2138,46 +2138,46 @@ msgstr ""
 msgid "Credit"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:933
+#: includes/class-wpsms-gateway.php:935
 msgid "Custom Gateway"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:938
+#: includes/class-wpsms-gateway.php:940
 msgid "Test Gateway"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:1011
+#: includes/class-wpsms-gateway.php:1013
 msgid "%1$s <a href=\"%2$s\" target=\"_blank\">Documentation</a>"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:1011
+#: includes/class-wpsms-gateway.php:1013
 msgid "N/A"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1037
-#: includes/class-wpsms-gateway.php:1059
-#: includes/class-wpsms-gateway.php:1079
+#: includes/class-wpsms-gateway.php:1039
+#: includes/class-wpsms-gateway.php:1061
+#: includes/class-wpsms-gateway.php:1081
 msgid "Available"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1043
-#: includes/class-wpsms-gateway.php:1065
-#: includes/class-wpsms-gateway.php:1085
+#: includes/class-wpsms-gateway.php:1045
+#: includes/class-wpsms-gateway.php:1067
+#: includes/class-wpsms-gateway.php:1087
 msgid "Not Available"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/class-wpsms-gateway.php:1494
+#: includes/class-wpsms-gateway.php:1496
 msgid "%s - SMS Sending Alert"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1502
+#: includes/class-wpsms-gateway.php:1504
 msgid "SMS Delivery Issue"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1506
+#: includes/class-wpsms-gateway.php:1508
 msgid "Check SMS gateway configuration"
 msgstr ""
 
@@ -2249,7 +2249,7 @@ msgstr ""
 msgid "WordPress %s is available! Please update now"
 msgstr ""
 
-#: includes/class-wpsms-notifications.php:227
+#: includes/class-wpsms-notifications.php:231
 msgid "SMS Notification"
 msgstr ""
 
@@ -3120,13 +3120,13 @@ msgid "Filter by group"
 msgstr ""
 
 #: includes/templates/admin/group-form.php:16
-#: includes/templates/admin/subscriber-form.php:59
+#: includes/templates/admin/subscriber-form.php:71
 msgid "Update"
 msgstr ""
 
 #: includes/templates/admin/group-form.php:18
-#: includes/templates/admin/subscriber-form.php:35
-#: includes/templates/admin/subscriber-form.php:61
+#: includes/templates/admin/subscriber-form.php:47
+#: includes/templates/admin/subscriber-form.php:73
 msgid "Add"
 msgstr ""
 
@@ -3517,12 +3517,16 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: includes/templates/admin/subscriber-form.php:34
-msgid "There is no group!"
+#: includes/templates/admin/subscriber-form.php:32
+msgid "Select group"
 msgstr ""
 
 #: includes/templates/admin/subscriber-form.php:46
-#: includes/templates/admin/subscriber-form.php:49
+msgid "There is no group!"
+msgstr ""
+
+#: includes/templates/admin/subscriber-form.php:58
+#: includes/templates/admin/subscriber-form.php:61
 msgid "Deactivate"
 msgstr ""
 
@@ -3618,7 +3622,7 @@ msgid "Type"
 msgstr ""
 
 #: includes/templates/email/partials/report-data.php:110
-#: src/Widget/Widgets/StatsWidget.php:145
+#: src/Widget/Widgets/StatsWidget.php:147
 msgid "Successful"
 msgstr ""
 
@@ -4136,7 +4140,7 @@ msgstr ""
 msgid "Another user with this phone number already exists."
 msgstr ""
 
-#: src/Widget/Widgets/StatsWidget.php:147
+#: src/Widget/Widgets/StatsWidget.php:149
 msgid "Plain"
 msgstr ""
 
