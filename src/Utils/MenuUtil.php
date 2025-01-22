@@ -69,7 +69,7 @@ class MenuUtil
                 $name = $menu['name'];
             }
 
-            // Assume '\WP_STATISTICS\\' is a constant base namespace for your classes.
+            // Assume '\WP_SMS\\' is a constant base namespace for your classes.
             $baseNamespace = '\WP_SMS\\';
 
             // Determine the class name. Use $menu['callback'] if it's set; otherwise, construct the name from $method.

@@ -1,6 +1,6 @@
-<div class="wps-wrap__top tabbed_page">
+<div class="wpsms-wrap__top tabbed_page">
     <?php if (!empty($tabs) && is_array($tabs)) { ?>
-        <ul class="wps-steps">
+        <ul class="wpsms-steps">
             <?php
             $stepBadge       = 1;
             $foundCurrent    = false;
@@ -23,10 +23,10 @@
                         $stepClass .= 'completed ';
                     }
                     ?>
-                    <li class="wps-step-link <?php echo $stepClass; ?>">
+                    <li class="wpsms-step-link <?php echo $stepClass; ?>">
                         <a href="<?php echo esc_attr($step['link']); ?>" class="<?php echo esc_attr($step['class'])?>">
-                            <span class="wps-step-link__badge"><?php echo $stepBadge; ?></span>
-                            <span class="wps-step-link__title"><?php echo esc_html($step['title']); ?></span>
+                            <span class="wpsms-step-link__badge"><?php echo $stepBadge; ?></span>
+                            <span class="wpsms-step-link__title"><?php echo esc_html($step['title']); ?></span>
                         </a>
                     </li>
                     <?php

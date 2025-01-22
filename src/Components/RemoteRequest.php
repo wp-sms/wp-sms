@@ -9,8 +9,9 @@ class RemoteRequest
 {
     public $requestUrl;
     private $parsedParams;
+    private $method;
 
-    public function __construct($method, $url, $arguments = [], $params = [])
+    public function __construct($url, $method, $arguments = [], $params = [])
     {
         /**
          * Filter to modify arguments
@@ -31,9 +32,13 @@ class RemoteRequest
          * Prepare the arguments
          */
         $this->parsedParams = wp_parse_args($params, [
-            'method' => $method,
-            'timeout' => 10
+            'timeout' => 10,
         ]);
+
+        /**
+         * Store the method
+         */
+        $this->method = strtoupper($method);
     }
 
     public function getRequestUrl()
@@ -52,10 +57,20 @@ class RemoteRequest
      */
     public function execute($throwFailedHttpCodeResponse = true)
     {
-        $response = wp_remote_request(
-            $this->requestUrl,
-            $this->parsedParams
-        );
+        $response = null;
+
+        switch ($this->method) {
+            case 'GET':
+                $response = wp_remote_get($this->requestUrl, $this->parsedParams);
+                break;
+
+            case 'POST':
+                $response = wp_remote_post($this->requestUrl, $this->parsedParams);
+                break;
+
+            default:
+                throw new Exception(esc_html(sprintf(__('Unsupported HTTP method: %s', 'wp-sms'), $this->method)));
+        }
 
         if (is_wp_error($response)) {
             throw new Exception(esc_html($response->get_error_message()));
@@ -65,8 +80,7 @@ class RemoteRequest
         $responseBody = wp_remote_retrieve_body($response);
 
         if ($throwFailedHttpCodeResponse) {
-            if (in_array($responseCode, [200, 201, 202]) === false) {
-
+            if (!in_array($responseCode, [200, 201, 202], true)) {
                 if (Helper::isJson($responseBody)) {
                     $responseBody = json_decode($responseBody, true);
                 }
@@ -78,6 +92,6 @@ class RemoteRequest
 
         $responseJson = json_decode($responseBody);
 
-        return ($responseJson == null) ? $responseBody : $responseJson;
+        return ($responseJson === null) ? $responseBody : $responseJson;
     }
 }
