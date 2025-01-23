@@ -1,10 +1,19 @@
 <?php
 
-use WP_SMS\Admin\Widget\WidgetsManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
+use WP_SMS\Blocks\BlockAssetsManager;
+use WP_SMS\Controller\ControllerManager;
+use WP_SMS\Notice\NoticeManager;
+use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
+use WP_SMS\Services\MessageButton\MessageButtonManager;
+use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
+use WP_SMS\Shortcode\ShortcodeManager;
+use WP_SMS\User\MobileFieldManager;
+use WP_SMS\Webhook\WebhookManager;
+use WP_SMS\Widget\WidgetsManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -142,60 +151,14 @@ class WP_SMS
         // Autoloader
         require_once WP_SMS_DIR . "vendor/autoload.php";
 
-        // Utility classes.
-        $this->include('src/Components/Singleton.php');
-        $this->include('src/Helper.php');
-        $this->include('src/Utils/CsvHelper.php');
-        $this->include('src/Components/Sms.php');
-        $this->include('src/Components/RemoteRequest.php');
-        $this->include('src/Components/Logger.php');
-        $this->include('src/Components/Assets.php');
-        $this->include('src/Components/Countries.php');
-        $this->include('src/Components/NumberParser.php');
-
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
         $this->include('includes/libraries/wp-background-processing/wp-background-process.php');
 
-        // MobileFieldHandler
-        $this->include('src/User/MobileFieldHandler/AbstractFieldHandler.php');
-        $this->include('src/User/MobileFieldHandler/DefaultFieldHandler.php');
-        $this->include('src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php');
-        $this->include('src/User/MobileFieldHandler/WooCommerceUsePhoneFieldHandler.php');
-        $this->include('src/User/MobileFieldHandler/WordPressMobileFieldHandler.php');
-        $this->include('src/User/RegisterUserViaPhone.php');
-        $this->include('src/User/UserLoginHandler.php');
-        $this->include('src/User/MobileFieldManager.php');
-        $this->include('src/User/UserHelper.php');
-
         add_action('init', function () {
-            $mobileFieldManager = new \WP_SMS\User\MobileFieldManager();
+            $mobileFieldManager = new MobileFieldManager();
             $mobileFieldManager->init();
         });
-
-        // Background Processing
-        $this->include('src/BackgroundProcess/Async/RemoteRequestAsync.php');
-        $this->include('src/BackgroundProcess/Queues/RemoteRequestQueue.php');
-        $this->include('src/BackgroundProcess/SmsDispatcher.php');
-
-        // Notification classes
-        $this->include('src/Notification/Notification.php');
-        $this->include('src/Notification/Handler/DefaultNotification.php');
-        $this->include('src/Notification/Handler/WooCommerceOrderNotification.php');
-        $this->include('src/Notification/Handler/WooCommerceAdminOrderNotification.php');
-        $this->include('src/Notification/Handler/WooCommerceCouponNotification.php');
-        $this->include('src/Notification/Handler/WooCommerceCustomerNotification.php');
-        $this->include('src/Notification/Handler/WooCommerceProductNotification.php');
-        $this->include('src/Notification/Handler/WordPressPostNotification.php');
-        $this->include('src/Notification/Handler/WordPressUserNotification.php');
-        $this->include('src/Notification/Handler/WordPressCommentNotification.php');
-        $this->include('src/Notification/Handler/SubscriberNotification.php');
-        $this->include('src/Notification/Handler/CustomNotification.php');
-        $this->include('src/Notification/Handler/AwesomeSupportTicketNotification.php');
-        $this->include('src/Notification/Handler/FormidableNotification.php');
-        $this->include('src/Notification/Handler/ForminatorNotification.php');
-        $this->include('src/Notification/NotificationFactory.php');
-        $this->include('src/Notification/ForminatorNotification.php');
 
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');
@@ -207,96 +170,16 @@ class WP_SMS
         $this->include('includes/class-wpsms-rest-api.php');
         $this->include('includes/admin/class-wpsms-version.php');
 
-        // Newsletter
-        $this->include('src/Services/Subscriber/SubscriberUtil.php');
-        $this->include('src/Services/Subscriber/SubscriberManager.php');
-        $subscriberManager = new \WP_SMS\Services\Subscriber\SubscriberManager();
-        $subscriberManager->init();
-
-        // Cron Jobs
-        $this->include('src/Services/CronJobs/WeeklyReport.php');
-        $this->include('src/Services/CronJobs/CronJobManager.php');
-        $cronJobManager = new \WP_SMS\Services\CronJobs\CronJobManager();
-        $cronJobManager->init();
-
-        // Controllers
-        $this->include('src/Controller/AjaxControllerAbstract.php');
-        $this->include('src/Controller/PublicSubscribeAjax.php');
-        $this->include('src/Controller/PublicUnsubscribeAjax.php');
-        $this->include('src/Controller/PublicVerifySubscribeAjax.php');
-        $this->include('src/Controller/SubscriberFormAjax.php');
-        $this->include('src/Controller/GroupFormAjax.php');
-        $this->include('src/Controller/ExportAjax.php');
-        $this->include('src/Controller/UploadSubscriberCsv.php');
-        $this->include('src/Controller/PrivacyDataAjax.php');
-        $this->include('src/Controller/ImportSubscriberCsv.php');
-        $this->include('src/Controller/ControllerManager.php');
-
-        $controllerManager = new \WP_SMS\Controller\ControllerManager();
-        $controllerManager->init();
-
-        // Webhooks
-        $this->include('src/Webhook/WebhookFactory.php');
-        $this->include('src/Webhook/WebhookAbstract.php');
-        $this->include('src/Webhook/WebhookManager.php');
-        $this->include('src/Webhook/NewSubscriberWebhook.php');
-        $this->include('src/Webhook/NewSmsWebhook.php');
-        $this->include('src/Webhook/NewIncomingSmsWebhook.php');
-
-        $webhookManager = new \WP_SMS\Webhook\WebhookManager();
-        $webhookManager->init();
-
-        // SmsOtp
-        $this->include('src/SmsOtp/Exceptions/OtpLimitExceededException.php');
-        $this->include('src/SmsOtp/Exceptions/TooManyAttemptsException.php');
-        $this->include('src/SmsOtp/Exceptions/InvalidArgumentException.php');
-        $this->include('src/SmsOtp/Generator.php');
-        $this->include('src/SmsOtp/Verifier.php');
-        $this->include('src/SmsOtp/SmsOtp.php');
-
-        // Services
-        $this->include('src/Services/WooCommerce/WooCommerceCheckout.php');
-        $this->include('src/Services/WooCommerce/OrderViewManager.php');
-        $this->include('src/Services/MessageButton/ChatBoxDecorator.php');
-        $this->include('src/Services/MessageButton/MessageButtonManager.php');
-        $this->include('src/Services/MessageButton/ChatBox.php');
-        $this->include('src/Services/Report/EmailReportGenerator.php');
-
-        // Blocks
-        $this->include('src/Blocks/BlockAbstract.php');
-        $this->include('src/Blocks/SubscribeBlock.php');
-        $this->include('src/Blocks/SendSmsBlock.php');
-        $this->include('src/Blocks/BlockAssetsManager.php');
-
-        $blockManager = new \WP_SMS\Blocks\BlockAssetsManager();
-        $blockManager->init();
-
-        $this->include('src/Blocks/WooBlockAbstract.php');
-        $this->include('src/Blocks/WooSmsOptInBlock.php');
-        $this->include('src/Blocks/WooMobileField.php');
-
-        $wooCommerceCheckout = new \WP_SMS\Services\WooCommerce\WooCommerceCheckout();
-        $wooCommerceCheckout->init();
-
-        $messageButtonManager = new \WP_SMS\Services\MessageButton\MessageButtonManager();
-        $messageButtonManager->init();
-
-        $this->include('src/Services/Formidable/Formidable.php');
-        $this->include('src/Services/Formidable/FormidableManager.php');
-        $formidableManager = new FormidableManager();
-        $formidableManager->init();
-
-        $this->include('src/Services/Forminator/ForminatorManager.php');
-        $this->include('src/Services/Forminator/Forminator.php');
-        $forminatorManager = new ForminatorManager();
-        $forminatorManager->init();
-
-        // Shortcode
-        $this->include('src/Shortcode/ShortcodeManager.php');
-        $this->include('src/Shortcode/SubscriberShortcode.php');
-
-        $shortcodeManager = new \WP_SMS\Shortcode\ShortcodeManager();
-        $shortcodeManager->init();
+        // Initializing managers.
+        (new CronJobManager())->init();
+        (new ControllerManager())->init();
+        (new WebhookManager())->init();
+        (new BlockAssetsManager())->init();
+        (new WooCommerceCheckout())->init();
+        (new MessageButtonManager())->init();
+        (new FormidableManager())->init();
+        (new ForminatorManager())->init();
+        (new ShortcodeManager())->init();
 
         if (is_admin()) {
             // Admin legacy classes.
@@ -309,14 +192,8 @@ class WP_SMS
             $this->include('includes/admin/send/class-wpsms-send.php');
             $this->include('includes/admin/add-ons/class-add-ons.php');
 
-            // Widgets
-            $this->include('src/Widget/WidgetsManager.php');
-            \WP_SMS\Widget\WidgetsManager::init();
-
-            // Notices
-            $this->include('src/Notice/AbstractNotice.php');
-            $this->include('src/Notice/NoticeManager.php');
-            \WP_SMS\Notice\NoticeManager::getInstance();
+            WidgetsManager::init();
+            NoticeManager::getInstance();
         }
 
         if (!is_admin()) {
@@ -356,11 +233,11 @@ class WP_SMS
     }
 
     /**
-     * @return \WP_SMS\Notice\NoticeManager
+     * @return NoticeManager
      */
     public function notice()
     {
-        return \WP_SMS\Notice\NoticeManager::getInstance();
+        return NoticeManager::getInstance();
     }
 
     /**
