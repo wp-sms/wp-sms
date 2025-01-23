@@ -4,9 +4,6 @@
       "WP_SMS\\": "src/"
     }
   },
-  "require-dev": {
-    "fakerphp/faker": "*"
-  },
   "config": {
     "platform-check": false,
     "platform": {
