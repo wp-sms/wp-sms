@@ -164,7 +164,7 @@ class LicenseHelper
     public static function isPremiumLicenseAvailable()
     {
         foreach (self::getLicenses() as $key => $data) {
-            if (!empty($data['sku']) && $data['sku'] === 'premium') {
+            if (!empty($data['sku']) && $data['sku'] === 'all-in-one') {
                 return $key;
             }
         }
