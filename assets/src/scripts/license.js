@@ -1,4 +1,11 @@
 jQuery(document).ready(function ($) {
+    const wpsms_js = WP_Sms_License_Manager_Object;
+    wpsms_js._ = function (key) {
+        return (key in this.global.i18n ? this.global.i18n[key] : '');
+    };
+    wpsms_js.is_active = function (option) {
+        return wps_js.global.options[option] === 1;
+    };
     const active_license_btn = document.querySelector('.js-addon-active-license');
     const license_input = document.querySelector('.wpsms-addon__step__active-license input');
     let params = {
@@ -49,13 +56,13 @@ jQuery(document).ready(function ($) {
                 }
                 const statusSpan = document.createElement('span');
                 statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--danger');
-                statusSpan.textContent = wps_js._('failed');
+                statusSpan.textContent = wpsms_js._('failed');
                 current_plugin_checkbox.parentElement.parentElement.insertBefore(statusSpan, current_plugin_checkbox.parentElement.parentElement.firstChild);
 
                 if (params.tab === 'get-started') {
                     const retryBtn = document.createElement('a');
                     retryBtn.classList.add('wps-postbox-addon__button', 'button-retry-addon-download', 'js-addon-retry-btn');
-                    retryBtn.textContent = wps_js._('retry');
+                    retryBtn.textContent = wpsms_js._('retry');
                     retryBtn.setAttribute('data-slug', params.plugin_slug);
                     current_plugin_checkbox.parentElement.parentElement.insertBefore(retryBtn, statusSpan.nextSibling);
                 }
@@ -70,7 +77,7 @@ jQuery(document).ready(function ($) {
                 }
                 const statusSpan = document.createElement('span');
                 statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--danger');
-                statusSpan.textContent = wps_js._('failed');
+                statusSpan.textContent = wpsms_js._('failed');
                 current_plugin.parentElement.parentElement.insertBefore(statusSpan, current_plugin.parentElement.parentElement.firstChild);
                 current_plugin.style.display = 'flex';
             }
@@ -103,7 +110,7 @@ jQuery(document).ready(function ($) {
     }
 
     const sendAjaxRequest = (params, button, callback) => {
-        // if (button)  wps_js.loading_button(button)
+        // if (button)  wpsms_js.loading_button(button)
         if (params.action === "wp_sms_download_plugin") {
 
             const current_plugin = document.querySelector(`[data-slug="${params.plugin_slug}"]`);
@@ -114,7 +121,7 @@ jQuery(document).ready(function ($) {
                 }
                 const statusSpan = document.createElement('span');
                 statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--purple');
-                // statusSpan.textContent = wps_js._('downloading');
+                // statusSpan.textContent = wpsms_js._('downloading');
                 if (current_plugin && current_plugin.parentElement.parentElement) {
                     current_plugin.parentElement.parentElement.insertBefore(statusSpan, current_plugin.parentElement.parentElement.firstChild);
                     current_plugin.style.display = 'none';
@@ -133,7 +140,7 @@ jQuery(document).ready(function ($) {
                 }
                 const statusSpan = document.createElement('span');
                 statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--purple');
-                // statusSpan.textContent = wps_js._('activating');
+                // statusSpan.textContent = wpsms_js._('activating');
                 if (current_plugin && current_plugin.parentElement.parentElement) {
                     current_plugin.parentElement.parentElement.insertBefore(statusSpan, current_plugin.parentElement.parentElement.firstChild);
                     current_plugin.style.display = 'none';
@@ -151,10 +158,10 @@ jQuery(document).ready(function ($) {
                 if (data.success) {
                     if (button) button.classList.add('disabled');
                     if (params.action === "wp_sms_check_license") {
-                        if (wps_js.global.request_params?.tab) {
+                        if (wpsms_js.global.request_params?.tab) {
                             button.classList.add('redirecting');
-                            button.textContent = wps_js._('redirecting');
-                            window.location.href = `admin.php?page=wps_plugins_page&tab=downloads&license_key=${params.license_key}`;
+                            button.textContent = wpsms_js._('redirecting');
+                            window.location.href = `admin.php?page=wp-sms-add-ons-1&tab=downloads&license_key=${params.license_key}`;
                         } else {
                             toggleAlertBox(button);
                             button.parentElement.querySelector('input').classList.remove('wps-danger');
@@ -162,7 +169,7 @@ jQuery(document).ready(function ($) {
                             if (statusDanger.classList.contains('wps-postbox-addon__status--danger')) {
                                 statusDanger.classList.add('wps-postbox-addon__status--success');
                                 statusDanger.classList.remove('wps-postbox-addon__status--danger');
-                                statusDanger.textContent = wps_js._('activated');
+                                statusDanger.textContent = wpsms_js._('activated');
                             }
                             const alertDiv = document.createElement('div');
                             alertDiv.classList.add('wps-alert', 'wps-alert--success');
@@ -192,7 +199,7 @@ jQuery(document).ready(function ($) {
                             }
                             const statusSpan = document.createElement('span');
                             statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--installed');
-                            statusSpan.textContent = wps_js._('already_installed');
+                            statusSpan.textContent = wpsms_js._('already_installed');
                             if (current_plugin_checkbox && current_plugin_checkbox.parentElement.parentElement) {
                                 current_plugin_checkbox.parentElement.parentElement.insertBefore(statusSpan, current_plugin_checkbox.parentElement.parentElement.firstChild);
                             }
@@ -203,7 +210,7 @@ jQuery(document).ready(function ($) {
                             if (params.tab === 'get-started') {
                                 const activeBtn = document.createElement('a');
                                 activeBtn.classList.add('wps-postbox-addon__button', 'button-activate-addon', 'js-addon-active-plugin-btn');
-                                activeBtn.textContent = wps_js._('active');
+                                activeBtn.textContent = wpsms_js._('active');
                                 activeBtn.setAttribute('data-slug', params.plugin_slug);
                                 current_plugin_checkbox.parentElement.insertBefore(activeBtn, statusSpan.nextSibling);
                                 const showMoreBtn = document.querySelector('.js-addon-show-more');
@@ -225,7 +232,7 @@ jQuery(document).ready(function ($) {
                             }
                             const statusSpan = document.createElement('span');
                             statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--success');
-                            statusSpan.textContent = wps_js._('activated');
+                            statusSpan.textContent = wpsms_js._('activated');
                             current_plugin_checkbox.parentElement.parentElement.insertBefore(statusSpan, current_plugin_checkbox.parentElement.parentElement.firstChild);
                             current_plugin_checkbox.remove();
                         }
