@@ -6,6 +6,7 @@ use WP_SMS\User\UserHelper;
 
 class MenuUtil
 {
+    private static $parentSlug = 'wp-sms';
     /**
      * List of Admin Page Slugs
      *
@@ -39,7 +40,7 @@ class MenuUtil
      */
     public static function init()
     {
-        add_action('admin_menu', [__CLASS__, 'registerMenus']);
+        add_action('admin_menu', [__CLASS__, 'registerMenus'], 20);
     }
 
     /**
@@ -85,12 +86,12 @@ class MenuUtil
             if (array_key_exists('sub', $menu)) {
                 //Check if add Break Line
                 if (array_key_exists('break', $menu)) {
-                    add_submenu_page(self::getPageSlug($menu['sub']), '', '', $capability, 'wps_break_menu', $callback);
+                    add_submenu_page(self::$parentSlug, '', '', $capability, 'wps_break_menu', $callback);
                 }
 
                 //Check Conditions For Show Menu
                 if (OptionUtil::checkOptionRequire($menu) === true) {
-                    add_submenu_page(self::getPageSlug($menu['sub']), $menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback);
+                    add_submenu_page(self::$parentSlug, $menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback);
                 }
             } else {
                 add_menu_page($menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback, $menu['icon']);

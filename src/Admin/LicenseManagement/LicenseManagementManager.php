@@ -50,7 +50,7 @@ class LicenseManagementManager
     public function addMenuItem($items)
     {
         $items['plugins'] = [
-            'sub'      => 'send-sms',
+            'sub'      => 'wp-sms',
             'title'    => __('Add-Ons', 'wp-sms'),
             'name'     => '<span class="wps-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
             'page_url' => 'add-ons-1',

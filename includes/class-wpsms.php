@@ -267,6 +267,7 @@ class WP_SMS
         $this->include('src/Abstracts/BasePage.php');
         $this->include('src/Abstracts/MultiViewPage.php');
         $this->include('src/Admin/LicenseManagement/LicenseManagerPage.php');
+        $this->include('src/Admin/LicenseManagement/Plugin/PluginDecorator.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginHelper.php');
         $this->include('src/Admin/LicenseManagement/LicenseMigration.php');
         $this->include('src/Admin/LicenseManagement/Plugin/PluginHandler.php');
