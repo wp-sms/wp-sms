@@ -40,7 +40,7 @@ class PluginHelper
         }
 
         foreach ($products as $product) {
-            if (isset($product->sku) && $product->sku === 'premium') continue;
+            if (isset($product->sku) && $product->sku === 'all-in-one') continue;
 
             $result[] = new PluginDecorator($product);
         }
