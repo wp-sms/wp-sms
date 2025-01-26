@@ -4,7 +4,7 @@ jQuery(document).ready(function ($) {
         return (key in this.global.i18n ? this.global.i18n[key] : '');
     };
     wpsms_js.is_active = function (option) {
-        return wps_js.global.options[option] === 1;
+        return wpsms_js.global.options[option] === 1;
     };
     const active_license_btn = document.querySelector('.js-addon-active-license');
     const license_input = document.querySelector('.wpsms-addon__step__active-license input');
