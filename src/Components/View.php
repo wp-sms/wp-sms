@@ -40,7 +40,8 @@ class View
                 include $viewPath;
             }
         } catch (\Exception $e) {
-            \WP_Statistics::log($e->getMessage(), 'error');
+            //todo implement
+//            \WP_Statistics::log($e->getMessage(), 'error');
         }
     }
 

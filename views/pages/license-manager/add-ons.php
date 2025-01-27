@@ -1,7 +1,7 @@
 <?php
 
-use WP_Statistics\Components\View;
-use WP_Statistics\Service\Admin\LicenseManagement\Plugin\PluginDecorator;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
+use WP_SMS\Components\View;
 
 ?>
 <div class="postbox-container wpsms-postbox-addon-container">
