@@ -124,7 +124,7 @@ class LicenseManagementManager
             foreach ($_GET as $key => $value) {
                 if ($key == "page") {
                     $slug  = self::getPageKeyFromSlug(esc_html($value));
-                    $value = $slug[0];
+                    $value = $slug[0] ?? '';
                 }
                 if (!is_array($value)) {
                     $list['request_params'][esc_html($key)] = esc_html($value);
