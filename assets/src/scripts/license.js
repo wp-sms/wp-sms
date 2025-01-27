@@ -3,6 +3,8 @@ jQuery(document).ready(function ($) {
     wpsms_js._ = function (key) {
         return (key in this.global.i18n ? this.global.i18n[key] : '');
     };
+
+    wpsms_global
     wpsms_js.is_active = function (option) {
         return wpsms_js.global.options[option] === 1;
     };
@@ -83,7 +85,7 @@ jQuery(document).ready(function ($) {
             }
         }
     }
-    
+
     if (license_input && active_license_btn) {
         function toggleButtonState() {
             license_input.classList.remove('wps-danger', 'wps-warning');
@@ -147,6 +149,8 @@ jQuery(document).ready(function ($) {
                 }
             }
         }
+        console.log(wpsms_global)
+        console.log(wpsms_global.is_active())
         jQuery.ajax({
             url: WP_Sms_License_Manager_Object.ajax_url,
             type: 'GET',
