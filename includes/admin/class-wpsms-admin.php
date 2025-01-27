@@ -205,7 +205,7 @@ class Admin
                 'action_required'              => __('Action Required', 'wp-statistics'),
             ),
             'admin_url' => admin_url(),
-            'rest_api_nonce' => wp_create_nonce()
+            'rest_api_nonce' => wp_create_nonce('wp_rest')
         );
 
         wp_localize_script(
