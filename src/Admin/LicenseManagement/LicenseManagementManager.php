@@ -52,7 +52,7 @@ class LicenseManagementManager
             'rest_api_nonce' => wp_create_nonce('wp_rest'),
             'global'         => self::licenseHelperObject()
         ];
-        Assets::script('license-manager', 'src/scripts/license.js', ['jquery'], $localization, true);
+        Assets::script('license-manager', 'src/scripts/license.js', ['jquery', 'wp-sms-global-script'], $localization, true);
     }
 
     public function addMenuItem($items)
