@@ -60,7 +60,7 @@ class LicenseManagementManager
         $items['plugins'] = [
             'sub'      => 'wp-sms',
             'title'    => __('Add-Ons', 'wp-sms'),
-            'name'     => '<span class="wps-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
+            'name'     => '<span class="wpsms-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
             'page_url' => 'add-ons-1',
             'callback' => LicenseManagerPage::class,
             'cap'      => WP_SMS\User\UserHelper::validateCapability(WP_SMS\Utils\OptionUtil::get('manage_capability', 'manage_options')),

@@ -4,8 +4,8 @@
     <tr valign="top">
         <!-- Send Message To -->
         <td colspan="2">
-            <label for="wps-send-to"><?php esc_html_e('To', 'wp-sms'); ?></label>
-            <select name="wps_send_to" id="wps-send-to">
+            <label for="wpsms-send-to"><?php esc_html_e('To', 'wp-sms'); ?></label>
+            <select name="wps_send_to" id="wpsms-send-to">
                 <option value="0" <?php if (isset($_GET['post']) and !$forceToSend) : echo 'selected';
                 endif; ?>><?php esc_html_e('Please select', 'wp-sms'); ?></option>
                 <option value="subscriber" <?php if (empty($_GET['post']) and $forceToSend) {
@@ -21,9 +21,9 @@
         </td>
 
         <!-- Select Subscriber Group -->
-        <td colspan="2" id="wpsms-select-subscriber-group" class="js-wpsms-show_if_wps-send-to_equal_subscriber">
-            <label for="wps-subscribe-group"><?php esc_html_e('Subscribe group', 'wp-sms'); ?></label>
-            <select name="wps_subscribe_group" id="wps-subscribe-group">
+        <td colspan="2" id="wpsms-select-subscriber-group" class="js-wpsms-show_if_wpsms-send-to_equal_subscriber">
+            <label for="wpsms-subscribe-group"><?php esc_html_e('Subscribe group', 'wp-sms'); ?></label>
+            <select name="wps_subscribe_group" id="wpsms-subscribe-group">
                 <option value="all">
                     <?php 
                         // translators: %s: Number of active subscribers
@@ -37,15 +37,15 @@
         </td>
 
         <!-- Enter receiver number -->
-        <td colspan="2" id="wpsms-select-numbers" class="js-wpsms-show_if_wps-send-to_equal_numbers">
-            <label for="wps-mobile-numbers"><?php esc_html_e('Number(s)', 'wp-sms'); ?></label>
-            <input placeholder="<?php esc_html_e('Separate numbers with commas', 'wp-sms'); ?>" type="text" name="wps_mobile_numbers" id="wps-mobile-numbers" class="regular-text" value="<?php echo esc_attr(wp_sms_get_option('notif_publish_new_post_numbers')) ?>"/>
+        <td colspan="2" id="wpsms-select-numbers" class="js-wpsms-show_if_wpsms-send-to_equal_numbers">
+            <label for="wpsms-mobile-numbers"><?php esc_html_e('Number(s)', 'wp-sms'); ?></label>
+            <input placeholder="<?php esc_html_e('Separate numbers with commas', 'wp-sms'); ?>" type="text" name="wps_mobile_numbers" id="wpsms-mobile-numbers" class="regular-text" value="<?php echo esc_attr(wp_sms_get_option('notif_publish_new_post_numbers')) ?>"/>
 
         </td>
 
 
         <!-- Select specific role -->
-        <td colspan="2" id="wpsms-select-users" class="js-wpsms-show_if_wps-send-to_equal_users">
+        <td colspan="2" id="wpsms-select-users" class="js-wpsms-show_if_wpsms-send-to_equal_users">
             <label for="wpsms_roles"><?php esc_html_e('Specific roles', 'wp-sms'); ?></label>
             <div class="wpsms-value wpsms-users wpsms-users-roles">
                 <select id="wpsms_roles" name="wpsms_roles[]" multiple="multiple" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Role', 'wp-sms'); ?>">
