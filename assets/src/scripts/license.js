@@ -1,13 +1,20 @@
 jQuery(document).ready(function ($) {
-    const wpsms_js = WP_Sms_License_Manager_Object;
+    const wpsms_js = {};
+    wpsms_js.global = wpsms_global;
+
     wpsms_js._ = function (key) {
         return (key in this.global.i18n ? this.global.i18n[key] : '');
     };
 
-    wpsms_global
     wpsms_js.is_active = function (option) {
         return wpsms_js.global.options[option] === 1;
     };
+
+    wpsms_js.loading_button = function (btn) {
+        btn.classList.add('wpsms-loading-button');
+    };
+
+
     const active_license_btn = document.querySelector('.js-addon-active-license');
     const license_input = document.querySelector('.wpsms-addon__step__active-license input');
     let params = {
@@ -15,7 +22,7 @@ jQuery(document).ready(function ($) {
         'action': 'wp_sms_check_license'
     };
     const toggleAlertBox = (btn) => {
-        const existingAlertDiv = btn.parentElement.parentElement.querySelector('.wps-alert');
+        const existingAlertDiv = btn.parentElement.parentElement.querySelector('.wpsms-alert');
         if (existingAlertDiv) {
             existingAlertDiv.remove();
         }
@@ -27,10 +34,10 @@ jQuery(document).ready(function ($) {
             const alertDiv = document.createElement('div');
             if (data?.data?.message?.toLowerCase().includes('domain')) {
                 button.parentElement.querySelector('input').classList.add('wps-warning');
-                alertDiv.classList.add('wps-alert', 'wps-alert--warning');
+                alertDiv.classList.add('wpsms-alert', 'wpsms-alert--warning');
             } else {
                 button.parentElement.querySelector('input').classList.add('wps-danger');
-                alertDiv.classList.add('wps-alert', 'wps-alert--danger');
+                alertDiv.classList.add('wpsms-alert', 'wpsms-alert--danger');
             }
             alertDiv.innerHTML = `
                                 <span class="icon"></span>
@@ -122,7 +129,7 @@ jQuery(document).ready(function ($) {
                     statusLable.remove();
                 }
                 const statusSpan = document.createElement('span');
-                statusSpan.classList.add('wps-postbox-addon__status', 'wps-postbox-addon__status--purple');
+                statusSpan.classList.add('wpsms-postbox-addon__status', 'wpsms-postbox-addon__status--purple');
                 // statusSpan.textContent = wpsms_js._('downloading');
                 if (current_plugin && current_plugin.parentElement.parentElement) {
                     current_plugin.parentElement.parentElement.insertBefore(statusSpan, current_plugin.parentElement.parentElement.firstChild);
@@ -149,8 +156,7 @@ jQuery(document).ready(function ($) {
                 }
             }
         }
-        console.log(wpsms_global)
-        console.log(wpsms_global.is_active())
+
         jQuery.ajax({
             url: WP_Sms_License_Manager_Object.ajax_url,
             type: 'GET',
@@ -176,7 +182,7 @@ jQuery(document).ready(function ($) {
                                 statusDanger.textContent = wpsms_js._('activated');
                             }
                             const alertDiv = document.createElement('div');
-                            alertDiv.classList.add('wps-alert', 'wps-alert--success');
+                            alertDiv.classList.add('wpsms-alert', 'wpsms-alert--success');
                             alertDiv.innerHTML = `
                                 <span class="icon"></span>
                                 <div>

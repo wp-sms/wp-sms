@@ -203,7 +203,9 @@ class Admin
                 'go_to_overview'               => __('Go to Overview'),
                 'continue_to_next_step'        => __('Continue to Next Step', 'wp-statistics'),
                 'action_required'              => __('Action Required', 'wp-statistics'),
-            )
+            ),
+            'admin_url' => admin_url(),
+            'rest_api_nonce' => wp_create_nonce()
         );
 
         wp_localize_script(

@@ -3796,6 +3796,10 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
             order: 2;
             display: block;
             width: 100%;
+
+            a {
+              text-decoration: none;
+            }
           }
           .wpsms-postbox-addon__item--actions {
             order: 1;
@@ -4569,6 +4573,10 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 
 }
 
+.wpsms-postbox-addon__item--info__title a {
+  text-decoration: none !important;
+}
+
 .wpsms-postbox-addon-button , .wpsms-wrap a.wpsms-postbox-addon-button{
   border: none;
   padding: 8px 16px;
@@ -4681,6 +4689,10 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 
     .wpsms-addon--actions {
       position: relative;
+
+      a {
+        text-decoration: none;
+      }
 
       &.active .wpsms-addon--submenus {
         display: block

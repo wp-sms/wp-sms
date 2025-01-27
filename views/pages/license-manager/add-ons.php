@@ -3,6 +3,10 @@
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
 use WP_SMS\Components\View;
 
+View::load('components/page-header',[
+    'link'  => "#",
+    'title' => esc_html__('Add-Ons', 'wp-sms')
+]);
 ?>
 <div class="postbox-container wpsms-postbox-addon-container">
     <div class="wpsms-postbox-addon">
