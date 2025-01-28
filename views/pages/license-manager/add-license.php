@@ -17,13 +17,13 @@
         <div class="wpsms-addon__step__faq">
             <ul>
                 <li>
-                    <a href="https://wp-statistics.com/pricing/?utm_source=wp-statistics&utm_medium=link&utm_campaign=install-addon" target="_blank" title="<?php esc_html_e('Buy Premium Now', 'wp-statistics'); ?>"><?php esc_html_e('Buy Premium Now', 'wp-statistics'); ?></a>
+                    <a href="https://wp-sms-pro.com/" target="_blank" title="<?php esc_html_e('Buy Premium Now', 'wp-statistics'); ?>"><?php esc_html_e('Buy Premium Now', 'wp-statistics'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-statistics.com/resources/finding-and-entering-your-license-key/?utm_source=wp-statistics&utm_medium=link&utm_campaign=install-addon" target="_blank" title="<?php esc_html_e('I brought Premium, where is my license key?', 'wp-statistics'); ?>"><?php esc_html_e('I brought Premium, where is my license key?', 'wp-statistics'); ?></a>
+                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key" target="_blank" title="<?php esc_html_e('I brought Premium, where is my license key?', 'wp-statistics'); ?>"><?php esc_html_e('I brought Premium, where is my license key?', 'wp-statistics'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-statistics.com/contact-us/?step=purchasing" target="_blank" title="<?php esc_html_e('Have a question or trouble with your license?', 'wp-statistics'); ?>"><?php esc_html_e('Have a question or trouble with your license?', 'wp-statistics'); ?></a>
+                    <a href="https://wp-sms-pro.com/contact-us" target="_blank" title="<?php esc_html_e('Have a question or trouble with your license?', 'wp-statistics'); ?>"><?php esc_html_e('Have a question or trouble with your license?', 'wp-statistics'); ?></a>
                 </li>
             </ul>
         </div>
