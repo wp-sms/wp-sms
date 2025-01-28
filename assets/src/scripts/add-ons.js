@@ -360,4 +360,24 @@ jQuery(document).ready(function () {
 
         });
     }
+
+    // Updated handleAddonAction to use event delegation
+    const handleAddonAction = (buttons, action, paramsKey) => {
+        if (buttons.length > 0) {
+            buttons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    const slug = button.getAttribute('data-slug');
+                    let action_params = {
+                        ...params,
+                        'action': action,
+                        [paramsKey]: slug
+                    };
+                    sendAjaxRequest(action_params, button);
+                });
+            });
+        }
+    };
+    const active_addon_plugin_btn = document.querySelectorAll('.js-addon-active-plugin-btn');
+    handleAddonAction(active_addon_plugin_btn, 'wp_statistics_activate_plugin', 'plugin_slug');
 })
