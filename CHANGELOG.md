@@ -1,6 +1,10 @@
-= v6.9.10 =
-- **Fix**: Resolved sendig SMS to registering user in login form.
-- **New**: Add Mobile Message Gateway (Australia)
+= v6.9.10 - 2025-01-22 =
+- **New**: Add **Mobile Message Gateway** (Australia).
+- **New**: Add **HelloSMS Gateway** (Sweden).
+- **Fix**: Resolve issues with adding and updating subscriber groups.
+- **Fix**: Address the `_load_textdomain_just_in_time` notice.
+- **Fix**: Correct SMS sending to registering users in the login form.
+- **Enhancement**: Add capability test for displaying widgets.
 - **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
 
 v6.9.9 - 2024-12-23
