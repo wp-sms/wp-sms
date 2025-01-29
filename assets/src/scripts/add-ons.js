@@ -379,5 +379,5 @@ jQuery(document).ready(function () {
         }
     };
     const active_addon_plugin_btn = document.querySelectorAll('.js-addon-active-plugin-btn');
-    handleAddonAction(active_addon_plugin_btn, 'wp_statistics_activate_plugin', 'plugin_slug');
+    handleAddonAction(active_addon_plugin_btn, 'wp_sms_activate_plugin', 'plugin_slug');
 })

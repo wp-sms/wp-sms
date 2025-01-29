@@ -63,7 +63,7 @@ jQuery(document).ready(function () {
         }
       }
     }
-    if (params.action === "wp_statistics_activate_plugin") {
+    if (params.action === "wp_sms_activate_plugin") {
       var current_plugin = document.querySelector("[data-slug=\"".concat(params.plugin_slug, "\"]"));
       if (current_plugin) {
         var loadingStatus = current_plugin.parentElement.parentElement.querySelector('.wpsms-postbox-addon__status');
@@ -97,7 +97,7 @@ jQuery(document).ready(function () {
         }
       }
     }
-    if (params.action === "wp_statistics_activate_plugin") {
+    if (params.action === "wp_sms_activate_plugin") {
       var _current_plugin = document.querySelector("[data-slug=\"".concat(params.plugin_slug, "\"]"));
       if (_current_plugin) {
         var _statusLable = _current_plugin.parentElement.parentElement.querySelector('.wpsms-postbox-addon__status');
@@ -184,7 +184,7 @@ jQuery(document).ready(function () {
               current_plugin_checkbox.remove();
             }
           }
-          if (params.action === "wp_statistics_activate_plugin") {
+          if (params.action === "wp_sms_activate_plugin") {
             var _current_plugin_checkbox = document.querySelector("[data-slug=\"".concat(params.plugin_slug, "\"]"));
             if (_current_plugin_checkbox) {
               var _loadingStatus = _current_plugin_checkbox.parentElement.parentElement.querySelector('.wpsms-postbox-addon__status--purple');
