@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Controller\LicenseManagerAjax;
+
 class Admin
 {
     public $sms;
@@ -88,7 +90,7 @@ class Admin
         $list = array(
             'i18n'           => $this->get_translations(),
             'admin_url'      => admin_url(),
-            'ajax_url'       => admin_url('admin-ajax.php'),
+            'ajax_url'       => LicenseManagerAjax::url(),
             'rest_api_nonce' => wp_create_nonce('wp_rest')
         );
 
