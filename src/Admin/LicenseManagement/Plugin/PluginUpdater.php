@@ -4,6 +4,7 @@ namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
 use Exception;
 use stdClass;
+use WP_SMS;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 

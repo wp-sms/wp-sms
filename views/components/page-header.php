@@ -24,7 +24,7 @@
         </h2>
     <?php endif ?>
 
-    <?php do_action('wp_statistics_after_admin_page_title'); ?>
+    <?php do_action('wp_sms_after_admin_page_title'); ?>
 
     <?php if (isset($real_time_button)): ?>
         <?php
@@ -32,17 +32,17 @@
         ?>
 
         <?php if ($is_realtime_active): ?>
-            <a class="wpsms-realtime-btn" href="<?php echo esc_url(admin_url('admin.php?page=wp_statistics_realtime_stats')) ?>" title="<?php echo esc_html_e('Real-time stats are available! Click here to view', 'wp-statistics') ?>">
-                <?php esc_html_e('Realtime', 'wp-statistics'); ?>
+            <a class="wpsms-realtime-btn" href="<?php echo esc_url(admin_url('admin.php?page=wp_sms_realtime_stats')) ?>" title="<?php echo esc_html_e('Real-time stats are available! Click here to view', 'wp-sms') ?>">
+                <?php esc_html_e('Realtime', 'wp-sms'); ?>
             </a>
         <?php else: ?>
             <button class="wpsms-realtime-btn disabled wpsms-tooltip-premium" >
-                <?php esc_html_e('Realtime', 'wp-statistics'); ?>
+                <?php esc_html_e('Realtime', 'wp-sms'); ?>
                 <span class="wpsms-tooltip_templates tooltip-premium tooltip-premium--bottom tooltip-premium--right">
                     <span id="tooltip_realtime">
-                        <a data-target="wp-statistics-realtime-stats" class="js-wpsms-openPremiumModal"><?php esc_html_e('Learn More', 'wp-statistics'); ?></a>
+                        <a data-target="wp-sms-realtime-stats" class="js-wpsms-openPremiumModal"><?php esc_html_e('Learn More', 'wp-sms'); ?></a>
                         <span>
-                            <?php esc_html_e('Premium Feature', 'wp-statistics'); ?>
+                            <?php esc_html_e('Premium Feature', 'wp-sms'); ?>
                         </span>
                     </span>
                 </span>

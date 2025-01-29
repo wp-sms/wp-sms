@@ -43,7 +43,7 @@ class TimeZone
         foreach ($period as $key => $value) {
             $list[$value->format('Y-m-d')] = array(
                 'timestamp' => $value->format('U'),
-                'format'    => $value->format(apply_filters('wp_statistics_request_days_format', $args['format']))
+                'format'    => $value->format(apply_filters('wp_sms_request_days_format', $args['format']))
             );
         }
 

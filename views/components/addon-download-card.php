@@ -1,6 +1,9 @@
 <?php
 
-/** @var WP_Statistics\Service\Admin\LicenseManagement\Plugin\PluginDecorator $addOn */
+/** @var PluginDecorator $addOn */
+
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
+
 if (!defined('ABSPATH') || empty($addOn)) {
     exit;
 }

@@ -132,7 +132,7 @@ class MenuUtil
     }
 
     /**
-     * Check if the current page is a WP Statistics admin page.
+     * Check if the current page is a WP SMS admin page.
      *
      * @param string $page
      * @return bool
@@ -144,7 +144,7 @@ class MenuUtil
     }
 
     /**
-     * Check if User is in a WP Statistics Plugin Page
+     * Check if User is in a WP SMS Plugin Page
      *
      * @return bool
      */

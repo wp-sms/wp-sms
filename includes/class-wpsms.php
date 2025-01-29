@@ -257,4 +257,24 @@ class WP_SMS
     {
         return $this->remoteRequestQueue;
     }
+
+    /**
+     * @param $message
+     * @param $level
+     * @return void
+     */
+    public static function log($message, $level = 'info')
+    {
+        if (is_array($message)) {
+            $message = wp_json_encode($message);
+        }
+
+        $log_level = strtoupper($level);
+
+
+        // Log when debug is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log(sprintf('[WP SMS] [%s]: %s', $log_level, $message));
+        }
+    }
 }

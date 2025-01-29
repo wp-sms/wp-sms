@@ -39,7 +39,7 @@ class Notice
     public static function addFlashNotice($message, $class = 'info', $isDismissible = true)
     {
         // Add flash notice using transient
-        $flashNotices = get_transient('wp_statistics_flash_notices');
+        $flashNotices = get_transient('wp_sms_flash_notices');
         if (!$flashNotices) {
             $flashNotices = array();
         }
@@ -50,7 +50,7 @@ class Notice
             'is_dismissible' => (bool)$isDismissible,
         );
 
-        set_transient('wp_statistics_flash_notices', $flashNotices, 3); // Keep for 3 second
+        set_transient('wp_sms_flash_notices', $flashNotices, 3); // Keep for 3 second
     }
 
     public static function displayNotices()
@@ -69,7 +69,7 @@ class Notice
         }
 
         // Display flash notices
-        $flashNotices = get_transient('wp_statistics_flash_notices');
+        $flashNotices = get_transient('wp_sms_flash_notices');
 
         if ($flashNotices) {
             foreach ($flashNotices as $flashNotice) {
@@ -77,7 +77,7 @@ class Notice
                 self::renderNoticeInternal($flashNotice, $dismissible, '');
             }
 
-            delete_transient('wp_statistics_flash_notices');
+            delete_transient('wp_sms_flash_notices');
         }
     }
 
@@ -85,9 +85,9 @@ class Notice
     {
         if ($notice['is_dismissible']) {
             return add_query_arg(array(
-                'action'    => 'wp_statistics_dismiss_notice',
+                'action'    => 'wp_sms_dismiss_notice',
                 'notice_id' => $id,
-                'nonce'     => wp_create_nonce('wp_statistics_dismiss_notice'),
+                'nonce'     => wp_create_nonce('wp_sms_dismiss_notice'),
             ), sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])));
         }
 
@@ -128,7 +128,7 @@ class Notice
 
     public static function getDismissedNotices() {
         if (empty(self::$dismissedNotices)) {
-            self::$dismissedNotices = get_option('wp_statistics_dismissed_notices', []);
+            self::$dismissedNotices = get_option('wp_sms_dismissed_notices', []);
         }
         
         return self::$dismissedNotices;
