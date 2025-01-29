@@ -4,10 +4,6 @@
       "WP_SMS\\": "src/"
     }
   },
-  "require-dev": {
-    "fakerphp/faker": "*"
-  }
-,
   "scripts": {
     "test": [
       "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"

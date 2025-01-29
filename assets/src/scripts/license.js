@@ -18,7 +18,7 @@ jQuery(document).ready(function ($) {
     const active_license_btn = document.querySelector('.js-addon-active-license');
     const license_input = document.querySelector('.wpsms-addon__step__active-license input');
     let params = {
-        'wps_nonce': WP_Sms_License_Manager_Object.rest_api_nonce,
+        'wps_nonce': wpsms_js.global.rest_api_nonce,
         'action': 'wp_sms_check_license'
     };
     const toggleAlertBox = (btn) => {
@@ -158,7 +158,7 @@ jQuery(document).ready(function ($) {
         }
 
         jQuery.ajax({
-            url: WP_Sms_License_Manager_Object.ajax_url,
+            url: wpsms_js.global.ajax_url,
             type: 'GET',
             dataType: 'json',
             data: params,
