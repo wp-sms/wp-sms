@@ -165,6 +165,9 @@ function wp_sms_modify_message($message) {
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
 
+## Development Guide
+For more information on how to contribute to WP SMS, please refer to the [Development Guide](https://github.com/wp-sms/wp-sms/wiki)
+
 # Resources
 * [WordPress.org plugin URL](https://wordpress.org/plugins/wp-sms/)
 * [Plugin Website](https://wp-sms-pro.com)
