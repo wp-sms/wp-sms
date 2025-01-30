@@ -16,6 +16,7 @@ class WooCommerceOrderNotification extends Notification
         '%billing_last_name%'           => 'getLastName',
         '%billing_company%'             => 'getCompany',
         '%billing_address%'             => 'getAddress',
+        '%billing_postcode%'            => 'getPostCode',
         '%order_edit_url%'              => 'getEditOrderUrl',
         '%billing_phone%'               => 'getBillingPhone',
         '%billing_email%'               => 'getBillingEmail',
@@ -81,6 +82,11 @@ class WooCommerceOrderNotification extends Notification
     public function getAddress()
     {
         return $this->order->get_billing_address_1();
+    }
+
+    public function getPostCode()
+    {
+        return $this->order->get_billing_postcode();
     }
 
     public function getEditOrderUrl()
