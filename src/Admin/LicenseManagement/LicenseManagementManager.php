@@ -46,7 +46,7 @@ class LicenseManagementManager
 
     public function enqueueScripts()
     {
-        Assets::script('license-manager', 'src/scripts/license.js', ['jquery', 'wp-sms-global-script'], [], true);
+        Assets::script('license-manager', 'js/licenseManager.min.js', ['jquery'], [], true);
     }
 
     public function addMenuItem($items)
