@@ -21,6 +21,9 @@ const wizardStepOne = () => {
 
     submitButton.addEventListener('click', async function (event) {
         event.stopPropagation();
+        let submitButtonLabel = submitButton.textContent
+        addClass(submitButton, 'wpsms-loading-button')
+        submitButton.textContent = ""
         // Get and trim the license key input value
         const license_key = licenseInput.value.trim();
         const params = {
@@ -31,6 +34,12 @@ const wizardStepOne = () => {
             const result = await sendGetRequest(params, 'check_license');
             toggleAlertBox(submitButton)
             requestResult(result, submitButton)
+
+            if (result) {
+                removeClass(submitButton, 'wpsms-loading-button')
+                submitButton.textContent =  submitButtonLabel
+            }
+
             if (result.success) {
                 submitButton.classList.add('redirecting');
                 submitButton.textContent = getString('redirecting');
@@ -68,5 +77,7 @@ const requestResult = (data, button) => {
         activeLicenseDiv.parentNode.insertBefore(alertDiv, activeLicenseDiv.nextSibling);
     }
 }
+
+
 
 export default wizardStepOne
