@@ -17,6 +17,7 @@ class WooCommerceOrderNotification extends Notification
         '%billing_company%'             => 'getCompany',
         '%billing_address%'             => 'getAddress',
         '%billing_postcode%'            => 'getPostCode',
+        '%payment_method%'              => 'getPaymentMethod',
         '%order_edit_url%'              => 'getEditOrderUrl',
         '%billing_phone%'               => 'getBillingPhone',
         '%billing_email%'               => 'getBillingEmail',
@@ -87,6 +88,11 @@ class WooCommerceOrderNotification extends Notification
     public function getPostCode()
     {
         return $this->order->get_billing_postcode();
+    }
+
+    public function getPaymentMethod()
+    {
+        return $this->order->get_payment_method_title();
     }
 
     public function getEditOrderUrl()
