@@ -32,7 +32,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
             </p>
         </div>
     </div>
-    <div class="wpsms-addon__download__item--select">
+    <div class="wpsms-addon__download__item--select" data-addon-slug="<?php echo esc_attr($addOn->getSlug()); ?>">
         <?php if ($included && $addOn->isInstalled()) : ?>
             <span class="wpsms-postbox-addon__status wpsms-postbox-addon__status--installed "><?php esc_html_e('Already installed', 'wp-sms'); ?></span>
         <?php elseif (!$included) : ?>
