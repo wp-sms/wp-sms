@@ -82,5 +82,5 @@ if (!defined('ABSPATH') || empty($addOn)) {
             </div>
         <?php endif; ?>
      </div>
-
+    <div class="wpsms-addon__download__item__info__alerts js-wpsms-addon-alert-wrapper"></div>
 </div>

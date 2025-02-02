@@ -4276,6 +4276,11 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
           position: relative;
         }
 
+        &.wpsms-addon__download__item--activation {
+          flex-wrap: wrap;
+          gap: 0;
+        }
+
         &.wpsms-has-checkbox:not(.wpsms-addon__download__item--disabled):hover {
           background: #FAFAFB;
           border: 1px solid #56585A
@@ -4955,6 +4960,11 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   }
 }
 
+.wpsms-addon__download__item--actions.wpsms-addon__download__item--actions--activation .wpsms-postbox-addon__buttons {
+  display: flex !important;
+  gap: 12px !important;
+}
+
 .wpsms-review_premium {
   margin-top: 32px;
   padding: 24px;
@@ -4963,6 +4973,11 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   border-radius: 8px;
   border: 1px solid #F6585E4D;
   background: linear-gradient(84.03deg, #FFF7F7 0.71%, #FFFFFF 99.08%);
+
+  a {
+    text-decoration: none !important;
+  }
+
   @media (max-width: 768px) {
     display: block;
     &:before {
@@ -5194,6 +5209,14 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       filter: brightness(1.1);
     }
   }
+}
+
+.wpsms-addon__download__item__info__alerts {
+  width: 100%;
+}
+
+.wpsms-addon__download__item__info__alerts:not(:empty) {
+  margin-top: 12px;
 }
 
 @import "add-ons/badge";

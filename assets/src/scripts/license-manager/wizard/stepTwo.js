@@ -3,7 +3,6 @@ import {sendGetRequest} from "../utils/ajaxHelper";
 import {generateBadge, generateRetryDownloadBtn} from "../utils/generator";
 
 const initStepTwo = () => {
-    console.log(wpsms_global)
     const selectAllCheckboxes = getElement('.js-wpsms-addon-select-all')
     const addOneCheckboxes = getElements('.js-wpsms-addon-check-box')
     const submitStepTwo = getElement('.js-addon-download-button')

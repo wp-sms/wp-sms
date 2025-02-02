@@ -66,4 +66,43 @@ const generateRetryDownloadBtn = (slug, children) => {
     return button;
 }
 
-export { generateBadge , generateRetryDownloadBtn};
+const generateRetryActivateBtn = (slug, children) => {
+    // Create button element
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-slug', slug);
+    button.classList.add('wpsms__btn--transparent'); // Add a class for styling if needed
+
+    // Append the provided child element inside the button
+    if (children instanceof HTMLElement) {
+        button.appendChild(children);
+    } else {
+        button.textContent = children;
+    }
+
+    // Bind click event
+    button.addEventListener('click', async () => {
+        const addonCheckboxWrapper = getElement(`.wpsms-addon__download__item--select[data-addon-slug="${slug}"]`)
+        addonCheckboxWrapper.querySelector('span').innerHTML = "";
+        addonCheckboxWrapper.querySelector('span').appendChild(generateBadge('success', getString('downloading') + '...'))
+
+        let params = {
+            'sub_action': 'activate_plugin',
+            'plugin_slug': slug
+        };
+
+        try {
+            const result = await sendGetRequest(params);
+
+            if (result) {
+                processAddonDownload(slug, result)
+            }
+        } catch (error) {
+
+        }
+    });
+
+    return button;
+}
+
+export { generateBadge , generateRetryDownloadBtn, generateRetryActivateBtn};

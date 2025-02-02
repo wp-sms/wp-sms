@@ -9,7 +9,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
 }
 
 ?>
-<div class="wpsms-addon__download__item">
+<div class="wpsms-addon__download__item wpsms-addon__download__item--activation">
     <div class="wpsms-addon__download__item--info">
         <div class="wpsms-addon__download__item--info__img">
             <img src="<?php echo esc_url($addOn->getIcon()); ?>" alt="<?php echo esc_attr($addOn->getName()); ?>">
@@ -23,7 +23,8 @@ if (!defined('ABSPATH') || empty($addOn)) {
             </p>
         </div>
     </div>
-    <div class="wpsms-addon__download__item--actions">
+    <div class="wpsms-addon__download__item__info__alerts"></div>
+    <div class="wpsms-addon__download__item--actions wpsms-addon__download__item--actions--activation" data-addon-slug="<?php echo esc_attr($addOn->getSlug()); ?>">
         <?php if (in_array($addOn->getSlug(), $selectedAddOns) && (!$addOn->isInstalled() || $addOn->isUpdateAvailable())) : ?>
             <span class="wpsms-postbox-addon__status wpsms-postbox-addon__status--danger "><?php esc_html_e('Failed', 'wp-sms'); ?></span>
         <?php elseif ($addOn->isActivated()) : ?>
