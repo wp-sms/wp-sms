@@ -7,9 +7,9 @@ const initStepThree = () => {
     const activateAllAddons = getElement('.js-addon_active-all')
 
     if (activateAllAddons) {
-        activateAllAddons.addEventListener('click', (e) => {
+        activateAllAddons.addEventListener('click', async (e) => {
             const addonWrappers = getElements('.wpsms-addon__download__item--actions--activation')
-            addonWrappers.map(async (wrapper) => {
+            for (const wrapper of addonWrappers) {
                 if (wrapper.querySelector('.wpsms-postbox-addon__buttons .wpsms_badge--success')) {
                     return
                 }
@@ -28,7 +28,7 @@ const initStepThree = () => {
                     processAddonActivation(slug, result)
                     requestResult(result, alertsWrapperElement)
                 }
-            })
+            }
         })
     }
 
