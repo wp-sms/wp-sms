@@ -32,27 +32,42 @@ class PluginHandler
         require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
         require_once ABSPATH . 'wp-admin/includes/file.php';
 
-        // Download the plugin zip file
-        $downloadFile = download_url($pluginUrl);
-        if (is_wp_error($downloadFile)) {
-            // translators: %s: Error message.
-            throw new Exception(sprintf(__('Failed to download the plugin: %s', 'wp-sms'), $downloadFile->get_error_message()));
+        $response = wp_remote_get($pluginUrl, [
+            'timeout'  => 300,
+            'stream'   => true,
+            'filename' => $temp_file = wp_tempnam($pluginUrl),
+        ]);
+
+        if (is_wp_error($response)) {
+            throw new Exception(sprintf(__('Failed to download the plugin: %s', 'wp-sms'), $response->get_error_message()));
         }
 
-        // Prepare for unpacking the plugin
+        // Check if we got a valid response
+        $response_code = wp_remote_retrieve_response_code($response);
+
+        if ($response_code != 200) {
+            $error_message = sprintf(
+                __('Failed to download the plugin. HTTP Status: %d. Response: %s', 'wp-sms'),
+                $response_code,
+                wp_remote_retrieve_body($response) // Show API response for debugging
+            );
+            throw new Exception($error_message);
+        }
+
+        // Use the temporary file for installation
         $pluginUpgrader = new \Plugin_Upgrader(new \Automatic_Upgrader_Skin());
-        $installResult  = $pluginUpgrader->install($downloadFile, ['overwrite_package' => true]);
+        $installResult  = $pluginUpgrader->install($temp_file, ['overwrite_package' => true]);
 
         // Cleanup downloaded file
-        @unlink($downloadFile);
+        @unlink($temp_file);
 
         if (is_wp_error($installResult)) {
-            // translators: %s: Error message.
             throw new Exception(sprintf(__('Failed to install the plugin: %s', 'wp-sms'), $installResult->get_error_message()));
         }
 
         return $installResult;
     }
+
 
     /**
      * Returns plugin file path.
@@ -163,8 +178,8 @@ class PluginHandler
      */
     public function getInstalledPlugins()
     {
-        $result     = [];
-        $plugins    = get_plugins();
+        $result  = [];
+        $plugins = get_plugins();
 
         foreach ($plugins as $pluginFile => $pluginData) {
             // If not wp-sms add-on, skip
