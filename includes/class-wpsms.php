@@ -180,6 +180,7 @@ class WP_SMS
         (new FormidableManager())->init();
         (new ForminatorManager())->init();
         (new ShortcodeManager())->init();
+        \WP_SMS\Utils\MenuUtil::init();
 
         if (is_admin()) {
             // Admin legacy classes.
@@ -194,6 +195,7 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
+            $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
         }
 
         if (!is_admin()) {
@@ -254,5 +256,25 @@ class WP_SMS
     public function getRemoteRequestQueue()
     {
         return $this->remoteRequestQueue;
+    }
+
+    /**
+     * @param $message
+     * @param $level
+     * @return void
+     */
+    public static function log($message, $level = 'info')
+    {
+        if (is_array($message)) {
+            $message = wp_json_encode($message);
+        }
+
+        $log_level = strtoupper($level);
+
+
+        // Log when debug is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log(sprintf('[WP SMS] [%s]: %s', $log_level, $message));
+        }
     }
 }

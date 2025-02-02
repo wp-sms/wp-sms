@@ -1,3 +1,5 @@
+@import "settings/settings";
+
 @import "modules/utilities";
 @import "modules/tabs";
 @import "modules/privacy-page";
@@ -19,3 +21,6 @@
 
 // Modal
 @import "modules/modal";
+
+// UI Admin - License Manager
+@import "modules/ui.admin";
