@@ -14,6 +14,10 @@ const getAjaxUrl = () => {
     return wpsms_global.ajax_url
 }
 
+const getLicenseKey = () => {
+    return wpsms_global.license_key
+}
+
 const getElements = (selector) => {
     return Array.from(document.querySelectorAll(selector))
 }
@@ -47,4 +51,4 @@ const checkInputSize = (e) => {
     return e.target.value.length > 1;
 }
 
-export {getElements, getElement, addClass, removeClass, toggleClass, checkInputSize, getNonce, getAdminUrl, getAjaxUrl, getString}
+export {getElements, getElement, addClass, removeClass, toggleClass, checkInputSize, getNonce, getAdminUrl, getAjaxUrl, getString, getLicenseKey}

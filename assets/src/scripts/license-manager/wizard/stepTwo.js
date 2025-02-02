@@ -1,12 +1,14 @@
-import {addClass, getElement, getElements, getString} from "../utils/utilities";
+import {addClass, getElement, getElements, getLicenseKey, getString, removeClass} from "../utils/utilities";
 import {sendGetRequest} from "../utils/ajaxHelper";
 import {generateBadge, generateRetryDownloadBtn} from "../utils/generator";
 
 const initStepTwo = () => {
+    console.log(wpsms_global)
     const selectAllCheckboxes = getElement('.js-wpsms-addon-select-all')
     const addOneCheckboxes = getElements('.js-wpsms-addon-check-box')
     const submitStepTwo = getElement('.js-addon-download-button')
     let selectedSlugs = []
+    let allAddonsDownloaded = addOneCheckboxes.length;
 
     if (!submitStepTwo) {
         return;
@@ -43,7 +45,7 @@ const initStepTwo = () => {
                 addonCheckboxWrapper.querySelector('span').appendChild(generateBadge('success', getString('downloading') + '...'))
 
                 const result = await sendGetRequest(params);
-
+                allAddonsDownloaded--;
                 if (result) {
                     processAddonDownload(slug, result)
                 }
@@ -79,8 +81,16 @@ const initStepTwo = () => {
     const processAddonDownload = (addonSlug, result) => {
         const addonCheckboxWrapper = getElement(`.wpsms-addon__download__item--select[data-addon-slug="${addonSlug}"]`)
         addonCheckboxWrapper.querySelector('span').innerHTML = "";
-        if (result.data.success) {
-            addonCheckboxWrapper.querySelector('span').appendChild(generateBadge('success', getString('success')))
+        if (result.success) {
+            addonCheckboxWrapper.querySelector('span').appendChild(generateBadge('success', getString('installed')))
+            if (allAddonsDownloaded === 0) {
+                const licenseKey = getLicenseKey()
+                submitStepTwo.classList.add('redirecting');
+                submitStepTwo.textContent = getString('redirecting');
+                window.location.href = `admin.php?page=wp-sms-add-ons-1&tab=get-started&license_key=${licenseKey}`;
+                removeClass(submitStepTwo, 'wpsms-loading-button')
+                submitStepTwo.textContent = ""
+            }
         } else {
             addonCheckboxWrapper.querySelector('span').appendChild(generateBadge('danger', getString('failed')))
             addonCheckboxWrapper.querySelector('span').appendChild(generateRetryDownloadBtn(addonSlug, generateBadge('warning', getString('retry'), 'md')))

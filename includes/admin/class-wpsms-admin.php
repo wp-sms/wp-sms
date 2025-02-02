@@ -282,6 +282,7 @@ class Admin
             'activated'                    => __('Activated', 'wp-sms'),
             'active'                       => __('Active', 'wp-sms'),
             'already_installed'            => __('Already installed', 'wp-sms'),
+            'installed'                    => __('Installed', 'wp-sms'),
             'failed'                       => __('Failed', 'wp-sms'),
             'retry'                        => __('Retry', 'wp-sms'),
             'redirecting'                  => __('Redirecting... Please wait', 'wp-sms'),
