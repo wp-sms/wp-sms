@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use WP_SMS\Controller\LicenseManagerAjax;
+use WP_SMS\Utils\Request;
 
 class Admin
 {
@@ -93,6 +94,10 @@ class Admin
             'ajax_url'       => LicenseManagerAjax::url(),
             'rest_api_nonce' => wp_create_nonce('wp_rest')
         );
+
+        if (!empty(Request::get('license_key'))) {
+            $list['license_key'] = Request::get('license_key');
+        }
 
         wp_localize_script(
             'wp-sms-global-script',
@@ -280,7 +285,7 @@ class Admin
             'failed'                       => __('Failed', 'wp-sms'),
             'retry'                        => __('Retry', 'wp-sms'),
             'redirecting'                  => __('Redirecting... Please wait', 'wp-sms'),
-            'update_license'                  => __('Update License', 'wp-sms'),
+            'update_license'               => __('Update License', 'wp-sms'),
         ];
     }
 
