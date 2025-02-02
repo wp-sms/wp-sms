@@ -4575,18 +4575,18 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   }
 
   &--success {
-    color: #196140;
-    background: #1961400D;
+    color: #058860;
+    background: #1961401A;
   }
 
   &--installed {
-    color: #196140;
+    color: #058860;
     background: transparent;
   }
 
   &--danger {
-    color: #D5201C;
-    background: #D5201C0D;
+    color: #D63638;
+    background: #D636380D;
   }
 
   &--primary {
@@ -4616,6 +4616,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 }
 
 .wpsms-postbox-addon-button , .wpsms-wrap a.wpsms-postbox-addon-button{
+  text-decoration: none;
   border: none;
   padding: 8px 16px;
   gap: 8px;
