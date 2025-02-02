@@ -280,6 +280,7 @@ class Admin
             'failed'                       => __('Failed', 'wp-sms'),
             'retry'                        => __('Retry', 'wp-sms'),
             'redirecting'                  => __('Redirecting... Please wait', 'wp-sms'),
+            'update_license'                  => __('Update License', 'wp-sms'),
         ];
     }
 

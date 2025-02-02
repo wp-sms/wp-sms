@@ -3960,6 +3960,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
             align-items: center;
             justify-content: center;
             border: none;
+            min-width: 134.917px;
 
             &.redirecting {
               background: transparent !important;
@@ -4007,6 +4008,29 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
               background: #F1F1F9;
               color: #B2B2CF;
               position: relative;
+            }
+
+            &.wpsms-loading-button {
+              background-color: #F5F5F5 !important;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              pointer-events: none;
+
+              &:hover {
+                background-color: #F5F5F5 !important;
+              }
+
+              &::after {
+                content: '';
+                display: block;
+                width: 16px;
+                height: 16px;
+                transition: 14s ease;
+                transform: rotate(3000deg);
+                background: center center 100%/no-repeat;
+                background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.64236 2.95378C4.81102 1.94328 6.33445 1.33203 8.00065 1.33203C11.6825 1.33203 14.6673 4.3168 14.6673 7.9987C14.6673 9.42276 14.2208 10.7426 13.4601 11.8258L11.334 7.9987H13.334C13.334 5.05318 10.9462 2.66536 8.00065 2.66536C6.5672 2.66536 5.26583 3.23088 4.30747 4.15098L3.64236 2.95378ZM12.3589 13.0436C11.1903 14.0541 9.66685 14.6654 8.00065 14.6654C4.31875 14.6654 1.33398 11.6806 1.33398 7.9987C1.33398 6.5746 1.78051 5.2548 2.54118 4.17166L4.66732 7.9987H2.66732C2.66732 10.9442 5.05513 13.332 8.00065 13.332C9.43412 13.332 10.7355 12.7665 11.6939 11.8464L12.3589 13.0436Z' fill='%23A3A3A3'/%3E%3C/svg%3E%0A");
+              }
             }
           }
         }
@@ -4692,7 +4716,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       transform: rotate(180deg);
     }
   }
-
 }
 
 .wpsms-addon__download__item, .wpsms-postbox-addon__item {

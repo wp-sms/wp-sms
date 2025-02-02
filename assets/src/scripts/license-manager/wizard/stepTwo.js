@@ -8,6 +8,10 @@ const initStepTwo = () => {
     const submitStepTwo = getElement('.js-addon-download-button')
     let selectedSlugs = []
 
+    if (!submitStepTwo) {
+        return;
+    }
+
     if (selectAllCheckboxes) {
         selectAllCheckboxes.addEventListener('click', () => {
             addOneCheckboxes.map(checkbox => checkbox.checked = true)

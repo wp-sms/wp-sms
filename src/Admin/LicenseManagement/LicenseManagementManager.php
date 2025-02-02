@@ -39,7 +39,7 @@ class LicenseManagementManager
     public function initAdminPreview()
     {
         // todo change the page address
-        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons-1' && isset($_GET['tab'])) {
+        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons-1') {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
         }
     }
