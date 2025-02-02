@@ -6,7 +6,7 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
 
 if (!empty($data['licensed_addons'])) {
     $total_installed_addons = 0;
-    $total_licensed_addons = count($data['licensed_addons']);
+    $total_licensed_addons  = count($data['licensed_addons']);
     foreach ($data['licensed_addons'] as $addOn) {
         $total_installed_addons = $addOn->isInstalled() ?: $total_installed_addons + 1;
     }
@@ -50,13 +50,13 @@ if (!empty($data['licensed_addons'])) {
         <div class="wpsms-addon__step__action">
             <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms-add-ons-1', ['tab' => 'add-license'])); ?>" class="wpsms-addon__step__back"><?php esc_html_e('Back', 'wp-sms'); ?></a>
             <?php if ($total_installed_addons == $total_licensed_addons) { ?>
-            <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms-add-ons-1', ['tab' => 'get-started', 'license_key' => $_GET['license_key']])); ?>" class="wpsms-postbox-addon-button js-addon-download-button">
-                <?php esc_html_e('Activate Add-Ons', 'wp-sms'); ?>
-            </a>
+                <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms-add-ons-1', ['tab' => 'get-started', 'license_key' => \WP_SMS\Utils\Request::get('license_key')])); ?>" class="wpsms-postbox-addon-button js-addon-download-button">
+                    <?php esc_html_e('Activate Add-Ons', 'wp-sms'); ?>
+                </a>
             <?php } else { ?>
-            <a class="wpsms-postbox-addon-button js-addon-download-button disabled">
-                <?php esc_html_e('Download & Install Selected Add-Ons', 'wp-sms'); ?>
-            </a>
+                <a class="wpsms-postbox-addon-button js-addon-download-button disabled">
+                    <?php esc_html_e('Download & Install Selected Add-Ons', 'wp-sms'); ?>
+                </a>
             <?php } ?>
         </div>
     </div>
