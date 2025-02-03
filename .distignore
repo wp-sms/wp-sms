@@ -2,12 +2,12 @@
 /.git
 /.github
 /node_modules
+/bin
 /tests
 
 .distignore
 .gitignore
 .editorconfig
-.env.testing.example
 .gulpfile.js
 codeception.dist.yml
 composer.json
