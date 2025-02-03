@@ -9,7 +9,7 @@ use WP_SMS\Admin\LicenseManagement\Views\LockedRealTimeStatView;
 
 class LicenseManagerPage extends MultiViewPage
 {
-    protected $pageSlug    = 'add-ons-1';
+    protected $pageSlug    = 'add-ons';
     protected $defaultView = 'tabs';
     protected $views       = [
         'tabs'              => TabsView::class,
