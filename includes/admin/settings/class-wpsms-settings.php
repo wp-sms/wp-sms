@@ -2191,41 +2191,6 @@ class Settings
     }
 
     /*
-     * Activate Icon
-     */
-    public function getLicenseStatusIcon($addOnKey)
-    {
-        $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
-        $licenseKey         = isset($this->options["license_{$addOnKey}_key"]) ? $this->options["license_{$addOnKey}_key"] : null;
-        $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
-        $updateOption       = false;
-
-        if (($constantLicenseKey && $this->isCurrentTab('licenses') && wp_sms_check_remote_license($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
-            $status = esc_html__('Activated', 'wp-sms');
-            $type   = 'active';
-
-            if ($constantLicenseKey) {
-                $this->options["license_{$addOnKey}_status"] = true;
-                $updateOption                                = true;
-            }
-        } else {
-            $status                                      = esc_html__('Deactivated', 'wp-sms');
-            $type                                        = 'inactive';
-            $this->options["license_{$addOnKey}_status"] = false;
-            $updateOption                                = true;
-        }
-
-        if ($updateOption && empty($_POST)) {
-            update_option($this->setting_name, $this->options);
-        }
-
-        return Helper::loadTemplate('admin/label-button.php', array(
-            'type'  => $type,
-            'label' => $status
-        ));
-    }
-
-    /*
      * Check license key
      */
     public function check_license_key($value, $oldValue)
