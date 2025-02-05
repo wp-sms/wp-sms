@@ -8,6 +8,7 @@ use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
+use WP_SMS\Services\Hooks\HooksManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
 use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 use WP_SMS\Shortcode\ShortcodeManager;
@@ -202,6 +203,8 @@ class WP_SMS
             // Front Class.
             $this->include('includes/class-front.php');
         }
+
+        new  HooksManager();
 
         // API class.
         $this->include('includes/api/v1/class-wpsms-api-newsletter.php');
