@@ -1,5 +1,5 @@
 ﻿=== WP SMS – Ultimate SMS & MMS Notifications, 2FA, OTP, and Integrations with WooCommerce, GravityForms, and More ===
-Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
+Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
