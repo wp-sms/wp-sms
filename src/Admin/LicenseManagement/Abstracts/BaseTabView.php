@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Abstracts;
+namespace WP_SMS\Admin\LicenseManagement\Abstracts;
 
 use WP_SMS\Exceptions\SystemErrorException;
 use WP_SMS\Utils\Request;

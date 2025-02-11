@@ -3,17 +3,16 @@
 namespace WP_SMS\Admin\LicenseManagement\Views;
 
 use Exception;
+use WP_SMS\Admin\LicenseManagement\Abstracts\BaseTabView;
+use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\LicenseManagerDataProvider;
+use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Components\View;
+use WP_SMS\Exceptions\SystemErrorException;
 use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\Request;
-use WP_SMS\Abstracts\BaseTabView;
-use WP_SMS\Exceptions\SystemErrorException;
-use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\NoticeHandler\Notice;
-use WP_SMS\Admin\LicenseManagement\LicenseManagerDataProvider;
-use WP_SMS\User;
 
 class TabsView extends BaseTabView
 {
