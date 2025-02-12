@@ -179,7 +179,7 @@ class WooCommerceOrderNotification extends Notification
             $preparedItems[] = $itemString;
         }
 
-        return implode('\n', $preparedItems);
+        return implode(PHP_EOL, $preparedItems);
     }
 
     public function getStatus()
