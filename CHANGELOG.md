@@ -1,4 +1,8 @@
-= v6.9.10 - 2025-01-22 =
+v6.9.11 - 2025-02-23 =
+- **Fix**: Render New Lines in the Outbox
+- **Fix**: Show Order Items from `%order_items%` Variable in Multiple Lines
+
+v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
 - **New**: Add **HelloSMS Gateway** (Sweden).
 - **Fix**: Resolve issues with adding and updating subscriber groups.
