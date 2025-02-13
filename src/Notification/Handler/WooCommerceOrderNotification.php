@@ -209,6 +209,7 @@ class WooCommerceOrderNotification extends Notification
         $itemMetaValues = [];
 
         foreach ($this->order->get_items() as $item) {
+            /** @var \WC_Product $product */
             $product = $item->get_product();
             $isVariation = $product->is_type('variation');
             $metaValue = null;
@@ -230,7 +231,6 @@ class WooCommerceOrderNotification extends Notification
                     $metaValue = get_post_meta($item->get_product_id(), $metaKey, true);
                 }
             }
-
 
             if ($metaValue) {
                 $itemMetaValues[] = $this->processMetaValue($metaValue);
