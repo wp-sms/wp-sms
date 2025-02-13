@@ -1,4 +1,5 @@
 v6.9.11 - 2025-02-23 =
+- **New**: Support Variable Products in the Order for `%order_item_meta_{key-name}%` Variable
 - **Fix**: Render New Lines in the Outbox
 - **Fix**: Show Order Items from `%order_items%` Variable in Multiple Lines
 

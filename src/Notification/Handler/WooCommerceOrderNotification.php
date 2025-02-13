@@ -209,11 +209,27 @@ class WooCommerceOrderNotification extends Notification
         $itemMetaValues = [];
 
         foreach ($this->order->get_items() as $item) {
-            $metaValue = $item->get_meta($metaKey);
+            /** @var \WC_Product $product */
+            $product = $item->get_product();
+            $isVariation = $product->is_type('variation');
+            $metaValue = null;
 
-            // Backward compatibility.
+            if ($isVariation) {
+                $metaValue = $product->get_meta($metaKey);
+
+                // Backward compatibility.
+                if (!$metaValue) {
+                    $metaValue = get_post_meta($product->get_id(), $metaKey, true);
+                }
+            }
+
             if (!$metaValue) {
-                $metaValue = get_post_meta($item->get_product_id(), $metaKey, true);
+                $metaValue = $item->get_meta($metaKey);
+
+                // Backward compatibility.
+                if (!$metaValue) {
+                    $metaValue = get_post_meta($item->get_product_id(), $metaKey, true);
+                }
             }
 
             if ($metaValue) {
