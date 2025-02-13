@@ -125,12 +125,8 @@ class SubscriberUtil
             return new \WP_Error('unsubscribe', esc_html__('The required parameters must be valued!', 'wp-sms'));
         }
 
-        // Check the mobile number is string or integer
-        if (strpos($mobile, '+') !== false) {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
-        } else {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
-        }
+        $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
+
         $groupId = json_decode(stripslashes($groupId), true);
 
         if (is_array($groupId)) {
