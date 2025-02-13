@@ -23,9 +23,9 @@ abstract class StepAbstract
 
     abstract protected function getDescription();
 
-    public function render()
+    public function render($data)
     {
-        View::load('pages/onboarding/steps/' . $this->getSlug());
+        View::load('pages/onboarding/steps/' . $this->getSlug(), $data);
     }
 
     public function process()
@@ -68,5 +68,8 @@ abstract class StepAbstract
         return [];
     }
 
-    public abstract function completeIf();
+    public function isCompleted()
+    {
+        return true;
+    }
 }

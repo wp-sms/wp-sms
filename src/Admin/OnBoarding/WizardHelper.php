@@ -14,7 +14,17 @@ class WizardHelper
         return admin_url("admin.php?page={$wizardSlug}&step={$stepSlug}");
     }
 
-    public static function redirectToStep($stepSlug, $wizardSlug)
+    public static function generateNextStepUrl($currentSlug, $wizardSlug)
+    {
+        return admin_url("admin.php?page={$wizardSlug}&step={$currentSlug}&action=next");
+    }
+
+    public static function generatePreviousStepUrl($currentSlug, $wizardSlug)
+    {
+        return admin_url("admin.php?page={$wizardSlug}&step={$currentSlug}&action=previous");
+    }
+
+    public static function redirectToStep($wizardSlug, $stepSlug)
     {
         $url = self::generateStepUrl($stepSlug, $wizardSlug);
         wp_redirect($url);

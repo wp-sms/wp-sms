@@ -23,6 +23,10 @@ class WizardManager
         $this->setCurrent();
         $this->enforceURL();
         add_action('admin_menu', [$this, 'registerPage']);
+
+        if (Request::has('action') && $this->isOnboarding()) {
+            $this->handle();
+        }
     }
 
     public function registerPage()
@@ -50,11 +54,13 @@ class WizardManager
             'current'  => $this->currentStep->getSlug(),
             'previous' => $this->getPrevious(),
             'next'     => $this->getNext(),
-            'ctas'     => $this->getCTAs()
+            'ctas'     => $this->getCTAs(),
+            'index'    => $this->getStepIndex() + 1
         ];
+
         $step = $this->currentStep;
         View::load('templates/layout/onboarding/header', $data);
-        $step->render();
+        $step->render($data);
         View::load('templates/layout/onboarding/footer', $data);
     }
 
@@ -73,6 +79,12 @@ class WizardManager
         return $keys[$currentIndex - 1] ?? null;
     }
 
+    private function getStepIndex()
+    {
+        $keys = array_keys($this->steps);
+        return array_search($this->currentStep->getSlug(), $keys);
+    }
+
     private function setCurrent()
     {
         $currentStep       = isset($_GET['step']) ? sanitize_text_field($_GET['step']) : null;
@@ -87,21 +99,23 @@ class WizardManager
     private function getCTAs()
     {
         $CTAs = [];
+
         if (!empty($this->getPrevious())) {
             $CTAs['back'] = [
-                'url' => WizardHelper::generateStepUrl($this->getPrevious(), $this->slug)
+                'url' => WizardHelper::generatePreviousStepUrl($this->currentStep->getSlug(), $this->slug),
+                'text' => __('Previous', 'wp-sms')
             ];
         }
 
         if (!empty($this->getNext())) {
             $CTAs['next'] = [
-                'url' => WizardHelper::generateStepUrl($this->getNext(), $this->slug)
+                'url' => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug),
+                'text' => __('Next', 'wp-sms')
             ];
         }
 
         if (method_exists($this->currentStep, 'getCTAs')) {
-            $stepCTAs = $this->currentStep->getCTAs();
-            $CTAs     = array_merge($CTAs, $stepCTAs);
+            $stepCTAs = array_merge($CTAs, $this->currentStep->getCTAs());
         }
 
         return apply_filters("wp_sms_{$this->slug}_onboarding_ctas", $CTAs);
@@ -118,28 +132,43 @@ class WizardManager
             $this->currentStep = reset($this->steps);
         }
 
-        $firstIncompleteStep = null;
-
-        // Find the first incomplete step
-        foreach ($this->steps as $step) {
-            if (!$step->completeIf()) {
-                $firstIncompleteStep = $step;
-                break;
-            }
-        }
-
-        $currentSlug = $this->currentStep->getSlug();
-
-        // Redirect if the first incomplete step is different from the current step
-        if ($firstIncompleteStep && $currentSlug !== $firstIncompleteStep->getSlug()) {
-            WizardHelper::redirectToStep($firstIncompleteStep->getSlug(), $this->slug);
-            exit;
-        }
-
         // Ensure 'step' exists in URL and matches the current step
-        if (!Request::get('step') || Request::get('step') !== $currentSlug) {
-            WizardHelper::redirectToStep($currentSlug, $this->slug);
+        if (!Request::get('step')) {
+            $firstIncompleteStep = null;
+
+            // Find the first incomplete step
+            foreach ($this->steps as $step) {
+                if (!$step->isCompleted()) {
+                    $firstIncompleteStep = $step;
+                    break;
+                }
+            }
+
+            $currentSlug = $this->currentStep->getSlug();
+
+            // Redirect if the first incomplete step is different from the current step
+            if ($firstIncompleteStep && $currentSlug !== $firstIncompleteStep->getSlug()) {
+                WizardHelper::redirectToStep($this->slug, $firstIncompleteStep->getSlug());
+                exit;
+            }
+            WizardHelper::redirectToStep($this->slug, $currentSlug);
             exit;
         }
+    }
+
+    private function handle()
+    {
+        switch (Request::get('action')) {
+            case 'next':
+                if ($this->process())
+                    WizardHelper::redirectToStep($this->slug, $this->getNext());
+            case 'previous':
+                WizardHelper::redirectToStep($this->slug, $this->getPrevious());
+        }
+    }
+
+    private function process()
+    {
+        return $this->currentStep->process() && $this->currentStep->isCompleted();
     }
 }
