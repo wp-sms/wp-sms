@@ -171,6 +171,9 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 == Changelog ==
 = v6.9.11 - 2025-02-** =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications.
+- **New**: Support Variable Products in the Order for `%order_item_meta_{key-name}%` Variable
+- **Fix**: Render New Lines in the Outbox
+- **Fix**: Show Order Items from `%order_items%` Variable in Multiple Lines
 - **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for better performance and maintainability.
 
 = v6.9.10 - 2025-01-22 =
