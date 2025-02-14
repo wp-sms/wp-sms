@@ -3,16 +3,25 @@
 namespace WP_SMS\Admin\OnBoarding;
 
 use WP_SMS\Components\View;
+use WP_SMS\Utils\Request;
+use WP_SMS\Utils\Validator;
 
 abstract class StepAbstract
 {
     protected $skippable = true;
     protected $data = [];
     protected $fields = [];
+    protected $errors = [];
 
     public function __construct()
     {
         $this->initialize();
+        $this->setFields();
+    }
+
+    protected function setFields()
+    {
+        $this->fields = $this->getFields();
     }
 
     abstract protected function initialize();
@@ -33,30 +42,37 @@ abstract class StepAbstract
         if (empty($this->fields)) {
             return true;
         }
+        $data = [];
 
-        if ($this->validate()) {
-            foreach ($this->fields as $field => $value) {
+        foreach ($this->fields as $field) {
+            $data[$field] = Request::get($field);
+        }
+
+        if (empty($this->validate($data))) {
+            foreach ($data as $field => $value) {
                 $this->setData($field, $value);
             }
             return true;
         }
 
-        return false;
+        return $this->errors;
     }
 
-    public function validate()
+    public function validate($data)
     {
-        //todo error handling
-        $this->errors = [];
+        if (empty($this->validationRules())) {
+            return [];
+        }
+        $validator = new Validator($data, $this->validationRules());
 
-        foreach ($this->fields as $field => $value) {
-            if (empty($value)) {
-                $this->errors[$field] = "The field '{$field}' is required.";
-            }
+        if ($validator->fails()) {
+            $this->errors = $validator->errors();
         }
 
-        return empty($this->errors);
+        return $this->errors;
     }
+
+    abstract protected function validationRules();
 
     public function setData($key, $value)
     {

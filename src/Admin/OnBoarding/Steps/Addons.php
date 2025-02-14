@@ -25,4 +25,17 @@ class Addons extends StepAbstract
     {
         // TODO: Implement getDescription() method.
     }
+
+    protected function validationRules()
+    {
+        // TODO: Implement validationRules() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getFields(): array
+    {
+        return [];
+    }
 }

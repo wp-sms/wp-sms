@@ -5,7 +5,7 @@
         Set up SMS functionality for your WordPress site by following a few simple steps. </p>
 </div>
 <div class="c-form c-form--medium u-flex u-content-center">
-    <form>
+    <form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=getting-started&action=next">
         <p class="c-form__title">Get Notifications Where You Need Them</p>
         <div class="c-form__fieldgroup u-mb-32">
             <label for="countries">
@@ -27,8 +27,11 @@
         </div>
         <div class="c-form__fieldgroup u-mb-38">
             <label for="tel">Your Mobile Number <span class="u-text-red">*</span></label>
-            <input id="tel" placeholder="Enter your mobile number" type="tel"/>
+            <input name="tel" id="tel" placeholder="Enter your mobile number" type="tel"/>
             <p class="c-form__description">Enter the phone number where you'd like to receive management alerts.</p>
+        </div>
+        <div class="c-form__footer u-flex-end">
+            <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
         </div>
     </form>
 </div>

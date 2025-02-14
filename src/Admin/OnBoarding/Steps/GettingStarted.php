@@ -38,4 +38,17 @@ class GettingStarted extends StepAbstract
     {
         return true;
     }
+
+    protected function validationRules()
+    {
+        return [
+            'tel'       => 'required|numeric',
+            'countries' => 'required|text'
+        ];
+    }
+
+    protected function getField()
+    {
+        // TODO: Implement getField() method.
+    }
 }

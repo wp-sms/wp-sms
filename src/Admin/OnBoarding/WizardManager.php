@@ -23,11 +23,33 @@ class WizardManager
         $this->setCurrent();
         $this->enforceURL();
         add_action('admin_menu', [$this, 'registerPage']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
 
         if (Request::has('action') && $this->isOnboarding()) {
             $this->handle();
         }
     }
+
+    public function enqueueScripts()
+    {
+        if (!Request::get('page') || Request::get('page') !== $this->slug) {
+            return;
+        }
+        wp_enqueue_style(
+            'wp-sms-onboarding-style',
+            WP_SMS_URL . 'assets/css/main.min.css',
+            [],
+            '1.0.0'
+        );
+        wp_enqueue_script(
+            'wp-sms-onboarding-script',
+            WP_SMS_URL . 'assets/js/main.js',
+            ['jquery', 'wpsms-select2'], // Ensure jQuery is loaded as a dependency
+            '1.0.0',
+            true
+        );
+    }
+
 
     public function registerPage()
     {
@@ -102,15 +124,15 @@ class WizardManager
 
         if (!empty($this->getPrevious())) {
             $CTAs['back'] = [
-                'url' => WizardHelper::generatePreviousStepUrl($this->currentStep->getSlug(), $this->slug),
-                'text' => __('Previous', 'wp-sms')
+                'url'  => WizardHelper::generatePreviousStepUrl($this->currentStep->getSlug(), $this->slug),
+                'text' => __('Back', 'wp-sms')
             ];
         }
 
         if (!empty($this->getNext())) {
             $CTAs['next'] = [
-                'url' => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug),
-                'text' => __('Next', 'wp-sms')
+                'url'  => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug),
+                'text' => __('Continue', 'wp-sms')
             ];
         }
 
@@ -160,15 +182,32 @@ class WizardManager
     {
         switch (Request::get('action')) {
             case 'next':
-                if ($this->process())
-                    WizardHelper::redirectToStep($this->slug, $this->getNext());
+                $errors = $this->process();
+
+                if (is_array($errors) && !empty($errors)) {
+                    $errorQuery = http_build_query(['errors' => json_encode($errors)]);
+                    $url        = WizardHelper::generateStepUrl($this->currentStep->getSlug(), $this->slug) . '&' . $errorQuery;
+                    wp_redirect($url);
+                    exit;
+                }
+                
+                WizardHelper::redirectToStep($this->slug, $this->getNext());
+                break;
             case 'previous':
                 WizardHelper::redirectToStep($this->slug, $this->getPrevious());
+                break;
         }
     }
 
+
     private function process()
     {
-        return $this->currentStep->process() && $this->currentStep->isCompleted();
+        $result = $this->currentStep->process();
+        if (is_array($result) && !empty($result)) {
+            return $result;
+        }
+
+        return $this->currentStep->isCompleted();
     }
+
 }

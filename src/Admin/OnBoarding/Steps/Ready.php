@@ -30,4 +30,14 @@ class Ready extends StepAbstract
     {
         // TODO: Implement completeIf() method.
     }
+
+    protected function validationRules()
+    {
+        // TODO: Implement validationRules() method.
+    }
+
+    protected function getFields()
+    {
+        return [];
+    }
 }

@@ -5,7 +5,7 @@
         Send a test SMS to the administrator's phone number to confirm everything is working as it should. </p>
 </div>
 <div class="c-form u-flex u-content-center u-align-center u-flex--column">
-    <form action="/step7-ready.html">
+    <form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=addons&action=next">
         <div class="c-addons__items u-flex u-content-sp u-align-stretch">
             <div class="c-addon-card u-flex u-flex--column u-content-start u-align-start">
                 <span class="c-addon__icon c-addon__icon--booking-integration"></span>
@@ -91,6 +91,11 @@
                     </a>
                 </div>
             </div>
+        </div>
+        <div class="c-form__footer u-content-sp u-align-center">
+            <a class="c-form__footer--last-step" href="<?= $ctas['back']['url'] ?>"><?= $ctas['back']['text'] ?></a>
+            <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
+            <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
         </div>
     </form>
 </div>

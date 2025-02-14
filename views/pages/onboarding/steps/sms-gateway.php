@@ -6,98 +6,104 @@
         directly to the SMS service. </p>
 </div>
 <div class="c-form c-form--medium u-flex u-content-center u-align-center u-flex--column">
-    <form action="/step4-industry.html">
-        <div class="c-form__fieldgroup u-mb-24">
-            <label for="username">API username <span class="u-text-red">*</span></label>
-            <input id="username" placeholder="" type="text"/>
-            <p class="c-form__description">Enter the username provided by your SMS gateway.</p>
+    <form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=sms-gateway&action=next">
+        <div class="c-table__wrapper">
+            <div class="wpsms-skeleton wpsms-skeleton__table"></div>
+            <table class="c-table c-table-gateway js-table-gateway js-table">
+                <thead>
+                <tr>
+                    <th>Gateway
+                        <span data-tooltip="Gateway tooltip" data-tooltip-font-size="12px">
+                                          <i class="wps-tooltip-icon"></i>
+                                        </span>
+                        <i class="c-table__sort-arrow"></i>
+                    </th>
+                    <th class="u-text-center">Bulk SMS <span data-tooltip="Bulk SMS tooltip" data-tooltip-font-size="12px"><i class="wps-tooltip-icon"></i></span></th>
+                    <th class="u-text-center">MMS <span data-tooltip="MMS tooltip" data-tooltip-font-size="12px"><i class="wps-tooltip-icon"></i></span></th>
+                    <th>Gateway Access <span data-tooltip="Gateway Access tooltip" data-tooltip-font-size="12px"><i class="wps-tooltip-icon"></i></span> <i class="c-table__sort-arrow"></i></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <input id="gateway-name-1" name="name" type="radio">
+                        <label for="gateway-name-1">Gateway name 1</label>
+                    </td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-text-center"><span class="unchecked"></span></td>
+                    <td class="u-flex u-align-center u-content-sp">
+                        <span class="c-table__availability c-table__availability--success">Available</span>
+                    </td>
+                </tr>
+                <tr class="disabled">
+                    <td>
+                        <span data-tooltip="Pro Version Required" data-tooltip-font-size="12px"><span class="icon-lock"></span></span>
+                        <span>Gateway name 2</span>
+                    </td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-text-center"><span class="unchecked"></span></td>
+                    <td class="u-flex u-align-center u-content-sp">
+                        <a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-table__availability c-table__availability--pro">Pro Version Required</a>
+                    </td>
+                </tr>
+
+                <tr class="disabled">
+                    <td>
+                        <span data-tooltip="Pro Version Required" data-tooltip-font-size="12px"><span class="icon-lock"></span></span>
+                        <span>Gateway name</span>
+                    </td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-text-center"><span class="unchecked"></span></td>
+                    <td class="u-flex u-align-center u-content-sp">
+                        <a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-table__availability c-table__availability--pro">Pro Version Required</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="gateway-name-4" name="name" type="radio">
+                        <label for="gateway-name-4">Gateway name</label>
+                    </td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-text-center"><span class="unchecked"></span></td>
+                    <td class="u-flex u-align-center u-content-sp">
+                        <span class="c-table__availability c-table__availability--success">Available</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="gateway-name-5" name="name" type="radio">
+                        <label for="gateway-name-5">Gateway name 5</label>
+                    </td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-flex u-align-center u-content-sp">
+                        <span class="c-table__availability c-table__availability--success">Available</span>
+                    </td>
+                </tr>
+                <tr class="disabled">
+                    <td>
+                        <span data-tooltip="Pro Version Required" data-tooltip-font-size="12px"><span class="icon-lock"></span></span>
+                        <span>Gateway name 6</span>
+                    </td>
+                    <td class="u-text-center"><span class="checked"></span></td>
+                    <td class="u-text-center"><span class="unchecked"></span></td>
+                    <td class="u-flex u-align-center u-content-sp">
+                        <a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-table__availability c-table__availability--pro">Pro Version Required</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="c-form__fieldgroup u-mb-24">
-            <label for="password">API password <span class="u-text-red">*</span></label>
-            <input id="password" placeholder="" type="password"/>
-            <p class="c-form__description">Enter the password associated with your SMS gateway account.</p>
+        <div class="c-getway__offer u-mb-38">
+            <span>Don’t have SMS gateway?</span>
+            <a class="c-link" href="https://wp-sms-pro.com/gateways/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="Check out our recommended SMS gateways for optimized service.">
+                Check out our recommended SMS gateways for optimized service.
+            </a>
         </div>
-        <div class="c-form__fieldgroup u-mb-24">
-            <label for="tel">Sender number <span class="u-text-red">*</span></label>
-            <input id="tel" placeholder="" type="tel"/>
-            <p class="c-form__description">This is the number that will appear on recipients’ devices when they receive
-                your messages.</p>
+        <div class="c-form__footer u-content-sp u-align-center">
+            <a class="c-form__footer--last-step" href="<?= $ctas['back']['url'] ?>"><?= $ctas['back']['text'] ?></a>
+            <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
+            <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
         </div>
-        <ul class="c-form__result c-form__result--success">
-            Connection Status
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Status</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--sucsess">Active</span>
-                    <span class="c-form__result-description">Your SMS gateway is successfully connected and ready to use.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Balance</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--primary">$23</span>
-                    <span class="c-form__result-description">This is the current credit in your SMS account.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Incoming message</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--sucsess">Supported</span>
-                    <span class="c-form__result-description">You can receive SMS messages on your configured number.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Bulk SMS</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--sucsess">Supported</span>
-                    <span class="c-form__result-description">You can send bulk SMS messages.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center">
-                <span class="c-form__result-title">Send MMS</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--sucsess">Supported</span>
-                    <span class="c-form__result-description">Multimedia Messaging Service (MMS) is enabled.</span>
-                  </span>
-            </li>
-        </ul>
-        <ul class="c-form__result c-form__result--danger">
-            Connection Status
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Status</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--danger">Deactivated!</span>
-                    <span class="c-form__result-description">There is an issue with the SMS gateway connection. Please check your settings.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Balance</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--primary">-</span>
-                    <span class="c-form__result-description">This is the current credit in your SMS account.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Incoming message</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--danger">Does not support!</span>
-                    <span class="c-form__result-description">Receiving SMS messages is not supported with the current gateway. Choose another gateway for this feature.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Bulk SMS</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--danger">Does not support!</span>
-                    <span class="c-form__result-description">You cannot send bulk SMS messages with the current gateway setup. To enable this feature, please select a gateway that offers bulk messaging.</span>
-                  </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center">
-                <span class="c-form__result-title">Send MMS</span>
-                <span class="c-form__result-status">
-                    <span class="c-form__result-status--danger">Does not support!</span>
-                    <span class="c-form__result-description">Your gateway does not support sending MMS. For this service, please select a gateway that offers MMS capabilities.</span>
-                  </span>
-            </li>
-        </ul>
     </form>
 </div>

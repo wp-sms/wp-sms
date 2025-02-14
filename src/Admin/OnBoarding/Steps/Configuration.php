@@ -37,4 +37,13 @@ class Configuration extends StepAbstract
     {
         // TODO: Implement completeIf() method.
     }
+
+    protected function validationRules()
+    {
+        return [
+            'tel'      => 'required|numeric',
+            'username' => 'required',
+            'password' => 'required',
+        ];
+    }
 }

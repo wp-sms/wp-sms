@@ -30,4 +30,22 @@ class TestSetup extends StepAbstract
     {
         // TODO: Implement completeIf() method.
     }
+
+    protected function validationRules()
+    {
+        // TODO: Implement validationRules() method.
+    }
+
+    protected function getField()
+    {
+        // TODO: Implement getField() method.
+    }
+
+    /**
+     * @return array
+     */
+    public function getFields(): array
+    {
+        return [];
+    }
 }

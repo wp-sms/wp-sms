@@ -38,4 +38,9 @@ class SmsGateway extends StepAbstract
     {
         // TODO: Implement completeIf() method.
     }
+
+    protected function validationRules()
+    {
+    }
+
 }
