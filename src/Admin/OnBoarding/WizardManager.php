@@ -190,7 +190,7 @@ class WizardManager
                     wp_redirect($url);
                     exit;
                 }
-                
+
                 WizardHelper::redirectToStep($this->slug, $this->getNext());
                 break;
             case 'previous':

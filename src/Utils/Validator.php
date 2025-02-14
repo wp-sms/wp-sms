@@ -14,6 +14,7 @@ class Validator
     {
         $this->data  = $data;
         $this->rules = $rules;
+        $this->setMessages();
     }
 
     public function setMessages()
