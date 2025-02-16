@@ -1,12 +1,12 @@
 <div class="c-section__title">
-    <span class="c-section__step">Step 3 of 7</span>
+    <span class="c-section__step">Step <?php echo $index ?> of 7</span>
     <h1 class=" u-m-0">Set Up Your SMS Gateway</h1>
     <p class="u-m-0">
         To get started with sending messages, enter your SMS gateway credentials. This connects your WordPress site
         directly to the SMS service. </p>
 </div>
 <div class="c-form c-form--medium u-flex u-content-center u-align-center u-flex--column">
-    <form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=sms-gateway&action=next">
+    <form method="post" action="<?php echo $ctas['next']['url'] ?>">
         <div class="c-table__wrapper">
             <div class="wpsms-skeleton wpsms-skeleton__table"></div>
             <table class="c-table c-table-gateway js-table-gateway js-table">
@@ -101,9 +101,9 @@
             </a>
         </div>
         <div class="c-form__footer u-content-sp u-align-center">
-            <a class="c-form__footer--last-step" href="<?= $ctas['back']['url'] ?>"><?= $ctas['back']['text'] ?></a>
+            <a class="c-form__footer--last-step" href="<?php echo $ctas['back']['url'] ?>"><?php echo $ctas['back']['text'] ?></a>
             <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
-            <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
+            <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['next']['text'] ?>"/>
         </div>
     </form>
 </div>

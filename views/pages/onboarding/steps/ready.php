@@ -1,4 +1,4 @@
-<form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=addons&action=next">
+<form method="post" action="<?php echo $ctas['next']['url'] ?>">
 
     <div class="u-flex u-flex--column u-align-center c-ready__message">
         <svg width="66" height="65" viewBox="0 0 66 65" fill="none" xmlns="http://www.w3.org/2000/svg">

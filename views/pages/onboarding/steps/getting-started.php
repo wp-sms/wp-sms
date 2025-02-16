@@ -1,11 +1,11 @@
 <div class="c-section__title u-border-b">
-    <span class="c-section__step">Step <?= $index ?> of 7</span>
+    <span class="c-section__step">Step <?php echo $index ?> of 7</span>
     <h1 class=" u-m-0 u-text-orange">Welcome to WP SMS!</h1>
     <p class="u-m-0">
         Set up SMS functionality for your WordPress site by following a few simple steps. </p>
 </div>
 <div class="c-form c-form--medium u-flex u-content-center">
-    <form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=getting-started&action=next">
+    <form method="post" action="<?php echo $ctas['next']['url'] ?>">
         <p class="c-form__title">Get Notifications Where You Need Them</p>
         <div class="c-form__fieldgroup u-mb-32">
             <label for="countries">
@@ -31,7 +31,7 @@
             <p class="c-form__description">Enter the phone number where you'd like to receive management alerts.</p>
         </div>
         <div class="c-form__footer u-flex-end">
-            <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
+            <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['next']['text'] ?>"/>
         </div>
     </form>
 </div>

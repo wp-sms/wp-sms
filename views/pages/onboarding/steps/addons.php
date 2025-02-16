@@ -1,11 +1,11 @@
 <div class="c-section__title">
-    <span class="c-section__step">Step 6 of 7</span>
+    <span class="c-section__step">Step <?php echo $index ?> of 7</span>
     <h1 class=" u-m-0">SMS Add-Ons</h1>
     <p class="u-m-0">
         Send a test SMS to the administrator's phone number to confirm everything is working as it should. </p>
 </div>
 <div class="c-form u-flex u-content-center u-align-center u-flex--column">
-    <form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=addons&action=next">
+    <form method="post" action="<?php echo $ctas['next']['url'] ?>">
         <div class="c-addons__items u-flex u-content-sp u-align-stretch">
             <div class="c-addon-card u-flex u-flex--column u-content-start u-align-start">
                 <span class="c-addon__icon c-addon__icon--booking-integration"></span>
@@ -35,7 +35,7 @@
                     </a>
                 </div>
             </div>
-            <div class="c-addon-card u-flex u-flex--column u-content-start u-align-start" >
+            <div class="c-addon-card u-flex u-flex--column u-content-start u-align-start">
                 <span class="c-addon__icon c-addon__icon--elementor"></span>
                 <h2 class="c-addon-card__title">
                     WP SMS Elementor </h2>
@@ -93,9 +93,9 @@
             </div>
         </div>
         <div class="c-form__footer u-content-sp u-align-center">
-            <a class="c-form__footer--last-step" href="<?= $ctas['back']['url'] ?>"><?= $ctas['back']['text'] ?></a>
+            <a class="c-form__footer--last-step" href="<?php echo $ctas['back']['url'] ?>"><?php echo $ctas['back']['text'] ?></a>
             <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
-            <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
+            <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['next']['text'] ?>"/>
         </div>
     </form>
 </div>

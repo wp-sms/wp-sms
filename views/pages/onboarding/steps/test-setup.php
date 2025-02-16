@@ -1,10 +1,10 @@
 <div class="c-section__title">
-    <span class="c-section__step">Step 4 of 7</span>
+    <span class="c-section__step">Step <?php echo $index ?> of 7</span>
     <h1 class=" u-m-0">Test Your Setup</h1>
     <p class="u-m-0">
         Send a test SMS to the administrator's phone number to confirm everything is working as it should. </p>
 </div>
-<form method="post" action="https://vl.test/wp-admin/admin.php?page=wp-sms-onboarding&step=test-setup&action=next">
+<form method="post" action="<?php echo $ctas['next']['url'] ?>">
     <div class="c-section__test">
         <p class="c-section__test--title">A test message will be sent to the phone number you provided earlier. Please
             check your device for the message.</p>
@@ -14,8 +14,8 @@
             troubleshooting options.</p>
     </div>
     <div class="c-form__footer u-content-sp u-align-center">
-        <a class="c-form__footer--last-step" href="<?= $ctas['back']['url'] ?>"><?= $ctas['back']['text'] ?></a>
+        <a class="c-form__footer--last-step" href="<?php echo $ctas['back']['url'] ?>"><?php echo $ctas['back']['text'] ?></a>
         <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
-        <input class="c-btn c-btn--primary" type="submit" value="<?= $ctas['next']['text'] ?>"/>
+        <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['next']['text'] ?>"/>
     </div>
 </form>
