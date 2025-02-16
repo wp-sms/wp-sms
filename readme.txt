@@ -172,6 +172,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 = v6.9.11 - 2025-02-** =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications.
 - **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for better performance and maintainability.
+- **Fix**: Resolved issue where the newsletter subscription confirmation failed with a 'Not found the number!' error.
 
 = v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
