@@ -54,8 +54,8 @@ class WizardManager
     public function registerPage()
     {
         add_dashboard_page(
-            __($this->title, 'veronalabs-onboarding'),
-            __($this->title, 'veronalabs-onboarding'),
+            __($this->title, 'wp-sms'),
+            __($this->title, 'wp-sms'),
             'manage_options',
             $this->slug,
             [$this, 'render']
@@ -183,15 +183,25 @@ class WizardManager
         switch (Request::get('action')) {
             case 'next':
                 $errors = $this->process();
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    if (is_array($errors) && !empty($errors)) {
+                        // Use NoticeManager to display errors
+                        $noticeManager = \WP_SMS\Notice\NoticeManager::getInstance();
 
-                if (is_array($errors) && !empty($errors)) {
-                    $errorQuery = http_build_query(['errors' => json_encode($errors)]);
-                    $url        = WizardHelper::generateStepUrl($this->currentStep->getSlug(), $this->slug) . '&' . $errorQuery;
-                    wp_redirect($url);
+                        foreach ($errors as $field => $errorArray) {
+                            foreach ($errorArray as $errorItem) {
+                                $noticeManager->registerNotice('wizard_error_' . uniqid(), $errorItem, false);
+                            }
+                        }
+                    } else {
+                        // Redirect to the next step
+                        WizardHelper::redirectToStep($this->slug, $this->getNext());
+                    }
+                } else {
+                    $redirectUrl = remove_query_arg('action', WizardHelper::generateStepUrl($this->currentStep->getSlug(), $this->slug));
+                    wp_redirect($redirectUrl);
                     exit;
                 }
-
-                WizardHelper::redirectToStep($this->slug, $this->getNext());
                 break;
             case 'previous':
                 WizardHelper::redirectToStep($this->slug, $this->getPrevious());
