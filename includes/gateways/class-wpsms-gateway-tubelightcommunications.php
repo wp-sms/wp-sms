@@ -9,7 +9,6 @@ use WP_SMS\Gateway;
 class tubelightcommunications extends Gateway
 {
     private     $wsdl_link = "https://portal.tubelightcommunications.com";
-//    public      $documentUrl = 'https://wp-sms-pro.com/resources/tubelight-communications-sms-gateway-configuration/';
     public      $unitrial = true;
     public      $unit;
     public      $flash = "disable";
@@ -22,7 +21,7 @@ class tubelightcommunications extends Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->help = __('SMS: please follow this format: <b>message|template_id</b><br>WhatsApp: please follow this format: <b>var1:var2:var3:var4|template_name</b>', 'wp-sms');
+        $this->help = __('<b>SMS Route</b>: Please follow this format in your messages: <pre>message|template_id</pre><br><b>WhatsApp Route</b>: Please follow this format in your messages: <pre>var1:var2:var3:var4|template_name</pre>', 'wp-sms');
         $this->gatewayFields  = [
             'username'       => [
                 'id'   => 'gateway_username',
@@ -55,7 +54,7 @@ class tubelightcommunications extends Gateway
     /**
      * Send SMS
      */
-    public function SendSMS(): WP_Error|string
+    public function SendSMS()
     {
 
         /**
@@ -85,108 +84,56 @@ class tubelightcommunications extends Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $token = $this->accessToken();
+        try {
+            // Get access token
+            $token = $this->accessToken();
+            if (is_wp_error($token)) {
+                throw new Exception('Authorization Error.');
+            }
 
-        if (is_wp_error($token)) {
-            return $token;
-        }
+            // Get template and message body
+            $templateMessage = $this->getTemplateIdAndMessageBody();
+            $template = $templateMessage['template_id'] ?? null;
+            $message = $templateMessage['message'] ?? null;
 
-        $templateMessage = $this->getTemplateIdAndMessageBody();
+            if (empty($message)) {
+                throw new Exception('Invalid Message Format');
+            }
 
-        if (is_array($templateMessage)) {
-            $template = $templateMessage['template_id'];
-            $message = $templateMessage['message'];
             $messageVars = explode(':', $message);
             $messageVars = count($messageVars) === 1 ? [] : $messageVars;
-        } else {
-            $template = null;
-            $message = $this->msg;
-            $messageVars = [];
+
+            $params = [
+                'headers'   => [
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ],
+            ];
+
+            // Process SMS
+            if ($this->route === 'sms') {
+                return $this->sendSMSMessage($params, $template, $message);
+            }
+
+            // Process WhatsApp
+            if ($this->route === 'whatsapp') {
+                return $this->sendWhatsAppMessage($params, $template, $messageVars);
+            }
+
+            throw new Exception('Invalid Route.');
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
-
-        $params = [
-            'headers'   => [
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-                'Authorization' => 'Bearer ' . $token
-            ],
-        ];
-
-        $responses = [];
-
-        if ($this->route == 'sms') {
-            foreach ($this->to as $number) {
-                try {
-                    $params['body'] = wp_json_encode([
-                        'sender'        => $this->from,
-                        'mobileNo'      => $number,
-                        'messageType'   => 'TEXT',
-                        'messages'      => $message,
-                        'tempId'        => $template ?? '',
-                    ]);
-
-                    $response = $this->request('POST', $this->wsdl_link . '/sms/api/v1/websms/single', [], $params);
-                    $this->log($this->from, $this->msg, $this->to, $response);
-
-                    /**
-                     * Run hook after send sms.
-                     *
-                     * @param string $result result output.
-                     *
-                     * @since 2.4
-                     *
-                     */
-                    do_action('wp_sms_send', $response);
-
-                    $responses[] = $response;
-                } catch (\Exception $e) {
-                    $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-                }
-            }
-        } else {
-            if ($template === null || empty($messageVars)) {
-                throw new Exception('Message format is not correct');
-            }
-            foreach ($this->to as $number) {
-                try {
-                    $params['body'] = wp_json_encode([
-                        'to'            => $this->to,
-                        'message'       => [
-                            'template_name'     => $template,
-                            'language'          => 'en',
-                            'type'              => 'template',
-                            'body_params'       => $messageVars,
-                            'header_params'     => $this->media,
-                        ]
-                    ]);
-
-                    $response = $this->request('POST', $this->wsdl_link . '/whatsapp/api/v1/send', [], $params);
-                    $this->log($this->from, $this->msg, $this->to, $response);
-
-                    /**
-                     * Run hook after send sms.
-                     *
-                     * @param string $result result output.
-                     *
-                     * @since 2.4
-                     *
-                     */
-                    do_action('wp_sms_send', $response);
-
-                    $responses[] = $response;
-                } catch (\Exception $e) {
-                    $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-                }
-            }
-        }
-
-        return json_encode($responses);
     }
 
     /**
      * Get available credit
      */
-    public function GetCredit(): WP_Error|string
+    public function GetCredit()
     {
         try {
             $token = $this->accessToken();
@@ -215,7 +162,7 @@ class tubelightcommunications extends Gateway
     /**
      * Get access token
      */
-    public function accessToken(): WP_Error|string
+    private function accessToken()
     {
         try {
             if (empty($this->username) || empty($this->password)) {
@@ -239,6 +186,60 @@ class tubelightcommunications extends Gateway
 
         } catch (Exception $e) {
             return new WP_Error('authorization', $e->getMessage());
+        }
+    }
+
+    private function sendSMSMessage($params, $template, $message)
+    {
+        $params['body'] = wp_json_encode(array_map(function ($number) use ($message, $template) {
+                return [
+                    'sender'        => $this->from,
+                    'mobileNo'      => $number,
+                    'messageType'   => 'TEXT',
+                    'messages'      => $message,
+                    'tempId'        => $template ?? '',
+                ];
+            }, $this->to),);
+
+
+        $response = $this->request('POST', $this->wsdl_link . '/sms/api/v1/websms/bulksend', [], $params);
+
+        $this->log($this->from, $this->msg, $this->to, $response);
+        do_action('wp_sms_send', $response);
+
+        return $response;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function sendWhatsAppMessage($params, $template, $messageVars)
+    {
+        if (empty($template) || empty($messageVars)) {
+            throw new Exception('Invalid Message Format');
+        }
+
+        foreach ($this->to as $number) {
+            try {
+                $params['body'] = wp_json_encode([
+                    'to'      => [$number],
+                    'message' => [
+                        'template_name' => $template,
+                        'type'          => 'template',
+                        'body_params'   => $messageVars,
+                        'header_params' => $this->media,
+                    ]
+                ]);
+
+                $response = $this->request('POST', $this->wsdl_link . '/whatsapp/api/v1/send', [], $params);
+
+                $this->log($this->from, $this->msg, $this->to, $response);
+                do_action('wp_sms_send', $response);
+
+                return $response;
+            } catch (\Exception $e) {
+                $this->log($this->from, $this->msg, $number, $e->getMessage(), 'error');
+            }
         }
     }
 }
