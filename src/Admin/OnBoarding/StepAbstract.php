@@ -16,11 +16,6 @@ abstract class StepAbstract
     public function __construct()
     {
         $this->initialize();
-        $this->setFields();
-    }
-
-    protected function setFields()
-    {
         $this->fields = $this->getFields();
     }
 
@@ -34,7 +29,7 @@ abstract class StepAbstract
 
     public function render($data)
     {
-        View::load('pages/onboarding/steps/' . $this->getSlug(), $data);
+        View::load(sprintf('pages/onboarding/steps/%s', $this->getSlug()), $data);
     }
 
     public function process()
@@ -42,16 +37,17 @@ abstract class StepAbstract
         if (empty($this->fields)) {
             return true;
         }
-        $data = [];
 
+        $data = [];
         foreach ($this->fields as $field) {
             $data[$field] = Request::get($field);
         }
 
-        if (empty($this->validate($data))) {
+        if (!$this->validate($data)) {
             foreach ($data as $field => $value) {
                 $this->setData($field, $value);
             }
+            $this->afterValidation();
             return true;
         }
 
@@ -60,10 +56,12 @@ abstract class StepAbstract
 
     public function validate($data)
     {
-        if (empty($this->validationRules())) {
+        $rules = $this->validationRules();
+        if (!$rules) {
             return [];
         }
-        $validator = new Validator($data, $this->validationRules());
+
+        $validator = new Validator($data, $rules);
 
         if ($validator->fails()) {
             $this->errors = $validator->errors();
@@ -87,5 +85,9 @@ abstract class StepAbstract
     public function isCompleted()
     {
         return true;
+    }
+
+    public function afterValidation()
+    {
     }
 }

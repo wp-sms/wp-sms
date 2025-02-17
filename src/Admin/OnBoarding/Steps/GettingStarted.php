@@ -47,8 +47,8 @@ class GettingStarted extends StepAbstract
         ];
     }
 
-    protected function getField()
+    public function afterValidation()
     {
-        // TODO: Implement getField() method.
+        update_option('wpsms_onboarding_getting_started_tel', $this->data['tel']);
     }
 }

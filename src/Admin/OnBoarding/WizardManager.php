@@ -72,6 +72,12 @@ class WizardManager
      */
     public function render()
     {
+        echo '<style>
+        #wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links { display: none !important; }
+        #wpcontent, #wpbody, #wpwrap { margin: 0 !important; padding: 0 !important; overflow: hidden; }
+        #wpbody-content { padding-bottom: 0; }
+        .wpsms-onboarding { width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        </style>';
         $data = [
             'current'  => $this->currentStep->getSlug(),
             'previous' => $this->getPrevious(),
