@@ -177,7 +177,7 @@ class WizardManager
         foreach ($steps as $slug => $object) {
             $stepsData[] = [
                 'title' => $object->title,
-                'url'   => \WP_SMS\Admin\OnBoarding\WizardHelper::generateStepUrl($slug, $this->currentStep->getSlug())
+                'url'   => \WP_SMS\Admin\OnBoarding\WizardHelper::generateStepUrl($slug, $this->slug)
             ];
         }
 
