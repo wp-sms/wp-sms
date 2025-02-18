@@ -56,7 +56,9 @@ class WizardManager
             'previous' => $this->getPrevious(),
             'next'     => $this->getNext(),
             'ctas'     => $this->getCTAs(),
-            'index'    => $this->getStepIndex() + 1
+            'index'    => $this->getStepIndex() + 1,
+            'steps'    => $this->getStepsData(),
+            'slug'     => $this->slug
         );
 
         View::load('templates/layout/onboarding/header', $data);
@@ -167,5 +169,18 @@ class WizardManager
         $keys  = array_keys($this->steps);
         $index = array_search($this->currentStep->getSlug(), $keys) + $offset;
         return isset($keys[$index]) ? $keys[$index] : null;
+    }
+
+    private function getStepsData()
+    {
+        $steps = $this->steps;
+        foreach ($steps as $slug => $object) {
+            $stepsData[] = [
+                'title' => $object->title,
+                'url'   => \WP_SMS\Admin\OnBoarding\WizardHelper::generateStepUrl($slug, $this->currentStep->getSlug())
+            ];
+        }
+
+        return $stepsData;
     }
 }

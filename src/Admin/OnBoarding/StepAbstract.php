@@ -8,14 +8,16 @@ use WP_SMS\Utils\Validator;
 
 abstract class StepAbstract
 {
-    protected $skippable = true;
-    protected $data = [];
-    protected $fields = [];
-    protected $errors = [];
+    public $title;
+    private $skippable = true;
+    private $data = [];
+    private $fields = [];
+    private $errors = [];
 
     public function __construct()
     {
         $this->initialize();
+        $this->title  = $this->getTitle();
         $this->fields = $this->getFields();
     }
 
