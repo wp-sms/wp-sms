@@ -117,9 +117,14 @@
       &:hover {
         color: $black-color;
       }
+
+      &:focus , &:active{
+        box-shadow: none;
+        outline: none;
+      }
     }
 
-    &.is-active {
+    &.is-active , &.active{
       > span,
       &:after {
         background-color: $primary-orange;

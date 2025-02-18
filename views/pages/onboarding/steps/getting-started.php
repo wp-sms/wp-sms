@@ -27,7 +27,7 @@
         </div>
         <div class="c-form__fieldgroup u-mb-38">
             <label for="tel">Your Mobile Number <span class="u-text-red">*</span></label>
-            <input name="tel" id="tel" placeholder="Enter your mobile number" type="tel"/>
+            <input name="tel" id="tel" placeholder="Enter your mobile number" type="tel" required/>
             <p class="c-form__description">Enter the phone number where you'd like to receive management alerts.</p>
         </div>
         <div class="c-form__footer u-flex-end">
