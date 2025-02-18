@@ -9,7 +9,7 @@ class GettingStarted extends StepAbstract
     /**
      * @return array
      */
-    public function getFields(): array
+    public function getFields()
     {
         return ['tel', 'countries'];
     }
