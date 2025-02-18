@@ -1,11 +1,25 @@
 <div class="c-section__title">
     <span class="c-section__step">Step <?php echo $index ?> of 7</span>
-    <h1 class=" u-m-0">Set Up Your SMS Gateway</h1>
+    <h1 class=" u-m-0">Choose Your SMS Gateway</h1>
     <p class="u-m-0">
-        To get started with sending messages, enter your SMS gateway credentials. This connects your WordPress site
-        directly to the SMS service. </p>
+        Connect with your audience through text messages by selecting a gateway that fits your needs. WP SMS is compatible with over 200 gateways worldwide to ensure you can send SMS seamlessly.
+    </p>
 </div>
-<div class="c-form c-form--medium u-flex u-content-center u-align-center u-flex--column">
+<div class="c-gateway">
+    <div class="c-search-filter u-flex u-align-center u-content-sp">
+        <div class="c-search u-flex u-align-center u-content-start">
+            <button type=submit></button>
+            <input id="searchGateway" placeholder="Type to search..." type="text"/>
+        </div>
+        <div class="wpsms-skeleton wpsms-skeleton__select wpsms-skeleton__select--step2"></div>
+        <select name="countries">
+            <option value="All">All countries</option>
+            <option value="Albania">Albania</option>
+            <option value="Algeria">Algeria</option>
+            <option value="Andorra">Andorra</option>
+            <option value="Angola">Angola</option>
+        </select>
+    </div>
     <form method="post" action="<?php echo $ctas['next']['url'] ?>">
         <div class="c-table__wrapper">
             <div class="wpsms-skeleton wpsms-skeleton__table"></div>

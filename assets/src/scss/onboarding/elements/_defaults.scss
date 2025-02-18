@@ -58,7 +58,9 @@ strong {
   }
 }
 
-#wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links ,.notice {
+#wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links ,
+.dt-paging-button.last , .dt-paging-button.first ,
+,.notice:not(.wpsms-admin-notice) , .dt-length , .dt-search {
   display: none !important;
 }
 
