@@ -37,13 +37,13 @@ class WizardManager
         }
         wp_enqueue_style(
             'wp-sms-onboarding-style',
-            WP_SMS_URL . 'assets/css/main.min.css',
+            WP_SMS_URL . 'assets/css/onboarding.min.css',
             [],
             '1.0.0'
         );
         wp_enqueue_script(
             'wp-sms-onboarding-script',
-            WP_SMS_URL . 'assets/js/main.js',
+            WP_SMS_URL . 'assets/js/onboarding.min.js',
             ['jquery', 'wpsms-select2'], // Ensure jQuery is loaded as a dependency
             '1.0.0',
             true
@@ -72,12 +72,6 @@ class WizardManager
      */
     public function render()
     {
-        echo '<style>
-        #wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links { display: none !important; }
-        #wpcontent, #wpbody, #wpwrap { margin: 0 !important; padding: 0 !important; overflow: hidden; }
-        #wpbody-content { padding-bottom: 0; }
-        .wpsms-onboarding { width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        </style>';
         $data = [
             'current'  => $this->currentStep->getSlug(),
             'previous' => $this->getPrevious(),

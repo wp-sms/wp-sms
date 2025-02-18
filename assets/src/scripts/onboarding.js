@@ -1,4 +1,5 @@
-/* eslint-env browser */
+ import DataTable from 'datatables.net';
+
 jQuery(document).ready(function ($) {
     'use strict';
     // Initialize Select2 with custom placeholder
@@ -11,9 +12,8 @@ jQuery(document).ready(function ($) {
         $('.wpsms-skeleton__select').hide();
         $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
     }
-
-    // Initialize DataTable
-    let table = $('.js-table').DataTable({
+     // Initialize DataTable
+    let table = new DataTable('.js-table', {
         searching: true,
         info: false,
         order: [],

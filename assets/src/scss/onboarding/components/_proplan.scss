@@ -1,0 +1,89 @@
+.c-proplan {
+  display: flex;
+  gap: 46px;
+  margin-bottom: 38px;
+  flex-direction: column;
+  @media (min-width: 718px) {
+    flex-direction: row;
+  }
+
+  &__header {
+    display: flex;
+    padding: 16px 32px;
+    gap: 32px;
+    border-radius: 8px;
+    border: 1px solid #ECD2CC;
+    background: #FFF4F1;
+  }
+
+  &__title {
+    color: $black-color;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 28.13px;
+    margin-top: 16px;
+    margin-bottom: 0;
+  }
+
+  &__icon {
+    display: block;
+    border-radius: 50%;
+    width: 74px;
+    height: 74px;
+    background-size: 29px 27.88px;
+    background: #FFD4CA url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjMwIiBoZWlnaHQ9IjI5IiB2aWV3Qm94PSIwIDAgMzAgMjkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yMS45NTkyIDAuNTYwNjY5TDIzLjY2MjcgMy43NTQ3NEwyNi44NTY3IDUuNDU4MjRMMjMuNjYyNyA3LjE2MTc0TDIxLjk1OTIgMTAuMzU1OEwyMC4yNTU3IDcuMTYxNzRMMTcuMDYxNiA1LjQ1ODI0TDIwLjI1NTcgMy43NTQ3NEwyMS45NTkyIDAuNTYwNjY5Wk0xMC4zMzQyIDQuNTk3MTNMMTMuNzc4NiAxMS4wNTU1TDIwLjIzNjkgMTQuNDk5OUwxMy43Nzg2IDE3Ljk0NDRMMTAuMzM0MiAyNC40MDI3TDYuODg5NzIgMTcuOTQ0NEwwLjQzMTM5NiAxNC40OTk5TDYuODg5NzIgMTEuMDU1NUwxMC4zMzQyIDQuNTk3MTNaTTI1LjQwMzYgMjAuMDk3MkwyMy4yNTA5IDE2LjA2MDdMMjEuMDk4MSAyMC4wOTcyTDE3LjA2MTYgMjIuMjQ5OUwyMS4wOTgxIDI0LjQwMjdMMjMuMjUwOSAyOC40MzkxTDI1LjQwMzYgMjQuNDAyN0wyOS40NCAyMi4yNDk5TDI1LjQwMzYgMjAuMDk3MloiIGZpbGw9IiNDMjQyMjUiLz4KPC9zdmc+Cg==") no-repeat center;
+  }
+
+  &__price {
+    width: 72px;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 15.23px;
+    color: #242121;
+
+    strong {
+      color: #c24225;
+      font-size: 42px;
+      font-weight: 600;
+      line-height: 49.22px;
+      margin: 2px 0;
+      display: block;
+    }
+  }
+}
+
+.c-proplan__desc {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15.23px;
+  color: #5F5F5F;
+  width: 230px;
+  max-width: 95%;
+  text-align: center;
+  margin: 0;
+}
+
+.c-btn--proplan {
+  border: 1px solid $primary-orange;
+  color: $primary-orange;
+  padding: 6px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.41px;
+  width: 100%;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  &:hover{
+    color: $white-color!important;
+    background: #C24225B2!important;
+    border-color: transparent!important;
+  }
+}
+
+.c-proplan__features {
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 24px 0;
+}

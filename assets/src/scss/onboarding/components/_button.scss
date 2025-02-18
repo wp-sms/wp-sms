@@ -1,0 +1,64 @@
+.c-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  padding: 6px 24px;
+  min-width: 108px;
+  text-align: center;
+  outline: 0;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  &:active {
+    outline: 0;
+  }
+  @include mq(tablet) {
+    min-width: 125px;
+  }
+  &[disabled]{
+    background: $grey-color-4!important;
+    color: #B2B2B2!important;
+    cursor: default;
+    border-color:transparent;
+    &:hover{
+      background: $grey-color-4!important;
+      color: #B2B2B2!important;
+    }
+  }
+}
+.c-btn--primary {
+  color: $white-color;
+  background-color: $primary-orange;
+  border:1px solid $primary-orange;
+  &:hover {
+    color: $white-color!important;
+    background: #C24225B2!important;
+    border-color: transparent!important;
+  }
+  &-light{
+    background-color: $white-color;
+    color: $primary-orange;
+    border:1px solid $primary-orange;
+    font-weight: 500;
+  }
+}
+
+.c-btn--light {
+  color: $black-color;
+  background-color: $grey-color-3;
+}
+.c-btn--ghost {
+  color: $black-color;
+  background-color: transparent;
+  border-radius: 3px;
+  border: 1px solid $grey-color-3;
+}
+
+.c-btn--mainready{
+    width: 154px;
+}

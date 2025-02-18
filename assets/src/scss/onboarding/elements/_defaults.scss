@@ -1,0 +1,73 @@
+body,
+html {
+  font-family: $Roboto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: $grey-color-2;
+  color: $grey-color-1;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px
+}
+
+body::-webkit-scrollbar-track {
+  background: #eaeaea
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #adb5bd;
+  border-radius: 8px
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #6c757d
+}
+
+.main {
+  background-color: #fff;
+}
+
+h1 {
+  color: $black-color;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 133.333% */
+  letter-spacing: 0.36px;
+}
+
+strong {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+@mixin ie {
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    @content;
+  }
+}
+
+#wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links ,.notice {
+  display: none !important;
+}
+
+#wpcontent, #wpbody, #wpwrap {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+#wpbody-content {
+  padding-bottom: 0;
+}
