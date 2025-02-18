@@ -4,11 +4,12 @@ namespace WP_SMS\Admin\OnBoarding;
 
 use WP_SMS\Components\View;
 use WP_SMS\Utils\Request;
+use WP_SMS\Notice\NoticeManager;
 
 class WizardManager
 {
-    private $steps = [];
-    private $currentStep = null;
+    private $steps = array();
+    private $currentStep;
     private $title;
     private $slug;
 
@@ -20,46 +21,27 @@ class WizardManager
 
     public function setup()
     {
+        if (!$this->isOnboarding()) {
+            return;
+        }
+
         $this->setCurrent();
         $this->enforceURL();
-        add_action('admin_menu', [$this, 'registerPage']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
+        add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
 
-        if (Request::has('action') && $this->isOnboarding()) {
+        if (Request::has('action')) {
             $this->handle();
         }
+
+        add_filter('wp_sms_send_sms_page_content', function ($content, $args) {
+            $this->render();
+        }, 10, 2);
     }
 
     public function enqueueScripts()
     {
-        if (!Request::get('page') || Request::get('page') !== $this->slug) {
-            return;
-        }
-        wp_enqueue_style(
-            'wp-sms-onboarding-style',
-            WP_SMS_URL . 'assets/css/main.min.css',
-            [],
-            '1.0.0'
-        );
-        wp_enqueue_script(
-            'wp-sms-onboarding-script',
-            WP_SMS_URL . 'assets/js/main.js',
-            ['jquery', 'wpsms-select2'], // Ensure jQuery is loaded as a dependency
-            '1.0.0',
-            true
-        );
-    }
-
-
-    public function registerPage()
-    {
-        add_dashboard_page(
-            __($this->title, 'wp-sms'),
-            __($this->title, 'wp-sms'),
-            'manage_options',
-            $this->slug,
-            [$this, 'render']
-        );
+        wp_enqueue_style('wp-sms-onboarding-style', WP_SMS_URL . 'assets/css/main.min.css', array(), '1.0.0');
+        wp_enqueue_script('wp-sms-onboarding-script', WP_SMS_URL . 'assets/js/main.js', array('jquery', 'wpsms-select2'), '1.0.0', true);
     }
 
     public function add(StepAbstract $step)
@@ -67,83 +49,68 @@ class WizardManager
         $this->steps[$step->getSlug()] = $step;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function render()
     {
         echo '<style>
-        #wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links { display: none !important; }
-        #wpcontent, #wpbody, #wpwrap { margin: 0 !important; padding: 0 !important; overflow: hidden; }
-        #wpbody-content { padding-bottom: 0; }
-        .wpsms-onboarding { width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+            #wpadminbar, #adminmenu, #wpfooter, #adminmenuback, #screen-meta-links { display: none !important; }
+            #wpcontent, #wpbody, #wpwrap { margin: 0 !important; padding: 0 !important; overflow: hidden; }
+            #wpbody-content { padding-bottom: 0; }
+            .wpsms-onboarding { width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         </style>';
-        $data = [
+
+        $data = array(
             'current'  => $this->currentStep->getSlug(),
             'previous' => $this->getPrevious(),
             'next'     => $this->getNext(),
             'ctas'     => $this->getCTAs(),
             'index'    => $this->getStepIndex() + 1
-        ];
+        );
 
-        $step = $this->currentStep;
         View::load('templates/layout/onboarding/header', $data);
-        $step->render($data);
+        $this->currentStep->render($data);
         View::load('templates/layout/onboarding/footer', $data);
     }
 
     private function getNext()
     {
-        $keys         = array_keys($this->steps);
-        $currentIndex = array_search($this->currentStep->getSlug(), $keys);
-        return $keys[$currentIndex + 1] ?? null;
-
+        return $this->getAdjacentStep(1);
     }
 
     private function getPrevious()
     {
-        $keys         = array_keys($this->steps);
-        $currentIndex = array_search($this->currentStep->getSlug(), $keys);
-        return $keys[$currentIndex - 1] ?? null;
+        return $this->getAdjacentStep(-1);
     }
 
     private function getStepIndex()
     {
-        $keys = array_keys($this->steps);
-        return array_search($this->currentStep->getSlug(), $keys);
+        return array_search($this->currentStep->getSlug(), array_keys($this->steps));
     }
 
     private function setCurrent()
     {
-        $currentStep       = isset($_GET['step']) ? sanitize_text_field($_GET['step']) : null;
-        $this->currentStep = $currentStep && isset($this->steps[$currentStep]) ? $this->steps[$currentStep] : reset($this->steps);
+        $stepSlug          = Request::get('step');
+        $this->currentStep = ($stepSlug && isset($this->steps[$stepSlug])) ? $this->steps[$stepSlug] : reset($this->steps);
     }
 
     private function isOnboarding()
     {
-        return Request::has('page') && Request::get('page') == $this->slug;
+        return Request::get('page') === 'wp-sms' && Request::get('path') === $this->slug;
     }
 
     private function getCTAs()
     {
-        $CTAs = [];
+        $CTAs = array();
 
-        if (!empty($this->getPrevious())) {
-            $CTAs['back'] = [
-                'url'  => WizardHelper::generatePreviousStepUrl($this->currentStep->getSlug(), $this->slug),
-                'text' => __('Back', 'wp-sms')
-            ];
+        if ($prev = $this->getPrevious()) {
+            $CTAs['back'] = array('url' => WizardHelper::generatePreviousStepUrl($this->currentStep->getSlug(), $this->slug), 'text' => __('Back', 'wp-sms'));
         }
 
-        if (!empty($this->getNext())) {
-            $CTAs['next'] = [
-                'url'  => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug),
-                'text' => __('Continue', 'wp-sms')
-            ];
+        if ($next = $this->getNext()) {
+            $CTAs['next'] = array('url' => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug), 'text' => __('Continue', 'wp-sms'));
         }
 
         if (method_exists($this->currentStep, 'getCTAs')) {
-            $stepCTAs = array_merge($CTAs, $this->currentStep->getCTAs());
+            $CTAs = array_merge($CTAs, $this->currentStep->getCTAs());
         }
 
         return apply_filters("wp_sms_{$this->slug}_onboarding_ctas", $CTAs);
@@ -151,79 +118,61 @@ class WizardManager
 
     private function enforceURL()
     {
-        if (!$this->isOnboarding() || empty($this->steps)) {
-            return;
-        }
-
-        // Ensure a valid current step
-        if (!$this->currentStep || !isset($this->steps[$this->currentStep->getSlug()])) {
-            $this->currentStep = reset($this->steps);
-        }
-
-        // Ensure 'step' exists in URL and matches the current step
-        if (!Request::get('step')) {
-            $firstIncompleteStep = null;
-
-            // Find the first incomplete step
+        if (empty($this->steps) || !$this->currentStep->isCompleted()) {
             foreach ($this->steps as $step) {
                 if (!$step->isCompleted()) {
-                    $firstIncompleteStep = $step;
-                    break;
+                    WizardHelper::redirectToStep($this->slug, $step->getSlug());
+                    return;
                 }
             }
+        }
 
-            $currentSlug = $this->currentStep->getSlug();
-
-            // Redirect if the first incomplete step is different from the current step
-            if ($firstIncompleteStep && $currentSlug !== $firstIncompleteStep->getSlug()) {
-                WizardHelper::redirectToStep($this->slug, $firstIncompleteStep->getSlug());
-                exit;
-            }
-            WizardHelper::redirectToStep($this->slug, $currentSlug);
-            exit;
+        if (!Request::get('step')) {
+            WizardHelper::redirectToStep($this->slug, $this->currentStep->getSlug());
         }
     }
 
     private function handle()
     {
-        switch (Request::get('action')) {
-            case 'next':
-                $errors = $this->process();
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    if (is_array($errors) && !empty($errors)) {
-                        // Use NoticeManager to display errors
-                        $noticeManager = \WP_SMS\Notice\NoticeManager::getInstance();
+        $action = Request::get('action');
 
-                        foreach ($errors as $field => $errorArray) {
-                            foreach ($errorArray as $errorItem) {
-                                $noticeManager->registerNotice('wizard_error_' . uniqid(), $errorItem, false);
-                            }
-                        }
-                    } else {
-                        // Redirect to the next step
-                        WizardHelper::redirectToStep($this->slug, $this->getNext());
-                    }
-                } else {
-                    $redirectUrl = remove_query_arg('action', WizardHelper::generateStepUrl($this->currentStep->getSlug(), $this->slug));
-                    wp_redirect($redirectUrl);
-                    exit;
-                }
-                break;
-            case 'previous':
-                WizardHelper::redirectToStep($this->slug, $this->getPrevious());
-                break;
+        if ($action === 'next') {
+            $this->processAndRedirect();
+        } elseif ($action === 'previous') {
+            WizardHelper::redirectToStep($this->slug, $this->getPrevious());
         }
     }
 
+    private function processAndRedirect()
+    {
+        $errors = $this->process();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!empty($errors) && is_array($errors)) {
+                $noticeManager = NoticeManager::getInstance();
+                foreach ($errors as $errorArray) {
+                    foreach ($errorArray as $errorItem) {
+                        $noticeManager->registerNotice('wizard_error_' . uniqid(), $errorItem, false);
+                    }
+                }
+            } else {
+                WizardHelper::redirectToStep($this->slug, $this->getNext());
+            }
+        } else {
+            wp_redirect(remove_query_arg('action', WizardHelper::generateStepUrl($this->currentStep->getSlug(), $this->slug)));
+            exit;
+        }
+    }
 
     private function process()
     {
-        $result = $this->currentStep->process();
-        if (is_array($result) && !empty($result)) {
-            return $result;
-        }
-
-        return $this->currentStep->isCompleted();
+        return $this->currentStep->process() ?: $this->currentStep->isCompleted();
     }
 
+    private function getAdjacentStep($offset)
+    {
+        $keys  = array_keys($this->steps);
+        $index = array_search($this->currentStep->getSlug(), $keys) + $offset;
+        return isset($keys[$index]) ? $keys[$index] : null;
+    }
 }

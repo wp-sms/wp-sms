@@ -11,17 +11,17 @@ class WizardHelper
 
     public static function generateStepUrl($stepSlug, $wizardSlug)
     {
-        return admin_url("admin.php?page={$wizardSlug}&step={$stepSlug}");
+        return admin_url("admin.php?page=wp-sms&path={$wizardSlug}&step={$stepSlug}");
     }
 
     public static function generateNextStepUrl($currentSlug, $wizardSlug)
     {
-        return admin_url("admin.php?page={$wizardSlug}&step={$currentSlug}&action=next");
+        return admin_url("admin.php?page=wp-sms&path={$wizardSlug}&step={$currentSlug}&action=next");
     }
 
     public static function generatePreviousStepUrl($currentSlug, $wizardSlug)
     {
-        return admin_url("admin.php?page={$wizardSlug}&step={$currentSlug}&action=previous");
+        return admin_url("admin.php?page=wp-sms&path={$wizardSlug}&step={$currentSlug}&action=previous");
     }
 
     public static function redirectToStep($wizardSlug, $stepSlug)
