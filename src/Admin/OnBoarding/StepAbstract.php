@@ -31,6 +31,7 @@ abstract class StepAbstract
 
     public function render($data)
     {
+        $data = array_merge($data, $this->data);
         View::load(sprintf('pages/onboarding/steps/%s', $this->getSlug()), $data);
     }
 
