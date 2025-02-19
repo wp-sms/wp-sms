@@ -101,7 +101,6 @@ class tubelightcommunications extends Gateway
             }
 
             $messageVars = explode(':', $message);
-            $messageVars = count($messageVars) === 1 ? [] : $messageVars;
 
             $params = [
                 'headers'   => [
@@ -230,7 +229,7 @@ class tubelightcommunications extends Gateway
                         'header_params' => $this->media,
                     ]
                 ]);
-
+                
                 $response = $this->request('POST', $this->wsdl_link . '/whatsapp/api/v1/send', [], $params);
 
                 $this->log($this->from, $this->msg, $this->to, $response);
