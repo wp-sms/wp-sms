@@ -3,12 +3,12 @@
 namespace WP_SMS\Admin\OnBoarding\Steps;
 
 use WP_SMS\Admin\OnBoarding\StepAbstract;
+use WP_SMS\Option;
 
 class GettingStarted extends StepAbstract
 {
-    /**
-     * @return array
-     */
+    const COUNTRY_DEFAULT_VALUE = 'global';
+
     public function getFields()
     {
         return ['tel', 'countries'];
@@ -49,6 +49,6 @@ class GettingStarted extends StepAbstract
 
     public function afterValidation()
     {
-        update_option('wpsms_onboarding_getting_started_tel', $this->data['tel']);
+        Option::updateOption('admin_mobile_number', $this->data['countries'] == self::COUNTRY_DEFAULT_VALUE ? $this->data['countries'] . $this->data['tel'] : $this->data['tel']);
     }
 }

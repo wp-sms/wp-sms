@@ -1,4 +1,4 @@
- import DataTable from 'datatables.net';
+import DataTable from 'datatables.net';
 
 jQuery(document).ready(function ($) {
     'use strict';
@@ -12,7 +12,7 @@ jQuery(document).ready(function ($) {
         $('.wpsms-skeleton__select').hide();
         $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
     }
-     // Initialize DataTable
+    // Initialize DataTable
     let table = new DataTable('.js-table', {
         searching: true,
         info: false,
@@ -59,5 +59,36 @@ jQuery(document).ready(function ($) {
         $('.c-table.js-table tbody tr').removeClass('selected-row');
         let selectedRow = $(this).closest('tr').addClass('selected-row');
         $('.c-form__footer input[type="submit"]').val('Continue').prop('disabled', false);
+    });
+
+    // Handle Test Connection
+    $('#wp_sms_test_connection').on('click', function (e) {
+        e.preventDefault(); // Prevent default action if it's a form button
+
+        // Collect data if needed
+        let data = {
+            action: 'test_connection',
+            nonce: wpSmsWizard.nonce,
+        };
+
+        // AJAX request
+        $.ajax({
+            url: wpSmsWizard.ajax_url, // WP AJAX URL passed from localize_script
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                $('.gateway-status').html(response.data.status);
+                $('.gateway-balance').html(response.data.balance);
+                $('.gateway-incoming').html(response.data.incoming);
+                $('.gateway-bulk').html(response.data.bulk);
+                $('.gateway-mms').html(response.data.mms);
+
+                $('.c-form__result').css('display', 'block');
+
+                $('#wp_sms_test_connection').replaceWith(
+                    '<input class="c-btn c-btn--primary" type="submit" value="Continue"/>'
+                );
+            }
+        });
     });
 });

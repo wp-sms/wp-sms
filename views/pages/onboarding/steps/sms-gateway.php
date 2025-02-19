@@ -42,27 +42,27 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($pages as $page): ?>
-                    <tr class="<?php echo !empty($page->fields->gateway_attributes->wp_sms_pro) && $page->fields->gateway_attributes->wp_sms_pro && !\WP_SMS\Version::pro_is_active() ? 'disabled' : ''; ?>">
+                <?php foreach ($gateways as $gateway): ?>
+                    <tr class="<?php echo !empty($gateway->fields->gateway_attributes->wp_sms_pro) && $gateway->fields->gateway_attributes->wp_sms_pro && !\WP_SMS\Version::pro_is_active() ? 'disabled' : ''; ?>">
                         <td>
-                            <?php if (!empty($page->fields->gateway_attributes->wp_sms_pro) && $page->fields->gateway_attributes->wp_sms_pro && !\WP_SMS\Version::pro_is_active()): ?>
+                            <?php if (!empty($gateway->fields->gateway_attributes->wp_sms_pro) && $gateway->fields->gateway_attributes->wp_sms_pro && !\WP_SMS\Version::pro_is_active()): ?>
                                 <span data-tooltip="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
                                         <span class="icon-lock"></span>
                                     </span>
-                                <span><?php echo esc_html($page->title->rendered); ?></span>
+                                <span><?php echo esc_html($gateway->title->rendered); ?></span>
                             <?php else: ?>
-                                <input id="gateway-name-<?php echo esc_attr($page->id); ?>" name="name" type="radio">
-                                <label for="gateway-name-<?php echo esc_attr($page->id); ?>"><?php echo esc_html($page->title->rendered); ?></label>
+                                <input value="<?php echo $gateway->slug ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
+                                <label for="gateway-name-<?php echo esc_attr($gateway->id); ?>"><?php echo esc_html($gateway->title->rendered); ?></label>
                             <?php endif; ?>
                         </td>
                         <td class="u-text-center">
-                            <span class="<?php echo !empty($page->fields->gateway_attributes->bulk_sms_support) && $page->fields->gateway_attributes->bulk_sms_support ? 'checked' : 'unchecked'; ?>"></span>
+                            <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) && $gateway->fields->gateway_attributes->bulk_sms_support ? 'checked' : 'unchecked'; ?>"></span>
                         </td>
                         <td class="u-text-center">
-                            <span class="<?php echo !empty($page->fields->gateway_attributes->mms_support) && $page->fields->gateway_attributes->mms_support ? 'checked' : 'unchecked'; ?>"></span>
+                            <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) && $gateway->fields->gateway_attributes->mms_support ? 'checked' : 'unchecked'; ?>"></span>
                         </td>
                         <td class="u-flex u-align-center u-content-sp">
-                            <?php if (!empty($page->fields->gateway_attributes->wp_sms_pro) && $page->fields->gateway_attributes->wp_sms_pro && !\WP_SMS\Version::pro_is_active()): ?>
+                            <?php if (!empty($gateway->fields->gateway_attributes->wp_sms_pro) && $gateway->fields->gateway_attributes->wp_sms_pro && !\WP_SMS\Version::pro_is_active()): ?>
                                 <a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/" class="c-table__availability c-table__availability--pro"><?php _e('Pro Version Required', 'wp-sms'); ?></a>
                             <?php else: ?>
                                 <span class="c-table__availability c-table__availability--success"><?php _e('Available', 'wp-sms'); ?></span>

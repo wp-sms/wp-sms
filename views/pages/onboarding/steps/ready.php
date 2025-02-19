@@ -5,42 +5,44 @@
             <path d="M32.9998 64.5833C15.2807 64.5833 0.916504 50.219 0.916504 32.5C0.916504 14.7809 15.2807 0.416687 32.9998 0.416687C50.7188 0.416687 65.0831 14.7809 65.0831 32.5C65.0831 50.219 50.7188 64.5833 32.9998 64.5833ZM29.7998 45.3333L52.4863 22.647L47.949 18.1097L29.7998 36.2589L20.7254 27.1841L16.1881 31.7217L29.7998 45.3333Z" fill="#058860"/>
         </svg>
         <h1 class="u-text-center">
-            Onboarding process successfully completed!
+            <?php _e('Onboarding process successfully completed!', 'wp-sms'); ?>
         </h1>
         <p class="u-text-center">
-            Start using the plugin to send SMS messages from your WordPress site.
+            <?php _e('Start using the plugin to send SMS messages from your WordPress site.', 'wp-sms'); ?>
         </p>
         <a href="" title="start using WP SMS" class="c-btn c-btn--primary c-btn--mainready">
-            Start using WP SMS
+            <?php _e('Start using WP SMS', 'wp-sms'); ?>
         </a>
     </div>
     <div class="c-ready-row">
-        <h3 class="c-ready__title">Support</h3>
+        <h3 class="c-ready__title"><?php _e('Support', 'wp-sms'); ?></h3>
         <div class="c-ready__items u-flex u-align-stretch u-content-sp">
             <div class="c-readycard">
                 <span class="c-readycard__icon c-readycard__icon--document"></span>
-                <h2 class="c-readycard__title">Documentation</h2>
+                <h2 class="c-readycard__title"><?php _e('Documentation', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    Find everything you need to get WP-SMS up and running. </p>
-                <a class="c-btn" href="https://wp-sms-pro.com/documentation/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="View">View</a>
+                    <?php _e('Find everything you need to get WP-SMS up and running.', 'wp-sms'); ?>
+                </p>
+                <a class="c-btn" href="https://wp-sms-pro.com/documentation/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="<?php _e('View', 'wp-sms'); ?>"><?php _e('View', 'wp-sms'); ?></a>
             </div>
             <div class="c-readycard">
                 <span class="c-readycard__icon c-readycard__icon--faq"></span>
                 <h2 class="c-readycard__title">FAQ</h2>
                 <p class="c-readycard__desc">
-                    If you've encountered an issue or have a question. </p>
-                <a class="c-btn" href="https://wp-sms-pro.com/faq/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="View">View</a>
+                    <?php _e("If you've encountered an issue or have a question.", 'wp-sms'); ?>
+                </p>
+                <a class="c-btn" href="https://wp-sms-pro.com/faq/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="<?php _e('View', 'wp-sms'); ?>"><?php _e('View', 'wp-sms'); ?></a>
             </div>
             <div class="c-readycard">
                 <span class="c-readycard__icon c-readycard__icon--plugin"></span>
-                <h2 class="c-readycard__title">Plugin customization</h2>
-                <p class="c-readycard__desc">Needs any customization?</p>
-                <a class="c-btn" href="https://wp-sms-pro.com/contact/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="View">View</a>
+                <h2 class="c-readycard__title"><?php _e('Plugin customization', 'wp-sms'); ?></h2>
+                <p class="c-readycard__desc"><?php _e('Needs any customization?', 'wp-sms'); ?></p>
+                <a class="c-btn" href="https://wp-sms-pro.com/contact/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank" title="<?php _e('View', 'wp-sms'); ?>"><?php _e('View', 'wp-sms'); ?></a>
             </div>
         </div>
     </div>
     <div class="c-ready-row">
-        <h3 class="c-ready__title">Integrations</h3>
+        <h3 class="c-ready__title"><?php _e('Integrations', 'wp-sms'); ?></h3>
         <div class="c-ready__items u-flex u-align-stretch u-content-sp">
             <div class="c-readycard c-readycard--integration">
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,11 +59,17 @@
                         </clipPath>
                     </defs>
                 </svg>
-                <a class="c-readycard__title" target="_blank" title="WooCommerce" href="https://wp-sms-pro.com/woocommerce-sms-integration/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding">WooCommerce</a>
+                <a class="c-readycard__title" target="_blank" title="<?php esc_attr_e('WooCommerce', 'wp-sms'); ?>" href="https://wp-sms-pro.com/woocommerce-sms-integration/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding">
+                    <?php _e('WooCommerce', 'wp-sms'); ?>
+                </a>
                 <p class="c-readycard__desc">
-                    Turn your site into a functional WordPress e-commerce website with just a few clicks.
+                    <?php _e('Turn your site into a functional WordPress e-commerce website with just a few clicks.', 'wp-sms'); ?>
                 </p>
-                <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
+                <div class="u-flex u-align-center">
+                    <a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">
+                        <?php _e('Pro Version Required', 'wp-sms'); ?>
+                    </a>
+                </div>
             </div>
             <div class="c-readycard c-readycard--integration">
                 <svg fill="none" height="28" width="23" xmlns="http://www.w3.org/2000/svg">
@@ -72,10 +80,10 @@
                     <path d="M17.615 19.034a1.694 1.694 0 1 0 0-3.388 1.694 1.694 0 0 0 0 3.388Z" fill="#444"/>
                     <path clip-rule="evenodd" d="M5.478 20.13a.376.376 0 0 0-.25.637c.176.19.695.847 1.62 1.434.925.586 2.283 1.127 4.21 1.214h.03c2.17-.066 3.588-.564 4.515-1.13.927-.565 1.37-1.222 1.54-1.452a.378.378 0 0 0-.354-.613.375.375 0 0 0-.25.165c-.203.274-.525.767-1.329 1.258-.8.489-2.076.952-4.13 1.017-1.797-.083-3.009-.576-3.828-1.096-.822-.521-1.223-1.042-1.47-1.308a.376.376 0 0 0-.304-.125Z" fill="#444" fill-rule="evenodd"/>
                 </svg>
-                <h2 class="c-readycard__title">Ultimate Member</h2>
+                <h2 class="c-readycard__title"><?php _e('Ultimate Member', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    Sync Mobile number from Ultimate Members mobile number form
-                    field. </p>
+                    <?php _e('Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms'); ?>
+                </p>
                 <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
             </div>
             <div class="c-readycard c-readycard--integration">
@@ -84,11 +92,15 @@
                           d="M12.296 28.402c-5.42-.658-9.988-4.446-11.66-9.67a16.85 16.85 0 0 1-.573-2.66c-.094-.754-.08-2.574.025-3.35.234-1.717.628-3.014 1.368-4.501a13.788 13.788 0 0 1 4.701-5.366c.696-.47.868-.57 1.614-.944A13.972 13.972 0 0 1 12.347.537c.695-.087 2.63-.087 3.325 0 4.738.596 8.785 3.451 10.892 7.684 1.012 2.035 1.453 3.924 1.455 6.24.002 1.204-.05 1.743-.274 2.865-1.167 5.846-6.105 10.377-12.072 11.078-.78.091-2.618.09-3.377-.002Zm3.19-.614c2.6-.304 4.93-1.276 6.936-2.892 2.55-2.055 4.25-4.98 4.816-8.29.139-.814.192-2.644.1-3.488-.178-1.66-.6-3.107-1.335-4.587-2.009-4.044-5.8-6.742-10.33-7.351-.86-.115-2.466-.115-3.326 0-4.564.613-8.36 3.33-10.363 7.42A13.507 13.507 0 0 0 .68 13.119c-.09.846-.037 2.678.102 3.488.333 1.951.98 3.616 2.02 5.196a13.412 13.412 0 0 0 8.566 5.806c1.264.256 2.871.326 4.119.18Zm-3.062-1.385c-2.967-.402-5.72-1.909-7.606-4.161-2.525-3.017-3.425-7.007-2.443-10.837.409-1.594 1.31-3.346 2.367-4.605a17.269 17.269 0 0 1 1.722-1.702c1.627-1.33 3.813-2.259 6.037-2.564.626-.085 2.392-.085 3.018 0 2.223.305 4.41 1.234 6.037 2.564.465.38 1.326 1.231 1.722 1.702.78.929 1.6 2.352 2.035 3.53.81 2.196.942 4.807.36 7.102a12.29 12.29 0 0 1-3.383 5.774 12.024 12.024 0 0 1-6.737 3.199c-.743.097-2.408.096-3.13-.002Zm8.558-4.971c.02-.05.036-.55.035-1.113-.002-1.036-.058-1.505-.265-2.226a5.346 5.346 0 0 0-1.134-2.055c-.726-.793-1.976-1.405-3.08-1.507l-.335-.032-1.487 1.465-1.487 1.464-1.491-1.465-1.492-1.464-.385.034a6.007 6.007 0 0 0-1.732.46c-1.48.684-2.37 2.02-2.695 4.047-.07.44-.091 2.109-.029 2.34l.038.141h7.75c7.335 0 7.754-.005 7.789-.09Zm2.657-2.152c.048-.03.05-.21.013-.78-.132-1.97-.629-3.266-1.604-4.178-.661-.62-1.617-.984-2.58-.986-.297 0-.273-.018-.788.575-.223.257-.243.298-.16.327.694.246 1.204.559 1.674 1.025.414.412.704.833 1.001 1.456.298.626.474 1.206.597 1.97.049.305.114.573.144.593.073.05 1.623.049 1.703-.002Zm-9.617-4.797a4.148 4.148 0 0 0 2.628-1.802c.455-.694.632-1.32.632-2.236 0-.537-.022-.742-.114-1.064-.42-1.454-1.497-2.515-2.954-2.906-.569-.152-1.474-.153-2.04-.002-1.446.389-2.547 1.487-2.955 2.949-.15.538-.16 1.465-.023 1.995.344 1.32 1.3 2.409 2.518 2.87.742.28 1.559.35 2.308.195Zm4.06-1.627c.518-.21.871-.45 1.328-.902.514-.51.794-.954 1.029-1.637.158-.46.167-.525.169-1.227 0-.626-.017-.806-.116-1.149a4.125 4.125 0 0 0-3.062-2.897c-.405-.094-.582-.108-1.082-.085-.645.03-1.062.133-1.636.404-.34.161-.364.216-.114.266.29.058.923.35 1.32.609a4.97 4.97 0 0 1 2.26 4.182c0 .844-.228 1.75-.604 2.4l-.13.226.166-.034c.092-.018.305-.089.472-.156Z"
                           fill="#D84D26" fill-rule="evenodd"/>
                 </svg>
-                <h2 class="c-readycard__title">BuddyPress</h2>
+                <h2 class="c-readycard__title"><?php _e('BuddyPress', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    build any kind of community website with member profiles,
-                    activity streams, and more. </p>
-                <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
+                    <?php _e('build any kind of community website with member profiles, activity streams, and more.', 'wp-sms'); ?>
+                </p>
+                <div class="u-flex u-align-center">
+                    <a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">
+                        <?php _e('Pro Version Required', 'wp-sms'); ?>
+                    </a>
+                </div>
             </div>
             <div class="c-readycard c-readycard--integration">
                 <svg fill="none" height="28" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -98,16 +110,20 @@
                 </svg>
                 <a class="c-readycard__title" target="_blank" title="Contact Form 7" href="https://wp-sms-pro.com/contact-form-7-sms-integration/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding">Contact Form 7</a>
                 <p class="c-readycard__desc">
-                    Send contact data to the Constant Contact API. </p>
+                    <?php _e('Send contact data to the Constant Contact API.', 'wp-sms'); ?>
+                </p>
             </div>
             <div class="c-readycard c-readycard--integration">
                 <svg fill="none" height="28" width="26" xmlns="http://www.w3.org/2000/svg">
                     <path clip-rule="evenodd" d="M25.43 19.015c0 1.279-.906 2.85-2.015 3.49l-8.687 5.015c-1.107.64-2.92.64-4.028 0l-8.686-5.016C.906 21.864 0 20.295 0 19.015V8.984c0-1.28.906-2.85 2.014-3.488L10.7.48c1.108-.64 2.92-.64 4.029 0l8.686 5.016c1.108.64 2.015 2.209 2.015 3.488v10.031Z" fill="#F15A2B" fill-rule="evenodd"/>
                     <path clip-rule="evenodd" d="M10.25 11.677h11.51V8.439H10.277c-1.642 0-3.004.563-4.046 1.671-2.506 2.668-2.574 9.39-2.574 9.39H21.67v-6.082h-3.236v2.845H7.111c.072-1.06.557-2.955 1.479-3.936.417-.443.944-.65 1.66-.65Z" fill="#fff" fill-rule="evenodd"/>
                 </svg>
-                <h2 class="c-readycard__title">GravityForms</h2>
+                <h2 class="c-readycard__title">
+                    <?php _e('GravityForms', 'wp-sms'); ?>
+                </h2>
                 <p class="c-readycard__desc">
-                    Integrate any form with Agile's Sales and Marketing CRM. </p>
+                    <?php _e("Integrate any form with Agile's Sales and Marketing CRM.", 'wp-sms'); ?>
+                </p>
                 <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
             </div>
             <div class="c-readycard c-readycard--integration">
@@ -121,10 +137,11 @@
                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAYAAACI7Fo9AAAACXBIWXMAAAsTAAALEwEAmpwYAAAGymlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpkZDA1NDA4ZS05ZjA3LTc2NDQtOWNiMC00OWQwOGNmYjVhZjciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDJGMUU1MzhEQTA2MTFFN0I4MzQ5NDE5MzIxOTc2QzEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZTM0OTc5ZjEtYTYxNi05ZjRiLWI4YmQtZTA0MDYyMWYyYWQxIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE0IChXaW5kb3dzKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDctMDZUMTE6NDQ6MTgrMDQ6MzAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTA3LTA2VDExOjU0OjU5KzA0OjMwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTA3LTA2VDExOjU0OjU5KzA0OjMwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NTVhMTRmNzMtYTFjMS05MDQzLTg5YzItMWYyOGY5ODBhOTg4IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOmRkMDU0MDhlLTlmMDctNzY0NC05Y2IwLTQ5ZDA4Y2ZiNWFmNyIvPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpkN2IyNmNkNC04MzllLWUwNGQtYTY5NS01ZDJiMTRlMjljYTMiIHN0RXZ0OndoZW49IjIwMTktMDctMDZUMTE6NTQ6NDUrMDQ6MzAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE5IChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZTM0OTc5ZjEtYTYxNi05ZjRiLWI4YmQtZTA0MDYyMWYyYWQxIiBzdEV2dDp3aGVuPSIyMDE5LTA3LTA2VDExOjU0OjU5KzA0OjMwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+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"/>
                     </defs>
                 </svg>
-                <h2 class="c-readycard__title">Quform</h2>
+                <h2 class="c-readycard__title"><?php _e('Quform', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    Create WordPress forms quickly and easily, no coding required. </p>
-                <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
+                    <?php _e('Create WordPress forms quickly and easily, no coding required.', 'wp-sms'); ?>
+                </p>
+                <div class="u-flex u-align-center"><a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge"><?php _e('Pro Version Required', 'wp-sms'); ?></a></div>
             </div>
             <div class="c-readycard c-readycard--integration">
                 <svg fill="none" height="28" width="28" xmlns="http://www.w3.org/2000/svg">
@@ -133,19 +150,25 @@
                           d="M25.924 13.883c-.063-6.598-5.405-11.927-11.988-11.927-6.582 0-11.926 5.33-11.987 11.928L7.446 8.36l1.843 1.852-4.022 4.042h17.339l-4.023-4.042 1.844-1.852 5.497 5.522Zm-11.988-2.07L8.828 6.43h3.394V3.775c0-.69.772-1.254 1.714-1.254s1.713.564 1.713 1.254v2.654h3.395l-5.108 5.385ZM15.426 20.778a4.507 4.507 0 0 0-1.034-.477 7.116 7.116 0 0 1-.784-.314c-.203-.1-.353-.21-.449-.325a.64.64 0 0 1-.144-.423c0-.13.04-.254.123-.371a.868.868 0 0 1 .384-.288c.176-.075.4-.115.678-.116.224 0 .429.019.614.051a3.253 3.253 0 0 1 .828.255l.309-.937a3.063 3.063 0 0 0-.706-.236 4.589 4.589 0 0 0-.832-.096v-.97h-.85v1.019a3.27 3.27 0 0 0-.392.088 2.497 2.497 0 0 0-.804.39c-.22.167-.391.363-.509.588a1.598 1.598 0 0 0-.178.738c.002.308.082.579.24.813.159.235.385.438.677.613.29.174.636.323 1.037.45.3.096.546.197.733.301.187.103.324.217.41.341.086.125.13.269.128.43 0 .176-.052.33-.153.462a.965.965 0 0 1-.441.306 2.06 2.06 0 0 1-.709.112 4.038 4.038 0 0 1-1.253-.207 3.153 3.153 0 0 1-.487-.205l-.3.977c.136.074.305.142.511.204.207.062.435.111.684.15.247.036.501.055.76.057h.045v1.002h.85v-1.083c.109-.02.212-.046.31-.075.34-.103.624-.244.848-.424.226-.179.393-.386.504-.62.11-.232.166-.48.166-.742 0-.308-.066-.58-.201-.815a1.873 1.873 0 0 0-.613-.623Z"
                           fill="#35495C" fill-rule="evenodd"/>
                 </svg>
-                <h2 class="c-readycard__title">Easy Digital Downloads</h2>
+                <h2 class="c-readycard__title">
+                    <?php _e('Easy Digital Downloads', 'wp-sms'); ?>
+                </h2>
                 <p class="c-readycard__desc">
-                    Selling digital products on the WordPress platform. </p>
-                <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
+                    <?php _e('Selling digital products on the WordPress platform.', 'wp-sms'); ?>
+                </p>
+                <div class="u-flex u-align-center"><a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge"><?php _e('Pro Version Required', 'wp-sms'); ?></a></div>
             </div>
             <div class="c-readycard c-readycard--integration">
                 <svg fill="none" height="28" width="20" xmlns="http://www.w3.org/2000/svg">
                     <path d="m10.45 19.81 1.26-2.115H8.282l1.26 2.114-1.764 5.794L10 28l2.213-2.397-1.763-5.794Zm6.176-2.367h-.611L10 27.779 3.984 17.443h-.61A3.352 3.352 0 0 0 .03 20.786V28h19.94v-7.214a3.352 3.352 0 0 0-3.344-3.343ZM12.8 8.397a1.43 1.43 0 0 0-1.427 1.427h2.862c0-.786-.641-1.427-1.435-1.427Zm-5.61 0a1.43 1.43 0 0 0-1.428 1.427h2.862A1.442 1.442 0 0 0 7.19 8.397Zm7.671-3.428H13.58l-.603-1.511h-2.512V2.45c.474-.183.802-.64.802-1.175C11.267.572 10.694 0 9.992 0S8.717.573 8.717 1.275c0 .534.336.992.802 1.175v1.008H7.007l-.603 1.511H5.13C2.694 4.97.832 7.1 1.282 9.481l1.328 6.801h14.764l1.328-6.801c.458-2.382-1.397-4.512-3.84-4.512Zm2.046 4.344c0 5.145-13.817 5.145-13.817 0 0-1.221.94-2.237 2.153-2.344h9.504a2.358 2.358 0 0 1 2.16 2.344Z" fill="#D75676"/>
                 </svg>
-                <h2 class="c-readycard__title">WP Job Manager</h2>
+                <h2 class="c-readycard__title">
+                    <?php _e('WP Job Manager', 'wp-sms'); ?>
+                </h2>
                 <p class="c-readycard__desc">
-                    Adding job-board like functionality to your WordPress site. </p>
-                <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
+                    <?php _e('Adding job-board like functionality to your WordPress site.', 'wp-sms'); ?>
+                </p>
+                <div class="u-flex u-align-center"><a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge"><?php _e('Pro Version Required', 'wp-sms'); ?></a></div>
             </div>
             <div class="c-readycard c-readycard--integration">
                 <svg fill="none" height="29" width="35" xmlns="http://www.w3.org/2000/svg">
@@ -154,9 +177,14 @@
                 </svg>
                 <a class="c-readycard__title" target="_blank" title="" href="https://wp-sms-pro.com/awesome-support-sms-integration/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding">Awesome Support</a>
                 <p class="c-readycard__desc">
-                    The most versatile and feature-rich support plugin for
-                    WordPress. </p>
-                <div class="u-flex u-align-center"><a title="Pro Version Required" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">Pro Version Required</a></div>
+                    <?php _e('The most versatile and feature-rich support plugin for WordPress.', 'wp-sms'); ?>
+
+                </p>
+                <div class="u-flex u-align-center">
+                    <a title="<?php esc_attr_e('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" class="c-readycard__badge">
+                        <?php _e('Pro Version Required', 'wp-sms'); ?>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

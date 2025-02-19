@@ -5,10 +5,11 @@ namespace WP_SMS\Admin\OnBoarding\Steps;
 use Exception;
 use WP_SMS\Admin\OnBoarding\StepAbstract;
 use WP_SMS\Components\RemoteRequest;
+use WP_SMS\Option;
 
 class SmsGateway extends StepAbstract
 {
-    const CACHE_KEY      = 'wp_sms_pages';
+    const CACHE_KEY      = 'wp_sms_gateways';
     const CACHE_DURATION = 43200; // 12 hours in seconds
 
     public function getFields()
@@ -18,7 +19,7 @@ class SmsGateway extends StepAbstract
 
     protected function initialize()
     {
-        $this->setData('pages', $this->getAllPages());
+        $this->setData('gateways', $this->getAllPages());
     }
 
     private function getAllPages()
@@ -28,8 +29,8 @@ class SmsGateway extends StepAbstract
             return $cached;
         }
 
-        $pages = array();
-        $page  = 1;
+        $gateways = array();
+        $page     = 1;
 
         try {
             do {
@@ -37,7 +38,7 @@ class SmsGateway extends StepAbstract
                 $response = $request->execute();
 
                 if (is_array($response) && !empty($response)) {
-                    $pages = array_merge($pages, $response);
+                    $gateways = array_merge($gateways, $response);
                     $page++;
                 } else {
                     break;
@@ -45,12 +46,12 @@ class SmsGateway extends StepAbstract
             } while (count($response) === 100);
 
             // Cache the data
-            set_transient(self::CACHE_KEY, $pages, self::CACHE_DURATION);
+            set_transient(self::CACHE_KEY, $gateways, self::CACHE_DURATION);
         } catch (Exception $e) {
             error_log('Error fetching pages: ' . $e->getMessage());
         }
 
-        return $pages;
+        return $gateways;
     }
 
     public function getSlug()
@@ -75,6 +76,15 @@ class SmsGateway extends StepAbstract
 
     protected function validationRules()
     {
+        return [
+            'name' => 'required',
+        ];
+    }
+
+    public function afterValidation()
+    {
+        Option::updateOption('gateway_name', $this->data['name']);
+
     }
 
 }

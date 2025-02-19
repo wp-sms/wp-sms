@@ -10,7 +10,7 @@ abstract class StepAbstract
 {
     public $title;
     private $skippable = true;
-    private $data = [];
+    protected $data = [];
     private $fields = [];
     private $errors = [];
 

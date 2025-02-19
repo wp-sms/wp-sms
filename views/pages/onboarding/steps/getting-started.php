@@ -10,7 +10,8 @@
         <p class="c-form__title"><?php _e('Get Notifications Where You Need Them', 'wp-sms'); ?></p>
         <div class="c-form__fieldgroup u-mb-32">
             <label for="countries">
-                <?php _e('Country Code', 'wp-sms'); ?>
+                <?php
+                _e('Country Code', 'wp-sms'); ?>
                 <span data-tooltip="<?php esc_attr_e('tooltip data', 'wp-sms'); ?>" data-tooltip-font-size="12px">
                     <i class="wps-tooltip-icon"></i>
                 </span>
@@ -18,11 +19,11 @@
             </label>
             <div class="wpsms-skeleton wpsms-skeleton__select wpsms-skeleton__select--step1"></div>
             <select id="countries" name="countries">
-                <option value="Global"><?php _e('No country code (Global)', 'wp-sms'); ?></option>
+                <option value="global"><?php _e('No country code (Global)', 'wp-sms'); ?></option>
                 <?php
-                $countries = ['Albania', 'Algeria', 'Andorra', 'Angola'];
-                foreach ($countries as $country) {
-                    echo '<option value="' . esc_attr($country) . '">' . esc_html__($country, 'wp-sms') . '</option>';
+                $countries = wp_sms_countries()->getCountriesMerged();;
+                foreach ($countries as $code => $country) {
+                    echo '<option value="' . esc_attr($code) . '">' . esc_html__($country, 'wp-sms') . '</option>';
                 }
                 ?>
             </select>
