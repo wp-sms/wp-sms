@@ -1,3 +1,7 @@
+= v6.9.11 - 2025-**-** =
+- **New**: Added support for WhatsApp in the Tubelight gateway.
+- **Enhancement**: Upgraded to the latest version of the Tubelight API.
+
 = v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
 - **New**: Add **HelloSMS Gateway** (Sweden).
