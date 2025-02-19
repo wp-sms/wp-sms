@@ -198,9 +198,8 @@ class tubelightcommunications extends Gateway
                     'messages'      => $message,
                     'tempId'        => $template ?? '',
                 ];
-            }, $this->to),);
-
-
+            }, $this->to));
+        
         $response = $this->request('POST', $this->wsdl_link . '/sms/api/v1/websms/bulksend', [], $params);
 
         $this->log($this->from, $this->msg, $this->to, $response);
