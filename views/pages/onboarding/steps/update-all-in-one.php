@@ -1,8 +1,8 @@
 <div class="c-section__title">
     <span class="c-section__step"><?php printf(__('Step %d of 7', 'wp-sms'), $index); ?></span>
-    <h1 class=" u-m-0"><?php _e('Purchase WP SMS Pro', 'wp-sms'); ?></h1>
+    <h1 class=" u-m-0"><?php esc_html_e('Purchase WP SMS All-in-One', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php _e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
+        <?php esc_html_e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
 </div>
 <div class="c-form u-flex u-content-center u-align-center u-flex--column">
     <form method="post" action="<?php echo $ctas['next']['url'] ?>">
@@ -11,16 +11,16 @@
                 <div class="c-proplan__header u-flex u-content-center u-align-center u-flex--column">
                     <div>
                         <span class="c-proplan__icon"></span>
-                        <h3 class="c-proplan__title"><?php _e('Pro Plan', 'wp-sms'); ?></h3>
+                        <h3 class="c-proplan__title"><?php esc_html_e('All-in-One Plan', 'wp-sms'); ?></h3>
                     </div>
 
                     <p class="c-proplan__price u-text-center">
                         <?php printf(__('From <strong>$%s</strong> per Year', 'wp-sms'), '29'); ?>
                     <div>
-                        <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php _e('Buy now', 'wp-sms'); ?>" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank">
-                            <?php _e('Buy now', 'wp-sms'); ?>
+                        <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_html_e('Buy now', 'wp-sms'); ?>" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank">
+                            <?php esc_html_e('Buy now', 'wp-sms'); ?>
                         </a>
-                        <p class="c-proplan__desc"><?php _e('14-day money-back guarantee on all the plans.', 'wp-sms'); ?></p>
+                        <p class="c-proplan__desc"><?php esc_html_e('14-day money-back guarantee on all the plans.', 'wp-sms'); ?></p>
                     </div>
                 </div>
                 <div class="c-proplan__features u-flex u-content-sp u-align-stretch">
@@ -29,8 +29,17 @@
                             <path d="M1.333 2.167h13.334V.5H1.333v1.667ZM14.667 5.5H1.333V3.833h13.334V5.5ZM.5 7.167h5.833v1.666h3.334V7.167H15.5v7.5c0 .46-.373.833-.833.833H1.333a.833.833 0 0 1-.833-.833v-7.5Zm10.833 1.666V10.5H4.667V8.833h-2.5v5h11.666v-5h-2.5Z" fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php _e('250+ Supported Gateways', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php _e('Compatible with over 250 SMS gateways', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('250+ Supported Gateways', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Compatible with over 250 SMS gateways', 'wp-sms'); ?></p>
+                        </div>
+                    </div>
+                    <div class="c-feature-card u-flex u-content-start u-align-start">
+                        <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.49984 15C1.0396 15 0.666504 14.6269 0.666504 14.1667V0.833333C0.666504 0.3731 1.0396 0 1.49984 0H7.67834L9.345 1.66667H15.6665C16.1268 1.66667 16.4998 2.03977 16.4998 2.5V5H14.8332V3.33333H8.65467L6.988 1.66667H2.33317V11.665L3.58317 6.66667H17.7498L15.8243 14.3687C15.7316 14.7397 15.3983 15 15.0158 15H1.49984ZM15.6152 8.33333H4.88446L3.63446 13.3333H14.3652L15.6152 8.33333Z" fill="black"/>
+                        </svg>
+                        <div class="c-feature-card__content">
+                            <h2 class="c-feature-card__title"><?php esc_html_e('Access to All Add-on', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Access to popular Add-ons like Elementor, Two-Way,  Membership Integrations, and more.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -40,8 +49,8 @@
                                 fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php _e('8 Integration Plugins', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php _e('Integrates with popular plugins like WooCommerce, Contact Form, and more.', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('8 Integration Plugins', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Integrates with popular plugins like WooCommerce, Contact Form, and more.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -49,8 +58,8 @@
                             <path d="M8 0.433289L14.8474 1.95494C15.2287 2.03967 15.5 2.37785 15.5 2.76843V11.0907C15.5 12.7625 14.6645 14.3236 13.2735 15.251L8 18.7666L2.7265 15.251C1.33551 14.3236 0.5 12.7625 0.5 11.0907V2.76843C0.5 2.37785 0.771275 2.03967 1.15256 1.95494L8 0.433289ZM8 2.14061L2.16667 3.43691V11.0907C2.16667 12.2052 2.72367 13.246 3.651 13.8642L8 16.7635L12.349 13.8642C13.2763 13.246 13.8333 12.2052 13.8333 11.0907V3.43691L8 2.14061ZM11.7103 6.45148L12.8888 7.62999L7.5855 12.9333L4.04999 9.39779L5.22851 8.21921L7.58492 10.5757L11.7103 6.45148Z" fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php _e('2FA & SMS Login', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php _e('Enhance the security of your WordPress site with Two Factor Authentication SMS.', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('2FA & SMS Login', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Enhance the security of your WordPress site with Two Factor Authentication SMS.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -58,8 +67,8 @@
                             <path d="M6.50008 0.233337V1.9H11.5001V0.233337H13.1667V1.9H16.5001C16.9603 1.9 17.3334 2.2731 17.3334 2.73334V16.0667C17.3334 16.5269 16.9603 16.9 16.5001 16.9H1.50008C1.03985 16.9 0.666748 16.5269 0.666748 16.0667V2.73334C0.666748 2.2731 1.03985 1.9 1.50008 1.9H4.83341V0.233337H6.50008ZM15.6667 6.06667H2.33341V15.2333H15.6667V6.06667ZM11.5297 7.84667L12.7082 9.02525L8.58341 13.15L5.63714 10.2038L6.81565 9.02525L8.58341 10.793L11.5297 7.84667Z" fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php _e('Scheduled SMS', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php _e('Schedule SMS messages to be sent at a later time.', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('Scheduled SMS', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Schedule SMS messages to be sent at a later time.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -67,8 +76,8 @@
                             <path d="M4.37887 14.0333L0.666748 16.95V1.53335C0.666748 1.07311 1.03985 0.700012 1.50008 0.700012H16.5001C16.9603 0.700012 17.3334 1.07311 17.3334 1.53335V13.2C17.3334 13.6603 16.9603 14.0333 16.5001 14.0333H4.37887ZM3.80243 12.3667H15.6667V2.36668H2.33341V13.5209L3.80243 12.3667ZM8.41083 8.3011L11.9463 4.76558L13.1248 5.94409L8.41083 10.6581L5.16992 7.41726L6.34843 6.23872L8.41083 8.3011Z" fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php _e('WooCommerce SMS Notify', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php _e('Keep WooCommerce customers informed about their orders or any changes via SMS.', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('WooCommerce SMS Notify', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Keep WooCommerce customers informed about their orders or any changes via SMS.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -78,8 +87,8 @@
                                 fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php _e('1 Year Updates & Support', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php _e('Compatible with over 250 SMS gateways', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('1 Year Updates & Support', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Compatible with over 250 SMS gateways', 'wp-sms'); ?></p>
                         </div>
                     </div>
                 </div>

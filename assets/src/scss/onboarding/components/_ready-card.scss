@@ -75,7 +75,7 @@ a.c-readycard__title{
 
 .c-readycard__badge {
   background: #FFF8F6;
-  color: $primary-orange;
+  color: $primary-orange!important;
   padding: 4px 12px 4px 12px;
   border-radius: 4px;
   margin: 0 auto;
@@ -83,6 +83,8 @@ a.c-readycard__title{
   font-weight: 600;
   line-height: 14.06px;
   display: inline-flex;
+  box-shadow: none;
+  outline:none;
   gap: 6px;
   align-items: center;
   justify-content: center;
