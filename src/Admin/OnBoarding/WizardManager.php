@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Admin\OnBoarding;
 
+use WP_SMS\Components\Assets;
 use WP_SMS\Components\View;
 use WP_SMS\Utils\Request;
 use WP_SMS\Notice\NoticeManager;
@@ -40,17 +41,17 @@ class WizardManager
 
     public function enqueueScripts()
     {
-        wp_enqueue_style('wp-sms-onboarding-style', WP_SMS_URL . 'assets/css/onboarding.min.css', array(), '1.0.0');
-        wp_enqueue_script('wp-sms-onboarding-script', WP_SMS_URL . 'assets/js/onboarding.min.js', array('jquery', 'wpsms-select2'), '1.0.0', true);
-
-        wp_localize_script('wp-sms-onboarding-script', 'wpSmsWizard', array(
+        $localization = array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('wp_sms_wizard_nonce'),
+            'nonce'    => wp_create_nonce('wp_sms_test_gateway_status'),
             'step'     => Request::get('step'),
             'slug'     => $this->slug,
             'next_url' => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug),
             'prev_url' => WizardHelper::generatePreviousStepUrl($this->currentStep->getSlug(), $this->slug),
-        ));
+        );
+
+        Assets::style('onboarding-style', 'css/onboarding.min.css');
+        Assets::script('onboarding-script', 'js/onboarding.min.js', array('jquery', 'wpsms-select2'), $localization);
     }
 
     public function add(StepAbstract $step)

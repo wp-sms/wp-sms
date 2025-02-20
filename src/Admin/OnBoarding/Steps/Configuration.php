@@ -22,7 +22,7 @@ class Configuration extends StepAbstract
     protected function initialize()
     {
         $this->setGatewayFields();
-        $this->registerAjaxAction();
+        add_action('onboarding_before_test_gateway_response', array($this, 'afterValidation'));
     }
 
     protected function setGatewayFields()
@@ -80,26 +80,4 @@ class Configuration extends StepAbstract
         }
     }
 
-    public function registerAjaxAction()
-    {
-        add_action('wp_ajax_test_connection', [$this, 'ajaxHandler']);
-    }
-
-    public function ajaxHandler()
-    {
-        check_ajax_referer('wp_sms_wizard_nonce', 'nonce');
-
-        $this->afterValidation();
-
-        $response = [
-            'status'   => !is_wp_error($this->sms->GetCredit) ? 'active' : 'deactive',
-            'balance'  => $this->sms->GetCredit ? $this->sms->GetCredit : 0,
-            'incoming' => $this->sms->supportIncoming ? 'true' : 'false',
-            'bulk'     => $this->sms->bulk_send ? 'true' : 'false',
-            'mms'      => $this->sms->supportMedia ? 'true' : 'false',
-        ];
-
-        wp_send_json_success($response, 200);
-
-    }
 }

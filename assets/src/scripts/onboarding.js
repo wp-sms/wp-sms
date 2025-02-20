@@ -67,13 +67,13 @@ jQuery(document).ready(function ($) {
 
         // Collect data if needed
         let data = {
-            action: 'test_connection',
-            nonce: wpSmsWizard.nonce,
+            action: 'wp_sms_test_gateway_status',
+            _nonce: WP_Sms_Onboarding_Script_Object.nonce,
         };
 
         // AJAX request
         $.ajax({
-            url: wpSmsWizard.ajax_url, // WP AJAX URL passed from localize_script
+            url: WP_Sms_Onboarding_Script_Object.ajax_url, // WP AJAX URL passed from localize_script
             type: 'POST',
             data: data,
             success: function (response) {
