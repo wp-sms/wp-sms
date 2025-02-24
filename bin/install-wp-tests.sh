@@ -119,7 +119,7 @@ install_wp() {
 
 install_woocommerce() {
     echo "Installing WooCommerce..."
-    wp plugin install woocommerce --activate --allow-root
+    wp plugin install woocommerce --activate --allow-root --path=$WP_CORE_DIR
 }
 
 install_test_suite() {
