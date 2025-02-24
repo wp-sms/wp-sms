@@ -64,16 +64,6 @@ else
 fi
 set -ex
 
-install_wp_cli() {
-    if ! command -v wp &> /dev/null
-    then
-        echo "WP CLI not found. Installing WP CLI..."
-        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-        chmod +x wp-cli.phar
-        sudo mv wp-cli.phar /usr/local/bin/wp
-    fi
-}
-
 install_wp() {
 
 	if [ -d $WP_CORE_DIR ]; then
@@ -118,8 +108,19 @@ install_wp() {
 }
 
 install_woocommerce() {
-    echo "Installing WooCommerce..."
-    wp plugin install woocommerce --activate --allow-root --path=$WP_CORE_DIR
+    echo 'Installing WooCommerce...'
+
+    # Define the directory to install the plugin
+    local plugin_dir="$WP_CORE_DIR/wp-content/plugins/woocommerce"
+
+    # Remove the existing WooCommerce directory if it exists
+    rm -rf $plugin_dir
+
+    # Create the plugin directory
+    mkdir -p $plugin_dir
+
+    # Use SVN export to download WooCommerce into the plugins directory
+    svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ $plugin_dir
 }
 
 install_test_suite() {
@@ -204,7 +205,6 @@ install_db() {
 	fi
 }
 
-install_wp_cli
 install_wp
 install_woocommerce
 install_test_suite

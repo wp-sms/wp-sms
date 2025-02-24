@@ -35,7 +35,10 @@ function _manually_load_plugins()
     $network_wide = is_multisite();
     WP_SMS::get_instance()->activate($network_wide);
 
-    require dirname(__DIR__, 2) . '/woocommerce/woocommerce.php'; // Adjust path to WooCommerce if required.
+    // Ensure WooCommerce is activated.
+    if (file_exists(dirname(__DIR__, 2) . '/woocommerce/woocommerce.php')) {
+        activate_plugin('woocommerce/woocommerce.php'); // Use relative path to WooCommerce plugin.
+    }
 }
 
 // Hook to load the plugins.
