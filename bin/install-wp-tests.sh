@@ -107,21 +107,16 @@ install_wp() {
 	download https://raw.githubusercontent.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
-install_woocommerce() {
-    echo 'Installing WooCommerce...'
-
-    # Ensure the WooCommerce directory is cleaned up before export
-    plugin_dir="/tmp/wordpress/wp-content/plugins/woocommerce"
-
-    # Check if the directory exists and remove it
-    if [ -d "$plugin_dir" ]; then
-        echo "Removing existing WooCommerce plugin directory..."
-        rm -rf "$plugin_dir"
+install_wp_cli() {
+    if ! command -v wp > /dev/null; then
+        echo "WP-CLI is not installed. Installing WP-CLI..."
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        mv wp-cli.phar /usr/local/bin/wp
+        echo "WP-CLI installed successfully."
+    else
+        echo "WP-CLI is already installed."
     fi
-
-    # Now, export WooCommerce from SVN
-    echo "Installing WooCommerce..."
-    svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ "$plugin_dir"
 }
 
 install_test_suite() {
@@ -206,7 +201,17 @@ install_db() {
 	fi
 }
 
+install_woocommerce() {
+    echo 'Installing WooCommerce...'
+    svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ $TMPDIR/wordpress-trunk/woocommerce
+    mv $TMPDIR/wordpress-trunk/woocommerce $WP_CORE_DIR/wp-content/plugins
+
+    echo 'Activating WooCommerce via WP-CLI...'
+    wp plugin activate woocommerce --path=$WP_CORE_DIR
+}
+
 install_wp
-install_woocommerce
+install_wp_cli
 install_test_suite
 install_db
+install_woocommerce
