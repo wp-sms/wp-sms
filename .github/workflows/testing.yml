@@ -40,6 +40,9 @@ jobs:
       - name: Setup tests
         run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 latest true
 
+      - name: Install WordPress
+        run: wp core download
+
       - name: Install and activate WooCommerce
         run: wp plugin install woocommerce --activate --allow-root
 
