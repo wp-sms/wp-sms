@@ -110,17 +110,18 @@ install_wp() {
 install_woocommerce() {
     echo 'Installing WooCommerce...'
 
-    # Define the directory to install the plugin
-    local plugin_dir="$WP_CORE_DIR/wp-content/plugins/woocommerce"
+    # Ensure the WooCommerce directory is cleaned up before export
+    plugin_dir="/tmp/wordpress/wp-content/plugins/woocommerce"
 
-    # Remove the existing WooCommerce directory if it exists
-    rm -rf $plugin_dir
+    # Check if the directory exists and remove it
+    if [ -d "$plugin_dir" ]; then
+        echo "Removing existing WooCommerce plugin directory..."
+        rm -rf "$plugin_dir"
+    fi
 
-    # Create the plugin directory
-    mkdir -p $plugin_dir
-
-    # Use SVN export to download WooCommerce into the plugins directory
-    svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ $plugin_dir
+    # Now, export WooCommerce from SVN
+    echo "Installing WooCommerce..."
+    svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ "$plugin_dir"
 }
 
 install_test_suite() {
