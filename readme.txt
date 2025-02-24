@@ -169,13 +169,12 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.11 - 2025-02-** =
-- **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications.
-- **New**: Support Variable Products in the Order for `%order_item_meta_{key-name}%` Variable
-- **Fix**: Render New Lines in the Outbox
-- **Fix**: Show Order Items from `%order_items%` Variable in Multiple Lines
-- **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for better performance and maintainability.
-- **Fix**: Resolved issue where the newsletter subscription confirmation failed with a 'Not found the number!' error.
+= v6.9.11 - 2025-02-24 =
+- **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
+- **Fix**: Resolved issue with rendering new lines in the Outbox.
+- **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
+- **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
+- **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
 
 = v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
