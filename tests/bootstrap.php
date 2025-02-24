@@ -34,11 +34,8 @@ function _manually_load_plugins()
     // Table creation on test environment.
     $network_wide = is_multisite();
     WP_SMS::get_instance()->activate($network_wide);
-
-    // Ensure WooCommerce is activated.
-    if (file_exists(dirname(__DIR__, 2) . '/woocommerce/woocommerce.php')) {
-        activate_plugin('woocommerce/woocommerce.php'); // Use relative path to WooCommerce plugin.
-    }
+    
+    activate_plugin('woocommerce/woocommerce.php'); // Use relative path to WooCommerce plugin.
 }
 
 // Hook to load the plugins.
