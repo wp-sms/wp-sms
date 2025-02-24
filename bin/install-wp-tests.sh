@@ -64,6 +64,16 @@ else
 fi
 set -ex
 
+install_wp_cli() {
+    if ! command -v wp &> /dev/null
+    then
+        echo "WP CLI not found. Installing WP CLI..."
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        sudo mv wp-cli.phar /usr/local/bin/wp
+    fi
+}
+
 install_wp() {
 
 	if [ -d $WP_CORE_DIR ]; then
@@ -105,6 +115,11 @@ install_wp() {
 	fi
 
 	download https://raw.githubusercontent.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
+}
+
+install_woocommerce() {
+    echo "Installing WooCommerce..."
+    wp plugin install woocommerce --activate --allow-root
 }
 
 install_test_suite() {
@@ -189,6 +204,8 @@ install_db() {
 	fi
 }
 
+install_wp_cli
 install_wp
+install_woocommerce
 install_test_suite
 install_db
