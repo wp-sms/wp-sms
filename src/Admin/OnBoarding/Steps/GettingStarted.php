@@ -34,11 +34,6 @@ class GettingStarted extends StepAbstract
         // TODO: Implement getDescription() method.
     }
 
-    public function completeIf()
-    {
-        return true;
-    }
-
     protected function validationRules()
     {
         return [
@@ -50,5 +45,7 @@ class GettingStarted extends StepAbstract
     public function afterValidation()
     {
         Option::updateOption('admin_mobile_number', $this->data['countries'] != self::COUNTRY_DEFAULT_VALUE ? $this->data['countries'] . $this->data['tel'] : $this->data['tel']);
+        Option::updateOption('admin_mobile_number_raw', $this->data['tel']);
+        Option::updateOption('admin_mobile_number_prefix', $this->data['countries']);
     }
 }

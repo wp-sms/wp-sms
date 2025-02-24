@@ -7,7 +7,7 @@ class StepFactory
     /**
      * The base namespace where all step classes are located.
      */
-    private const BASE_NAMESPACE = 'WP_SMS\\Admin\\OnBoarding\\Steps\\';
+    const BASE_NAMESPACE = 'WP_SMS\\Admin\\OnBoarding\\Steps\\';
 
     /**
      * Creates an instance of a step using only the step name.
@@ -16,7 +16,7 @@ class StepFactory
      * @return StepAbstract
      * @throws \Exception If the class does not exist or is not a valid step.
      */
-    public static function create($stepName)
+    public static function create($stepName, WizardManager $wizard)
     {
         $className = self::BASE_NAMESPACE . $stepName;
 
@@ -24,7 +24,7 @@ class StepFactory
             throw new \Exception("Step class '{$className}' not found.");
         }
 
-        $step = new $className();
+        $step = new $className($wizard);
 
         if (!$step instanceof StepAbstract) {
             throw new \Exception("The class '{$className}' must extend StepAbstract.");

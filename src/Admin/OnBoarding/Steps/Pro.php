@@ -26,11 +26,6 @@ class Pro extends StepAbstract
         // TODO: Implement getDescription() method.
     }
 
-    public function completeIf()
-    {
-        // TODO: Implement completeIf() method.
-    }
-
     protected function validationRules()
     {
         // TODO: Implement validationRules() method.

@@ -13,8 +13,10 @@ class Configuration extends StepAbstract
     public function getFields()
     {
         $ids = [];
-        foreach ($this->data['fields'] as $item) {
-            $ids[] = $item['id'];
+        if (is_array($this->data && $this->data['fields'])) {
+            foreach ($this->data['fields'] as $item) {
+                $ids[] = $item['id'];
+            }
         }
         return $ids;
     }
@@ -46,11 +48,6 @@ class Configuration extends StepAbstract
     protected function getDescription()
     {
         // TODO: Implement getDescription() method.
-    }
-
-    public function completeIf()
-    {
-        // TODO: Implement completeIf() method.
     }
 
     protected function validationRules()

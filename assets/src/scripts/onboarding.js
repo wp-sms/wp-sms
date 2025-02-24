@@ -77,18 +77,42 @@ jQuery(document).ready(function ($) {
             type: 'POST',
             data: data,
             success: function (response) {
-                $('.gateway-status').html(response.data.status);
-                $('.gateway-balance').html(response.data.balance);
-                $('.gateway-incoming').html(response.data.incoming);
-                $('.gateway-bulk').html(response.data.bulk);
-                $('.gateway-mms').html(response.data.mms);
+                if (response.success) {
+                    const data = response.data;
 
-                $('.c-form__result').css('display', 'block');
+                    // Inject status values
+                    $('.gateway-status-label').text(data.status.label).attr('class', data.status.class);
+                    $('.gateway-status-description').text(data.status.description);
 
-                $('#wp_sms_test_connection').replaceWith(
-                    '<input class="c-btn c-btn--primary" type="submit" value="Continue"/>'
-                );
+                    // Inject balance values
+                    $('.gateway-balance-label').text(data.balance.label).attr('class', data.balance.class);
+                    $('.gateway-balance-description').text(data.balance.description);
+
+                    // Inject incoming message values
+                    $('.gateway-incoming-label').text(data.incoming.label).attr('class', data.incoming.class);
+                    $('.gateway-incoming-description').text(data.incoming.description);
+
+                    // Inject bulk SMS values
+                    $('.gateway-bulk-label').text(data.bulk.label).attr('class', data.bulk.class);
+                    $('.gateway-bulk-description').text(data.bulk.description);
+
+                    // Inject MMS values
+                    $('.gateway-mms-label').text(data.mms.label).attr('class', data.mms.class);
+                    $('.gateway-mms-description').text(data.mms.description);
+
+                    // Display the container
+                    $('.gateway-status-container').css('display', 'block');
+
+                    // Replace button
+                    $('#wp_sms_test_connection').replaceWith(
+                        '<input class="c-btn c-btn--primary" type="submit" value="Continue"/>'
+                    );
+                }
+            },
+            error: function () {
+                alert('There was an error. Please try again.');
             }
         });
+
     });
 });

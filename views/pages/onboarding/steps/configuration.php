@@ -21,40 +21,54 @@
                     name="<?php echo esc_attr($field['id']); ?>"
                     placeholder=""
                     type="<?php echo ($key === 'password') ? 'password' : 'text'; ?>"
+                    value="<?php echo \WP_SMS\Option::getOption($field['id']) ?>"
                 />
                 <p class="c-form__description">
                     <?php echo esc_html($field['desc']); ?>
                 </p>
             </div>
         <?php endforeach; ?>
-        <ul class="c-form__result c-form__result--success" style="display: none">
-            Connection Status
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Status</span>
-                <span class="c-form__result-status gateway-status">
-                </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Balance</span>
-                <span class="c-form__result-status gateway-balance">
-                </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Incoming message</span>
-                <span class="c-form__result-status gateway-incoming">
-                </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
-                <span class="c-form__result-title">Bulk SMS</span>
-                <span class="c-form__result-status gateway-bulk">
-                </span>
-            </li>
-            <li class="c-form__result-item u-flex u-content-sp u-align-center">
-                <span class="c-form__result-title">Send MMS</span>
-                <span class="c-form__result-status gateway-mms">
-                </span>
-            </li>
-        </ul>
+        <div class="gateway-status-container" style="display: none">
+            <ul class="c-form__result">
+                <h3>Connection Status</h3>
+                <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
+                    <span class="c-form__result-title">Status</span>
+                    <span class="c-form__result-status">
+                <span class="gateway-status-label"></span>
+                <span class="gateway-status-description"></span>
+            </span>
+                </li>
+                <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
+                    <span class="c-form__result-title">Balance</span>
+                    <span class="c-form__result-status">
+                <span class="gateway-balance-label"></span>
+                <span class="gateway-balance-description"></span>
+            </span>
+                </li>
+                <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
+                    <span class="c-form__result-title">Incoming message</span>
+                    <span class="c-form__result-status">
+                <span class="gateway-incoming-label"></span>
+                <span class="gateway-incoming-description"></span>
+            </span>
+                </li>
+                <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
+                    <span class="c-form__result-title">Bulk SMS</span>
+                    <span class="c-form__result-status">
+                <span class="gateway-bulk-label"></span>
+                <span class="gateway-bulk-description"></span>
+            </span>
+                </li>
+                <li class="c-form__result-item u-flex u-content-sp u-align-center">
+                    <span class="c-form__result-title">Send MMS</span>
+                    <span class="c-form__result-status">
+                <span class="gateway-mms-label"></span>
+                <span class="gateway-mms-description"></span>
+            </span>
+                </li>
+            </ul>
+        </div>
+
         <div class="c-form__footer u-content-sp u-align-center">
             <a class="c-form__footer--last-step" href="<?php echo esc_url($ctas['back']['url']); ?>">
                 <?php echo esc_html($ctas['back']['text']); ?>

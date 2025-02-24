@@ -36,7 +36,7 @@ class SmsGateway extends StepAbstract
             do {
                 $request  = new RemoteRequest('get', "https://staging.wp-sms-pro.com/wp-json/wp/v2/gateway?per_page=100&page={$page}");
                 $response = $request->execute();
-
+                var_dump($response);
                 if (is_array($response) && !empty($response)) {
                     $gateways = array_merge($gateways, $response);
                     $page++;
@@ -48,7 +48,7 @@ class SmsGateway extends StepAbstract
             // Cache the data
             set_transient(self::CACHE_KEY, $gateways, self::CACHE_DURATION);
         } catch (Exception $e) {
-            error_log('Error fetching pages: ' . $e->getMessage());
+            error_log(sprintf(__('Error fetching pages: %s', 'wp-sms'), $e->getMessage()));
         }
 
         return $gateways;
@@ -69,11 +69,6 @@ class SmsGateway extends StepAbstract
         // TODO: Implement getDescription() method.
     }
 
-    public function completeIf()
-    {
-        // TODO: Implement completeIf() method.
-    }
-
     protected function validationRules()
     {
         return [
@@ -84,7 +79,6 @@ class SmsGateway extends StepAbstract
     public function afterValidation()
     {
         Option::updateOption('gateway_name', $this->data['name']);
-
     }
 
 }

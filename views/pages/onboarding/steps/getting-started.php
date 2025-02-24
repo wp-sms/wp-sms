@@ -21,9 +21,13 @@
             <select id="countries" name="countries">
                 <option value="global"><?php _e('No country code (Global)', 'wp-sms'); ?></option>
                 <?php
-                $countries = wp_sms_countries()->getCountriesMerged();;
+                $countries            = wp_sms_countries()->getCountriesMerged();
+                $current_country_code = \WP_SMS\Option::getOption('admin_mobile_number_prefix');
+                $current_tel_raw      = \WP_SMS\Option::getOption('admin_mobile_number_raw');
+
                 foreach ($countries as $code => $country) {
-                    echo '<option value="' . esc_attr($code) . '">' . esc_html__($country, 'wp-sms') . '</option>';
+                    $selected = ($current_country_code === esc_attr($code)) ? 'selected' : '';
+                    echo '<option ' . $selected . ' value="' . esc_attr($code) . '">' . esc_html__($country, 'wp-sms') . '</option>';
                 }
                 ?>
             </select>
@@ -33,7 +37,7 @@
         </div>
         <div class="c-form__fieldgroup u-mb-38">
             <label for="tel"><?php _e('Your Mobile Number', 'wp-sms'); ?> <span class="u-text-red">*</span></label>
-            <input name="tel" id="tel" placeholder="<?php esc_attr_e('Enter your mobile number', 'wp-sms'); ?>" type="tel" required/>
+            <input value="<?php echo $current_tel_raw ?>" name="tel" id="tel" placeholder="<?php esc_attr_e('Enter your mobile number', 'wp-sms'); ?>" type="tel" required/>
             <p class="c-form__description">
                 <?php _e("Enter the phone number where you'd like to receive management alerts.", 'wp-sms'); ?>
             </p>

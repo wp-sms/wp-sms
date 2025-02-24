@@ -3,12 +3,21 @@
 namespace WP_SMS\Admin\OnBoarding\Steps;
 
 use WP_SMS\Admin\OnBoarding\StepAbstract;
+use WP_SMS\Components\Sms;
+use WP_SMS\Option;
 
 class TestSetup extends StepAbstract
 {
     protected function initialize()
     {
-        // TODO: Implement initialize() method.
+        $params = [
+            'to'  => Option::getOption('admin_mobile_number'),
+            'msg' => __('This is a test from WP-SMS onboarding process.')
+        ];
+
+        if (Sms::send($params)) {
+            $this->markAsInitialized();
+        }
     }
 
     public function getSlug()
@@ -26,25 +35,16 @@ class TestSetup extends StepAbstract
         // TODO: Implement getDescription() method.
     }
 
-    public function completeIf()
-    {
-        // TODO: Implement completeIf() method.
-    }
 
     protected function validationRules()
     {
         // TODO: Implement validationRules() method.
     }
 
-    protected function getField()
-    {
-        // TODO: Implement getField() method.
-    }
-
     /**
      * @return array
      */
-    public function getFields(): array
+    public function getFields()
     {
         return [];
     }

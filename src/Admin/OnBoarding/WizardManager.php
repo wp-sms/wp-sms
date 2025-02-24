@@ -12,7 +12,7 @@ class WizardManager
     private $steps = array();
     private $currentStep;
     private $title;
-    private $slug;
+    public $slug;
 
     public function __construct($title, $slug)
     {
@@ -64,7 +64,7 @@ class WizardManager
         $data = array(
             'current'  => $this->currentStep->getSlug(),
             'previous' => $this->getPrevious(),
-            'next'     => $this->getNext(),
+            'next'     => WizardHelper::generateStepUrl($this->getNext(), $this->slug),
             'ctas'     => $this->getCTAs(),
             'index'    => $this->getStepIndex() + 1,
             'steps'    => $this->getStepsData(),
@@ -123,15 +123,6 @@ class WizardManager
 
     private function enforceURL()
     {
-        if (empty($this->steps) || !$this->currentStep->isCompleted()) {
-            foreach ($this->steps as $step) {
-                if (!$step->isCompleted()) {
-                    WizardHelper::redirectToStep($this->slug, $step->getSlug());
-                    return;
-                }
-            }
-        }
-
         if (!Request::get('step')) {
             WizardHelper::redirectToStep($this->slug, $this->currentStep->getSlug());
         }

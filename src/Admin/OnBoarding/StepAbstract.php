@@ -10,15 +10,21 @@ abstract class StepAbstract
 {
     public $title;
     private $skippable = true;
+    private $wizard;
+
     protected $data = [];
     private $fields = [];
     private $errors = [];
 
-    public function __construct()
+    public function __construct(WizardManager $wizard)
     {
-        $this->initialize();
+        $this->wizard = $wizard;
         $this->title  = $this->getTitle();
         $this->fields = $this->getFields();
+
+        if (!$this->isInitialized()) {
+            $this->initialize();
+        }
     }
 
     abstract protected function initialize();
@@ -85,9 +91,14 @@ abstract class StepAbstract
         return [];
     }
 
-    public function isCompleted()
+    public function markAsInitialized()
     {
-        return true;
+        update_option('wp_sms_' . $this->wizard->slug . '_onboarding_step_' . $this->getSlug() . '_initialized', true);
+    }
+
+    public function isInitialized()
+    {
+        return get_option('wp_sms_' . $this->wizard->slug . '_onboarding_step_' . $this->getSlug() . '_initialized', false);
     }
 
     public function afterValidation()

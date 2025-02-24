@@ -211,13 +211,13 @@ class WP_SMS
 
         $wizard = new WizardManager(__('WPSMS OnBoarding Process'), 'wp-sms-onboarding');
 
-        $wizard->add(StepFactory::create('GettingStarted'));
-        $wizard->add(StepFactory::create('SmsGateway'));
-        $wizard->add(StepFactory::create('Configuration'));
-        $wizard->add(StepFactory::create('TestSetup'));
-        $wizard->add(StepFactory::create('Pro'));
-        $wizard->add(StepFactory::create('Addons'));
-        $wizard->add(StepFactory::create('Ready'));
+        $wizard->add(StepFactory::create('GettingStarted', $wizard));
+        $wizard->add(StepFactory::create('SmsGateway', $wizard));
+        $wizard->add(StepFactory::create('Configuration', $wizard));
+        $wizard->add(StepFactory::create('TestSetup', $wizard));
+        $wizard->add(StepFactory::create('Pro', $wizard));
+        $wizard->add(StepFactory::create('Addons', $wizard));
+        $wizard->add(StepFactory::create('Ready', $wizard));
 
         $wizard->setup();
     }

@@ -50,8 +50,11 @@
                                         <span class="icon-lock"></span>
                                     </span>
                                 <span><?php echo esc_html($gateway->title->rendered); ?></span>
-                            <?php else: ?>
-                                <input value="<?php echo $gateway->slug ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
+                            <?php else:
+                                $current_gateway = \WP_SMS\Option::getOption('gateway_name');
+                                $selected = ($current_gateway === esc_attr($gateway->slug)) ? 'checked' : '';
+                                ?>
+                                <input <?php echo $selected ?> value="<?php echo $gateway->slug ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
                                 <label for="gateway-name-<?php echo esc_attr($gateway->id); ?>"><?php echo esc_html($gateway->title->rendered); ?></label>
                             <?php endif; ?>
                         </td>
