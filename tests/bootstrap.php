@@ -25,6 +25,9 @@ require_once "{$_tests_dir}/includes/functions.php";
 // Autoload dependencies (e.g., Faker).
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+// Load pluggable.php to enable WordPress functions like wp_get_current_user().
+require_once dirname(__FILE__, 2) . '/wp-includes/pluggable.php'; // Update path to correct WordPress location
+
 /**
  * Load the plugins being tested.
  */
