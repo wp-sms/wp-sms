@@ -18,7 +18,7 @@ class Pro extends StepAbstract
 
     protected function getTitle()
     {
-        return __('Update to All-In-One', 'wp-sms');
+        return __('WP SMS All-in-One', 'wp-sms');
     }
 
     protected function getDescription()

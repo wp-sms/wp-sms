@@ -27,7 +27,7 @@ class TestSetup extends StepAbstract
 
     protected function getTitle()
     {
-        return __('Test Setup', 'wp-sms');
+        return __('Test Your Setup', 'wp-sms');
     }
 
     protected function getDescription()

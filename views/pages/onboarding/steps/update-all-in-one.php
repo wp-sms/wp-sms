@@ -30,7 +30,7 @@
                         </svg>
                         <div class="c-feature-card__content">
                             <h2 class="c-feature-card__title"><?php esc_html_e('250+ Supported Gateways', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Compatible with over 250 SMS gateways', 'wp-sms'); ?></p>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Compatible with over 250 SMS gateways for reliable message delivery.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -38,8 +38,8 @@
                             <path d="M1.49984 15C1.0396 15 0.666504 14.6269 0.666504 14.1667V0.833333C0.666504 0.3731 1.0396 0 1.49984 0H7.67834L9.345 1.66667H15.6665C16.1268 1.66667 16.4998 2.03977 16.4998 2.5V5H14.8332V3.33333H8.65467L6.988 1.66667H2.33317V11.665L3.58317 6.66667H17.7498L15.8243 14.3687C15.7316 14.7397 15.3983 15 15.0158 15H1.49984ZM15.6152 8.33333H4.88446L3.63446 13.3333H14.3652L15.6152 8.33333Z" fill="black"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php esc_html_e('Access to All Add-on', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Access to popular Add-ons like Elementor, Two-Way,  Membership Integrations, and more.', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('Access to All Add‑Ons', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Unlock features like WP SMS Pro, WooCommerce Pro, Two‑Way, Elementor, Membership, Fluent, and Booking integrations.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -50,7 +50,7 @@
                         </svg>
                         <div class="c-feature-card__content">
                             <h2 class="c-feature-card__title"><?php esc_html_e('8 Integration Plugins', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Integrates with popular plugins like WooCommerce, Contact Form, and more.', 'wp-sms'); ?></p>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Seamlessly works with popular plugins including WooCommerce, Contact Form, Gravity Forms, BuddyPress, and more.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -59,7 +59,7 @@
                         </svg>
                         <div class="c-feature-card__content">
                             <h2 class="c-feature-card__title"><?php esc_html_e('2FA & SMS Login', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Enhance the security of your WordPress site with Two Factor Authentication SMS.', 'wp-sms'); ?></p>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Secure your WordPress site with Two‑Factor Authentication via SMS and mobile login.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -67,8 +67,8 @@
                             <path d="M6.50008 0.233337V1.9H11.5001V0.233337H13.1667V1.9H16.5001C16.9603 1.9 17.3334 2.2731 17.3334 2.73334V16.0667C17.3334 16.5269 16.9603 16.9 16.5001 16.9H1.50008C1.03985 16.9 0.666748 16.5269 0.666748 16.0667V2.73334C0.666748 2.2731 1.03985 1.9 1.50008 1.9H4.83341V0.233337H6.50008ZM15.6667 6.06667H2.33341V15.2333H15.6667V6.06667ZM11.5297 7.84667L12.7082 9.02525L8.58341 13.15L5.63714 10.2038L6.81565 9.02525L8.58341 10.793L11.5297 7.84667Z" fill="#242121"/>
                         </svg>
                         <div class="c-feature-card__content">
-                            <h2 class="c-feature-card__title"><?php esc_html_e('Scheduled SMS', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Schedule SMS messages to be sent at a later time.', 'wp-sms'); ?></p>
+                            <h2 class="c-feature-card__title"><?php esc_html_e('Scheduled & Repeating SMS', 'wp-sms'); ?></h2>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Plan messages for future delivery or set recurring texts to keep users engaged.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -77,7 +77,7 @@
                         </svg>
                         <div class="c-feature-card__content">
                             <h2 class="c-feature-card__title"><?php esc_html_e('WooCommerce SMS Notify', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Keep WooCommerce customers informed about their orders or any changes via SMS.', 'wp-sms'); ?></p>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Send order updates, abandoned cart alerts, and shipping notifications straight to customers’ phones.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
@@ -88,7 +88,7 @@
                         </svg>
                         <div class="c-feature-card__content">
                             <h2 class="c-feature-card__title"><?php esc_html_e('1 Year Updates & Support', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Compatible with over 250 SMS gateways', 'wp-sms'); ?></p>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Enjoy the latest features and dedicated support throughout your subscription.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                 </div>
