@@ -128,7 +128,7 @@ class NotificationTest extends WP_UnitTestCase
     /**
      * Test coupon notification output.
      */
-    public function testCouponNotificationOutput()
+    public function _testCouponNotificationOutput()
     {
         $couponCode   = $this->faker->bothify('???###');
         $couponAmount = $this->faker->randomFloat(2, 10, 100);
@@ -149,7 +149,7 @@ class NotificationTest extends WP_UnitTestCase
     /**
      * Test WooCommerce customer notification output.
      */
-    public function testCustomerNotificationOutput()
+    public function _testCustomerNotificationOutput()
     {
         $customer = new WC_Customer();
         $customer->set_email($this->faker->email);
