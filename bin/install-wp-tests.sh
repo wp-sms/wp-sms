@@ -205,9 +205,6 @@ install_woocommerce() {
     echo 'Installing WooCommerce...'
     svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ $TMPDIR/wordpress-trunk/woocommerce
     mv $TMPDIR/wordpress-trunk/woocommerce $WP_CORE_DIR/wp-content/plugins
-
-    echo 'Activating WooCommerce via WP-CLI...'
-    wp plugin activate woocommerce --path=$WP_CORE_DIR
 }
 
 install_wp
