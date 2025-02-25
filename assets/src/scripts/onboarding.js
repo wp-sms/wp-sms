@@ -2,6 +2,16 @@ import DataTable from 'datatables.net';
 
 jQuery(document).ready(function ($) {
     'use strict';
+
+    const notices = document.querySelectorAll('.wpsms-admin-notice');
+    const mainContent = document.querySelector('.o-section.c-section--maincontent');
+    if (notices.length > 0 && mainContent) {
+         notices.forEach(notice => {
+             notice.classList.add('active')
+             mainContent.insertBefore(notice, mainContent.firstChild);
+        });
+    }
+
     // Initialize Select2 with custom placeholder
     $('.wpsms-onboarding select').select2().on('select2:open', function () {
         $('.select2-search__field').attr('placeholder', 'Type to search...');
