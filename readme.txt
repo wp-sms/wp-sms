@@ -169,7 +169,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.11 - 2025-02-24 =
+= v6.9.11 - 2025-02-25 =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
 - **Fix**: Resolved issue with rendering new lines in the Outbox.
 - **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
