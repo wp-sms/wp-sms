@@ -1,4 +1,11 @@
-= v6.9.10 - 2025-01-22 =
+v6.9.11 - 2025-02-25
+- **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
+- **Fix**: Resolved issue with rendering new lines in the Outbox.
+- **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
+- **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
+- **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
+
+v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
 - **New**: Add **HelloSMS Gateway** (Sweden).
 - **Fix**: Resolve issues with adding and updating subscriber groups.

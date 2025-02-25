@@ -107,6 +107,18 @@ install_wp() {
 	download https://raw.githubusercontent.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
+install_wp_cli() {
+    if ! command -v wp > /dev/null; then
+        echo "WP-CLI is not installed. Installing WP-CLI..."
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        mv wp-cli.phar /usr/local/bin/wp
+        echo "WP-CLI installed successfully."
+    else
+        echo "WP-CLI is already installed."
+    fi
+}
+
 install_test_suite() {
 	# portable in-place argument for both GNU sed and Mac OSX sed
 	if [[ $(uname -s) == 'Darwin' ]]; then
@@ -189,6 +201,14 @@ install_db() {
 	fi
 }
 
+install_woocommerce() {
+    echo 'Installing WooCommerce...'
+    svn export --quiet https://plugins.svn.wordpress.org/woocommerce/trunk/ $TMPDIR/wordpress-trunk/woocommerce
+    mv $TMPDIR/wordpress-trunk/woocommerce $WP_CORE_DIR/wp-content/plugins
+}
+
 install_wp
+install_wp_cli
 install_test_suite
 install_db
+install_woocommerce

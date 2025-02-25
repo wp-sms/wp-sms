@@ -16,6 +16,8 @@ class WooCommerceOrderNotification extends Notification
         '%billing_last_name%'           => 'getLastName',
         '%billing_company%'             => 'getCompany',
         '%billing_address%'             => 'getAddress',
+        '%billing_postcode%'            => 'getPostCode',
+        '%payment_method%'              => 'getPaymentMethod',
         '%order_edit_url%'              => 'getEditOrderUrl',
         '%billing_phone%'               => 'getBillingPhone',
         '%billing_email%'               => 'getBillingEmail',
@@ -81,6 +83,16 @@ class WooCommerceOrderNotification extends Notification
     public function getAddress()
     {
         return $this->order->get_billing_address_1();
+    }
+
+    public function getPostCode()
+    {
+        return $this->order->get_billing_postcode();
+    }
+
+    public function getPaymentMethod()
+    {
+        return $this->order->get_payment_method_title();
     }
 
     public function getEditOrderUrl()
@@ -167,7 +179,7 @@ class WooCommerceOrderNotification extends Notification
             $preparedItems[] = $itemString;
         }
 
-        return implode('\n', $preparedItems);
+        return implode(PHP_EOL, $preparedItems);
     }
 
     public function getStatus()
@@ -197,7 +209,29 @@ class WooCommerceOrderNotification extends Notification
         $itemMetaValues = [];
 
         foreach ($this->order->get_items() as $item) {
-            $metaValue = $item->get_meta($metaKey);
+            /** @var \WC_Product $product */
+            $product = $item->get_product();
+            $isVariation = $product->is_type('variation');
+            $metaValue = null;
+
+            if ($isVariation) {
+                $metaValue = $product->get_meta($metaKey);
+
+                // Backward compatibility.
+                if (!$metaValue) {
+                    $metaValue = get_post_meta($product->get_id(), $metaKey, true);
+                }
+            }
+
+            if (!$metaValue) {
+                $metaValue = $item->get_meta($metaKey);
+
+                // Backward compatibility.
+                if (!$metaValue) {
+                    $metaValue = get_post_meta($item->get_product_id(), $metaKey, true);
+                }
+            }
+
             if ($metaValue) {
                 $itemMetaValues[] = $this->processMetaValue($metaValue);
             }
