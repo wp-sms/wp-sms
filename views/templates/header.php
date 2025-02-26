@@ -9,46 +9,12 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
 
 <div class="wpsms-adminHeader <?php echo $isPremium ? 'wpsms-adminHeader__premium' : '' ?>">
     <div class="wpsms-adminHeader__logo--container">
-         <?php if ($isPremium): ?>
+        <?php if ($isPremium): ?>
             <img width="134" height="22" class="wpsms-adminHeader__logo wpsms-adminHeader__logo--premium" src="<?php echo esc_url(apply_filters('wp_sms_header_url', WP_SMS_URL . 'assets/images/wp-sms-premium.svg')); ?>"/>
-         <?php else: ?>
+        <?php else: ?>
             <img width="134" height="22" class="wpsms-adminHeader__logo" src="<?php echo esc_url(apply_filters('wp_sms_header_url', WP_SMS_URL . 'assets/images/white-header-logo.svg')); ?>"/>
 
         <?php endif; ?>
-    </div>
-    <div class="wpsms-adminHeader__menu">
-        <?php
-        echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_overview_page', 'link_text' => __('Overview', 'wp-sms'), 'icon_class' => 'overview', 'badge_count' => null], true);
-        if (!$isPremium && apply_filters('wp_sms_enable_header_addons_menu', true)) {
-            echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_plugins_page', 'link_text' => __('Add-Ons', 'wp-sms'), 'icon_class' => 'addons', 'badge_count' => null], true);
-        }
-        if ($isPremium) {
-            echo AdminHelper::getTemplate('layout/partials/menu-link', [
-                'slug'        => '',
-                'link_text'   => __('Quick Access', 'wp-sms'),
-                'icon_class'  => 'quick-access',
-                'badge_count' => null,
-                'sub_menu'    => [
-                    [
-                        'slug'       => 'wps_pages_page',
-                        'link_text'  => __('Top Pages', 'wp-sms'),
-                        'icon_class' => 'top-pages'
-                    ],
-                    [
-                        'slug'       => 'wps_content-analytics_page',
-                        'link_text'  => __('Content Analytics', 'wp-sms'),
-                        'icon_class' => 'content-analytics'
-                    ],
-                    [
-                        'slug'       => 'wps_author-analytics_page',
-                        'link_text'  => __('Author Analytics', 'wp-sms'),
-                        'icon_class' => 'author-analytics'
-                    ]
-                ]
-            ], true);
-        }
-
-        ?>
     </div>
     <div class="wpsms-adminHeader__side">
         <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) : ?>
@@ -58,7 +24,7 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
                 </a>
             <?php else : ?>
                 <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" class="wpsms-license-status wpsms-license-status--valid">
-                    <span><?php esc_html_e(sprintf('License: %s/%s', count(PluginHelper::getLicensedPlugins()), count(PluginHelper::$plugins)), 'wp-sms')?></span> <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
+                    <span><?php esc_html_e(sprintf('License: %s/%s', count(PluginHelper::getLicensedPlugins()), count(PluginHelper::$plugins)), 'wp-sms') ?></span> <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
                 </a>
             <?php endif; ?>
         <?php endif; ?>

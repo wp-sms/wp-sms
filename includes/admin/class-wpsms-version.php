@@ -19,6 +19,15 @@ if (!defined('ABSPATH')) {
  */
 class Version
 {
+    /**
+     * Check PHP version and show notice only if PHP is below 7
+     */
+    private static function maybe_deprecated_function($method, $replacement)
+    {
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            _deprecated_function($method, '7.0.0', $replacement);
+        }
+    }
 
     /**
      * Deprecated: Check if Pro pack is enabled
@@ -28,7 +37,7 @@ class Version
      */
     public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
-        _deprecated_function(__METHOD__, '7.0.0', 'LicenseHelper::isPluginLicenseValid()');
+        self::maybe_deprecated_function(__METHOD__, 'LicenseHelper::isPluginLicenseValid()');
         return LicenseHelper::isPluginLicenseValid($pluginSlug);
     }
 
@@ -40,7 +49,7 @@ class Version
      */
     public static function pro_is_installed($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
-        _deprecated_function(__METHOD__, '7.0.0', 'PluginUtilities::isPluginInstalled()');
+        self::maybe_deprecated_function(__METHOD__, 'PluginUtilities::isPluginInstalled()');
         return PluginHelper::isPluginInstalled($pluginSlug);
     }
 
@@ -52,13 +61,13 @@ class Version
      */
     public static function addProGateways($gateways)
     {
-        _deprecated_function(__METHOD__, '7.0.0', 'HooksManager::addProGateways()');
+        self::maybe_deprecated_function(__METHOD__, 'HooksManager::addProGateways()');
 
         // Call the new method for backward compatibility
         $hooksManager = new HooksManager();
         return $hooksManager->addProGateways($gateways);
     }
-
 }
 
+// Instantiate the class
 new Version();
