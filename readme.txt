@@ -1,11 +1,11 @@
 ﻿=== WP SMS – Ultimate SMS & MMS Notifications, 2FA, OTP, and Integrations with WooCommerce, GravityForms, and More ===
-Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
+Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.10
+Stable tag: 6.9.11
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,13 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.9.11 - 2025-02-25 =
+- **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
+- **Fix**: Resolved issue with rendering new lines in the Outbox.
+- **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
+- **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
+- **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
+
 = v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
 - **New**: Add **HelloSMS Gateway** (Sweden).
