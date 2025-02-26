@@ -1,3 +1,6 @@
+v7 - 2025-xx-xx
+- **Fix**: Support wider range of CSV MIME types during the import proccess.
+
 v6.9.11 - 2025-02-25
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
 - **Fix**: Resolved issue with rendering new lines in the Outbox.
