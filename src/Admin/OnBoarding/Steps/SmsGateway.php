@@ -29,7 +29,7 @@ class SmsGateway extends StepAbstract
         try {
             do {
                 // Create a new RemoteRequest instance
-                $request = new RemoteRequest('get', "http://wp-sms-pro.test/wp-json/wp/v2/gateway?per_page=100&page={$page}");
+                $request = new RemoteRequest('get', "https://staging.wp-sms-pro.com/wp-json/wp/v2/gateway?per_page=100&page={$page}");
 
                 // Execute the request with caching enabled
                 $response = $request->execute(true, true, 43200);
