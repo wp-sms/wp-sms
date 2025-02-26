@@ -1,4 +1,4 @@
-v7 - 2025-xx-xx
+v6.9.* - 2025-xx-xx
 - **Fix**: Support wider range of CSV MIME types during the import proccess.
 
 v6.9.11 - 2025-02-25
