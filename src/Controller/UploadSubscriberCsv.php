@@ -21,6 +21,10 @@ class UploadSubscriberCsv extends AjaxControllerAbstract
             'text/x-csv',
             'text/csv',
             'application/csv',
+            'application/vnd.ms-excel', // Older Excel MIME type (sometimes used for CSV files)
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Excel MIME type for modern CSV
+            'text/comma-separated-values', // Common CSV MIME type
+            'text/tsv', // Tab-separated values, sometimes used as CSV
         );
 
         if (empty($_FILES["file"]["name"])) {
