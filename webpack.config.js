@@ -20,6 +20,9 @@ module.exports = {
         frontend: [
             './assets/src/scripts/blocks.js',
         ],
+        onboarding: [
+            './assets/src/scripts/onboarding.js',
+        ],
     },
     output: {
         filename: '[name].min.js',
@@ -46,6 +49,15 @@ module.exports = {
         },
     },
     optimization: {
-        minimizer: [new TerserPlugin()],
+        minimizer: [
+            new TerserPlugin({
+                extractComments: false,
+                terserOptions: {
+                    format: {
+                        comments: false,
+                    },
+                },
+            }),
+        ],
     }
 };
