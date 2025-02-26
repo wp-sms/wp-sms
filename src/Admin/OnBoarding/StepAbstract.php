@@ -22,9 +22,9 @@ abstract class StepAbstract
         $this->title  = $this->getTitle();
         $this->fields = $this->getFields();
 
-        if (!$this->isInitialized()) {
+//        if (!$this->isInitialized()) {
             $this->initialize();
-        }
+//        }
     }
 
     abstract protected function initialize();
@@ -91,14 +91,19 @@ abstract class StepAbstract
         return [];
     }
 
+    private function getOptionName()
+    {
+        return 'wp_sms_' . $this->wizard->slug . '_onboarding_step_' . $this->getSlug() . '_initialized';
+    }
+
     public function markAsInitialized()
     {
-        update_option('wp_sms_' . $this->wizard->slug . '_onboarding_step_' . $this->getSlug() . '_initialized', true);
+        update_option($this->getOptionName(), true);
     }
 
     public function isInitialized()
     {
-        return get_option('wp_sms_' . $this->wizard->slug . '_onboarding_step_' . $this->getSlug() . '_initialized', false);
+        return get_option($this->getOptionName(), false);
     }
 
     public function afterValidation()

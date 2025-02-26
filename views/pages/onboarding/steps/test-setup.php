@@ -27,8 +27,7 @@
         </div>
     </div>
     <div class="c-form__footer u-content-sp u-align-center">
-        <a class="c-form__footer--last-step" href="<?php echo $ctas['back']['url'] ?>"><?php echo $ctas['back']['text'] ?></a>
-        <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
-        <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['next']['text'] ?>"/>
+        <a class="c-form__footer--last-step" href="<?php echo $ctas['back']['url'] ?>"><?php echo $ctas['not_received']['text'] ?></a>
+        <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['received']['text'] ?>"/>
     </div>
 </form>

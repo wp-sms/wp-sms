@@ -9,7 +9,6 @@ use WP_SMS\Option;
 
 class SmsGateway extends StepAbstract
 {
-    const CACHE_KEY      = 'wp_sms_gateways';
     const CACHE_DURATION = 43200; // 12 hours in seconds
 
     public function getFields()
@@ -24,19 +23,18 @@ class SmsGateway extends StepAbstract
 
     private function getAllPages()
     {
-        $cached = get_transient(self::CACHE_KEY);
-        if ($cached !== false) {
-            return $cached;
-        }
-
         $gateways = array();
         $page     = 1;
 
         try {
             do {
-                $request  = new RemoteRequest('get', "https://staging.wp-sms-pro.com/wp-json/wp/v2/gateway?per_page=100&page={$page}");
-                $response = $request->execute();
-                var_dump($response);
+                // Create a new RemoteRequest instance
+                $request = new RemoteRequest('get', "http://wp-sms-pro.test/wp-json/wp/v2/gateway?per_page=100&page={$page}");
+
+                // Execute the request with caching enabled
+                $response = $request->execute(true, true, 43200);
+
+
                 if (is_array($response) && !empty($response)) {
                     $gateways = array_merge($gateways, $response);
                     $page++;
@@ -44,9 +42,6 @@ class SmsGateway extends StepAbstract
                     break;
                 }
             } while (count($response) === 100);
-
-            // Cache the data
-            set_transient(self::CACHE_KEY, $gateways, self::CACHE_DURATION);
         } catch (Exception $e) {
             error_log(sprintf(__('Error fetching pages: %s', 'wp-sms'), $e->getMessage()));
         }
