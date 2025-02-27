@@ -75,7 +75,6 @@ class Settings
             add_filter('pre_update_option_' . $this->setting_name, array($this, 'check_license_key'), 10, 2);
         }
 
-        add_filter('wp_sms_licenses_settings', array($this, 'modifyLicenseSettings'));
     }
 
     /**
@@ -169,11 +168,6 @@ class Settings
             'notifications'  => esc_html__('Notifications', 'wp-sms'),
             'message_button' => esc_html__('Message Button', 'wp-sms'),
             'advanced'       => esc_html__('Advanced', 'wp-sms'),
-
-            /*
-             * Licenses tab
-             */
-            'licenses'       => esc_html__('Licenses', 'wp-sms'),
 
             /*
              * Pro Pack tabs
@@ -2197,41 +2191,6 @@ class Settings
     }
 
     /*
-     * Activate Icon
-     */
-    public function getLicenseStatusIcon($addOnKey)
-    {
-        $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
-        $licenseKey         = isset($this->options["license_{$addOnKey}_key"]) ? $this->options["license_{$addOnKey}_key"] : null;
-        $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
-        $updateOption       = false;
-
-        if (($constantLicenseKey && $this->isCurrentTab('licenses') && wp_sms_check_remote_license($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
-            $status = esc_html__('Activated', 'wp-sms');
-            $type   = 'active';
-
-            if ($constantLicenseKey) {
-                $this->options["license_{$addOnKey}_status"] = true;
-                $updateOption                                = true;
-            }
-        } else {
-            $status                                      = esc_html__('Deactivated', 'wp-sms');
-            $type                                        = 'inactive';
-            $this->options["license_{$addOnKey}_status"] = false;
-            $updateOption                                = true;
-        }
-
-        if ($updateOption && empty($_POST)) {
-            update_option($this->setting_name, $this->options);
-        }
-
-        return Helper::loadTemplate('admin/label-button.php', array(
-            'type'  => $type,
-            'label' => $status
-        ));
-    }
-
-    /*
      * Check license key
      */
     public function check_license_key($value, $oldValue)
@@ -2863,49 +2822,6 @@ class Settings
             }
         }
         return $return_value;
-    }
-
-    /**
-     * Modify license setting page and render add-ons settings
-     *
-     * @param $settings
-     * @return array
-     */
-    public function modifyLicenseSettings($settings)
-    {
-        if (!wp_sms_get_addons()) {
-            $settings["license_title"] = array(
-                'id'   => "license_title",
-                'type' => 'notice',
-                'name' => esc_html__('No Pro Pack or Add-On found', 'wp-sms'),
-                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
-            );
-
-            return $settings;
-        }
-
-        foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
-            // license title
-            $settings["license_{$addOnKey}_title"] = array(
-                'id'   => "license_{$addOnKey}_title",
-                'name' => $addOn,
-                'type' => 'header',
-                'doc'  => '/resources/troubleshoot-license-activation-issues/',
-                'desc' => esc_html__('License key is used to get access to automatic updates and support.', 'wp-sms')
-            );
-
-            // license key
-            $settings["license_{$addOnKey}_key"] = array(
-                'id'          => "license_{$addOnKey}_key",
-                'name'        => esc_html__('License Key', 'wp-sms'),
-                'type'        => 'text',
-                'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                // translators: %s: Account link
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
-            );
-        }
-
-        return $settings;
     }
 
     /**
