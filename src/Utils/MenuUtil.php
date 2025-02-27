@@ -27,6 +27,7 @@ class MenuUtil
         'category-analytics' => 'category-analytics',
         'pages'              => 'pages',
         'visitors'           => 'visitors',
+        'add-ons'            => 'add-ons',
     ];
 
     /**
