@@ -16,6 +16,10 @@
                 <span class="wpsms-tooltip" title="<?php echo esc_attr($tooltip); ?>"><i class="wpsms-tooltip-icon info"></i></span>
             <?php endif; ?>
 
+            <div class="o-tooltip" data-tooltip="">
+                <span class="o-icon o-icon--info"></span>
+            </div>
+
             <?php if (isset($install_addon_btn_txt)) : ?>
                 <a href="<?php echo esc_attr($install_addon_btn_link); ?>" class="wpsms-install-addon-btn">
                     <span><?php echo esc_attr($install_addon_btn_txt); ?></span>

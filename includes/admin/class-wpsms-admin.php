@@ -281,6 +281,7 @@ class Admin
             'downloading'                  => __('Downloading', 'wp-sms'),
             'activated'                    => __('Activated', 'wp-sms'),
             'active'                       => __('Active', 'wp-sms'),
+            'activating'                       => __('Activating', 'wp-sms'),
             'already_installed'            => __('Already installed', 'wp-sms'),
             'installed'                    => __('Installed', 'wp-sms'),
             'failed'                       => __('Failed', 'wp-sms'),
