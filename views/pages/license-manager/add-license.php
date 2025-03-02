@@ -17,10 +17,10 @@
         <div class="wpsms-addon__step__faq">
             <ul>
                 <li>
-                    <a href="https://wp-sms-pro.com/" target="_blank" title="<?php esc_html_e('Buy Premium Now', 'wp-sms'); ?>"><?php esc_html_e('Buy Premium Now', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/" target="_blank" title="<?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?>"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key" target="_blank" title="<?php esc_html_e('I brought Premium, where is my license key?', 'wp-sms'); ?>"><?php esc_html_e('I brought Premium, where is my license key?', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key" target="_blank" title="<?php esc_html_e('I brought All-in-One, where is my license key?', 'wp-sms'); ?>"><?php esc_html_e('I brought Premium, where is my license key?', 'wp-sms'); ?></a>
                 </li>
                 <li>
                     <a href="https://wp-sms-pro.com/contact-us" target="_blank" title="<?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?>"><?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?></a>

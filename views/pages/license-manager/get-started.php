@@ -38,8 +38,8 @@ use WP_SMS\Utils\MenuUtil;
         <div class="wpsms-review_premium">
             <div>
                 <div class="wpsms-review_premium__content">
-                    <h4><?php esc_html_e('Love WP SMS Premium? Let Us Know!', 'wp-sms'); ?></h4>
-                    <p><?php esc_html_e('Thanks for choosing WP SMS Premium! If you’re enjoying the new features, please leave us a 5-star review. Your feedback helps us improve!', 'wp-sms'); ?></p>
+                    <h4><?php esc_html_e('Love WP SMS All-In-One? Let Us Know!', 'wp-sms'); ?></h4>
+                    <p><?php esc_html_e('Thanks for choosing WP SMS All-In-One! If you’re enjoying the new features, please leave us a 5-star review. Your feedback helps us improve!', 'wp-sms'); ?></p>
                     <p><?php esc_html_e('Thanks for being part of our community!', 'wp-sms'); ?></p>
                 </div>
                 <div class="wpsms-review_premium__actions">

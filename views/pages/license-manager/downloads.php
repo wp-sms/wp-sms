@@ -48,7 +48,7 @@ if (!empty($data['licensed_addons'])) {
             </div>
         </div>
         <div class="wpsms-addon__step__action">
-            <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms-add-ons', ['tab' => 'add-license'])); ?>" class="wpsms-addon__step__back"><?php esc_html_e('Back', 'wp-sms'); ?></a>
+                <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms-add-ons', ['tab' => 'add-license'])); ?>" class="wpsms-addon__step__back"><?php esc_html_e('Back', 'wp-sms'); ?></a>
             <?php if ($total_installed_addons == $total_licensed_addons) { ?>
                 <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms-add-ons', ['tab' => 'get-started', 'license_key' => \WP_SMS\Utils\Request::get('license_key')])); ?>" class="wpsms-postbox-addon-button js-addon-download-button">
                     <?php esc_html_e('Activate Add-Ons', 'wp-sms'); ?>

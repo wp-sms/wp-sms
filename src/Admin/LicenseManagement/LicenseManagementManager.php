@@ -38,7 +38,7 @@ class LicenseManagementManager
 
     public function initAdminPreview()
     {
-        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons') {
+    if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons') {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
         }
     }

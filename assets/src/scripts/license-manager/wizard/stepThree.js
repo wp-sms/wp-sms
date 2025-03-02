@@ -1,6 +1,7 @@
 import {getElement, getElements, getString} from "../utils/utilities";
 import {generateBadge} from "../utils/generator";
 import {sendGetRequest} from "../utils/ajaxHelper";
+import wpsms_js from "../../../../../../../../wp-includes/js/dist/vendor/lodash";
 
 const initStepThree = () => {
     const activateButtons = getElements('.js-addon-active-plugin-btn')
@@ -35,6 +36,11 @@ const initStepThree = () => {
     if (activateButtons) {
         activateButtons.map(button => {
         button.addEventListener('click', async (e) => {
+            button.classList.add('is-activating');
+
+            if (getElement('.wpsms-postbox-addon__item__statuses')) {
+                button.innerHTML = getString('activating')
+            }
             e.preventDefault();
             const alertsWrapperElement = button.parentElement.parentElement.parentElement.querySelector('.wpsms-addon__download__item__info__alerts')
             const slug = button.getAttribute('data-slug');
@@ -56,6 +62,29 @@ const initStepThree = () => {
                     addOnAlertWrapper.innerHTML = ""
                     requestResult(result, addOnAlertWrapper)
                 }
+               if (getElement('.js-addon-statuses-wrapper')) {
+                    if (result.success === true) {
+                        const addonSlug = button.parentElement.parentElement.getAttribute('data-addon-slug')
+
+                        button.remove()
+                        const statusesWrapper = getElement(`.wpsms-postbox-addon__item--actions[data-addon-slug=${addonSlug}]`)
+                        statusesWrapper.querySelector('.js-addon-statuses-wrapper').innerHTML = ""
+
+                        const statusElement = document.createElement('span');
+
+                        statusElement.classList.add(
+                            'wpsms-postbox-addon__status',
+                            'wpsms-postbox-addon__status--success',
+                            'js-wpsms-addon-status-success'
+                        );
+
+                        statusElement.innerText = getString('activated')
+                        statusesWrapper.querySelector('.js-addon-statuses-wrapper').appendChild(statusElement)
+
+                    } else {
+                        button.innerHTML = getString('active')
+                    }
+                }
             }
         })
     })
@@ -66,6 +95,7 @@ const initStepThree = () => {
         if (result.success) {
             addonButtonsWrapper.innerHTML = "";
             addonButtonsWrapper.appendChild(generateBadge('success', getString('activated')))
+
         } else {
             const errorBadge = addonButtonsWrapper.querySelector('.wpsms_badge.wpsms_badge--danger')
             if (errorBadge) {

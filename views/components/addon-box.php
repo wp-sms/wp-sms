@@ -35,7 +35,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
                 </p>
             </div>
         </div>
-        <div class="wpsms-postbox-addon__item--actions">
+ <div class="wpsms-postbox-addon__item--actions">
             <span class="wpsms-postbox-addon__status wpsms-postbox-addon__status--<?php echo esc_attr($addOn->getStatusClass()); ?> "><?php echo esc_html($addOn->getStatusLabel()); ?></span>
             <div class="wpsms-postbox-addon__buttons">
                 <?php if ($addOn->isInstalled() && !$addOn->isActivated()) : ?>

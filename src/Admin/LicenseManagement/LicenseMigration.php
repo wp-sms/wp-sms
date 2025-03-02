@@ -116,7 +116,7 @@ class LicenseMigration
         try {
             $this->apiCommunicator->validateLicense($licenseKey, $addonSlug);
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
+          var_dump($e->getMessage());
             Notice::addNotice(
                 sprintf(__('Failed to migrate license for %s: %s', 'wp-sms'), $addonSlug, $e->getMessage()),
                 'license_migration',
