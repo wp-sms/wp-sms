@@ -1,11 +1,12 @@
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(__('Step %d of 7', 'wp-sms'), $index); ?></span>
-    <h1 class=" u-m-0"><?php esc_html_e('Purchase WP SMS All-in-One', 'wp-sms'); ?></h1>
+    <span class="c-section__step"><?php printf(esc_html__('Step %d of 7', 'wp-sms'), $index); ?></span>
+    <h1 class="u-m-0"><?php esc_html_e('Purchase WP SMS All-in-One', 'wp-sms'); ?></h1>
     <p class="u-m-0">
         <?php esc_html_e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
+    </p>
 </div>
 <div class="c-form u-flex u-content-center u-align-center u-flex--column">
-    <form method="post" action="<?php echo $ctas['next']['url'] ?>">
+    <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
         <div class="c-form__fieldgroup">
             <div class="c-proplan">
                 <div class="c-proplan__header u-flex u-content-center u-align-center u-flex--column">
@@ -15,9 +16,10 @@
                     </div>
 
                     <p class="c-proplan__price u-text-center">
-                        <?php printf(__('From <strong>$%s</strong> per Year', 'wp-sms'), '29'); ?>
+                        <?php printf(esc_html__('From <strong>$%s</strong> per Year', 'wp-sms'), '29'); ?>
+                    </p>
                     <div>
-                        <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_html_e('Buy now', 'wp-sms'); ?>" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding" target="_blank">
+                        <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_attr_e('Buy now', 'wp-sms'); ?>" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank">
                             <?php esc_html_e('Buy now', 'wp-sms'); ?>
                         </a>
                         <p class="c-proplan__desc"><?php esc_html_e('14-day money-back guarantee on all the plans.', 'wp-sms'); ?></p>
@@ -95,9 +97,8 @@
             </div>
         </div>
         <div class="c-form__footer u-content-sp u-align-center">
-            <a class="c-form__footer--last-step" href="<?php echo $ctas['back']['url'] ?>"><?php echo $ctas['back']['text'] ?></a>
-            <!--            <input class="c-btn c-btn--primary" disabled type="submit" value="No gateway selected"/>-->
-            <input class="c-btn c-btn--primary" type="submit" value="<?php echo $ctas['next']['text'] ?>"/>
+            <a class="c-form__footer--last-step" href="<?php echo esc_url($ctas['back']['url']); ?>"><?php echo esc_html($ctas['back']['text']); ?></a>
+            <input class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['next']['text']); ?>"/>
         </div>
     </form>
 </div>

@@ -22,9 +22,9 @@ abstract class StepAbstract
         $this->title  = $this->getTitle();
         $this->fields = $this->getFields();
 
-//        if (!$this->isInitialized()) {
+        if (!$this->isInitialized()) {
             $this->initialize();
-//        }
+        }
     }
 
     abstract protected function initialize();

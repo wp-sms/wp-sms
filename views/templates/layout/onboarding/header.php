@@ -1,7 +1,7 @@
 <div id="main" class="wpsms-onboarding" role="content">
 
     <section class="c-section--logo u-text-center">
-        <img alt="logo" src="<?php echo esc_url(WP_SMS_URL . 'assets/images/logo.svg'); ?>"/>
+        <img alt="<?php esc_attr_e('Logo', 'wp-sms'); ?>" src="<?php echo esc_url(WP_SMS_URL . 'assets/images/logo.svg'); ?>"/>
     </section>
 
     <header class="o-section c-section--header">
@@ -17,7 +17,7 @@
                                 $title = isset($step['title']) ? esc_html($step['title']) : '';
 
                                 echo '<li class="' . esc_attr($isActive) . '">';
-                                echo '<span></span><a href="' . $url . '" title="' . $title . '">' . $title . '</a>';
+                                echo '<span></span><a href="' . esc_url($url) . '" title="' . esc_attr($title) . '">' . esc_html($title) . '</a>';
                                 echo '</li>';
                             }
                         }

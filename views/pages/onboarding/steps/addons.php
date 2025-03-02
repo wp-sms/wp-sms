@@ -1,8 +1,8 @@
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(__('Step %d of 7', 'wp-sms'), $index); ?></span>
-    <h1 class="u-m-0"><?php _e('SMS Add-Ons', 'wp-sms'); ?></h1>
+    <span class="c-section__step"><?php echo esc_html(sprintf(__('Step %d of 7', 'wp-sms'), $index)); ?></span>
+    <h1 class="u-m-0"><?php esc_html_e('SMS Add-Ons', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php _e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
+        <?php esc_html_e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
     </p>
 </div>
 
@@ -55,9 +55,9 @@
                     <h2 class="c-addon-card__title"><?php echo esc_html($addon['title']); ?></h2>
                     <p class="c-addon-card__desc"><?php echo esc_html($addon['desc']); ?></p>
                     <div class="c-addon-card__footer">
-                        <span class="c-addon-card__price"><?php _e('From', 'wp-sms'); ?> <strong>$14</strong> /<?php _e('Year', 'wp-sms'); ?></span>
-                        <a class="c-btn c-btn--addons-card" title="<?php _e('Details', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url($addon['link']); ?>">
-                            <?php _e('Details', 'wp-sms'); ?>
+                        <span class="c-addon-card__price"><?php esc_html_e('From', 'wp-sms'); ?> <strong>$14</strong> /<?php esc_html_e('Year', 'wp-sms'); ?></span>
+                        <a class="c-btn c-btn--addons-card" title="<?php esc_attr_e('Details', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url($addon['link']); ?>">
+                            <?php esc_html_e('Details', 'wp-sms'); ?>
                         </a>
                     </div>
                 </div>
