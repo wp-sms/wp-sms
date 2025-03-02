@@ -41,7 +41,6 @@ const initStepThree = () => {
             if (getElement('.wpsms-postbox-addon__item__statuses')) {
                 button.innerHTML = getString('activating')
             }
-
             e.preventDefault();
             const alertsWrapperElement = button.parentElement.parentElement.parentElement.querySelector('.wpsms-addon__download__item__info__alerts')
             const slug = button.getAttribute('data-slug');
@@ -63,8 +62,7 @@ const initStepThree = () => {
                     addOnAlertWrapper.innerHTML = ""
                     requestResult(result, addOnAlertWrapper)
                 }
-
-                if (getElement('.js-addon-statuses-wrapper')) {
+               if (getElement('.js-addon-statuses-wrapper')) {
                     if (result.success === true) {
                         const addonSlug = button.parentElement.parentElement.getAttribute('data-addon-slug')
 

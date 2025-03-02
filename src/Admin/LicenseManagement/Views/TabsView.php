@@ -3,17 +3,16 @@
 namespace WP_SMS\Admin\LicenseManagement\Views;
 
 use Exception;
+use WP_SMS\Admin\LicenseManagement\Abstracts\BaseTabView;
+use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\LicenseManagerDataProvider;
+use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Components\View;
+use WP_SMS\Exceptions\SystemErrorException;
 use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\Request;
-use WP_SMS\Abstracts\BaseTabView;
-use WP_SMS\Exceptions\SystemErrorException;
-use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\NoticeHandler\Notice;
-use WP_SMS\Admin\LicenseManagement\LicenseManagerDataProvider;
-use WP_SMS\User;
 
 class TabsView extends BaseTabView
 {
@@ -139,27 +138,27 @@ class TabsView extends BaseTabView
 
             $args = [
                 'title'      => esc_html__('License Manager', 'wp-sms'),
-                'pageName'   => MenuUtil::getPageSlug('plugins'),
+                'pageName'   => MenuUtil::getPageSlug('add-ons'),
                 'custom_get' => ['tab' => $currentTab],
                 'data'       => $data,
                 'tabs'       => [
                     [
-                        'link'  => MenuUtil::getAdminUrl('plugins', ['tab' => 'add-ons']),
+                        'link'  => MenuUtil::getAdminUrl('add-ons', ['tab' => 'add-ons']),
                         'title' => esc_html__('Add-Ons', 'wp-sms'),
                         'class' => $this->isTab('add-ons') ? 'current' : '',
                     ],
                     [
-                        'link'  => MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']),
+                        'link'  => MenuUtil::getAdminUrl('add-ons', ['tab' => 'add-license']),
                         'title' => esc_html__('Add Your License', 'wp-sms'),
                         'class' => $this->isTab('add-license') ? 'current' : '',
                     ],
                     [
-                        'link'  => MenuUtil::getAdminUrl('plugins', array_merge(['tab' => 'downloads'], $urlParams)),
+                        'link'  => MenuUtil::getAdminUrl('add-ons', array_merge(['tab' => 'downloads'], $urlParams)),
                         'title' => esc_html__('Download Add-Ons', 'wp-sms'),
                         'class' => $this->isTab('downloads') ? 'current' : '',
                     ],
                     [
-                        'link'  => MenuUtil::getAdminUrl('plugins', array_merge(['tab' => 'get-started'], $urlParams)),
+                        'link'  => MenuUtil::getAdminUrl('add-ons', array_merge(['tab' => 'get-started'], $urlParams)),
                         'title' => esc_html__('Get Started', 'wp-sms'),
                         'class' => $this->isTab('get-started') ? 'current' : '',
                     ],

@@ -171,7 +171,7 @@ jQuery(document).ready(function ($) {
                         if (wpsms_js.global.request_params?.tab) {
                             button.classList.add('redirecting');
                             button.textContent = wpsms_js._('redirecting');
-                            window.location.href = `admin.php?page=wp-sms-add-ons-1&tab=downloads&license_key=${params.license_key}`;
+                            window.location.href = `admin.php?page=wp-sms-add-ons&tab=downloads&license_key=${params.license_key}`;
                         } else {
                             toggleAlertBox(button);
                             button.parentElement.querySelector('input').classList.remove('wps-danger');

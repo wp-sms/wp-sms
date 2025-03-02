@@ -27,6 +27,7 @@ class MenuUtil
         'category-analytics' => 'category-analytics',
         'pages'              => 'pages',
         'visitors'           => 'visitors',
+        'add-ons'            => 'add-ons',
     ];
 
     /**
@@ -84,11 +85,6 @@ class MenuUtil
 
             //Check if SubMenu or Main Menu
             if (array_key_exists('sub', $menu)) {
-                //Check if add Break Line
-                if (array_key_exists('break', $menu)) {
-                    add_submenu_page(self::$parentSlug, '', '', $capability, 'wps_break_menu', $callback);
-                }
-
                 //Check Conditions For Show Menu
                 if (OptionUtil::checkOptionRequire($menu) === true) {
                     add_submenu_page(self::$parentSlug, $menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback);

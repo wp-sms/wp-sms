@@ -36,9 +36,7 @@ class PluginHandler
             'timeout'  => 300,
             'stream'   => true,
             'filename' => $temp_file = wp_tempnam($pluginUrl),
-            'headers' => [
-                'Authorization' => 'Basic ' . base64_encode('admin' . ':' . 'subzero')
-            ],
+            'headers'  => [],
         ]);
 
         if (is_wp_error($response)) {

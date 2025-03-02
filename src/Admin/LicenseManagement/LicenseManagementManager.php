@@ -38,8 +38,7 @@ class LicenseManagementManager
 
     public function initAdminPreview()
     {
-        // todo change the page address
-        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons-1') {
+    if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons') {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
         }
     }
@@ -55,7 +54,7 @@ class LicenseManagementManager
             'sub'      => 'wp-sms',
             'title'    => __('Add-Ons', 'wp-sms'),
             'name'     => '<span class="wpsms-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
-            'page_url' => 'add-ons-1',
+            'page_url' => 'add-ons',
             'callback' => LicenseManagerPage::class,
             'cap'      => WP_SMS\User\UserHelper::validateCapability(WP_SMS\Utils\OptionUtil::get('manage_capability', 'manage_options')),
             'priority' => 90,

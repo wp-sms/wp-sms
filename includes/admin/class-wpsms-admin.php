@@ -370,8 +370,6 @@ class Admin
             );
         }, 7);
 
-        // translators: %1$s: Starting span tag, %2$s: Closing span tag 
-        add_submenu_page('wp-sms', esc_html__('Add-Ons', 'wp-sms'), sprintf(esc_html__('%1$sAdd-Ons%2$s', 'wp-sms'), '<span style="color:#FF7600">', '</span>'), 'manage_options', 'wp-sms-add-ons', array($this, 'add_ons_callback'), 8);
 
         // Add styles to menu pages
         foreach ($hook_suffix as $menu => $hook) {
@@ -448,12 +446,6 @@ class Admin
         $page           = new Privacy();
         $page->pagehook = get_current_screen()->id;
         $page->render_page();
-    }
-
-    public function add_ons_callback()
-    {
-        $page = new AddOns();
-        $page->init();
     }
 
 

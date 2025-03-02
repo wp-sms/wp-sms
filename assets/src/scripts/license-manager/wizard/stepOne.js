@@ -43,7 +43,7 @@ const wizardStepOne = () => {
             if (result.success) {
                 submitButton.classList.add('redirecting');
                 submitButton.textContent = getString('redirecting');
-                window.location.href = `admin.php?page=wp-sms-add-ons-1&tab=downloads&license_key=${params.license_key}`;
+                window.location.href = `admin.php?page=wp-sms-add-ons&tab=downloads&license_key=${params.license_key}`;
             }
         } else {
             addClass(submitButton, 'disabled')

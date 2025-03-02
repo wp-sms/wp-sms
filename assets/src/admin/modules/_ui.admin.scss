@@ -2,6 +2,7 @@
   font-family: Roboto, Arial, Helvetica, sans-serif;
 }
 
+
 body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   z-index: 4 !important;
 }
@@ -2635,7 +2636,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       a {
         pointer-events: none;
         cursor: default;
-
       }
     }
 
@@ -2684,6 +2684,10 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 
       .wpsms-step-link__title {
         color: #0A0A0A;
+      }
+
+      .wpsms-step-link__title {
+        color: #0C0C0D;
         text-decoration: none;
         font-weight: 500;
       }
@@ -2705,7 +2709,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       }
 
       .wpsms-step-link__title {
-        color: #058860;
+          color: #058860;
       }
     }
   }
@@ -4658,7 +4662,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 
     &::after {
       display: block;
-      width: 16px;
+   width: 16px;
       height: 16px;
       transition: 8s ease;
       transform: rotate(1000deg);
@@ -4693,7 +4697,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       width: 16px;
       min-width: 16px;
       height: 16px;
-      -webkit-animation-name: wpsms-cycle;
+     -webkit-animation-name: wpsms-cycle;
       -webkit-animation-duration: 2s;
       -webkit-animation-iteration-count: infinite;
       -webkit-animation-fill-mode: forwards;
@@ -4833,7 +4837,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
           width: calc(100% - 8px);
 
           .wpsms-separator {
-            background: #E5E5E5;
+background: #E5E5E5;
             height: 1px;
             box-sizing: border-box;
             border-radius: 0;
@@ -4867,7 +4871,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
             }
 
             &:hover {
-              background: #FAFAFA;
+background: #FAFAFA;
               color: #0C0C0D;
 
               &.wpsms-addon--submenu__settings span:before {
@@ -4956,7 +4960,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       }
 
       &.js-addon-active-plugin-btn , &.button-retry-addon-download{
-        background: #FFF7ED;
+       background: #FFF7ED;
         color: #EA580C;
 
         &.is-activating {
@@ -5238,7 +5242,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 .wpsms-addon__download__item__info__alerts:not(:empty) {
   margin-top: 12px;
 }
-
 a.wpsms-addon__download_select-all,
 a.wpsms-addon__download_active-all {
   color: #404BF2;
