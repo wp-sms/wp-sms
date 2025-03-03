@@ -44,7 +44,7 @@ use WP_SMS\Utils\MenuUtil;
                 </div>
                 <div class="wpsms-review_premium__actions">
                     <a href="https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post" target="_blank" class="wpsms-review_premium__actions__review-btn"><?php esc_html_e('Write a Review', 'wp-sms'); ?></a>
-                    <a href="<?php echo esc_url(MenuUtil::getAdminUrl('overview')); ?>" class="wpsms-review_premium__actions__overview-btn"><?php esc_html_e('No, Take me to the Overview', 'wp-sms'); ?></a>
+                    <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms')); ?>" class="wpsms-review_premium__actions__overview-btn"><?php esc_html_e('No, take me to the Send SMS page', 'wp-sms'); ?></a>
                 </div>
             </div>
         </div>
