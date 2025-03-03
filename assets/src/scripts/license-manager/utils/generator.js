@@ -4,9 +4,7 @@ import {sendGetRequest} from "./ajaxHelper";
 const generateBadge = (type, content, size = "") => {
     const badge = document.createElement('span');
     badge.classList.add('wpsms_badge', `wpsms_badge--${type}`);
-    console.log(size)
     if (size !== "") {
-        console.log(size)
         badge.classList.add(`wpsms_badge--${size}`);
     }
 

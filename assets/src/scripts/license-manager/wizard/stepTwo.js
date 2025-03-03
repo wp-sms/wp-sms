@@ -44,8 +44,8 @@ const initStepTwo = () => {
                 addonCheckboxWrapper.querySelector('span').appendChild(generateBadge('success', getString('downloading') + '...'))
 
                 const result = await sendGetRequest(params);
-                allAddonsDownloaded--;
                 if (result) {
+                    allAddonsDownloaded--;
                     processAddonDownload(slug, result)
                 }
             }
@@ -75,6 +75,8 @@ const initStepTwo = () => {
                 selectedSlugs.push(checkbox.getAttribute('data-slug'));
             }
         });
+        console.log(selectedSlugs);
+
     }
 
     const processAddonDownload = (addonSlug, result) => {

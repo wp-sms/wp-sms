@@ -8,7 +8,7 @@ if (!empty($data['licensed_addons'])) {
     $total_installed_addons = 0;
     $total_licensed_addons  = count($data['licensed_addons']);
     foreach ($data['licensed_addons'] as $addOn) {
-        $total_installed_addons = $addOn->isInstalled() ?: $total_installed_addons + 1;
+        $total_installed_addons = $addOn->isInstalled() ? $total_installed_addons + 1 : $total_installed_addons;
     }
 }
 ?>
