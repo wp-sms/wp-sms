@@ -123,6 +123,7 @@ class Notifications
         if (Option::getOption('notif_publish_new_post')) {
             add_action('add_meta_boxes', [$this, 'notification_meta_box']);
             add_action('wp_insert_post', [$this, 'notify_subscribers_for_published_post'], 10, 3);
+            add_action('future_to_publish', [$this, 'handle_scheduled_post_published'], 10, 1);
         }
     }
 
@@ -263,47 +264,95 @@ class Notifications
      */
     public function notify_subscribers_for_published_post($postID, $post, $update)
     {
-        if ($post->post_status !== 'publish' && $post->post_status !== 'future') {
+        // Early return if post status is not 'publish' or 'future'
+        if (!in_array($post->post_status, ['publish', 'future'])) {
             return;
         }
 
+        // Early return if post type is not in specified post types
         $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
-
         if (!in_array($post->post_type, $specified_post_types)) {
             return;
         }
 
+        // Early return if required request parameters are not set
         if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
             return;
         }
 
-        // Process recipients and send notifications
-        $recipients = isset($_REQUEST['wps_send_to']) ? sanitize_text_field($_REQUEST['wps_send_to']) : '';
+        // Sanitize and prepare recipients and message
+        $recipients = sanitize_text_field($_REQUEST['wps_send_to']);
         $message    = sanitize_text_field($_REQUEST['wpsms_text_template']);
         $receiver   = [];
 
+        // Handle future posts
+        if ($post->post_status === 'future') {
+            $this->handleFuturePost($postID, $recipients, $message);
+            return;
+        }
+
+        // Determine receivers based on recipient type
+        $receiver = $this->getReceivers($recipients);
+
+        // Send notification if receivers and message are valid
+        if (!empty($receiver) && $message) {
+            $notification = NotificationFactory::getPost($postID);
+            $notification->send($message, $receiver);
+        }
+    }
+
+    private function handleFuturePost($postID, $recipients, $message)
+    {
+        update_post_meta($postID, 'wpsms_scheduled_send_to', $recipients);
+        update_post_meta($postID, 'wpsms_scheduled_message_template', $message);
+
+        $receiver = $this->getReceivers($recipients);
+        update_post_meta($postID, 'wpsms_scheduled_receivers', $receiver);
+    }
+
+    private function getReceivers($recipients)
+    {
+        $receiver = [];
+
         switch ($recipients) {
             case 'subscriber':
-                $group = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : 'all';
-                if ($group === 'all') {
-                    $receiver = Newsletter::getSubscribers(null, true);
-                } else {
-                    $receiver = Newsletter::getSubscribers([$group], true);
-                }
+                $group    = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : 'all';
+                $receiver = $group === 'all' ? Newsletter::getSubscribers(null, true) : Newsletter::getSubscribers([$group], true);
                 break;
             case 'numbers':
                 $raw_numbers = isset($_REQUEST['wps_mobile_numbers']) ? sanitize_text_field($_REQUEST['wps_mobile_numbers']) : '';
-                $receiver = explode(',', $raw_numbers);
+                $receiver    = explode(',', $raw_numbers);
                 break;
             case 'users':
                 $receiver = Helper::getUsersMobileNumbers(Option::getOption('notif_publish_new_post_users'));
                 break;
         }
 
+        return $receiver;
+    }
+
+    public function handle_scheduled_post_published($post)
+    {
+        // Retrieve the metadata stored for the scheduled post
+        $recipients = get_post_meta($post->ID, 'wpsms_scheduled_send_to', true);
+        $message    = get_post_meta($post->ID, 'wpsms_scheduled_message_template', true);
+        $receiver   = get_post_meta($post->ID, 'wpsms_scheduled_receivers', true);
+
+        // Early return if any required data is missing
+        if (empty($recipients) || empty($message) || empty($receiver)) {
+            return;
+        }
+
+        // Send the SMS notification
         if (!empty($receiver) && $message) {
-            $notification = NotificationFactory::getPost($postID);
+            $notification = NotificationFactory::getPost($post->ID);
             $notification->send($message, $receiver);
         }
+
+        // Clean up the metadata after sending the notification
+        delete_post_meta($post->ID, 'wpsms_scheduled_send_to');
+        delete_post_meta($post->ID, 'wpsms_scheduled_message_template');
+        delete_post_meta($post->ID, 'wpsms_scheduled_receivers');
     }
 
     /**
