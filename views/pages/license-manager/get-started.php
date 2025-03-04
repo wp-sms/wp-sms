@@ -26,10 +26,12 @@ use WP_SMS\Utils\MenuUtil;
 
                     /** @var PluginDecorator $addOn */
                     foreach ($data['licensed_addons'] as $addOn) {
-                        View::load('components/addon-active-card', [
-                            'addOn'          => $addOn,
-                            'selectedAddOns' => $selectedAddOns,
-                        ]);
+                        if ($addOn->isInstalled()) {
+                            View::load('components/addon-active-card', [
+                                'addOn'          => $addOn,
+                                'selectedAddOns' => $selectedAddOns,
+                            ]);
+                        }
                     }
                 }
                 ?>

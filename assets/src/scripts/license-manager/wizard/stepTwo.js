@@ -7,7 +7,7 @@ const initStepTwo = () => {
     const addOneCheckboxes = getElements('.js-wpsms-addon-check-box')
     const submitStepTwo = getElement('.js-addon-download-button')
     let selectedSlugs = []
-    let allAddonsDownloaded = addOneCheckboxes.length;
+    let allAddonsDownloaded = 0;
 
     if (!submitStepTwo) {
         return;
@@ -26,6 +26,8 @@ const initStepTwo = () => {
 
     submitStepTwo.addEventListener('click', async () => {
         let submitButtonLabel = submitStepTwo.textContent
+        allAddonsDownloaded = getElements('.js-wpsms-addon-check-box:checked').length
+        console.log(allAddonsDownloaded)
 
         addClass(submitStepTwo, 'wpsms-loading-button')
         submitStepTwo.textContent = ""
@@ -75,8 +77,6 @@ const initStepTwo = () => {
                 selectedSlugs.push(checkbox.getAttribute('data-slug'));
             }
         });
-        console.log(selectedSlugs);
-
     }
 
     const processAddonDownload = (addonSlug, result) => {
