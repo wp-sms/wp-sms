@@ -68,7 +68,8 @@ class WizardManager
             'ctas'     => $this->getCTAs(),
             'index'    => $this->getStepIndex() + 1,
             'steps'    => $this->getStepsData(),
-            'slug'     => $this->slug
+            'slug'     => $this->slug,
+            'is_last'     => $this->isLastStep()
         );
 
         View::load('templates/layout/onboarding/header', $data);
@@ -126,6 +127,13 @@ class WizardManager
         if (!Request::get('step')) {
             WizardHelper::redirectToStep($this->slug, $this->currentStep->getSlug());
         }
+    }
+
+    public function isLastStep()
+    {
+        $keys         = array_keys($this->steps);
+        $lastStepSlug = end($keys);
+        return $this->currentStep->getSlug() === $lastStepSlug;
     }
 
     private function handle()
