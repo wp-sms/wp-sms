@@ -225,29 +225,50 @@ class Newsletter
     {
         global $wpdb;
 
-        $where['mobile'] = $mobile;
+        if (empty($mobile)) {
+            return ['result' => 'error', 'message' => esc_html__('Mobile number is required!', 'wp-sms')];
+        }
+        $where = ['mobile' => $mobile];
 
-        if ($group_id) {
-            $where['group_id'] = $group_id;
+        if (!empty($group_id)) {
+            $group_id  = str_replace('\\', '', $group_id); // Remove backslashes
+            $group_ids = json_decode($group_id, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($group_ids)) {
+                return ['result' => 'error', 'message' => esc_html__('Invalid group_id format!', 'wp-sms')];
+            }
+        } else {
+            $group_ids = [null];
         }
 
-        $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
+        $success = false;
 
-        if (!$result) {
-            return array('result' => 'error', 'message' => esc_html__('The mobile number does not exist!', 'wp-sms'));
+        foreach ($group_ids as $group_id) {
+            if (!empty($group_id)) {
+                $where['group_id'] = $group_id;
+            }
+
+            $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
+
+            if ($result !== false) {
+                $success = true; // At least one deletion was successful
+            }
+        }
+
+        // Handle deletion result
+        if (!$success) {
+            return ['result' => 'error', 'message' => esc_html__('The mobile number does not exist in the specified group(s)!', 'wp-sms')];
         }
 
         /**
-         * Run hook after deleting subscribe.
+         * Run hook after deleting subscriber.
          *
-         * @param string $result result query.
-         *
+         * @param bool $result Whether the deletion was successful.
          * @since 3.0
-         *
          */
-        do_action('wp_sms_delete_subscriber', $result);
+        do_action('wp_sms_delete_subscriber', $success);
 
-        return array('result' => 'success', 'message' => esc_html__('Successfully canceled the subscription!', 'wp-sms'));
+        return ['result' => 'success', 'message' => esc_html__('Successfully canceled the subscription!', 'wp-sms')];
     }
 
 
