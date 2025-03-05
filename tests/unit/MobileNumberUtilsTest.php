@@ -39,7 +39,7 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
     public function testSearchUserByMobileNumber()
     {
         // Create user
-        $userId = $this->factory->user->create();
+        $userId = $this->factory()->user->create();
 
         // Update mobile field option
         Option::updateOption('add_mobile_field', 'add_mobile_field_in_profile');
@@ -62,10 +62,10 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
         }
     }
 
-    public function _testSearchWooCommerceCustomerMobileNumberByOrderId()
+    public function testSearchWooCommerceCustomerMobileNumberByOrderId()
     {
         // Create user
-        $userId = $this->factory->user->create();
+        $userId = $this->factory()->user->create();
 
         // Update mobile field option
         Option::updateOption('add_mobile_field', 'use_phone_field_in_wc_billing');
@@ -95,7 +95,7 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
         $this->assertStringContainsString($mobileNumber, $customerMobileNumber);
     }
 
-    public function _testSearchWooCommerceGuestMobileNumberByOrderId()
+    public function testSearchWooCommerceGuestMobileNumberByOrderId()
     {
         // Update mobile field option
         Option::updateOption('add_mobile_field', 'use_phone_field_in_wc_billing');
