@@ -215,6 +215,7 @@ class WP_SMS
         $wizard->add(StepFactory::create('Configuration', $wizard));
         $wizard->add(StepFactory::create('TestSetup', $wizard));
         $wizard->add(StepFactory::create('Pro', $wizard));
+        $wizard->add(StepFactory::create('Addons', $wizard));
         $wizard->add(StepFactory::create('Ready', $wizard));
 
         $wizard->setup();
