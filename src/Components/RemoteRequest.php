@@ -39,7 +39,9 @@ class RemoteRequest
          */
         $this->parsedParams = wp_parse_args($params, [
             'timeout' => 10,
-            'headers' => array()
+            'headers' => array(
+                'Authorization' => 'Basic ' . base64_encode('admin' . ':' . 'subzero')
+            )
         ]);
 
         /**
