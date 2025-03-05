@@ -124,6 +124,10 @@
   overflow: hidden;
   .dt-paging>button ,.dt-paging-button{
     margin:0!important;
+    cursor: pointer;
+    &.disabled{
+      cursor: default;
+    }
   }
   .dt-paging {
     border-top: 1px solid #E7E7E7;
@@ -258,4 +262,12 @@ table.dataTable{
 }
 .dt-paging>span{
   margin-left: 2px;
+}
+
+.dt-empty {
+  text-align: center;
+}
+
+.c-table-gateway .c-table-country--filter {
+  display: none;
 }

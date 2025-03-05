@@ -28,6 +28,12 @@ jQuery(document).ready(function ($) {
         info: false,
         order: [],
         responsive: true,
+        columnDefs: [
+            {
+                targets: [4],
+                visible: false
+            }
+        ],
         language: {
             paginate: {
                 previous:
@@ -56,6 +62,15 @@ jQuery(document).ready(function ($) {
     // Search functionality
     $('#searchGateway').on('keyup', function () {
         table.search(this.value).draw();
+    });
+
+    $('#filterCountries').on('select2:select', function (e) {
+        let selectedCountry = e.params.data.id;
+        if (selectedCountry === 'All') {
+            table.column(4).search('').draw();
+        } else {
+            table.column(4).search(selectedCountry).draw();
+        }
     });
 
     // Navigation step click event

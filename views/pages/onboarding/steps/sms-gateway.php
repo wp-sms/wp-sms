@@ -47,7 +47,7 @@
                     <th class="u-text-center"><?php esc_html_e('Bulk SMS', 'wp-sms'); ?></th>
                     <th class="u-text-center"><?php esc_html_e('MMS', 'wp-sms'); ?></th>
                     <th><?php esc_html_e('Gateway Access', 'wp-sms'); ?></th>
-                    <th><?php esc_html_e('Countries', 'wp-sms'); ?></th>
+                    <th class="c-table-country--filter"><?php esc_html_e('Countries', 'wp-sms'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -80,7 +80,7 @@
                         <td class="u-text-center">
                             <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
                         </td>
-                        <td><?php echo esc_html($country_list); ?></td>
+                        <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
