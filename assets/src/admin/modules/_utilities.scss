@@ -37,6 +37,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+
   &:hover {
     background: rgba(194, 66, 37, 0.1);
   }
@@ -48,17 +49,19 @@
     display: inline-flex;
     width: 15px;
     height: 15px;
-    background:  url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik01LjI1IDUuMjVWMC43NUg2Ljc1VjUuMjVIMTEuMjVWNi43NUg2Ljc1VjExLjI1SDUuMjVWNi43NUgwLjc1VjUuMjVINS4yNVoiIGZpbGw9IiNDMjQyMjUiLz4KPC9zdmc+Cg==") center no-repeat;
+    background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik01LjI1IDUuMjVWMC43NUg2Ljc1VjUuMjVIMTEuMjVWNi43NUg2Ljc1VjExLjI1SDUuMjVWNi43NUgwLjc1VjUuMjVINS4yNVoiIGZpbGw9IiNDMjQyMjUiLz4KPC9zdmc+Cg==") center no-repeat;
   }
 }
 
-.wpsms-flex{
+.wpsms-flex {
   display: flex;
 }
-.wpsms-flex-col{
+
+.wpsms-flex-col {
   flex-direction: column;
-  align-items: flex-start!important;
+  align-items: flex-start !important;
 }
+
 .wpsms-wrap .wpsms-wrap__top .wpsms-button-group {
   gap: 14px;
   display: inline-flex;
@@ -162,6 +165,23 @@
   width: 20px;
   height: 20px;
   vertical-align: middle;
+
+
+}
+
+.wpsms_plugins_page-title {
+  .wpsms-tooltip-icon {
+    width: 16px;
+    height: 16px;
+    margin-bottom: -2px;
+    background-image: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiB2aWV3Qm94PSIwIDAgMTQgMTQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik02Ljk5ODcgMC4zNDM3NUMzLjMxNjcgMC4zNDM3NSAwLjMzMjAzMSAzLjMyODQyIDAuMzMyMDMxIDcuMDEwNDJDMC4zMzIwMzEgMTAuNjkyNCAzLjMxNjcgMTMuNjc3MSA2Ljk5ODcgMTMuNjc3MUMxMC42ODA3IDEzLjY3NzEgMTMuNjY1NCAxMC42OTI0IDEzLjY2NTQgNy4wMTA0MkMxMy42NjU0IDMuMzI4NDIgMTAuNjgwNyAwLjM0Mzc1IDYuOTk4NyAwLjM0Mzc1Wk02Ljk5ODcgMS42NzcwOEM4LjQxMzE5IDEuNjc3MDggOS43Njk3NCAyLjIzODk5IDEwLjc2OTkgMy4yMzkxOEMxMS43NzAxIDQuMjM5MzcgMTIuMzMyIDUuNTk1OTMgMTIuMzMyIDcuMDEwNDJDMTIuMzMyIDguNDI0OSAxMS43NzAxIDkuNzgxNDYgMTAuNzY5OSAxMC43ODE3QzkuNzY5NzQgMTEuNzgxOCA4LjQxMzE5IDEyLjM0MzcgNi45OTg3IDEyLjM0MzdDNS41ODQyMSAxMi4zNDM3IDQuMjI3NjYgMTEuNzgxOCAzLjIyNzQ2IDEwLjc4MTdDMi4yMjcyNyA5Ljc4MTQ2IDEuNjY1MzYgOC40MjQ5IDEuNjY1MzYgNy4wMTA0MkMxLjY2NTM2IDUuNTk1OTMgMi4yMjcyNyA0LjIzOTM3IDMuMjI3NDYgMy4yMzkxOEM0LjIyNzY2IDIuMjM4OTkgNS41ODQyMSAxLjY3NzA4IDYuOTk4NyAxLjY3NzA4Wk02Ljk5ODcgMy42NzcwOEM2LjgyMTg5IDMuNjc3MDggNi42NTIzMiAzLjc0NzMyIDYuNTI3MjkgMy44NzIzNUM2LjQwMjI3IDMuOTk3MzcgNi4zMzIwMyA0LjE2Njk0IDYuMzMyMDMgNC4zNDM3NUM2LjMzMjAzIDQuNTIwNTYgNi40MDIyNyA0LjY5MDEzIDYuNTI3MjkgNC44MTUxNUM2LjY1MjMyIDQuOTQwMTggNi44MjE4OSA1LjAxMDQyIDYuOTk4NyA1LjAxMDQyQzcuMTc1NTEgNS4wMTA0MiA3LjM0NTA4IDQuOTQwMTggNy40NzAxIDQuODE1MTVDNy41OTUxMyA0LjY5MDEzIDcuNjY1MzYgNC41MjA1NiA3LjY2NTM2IDQuMzQzNzVDNy42NjUzNiA0LjE2Njk0IDcuNTk1MTMgMy45OTczNyA3LjQ3MDEgMy44NzIzNUM3LjM0NTA4IDMuNzQ3MzIgNy4xNzU1MSAzLjY3NzA4IDYuOTk4NyAzLjY3NzA4Wk02LjMzMjAzIDUuNjc3MDhDNi4xNTUyMiA1LjY3NzA4IDUuOTg1NjUgNS43NDczMiA1Ljg2MDYzIDUuODcyMzVDNS43MzU2IDUuOTk3MzcgNS42NjUzNiA2LjE2Njk0IDUuNjY1MzYgNi4zNDM3NUM1LjY2NTM2IDYuNjY1MDggNS45MDQ3IDYuOTA1MDggNi4yMDY3IDYuOTY5MDhMNS44MTEzNiA4Ljg4NTA4QzUuNjU2NyA5LjY1OTA4IDYuMjEwMDMgMTAuMzQzNyA2Ljk5ODAzIDEwLjM0MzdINy42NjQ3QzcuODQxNTEgMTAuMzQzNyA4LjAxMTA4IDEwLjI3MzUgOC4xMzYxIDEwLjE0ODVDOC4yNjExMyAxMC4wMjM1IDguMzMxMzYgOS44NTM4OSA4LjMzMTM2IDkuNjc3MDhDOC4zMzEzNiA5LjUwMDI3IDguMjYxMTMgOS4zMzA3IDguMTM2MSA5LjIwNTY4QzguMDExMDggOS4wODA2NSA3Ljg0MTUxIDkuMDEwNDIgNy42NjQ3IDkuMDEwNDJINy4xNDQ3TDcuNjQ0NyA2LjQ2OTA4QzcuNjY0NzggNi4zNzMxNCA3LjY2MzE1IDYuMjczOTEgNy42Mzk5MyA2LjE3ODY4QzcuNjE2NyA2LjA4MzQ0IDcuNTcyNDcgNS45OTQ2IDcuNTEwNDggNS45MTg2N0M3LjQ0ODQ4IDUuODQyNzQgNy4zNzAyOCA1Ljc4MTY0IDcuMjgxNjIgNS43Mzk4NEM3LjE5Mjk1IDUuNjk4MDQgNy4wOTYwNiA1LjY3NjU5IDYuOTk4MDMgNS42NzcwOEg2LjMzMjAzWiIgZmlsbD0iIzU2NTg1QSIvPgo8L3N2Zz4K");
+  }
+
+  .wpsms-tooltip {
+    width: 16px;
+    height: 16px;
+    margin: 3px 0 0 7px;
+  }
 }
 
 .wpsms-tooltip-icon {
@@ -263,6 +283,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 12px 0 #0000001A;
   top: calc(100% + 4px);
+
   & > a {
     text-decoration: none;
     font-size: 14px;
@@ -273,12 +294,15 @@
     padding: 12px;
     position: relative;
     align-items: center;
+
     &.integrations {
       padding-bottom: 17px;
     }
-    &.settings  {
+
+    &.settings {
       padding-top: 17px;
     }
+
     &.active, &:hover {
       background: #F3F3F5;
     }

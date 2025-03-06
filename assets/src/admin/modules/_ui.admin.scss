@@ -1327,12 +1327,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   border-color: #404bf2 !important;
 }
 
-.wpsms-wrap input[type="checkbox"]:checked::before {
-  content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
-  height: 1.3rem !important;
-  width: 1.3rem !important;
-}
-
 .wpsms-wrap .btn-danger:hover {
   background: #c20000 !important;
   background-color: rgb(194, 0, 0);
@@ -1671,8 +1665,8 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 .wpsms-realtime-stats-settings-wrap input[type="checkbox"]:checked::before {
   margin: -0.07rem 0 0 -0.12rem !important;
   content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
-  height: 1.5rem !important;
-  width: 1.5rem !important;
+  height: 17px !important;
+  width: 17px !important;
 }
 
 .wpsms-widgets-settings-wrap .thickbox.button,
@@ -2657,7 +2651,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       border-radius: 250px;
       background: #E5E5E5;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 700;
       line-height: 14.06px;
       color: #A3A3A3;
       display: inline-flex;
@@ -2683,7 +2677,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       }
 
       .wpsms-step-link__title {
-        color: #0A0A0A;
+        color: #0A0A0A !important;
       }
 
       .wpsms-step-link__title {
@@ -2736,6 +2730,15 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       overflow-x: auto;
      }
   }
+}
+
+.wpsms-addon__step__desc {
+  color: #404040;
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.41px;
+  letter-spacing: 0;
 }
 
 .wpsms-tab-link {
@@ -3695,14 +3698,15 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 
 .wpsms-install-addon-btn {
   background: #171717;
-  padding: 12px 12px;
+  padding: 12px 15.5px;
   max-height: 40px;
+  text-align: center;
   gap: 8px;
   border-radius: 6px;
   color: #FFFFFF !important;
   font-size: 14px;
   font-weight: 500 !important;
-  line-height: 16.41px;
+  line-height: 16px;
   display: inline-flex;
   margin-left: 24px;
 
@@ -3856,6 +3860,13 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
             width: 24px;
             min-width: 24px;
             height: 24px;
+            outline: none !important;
+            box-shadow: none !important;
+
+            &:focus {
+              outline: none !important;
+              box-shadow: none !important;
+            }
           }
         }
 
@@ -4039,9 +4050,8 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
                 display: block;
                 width: 16px;
                 height: 16px;
-                transition: 14s ease;
-                transform: rotate(3000deg);
-                background: center center 100%/no-repeat;
+                animation: wpsms-spin 1s linear infinite;
+                background: center center/100% no-repeat;
                 background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.64236 2.95378C4.81102 1.94328 6.33445 1.33203 8.00065 1.33203C11.6825 1.33203 14.6673 4.3168 14.6673 7.9987C14.6673 9.42276 14.2208 10.7426 13.4601 11.8258L11.334 7.9987H13.334C13.334 5.05318 10.9462 2.66536 8.00065 2.66536C6.5672 2.66536 5.26583 3.23088 4.30747 4.15098L3.64236 2.95378ZM12.3589 13.0436C11.1903 14.0541 9.66685 14.6654 8.00065 14.6654C4.31875 14.6654 1.33398 11.6806 1.33398 7.9987C1.33398 6.5746 1.78051 5.2548 2.54118 4.17166L4.66732 7.9987H2.66732C2.66732 10.9442 5.05513 13.332 8.00065 13.332C9.43412 13.332 10.7355 12.7665 11.6939 11.8464L12.3589 13.0436Z' fill='%23A3A3A3'/%3E%3C/svg%3E%0A");
               }
             }
@@ -4109,7 +4119,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       font-size: 14px;
       font-weight: 400;
       line-height: 22px;
-      color: #56585A;
+      color: #404040;
       margin: 0;
       padding: 0;
     }
@@ -4133,7 +4143,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
             font-size: 13px;
             font-weight: 400;
             line-height: 21px;
-            border-bottom: 1px solid #56585A;
+            border-bottom: 1px solid #737373;
             color: #737373;
             text-decoration: none;
 
@@ -4302,11 +4312,12 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
         }
 
         &--disabled {
-          background: #EEEFF1;
+          background: #F5F5F5;
+          border-color: #E5E5E5;
 
           &:hover {
-            background: #EEEFF1;
-            border: 1px solid #DADCE0;
+            background: #F5F5F5;
+            border: 1px solid #E5E5E5;
           }
         }
 
@@ -4662,10 +4673,9 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 
     &::after {
       display: block;
-   width: 16px;
+      width: 16px;
       height: 16px;
-      transition: 8s ease;
-      transform: rotate(1000deg);
+      animation: wpsms-spin 1s linear infinite;
       background: center center 100%/no-repeat;
       background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.64236 2.95378C4.81102 1.94328 6.33445 1.33203 8.00065 1.33203C11.6825 1.33203 14.6673 4.3168 14.6673 7.9987C14.6673 9.42276 14.2208 10.7426 13.4601 11.8258L11.334 7.9987H13.334C13.334 5.05318 10.9462 2.66536 8.00065 2.66536C6.5672 2.66536 5.26583 3.23088 4.30747 4.15098L3.64236 2.95378ZM12.3589 13.0436C11.1903 14.0541 9.66685 14.6654 8.00065 14.6654C4.31875 14.6654 1.33398 11.6806 1.33398 7.9987C1.33398 6.5746 1.78051 5.2548 2.54118 4.17166L4.66732 7.9987H2.66732C2.66732 10.9442 5.05513 13.332 8.00065 13.332C9.43412 13.332 10.7355 12.7665 11.6939 11.8464L12.3589 13.0436Z' fill='%23A3A3A3'/%3E%3C/svg%3E%0A");
     }
@@ -4784,7 +4794,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
         background-position: center;
         background-repeat: no-repeat;
         background-size: 15px;
-        background-color: #12121B0A;
+        background-color: #F5F5F5;
         border-radius: 4px;
 
         &:hover {
@@ -5221,20 +5231,6 @@ background: #FAFAFA;
   border: none;
 }
 
-.wpsms-addon__download__item--select span {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  button:hover {
-    cursor: pointer;
-
-    .wpsms_badge {
-      filter: brightness(1.1);
-    }
-  }
-}
-
 .wpsms-addon__download__item__info__alerts {
   width: 100%;
 }
@@ -5253,5 +5249,48 @@ a.wpsms-addon__download_active-all {
     background-color: transparent !important;
   }
 }
+
+.wpsms-wrap .wpsms-addon__download__item--select span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+
+  button:hover {
+    cursor: pointer;
+
+    .wpsms_badge {
+      filter: brightness(1.1);
+    }
+  }
+
+  input[type="checkbox"] {
+    overflow: hidden;
+    position: relative;
+
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 16px !important;
+      height: 16px !important;
+      margin: 0 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: center center/100% no-repeat;
+      content: '' !important;
+    }
+
+    &:checked {
+      &::before {
+        content: '' !important;
+        background: center center/100% no-repeat;
+        background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C0 1.34315 1.34315 0 3 0H14C15.6569 0 17 1.34315 17 3V14C17 15.6569 15.6569 17 14 17H3C1.34315 17 0 15.6569 0 14V3Z' fill='%23404BF2'/%3E%3Cpath d='M13.3453 5.4563L7.08839 11.7132C7.03297 11.7691 6.95753 11.8005 6.87884 11.8005C6.80014 11.8005 6.72471 11.7691 6.66929 11.7132L3.48769 8.53165C3.43182 8.47623 3.40039 8.40079 3.40039 8.3221C3.40039 8.2434 3.43182 8.16797 3.48769 8.11255L3.90089 7.69936C3.9563 7.64348 4.03174 7.61206 4.11044 7.61206C4.18913 7.61206 4.26457 7.64348 4.31998 7.69936L6.87589 10.2553L12.513 4.61811C12.6298 4.5049 12.8154 4.5049 12.9321 4.61811L13.3453 5.0372C13.4012 5.09262 13.4326 5.16806 13.4326 5.24675C13.4326 5.32545 13.4012 5.40088 13.3453 5.4563Z' fill='white'/%3E%3C/svg%3E%0A") !important;
+      }
+    }
+  }
+}
+
 
 @import "add-ons/badge";
