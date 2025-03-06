@@ -45,6 +45,11 @@
     color: $primary-orange;
     border:1px solid $primary-orange;
     font-weight: 500;
+
+    &:hover {
+      background-color: $primary-orange!important;
+      border-color: $primary-orange!important;
+    }
   }
 
   &.loading{
