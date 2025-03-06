@@ -38,9 +38,6 @@
     position: relative;
     box-sizing: border-box;
     cursor: pointer;
-    @media (max-width: 790px) {
-      width: 14.28%;
-    }
     &:after {
       content: "";
       display: block;
