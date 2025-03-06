@@ -46,6 +46,29 @@
     border:1px solid $primary-orange;
     font-weight: 500;
   }
+
+  &.loading{
+    background: #C2410C4D;
+    position: relative;
+    color: transparent!important;
+    border-color: transparent;
+    pointer-events: none;
+
+    &:before{
+      content: '';
+      left: 41%;
+      top: 9px;
+      position: absolute;
+      z-index: 19 !important;
+      animation: loading-bar-spinner 400ms linear infinite;
+      width: 11px;
+      height: 11px;
+      border: solid 3px transparent;
+      border-top-color: #ffffff !important;
+      border-left-color: #fffdfcb3 !important;
+      border-radius: 50%;
+     }
+  }
 }
 
 .c-btn--light {
@@ -61,4 +84,15 @@
 
 .c-btn--mainready{
     width: 154px;
+}
+
+@keyframes loading-bar-spinner {
+  0% {
+    transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

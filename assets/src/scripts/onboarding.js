@@ -88,8 +88,9 @@ jQuery(document).ready(function ($) {
 
     // Handle Test Connection
     $('#wp_sms_test_connection').on('click', function (e) {
-        e.preventDefault(); // Prevent default action if it's a form button
-
+        e.preventDefault();
+        const testBtn = document.getElementById('wp_sms_test_connection');
+        testBtn.classList.add('loading')
         // Collect data if needed
         let data = {
             action: 'wp_sms_test_gateway_status',
@@ -102,6 +103,7 @@ jQuery(document).ready(function ($) {
             type: 'POST',
             data: data,
             success: function (response) {
+                testBtn.classList.remove('loading')
                 if (response.success) {
                     const data = response.data;
 
@@ -135,6 +137,7 @@ jQuery(document).ready(function ($) {
                 }
             },
             error: function () {
+                testBtn.classList.remove('loading')
                 alert('There was an error. Please try again.');
             }
         });
