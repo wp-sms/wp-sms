@@ -29,10 +29,12 @@
             </div>
         </div>
     </div>
-    <div class="c-form__footer u-content-sp u-align-center">
-        <a class="c-form__footer--last-step" href="<?php echo esc_url($ctas['back']['url']); ?>">
-            <?php echo esc_html($ctas['not_received']['text']); ?>
-        </a>
-        <input class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['received']['text']); ?>"/>
+
+    <div class="c-form__footer c-form__footer--step-4 u-content-sp u-align-center">
+        <a class="c-form__footer--last-step" href="<?php echo esc_url($ctas['back']['url']); ?>"><?php echo esc_html($ctas['back']['text']); ?></a>
+        <div class="u-flex u-align-center">
+            <a href="<?php echo esc_url($ctas['back']['url']); ?>" class="c-btn c-btn--primary c-btn--primary-light"><?php echo esc_html($ctas['not_received']['text']); ?></a>
+            <input class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['received']['text']); ?>">
+        </div>
     </div>
 </form>
