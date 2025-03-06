@@ -6,9 +6,9 @@ jQuery(document).ready(function ($) {
     const notices = document.querySelectorAll('.wpsms-admin-notice');
     const mainContent = document.querySelector('.o-section.c-section--maincontent');
     if (notices.length > 0 && mainContent) {
-         notices.forEach(notice => {
-             notice.classList.add('active')
-             mainContent.insertBefore(notice, mainContent.firstChild);
+        notices.forEach(notice => {
+            notice.classList.add('active')
+            mainContent.insertBefore(notice, mainContent.firstChild);
         });
     }
 
@@ -128,6 +128,7 @@ jQuery(document).ready(function ($) {
                     $('.gateway-mms-description').text(data.mms.description);
 
                     // Display the container
+                    $('.c-form__result').addClass(data.container.class);
                     $('.gateway-status-container').css('display', 'block');
 
                     // Replace button
