@@ -10,6 +10,7 @@ class cellsynt extends \WP_SMS\Gateway
     public $unit;
     public $flash = "enable";
     public $isflash = false;
+    public $originatortype = 'alpha';
 
     public function __construct()
     {
@@ -17,6 +18,34 @@ class cellsynt extends \WP_SMS\Gateway
         $this->validateNumber  = "00xxxxxxxxxxxx";
         $this->supportIncoming = true;
         $this->documentUrl     = 'https://wp-sms-pro.com/resources/cellsynt-gateway-configuration/';
+        $this->gatewayFields = [
+            'username'         => [
+                'id'   => 'username',
+                'name' => 'API Username',
+                'desc' => 'Enter API username of gateway.',
+            ],
+            'password'         => [
+                'id'   => 'password',
+                'name' => 'API Password',
+                'desc' => 'Enter API password of gateway.',
+            ],
+            'from'         => [
+                'id'   => 'originator',
+                'name' => 'Sender Number',
+                'desc' => 'Sender number or sender ID',
+            ],
+            'originatortype'         => [
+                'id'      => 'originatortype',
+                'name'    => __('Originator Type', 'wp-sms'),
+                'desc'    => __('Please select originator type.', 'wp-sms'),
+                'type'    => 'select',
+                'options' => [
+                    'alpha'     => __('Alpha', 'wp-sms'),
+                    'numeric'   => __('Numeric', 'wp-sms'),
+                    'shortcode' => __('Shortcode', 'wp-sms'),
+                ]
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -60,9 +89,19 @@ class cellsynt extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $to     = implode(',', $this->to);
-        $msg    = urlencode($this->msg);
-        $result = $this->request('GET', $this->wsdl_link . "?username=" . $this->username . "&password=" . $this->password . "&destination=" . $to . "&type=text&charset=UTF-8&text=" . $msg . "&originatortype=alpha&allowconcat=6&originator=" . $this->from, [], [], false);
+        $params = [
+            'username'        => $this->username,
+            'password'        => $this->password,
+            'destination'     => implode(',', $this->to),
+            'type'            => 'text',
+            'charset'         => 'UTF-8',
+            'text'            => urlencode($this->msg),
+            'originatortype'  => $this->originatortype,
+            'allowconcat'     => 6,
+            'originator'      => $this->from,
+        ];
+
+        $result = $this->request('GET', "{$this->wsdl_link}/SendSMS", $params);
 
         if (strstr($result, 'OK:')) {
             // Log the result
