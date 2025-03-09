@@ -8,6 +8,7 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginActions;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginUpdater;
 use WP_SMS\Components\Assets;
+use WP_SMS\Utils\Request;
 
 class LicenseManagementManager
 {
@@ -33,12 +34,23 @@ class LicenseManagementManager
         add_filter('wp_sms_enable_upgrade_to_bundle', [$this, 'showUpgradeToBundle']);
         add_filter('wp_sms_admin_menu_list', [$this, 'addMenuItem']);
         add_action('admin_init', [$this, 'initAdminPreview']);
+        add_action('init', [$this, 'redirectOldLicenseUrlToNew']);
+    }
 
+    public function redirectOldLicenseUrlToNew()
+    {
+        if (
+            (Request::compare('page', 'wp-sms-settings') && Request::compare('tab', 'licenses')) ||
+            (Request::compare('page', 'wp-sms-plugins') && Request::compare('tab', 'add-license'))
+        ) {
+            wp_redirect(admin_url('admin.php?page=wp-sms-add-ons'));
+            exit;
+        }
     }
 
     public function initAdminPreview()
     {
-    if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons') {
+        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons') {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
         }
     }
