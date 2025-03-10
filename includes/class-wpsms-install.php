@@ -2,6 +2,9 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Services\Database\Managers\TableHandler;
+use WP_SMS\Utils\OptionUtil as Option;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -37,7 +40,42 @@ class Install
             }
         } else {
             self::table_sql();
+
         }
+    }
+
+
+    /**
+     * Checks whether the plugin is a fresh installation.
+     *
+     * @return void
+     */
+    private function checkIsFresh()
+    {
+        $version = get_option('wp_sms_plugin_version');
+
+        if (empty($version)) {
+            update_option('wp_sms_is_fresh', true);
+            return;
+        }
+
+        update_option('wp_sms_is_fresh', false);
+    }
+
+    /**
+     * Determines if the plugin is marked as freshly installed.
+     *
+     * @return bool.
+     */
+    public static function isFresh()
+    {
+        $isFresh = get_option('wp_sms_is_fresh', false);
+
+        if ($isFresh) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -104,7 +142,18 @@ class Install
      */
     public function install($network_wide)
     {
-        global $wp_sms_db_version;
+        require_once WP_SMS_DIR . 'src/Utils/OptionUtil.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/DatabaseManager.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Managers/TransactionHandler.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/AbstractDatabaseOperation.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Operations/AbstractTableOperation.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Operations/Create.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Operations/Inspect.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/DatabaseFactory.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Schema/Manager.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Managers/TableHandler.php';
+
+        global $wp_sms_db_version, $wpdb;
 
         self::create_table($network_wide);
 
@@ -116,6 +165,35 @@ class Install
         if (is_admin()) {
             self::upgrade();
         }
+
+        if (is_multisite() && $network_wide) {
+            $blog_ids = $wpdb->get_col("SELECT `blog_id` FROM $wpdb->blogs");
+            foreach ($blog_ids as $blog_id) {
+
+                switch_to_blog($blog_id);
+                $this->checkIsFresh();
+                TableHandler::createAllTables();
+                restore_current_blog();
+            }
+        } else {
+            $this->checkIsFresh();
+            TableHandler::createAllTables();
+        }
+
+        $this->markBackgroundProcessAsInitiated();
+    }
+
+    private function markBackgroundProcessAsInitiated()
+    {
+        if (!self::isFresh()) {
+            return;
+        }
+
+        Option::saveOptionGroup('update_source_channel_process_initiated', true, 'jobs');
+        Option::saveOptionGroup('update_geoip_process_initiated', true, 'jobs');
+        Option::saveOptionGroup('schema_migration_process_started', true, 'jobs');
+        Option::saveOptionGroup('update_source_channel_process_initiated', true, 'jobs');
+        Option::saveOptionGroup('table_operations_process_initiated', true, 'jobs');
     }
 
     /**
