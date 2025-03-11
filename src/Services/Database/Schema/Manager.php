@@ -18,7 +18,7 @@ class Manager
     private static $tablesSchema = [
         'subscribes' => [
             'columns' => [
-                'id'             => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'             => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'date'           => 'DATETIME',
                 'name'           => 'VARCHAR(250)',
                 'mobile'         => 'VARCHAR(20) NOT NULL',
@@ -28,21 +28,21 @@ class Manager
                 'group_ID'       => 'INT(5)',
             ],
             'constraints' => [
-                'PRIMARY KEY (id)'
+                'PRIMARY KEY (ID)'
             ],
         ],
         'subscribes_group' => [
             'columns' => [
-                'id'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'name'       => 'VARCHAR(250)',
             ],
             'constraints' => [
-                'PRIMARY KEY (id)'
+                'PRIMARY KEY (ID)'
             ],
         ],
         'send' => [
             'columns' => [
-                'id'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'date'       => 'DATETIME',
                 'sender'     => 'VARCHAR(20) NOT NULL',
                 'message'    => 'TEXT NOT NULL',
@@ -51,7 +51,7 @@ class Manager
                 'status'     => "VARCHAR(10) NOT NULL",
             ],
             'constraints' => [
-                'PRIMARY KEY (id)'
+                'PRIMARY KEY (ID)'
             ],
         ],
         'numbers' => [
