@@ -44,18 +44,15 @@ class DataMigration extends AbstractMigrationOperation
      *
      * @var array
      */
-    protected $migrationSteps = [
-        '14.12.6' => [
-            'addFirstAndLastPageData',
-        ],
-    ];
+    protected $migrationSteps = [];
 
     /**
      * Adds first and last page visit data for each visitor.
      *
      * @return array
      */
-    public function addFirstAndLastPageData() {
+    public function addFirstAndLastPageData()
+    {
         try {
             $this->ensureConnection();
 
@@ -86,10 +83,10 @@ class DataMigration extends AbstractMigrationOperation
             $visitorIds = array_column($allVisitors, 'visitor_id');
 
             $totalVisitors = count($visitorIds);
-            $batches = ceil($totalVisitors / $batchSize);
+            $batches       = ceil($totalVisitors / $batchSize);
 
             for ($batch = 0; $batch < $batches; $batch++) {
-                $offset = $batch * $batchSize;
+                $offset       = $batch * $batchSize;
                 $currentBatch = array_slice($visitorIds, $offset, $batchSize);
 
                 $tasks[] = DatabaseFactory::table('visitor_search_insert')
@@ -97,7 +94,7 @@ class DataMigration extends AbstractMigrationOperation
             }
 
             return $tasks;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->setErrorStatus($e->getMessage());
         }
     }

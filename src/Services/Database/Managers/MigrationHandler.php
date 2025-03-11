@@ -259,7 +259,7 @@ class MigrationHandler
         $message = self::buildNoticeMessage();
 
         $notice = NoticeManager::getInstance();
-        $notice->registerNotice('database_manual_migration', $message, 'warning', false);
+        $notice->registerNotice('database_manual_migration', $message, true, false);
 
     }
 
@@ -548,6 +548,7 @@ class MigrationHandler
     public static function handleMigrationStatusNotices()
     {
         $details = Option::getOptionGroup('db', 'migration_status_detail', null);
+        $notice  = NoticeManager::getInstance();
 
         if (empty($details['status'])) {
             return;
@@ -568,8 +569,7 @@ class MigrationHandler
                 esc_html__('The Database Migration process is running in the background. This may take a few minutes depending on your site’s data size.', 'wp-sms'),
                 esc_html__('Please wait while the process completes. You can continue working in the admin area.', 'wp-sms')
             );
-
-            Notice::addNotice($message, 'database_manual_migration_progress', 'info', false);
+            $notice->registerNotice('database_manual_migration_progress', $message, true);
             return;
         }
 
@@ -588,8 +588,7 @@ class MigrationHandler
                 esc_html__('Your WP SMS plugin is now fully updated and optimized. 🎉', 'wp-sms'),
                 esc_html__('Thank you for keeping WP SMS up-to-date!', 'wp-sms')
             );
-
-            Notice::addNotice($message, 'database_manual_migration_done', 'success');
+            $notice->registerNotice('database_manual_migration_done', $message, true);
             return;
         }
 
@@ -615,8 +614,7 @@ class MigrationHandler
                 esc_url('https://wp-sms.com/support/?utm_source=wp-sms&utm_medium=link&utm_campaign=db-error'),
                 esc_html__('Contact Support', 'wp-sms')
             );
-
-            Notice::addNotice($message, 'database_manual_migration_failed', 'error', false);
+            $notice->registerNotice('database_manual_migration_failed', $message, true);
         }
     }
 }
