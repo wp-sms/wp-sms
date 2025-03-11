@@ -43,6 +43,9 @@ class WP_SMS
      */
     private $remoteRequestQueue;
 
+    /**
+     * @var $backgroundProcess
+     */
     private $backgroundProcess;
 
 
@@ -105,6 +108,9 @@ class WP_SMS
 
     }
 
+    /**
+     * @return void
+     */
     private function setupBackgroundProcess()
     {
         $this->registerBackgroundProcess(RemoteRequestAsync::class, 'remote_request_async');
@@ -115,6 +121,11 @@ class WP_SMS
 
     }
 
+    /**
+     * @param $className
+     * @param $processKey
+     * @return void
+     */
     private function registerBackgroundProcess($className, $processKey)
     {
         if (class_exists($className)) {
@@ -122,6 +133,10 @@ class WP_SMS
         }
     }
 
+    /**
+     * @param $processKey
+     * @return mixed
+     */
     public function getBackgroundProcess($processKey)
     {
         return $this->backgroundProcess[$processKey];

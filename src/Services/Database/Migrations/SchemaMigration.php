@@ -43,11 +43,7 @@ class SchemaMigration extends AbstractMigrationOperation
      *
      * @var array
      */
-    protected $migrationSteps = [
-        '14.12.6' => [
-            'addFirstAndLastPageToVisitors',
-        ],
-    ];
+    protected $migrationSteps = [];
 
     /**
      * Adds 4 new columns to the 'visitors' table: 'first_page', 'first_view', 'last_page', and 'last_view'.

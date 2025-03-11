@@ -16,6 +16,44 @@ class Manager
      * @var array
      */
     private static $tablesSchema = [
+        'subscribes' => [
+            'columns' => [
+                'id'             => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'date'           => 'DATETIME',
+                'name'           => 'VARCHAR(250)',
+                'mobile'         => 'VARCHAR(20) NOT NULL',
+                'status'         => 'TINYINT(1)',
+                'activate_key'   => 'INT(11)',
+                'custom_fields'  => 'TEXT NULL',
+                'group_ID'       => 'INT(5)',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)'
+            ],
+        ],
+        'subscribes_group' => [
+            'columns' => [
+                'id'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'name'       => 'VARCHAR(250)',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)'
+            ],
+        ],
+        'send' => [
+            'columns' => [
+                'id'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'date'       => 'DATETIME',
+                'sender'     => 'VARCHAR(20) NOT NULL',
+                'message'    => 'TEXT NOT NULL',
+                'recipient'  => 'TEXT NOT NULL',
+                'response'   => 'TEXT NOT NULL',
+                'status'     => "VARCHAR(10) NOT NULL",
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)'
+            ],
+        ],
         'numbers' => [
             'columns' => [
                 'id'              => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
