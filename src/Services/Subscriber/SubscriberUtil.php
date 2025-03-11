@@ -125,12 +125,9 @@ class SubscriberUtil
             return new \WP_Error('unsubscribe', esc_html__('The required parameters must be valued!', 'wp-sms'));
         }
 
-        // Check the mobile number is string or integer
-        if (strpos($mobile, '+') !== false) {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
-        } else {
-            $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %d AND `status` = %d", $mobile, 0);
-        }
+        $db_prepare = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s AND `status` = %d", $mobile, 0);
+
+        $groupId = json_decode(stripslashes($groupId), true);
 
         if (is_array($groupId)) {
             $groupId = $groupId[0];
@@ -141,9 +138,7 @@ class SubscriberUtil
             $db_prepare                  .= $wpdb->prepare(" AND group_ID = %d", $groupId);
             $updateCondition['group_ID'] = $groupId;
         }
-
         $check_mobile = $wpdb->get_row($db_prepare); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-
         if ($check_mobile) {
 
             if ($activation != $check_mobile->activate_key) {
