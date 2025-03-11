@@ -1,5 +1,6 @@
-v6.9.* - 2025-xx-xx
-- **Fix**: Support wider range of CSV MIME types during the import proccess.
+v6.9.12 - 2025-**-**
+- **New**: Added support for WhatsApp in the Tubelight gateway.
+- **Enhancement**: Upgraded to the latest version of the Tubelight API.
 
 v6.9.11 - 2025-02-25
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
@@ -14,6 +15,7 @@ v6.9.10 - 2025-01-22 =
 - **Fix**: Resolve issues with adding and updating subscriber groups.
 - **Fix**: Address the `_load_textdomain_just_in_time` notice.
 - **Fix**: Correct SMS sending to registering users in the login form.
+- **Fix**: Support wider range of CSV MIME types during the import proccess.
 - **Enhancement**: Add capability test for displaying widgets.
 - **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
 
