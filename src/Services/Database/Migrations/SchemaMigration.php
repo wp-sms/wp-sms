@@ -44,30 +44,4 @@ class SchemaMigration extends AbstractMigrationOperation
      * @var array
      */
     protected $migrationSteps = [];
-
-    /**
-     * Adds 4 new columns to the 'visitors' table: 'first_page', 'first_view', 'last_page', and 'last_view'.
-     *
-     * @return void
-     */
-    public function addFirstAndLastPageToVisitors()
-    {
-        $this->ensureConnection();
-
-        try {
-            DatabaseFactory::table('update')
-                ->setName('visitor')
-                ->setArgs([
-                    'add' => [
-                        'first_page' => 'bigint(20) UNSIGNED DEFAULT NULL',
-                        'first_view' => 'datetime DEFAULT NULL',
-                        'last_page'  => 'bigint(20) UNSIGNED DEFAULT NULL',
-                        'last_view'  => 'datetime DEFAULT NULL'
-                    ]
-                ])
-                ->execute();
-        } catch (Exception $e) {
-            $this->setErrorStatus($e->getMessage());
-        }
-    }
 }
