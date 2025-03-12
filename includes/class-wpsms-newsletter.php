@@ -185,6 +185,7 @@ class Newsletter
         $placeholders = implode(', ', $metaValue);
         $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
+
         $result = $wpdb->get_row($sql);
 
         if ($result) {
@@ -228,19 +229,14 @@ class Newsletter
         if (empty($mobile)) {
             return ['result' => 'error', 'message' => esc_html__('Mobile number is required!', 'wp-sms')];
         }
-        $where = ['mobile' => $mobile];
 
-        if (!empty($group_id)) {
-            $group_id  = str_replace('\\', '', $group_id); // Remove backslashes
-            $group_ids = json_decode($group_id, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE || !is_array($group_ids)) {
-                return ['result' => 'error', 'message' => esc_html__('Invalid group_id format!', 'wp-sms')];
-            }
-        } else {
-            $group_ids = [null];
+        // Process group_id
+        $group_ids = self::processGroupId($group_id);
+        if (is_wp_error($group_ids)) {
+            return ['result' => 'error', 'message' => $group_ids->get_error_message()];
         }
 
+        $where   = ['mobile' => $mobile];
         $success = false;
 
         foreach ($group_ids as $group_id) {
@@ -254,12 +250,10 @@ class Newsletter
                 $success = true; // At least one deletion was successful
             }
         }
-
         // Handle deletion result
         if (!$success) {
             return ['result' => 'error', 'message' => esc_html__('The mobile number does not exist in the specified group(s)!', 'wp-sms')];
         }
-
         /**
          * Run hook after deleting subscriber.
          *
@@ -658,6 +652,78 @@ class Newsletter
 
         return $result;
     }
+
+    /**
+     * Process the group_id parameter.
+     *
+     * @param mixed $group_id The group_id to process.
+     *
+     * @return array|WP_Error Returns an array of group IDs or an error if the group_id is invalid.
+     */
+    protected static function processGroupId($group_id)
+    {
+        if (!empty($group_id)) {
+            $group_id  = str_replace('\\', '', $group_id); // Remove backslashes
+            $group_ids = json_decode($group_id, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($group_ids)) {
+                return new \WP_Error('invalid_group_id', esc_html__('Invalid group_id format!', 'wp-sms'));
+            }
+        } else {
+            $group_ids = [null];
+        }
+
+        return $group_ids;
+    }
+
+
+    /**
+     * Check if a subscriber exists in a specific group.
+     *
+     * @param string $mobile The mobile number to check.
+     * @param int $group_id The group ID to check against.
+     * @param bool $only_active Whether to check only active subscribers. Default false.
+     *
+     * @return bool True if the subscriber exists in the group, false otherwise.
+     */
+    public static function subscriberExistsInGroup($mobile, $group_id, $only_active = false)
+    {
+        global $wpdb;
+
+        // Process group_id
+        $group_ids = self::processGroupId($group_id);
+        if (is_wp_error($group_ids)) {
+            return false; // Or handle the error as needed
+        }
+
+        $mobile_variations = Helper::prepareMobileNumberQuery($mobile);
+        if (empty($mobile_variations)) {
+            return false;
+        }
+
+        // Construct the query with placeholders
+        $mobile_placeholders = implode(', ', array_fill(0, count($mobile_variations), '%s'));
+        $group_placeholders  = implode(', ', array_fill(0, count($group_ids), '%d'));
+
+        $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes WHERE mobile IN ($mobile_placeholders) AND group_ID IN ($group_placeholders)";
+
+        // Add active status condition if needed
+        if ($only_active) {
+            $sql .= " AND status = %d";
+        }
+
+        // Prepare and execute the query
+        $params = array_merge($mobile_variations, $group_ids);
+        if ($only_active) {
+            $params[] = 1;
+        }
+
+        $prepared_sql = $wpdb->prepare($sql, $params);
+        $count        = $wpdb->get_var($prepared_sql);
+
+        return $count > 0;
+    }
+
 }
 
 new Newsletter();
