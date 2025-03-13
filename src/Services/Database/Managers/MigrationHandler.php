@@ -519,6 +519,7 @@ class MigrationHandler
      */
     private static function finalizeManualTasks($manualTasks, $process)
     {
+        @ini_set('memory_limit', '-1');
         Option::saveOptionGroup('manual_migration_tasks', $manualTasks, 'db');
         Option::saveOptionGroup('data_migration_process_started', true, 'jobs');
         $process->save()->dispatch();

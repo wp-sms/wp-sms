@@ -2,8 +2,9 @@
 
 namespace WP_SMS\BackgroundProcess\Async;
 
+use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Utils\OptionUtil as Option;
-use WP_SMS\Service\Database\Migrations\DataMigration;
+use WP_SMS\Services\Database\Migrations\DataMigration;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
 
 class DataMigrationProcess extends WP_Background_Process
@@ -43,11 +44,11 @@ class DataMigrationProcess extends WP_Background_Process
      */
     protected function task($data)
     {
-        $class   = $data['class'] ?? null;
-        $method  = $data['method'] ?? null;
-        $version = $data['version'] ?? null;
-        $task    = $data['task'] ?? null;
-        $type    = $data['type'] ?? null;
+        $class   = isset($data['class']) ? $data['class'] : null;
+        $method  = isset($data['method']) ? $data['method'] : null;
+        $version = isset($data['version']) ? $data['version'] : null;
+        $task    = isset($data['task']) ? $data['task'] : null;
+        $type    = isset($data['type']) ? $data['type'] : null;
 
         if (!$class || !$method || !$version) {
             return false;
@@ -84,12 +85,25 @@ class DataMigrationProcess extends WP_Background_Process
             return false;
         }
 
-        if (!method_exists($task, 'execute')) {
+        $batchClass = $class;
+
+        if (is_array($task) && ! empty($task['class'])) {
+            $data    = ! empty($task['data']) ? $task['data'] : [];
+            $setData = ! empty($task['setData']) ? $task['setData'] : '';
+
+            if (empty($setData)) {
+                return false;
+            }
+
+            $batchClass = DatabaseFactory::table($task['class'])->$setData($data);
+        }
+
+        if (!method_exists($batchClass, 'execute')) {
             return false;
         }
 
         $instance->setMethod($method, $version);
-        $task->execute();
+        $batchClass->execute();
         $instance->setVersion();
 
         return false;

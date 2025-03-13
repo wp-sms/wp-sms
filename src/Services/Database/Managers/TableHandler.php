@@ -61,6 +61,7 @@ class TableHandler
         }
 
         Option::saveOptionGroup('migrated', false, 'db');
+        Option::saveOptionGroup('migration_status_detail', null, 'db');
 
         $dismissedNotices = get_option('wp_sms_dismissed_notices', []);
 
