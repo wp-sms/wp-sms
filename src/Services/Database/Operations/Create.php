@@ -62,8 +62,8 @@ class Create extends AbstractTableOperation
     private function buildCreateTableSql()
     {
         $charset_collate = $this->wpdb->get_charset_collate();
-        $columns = $this->args['columns'] ?? [];
-        $constraints = $this->args['constraints'] ?? [];
+        $columns = isset($this->args['columns']) ? $this->args['columns'] : [];
+        $constraints = isset($this->args['constraints']) ? $this->args['constraints'] : [];
 
         $columnsSql = array_map(function ($columnName, $definition) {
             return sprintf("`%s` %s", $columnName, $definition);

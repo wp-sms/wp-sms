@@ -81,8 +81,8 @@ class Insert extends AbstractTableOperation
      */
     public function insertOrUpdateData()
     {
-        $mapping = $this->args['mapping'] ?? [];
-        $conditions = $this->args['conditions'] ?? [];
+        $mapping = isset($this->args['mapping']) ? $this->args['mapping'] : [];
+        $conditions = isset($this->args['conditions']) ? $this->args['conditions'] : [];
 
         if (empty($mapping) || empty($conditions)) {
             throw new RuntimeException("Mapping and conditions are required for updating data.");
@@ -131,16 +131,16 @@ class Insert extends AbstractTableOperation
             throw new RuntimeException("Source table is not specified for migration.");
         }
 
-        $mapping = $this->args['mapping'] ?? [];
-        $distinctFields = $this->args['distinct_fields'] ?? [];
-        $sourceTableSet = $this->args['source_table_set'] ?? [];
+        $mapping = isset($this->args['mapping']) ? $this->args['mapping'] : [];
+        $distinctFields = isset($this->args['distinct_fields']) ? $this->args['distinct_fields'] : [];
+        $sourceTableSet = isset($this->args['source_table_set']) ? $this->args['source_table_set'] : [];
 
         if (empty($mapping)) {
             throw new RuntimeException("Mapping is required for migration.");
         }
 
-        $batchSize = $this->args['batch_size'] ?? 50;
-        $offset = $this->args['offset'] ?? 0;
+        $batchSize = isset($this->args['batch_size']) ? $this->args['batch_size'] : 50;
+        $offset = isset($this->args['offset']) ? $this->args['offset'] : 0;
 
         // Prepare the columns for fetching data from the source table
         $sourceColumns = implode(', ', array_values($mapping));

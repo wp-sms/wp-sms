@@ -25,9 +25,9 @@ class TableOperationProcess extends WP_Background_Process
      */
     protected function task($data)
     {
-        $operation = $data['operation'] ?? null;
-        $tableName = $data['table_name'] ?? null;
-        $args      = $data['args'] ?? [];
+        $operation = isset($data['operation']) ? $data['operation'] : null;
+        $tableName = isset($data['table_name']) ? $data['table_name'] : null;
+        $args      = isset($data['args']) ? $data['args'] : [];
 
         if (!$operation || !$tableName) {
             return false;

@@ -25,9 +25,9 @@ class SchemaMigrationProcess extends WP_Background_Process
      */
     protected function task($data)
     {
-        $class   = $data['class'] ?? null;
-        $method  = $data['method'] ?? null;
-        $version = $data['version'] ?? null;
+        $class   = isset($data['class']) ? $data['class'] : null;
+        $method  = isset($data['method']) ? $data['method'] : null;
+        $version = isset($data['version']) ? $data['version'] : null;
 
         if (!$class || !$method || !$version) {
             return false;
