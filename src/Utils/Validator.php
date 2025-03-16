@@ -25,7 +25,6 @@ class Validator
             'min'      => __('The :attribute must be at least :min characters.', 'wp-sms'),
             'max'      => __('The :attribute may not be greater than :max characters.', 'wp-sms'),
             'numeric'  => __('The :attribute must be a number.', 'wp-sms'),
-
         ];
     }
 
@@ -35,7 +34,7 @@ class Validator
 
         foreach ($this->rules as $field => $ruleSet) {
             $rules = explode('|', $ruleSet);
-            $value = $this->data[$field] ?? null;
+            $value = isset($this->data[$field]) ? $this->data[$field] : null;
 
             foreach ($rules as $rule) {
                 $rule = trim($rule);
@@ -96,7 +95,7 @@ class Validator
 
     protected function validateNumeric($field, $value)
     {
-        return is_numeric($value);
+        return ctype_digit($value);
     }
 
     protected function addError($field, $rule, $param = null)

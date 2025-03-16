@@ -44,8 +44,7 @@ class GettingStarted extends StepAbstract
 
     public function afterValidation()
     {
-        Option::updateOption('admin_mobile_number', $this->data['countries'] != self::COUNTRY_DEFAULT_VALUE ? $this->data['countries'] . $this->data['tel'] : $this->data['tel']);
-        Option::updateOption('admin_mobile_number_raw', $this->data['tel']);
-        Option::updateOption('admin_mobile_number_prefix', $this->data['countries']);
+        Option::updateOption('admin_mobile_number', $this->data['tel']);
+        Option::updateOption('mobile_county_code', $this->data['countries']);
     }
 }

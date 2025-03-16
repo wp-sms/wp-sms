@@ -113,6 +113,9 @@ class Install
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
 
+        // Set an option to indicate that the plugin was just activated
+        update_option('wp_sms_onboarding_redirect', true);
+
         if (is_admin()) {
             self::upgrade();
         }

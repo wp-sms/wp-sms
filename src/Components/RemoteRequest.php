@@ -124,13 +124,13 @@ class RemoteRequest
             throw new Exception(esc_html($response->get_error_message()));
         }
 
-        $responseCode = wp_remote_retrieve_response_code($response);
-        $responseBody = wp_remote_retrieve_body($response);
+        $this->responseCode = wp_remote_retrieve_response_code($response);
+        $this->responseBody = wp_remote_retrieve_body($response);
 
         if ($throwFailedHttpCodeResponse) {
-            if (!in_array($responseCode, [200, 201, 202], true)) {
-                if (Helper::isJson($responseBody)) {
-                    $responseBody = json_decode($responseBody, true);
+            if (!in_array($this->responseCode, [200, 201, 202], true)) {
+                if (Helper::isJson($this->responseBody)) {
+                    $responseBody = json_decode($this->responseBody, true);
                 }
 
                 // translators: %s: Response message
@@ -138,7 +138,7 @@ class RemoteRequest
             }
         }
 
-        $responseJson = json_decode($responseBody);
+        $responseJson = json_decode($this->responseBody);
 
         // Cache the result if caching is enabled
         $resultToCache = ($responseJson === null) ? $this->responseBody : $responseJson;

@@ -18,6 +18,24 @@ class WizardManager
     {
         $this->title = $title;
         $this->slug  = $slug;
+
+        $this->maybe_redirect_to_onboarding();
+    }
+
+    /**
+     * Handle redirection to the onboarding page after activation
+     */
+    public function maybe_redirect_to_onboarding()
+    {
+        // Check if the onboarding process should be shown and is not completed
+        if (get_option('wp_sms_onboarding_redirect') && get_option('wp_sms_onboarding_process') !== 'completed') {
+            // Delete the option to prevent repeated redirections
+            delete_option('wp_sms_onboarding_redirect');
+
+            // Redirect to the onboarding page
+            wp_redirect(admin_url('admin.php?page=wp-sms&path=' . $this->slug));
+            exit;
+        }
     }
 
     public function setup()
@@ -69,7 +87,7 @@ class WizardManager
             'index'    => $this->getStepIndex() + 1,
             'steps'    => $this->getStepsData(),
             'slug'     => $this->slug,
-            'is_last'     => $this->isLastStep()
+            'is_last'  => $this->isLastStep()
         );
 
         View::load('templates/layout/onboarding/header', $data);
