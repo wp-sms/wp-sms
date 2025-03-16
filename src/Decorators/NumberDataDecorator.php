@@ -1,8 +1,9 @@
 <?php
 
-namespace WP_SMS\Services\Database\Decorators;
+namespace WP_SMS\Decorators;
 
 use Exception;
+use stdClass;
 
 class NumberDataDecorator
 {
@@ -12,11 +13,34 @@ class NumberDataDecorator
     private $number;
 
     /**
-     * @param array $numberData
+     * @param array|stdClass $numberData
      */
-    public function __construct(array $numberData)
+    public function __construct($numberData)
     {
+        // Convert stdClass to array if necessary
+        if ($numberData instanceof stdClass) {
+            $numberData = $this->convertStdClassToArray($numberData);
+        }
+
+        // Ensure the input is an array
+        if (!is_array($numberData)) {
+            throw new \InvalidArgumentException(
+                __('Number data must be an array or stdClass object.', 'wp-sms')
+            );
+        }
+
         $this->number = $numberData;
+    }
+
+    /**
+     * Convert stdClass to array
+     *
+     * @param stdClass $object
+     * @return array
+     */
+    private function convertStdClassToArray(stdClass $object)
+    {
+        return json_decode(json_encode($object), true);
     }
 
     /**
@@ -24,7 +48,7 @@ class NumberDataDecorator
      */
     public function getId()
     {
-        return (int) $this->number['id'];
+        return (int)$this->number['id'];
     }
 
     /**
@@ -75,7 +99,7 @@ class NumberDataDecorator
      */
     public function getUserId()
     {
-        return (int) $this->number['user_id'];
+        return (int)$this->number['user_id'];
     }
 
     /**
@@ -91,7 +115,7 @@ class NumberDataDecorator
      */
     public function isUnsubscribed()
     {
-        return (bool) $this->number['unsubscribed'];
+        return (bool)$this->number['unsubscribed'];
     }
 
     /**
@@ -99,7 +123,7 @@ class NumberDataDecorator
      */
     public function isVerified()
     {
-        return (bool) $this->number['verified'];
+        return (bool)$this->number['verified'];
     }
 
     /**
@@ -139,7 +163,7 @@ class NumberDataDecorator
      */
     public function getSuccessCount()
     {
-        return (int) $this->number['success_count'];
+        return (int)$this->number['success_count'];
     }
 
     /**
@@ -147,7 +171,7 @@ class NumberDataDecorator
      */
     public function getFailCount()
     {
-        return (int) $this->number['fail_count'];
+        return (int)$this->number['fail_count'];
     }
 
     /**

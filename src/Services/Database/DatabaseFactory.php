@@ -9,7 +9,6 @@ use WP_SMS\Services\Database\Operations\Create;
 use WP_SMS\Services\Database\Operations\Drop;
 use WP_SMS\Services\Database\Operations\Insert;
 use WP_SMS\Services\Database\Operations\Inspect;
-use WP_SMS\Services\Database\Operations\MultiStepOps\VisitorSearchInsert;
 use WP_SMS\Services\Database\Operations\Select;
 use WP_SMS\Services\Database\Operations\Update;
 
@@ -33,7 +32,6 @@ class DatabaseFactory
         'inspect'               => Inspect::class,
         'insert'                => Insert::class,
         'select'                => Select::class,
-        'visitor_search_insert' => VisitorSearchInsert::class
     ];
 
     /**
