@@ -33,8 +33,8 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 30px 6px 0;
-    width: 20%;
+    padding: 30px 0 0;
+    width: 20%!important;
     position: relative;
     box-sizing: border-box;
     cursor: pointer;
@@ -52,7 +52,7 @@
 
     &:first-child {
       justify-content: flex-start;
-      padding-left: 0;
+      width: 10%!important;
       a {
         left: 0;
         transform: translateX(0);
@@ -61,7 +61,7 @@
 
     &:last-child {
       justify-content: flex-end;
-      width: 9%;
+      width: 10%!important;
       padding-right: 0;
       @media (max-width: 790px) {
         width: 14.28%;
@@ -74,10 +74,10 @@
     }
 
     > span {
-      width: 17px;
-      height: 17px;
+      width: 18px;
+      height: 18px;
       background-color: $grey-color-3;
-      border-radius: 50%;
+      border-radius: 100%;
       font-size: 10px;
       font-weight: 400;
       line-height: 73.023%; /* 7.302px */

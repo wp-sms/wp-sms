@@ -77,9 +77,12 @@
   margin-bottom: 24px;
   box-sizing: border-box;
   &:hover{
-    color: $white-color!important;
-    background: #C24225B2!important;
-    border-color: transparent!important;
+    color: $primary-orange;
+    opacity: 0.6;
+  }
+  &:focus{
+    outline: none;
+    box-shadow: none;
   }
 }
 

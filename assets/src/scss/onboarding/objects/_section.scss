@@ -28,7 +28,7 @@
     padding:38px 38px 15px;
   }
 }
-.wpsms-onboarding{
+.wpsms-onboarding , .toplevel_page_wp-sms{
 
   .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable{
   background: #F7F7F7!important;
@@ -38,10 +38,16 @@
     outline: none!important;
   }
   .select2-dropdown{
-    border-color: #E7E7E7;
+    border-color: $grey-color-5;
   }
   .select2-search__field{
     font-size: 14px;
     border: none!important;
+    border-color: $grey-color-5;
+
+    &:focus , &:active{
+      outline: none;
+      box-shadow: none;
+    }
   }
 }

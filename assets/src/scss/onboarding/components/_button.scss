@@ -14,8 +14,9 @@
   border-radius: 4px;
   text-decoration: none;
   cursor: pointer;
-  &:active {
+  &:active , &:focus{
     outline: 0;
+    box-shadow: none;
   }
   @include mq(tablet) {
     min-width: 125px;
@@ -36,19 +37,15 @@
   background-color: $primary-orange;
   border:1px solid $primary-orange;
   &:hover {
-    color: $white-color!important;
-    background: #C24225B2!important;
-    border-color: transparent!important;
+    opacity: 0.6;
   }
   &-light{
     background-color: $white-color;
     color: $primary-orange;
     border:1px solid $primary-orange;
     font-weight: 500;
-
-    &:hover {
-      background-color: $primary-orange!important;
-      border-color: $primary-orange!important;
+    &:hover{
+      color: $primary-orange;
     }
   }
 

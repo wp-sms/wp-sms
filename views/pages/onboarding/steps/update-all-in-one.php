@@ -1,5 +1,5 @@
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(esc_html__('Step %d of 7', 'wp-sms'), $index); ?></span>
+    <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Purchase WP SMS All-in-One', 'wp-sms'); ?></h1>
     <p class="u-m-0">
         <?php esc_html_e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
@@ -16,13 +16,13 @@
                     </div>
 
                     <p class="c-proplan__price u-text-center">
-                        <?php printf(esc_html__('From <strong>$%s</strong> per Year', 'wp-sms'), '29'); ?>
+                        <?php printf(__('From <strong>$%s</strong> per Year', 'wp-sms'), '29'); ?>
                     </p>
                     <div>
                         <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_attr_e('Buy now', 'wp-sms'); ?>" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank">
                             <?php esc_html_e('Buy now', 'wp-sms'); ?>
                         </a>
-                        <p class="c-proplan__desc"><?php esc_html_e('14-day money-back guarantee on all the plans.', 'wp-sms'); ?></p>
+                        <p class="c-proplan__desc"><?php esc_html_e('14-day money-back guarantee on all plans.', 'wp-sms'); ?></p>
                     </div>
                 </div>
                 <div class="c-proplan__features u-flex u-content-sp u-align-stretch">

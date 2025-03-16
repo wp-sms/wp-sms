@@ -1,7 +1,7 @@
 <div class="c-section__title">
     <span class="c-section__step">
         <?php use WP_SMS\Gateway;
-        echo esc_html(sprintf(__('Step %d of 7', 'wp-sms'), $index)); ?>
+        echo esc_html(sprintf(__('Step %d of 6', 'wp-sms'), $index)); ?>
     </span>
     <h1 class="u-m-0">
         <?php esc_html_e('Set Up Your SMS Gateway', 'wp-sms'); ?>

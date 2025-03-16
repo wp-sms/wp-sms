@@ -215,8 +215,15 @@
       display: inline-flex;
       background:url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE3IiBoZWlnaHQ9IjE3IiB2aWV3Qm94PSIwIDAgMTcgMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xMi4wNDIyIDAuODU1ODM1TDEyLjk3NjMgMi42MDc0MkwxNC43Mjc5IDMuNTQxNkwxMi45NzYzIDQuNDc1NzhMMTIuMDQyMiA2LjIyNzM3TDExLjEwNzkgNC40NzU3OEw5LjM1NjM4IDMuNTQxNkwxMS4xMDc5IDIuNjA3NDJMMTIuMDQyMiAwLjg1NTgzNVpNNS42NjcxMyAzLjA2OTM4TDcuNTU2MDEgNi42MTEwNEwxMS4wOTc3IDguNDk5OTJMNy41NTYwMSAxMC4zODg4TDUuNjY3MTMgMTMuOTMwNUwzLjc3ODI0IDEwLjM4ODhMMC4yMzY1NzIgOC40OTk5MkwzLjc3ODI0IDYuNjExMDRMNS42NjcxMyAzLjA2OTM4Wk0xMy45MzEgMTEuNTY5NEwxMi43NTA1IDkuMzU1ODdMMTEuNTY5OSAxMS41Njk0TDkuMzU2MzggMTIuNzQ5OUwxMS41Njk5IDEzLjkzMDVMMTIuNzUwNSAxNi4xNDRMMTMuOTMxIDEzLjkzMDVMMTYuMTQ0NSAxMi43NDk5TDEzLjkzMSAxMS41Njk0WiIgZmlsbD0iI0MyNDIyNSIvPgo8L3N2Zz4K") center center/100% no-repeat ;
     }
+
+    &:focus{
+      color: $primary-orange;
+      box-shadow: none;
+      outline: none;
+    }
     &:hover{
       background: #FDD8CF;
+      color: $primary-orange;
     }
   }
 }
@@ -270,4 +277,16 @@ table.dataTable{
 
 .c-table-gateway .c-table-country--filter {
   display: none;
+}
+
+.c-table-gateway{
+  .wpsms-tooltip{
+    width: 13px;
+    height: 13px;
+    margin-top: -2px;
+    .wps-tooltip-icon{
+      width: 13px;
+      height: 13px;
+    }
+  }
 }

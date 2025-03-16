@@ -1,7 +1,7 @@
 .c-readycard {
 
   border-radius: 4px;
-  border: 1px solid $grey-color-3;
+  border: 1px solid $grey-color-5;
   padding: 12px 16px;
   box-sizing: border-box;
   position: relative;
@@ -34,6 +34,10 @@
       height: 9.55px;
       background: url(data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjYiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCA2IDEwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMy44Nzg4NCA1LjAwMDUyTDAuMTY2NTA0IDEuMjg4MkwxLjIyNzE3IDAuMjI3NTM5TDYuMDAwMTQgNS4wMDA1MkwxLjIyNzE3IDkuNzczNDVMMC4xNjY1MDQgOC43MTI4TDMuODc4ODQgNS4wMDA1MloiIGZpbGw9IiNDMjQyMjUiLz4KPC9zdmc+Cg==) center center no-repeat;
     }
+
+    &:hover{
+      opacity: 0.6;
+    }
   }
 }
 
@@ -61,6 +65,10 @@ a.c-readycard__title{
     &:after{
       filter: none;
     }
+  }
+  &:focus{
+    outline: none;
+    box-shadow: none;
   }
 }
 
@@ -100,6 +108,11 @@ a.c-readycard__title{
   }
   &:hover{
     background: #fdd8cf
+  }
+
+  &:focus{
+    box-shadow: none;
+    outline: none;
   }
 }
 

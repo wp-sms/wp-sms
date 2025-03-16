@@ -1,5 +1,5 @@
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(esc_html__('Step %d of 7', 'wp-sms'), $index); ?></span>
+    <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">
         <?php esc_html_e('Connect with your audience through text messages by selecting a gateway that fits your needs. WP SMS is compatible with over 200 gateways worldwide to ensure you can send SMS seamlessly.', 'wp-sms'); ?>
@@ -43,10 +43,29 @@
             <table class="c-table c-table-gateway js-table-gateway js-table">
                 <thead>
                 <tr>
-                    <th><?php esc_html_e('Gateway', 'wp-sms'); ?></th>
-                    <th class="u-text-center"><?php esc_html_e('Bulk SMS', 'wp-sms'); ?></th>
-                    <th class="u-text-center"><?php esc_html_e('MMS', 'wp-sms'); ?></th>
-                    <th><?php esc_html_e('Gateway Access', 'wp-sms'); ?></th>
+                    <th><?php esc_html_e('Gateway', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Gateway tooltip', 'wp-sms'); ?>" >
+                          <i class="wps-tooltip-icon"></i>
+                        </span>
+                    </th>
+                    <th class="u-text-center">
+                        <?php esc_html_e('Bulk SMS', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Bulk SMS tooltip', 'wp-sms'); ?>">
+                          <i class="wps-tooltip-icon"></i>
+                        </span>
+                    </th>
+                    <th class="u-text-center">
+                        <?php esc_html_e('MMS', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('MMS tooltip', 'wp-sms'); ?>">
+                          <i class="wps-tooltip-icon"></i>
+                        </span>
+                    </th>
+                    <th>
+                        <?php esc_html_e('Gateway Access', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Gateway Access tooltip', 'wp-sms'); ?>">
+                          <i class="wps-tooltip-icon"></i>
+                        </span>
+                    </th>
                     <th class="c-table-country--filter"><?php esc_html_e('Countries', 'wp-sms'); ?></th>
                 </tr>
                 </thead>

@@ -1,6 +1,6 @@
 <div class="c-section__title u-border-b">
     <span class="c-section__step">
-        <?php echo esc_html(sprintf(__('Step %d of 7', 'wp-sms'), $index)); ?>
+        <?php echo esc_html(sprintf(__('Step %d of 6', 'wp-sms'), $index)); ?>
     </span>
     <h1 class="u-m-0 u-text-orange">
         <?php esc_html_e('Welcome to WP SMS!', 'wp-sms'); ?>
@@ -17,9 +17,6 @@
         <div class="c-form__fieldgroup u-mb-32">
             <label for="countries">
                 <?php esc_html_e('Country Code', 'wp-sms'); ?>
-                <span data-tooltip="<?php echo esc_attr(__('tooltip data', 'wp-sms')); ?>" data-tooltip-font-size="12px">
-                    <i class="wps-tooltip-icon"></i>
-                </span>
                 <span class="u-text-red">*</span>
             </label>
             <div class="wpsms-skeleton wpsms-skeleton__select wpsms-skeleton__select--step1"></div>
