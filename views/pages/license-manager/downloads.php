@@ -18,8 +18,8 @@ if (!empty($data['licensed_addons'])) {
     <div class="wpsms-postbox-addon__step">
         <div class="wpsms-addon__step__info">
             <span class="wpsms-addon__step__image wpsms-addon__step__image--checked"></span>
-            <h2 class="wpsms-addon__step__title"><?php esc_html_e('You\'re All Set! Your License is Successfully Activated!', 'wp-sms'); ?></h2>
-            <p class="wpsms-addon__step__desc"><?php esc_html_e('Choose the add-ons you want to install. You can modify your selection later.', 'wp-sms'); ?></p>
+            <h2 class="wpsms-addon__step__title"><?php esc_html_e('You\'re All Set! Your License Is Successfully Activated!', 'wp-sms'); ?></h2>
+            <p class="wpsms-addon__step__desc"><?php esc_html_e('Choose your add‑ons to install now. You can always add or remove them later. Let’s get started with WP SMS!', 'wp-sms'); ?></p>
         </div>
         <div class="wpsms-addon__step__download">
             <div class="wpsms-addon__download__title">

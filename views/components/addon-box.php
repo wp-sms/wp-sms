@@ -31,7 +31,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
                     <?php endif; ?>
                 </div>
                 <p class="wpsms-postbox-addon__item--info__desc">
-                    <?php echo wp_kses($addOn->getShortDescription(), 'data'); ?>
+                    <?php echo wp_kses($addOn->getDescription(), 'data'); ?>
                 </p>
             </div>
         </div>
