@@ -1,3 +1,6 @@
+v6.9.* - 2025- ** - **
+- **Fix**: Remove down gateways
+
 v6.9.12 - 2025-**-**
 - **New**: Added support for WhatsApp in the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
