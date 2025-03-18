@@ -65,6 +65,11 @@ With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommer
 - **[Fluent Integrations](https://wp-sms-pro.com/product/wp-sms-fluent-integrations/?utm_source=wporg&utm_medium=link&utm_campaign=fluent)**: Get SMS notifications with Fluent CRM, Fluent Forms, and Fluent Support.
 - **[Booking Integrations](https://wp-sms-pro.com/product/wp-sms-booking-integrations/?utm_source=wporg&utm_medium=link&utm_campaign=booking)**: SMS notifications with popular booking plugins such as BookingPress, WooCommerce Appointments, and Booking Calendar.
 
+= Report Bugs =
+Having trouble with a bug? Please [create an issue](https://github.com/wp-sms/wp-sms/issues/new) on GitHub. Kindly note that [GitHub](https://github.com/wp-sms/wp-sms) is exclusively for bug reports; other inquiries will be closed.
+
+For security vulnerabilities, please report them through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/wordpress/plugin/wp-sms/vdp). The Patchstack team will validate, triage, and handle any security issues.
+
 == Installation ==
 
 https://www.youtube.com/watch?v=uZVs8DXu_XM

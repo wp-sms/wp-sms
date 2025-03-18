@@ -27,7 +27,6 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testItWorks()
     {
-
         $post = static::factory()->post->create_and_get();
         $this->assertInstanceOf(\WP_Post::class, $post);
     }
@@ -73,7 +72,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testPostOutputMessage()
     {
-        $postId       = $this->factory->post->create();
+        $postId       = $this->factory()->post->create();
         $notification = NotificationFactory::getPost($postId);
 
         $this->assertStringContainsString(
@@ -87,7 +86,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testCommentOutputMessage()
     {
-        $commentId    = $this->factory->comment->create();
+        $commentId    = $this->factory()->comment->create();
         $notification = NotificationFactory::getComment($commentId);
 
         $this->assertStringContainsString(
@@ -101,7 +100,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testUserOutputMessage()
     {
-        $userId       = $this->factory->user->create();
+        $userId       = $this->factory()->user->create();
         $notification = NotificationFactory::getUser($userId);
 
         $this->assertStringContainsString(
@@ -128,7 +127,7 @@ class NotificationTest extends WP_UnitTestCase
     /**
      * Test coupon notification output.
      */
-    public function _testCouponNotificationOutput()
+    public function testCouponNotificationOutput()
     {
         $couponCode   = $this->faker->bothify('???###');
         $couponAmount = $this->faker->randomFloat(2, 10, 100);
@@ -149,7 +148,7 @@ class NotificationTest extends WP_UnitTestCase
     /**
      * Test WooCommerce customer notification output.
      */
-    public function _testCustomerNotificationOutput()
+    public function testCustomerNotificationOutput()
     {
         $customer = new WC_Customer();
         $customer->set_email($this->faker->email);

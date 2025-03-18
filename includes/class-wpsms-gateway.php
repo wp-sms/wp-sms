@@ -801,7 +801,7 @@ class Gateway
                 'popaksms'       => 'popaksms.ir',
                 'novin1sms'      => 'novin1sms.ir',
                 '_500sms'        => '500sms.ir',
-                'matinsms'       => 'smspanel.mat-in.ir',
+                'matinsms'       => 'MatinSMS.ir',
                 'iranspk'        => 'iranspk.ir',
                 'freepayamak'    => 'freepayamak.ir',
                 'itpayamak'      => 'itpayamak.ir',
