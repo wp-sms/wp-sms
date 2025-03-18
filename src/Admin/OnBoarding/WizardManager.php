@@ -89,7 +89,8 @@ class WizardManager
             'index'    => $this->getStepIndex() + 1,
             'steps'    => $this->getStepsData(),
             'slug'     => $this->slug,
-            'is_last'  => $this->isLastStep()
+            'is_last'  => $this->isLastStep(),
+            'is_first' => $this->isFirstStep()
         );
 
         if (method_exists($this->currentStep, 'extraData')) {
@@ -151,6 +152,13 @@ class WizardManager
         if (!Request::get('step')) {
             WizardHelper::redirectToStep($this->slug, $this->currentStep->getSlug());
         }
+    }
+
+    public function isFirstStep()
+    {
+        $keys          = array_keys($this->steps);
+        $firstStepSlug = reset($keys);
+        return $this->currentStep->getSlug() === $firstStepSlug;
     }
 
     public function isLastStep()

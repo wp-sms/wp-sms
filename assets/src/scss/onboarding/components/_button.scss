@@ -45,7 +45,17 @@
     border:1px solid $primary-orange;
     font-weight: 500;
     &:hover{
+      background: $primary-orange;
+      color: $white-color;
+      opacity: 0.7;
+      &:focus , &:active{
+        color: $white-color;
+       }
+    }
+    &:focus , &:active{
+      outline: none;
       color: $primary-orange;
+      box-shadow: none;
     }
   }
 

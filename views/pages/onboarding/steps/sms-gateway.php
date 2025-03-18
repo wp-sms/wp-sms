@@ -2,40 +2,48 @@
     <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php esc_html_e('Connect with your audience through text messages by selecting a gateway that fits your needs. WP SMS is compatible with over 200 gateways worldwide to ensure you can send SMS seamlessly.', 'wp-sms'); ?>
+        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 250 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
     </p>
 </div>
 
 <div class="c-gateway">
     <div class="c-search-filter u-flex u-align-center u-content-sp">
-        <div class="c-search u-flex u-align-center u-content-start">
-            <button type="submit"></button>
-            <input id="searchGateway" placeholder="<?php esc_attr_e('Type to search...', 'wp-sms'); ?>" type="text"/>
+        <div class="c-filters">
+            <label for="searchGateway"><?php esc_html_e('Search by Gateway Name', 'wp-sms'); ?></label>
+            <div class="c-search u-flex u-align-center u-content-start">
+                <button type="submit"></button>
+                <input id="searchGateway" placeholder="<?php esc_attr_e('Type to search...', 'wp-sms'); ?>" type="text"/>
+            </div>
         </div>
 
-        <?php
-        // Collect all unique countries from gateways
-        $all_countries = [];
-        foreach ($gateways as $gateway) {
-            if (!empty($gateway->fields->gateway_attributes->country)) {
-                $countries = is_array($gateway->fields->gateway_attributes->country)
-                    ? $gateway->fields->gateway_attributes->country
-                    : explode(',', $gateway->fields->gateway_attributes->country);
+        <div class="c-filters">
+            <label for="filterCountries"><?php esc_html_e('Origin Country', 'wp-sms'); ?></label>
+            <?php
+            // Collect all unique countries from gateways
+            $all_countries = [];
+            foreach ($gateways as $gateway) {
+                if (!empty($gateway->fields->gateway_attributes->country)) {
+                    $countries = is_array($gateway->fields->gateway_attributes->country)
+                        ? $gateway->fields->gateway_attributes->country
+                        : explode(',', $gateway->fields->gateway_attributes->country);
 
-                $all_countries = array_merge($all_countries, array_map('trim', $countries));
+                    $all_countries = array_merge($all_countries, array_map('trim', $countries));
+                }
             }
-        }
-        $all_countries = array_unique($all_countries);
-        sort($all_countries);
-        ?>
-        <input type="hidden" class="chosen-country" value="<?php print_r($extra['country']) ?>">
-        <select id="filterCountries" name="countries">
-            <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
-            <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
-            <?php foreach ($all_countries as $country): ?>
-                <option value="<?php echo esc_attr($country); ?>"><?php echo esc_html($country); ?></option>
-            <?php endforeach; ?>
-        </select>
+            $all_countries = array_unique($all_countries);
+            sort($all_countries);
+            ?>
+            <input type="hidden" class="chosen-country" value="<?php print_r($extra['country']) ?>">
+            <select id="filterCountries" name="countries">
+                <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
+                <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
+                <?php foreach ($all_countries as $country): ?>
+                    <option value="<?php echo esc_attr($country); ?>"><?php echo esc_html($country); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+
     </div>
 
     <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
@@ -44,25 +52,25 @@
                 <thead>
                 <tr>
                     <th><?php esc_html_e('Gateway', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('Gateway tooltip', 'wp-sms'); ?>">
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('The name of the SMS provider.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
                     <th class="u-text-center">
                         <?php esc_html_e('Bulk SMS', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('Bulk SMS tooltip', 'wp-sms'); ?>">
+                        <span class="wpsms-tooltip" title="<?php esc_html_e(' Indicates if this gateway supports sending high-volume SMS to multiple recipients simultaneously.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
                     <th class="u-text-center">
-                        <?php esc_html_e('MMS', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('MMS tooltip', 'wp-sms'); ?>">
+                        <?php esc_html_e('WhatsApp', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('WhatsApp tooltip', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
                     <th>
                         <?php esc_html_e('Gateway Access', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('Gateway Access tooltip', 'wp-sms'); ?>">
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Shows whether this gateway is included in your current plan or requires All-in-One for full functionality.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
@@ -139,7 +147,7 @@
         </div>
 
         <div class="c-getway__offer u-mb-38">
-            <span><?php esc_html_e('Don’t have an SMS gateway?', 'wp-sms'); ?></span>
+            <span><?php esc_html_e('Don’t have SMS gateway?', 'wp-sms'); ?></span>
             <a class="c-link" href="<?php echo esc_url('https://wp-sms-pro.com/gateways/'); ?>" target="_blank">
                 <?php esc_html_e('Check out our recommended SMS gateways for optimized service.', 'wp-sms'); ?>
             </a>

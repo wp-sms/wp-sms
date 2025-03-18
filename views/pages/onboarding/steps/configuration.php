@@ -1,4 +1,4 @@
-<div class="c-section__title">
+<div class="c-section__title u-mb-10">
     <span class="c-section__step">
         <?php use WP_SMS\Gateway;
 
@@ -8,7 +8,7 @@
         <?php esc_html_e('Set Up Your SMS Gateway', 'wp-sms'); ?>
     </h1>
     <p class="u-m-0">
-        <?php esc_html_e('To get started with sending messages, enter your SMS gateway credentials. This connects your WordPress site directly to the SMS service.', 'wp-sms'); ?>
+        <?php esc_html_e('Now that you’ve chosen your SMS gateway. This step connects your WordPress site directly to the gateway so you can start sending messages. If you’re unsure where to find these details, check the gateway’s documentation or contact their support.', 'wp-sms'); ?>
     </p>
 </div>
 
@@ -71,6 +71,22 @@
                     </span>
                 </li>
             </ul>
+        </div>
+
+        <div class="wpsms-admin-alert wpsms-admin-alert--info u-mt-38">
+            <div class="wpsms-admin-alert--content">
+
+                <p>
+                    <?php
+                    echo sprintf(
+                    __('<a href="%1$s" title="%2$s" target="_blank">%2$s</a> %3$s.', 'wp-sms'),
+                        esc_url(WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'),
+                        esc_html__('View dedicated documentation for this gateway', 'wp-sms'),
+                        esc_html__('to learn more about specific requirements, supported features, and troubleshooting tips', 'wp-sms')
+                    );
+                    ?>
+                </p>
+            </div>
         </div>
 
         <div class="c-form__footer u-content-sp u-align-center">

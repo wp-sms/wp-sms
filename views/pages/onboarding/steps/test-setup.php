@@ -6,8 +6,15 @@
         <?php esc_html_e('Test Your Setup', 'wp-sms'); ?>
     </h1>
     <p class="u-m-0">
-        <?php esc_html_e('Send a test SMS to the administrator\'s phone number to confirm everything is working as it should.', 'wp-sms'); ?>
-    </p>
+        <?php
+        echo sprintf(
+            __('%1$s <b>%2$s</b> %3$s!', 'wp-sms'),
+             esc_html__('Before moving forward, let’s make sure your SMS gateway is working correctly. Click', 'wp-sms'),
+             esc_html__('Send Test SMS', 'wp-sms'),
+            esc_html__('to send a message to the administrator’s phone number you provided. Once you receive it, you’re good to go', 'wp-sms')
+        );
+        ?>
+     </p>
 </div>
 <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
     <div class="c-section__test">
@@ -24,7 +31,7 @@
                     <?php esc_html_e('Did you receive the test SMS?', 'wp-sms'); ?>
                 </h2>
                 <p>
-                    <?php esc_html_e('If you\'ve received the test SMS, clicking \'Yes, I received it!\' will confirm your setup is correct and take you to the next step. If not, select \'No, I didn\'t receive it.\' for troubleshooting options.', 'wp-sms'); ?>
+                    <?php esc_html_e('Please check your device to confirm whether you received the message.', 'wp-sms'); ?>
                 </p>
             </div>
         </div>
