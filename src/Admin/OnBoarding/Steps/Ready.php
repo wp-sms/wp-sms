@@ -16,7 +16,7 @@ class Ready extends StepAbstract
         return 'ready';
     }
 
-    protected function getTitle()
+    public function getTitle()
     {
         return __('Ready', 'wp-sms');
     }

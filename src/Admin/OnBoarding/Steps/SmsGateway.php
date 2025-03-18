@@ -6,6 +6,7 @@ use Exception;
 use WP_SMS\Admin\OnBoarding\StepAbstract;
 use WP_SMS\Components\RemoteRequest;
 use WP_SMS\Option;
+use WP_SMS\Utils\Request;
 
 class SmsGateway extends StepAbstract
 {
@@ -18,7 +19,9 @@ class SmsGateway extends StepAbstract
 
     protected function initialize()
     {
-        $this->setData('gateways', $this->getAllPages());
+        if (Request::get('step') == $this->getSlug()) {
+            $this->setData('gateways', $this->getAllPages());
+        }
     }
 
     private function getAllPages()
@@ -28,11 +31,9 @@ class SmsGateway extends StepAbstract
 
         try {
             do {
-                // Create a new RemoteRequest instance
                 $request = new RemoteRequest('get', "https://staging.wp-sms-pro.com/wp-json/wp/v2/gateway?per_page=100&page={$page}");
 
-                // Execute the request with caching enabled
-                $response = $request->execute(true, true, 43200);
+                $response = $request->execute(true, true, self::CACHE_DURATION);
 
 
                 if (is_array($response) && !empty($response)) {
@@ -54,9 +55,30 @@ class SmsGateway extends StepAbstract
         return "sms-gateway";
     }
 
-    protected function getTitle()
+    public function getTitle()
     {
         return __('SMS Gateway', 'wp-sms');
+    }
+
+    public function extraData()
+    {
+        $result = ['country' => ''];
+
+        $country_code = \WP_SMS\Option::getOption('mobile_county_code');
+
+        if (empty($country_code)) {
+            return $result;
+        }
+
+        $country_obj = new \WP_SMS\Components\Countries();
+
+        $country = $country_obj->getCountryByPrefix($country_code);
+
+        if (!empty($country) && isset($country['name'])) {
+            $result['country'] = $country['name'];
+        }
+
+        return $result;
     }
 
     protected function getDescription()

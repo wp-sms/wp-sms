@@ -1,6 +1,7 @@
 <div class="c-section__title">
     <span class="c-section__step">
         <?php use WP_SMS\Gateway;
+
         echo esc_html(sprintf(__('Step %d of 6', 'wp-sms'), $index)); ?>
     </span>
     <h1 class="u-m-0">
@@ -27,7 +28,7 @@
                     value="<?php echo esc_attr(\WP_SMS\Option::getOption($field['id'])); ?>"
                 />
                 <p class="c-form__description">
-                    <?php echo esc_html($field['desc']); ?>
+                    <?php echo $field['desc']; ?>
                 </p>
             </div>
         <?php endforeach; ?>

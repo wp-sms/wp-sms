@@ -10,14 +10,22 @@ class OnBoardingTestGateway extends AjaxControllerAbstract
 
     protected function run()
     {
+        $fields = $this->get('fields');
+
+        do_action('onboarding_before_test_gateway_response', $fields);
+
         WP_SMS::get_instance()->init();
 
         global $sms;
 
-        do_action('onboarding_before_test_gateway_response');
-
-        $credit    = $sms->GetCredit();
-        $is_active = !is_wp_error($credit) && $credit !== false;
+        try {
+            $credit    = $sms->GetCredit();
+            $is_active = !is_wp_error($credit) && $credit !== false;
+        } catch (\Exception $e) {
+            $is_active = false;
+            $credit    = false;
+            error_log('Error getting SMS gateway credit: ' . $e->getMessage());
+        }
 
         $response = array(
             'container' => array(
@@ -60,6 +68,4 @@ class OnBoardingTestGateway extends AjaxControllerAbstract
 
         wp_send_json_success($response);
     }
-
-
 }

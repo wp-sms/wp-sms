@@ -47,6 +47,7 @@ jQuery(document).ready(function ($) {
         initComplete: function () {
             $('.wpsms-skeleton__table').hide();
             $('.js-table-gateway').css('display', 'table');
+
         }
     });
 
@@ -63,6 +64,13 @@ jQuery(document).ready(function ($) {
     $('#searchGateway').on('keyup', function () {
         table.search(this.value).draw();
     });
+
+    let chosen_country = $('.chosen-country').val();
+
+    if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
+        $('#filterCountries').val(chosen_country).trigger('change');
+        table.column(4).search(chosen_country).draw();
+    }
 
     $('#filterCountries').on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;

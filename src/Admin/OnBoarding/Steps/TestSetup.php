@@ -5,6 +5,7 @@ namespace WP_SMS\Admin\OnBoarding\Steps;
 use WP_SMS\Admin\OnBoarding\StepAbstract;
 use WP_SMS\Components\Sms;
 use WP_SMS\Option;
+use WP_SMS\Utils\Request;
 
 class TestSetup extends StepAbstract
 {
@@ -19,7 +20,7 @@ class TestSetup extends StepAbstract
 
         $this->setData('gateway_status', $is_active);
 
-        if ($is_active) {
+        if ($is_active && Request::get('step') == $this->getSlug()) {
             $params = [
                 'to'  => Option::getOption('admin_mobile_number'),
                 'msg' => __('This is a test from WP SMS onboarding process.', 'wp-sms')
@@ -36,7 +37,7 @@ class TestSetup extends StepAbstract
         return 'test-setup';
     }
 
-    protected function getTitle()
+    public function getTitle()
     {
         return __('Test Your Setup', 'wp-sms');
     }
@@ -63,7 +64,7 @@ class TestSetup extends StepAbstract
     public function getCTAs()
     {
         return [
-            'received'         => [
+            'received'     => [
                 'text' => __('Yes, I received it!', 'wp-sms'),
             ],
             'not_received' => [

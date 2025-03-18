@@ -19,23 +19,6 @@ class WizardManager
         $this->title = $title;
         $this->slug  = $slug;
 
-        $this->maybe_redirect_to_onboarding();
-    }
-
-    /**
-     * Handle redirection to the onboarding page after activation
-     */
-    public function maybe_redirect_to_onboarding()
-    {
-        // Check if the onboarding process should be shown and is not completed
-        if (get_option('wp_sms_onboarding_redirect') && get_option('wp_sms_onboarding_process') !== 'completed') {
-            // Delete the option to prevent repeated redirections
-            delete_option('wp_sms_onboarding_redirect');
-
-            // Redirect to the onboarding page
-            wp_redirect(admin_url('admin.php?page=wp-sms&path=' . $this->slug));
-            exit;
-        }
     }
 
     public function setup()
@@ -47,6 +30,7 @@ class WizardManager
         $this->setCurrent();
         $this->enforceURL();
         add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
+        add_filter('admin_title', array($this, 'modifyOnboardingTitle'), 10, 2);
 
         if (Request::has('action')) {
             $this->handle();
@@ -55,6 +39,24 @@ class WizardManager
         add_filter('wp_sms_send_sms_page_content', function ($content, $args) {
             $this->render();
         }, 10, 2);
+    }
+
+    public function modifyOnboardingTitle($admin_title, $title)
+    {
+        if ($this->isOnboarding()) {
+            $wizardTitle = $this->title;
+
+            $stepTitle = method_exists($this->currentStep, 'getTitle') ? $this->currentStep->getTitle() : '';
+
+            $customTitle = $stepTitle;
+            if ($stepTitle) {
+                $customTitle .= ' › ' . $wizardTitle;
+            }
+
+            return sprintf('%s › %s', $customTitle, get_bloginfo('name'));
+        }
+
+        return $admin_title;
     }
 
     public function enqueueScripts()
@@ -90,6 +92,10 @@ class WizardManager
             'is_last'  => $this->isLastStep()
         );
 
+        if (method_exists($this->currentStep, 'extraData')) {
+            $data['extra'] = $this->currentStep->extraData();
+        }
+
         View::load('templates/layout/onboarding/header', $data);
         $this->currentStep->render($data);
         View::load('templates/layout/onboarding/footer', $data);
@@ -116,7 +122,7 @@ class WizardManager
         $this->currentStep = ($stepSlug && isset($this->steps[$stepSlug])) ? $this->steps[$stepSlug] : reset($this->steps);
     }
 
-    private function isOnboarding()
+    public function isOnboarding()
     {
         return Request::get('page') === 'wp-sms' && Request::get('path') === $this->slug;
     }

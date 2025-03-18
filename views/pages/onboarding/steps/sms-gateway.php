@@ -28,7 +28,7 @@
         $all_countries = array_unique($all_countries);
         sort($all_countries);
         ?>
-
+        <input type="hidden" class="chosen-country" value="<?php print_r($extra['country']) ?>">
         <select id="filterCountries" name="countries">
             <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
             <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
@@ -44,7 +44,7 @@
                 <thead>
                 <tr>
                     <th><?php esc_html_e('Gateway', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('Gateway tooltip', 'wp-sms'); ?>" >
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Gateway tooltip', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
@@ -78,29 +78,61 @@
                             : explode(',', $gateway->fields->gateway_attributes->country))
                         : [];
 
-                    $countries    = array_map('trim', $countries);
-                    $country_list = implode(', ', $countries);
+                    $countries      = array_map('trim', $countries);
+                    $country_list   = implode(', ', $countries);
+                    $can_choose     = \WP_SMS\Version::pro_is_active();
+                    $is_pro_gateway = $gateway->fields->gateway_attributes->wp_sms_pro;
                     ?>
-                    <tr class="gateway-row" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
-                        <td>
-                            <?php
-                            $current_gateway = \WP_SMS\Option::getOption('gateway_name');
-                            $selected        = ($current_gateway === esc_attr($gateway->slug)) ? 'checked' : '';
-                            ?>
-                            <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($gateway->slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
-                            <label for="gateway-name-<?php echo esc_attr($gateway->id); ?>"><?php echo esc_html($gateway->title->rendered); ?></label>
-                        </td>
-                        <td class="u-text-center">
-                            <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? 'checked' : 'unchecked'; ?>"></span>
-                        </td>
-                        <td class="u-text-center">
-                            <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? 'checked' : 'unchecked'; ?>"></span>
-                        </td>
-                        <td class="u-text-center">
-                            <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
-                        </td>
-                        <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
-                    </tr>
+
+                    <?php if ($is_pro_gateway && !$can_choose): ?>
+                        <tr class="disabled even" role="row">
+                            <td>
+                                <span data-tooltip="<?php echo esc_attr__('Pro Version Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
+                                    <span class="icon-lock"></span>
+                                </span>
+                                <span><?php echo esc_html($gateway->title->rendered); ?></span>
+                            </td>
+                            <td class="u-text-center">
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                            </td>
+                            <td class="u-text-center">
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                            </td>
+                            <td class="u-flex u-align-center u-content-sp">
+                                <a title="<?php echo esc_attr__('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                                    <?php esc_html_e('Pro Version Required', 'wp-sms'); ?>
+                                </a>
+                            </td>
+                            <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
+                        </tr>
+                    <?php else:
+                        $current_gateway = \WP_SMS\Option::getOption('gateway_name');
+                        $slug       = str_replace(['-', ' '], '', $gateway->slug);
+
+                        if (!\WP_SMS\Gateway::gatewayExists($slug)) {
+                            continue;
+                        }
+
+                        $selected = ($current_gateway === $slug) ? 'checked' : '';
+                        ?>
+                        <tr class="gateway-row" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
+                            <td>
+                                <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
+                                <label for="gateway-name-<?php echo esc_attr($gateway->id); ?>"><?php echo esc_html($gateway->title->rendered); ?></label>
+                            </td>
+                            <td class="u-text-center">
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                            </td>
+                            <td class="u-text-center">
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                            </td>
+                            <td class="u-text-center">
+                                <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
+                            </td>
+                            <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
+                        </tr>
+                    <?php endif; ?>
+
                 <?php endforeach; ?>
                 </tbody>
             </table>

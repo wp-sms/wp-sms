@@ -18,12 +18,14 @@ abstract class StepAbstract
 
     public function __construct(WizardManager $wizard)
     {
-        $this->wizard = $wizard;
-        $this->title  = $this->getTitle();
-        $this->fields = $this->getFields();
+        if ($wizard->isOnboarding()) {
+            $this->wizard = $wizard;
+            $this->title  = $this->getTitle();
+            $this->fields = $this->getFields();
 
-        if (!$this->isInitialized()) {
-            $this->initialize();
+            if (!$this->isInitialized()) {
+                $this->initialize();
+            }
         }
     }
 
@@ -31,7 +33,7 @@ abstract class StepAbstract
 
     abstract public function getSlug();
 
-    abstract protected function getTitle();
+    abstract public function getTitle();
 
     abstract protected function getDescription();
 

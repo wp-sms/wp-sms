@@ -24,7 +24,7 @@ class GettingStarted extends StepAbstract
         return "getting-started";
     }
 
-    protected function getTitle()
+    public function getTitle()
     {
         return __('Getting Started', 'wp-sms');
     }

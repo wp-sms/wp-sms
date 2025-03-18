@@ -3,12 +3,23 @@
 namespace WP_SMS\Admin\OnBoarding\Steps;
 
 use WP_SMS\Admin\OnBoarding\StepAbstract;
+use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\Gateway;
 use WP_SMS\Option;
 
 class Configuration extends StepAbstract
 {
     protected $sms;
+
+    public function __construct(WizardManager $wizard)
+    {
+        parent::__construct($wizard);
+        add_action('onboarding_before_test_gateway_response', function ($fields) {
+            foreach ($fields as $key => $field) {
+                Option::updateOption($key, $fields[$key]);
+            }
+        });
+    }
 
     public function getFields()
     {
@@ -24,7 +35,6 @@ class Configuration extends StepAbstract
     protected function initialize()
     {
         $this->setGatewayFields();
-        add_action('onboarding_before_test_gateway_response', array($this, 'afterValidation'));
     }
 
     protected function setGatewayFields()
@@ -40,7 +50,7 @@ class Configuration extends StepAbstract
         return 'configuration';
     }
 
-    protected function getTitle()
+    public function getTitle()
     {
         return __('Configuration', 'wp-sms');
     }

@@ -26,8 +26,8 @@
                 </option>
                 <?php
                 $countries            = wp_sms_countries()->getCountriesMerged();
-                $current_country_code = \WP_SMS\Option::getOption('admin_mobile_number_prefix');
-                $current_tel_raw     = \WP_SMS\Option::getOption('admin_mobile_number_raw');
+                $current_country_code = \WP_SMS\Option::getOption('mobile_county_code');
+                $current_tel_raw     = \WP_SMS\Option::getOption('admin_mobile_number');
 
                 foreach ($countries as $code => $country) {
                     $selected = ($current_country_code === esc_attr($code)) ? 'selected' : '';
