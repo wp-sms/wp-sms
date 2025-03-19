@@ -65,12 +65,12 @@ jQuery(document).ready(function ($) {
         table.search(this.value).draw();
     });
 
-    let chosen_country = $('.chosen-country').val();
-
-    if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
-        $('#filterCountries').val(chosen_country).trigger('change');
-        table.column(4).search(chosen_country).draw();
-    }
+    // let chosen_country = $('.chosen-country').val();
+    //
+    // if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
+    //     $('#filterCountries').val(chosen_country).trigger('change');
+    //     table.column(4).search(chosen_country).draw();
+    // }
 
     $('#filterCountries').on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;
@@ -100,9 +100,21 @@ jQuery(document).ready(function ($) {
         const testBtn = document.getElementById('wp_sms_test_connection');
         testBtn.classList.add('loading')
         // Collect data if needed
+        let formData = {};
+        $('.wp-sms-onboarding-step-configuration input, .wp-sms-onboarding-step-configuration select').each(function () {
+            const fieldName = $(this).attr('name');
+            const fieldValue = $(this).val();
+            if (fieldName) {
+                formData[fieldName] = fieldValue;
+            }
+        });
+
+        // Include the collected form data in the AJAX request
         let data = {
-            action: 'wp_sms_test_gateway_status',
+            action: 'wp_sms_test_gateway',
+            sub_action: 'test_status',
             _nonce: WP_Sms_Onboarding_Script_Object.nonce,
+            ...formData // Spread the form data into the data object
         };
 
         // AJAX request
@@ -152,4 +164,41 @@ jQuery(document).ready(function ($) {
         });
 
     });
-});
+
+    $('#wp_sms_send_test_sms').on('click', function (e) {
+        e.preventDefault();
+        const testSmsBtn = document.getElementById('wp_sms_send_test_sms');
+        testSmsBtn.classList.add('loading');
+
+        let data = {
+            action: 'wp_sms_test_gateway',
+            sub_action: 'send_sms',
+            _nonce: WP_Sms_Onboarding_Script_Object.nonce,
+        };
+
+        $.ajax({
+            url: WP_Sms_Onboarding_Script_Object.ajax_url,
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                testSmsBtn.classList.remove('loading');
+                if (response.success) {
+                    const messages = response.data.messages;
+                    const classes = response.data.classes;
+                    $('.wpsms-admin-alert--content')
+                        .html('<h2>' + messages.confirmation_title + '</h2>' + '<p>' + messages.confirmation_text + '</p>')
+                        .parent()
+                        .addClass(classes.info_class);
+
+                    $(testSmsBtn).remove();
+
+                    $('a.c-btn--primary-light').css('display', 'inline-block');
+                    $('input.c-btn--primary').css('display', 'inline-block');
+                }
+            },
+            error: function () {
+                testSmsBtn.classList.remove('loading');
+                alert('There was an error sending the test SMS. Please try again.');
+            }
+        });
+    });});

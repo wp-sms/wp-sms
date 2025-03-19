@@ -37,14 +37,13 @@ class GettingStarted extends StepAbstract
     protected function validationRules()
     {
         return [
-            'tel'       => 'required|numeric',
-            'countries' => 'required|text'
+            'tel' => 'required',
         ];
     }
 
     public function afterValidation()
     {
-        Option::updateOption('admin_mobile_number', $this->data['tel']);
-        Option::updateOption('mobile_county_code', $this->data['countries']);
+        $tel = is_array($this->data['tel']) ? $this->data['tel'][0] : $this->data['tel'];
+        Option::updateOption('admin_mobile_number', $tel);
     }
 }

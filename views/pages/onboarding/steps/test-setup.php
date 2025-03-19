@@ -9,12 +9,12 @@
         <?php
         echo sprintf(
             __('%1$s <b>%2$s</b> %3$s!', 'wp-sms'),
-             esc_html__('Before moving forward, let’s make sure your SMS gateway is working correctly. Click', 'wp-sms'),
-             esc_html__('Send Test SMS', 'wp-sms'),
+            esc_html__('Before moving forward, let’s make sure your SMS gateway is working correctly. Click', 'wp-sms'),
+            esc_html__('Send Test SMS', 'wp-sms'),
             esc_html__('to send a message to the administrator’s phone number you provided. Once you receive it, you’re good to go', 'wp-sms')
         );
         ?>
-     </p>
+    </p>
 </div>
 <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
     <div class="c-section__test">
@@ -25,23 +25,14 @@
                 </p>
             </div>
         </div>
-        <div class="wpsms-admin-alert wpsms-admin-alert--info">
-            <div class="wpsms-admin-alert--content">
-                <h2>
-                    <?php esc_html_e('Did you receive the test SMS?', 'wp-sms'); ?>
-                </h2>
-                <p>
-                    <?php esc_html_e('Please check your device to confirm whether you received the message.', 'wp-sms'); ?>
-                </p>
-            </div>
-        </div>
     </div>
 
     <div class="c-form__footer c-form__footer--step-4 u-content-sp u-align-center">
         <a class="c-form__footer--last-step" href="<?php echo esc_url($ctas['back']['url']); ?>"><?php echo esc_html($ctas['back']['text']); ?></a>
         <div class="u-flex u-align-center">
-            <a href="<?php echo esc_url($ctas['back']['url']); ?>" class="c-btn c-btn--primary c-btn--primary-light"><?php echo esc_html($ctas['not_received']['text']); ?></a>
-            <input class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['received']['text']); ?>">
+            <a style="display: none" href="<?php echo esc_url($ctas['back']['url']); ?>" class="c-btn c-btn--primary c-btn--primary-light"><?php echo esc_html($ctas['not_received']['text']); ?></a>
+            <input style="display: none" class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['received']['text']); ?>">
+            <a href="" class="c-btn c-btn--primary" id="wp_sms_send_test_sms"><?php echo __('Send Test SMS', 'wp-sms') ?></a>
         </div>
     </div>
 </form>

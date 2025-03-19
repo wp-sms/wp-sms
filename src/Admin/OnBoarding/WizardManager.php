@@ -63,7 +63,7 @@ class WizardManager
     {
         $localization = array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('wp_sms_test_gateway_status'),
+            'nonce'    => wp_create_nonce('wp_sms_test_gateway'),
             'step'     => Request::get('step'),
             'slug'     => $this->slug,
             'next_url' => WizardHelper::generateNextStepUrl($this->currentStep->getSlug(), $this->slug),
@@ -82,15 +82,16 @@ class WizardManager
     public function render()
     {
         $data = array(
-            'current'  => $this->currentStep->getSlug(),
-            'previous' => $this->getPrevious(),
-            'next'     => WizardHelper::generateStepUrl($this->getNext(), $this->slug),
-            'ctas'     => $this->getCTAs(),
-            'index'    => $this->getStepIndex() + 1,
-            'steps'    => $this->getStepsData(),
-            'slug'     => $this->slug,
-            'is_last'  => $this->isLastStep(),
-            'is_first' => $this->isFirstStep()
+            'current'        => $this->currentStep->getSlug(),
+            'previous'       => $this->getPrevious(),
+            'next'           => WizardHelper::generateStepUrl($this->getNext(), $this->slug),
+            'ctas'           => $this->getCTAs(),
+            'index'          => $this->getStepIndex() + 1,
+            'steps'          => $this->getStepsData(),
+            'slug'           => $this->slug,
+            'is_last'        => $this->isLastStep(),
+            'is_first'       => $this->isFirstStep(),
+            'skip_setup_url' => admin_url('?page=wp-sms')
         );
 
         if (method_exists($this->currentStep, 'extraData')) {

@@ -13,7 +13,7 @@
 </div>
 
 <div class="c-form c-form--medium u-flex u-content-center u-align-center u-flex--column">
-    <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
+    <form class="<?php echo esc_attr($slug) . '-step-' . esc_attr($current) ?>" method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
         <?php
         foreach ($fields as $key => $field): ?>
             <div class="c-form__fieldgroup u-mb-24">
@@ -79,7 +79,7 @@
                 <p>
                     <?php
                     echo sprintf(
-                    __('<a href="%1$s" title="%2$s" target="_blank">%2$s</a> %3$s.', 'wp-sms'),
+                        __('<a href="%1$s" title="%2$s" target="_blank">%2$s</a> %3$s.', 'wp-sms'),
                         esc_url(WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'),
                         esc_html__('View dedicated documentation for this gateway', 'wp-sms'),
                         esc_html__('to learn more about specific requirements, supported features, and troubleshooting tips', 'wp-sms')

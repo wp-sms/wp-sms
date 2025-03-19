@@ -19,17 +19,6 @@ class TestSetup extends StepAbstract
         $is_active = !is_wp_error($credit) && $credit !== false;
 
         $this->setData('gateway_status', $is_active);
-
-        if ($is_active && Request::get('step') == $this->getSlug()) {
-            $params = [
-                'to'  => Option::getOption('admin_mobile_number'),
-                'msg' => __('This is a test from WP SMS onboarding process.', 'wp-sms')
-            ];
-
-            if (Sms::send($params)) {
-                $this->markAsInitialized();
-            }
-        }
     }
 
     public function getSlug()
