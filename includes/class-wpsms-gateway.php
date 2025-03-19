@@ -132,6 +132,7 @@ class Gateway
             'taqnyat'     => 'taqnyat.sa',
             'mobishastra' => 'mobishastra.com',
             'brqsms'      => 'brqsms.com',
+            'smsala'      => 'smsala.com',
         ),
         'bangladesh'     => array(
             'esmsbd'    => 'esms.com.bd',
