@@ -95,10 +95,10 @@
                     <?php if ($is_pro_gateway && !$can_choose): ?>
                         <tr class="disabled even" role="row">
                             <td>
-                                <span data-tooltip="<?php echo esc_attr__('Pro Version Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
+                                <span data-tooltip="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
                                     <span class="icon-lock"></span>
                                 </span>
-                                <span><?php echo esc_html($gateway->title->rendered); ?></span>
+                                <span class="c-table-gateway__name"><a href="" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a></span>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
@@ -107,8 +107,8 @@
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
                             </td>
                             <td class="u-flex u-align-center u-content-sp">
-                                <a title="<?php echo esc_attr__('Pro Version Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
-                                    <?php esc_html_e('Pro Version Required', 'wp-sms'); ?>
+                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                                    <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                                 </a>
                             </td>
                             <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
@@ -126,7 +126,7 @@
                         <tr class="gateway-row" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
                             <td>
                                 <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
-                                <label for="gateway-name-<?php echo esc_attr($gateway->id); ?>"><?php echo esc_html($gateway->title->rendered); ?></label>
+                                 <span class="c-table-gateway__name"><a href="" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a></span>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
@@ -134,7 +134,7 @@
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
                             </td>
-                            <td class="u-text-center">
+                            <td>
                                 <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
                             </td>
                             <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
