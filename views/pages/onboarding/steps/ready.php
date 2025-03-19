@@ -12,7 +12,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
             <?php esc_html_e('Onboarding process successfully completed!', 'wp-sms'); ?>
         </h1>
         <p class="u-text-center">
-            <?php esc_html_e('Start using the plugin to send SMS messages from your WordPress site.', 'wp-sms'); ?>
+            <?php esc_html_e('Start sending SMS messages from your WordPress site right away.', 'wp-sms'); ?>
         </p>
         <a href="<?php echo esc_url(admin_url('/?page=wp-sms')); ?>" title="<?php esc_attr_e('start using WP SMS', 'wp-sms'); ?>" class="c-btn c-btn--primary c-btn--mainready">
             <?php esc_html_e('Start using WP SMS', 'wp-sms'); ?>
@@ -21,27 +21,21 @@ $is_pro = \WP_SMS\Version::pro_is_active();
     <div class="c-ready-row">
         <h3 class="c-ready__title"><?php esc_html_e('Support', 'wp-sms'); ?></h3>
         <div class="c-ready__items u-flex u-align-stretch u-content-sp">
-            <div class="c-readycard">
+            <div class="c-readycard c-readycard__half">
                 <span class="c-readycard__icon c-readycard__icon--document"></span>
                 <h2 class="c-readycard__title"><?php esc_html_e('Documentation', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Find everything you need to get WP-SMS up and running.', 'wp-sms'); ?>
+                    <?php esc_html_e('Find step-by-step guides for configuring WP SMS and troubleshooting common issues.', 'wp-sms'); ?>
                 </p>
                 <a class="c-btn" href="<?php echo esc_url('https://wp-sms-pro.com/documentation/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank" title="<?php esc_attr_e('View', 'wp-sms'); ?>"><?php esc_html_e('View', 'wp-sms'); ?></a>
             </div>
-            <div class="c-readycard">
+            <div class="c-readycard c-readycard__half">
                 <span class="c-readycard__icon c-readycard__icon--faq"></span>
-                <h2 class="c-readycard__title">FAQ</h2>
+                <h2 class="c-readycard__title"><?php esc_html_e("FAQ", 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e("If you've encountered an issue or have a question.", 'wp-sms'); ?>
+                    <?php esc_html_e("Have a question or need quick answers? Check out our Frequently Asked Questions.", 'wp-sms'); ?>
                 </p>
                 <a class="c-btn" href="<?php echo esc_url('https://wp-sms-pro.com/faq/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank" title="<?php esc_attr_e('View', 'wp-sms'); ?>"><?php esc_html_e('View', 'wp-sms'); ?></a>
-            </div>
-            <div class="c-readycard">
-                <span class="c-readycard__icon c-readycard__icon--plugin"></span>
-                <h2 class="c-readycard__title"><?php esc_html_e('Plugin customization', 'wp-sms'); ?></h2>
-                <p class="c-readycard__desc"><?php esc_html_e('Needs any customization?', 'wp-sms'); ?></p>
-                <a class="c-btn" href="<?php echo esc_url('https://wp-sms-pro.com/contact/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank" title="<?php esc_attr_e('View', 'wp-sms'); ?>"><?php esc_html_e('View', 'wp-sms'); ?></a>
             </div>
         </div>
     </div>
@@ -270,7 +264,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
     <div class="c-ready-row">
         <h3 class="c-ready__title"><?php esc_html_e('Our products', 'wp-sms'); ?></h3>
         <div class="c-ready__items u-flex u-align-stretch u-content-sp">
-            <div class="c-readycard">
+            <div class="c-readycard c-readycard__half">
                 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M35.3228 24.2898C34.0665 28.1656 31.4722 31.468 28.0039 33.606C24.5356 35.744 20.4198 36.5782 16.3927 35.9593C12.3657 35.3404 8.69027 33.3087 6.02408 30.2279C3.3579 27.1471 1.87493 23.2181 1.84051 19.1439C1.8061 15.0697 3.22248 11.1162 5.83624 7.99081C8.45 4.86538 12.0906 2.77195 16.1066 2.08509C20.1226 1.39823 24.252 2.16276 27.7559 4.24189C31.2597 6.32102 33.9095 9.57907 35.2311 13.4331H37.1661C35.8289 9.06955 32.9657 5.33311 29.1002 2.90701C25.2346 0.480915 20.6249 -0.472713 16.114 0.220504C11.6031 0.91372 7.49245 3.20746 4.53371 6.68229C1.57496 10.1571 -0.0341747 14.5809 0.000550502 19.1446C0.0352757 23.7083 1.71154 28.107 4.72282 31.5364C7.7341 34.9658 11.8792 37.1967 16.4001 37.8212C20.921 38.4457 25.5157 37.4221 29.3439 34.9374C33.1721 32.4528 35.9781 28.6732 37.2487 24.2898H35.3228Z" fill="black"/>
                     <path
@@ -279,47 +273,26 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                 </svg>
                 <h2 class="c-readycard__title"><?php esc_html_e('WP Statistics', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Find everything you need to get WP-SMS up and running.', 'wp-sms'); ?>
+                    <?php esc_html_e('The #1 Privacy-Focused Analytics tool for WordPress.', 'wp-sms'); ?>
                 </p>
                 <a class="c-btn" href="<?php echo esc_url('https://wp-statistics.com/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank" title="<?php esc_attr_e('Learn more', 'wp-sms'); ?>">
                     <?php esc_html_e('Learn more', 'wp-sms'); ?>
                 </a>
             </div>
-            <div class="c-readycard">
+            <div class="c-readycard c-readycard__half">
                 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M6.29756e-06 18.9991C6.29756e-06 8.50632 8.50633 0 19 0C25.6854 0 31.5642 3.45177 34.9498 8.67017L24.5631 19.2199L24.5546 19.2284L24.5478 19.236C24.4505 19.3363 24.3324 19.4141 24.2019 19.464C24.0714 19.5139 23.9315 19.5347 23.7921 19.525C23.6527 19.5152 23.5171 19.475 23.3949 19.4074C23.2726 19.3397 23.1666 19.2462 23.0842 19.1333L20.1868 15.1628C17.702 11.7569 12.7289 11.4564 9.85189 14.5388L0.747069 24.2914C0.250055 22.5713 -0.0014511 20.7896 6.29756e-06 18.9991ZM3.41527 29.8698C6.84921 34.7851 12.5498 38 19 38C29.4937 38 38.0009 29.4928 38.0009 18.9991C38.0009 17.3981 37.8031 15.8428 37.4295 14.3572L28.6719 23.2523C25.772 26.2321 20.8855 25.8874 18.4338 22.5265L15.5355 18.5577C15.4522 18.4434 15.3447 18.3489 15.2207 18.281C15.0966 18.2132 14.9591 18.1735 14.8179 18.165C14.6768 18.1565 14.5355 18.1793 14.4042 18.2318C14.2729 18.2843 14.1548 18.3651 14.0584 18.4686L3.41612 29.8698H3.41527Z"
                           fill="#F22F46"/>
                 </svg>
                 <h2 class="c-readycard__title"><?php esc_html_e('WP SlimStat', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Find everything you need to get WP-SMS up and running.', 'wp-sms'); ?>
+                    <?php esc_html_e('Maximize your business potential with data analytics.', 'wp-sms'); ?>
                 </p>
                 <a class="c-btn" href="<?php echo esc_url('https://wp-slimstat.com/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank" title="<?php esc_attr_e('Learn more', 'wp-sms'); ?>">
                     <?php esc_html_e('Learn more', 'wp-sms'); ?>
                 </a>
             </div>
-            <div class="c-readycard">
-                <svg width="34" height="38" viewBox="0 0 34 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11.5063 22.3446L7.99407 34.4268C7.80136 35.0897 7.2936 35.6146 6.63746 35.8292C4.47424 36.5368 2.64171 34.1039 3.91895 32.2201L12.1757 20.042L11.5063 22.3446Z" fill="#F4DD45"/>
-                    <path d="M12.1758 20.042L25.8601 26.9021L22.2684 27.8719L11.4934 22.3407L12.1758 20.042Z" fill="#EFAC08"/>
-                    <path d="M24.3873 23.382L28.2664 14.1514L23.8127 14.1873L21.7295 16.9529L24.3873 23.382Z" fill="#FCC101"/>
-                    <path d="M17.8507 7.36328L25.8601 26.902L22.2684 25.178L16.3422 10.7395L17.8507 7.36328Z" fill="#FCC101"/>
-                    <path d="M31.1039 14.1514L31.8932 16.7865C32.3594 18.3429 30.5291 19.5626 29.2721 18.5332L31.1039 14.1514Z" fill="#FFE97B"/>
-                    <path d="M12.1757 20.0416L16.342 10.7391L5.24375 3.73535L12.1757 20.0416Z" fill="#FFE97B"/>
-                    <path d="M16.342 10.7393L22.2683 25.1778L12.1757 20.0417L16.342 10.7393Z" fill="#F4DD45"/>
-                    <path d="M28.2307 14.1514H31.104L25.8601 26.9018L24.3876 23.3461L28.2307 14.1514Z" fill="#EFAC08"/>
-                    <path d="M16.3421 10.775L17.8506 7.36295L7.32917 1.86068C6.10135 1.21857 4.73561 2.44631 5.24378 3.73535L16.3421 10.775Z" fill="#F4DD45"/>
-                    <path d="M11.4933 22.3398L22.2683 27.871L8.90726 31.319L11.4933 22.3398Z" fill="#FCC101"/>
-                </svg>
-                <h2 class="c-readycard__title"><?php esc_html_e('FeedbackBird', 'wp-sms'); ?></h2>
-                <p class="c-readycard__desc">
-                    <?php esc_html_e('Find everything you need to get WP-SMS up and running.', 'wp-sms'); ?>
-                </p>
-                <a class="c-btn" href="<?php echo esc_url('https://feedbackbird.io/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" title="<?php esc_attr_e('Learn more', 'wp-sms'); ?>" target="_blank">
-                    <?php esc_html_e('Learn more', 'wp-sms'); ?>
-                </a>
-            </div>
-        </div>
+         </div>
     </div>
 
 </form>

@@ -292,11 +292,16 @@
       height: 12.32px;
       display: inline-flex;
       background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjEzIiBoZWlnaHQ9IjE0IiB2aWV3Qm94PSIwIDAgMTMgMTQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjE5NzQ3IDYuMjA4MjVIMTIuODMzM1Y3Ljc5MTU5SDMuMTk3NDdMNy40NDM5NCAxMi4wMzhMNi4zMjQzNyAxMy4xNTc2TDAuMTY2NjI2IDYuOTk5OTJMNi4zMjQzNyAwLjg0MjE2M0w3LjQ0Mzk0IDEuOTYxNzVMMy4xOTc0NyA2LjIwODI1WiIgZmlsbD0iI0MyNDIyNSIvPgo8L3N2Zz4K") center center/100% no-repeat;
+
+      .rtl &{
+        transform: rotate(180deg);
+      }
     }
 
     &:focus{
       outline: none;
       box-shadow: none;
+      color: $primary-orange;
     }
 
     &:hover{

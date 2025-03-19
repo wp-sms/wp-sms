@@ -125,6 +125,9 @@
       > span,
       &:after {
         background-color: $primary-orange;
+        .rtl &{
+          background-color: $primary-orange
+        }
       }
 
       a {
@@ -134,11 +137,18 @@
 
     &:nth-last-child(1 of .is-active) {
       &:first-child:after {
-        background: $grey-color-3
+        background: $grey-color-3;
+        .rtl &{
+          background: $grey-color-3
+        }
       }
 
       &:last-child:after {
-        background: $primary-orange
+        background: $primary-orange;
+        .rtl &{
+          background: $primary-orange
+
+        }
       }
 
       a {
@@ -151,6 +161,10 @@
 
       &:after {
         background: linear-gradient(90deg, $primary-orange 50%, $grey-color-3 50%);
+
+        .rtl &{
+          background: linear-gradient(-90deg, #C2410C 50%, #E8E6E5 50%)
+        }
       }
     }
 
