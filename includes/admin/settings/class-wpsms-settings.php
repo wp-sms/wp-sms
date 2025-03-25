@@ -1445,6 +1445,17 @@ class Settings
                     'type' => 'text',
                     'desc' => esc_html__('Enter API key of gateway', 'wp-sms')
                 ),
+                're_run_setup_wizard'          => array(
+                    'id'      => 're_run_setup_wizard',
+                    'name'    => esc_html__('WP SMS Setup Wizard', 'wp-sms'),
+                    'type'    => 'html',
+                    'options' => '
+                        <div>
+                            <a href="' . admin_url('admin.php?page=wp-sms&path=wp-sms-onboarding') . '" target="_blank" class="button button-primary">' . esc_html__('Re-run Setup Wizard', 'wp-sms') . '</a><br>
+                        </div>
+                    ',
+                    'desc'    => esc_html__('Need to debug or update your gateway settings? Relaunch the WP SMS Setup Wizard for a guided, step-by-step process. This will help you verify your credentials, test sending/receiving capabilities, and ensure everything is running smoothly.', 'wp-sms')
+                ),
                 // Gateway status
                 'gateway_status_title'         => array(
                     'id'   => 'gateway_status_title',
@@ -2298,6 +2309,7 @@ class Settings
     public function html_callback($args)
     {
         echo wp_kses_normalize_entities($args['options']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo sprintf('<p class="description">%1$s</p>', wp_kses_post($args['desc']));
     }
 
     public function notice_callback($args)

@@ -19,11 +19,13 @@ class WizardManager
         $this->title = $title;
         $this->slug  = $slug;
 
+        add_action('admin_init', [$this, 'handleNoticeDismissal']);
     }
 
     public function setup()
     {
         if (!$this->isOnboarding()) {
+            $this->addActivationNotice();
             return;
         }
 
@@ -39,6 +41,45 @@ class WizardManager
         add_filter('wp_sms_send_sms_page_content', function ($content, $args) {
             $this->render();
         }, 10, 2);
+    }
+
+    private function addActivationNotice()
+    {
+        $notice_option_name = 'wp_sms_' . $this->slug . '_activation_notice_shown';
+        if (get_option($notice_option_name)) {
+            return;
+        }
+
+        $noticeManager = NoticeManager::getInstance();
+
+        // Generate the setup wizard URL
+        $setup_url = admin_url('admin.php?page=wp-sms&path=' . $this->slug);
+
+        // Create the notice message with links
+        $message = sprintf(
+            __('WP SMS is now active! Before sending any messages, please configure your gateway and complete the setup process. %s %s', 'wp-sms'),
+            '<a href="' . esc_url($setup_url) . '" class="button button-primary">' . __('Launch Setup Wizard', 'wp-sms') . '</a>',
+            '<a href="' . esc_url(add_query_arg('wpsms_dismiss_activation_notice', '1')) . '" class="button">' . __('Dismiss', 'wp-sms') . '</a>'
+        );
+
+        $noticeManager->registerNotice(
+            'wp_sms_' . $this->slug . '_activation',
+            $message,
+            false,
+            false
+        );
+
+        update_option($notice_option_name, true);
+    }
+
+    public function handleNoticeDismissal()
+    {
+        if (isset($_GET['wpsms_dismiss_activation_notice'])) {
+            $notice_option_name = 'wp_sms_' . $this->slug . '_activation_notice_shown';
+            update_option($notice_option_name, true);
+            wp_redirect(remove_query_arg('wpsms_dismiss_activation_notice'));
+            exit;
+        }
     }
 
     public function modifyOnboardingTitle($admin_title, $title)
