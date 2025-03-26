@@ -13,31 +13,21 @@ class RemoteRequest
 
     public function __construct($url, $method, $arguments = [], $params = [])
     {
-        /**
-         * Filter to modify arguments
-         */
-        $arguments = apply_filters('wp_sms_request_arguments', $arguments);
-
-        /**
-         * Build request URL
-         */
+        $arguments        = apply_filters('wp_sms_request_arguments', $arguments);
         $this->requestUrl = add_query_arg($arguments, $url);
 
-        /**
-         * Filter to modify params
-         */
         $params = apply_filters('wp_sms_request_params', $params);
 
-        /**
-         * Prepare the arguments
-         */
+        if (defined('WP_SMS_API_USERNAME') && defined('WP_SMS_API_PASSWORD')) {
+            $basic_auth                         = 'Basic ' . base64_encode(WP_SMS_API_USERNAME . ':' . WP_SMS_API_PASSWORD);
+            $params['headers']['Authorization'] = $basic_auth;
+        }
+
         $this->parsedParams = wp_parse_args($params, [
             'timeout' => 10,
-            'headers' => array()]);
+            'headers' => array()
+        ]);
 
-        /**
-         * Store the method
-         */
         $this->method = strtoupper($method);
     }
 

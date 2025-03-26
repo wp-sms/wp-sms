@@ -32,11 +32,17 @@ class PluginHandler
         require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
         require_once ABSPATH . 'wp-admin/includes/file.php';
 
+        $headers = [];
+
+        if (defined('WP_SMS_API_USERNAME') && defined('WP_SMS_API_PASSWORD')) {
+            $headers['Authorization'] = 'Basic ' . base64_encode(WP_SMS_API_USERNAME . ':' . WP_SMS_API_PASSWORD);
+        }
+
         $response = wp_remote_get($pluginUrl, [
             'timeout'  => 300,
             'stream'   => true,
             'filename' => $temp_file = wp_tempnam($pluginUrl),
-            'headers'  => [],
+            'headers'  => $headers,
         ]);
 
         if (is_wp_error($response)) {
