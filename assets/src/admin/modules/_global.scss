@@ -252,7 +252,7 @@
   }
 }
 
-@media screen and (max-width: 1030px) {
+@media screen and (max-width: 1280px) {
   .rtl .wpsms-wrap__top h2, .rtl .wpsms-wrap__top h1 {
     float: right
   }
@@ -284,8 +284,8 @@
     }
   }
   .wpsms-header-items-side {
-    right: 24px !important;
-    bottom: 6px !important;
+    right: 16px !important;
+    bottom: 12px !important;
 
     .wpsms-mobile-menu {
       display: block;
@@ -311,7 +311,7 @@
   }
   .wpsms-header-banner .wpsms-header-logo {
     width: 109px !important;
-    height: 30px !important;
+    height: 17px !important;
   }
   .wpsms-header-banner .wpsms-header-items-flex {
     .outbox, .integrations {

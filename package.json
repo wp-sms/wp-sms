@@ -6,7 +6,7 @@
   "scripts": {
     "build": "wp-scripts build --webpack-src-dir=assets/src/blocks --output-path=assets/blocks && rm -rf assets/blocks/dev",
     "start": "concurrently \"wp-scripts start --webpack-copy-php --webpack-src-dir=assets/src/blocks --output-path=assets/blocks\" \"npm run dev\"",
-    "watch": "concurrently \"npm run sass-compile\" \"npm run js-compile\" \"watch 'npm run sass-compile' ./assets/src\" \"watch 'npm run js-compile' ./assets/src\"",
+    "watch": "concurrently \"npm run sass-compile -- --watch\" \"npm run js-compile -- --watch\"",
     "sass-compile": "concurrently \"node-sass assets/src/scss/front-styles.scss assets/css/front-styles.css --output-style compressed\" \"node-sass assets/src/scss/mail.scss assets/css/mail.css --output-style compressed\" \"node-sass assets/src/admin/admin.scss assets/css/admin.css --output-style compressed\"",
     "dev": "concurrently \"npm run watch\" \"npm run sass-compile\"  \"npm run js-compile\"",
     "js-compile": "webpack --config webpack.config.js"
