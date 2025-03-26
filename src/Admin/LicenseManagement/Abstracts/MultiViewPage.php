@@ -3,8 +3,8 @@
 namespace WP_SMS\Admin\LicenseManagement\Abstracts;
 
 use Exception;
-use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Exceptions\SystemErrorException;
+use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\Request;
 
 abstract class MultiViewPage extends BasePage
@@ -56,7 +56,16 @@ abstract class MultiViewPage extends BasePage
             $view = new $views[$currentView];
             $view->render();
         } catch (Exception $e) {
-            Notice::renderNotice($e->getMessage(), $e->getCode(), 'error');
+            $noticeManager = NoticeManager::getInstance();
+
+            $noticeManager->registerNotice(
+                'wp_sms_license_manager_exception',
+                $e->getMessage(),
+                false,
+                false
+            );
+
+            $noticeManager->displayStaticNotices();
         }
     }
 

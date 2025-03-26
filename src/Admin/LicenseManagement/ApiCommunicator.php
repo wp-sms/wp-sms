@@ -79,7 +79,7 @@ class ApiCommunicator
         // Search for the download URL in the licensed products
         foreach ($licenseStatus->products as $product) {
             if ($product->slug === $pluginSlug) {
-                return $product->download_url ?? null;
+                return isset($product->download_url) ? $product->download_url : null;
             }
         }
 
@@ -116,11 +116,24 @@ class ApiCommunicator
         }
 
         if (empty($licenseData->license_details)) {
+            $message = isset($licenseData) && is_object($licenseData) && isset($licenseData->message)
+                ? $licenseData->message
+                : esc_html__('Unknown error!', 'wp-sms');
+
+            $status = isset($licenseData) && is_object($licenseData) && isset($licenseData->status)
+                ? $licenseData->status
+                : '';
+
+            $code = isset($licenseData) && is_object($licenseData) && isset($licenseData->code)
+                ? intval($licenseData->code)
+                : 0;
+
             throw new LicenseException(
-                $licenseData->message ?? esc_html__('Unknown error!', 'wp-sms'),
-                $licenseData->status ?? '',
-                intval($licenseData->code)
+                $message,
+                $status,
+                $code
             );
+
         }
 
         if (!empty($product)) {

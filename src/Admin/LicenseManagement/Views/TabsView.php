@@ -7,9 +7,9 @@ use WP_SMS\Admin\LicenseManagement\Abstracts\BaseTabView;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\LicenseManagerDataProvider;
-use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Components\View;
 use WP_SMS\Exceptions\SystemErrorException;
+use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\Request;
@@ -166,7 +166,7 @@ class TabsView extends BaseTabView
             ];
 
             if ($this->isTab('add-ons')) {
-                $args['title']                  = esc_html__('Add-Ons', 'wp-sms');
+                $args['title'] = esc_html__('Add-Ons', 'wp-sms');
 
                 if (is_main_site()) {
                     $args['install_addon_btn_txt']  = esc_html__('Install Add-On', 'wp-sms');
@@ -181,7 +181,16 @@ class TabsView extends BaseTabView
             View::load("pages/license-manager/$currentTab", $args);
             AdminHelper::getTemplate(['layout/postbox.hide', 'layout/footer'], $args);
         } catch (Exception $e) {
-            Notice::renderNotice($e->getMessage(), $e->getCode(), 'error');
+            $noticeManager = NoticeManager::getInstance();
+
+            $noticeManager->registerNotice(
+                'wp_sms_license_manager_exception',
+                $e->getMessage(),
+                false,
+                false
+            );
+
+            $noticeManager->displayStaticNotices();
         }
     }
 }
