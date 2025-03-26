@@ -747,7 +747,6 @@ class Gateway
             'india'                => array(
                 'tubelightcommunications' => 'tubelightcommunications.com',
                 'shreesms'                => 'shreesms.net',
-                'ozonesmsworld'           => 'ozonesmsworld.com',
                 'smsgatewayhub'           => 'smsgatewayhub.com',
                 'smsgatewaycenter'        => 'smsgatewaycenter.com',
                 'pridesms'                => 'pridesms.in',
@@ -902,7 +901,6 @@ class Gateway
             ),
             'cyprus'               => array(
                 'websmscy' => 'websms.com.cy',
-                'smsnetgr' => 'sms.net.gr',
             ),
             'ukraine'              => array(
                 'smsc' => 'smsc.ua',
