@@ -37,7 +37,7 @@
   text-align: center;
   letter-spacing: 0.02em;
   margin-top: 0;
-  margin-bottom: 12px;
+  margin-bottom: 32px;
 
   @media screen and (max-width: 990px) {
     font-size:18px;
@@ -50,6 +50,7 @@
   line-height: 24px;
   color:#5B5856;
   font-weight: 500;
+  margin: 24px 0;
   b{
     display: block;
     font-weight: 600;
@@ -65,7 +66,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   width: 75%;
-  margin: 32px auto 0;
+  margin: 0 auto;
 
   @media screen and (max-width: 990px) {
     width: 70%;
@@ -111,7 +112,7 @@
 
 .promotion-modal__actions {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 13px;
 
   a.button-primary{
     background: #C24225;
