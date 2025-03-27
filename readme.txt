@@ -179,7 +179,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
 - **Enhancement**: Updated integration with the MatinSMS gateway.
 - **Fix**: Expanded support for a wider range of CSV MIME types for the subscriber import process.
-- **Fix**: Removed inactive gateways and deleted their associated class files.
+- **Fix**: Removed inactivated gateways.
 
 = v6.9.11 - 2025-02-25 =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
