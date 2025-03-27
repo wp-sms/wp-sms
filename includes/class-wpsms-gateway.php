@@ -742,11 +742,11 @@ class Gateway
             'india'                => array(
                 'tubelightcommunications' => 'tubelightcommunications.com',
                 'shreesms'                => 'shreesms.net',
-                'ozonesmsworld'           => 'ozonesmsworld.com',
                 'smsgatewayhub'           => 'smsgatewayhub.com',
                 'smsgatewaycenter'        => 'smsgatewaycenter.com',
                 'tripadasmsbox'           => 'tripadasmsbox.com',
                 'callifony'               => 'callifony.com',
+                'smsozone'                => 'ozonesms.com',
                 'fast2sms'                => 'fast2sms.com'
             ),
             'iran'                 => array(
@@ -889,7 +889,6 @@ class Gateway
             ),
             'cyprus'               => array(
                 'websmscy' => 'websms.com.cy',
-                'smsnetgr' => 'sms.net.gr',
             ),
             'ukraine'              => array(
                 'smsc' => 'smsc.ua',
@@ -898,7 +897,6 @@ class Gateway
                 'eazismspro' => 'eazismspro.com',
             ),
             'greece'               => array(
-                'smsnetgr' => 'sms.net.gr',
                 'liveall'  => 'liveall.eu',
             ),
             'malaysia'             => array(
