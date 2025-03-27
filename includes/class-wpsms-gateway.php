@@ -746,6 +746,7 @@ class Gateway
                 'smsgatewaycenter'        => 'smsgatewaycenter.com',
                 'tripadasmsbox'           => 'tripadasmsbox.com',
                 'callifony'               => 'callifony.com',
+                'smsozone'                => 'ozonesms.com',
                 'fast2sms'                => 'fast2sms.com'
             ),
             'iran'                 => array(
