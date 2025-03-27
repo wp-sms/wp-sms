@@ -25,7 +25,8 @@ class RemoteRequest
 
         $this->parsedParams = wp_parse_args($params, [
             'timeout' => 10,
-            'headers' => array()
+            'headers' => array(),
+            'method'  => strtoupper($method)
         ]);
 
         $this->method = strtoupper($method);
@@ -47,20 +48,7 @@ class RemoteRequest
      */
     public function execute($throwFailedHttpCodeResponse = true)
     {
-        $response = null;
-
-        switch ($this->method) {
-            case 'GET':
-                $response = wp_remote_get($this->requestUrl, $this->parsedParams);
-                break;
-
-            case 'POST':
-                $response = wp_remote_post($this->requestUrl, $this->parsedParams);
-                break;
-
-            default:
-                throw new Exception(esc_html(sprintf(__('Unsupported HTTP method: %s', 'wp-sms'), $this->method)));
-        }
+        $response = wp_remote_request($this->requestUrl, $this->parsedParams);
 
         if (is_wp_error($response)) {
             throw new Exception(esc_html($response->get_error_message()));
