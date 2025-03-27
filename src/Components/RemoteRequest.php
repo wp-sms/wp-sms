@@ -18,11 +18,6 @@ class RemoteRequest
 
         $params = apply_filters('wp_sms_request_params', $params);
 
-        if (defined('WP_SMS_API_USERNAME') && defined('WP_SMS_API_PASSWORD')) {
-            $basic_auth                         = 'Basic ' . base64_encode(WP_SMS_API_USERNAME . ':' . WP_SMS_API_PASSWORD);
-            $params['headers']['Authorization'] = $basic_auth;
-        }
-
         $this->parsedParams = wp_parse_args($params, [
             'timeout' => 10,
             'headers' => array(),
