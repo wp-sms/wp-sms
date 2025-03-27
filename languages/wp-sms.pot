@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP SMS 6.9.11\n"
+"Project-Id-Version: WP SMS 6.9.12\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-02-24T06:29:57+00:00\n"
+"POT-Creation-Date: 2025-03-27T12:55:04+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wp-sms\n"
@@ -45,7 +45,7 @@ msgstr ""
 #: includes/admin/add-ons/class-add-ons.php:67
 #: includes/admin/settings/class-wpsms-settings.php:2311
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:981
+#: includes/class-wpsms-gateway.php:966
 #: includes/templates/admin/subscriber-form.php:57
 #: includes/templates/admin/subscriber-form.php:60
 #: includes/templates/email/partials/report-data.php:73
@@ -54,8 +54,8 @@ msgstr ""
 
 #: includes/admin/add-ons/class-add-ons.php:70
 #: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
-#: includes/class-wpsms-gateway.php:969
-#: includes/class-wpsms-gateway.php:988
+#: includes/class-wpsms-gateway.php:954
+#: includes/class-wpsms-gateway.php:973
 msgid "Inactive"
 msgstr ""
 
@@ -98,7 +98,8 @@ msgstr ""
 #: includes/admin/class-wpsms-admin.php:213
 #: includes/admin/class-wpsms-admin.php:246
 #: includes/class-front.php:80
-#: includes/class-wpsms-gateway.php:474
+#: includes/class-wpsms-gateway.php:469
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:46
 #: includes/templates/admin/fields/field-team-member-repeater.php:41
 #: includes/templates/admin/fields/field-team-member-repeater.php:85
 #: includes/templates/admin/user-profile-fields.php:1
@@ -242,7 +243,7 @@ msgid "WP SMS Pro v%s"
 msgstr ""
 
 #: includes/admin/class-wpsms-version.php:153
-#: includes/class-wpsms-gateway.php:621
+#: includes/class-wpsms-gateway.php:616
 msgid "Please select your gateway"
 msgstr ""
 
@@ -2134,50 +2135,50 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:472
+#: includes/class-wpsms-gateway.php:467
 msgid "Credit"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:935
+#: includes/class-wpsms-gateway.php:920
 msgid "Custom Gateway"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:940
+#: includes/class-wpsms-gateway.php:925
 msgid "Test Gateway"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:1013
+#: includes/class-wpsms-gateway.php:998
 msgid "%1$s <a href=\"%2$s\" target=\"_blank\">Documentation</a>"
 msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
-#: includes/class-wpsms-gateway.php:1013
+#: includes/class-wpsms-gateway.php:998
 msgid "N/A"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1039
-#: includes/class-wpsms-gateway.php:1061
-#: includes/class-wpsms-gateway.php:1081
+#: includes/class-wpsms-gateway.php:1024
+#: includes/class-wpsms-gateway.php:1046
+#: includes/class-wpsms-gateway.php:1066
 msgid "Available"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1045
-#: includes/class-wpsms-gateway.php:1067
-#: includes/class-wpsms-gateway.php:1087
+#: includes/class-wpsms-gateway.php:1030
+#: includes/class-wpsms-gateway.php:1052
+#: includes/class-wpsms-gateway.php:1072
 msgid "Not Available"
 msgstr ""
 
 #. translators: %s: Site name
-#: includes/class-wpsms-gateway.php:1496
+#: includes/class-wpsms-gateway.php:1481
 msgid "%s - SMS Sending Alert"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1504
+#: includes/class-wpsms-gateway.php:1489
 msgid "SMS Delivery Issue"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1508
+#: includes/class-wpsms-gateway.php:1493
 msgid "Check SMS gateway configuration"
 msgstr ""
 
@@ -2260,7 +2261,6 @@ msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-abrestan.php:106
 #: includes/gateways/class-wpsms-gateway-afilnet.php:115
-#: includes/gateways/class-wpsms-gateway-alchemymarketinggm.php:128
 #: includes/gateways/class-wpsms-gateway-aradsms.php:100
 #: includes/gateways/class-wpsms-gateway-arkapayamak.php:108
 #: includes/gateways/class-wpsms-gateway-aruba.php:108
@@ -2287,7 +2287,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-hisms.php:103
 #: includes/gateways/class-wpsms-gateway-idehpayam.php:104
 #: includes/gateways/class-wpsms-gateway-imencms.php:99
-#: includes/gateways/class-wpsms-gateway-infodomain.php:148
 #: includes/gateways/class-wpsms-gateway-instantalerts.php:96
 #: includes/gateways/class-wpsms-gateway-iransms.php:87
 #: includes/gateways/class-wpsms-gateway-iranspk.php:102
@@ -2323,7 +2322,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-rayansmspanel.php:102
 #: includes/gateways/class-wpsms-gateway-raygansms.php:112
 #: includes/gateways/class-wpsms-gateway-razpayamak.php:101
-#: includes/gateways/class-wpsms-gateway-resalaty.php:98
 #: includes/gateways/class-wpsms-gateway-sabasms.php:106
 #: includes/gateways/class-wpsms-gateway-sarinapayamak.php:108
 #: includes/gateways/class-wpsms-gateway-smsarak.php:91
@@ -2334,7 +2332,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-smshooshmand.php:105
 #: includes/gateways/class-wpsms-gateway-smsmart.php:103
 #: includes/gateways/class-wpsms-gateway-smsmelli.php:97
-#: includes/gateways/class-wpsms-gateway-smsnation.php:116
 #: includes/gateways/class-wpsms-gateway-smsroo.php:102
 #: includes/gateways/class-wpsms-gateway-smss.php:109
 #: includes/gateways/class-wpsms-gateway-smssolutions.php:134
@@ -2379,10 +2376,8 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-irsmsland.php:90
 #: includes/gateways/class-wpsms-gateway-jahanpayamak.php:113
 #: includes/gateways/class-wpsms-gateway-jawalbsms.php:108
-#: includes/gateways/class-wpsms-gateway-matinsms.php:92
 #: includes/gateways/class-wpsms-gateway-melipayamak.php:140
 #: includes/gateways/class-wpsms-gateway-modiranweb.php:93
-#: includes/gateways/class-wpsms-gateway-msgwow.php:120
 #: includes/gateways/class-wpsms-gateway-niazpardaz.php:102
 #: includes/gateways/class-wpsms-gateway-niazpardazcom.php:98
 #: includes/gateways/class-wpsms-gateway-novin1sms.php:96
@@ -2395,7 +2390,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-pegahpayamak.php:102
 #: includes/gateways/class-wpsms-gateway-persiansms.php:103
 #: includes/gateways/class-wpsms-gateway-postgah.php:101
-#: includes/gateways/class-wpsms-gateway-pridesms.php:109
 #: includes/gateways/class-wpsms-gateway-reachinteractive.php:167
 #: includes/gateways/class-wpsms-gateway-sadat24.php:105
 #: includes/gateways/class-wpsms-gateway-safasms.php:127
@@ -2455,7 +2449,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-labsmobile.php:119
 #: includes/gateways/class-wpsms-gateway-loginpanel.php:107
 #: includes/gateways/class-wpsms-gateway-markazpayamak.php:106
-#: includes/gateways/class-wpsms-gateway-matinsms.php:96
 #: includes/gateways/class-wpsms-gateway-mediana.php:23
 #: includes/gateways/class-wpsms-gateway-melipayamak.php:144
 #: includes/gateways/class-wpsms-gateway-modiranweb.php:97
@@ -2512,8 +2505,6 @@ msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-afilnet.php:129
 #: includes/gateways/class-wpsms-gateway-mobtexting.php:138
-#: includes/gateways/class-wpsms-gateway-msgwow.php:134
-#: includes/gateways/class-wpsms-gateway-smsnation.php:128
 msgid "Server API Unavailable"
 msgstr ""
 
@@ -2542,7 +2533,6 @@ msgid "The Username/Password for this gateway is not set"
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-cpsms.php:112
-#: includes/gateways/class-wpsms-gateway-ozonesmsworld.php:99
 #: includes/gateways/class-wpsms-gateway-suresms.php:101
 #: includes/gateways/class-wpsms-gateway-verimor.php:102
 msgid "The Username/API Key for this gateway is not set"
@@ -2615,6 +2605,7 @@ msgid "For <b>DLT</b> messages, send variables and message id in this format: <b
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-fast2sms.php:31
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:43
 msgid "Route"
 msgstr ""
 
@@ -2661,10 +2652,6 @@ msgstr ""
 msgid "Token is not entered."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-infodomain.php:157
-msgid "Username/Password is not valid."
-msgstr ""
-
 #: includes/gateways/class-wpsms-gateway-liveall.php:123
 msgid "The API Token for this gateway is not set."
 msgstr ""
@@ -2681,7 +2668,6 @@ msgstr ""
 #: includes/gateways/class-wpsms-gateway-primotexto.php:150
 #: includes/gateways/class-wpsms-gateway-sabanovin.php:109
 #: includes/gateways/class-wpsms-gateway-smsbox.php:149
-#: includes/gateways/class-wpsms-gateway-smsnetgr.php:117
 msgid "The API Key for this gateway is not set"
 msgstr ""
 
@@ -2821,8 +2807,18 @@ msgstr ""
 msgid "Invalid get token response "
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:33
-msgid "For send messages, send variables and message id in this format: <b>message|template_id</b>"
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:24
+msgid "<b>SMS Route</b>: Please follow this format in your messages: <pre>message|template_id</pre><br><b>WhatsApp Route</b>: Please follow this format in your messages: <pre>var1:var2:var3:var4|template_name</pre>"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:47
+#: includes/templates/admin/fields/field-team-member-repeater.php:37
+#: includes/templates/admin/fields/field-team-member-repeater.php:81
+msgid "WhatsApp"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:49
+msgid "Please select the route."
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-uwaziimobile.php:125
@@ -3048,11 +3044,6 @@ msgstr ""
 #: includes/templates/admin/fields/field-team-member-repeater.php:36
 #: includes/templates/admin/fields/field-team-member-repeater.php:80
 msgid "Contact Type"
-msgstr ""
-
-#: includes/templates/admin/fields/field-team-member-repeater.php:37
-#: includes/templates/admin/fields/field-team-member-repeater.php:81
-msgid "WhatsApp"
 msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:38
@@ -3967,19 +3958,19 @@ msgstr ""
 msgid "The CSV file generated successfully!"
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:27
+#: src/Controller/UploadSubscriberCsv.php:31
 msgid "Choose a *.csv file, first."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:32
+#: src/Controller/UploadSubscriberCsv.php:36
 msgid "Only *.csv files are allowed."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:39
+#: src/Controller/UploadSubscriberCsv.php:43
 msgid "The uploaded file doesn't contain any data."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:81
+#: src/Controller/UploadSubscriberCsv.php:85
 msgid "File uploaded successfully."
 msgstr ""
 

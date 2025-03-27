@@ -1,4 +1,4 @@
-v6.9.12 - 2025-03-26
+v6.9.12 - 2025-03-27
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
 - **Enhancement**: Updated integration with the MatinSMS gateway.

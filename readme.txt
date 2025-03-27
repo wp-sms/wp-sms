@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.11
+Stable tag: 6.9.12
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -174,6 +174,13 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v6.9.12 - 2025-03-27 =
+- **New**: Added WhatsApp support for the Tubelight gateway.
+- **Enhancement**: Upgraded to the latest version of the Tubelight API.
+- **Enhancement**: Updated integration with the MatinSMS gateway.
+- **Fix**: Expanded support for a wider range of CSV MIME types for the subscriber import process.
+- **Fix**: Removed inactive gateways and deleted their associated class files.
+
 = v6.9.11 - 2025-02-25 =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
 - **Fix**: Resolved issue with rendering new lines in the Outbox.
