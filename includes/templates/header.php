@@ -1,4 +1,8 @@
-<?php $option = get_option('wpsms_settings');
+<?php
+
+use WP_SMS\Admin\ModalHandler\Modal;
+
+$option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
 $tab_url = add_query_arg(array(
     'settings-updated' => false,
@@ -20,6 +24,7 @@ foreach ($addons as $option_key => $status) {
         $addons[$option_key] = true;
     }
 }
+
 ?>
 <div class="wpsms-header-banner" style="<?php echo isset($full_width_banner) && $full_width_banner ? 'margin-left: -20px; width: auto; max-width: none;' : ''; ?>">
     <div class="wpsms-header-logo"></div>
@@ -66,3 +71,5 @@ foreach ($addons as $option_key => $status) {
         </div>
     </div>
 </div>
+
+<?php Modal::render('all-in-one'); ?>
