@@ -124,6 +124,11 @@ class Notifications
             add_action('add_meta_boxes', [$this, 'notification_meta_box']);
             add_action('wp_insert_post', [$this, 'notify_subscribers_for_published_post'], 10, 3);
             add_action('future_to_publish', [$this, 'handle_scheduled_post_published'], 10, 1);
+            add_action('transition_post_status', function ($new, $old, $post) {
+                if ($new === 'draft') {
+                    delete_post_meta($post->ID, '_wpsms_notification_sent');
+                }
+            }, 10, 3);
         }
     }
 
@@ -264,40 +269,50 @@ class Notifications
      */
     public function notify_subscribers_for_published_post($postID, $post, $update)
     {
-        // Early return if post status is not 'publish' or 'future'
+        // Only proceed for 'publish' or 'future' status
         if (!in_array($post->post_status, ['publish', 'future'])) {
             return;
         }
 
-        // Early return if post type is not in specified post types
+        // Check if post type is allowed
         $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
         if (!in_array($post->post_type, $specified_post_types)) {
             return;
         }
-
-        // Early return if required request parameters are not set
+        // Validate required request params
         if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
             return;
         }
 
-        // Sanitize and prepare recipients and message
         $recipients = sanitize_text_field($_REQUEST['wps_send_to']);
         $message    = sanitize_text_field($_REQUEST['wpsms_text_template']);
-        $receiver   = [];
 
-        // Handle future posts
+        // If post is scheduled (future), handle differently
         if ($post->post_status === 'future') {
             $this->handleFuturePost($postID, $recipients, $message);
             return;
         }
 
-        // Determine receivers based on recipient type
+        if (get_post_meta($postID, '_wpsms_notification_sent', true)) {
+            return;
+        }
+
+
+        // Only send if publish date is now or future
+        $post_time    = strtotime($post->post_date);
+        $current_time = current_time('timestamp');
+        if ($post_time > $current_time) {
+            return;
+        }
+
         $receiver = $this->getReceivers($recipients);
 
-        // Send notification if receivers and message are valid
         if (!empty($receiver) && $message) {
             $notification = NotificationFactory::getPost($postID);
             $notification->send($message, $receiver);
+
+            // Mark as sent
+            update_post_meta($postID, '_wpsms_notification_sent', true);
         }
     }
 
