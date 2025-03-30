@@ -29,6 +29,9 @@ class WizardManager
             return;
         }
 
+        // If we're in onboarding, mark the notice as dismissed
+        $this->dismissActivationNotice();
+
         $this->setCurrent();
         $this->enforceURL();
         add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
@@ -68,15 +71,18 @@ class WizardManager
             false,
             false
         );
+    }
 
+    private function dismissActivationNotice()
+    {
+        $notice_option_name = 'wp_sms_' . $this->slug . '_activation_notice_shown';
         update_option($notice_option_name, true);
     }
 
     public function handleNoticeDismissal()
     {
         if (isset($_GET['wpsms_dismiss_activation_notice'])) {
-            $notice_option_name = 'wp_sms_' . $this->slug . '_activation_notice_shown';
-            update_option($notice_option_name, true);
+            $this->dismissActivationNotice();
             wp_redirect(remove_query_arg('wpsms_dismiss_activation_notice'));
             exit;
         }
