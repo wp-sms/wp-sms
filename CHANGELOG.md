@@ -1,4 +1,5 @@
 v6.9.12 - 2025-03-27
+- **Fix**: Resolved welcome message not being sent to new subscribers.
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
 - **Enhancement**: Updated integration with the MatinSMS gateway.
