@@ -15,6 +15,9 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         'mobile',
     ];
 
+    /**
+     * @throws Exception
+     */
     protected function run()
     {
         $name           = $this->get('name');
@@ -22,30 +25,38 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         $group_id       = $this->get('group_id', 0);
         $groups_enabled = Option::getOption('newsletter_form_groups');
 
-        if ($groups_enabled && !$group_id) {
-            throw new Exception(esc_html__('Please select a group to unsubscribe from.', 'wp-sms'));
-        }
-
         if (!Newsletter::getSubscriberByMobile($number)) {
             throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
-        if ($groups_enabled) {
-            if (!Newsletter::subscriberExistsInGroup($number, $group_id)) {
+        if ($groups_enabled && !empty(array_filter($groupIds))) {
+            $subscriberGroups = Newsletter::getSubscriberGroupsByNumber($number);
+
+            if (empty($subscriberGroups)) {
+                $groupIds = array();
+            } else if (!Newsletter::subscriberExistsInGroup($number, $group_id)) {
                 throw new Exception(esc_html__('This mobile number is not subscribed to the selected group(s).', 'wp-sms'));
             }
         }
 
-        foreach ($groupIds as $groupId) {
-            $result = SubscriberUtil::unSubscribe($name, $number, $groupId);
+        if (!empty($groupIds)) {
+            foreach ($groupIds as $groupId) {
+                $result = SubscriberUtil::unSubscribe($name, $number, $groupId);
+
+                if (is_wp_error($result)) {
+                    throw new Exception($result->get_error_message());
+                }
+            }
+        } else {
+            $result = SubscriberUtil::unSubscribe($name, $number);
 
             if (is_wp_error($result)) {
                 throw new Exception($result->get_error_message());
             }
         }
 
-        return wp_send_json_success(esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'));
+        wp_send_json_success(esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'));
     }
 }

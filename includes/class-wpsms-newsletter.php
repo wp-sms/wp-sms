@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_Error;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -208,7 +210,7 @@ class Newsletter
                 $result = Newsletter::deleteSubscriberByNumber($mobile, $row->group_ID);
                 // Check result
                 if ($result['result'] == 'error') {
-                    return new \WP_Error('clear inactive subscribes', $result['message']);
+                    return new WP_Error('clear inactive subscribes', $result['message']);
                 }
             }
         }
@@ -667,7 +669,7 @@ class Newsletter
             $group_ids = json_decode($group_id, true);
 
             if (json_last_error() !== JSON_ERROR_NONE || !is_array($group_ids)) {
-                return new \WP_Error('invalid_group_id', esc_html__('Invalid group_id format!', 'wp-sms'));
+                return new WP_Error('invalid_group_id', esc_html__('Invalid group_id format!', 'wp-sms'));
             }
         } else {
             $group_ids = [null];
@@ -722,6 +724,56 @@ class Newsletter
         $count        = $wpdb->get_var($prepared_sql);
 
         return $count > 0;
+    }
+
+    /**
+     * Get subscriber groups by mobile number
+     *
+     * @param string $mobile The mobile number to search for
+     * @param bool $only_active Whether to include only active subscribers. Default false.
+     * @return WP_Error Array of group information (empty if no groups found) or WP_Error on failure
+     */
+    public static function getSubscriberGroupsByNumber($mobile, $only_active = false)
+    {
+        global $wpdb;
+
+        $mobile_variations = Helper::prepareMobileNumberQuery($mobile);
+        if (empty($mobile_variations)) {
+            return new WP_Error('invalid_mobile', esc_html__('Invalid mobile number format!', 'wp-sms'));
+        }
+
+        $mobile_placeholders = implode(', ', array_fill(0, count($mobile_variations), '%s'));
+        $sql                 = "SELECT s.group_ID, g.name 
+            FROM {$wpdb->prefix}sms_subscribes s
+            LEFT JOIN {$wpdb->prefix}sms_subscribes_group g ON s.group_ID = g.ID
+            WHERE s.mobile IN ($mobile_placeholders)";
+
+        if ($only_active) {
+            $sql .= " AND s.status = %d";
+        }
+
+        $params = $mobile_variations;
+        if ($only_active) {
+            $params[] = 1;
+        }
+
+        $prepared_sql = $wpdb->prepare($sql, $params);
+        $results      = $wpdb->get_results($prepared_sql);
+
+        $groups = [];
+
+        if ($results) {
+            foreach ($results as $row) {
+                if ($row->group_ID) {
+                    $groups[] = [
+                        'group_id'   => $row->group_ID,
+                        'group_name' => $row->name ?: __('No Group', 'wp-sms')
+                    ];
+                }
+            }
+        }
+
+        return $groups;
     }
 
 }
