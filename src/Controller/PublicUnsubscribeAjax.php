@@ -23,18 +23,18 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         $groups_enabled = Option::getOption('newsletter_form_groups');
 
         if ($groups_enabled && !$group_id) {
-            throw new Exception(esc_html__('Please select a specific group.', 'wp-sms'));
+            throw new Exception(esc_html__('Please select a group to unsubscribe from.', 'wp-sms'));
         }
 
         if (!Newsletter::getSubscriberByMobile($number)) {
-            throw new Exception(esc_html__('The mobile number does not exist!', 'wp-sms'));
+            throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
 
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
         if ($groups_enabled) {
             if (!Newsletter::subscriberExistsInGroup($number, $group_id)) {
-                throw new Exception(esc_html__('The mobile number does not exist!', 'wp-sms'));
+                throw new Exception(esc_html__('This mobile number is not subscribed to the selected group(s).', 'wp-sms'));
             }
         }
 
@@ -46,6 +46,6 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
             }
         }
 
-        return wp_send_json_success(esc_html__('Your mobile number has been successfully unsubscribed.', 'wp-sms'));
+        return wp_send_json_success(esc_html__('You have successfully unsubscribed from the newsletter.', 'wp-sms'));
     }
 }
