@@ -31,13 +31,14 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
  */
 function _manually_load_plugins()
 {
-    require dirname(__FILE__, 2) . '/wp-sms.php';
     // Table creation on test environment.
-    $network_wide = is_multisite();
-    WP_SMS::get_instance()->activate($network_wide);
+    $network_wide   = is_multisite();
+    $_wordpress_dir = getenv('WP_TESTS_DIR') ?: rtrim(sys_get_temp_dir(), '/\\') . '/wordpress';
 
-    // TODO impossible to call the function activate_plugin and active a plugin, this need to be activated in install-wp-tests.sh which need to be switched to WP-CLI
-    //activate_plugin('woocommerce/woocommerce.php'); // Use relative path to WooCommerce plugin.
+    require $_wordpress_dir . '/wp-content/plugins/woocommerce/woocommerce.php';
+    require dirname(__FILE__, 2) . '/wp-sms.php';
+
+    WP_SMS::get_instance()->activate($network_wide);
 }
 
 // Hook to load the plugins.

@@ -1,3 +1,11 @@
+v6.9.12 - 2025-03-27
+- **Fix**: Resolved welcome message not being sent to new subscribers.
+- **New**: Added WhatsApp support for the Tubelight gateway.
+- **Enhancement**: Upgraded to the latest version of the Tubelight API.
+- **Enhancement**: Updated integration with the MatinSMS gateway.
+- **Fix**: Expanded support for a wider range of CSV MIME types for the subscriber import process.
+- **Fix**: Removed inactive gateways and deleted their associated class files.
+
 v6.9.11 - 2025-02-25
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
 - **Fix**: Resolved issue with rendering new lines in the Outbox.
