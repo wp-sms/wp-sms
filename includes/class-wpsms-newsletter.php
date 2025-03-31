@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_Error;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -185,6 +187,7 @@ class Newsletter
         $placeholders = implode(', ', $metaValue);
         $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
+
         $result = $wpdb->get_row($sql);
 
         if ($result) {
@@ -207,7 +210,7 @@ class Newsletter
                 $result = Newsletter::deleteSubscriberByNumber($mobile, $row->group_ID);
                 // Check result
                 if ($result['result'] == 'error') {
-                    return new \WP_Error('clear inactive subscribes', $result['message']);
+                    return new WP_Error('clear inactive subscribes', $result['message']);
                 }
             }
         }
@@ -225,29 +228,43 @@ class Newsletter
     {
         global $wpdb;
 
-        $where['mobile'] = $mobile;
-
-        if ($group_id) {
-            $where['group_id'] = $group_id;
+        if (empty($mobile)) {
+            return ['result' => 'error', 'message' => esc_html__('Mobile number is required!', 'wp-sms')];
         }
 
-        $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
-
-        if (!$result) {
-            return array('result' => 'error', 'message' => esc_html__('The mobile number does not exist!', 'wp-sms'));
+        // Process group_id
+        $group_ids = self::processGroupId($group_id);
+        if (is_wp_error($group_ids)) {
+            return ['result' => 'error', 'message' => $group_ids->get_error_message()];
         }
 
+        $where   = ['mobile' => $mobile];
+        $success = false;
+
+        foreach ($group_ids as $group_id) {
+            if (!empty($group_id)) {
+                $where['group_id'] = $group_id;
+            }
+
+            $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
+
+            if ($result !== false) {
+                $success = true; // At least one deletion was successful
+            }
+        }
+        // Handle deletion result
+        if (!$success) {
+            return ['result' => 'error', 'message' => esc_html__('The mobile number does not exist in the specified group(s)!', 'wp-sms')];
+        }
         /**
-         * Run hook after deleting subscribe.
+         * Run hook after deleting subscriber.
          *
-         * @param string $result result query.
-         *
+         * @param bool $result Whether the deletion was successful.
          * @since 3.0
-         *
          */
-        do_action('wp_sms_delete_subscriber', $result);
+        do_action('wp_sms_delete_subscriber', $success);
 
-        return array('result' => 'success', 'message' => esc_html__('Successfully canceled the subscription!', 'wp-sms'));
+        return ['result' => 'success', 'message' => esc_html__('Successfully canceled the subscription!', 'wp-sms')];
     }
 
 
@@ -637,6 +654,128 @@ class Newsletter
 
         return $result;
     }
+
+    /**
+     * Process the group_id parameter.
+     *
+     * @param mixed $group_id The group_id to process.
+     *
+     * @return array|WP_Error Returns an array of group IDs or an error if the group_id is invalid.
+     */
+    protected static function processGroupId($group_id)
+    {
+        if (!empty($group_id)) {
+            $group_id  = str_replace('\\', '', $group_id); // Remove backslashes
+            $group_ids = json_decode($group_id, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($group_ids)) {
+                return new WP_Error('invalid_group_id', esc_html__('Invalid group_id format!', 'wp-sms'));
+            }
+        } else {
+            $group_ids = [null];
+        }
+
+        return $group_ids;
+    }
+
+
+    /**
+     * Check if a subscriber exists in a specific group.
+     *
+     * @param string $mobile The mobile number to check.
+     * @param int $group_id The group ID to check against.
+     * @param bool $only_active Whether to check only active subscribers. Default false.
+     *
+     * @return bool True if the subscriber exists in the group, false otherwise.
+     */
+    public static function subscriberExistsInGroup($mobile, $group_id, $only_active = false)
+    {
+        global $wpdb;
+
+        // Process group_id
+        $group_ids = self::processGroupId($group_id);
+        if (is_wp_error($group_ids)) {
+            return false; // Or handle the error as needed
+        }
+
+        $mobile_variations = Helper::prepareMobileNumberQuery($mobile);
+        if (empty($mobile_variations)) {
+            return false;
+        }
+
+        // Construct the query with placeholders
+        $mobile_placeholders = implode(', ', array_fill(0, count($mobile_variations), '%s'));
+        $group_placeholders  = implode(', ', array_fill(0, count($group_ids), '%d'));
+
+        $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes WHERE mobile IN ($mobile_placeholders) AND group_ID IN ($group_placeholders)";
+
+        // Add active status condition if needed
+        if ($only_active) {
+            $sql .= " AND status = %d";
+        }
+
+        // Prepare and execute the query
+        $params = array_merge($mobile_variations, $group_ids);
+        if ($only_active) {
+            $params[] = 1;
+        }
+
+        $prepared_sql = $wpdb->prepare($sql, $params);
+        $count        = $wpdb->get_var($prepared_sql);
+
+        return $count > 0;
+    }
+
+    /**
+     * Get subscriber groups by mobile number
+     *
+     * @param string $mobile The mobile number to search for
+     * @param bool $only_active Whether to include only active subscribers. Default false.
+     * @return WP_Error Array of group information (empty if no groups found) or WP_Error on failure
+     */
+    public static function getSubscriberGroupsByNumber($mobile, $only_active = false)
+    {
+        global $wpdb;
+
+        $mobile_variations = Helper::prepareMobileNumberQuery($mobile);
+        if (empty($mobile_variations)) {
+            return new WP_Error('invalid_mobile', esc_html__('Invalid mobile number format!', 'wp-sms'));
+        }
+
+        $mobile_placeholders = implode(', ', array_fill(0, count($mobile_variations), '%s'));
+        $sql                 = "SELECT s.group_ID, g.name 
+            FROM {$wpdb->prefix}sms_subscribes s
+            LEFT JOIN {$wpdb->prefix}sms_subscribes_group g ON s.group_ID = g.ID
+            WHERE s.mobile IN ($mobile_placeholders)";
+
+        if ($only_active) {
+            $sql .= " AND s.status = %d";
+        }
+
+        $params = $mobile_variations;
+        if ($only_active) {
+            $params[] = 1;
+        }
+
+        $prepared_sql = $wpdb->prepare($sql, $params);
+        $results      = $wpdb->get_results($prepared_sql);
+
+        $groups = [];
+
+        if ($results) {
+            foreach ($results as $row) {
+                if ($row->group_ID) {
+                    $groups[] = [
+                        'group_id'   => $row->group_ID,
+                        'group_name' => $row->name ?: __('No Group', 'wp-sms')
+                    ];
+                }
+            }
+        }
+
+        return $groups;
+    }
+
 }
 
 new Newsletter();
