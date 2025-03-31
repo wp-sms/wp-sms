@@ -103,13 +103,20 @@
   }
   &:focus , &:active{
     outline: none;
-    color: $primary-orange;
     box-shadow: none;
   }
 }
 
 .c-proplan__features {
-  gap: 24px;
+  gap: 8px;
   flex-wrap: wrap;
-  padding: 24px 0;
+
+  &__title{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    color: $black-color;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
 }

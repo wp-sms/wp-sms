@@ -2,19 +2,31 @@
 
   border-radius: 4px;
   border: 1px solid $grey-color-5;
-  padding: 12px 16px;
   box-sizing: border-box;
   position: relative;
   width: calc(100% - 11px);
   margin: 0 auto;
+  padding: 12px 16px 36px;
   @include mq(tablet) {
     width: calc(100% / 3 - 11px);
   }
 
   &.c-readycard__half{
+    padding: 12px 16px 27px;
     @include mq(tablet) {
       width: calc(100% / 2 - 11px);
     }
+
+    .c-readycard__desc{
+      min-height: 30px;
+    }
+  }
+
+  .u-flex.u-align-center {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
   }
 
   svg {
@@ -24,7 +36,10 @@
 
   .c-btn {
     display: flex;
-    position: relative;
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
     color: $primary-orange;
     justify-content: flex-start;
     font-size: 13px;
@@ -94,6 +109,8 @@ a.c-readycard__title{
   line-height: 15.23px;
   color: #5F5F5F;
 }
+
+
 
 .c-readycard__badge {
   background: #FFF8F6;

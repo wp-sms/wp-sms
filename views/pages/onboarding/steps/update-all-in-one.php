@@ -2,16 +2,8 @@
     <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Level Up Your WP SMS Experience', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php
-        echo sprintf(
-            __('%1$s <b>%2$s</b>. %3$s!', 'wp-sms'),
-            esc_html__('You already enjoy WP SMS free—now unlock its full potential with', 'wp-sms'),
-            esc_html__('WP SMS All‑in‑One', 'wp-sms'),
-            esc_html__('Get every premium add‑on, expanded gateway support, advanced WooCommerce notifications, membership integrations, and much more in a single plan.', 'wp-sms')
-        );
-        ?>
-        <?php esc_html_e("Send a test SMS to the administrator's phone number to confirm everything is working as it should.", 'wp-sms'); ?>
-    </p>
+        <?php esc_html_e("You already enjoy WP SMS free—now unlock its full potential with WP SMS All‑in‑One. Get every premium add‑on, expanded gateway support, advanced WooCommerce notifications, membership integrations, and much more in a single plan.", 'wp-sms'); ?>
+     </p>
 </div>
 <div class="c-form u-flex u-content-center u-align-center u-flex--column">
     <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
@@ -34,6 +26,7 @@
                     </div>
                 </div>
                 <div class="c-proplan__features u-flex u-content-sp u-align-stretch">
+                    <p class="c-proplan__features__title"><?php esc_html_e('What You’ll Unlock:', 'wp-sms'); ?></p>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
                         <svg fill="none" height="16" width="16" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.333 2.167h13.334V.5H1.333v1.667ZM14.667 5.5H1.333V3.833h13.334V5.5ZM.5 7.167h5.833v1.666h3.334V7.167H15.5v7.5c0 .46-.373.833-.833.833H1.333a.833.833 0 0 1-.833-.833v-7.5Zm10.833 1.666V10.5H4.667V8.833h-2.5v5h11.666v-5h-2.5Z" fill="#242121"/>

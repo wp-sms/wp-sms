@@ -168,5 +168,12 @@
       }
     }
 
+    &:not(.is-active) {
+      pointer-events: none;
+      a{
+        pointer-events: none;
+      }
+    }
+
   }
 }

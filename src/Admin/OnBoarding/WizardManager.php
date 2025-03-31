@@ -138,7 +138,7 @@ class WizardManager
             'slug'           => $this->slug,
             'is_last'        => $this->isLastStep(),
             'is_first'       => $this->isFirstStep(),
-            'skip_setup_url' => admin_url('?page=wp-sms')
+            'skip_setup_url' => admin_url('admin.php?page=wp-sms')
         );
 
         if (method_exists($this->currentStep, 'extraData')) {

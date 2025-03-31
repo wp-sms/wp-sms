@@ -14,7 +14,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
         <p class="u-text-center">
             <?php esc_html_e('Start sending SMS messages from your WordPress site right away.', 'wp-sms'); ?>
         </p>
-        <a href="<?php echo esc_url(admin_url('/?page=wp-sms')); ?>" title="<?php esc_attr_e('start using WP SMS', 'wp-sms'); ?>" class="c-btn c-btn--primary c-btn--mainready">
+        <a href="<?php echo esc_url(admin_url('/admin.php?page=wp-sms')); ?>" title="<?php esc_attr_e('start using WP SMS', 'wp-sms'); ?>" class="c-btn c-btn--primary c-btn--mainready">
             <?php esc_html_e('Start using WP SMS', 'wp-sms'); ?>
         </a>
     </div>
@@ -61,7 +61,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('WooCommerce', 'wp-sms'); ?>
                 </a>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Turn your site into a functional WordPress e-commerce website with just a few clicks.', 'wp-sms'); ?>
+                    <?php esc_html_e('Boost sales and customer satisfaction with instant order updates, automated cart recovery, SMS login, targeted campaigns, etc.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -91,7 +91,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                 </svg>
                 <h2 class="c-readycard__title"><?php esc_html_e('Ultimate Member', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Sync Mobile number from Ultimate Members mobile number form field.', 'wp-sms'); ?>
+                    <?php esc_html_e('Easily sync mobile numbers from user profiles and send automatic SMS notifications upon membership approval.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -116,7 +116,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                 </svg>
                 <h2 class="c-readycard__title"><?php esc_html_e('BuddyPress', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('build any kind of community website with member profiles, activity streams, and more.', 'wp-sms'); ?>
+                    <?php esc_html_e('Keep your community engaged with SMS notifications for mentions, activity replies, private messages, and comments. Automatically send a welcome SMS to new members using existing profile mobile numbers.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -143,7 +143,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('Contact Form 7', 'wp-sms'); ?>
                 </a>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Send contact data to the Constant Contact API.', 'wp-sms'); ?>
+                    <?php esc_html_e('Get instant SMS alerts when visitors submit forms, and automatically send personalized SMS confirmations.', 'wp-sms'); ?>
                 </p>
             </div>
             <div class="c-readycard c-readycard--integration">
@@ -155,7 +155,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('GravityForms', 'wp-sms'); ?>
                 </h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e("Integrate any form with Agile's Sales and Marketing CRM.", 'wp-sms'); ?>
+                    <?php esc_html_e("Instantly alert admins via SMS upon form submissions and automatically send SMS confirmations to user-selected phone numbers.", 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -181,7 +181,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                 </svg>
                 <h2 class="c-readycard__title"><?php esc_html_e('Quform', 'wp-sms'); ?></h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Create WordPress forms quickly and easily, no coding required.', 'wp-sms'); ?>
+                    <?php esc_html_e('Automatically send SMS alerts to admins when forms are submitted, and instantly notify users via SMS using phone numbers they select.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -210,7 +210,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('Easy Digital Downloads', 'wp-sms'); ?>
                 </h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Selling digital products on the WordPress platform.', 'wp-sms'); ?>
+                    <?php esc_html_e('Add mobile numbers at checkout, instantly notify admins of new orders, and automatically confirm orders with customers via SMS.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -230,7 +230,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('WP Job Manager', 'wp-sms'); ?>
                 </h2>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('Adding job-board like functionality to your WordPress site.', 'wp-sms'); ?>
+                    <?php esc_html_e('Capture employer mobile numbers on job submissions, instantly notify admins of new listings, and automatically text employers when their job posts are approved.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
@@ -249,7 +249,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('Awesome Support', 'wp-sms'); ?>
                 </a>
                 <p class="c-readycard__desc">
-                    <?php esc_html_e('The most versatile and feature-rich support plugin for WordPress.', 'wp-sms'); ?>
+                    <?php esc_html_e('Instantly alert admins via SMS for new tickets and replies, and automatically notify users when their support tickets receive responses.', 'wp-sms'); ?>
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
