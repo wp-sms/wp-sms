@@ -50,20 +50,31 @@ jQuery(document).ready(function ($) {
 
         }
     });
+    if(table){
+        // Handle row selection
+        table.on('click', 'tbody tr:not(.disabled)', function (event) {
+            event.stopPropagation();
+            let radio = $(this).find('input[type="radio"]');
+            if (radio.length) {
+                radio.prop('checked', true).trigger('change');
+            }
+        });
+        $(document).on('change', '.js-table td input[type="radio"]', function (e) {
+            let $this = $(this);
+            table.$('input[type="radio"]').not(this).prop('checked', false);
+            table.$('tr').removeClass('selected-row');
+            $this.closest('tr').addClass('selected-row');
+            $('.c-form__footer input[type="submit"]').val('Continue').prop('disabled', false);
+        });
 
-    // Handle row selection
-    $('.js-table-gateway tbody tr:not(.disabled)').on('click', function (event) {
-        event.stopPropagation();
-        let radio = $(this).find('input[type="radio"]');
-        if (radio.length) {
-            radio.prop('checked', true).trigger('change');
-        }
-    });
+    }
+
 
     // Search functionality
     $('#searchGateway').on('keyup', function () {
-        table.search(this.value).draw();
+        table.column(0).search(this.value).draw();
     });
+
 
     // let chosen_country = $('.chosen-country').val();
     //
@@ -87,12 +98,6 @@ jQuery(document).ready(function ($) {
         if (href) window.location.href = href;
     });
 
-    // Handle step 2 - row selection and button update
-    $('.js-table-gateway td input[type="radio"]').on('change', function () {
-        $('.c-table.js-table tbody tr').removeClass('selected-row');
-        let selectedRow = $(this).closest('tr').addClass('selected-row');
-        $('.c-form__footer input[type="submit"]').val('Continue').prop('disabled', false);
-    });
 
     // Handle Test Connection
     $('#wp_sms_test_connection').on('click', function (e) {

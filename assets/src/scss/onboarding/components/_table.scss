@@ -199,7 +199,9 @@
 }
 
 .dt-paging-button.previous {
-  border-radius: 0 4px 4px 0!important;
+  .rtl &{
+    border-radius: 0 4px 4px 0!important;
+  }
 
   svg{
     .rtl &{
@@ -214,7 +216,9 @@
 }
 
 .dt-paging-button.next {
-  border-radius: 4px 0 0 4px!important;
+  .rtl &{
+    border-radius: 4px 0 0 4px!important;
+  }
 
   svg{
     .rtl &{

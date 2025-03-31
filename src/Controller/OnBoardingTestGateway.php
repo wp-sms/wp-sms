@@ -59,34 +59,34 @@ class OnBoardingTestGateway extends AjaxControllerAbstract
             'status'    => array(
                 'label'       => $is_active ? __('Active', 'wp-sms') : __('Deactivated!', 'wp-sms'),
                 'description' => $is_active
-                    ? __('Your SMS gateway is successfully connected and ready to use.', 'wp-sms')
-                    : __('There is an issue with the SMS gateway connection. Please check your settings.', 'wp-sms'),
+                    ? __('Your SMS gateway is successfully connected and ready to send messages.', 'wp-sms')
+                    : __('There’s an issue connecting to your SMS gateway. Please double-check your credentials and settings.', 'wp-sms'),
                 'class'       => $is_active ? 'c-form__result-status--success' : 'c-form__result-status--danger'
             ),
             'balance'   => array(
                 'label'       => $is_active && $credit !== false ? '$' . number_format((float)$credit, 2) : '-',
-                'description' => __('This is the current credit in your SMS account.', 'wp-sms'),
+                'description' => __('Your current credit or balance in the gateway account.', 'wp-sms'),
                 'class'       => 'c-form__result-status--primary'
             ),
             'incoming'  => array(
                 'label'       => isset($this->sms->supportIncoming) && $this->sms->supportIncoming ? __('Supported', 'wp-sms') : __('Not Supported!', 'wp-sms'),
                 'description' => isset($this->sms->supportIncoming) && $this->sms->supportIncoming
-                    ? __('You can receive SMS messages on your configured number.', 'wp-sms')
-                    : __('Receiving SMS messages is not supported with the current gateway. Choose another gateway for this feature.', 'wp-sms'),
+                    ? __('Your gateway can receive inbound messages on the configured number.', 'wp-sms')
+                    : __('The gateway you’ve selected does not support receiving inbound messages. If you need this feature, pick a different gateway.', 'wp-sms'),
                 'class'       => isset($this->sms->supportIncoming) && $this->sms->supportIncoming ? 'c-form__result-status--success' : 'c-form__result-status--danger'
             ),
             'bulk'      => array(
                 'label'       => isset($this->sms->bulk_send) && $this->sms->bulk_send ? __('Supported', 'wp-sms') : __('Not Supported!', 'wp-sms'),
                 'description' => isset($this->sms->bulk_send) && $this->sms->bulk_send
-                    ? __('You can send bulk SMS messages.', 'wp-sms')
-                    : __('You cannot send bulk SMS messages with the current gateway setup. To enable this feature, please select a gateway that offers bulk messaging.', 'wp-sms'),
+                    ? __('You can send messages to large groups of recipients (mass or marketing campaigns).', 'wp-sms')
+                    : __('Bulk messaging isn’t available with this gateway. Choose a provider that offers mass-sending capabilities if needed.', 'wp-sms'),
                 'class'       => isset($this->sms->bulk_send) && $this->sms->bulk_send ? 'c-form__result-status--success' : 'c-form__result-status--danger'
             ),
             'mms'       => array(
                 'label'       => isset($this->sms->supportMedia) && $this->sms->supportMedia ? __('Supported', 'wp-sms') : __('Not Supported!', 'wp-sms'),
                 'description' => isset($this->sms->supportMedia) && $this->sms->supportMedia
-                    ? __('Multimedia Messaging Service (MMS) is enabled.', 'wp-sms')
-                    : __('Your gateway does not support sending MMS. For this service, please select a gateway that offers MMS capabilities.', 'wp-sms'),
+                    ? __('WhatsApp Messaging is enabled for your gateway.', 'wp-sms')
+                    : __('This gateway does not support WhatsApp messaging. If you require this feature, please switch to a compatible gateway.', 'wp-sms'),
                 'class'       => isset($this->sms->supportMedia) && $this->sms->supportMedia ? 'c-form__result-status--success' : 'c-form__result-status--danger'
             )
         );

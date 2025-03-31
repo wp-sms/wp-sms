@@ -64,7 +64,7 @@
                     </span>
                 </li>
                 <li class="c-form__result-item u-flex u-content-sp u-align-center">
-                    <span class="c-form__result-title"><?php esc_html_e('Send MMS', 'wp-sms'); ?></span>
+                    <span class="c-form__result-title"><?php esc_html_e('WhatsApp', 'wp-sms'); ?></span>
                     <span class="c-form__result-status">
                         <span class="gateway-mms-label"></span>
                         <span class="gateway-mms-description c-form__result-description"></span>

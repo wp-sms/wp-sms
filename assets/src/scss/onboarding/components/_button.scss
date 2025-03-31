@@ -33,30 +33,25 @@
   }
 }
 .c-btn--primary {
-  color: $white-color;
+  color: $white-color!important;
   background-color: $primary-orange;
   border:1px solid $primary-orange;
   &:hover {
     opacity: 0.7;
-    color: $white-color;
-  }
+   }
   &-light{
     background-color: $white-color;
-    color: $primary-orange;
+    color: $primary-orange!important;
     border:1px solid $primary-orange;
     font-weight: 500;
     &:hover{
       background: $primary-orange;
-      color: $white-color;
+      color: $white-color!important;
       opacity: 0.7;
-      &:focus , &:active{
-        color: $white-color;
-       }
     }
     &:focus , &:active{
       outline: none;
-      color: $primary-orange;
-      box-shadow: none;
+       box-shadow: none;
     }
   }
 

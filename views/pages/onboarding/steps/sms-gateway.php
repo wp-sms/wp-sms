@@ -11,7 +11,7 @@
         <div class="c-filters">
             <label for="searchGateway"><?php esc_html_e('Search by Gateway Name', 'wp-sms'); ?></label>
             <div class="c-search u-flex u-align-center u-content-start">
-                <button type="submit"></button>
+                <button type="button"></button>
                 <input id="searchGateway" placeholder="<?php esc_attr_e('Type to search...', 'wp-sms'); ?>" type="text"/>
             </div>
         </div>
@@ -109,7 +109,7 @@
                                 <span class="c-table-gateway__name">
                                     <?php
                                     if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                        <a href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a>
+                                        <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a>
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
                                     <?php endif; ?>
@@ -143,7 +143,7 @@
                                 <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
                                 <span class="c-table-gateway__name">
                                     <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                        <a href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a>
+                                        <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a>
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
                                     <?php endif; ?>
