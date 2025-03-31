@@ -174,12 +174,14 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.12 - 2025-03-27 =
+= v6.9.12 - 2025-03-31 =
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
 - **Enhancement**: Updated integration with the MatinSMS gateway.
 - **Fix**: Expanded support for a wider range of CSV MIME types for the subscriber import process.
-- **Fix**: Removed inactivated gateways.
+- **Fix**: Removed deprecated/inactive gateways and their associated class files.
+- **Fix**: Fixed issue where the welcome message was not being sent to new subscribers.
+- **Fix**: Resolved issues with the unsubscribe functionality in the subscription form.
 
 = v6.9.11 - 2025-02-25 =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
