@@ -1,0 +1,50 @@
+.wpsms-skeleton{
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, .12);
+  cursor: wait;
+  mask-image: radial-gradient(#fff, #000);
+  border-radius: 4px;
+  &__select{
+    &--step1{
+      height: 40px;
+      margin-bottom: .25rem;
+      width: 449px !important;
+      max-width: 100%;
+    }
+    &--step2{
+      width: 100%!important;
+      height: 45px;
+      @include mq(tablet) {
+        width: 230px!important;
+      }
+    }
+  }
+  &__table{
+    height: 150px;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    background: linear-gradient(90deg, transparent, hsla(0, 0%, 100%, .4), transparent);
+    animation: skeleton-animate-wave 1.75s linear infinite;
+  }
+}
+
+@keyframes skeleton-animate-wave {
+  0% {
+    transform: translateX(-100%)
+  }
+
+  to {
+    transform: translateX(100%)
+  }
+}
+.wpsms-onboarding .select2-container,.wpsms-onboarding  select,.c-table-gateway{
+  display: none;
+}

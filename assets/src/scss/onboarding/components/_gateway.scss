@@ -1,0 +1,32 @@
+.c-getway__offer {
+  border-radius: 4px;
+  background: $grey-color-4;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 18px;
+  color: $black-color;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16.41px;
+  flex-direction: column;
+  align-items: center;
+  @media (min-width: 700px) {
+    flex-direction: row;
+  }
+
+  a {
+    color: $primary-orange;
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    @include mq(lg) {
+      display: inline;
+    }
+    &:hover{
+      opacity: 0.7;
+    }
+  }
+
+}

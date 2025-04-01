@@ -1,6 +1,6 @@
 ﻿jQuery(document).ready(function ($) {
 
-    jQuery( 'body' ).on( 'thickbox:removed', function() {
+    jQuery('body').on('thickbox:removed', function () {
         jQuery('.iti__country-container').trigger('click');
     });
 
@@ -292,7 +292,7 @@ class ShowIfEnabled {
 document.addEventListener('DOMContentLoaded', () => {
     const notices = document.querySelectorAll('.notice');
     const promotionModal = document.querySelector('.promotion-modal');
-     if (notices.length > 0  && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings')) ) {
+    if (notices.length > 0 && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
         notices.forEach(notice => {
             notice.classList.remove('inline');
             if (promotionModal) {
@@ -315,13 +315,15 @@ function moveFeedbackBird() {
     if (feedbackBird && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
         if (windowWidth <= 1030) {
             const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
-            license.parentNode.insertBefore(cutDiv, license);
+            if(license) license.parentNode.insertBefore(cutDiv, license);
         } else {
-            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
-            support.appendChild(cutDiv);
+            if (support) {
+                const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
+                if(support) support.appendChild(cutDiv);
+            }
         }
         feedbackBird.style.display = 'block';
-        feedbackBird.setAttribute('title',feedbackBirdTitle.innerHTML);
+        feedbackBird.setAttribute('title', feedbackBirdTitle.innerHTML);
     }
 }
 

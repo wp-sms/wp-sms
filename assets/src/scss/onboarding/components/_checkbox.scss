@@ -1,0 +1,62 @@
+.c-form {
+  .c-form__checkbox-container {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 12px 24px 12px 48px;
+    word-break: break-word;
+    &:not(:last-child) {
+      border-bottom: 1px solid $grey-color-3;
+    }
+  }
+
+  /* Hide the browser's default checkbox */
+  .c-form__checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  /* Create a custom checkbox */
+  .c-form__checkmark {
+    position: absolute;
+    top: 10px;
+    left: 24px;
+    height: 15px;
+    width: 15px;
+    border-radius: 2px;
+    border: 1px solid $grey-color-1;
+    background: $white-color;
+  }
+
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .c-form__checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  /* Show the checkmark when checked */
+  .c-form__checkbox-container input:checked ~ .c-form__checkmark:after {
+    display: block;
+  }
+
+  /* Style the checkmark/indicator */
+  .c-form__checkbox-container .c-form__checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 3px;
+    height: 8px;
+    border: solid $primary-orange;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
