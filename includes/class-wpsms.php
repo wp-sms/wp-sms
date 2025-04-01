@@ -10,6 +10,7 @@ use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
+use WP_SMS\Services\Hooks\HooksManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
 use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 use WP_SMS\Shortcode\ShortcodeManager;
@@ -98,6 +99,28 @@ class WP_SMS
         $this->setupBackgroundProcess();
     }
 
+    /**
+     * The main logging function
+     *
+     * @param string $message The message to be logged.
+     * @param string $level The log level (e.g., 'info', 'warning', 'error'). Default is 'info'.
+     * @uses error_log
+     */
+    public static function log($message, $level = 'info')
+    {
+        if (is_array($message)) {
+            $message = wp_json_encode($message);
+        }
+
+        $log_level = strtoupper($level);
+
+
+        // Log when debug is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log(sprintf('[WP SMS] [%s]: %s', $log_level, $message));
+        }
+    }
+
     private function setupBackgroundProcess()
     {
         $this->remoteRequestAsync = new RemoteRequestAsync();
@@ -182,6 +205,7 @@ class WP_SMS
         (new FormidableManager())->init();
         (new ForminatorManager())->init();
         (new ShortcodeManager())->init();
+        \WP_SMS\Utils\MenuUtil::init();
 
         if (is_admin()) {
             // Admin legacy classes.
@@ -196,12 +220,15 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
+            $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
         }
 
         if (!is_admin()) {
             // Front Class.
             $this->include('includes/class-front.php');
         }
+
+        new  HooksManager();
 
         // API class.
         $this->include('includes/api/v1/class-wpsms-api-newsletter.php');

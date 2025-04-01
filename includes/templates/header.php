@@ -1,4 +1,8 @@
-<?php $option = get_option('wpsms_settings');
+<?php
+use WP_SMS\Version;
+use WP_SMS\Admin\ModalHandler\Modal;
+
+$option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
 $tab_url = add_query_arg(array(
     'settings-updated' => false,
@@ -6,7 +10,7 @@ $tab_url = add_query_arg(array(
     'page'             => 'wp-sms-settings'
 ));
 $active  = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
-
+$isPremium    = Version::pro_is_active();
 // Get information about active add-ons
 $addons = is_plugin_active('wp-sms-pro/wp-sms-pro.php') ? array('license_wp-sms-pro_status' => false) : array();
 
@@ -21,12 +25,12 @@ foreach ($addons as $option_key => $status) {
     }
 }
 ?>
-<div class="wpsms-header-banner" style="<?php echo isset($full_width_banner) && $full_width_banner ? 'margin-left: -20px; width: auto; max-width: none;' : ''; ?>">
+<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>" style="<?php echo isset($full_width_banner) && $full_width_banner ? 'margin-left: -20px; width: auto; max-width: none;' : ''; ?>">
     <div class="wpsms-header-logo"></div>
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
         <?php
-        $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
+        $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : 0;
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms', 'link_text' => __('Send SMS', 'wp-sms'), 'icon_class' => 'send-sms', 'badge_count' => null]);
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-inbox', 'link_text' => __('Inbox', 'wp-sms'), 'icon_class' => 'inbox', 'badge_count' => $unreadMessagesCount]);
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-outbox', 'link_text' => __('Outbox', 'wp-sms'), 'icon_class' => 'outbox', 'badge_count' => null]);
@@ -66,3 +70,5 @@ foreach ($addons as $option_key => $status) {
         </div>
     </div>
 </div>
+
+<?php Modal::render('all-in-one'); ?>

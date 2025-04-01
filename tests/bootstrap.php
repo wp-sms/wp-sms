@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file.
  *
- * @package WP_Statistics
+ * @package WP_SMS
  */
 
 // Locate the WordPress testing library directory.

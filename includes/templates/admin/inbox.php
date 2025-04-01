@@ -1,6 +1,6 @@
 <div class="wrap wpsms-wrap">
     <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-    <div class="wpsms-wrap__main wpsms-inbox-page">
+    <div class="wpsms-wrap__main wpsms-inbox-page wpsms-inbox-page__empty">
         <img class="background-img" src="<?php echo esc_url(WP_SMS_URL . '/assets/images/blurred-inbox.jpg'); ?>" alt="">
         <div class="promotion-modal">
             <h3 class="promotion-modal__title"><?php esc_html_e('View Inbox / Incoming Messages', 'wp-sms'); ?></h3>
