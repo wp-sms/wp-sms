@@ -36,5 +36,6 @@ class ControllerManager
         UploadSubscriberCsv::listen(false);
         ImportSubscriberCsv::listen(false);
         LicenseManagerAjax::listen(false);
+        OnBoardingTestGateway::listen(false);
     }
 }

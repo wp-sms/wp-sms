@@ -23,7 +23,7 @@ class ApiCommunicator
     public function getProducts()
     {
         try {
-            $remoteRequest = new RemoteRequest("{$this->apiUrl}/product/list", 'GET');
+            $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/list");
             $plugins       = $remoteRequest->execute(false, true, WEEK_IN_SECONDS);
 
             if (empty($plugins) || !is_array($plugins)) {
@@ -53,7 +53,7 @@ class ApiCommunicator
      */
     public function getDownloadUrl($licenseKey, $pluginSlug)
     {
-        $remoteRequest = new RemoteRequest("{$this->apiUrl}/product/download", 'GET', [
+        $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/download", [
             'license_key' => $licenseKey,
             'domain'      => home_url(),
             'plugin_slug' => $pluginSlug,
@@ -104,7 +104,7 @@ class ApiCommunicator
             );
         }
 
-        $remoteRequest = new RemoteRequest("{$this->apiUrl}/license/status", 'GET', [
+        $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/license/status", [
             'license_key' => $licenseKey,
             'domain'      => home_url(),
         ]);
