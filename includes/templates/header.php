@@ -1,6 +1,7 @@
 <?php
-
 use WP_SMS\Version;
+use WP_SMS\Admin\ModalHandler\Modal;
+
 $option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
 $tab_url = add_query_arg(array(
@@ -37,7 +38,7 @@ foreach ($addons as $option_key => $status) {
         ?>
     </div>
     <div class="wpsms-header-items-side">
-        <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons, 'tab_url' => $tab_url]); ?>
+        <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons,'tab_url'=>$tab_url]); ?>
         <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('Settings', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
             echo 'active';
         } ?>"></a>
@@ -63,9 +64,11 @@ foreach ($addons as $option_key => $status) {
                     <?php esc_html_e('Help Center', 'wp-sms'); ?>
                 </a>
                 <div class="wpsms-license">
-                    <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons, 'tab_url' => $tab_url]); ?>
+                    <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons,'tab_url'=>$tab_url]); ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php Modal::render('all-in-one'); ?>

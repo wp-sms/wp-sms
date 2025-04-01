@@ -16,7 +16,9 @@ module.exports = {
             './assets/src/scripts/admin-order-view.js',
             './assets/src/scripts/admin-dashboard-stats-widget.js',
             './assets/src/scripts/chart.min.js',
-//            './assets/src/scripts/add-ons.js',
+            './assets/src/scripts/modal-handler.js',
+            //            './assets/src/scripts/add-ons.js',
+
         ],
         frontend: [
             './assets/src/scripts/blocks.js',

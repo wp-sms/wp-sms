@@ -97,6 +97,28 @@ class WP_SMS
         $this->setupBackgroundProcess();
     }
 
+    /**
+     * The main logging function
+     *
+     * @param string $message The message to be logged.
+     * @param string $level The log level (e.g., 'info', 'warning', 'error'). Default is 'info'.
+     * @uses error_log
+     */
+    public static function log($message, $level = 'info')
+    {
+        if (is_array($message)) {
+            $message = wp_json_encode($message);
+        }
+
+        $log_level = strtoupper($level);
+
+
+        // Log when debug is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log(sprintf('[WP SMS] [%s]: %s', $log_level, $message));
+        }
+    }
+
     private function setupBackgroundProcess()
     {
         $this->remoteRequestAsync = new RemoteRequestAsync();
