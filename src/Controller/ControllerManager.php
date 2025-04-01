@@ -35,7 +35,7 @@ class ControllerManager
         ExportAjax::listen(false);
         UploadSubscriberCsv::listen(false);
         ImportSubscriberCsv::listen(false);
-        LicenseManagerAjax::listen(false);
         OnBoardingTestGateway::listen(false);
+        LicenseManagerAjax::listen(false);
     }
 }
