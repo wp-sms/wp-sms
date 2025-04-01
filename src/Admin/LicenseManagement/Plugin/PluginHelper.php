@@ -12,13 +12,10 @@ class PluginHelper
      * Hard-coded list of all plugins, useful when we don't want to request the API.
      */
     public static $plugins = [
-        'wp-sms-data-plus'          => 'Data Plus',
-        'wp-sms-mini-chart'         => 'Mini Chart',
-        'wp-sms-advanced-reporting' => 'Advanced Reporting',
-        'wp-sms-realtime-stats'     => 'Real-Time Stats',
-        'wp-sms-widgets'            => 'Widgets',
-        'wp-sms-customization'      => 'Customization',
-        'wp-sms-rest-api'           => 'REST API'
+        'wp-sms-pro'             => 'WP SMS Pro',
+        'wp-sms-woocommerce-pro' => 'WooCommerce Pro',
+        'wp-sms-two-way'         => 'Two-Way',
+        'wp-sms-integration'     => 'Even More Integrations',
     ];
 
     /**
