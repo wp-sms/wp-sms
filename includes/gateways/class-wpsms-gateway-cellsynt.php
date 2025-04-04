@@ -10,7 +10,7 @@ class cellsynt extends \WP_SMS\Gateway
     public $unit;
     public $flash = "enable";
     public $isflash = false;
-    public $originatortype = 'alpha';
+    public $originatortype = 'numeric';
 
     public function __construct()
     {
