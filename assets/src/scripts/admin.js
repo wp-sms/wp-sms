@@ -26,8 +26,42 @@
         });
     }
 
-    let WpSmsSelect2 = $('.js-wpsms-select2')
-    let WpSmsExportForm = $('.js-wpSmsExportForm')
+    let WpSmsSelect2 = $('.js-wpsms-select2');
+    let WpSmsExportForm = $('.js-wpSmsExportForm');
+
+    let WpSmsSelect2TickModal = $('.js-wpsmsSelect2TickModal');
+
+    window.prependCheckbox = function(data) {
+        if (!data.id) {
+            return data.text;
+        }
+
+        return $('<div class="checkbox no-margin">').append(
+            $('<label>').append(
+                $('<input type="checkbox" />').prop('checked', data.element.selected)
+            ).append(data.text)
+        );
+    };
+    const wpsms_js = {};
+    wpsms_js.global = wpsms_global;
+
+    wpsms_js._ = function (key) {
+        return (key in this.global.i18n ? this.global.i18n[key] : '');
+    };
+
+
+    if (WpSmsSelect2TickModal.length) {
+        WpSmsSelect2TickModal.select2({
+            dropdownCssClass: 'wpsms-select2-tick-dropdown',
+            placeholder: wpsms_js._('select_groups') ,
+            allowClear: false,
+            templateResult: window.prependCheckbox,
+            templateSelection: function(data) {
+                return data.text;
+            }
+        });
+     }
+
 
     function matchCustom(params, data) {
         // If there are no search terms, return all of the data
@@ -66,6 +100,8 @@
     // Select2
     window.WpSmsSelect2 = WpSmsSelect2;
     WpSmsSelect2.select2(WpSmsSelect2Options);
+
+
 
     // Auto submit the gateways form, after changing value
     $("#wpsms_settings\\[gateway_name\\]").on('change', function () {

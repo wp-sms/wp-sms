@@ -38,15 +38,6 @@
   padding: 12px 8px 12px 24px !important;
 }
 
-.wpsms-wrap-woo-pro {
-  margin-left: -20px;
-
-  .rtl & {
-    margin-right: -20px;
-    margin-left: unset;
-  }
-}
-
 .wpsms-wrap {
   .notice:has(p):not(.e-notice) {
     padding: 8px 14px;
@@ -220,11 +211,6 @@
 .rtl .wpsms-header-banner .license-status a.upgrade {
   direction: rtl;
 }
-
-.rtl .wpsms-header-banner .license-status--free a::after {
-  transform: rotate(45deg);
-}
-
 
 .rtl .wpsms-menu-content {
   left: 0;
@@ -530,7 +516,7 @@ body.rtl #screen-meta-links {
 .rtl .wpsms-header-banner {
   justify-content: flex-start;
   margin-left: 0 !important;
-}
+ }
 
 .wpsms-header-banner .license-status {
   transition: 0.3s all ease-out;
@@ -653,6 +639,7 @@ body.rtl #screen-meta-links {
     .rtl &{
       margin-left:0;
       margin-right: 3px;
+      transform: rotate(180deg)
     }
   }
 
@@ -672,6 +659,10 @@ body.rtl #screen-meta-links {
     box-sizing: border-box;
     height: 26px;
     position: relative;
+
+    .rtl &{
+      padding: 6px 6px 6px 12px;
+    }
   }
 
   .wpsms-header-banner .license-status a.upgrade span span {
@@ -741,6 +732,10 @@ body.rtl #screen-meta-links {
 
     &:hover {
       color: #2271b1 !important;
+    }
+
+    .rtl &{
+      padding: 0 8px 0 24px !important;
     }
   }
 

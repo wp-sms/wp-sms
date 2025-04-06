@@ -25,7 +25,7 @@ foreach ($addons as $option_key => $status) {
     }
 }
 ?>
-<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>" style="<?php echo isset($full_width_banner) && $full_width_banner ? 'margin-left: -20px; width: auto; max-width: none;' : ''; ?>">
+<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>">
     <div class="wpsms-header-logo"></div>
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">

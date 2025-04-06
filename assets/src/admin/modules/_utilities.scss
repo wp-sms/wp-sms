@@ -68,29 +68,42 @@
 }
 
 .wpsms-wrap .wpsms-wrap__top .wpsms-button-group {
-  gap: 14px;
+  gap: 12px;
   display: inline-flex;
   margin-top: 0 !important;
 
   .button {
-    padding: 8px 16px !important;
-    font-weight: 500 !important;
+    padding: 4px 21px !important;
+    font-weight: 400 !important;
     transition: 0.2s;
-    border-radius: 4px;
-    color: #C24225;
-    border: 1px solid #C24225;
-    font-size: 12px;
-    line-height: 15px;
+    border-radius: 3px;
+    color: #9A3412!important;
+    border: 1px solid #9A3412!important;
+    font-size: 13px;
+    line-height: 24px;
     min-height: unset;
-    margin-bottom: 0;
+    margin: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     background: #fff;
 
     &:hover {
       background: rgba(194, 66, 37, 0.1);
+    }
+
+    &:focus , &:active {
+      background: #FED7AA;
+      box-shadow: none;
+    }
+
+    @media (max-width: 1280px) {
+      padding: 4px 16px!important;
+      font-size: 12px;
+      line-height: 15px;
+      margin-top: 0 !important;
+      margin-bottom: 12px !important;
     }
   }
 

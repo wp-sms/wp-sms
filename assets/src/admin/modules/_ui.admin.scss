@@ -1,14 +1,9 @@
-.sms_page_wp-sms .wpsms-wrap {
-  font-family: Roboto, Arial, Helvetica, sans-serif;
-}
-
-
 body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   z-index: 4 !important;
 }
 
 .wpsms-wrap{
-  .notice:not(.wp-statistics-notice){
+  .notice:not(.wpsms-admin-notice){
     display:none!important;
   }
 }
@@ -69,8 +64,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   display: flex;
   border-bottom: 1px solid #DADCE0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05);
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 
   @media(max-width: 500px) {
     padding-right: 10px;

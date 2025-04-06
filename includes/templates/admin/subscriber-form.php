@@ -5,13 +5,13 @@
 
     <table>
         <tr>
-            <td style="padding-top: 10px;">
+            <td>
                 <label for="wp_subscribe_name" class="wp_sms_subscribers_label"><?php esc_html_e('Name', 'wp-sms'); ?></label>
                 <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
             </td>
         </tr>
         <tr>
-            <td style="padding-top: 10px;">
+            <td>
                 <label for="wp_subscribe_mobile" class="wp_sms_subscribers_label"><?php esc_html_e('Mobile', 'wp-sms'); ?></label>
                 <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? esc_attr($subscriber->mobile) : '')); ?>
             </td>
@@ -20,14 +20,13 @@
         // groups field does not need to be multiple in edit form.
         if ($groups) : ?>
             <tr>
-                <td style="padding-top: 10px;">
+                <td class="subscribers_group_section">
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Group', 'wp-sms'); ?></label>
                     <select
                         name="<?php echo isset($subscriber_id) ? 'wpsms_group_name' : 'wpsms_group_name[]'; ?>"
                         id="wpsms_group_name"
-                        class="wp_sms_subscribers_input_text code"
-                        <?php echo isset($subscriber_id) ? '' : 'multiple="multiple"'; ?>
-                        style="<?php echo isset($subscriber_id) ? '' : 'height: 100px;'; ?>">
+                        class="wp_sms_subscribers_input_text js-wpsmsSelect2TickModal"
+                        <?php echo isset($subscriber_id) ? '' : 'multiple="multiple"'; ?> >
                         <?php if (isset($subscriber_id)) : ?>
                             <option value="" selected><?php esc_html_e('Select group', 'wp-sms'); ?></option>
                         <?php endif; ?>
@@ -41,7 +40,7 @@
             </tr>
         <?php else : ?>
             <tr>
-                <td style="padding-top: 10px;">
+                <td>
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Group', 'wp-sms'); ?></label>
                     <?php esc_html_e('There is no group!', 'wp-sms'); ?>
                     <a href="admin.php?page=wp-sms-subscribers-group"><?php esc_html_e('Add', 'wp-sms') ?></a>
@@ -52,7 +51,7 @@
         <tr>
             <td>
                 <label for="wpsms_subscribe_status" class="wp_sms_subscribers_label"><?php esc_html_e('Status', 'wp-sms'); ?></label>
-                <select name="wpsms_subscribe_status" id="wpsms_subscribe_status" class="wp_sms_subscribers_input_text code">';
+                <select name="wpsms_subscribe_status" id="wpsms_subscribe_status" class="wp_sms_subscribers_input_text">';
                     <?php if (isset($subscriber)) : ?>
                         <option value="1" <?php selected($subscriber->status, 1); ?>><?php esc_html_e('Active', 'wp-sms'); ?></option>
                         <option value="0" <?php selected($subscriber->status, 0); ?>><?php esc_html_e('Deactivate', 'wp-sms'); ?></option>
@@ -65,7 +64,7 @@
         </tr>
 
         <tr>
-            <td colspan="2" style="padding-top: 20px;">
+            <td>
                 <?php wp_nonce_field('wp_sms_subscriber_action'); ?>
                 <?php if (isset($subscriber_id)) : ?>
                     <input type="submit" class="button-primary" name="wp_update_subscribe" value="<?php esc_html_e('Update', 'wp-sms'); ?>"/>
