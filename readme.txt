@@ -1,11 +1,11 @@
 ﻿=== WP SMS – Ultimate SMS & MMS Notifications, 2FA, OTP, and Integrations with WooCommerce, GravityForms, and More ===
-Contributors: mostafa.s1990, kashani, veronalabs, alifallahrn
+Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.10
+Stable tag: 6.9.12
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,11 @@ With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommer
 - **[Elementor](https://wp-sms-pro.com/product/wp-sms-elementor-form/?utm_source=wporg&utm_medium=link&utm_campaign=elementor)**: Add SMS notifications to your Elementor forms, sending messages to specific phone numbers when a form is submitted.
 - **[Fluent Integrations](https://wp-sms-pro.com/product/wp-sms-fluent-integrations/?utm_source=wporg&utm_medium=link&utm_campaign=fluent)**: Get SMS notifications with Fluent CRM, Fluent Forms, and Fluent Support.
 - **[Booking Integrations](https://wp-sms-pro.com/product/wp-sms-booking-integrations/?utm_source=wporg&utm_medium=link&utm_campaign=booking)**: SMS notifications with popular booking plugins such as BookingPress, WooCommerce Appointments, and Booking Calendar.
+
+= Report Bugs =
+Having trouble with a bug? Please [create an issue](https://github.com/wp-sms/wp-sms/issues/new) on GitHub. Kindly note that [GitHub](https://github.com/wp-sms/wp-sms) is exclusively for bug reports; other inquiries will be closed.
+
+For security vulnerabilities, please report them through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/wordpress/plugin/wp-sms/vdp). The Patchstack team will validate, triage, and handle any security issues.
 
 == Installation ==
 
@@ -169,8 +174,21 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.11 - 2025-**-** =
-- **Enhancement**: Replaced manual include with PSR-4 autoloading.
+= v6.9.12 - 2025-03-31 =
+- **New**: Added WhatsApp support for the Tubelight gateway.
+- **Enhancement**: Upgraded to the latest version of the Tubelight API.
+- **Enhancement**: Updated integration with the MatinSMS gateway.
+- **Fix**: Expanded support for a wider range of CSV MIME types for the subscriber import process.
+- **Fix**: Removed deprecated/inactive gateways and their associated class files.
+- **Fix**: Fixed issue where the welcome message was not being sent to new subscribers.
+- **Fix**: Resolved issues with the unsubscribe functionality in the subscription form.
+
+= v6.9.11 - 2025-02-25 =
+- **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
+- **Fix**: Resolved issue with rendering new lines in the Outbox.
+- **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
+- **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
+- **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
 
 = v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).

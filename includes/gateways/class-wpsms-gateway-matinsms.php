@@ -2,26 +2,37 @@
 
 namespace WP_SMS\Gateway;
 
-class matinsms extends \WP_SMS\Gateway
+use Exception;
+use WP_Error;
+use WP_SMS\Gateway;
+
+class matinsms extends Gateway
 {
-    private $wsdl_link = "http://smspanel.mat-in.ir/webservice/index.php?wsdl";
-    public $tariff = "http://smspanel.mat-in.ir";
-    public $unitrial = true;
+    const APIPATH = "http://api.kavenegar.com/v1/%s/%s/%s.json/";
+
+    private $wsdl_link = "";
+    public $tariff = "https://matinsms.ir";
+    public $unitrial = false;
     public $unit;
-    public $flash = "enable";
+    public $flash = false;
     public $isflash = false;
+
+    private function get_path($method, $base = 'sms')
+    {
+        return sprintf(self::APIPATH, trim($this->has_key), $base, $method);
+    }
 
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "09xxxxxxxx";
-
-        @ini_set("soap.wsdl_cache_enabled", "0");
+        $this->has_key        = true;
+        $this->bulk_send      = true;
+        $this->help           = "Enter your MatinSMS API Key in the API Key field.<br>The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
+        $this->validateNumber = "The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -49,24 +60,26 @@ class matinsms extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
+            if (empty($this->has_key)) {
+                throw new Exception(__('The API Key for this gateway is not set', 'wp-sms-pro'));
+            }
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $path = $this->get_path('send');
 
-            return $credit;
-        }
+            $params = [
+                'receptor' => implode(",", $this->to),
+                'sender'   => $this->from,
+                'message'  => urlencode($this->msg),
+            ];
 
-        $client = new \SoapClient($this->wsdl_link);
+            $response = $this->request('GET', $path, $params);
 
-        $result = $client->sendsms($this->username, $this->password, $this->to, $this->from, $this->msg);
+            if ($response->return->status != 200) {
+                throw new Exception($response->return->message);
+            }
 
-        if ($result) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result);
+            $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
              * Run hook after send sms.
@@ -75,35 +88,36 @@ class matinsms extends \WP_SMS\Gateway
              * @since 2.4
              *
              */
-            do_action('wp_sms_send', $result);
+            do_action('wp_sms_send', $response);
 
-            return $result;
+            return $response;
+
+        } catch (Exception $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
-        // Log th result
-        $this->log($this->from, $this->msg, $this->to, $result, 'error');
-
-        return new \WP_Error('send-sms', $result);
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
-        }
-
-        if (!class_exists('SoapClient')) {
-            return new \WP_Error('required-class', esc_html__('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
-        }
-
         try {
-            $client = new \SoapClient($this->wsdl_link);
-        } catch (\Exception $e) {
-            return new \WP_Error('account-credit', $e->getMessage());
+            if (empty($this->has_key)) {
+                return new WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms-pro'));
+            }
+
+            $path = $this->get_path('info', 'account');
+
+            $response = $this->request('GET', $path);
+
+            if ($response->return->status != 200) {
+                throw new Exception($response->return->message);
+            }
+
+            return $response->entries->remaincredit;
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
         }
-
-        $result = $client->balance($this->username, $this->password);
-
-        return $result;
     }
 }
