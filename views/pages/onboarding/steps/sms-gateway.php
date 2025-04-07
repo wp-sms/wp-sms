@@ -1,3 +1,9 @@
+<?php
+
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+
+?>
+
 <div class="c-section__title">
     <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
@@ -79,8 +85,10 @@
                     <?php
                     $countries      = [];
                     $country_list   = '';
-                    $can_choose     = \WP_SMS\Version::pro_is_active();
+                    $can_choose     = LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
                     $is_pro_gateway = false;
+
+                    if (isset($gateway->fields->gateway_attributes->is_deprecated) && $gateway->fields->gateway_attributes->is_deprecated) continue;
 
                     if (isset($gateway->fields) && !empty($gateway->fields)) {
                         if (isset($gateway->fields->gateway_attributes) && !empty($gateway->fields->gateway_attributes)) {

@@ -1,5 +1,8 @@
 <?php
-$is_pro = \WP_SMS\Version::pro_is_active();
+
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+
+$is_pro = LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
 ?>
 
 <form method="post">
@@ -292,7 +295,7 @@ $is_pro = \WP_SMS\Version::pro_is_active();
                     <?php esc_html_e('Learn more', 'wp-sms'); ?>
                 </a>
             </div>
-         </div>
+        </div>
     </div>
 
 </form>
