@@ -20,19 +20,19 @@ class MigrationHandler
      * Action for triggering manual migration.
      * @var string
      */
-    private const MIGRATION_ACTION = 'run_manual_migration';
+    const MIGRATION_ACTION = 'run_manual_migration';
 
     /**
      * Action for triggering retry manual migration.
      * @var string
      */
-    private const MIGRATION_RETRY_ACTION = 'retry_manual_migration';
+    const MIGRATION_RETRY_ACTION = 'retry_manual_migration';
 
     /**
      * Nonce name for manual migration action.
      * @var string
      */
-    private const MIGRATION_NONCE = 'run_manual_migration_nonce';
+    const MIGRATION_NONCE = 'run_manual_migration_nonce';
 
     /**
      * Initialize migration processes and register WordPress hooks.
@@ -44,7 +44,7 @@ class MigrationHandler
         add_action('admin_post_' . self::MIGRATION_ACTION, [self::class, 'processManualMigrations']);
         add_action('admin_post_' . self::MIGRATION_RETRY_ACTION, [self::class, 'retryManualMigration']);
 
-        add_action('init', [self::class, 'handleNotice']);
+        add_action('admin_init', [self::class, 'handleNotice']);
         self::runMigrations();
     }
 
@@ -589,6 +589,7 @@ class MigrationHandler
                 esc_html__('Thank you for keeping WP SMS up-to-date!', 'wp-sms')
             );
             $notice->registerNotice('database_manual_migration_done', $message, true);
+            Option::saveOptionGroup('migration_status_detail', null, 'db');
             return;
         }
 
