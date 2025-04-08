@@ -614,7 +614,7 @@ class MigrationHandler
                 esc_html__('WP SMS: Process Failed', 'wp-sms'),
                 esc_html__('The Database Migration process encountered an error and could not be completed.', 'wp-sms'),
                 esc_html__('Error:', 'wp-sms'),
-                esc_html($details['message'] ?? ''),
+                esc_html(isset($details['message']) ? $details['message'] : ''),
                 esc_url($actionUrl),
                 esc_html__('Retry Process', 'wp-sms'),
                 esc_url('https://wp-sms.com/support/?utm_source=wp-sms&utm_medium=link&utm_campaign=db-error'),
