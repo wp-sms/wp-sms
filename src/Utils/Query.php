@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Utils;
 
+use mysqli_result;
 use WP_SMS\Traits\TransientCacheTrait;
 use WP_SMS\Utils\DBUtil as DB;
 use InvalidArgumentException;
@@ -10,6 +11,9 @@ use wpdb;
 class Query
 {
     use TransientCacheTrait;
+
+    /** @var wpdb */
+    protected $db;
 
     /**
      * @var array
@@ -76,9 +80,6 @@ class Query
      */
     private $decorator;
 
-    /** @var wpdb */
-    protected $db;
-
     /**
      *
      */
@@ -120,6 +121,18 @@ class Query
     {
         $instance            = new self();
         $instance->operation = 'insert';
+        $instance->table     = $instance->getTable($table);
+        return $instance;
+    }
+
+    /**
+     * @param $table
+     * @return self
+     */
+    public static function delete($table)
+    {
+        $instance            = new self();
+        $instance->operation = 'delete';
         $instance->table     = $instance->getTable($table);
         return $instance;
     }
@@ -227,11 +240,23 @@ class Query
     public function getAll()
     {
         $query = $this->prepareQuery($this->buildQuery(), $this->valuesToPrepare);
-        if ($this->allowCaching && ($cachedResult = $this->getCachedResult($query)) !== false) {
-            return $this->maybeDecorate($cachedResult);
+
+        // Use caching if enabled
+        if ($this->allowCaching) {
+            $cachedResult = $this->getCachedResult($query);
+            if ($cachedResult !== false) {
+                return $this->maybeDecorate($cachedResult);
+            }
         }
+
+        // Fetch from database if not cached
         $result = $this->db->get_results($query);
-        if ($this->allowCaching) $this->setCachedResult($query, $result, WEEK_IN_SECONDS);
+
+        // Cache the result if caching is enabled
+        if ($this->allowCaching) {
+            $this->setCachedResult($query, $result, WEEK_IN_SECONDS); // 7 days
+        }
+
         return $this->maybeDecorate($result);
     }
 
@@ -255,7 +280,6 @@ class Query
         }
         return $decoratedResult;
     }
-
 
     /**
      * @return string
@@ -327,18 +351,14 @@ class Query
     }
 
     /**
-     * Build the DELETE query.
-     *
      * @return string
      */
     protected function deleteQuery()
     {
         $query = "DELETE FROM $this->table";
-
         if (!empty($this->whereClauses)) {
             $query .= ' WHERE ' . implode(" $this->whereRelation ", $this->whereClauses);
         }
-
         return $query;
     }
 
@@ -347,7 +367,6 @@ class Query
      */
     protected function unionQuery()
     {
-
         foreach ($this->queries as $key => $value) {
             $this->queries[$key] = "($value)";
         }
@@ -361,13 +380,20 @@ class Query
         return $query;
     }
 
-
     /**
-     * @return bool|int|\mysqli_result|null
+     * @return bool|int|mixed|mysqli_result|null
      */
     public function execute()
     {
-        return $this->db->query($this->prepareQuery($this->buildQuery(), $this->valuesToPrepare));
+        $query  = $this->prepareQuery($this->buildQuery(), $this->valuesToPrepare);
+        $result = $this->db->query($query);
+
+        // Clear cache for this table if it's a write operation
+        if ($this->operation !== 'select' && $result !== false) {
+            $this->clearCacheForTable($this->table);
+        }
+
+        return $result;
     }
 
     /**
@@ -394,20 +420,6 @@ class Query
     }
 
     /**
-     * Initialize a DELETE query.
-     *
-     * @param string $table
-     * @return self
-     */
-    public static function delete($table)
-    {
-        $instance            = new self();
-        $instance->operation = 'delete';
-        $instance->table     = $instance->getTable($table);
-        return $instance;
-    }
-
-    /**
      * @param array $data
      * @return $this
      */
@@ -425,7 +437,7 @@ class Query
      * @param $first
      * @param $operator
      * @param $second
-     * @param string $type
+     * @param $type
      * @return $this
      */
     public function join($table, $first, $operator, $second, $type = 'INNER')
@@ -437,7 +449,7 @@ class Query
 
     /**
      * @param $field
-     * @param string $direction
+     * @param $direction
      * @return $this
      */
     public function orderBy($field, $direction = 'ASC')
@@ -458,7 +470,7 @@ class Query
 
     /**
      * @param $limit
-     * @param null $offset
+     * @param $offset
      * @return $this
      */
     public function limit($limit, $offset = null)
@@ -468,7 +480,7 @@ class Query
     }
 
     /**
-     * @param bool $allow
+     * @param $allow
      * @return $this
      */
     public function allowCaching($allow = true)
@@ -485,5 +497,17 @@ class Query
     {
         $this->decorator = $decorator;
         return $this;
+    }
+
+    /**
+     * Clear all cached queries related to a specific table.
+     *
+     * @param string $table
+     * @return void
+     */
+    private function clearCacheForTable($table)
+    {
+        $cacheKeyPrefix = $this->getCacheKey("table:$table");
+        delete_transient($cacheKeyPrefix);
     }
 }
