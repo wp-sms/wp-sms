@@ -3,7 +3,7 @@
 namespace WP_SMS\BackgroundProcess\Async;
 
 use WP_SMS\Utils\OptionUtil as Option;
-use WP_SMS\Service\Database\Migrations\DataMigration;
+use WP_SMS\Services\Database\Migrations\DataMigration;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
 
 class DataMigrationProcess extends WP_Background_Process
@@ -43,11 +43,11 @@ class DataMigrationProcess extends WP_Background_Process
      */
     protected function task($data)
     {
-        $class   = $data['class'] ?? null;
-        $method  = $data['method'] ?? null;
-        $version = $data['version'] ?? null;
-        $task    = $data['task'] ?? null;
-        $type    = $data['type'] ?? null;
+        $class   = isset($data['class']) ? $data['class'] : null;
+        $method  = isset($data['method']) ? $data['method'] : null;
+        $version = isset($data['version']) ? $data['version'] : null;
+        $task    = isset($data['task']) ? $data['task'] : null;
+        $type    = isset($data['type']) ? $data['type'] : null;
 
         if (!$class || !$method || !$version) {
             return false;
