@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Services\Database\Managers;
 
+use WP_SMS\BackgroundProcess\Async\BackgroundProcessMonitor;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
@@ -558,6 +559,8 @@ class MigrationHandler
         $status = $details['status'];
 
         if ($status === 'progress') {
+            $remaining = BackgroundProcessMonitor::getRemainingRecords('data_migration_process');
+
             $message = sprintf(
                 '
                     <p>
@@ -595,6 +598,7 @@ class MigrationHandler
         }
 
         if ($status === 'failed') {
+            BackgroundProcessMonitor::deleteOption('data_migration_process');
             $actionUrl = self::buildActionUrl('retry');
 
             $message = sprintf(
