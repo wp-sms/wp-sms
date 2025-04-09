@@ -220,6 +220,21 @@ class PluginDecorator
                 $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => 'addon_two_way']);
                 break;
 
+            case 'wp-sms-membership':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_paid_membership_pro']);
+                break;
+
+            case 'wp-sms-fluent':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_fluent_crm']);
+                break;
+
+            case 'wp-sms-booking':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_booking_integrations_woo_appointments']);
+                break;
+            case 'wp-sms-elementor':
+                $settingsUrl = '';
+                break;
+
             default:
                 $pluginName  = str_replace('wp-sms-', '', $pluginSlug);
                 $tab         = !empty($pluginName) ? "$pluginName-settings" : '';
