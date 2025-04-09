@@ -20,13 +20,13 @@ class MigrationHandler
      * Action for triggering manual migration.
      * @var string
      */
-    const MIGRATION_ACTION = 'run_manual_migration';
+    const MIGRATION_ACTION = 'wp_sms_run_manual_migration';
 
     /**
      * Action for triggering retry manual migration.
      * @var string
      */
-    const MIGRATION_RETRY_ACTION = 'retry_manual_migration';
+    const MIGRATION_RETRY_ACTION = 'wp_sms_retry_manual_migration';
 
     /**
      * Nonce name for manual migration action.
