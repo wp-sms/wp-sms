@@ -1,0 +1,28 @@
+.wpsms_badge {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15.23px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #F5F5F5;
+  color: #12121B;
+}
+
+.wpsms_badge--success {
+  background-color: #1961401A;
+  color: #058860;
+}
+
+.wpsms_badge--danger {
+  background-color: #D636380D;
+  color: #D63638;
+}
+
+.wpsms_badge--warning {
+  background-color: #FFF7ED;
+  color: #EA580C;
+}
+
+.wpsms_badge--md {
+  padding: 6px 12px;
+}

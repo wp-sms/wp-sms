@@ -161,10 +161,10 @@ class Gateway
             'smseagle' => 'smseagle.eu'
         ),
         'australia'      => array(
-            'smsbroadcast'      => 'smsbroadcast.com.au',
-            'textteam'          => 'textteam.com.au',
-            'messagemedia'      => 'messagemedia.com/au',
-            'smscentral'        => 'smscentral.com.au',
+            'smsbroadcast' => 'smsbroadcast.com.au',
+            'textteam'     => 'textteam.com.au',
+            'messagemedia' => 'messagemedia.com/au',
+            'smscentral'   => 'smscentral.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
@@ -607,6 +607,27 @@ class Gateway
     }
 
     /**
+     * Check if a gateway exists in the gateway list
+     *
+     * @param string $slug The gateway slug to check
+     * @return bool True if the gateway exists, false otherwise
+     */
+    public static function gatewayExists($slug)
+    {
+        $slug = str_replace(['-', ' '], '', $slug);
+
+        $gateways = self::gateway();
+
+        foreach ($gateways as $region => $gatewayList) {
+            if (array_key_exists($slug, $gatewayList)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return mixed|void
      */
     public static function gateway()
@@ -680,11 +701,11 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'australia'            => array(
-                'mobilemessage'     =>  'mobilemessage.com.au',
-                'slinteractive'     => 'slinteractive.com.au',
-                'smssolutions'      => 'smssolutionsaustralia.com.au',
-                '_160au'            => '160.com.au',
-                'gunisms'           => 'gunisms.com.au',
+                'mobilemessage' => 'mobilemessage.com.au',
+                'slinteractive' => 'slinteractive.com.au',
+                'smssolutions'  => 'smssolutionsaustralia.com.au',
+                '_160au'        => '160.com.au',
+                'gunisms'       => 'gunisms.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',
@@ -912,9 +933,9 @@ class Gateway
                 'directsend' => 'directsend.co.kr',
             ),
             'sweden'               => array(
-                'hellosms'      => 'hellosms.se',
-                'prosms'        => 'prosms.se',
-                'cellsynt'      => 'cellsynt',
+                'hellosms' => 'hellosms.se',
+                'prosms'   => 'prosms.se',
+                'cellsynt' => 'cellsynt',
             ),
             'development'          => array(
                 'custom' => __('Custom Gateway', 'wp-sms')
