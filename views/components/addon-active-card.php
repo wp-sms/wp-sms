@@ -35,7 +35,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
             <?php if (in_array($addOn->getSlug(), $selectedAddOns) && (!$addOn->isInstalled() || $addOn->isUpdateAvailable())) : ?>
                 <a class="wpsms-postbox-addon__button button-retry-addon-download js-addon-retry-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Retry', 'wp-sms'); ?>"><?php esc_html_e('Retry', 'wp-sms'); ?></a>
             <?php elseif ($addOn->isInstalled() && !$addOn->isActivated() ) : ?>
-                <a class="wpsms-postbox-addon__button button-activate-addon js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Active', 'wp-sms'); ?>"><?php esc_html_e('Active', 'wp-sms'); ?></a>
+                <a class="wpsms-postbox-addon__button button-activate-addon js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Activate', 'wp-sms'); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
             <?php endif; ?>
         </div>
 

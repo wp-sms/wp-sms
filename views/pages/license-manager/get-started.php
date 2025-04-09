@@ -15,7 +15,7 @@ use WP_SMS\Utils\MenuUtil;
         <div class="wpsms-addon__step__download">
             <div class="wpsms-addon__download__title">
                 <h3>
-                    <?php esc_html_e('Select Your Add-Ons', 'wp-sms'); ?>
+                    <?php esc_html_e('Activate Your Add-Ons', 'wp-sms'); ?>
                 </h3>
                 <a class="wpsms-addon__download_active-all js-addon_active-all <?php echo empty($data['display_activate_all']) ? 'wpsms-hide' : ''; ?>"><?php esc_html_e('Activate All', 'wp-sms'); ?></a>
             </div>

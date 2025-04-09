@@ -2644,9 +2644,9 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       height: 16px;
       border-radius: 250px;
       background: #E5E5E5;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      line-height: 14.06px;
+      line-height: 12.89px;
       color: #A3A3A3;
       display: inline-flex;
       align-items: center;
@@ -3993,15 +3993,15 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
                 display: inline-block;
                 width: 16px;
                 height: 16px;
-                -webkit-animation-name: wpsms-cycle;
+                -webkit-animation-name: wpsms-spin;
                 -webkit-animation-duration: 2s;
                 -webkit-animation-iteration-count: infinite;
                 -webkit-animation-fill-mode: forwards;
-                animation-name: wpsms-cycle;
+                animation-name: wpsms-spin;
                 animation-duration: 2s;
                 animation-iteration-count: infinite;
                 animation-fill-mode: forwards;
-                -moz-animation-name: wpsms-cycle;
+                -moz-animation-name: wpsms-spin;
                 -moz-animation-duration: 2s;
                 -moz-animation-iteration-count: infinite;
                 -moz-animation-fill-mode: forwards;
@@ -4162,7 +4162,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
               border-bottom: 1px solid #0C0C0D;
 
               &:after {
-                background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTEiIHZpZXdCb3g9IjAgMCAxMCAxMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3ODA4XzU2NjgpIj4KPHBhdGggZD0iTTcuNzQwMTcgNS4xNjk4M0w0LjU3MzkyIDEuOTEzMjdMNS40MDg2OSAxLjA1NDY5TDkuOTk5OTkgNS43NzY5NUw1LjQwODY5IDEwLjQ5OTFMNC41NzM5MiA5LjY0MDU1TDcuNzQwMTcgNi4zODQwNkgwLjU1NTU0MlY1LjE2OTgzSDcuNzQwMTdaIiBmaWxsPSIjMEMwQzBEIi8+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMTc4MDhfNTY2OCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMC41KSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=") center center no-repeat;
+                filter: brightness(0.5);
               }
             }
           }
@@ -4181,7 +4181,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
                 border-bottom: 1px solid #0C0C0D;
 
                 &:after {
-                  background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTEiIHZpZXdCb3g9IjAgMCAxMCAxMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3ODA4XzU2NjgpIj4KPHBhdGggZD0iTTcuNzQwMTcgNS4xNjk4M0w0LjU3MzkyIDEuOTEzMjdMNS40MDg2OSAxLjA1NDY5TDkuOTk5OTkgNS43NzY5NUw1LjQwODY5IDEwLjQ5OTFMNC41NzM5MiA5LjY0MDU1TDcuNzQwMTcgNi4zODQwNkgwLjU1NTU0MlY1LjE2OTgzSDcuNzQwMTdaIiBmaWxsPSIjMEMwQzBEIi8+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMTc4MDhfNTY2OCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMC41KSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=") center center no-repeat;
+                  filter: brightness(0.5);
                 }
               }
             }
@@ -4660,6 +4660,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    padding: 11px 16px;
 
     &:hover {
       background-color: #F5F5F5 !important;
@@ -4701,15 +4702,15 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       width: 16px;
       min-width: 16px;
       height: 16px;
-     -webkit-animation-name: wpsms-cycle;
+     -webkit-animation-name: wpsms-spin;
       -webkit-animation-duration: 2s;
       -webkit-animation-iteration-count: infinite;
       -webkit-animation-fill-mode: forwards;
-      animation-name: wpsms-cycle;
+      animation-name: wpsms-spin;
       animation-duration: 2s;
       animation-iteration-count: infinite;
       animation-fill-mode: forwards;
-      -moz-animation-name: wpsms-cycle;
+      -moz-animation-name: wpsms-spin;
       -moz-animation-duration: 2s;
       -moz-animation-iteration-count: infinite;
       -moz-animation-fill-mode: forwards;
@@ -5218,6 +5219,7 @@ background: #FAFAFA;
     transform: rotate(359deg);
   }
 }
+
 
 .wpsms__btn--transparent {
   padding: 0;

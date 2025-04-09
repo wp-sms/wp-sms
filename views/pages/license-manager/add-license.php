@@ -23,7 +23,7 @@
                     <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key" target="_blank" title="<?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?>"><?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-sms-pro.com/contact-us" target="_blank" title="<?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?>"><?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/contact-us" target="_blank" title="<?php esc_html_e('Have questions or trouble activating your license?', 'wp-sms'); ?>"><?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?></a>
                 </li>
             </ul>
         </div>
