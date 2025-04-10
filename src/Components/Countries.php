@@ -159,4 +159,25 @@ class Countries extends Singleton
     {
         return $this->getCountries('allDialCodes', 'code');
     }
+
+    /**
+     * Get the phone number prefix (dial code) for a country by its short code.
+     *
+     * @param string $countryCode The country's short code (e.g., "IR" for Iran)
+     * @return string|null The dial code (e.g., "+98") or null if not found
+     */
+    public function getDialCodeByCountryCode($countryCode)
+    {
+        // Get all countries with their codes as keys and allDialCodes as values
+        $dialCodesByCountryCode = $this->getAllDialCodesByCode();
+
+        // Check if the country code exists
+        if (isset($dialCodesByCountryCode[$countryCode])) {
+            // Get the first dial code (usually the main one)
+            $dialCodes = $dialCodesByCountryCode[$countryCode];
+            return $dialCodes[0] ?? null;
+        }
+
+        return null;
+    }
 }

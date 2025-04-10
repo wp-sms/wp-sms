@@ -326,6 +326,7 @@ class MigrationHandler
         }
 
         $process = WPSms()->getBackgroundProcess('data_migration_process');
+        $process->stopProcess();
         if ($process->is_active()) {
             return;
         }

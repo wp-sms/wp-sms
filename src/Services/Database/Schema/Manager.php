@@ -16,66 +16,66 @@ class Manager
      * @var array
      */
     private static $tablesSchema = [
-        'subscribes' => [
-            'columns' => [
-                'ID'             => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
-                'date'           => 'DATETIME',
-                'name'           => 'VARCHAR(250)',
-                'mobile'         => 'VARCHAR(20) NOT NULL',
-                'status'         => 'TINYINT(1)',
-                'activate_key'   => 'INT(11)',
-                'custom_fields'  => 'TEXT NULL',
-                'group_ID'       => 'INT(5)',
+        'sms_subscribes'       => [
+            'columns'     => [
+                'ID'            => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'date'          => 'DATETIME',
+                'name'          => 'VARCHAR(250)',
+                'mobile'        => 'VARCHAR(20) NOT NULL',
+                'status'        => 'TINYINT(1)',
+                'activate_key'  => 'INT(11)',
+                'custom_fields' => 'TEXT NULL',
+                'group_ID'      => 'INT(5)',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'subscribes_group' => [
-            'columns' => [
-                'ID'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
-                'name'       => 'VARCHAR(250)',
+        'sms_subscribes_group' => [
+            'columns'     => [
+                'ID'   => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'name' => 'VARCHAR(250)',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'send' => [
-            'columns' => [
-                'ID'         => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
-                'date'       => 'DATETIME',
-                'sender'     => 'VARCHAR(20) NOT NULL',
-                'message'    => 'TEXT NOT NULL',
-                'recipient'  => 'TEXT NOT NULL',
-                'response'   => 'TEXT NOT NULL',
-                'status'     => "VARCHAR(10) NOT NULL",
+        'sms_send'             => [
+            'columns'     => [
+                'ID'        => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'date'      => 'DATETIME',
+                'sender'    => 'VARCHAR(20) NOT NULL',
+                'message'   => 'TEXT NOT NULL',
+                'recipient' => 'TEXT NOT NULL',
+                'response'  => 'TEXT NOT NULL',
+                'status'    => "VARCHAR(10) NOT NULL",
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'numbers' => [
-            'columns' => [
-                'id'              => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
-                'number'          => 'VARCHAR(20) NOT NULL UNIQUE',
-                'country_code'    => 'VARCHAR(10) NOT NULL',
-                'first_name'      => 'VARCHAR(50)',
-                'last_name'       => 'VARCHAR(50)',
-                'display_name'    => 'VARCHAR(100)',
-                'user_id'         => 'BIGINT(20) NOT NULL',
-                'status'          => "ENUM('active', 'pending', 'deactivated') NOT NULL DEFAULT 'pending'",
-                'unsubscribed'    => 'BOOLEAN NOT NULL DEFAULT FALSE',
-                'verified'        => 'BOOLEAN NOT NULL DEFAULT FALSE',
-                'source'          => 'VARCHAR(255)',
-                'meta'            => 'TEXT',
+        'sms_numbers'          => [
+            'columns'     => [
+                'id'               => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'number'           => 'VARCHAR(20) NOT NULL UNIQUE',
+                'country_code'     => 'VARCHAR(10) NOT NULL',
+                'first_name'       => 'VARCHAR(50)',
+                'last_name'        => 'VARCHAR(50)',
+                'display_name'     => 'VARCHAR(100)',
+                'user_id'          => 'BIGINT(20) NOT NULL',
+                'status'           => "ENUM('active', 'pending', 'deactivated') NOT NULL DEFAULT 'pending'",
+                'unsubscribed'     => 'BOOLEAN NOT NULL DEFAULT FALSE',
+                'verified'         => 'BOOLEAN NOT NULL DEFAULT FALSE',
+                'source'           => 'VARCHAR(255)',
+                'meta'             => 'TEXT',
                 'secondary_number' => 'VARCHAR(20) DEFAULT NULL',
-                'last_sent_at'    => 'DATETIME DEFAULT NULL',
-                'success_count'   => 'INT(11) NOT NULL DEFAULT 0',
-                'fail_count'      => 'INT(11) NOT NULL DEFAULT 0',
-                'opt_in_date'     => 'DATETIME DEFAULT NULL',
-                'opt_out_at'      => 'DATETIME DEFAULT NULL',
-                'created_at'      => 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
-                'updated_at'      => 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+                'last_sent_at'     => 'DATETIME DEFAULT NULL',
+                'success_count'    => 'INT(11) NOT NULL DEFAULT 0',
+                'fail_count'       => 'INT(11) NOT NULL DEFAULT 0',
+                'opt_in_date'      => 'DATETIME DEFAULT NULL',
+                'opt_out_at'       => 'DATETIME DEFAULT NULL',
+                'created_at'       => 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
+                'updated_at'       => 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
             ],
             'constraints' => [
                 'PRIMARY KEY (id)',
@@ -92,7 +92,7 @@ class Manager
      */
     public static function getSchemaForTable(string $tableName)
     {
-        return self::$tablesSchema[$tableName] ?? null;
+        return isset(self::$tablesSchema[$tableName]) ? self::$tablesSchema[$tableName] : null;
     }
 
     /**
