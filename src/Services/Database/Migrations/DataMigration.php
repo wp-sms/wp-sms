@@ -41,7 +41,6 @@ class DataMigration extends AbstractMigrationOperation
                 ->setName('sms_subscribes')
                 ->setArgs([
                     'columns'  => ['ID', 'mobile', 'name', 'status', 'group_ID'],
-                    'where'    => ['mobile IS NOT NULL AND mobile != ""'],
                     'order_by' => 'ID ASC'
                 ])
                 ->execute()
@@ -81,35 +80,30 @@ class DataMigration extends AbstractMigrationOperation
             $this->ensureConnection();
             $tasks     = [];
             $batchSize = 100;
-            $metaKeys  = ['mobile', 'phone', 'billing_phone'];
+            $userIds   = get_users(['fields' => 'ID']);
+            $users     = [];
 
-            foreach ($metaKeys as $key) {
-                $userNumbers = DatabaseFactory::table('select')
-                    ->setName('usermeta')
-                    ->setArgs([
-                        'columns' => ['user_id', 'meta_value as number'],
-                        'where'   => [
-                            'meta_key' => $key,
-                            'meta_value IS NOT NULL AND meta_value != ""'
-                        ]
-                    ])
-                    ->execute()
-                    ->getResult();
+            foreach ($userIds as $userId) {
+                $users[] = [
+                    'user_id'            => $userId,
+                    'billing_first_name' => get_user_meta($userId, 'billing_first_name', true),
+                    'billing_last_name'  => get_user_meta($userId, 'billing_last_name', true),
+                    'billing_country'    => get_user_meta($userId, 'billing_country', true),
+                    'billing_email'      => get_user_meta($userId, 'billing_email', true),
+                    'billing_phone'      => get_user_meta($userId, 'billing_phone', true)
+                ];
+            }
 
-                if ($userNumbers) {
-                    $total = count($userNumbers);
-                    BackgroundProcessMonitor::addTotalRecords('data_migration_process', $total);
+            if ($users) {
 
-                    $batches = array_chunk($userNumbers, $batchSize);
+                $batches = array_chunk($users, $batchSize);
 
-                    foreach ($batches as $batch) {
-                        $tasks[] = [
-                            'data'     => $batch,
-                            'setData'  => 'setUserMetaBatch',
-                            'class'    => 'process_user_meta_numbers',
-                            'meta_key' => $key
-                        ];
-                    }
+                foreach ($batches as $batch) {
+                    $tasks[] = [
+                        'data'    => $batch,
+                        'setData' => 'setUserMetaBatch',
+                        'class'   => 'process_user_meta_numbers',
+                    ];
                 }
             }
 
@@ -183,7 +177,7 @@ class DataMigration extends AbstractMigrationOperation
         $record = array_merge($defaults, $data);
 
         return DatabaseFactory::table('insert')
-            ->setName('numbers')
+            ->setName('sms_numbers')
             ->setArgs([
                 'data'   => $record,
                 'format' => [
