@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Services\Database;
 
+use WP_SMS\Services\Database\Operations\MultiStepOps\ProcessSubscriberNumbers;
+use WP_SMS\Services\Database\Operations\MultiStepOps\ProcessUserMetaNumbers;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\Migrations\DataMigration;
 use WP_SMS\Services\Database\Migrations\SchemaMigration;
@@ -26,12 +28,14 @@ class DatabaseFactory
      * @var array
      */
     private static $operations = [
-        'create'                => Create::class,
-        'update'                => Update::class,
-        'drop'                  => Drop::class,
-        'inspect'               => Inspect::class,
-        'insert'                => Insert::class,
-        'select'                => Select::class,
+        'create'                     => Create::class,
+        'update'                     => Update::class,
+        'drop'                       => Drop::class,
+        'inspect'                    => Inspect::class,
+        'insert'                     => Insert::class,
+        'select'                     => Select::class,
+        'process_subscriber_numbers' => ProcessSubscriberNumbers::class,
+        'process_user_meta_numbers'  => ProcessUserMetaNumbers::class
     ];
 
     /**
@@ -41,7 +45,7 @@ class DatabaseFactory
      */
     private static $migrationTypes = [
         'schema' => SchemaMigration::class,
-        'data' => DataMigration::class,
+        'data'   => DataMigration::class,
     ];
 
     /**
@@ -54,7 +58,6 @@ class DatabaseFactory
     public static function table($operation)
     {
         $operation = strtolower($operation);
-
         if (!isset(self::$operations[$operation])) {
             throw new \InvalidArgumentException("Invalid operation: {$operation}");
         }
@@ -78,7 +81,7 @@ class DatabaseFactory
         $migrationInstances = [];
 
         foreach (self::$migrationTypes as $migrationClass) {
-            if (! class_exists($migrationClass)) {
+            if (!class_exists($migrationClass)) {
                 continue;
             }
 
@@ -95,7 +98,7 @@ class DatabaseFactory
      * and compares it to a specified required version using a provided comparison operation.
      *
      * @param string $requiredVersion The version to compare against (e.g., "1.2.3").
-     * @param string $operation       The comparison operator for version comparison.
+     * @param string $operation The comparison operator for version comparison.
      *                                Allowed values: '<', '<=', '>', '>=', '==', '!='.
      *
      * @return bool Returns true if the comparison condition is met, false otherwise.
