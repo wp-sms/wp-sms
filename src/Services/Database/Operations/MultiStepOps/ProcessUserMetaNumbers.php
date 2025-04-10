@@ -67,7 +67,7 @@ class ProcessUserMetaNumbers extends AbstractTableOperation
                     $country_code     = $countries->getDialCodeByCountryCode($billingCountry);
 
                     DatabaseFactory::table('insert')
-                        ->setName('numbers')
+                        ->setName('sms_numbers')
                         ->setArgs([
                             'conditions' => [
                                 'number' => $billingPhone,
