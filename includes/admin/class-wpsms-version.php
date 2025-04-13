@@ -38,6 +38,7 @@ class Version
     public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
         self::maybe_deprecated_function(__METHOD__, 'LicenseHelper::isPluginLicenseValid()');
+        if ($pluginSlug == 'wp-sms-pro/wp-sms-pro.php') $pluginSlug = 'wp-sms-pro';
         return LicenseHelper::isPluginLicenseValid($pluginSlug);
     }
 
