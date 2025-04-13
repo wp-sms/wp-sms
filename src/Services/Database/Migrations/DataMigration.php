@@ -21,8 +21,7 @@ class DataMigration extends AbstractMigrationOperation
     protected $migrationSteps = [
         '14.12.7' => [
             'migrateMobileNumbersFromSubscribers',
-            'migrateMobileNumbersFromUserMeta',
-            'verifyMobileNumberMigration'
+            'migrateMobileNumbersFromUserMeta'
         ],
     ];
 
@@ -38,7 +37,7 @@ class DataMigration extends AbstractMigrationOperation
 
             // Get all distinct mobile numbers from subscribers table
             $subscribers = DatabaseFactory::table('select')
-                ->setName('sms_subscribes')
+                ->setName('subscribes')
                 ->setArgs([
                     'columns'  => ['ID', 'mobile', 'name', 'status', 'group_ID'],
                     'order_by' => 'ID ASC'
@@ -67,7 +66,6 @@ class DataMigration extends AbstractMigrationOperation
             return $tasks;
         } catch (Exception $e) {
             $this->setErrorStatus($e->getMessage());
-            return [];
         }
     }
 
@@ -110,98 +108,6 @@ class DataMigration extends AbstractMigrationOperation
             return $tasks;
         } catch (Exception $e) {
             $this->setErrorStatus($e->getMessage());
-            return [];
         }
-    }
-
-    /**
-     * Verify the mobile number migration
-     */
-    public function verifyMobileNumberMigration()
-    {
-        return [
-            [
-                'task'  => 'validate_mobile_number_migration',
-                'class' => 'migration_verification'
-            ]
-        ];
-    }
-
-    /**
-     * Process a batch of subscriber numbers
-     */
-    public function processSubscriberNumbers($batch)
-    {
-        foreach ($batch as $subscriber) {
-            $this->insertMobileNumber([
-                'number' => $subscriber['mobile'],
-                'name'   => $subscriber['name'] ?? null,
-                'status' => $subscriber['status'] ? 'active' : 'pending',
-                'source' => 'legacy_subscriber',
-                'meta'   => json_encode([
-                    'legacy_id' => $subscriber['ID'],
-                    'group_id'  => $subscriber['group_ID']
-                ])
-            ]);
-        }
-        return true;
-    }
-
-    /**
-     * Process a batch of user meta numbers
-     */
-    public function processUserMetaNumbers($batch, $metaKey)
-    {
-        foreach ($batch as $user) {
-            $this->insertMobileNumber([
-                'number'  => $user['number'],
-                'user_id' => $user['user_id'],
-                'status'  => 'active',
-                'source'  => 'usermeta_' . $metaKey
-            ]);
-        }
-        return true;
-    }
-
-    /**
-     * Insert a mobile number record
-     */
-    protected function insertMobileNumber($data)
-    {
-        $defaults = [
-            'country_code' => $this->detectCountryCode($data['number']),
-            'verified'     => false,
-            'created_at'   => current_time('mysql')
-        ];
-
-        $record = array_merge($defaults, $data);
-
-        return DatabaseFactory::table('insert')
-            ->setName('sms_numbers')
-            ->setArgs([
-                'data'   => $record,
-                'format' => [
-                    '%s', // number
-                    '%s', // country_code
-                    '%d', // user_id
-                    '%s', // name
-                    '%s', // status
-                    '%s', // source
-                    '%s', // meta
-                    '%d', // verified
-                    '%s'  // created_at
-                ]
-            ])
-            ->execute()
-            ->getResult();
-    }
-
-    /**
-     * Simple country code detection
-     */
-    protected function detectCountryCode($number)
-    {
-        // Implement proper country code detection
-        return '';
     }
 }

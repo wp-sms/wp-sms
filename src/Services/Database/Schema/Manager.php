@@ -16,7 +16,7 @@ class Manager
      * @var array
      */
     private static $tablesSchema = [
-        'sms_subscribes'       => [
+        'subscribes'       => [
             'columns'     => [
                 'ID'            => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'date'          => 'DATETIME',
@@ -31,7 +31,7 @@ class Manager
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'sms_subscribes_group' => [
+        'subscribes_group' => [
             'columns'     => [
                 'ID'   => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'name' => 'VARCHAR(250)',
@@ -40,7 +40,7 @@ class Manager
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'sms_send'             => [
+        'send'             => [
             'columns'     => [
                 'ID'        => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'date'      => 'DATETIME',
@@ -54,7 +54,7 @@ class Manager
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'sms_numbers'          => [
+        'numbers'          => [
             'columns'     => [
                 'id'               => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
                 'number'           => 'VARCHAR(20) NOT NULL UNIQUE',
