@@ -1057,6 +1057,50 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   }
 }
 
+.notice.wpsms-admin-notice{
+  padding: 8px 14px;
+
+  p{
+    margin-bottom: 0;
+  }
+  .button {
+    padding: 0 10px;
+    margin: 0;
+    background: #f6f7f7;
+    border-color: #8c8f94;
+    box-shadow: none;
+    font-size: 13px;
+    line-height: 2.15384615;
+    min-height: 30px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  p:first-child {
+    margin-top: 0
+  }
+
+  .button-primary {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff
+  }
+
+  &.wpsms-admin-notice__dismissible{
+    padding-right: 35px!important;
+
+    .rtl &{
+      padding-left: 35px!important;
+      padding-right: 14px!important;
+    }
+  }
+}
+
 .wpsms-wrap .notice::before {
   content: "";
   min-width: 20px;

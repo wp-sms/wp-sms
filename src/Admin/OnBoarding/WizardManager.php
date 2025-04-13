@@ -58,16 +58,41 @@ class WizardManager
         // Generate the setup wizard URL
         $setup_url = admin_url('admin.php?page=wp-sms&path=' . $this->slug);
 
+        // Allow 'display' CSS property for inline styles
+        add_filter('safe_style_css', function ($styles) {
+            $styles[] = 'display';
+            return $styles;
+        });
         // Create the notice message with links
         $message = sprintf(
-            __('WP SMS is now active! Before sending any messages, please configure your gateway and complete the setup process. %s %s', 'wp-sms'),
+            __('<span>%s<span style="display: flex;align-items: center;gap: 6px;margin-top: 8px" class="wpsms-admin-notice__action">%s %s</span></span>', 'wp-sms'),
+            __('WP SMS is now active! Before sending any messages, please configure your gateway and complete the setup process', 'wp-sms'),
             '<a href="' . esc_url($setup_url) . '" class="button button-primary">' . __('Launch Setup Wizard', 'wp-sms') . '</a>',
             '<a href="' . esc_url(add_query_arg('wpsms_dismiss_activation_notice', '1')) . '" class="button">' . __('Dismiss', 'wp-sms') . '</a>'
         );
 
+        // Define allowed HTML for sanitization
+        $allowed_html = array(
+            'span' => array(
+                'style' => true,
+                'class' => true,
+            ),
+            'a' => array(
+                'href' => true,
+                'class' => true,
+            ),
+        );
+
+        $sanitized_message = wp_kses($message, $allowed_html);
+        // Remove the filter to avoid affecting other inline styles
+        remove_filter('safe_style_css', function ($styles) {
+            $styles[] = 'display';
+            return $styles;
+        });
+
         $noticeManager->registerNotice(
             'wp_sms_' . $this->slug . '_activation',
-            $message,
+            $sanitized_message,
             false,
             false
         );
