@@ -87,9 +87,9 @@ class DataMigrationProcess extends WP_Background_Process
 
         $batchClass = $class;
 
-        if (is_array($task) && ! empty($task['class'])) {
-            $data    = ! empty($task['data']) ? $task['data'] : [];
-            $setData = ! empty($task['setData']) ? $task['setData'] : '';
+        if (is_array($task) && !empty($task['class'])) {
+            $data    = !empty($task['data']) ? $task['data'] : [];
+            $setData = !empty($task['setData']) ? $task['setData'] : '';
 
             if (empty($setData)) {
                 return false;
@@ -132,5 +132,7 @@ class DataMigrationProcess extends WP_Background_Process
         Option::deleteOptionGroup('data_migration_process_started', 'jobs');
         Option::saveOptionGroup('migrated', true, 'db');
         Option::saveOptionGroup('migration_status_detail', $operationStatus, 'db');
+
+        BackgroundProcessMonitor::deleteOption($this->action);
     }
 }

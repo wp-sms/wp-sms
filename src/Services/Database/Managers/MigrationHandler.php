@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Services\Database\Managers;
 
+use WP_SMS\BackgroundProcess\Async\BackgroundProcessMonitor;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
@@ -20,19 +21,19 @@ class MigrationHandler
      * Action for triggering manual migration.
      * @var string
      */
-    private const MIGRATION_ACTION = 'run_manual_migration';
+    const MIGRATION_ACTION = 'wp_sms_run_manual_migration';
 
     /**
      * Action for triggering retry manual migration.
      * @var string
      */
-    private const MIGRATION_RETRY_ACTION = 'retry_manual_migration';
+    const MIGRATION_RETRY_ACTION = 'wp_sms_retry_manual_migration';
 
     /**
      * Nonce name for manual migration action.
      * @var string
      */
-    private const MIGRATION_NONCE = 'run_manual_migration_nonce';
+    const MIGRATION_NONCE = 'run_manual_migration_nonce';
 
     /**
      * Initialize migration processes and register WordPress hooks.
@@ -44,7 +45,7 @@ class MigrationHandler
         add_action('admin_post_' . self::MIGRATION_ACTION, [self::class, 'processManualMigrations']);
         add_action('admin_post_' . self::MIGRATION_RETRY_ACTION, [self::class, 'retryManualMigration']);
 
-        add_action('init', [self::class, 'handleNotice']);
+        add_action('admin_init', [self::class, 'handleNotice']);
         self::runMigrations();
     }
 
@@ -325,6 +326,7 @@ class MigrationHandler
         }
 
         $process = WPSms()->getBackgroundProcess('data_migration_process');
+
         if ($process->is_active()) {
             return;
         }
@@ -558,6 +560,8 @@ class MigrationHandler
         $status = $details['status'];
 
         if ($status === 'progress') {
+            $remaining = BackgroundProcessMonitor::getRemainingRecords('data_migration_process');
+
             $message = sprintf(
                 '
                     <p>
@@ -590,10 +594,12 @@ class MigrationHandler
                 esc_html__('Thank you for keeping WP SMS up-to-date!', 'wp-sms')
             );
             $notice->registerNotice('database_manual_migration_done', $message, true);
+            Option::saveOptionGroup('migration_status_detail', null, 'db');
             return;
         }
 
         if ($status === 'failed') {
+            BackgroundProcessMonitor::deleteOption('data_migration_process');
             $actionUrl = self::buildActionUrl('retry');
 
             $message = sprintf(
