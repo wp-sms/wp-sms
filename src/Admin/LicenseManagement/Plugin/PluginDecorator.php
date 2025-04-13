@@ -1,5 +1,7 @@
 <?php
+
 namespace WP_SMS\Admin\LicenseManagement\Plugin;
+
 namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
 use Exception;
@@ -16,9 +18,9 @@ class PluginDecorator
 
     public function __construct($plugin)
     {
-        $this->apiCommunicator  = new ApiCommunicator();
-        $this->pluginHandler    = new PluginHandler();
-        $this->plugin           = $plugin;
+        $this->apiCommunicator = new ApiCommunicator();
+        $this->pluginHandler   = new PluginHandler();
+        $this->plugin          = $plugin;
     }
 
     public function getId()
@@ -203,11 +205,46 @@ class PluginDecorator
      */
     public function getSettingsUrl()
     {
-        $pluginName = str_replace('wp-sms-', '', $this->getSlug());
-        $tab        = !empty($pluginName) ? "$pluginName-settings" : '';
+        $pluginSlug  = $this->getSlug();
+        $settingsUrl = '';
 
-        return MenuUtil::getAdminUrl('settings', ['tab' => $tab]); // Updated to use MenuUtil
+        switch ($pluginSlug) {
+            case 'wp-sms-woocommerce-pro':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-woo-pro-settings');
+                break;
+            case 'wp-sms-pro':
+                $settingsUrl = MenuUtil::getAdminUrl('settings');
+                break;
+
+            case 'wp-sms-two-way':
+                $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => 'addon_two_way']);
+                break;
+
+            case 'wp-sms-membership':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_paid_membership_pro']);
+                break;
+
+            case 'wp-sms-fluent':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_fluent_crm']);
+                break;
+
+            case 'wp-sms-booking':
+                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_booking_integrations_woo_appointments']);
+                break;
+            case 'wp-sms-elementor':
+                $settingsUrl = '';
+                break;
+
+            default:
+                $pluginName  = str_replace('wp-sms-', '', $pluginSlug);
+                $tab         = !empty($pluginName) ? "$pluginName-settings" : '';
+                $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => $tab]);
+                break;
+        }
+
+        return apply_filters('wp_sms_addon_settings_url', $settingsUrl, $pluginSlug);
     }
+
 
     public function isUpdateAvailable()
     {

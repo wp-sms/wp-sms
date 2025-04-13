@@ -34,7 +34,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
         <div class="wpsms-postbox-addon__buttons">
             <?php if (in_array($addOn->getSlug(), $selectedAddOns) && (!$addOn->isInstalled() || $addOn->isUpdateAvailable())) : ?>
                 <a class="wpsms-postbox-addon__button button-retry-addon-download js-addon-retry-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Retry', 'wp-sms'); ?>"><?php esc_html_e('Retry', 'wp-sms'); ?></a>
-            <?php elseif ($addOn->isInstalled() && !$addOn->isActivated() ) : ?>
+            <?php elseif ($addOn->isInstalled() && !$addOn->isActivated()) : ?>
                 <a class="wpsms-postbox-addon__button button-activate-addon js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Activate', 'wp-sms'); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
             <?php endif; ?>
         </div>
@@ -43,7 +43,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
         <div class="wpsms-addon--actions <?php echo !$addOn->isInstalled() ? 'wpsms-hide' : ''; ?>">
             <span class="wpsms-addon--actions--show-more js-addon-show-more"></span>
             <ul class="wpsms-addon--submenus">
-                <?php if ($addOn->isActivated()) : ?>
+                <?php if ($addOn->isActivated() && !empty($addOn->getSettingsUrl())) : ?>
                     <li><a target="_blank" href="<?php echo esc_url($addOn->getSettingsUrl()); ?>" class="wpsms-addon--submenu wpsms-addon--submenu__settings"><?php esc_html_e('Settings', 'wp-sms'); ?></a></li>
                 <?php endif; ?>
                 <?php if (!empty($addOn->getProductUrl())) : ?>
