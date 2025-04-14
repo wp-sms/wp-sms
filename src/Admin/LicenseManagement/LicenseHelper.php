@@ -1,4 +1,5 @@
 <?php
+
 namespace WP_SMS\Admin\LicenseManagement;
 
 use Exception;
@@ -75,6 +76,7 @@ class LicenseHelper
     {
         $licenseKey = self::getPluginLicense($slug);
         $status     = self::getLicenseInfo($licenseKey);
+        error_log(print_r($licenseKey, true));
 
         return $status['status'] ?? null;
     }
@@ -86,7 +88,7 @@ class LicenseHelper
      *
      * @return bool True if the plugin has a valid license, false otherwise.
      */
-    public static function isPluginLicenseValid($slug)
+    public static function isPluginLicenseValid($slug = 'wp-sms-pro')
     {
         $status = self::getPluginLicenseStatus($slug);
         return $status === 'valid';
@@ -112,12 +114,12 @@ class LicenseHelper
     public static function storeLicense($licenseKey, $licenseData)
     {
         $data = [
-            'status'        => $licenseData->status,
-            'type'          => $licenseData->license_details->type ?? null,
-            'sku'           => $licenseData->license_details->sku ?? null,
-            'max_domains'   => $licenseData->license_details->max_domains ?? null,
-            'user'          => $licenseData->license_details->user ?? null,
-            'products'      => isset($licenseData->products) ? wp_list_pluck($licenseData->products, 'slug') : null,
+            'status'      => $licenseData->status,
+            'type'        => $licenseData->license_details->type ?? null,
+            'sku'         => $licenseData->license_details->sku ?? null,
+            'max_domains' => $licenseData->license_details->max_domains ?? null,
+            'user'        => $licenseData->license_details->user ?? null,
+            'products'    => isset($licenseData->products) ? wp_list_pluck($licenseData->products, 'slug') : null,
         ];
 
         OptionUtil::saveOptionGroup($licenseKey, $data, self::LICENSE_OPTION_KEY);

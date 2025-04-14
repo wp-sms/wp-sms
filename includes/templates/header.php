@@ -12,7 +12,7 @@ $tab_url   = add_query_arg(array(
     'page'             => 'wp-sms-settings'
 ));
 $active    = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
-$isPremium = LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
+$isPremium = LicenseHelper::isPluginLicenseValid();
 // Get information about active add-ons
 $addons = is_plugin_active('wp-sms-pro/wp-sms-pro.php') ? array('license_wp-sms-pro_status' => false) : array();
 

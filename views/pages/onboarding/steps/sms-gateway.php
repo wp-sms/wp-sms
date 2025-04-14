@@ -85,7 +85,7 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
                     <?php
                     $countries      = [];
                     $country_list   = '';
-                    $can_choose     = LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
+                    $can_choose     = LicenseHelper::isPluginLicenseValid();
                     $is_pro_gateway = false;
 
                     if (isset($gateway->fields->gateway_attributes->is_deprecated) && $gateway->fields->gateway_attributes->is_deprecated) continue;
