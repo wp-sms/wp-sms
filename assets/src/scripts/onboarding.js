@@ -11,6 +11,46 @@ jQuery(document).ready(function ($) {
             mainContent.insertBefore(notice, mainContent.firstChild);
         });
     }
+    const wpSmsItiTel = document.querySelector(".wp-sms-input-iti-tel");
+    const countryCodeField = document.querySelector("#wp-sms-country-code-field");
+    if(wpSmsItiTel){
+        const body = document.body;
+        const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
+        wpSmsItiTel.setAttribute('dir', direction)
+        let iti_tel = window.intlTelInput(wpSmsItiTel, {
+            autoInsertDialCode: true,
+            allowDropdown: true,
+            strictMode: true,
+            useFullscreenPopup: false,
+            dropdownContainer: body.classList.contains('rtl') ? null : body,
+            nationalMode: true,
+            formatOnDisplay: false,
+        });
+        if (countryCodeField) {
+            countryCodeField.value = iti_tel.getSelectedCountryData().dialCode;
+        }
+        wpSmsItiTel.addEventListener('countrychange', function() {
+            if (countryCodeField) {
+                countryCodeField.value = iti_tel.getSelectedCountryData().dialCode;
+            }
+        });
+        wpSmsItiTel.addEventListener('blur', function () {
+            setDefaultCode(this, iti_tel);
+        });
+    }
+
+    function setDefaultCode(item, intlTelInputElement) {
+        if (item.value == '') {
+            let country = intlTelInputElement.getSelectedCountryData();
+            item.value = '+' + country.dialCode;
+        } else {
+            if (intlTelInputElement.getNumber()) {
+                item.value = intlTelInputElement.getNumber().replace(/[-\s]/g, '')
+            } else {
+                item.value = item.value.replace(/[-\s]/g, '')
+            }
+        }
+    }
 
     // Initialize Select2 with custom placeholder
     $('.wpsms-onboarding select').select2().on('select2:open', function () {
@@ -83,7 +123,9 @@ jQuery(document).ready(function ($) {
     //     table.column(4).search(chosen_country).draw();
     // }
 
-    $('#filterCountries').on('select2:select', function (e) {
+    $('#filterCountries').select2({
+        dropdownCssClass: 'wp-sms-search-filter-dropdown'
+    }).on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;
         if (selectedCountry === 'All') {
             table.column(4).search('').draw();
