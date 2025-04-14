@@ -2657,6 +2657,9 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   justify-content: space-between;
   align-items: center;
   margin: 2px auto 22px;
+  @media (max-width: 1280px) {
+    margin: 2px auto;
+  }
 
   .wpsms-step-link {
 
@@ -4319,6 +4322,12 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
           line-height: 16.41px;
           border-bottom: 1px solid;
           cursor: pointer;
+          &.wpsms-loading-button{
+            color: #979797;
+            text-decoration: none;
+            pointer-events: none;
+            border: none
+          }
         }
       }
 
@@ -5011,10 +5020,12 @@ background: #FAFAFA;
       &.js-addon-active-plugin-btn , &.button-retry-addon-download{
        background: #FFF7ED;
         color: #EA580C;
+        padding: 2px 6px;
 
         &.is-activating {
-          background-color: #EA580C !important;
-          color: #fff !important;
+          background-color: #F5F5F5 !important;
+          color: #3c434a!important;
+          pointer-events: none;
         }
 
         &:hover {
@@ -5023,10 +5034,6 @@ background: #FAFAFA;
 
         &:focus {
           background: #FED7AA;
-        }
-
-        &:focus, &:active {
-          background: #404BF214;
         }
 
       }
@@ -5249,10 +5256,10 @@ background: #FAFAFA;
       background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE3IiBoZWlnaHQ9IjE3IiB2aWV3Qm94PSIwIDAgMTcgMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik04LjQ5OTg0IDE1LjU4NDZDNC41ODc4MiAxNS41ODQ2IDEuNDE2NSAxMi40MTMzIDEuNDE2NSA4LjUwMTNDMS40MTY1IDQuNTg5MjggNC41ODc4MiAxLjQxNzk3IDguNDk5ODQgMS40MTc5N0MxMi40MTE4IDEuNDE3OTcgMTUuNTgzMiA0LjU4OTI4IDE1LjU4MzIgOC41MDEzQzE1LjU4MzIgMTIuNDEzMyAxMi40MTE4IDE1LjU4NDYgOC40OTk4NCAxNS41ODQ2Wk03Ljc5MzM1IDExLjMzNDZMMTIuODAyIDYuMzI1OTZMMTEuODAwMyA1LjMyNDIzTDcuNzkzMzUgOS4zMzExOUw1Ljc4OTkgNy4zMjc2Nkw0Ljc4ODE2IDguMzI5NDZMNy43OTMzNSAxMS4zMzQ2WiIgZmlsbD0iIzE5NjE0MCIvPgo8L3N2Zz4K") center center no-repeat;
     }
   }
+}
 
-  &.wpsms-hide {
-    display: none;
-  }
+.wpsms-hide{
+  display: none!important;;
 }
 
 @keyframes wpsms-spin {
@@ -5273,10 +5280,17 @@ background: #FAFAFA;
 
 .wpsms-addon__download__item__info__alerts {
   width: 100%;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
 }
 
 .wpsms-addon__download__item__info__alerts:not(:empty) {
   margin-top: 12px;
+  @media (max-width: 768px) {
+    margin-top: 33px;
+    margin-bottom: 16px;
+  }
 }
 a.wpsms-addon__download_select-all,
 a.wpsms-addon__download_active-all {
