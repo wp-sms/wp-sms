@@ -67,7 +67,7 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
                     </th>
                     <th class="u-text-center">
                         <?php esc_html_e('WhatsApp', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('WhatsApp tooltip', 'wp-sms'); ?>">
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Indicates if this gateway supports sending WhatsApp messages.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
@@ -117,7 +117,18 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
                                 <span class="c-table-gateway__name">
                                     <?php
                                     if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                        <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a>
+
+                                        <span>
+                                           <?php echo esc_html($gateway->title->rendered); ?>
+                                            <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
+                                                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </a>
+                                        </span>
+
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
                                     <?php endif; ?>
@@ -151,7 +162,16 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
                                 <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
                                 <span class="c-table-gateway__name">
                                     <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                        <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>"><?php echo esc_html($gateway->title->rendered); ?></a>
+                                            <span>
+                                                <?php echo esc_html($gateway->title->rendered); ?>
+                                                <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
+                                                    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </a>
+                                            </span>
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
                                     <?php endif; ?>

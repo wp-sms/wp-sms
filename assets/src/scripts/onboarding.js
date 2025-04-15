@@ -53,7 +53,9 @@ jQuery(document).ready(function ($) {
     }
 
     // Initialize Select2 with custom placeholder
-    $('.wpsms-onboarding select').select2().on('select2:open', function () {
+    $('.wpsms-onboarding select').select2({
+        dropdownCssClass: 'c-select2-dropdown'
+    }).on('select2:open', function () {
         $('.select2-search__field').attr('placeholder', 'Type to search...');
         $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
     });
@@ -123,9 +125,7 @@ jQuery(document).ready(function ($) {
     //     table.column(4).search(chosen_country).draw();
     // }
 
-    $('#filterCountries').select2({
-        dropdownCssClass: 'wp-sms-search-filter-dropdown'
-    }).on('select2:select', function (e) {
+    $('#filterCountries').on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;
         if (selectedCountry === 'All') {
             table.column(4).search('').draw();

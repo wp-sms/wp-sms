@@ -312,6 +312,12 @@
 
 }
 
+.c-select2-dropdown{
+  .select2-results__option{
+    text-transform: capitalize;
+  }
+}
+
 .toplevel_page_wp-sms .iti__dropdown-content .iti__search-input{
   border:none;
   box-shadow: none;
