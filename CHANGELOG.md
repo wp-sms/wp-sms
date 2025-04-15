@@ -1,3 +1,6 @@
+v6.9.x - 2025-04-x
+- **New**: Added a select input to choose the API endpoint for apigateway.
+
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
