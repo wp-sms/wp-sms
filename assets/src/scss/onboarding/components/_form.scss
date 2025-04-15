@@ -235,6 +235,10 @@
     font-weight: 400;
     line-height: 16.41px;
     margin: 0;
+
+    &.invalid{
+      color: #D63638;
+    }
   }
 
   .wp-sms-invalid{

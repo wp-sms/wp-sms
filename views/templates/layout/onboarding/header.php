@@ -2,6 +2,7 @@
 
     <section class="c-section--logo u-text-center">
         <img alt="<?php esc_attr_e('Logo', 'wp-sms'); ?>" src="<?php echo esc_url(WP_SMS_URL . 'assets/images/logo.svg'); ?>"/>
+        <a href="<?php echo esc_url($skip_setup_url); ?>" class="c-section--exit"><?php esc_attr_e('Exit Setup', 'wp-sms'); ?></a>
     </section>
 
     <header class="o-section c-section--header">

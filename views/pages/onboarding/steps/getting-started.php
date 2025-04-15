@@ -21,14 +21,14 @@
             <label for="tel">
                 <?php esc_html_e('Admin Mobile Number', 'wp-sms'); ?> <span class="u-text-red">*</span>
             </label>
-            <input class="wp-sms-input-iti-tel regular-text" value="<?php echo esc_attr($current_tel_raw); ?>" name="tel" id="tel" type="tel" required/>
-            <input name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text" />
+            <input class="wp-sms-input-iti-tel regular-text" value="<?php echo esc_attr($current_tel_raw); ?>" name="tel" id="tel" type="tel"/>
+            <input name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text"  />
             <p class="c-form__description">
                 <?php esc_html_e("Select your country and enter your mobile number. This number will be used for important notifications and alerts, so make sure it’s correct.", 'wp-sms'); ?>
             </p>
         </div>
         <div class="c-form__footer u-flex-end">
-            <input class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['next']['text']); ?>"/>
+            <input class="c-btn c-btn--primary" disabled type="submit" value="<?php echo esc_attr($ctas['next']['text']); ?>"/>
         </div>
     </form>
 </div>
