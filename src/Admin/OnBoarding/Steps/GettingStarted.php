@@ -11,7 +11,7 @@ class GettingStarted extends StepAbstract
 
     public function getFields()
     {
-        return ['tel', 'countries'];
+        return ['tel', 'countries', 'code'];
     }
 
     protected function initialize()
@@ -45,7 +45,9 @@ class GettingStarted extends StepAbstract
 
     public function afterValidation()
     {
-        $tel = is_array($this->data['tel']) ? $this->data['tel'][0] : $this->data['tel'];
+        $tel          = is_array($this->data['tel']) ? $this->data['tel'][0] : $this->data['tel'];
+        $country_code = $this->data['code'] ?: '';
         Option::updateOption('admin_mobile_number', $tel);
+        Option::updateOption('admin_mobile_number_country_prefix', $country_code);
     }
 }
