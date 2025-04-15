@@ -24,6 +24,14 @@ class WizardManager
 
     public function setup()
     {
+        $skipped_pages = [
+            'wp-sms-add-ons'
+        ];
+
+        if (in_array(Request::get('page'), $skipped_pages)) {
+            return;
+        }
+
         if (!$this->isOnboarding()) {
             $this->addActivationNotice();
             return;
@@ -77,8 +85,8 @@ class WizardManager
                 'style' => true,
                 'class' => true,
             ),
-            'a' => array(
-                'href' => true,
+            'a'    => array(
+                'href'  => true,
                 'class' => true,
             ),
         );
