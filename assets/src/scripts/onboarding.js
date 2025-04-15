@@ -27,11 +27,11 @@ jQuery(document).ready(function ($) {
             formatOnDisplay: false,
         });
         if (countryCodeField) {
-            countryCodeField.value = iti_tel.getSelectedCountryData().dialCode;
+            countryCodeField.value = iti_tel.getSelectedCountryData().name;
         }
         wpSmsItiTel.addEventListener('countrychange', function() {
             if (countryCodeField) {
-                countryCodeField.value = iti_tel.getSelectedCountryData().dialCode;
+                countryCodeField.value = iti_tel.getSelectedCountryData().name;
             }
         });
         wpSmsItiTel.addEventListener('blur', function () {
@@ -127,12 +127,12 @@ jQuery(document).ready(function ($) {
     });
 
 
-    // let chosen_country = $('.chosen-country').val();
-    //
-    // if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
-    //     $('#filterCountries').val(chosen_country).trigger('change');
-    //     table.column(4).search(chosen_country).draw();
-    // }
+    let chosen_country = $('.chosen-country').val();
+
+    if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
+        $('#filterCountries').val(chosen_country).trigger('change');
+        table.column(4).search(chosen_country).draw();
+    }
 
     $('#filterCountries').on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;

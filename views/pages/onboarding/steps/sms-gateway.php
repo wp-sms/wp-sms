@@ -1,6 +1,7 @@
 <?php
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+$current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
 
 ?>
 
@@ -39,6 +40,7 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
             $all_countries = array_unique($all_countries);
             sort($all_countries);
             ?>
+            <input class="chosen-country" disabled type="hidden" value="<?php echo esc_html($current_country)?>">
             <select id="filterCountries" name="countries">
                 <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
                 <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
