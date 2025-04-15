@@ -75,15 +75,31 @@
 
         <div class="wpsms-admin-alert wpsms-admin-alert--info u-mt-38">
             <div class="wpsms-admin-alert--content">
-
                 <p>
                     <?php
-                    echo sprintf(
-                        __('<a href="%1$s" title="%2$s" target="_blank">%2$s</a> %3$s.', 'wp-sms'),
-                        esc_url(WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'),
-                        esc_html__('View dedicated documentation for this gateway', 'wp-sms'),
-                        esc_html__('to learn more about specific requirements, supported features, and troubleshooting tips', 'wp-sms')
-                    );
+                    $output = [];
+
+                    if (!empty($doc_url)) {
+                        $output[] = sprintf(
+                            __('Need More Details? <a href="%1$s" title="%2$s" target="_blank">%2$s</a>', 'wp-sms'),
+                            esc_url($doc_url),
+                            esc_html__('View Instructions for This Gateway', 'wp-sms')
+                        );
+                    }
+
+                    if (!empty($help)) {
+                        $guide_title = '<strong>' . esc_html__('Gateway Guide', 'wp-sms') . '</strong>';
+                        $output[] = $guide_title . '<br>' . wp_kses_post($help);
+                    }
+
+                    if (empty($output)) {
+                        $output[] = sprintf(
+                            __('For additional setup instructions and troubleshooting, visit the <a href="%1$s" target="_blank">WP SMS plugin documentation</a>.', 'wp-sms'),
+                            esc_url(WP_SMS_SITE . '/documentation')
+                        );
+                    }
+
+                    echo implode('<br>', $output);
                     ?>
                 </p>
             </div>

@@ -33,6 +33,8 @@ class Configuration extends StepAbstract
         global $sms;
         $this->sms = $sms;
         $this->setData('fields', $sms->gatewayFields);
+        $this->setData('help', $sms->help);
+        $this->setData('doc_url', $sms->documentUrl);
     }
 
     public function getSlug()
