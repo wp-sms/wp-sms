@@ -65,6 +65,11 @@ jQuery(document).ready(function ($) {
         $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
     }
     // Initialize DataTable
+    DataTable.ext.order['dom-data-sort'] = function(settings, col) {
+        return this.api().column(col, { order: 'index' }).nodes().map(function(td) {
+            return $(td).find('span').data('sort') || 0;
+        });
+    };
     let table = new DataTable('.js-table', {
         searching: true,
         info: false,
@@ -74,6 +79,10 @@ jQuery(document).ready(function ($) {
             {
                 targets: [4],
                 visible: false
+            },
+            {
+                targets: [1, 2],
+                orderDataType: 'dom-data-sort'
             }
         ],
         language: {

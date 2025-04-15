@@ -135,10 +135,12 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
                                 </span>
                             </td>
                             <td class="u-text-center">
-                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
-                            </td>
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '1' : '0'; ?>"></span>
+                             </td>
                             <td class="u-text-center">
-                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '1' : '0'; ?>"></span>
                             </td>
                             <td class="u-flex u-align-center u-content-sp">
                                 <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
@@ -178,10 +180,12 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
                                 </span>
                             </td>
                             <td class="u-text-center">
-                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '1' : '0'; ?>"></span>
                             </td>
                             <td class="u-text-center">
-                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"></span>
+                                <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? '1' : '0'; ?>"></span>
                             </td>
                             <td>
                                 <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
