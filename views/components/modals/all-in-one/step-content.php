@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
@@ -20,17 +20,7 @@ if ($step_name !== 'first-step') {
 <div class="wp-sms-modal__premium-step js-wp-sms-premiumModalStep wp-sms-modal__premium-step--<?php echo esc_attr($step_name) ?>">
     <div class="js-wp-sms-premium-steps__head">
         <div class="js-wp-sms-premium-step__title">
-            <?php if ($step_name === 'first-step') : ?>
-                <?php if ($isPremium) : ?>
-                    <p><?php esc_html_e('You\'re All Set with WP SMS All-in-One', 'wp-sms'); ?></p>
-                <?php elseif ($hasLicense && !$isPremium) : ?>
-                    <p><?php esc_html_e('You\'re Already Enjoying Add-Ons!', 'wp-sms'); ?></p>
-                <?php else : ?>
-                    <p><?php esc_html_e('Try the upgrade. See more. Do more.', 'wp-sms'); ?></p>
-                <?php endif; ?>
-            <?php else: ?>
-                <?php echo esc_html($step_title); ?>
-            <?php endif; ?>
+            <?php echo esc_html($step_title); ?>
         </div>
         <?php echo $description; ?>
     </div>

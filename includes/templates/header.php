@@ -73,4 +73,5 @@ foreach ($addons as $option_key => $status) {
         </div>
     </div>
 
+<?php Modal::showOnce('welcome-premium'); ?>
 <?php Modal::render('all-in-one'); ?>

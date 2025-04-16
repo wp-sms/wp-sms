@@ -1,15 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const skipButtons = document.querySelectorAll('.js-wp-sms-premiumModalClose');
     const modal = document.querySelector('.js-wp-sms-premiumModal');
-    const welcomeContent = document.querySelector('.js-wp-sms-premiumModalWelcomeContent');
     const premiumStepsContent = document.querySelector('.js-wp-sms-premiumModalSteps');
     const premiumSteps = document.querySelectorAll('.js-wp-sms-premiumModalStep');
     const premiumWelcomeSteps = document.querySelectorAll('.js-wp-sms-premiumModal-welcome .js-wp-sms-premiumModalStep');
-    const exploreButton = document.querySelector('.js-wp-sms-premiumModalExploreBtn');
+    const welcomeSection = document.querySelector('.js-wp-sms-premiumModal-welcome');
+    const welcomeModal = document.querySelector('.js-wp-sms-premiumModal-welcome .js-wp-sms-premiumModal');
     const premiumFeatures = document.querySelectorAll('.js-wp-sms-premiumStepFeature');
     const upgradeButtonBox = document.querySelectorAll('.wp-sms-premium-step__action-container');
-    const premiumBtn = document.querySelectorAll('.js-wp-sms-openPremiumModal');
+    const premiumBtn = document.querySelectorAll('.js-wp-sms-openPremiumModal')
+    const premiumStepsTitle = document.querySelectorAll('.js-wp-sms-premium-steps__title');
+    const firstStepHeader = document.querySelectorAll('.js-wp-sms-premium-first-step__head');
+    const dynamicTitle = document.querySelector('.js-wp-sms-dynamic-title');
+
     let autoSlideInterval;
     let currentStepIndex = 1;
+
     if (premiumBtn.length > 0) {
         premiumBtn.forEach(button => {
             button.addEventListener('click', (event) => {
@@ -21,10 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const skipButtons = document.querySelectorAll('.js-wp-sms-premiumModalClose');
     if (skipButtons.length > 0) {
         skipButtons.forEach(button => {
-            button.addEventListener('click', closeModal);
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                closeModal();
+            });
         });
     }
 
@@ -32,14 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = () => {
         if (modal) {
             modal.style.display = 'none';
+            modal.classList.remove('wp-sms-modal--open');
             document.body.style.overflow = '';
         }
     }
 
     const setMaxHeightForAllSteps = () => {
-        if (premiumSteps.length === 0) {
-            return;
-        }
+        if (window.innerWidth <= 768 || premiumSteps.length === 0) return;
         let maxStepHeight = 0;
         premiumSteps.forEach(step => {
             const originalDisplay = step.style.display;
@@ -55,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-// Optionally, re-run the function when the window is resized
+    // Optionally, re-run the function when the window is resized
     window.addEventListener('resize', setMaxHeightForAllSteps);
     const openModal = (target, href) => {
         if (modal) {
@@ -65,9 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetIndex = Array.from(premiumFeatures).findIndex(step => step.getAttribute('data-modal') === target);
         if (targetIndex !== -1) {
             currentStepIndex = targetIndex;
-            if (welcomeContent) {
-                welcomeContent.style.display = 'none';
-            }
             loadModalImages();
             showStep(currentStepIndex + 1);
             premiumStepsContent.style.display = 'block';
@@ -76,21 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-// Hide the premium steps initially
+    // Hide the premium steps initially
     premiumSteps.forEach(step => {
         step.classList.remove('wp-sms-modal__premium-step--active');
     });
 
-    if (exploreButton) {
-        exploreButton.addEventListener('click', function () {
-            currentStepIndex = 0;
-            loadModalImages();
-            welcomeContent.style.display = 'none';
-            premiumStepsContent.style.display = 'block';
-            showStep(currentStepIndex);
-            startAutoSlide();
-        });
-    }
 
     const loadModalImages = () => {
         document.querySelectorAll('.wp-sms-premium-step__image').forEach((img) => {
@@ -98,13 +93,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// Function to show a specific step and sync the sidebar
+    // Function to show a specific step and sync the sidebar
     const showStep = (index) => {
         setTimeout(() => {
             setMaxHeightForAllSteps();
         }, 100);
 
         if (index < 0 || index >= premiumSteps.length) return;
+
+        const activeStep = premiumSteps[index];
+        const stepTitle = activeStep.querySelector('.js-wp-sms-premium-step__title');
+        if (dynamicTitle && stepTitle) {
+            dynamicTitle.textContent = stepTitle.textContent.trim() || 'Default Title';
+        }
+
         premiumSteps.forEach(step => step.classList.remove('wp-sms-modal__premium-step--active'));
         if (upgradeButtonBox && upgradeButtonBox.length > 0) {
             upgradeButtonBox.forEach(btn => {
@@ -116,21 +118,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 upgradeButtonBox[index - 1].classList.add('active');
             }
         }
+        if (premiumStepsTitle && premiumStepsTitle.length > 0) {
+            premiumStepsTitle.forEach(p => {
+                if (p) {
+                    p.classList.remove('active')
+                }
+            });
+            if (premiumStepsTitle[index - 1]) {
+                premiumStepsTitle[index - 1].classList.add('active');
+            }
+        }
+
         premiumFeatures.forEach(feature => feature.classList.remove('active'));
         premiumSteps[index].classList.add('wp-sms-modal__premium-step--active');
 
+        const toggleDisplay = (elements, displayStyle) => {
+            elements.forEach(element => {
+                element.style.display = displayStyle;
+            });
+        };
+
+
         if (index > 0) {
+            toggleDisplay(firstStepHeader, 'none');
             premiumFeatures[index - 1].classList.add('active');
+        } else {
+            toggleDisplay(firstStepHeader, 'block');
         }
 
     }
 
-// Function to start the auto-slide process
+    // Function to start the auto-slide process
     const startAutoSlide = () => {
         autoSlideInterval = setInterval(() => {
             currentStepIndex = (currentStepIndex + 1) % premiumWelcomeSteps.length; // Loop through steps
             showStep(currentStepIndex); // Show the current step and sync sidebar
         }, 5000); // Adjust time interval to 5 seconds
+    }
+
+
+    if (welcomeSection) {
+        currentStepIndex = 0;
+        loadModalImages();
+        welcomeModal.style.display = 'block';
+        premiumStepsContent.style.display = 'block';
+        showStep(currentStepIndex);
+        startAutoSlide();
     }
 
     const stopAutoSlide = () => {
@@ -239,4 +272,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     new ModalHandler();
-})
+});
