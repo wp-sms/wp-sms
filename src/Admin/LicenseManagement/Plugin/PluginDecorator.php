@@ -203,10 +203,34 @@ class PluginDecorator
      *
      * @return string Settings URL.
      */
-    public function getSettingsUrl()
+    /**
+     * Returns add-on's settings page link.
+     *
+     * @param string|null $pluginSlug Optional. The plugin slug to get settings URL for.
+     * @return string Settings URL.
+     */
+    public function getSettingsUrl($pluginSlug = null)
     {
-        $pluginSlug  = $this->getSlug();
+        $pluginSlug  = $pluginSlug ?: $this->getSlug();
         $settingsUrl = '';
+
+        $supportedPlugins = [
+            'wp-sms-booking-integrations'    => [
+                'woocommerce-appointments/woocommerce-appointments.php',
+                'woocommerce-bookings/woocommerce-bookings.php',
+                'bookingpress-appointment-booking/bookingpress-appointment-booking.php',
+                'booking/wpdev-booking.php'
+            ],
+            'wp-sms-fluent-integrations'     => [
+                'fluent-crm/fluent-crm.php',
+                'fluent-forms/fluent-forms.php',
+                'fluent-support/fluent-support.php'
+            ],
+            'wp-sms-membership-integrations' => [
+                'paid-memberships-pro/paid-memberships-pro.php',
+                'simple-membership/simple-wp-membership.php'
+            ],
+        ];
 
         switch ($pluginSlug) {
             case 'wp-sms-woocommerce-pro':
@@ -215,24 +239,31 @@ class PluginDecorator
             case 'wp-sms-pro':
                 $settingsUrl = MenuUtil::getAdminUrl('settings');
                 break;
-
             case 'wp-sms-two-way':
                 $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => 'addon_two_way']);
                 break;
-
-            case 'wp-sms-membership':
-                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_paid_membership_pro']);
-                break;
-
-            case 'wp-sms-fluent':
-                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_fluent_crm']);
-                break;
-
-            case 'wp-sms-booking':
-                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => 'addon_booking_integrations_woo_appointments']);
-                break;
             case 'wp-sms-elementor':
                 $settingsUrl = '';
+                break;
+
+            case 'wp-sms-booking-integrations':
+            case 'wp-sms-fluent-integrations':
+            case 'wp-sms-membership-integrations':
+                if (isset($supportedPlugins[$pluginSlug])) {
+                    $activePlugins = array_filter($supportedPlugins[$pluginSlug], function ($plugin) {
+                        if (!function_exists('is_plugin_active')) {
+                            include_once ABSPATH . 'wp-admin/includes/plugin.php';
+                        }
+
+                        return is_plugin_active($plugin);
+                    });
+
+                    if (!empty($activePlugins)) {
+                        $firstActivePlugin = reset($activePlugins);
+                        $tab               = $this->getTabForPlugin($pluginSlug, $firstActivePlugin);
+                        $settingsUrl       = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => $tab]);
+                    }
+                }
                 break;
 
             default:
@@ -243,6 +274,32 @@ class PluginDecorator
         }
 
         return apply_filters('wp_sms_addon_settings_url', $settingsUrl, $pluginSlug);
+    }
+
+    /**
+     * Helper method to determine the tab for a specific supported plugin
+     */
+    private function getTabForPlugin($addonSlug, $pluginFile)
+    {
+        $mapping = [
+            'wp-sms-booking-integrations'    => [
+                'woocommerce-appointments/woocommerce-appointments.php'                 => 'addon_booking_integrations_woo_appointments',
+                'woocommerce-bookings/woocommerce-bookings.php'                         => 'addon_booking_integrations_woo_bookings',
+                'bookingpress-appointment-booking/bookingpress-appointment-booking.php' => 'addon_booking_integrations_bookingpress',
+                'booking/wpdev-booking.php'                                             => 'addon_booking_integrations_booking_calendar',
+            ],
+            'wp-sms-fluent-integrations'     => [
+                'fluent-crm/fluent-crm.php'         => 'addon_fluent_crm',
+                'fluent-forms/fluent-forms.php'     => 'addon_fluent_forms',
+                'fluent-support/fluent-support.php' => 'addon_fluent_support',
+            ],
+            'wp-sms-membership-integrations' => [
+                'paid-memberships-pro/paid-memberships-pro.php' => 'addon_paid_membership_pro',
+                'simple-membership/simple-wp-membership.php'    => 'addon_simple_membership',
+            ],
+        ];
+
+        return isset($mapping[$addonSlug][$pluginFile]) ? $mapping[$addonSlug][$pluginFile] : '';
     }
 
 

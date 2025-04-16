@@ -5,6 +5,7 @@ namespace WP_SMS\Controller;
 use Exception;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\Request;
 
@@ -134,8 +135,13 @@ class LicenseManagerAjax extends AjaxControllerAbstract
 
             $this->pluginHandler->activatePlugin($pluginSlug);
 
+            $data  = $this->pluginHandler->getPluginData($pluginSlug);
+            $addon = new PluginDecorator($data);
+
             wp_send_json_success([
-                'message' => __('Plugin activated successfully.', 'wp-sms'),
+                'setting_url' => $addon->getSettingsUrl($pluginSlug),
+                'slug'        => $pluginSlug,
+                'message'     => __('Plugin activated successfully.', 'wp-sms'),
             ]);
         } catch (Exception $e) {
             wp_send_json_error([
