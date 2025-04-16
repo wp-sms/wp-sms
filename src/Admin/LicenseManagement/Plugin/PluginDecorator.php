@@ -203,10 +203,15 @@ class PluginDecorator
      *
      * @return string Settings URL.
      */
-    public function getSettingsUrl()
+    /**
+     * Returns add-on's settings page link.
+     *
+     * @param string|null $pluginSlug Optional. The plugin slug to get settings URL for.
+     * @return string Settings URL.
+     */
+    public function getSettingsUrl($pluginSlug = null)
     {
-        $pluginSlug  = $this->getSlug();
-        error_log($pluginSlug);
+        $pluginSlug  = $pluginSlug ?: $this->getSlug();
         $settingsUrl = '';
 
         $supportedPlugins = [
@@ -220,7 +225,6 @@ class PluginDecorator
                 'fluent-crm/fluent-crm.php',
                 'fluent-forms/fluent-forms.php',
                 'fluent-support/fluent-support.php'
-
             ],
             'wp-sms-membership-integrations' => [
                 'paid-memberships-pro/paid-memberships-pro.php',
@@ -245,7 +249,6 @@ class PluginDecorator
             case 'wp-sms-booking-integrations':
             case 'wp-sms-fluent-integrations':
             case 'wp-sms-membership-integrations':
-
                 if (isset($supportedPlugins[$pluginSlug])) {
                     $activePlugins = array_filter($supportedPlugins[$pluginSlug], function ($plugin) {
                         if (!function_exists('is_plugin_active')) {
