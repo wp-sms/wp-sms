@@ -1,5 +1,5 @@
-<div class="wrap wpsms-wrap<?php echo(isset($class) ? ' ' . esc_attr($class) : ''); ?>">
+<div class="wrap wpsms-wrap">
 
-<?php
-require_once WP_SMS_DIR . "views/templates/header.php";
-?>
+    <?php use WP_SMS\Helper;
+    echo(isset($class) ? ' ' . esc_attr($class) : '');
+    echo Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
