@@ -19,6 +19,9 @@ class GettingStarted extends StepAbstract
         // TODO: Implement initialize() method.
         wp_enqueue_style('wpsms-intel-tel-input', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, '24.5.0');
         wp_enqueue_script('wpsms-intel-tel-input', WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js', array('jquery'), '24.5.0', true);
+        $tel_intel_vars             = array();
+        $tel_intel_vars['util_js'] = WP_SMS_URL . 'assets/js/intel/utils.js';
+        wp_localize_script('wpsms-intel-script', 'wp_sms_intel_tel_input', $tel_intel_vars);
     }
 
     public function getSlug()

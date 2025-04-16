@@ -13,7 +13,14 @@ jQuery(document).ready(function ($) {
     }
     const wpSmsItiTel = document.querySelector(".wp-sms-input-iti-tel");
     const countryCodeField = document.querySelector("#wp-sms-country-code-field");
-    if(wpSmsItiTel){
+    const formDescription = document.querySelector(".c-form__description");
+    const submitButton = document.querySelector(".c-form .c-btn--primary");
+    const errorNotice = document.querySelector(".c-section--maincontent .notice-warning.wpsms-admin-notice.active");
+
+    if(errorNotice){
+        formDescription.classList.add('invalid');
+    }
+    if (wpSmsItiTel) {
         const body = document.body;
         const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
         wpSmsItiTel.setAttribute('dir', direction)
@@ -23,34 +30,49 @@ jQuery(document).ready(function ($) {
             strictMode: true,
             useFullscreenPopup: false,
             dropdownContainer: body.classList.contains('rtl') ? null : body,
-            nationalMode: true,
-            formatOnDisplay: false,
-        });
+            nationalMode: false,
+            autoPlaceholder: "polite",
+            utilsScript: wp_sms_intel_tel_input.util_js,
+            customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
+                return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`;
+            },        })
+
+        const initialPlaceholder = `+${iti_tel.getSelectedCountryData().dialCode} 555 123 4567`;
+        wpSmsItiTel.setAttribute('placeholder', initialPlaceholder);
+
+
         if (countryCodeField) {
             countryCodeField.value = iti_tel.getSelectedCountryData().name;
         }
-        wpSmsItiTel.addEventListener('countrychange', function() {
+        wpSmsItiTel.addEventListener('countrychange', function () {
             if (countryCodeField) {
                 countryCodeField.value = iti_tel.getSelectedCountryData().name;
             }
+            const newPlaceholder = `+${iti_tel.getSelectedCountryData().dialCode} 555 123 4567`;
+            wpSmsItiTel.setAttribute('placeholder', newPlaceholder);
         });
-        wpSmsItiTel.addEventListener('blur', function () {
-            setDefaultCode(this, iti_tel);
+        wpSmsItiTel.addEventListener('input', function () {
+            validateAndSet(this, iti_tel);
         });
     }
 
-    function setDefaultCode(item, intlTelInputElement) {
-        if (item.value == '') {
-            let country = intlTelInputElement.getSelectedCountryData();
-            item.value = '+' + country.dialCode;
+    function validateAndSet(input, intlTelInputInstance) {
+        const isValid = intlTelInputInstance.isValidNumber();
+
+        if (isValid) {
+            formDescription.classList.remove('invalid');
+            submitButton.disabled = false;
+            errorNotice.remove();
+            input.value = intlTelInputInstance.getNumber().replace(/[-\s]/g, '');
+        } else if (input.value.trim() !== '') {
+            formDescription.classList.add('invalid');
+            submitButton.disabled = true;
         } else {
-            if (intlTelInputElement.getNumber()) {
-                item.value = intlTelInputElement.getNumber().replace(/[-\s]/g, '')
-            } else {
-                item.value = item.value.replace(/[-\s]/g, '')
-            }
+            formDescription.classList.remove('invalid');
+            submitButton.disabled = false;
         }
     }
+
 
     // Initialize Select2 with custom placeholder
     $('.wpsms-onboarding select').select2({
@@ -65,8 +87,8 @@ jQuery(document).ready(function ($) {
         $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
     }
     // Initialize DataTable
-    DataTable.ext.order['dom-data-sort'] = function(settings, col) {
-        return this.api().column(col, { order: 'index' }).nodes().map(function(td) {
+    DataTable.ext.order['dom-data-sort'] = function (settings, col) {
+        return this.api().column(col, {order: 'index'}).nodes().map(function (td) {
             return $(td).find('span').data('sort') || 0;
         });
     };
@@ -101,7 +123,7 @@ jQuery(document).ready(function ($) {
 
         }
     });
-    if(table){
+    if (table) {
         // Handle row selection
         table.on('click', 'tbody tr:not(.disabled)', function (event) {
             event.stopPropagation();
@@ -257,4 +279,5 @@ jQuery(document).ready(function ($) {
                 alert('There was an error sending the test SMS. Please try again.');
             }
         });
-    });});
+    });
+});
