@@ -74,7 +74,7 @@ class WizardManager
         // Create the notice message with links
         $message = sprintf(
             __('<span>%s<span style="display: flex;align-items: center;gap: 6px;margin-top: 8px" class="wpsms-admin-notice__action">%s %s</span></span>', 'wp-sms'),
-            __('WP SMS is now active! Before sending any messages, please configure your gateway and complete the setup process', 'wp-sms'),
+            __('WP SMS is now active! Before sending any messages, please configure your gateway and complete the setup process.', 'wp-sms'),
             '<a href="' . esc_url($setup_url) . '" class="button button-primary">' . __('Launch Setup Wizard', 'wp-sms') . '</a>',
             '<a href="' . esc_url(add_query_arg('wpsms_dismiss_activation_notice', '1')) . '" class="button">' . __('Dismiss', 'wp-sms') . '</a>'
         );
