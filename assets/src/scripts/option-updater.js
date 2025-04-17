@@ -6,8 +6,8 @@ jQuery(document).ready(function () {
         let option = $this.data('option');
         let value = $this.data('value');
         let params = {
-            'wps_nonce': wpsms_global.rest_api_nonce,
-            'action': 'wp_statistics_option_updater',
+            'wpsms_nonce': wpsms_global.rest_api_nonce,
+            'action': 'wp_sms_option_updater',
             'option': option,
             'value': value
         }

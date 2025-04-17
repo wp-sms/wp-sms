@@ -33,7 +33,7 @@ class AjaxOptionUpdater
     public function optionUpdater()
     {
         try {
-            check_ajax_referer('wp_rest', 'wps_nonce');
+            check_ajax_referer('wp_rest', 'wpsms_nonce');
 
             $option = Request::get('option');
             $value  = Request::get('value');
