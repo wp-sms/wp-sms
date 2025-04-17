@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Admin\AnonymizedUsageData;
 
-use WP_Statistics\Service\Admin\SiteHealthInfo;
+use WP_SMS\Admin\SiteHealthInfo;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Components\DBUtil as DB;

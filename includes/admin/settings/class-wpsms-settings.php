@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use Forminator_API;
+use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 
@@ -2609,6 +2610,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
     /**
      * args[] : header_template
+     * @throws \Exception
      */
     public function render_settings($default = "general", $args = array())
     {
@@ -2622,6 +2624,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            View::load('components/objects/share-anonymous-notice');
             ?>
             <div class="wpsms-wrap__top">
                 <?php do_action('wp_sms_settings_page');
