@@ -119,10 +119,18 @@ const initStepThree = () => {
     }
 
     const processAddonActivation = (addonSlug, result) => {
-        const addonButtonsWrapper = getElement(`.wpsms-addon__download__item--actions[data-addon-slug="${addonSlug}"] .wpsms-postbox-addon__buttons`)
+        const addonButtonsWrapper = getElement(`.wpsms-addon__download__item--actions[data-addon-slug="${addonSlug}"] .wpsms-postbox-addon__buttons`);
+        const actionMenu = getElement(`.wpsms-addon__download__item--actions[data-addon-slug="${addonSlug}"] .wpsms-addon--actions ul`);
         if (result.success) {
             addonButtonsWrapper.innerHTML = "";
-            addonButtonsWrapper.appendChild(generateBadge('success', getString('activated')))
+            addonButtonsWrapper.appendChild(generateBadge('success', getString('activated')));
+
+            // Create the new settings link
+            const settingsItem = document.createElement('li');
+            settingsItem.innerHTML = `<a target="_blank" href="${result.data.setting_url}" class="wpsms-addon--submenu wpsms-addon--submenu__settings">Settings</a>`;
+
+            // Prepend as the first child of actionMenu
+            actionMenu.prepend(settingsItem);
         } else {
             const errorBadge = addonButtonsWrapper.querySelector('.wpsms_badge.wpsms_badge--danger')
             if (errorBadge) {
