@@ -17,8 +17,8 @@ jQuery(document).ready(function ($) {
     const submitButton = document.querySelector(".c-form .c-btn--primary");
     const errorNotice = document.querySelector(".c-section--maincontent .notice-warning.wpsms-admin-notice.active");
 
-    if(errorNotice){
-        if(formDescription) formDescription.classList.add('invalid');
+    if (errorNotice) {
+        if (formDescription) formDescription.classList.add('invalid');
     }
     if (wpSmsItiTel) {
         const body = document.body;
@@ -40,7 +40,8 @@ jQuery(document).ready(function ($) {
             utilsScript: wp_sms_intel_tel_util.util_js,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
                 return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`;
-            },        })
+            },
+        })
         wpSmsItiTel.value = '';
         iti_tel.setNumber('');
         const updatePlaceholder = () => {
@@ -64,6 +65,12 @@ jQuery(document).ready(function ($) {
             }
             updatePlaceholder();
         });
+        wpSmsItiTel.addEventListener('open:countrydropdown', function () {
+            const selectedCountryData = iti_tel.getSelectedCountryData();
+            if (selectedCountryData.iso2) {
+                iti_tel.setCountry(selectedCountryData.iso2); // Explicitly set the country in the dropdown
+            }
+        });
         wpSmsItiTel.addEventListener('input', function () {
             validateAndSet(this, iti_tel);
             updatePlaceholder();
@@ -76,10 +83,12 @@ jQuery(document).ready(function ($) {
         if (isValid) {
             formDescription.classList.remove('invalid');
             submitButton.disabled = false;
-            if (errorNotice){errorNotice.remove()}
+            if (errorNotice) {
+                errorNotice.remove()
+            }
             input.value = intlTelInputInstance.getNumber().replace(/[-\s]/g, '');
         } else if (input.value.trim() !== '') {
-            if(formDescription) formDescription.classList.add('invalid');
+            if (formDescription) formDescription.classList.add('invalid');
             submitButton.disabled = true;
         } else {
             formDescription.classList.remove('invalid');
