@@ -18,13 +18,18 @@ jQuery(document).ready(function ($) {
     const errorNotice = document.querySelector(".c-section--maincontent .notice-warning.wpsms-admin-notice.active");
 
     if(errorNotice){
-        formDescription.classList.add('invalid');
+        if(formDescription) formDescription.classList.add('invalid');
     }
     if (wpSmsItiTel) {
         const body = document.body;
         const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
-        wpSmsItiTel.setAttribute('dir', direction)
+        wpSmsItiTel.setAttribute('dir', direction);
+        wpSmsItiTel.setAttribute('autocomplete', 'off');
+        wpSmsItiTel.value = '';
+
+
         let iti_tel = window.intlTelInput(wpSmsItiTel, {
+            initialCountry: "us",
             autoInsertDialCode: true,
             allowDropdown: true,
             strictMode: true,
@@ -32,27 +37,36 @@ jQuery(document).ready(function ($) {
             dropdownContainer: body.classList.contains('rtl') ? null : body,
             nationalMode: false,
             autoPlaceholder: "polite",
-            utilsScript: wp_sms_intel_tel_input.util_js,
+            utilsScript: wp_sms_intel_tel_util.util_js,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
                 return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`;
             },        })
-
-        const initialPlaceholder = `+${iti_tel.getSelectedCountryData().dialCode} 555 123 4567`;
-        wpSmsItiTel.setAttribute('placeholder', initialPlaceholder);
-
+        wpSmsItiTel.value = '';
+        iti_tel.setNumber('');
+        const updatePlaceholder = () => {
+            const dialCode = iti_tel.getSelectedCountryData().dialCode || '1';
+            const newPlaceholder = `+${dialCode} 555 123 4567`;
+            wpSmsItiTel.setAttribute('placeholder', newPlaceholder);
+        };
+        updatePlaceholder();
 
         if (countryCodeField) {
             countryCodeField.value = iti_tel.getSelectedCountryData().name;
         }
         wpSmsItiTel.addEventListener('countrychange', function () {
-            if (countryCodeField) {
-                countryCodeField.value = iti_tel.getSelectedCountryData().name;
+            const selectedCountryData = iti_tel.getSelectedCountryData();
+            const dialCode = selectedCountryData.dialCode || '1';
+            if (!wpSmsItiTel.value.trim()) {
+                wpSmsItiTel.value = `+${dialCode}`;
             }
-            const newPlaceholder = `+${iti_tel.getSelectedCountryData().dialCode} 555 123 4567`;
-            wpSmsItiTel.setAttribute('placeholder', newPlaceholder);
+            if (countryCodeField) {
+                countryCodeField.value = selectedCountryData.name || 'United States';
+            }
+            updatePlaceholder();
         });
         wpSmsItiTel.addEventListener('input', function () {
             validateAndSet(this, iti_tel);
+            updatePlaceholder();
         });
     }
 
@@ -62,10 +76,10 @@ jQuery(document).ready(function ($) {
         if (isValid) {
             formDescription.classList.remove('invalid');
             submitButton.disabled = false;
-            errorNotice.remove();
+            if (errorNotice){errorNotice.remove()}
             input.value = intlTelInputInstance.getNumber().replace(/[-\s]/g, '');
         } else if (input.value.trim() !== '') {
-            formDescription.classList.add('invalid');
+            if(formDescription) formDescription.classList.add('invalid');
             submitButton.disabled = true;
         } else {
             formDescription.classList.remove('invalid');

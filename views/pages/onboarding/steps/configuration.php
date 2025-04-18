@@ -23,7 +23,7 @@
                 <input
                     id="<?php echo esc_attr($field['id']); ?>"
                     name="<?php echo esc_attr($field['id']); ?>"
-                    placeholder=""
+                    placeholder="<?php echo isset($field['place_holder']) ? esc_attr($field['place_holder']) : ''; ?>"
                     type="<?php echo ($key === 'password') ? 'password' : 'text'; ?>"
                     value="<?php echo esc_attr(\WP_SMS\Option::getOption($field['id'])); ?>"
                 />

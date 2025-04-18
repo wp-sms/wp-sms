@@ -449,7 +449,7 @@ table.dataTable {
   .dt-ordering-asc{
     .dt-column-order{
       background: url(data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjEwIiBoZWlnaHQ9IjYiIHZpZXdCb3g9IjAgMCAxMCA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNNC40Nzg1MiA1LjE0NjQ4TDEuMjI4NTIgMS44OTY0OEMxIDEuNjY3OTcgMC45MjM4MjggMS4zMTI1IDEuMDUwNzggMS4wMDc4MUMxLjE3NzczIDAuNzAzMTI1IDEuNDgyNDIgMC41IDEuODEyNSAwLjVIOC4zMTI1QzguNjQyNTggMC41IDguOTIxODggMC43MDMxMjUgOS4wNDg4MyAxLjAwNzgxQzkuMTc1NzggMS4zMTI1IDkuMDk5NjEgMS42Njc5NyA4Ljg3MTA5IDEuODk2NDhMNS42MjEwOSA1LjE0NjQ4QzUuMzE2NDEgNS40NzY1NiA0Ljc4MzIgNS40NzY1NiA0LjQ3ODUyIDUuMTQ2NDhaIiBmaWxsPSIjNUI1QjVCIi8+Cjwvc3ZnPgo=) 50% / contain no-repeat;
-      transform: rotate(180deg);
+      margin-bottom: -3px;
     }
   }
 
@@ -457,6 +457,7 @@ table.dataTable {
     .dt-column-order{
       background: url(data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjEwIiBoZWlnaHQ9IjYiIHZpZXdCb3g9IjAgMCAxMCA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNNC40Nzg1MiA1LjE0NjQ4TDEuMjI4NTIgMS44OTY0OEMxIDEuNjY3OTcgMC45MjM4MjggMS4zMTI1IDEuMDUwNzggMS4wMDc4MUMxLjE3NzczIDAuNzAzMTI1IDEuNDgyNDIgMC41IDEuODEyNSAwLjVIOC4zMTI1QzguNjQyNTggMC41IDguOTIxODggMC43MDMxMjUgOS4wNDg4MyAxLjAwNzgxQzkuMTc1NzggMS4zMTI1IDkuMDk5NjEgMS42Njc5NyA4Ljg3MTA5IDEuODk2NDhMNS42MjEwOSA1LjE0NjQ4QzUuMzE2NDEgNS40NzY1NiA0Ljc4MzIgNS40NzY1NiA0LjQ3ODUyIDUuMTQ2NDhaIiBmaWxsPSIjNUI1QjVCIi8+Cjwvc3ZnPgo=) 50% / contain no-repeat;
       margin-bottom: -3px;
+      transform: rotate(180deg);
     }
   }
 

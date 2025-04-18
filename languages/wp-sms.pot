@@ -1257,7 +1257,7 @@ msgid "API Username"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1427
-msgid "Enter API username of gateway"
+msgid "Enter the username provided by your SMS gateway."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1431

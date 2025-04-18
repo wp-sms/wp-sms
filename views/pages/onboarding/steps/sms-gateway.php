@@ -9,7 +9,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
     <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 250 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
+        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 300 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
     </p>
 </div>
 
@@ -138,11 +138,11 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
-                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '1' : '0'; ?>"></span>
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '0' : '1'; ?>"></span>
                              </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
-                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '1' : '0'; ?>"></span>
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td class="u-flex u-align-center u-content-sp">
                                 <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
@@ -183,11 +183,11 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
-                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '1' : '0'; ?>"></span>
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
-                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? '1' : '0'; ?>"></span>
+                                      data-sort="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td>
                                 <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>

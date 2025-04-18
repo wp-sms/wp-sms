@@ -30,7 +30,8 @@ class gateway extends \WP_SMS\Gateway
             'password' => [
                 'id'   => 'gateway_password',
                 'name' => 'API Password',
-                'desc' => 'Enter your API password.',
+                'place_holder' => 'e.g., YourGatewayPassword456',
+                'desc' => 'Enter the password associated with your SMS gateway account.',
             ],
             'from'     => [
                 'id'   => 'gateway_sender_id',

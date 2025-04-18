@@ -1415,10 +1415,11 @@ class Settings
                     'options' => Gateway::help(),
                 ),
                 'gateway_username'             => array(
-                    'id'   => 'gateway_username',
-                    'name' => esc_html__('API Username', 'wp-sms'),
-                    'type' => 'text',
-                    'desc' => esc_html__('Enter API username of gateway', 'wp-sms')
+                    'id'           => 'gateway_username',
+                    'name'         => esc_html__('API Username', 'wp-sms'),
+                    'type'         => 'text',
+                    'place_holder' => esc_html__('e.g., YourGatewayUsername123', 'wp-sms'),
+                    'desc'         => esc_html__('Enter the username provided by your SMS gateway.', 'wp-sms')
                 ),
                 'gateway_password'             => array(
                     'id'   => 'gateway_password',
@@ -1431,7 +1432,8 @@ class Settings
                     'name' => esc_html__('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
-                    'desc' => esc_html__('Sender number or sender ID', 'wp-sms')
+                    'desc' => esc_html__('This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.', 'wp-sms')
                 ),
                 'gateway_key'                  => array(
                     'id'   => 'gateway_key',
