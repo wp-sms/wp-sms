@@ -18,9 +18,10 @@ class nesssolution extends \WP_SMS\Gateway
         $this->has_key        = true;
         $this->gatewayFields  = [
             'from'    => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender number',
-                'desc' => 'Alphanumeric sender ID text, e.g. your brand name.',
+                'id'           => 'gateway_sender_id',
+                'name'         => 'Sender Number',
+                'place_holder' => 'e.g., +1 555 123 4567',
+                'desc'         => 'Alphanumeric sender ID text, e.g. your brand name.',
             ],
             'has_key' => [
                 'id'   => 'gateway_key',
