@@ -57,4 +57,9 @@ class SiteHealthInfo
         return $settings;
     }
 
+    public function getAddOnsSettings()
+    {
+        return [];
+    }
+
 }
