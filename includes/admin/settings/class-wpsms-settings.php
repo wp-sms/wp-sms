@@ -1868,7 +1868,7 @@ class Settings
                 ),
                 'share_anonymous_data'           => array(
                     'id'       => 'share_anonymous_data',
-                    'name'     => esc_html__('Activate', 'wp-sms'),
+                    'name'     => esc_html__('Share Anonymous Data', 'wp-sms'),
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-statistics&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),

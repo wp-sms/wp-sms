@@ -40,7 +40,7 @@ class AnonymizedUsageDataSender
                 'cookies'     => array(),
             ];
 
-            $remoteRequest = new RemoteRequest($url, $method, $params, $args);
+            $remoteRequest = new RemoteRequest($method, $url, $params, $args);
 
             $remoteRequest->execute(false, false);
 
@@ -53,7 +53,7 @@ class AnonymizedUsageDataSender
 
             return true;
         } catch (Exception $e) {
-            WP_Statistics()->log($e->getMessage(), 'error');
+            WPSms()->log($e->getMessage(), 'error');
             return false;
         }
     }
