@@ -12,7 +12,7 @@ class AnonymizedUsageDataSender
      *
      * @var string
      */
-    private $apiUrl = 'https://connect.wp-sms.com';
+    private $apiUrl = 'https://connect.wp-sms-pro.com';
 
     /**
      * Sends anonymized usage data to the remote API.
@@ -24,7 +24,7 @@ class AnonymizedUsageDataSender
     public function sendAnonymizedUsageData($data)
     {
         try {
-            $pluginSlug = basename(dirname(WP_STATISTICS_MAIN_FILE));
+            $pluginSlug = basename(dirname(WP_SMS_MAIN_FILE));
             $url        = $this->apiUrl . '/api/v1/data';
             $method     = 'POST';
             $params     = ['plugin_slug' => $pluginSlug];
