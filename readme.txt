@@ -48,7 +48,7 @@ To use this plugin, you must have an account with one of our supported gateways.
 = Pro Package =
 With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommerce mobile verification, order notifications, and user registration verification are all included in the Pro version.
 
-[Buy Pro Package](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
+[Buy All-In-One](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=all-in-one)
 = Pro Version Features =
 - **Extensive Gateway Support:** Supports more SMS gateways.
 - **Scheduled SMS/MMS:** Schedule SMS/MMS messages to be sent later.

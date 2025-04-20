@@ -29,7 +29,7 @@
     <div class="wpsms-header-items-side">
         <?php if (count($addons) == 0) : ?>
             <div class="license-status license-status--free">
-                <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank"><span><?php esc_html_e('UPGRADE TO PRO', 'wp-sms'); ?></span></a>
+                <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank"><span><?php esc_html_e('UPGRADE TO All-In-One', 'wp-sms'); ?></span></a>
             </div>
         <?php else : ?>
             <div class="license-status license-status--valid">
