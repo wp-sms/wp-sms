@@ -646,3 +646,12 @@
     display: none !important;
   }
 }
+
+.wpsms-premium-link-btn {
+  font-weight: bold;
+  color: #A03B1F !important;
+
+  &:hover {
+    color: #A03B1F;
+  }
+}

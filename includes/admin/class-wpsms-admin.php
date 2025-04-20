@@ -120,7 +120,11 @@ class Admin
         /**
          * Whole setting page's assets
          */
-        if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign' or $screen->id == 'woocommerce_page_wc-orders') {
+        if (
+            str_contains($screen->id, 'wp-sms') ||
+            $screen->base === 'post' ||
+            in_array($screen->id, ['edit-wpsms-command', 'edit-sms-campaign', 'woocommerce_page_wc-orders', 'plugins'])
+        ) {
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
 
