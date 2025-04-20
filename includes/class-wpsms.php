@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
@@ -239,6 +240,7 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
 
+        // Setup Wizard
         $wizard = new WizardManager(__('WPSMS OnBoarding Process'), 'wp-sms-onboarding');
         $wizard->add(StepFactory::create('GettingStarted', $wizard));
         $wizard->add(StepFactory::create('SmsGateway', $wizard));
@@ -248,6 +250,9 @@ class WP_SMS
         $wizard->add(StepFactory::create('Ready', $wizard));
 
         $wizard->setup();
+
+        // Anonymous Data sharing
+        $anonymizedUsageDataManager = new AnonymizedUsageDataManager();
     }
 
     /**
