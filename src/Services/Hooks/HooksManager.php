@@ -27,7 +27,7 @@ class HooksManager
     public function addActionLinks($links)
     {
         $customLinks = [
-            '<a class="wps-premium-link-btn" target="_blank" href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=header">' . esc_html__('Get All-in-One', 'wp-sms') . '</a>',
+            '<a class="wps-premium-link-btn" target="_blank" href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=header">' . esc_html__('Get All-in-One', 'wp-sms') . '</a>',
             '<a href="' . MenuUtil::getAdminUrl('settings') . '">' . esc_html__('Settings', 'wp-sms') . '</a>',
         ];
 
