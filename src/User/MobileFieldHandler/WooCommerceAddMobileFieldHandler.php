@@ -148,13 +148,8 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 
     public function registerFieldInAdminOrderBillingForm($billingFields)
     {
-        // Backward compatibility
-        if (empty($_GET['post'])) {
-            return;
-        }
-
-        $orderId = sanitize_text_field($_GET['post']);
-        $mobile  = get_post_meta($orderId, $this->getUserMobileFieldName(), true);
+        $orderId = isset($_GET['post']) ? sanitize_text_field($_GET['post']) : 0;
+        $mobile  = $orderId ? get_post_meta($orderId, $this->getUserMobileFieldName(), true) : '';
 
         $billingFields[$this->getUserMobileFieldName()] = [
             'label' => esc_html__('Mobile Number', 'wp-sms'),
