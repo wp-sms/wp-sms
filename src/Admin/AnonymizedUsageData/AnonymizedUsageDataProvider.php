@@ -2,8 +2,8 @@
 
 namespace WP_SMS\Admin\AnonymizedUsageData;
 
-use WP_SMS\Admin\SiteHealthInfo;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Components\DBUtil as DB;
 
@@ -207,14 +207,10 @@ class AnonymizedUsageDataProvider
      */
     public static function getPluginSettings()
     {
-        $siteHealthInfo = new SiteHealthInfo();
-
-        $pluginSettings = self::processSettings($siteHealthInfo->getPluginSettings());
-        $addOnSettings  = self::processSettings($siteHealthInfo->getAddOnsSettings());
+        $pluginSettings = self::processSettings(self::getSettings());
 
         return [
-            'main'   => $pluginSettings,
-            'addOns' => $addOnSettings,
+            'main' => $pluginSettings,
         ];
     }
 
@@ -230,10 +226,6 @@ class AnonymizedUsageDataProvider
         $processedSettings = [];
 
         foreach ($rawSettings as $key => $setting) {
-            if ($key === 'version' || $key === 'geoIpDatabaseSize') {
-                continue;
-            }
-
             $processedSettings[$key] = $setting['debug'] ?? $setting['value'] ?? null;
         }
 
@@ -307,5 +299,58 @@ class AnonymizedUsageDataProvider
             'jobs'                           => Option::getOptionGroup('jobs'),
             'dismissed_notices'              => Option::getOptionGroup('dismissed_notices'),
         ];
+    }
+
+    public static function getSettings()
+    {
+        $settings = [
+            'version'                               => [
+                'label' => esc_html__('Version', 'wp-sms'),
+                'value' => WP_SMS_VERSION,
+            ],
+            'adminMobileNumber'                     => [
+                'label' => esc_html__('Admin Mobile Number', 'wp-statistics'),
+                'value' => OptionUtil::get('admin_mobile_number'),
+                'debug' => OptionUtil::get('admin_mobile_number'),
+            ],
+            'addMobileField'                        => [
+                'label' => esc_html__('Add Mobile Field', 'wp-statistics'),
+                'value' => OptionUtil::get('add_mobile_field'),
+                'debug' => OptionUtil::get('add_mobile_field'),
+            ],
+            'internationalMobile'                   => [
+                'label' => esc_html__('International Mobile', 'wp-statistics'),
+                'value' => OptionUtil::get('international_mobile'),
+                'debug' => OptionUtil::get('international_mobile'),
+            ],
+            'internationalMobileOnlyCountries'      => [
+                'label' => esc_html__('International Mobile Only Countries', 'wp-statistics'),
+                'value' => OptionUtil::get('international_mobile_only_countries'),
+                'debug' => OptionUtil::get('international_mobile_only_countries'),
+            ],
+            'internationalMobilePreferredCountries' => [
+                'label' => esc_html__('International Mobile Preferred Countries', 'wp-statistics'),
+                'value' => OptionUtil::get('international_mobile_preferred_countries'),
+                'debug' => OptionUtil::get('international_mobile_preferred_countries'),
+            ],
+            'mobileCountyCode'                      => [
+                'label' => esc_html__('Mobile County Code', 'wp-statistics'),
+                'value' => OptionUtil::get('mobile_county_code'),
+                'debug' => OptionUtil::get('mobile_county_code'),
+            ],
+            'gatewayName'                           => [
+                'label' => esc_html__('Gateway Name', 'wp-statistics'),
+                'value' => OptionUtil::get('gateway_name'),
+                'debug' => OptionUtil::get('gateway_name'),
+            ],
+            'smsDeliveryMethod'                     => [
+                'label' => esc_html__('SMS Delivery Method', 'wp-statistics'),
+                'value' => OptionUtil::get('sms_delivery_method'),
+                'debug' => OptionUtil::get('sms_delivery_method'),
+            ],
+        ];
+
+
+        return $settings;
     }
 }

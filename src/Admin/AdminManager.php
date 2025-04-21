@@ -4,7 +4,6 @@ namespace WP_SMS\Admin;
 
 use WP_SMS\Admin\AjaxOptionUpdater;
 use WP_SMS\Admin\NoticeHandler\Notice;
-use WP_SMS\Admin\SiteHealthInfo;
 
 class AdminManager
 {
@@ -12,7 +11,6 @@ class AdminManager
     {
         $this->initFooterModifier();
         $this->initNoticeHandler();
-        $this->initSiteHealthInfo();
         $this->initAjaxOptionUpdater();
     }
 
@@ -29,16 +27,6 @@ class AdminManager
         add_action('admin_init', [Notice::class, 'handleGeneralNotices']);
     }
 
-    private function initSiteHealthInfo()
-    {
-        // Initialize Site Health Info and register its hooks
-        $siteHealthInfo = new SiteHealthInfo();
-        $siteHealthInfo->register();
-    }
-
-    /**
-     *
-     */
     private function initAjaxOptionUpdater()
     {
         $optionUpdater = new AjaxOptionUpdater();
