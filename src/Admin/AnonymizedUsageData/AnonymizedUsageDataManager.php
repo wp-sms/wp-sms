@@ -56,7 +56,7 @@ class AnonymizedUsageDataManager
      */
     public function getAnonymizedUsageData()
     {
-        return [
+        $data = [
             'domain'            => AnonymizedUsageDataProvider::getHomeUrl(),
             'wordpress_version' => AnonymizedUsageDataProvider::getWordPressVersion(),
             'php_version'       => AnonymizedUsageDataProvider::getPhpVersion() ?? 'not available',
@@ -71,5 +71,8 @@ class AnonymizedUsageDataManager
             'licenses_info'     => AnonymizedUsageDataProvider::getLicensesInfo(),
             'payload'           => AnonymizedUsageDataProvider::getPayload(),
         ];
+
+        return apply_filters('wp_sms_anonymized_usage_data', $data);
     }
+
 }
