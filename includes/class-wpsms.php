@@ -224,7 +224,7 @@ class WP_SMS
             WidgetsManager::init();
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
-            new \WP_SMS\Admin\AdminManager;
+            new \WP_SMS\Admin\AdminManager();
         }
 
         if (!is_admin()) {
