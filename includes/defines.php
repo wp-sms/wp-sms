@@ -14,6 +14,8 @@ if (!function_exists('get_plugin_data')) {
 // Set Plugin path and url defines.
 define('WP_SMS_URL', plugin_dir_url(dirname(__FILE__)));
 define('WP_SMS_DIR', plugin_dir_path(dirname(__FILE__)));
+define('WP_SMS_MAIN_FILE', WP_SMS_DIR . 'wp-sms.php');
+
 
 // Set another useful Plugin defines.
 define('WP_SMS_ADMIN_URL', get_admin_url());
