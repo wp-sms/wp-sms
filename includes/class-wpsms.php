@@ -224,15 +224,17 @@ class WP_SMS
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
 
-            $wizard = new WizardManager(__('WPSMS OnBoarding Process'), 'wp-sms-onboarding');
-            $wizard->add(StepFactory::create('GettingStarted', $wizard));
-            $wizard->add(StepFactory::create('SmsGateway', $wizard));
-            $wizard->add(StepFactory::create('Configuration', $wizard));
-            $wizard->add(StepFactory::create('TestSetup', $wizard));
-            $wizard->add(StepFactory::create('Pro', $wizard));
-            $wizard->add(StepFactory::create('Ready', $wizard));
+            add_action('init', function () {
+                $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
+                $wizard->add(StepFactory::create('GettingStarted', $wizard));
+                $wizard->add(StepFactory::create('SmsGateway', $wizard));
+                $wizard->add(StepFactory::create('Configuration', $wizard));
+                $wizard->add(StepFactory::create('TestSetup', $wizard));
+                $wizard->add(StepFactory::create('Pro', $wizard));
+                $wizard->add(StepFactory::create('Ready', $wizard));
+                $wizard->setup();
+            });
 
-            $wizard->setup();
         }
 
         if (!is_admin()) {
