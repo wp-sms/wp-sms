@@ -151,14 +151,6 @@ class NumberDataDecorator
     }
 
     /**
-     * @throws Exception
-     */
-    public function getLastSentAt()
-    {
-        return isset($this->number['last_sent_at']) ? new \DateTime($this->number['last_sent_at']) : null;
-    }
-
-    /**
      * @return int
      */
     public function getSuccessCount()
@@ -175,6 +167,16 @@ class NumberDataDecorator
     }
 
     /**
+     * @return \DateTime|null
+     * @throws Exception
+     */
+    public function getLastSentAt()
+    {
+        return isset($this->number['last_sent_at']) ? new \DateTime($this->number['last_sent_at']) : null;
+    }
+
+    /**
+     * @return \DateTime|null
      * @throws Exception
      */
     public function getOptInDate()
@@ -183,6 +185,7 @@ class NumberDataDecorator
     }
 
     /**
+     * @return \DateTime|null
      * @throws Exception
      */
     public function getOptOutAt()
@@ -191,6 +194,7 @@ class NumberDataDecorator
     }
 
     /**
+     * @return \DateTime
      * @throws Exception
      */
     public function getCreatedAt()
@@ -199,6 +203,7 @@ class NumberDataDecorator
     }
 
     /**
+     * @return \DateTime
      * @throws Exception
      */
     public function getUpdatedAt()
