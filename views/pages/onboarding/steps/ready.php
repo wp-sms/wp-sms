@@ -68,7 +68,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -98,7 +98,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -123,7 +123,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -162,7 +162,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -188,7 +188,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -217,7 +217,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -237,7 +237,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>
@@ -256,7 +256,7 @@ $is_pro = LicenseHelper::isPluginLicenseValid();
                 </p>
                 <?php if (!$is_pro): ?>
                     <div class="u-flex u-align-center">
-                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
+                        <a title="<?php esc_attr_e('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-readycard__badge">
                             <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                         </a>
                     </div>

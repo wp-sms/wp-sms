@@ -145,7 +145,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td class="u-flex u-align-center u-content-sp">
-                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
                                     <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                                 </a>
                             </td>
