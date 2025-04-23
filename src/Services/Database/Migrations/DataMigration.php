@@ -78,32 +78,50 @@ class DataMigration extends AbstractMigrationOperation
             $this->ensureConnection();
             $tasks     = [];
             $batchSize = 100;
-            $userIds   = get_users(['fields' => 'ID']);
-            $users     = [];
+            $offset    = 0;
 
-            foreach ($userIds as $userId) {
-                $users[] = [
-                    'user_id'            => $userId,
-                    'billing_first_name' => get_user_meta($userId, 'billing_first_name', true),
-                    'billing_last_name'  => get_user_meta($userId, 'billing_last_name', true),
-                    'billing_country'    => get_user_meta($userId, 'billing_country', true),
-                    'billing_email'      => get_user_meta($userId, 'billing_email', true),
-                    'billing_phone'      => get_user_meta($userId, 'billing_phone', true)
-                ];
-            }
+            do {
+                $rows = \WP_SMS\Utils\Query::select([
+                    'um1.user_id',
+                    'um2.meta_value AS billing_first_name',
+                    'um3.meta_value AS billing_last_name',
+                    'um4.meta_value AS billing_country',
+                    'um5.meta_value AS billing_email',
+                    'um1.meta_value AS billing_phone'
+                ])
+                    ->from('usermeta AS um1')
+                    ->join('usermeta AS um2', 'um1.user_id', '=', 'um2.user_id AND um2.meta_key = "billing_first_name"')
+                    ->join('usermeta AS um3', 'um1.user_id', '=', 'um3.user_id AND um3.meta_key = "billing_last_name"')
+                    ->join('usermeta AS um4', 'um1.user_id', '=', 'um4.user_id AND um4.meta_key = "billing_country"')
+                    ->join('usermeta AS um5', 'um1.user_id', '=', 'um5.user_id AND um5.meta_key = "billing_email"')
+                    ->where('um1.meta_key', '=', 'billing_phone')
+                    ->where('um1.meta_value', '!=', '')
+                    ->orderBy('um1.user_id', 'ASC')
+                    ->limit($batchSize, $offset)
+                    ->getAll();
 
-            if ($users) {
+                $batch = [];
+                foreach ($rows as $row) {
+                    $batch[] = [
+                        'user_id'            => $row->user_id,
+                        'billing_first_name' => $row->billing_first_name,
+                        'billing_last_name'  => $row->billing_last_name,
+                        'billing_country'    => $row->billing_country,
+                        'billing_email'      => $row->billing_email,
+                        'billing_phone'      => $row->billing_phone,
+                    ];
+                }
 
-                $batches = array_chunk($users, $batchSize);
-
-                foreach ($batches as $batch) {
+                if ($batch) {
                     $tasks[] = [
                         'data'    => $batch,
                         'setData' => 'setUserMetaBatch',
                         'class'   => 'process_user_meta_numbers',
                     ];
                 }
-            }
+
+                $offset += $batchSize;
+            } while (count($rows) === $batchSize);
 
             return $tasks;
         } catch (Exception $e) {
