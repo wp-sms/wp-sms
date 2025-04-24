@@ -29,7 +29,7 @@
     <div class="wpsms-header-items-side">
         <?php if (count($addons) == 0) : ?>
             <div class="license-status license-status--free">
-                <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" target="_blank"><span><?php esc_html_e('UPGRADE TO All-In-One', 'wp-sms'); ?></span></a>
+                <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank"><span><?php esc_html_e('UPGRADE TO All-In-One', 'wp-sms'); ?></span></a>
             </div>
         <?php else : ?>
             <div class="license-status license-status--valid">
@@ -38,15 +38,15 @@
                     // translators: %1$s: Active licenses, %2$s: Total licenses
                     echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(array_filter($addons)), count($addons));
                     ?>
-                    <a class="upgrade" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>"><?php esc_html_e('UPGRADE', 'wp-sms'); ?></a>
+                    <a class="upgrade" target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>"><?php esc_html_e('UPGRADE', 'wp-sms'); ?></a>
                 </span>
             </div>
         <?php endif; ?>
         <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('setting', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
             echo 'active';
         } ?>"></a>
-        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins-support'); ?>" target="_blank" title="<?php esc_html_e('support', 'wp-sms'); ?>" class="support"></a>
+        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header-support'); ?>" target="_blank" title="<?php esc_html_e('support', 'wp-sms'); ?>" class="support"></a>
 
     </div>
 
-</div>
+</div>`

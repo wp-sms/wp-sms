@@ -19,11 +19,11 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
     <div class="wpsms-adminHeader__side">
         <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) : ?>
             <?php if (!$isPremium && !LicenseHelper::isValidLicenseAvailable()) : ?>
-                <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
+                <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
                     <?php esc_html_e('Upgrade To All-in-One', 'wp-sms'); ?>
                 </a>
             <?php else : ?>
-                <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" class="wpsms-license-status wpsms-license-status--valid">
+                <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" class="wpsms-license-status wpsms-license-status--valid">
                     <span><?php esc_html_e(sprintf('License: %s/%s', count(PluginHelper::getLicensedPlugins()), count(PluginHelper::$plugins)), 'wp-sms') ?></span> <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
                 </a>
             <?php endif; ?>
@@ -36,7 +36,7 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
             echo 'active';
         } ?>"></a>
         <?php if (apply_filters('wp_sms_enable_help_icon', true)) { ?>
-            <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
+            <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
         <?php } ?>
         <div class="wpsms-adminHeader__mobileMenu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
@@ -63,7 +63,7 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
                 ?>
                 <?php if (apply_filters('wp_sms_enable_help_icon', true)) { ?>
                     <div>
-                        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="help">
+                        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="help">
                             <span class="icon"></span>
                             <?php esc_html_e('Help Center', 'wp-sms'); ?>
                         </a>
@@ -73,11 +73,11 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
                 <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) : ?>
                     <div class="wpsms-bundle">
                         <?php if (!$isPremium && !LicenseHelper::isValidLicenseAvailable()) : ?>
-                            <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
+                            <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
                                 <?php esc_html_e('Upgrade To Premium', 'wp-sms'); ?>
                             </a>
                         <?php else : ?>
-                            <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins'); ?>" class="wpsms-license-status wpsms-license-status--valid">
+                            <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" class="wpsms-license-status wpsms-license-status--valid">
                                 <span><?php esc_html_e(sprintf('License: %s/%s', count(PluginHelper::getLicensedPlugins()), count(PluginHelper::$plugins)), 'wp-sms'); ?></span> <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
                             </a>
                         <?php endif; ?>
