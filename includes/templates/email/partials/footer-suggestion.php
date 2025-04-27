@@ -1,7 +1,7 @@
 <div class="pro-ad">
     <table>
         <tr>
-            <td><h3><?php esc_html_e('Upgrade to WP SMS All-In-One', 'wp-sms'); ?></h3></td>
+            <td><h3><?php esc_html_e('Upgrade to WP SMS Pro', 'wp-sms'); ?></h3></td>
             <td class="button">
                 <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing'); ?>"><?php esc_html_e('Buy Now ', 'wp-sms'); ?><img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/white-chev.png'); ?>"/></a>
             </td>

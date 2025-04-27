@@ -52,13 +52,13 @@
                         <option value="wc-customers" id="wc_users" <?php disabled(!$proIsActive); ?>>
                             <?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?>
                             <?php if (!$proIsActive) : ?>
-                                <span>(<?php esc_html_e('Requires All-In-One!', 'wp-sms'); ?>)</span>
+                                <span>(<?php esc_html_e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
                             <?php endif; ?>
                         </option>
                         <option value="bp-users" id="bp_users" <?php disabled(!$proIsActive); ?>>
                             <?php esc_html_e('BuddyPress\'s Users', 'wp-sms'); ?>
                             <?php if (!$proIsActive) : ?>
-                                <span>(<?php esc_html_e('Requires All-In-One!', 'wp-sms'); ?>)</span>
+                                <span>(<?php esc_html_e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
                             <?php endif; ?>
                         </option>
                         <?php do_action('wp_sms_form_send_to_select_option', $smsObject, $proIsActive); ?>
@@ -173,7 +173,7 @@
                             <p>
                                 <?php 
                                     // translators: %s: Supported gateways link
-                                    echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-all-in-one
+                                    echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro
                                     '); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 ?>
                             </p>
@@ -186,7 +186,7 @@
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-all-in-one'); ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go All-In-One</a>
+                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro'); ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go PRO</a>
                 </div>
 
                 <div class="set-date-field">
