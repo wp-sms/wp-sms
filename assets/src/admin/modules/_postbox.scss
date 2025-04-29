@@ -222,7 +222,7 @@ body.rtl #feedback-bird-app {
   margin: 0 !important;
 }
 
-.rtl .wpsms-header-banner .wpsms-header-items-side .wpsms-menu-content a span.icon,
+
 .rtl .wpsms-mobile-menu #feedback-bird-app .c-fbb-btn--default > span:before {
   margin-right: 0 !important;
   margin-left: 10px;
@@ -385,7 +385,6 @@ body.rtl #feedback-bird-app {
       a {
         span.icon {
           display: inline-flex;
-          margin-right: 10px;
           width: 16px;
           height: 19px;
           background: center center/contain no-repeat;
@@ -649,8 +648,8 @@ body.rtl #screen-meta-links {
     height: 14px;
     margin-right: 6px;
     transition: 0.2s;
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAxNSAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwLjU4NjYgMi45MTQ1OUwxMC41NDU4IDUuMTI1NDFDMTAuNTQgNS40Mjg3NCAxMC43MzI1IDUuODMxMjUgMTAuOTc3NSA2LjAxMjA5TDEyLjQyNDEgNy4xMDg3NEMxMy4zNTE2IDcuODA4NzQgMTMuMiA4LjY2NjI1IDEyLjA5MTYgOS4wMTYyNUwxMC4yMDc1IDkuNjA1NDFDOS44OTI0OCA5LjcwNDU3IDkuNTU5OTggMTAuMDQ4OCA5LjQ3ODMxIDEwLjM2OTZMOS4wMjkxNCAxMi4wODQ2QzguNjczMyAxMy40Mzc5IDcuNzg2NjMgMTMuNTcyMSA3LjA1MTYzIDEyLjM4MjFMNi4wMjQ5NiAxMC43MTk2QzUuODM4MjkgMTAuNDE2MiA1LjM5NDk2IDEwLjE4ODggNS4wNDQ5NiAxMC4yMDYzTDMuMDk2NjUgMTAuMzA1NEMxLjcwMjQ4IDEwLjM3NTQgMS4zMDU4MSA5LjU3MDQyIDIuMjE1ODEgOC41MDg3NUwzLjM3MDggNy4xNjcwOEMzLjU4NjYzIDYuOTE2MjQgMy42ODU3OSA2LjQ0OTU4IDMuNTg2NjMgNi4xMzQ1OEwyLjk5NzQ5IDQuMjUwNDFDMi42NTMzMiAzLjE0MjA4IDMuMjcxNjUgMi41Mjk1OCA0LjM3NDE1IDIuODkxMjVMNi4wOTQ5OSAzLjQ1NzA5QzYuMzg2NjUgMy41NTA0MiA2LjgyNDE0IDMuNDg2MjUgNy4wNjkxNCAzLjMwNTQxTDguODY1ODIgMi4wMTA0MUM5LjgzNDE1IDEuMzEwNDEgMTAuNjEgMS43MTg3NiAxMC41ODY2IDIuOTE0NTlaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMy4yODEyIDEzLjMzMjlMMTEuNTEzNyAxMS41NjU0IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=) center center no-repeat;
-  }
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOSAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzLjUxMjggMC40NTYwNTVMMTQuNTU2OSAyLjQxMzcxTDE2LjUxNDUgMy40NTc3OUwxNC41NTY5IDQuNTAxODdMMTMuNTEyOCA2LjQ1OTUzTDEyLjQ2ODcgNC41MDE4N0wxMC41MTExIDMuNDU3NzlMMTIuNDY4NyAyLjQxMzcxTDEzLjUxMjggMC40NTYwNTVaTTYuMzg3OCAyLjkzMDAxTDguNDk4OSA2Ljg4ODM1TDEyLjQ1NzIgOC45OTk0NEw4LjQ5ODkgMTEuMTEwNkw2LjM4NzggMTUuMDY4OUw0LjI3NjY5IDExLjExMDZMMC4zMTgzNTkgOC45OTk0NEw0LjI3NjY5IDYuODg4MzVMNi4zODc4IDIuOTMwMDFaTTE1LjYyMzkgMTIuNDMwMUwxNC4zMDQ1IDkuOTU2MDlMMTIuOTg1IDEyLjQzMDFMMTAuNTExMSAxMy43NDk0TDEyLjk4NSAxNS4wNjg5TDE0LjMwNDUgMTcuNTQyOUwxNS42MjM5IDE1LjA2ODlMMTguMDk3OSAxMy43NDk0TDE1LjYyMzkgMTIuNDMwMVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=) center center no-repeat
+   }
 
   .wpsms-header-banner .license-status a.upgrade {
     padding: 6px 12px 6px 6px;

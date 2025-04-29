@@ -49,9 +49,10 @@
     width: 18px;
     min-width: 18px;
     height: 18px;
-    background:  url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguMjUgOC4yNVYzLjc1SDkuNzVWOC4yNUgxNC4yNVY5Ljc1SDkuNzVWMTQuMjVIOC4yNVY5Ljc1SDMuNzVWOC4yNUg4LjI1WiIgZmlsbD0iI0MyNDIyNSIvPgo8L3N2Zz4K") center no-repeat;
+    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguMjUgOC4yNVYzLjc1SDkuNzVWOC4yNUgxNC4yNVY5Ljc1SDkuNzVWMTQuMjVIOC4yNVY5Ljc1SDMuNzVWOC4yNUg4LjI1WiIgZmlsbD0iI0MyNDIyNSIvPgo8L3N2Zz4K") center no-repeat;
   }
-  &:focus{
+
+  &:focus {
     box-shadow: none;
     outline: none;
     background: #FED7AA;
@@ -77,8 +78,8 @@
     font-weight: 400 !important;
     transition: 0.2s;
     border-radius: 3px;
-    color: #9A3412!important;
-    border: 1px solid #9A3412!important;
+    color: #9A3412 !important;
+    border: 1px solid #9A3412 !important;
     font-size: 13px;
     line-height: 24px;
     min-height: unset;
@@ -93,13 +94,13 @@
       background: #FFF7ED;
     }
 
-    &:focus , &:active {
+    &:focus, &:active {
       background: #FED7AA;
       box-shadow: none;
     }
 
     @media (max-width: 1280px) {
-      padding: 4px 16px!important;
+      padding: 4px 16px !important;
       font-size: 12px;
       line-height: 15px;
       margin-top: 0 !important;
@@ -308,21 +309,13 @@
   & > a {
     text-decoration: none;
     font-size: 14px;
-    line-height: 17px;
     font-weight: 500;
     color: #4E5154;
     display: flex;
-    padding: 12px;
+    padding: 8px 16px;
+    gap: 12px;
     position: relative;
     align-items: center;
-
-    &.integrations {
-      padding-bottom: 17px;
-    }
-
-    &.settings {
-      padding-top: 17px;
-    }
 
     &.active, &:hover {
       background: #F3F3F5;
@@ -338,14 +331,14 @@
       width: calc(100% - 32px);
       position: absolute;
       left: 16px;
-      bottom: 0;
+      bottom: -5px;
       height: 1px;
-      background: #DADCE0;
+      background: #F3F3F5;
     }
   }
 
   .wpsms-license {
-    padding: 12px;
+    padding: 0 16px;
   }
 
   .license-status {
@@ -355,16 +348,34 @@
 
 #wpsms-menu-toggle, .wpsms-mobile-menu {
   display: none;
+
+  .license-status a {
+    font-weight: 600;
+
+    &:before {
+      width: 19px;
+      height: 19px;
+    }
+
+    &.upgrade {
+      height: 28px;
+    }
+  }
 }
 
 #wpsms-menu-toggle:checked ~ .wpsms-menu-content {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 #wpsms-menu-toggle:checked ~ .hamburger-menu-container {
   background: #FFFFFF33;
   color: #fff;
-  .menu-bar{
+
+  .menu-bar {
     background-color: #fff;
   }
 }

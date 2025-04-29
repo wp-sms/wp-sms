@@ -325,6 +325,36 @@ class ShowIfEnabled {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('wpsms-menu-toggle');
+    const mobileMenuContent = document.querySelector('.wpsms-menu-content');
+    const hamburgerContainer = document.querySelector('.hamburger-menu-container');
+    if (!menuToggle || !mobileMenuContent || !hamburgerContainer) {
+        return;
+    }
+
+    document.addEventListener('click', function(event) {
+        if (
+            menuToggle.checked &&
+            !mobileMenuContent.contains(event.target) &&
+            !hamburgerContainer.contains(event.target) &&
+            event.target !== menuToggle &&
+            !hamburgerContainer.contains(event.target.closest('.hamburger-menu-container'))
+        ) {
+            menuToggle.checked = false;
+        }
+    });
+
+    menuToggle.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    hamburgerContainer.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const notices = document.querySelectorAll('.notice');
     const promotionModal = document.querySelector('.promotion-modal');
