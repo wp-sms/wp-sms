@@ -125,18 +125,19 @@ const initStepThree = () => {
             addonButtonsWrapper.innerHTML = "";
             addonButtonsWrapper.appendChild(generateBadge('success', getString('activated')));
 
-            // Create the new settings link
-            const settingsItem = document.createElement('li');
-            settingsItem.innerHTML = `<a target="_blank" href="${result.data.setting_url}" class="wpsms-addon--submenu wpsms-addon--submenu__settings">Settings</a>`;
+            // Check if setting_url is present and non-empty
+            if (result.data.setting_url) {
+                const settingsItem = document.createElement('li');
+                settingsItem.innerHTML = `<a target="_blank" href="${result.data.setting_url}" class="wpsms-addon--submenu wpsms-addon--submenu__settings">Settings</a>`;
+                actionMenu.prepend(settingsItem);
+            }
 
-            // Prepend as the first child of actionMenu
-            actionMenu.prepend(settingsItem);
         } else {
-            const errorBadge = addonButtonsWrapper.querySelector('.wpsms_badge.wpsms_badge--danger')
-            const loading = addonButtonsWrapper.querySelector('.is-activating')
-            if(loading) loading.remove()
-            if (errorBadge)  errorBadge.remove()
-            addonButtonsWrapper.appendChild(generateBadge('danger', getString('failed')))
+            const errorBadge = addonButtonsWrapper.querySelector('.wpsms_badge.wpsms_badge--danger');
+            const loading = addonButtonsWrapper.querySelector('.is-activating');
+            if (loading) loading.remove();
+            if (errorBadge) errorBadge.remove();
+            addonButtonsWrapper.appendChild(generateBadge('danger', getString('failed')));
         }
     }
 
