@@ -10,7 +10,10 @@
 .sms_page_wp-sms-settings.sms_page_wp-sms-pro,
 .sms_page_wp-sms-scheduled,
 .sms_page_wp-sms-commands,
-.post-type-wpsms-command
+.post-type-wpsms-command,
+.sms-woo-pro_page_wp-sms-woo-pro-settings,
+.sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment,
+.post-type-sms-campaign
 {
 
   #wpcontent {
@@ -362,6 +365,17 @@
   }
 }
 
+.sms-woo-pro_page_wp-sms-woo-pro-settings,
+.sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment,
+.post-type-sms-campaign{
+  .wrap {
+    padding: 20px 8px;
+    margin: 0;
+    @media (min-width: 768px) {
+        padding: 20px;
+    }
+  }
+}
 
 .post-type-wpsms-command #wpbody-content>.wrap{
   padding: 20px 8px;

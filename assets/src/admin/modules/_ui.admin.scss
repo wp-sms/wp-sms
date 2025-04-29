@@ -3859,8 +3859,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
           padding-bottom: 40px;
 
           .wpsms-postbox-addon__item--info {
-            order: 2;
-            display: block;
+             display: block;
             width: 100%;
 
             a {
@@ -4407,7 +4406,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
           gap: 16px;
 
           @media (max-width: 768px) {
-            order: 2;
             display: block;
             width: 100%;
           }
@@ -4596,18 +4594,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
     }
   }
 }
-
-
-
-
-
-@media(max-width: 768px){
-  .wpsms-addon__download__items--get-started .wpsms-addon__download__item--info{
-    margin-bottom: 44px!important;
-  }
-}
-
-
 
 .wpsms-postbox-addon__label {
   font-size: 10px;
@@ -4811,15 +4797,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
       right: unset;
     }
 
-    @media (max-width: 768px) {
-      justify-content: flex-end;
-      order: 1;
-      gap: 8px;
-      align-items: self-start;
-      height: calc(100% - 32px);
-      top: 16px;
-    }
-
     .wpsms-addon--actions {
       position: relative;
 
@@ -4972,10 +4949,6 @@ background: #FAFAFA;
       display: flex;
       gap: 12px;
       align-items: center;
-      @media (max-width: 768px) {
-        position: absolute;
-        bottom: 0;
-      }
     }
 
     .wpsms-postbox-addon__button {
@@ -5287,10 +5260,6 @@ background: #FAFAFA;
 
 .wpsms-addon__download__item__info__alerts:not(:empty) {
   margin-top: 12px;
-  @media (max-width: 768px) {
-    margin-top: 33px;
-    margin-bottom: 16px;
-  }
 }
 a.wpsms-addon__download_select-all,
 a.wpsms-addon__download_active-all {

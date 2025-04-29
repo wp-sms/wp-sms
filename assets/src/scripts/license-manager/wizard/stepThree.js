@@ -133,9 +133,9 @@ const initStepThree = () => {
             actionMenu.prepend(settingsItem);
         } else {
             const errorBadge = addonButtonsWrapper.querySelector('.wpsms_badge.wpsms_badge--danger')
-            if (errorBadge) {
-                errorBadge.remove()
-            }
+            const loading = addonButtonsWrapper.querySelector('.is-activating')
+            if(loading) loading.remove()
+            if (errorBadge)  errorBadge.remove()
             addonButtonsWrapper.appendChild(generateBadge('danger', getString('failed')))
         }
     }
