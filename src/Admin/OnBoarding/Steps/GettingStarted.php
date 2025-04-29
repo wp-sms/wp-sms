@@ -16,13 +16,36 @@ class GettingStarted extends StepAbstract
 
     protected function initialize()
     {
-        // TODO: Implement initialize() method.
-        wp_enqueue_style('wp-sms-intel-script', WP_SMS_URL . 'assets/css/intlTelInput.min.css', true, '24.5.0');
-        wp_enqueue_script('wp-sms-intel-script', WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js', array('jquery'), '24.5.0', true);
-        $tel_intel_vars             = array();
-        $tel_intel_vars['util_js'] = WP_SMS_URL . 'assets/js/intel/utils.js';
-        wp_localize_script('wp-sms-intel-script', 'wp_sms_intel_tel_util', $tel_intel_vars);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueIntelAssets']);
     }
+
+
+    public function enqueueIntelAssets()
+    {
+        wp_enqueue_style(
+            'wp-sms-intel-style',
+            WP_SMS_URL . 'assets/css/intlTelInput.min.css',
+            [],
+            '24.5.0'
+        );
+
+        wp_enqueue_script(
+            'wp-sms-intel-script',
+            WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js',
+            ['jquery'],
+            '24.5.0',
+            true
+        );
+
+        wp_localize_script(
+            'wp-sms-intel-script',
+            'wp_sms_intel_tel_util',
+            [
+                'util_js' => WP_SMS_URL . 'assets/js/intel/utils.js'
+            ]
+        );
+    }
+
 
     public function getSlug()
     {

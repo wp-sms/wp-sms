@@ -76,7 +76,6 @@ class LicenseHelper
     {
         $licenseKey = self::getPluginLicense($slug);
         $status     = self::getLicenseInfo($licenseKey);
-        error_log(print_r($licenseKey, true));
 
         return $status['status'] ?? null;
     }

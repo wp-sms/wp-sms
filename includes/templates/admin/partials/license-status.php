@@ -7,7 +7,7 @@ if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
     ?>
     <?php if (!$isPremium && !LicenseHelper::isValidLicenseAvailable()) : ?>
     <div class="license-status license-status--free">
-        <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank">
+        <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank">
             <span><?php esc_html_e('UPGRADE TO ALL-IN-ONE', 'wp-sms'); ?></span>
         </a>
     </div>

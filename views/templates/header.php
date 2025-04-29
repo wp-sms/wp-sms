@@ -19,7 +19,7 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
     <div class="wpsms-adminHeader__side">
         <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) : ?>
             <?php if (!$isPremium && !LicenseHelper::isValidLicenseAvailable()) : ?>
-                <a href="<?php echo esc_url(WP_SMS_SITE . '/buy?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
+                <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
                     <?php esc_html_e('Upgrade To All-in-One', 'wp-sms'); ?>
                 </a>
             <?php else : ?>

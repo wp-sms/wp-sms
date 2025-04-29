@@ -17,7 +17,7 @@
         <div class="wpsms-addon__step__faq">
             <ul>
                 <li>
-                    <a href="https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" title="<?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?>"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" title="<?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?>"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
                 </li>
                 <li>
                     <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key" target="_blank" title="<?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?>"><?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?></a>

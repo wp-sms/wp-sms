@@ -29,7 +29,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
             $data = [
                 'step_name'   => 'first-step',
                 'description' => $defaultDescription,
-                'step_href'   => esc_url(WP_SMS_SITE . '/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium'),
+                'step_href'   => esc_url(WP_SMS_SITE . '/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium'),
                 'step_title'  => $isPremium ? esc_html__('You’re All Set with WP SMS All‑in‑One', 'wp-sms') : ($hasLicense && !$isPremium ? esc_html__('You\'re Already Enjoying Add-Ons!', 'wp-sms') : esc_html__('All Premium SMS Features in One Package', 'wp-sms')),
             ];
 

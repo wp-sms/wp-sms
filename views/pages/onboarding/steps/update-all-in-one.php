@@ -19,7 +19,7 @@
                         <?php printf(__('From <strong>$%s</strong> per Year', 'wp-sms'), '59'); ?>
                     </p>
                     <div>
-                        <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_attr_e('Buy now', 'wp-sms'); ?>" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank">
+                        <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_attr_e('Buy now', 'wp-sms'); ?>" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank">
                             <?php esc_html_e('Buy now', 'wp-sms'); ?>
                         </a>
                         <p class="c-proplan__desc"><?php esc_html_e('14-day money-back', 'wp-sms'); ?><br><?php esc_html_e('guarantee on all plans.', 'wp-sms'); ?></p>

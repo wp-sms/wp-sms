@@ -2653,7 +2653,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                             if ($isProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/buy">PRO</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing">PRO</a></span></li>';
                                 }
                             }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
