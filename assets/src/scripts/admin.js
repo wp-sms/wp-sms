@@ -4,6 +4,21 @@
         jQuery('.iti__country-container').trigger('click');
     });
 
+    $(document).on('click', '.thickbox', function(e) {
+        var $link = $(this);
+        var iconClass = $link.data('icon');
+        var titleText = $link.attr('name');
+
+        setTimeout(function() {
+            if (iconClass && typeof iconClass === 'string' && iconClass.trim() !== '') {
+                $('#TB_title').html(
+                    '<span class="dashicons ' + iconClass + '"></span> ' + titleText
+                );
+            } else {
+                $('#TB_title').html(titleText);
+            }
+        }, 100);
+    });
 
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();

@@ -8,7 +8,7 @@ namespace WP_SMS;
         <h2><?php esc_html_e('Groups', 'wp-sms'); ?></h2>
         <div class="wpsms-button-group">
             <?php add_thickbox(); ?>
-            <a name="<?php esc_html_e('Add Group', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers-group#TB_inline?&width=400&height=125&inlineId=add-group" class="thickbox button"><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Add Group', 'wp-sms'); ?></a>
+            <a title="<span class='wps-tick-title wps-tick-title__group'><?php esc_html_e('Add Group', 'wp-sms'); ?></span>" name="<?php esc_html_e('Add Group', 'wp-sms'); ?>" href="admin.php?page=wp-sms-subscribers-group#TB_inline?&width=400&height=125&inlineId=add-group" class="thickbox button"><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Add Group', 'wp-sms'); ?></a>
             <div id="add-group" style="display:none;">
                 <?php echo Helper::loadTemplate('admin/group-form.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </div>

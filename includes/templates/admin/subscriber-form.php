@@ -7,7 +7,7 @@
         <tr>
             <td>
                 <label for="wp_subscribe_name" class="wp_sms_subscribers_label"><?php esc_html_e('Name', 'wp-sms'); ?></label>
-                <input type="text" id="wp_subscribe_name" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
+                <input type="text" id="wp_subscribe_name" placeholder="<?php esc_html_e('Name', 'wp-sms'); ?>" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
             </td>
         </tr>
         <tr>

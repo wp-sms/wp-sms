@@ -7,7 +7,7 @@
             <div class="promotion-modal__screenshot">
                 <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/wp-sms-two-way-chagemode.png'); ?>" alt="">
             </div>
-            <p class="promotion-modal__desc"><?php _e('<b>Chat Mode is now live in WP SMS Two Way!</b> This powerful feature enhances your communication by allowing you'); ?></p>
+            <p class="promotion-modal__desc"><?php _e('<b>Chat Mode is now live in WP SMS Two Way!</b> This powerful feature enhances your communication by allowing you to'); ?></p>
             <div class="promotion-modal__features">
                 <div class="promotion-modal__feature__col">
                     <div title="<?php esc_html_e('Keep a record of all incoming messages without hassle.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('Store Incoming Messages', 'wp-sms'); ?></div>
