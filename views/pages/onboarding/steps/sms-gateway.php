@@ -79,12 +79,17 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                         </span>
                     </th>
                     <th>
+                        <?php esc_html_e('Origin Country', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Origin Country', 'wp-sms'); ?>">
+                          <i class="wps-tooltip-icon"></i>
+                        </span>
+                    </th>
+                    <th>
                         <?php esc_html_e('Gateway Access', 'wp-sms'); ?>
                         <span class="wpsms-tooltip" title="<?php esc_html_e('Shows whether this gateway is included in your current plan or requires All-in-One for full functionality.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
-                    <th class="c-table-country--filter"><?php esc_html_e('Countries', 'wp-sms'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -144,12 +149,12 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
+                            <td><?php echo esc_html($country_list); ?></td>
                             <td class="u-flex u-align-center u-content-sp">
                                 <a title="<?php echo esc_attr__('Pro Plugin Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
                                     <?php esc_html_e('Pro Plugin Required', 'wp-sms'); ?>
                                 </a>
                             </td>
-                            <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
                         </tr>
                     <?php else:
                         $current_gateway = \WP_SMS\Option::getOption('gateway_name');
@@ -189,10 +194,10 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? '0' : '1'; ?>"></span>
                             </td>
+                            <td><?php echo esc_html($country_list); ?></td>
                             <td>
                                 <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
                             </td>
-                            <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
                         </tr>
                     <?php endif; ?>
                 <?php endforeach; ?>
