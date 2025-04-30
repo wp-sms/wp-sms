@@ -9,7 +9,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
     <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 300 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
+        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 350 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
     </p>
 </div>
 
