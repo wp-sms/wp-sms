@@ -125,9 +125,7 @@ class WizardManager
     {
         if ($this->isOnboarding()) {
             $stepTitle = method_exists($this->currentStep, 'getTitle') ? $this->currentStep->getTitle() : '';
-            $customTitle = sprintf('WP SMS Onboarding Process: %s', $stepTitle ?: $this->title);
-
-            return sprintf('%s › %s', $customTitle, get_bloginfo('name'));
+            return sprintf(__('WP SMS Onboarding Process: %s', 'wp-sms'), $stepTitle ?: $this->title);
         }
 
         return $admin_title;
