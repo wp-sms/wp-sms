@@ -23,12 +23,15 @@
             </label>
             <input class="wp-sms-input-iti-tel regular-text" value="<?php echo esc_attr($current_tel_raw); ?>" name="tel" id="tel" type="tel"/>
             <input name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text"  />
-            <p class="c-form__description">
+            <p class="c-form__description valid">
                 <?php esc_html_e("Select your country and enter your mobile number. This number will be used for important notifications and alerts, so make sure it’s correct.", 'wp-sms'); ?>
+            </p>
+            <p class="c-form__description invalid hidden">
+                <?php esc_html_e("Enter the full international format, including the country code (for example, “+1” for the United States).This is the number where you’ll receive management and alert notifications.", 'wp-sms'); ?>
             </p>
         </div>
         <div class="c-form__footer u-flex-end">
-            <input class="c-btn c-btn--primary" disabled type="submit" value="<?php echo esc_attr($ctas['next']['text']); ?>"/>
+            <input class="c-btn c-btn--primary" type="submit" value="<?php echo esc_attr($ctas['next']['text']); ?>"/>
         </div>
     </form>
 </div>
