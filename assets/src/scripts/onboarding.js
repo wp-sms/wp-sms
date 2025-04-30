@@ -153,10 +153,6 @@ jQuery(document).ready(function ($) {
         responsive: true,
         columnDefs: [
             {
-                targets: [4],
-                visible: false
-            },
-            {
                 targets: [1, 2],
                 orderDataType: 'dom-data-sort'
             }
@@ -207,15 +203,15 @@ jQuery(document).ready(function ($) {
 
     if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
         $('#filterCountries').val(chosen_country).trigger('change');
-        table.column(4).search(chosen_country).draw();
+        table.column(3).search(chosen_country).draw();
     }
 
     $('#filterCountries').on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;
         if (selectedCountry === 'All') {
-            table.column(4).search('').draw();
+            table.column(3).search('').draw();
         } else {
-            table.column(4).search(selectedCountry).draw();
+            table.column(3).search(selectedCountry).draw();
         }
     });
 
