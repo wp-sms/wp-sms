@@ -16,10 +16,24 @@
     <form class="<?php echo esc_attr($slug) . '-step-' . esc_attr($current) ?>" method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">
         <?php
         foreach ($fields as $key => $field): ?>
-            <div class="c-form__fieldgroup u-mb-24">
-                <label for="<?php echo esc_attr($field['id']); ?>">
-                    <?php echo esc_html($field['name']); ?> <span class="u-text-red">*</span>
-                </label>
+        <div class="c-form__fieldgroup u-mb-24">
+            <label for="<?php echo esc_attr($field['id']); ?>">
+                <?php echo esc_html($field['name']); ?> <span class="u-text-red">*</span>
+            </label>
+
+            <?php if (isset($field['type']) && $field['type'] === 'select' && isset($field['options'])): ?>
+                <select id="<?php echo esc_attr($field['id']); ?>"
+                        name="<?php echo esc_attr($field['id']); ?>">
+                    <?php
+                    $selected_value = \WP_SMS\Option::getOption($field['id']);
+                    foreach ($field['options'] as $option_value => $option_label): ?>
+                        <option value="<?php echo esc_attr($option_value); ?>"
+                            <?php selected($selected_value, $option_value); ?>>
+                            <?php echo esc_html($option_label); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            <?php else: ?>
                 <input
                     id="<?php echo esc_attr($field['id']); ?>"
                     name="<?php echo esc_attr($field['id']); ?>"
@@ -27,10 +41,12 @@
                     type="<?php echo ($key === 'password') ? 'password' : 'text'; ?>"
                     value="<?php echo esc_attr(\WP_SMS\Option::getOption($field['id'])); ?>"
                 />
-                <p class="c-form__description">
-                    <?php echo $field['desc']; ?>
-                </p>
-            </div>
+            <?php endif; ?>
+
+            <p class="c-form__description">
+                <?php echo $field['desc']; ?>
+            </p>
+        </div>
         <?php endforeach; ?>
         <div class="gateway-status-container" style="display: none">
             <ul class="c-form__result">
