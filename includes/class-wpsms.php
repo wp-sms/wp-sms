@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
@@ -230,7 +231,8 @@ class WP_SMS
                 $wizard->add(StepFactory::create('SmsGateway', $wizard));
                 $wizard->add(StepFactory::create('Configuration', $wizard));
                 $wizard->add(StepFactory::create('TestSetup', $wizard));
-                $wizard->add(StepFactory::create('Pro', $wizard));
+                if (!LicenseHelper::isPluginLicenseValid())
+                    $wizard->add(StepFactory::create('Pro', $wizard));
                 $wizard->add(StepFactory::create('Ready', $wizard));
                 $wizard->setup();
             });

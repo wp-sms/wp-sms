@@ -1,9 +1,10 @@
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
+    <span class="c-section__step"><?php echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Level Up Your WP SMS Experience', 'wp-sms'); ?></h1>
     <p class="u-m-0">
         <?php esc_html_e("You already enjoy WP SMS free—now unlock its full potential with WP SMS All‑in‑One. Get every premium add‑on, expanded gateway support, advanced WooCommerce notifications, membership integrations, and much more in a single plan.", 'wp-sms'); ?>
-     </p>
+    </p>
 </div>
 <div class="c-form u-flex u-content-center u-align-center u-flex--column">
     <form method="post" action="<?php echo esc_url($ctas['next']['url']); ?>">

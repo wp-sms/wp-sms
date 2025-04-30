@@ -1,12 +1,17 @@
 <?php
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-$current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
+use WP_SMS\Utils\PluginHelper;
+
+$current_country         = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
+$is_pro_plugin_activated = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+$has_valid_license       = LicenseHelper::isPluginLicenseValid();
 
 ?>
 
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
+    <span class="c-section__step"><?php echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">
         <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 350 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
@@ -40,7 +45,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
             $all_countries = array_unique($all_countries);
             sort($all_countries);
             ?>
-            <input class="chosen-country" disabled type="hidden" value="<?php echo esc_html($current_country)?>">
+            <input class="chosen-country" disabled type="hidden" value="<?php echo esc_html($current_country) ?>">
             <select id="filterCountries" name="countries">
                 <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
                 <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
@@ -87,7 +92,6 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                     <?php
                     $countries      = [];
                     $country_list   = '';
-                    $can_choose     = LicenseHelper::isPluginLicenseValid();
                     $is_pro_gateway = false;
 
                     if (isset($gateway->fields->gateway_attributes->is_deprecated) && $gateway->fields->gateway_attributes->is_deprecated) continue;
@@ -109,17 +113,14 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                     }
                     ?>
 
-                    <?php if ($is_pro_gateway && !$can_choose):
-                        ?>
+                    <?php if ($is_pro_gateway && (!$has_valid_license || !$is_pro_plugin_activated)): ?>
                         <tr class="disabled even" role="row">
                             <td>
-                                <span data-tooltip="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
+                                <span data-tooltip="<?php echo esc_attr__('Pro Plugin Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
                                     <span class="icon-lock"></span>
                                 </span>
                                 <span class="c-table-gateway__name">
-                                    <?php
-                                    if (isset($gateway->link) && !empty($gateway->link)): ?>
-
+                                    <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
                                         <span>
                                            <?php echo esc_html($gateway->title->rendered); ?>
                                             <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
@@ -130,7 +131,6 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                                                 </svg>
                                             </a>
                                         </span>
-
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
                                     <?php endif; ?>
@@ -139,14 +139,14 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '0' : '1'; ?>"></span>
-                             </td>
+                            </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td class="u-flex u-align-center u-content-sp">
-                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
-                                    <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
+                                <a title="<?php echo esc_attr__('Pro Plugin Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                                    <?php esc_html_e('Pro Plugin Required', 'wp-sms'); ?>
                                 </a>
                             </td>
                             <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
@@ -166,7 +166,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                                 <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
                                 <span class="c-table-gateway__name">
                                     <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                            <span>
+                                        <span>
                                                 <?php echo esc_html($gateway->title->rendered); ?>
                                                 <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
                                                     <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -195,7 +195,6 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                             <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
                         </tr>
                     <?php endif; ?>
-
                 <?php endforeach; ?>
                 </tbody>
             </table>

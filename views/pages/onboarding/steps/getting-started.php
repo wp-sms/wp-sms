@@ -1,6 +1,7 @@
 <div class="c-section__title u-border-b">
     <span class="c-section__step">
-        <?php echo esc_html(sprintf(__('Step %d of 6', 'wp-sms'), $index)); ?>
+        <?php echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        ?>
     </span>
     <h1 class="u-m-0 u-text-orange">
         <?php esc_html_e('Welcome to WP SMS!', 'wp-sms'); ?>
@@ -16,13 +17,13 @@
         </p>
         <div class="c-form__fieldgroup u-mb-38">
             <?php
-            $current_tel_raw      = \WP_SMS\Option::getOption('admin_mobile_number');
+            $current_tel_raw = \WP_SMS\Option::getOption('admin_mobile_number');
             ?>
             <label for="tel">
                 <?php esc_html_e('Admin Mobile Number', 'wp-sms'); ?> <span class="u-text-red">*</span>
             </label>
             <input class="wp-sms-input-iti-tel regular-text" value="<?php echo esc_attr($current_tel_raw); ?>" name="tel" id="tel" type="tel"/>
-            <input name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text"  />
+            <input name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text"/>
             <p class="c-form__description valid">
                 <?php esc_html_e("Select your country and enter your mobile number. This number will be used for important notifications and alerts, so make sure it’s correct.", 'wp-sms'); ?>
             </p>

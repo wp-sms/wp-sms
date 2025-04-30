@@ -159,6 +159,7 @@ class WizardManager
             'next'           => WizardHelper::generateStepUrl($this->getNext(), $this->slug),
             'ctas'           => $this->getCTAs(),
             'index'          => $this->getStepIndex() + 1,
+            'total_steps'    => count($this->steps),
             'steps'          => $this->getStepsData(),
             'slug'           => $this->slug,
             'is_last'        => $this->isLastStep(),
