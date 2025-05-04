@@ -72,7 +72,7 @@
 }
 
 .wpsms-tab {
-  width: 298px;
+  width: 284px;
   float: left;
   background-color: transparent;
   margin: 0;
@@ -312,13 +312,18 @@
 }
 
 .wpsms-tab-content {
-  background-color: #fff;
+  margin: 0 0 0 27px;
   display: grid;
-  padding: 21px 33px 6px;
-  min-height: 680px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
-  border-radius: 2px;
-  margin: 0 6px 0 30px;
+  gap: 20px;
+
+  &__box{
+    background-color: #fff;
+    display: grid;
+    padding: 27px 33px 6px;
+    min-height: 680px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+  }
 }
 
 .licenses_settings_tab {
@@ -370,7 +375,7 @@
 .wpsms-tab-content tr.tr-header th,
 tr.tr-header td {
   color: #ffffff;
-  padding: 14px 12px 12px 12px;
+  padding: 7px 10px;
   white-space: nowrap;
   background: #f0f0f1;
   font-weight: bold;

@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use Forminator_API;
+use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 
@@ -2690,15 +2691,19 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         } ?>
                     </ul>
 
-                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
-                        <?php
-                        if (isset($args['setting']) && $args['setting'] == true) {
-                            $this->renderWpSetting();
-                        } else if (isset($args['template']) && $args['template'] != "") {
-                            call_user_func($args['template'], []);
-                        }
-                        ?>
 
+                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+
+                        <?php View::load("components/lock-sections/notice-inactive-license-addon") ?>
+                        <div class="wpsms-tab-content__box">
+                            <?php
+                            if (isset($args['setting']) && $args['setting'] == true) {
+                                $this->renderWpSetting();
+                            } else if (isset($args['template']) && $args['template'] != "") {
+                                call_user_func($args['template'], []);
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
