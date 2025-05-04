@@ -98,6 +98,7 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                     $countries      = [];
                     $country_list   = '';
                     $is_pro_gateway = false;
+                    $badges         = [];
 
                     if (isset($gateway->fields->gateway_attributes->is_deprecated) && $gateway->fields->gateway_attributes->is_deprecated) continue;
 
@@ -115,6 +116,11 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                 $is_pro_gateway = $gateway->fields->gateway_attributes->wp_sms_pro;
                             }
                         }
+                    }
+
+                    if (isset($gateway->fields->gateway_attributes->badge)) {
+                        $badges = json_decode(json_encode($gateway->fields->gateway_attributes->badge), true);
+                        $badges = array_column($badges, 'label', 'value');
                     }
                     ?>
 
@@ -135,9 +141,25 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                                     <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
                                             </a>
+                                            <?php
+                                            if (!empty($badges)):
+                                                foreach ($badges as $slug => $badge):?>
+                                                    <span><?php echo esc_html($badge) ?></span>
+                                                <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
                                         </span>
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
+                                        <?php
+                                        if (!empty($badges)):
+                                            foreach ($badges as $slug => $badge):?>
+                                                <span><?php echo esc_html($badge) ?></span>
+                                            <?php
+                                            endforeach;
+                                        endif;
+                                        ?>
                                     <?php endif; ?>
                                 </span>
                             </td>
@@ -172,17 +194,33 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                 <span class="c-table-gateway__name">
                                     <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
                                         <span>
-                                                <?php echo esc_html($gateway->title->rendered); ?>
-                                                <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
-                                                    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                        <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                        <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    </svg>
-                                                </a>
-                                            </span>
+                                            <?php echo esc_html($gateway->title->rendered); ?>
+                                            <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
+                                                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </a>
+                                            <?php
+                                            if (!empty($badges)):
+                                                foreach ($badges as $slug => $badge):?>
+                                                    <span><?php echo esc_html($badge) ?></span>
+                                                <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
+                                        </span>
                                     <?php else: ?>
                                         <?php echo esc_html($gateway->title->rendered); ?>
+                                        <?php
+                                        if (!empty($badges)):
+                                            foreach ($badges as $slug => $badge):?>
+                                                <span><?php echo esc_html($badge) ?></span>
+                                            <?php
+                                            endforeach;
+                                        endif;
+                                        ?>
                                     <?php endif; ?>
                                 </span>
                             </td>
