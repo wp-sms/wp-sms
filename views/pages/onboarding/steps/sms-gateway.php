@@ -80,7 +80,7 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                     </th>
                     <th>
                         <?php esc_html_e('Origin Country', 'wp-sms'); ?>
-                        <span class="wpsms-tooltip" title="<?php esc_html_e('Origin Country', 'wp-sms'); ?>">
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Country where the gateway is headquartered or primarily licensed.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
@@ -125,43 +125,37 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                     ?>
 
                     <?php if ($is_pro_gateway && (!$has_valid_license || !$is_pro_plugin_activated)): ?>
-                        <tr class="disabled even" role="row">
+                        <tr class="disabled even <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" role="row">
                             <td>
-                                <span data-tooltip="<?php echo esc_attr__('Pro Plugin Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
-                                    <span class="icon-lock"></span>
-                                </span>
-                                <span class="c-table-gateway__name">
-                                    <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                        <span>
-                                           <?php echo esc_html($gateway->title->rendered); ?>
-                                            <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
-                                                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                            </a>
-                                            <?php
-                                            if (!empty($badges)):
-                                                foreach ($badges as $slug => $badge):?>
-                                                    <span><?php echo esc_html($badge) ?></span>
-                                                <?php
-                                                endforeach;
-                                            endif;
-                                            ?>
-                                        </span>
-                                    <?php else: ?>
-                                        <?php echo esc_html($gateway->title->rendered); ?>
+                                <div class="c-table-gateway__info">
+                                   <span data-tooltip="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
+                                        <span class="icon-lock"></span>
+                                    </span>
+                                    <span class="c-table-gateway__name">
+                                        <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
+                                            <span>
+                                               <?php echo esc_html($gateway->title->rendered); ?>
+                                                <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
+                                                    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </a>
+                                            </span>
+                                        <?php else: ?>
+                                            <?php echo esc_html($gateway->title->rendered); ?>
+                                        <?php endif; ?>
+                                    </span>
+                                    <?php
+                                    if (!empty($badges)):
+                                        foreach ($badges as $slug => $badge):?>
+                                            <span class="c-table-gateway__badge"><?php echo esc_html($badge) ?></span>
                                         <?php
-                                        if (!empty($badges)):
-                                            foreach ($badges as $slug => $badge):?>
-                                                <span><?php echo esc_html($badge) ?></span>
-                                            <?php
-                                            endforeach;
-                                        endif;
-                                        ?>
-                                    <?php endif; ?>
-                                </span>
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
@@ -171,10 +165,10 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
-                            <td><?php echo esc_html($country_list); ?></td>
+                            <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($country_list); ?></span></td>
                             <td class="u-flex u-align-center u-content-sp">
-                                <a title="<?php echo esc_attr__('Pro Plugin Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
-                                    <?php esc_html_e('Pro Plugin Required', 'wp-sms'); ?>
+                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                                    <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                                 </a>
                             </td>
                         </tr>
@@ -188,41 +182,35 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
 
                         $selected = ($current_gateway === $slug) ? 'checked' : '';
                         ?>
-                        <tr class="gateway-row" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
+                        <tr class="gateway-row  <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
                             <td>
-                                <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
-                                <span class="c-table-gateway__name">
-                                    <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
-                                        <span>
+                                <div class="c-table-gateway__info">
+                                    <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
+                                    <span class="c-table-gateway__name">
+                                        <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
+                                            <span>
+                                                <?php echo esc_html($gateway->title->rendered); ?>
+                                                <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
+                                                    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </a>
+                                            </span>
+                                        <?php else: ?>
                                             <?php echo esc_html($gateway->title->rendered); ?>
-                                            <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
-                                                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                            </a>
-                                            <?php
-                                            if (!empty($badges)):
-                                                foreach ($badges as $slug => $badge):?>
-                                                    <span><?php echo esc_html($badge) ?></span>
-                                                <?php
-                                                endforeach;
-                                            endif;
-                                            ?>
-                                        </span>
-                                    <?php else: ?>
-                                        <?php echo esc_html($gateway->title->rendered); ?>
+                                        <?php endif; ?>
+                                    </span>
+                                    <?php
+                                    if (!empty($badges)):
+                                        foreach ($badges as $slug => $badge):?>
+                                            <span class="c-table-gateway__badge"><?php echo esc_html($badge) ?></span>
                                         <?php
-                                        if (!empty($badges)):
-                                            foreach ($badges as $slug => $badge):?>
-                                                <span><?php echo esc_html($badge) ?></span>
-                                            <?php
-                                            endforeach;
-                                        endif;
-                                        ?>
-                                    <?php endif; ?>
-                                </span>
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
@@ -232,7 +220,7 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? '0' : '1'; ?>"></span>
                             </td>
-                            <td><?php echo esc_html($country_list); ?></td>
+                            <td class="u-text-center"><?php echo esc_html($country_list); ?></td>
                             <td>
                                 <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
                             </td>
