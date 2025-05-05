@@ -43,18 +43,19 @@
       color: #56585A;
       font-size: 13px;
       padding: 0 10px 5px;
-      margin: 0!important;
+      margin: 0 !important;
       line-height: 24px;
       font-weight: 500;
       outline: none !important;
       box-shadow: none !important;
-      &:hover{
-        color:#171717;
+
+      &:hover {
+        color: #171717;
       }
     }
 
     .nav-tab-active, .nav-tab-active:focus, .nav-tab-active:focus:active, .nav-tab-active:hover {
-      color:#171717;
+      color: #171717;
       border-bottom: 2px solid #EA580C;
     }
   }
@@ -125,8 +126,19 @@
   line-height: 18px;
 }
 
-.wpsms-tab .is-pro-tab .pro-not-installed a {
-  background: #EF771F;
+.wpsms-tab .is-pro-tab .pro-not-installed{
+  a {
+    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDEyLjc3N0wxMi42MjEyIDE0Ljc2MTVDMTIuODAxOSAxNC44ODg1IDEyLjk4NDMgMTQuODkyNyAxMy4xNjgzIDE0Ljc3NEMxMy4zNTIzIDE0LjY1NTUgMTMuNDA5IDE0LjQ4OTIgMTMuMzM4NSAxNC4yNzVMMTIuMzQ2MiAxMC45OTIzTDE0LjkwNjUgOS4xNzE1QzE1LjA5NDUgOS4wMzE1IDE1LjE1MTYgOC44NTcgMTUuMDc3OCA4LjY0OEMxNS4wMDQxIDguNDM5MTcgMTQuODU3MyA4LjMzNDc1IDE0LjYzNzUgOC4zMzQ3NUgxMS41MDM4TDEwLjQzNjUgNC44ODY1QzEwLjM2IDQuNjcyNSAxMC4yMTQ2IDQuNTY1NSAxMC4wMDAzIDQuNTY1NUM5Ljc4NTkyIDQuNTY1NSA5LjY0MDMzIDQuNjcyNSA5LjU2MzUgNC44ODY1TDguNDk2MjUgOC4zMzQ3NUg1LjM2MjVDNS4xNDI2NyA4LjMzNDc1IDQuOTk1OTIgOC40MzkxNyA0LjkyMjI1IDguNjQ4QzQuODQ4NDIgOC44NTcgNC45MDU1IDkuMDMxNSA1LjA5MzUgOS4xNzE1TDcuNjUzNzUgMTAuOTkyM0w2LjY2MTUgMTQuMjc1QzYuNTkxIDE0LjQ4OTIgNi42NDc3NSAxNC42NTU1IDYuODMxNzUgMTQuNzc0QzcuMDE1NzUgMTQuODkyNyA3LjE5ODA4IDE0Ljg4ODUgNy4zNzg3NSAxNC43NjE1TDEwIDEyLjc3N1pNMTAuMDAxNyAxOS41QzguNjg3NzUgMTkuNSA3LjQ1MjY3IDE5LjI1MDcgNi4yOTY1IDE4Ljc1MkM1LjE0MDMzIDE4LjI1MzMgNC4xMzQ2NyAxNy41NzY2IDMuMjc5NSAxNi43MjE4QzIuNDI0MzMgMTUuODY2OSAxLjc0NzI1IDE0Ljg2MTcgMS4yNDgyNSAxMy43MDZDMC43NDk0MTcgMTIuNTUwMyAwLjUgMTEuMzE1NiAwLjUgMTAuMDAxN0MwLjUgOC42ODc3NSAwLjc0OTMzMyA3LjQ1MjY3IDEuMjQ4IDYuMjk2NUMxLjc0NjY3IDUuMTQwMzMgMi40MjM0MiA0LjEzNDY3IDMuMjc4MjUgMy4yNzk1QzQuMTMzMDggMi40MjQzMyA1LjEzODMzIDEuNzQ3MjUgNi4yOTQgMS4yNDgyNUM3LjQ0OTY3IDAuNzQ5NDE3IDguNjg0NDIgMC41IDkuOTk4MjUgMC41QzExLjMxMjMgMC41IDEyLjU0NzMgMC43NDkzMzMgMTMuNzAzNSAxLjI0OEMxNC44NTk3IDEuNzQ2NjcgMTUuODY1MyAyLjQyMzQyIDE2LjcyMDUgMy4yNzgyNUMxNy41NzU3IDQuMTMzMDggMTguMjUyOCA1LjEzODMzIDE4Ljc1MTggNi4yOTRDMTkuMjUwNiA3LjQ0OTY3IDE5LjUgOC42ODQ0MiAxOS41IDkuOTk4MjVDMTkuNSAxMS4zMTIzIDE5LjI1MDcgMTIuNTQ3MyAxOC43NTIgMTMuNzAzNUMxOC4yNTMzIDE0Ljg1OTcgMTcuNTc2NiAxNS44NjUzIDE2LjcyMTggMTYuNzIwNUMxNS44NjY5IDE3LjU3NTcgMTQuODYxNyAxOC4yNTI4IDEzLjcwNiAxOC43NTE4QzEyLjU1MDMgMTkuMjUwNiAxMS4zMTU2IDE5LjUgMTAuMDAxNyAxOS41WiIgZmlsbD0iI0Y5NzMxNiIvPgo8L3N2Zz4K") center center no-repeat;
+    width: 19px;
+    height: 19px;
+    opacity: 40%;
+  }
+  &.active{
+    box-shadow: none;
+    a{
+      opacity: 1;
+    }
+  }
 }
 
 .wpsms-tab #wpsms-logo {
@@ -316,7 +328,7 @@
   display: grid;
   gap: 20px;
 
-  &__box{
+  &__box {
     background-color: #fff;
     display: grid;
     padding: 27px 33px 6px;
@@ -583,5 +595,136 @@ tr.tr-header td {
 @media screen and (max-width: 520px) {
   .notice input[type="email"] {
     margin-bottom: 12px;
+  }
+}
+
+.wp-sms-lock {
+  &__title {
+    color: #282828;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    margin: 0 0 12px 0;
+  }
+
+  &__desc {
+    margin: 0 0 24px 0;
+    color: #525252;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  &__features{
+    display: flex;
+    margin-top: 24px;
+    gap:12px;
+    flex-direction: column;
+  }
+
+  &__feature{
+     font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
+    color:#282828;
+
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+
+    &:before{
+      content: '';
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNSAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwLjExNzkgMTUuMTcwOUwxOS4zMTAzIDUuOTc4NTJMMjAuNzI0NSA3LjM5MjczTDEwLjExNzkgMTcuOTk5M0wzLjc1MzkxIDExLjYzNTRMNS4xNjgxMyAxMC4yMjEyTDEwLjExNzkgMTUuMTcwOVoiIGZpbGw9IiNFQTU4MEMiLz4KPC9zdmc+Cg==") center center no-repeat;
+    }
+    b{
+      font-weight: 700;
+    }
+
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__action {
+    display: inline-flex;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    text-decoration: none;
+    align-items: center;
+
+    &--primary {
+      background: #F97316;
+      color: #FFFFFF !important;
+
+      &:hover {
+
+      }
+
+      &:after{
+        content: '';
+        min-width: 16px;
+        width: 16px;
+        height: 16px;
+        display: inline-flex;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguODk5NDYgOC4wMDA0N0w1LjU5OTYxIDQuNzAwNjJMNi41NDI0MiAzLjc1NzgxTDEwLjc4NTEgOC4wMDA0N0w2LjU0MjQyIDEyLjI0MzFMNS41OTk2MSAxMS4zMDAzTDguODk5NDYgOC4wMDA0N1oiIGZpbGw9IiNGQUZBRkEiLz4KPC9zdmc+Cg==") center center no-repeat;
+      }
+    }
+
+    &--default {
+      background: #FAFAFA;
+      color: #525252;
+      border: 1px solid var(--Neutral-Neutral-300, #D4D4D4)
+    }
+  }
+
+  &__footer {
+    margin-top: 32px;
+
+    &--dashed {
+      border-top: 1px solid #E5E5E5;
+      padding-top: 32px;
+    }
+
+    &__info {
+      margin-top: 16px;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 12px;
+      line-height: 100%;
+      color: #0C0C0D;
+
+      a {
+        color: #3088EC;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 100%;
+        text-decoration: underline;
+        text-decoration-style: solid;
+        display: inline-flex;
+        align-items: center;
+
+        &:hover {
+          color: #0C0C0D;
+        }
+      }
+    }
+
+    &__desc {
+      margin: 0 0 24px 0;
+      color: #282828;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+    }
   }
 }

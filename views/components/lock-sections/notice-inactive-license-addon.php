@@ -1,6 +1,6 @@
 <div class="wp-sms-notice wp-sms-notice--warning">
     <div>
-        <p class="wp-sms-notice__title"> <?php esc_html_e('Notice:', 'wp-sms') ?></p>
+        <p class="wp-sms-notice__title"><?php esc_html_e('Notice:', 'wp-sms') ?></p>
         <div class="wp-sms-notice__desc">
             <?php
             echo wp_kses_post(sprintf(
