@@ -290,7 +290,7 @@ class PluginDecorator
             ],
             'wp-sms-fluent-integrations'     => [
                 'fluent-crm/fluent-crm.php'         => 'addon_fluent_crm',
-                'fluent-forms/fluent-forms.php'     => 'addon_fluent_forms',
+                'fluentform/fluentform.php'         => 'addon_fluent_forms',
                 'fluent-support/fluent-support.php' => 'addon_fluent_support',
             ],
             'wp-sms-membership-integrations' => [
