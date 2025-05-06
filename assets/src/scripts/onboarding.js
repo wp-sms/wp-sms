@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
             autoPlaceholder: "polite",
             utilsScript: wp_sms_intel_tel_util.util_js,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
-                return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`;
+                return `+${selectedCountryData.dialCode} 555 123 4567`;
             },
         })
 
