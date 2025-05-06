@@ -64,6 +64,14 @@ jQuery(document).ready(function ($) {
         };
         updatePlaceholder();
 
+        if (!wpSmsItiTel.value.trim()) {
+            submitButton.disabled = true;
+            if (formDescription) formDescription.classList.remove('hidden');
+            if (formDescriptionInvalid) formDescriptionInvalid.classList.add('hidden');
+            const existingNotices = document.querySelectorAll('.wpsms-admin-notice.notice-warning');
+            existingNotices.forEach(notice => notice.remove());
+        }
+
         wpSmsItiTel.addEventListener('countrychange', function () {
             const selectedCountryData = iti_tel.getSelectedCountryData();
             const dialCode = selectedCountryData.dialCode || '1';
@@ -108,10 +116,14 @@ jQuery(document).ready(function ($) {
         const existingNotices = document.querySelectorAll('.wpsms-admin-notice.notice-warning');
         existingNotices.forEach(notice => notice.remove());
 
-        if (isValid) {
+        if (isEmpty) {
             if (formDescription) formDescription.classList.remove('hidden');
             if (formDescriptionInvalid) formDescriptionInvalid.classList.add('hidden');
-            submitButton.disabled = false;
+            if (submitButton) submitButton.disabled = true;
+        } else if (isValid) {
+            if (formDescription) formDescription.classList.remove('hidden');
+            if (formDescriptionInvalid) formDescriptionInvalid.classList.add('hidden');
+            if (submitButton) submitButton.disabled = false;
             input.value = intlTelInputInstance.getNumber().replace(/[-\s]/g, '');
         } else {
             if (formDescription) formDescription.classList.add('hidden');
@@ -129,11 +141,27 @@ jQuery(document).ready(function ($) {
 
 
     // Initialize Select2 with custom placeholder
-    $('.wpsms-onboarding select').select2({
-        dropdownCssClass: 'c-select2-dropdown'
-    }).on('select2:open', function () {
-        $('.select2-search__field').attr('placeholder', 'Type to search...');
-        $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
+    function initSelect2(selector, options = {}) {
+        const defaultOptions = {
+            dropdownCssClass: 'c-select2-dropdown'
+        };
+
+        const finalOptions = $.extend({}, defaultOptions, options);
+
+        $(selector).select2(finalOptions).on('select2:open', function () {
+            $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
+
+            // Add placeholder only for searchable dropdowns
+            if (!finalOptions.minimumResultsForSearch || finalOptions.minimumResultsForSearch === 0) {
+                $('.select2-search__field').attr('placeholder', 'Type to search...');
+            }
+        });
+    }
+
+     initSelect2('.wpsms-onboarding select');
+
+     initSelect2('.wpsms-onboarding .wp-sms-onboarding-step-configuration select', {
+        minimumResultsForSearch: Infinity
     });
 
     if ($('.select2-container').length > 0) {

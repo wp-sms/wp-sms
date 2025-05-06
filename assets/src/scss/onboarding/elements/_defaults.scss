@@ -76,8 +76,8 @@ strong {
    line-height: 22px;
    gap: 12px;
    align-items: center;
-   width: 792px;
-   max-width: 100%;
+   width: 864px;
+   max-width: calc(100% - 20px);
    box-sizing: border-box;
    display: none;
 
