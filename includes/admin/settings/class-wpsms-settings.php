@@ -2609,7 +2609,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
-    public function render_header_notice()
+    public function render_locked_section_notice()
     {
         $active_tab   = $this->get_active_tab();
         $current_page = isset($_GET['page']) ? $_GET['page'] : '';
@@ -2651,7 +2651,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'data' => [
                     'addon_name' => $plugin_names[$plugin_file],
                     'features'   => $features,
-                    'addon_url'        => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
+                    'addon_url'  => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
                 ]
             ];
         }
@@ -2661,7 +2661,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'type' => 'inactive_license',
                 'data' => [
                     'addon_name' => $plugin_names[$plugin_file],
-                    'addon_url'        => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
+                    'addon_url'  => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
                 ]
             ];
         }
@@ -2802,7 +2802,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             'template' => '' //must be a callable function
         ]);
         $args                    = apply_filters('wp_sms_settings_render_' . $this->active_tab, $args);
-        $notice                  = $this->render_header_notice();
+        $notice                  = $this->render_locked_section_notice();
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
