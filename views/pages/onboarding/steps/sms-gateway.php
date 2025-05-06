@@ -233,7 +233,7 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
 
         <div class="c-getway__offer u-mb-38">
             <span><?php esc_html_e('Don’t have SMS gateway?', 'wp-sms'); ?></span>
-            <a class="c-link" href="<?php echo esc_url('https://wp-sms-pro.com/gateways/'); ?>" target="_blank">
+            <a class="c-link" href="<?php echo esc_url('https://wp-sms-pro.com/gateways/recommended/'); ?>" target="_blank">
                 <?php esc_html_e('Check out our recommended SMS gateways for optimized service.', 'wp-sms'); ?>
             </a>
         </div>
