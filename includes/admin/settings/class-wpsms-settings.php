@@ -3,9 +3,11 @@
 namespace WP_SMS;
 
 use Forminator_API;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
+use WP_SMS\Utils\PluginHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -2481,7 +2483,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                 if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
                     $disabled = ' disabled';
-                    $name     .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
+                    $name     .= '<span> ' . esc_html__('- (Pro Pack)', 'wp-sms') . '</span>';
                 }
 
                 $selected = selected($option, $value, false);
@@ -2607,6 +2609,186 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
+    public function render_header_notice()
+    {
+        $active_tab   = $this->get_active_tab();
+        $current_page = isset($_GET['page']) ? $_GET['page'] : '';
+
+        foreach ($this->get_plugins() as $plugin_file => $tabs) {
+            if (!is_array($tabs)) {
+                continue;
+            }
+
+            foreach ($tabs as $tab_data) {
+                if ($tab_data['page'] !== $current_page || $tab_data['tab'] !== $active_tab) {
+                    continue;
+                }
+
+                return $this->get_plugin_notice($plugin_file, $tab_data['tab']);
+            }
+        }
+
+        return null;
+    }
+
+    private function get_active_tab()
+    {
+        $tabs = $this->get_tabs();
+        return isset($_GET['tab']) && array_key_exists($_GET['tab'], $tabs)
+            ? sanitize_text_field($_GET['tab'])
+            : 'general';
+    }
+
+    private function get_plugin_notice($plugin_file, $tab_key)
+    {
+        $plugin_names = $this->get_plugin_names();
+        $plugin_urls  = $this->get_addon_url();
+
+        if (!PluginHelper::isPluginInstalled($plugin_file)) {
+            $features = $this->get_addon_features($tab_key);
+            return [
+                'type' => 'unlock',
+                'data' => [
+                    'addon_name' => $plugin_names[$plugin_file],
+                    'features'   => $features,
+                    'addon_url'        => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
+                ]
+            ];
+        }
+
+        if (!LicenseHelper::isPluginLicenseValid($plugin_file)) {
+            return [
+                'type' => 'inactive_license',
+                'data' => [
+                    'addon_name' => $plugin_names[$plugin_file],
+                    'addon_url'        => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
+                ]
+            ];
+        }
+
+        return [
+            'type' => 'active',
+            'data' => [
+                'addon_name' => $plugin_names[$plugin_file],
+                'addon_url'  => isset($plugin_urls[$plugin_file]) ? $plugin_urls[$plugin_file] : WP_SMS_SITE
+            ]
+        ];
+    }
+
+
+    private function get_addon_features($tab_key)
+    {
+        $features = $this->get_addon_features_map();
+        return isset($features[$tab_key]) ? $features[$tab_key] : $features['pro_wordpress'];
+    }
+
+    private function get_plugins()
+    {
+        return [
+            'wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php'                 => [
+                ['page' => 'wp-sms-woo-pro-settings'],
+            ],
+            'wp-sms-pro/wp-sms-pro.php'                                         => [
+                ['page' => 'wp-sms-settings', 'tab' => 'pro_wordpress'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_buddypress'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_woocommerce'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_gravity_forms'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_quform'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_edd'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_wp_job_manager'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_awesome_support'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'pro_ultimate_members'],
+            ],
+            'wp-sms-booking-integrations/wp-sms-booking-integrations.php'       => [
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_booking_integrations_woo_appointments'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_booking_integrations_woo_bookings'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_booking_integrations_bookingpress'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_booking_integrations_booking_calendar'],
+            ],
+            'wp-sms-elementor-form/wp-sms-elementor-form.php',
+            'wp-sms-fluent-integrations/wp-sms-fluent-integrations.php'         => [
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_fluent_crm'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_fluent_forms'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_fluent_support'],
+            ],
+            'wp-sms-membership-integrations/wp-sms-membership-integrations.php' => [
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_paid_membership_pro'],
+                ['page' => 'wp-sms-integrations', 'tab' => 'addon_simple_membership'],
+            ]
+        ];
+    }
+
+    private function get_plugin_names()
+    {
+        return [
+            'wp-sms-pro/wp-sms-pro.php'                                         => __('WP SMS PRO', 'wp-sms'),
+            'wp-sms-booking-integrations/wp-sms-booking-integrations.php'       => __('WP SMS Booking Integrations', 'wp-sms'),
+            'wp-sms-elementor-form/wp-sms-elementor-form.php'                   => __('WP SMS Elementor Integration', 'wp-sms'),
+            'wp-sms-fluent-integrations/wp-sms-fluent-integrations.php'         => __('WP SMS Fluent Integrations', 'wp-sms'),
+            'wp-sms-membership-integrations/wp-sms-membership-integrations.php' => __('WP SMS Membership Integrations', 'wp-sms'),
+        ];
+    }
+
+    private function get_addon_url()
+    {
+        return [
+            'wp-sms-pro/wp-sms-pro.php'                                         => WP_SMS_SITE . '/buy',
+            'wp-sms-booking-integrations/wp-sms-booking-integrations.php'       => WP_SMS_SITE . '/product/wp-sms-booking-integrations/',
+            'wp-sms-elementor-form/wp-sms-elementor-form.php'                   => WP_SMS_SITE . '/product/wp-sms-elementor-form/',
+            'wp-sms-fluent-integrations/wp-sms-fluent-integrations.php'         => WP_SMS_SITE . '/product/wp-sms-fluent-integrations/',
+            'wp-sms-membership-integrations/wp-sms-membership-integrations.php' => WP_SMS_SITE . '/product/wp-sms-membership-integrations/',
+        ];
+    }
+
+    private function get_addon_features_map()
+    {
+        return [
+            'pro_two_way'                                 => [
+                ['title' => __('Interactive SMS inbox', 'wp-sms'), 'description' => __('Read and respond to incoming texts without leaving your dashboard.', 'wp-sms')],
+                ['title' => __('Automated commands', 'wp-sms'), 'description' => __('Let shoppers text “CANCEL 123” or “REORDER” and watch WooCommerce update itself.', 'wp-sms')],
+                ['title' => __('Order & account management by text', 'wp-sms'), 'description' => __('Customers can request status, cancellations, or password resets in seconds.', 'wp-sms')],
+                ['title' => __('Smart forwarding', 'wp-sms'), 'description' => __('Push messages to email or the store owner’s phone so nothing slips through the cracks.', 'wp-sms')],
+                ['title' => __('Multi-gateway support & auto-webhooks', 'wp-sms'), 'description' => __('Plug into Twilio, Nexmo, Plivo, BulkGate, and more with one-click webhook registration.', 'wp-sms')],
+            ],
+            'addon_paid_membership_pro'                   => [
+                ['title' => __('Instant welcome texts', 'wp-sms'), 'description' => __('Make new members feel valued the moment they join.', 'wp-sms')],
+                ['title' => __('Plan change & renewal alerts', 'wp-sms'), 'description' => __('Confirm upgrades, downgrades, or renewals so nobody’s left guessing.', 'wp-sms')],
+                ['title' => __('Cancellation / expiration nudges', 'wp-sms'), 'description' => __('Send courteous “we’ll miss you” texts with a one-click re-join link.', 'wp-sms')],
+                ['title' => __('Works with Paid Memberships Pro & Simple Membership', 'wp-sms'), 'description' => __('More integrations (MemberPress, WooCommerce Memberships, RCP) on the way.', 'wp-sms')],
+                ['title' => __('Personalised templates & bulk sends', 'wp-sms'), 'description' => __('Keep your brand voice consistent in every SMS broadcast.', 'wp-sms')],
+            ],
+            'addon_elementor_form'                        => [
+                ['title' => __('Instant admin notifications', 'wp-sms'), 'description' => __('Get a text the second a lead, order, or enquiry hits your Elementor form.', 'wp-sms')],
+                ['title' => __('Automatic user confirmations', 'wp-sms'), 'description' => __('Send a polite “Thanks, we got it!” SMS so visitors know their message landed.', 'wp-sms')],
+                ['title' => __('Customisable messages', 'wp-sms'), 'description' => __('Pull names, order numbers, or any form field into your text for a personal touch.', 'wp-sms')],
+                ['title' => __('Multiple-recipient support', 'wp-sms'), 'description' => __('Route different forms to different phone numbers (sales, support, fulfilment…).', 'wp-sms')],
+                ['title' => __('Real-time workflow updates', 'wp-sms'), 'description' => __('Act on new submissions faster and never miss an opportunity.', 'wp-sms')],
+            ],
+            'addon_fluent_crm'                            => [
+                ['title' => __('Real-time Fluent CRM alerts', 'wp-sms'), 'description' => __('Get a text the moment a contact subscribes, unsubscribes, or needs approval so you can follow up fast.', 'wp-sms')],
+                ['title' => __('Instant notifications for Fluent Forms', 'wp-sms'), 'description' => __('Receive an SMS (to a fixed number or the submitter’s) every time a form is completed.', 'wp-sms')],
+                ['title' => __('Fluent Support ticket updates', 'wp-sms'), 'description' => __('Be alerted when a ticket is opened, assigned, replied to, or closed.', 'wp-sms')],
+                ['title' => __('Event-based routing', 'wp-sms'), 'description' => __('Send different events to different phone numbers (sales, support, marketing).', 'wp-sms')],
+                ['title' => __('Easy setup & custom templates', 'wp-sms'), 'description' => __('Choose the events, set your numbers, and personalise each SMS right inside WordPress—no code needed.', 'wp-sms')],
+            ],
+            'addon_booking_integrations_woo_appointments' => [
+                ['title' => __('Instant SMS confirmations', 'wp-sms'), 'description' => __('Automatically text customers the moment a new appointment is booked.', 'wp-sms')],
+                ['title' => __('Approve & cancel alerts', 'wp-sms'), 'description' => __('Notify both customers and admins right away when a booking is approved or canceled.', 'wp-sms')],
+                ['title' => __('Reschedule notifications', 'wp-sms'), 'description' => __('Send quick texts if the date or time changes.', 'wp-sms')],
+                ['title' => __('Plug-and-play with BookingPress, WooCommerce Appointments & Booking Calendar', 'wp-sms'), 'description' => __('No complicated setup.', 'wp-sms')],
+                ['title' => __('Custom templates & multi-recipient routing', 'wp-sms'), 'description' => __('Personalise messages and send them to the right team members.', 'wp-sms')],
+            ],
+            'pro_wordpress'                               => [
+                ['title' => __('Access 350+ global gateways', 'wp-sms'), 'description' => __('Pick the perfect provider for any region or budget.', 'wp-sms')],
+                ['title' => __('Schedule or repeat messages', 'wp-sms'), 'description' => __('Automate future drips, reminders, and promos.', 'wp-sms')],
+                ['title' => __('Deep WooCommerce & BuddyPress messaging', 'wp-sms'), 'description' => __('Text shoppers or community members right from WordPress.', 'wp-sms')],
+                ['title' => __('SMS login & two-factor security', 'wp-sms'), 'description' => __('Lock down accounts with one-time verification codes.', 'wp-sms')],
+                ['title' => __('Plug-and-play with top plugins', 'wp-sms'), 'description' => __('Gravity Forms, EDD, Awesome Support, Ultimate Member, and more.', 'wp-sms')],
+                ['title' => __('Advanced WooCommerce alerts', 'wp-sms'), 'description' => __('Order updates, low-stock warnings, product launches—all by SMS.', 'wp-sms')],
+            ],
+        ];
+    }
+
 
     /**
      * args[] : header_template
@@ -2620,6 +2802,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             'template' => '' //must be a callable function
         ]);
         $args                    = apply_filters('wp_sms_settings_render_' . $this->active_tab, $args);
+        $notice                  = $this->render_header_notice();
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -2693,8 +2876,20 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
 
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                        <?php
+                        if ($notice && $notice['type'] === 'inactive_license') {
+                            View::load("components/lock-sections/notice-inactive-license-addon");
+                        } ?>
+                        <div class="wpsms-tab-content__box">
+                            <?php
+                            if ($notice && $notice['type'] === 'unlock') {
+                                View::load("components/lock-sections/unlock-all-in-one-addon", $notice['data']);
+                            }
 
-                         <div class="wpsms-tab-content__box">
+                            if ($notice && $notice['type'] === 'active') {
+                                View::load("components/lock-sections/active-addon", $notice['data']);
+                            }
+                            ?>
                             <?php
                             if (isset($args['setting']) && $args['setting'] == true) {
                                 $this->renderWpSetting();
@@ -2719,7 +2914,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     private function renderWpSetting()
     {
         ?>
-         <form method="post" action="options.php">
+        <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);
