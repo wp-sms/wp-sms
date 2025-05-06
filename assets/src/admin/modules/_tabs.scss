@@ -279,13 +279,12 @@
 }
 
 .wpsms-tab .tab-section-header {
-  padding: 13px 14px;
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 12px;
   letter-spacing: 0.02em;
-  color: #000000;
-  opacity: 0.5;
-  margin-top: 16px;
+  color: #282828;
+  margin-top: 24px;
+  margin-bottom: 8px;
 }
 
 .wpsms-tab li a {
@@ -406,35 +405,58 @@ tr.tr-header td {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     border-radius: 4px;
     padding: 14px 16px;
-    margin-top: 15px;
+    margin-top: 24px;
+    display: flex;
+    gap: 13px;
+    flex-direction: column;
+    align-items: flex-start;
 
     div {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
     }
 
     .button-primary {
-      background: #EF771F;
-      padding: 4px 7px;
       border-radius: 2px;
-      font-style: italic;
-      line-height: 24px;
-      font-size: 11px;
-      text-transform: uppercase;
+      padding: 4px 16px;
       gap: 4px;
       display: inline-flex;
+      align-items: center;
+      background: #F97316;
+      font-weight: 700!important;
+      font-style: italic;
+      font-size: 10px;
+      line-height: 12px;
+      text-transform: uppercase;
       opacity: 1;
+      border:none;
+      margin: 0;
+
+      &:after{
+        content: '';
+        width: 16px;
+        min-width: 16px;
+        height: 16px;
+        display: inline-flex;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguNzgwMzIgOC4wMDA0N0w1LjQ4MDQ3IDQuNzAwNjJMNi40MjMyOCAzLjc1NzgxTDEwLjY2NTkgOC4wMDA0N0w2LjQyMzI4IDEyLjI0MzFMNS40ODA0NyAxMS4zMDAzTDguNzgwMzIgOC4wMDA0N1oiIGZpbGw9IiNGQUZBRkEiLz4KPC9zdmc+Cg==") center center no-repeat;
+      }
+
+      &:focus{
+        box-shadow: none;
+      }
 
       &:hover {
-        background: #df6a13;
+        background: #C2410C;
       }
     }
 
     p {
       font-weight: 400;
-      color: #4F4F4F;
-      margin: 13px 0;
+      color: #525252;
+      padding:0;
+      margin: 0;
       font-size: 12px;
       line-height: 16px;
     }
@@ -653,37 +675,50 @@ tr.tr-header td {
 
   &__action {
     display: inline-flex;
-    gap: 4px;
-    padding: 8px 16px;
+    gap: 8px;
+    padding: 12px 24px;
     border-radius: 4px;
     font-weight: 500;
     font-size: 14px;
-    line-height: 22px;
     text-decoration: none;
     align-items: center;
+    line-height: 17px;
+
+    &:focus{
+      box-shadow:none
+    }
+
+    &:after{
+      content: '';
+      min-width: 16px;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+     }
 
     &--primary {
       background: #F97316;
       color: #FFFFFF !important;
 
       &:hover {
-
+        background: #C2410C;
       }
 
       &:after{
-        content: '';
-        min-width: 16px;
-        width: 16px;
-        height: 16px;
-        display: inline-flex;
         background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguODk5NDYgOC4wMDA0N0w1LjU5OTYxIDQuNzAwNjJMNi41NDI0MiAzLjc1NzgxTDEwLjc4NTEgOC4wMDA0N0w2LjU0MjQyIDEyLjI0MzFMNS41OTk2MSAxMS4zMDAzTDguODk5NDYgOC4wMDA0N1oiIGZpbGw9IiNGQUZBRkEiLz4KPC9zdmc+Cg==") center center no-repeat;
       }
     }
 
     &--default {
       background: #FAFAFA;
-      color: #525252;
-      border: 1px solid var(--Neutral-Neutral-300, #D4D4D4)
+      color: #262626!important;
+      border: 1px solid #D4D4D4;
+      &:hover {
+        background: #FFEDD5;
+       }
+      &:after{
+        background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIHZpZXdCb3g9IjAgMCAxNiAxNyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguNzgwMzIgOC41MDA0N0w1LjQ4MDQ3IDUuMjAwNjJMNi40MjMyOCA0LjI1NzgxTDEwLjY2NTkgOC41MDA0N0w2LjQyMzI4IDEyLjc0MzFMNS40ODA0NyAxMS44MDAzTDguNzgwMzIgOC41MDA0N1oiIGZpbGw9IiMyNjI2MjYiLz4KPC9zdmc+Cg==") center center no-repeat;
+      }
     }
   }
 
@@ -712,6 +747,14 @@ tr.tr-header td {
         text-decoration-style: solid;
         display: inline-flex;
         align-items: center;
+
+        &:after{
+          content: '';
+          min-width: 16px;
+          width: 16px;
+          height: 16px;
+          display: inline-flex;
+        }
 
         &:hover {
           color: #0C0C0D;
