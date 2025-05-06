@@ -485,6 +485,12 @@ table.dataTable {
     width: 9px;
     height: 13px;
     display: inline-block;
+    margin-left: 2px;
+
+    .rtl &{
+      margin-left: 0;
+      margin-right: 2px;
+    }
   }
 
   .dt-ordering-asc {

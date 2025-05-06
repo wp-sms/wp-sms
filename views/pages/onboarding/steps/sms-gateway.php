@@ -166,7 +166,7 @@ $has_valid_license       = LicenseHelper::isPluginLicenseValid();
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($country_list); ?></span></td>
-                            <td class="u-flex u-align-center u-content-sp">
+                            <td class="u-text-center">
                                 <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
                                     <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                                 </a>
