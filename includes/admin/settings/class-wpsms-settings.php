@@ -2694,8 +2694,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
 
-                        <?php View::load("components/lock-sections/notice-inactive-license-addon") ?>
-                        <div class="wpsms-tab-content__box">
+                         <div class="wpsms-tab-content__box">
                             <?php
                             if (isset($args['setting']) && $args['setting'] == true) {
                                 $this->renderWpSetting();
@@ -2720,10 +2719,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     private function renderWpSetting()
     {
         ?>
-        <?php View::load("components/lock-sections/unlock-all-in-one-addon", ['addon_name' => 'addon_name']) ?>
-
-        <?php View::load("components/lock-sections/active-addon" , ['addon_name' => 'addon_name']) ?>
-        <form method="post" action="options.php">
+         <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);
