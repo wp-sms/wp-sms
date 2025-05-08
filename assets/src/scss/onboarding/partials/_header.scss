@@ -1,0 +1,11 @@
+.c-section--header {
+  padding: 0;
+  width: 100%;
+  .o-section__wrapper {
+      width: 864px;
+      max-width: calc(100% - 20px);
+      margin: 0 auto 27px;
+      box-sizing: border-box;
+      padding: 0;
+  }
+}

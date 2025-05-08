@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use Forminator_API;
+use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 
@@ -75,7 +76,6 @@ class Settings
             add_filter('pre_update_option_' . $this->setting_name, array($this, 'check_license_key'), 10, 2);
         }
 
-        add_filter('wp_sms_licenses_settings', array($this, 'modifyLicenseSettings'));
     }
 
     /**
@@ -169,11 +169,6 @@ class Settings
             'notifications'  => esc_html__('Notifications', 'wp-sms'),
             'message_button' => esc_html__('Message Button', 'wp-sms'),
             'advanced'       => esc_html__('Advanced Options', 'wp-sms'),
-
-            /*
-             * Licenses tab
-             */
-            'licenses'       => esc_html__('Licenses', 'wp-sms'),
 
             /*
              * Pro Pack tabs
@@ -1421,10 +1416,11 @@ class Settings
                     'options' => Gateway::help(),
                 ),
                 'gateway_username'             => array(
-                    'id'   => 'gateway_username',
-                    'name' => esc_html__('API Username', 'wp-sms'),
-                    'type' => 'text',
-                    'desc' => esc_html__('Enter API username of gateway', 'wp-sms')
+                    'id'           => 'gateway_username',
+                    'name'         => esc_html__('API Username', 'wp-sms'),
+                    'type'         => 'text',
+                    'place_holder' => esc_html__('e.g., YourGatewayUsername123', 'wp-sms'),
+                    'desc'         => esc_html__('Enter the username provided by your SMS gateway.', 'wp-sms')
                 ),
                 'gateway_password'             => array(
                     'id'   => 'gateway_password',
@@ -1437,13 +1433,25 @@ class Settings
                     'name' => esc_html__('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
-                    'desc' => esc_html__('Sender number or sender ID', 'wp-sms')
+                    'desc' => esc_html__('This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.', 'wp-sms')
                 ),
                 'gateway_key'                  => array(
                     'id'   => 'gateway_key',
                     'name' => esc_html__('API Key', 'wp-sms'),
                     'type' => 'text',
                     'desc' => esc_html__('Enter API key of gateway', 'wp-sms')
+                ),
+                're_run_setup_wizard'          => array(
+                    'id'      => 're_run_setup_wizard',
+                    'name'    => esc_html__('WP SMS Setup Wizard', 'wp-sms'),
+                    'type'    => 'html',
+                    'options' => '
+                        <div>
+                            <a href="' . admin_url('admin.php?page=wp-sms&path=wp-sms-onboarding') . '" target="_blank" class="button button-primary">' . esc_html__('Re-run Setup Wizard', 'wp-sms') . '</a><br>
+                        </div>
+                    ',
+                    'desc'    => esc_html__('Need to debug or update your gateway settings? Relaunch the WP SMS Setup Wizard for a guided, step-by-step process. This will help you verify your credentials, test sending/receiving capabilities, and ensure everything is running smoothly.', 'wp-sms')
                 ),
                 // Gateway status
                 'gateway_status_title'         => array(
@@ -2197,41 +2205,6 @@ class Settings
     }
 
     /*
-     * Activate Icon
-     */
-    public function getLicenseStatusIcon($addOnKey)
-    {
-        $constantLicenseKey = wp_sms_generate_constant_license($addOnKey);
-        $licenseKey         = isset($this->options["license_{$addOnKey}_key"]) ? $this->options["license_{$addOnKey}_key"] : null;
-        $licenseStatus      = isset($this->options["license_{$addOnKey}_status"]) ? $this->options["license_{$addOnKey}_status"] : null;
-        $updateOption       = false;
-
-        if (($constantLicenseKey && $this->isCurrentTab('licenses') && wp_sms_check_remote_license($addOnKey, $constantLicenseKey)) or $licenseStatus and $licenseKey) {
-            $status = esc_html__('Activated', 'wp-sms');
-            $type   = 'active';
-
-            if ($constantLicenseKey) {
-                $this->options["license_{$addOnKey}_status"] = true;
-                $updateOption                                = true;
-            }
-        } else {
-            $status                                      = esc_html__('Deactivated', 'wp-sms');
-            $type                                        = 'inactive';
-            $this->options["license_{$addOnKey}_status"] = false;
-            $updateOption                                = true;
-        }
-
-        if ($updateOption && empty($_POST)) {
-            update_option($this->setting_name, $this->options);
-        }
-
-        return Helper::loadTemplate('admin/label-button.php', array(
-            'type'  => $type,
-            'label' => $status
-        ));
-    }
-
-    /*
      * Check license key
      */
     public function check_license_key($value, $oldValue)
@@ -2298,6 +2271,7 @@ class Settings
     public function html_callback($args)
     {
         echo wp_kses_normalize_entities($args['options']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo sprintf('<p class="description">%1$s</p>', wp_kses_post($args['desc']));
     }
 
     public function notice_callback($args)
@@ -2680,7 +2654,7 @@ class Settings
 
                             if ($isProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a href="' . esc_url(WP_SMS_SITE) . '/buy" target="_blank">PRO</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
                                 }
                             }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
@@ -2717,15 +2691,18 @@ class Settings
                         } ?>
                     </ul>
 
-                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
-                        <?php
-                        if (isset($args['setting']) && $args['setting'] == true) {
-                            $this->renderWpSetting();
-                        } else if (isset($args['template']) && $args['template'] != "") {
-                            call_user_func($args['template'], []);
-                        }
-                        ?>
 
+                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+
+                         <div class="wpsms-tab-content__box">
+                            <?php
+                            if (isset($args['setting']) && $args['setting'] == true) {
+                                $this->renderWpSetting();
+                            } else if (isset($args['template']) && $args['template'] != "") {
+                                call_user_func($args['template'], []);
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2742,7 +2719,7 @@ class Settings
     private function renderWpSetting()
     {
         ?>
-        <form method="post" action="options.php">
+         <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);
@@ -2863,49 +2840,6 @@ class Settings
             }
         }
         return $return_value;
-    }
-
-    /**
-     * Modify license setting page and render add-ons settings
-     *
-     * @param $settings
-     * @return array
-     */
-    public function modifyLicenseSettings($settings)
-    {
-        if (!wp_sms_get_addons()) {
-            $settings["license_title"] = array(
-                'id'   => "license_title",
-                'type' => 'notice',
-                'name' => esc_html__('No Pro Pack or Add-On found', 'wp-sms'),
-                'desc' => sprintf('If you have already installed the Pro Pack or Add-On(s) but the license field is not showing-up, get and install the latest version through <a href="%s" target="_blank">your account</a> again.', esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
-            );
-
-            return $settings;
-        }
-
-        foreach (wp_sms_get_addons() as $addOnKey => $addOn) {
-            // license title
-            $settings["license_{$addOnKey}_title"] = array(
-                'id'   => "license_{$addOnKey}_title",
-                'name' => $addOn,
-                'type' => 'header',
-                'doc'  => '/resources/troubleshoot-license-activation-issues/',
-                'desc' => esc_html__('License key is used to get access to automatic updates and support.', 'wp-sms')
-            );
-
-            // license key
-            $settings["license_{$addOnKey}_key"] = array(
-                'id'          => "license_{$addOnKey}_key",
-                'name'        => esc_html__('License Key', 'wp-sms'),
-                'type'        => 'text',
-                'after_input' => $this->getLicenseStatusIcon($addOnKey),
-                // translators: %s: Account link
-                'desc'        => sprintf(__('To get the license, please go to <a href="%s" target="_blank">your account</a>.', 'wp-sms'), esc_url(WP_SMS_SITE . '/my-account/orders/?utm_source=wp-sms&utm_medium=link&utm_campaign=account'))
-            );
-        }
-
-        return $settings;
     }
 
     /**

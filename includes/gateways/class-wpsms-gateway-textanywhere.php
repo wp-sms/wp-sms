@@ -34,9 +34,10 @@ class textanywhere extends \WP_SMS\Gateway
                 'desc' => 'Enter your account password',
             ],
             'apiPassword' => [
-                'id'   => 'gateway_api_password',
-                'name' => 'API Password',
-                'desc' => 'Enter your API password get from Account -> API & IPs (If your type of account is new)',
+                'id'           => 'gateway_api_password',
+                'name'         => 'API Password',
+                'place_holder' => 'e.g., YourGatewayPassword456',
+                'desc'         => 'Enter your API password get from Account -> API & IPs (If your type of account is new)',
             ],
             'has_key'     => [
                 'id'   => 'gateway_key',

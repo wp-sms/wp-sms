@@ -22,14 +22,16 @@ class onewaysms extends \WP_SMS\Gateway
         $this->validateNumber = "Support only 10 numbers, e.g. 6019xxxxxxx,6012xxxxxxx";
         $this->gatewayFields  = [
             'username'             => [
-                'id'   => 'gateway_username',
-                'name' => 'API username',
-                'desc' => 'Enter API username of gateway',
+                'id'           => 'gateway_username',
+                'name'         => 'API Username',
+                'place_holder' => 'e.g., YourGatewayUsername123',
+                'desc'         => 'Enter the username provided by your SMS gateway.',
             ],
             'password'             => [
-                'id'   => 'gateway_password',
-                'name' => 'API password',
-                'desc' => 'Enter API password of gateway',
+                'id'           => 'gateway_password',
+                'name'         => 'API Password',
+                'place_holder' => 'e.g., YourGatewayPassword456',
+                'desc'         => 'Enter the password associated with your SMS gateway account.',
             ],
             'gatewayMtApiUrl'      => [
                 'id'   => 'gateway_mt_api_url',
@@ -42,9 +44,11 @@ class onewaysms extends \WP_SMS\Gateway
                 'desc' => 'Enter the credit balance API URL',
             ],
             'from'                 => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender number',
-                'desc' => 'Sender number or sender ID',
+                'id'           => 'gateway_sender_id',
+                'name'         => 'Sender Number',
+                'place_holder' => 'e.g., +1 555 123 4567',
+                'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.',
             ],
         ];
     }
