@@ -22,8 +22,8 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
         <div class="wp-sms-premium-step__content">
             <?php
 
-             $defaultDescription = __('<p>All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.</p>', 'wp-sms');
-            $premiumDescription = __('<p>You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support—have fun exploring everything! </p>', 'wp-sms');
+            $defaultDescription = __('<p>All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.</p>', 'wp-sms');
+            $premiumDescription = __('<p>You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support—have fun exploring everything!</p>', 'wp-sms');
             $licenseDescription = __('<p>Looks like you have a few premium features active. Upgrade to All‑in‑One to unlock every tool and integration. Get the most out of WP SMS and boost your site’s performance.</p>', 'wp-sms');
 
             $data = [
@@ -74,7 +74,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
         </div>
         <div class="wp-sms-premium-step__sidebar">
             <div>
-                <p><?php esc_html_e('WP SMS All-in-One Include', 'wp-sms'); ?>:</p>
+                <p><?php esc_html_e('WP SMS All-in-One Includes', 'wp-sms'); ?>:</p>
                 <ul class="wp-sms-premium-step__features-list">
                     <?php foreach (PluginHelper::$plugins as $slug => $title) :
                         $class = '';
@@ -127,7 +127,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                                 <a href="<?php echo esc_url(WP_SMS_URL . '/add-ons/' . $slug . '/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium') ?>" target="_blank" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
                                 <a class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--later js-wp-sms-premiumModalClose"><?php esc_html_e('Maybe Later', 'wp-sms'); ?></a>
                             <?php elseif (($hasLicense && !$isActive) || (!$hasLicense && $isInstalled)) : ?>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=wps_plugins_page')) ?>" class="wp-sms-premium-step__action-btn js-wp-sms-premiumModalUpgradeBtn wp-sms-premium-step__action-btn--addons"><?php esc_html_e('Go to Add-Ons Page', 'wp-sms'); ?></a>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=wp-sms-add-ons')) ?>" class="wp-sms-premium-step__action-btn js-wp-sms-premiumModalUpgradeBtn wp-sms-premium-step__action-btn--addons"><?php esc_html_e('Go to Add-Ons Page', 'wp-sms'); ?></a>
                             <?php elseif ($hasLicense && $isActive) : ?>
                                 <a class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade  activated js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Add-on Activated', 'wp-sms'); ?></a>
                             <?php endif; ?>

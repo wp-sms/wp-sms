@@ -22,7 +22,9 @@ if ($step_name !== 'first-step') {
         <div class="js-wp-sms-premium-step__title">
             <?php echo esc_html($step_title); ?>
         </div>
-        <?php echo $description; ?>
+        <span class="wp-sms-modal__premium-step__desc">
+            <?php echo $description; ?>
+        </span>
     </div>
 
     <?php if ($step_name !== 'first-step') : ?>
@@ -31,16 +33,22 @@ if ($step_name !== 'first-step') {
         <?php if ($hasLicense && !$isActive) : ?>
             <div class="wp-sms-premium-step__notice">
                 <div>
-                    <?php echo sprintf(__('Your license includes the %s, but it’s not installed yet. Go to the Add-Ons page to install and activate it, so you can start using all its features.', 'wp-sms'),
-                        esc_attr($step_title)) ?>
+                    <?php printf(
+                        __('Your license includes the %s, but it’s not installed yet. Go to the Add-Ons page to install and %s it, so you can start using all its features.', 'wp-sms'),
+                        '<b>' . esc_attr($step_title) . '</b>',
+                        '<b>' . __('activate', 'wp-sms') . '</b>'
+                    ); ?>
                 </div>
             </div>
         <?php endif; ?>
         <?php if (!$hasLicense && $isInstalled) : ?>
             <div class="wp-sms-premium-step__notice wp-sms-premium-step__notice--warning">
                 <div>
-                    <?php echo sprintf(__('This add-on does <b>not have an active license</b>, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license <a href="%s">here</a>.', 'wp-sms'),
-                        esc_url(admin_url('admin.php?page=wp-sms-add-ons'))) ?>
+                    <?php printf(
+                        __('This add-on does %s, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license %s.', 'wp-sms'),
+                        '<b>' . __('not have an active license', 'wp-sms') . '</b>',
+                        '<a href="' . esc_url(admin_url('admin.php?page=wp-sms-add-ons')) . '">' . __('here', 'wp-sms') . '</a>'
+                    ); ?>
                 </div>
             </div>
         <?php endif; ?>
