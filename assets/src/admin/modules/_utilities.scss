@@ -415,9 +415,9 @@
 #wpsms-menu-toggle:checked ~ .wpsms-menu-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  gap: 5px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 #wpsms-menu-toggle:checked ~ .hamburger-menu-container {

@@ -116,6 +116,7 @@
           input[type=text], input[type="tel"], input[type=number], &.subscribers_group_section .select2-container.select2-container--open .select2-selection, .select2-selection, select {
             &:focus, &:active {
               border: 1px solid #C2410C !important;
+              box-shadow: 0 0 0 2px #C2410C33!important;
             }
           }
 
@@ -152,6 +153,7 @@
       &.select2-container--open {
         .select2-selection {
           border: 1px solid #C2410C !important;
+          box-shadow: 0 0 0 2px #C2410C33!important;
         }
       }
 
@@ -636,6 +638,8 @@
     background: transparent;
     box-shadow: none;
     outline: none;
+    height: 15px;
+    width: 15px;
 
     &:before {
       content: "";
