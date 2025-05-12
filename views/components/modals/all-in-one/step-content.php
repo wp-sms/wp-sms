@@ -30,7 +30,7 @@ if ($step_name !== 'first-step') {
     <?php if ($step_name !== 'first-step') : ?>
         <img class="wp-sms-premium-step__image v-image-lazy" width="509" height="291" data-src="<?php echo WP_SMS_URL . 'assets/images/premium-modal/' . esc_attr($step_name) . '.png'; ?>" alt="<?php echo esc_attr($step_name); ?>">
 
-        <?php if ($hasLicense && !$isActive) : ?>
+        <?php if ($hasLicense && !$isInstalled) : ?>
             <div class="wp-sms-premium-step__notice">
                 <div>
                     <?php printf(
