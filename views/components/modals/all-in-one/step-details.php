@@ -107,9 +107,9 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                     <?php if ($isPremium) : ?>
                         <a class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade activated js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('All-in-One Activated', 'wp-sms'); ?></a>
                     <?php elseif ($hasLicense && !$isPremium) : ?>
-                        <a target="_blank" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
+                        <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium') ?>" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
                     <?php else : ?>
-                        <a target="_blank" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade Now', 'wp-sms'); ?></a>
+                        <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium') ?>" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade Now', 'wp-sms'); ?></a>
                     <?php endif; ?>
 
                     <?php if (!$isPremium) : ?>
@@ -124,7 +124,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                         ?>
                         <div class="wp-sms-premium-step__action-container">
                             <?php if (!$hasLicense && !$isInstalled) : ?>
-                                <a href="<?php echo esc_url(WP_SMS_URL . '/add-ons/' . $slug . '/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium') ?>" target="_blank" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
+                                <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-premium') ?>" target="_blank" class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--upgrade js-wp-sms-premiumModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
                                 <a class="wp-sms-premium-step__action-btn wp-sms-premium-step__action-btn--later js-wp-sms-premiumModalClose"><?php esc_html_e('Maybe Later', 'wp-sms'); ?></a>
                             <?php elseif (($hasLicense && !$isActive) || (!$hasLicense && $isInstalled)) : ?>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=wp-sms-add-ons')) ?>" class="wp-sms-premium-step__action-btn js-wp-sms-premiumModalUpgradeBtn wp-sms-premium-step__action-btn--addons"><?php esc_html_e('Go to Add-Ons Page', 'wp-sms'); ?></a>
