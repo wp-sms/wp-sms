@@ -233,7 +233,7 @@
 }
 
 
-.wpsms-wrap textarea:not(#feedback-bird-app textarea):not(.select2-selection textarea) {
+.wpsms-wrap textarea:not(.select2-selection textarea) {
   max-width: calc(100% - 45px);
   background-color: #fff;
   padding: 8px 14px !important;
@@ -245,11 +245,8 @@
   border-radius: 2px !important;
 }
 
-.wpsms-wrap #feedback-bird-app .o-fbb-input:focus {
-  border-color: #F88E40;
-}
 
-.wpsms-wrap textarea:not(#feedback-bird-app textarea):not(.select2-selection textarea):focus {
+.wpsms-wrap textarea:not(.select2-selection textarea):focus {
   border-color: #F88E40 !important;
   outline: #F88E40 !important;
   box-shadow: 0 0 0 1px #F88E40 !important;
