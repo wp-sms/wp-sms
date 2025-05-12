@@ -3,25 +3,44 @@
     <div class="wpsms-wrap__main wpsms-inbox-page wpsms-inbox-page__empty">
         <img class="background-img" src="<?php echo esc_url(WP_SMS_URL . '/assets/images/blurred-inbox.jpg'); ?>" alt="">
         <div class="promotion-modal">
-            <h3 class="promotion-modal__title"><?php esc_html_e('View Inbox / Incoming Messages', 'wp-sms'); ?></h3>
+            <h3 class="promotion-modal__title"><?php esc_html_e('Inbox: turn SMS into live, two-way conversations', 'wp-sms'); ?></h3>
+            <p class="promotion-modal__desc">
+                <?php esc_html_e('Add the Two-Way Messaging engine (included with the All-in-One Suite or available on its own) and your WP Inbox becomes a real-time chat window.', 'wp-sms'); ?>
+            </p>
             <div class="promotion-modal__screenshot">
                 <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/wp-sms-two-way-chagemode.png'); ?>" alt="">
             </div>
-            <p class="promotion-modal__desc"><?php _e('<b>Chat Mode is now live in WP SMS Two Way!</b> This powerful feature enhances your communication by allowing you to'); ?></p>
+            <p class="promotion-modal__features__title"><?php echo esc_html__('What you’ll get', 'wp-sms'); ?></p>
             <div class="promotion-modal__features">
-                <div class="promotion-modal__feature__col">
-                    <div title="<?php esc_html_e('Keep a record of all incoming messages without hassle.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('Store Incoming Messages', 'wp-sms'); ?></div>
-                    <div title="<?php esc_html_e('Set up specific commands to trigger actions or automated responses.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('Custom Commands', 'wp-sms'); ?></div>
-                    <div title="<?php esc_html_e('Take immediate action, such as canceling orders, directly from the chat.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('Direct Actions', 'wp-sms'); ?></div>
-                </div>
-                <div class="promotion-modal__feature__col">
-                    <div title="<?php esc_html_e('View messages in context with the conversation display.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('Maintain Conversations', 'wp-sms'); ?></div>
-                    <div title="<?php esc_html_e('Integration: Perfectly sync with your WooCommerce orders for streamlined management.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('WooCommerce Compatibility', 'wp-sms'); ?></div>
-                    <div title="<?php esc_html_e('Ensure your subscriber lists are always up to date.', 'wp-sms'); ?>" class="promotion-modal__features__item"><span class="dashicons dashicons-saved"></span> <?php esc_html_e('Subscriber Sync', 'wp-sms'); ?></div>
-                </div>
+                <div class="promotion-modal__features__item"><?php esc_html_e('Reply to customer texts without leaving WordPress', 'wp-sms'); ?></div>
+                <div class="promotion-modal__features__item"><?php esc_html_e('Every inbound & outbound message stored in one clean thread', 'wp-sms'); ?></div>
+                <div class="promotion-modal__features__item"><?php esc_html_e('One-tap commands and auto-replies', 'wp-sms'); ?></div>
+                <div class="promotion-modal__features__item"><?php esc_html_e('WooCommerce order updates customers can answer', 'wp-sms'); ?></div>
             </div>
-            <div class="promotion-modal__actions">
-                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'); ?>" class="button-primary"><?php esc_html_e('Discover More About WP SMS Two Way!', 'wp-sms'); ?></a>
+
+            <div class="promotion-modal__chat">
+                <p class="promotion-modal__chat__title"><?php echo esc_html__('Ready to chat?', 'wp-sms'); ?></p>
+                <ul>
+                    <li>
+                        <?php echo sprintf('<a target="_blank" href="%s">%s</a> %s',
+                            esc_url(WP_SMS_SITE . '/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'),
+                            esc_html__('Unlock the All-in-One Suite', 'wp-sms'),
+                            esc_html__('— every premium add-on, Two-Way included', 'wp-sms')) ?>
+                    </li>
+                    <li>
+                        <?php echo sprintf('%s <a target="_blank" href="%s">%s</a>',
+                            esc_html__('Just need conversations?', 'wp-sms'),
+                            esc_url(WP_SMS_SITE . '/two-way-addon/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'),
+                            esc_html__('Get the Two-Way add-on', 'wp-sms')) ?>
+                    </li>
+                </ul>
+            </div>
+            <div class="promotion-modal__footer">
+                <?php echo sprintf('%s <a href="%s">%s</a> %s',
+                    esc_html__('Already licensed?', 'wp-sms'),
+                    esc_url(admin_url('admin.php?page=wp-sms-add-ons')),
+                    esc_html__('Activate now', 'wp-sms'),
+                    esc_html__('and start chatting.', 'wp-sms')) ?>
             </div>
         </div>
     </div>
