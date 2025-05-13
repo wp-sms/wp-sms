@@ -1,5 +1,5 @@
 jQuery(document).ready(function () {
-    jQuery(document).on('click', "a.wps-option__updater", function (e) {
+    jQuery(document).on('click', "a.wpsms-option__updater", function (e) {
         e.preventDefault();
 
         let $this = jQuery(this);

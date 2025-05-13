@@ -18,7 +18,7 @@ if (!\WP_SMS\Utils\OptionUtil::get('share_anonymous_data') && !in_array('share_a
                     'data-option' => 'share_anonymous_data',
                     'data-value'  => 'true',
                 ],
-                'class'      => 'wps-option__updater notice--enable-usage',
+                'class'      => 'wpsms-option__updater notice--enable-usage',
             ]
         ]
     ];
