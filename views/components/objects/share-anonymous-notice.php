@@ -9,7 +9,7 @@ if (!\WP_SMS\Utils\OptionUtil::get('share_anonymous_data') && !in_array('share_a
         'links'   => [
             'learn_more'      => [
                 'text' => __('Learn More', 'wp-sms'),
-                'url'  => 'https://wp-sms.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+                'url'  => 'https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
             ],
             'primary_button' => [
                 'text'       => __('Enable Share Anonymous Data', 'wp-sms'),
