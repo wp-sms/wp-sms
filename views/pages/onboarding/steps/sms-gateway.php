@@ -1,15 +1,20 @@
 <?php
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-$current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
+use WP_SMS\Utils\PluginHelper;
+
+$current_country         = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
+$is_pro_plugin_activated = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+$has_valid_license       = LicenseHelper::isPluginLicenseValid();
 
 ?>
 
 <div class="c-section__title">
-    <span class="c-section__step"><?php printf(esc_html__('Step %d of 6', 'wp-sms'), $index); ?></span>
+    <span class="c-section__step"><?php echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">
-        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 300 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
+        <?php esc_html_e('Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 350 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are.', 'wp-sms'); ?>
     </p>
 </div>
 
@@ -40,7 +45,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
             $all_countries = array_unique($all_countries);
             sort($all_countries);
             ?>
-            <input class="chosen-country" disabled type="hidden" value="<?php echo esc_html($current_country)?>">
+            <input class="chosen-country" disabled type="hidden" value="<?php echo esc_html($current_country) ?>">
             <select id="filterCountries" name="countries">
                 <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
                 <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
@@ -74,12 +79,17 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                         </span>
                     </th>
                     <th>
+                        <?php esc_html_e('Origin Country', 'wp-sms'); ?>
+                        <span class="wpsms-tooltip" title="<?php esc_html_e('Country where the gateway is headquartered or primarily licensed.', 'wp-sms'); ?>">
+                          <i class="wps-tooltip-icon"></i>
+                        </span>
+                    </th>
+                    <th>
                         <?php esc_html_e('Gateway Access', 'wp-sms'); ?>
                         <span class="wpsms-tooltip" title="<?php esc_html_e('Shows whether this gateway is included in your current plan or requires All-in-One for full functionality.', 'wp-sms'); ?>">
                           <i class="wps-tooltip-icon"></i>
                         </span>
                     </th>
-                    <th class="c-table-country--filter"><?php esc_html_e('Countries', 'wp-sms'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -87,8 +97,8 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                     <?php
                     $countries      = [];
                     $country_list   = '';
-                    $can_choose     = LicenseHelper::isPluginLicenseValid();
                     $is_pro_gateway = false;
+                    $badges         = [];
 
                     if (isset($gateway->fields->gateway_attributes->is_deprecated) && $gateway->fields->gateway_attributes->is_deprecated) continue;
 
@@ -107,49 +117,60 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                             }
                         }
                     }
+
+                    if (isset($gateway->fields->gateway_attributes->badge)) {
+                        $badges = json_decode(json_encode($gateway->fields->gateway_attributes->badge), true);
+                        $badges = array_column($badges, 'label', 'value');
+                    }
                     ?>
 
-                    <?php if ($is_pro_gateway && !$can_choose):
-                        ?>
-                        <tr class="disabled even" role="row">
+                    <?php if ($is_pro_gateway && (!$has_valid_license || !$is_pro_plugin_activated)): ?>
+                        <tr class="disabled even <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" role="row">
                             <td>
-                                <span data-tooltip="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
-                                    <span class="icon-lock"></span>
-                                </span>
-                                <span class="c-table-gateway__name">
+                                <div class="c-table-gateway__info">
+                                   <span data-tooltip="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">
+                                        <span class="icon-lock"></span>
+                                    </span>
+                                    <span class="c-table-gateway__name">
+                                        <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
+                                            <span>
+                                               <?php echo esc_html($gateway->title->rendered); ?>
+                                                <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
+                                                    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </a>
+                                            </span>
+                                        <?php else: ?>
+                                            <?php echo esc_html($gateway->title->rendered); ?>
+                                        <?php endif; ?>
+                                    </span>
                                     <?php
-                                    if (isset($gateway->link) && !empty($gateway->link)): ?>
-
-                                        <span>
-                                           <?php echo esc_html($gateway->title->rendered); ?>
-                                            <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
-                                                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M8.66699 7.83288L14.1337 2.36621" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M14.6668 5.03301V1.83301H11.4668" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M7.33301 1.83301H5.99967C2.66634 1.83301 1.33301 3.16634 1.33301 6.49967V10.4997C1.33301 13.833 2.66634 15.1663 5.99967 15.1663H9.99967C13.333 15.1663 14.6663 13.833 14.6663 10.4997V9.16634" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
-                                            </a>
-                                        </span>
-
-                                    <?php else: ?>
-                                        <?php echo esc_html($gateway->title->rendered); ?>
-                                    <?php endif; ?>
-                                </span>
+                                    if (!empty($badges)):
+                                        foreach ($badges as $slug => $badge):?>
+                                            <span class="c-table-gateway__badge"><?php echo esc_html($badge) ?></span>
+                                        <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? '0' : '1'; ?>"></span>
-                             </td>
+                            </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
-                            <td class="u-flex u-align-center u-content-sp">
-                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/buy/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                            <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($country_list); ?></span></td>
+                            <td class="u-text-center">
+                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
                                     <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
                                 </a>
                             </td>
-                            <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
                         </tr>
                     <?php else:
                         $current_gateway = \WP_SMS\Option::getOption('gateway_name');
@@ -161,11 +182,12 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
 
                         $selected = ($current_gateway === $slug) ? 'checked' : '';
                         ?>
-                        <tr class="gateway-row" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
+                        <tr class="gateway-row  <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
                             <td>
-                                <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
-                                <span class="c-table-gateway__name">
-                                    <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
+                                <div class="c-table-gateway__info">
+                                    <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
+                                    <span class="c-table-gateway__name">
+                                        <?php if (isset($gateway->link) && !empty($gateway->link)): ?>
                                             <span>
                                                 <?php echo esc_html($gateway->title->rendered); ?>
                                                 <a target="_blank" href="<?php echo esc_url($gateway->link); ?>" title="<?php echo esc_html($gateway->title->rendered); ?>">
@@ -176,10 +198,19 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                                                     </svg>
                                                 </a>
                                             </span>
-                                    <?php else: ?>
-                                        <?php echo esc_html($gateway->title->rendered); ?>
-                                    <?php endif; ?>
-                                </span>
+                                        <?php else: ?>
+                                            <?php echo esc_html($gateway->title->rendered); ?>
+                                        <?php endif; ?>
+                                    </span>
+                                    <?php
+                                    if (!empty($badges)):
+                                        foreach ($badges as $slug => $badge):?>
+                                            <span class="c-table-gateway__badge"><?php echo esc_html($badge) ?></span>
+                                        <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
                             </td>
                             <td class="u-text-center">
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->bulk_sms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
@@ -189,13 +220,12 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
                                 <span class="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? esc_attr('checked') : esc_attr('unchecked'); ?>"
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->mms_support) ? '0' : '1'; ?>"></span>
                             </td>
+                            <td class="u-text-center"><?php echo esc_html($country_list); ?></td>
                             <td>
                                 <span class="c-table__availability c-table__availability--success"><?php esc_html_e('Available', 'wp-sms'); ?></span>
                             </td>
-                            <td class="c-table-country--filter"><?php echo esc_html($country_list); ?></td>
                         </tr>
                     <?php endif; ?>
-
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -203,7 +233,7 @@ $current_country = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix
 
         <div class="c-getway__offer u-mb-38">
             <span><?php esc_html_e('Don’t have SMS gateway?', 'wp-sms'); ?></span>
-            <a class="c-link" href="<?php echo esc_url('https://wp-sms-pro.com/gateways/'); ?>" target="_blank">
+            <a class="c-link" href="<?php echo esc_url('https://wp-sms-pro.com/gateways/recommended/'); ?>" target="_blank">
                 <?php esc_html_e('Check out our recommended SMS gateways for optimized service.', 'wp-sms'); ?>
             </a>
         </div>

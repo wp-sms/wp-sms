@@ -2,23 +2,37 @@ import DataTable from 'datatables.net';
 
 jQuery(document).ready(function ($) {
     'use strict';
+    const wpsms_js = {};
+    wpsms_js.global = wpsms_global;
+
+    wpsms_js._ = function (key) {
+        return (key in this.global.i18n ? this.global.i18n[key] : '');
+    };
 
     const notices = document.querySelectorAll('.wpsms-admin-notice');
     const mainContent = document.querySelector('.o-section.c-section--maincontent');
-    if (notices.length > 0 && mainContent) {
-        notices.forEach(notice => {
-            notice.classList.add('active')
-            mainContent.insertBefore(notice, mainContent.firstChild);
-        });
+    const sectionHeader = document.querySelector('.c-section--header');
+    let existingNotice = mainContent.querySelector('.wpsms-admin-notice.notice-warning');
+
+    if (notices.length > 0 && mainContent && sectionHeader) {
+        let existingHeaderNotice = document.querySelector('.wpsms-admin-notice.notice-warning');
+        if (!existingHeaderNotice) {
+            notices.forEach(notice => {
+                notice.classList.add('active');
+                sectionHeader.insertAdjacentElement('afterend', notice);
+            });
+        }
     }
     const wpSmsItiTel = document.querySelector(".wp-sms-input-iti-tel");
     const countryCodeField = document.querySelector("#wp-sms-country-code-field");
-    const formDescription = document.querySelector(".c-form__description");
+    const formDescription = document.querySelector(".c-form__description.valid");
+    const formDescriptionInvalid = document.querySelector(".c-form__description.invalid");
     const submitButton = document.querySelector(".c-form .c-btn--primary");
     const errorNotice = document.querySelector(".c-section--maincontent .notice-warning.wpsms-admin-notice.active");
 
     if (errorNotice) {
-        if (formDescription) formDescription.classList.add('invalid');
+        if (formDescription) formDescription.classList.add('hidden');
+        if (formDescriptionInvalid) formDescriptionInvalid.classList.remove('hidden');
     }
     if (wpSmsItiTel) {
         const body = document.body;
@@ -39,11 +53,10 @@ jQuery(document).ready(function ($) {
             autoPlaceholder: "polite",
             utilsScript: wp_sms_intel_tel_util.util_js,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
-                return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`;
+                return `+${selectedCountryData.dialCode} 555 123 4567`;
             },
         })
-        wpSmsItiTel.value = '';
-        iti_tel.setNumber('');
+
         const updatePlaceholder = () => {
             const dialCode = iti_tel.getSelectedCountryData().dialCode || '1';
             const newPlaceholder = `+${dialCode} 555 123 4567`;
@@ -51,9 +64,14 @@ jQuery(document).ready(function ($) {
         };
         updatePlaceholder();
 
-        if (countryCodeField) {
-            countryCodeField.value = iti_tel.getSelectedCountryData().name;
+        if (!wpSmsItiTel.value.trim()) {
+            submitButton.disabled = true;
+            if (formDescription) formDescription.classList.remove('hidden');
+            if (formDescriptionInvalid) formDescriptionInvalid.classList.add('hidden');
+            const existingNotices = document.querySelectorAll('.wpsms-admin-notice.notice-warning');
+            existingNotices.forEach(notice => notice.remove());
         }
+
         wpSmsItiTel.addEventListener('countrychange', function () {
             const selectedCountryData = iti_tel.getSelectedCountryData();
             const dialCode = selectedCountryData.dialCode || '1';
@@ -64,6 +82,7 @@ jQuery(document).ready(function ($) {
                 countryCodeField.value = selectedCountryData.name || 'United States';
             }
             updatePlaceholder();
+            validateAndSet(wpSmsItiTel, iti_tel);
         });
         wpSmsItiTel.addEventListener('open:countrydropdown', function () {
             const selectedCountryData = iti_tel.getSelectedCountryData();
@@ -71,38 +90,78 @@ jQuery(document).ready(function ($) {
                 iti_tel.setCountry(selectedCountryData.iso2); // Explicitly set the country in the dropdown
             }
         });
+
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        const debouncedValidateAndSet = debounce(function () {
+            validateAndSet(wpSmsItiTel, iti_tel);
+        }, 300);
+
         wpSmsItiTel.addEventListener('input', function () {
-            validateAndSet(this, iti_tel);
             updatePlaceholder();
+            debouncedValidateAndSet();
         });
     }
 
     function validateAndSet(input, intlTelInputInstance) {
         const isValid = intlTelInputInstance.isValidNumber();
+        const isEmpty = input.value.trim() === '';
 
-        if (isValid) {
-            formDescription.classList.remove('invalid');
-            submitButton.disabled = false;
-            if (errorNotice) {
-                errorNotice.remove()
-            }
+        const existingNotices = document.querySelectorAll('.wpsms-admin-notice.notice-warning');
+        existingNotices.forEach(notice => notice.remove());
+
+        if (isEmpty) {
+            if (formDescription) formDescription.classList.remove('hidden');
+            if (formDescriptionInvalid) formDescriptionInvalid.classList.add('hidden');
+            if (submitButton) submitButton.disabled = true;
+        } else if (isValid) {
+            if (formDescription) formDescription.classList.remove('hidden');
+            if (formDescriptionInvalid) formDescriptionInvalid.classList.add('hidden');
+            if (submitButton) submitButton.disabled = false;
             input.value = intlTelInputInstance.getNumber().replace(/[-\s]/g, '');
-        } else if (input.value.trim() !== '') {
-            if (formDescription) formDescription.classList.add('invalid');
-            submitButton.disabled = true;
         } else {
-            formDescription.classList.remove('invalid');
-            submitButton.disabled = false;
+            if (formDescription) formDescription.classList.add('hidden');
+            if (formDescriptionInvalid) formDescriptionInvalid.classList.remove('hidden');
+            submitButton.disabled = true;
+
+            if (sectionHeader) {
+                const notice = document.createElement('div');
+                notice.className = 'notice notice-warning wpsms-admin-notice active';
+                notice.innerHTML = `<p>${wpsms_js._('fix_highlight')}</p>`;
+                sectionHeader.insertAdjacentElement('afterend', notice);
+            }
         }
     }
 
 
     // Initialize Select2 with custom placeholder
-    $('.wpsms-onboarding select').select2({
-        dropdownCssClass: 'c-select2-dropdown'
-    }).on('select2:open', function () {
-        $('.select2-search__field').attr('placeholder', 'Type to search...');
-        $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
+    function initSelect2(selector, options = {}) {
+        const defaultOptions = {
+            dropdownCssClass: 'c-select2-dropdown'
+        };
+
+        const finalOptions = $.extend({}, defaultOptions, options);
+
+        $(selector).select2(finalOptions).on('select2:open', function () {
+            $('.wpsms-onboarding select, .wpsms-onboarding .select2-container').css('display', 'inline-block');
+
+            // Add placeholder only for searchable dropdowns
+            if (!finalOptions.minimumResultsForSearch || finalOptions.minimumResultsForSearch === 0) {
+                $('.select2-search__field').attr('placeholder', 'Type to search...');
+            }
+        });
+    }
+
+     initSelect2('.wpsms-onboarding select');
+
+     initSelect2('.wpsms-onboarding .wp-sms-onboarding-step-configuration select', {
+        minimumResultsForSearch: Infinity
     });
 
     if ($('.select2-container').length > 0) {
@@ -121,10 +180,6 @@ jQuery(document).ready(function ($) {
         order: [],
         responsive: true,
         columnDefs: [
-            {
-                targets: [4],
-                visible: false
-            },
             {
                 targets: [1, 2],
                 orderDataType: 'dom-data-sort'
@@ -176,15 +231,15 @@ jQuery(document).ready(function ($) {
 
     if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
         $('#filterCountries').val(chosen_country).trigger('change');
-        table.column(4).search(chosen_country).draw();
+        table.column(3).search(chosen_country).draw();
     }
 
     $('#filterCountries').on('select2:select', function (e) {
         let selectedCountry = e.params.data.id;
         if (selectedCountry === 'All') {
-            table.column(4).search('').draw();
+            table.column(3).search('').draw();
         } else {
-            table.column(4).search(selectedCountry).draw();
+            table.column(3).search(selectedCountry).draw();
         }
     });
 

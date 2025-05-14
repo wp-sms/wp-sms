@@ -34,7 +34,7 @@
     justify-content: center;
     gap: 6px;
     padding: 30px 0 0;
-    width: 20%!important;
+    flex: 2;
     position: relative;
     box-sizing: border-box;
     cursor: pointer;
@@ -52,7 +52,7 @@
 
     &:first-child {
       justify-content: flex-start;
-      width: 10%!important;
+      flex: 1;
       a {
         left: 0;
         transform: translateX(0);
@@ -61,11 +61,9 @@
 
     &:last-child {
       justify-content: flex-end;
-      width: 10%!important;
+      flex: 1;
       padding-right: 0;
-      @media (max-width: 790px) {
-        width: 14.28%;
-      }
+
       a {
         right: 0;
         transform: translateX(0);

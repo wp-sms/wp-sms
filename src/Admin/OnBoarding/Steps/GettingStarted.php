@@ -71,9 +71,18 @@ class GettingStarted extends StepAbstract
 
     public function afterValidation()
     {
-        $tel          = is_array($this->data['tel']) ? $this->data['tel'][0] : $this->data['tel'];
-        $country_code = $this->data['code'] ?: '';
-        Option::updateOption('admin_mobile_number', $tel);
-        Option::updateOption('admin_mobile_number_country_prefix', $country_code);
+        $raw_phone        = is_array($this->data['tel']) ? $this->data['tel'][0] : $this->data['tel'];
+        $raw_country_code = $this->data['code'] ?: '';
+
+        // Keep leading +, remove all other non-digit characters
+        $normalized_phone        = preg_replace('/(?!^\+)\D+/', '', $raw_phone);
+        $normalized_country_code = preg_replace('/\D+/', '', $raw_country_code);
+
+        if ($normalized_country_code && strpos($normalized_phone, '+' . $normalized_country_code) !== 0) {
+            $normalized_phone = '+' . $normalized_country_code . ltrim($normalized_phone, '+');
+        }
+
+        Option::updateOption('admin_mobile_number', $normalized_phone);
+        Option::updateOption('admin_mobile_number_country_prefix', '+' . $normalized_country_code);
     }
 }

@@ -24,7 +24,7 @@
   box-shadow: 0px 2px 4px 0px #00000014;
 
   @include mq(tablet) {
-    max-width: 792px;
+    width: 864px;
     padding:38px 38px 15px;
   }
 }

@@ -124,16 +124,8 @@ class WizardManager
     public function modifyOnboardingTitle($admin_title, $title)
     {
         if ($this->isOnboarding()) {
-            $wizardTitle = $this->title;
-
             $stepTitle = method_exists($this->currentStep, 'getTitle') ? $this->currentStep->getTitle() : '';
-
-            $customTitle = $stepTitle;
-            if ($stepTitle) {
-                $customTitle .= ' › ' . $wizardTitle;
-            }
-
-            return sprintf('%s › %s', $customTitle, get_bloginfo('name'));
+            return sprintf(__('WP SMS Onboarding Process: %s', 'wp-sms'), $stepTitle ?: $this->title);
         }
 
         return $admin_title;
@@ -167,6 +159,7 @@ class WizardManager
             'next'           => WizardHelper::generateStepUrl($this->getNext(), $this->slug),
             'ctas'           => $this->getCTAs(),
             'index'          => $this->getStepIndex() + 1,
+            'total_steps'    => count($this->steps),
             'steps'          => $this->getStepsData(),
             'slug'           => $this->slug,
             'is_last'        => $this->isLastStep(),

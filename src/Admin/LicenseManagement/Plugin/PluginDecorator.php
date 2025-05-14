@@ -222,8 +222,8 @@ class PluginDecorator
                 'booking/wpdev-booking.php'
             ],
             'wp-sms-fluent-integrations'     => [
+                'fluentform/fluentform.php',
                 'fluent-crm/fluent-crm.php',
-                'fluent-forms/fluent-forms.php',
                 'fluent-support/fluent-support.php'
             ],
             'wp-sms-membership-integrations' => [
@@ -242,7 +242,7 @@ class PluginDecorator
             case 'wp-sms-two-way':
                 $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => 'addon_two_way']);
                 break;
-            case 'wp-sms-elementor':
+            case 'wp-sms-elementor-form':
                 $settingsUrl = '';
                 break;
 
@@ -290,7 +290,7 @@ class PluginDecorator
             ],
             'wp-sms-fluent-integrations'     => [
                 'fluent-crm/fluent-crm.php'         => 'addon_fluent_crm',
-                'fluent-forms/fluent-forms.php'     => 'addon_fluent_forms',
+                'fluentform/fluentform.php'         => 'addon_fluent_forms',
                 'fluent-support/fluent-support.php' => 'addon_fluent_support',
             ],
             'wp-sms-membership-integrations' => [

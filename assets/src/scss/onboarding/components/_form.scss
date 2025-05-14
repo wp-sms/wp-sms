@@ -54,7 +54,10 @@
   .select2-container--default .select2-selection--single {
     height: 40px;
     padding: 12px;
+    border: 1px solid #E7E7E7 !important;
   }
+
+
 
   .select2-container--default
   .select2-selection--single
@@ -86,6 +89,13 @@
     font-size: 14px;
     line-height: 15.41px;
     font-weight: 400;
+    padding-left: 0;
+    padding-right: 20px;
+
+    .rtl &{
+      padding-right: 0;
+      padding-left: 20px;
+    }
   }
 
   .select2-container--default .select2-search--dropdown .select2-search__field {
@@ -324,6 +334,10 @@
   .select2-results__option{
     text-transform: capitalize;
   }
+}
+
+.select2-container--default .c-select2-dropdown .select2-results__option--selected{
+  background: transparent;
 }
 
 .toplevel_page_wp-sms .iti__dropdown-content .iti__search-input{

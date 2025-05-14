@@ -65,7 +65,7 @@ strong {
 }
 
  .notice.wpsms-admin-notice ,.sms_page_wp-sms #wpcontent  .notice.wpsms-admin-notice{
-   margin: 20px auto!important;
+   margin: 20px auto 12px!important;
    background: #FFF2F2;
    border: 1px solid #F9595980;
    border-radius: 8px;
@@ -76,8 +76,8 @@ strong {
    line-height: 22px;
    gap: 12px;
    align-items: center;
-   width: 792px;
-   max-width: 100%;
+   width: 864px;
+   max-width: calc(100% - 20px);
    box-sizing: border-box;
    display: none;
 

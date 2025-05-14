@@ -1818,7 +1818,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (All-In-One)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
+                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'             => array(
@@ -1878,7 +1878,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        !$this->proIsInstalled ? esc_html__('Google reCAPTCHA Integration (All-In-One / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        !$this->proIsInstalled ? esc_html__('Google reCAPTCHA Integration (Pro / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
                     'type' => 'header',
@@ -2493,7 +2493,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                 if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
                     $disabled = ' disabled';
-                    $name     .= '<span> ' . esc_html__('- (All-In-One)', 'wp-sms') . '</span>';
+                    $name     .= '<span> ' . esc_html__('- (Pro Pack)', 'wp-sms') . '</span>';
                 }
 
                 $selected = selected($option, $value, false);
@@ -2668,7 +2668,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                             if ($isProTab) {
                                 if (!$this->proIsInstalled) {
-                                    $proLockIcon = '</a><span class="pro-not-installed"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing">All-In-One</a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
                                 }
                             }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
@@ -2705,15 +2705,18 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         } ?>
                     </ul>
 
-                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
-                        <?php
-                        if (isset($args['setting']) && $args['setting'] == true) {
-                            $this->renderWpSetting();
-                        } else if (isset($args['template']) && $args['template'] != "") {
-                            call_user_func($args['template'], []);
-                        }
-                        ?>
 
+                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+
+                         <div class="wpsms-tab-content__box">
+                            <?php
+                            if (isset($args['setting']) && $args['setting'] == true) {
+                                $this->renderWpSetting();
+                            } else if (isset($args['template']) && $args['template'] != "") {
+                                call_user_func($args['template'], []);
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2730,7 +2733,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     private function renderWpSetting()
     {
         ?>
-        <form method="post" action="options.php">
+         <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);

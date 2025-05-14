@@ -222,7 +222,7 @@ body.rtl #feedback-bird-app {
   margin: 0 !important;
 }
 
-.rtl .wpsms-header-banner .wpsms-header-items-side .wpsms-menu-content a span.icon,
+
 .rtl .wpsms-mobile-menu #feedback-bird-app .c-fbb-btn--default > span:before {
   margin-right: 0 !important;
   margin-left: 10px;
@@ -294,7 +294,7 @@ body.rtl #feedback-bird-app {
       color: #FFFFFFCC;
       text-decoration: none;
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 500;
       transition: 0.3s background ease-out;
       gap: 8px;
       border-radius: 4px;
@@ -385,7 +385,6 @@ body.rtl #feedback-bird-app {
       a {
         span.icon {
           display: inline-flex;
-          margin-right: 10px;
           width: 16px;
           height: 19px;
           background: center center/contain no-repeat;
@@ -645,12 +644,12 @@ body.rtl #screen-meta-links {
 
   .wpsms-header-banner .license-status  a:before{
     content: "";
-    width: 19px;
-    height: 19px;
+    width: 14px;
+    height: 14px;
     margin-right: 6px;
     transition: 0.2s;
-    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE1NjQxXzE1ODU2KSI+CjxwYXRoIGQ9Ik0xMy41MTI4IDEuNDU2MDVMMTQuNTU2OSAzLjQxMzcxTDE2LjUxNDUgNC40NTc3OUwxNC41NTY5IDUuNTAxODdMMTMuNTEyOCA3LjQ1OTUzTDEyLjQ2ODcgNS41MDE4N0wxMC41MTExIDQuNDU3NzlMMTIuNDY4NyAzLjQxMzcxTDEzLjUxMjggMS40NTYwNVpNNi4zODc4IDMuOTMwMDFMOC40OTg5IDcuODg4MzVMMTIuNDU3MiA5Ljk5OTQ0TDguNDk4OSAxMi4xMTA2TDYuMzg3OCAxNi4wNjg5TDQuMjc2NjkgMTIuMTEwNkwwLjMxODM1OSA5Ljk5OTQ0TDQuMjc2NjkgNy44ODgzNUw2LjM4NzggMy45MzAwMVpNMTUuNjIzOSAxMy40MzAxTDE0LjMwNDUgMTAuOTU2MUwxMi45ODUgMTMuNDMwMUwxMC41MTExIDE0Ljc0OTRMMTIuOTg1IDE2LjA2ODlMMTQuMzA0NSAxOC41NDI5TDE1LjYyMzkgMTYuMDY4OUwxOC4wOTc5IDE0Ljc0OTRMMTUuNjIzOSAxMy40MzAxWiIgZmlsbD0id2hpdGUiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8xNTY0MV8xNTg1NiI+CjxyZWN0IHdpZHRoPSIxOSIgaGVpZ2h0PSIxOSIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMDU0Njg3NSAwLjUpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==") center center/100% no-repeat;
-  }
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOSAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzLjUxMjggMC40NTYwNTVMMTQuNTU2OSAyLjQxMzcxTDE2LjUxNDUgMy40NTc3OUwxNC41NTY5IDQuNTAxODdMMTMuNTEyOCA2LjQ1OTUzTDEyLjQ2ODcgNC41MDE4N0wxMC41MTExIDMuNDU3NzlMMTIuNDY4NyAyLjQxMzcxTDEzLjUxMjggMC40NTYwNTVaTTYuMzg3OCAyLjkzMDAxTDguNDk4OSA2Ljg4ODM1TDEyLjQ1NzIgOC45OTk0NEw4LjQ5ODkgMTEuMTEwNkw2LjM4NzggMTUuMDY4OUw0LjI3NjY5IDExLjExMDZMMC4zMTgzNTkgOC45OTk0NEw0LjI3NjY5IDYuODg4MzVMNi4zODc4IDIuOTMwMDFaTTE1LjYyMzkgMTIuNDMwMUwxNC4zMDQ1IDkuOTU2MDlMMTIuOTg1IDEyLjQzMDFMMTAuNTExMSAxMy43NDk0TDEyLjk4NSAxNS4wNjg5TDE0LjMwNDUgMTcuNTQyOUwxNS42MjM5IDE1LjA2ODlMMTguMDk3OSAxMy43NDk0TDE1LjYyMzkgMTIuNDMwMVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=) center center no-repeat
+   }
 
   .wpsms-header-banner .license-status a.upgrade {
     padding: 6px 12px 6px 6px;
@@ -784,9 +783,9 @@ body.rtl #screen-meta-links {
   }
 
   .wpsms-wrap .description {
-    color: #5b5b5b;
-    font-size: 12px;
-    margin-top: 2px;
+    color: #737373;
+    font-size: 10px;
+    margin-top: 4px;
     line-height: 22px;
   }
 

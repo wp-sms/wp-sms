@@ -294,6 +294,7 @@ class Admin
             'update_license'               => __('Update License', 'wp-sms'),
             'select_groups'                => __('Please select the group(s) ...', 'wp-sms'),
             'no_results_found'             => __('No results found', 'wp-sms'),
+            'fix_highlight'                => __('Please fix the highlighted field(s) below.', 'wp-sms'),
             'search'                       => __('Search ...', 'wp-sms'),
         ];
     }

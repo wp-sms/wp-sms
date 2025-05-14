@@ -1,6 +1,7 @@
 <?php
 
 use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
@@ -224,7 +225,19 @@ class WP_SMS
             WidgetsManager::init();
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
-            new \WP_SMS\Admin\AdminManager();
+
+            add_action('init', function () {
+                $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
+                $wizard->add(StepFactory::create('GettingStarted', $wizard));
+                $wizard->add(StepFactory::create('SmsGateway', $wizard));
+                $wizard->add(StepFactory::create('Configuration', $wizard));
+                $wizard->add(StepFactory::create('TestSetup', $wizard));
+                if (!LicenseHelper::isPluginLicenseValid())
+                    $wizard->add(StepFactory::create('Pro', $wizard));
+                $wizard->add(StepFactory::create('Ready', $wizard));
+                $wizard->setup();
+            });
+
         }
 
         if (!is_admin()) {
@@ -239,21 +252,9 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-send.php');
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
-
-        // Setup Wizard
-        $wizard = new WizardManager(__('WPSMS OnBoarding Process'), 'wp-sms-onboarding');
-        $wizard->add(StepFactory::create('GettingStarted', $wizard));
-        $wizard->add(StepFactory::create('SmsGateway', $wizard));
-        $wizard->add(StepFactory::create('Configuration', $wizard));
-        $wizard->add(StepFactory::create('TestSetup', $wizard));
-        $wizard->add(StepFactory::create('Pro', $wizard));
-        $wizard->add(StepFactory::create('Ready', $wizard));
-
-        $wizard->setup();
-
+      
         // Anonymous Data sharing
-        $anonymizedUsageDataManager = new AnonymizedUsageDataManager();
-    }
+        $anonymizedUsageDataManager = new AnonymizedUsageDataManager();    }
 
     /**
      * @return \WP_SMS\Pro\Scheduled
