@@ -5,6 +5,7 @@ namespace WP_SMS;
 use WC_Blocks_Utils;
 use WP_Error;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Utils\OptionUtil;
 
 /**
  * Class WP_SMS
@@ -609,5 +610,96 @@ class Helper
     public static function convertNumber($number)
     {
         return strtr($number, array('۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4', '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9', '٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4', '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9'));
+    }
+
+    public static function checkMemoryLimit()
+    {
+        if (!function_exists('memory_get_peak_usage') or !function_exists('ini_get')) {
+            return false;
+        }
+
+        $memoryLimit = ini_get('memory_limit');
+
+        if (memory_get_peak_usage(true) > self::convertBytes($memoryLimit)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check User Access To WP SMS Admin
+     *
+     * @param string $type [manage | read ]
+     * @param string|boolean $export
+     * @return bool
+     */
+    public static function userAccess($type = 'both', $export = false)
+    {
+
+        //List Of Default Cap
+        $list = array(
+            'manage' => array('manage_capability', 'manage_options'),
+            'read'   => array('read_capability', 'manage_options')
+        );
+
+        //User User Cap
+        $cap = 'both';
+        if (!empty($type) and array_key_exists($type, $list)) {
+            $cap = $type;
+        }
+
+        //Check Export Cap name or Validation current_can_user
+        if ($export == "cap") {
+            return self::ExistCapability(OptionUtil::get($list[$cap][0], $list[$cap][1]));
+        }
+
+        //Check Access
+        switch ($type) {
+            case "manage":
+            case "read":
+                return current_user_can(self::ExistCapability(OptionUtil::get($list[$cap][0], $list[$cap][1])));
+                break;
+            case "both":
+                foreach (array('manage', 'read') as $c) {
+                    if (self::userAccess($c) === true) {
+                        return true;
+                    }
+                }
+                break;
+        }
+
+        return false;
+    }
+
+    /**
+     * Validation User Capability
+     *
+     * @default manage_options
+     * @param string $capability Capability
+     * @return string 'manage_options'
+     */
+    public static function ExistCapability($capability)
+    {
+        global $wp_roles;
+
+        $default_manage_cap = 'manage_options';
+
+
+        if (!is_object($wp_roles) || !is_array($wp_roles->roles)) {
+            return $default_manage_cap;
+        }
+
+        foreach ($wp_roles->roles as $role) {
+            $cap_list = $role['capabilities'];
+
+            foreach ($cap_list as $key => $cap) {
+                if ($capability == $key) {
+                    return $capability;
+                }
+            }
+        }
+
+        return $default_manage_cap;
     }
 }
