@@ -8,37 +8,39 @@ use WP_SMS\Gateway;
 
 class tubelightcommunications extends Gateway
 {
-    private     $wsdl_link = "https://portal.tubelightcommunications.com";
-    public      $unitrial = true;
-    public      $unit;
-    public      $flash = "disable";
-    public      $isflash = false;
-    public      $template_id = '';
-    public      $validateNumber = "919811xxxxxx";
-    public      $supportMedia = true;
-    public      $route = 'sms';
+    private $wsdl_link = "https://portal.tubelightcommunications.com";
+    public $unitrial = true;
+    public $unit;
+    public $flash = "disable";
+    public $isflash = false;
+    public $template_id = '';
+    public $validateNumber = "919811xxxxxx";
+    public $supportMedia = true;
+    public $route = 'sms';
 
     public function __construct()
     {
         parent::__construct();
-        $this->help = __('<b>SMS Route</b>: Please follow this format in your messages: <pre>message|template_id</pre><br><b>WhatsApp Route</b>: Please follow this format in your messages: <pre>var1:var2:var3:var4|template_name</pre>', 'wp-sms');
-        $this->gatewayFields  = [
-            'username'       => [
+        $this->help          = __('<b>SMS Route</b>: Please follow this format in your messages: <pre>message|template_id</pre><br><b>WhatsApp Route</b>: Please follow this format in your messages: <pre>var1:var2:var3:var4|template_name</pre>', 'wp-sms');
+        $this->gatewayFields = [
+            'username' => [
                 'id'   => 'gateway_username',
                 'name' => 'Username',
                 'desc' => 'Username provided by Tubelight',
             ],
-            'password'       => [
+            'password' => [
                 'id'   => 'gateway_password',
                 'name' => 'Password',
                 'desc' => 'Password provided by Tubelight',
             ],
-            'from'           => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender number',
-                'desc' => 'Sender number or sender ID',
+            'from'     => [
+                'id'           => 'gateway_sender_id',
+                'name'         => 'Sender Number',
+                'place_holder' => 'e.g., +1 555 123 4567',
+                'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.',
             ],
-            'route'          => [
+            'route'    => [
                 'id'      => 'route',
                 'name'    => esc_html__('Route', 'wp-sms'),
                 'type'    => 'select',
@@ -93,8 +95,8 @@ class tubelightcommunications extends Gateway
 
             // Get template and message body
             $templateMessage = $this->getTemplateIdAndMessageBody();
-            $template = $templateMessage['template_id'] ?? null;
-            $message = $templateMessage['message'] ?? null;
+            $template        = $templateMessage['template_id'] ?? null;
+            $message         = $templateMessage['message'] ?? null;
 
             if (empty($message)) {
                 throw new Exception('Invalid Message Format');
@@ -103,7 +105,7 @@ class tubelightcommunications extends Gateway
             $messageVars = explode(':', $message);
 
             $params = [
-                'headers'   => [
+                'headers' => [
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                     'Authorization' => 'Bearer ' . $token
@@ -142,7 +144,7 @@ class tubelightcommunications extends Gateway
             }
 
             $params = [
-                'headers'   => [
+                'headers' => [
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                     'Authorization' => 'Bearer ' . $token
@@ -170,12 +172,12 @@ class tubelightcommunications extends Gateway
 
             $params = [
                 'headers' => [
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
+                    'Accept'       => 'application/json',
+                    'Content-Type' => 'application/json',
                 ],
                 'body'    => wp_json_encode([
-                    'username'      => $this->username,
-                    'password'      => $this->password,
+                    'username' => $this->username,
+                    'password' => $this->password,
                 ]),
             ];
 
@@ -191,15 +193,15 @@ class tubelightcommunications extends Gateway
     private function sendSMSMessage($params, $template, $message)
     {
         $params['body'] = wp_json_encode(array_map(function ($number) use ($message, $template) {
-                return [
-                    'sender'        => $this->from,
-                    'mobileNo'      => $number,
-                    'messageType'   => 'TEXT',
-                    'messages'      => $message,
-                    'tempId'        => $template ?? '',
-                ];
-            }, $this->to));
-        
+            return [
+                'sender'      => $this->from,
+                'mobileNo'    => $number,
+                'messageType' => 'TEXT',
+                'messages'    => $message,
+                'tempId'      => $template ?? '',
+            ];
+        }, $this->to));
+
         $response = $this->request('POST', $this->wsdl_link . '/sms/api/v1/websms/bulksend', [], $params);
 
         $this->log($this->from, $this->msg, $this->to, $response);
@@ -228,7 +230,7 @@ class tubelightcommunications extends Gateway
                         'header_params' => $this->media,
                     ]
                 ]);
-                
+
                 $response = $this->request('POST', $this->wsdl_link . '/whatsapp/api/v1/send', [], $params);
 
                 $this->log($this->from, $this->msg, $this->to, $response);

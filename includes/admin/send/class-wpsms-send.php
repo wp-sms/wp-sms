@@ -61,6 +61,8 @@ class SMS_Send
             'gatewayCredit'           => $credit
         ];
 
-        echo Helper::loadTemplate('admin/send-sms.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        $content = apply_filters('wp_sms_send_sms_page_content', Helper::loadTemplate('admin/send-sms.php', $args), $args);
+
+        echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 }

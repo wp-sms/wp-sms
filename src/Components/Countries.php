@@ -37,6 +37,28 @@ class Countries extends Singleton
     }
 
     /**
+     * Returns the country information by its dial code prefix.
+     *
+     * @param string $prefix The dial code prefix to search for.
+     *
+     * @return  array|null       The country information if found, or null if not found.
+     */
+    public function getCountryByPrefix($prefix)
+    {
+        if (empty($this->countries)) {
+            return null;
+        }
+
+        foreach ($this->countries as $country) {
+            if (in_array($prefix, $country['allDialCodes'])) {
+                return $country;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Adds the `fullInfo` field to the countries array.
      *
      * Country name + country native name + dial code will be displayed in this field.
@@ -62,8 +84,8 @@ class Countries extends Singleton
     /**
      * Returns the countries array.
      *
-     * @param   string  $field  Pluck the array with this field.
-     * @param   string  $key    Which field should be used as key? (Works only when `$field` is not empty)
+     * @param string $field Pluck the array with this field.
+     * @param string $key Which field should be used as key? (Works only when `$field` is not empty)
      *
      * @return  array           The plucked or the complete array, or empty array on error.
      */

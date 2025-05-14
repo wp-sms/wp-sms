@@ -20,14 +20,16 @@ class smartsmsgateway extends \WP_SMS\Gateway
         $this->help           = "Fill in the below fields with the valid credentials from your SMS gateway provider.";
         $this->gatewayFields  = [
             'username' => [
-                'id'   => 'gateway_username',
-                'name' => 'API Username',
-                'desc' => 'Enter your API username.',
+                'id'           => 'gateway_username',
+                'name'         => 'API Username',
+                'place_holder' => 'e.g., YourGatewayUsername123',
+                'desc'         => 'Enter the username provided by your SMS gateway.',
             ],
             'password' => [
                 'id'   => 'gateway_password',
                 'name' => 'API Password',
-                'desc' => 'Enter your API password.',
+                'place_holder' => 'e.g., YourGatewayPassword456',
+                'desc' => 'Enter the password associated with your SMS gateway account.',
             ],
             'from'     => [
                 'id'   => 'gateway_sender_id',
