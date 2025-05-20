@@ -176,7 +176,8 @@ class Newsletter extends RestApi
     {
         // Get parameters from request
         $params         = $request->get_params();
-        $number         = NumberParser::toEnglishNumerals($params['mobile']);
+        $numberParser   = new NumberParser($params['mobile']);
+        $number         = $numberParser->getValidNumber();
         $group_id       = isset($params['group_id']) ? $params['group_id'] : 0;
         $groups_enabled = Option::getOption('newsletter_form_groups');
 
@@ -206,11 +207,11 @@ class Newsletter extends RestApi
     public function verify_subscriber_callback(WP_REST_Request $request)
     {
         // Get parameters from request
-        $params = $request->get_params();
-        $number = NumberParser::toEnglishNumerals($params['mobile']);
-
-        $group_id = isset($params['group_id']) ? $params['group_id'] : 0;
-        $groupIds = is_array($group_id) ? $group_id : array($group_id);
+        $params       = $request->get_params();
+        $numberParser = new NumberParser($params['mobile']);
+        $number       = $numberParser->getValidNumber();
+        $group_id     = isset($params['group_id']) ? $params['group_id'] : 0;
+        $groupIds     = is_array($group_id) ? $group_id : array($group_id);
 
         foreach ($groupIds as $groupId) {
 
