@@ -1,3 +1,6 @@
+v7.0.0
+- **Fix**: Fixed issues with disappearing billing fields on woocommerce legacy and HPOS mode.
+
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
