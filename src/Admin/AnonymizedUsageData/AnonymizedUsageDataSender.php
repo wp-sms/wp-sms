@@ -44,10 +44,25 @@ class AnonymizedUsageDataSender
 
             $remoteRequest->execute(false, false);
 
-            $response     = $remoteRequest->getResponseBody();
             $responseCode = $remoteRequest->getResponseCode();
+            $responseBody = $remoteRequest->getResponseBody();
 
-            if ($responseCode !== 200) {
+            // Check status code
+            if (!in_array($responseCode, [200, 201], true)) {
+                return false;
+            }
+
+            // Check if response is valid JSON
+            $decoded = json_decode($responseBody, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+                WPSms()->log('Unexpected response format: ' . substr($responseBody, 0, 300), 'error');
+                return false;
+            }
+
+            // Check a specific "success" field in response JSON
+            if (isset($decoded['status']) && $decoded['status'] !== 'success') {
+                WPSms()->log('API returned failure status: ' . $responseBody, 'error');
                 return false;
             }
 
