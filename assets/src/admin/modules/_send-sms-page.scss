@@ -298,6 +298,10 @@ Send SMS page
 /**
 New styles for new version of the page
  */
+
+.toplevel_page_wp-sms .wpsms-header-banner{
+  display: none!important;
+}
 .wpsms-sendsms {
   background-color: white;
   position: relative;
@@ -405,32 +409,31 @@ New styles for new version of the page
   h1 {
     text-align: center;
     font-weight: 600;
-    color: $dark-gray;
+    color: #282828;
     margin: 0;
-
-    @media (max-width: 400px) {
-      margin: 10px 0 30px 0;
-    }
+    font-size: 28px;
+    line-height: 34px;
+    padding: 0;
   }
 
   .sendsms-tabs {
     max-width: 500px;
-    margin: 40px auto 0px auto;
+    margin: 54px auto 0;
 
     display: flex;
     //align-items: center;
     justify-content: space-between;
 
     .tab {
-      font-size: 15px;
-      font-weight: 500;
-      color: $dark-gray;
+      font-size: 12px;
+      font-weight: 400;
+      color: #525252;
       text-align: center;
       position: relative;
       display: block;
       flex: 0 0 25%;
       cursor: pointer;
-      padding: 10px 0;
+      padding: 0;
       transition: .3s all ease-out;
 
       &.active::before,
@@ -439,7 +442,7 @@ New styles for new version of the page
         width: 100%;
         height: 3px;
         position: absolute;
-        background-color: $brand-orange;
+        background-color: #F97316;
         top: 61px;
         left: 50%;
         transform: translateX(-50%);
@@ -461,24 +464,29 @@ New styles for new version of the page
 
       &::after {
         content: "";
-        background: url("../images/icons/next-step-outline.png") no-repeat center center / contain;
-        width: 18px;
-        height: 18px;
+        background-image: url("../images/icons/next-step-outline.png");
+        width: 20px;
+        height: 20px;
         position: absolute;
-        top: 53px;
+        top: 33px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 1;
         transition: .3s all ease-out;
+        background-color: #fff;
+        background-repeat: no-repeat;
+        background-size: 15.3px 15.3px;
+        background-position: center center;
       }
 
       &.passed::after,
       &.active::after {
-        background: url("../images/icons/next-step-fill.png") no-repeat center center / contain;
+        background-image: url("../images/icons/next-step-fill.png");
       }
 
       &.active {
-        color: $brand-orange;
+        color: #C2410C;
+        font-weight: 600;
       }
     }
 
@@ -519,11 +527,11 @@ New styles for new version of the page
   }
 
   .sendsms-tabs-line {
-    width: 100%;
-    height: 2px;
-    background-color: #f0f0f1;
-    margin-bottom: 80px;
-    margin-top: 24px;
+    height: 0.5px;
+    background-color: #D4D4D4;
+    width: 524px;
+    max-width: 100%;
+    margin: 24px auto 80px;
 
     @media (max-width: 400px) {
       margin-bottom: 30px;
@@ -532,11 +540,10 @@ New styles for new version of the page
   }
 
   .sendsms-content {
-    max-width: 500px;
-    margin: auto;
+    max-width: 524px;
     position: relative;
     min-height: 40vh;
-    margin-bottom: 100px;
+    margin: auto auto 100px;
 
     .select2-container {
       min-width: 350px;
