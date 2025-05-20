@@ -34,17 +34,54 @@
   }
 }
 
-.rtl .wpsms-wrap .button {
-  font-weight: 600 !important;
-  font-size: 14px;
-  line-height: 17px;
-  padding: 15px 24px;
-  border-radius: 2px;
-  transition: 0.2s;
-}
+.rtl .wpsms-wrap {
+  .button {
+     font-weight: 600 !important;
+    font-size: 14px;
+    line-height: 17px;
+    padding: 15px 16px;
+    border-radius: 2px;
+    transition: 0.2s;
+    &:disabled {
+      background-color: #808080 !important;
+    }
+  }
 
-.wpsms-wrap .button:disabled {
-  background-color: #808080 !important;
+  .notice.wpsms-admin-notice .button {
+    font-weight: 400!important;
+    padding: 0 10px;
+    margin: 0;
+    box-shadow: none;
+    font-size: 13px;
+    line-height: 2.15384615;
+    min-height: 30px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    background: #f6f7f7;
+    border-color: #8c8f94;
+    color: #2271b1;
+
+    &:hover{
+      background: #f0f0f1;
+      border-color: #0a4b78;
+      color: #0a4b78;
+    }
+
+    &.button-primary {
+      background: #2271b1;
+      border-color: #2271b1;
+      color: #fff;
+      &:hover{
+        background: #135e96;
+        border-color: #135e96;
+      }
+    }
+  }
 }
 
 .wpsms-wrap .button-primary,

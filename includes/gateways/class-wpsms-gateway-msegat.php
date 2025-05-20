@@ -14,20 +14,23 @@ class msegat extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->gatewayFields = [
+        $this->gatewayFields  = [
             'username' => [
-                'id'   => 'gateway_username',
-                'name' => 'API username',
-                'desc' => 'Enter API username of gateway',
+                'id'           => 'gateway_username',
+                'name'         => 'API Username',
+                'place_holder' => 'e.g., YourGatewayUsername123',
+                'desc'         => 'Enter the username provided by your SMS gateway.',
             ],
             'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender number',
-                'desc' => 'Sender number or sender ID',
+                'id'           => 'gateway_sender_id',
+                'name'         => 'Sender Number',
+                'place_holder' => 'e.g., +1 555 123 4567',
+                'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.',
             ],
             'has_key'  => [
                 'id'   => 'gateway_key',
-                'name' => 'API key',
+                'name' => 'API Key',
                 'desc' => 'Enter API key of gateway'
             ]
         ];

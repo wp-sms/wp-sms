@@ -9,7 +9,7 @@
 
     <!-- Show request message the client -->
     <div class="wpsms-wrap wpsms-export-popup">
-        <div class="wp-sms-popup-messages"></div>
+        <div class="wp-sms-popup-messages js-wpSmsErrorMessage wpsms-admin-notice"></div>
     </div>
 
     <form class="js-wpSmsExportForm">
@@ -17,13 +17,13 @@
         <input class="wp-sms-export-type" type="hidden" value="inbox">
         <table>
             <tr>
-                <td style="padding-top: 10px;">
+                <td>
                     <p> <?php _e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
 
             <tr>
-                <td colspan="2" style="padding-top: 10px;">
+                <td>
                     <input type="submit" class="button-primary js-wpSmsExportButton" value="<?php esc_html_e('Export', 'wp-sms'); ?>"/>
                 </td>
             </tr>

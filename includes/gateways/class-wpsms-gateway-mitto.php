@@ -13,9 +13,11 @@ class mitto extends \WP_SMS\Gateway
     public $documentUrl = 'https://wp-sms-pro.com/resources/mitto-gateway-configuration/';
     public $gatewayFields = [
         'from'    => [
-            'id'   => 'gateway_sender_id',
-            'name' => 'Sender number',
-            'desc' => 'Sender number or sender ID',
+            'id'           => 'gateway_sender_id',
+            'name'         => 'Sender Number',
+            'place_holder' => 'e.g., +1 555 123 4567',
+            'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.',
         ],
         'has_key' => [
             'id'   => 'gateway_key',
@@ -93,7 +95,7 @@ class mitto extends \WP_SMS\Gateway
 
         $response_code = wp_remote_retrieve_response_code($response);
         $result        = json_decode($response['body']);
-        
+
         if ($response_code != '200' or $result->responseCode !== 0) {
             $this->log($this->from, $this->msg, $this->to, $result->responseText, 'error');
             return new \WP_Error('sms-send', $result->responseText);
