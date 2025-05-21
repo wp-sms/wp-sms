@@ -116,7 +116,7 @@ class Modal
         $modal = self::getState($modalId);
 
         $state = [
-            'times_opened' => isset($modal['times_opened']) ? $modal['times_opened'] + 1 : 1,
+            'times_opened' => (is_array($modal) && isset($modal['times_opened'])) ? $modal['times_opened'] + 1 : 1,
             'last_opened'  => date('Y-m-d H:i:s')
         ];
 
