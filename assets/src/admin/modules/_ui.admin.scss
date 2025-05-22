@@ -535,7 +535,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
     object-fit: contain;
     height: 22px;
 
-    &--premium {
+    &--aio {
       width: 214px;
     }
   }
@@ -1004,7 +1004,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
 }
 
 
-.wpsms-adminHeader__premium {
+.wpsms-adminHeader__aio {
   background: #12121B
 }
 
@@ -4939,7 +4939,7 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   gap: 12px !important;
 }
 
-.wpsms-review_premium {
+.wpsms-review_aio {
   margin-top: 32px;
   padding: 24px;
   gap: 24px;
