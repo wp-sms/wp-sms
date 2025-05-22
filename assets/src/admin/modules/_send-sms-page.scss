@@ -59,7 +59,7 @@ Send SMS page
     display: inline-block;
     background: rgba(0, 0, 0, .07);
     border-radius: 4px;
-    padding: 0px 6px 1px 6px;
+    padding: 0 6px 1px 6px;
     color: #5b5b5b;
     cursor: pointer;
     margin-bottom: 6px;
@@ -299,10 +299,11 @@ Send SMS page
 New styles for new version of the page
  */
 
-.toplevel_page_wp-sms .wpsms-header-banner{
-  display: none!important;
+.toplevel_page_wp-sms .wpsms-header-banner {
+  display: none !important;
 }
-.wpsms-sendsms {
+
+body.sms_page_wp-sms .wpsms-wrap .wpsms-sendsms {
   background-color: white;
   position: relative;
   padding: 20px 20px;
@@ -436,19 +437,6 @@ New styles for new version of the page
       padding: 0;
       transition: .3s all ease-out;
 
-      &.active::before,
-      &.passed::before {
-        content: "";
-        width: 100%;
-        height: 3px;
-        position: absolute;
-        background-color: #F97316;
-        top: 61px;
-        left: 50%;
-        transform: translateX(-50%);
-        //transition: .3s all ease-out;
-      }
-
       &.active::before {
         width: 100%;
         left: 0;
@@ -464,7 +452,7 @@ New styles for new version of the page
 
       &::after {
         content: "";
-        background-image: url("../images/icons/next-step-outline.png");
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjQwMjYgMTAuMjE5NEw5LjI3MTEyIDEyLjM1MDlDOS4xNTU4NCAxMi40NjQ5IDkuMDk4MiAxMi42MDc1IDkuMDk4MiAxMi43Nzg2QzkuMDk4MiAxMi45NDk1IDkuMTU1ODQgMTMuMDk3IDkuMjcxMTIgMTMuMjIxMUM5LjM5NTE1IDEzLjM1MDIgOS41NDM2OSAxMy40MTM1IDkuNzE2NzQgMTMuNDEwOUM5Ljg4OTggMTMuNDA4MiAxMC4wMzgzIDEzLjM0NSAxMC4xNjIyIDEzLjIyMTFMMTIuNjM2NSAxMC43NDY3QzEyLjc4NzIgMTAuNTk2IDEyLjg2MjYgMTAuNDIwMiAxMi44NjI2IDEwLjIxOTRDMTIuODYyNiAxMC4wMTg2IDEyLjc4NzIgOS44NDI4IDEyLjYzNjUgOS42OTIxMUwxMC4xNDk1IDcuMjA1MDNDMTAuMDI1NCA3LjA4MTE0IDkuODc5MDQgNy4wMTk5NiA5LjcxMDI5IDcuMDIxNDhDOS41NDE1NCA3LjAyMzE1IDkuMzk1MTUgNy4wODg1NyA5LjI3MTEyIDcuMjE3NzNDOS4xNTU4NCA3LjM0MTc2IDkuMDk3MzcgNy40ODgxNSA5LjA5NTcgNy42NTY5QzkuMDk0MTcgNy44MjU2NSA5LjE1NTM2IDcuOTcyMDQgOS4yNzkyNCA4LjA5NjA3TDExLjQwMjYgMTAuMjE5NFpNMTAuNTQ1MSAxOC4xMzYxQzkuNDUwMDggMTguMTM2MSA4LjQyMDg0IDE3LjkyODMgNy40NTczNyAxNy41MTI3QzYuNDkzOSAxNy4wOTcyIDUuNjU1ODQgMTYuNTMzMiA0Ljk0MzIgMTUuODIwOUM0LjIzMDU2IDE1LjEwODUgMy42NjYzMyAxNC4yNzA4IDMuMjUwNDkgMTMuMzA3N0MyLjgzNDggMTIuMzQ0NyAyLjYyNjk1IDExLjMxNTcgMi42MjY5NSAxMC4yMjA5QzIuNjI2OTUgOS4xMjU4NiAyLjgzNDczIDguMDk2NjIgMy4yNTAyOSA3LjEzMzE1QzMuNjY1ODQgNi4xNjk2OCA0LjIyOTggNS4zMzE2MiA0Ljk0MjE2IDQuNjE4OThDNS42NTQ1MiAzLjkwNjM1IDYuNDkyMjMgMy4zNDIxMSA3LjQ1NTI5IDIuOTI2MjhDOC40MTgzNCAyLjUxMDU4IDkuNDQ3MyAyLjMwMjczIDEwLjU0MjIgMi4zMDI3M0MxMS42MzcyIDIuMzAyNzMgMTIuNjY2NCAyLjUxMDUxIDEzLjYyOTkgMi45MjYwN0MxNC41OTMzIDMuMzQxNjIgMTUuNDMxNCAzLjkwNTU4IDE2LjE0NCA0LjYxNzk0QzE2Ljg1NjcgNS4zMzAzIDE3LjQyMDkgNi4xNjgwMSAxNy44MzY3IDcuMTMxMDdDMTguMjUyNCA4LjA5NDEyIDE4LjQ2MDMgOS4xMjMwOCAxOC40NjAzIDEwLjIxNzlDMTguNDYwMyAxMS4zMTI5IDE4LjI1MjUgMTIuMzQyMiAxNy44MzcgMTMuMzA1N0MxNy40MjE0IDE0LjI2OTEgMTYuODU3NCAxNS4xMDcyIDE2LjE0NTEgMTUuODE5OEMxNS40MzI3IDE2LjUzMjUgMTQuNTk1IDE3LjA5NjcgMTMuNjMyIDE3LjUxMjVDMTIuNjY4OSAxNy45MjgyIDExLjYzOTkgMTguMTM2MSAxMC41NDUxIDE4LjEzNjFaIiBmaWxsPSIjRDRENEQ0Ii8+Cjwvc3ZnPgo=");
         width: 20px;
         height: 20px;
         position: absolute;
@@ -479,9 +467,8 @@ New styles for new version of the page
         background-position: center center;
       }
 
-      &.passed::after,
       &.active::after {
-        background-image: url("../images/icons/next-step-fill.png");
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjQwMjYgMTAuMjE5NEw5LjI3MTEyIDEyLjM1MDlDOS4xNTU4NCAxMi40NjQ5IDkuMDk4MiAxMi42MDc1IDkuMDk4MiAxMi43Nzg2QzkuMDk4MiAxMi45NDk1IDkuMTU1ODQgMTMuMDk3IDkuMjcxMTIgMTMuMjIxMUM5LjM5NTE1IDEzLjM1MDIgOS41NDM2OSAxMy40MTM1IDkuNzE2NzQgMTMuNDEwOUM5Ljg4OTggMTMuNDA4MiAxMC4wMzgzIDEzLjM0NSAxMC4xNjIyIDEzLjIyMTFMMTIuNjM2NSAxMC43NDY3QzEyLjc4NzIgMTAuNTk2IDEyLjg2MjYgMTAuNDIwMiAxMi44NjI2IDEwLjIxOTRDMTIuODYyNiAxMC4wMTg2IDEyLjc4NzIgOS44NDI4IDEyLjYzNjUgOS42OTIxMUwxMC4xNDk1IDcuMjA1MDNDMTAuMDI1NCA3LjA4MTE0IDkuODc5MDQgNy4wMTk5NiA5LjcxMDI5IDcuMDIxNDhDOS41NDE1NCA3LjAyMzE1IDkuMzk1MTUgNy4wODg1NyA5LjI3MTEyIDcuMjE3NzNDOS4xNTU4NCA3LjM0MTc2IDkuMDk3MzcgNy40ODgxNSA5LjA5NTcgNy42NTY5QzkuMDk0MTcgNy44MjU2NSA5LjE1NTM2IDcuOTcyMDQgOS4yNzkyNCA4LjA5NjA3TDExLjQwMjYgMTAuMjE5NFpNMTAuNTQ1MSAxOC4xMzYxQzkuNDUwMDggMTguMTM2MSA4LjQyMDg0IDE3LjkyODMgNy40NTczNyAxNy41MTI3QzYuNDkzOSAxNy4wOTcyIDUuNjU1ODQgMTYuNTMzMiA0Ljk0MzIgMTUuODIwOUM0LjIzMDU2IDE1LjEwODUgMy42NjYzMyAxNC4yNzA4IDMuMjUwNDkgMTMuMzA3N0MyLjgzNDggMTIuMzQ0NyAyLjYyNjk1IDExLjMxNTcgMi42MjY5NSAxMC4yMjA5QzIuNjI2OTUgOS4xMjU4NiAyLjgzNDczIDguMDk2NjIgMy4yNTAyOSA3LjEzMzE1QzMuNjY1ODQgNi4xNjk2OCA0LjIyOTggNS4zMzE2MiA0Ljk0MjE2IDQuNjE4OThDNS42NTQ1MiAzLjkwNjM1IDYuNDkyMjMgMy4zNDIxMSA3LjQ1NTI5IDIuOTI2MjhDOC40MTgzNCAyLjUxMDU4IDkuNDQ3MyAyLjMwMjczIDEwLjU0MjIgMi4zMDI3M0MxMS42MzcyIDIuMzAyNzMgMTIuNjY2NCAyLjUxMDUxIDEzLjYyOTkgMi45MjYwN0MxNC41OTMzIDMuMzQxNjIgMTUuNDMxNCAzLjkwNTU4IDE2LjE0NCA0LjYxNzk0QzE2Ljg1NjcgNS4zMzAzIDE3LjQyMDkgNi4xNjgwMSAxNy44MzY3IDcuMTMxMDdDMTguMjUyNCA4LjA5NDEyIDE4LjQ2MDMgOS4xMjMwOCAxOC40NjAzIDEwLjIxNzlDMTguNDYwMyAxMS4zMTI5IDE4LjI1MjUgMTIuMzQyMiAxNy44MzcgMTMuMzA1N0MxNy40MjE0IDE0LjI2OTEgMTYuODU3NCAxNS4xMDcyIDE2LjE0NTEgMTUuODE5OEMxNS40MzI3IDE2LjUzMjUgMTQuNTk1IDE3LjA5NjcgMTMuNjMyIDE3LjUxMjVDMTIuNjY4OSAxNy45MjgyIDExLjYzOTkgMTguMTM2MSAxMC41NDUxIDE4LjEzNjFaIiBmaWxsPSIjRjk3MzE2Ii8+Cjwvc3ZnPgo=");
       }
 
       &.active {
@@ -531,7 +518,7 @@ New styles for new version of the page
     background-color: #D4D4D4;
     width: 524px;
     max-width: 100%;
-    margin: 24px auto 80px;
+    margin: 24px auto 113px;
 
     @media (max-width: 400px) {
       margin-bottom: 30px;
@@ -540,17 +527,13 @@ New styles for new version of the page
   }
 
   .sendsms-content {
-    max-width: 524px;
+    width: 400px;
+    max-width: 100%;
     position: relative;
     min-height: 40vh;
-    margin: auto auto 100px;
+    margin: auto auto 121px;
 
     .select2-container {
-      min-width: 350px;
-
-      &:not(.TB_ajaxContent) {
-        min-width: 285px;
-      }
 
       .select2-selection--single {
         height: 45px;
@@ -573,7 +556,20 @@ New styles for new version of the page
       }
 
       .select2-selection--multiple {
-        padding: 3px 2px;
+        padding: 12px;
+        border: 1px solid #525252 !important;
+        border-radius: 4px;
+        width: 100%;
+        margin: 0;
+        display: block;
+        color: #262626;
+        line-height: 17px;
+
+        &:focus {
+          box-shadow: none;
+          outline: none;
+          border: 1px solid #F97316 !important;
+        }
       }
 
       .select2-search--inline {
@@ -625,25 +621,35 @@ New styles for new version of the page
       }
     }
 
-    .content-field,
-    .mms-media-field,
-    .bulk-field,
-    .from-field,
-    .repeat-field,
-    .repeat-every-field,
-    .wpsms-users-field,
-    .wpsms-group-field,
-    .repeat-end-field,
-    .other-scheduled-field,
-    .flash-field,
-    .to-field,
-    .set-date-field,
-    .schedule-field {
-      margin: 30px 0;
+    .content-field, mms-media-field {
+      width: 400px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
 
-      @media (max-width: 400px) {
-        margin: 20px 0;
+    .mms-media-field__content {
+      margin-top: -8px;
+
+      p {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 24px;
+        color: #262626;
+        text-transform: capitalize;
+
+        a {
+          color: #262626;
+
+          &:hover {
+            color: #F97316
+          }
+        }
       }
+    }
+
+    .wpsms-sendsms__form-filed {
+      margin-top: 0;
+      margin-bottom: 24px;
     }
 
     .mms-media-field .wpsms-upload-button {
@@ -654,19 +660,24 @@ New styles for new version of the page
       margin-top: 40px;
 
       .radio-options {
-        display: block;
-        margin: 20px 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
 
-        input[type="radio"]:checked {
-          transform: translateY(1px);
+        &__fields {
+          display: flex;
+          align-items: center;
+          gap: 4px;
 
-          &::before {
-            transform: translateX(1px);
+          label {
+            margin-bottom: 0;
           }
 
-          @media (max-width: 400px) {
-            &::before {
-              transform: translateX(0);
+          input[type="radio"] {
+            min-width: 17px;
+
+            &:checked::before {
+              margin: 3.5px!important;
             }
           }
         }
@@ -683,12 +694,12 @@ New styles for new version of the page
 
       .repeat-forever {
         margin-left: 20px;
-        transform: translateY(7px);
+        transform: translateY(17px);
       }
 
       .rtl & {
         .repeat-forever {
-          margin-left: 0px;
+          margin-left: 0;
           margin-right: 20px;
         }
       }
@@ -698,33 +709,70 @@ New styles for new version of the page
       text-transform: uppercase;
       text-align: left;
       color: $dark-gray;
-      margin-bottom: 10px;
       font-weight: 600;
       font-size: 14px;
+      line-height: 17px;
+      display: inline-block;
+      margin-bottom: 16px;
+      width: 100%;
     }
 
-    textarea {
-      border: 1px solid $borders-color;
-      border-radius: 3px;
+    #wp_get_message_counter {
+      color: #525252;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: left;
+
+      .rtl & {
+        text-align: right;
+      }
+    }
+
+    textarea.wpsms-sendsms__field {
+      border: 0.5px solid #525252 !important;
+      border-radius: 4px !important;
+      padding: 12px !important;
+      margin: 0 auto 12px !important;
+      font-weight: 400 !important;
+      font-size: 14px !important;
+      line-height: 17px !important;
+      min-height: 196px;
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      max-width: none;
+      max-width: 100%;
+
+      &:focus {
+        box-shadow: none !important;
+        border: 1px solid #F97316 !important;
+        outline: none !important;
+      }
     }
 
     span.select2 {
       display: block;
-      max-width: none;
-      margin: 10px 0;
+      max-width: 100%;
+      margin: 0;
     }
 
-    input[type="text"] {
-      border: 1px solid $borders-color;
-      border-radius: 3px;
+    input[type="text"], select, input[type="number"] {
+      border: 1px solid #525252 !important;
+      border-radius: 4px;
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+      padding: 12px !important;
+      margin: 0;
       display: block;
+      color: #262626 !important;
+      line-height: 17px;
+
+      &::placeholder {
+        color: #A3A3A3 !important;
+      }
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+        border: 1px solid #F97316 !important;
+      }
 
       .rtl & {
         direction: ltr;
@@ -766,50 +814,44 @@ New styles for new version of the page
       margin: 10px 0;
     }
 
-    select {
-      border: 1px solid $borders-color;
-      border-radius: 3px;
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      display: block;
-      max-width: none;
-    }
-
     input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      background-color: $brand-orange;
-      border: none !important;
-      margin-right: 10px;
-      transform: translateY(2px);
+      width: 17px;
+      height: 17px;
+      min-width: 17px !important;
+      background-color: #ffffff;
+      box-shadow: none;
+      border: 1px solid #262626 !important;
+      margin: 3.5px !important;
+      box-sizing: border-box;
+      background-repeat: no-repeat;
+      background-position: center center;
 
-      &:checked {
-        background-color: $brand-orange;
-
-        &::before {
-          height: 20px !important;
-          width: 20px !important;
-          transform: translate(1px, 1px);
-
-          .rtl & {
-            transform: translate(-2px, 2px);
-          }
-        }
+      &:before {
+        display: none !important;
       }
 
-      .rtl & {
-        margin-right: 0px;
-        margin-left: 5px;
+      &:checked {
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcuNjQxOTkgMTAuOTY1N0w1LjMxODk5IDguNjQyNDhDNS4xODA0OSA4LjUwNDE1IDUuMDA2NDEgOC40MzMzMiA0Ljc5Njc0IDguNDI5OThDNC41ODcyNCA4LjQyNjgyIDQuNDA5OTkgOC40OTc2NSA0LjI2NDk5IDguNjQyNDhDNC4xMjAxNiA4Ljc4NzQ4IDQuMDQ3NzQgOC45NjMxNSA0LjA0Nzc0IDkuMTY5NDhDNC4wNDc3NCA5LjM3NTgyIDQuMTIwMTYgOS41NTE0OCA0LjI2NDk5IDkuNjk2NDhMNy4wMDkyNCAxMi40NDA3QzcuMTkwMDggMTIuNjIxNCA3LjQwMDk5IDEyLjcxMTcgNy42NDE5OSAxMi43MTE3QzcuODgyOTkgMTIuNzExNyA4LjA5MzkxIDEyLjYyMTQgOC4yNzQ3NCAxMi40NDA3TDEzLjgzODIgNi44NzcyM0MxMy45NzY2IDYuNzM4NzMgMTQuMDQ3NCA2LjU2NDY1IDE0LjA1MDcgNi4zNTQ5OEMxNC4wNTM5IDYuMTQ1NDggMTMuOTgzMSA1Ljk2ODIzIDEzLjgzODIgNS44MjMyM0MxMy42OTMyIDUuNjc4NCAxMy41MTc2IDUuNjA1OTggMTMuMzExMiA1LjYwNTk4QzEzLjEwNDkgNS42MDU5OCAxMi45MjkyIDUuNjc4NCAxMi43ODQyIDUuODIzMjNMNy42NDE5OSAxMC45NjU3Wk0yLjM0OTc0IDE3LjcxOTVDMS44NDQ1OCAxNy43MTk1IDEuNDE2OTkgMTcuNTQ0NSAxLjA2Njk5IDE3LjE5NDVDMC43MTY5OTIgMTYuODQ0NSAwLjU0MTk5MiAxNi40MTY5IDAuNTQxOTkyIDE1LjkxMTdWMi41MjcyM0MwLjU0MTk5MiAyLjAyMjA3IDAuNzE2OTkyIDEuNTk0NDggMS4wNjY5OSAxLjI0NDQ4QzEuNDE2OTkgMC44OTQ0ODIgMS44NDQ1OCAwLjcxOTQ4MiAyLjM0OTc0IDAuNzE5NDgySDE1LjczNDJDMTYuMjM5NCAwLjcxOTQ4MiAxNi42NjcgMC44OTQ0ODIgMTcuMDE3IDEuMjQ0NDhDMTcuMzY3IDEuNTk0NDggMTcuNTQyIDIuMDIyMDcgMTcuNTQyIDIuNTI3MjNWMTUuOTExN0MxNy41NDIgMTYuNDE2OSAxNy4zNjcgMTYuODQ0NSAxNy4wMTcgMTcuMTk0NUMxNi42NjcgMTcuNTQ0NSAxNi4yMzk0IDE3LjcxOTUgMTUuNzM0MiAxNy43MTk1SDIuMzQ5NzRaIiBmaWxsPSIjRjk3MzE2Ii8+Cjwvc3ZnPgo=");
+        border-color: #F97316 !important;
+      }
+    }
+
+    .repeat-field ,.repeat-forever{
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      label {
+        margin-bottom: 0;
       }
     }
 
     .field-description {
-      color: #545454;
-      font-size: 15px;
-      text-align: justify;
-      line-height: 1.8 !important;
-      margin-bottom: 10px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 15px;
+      color: #525252;
+      margin-top: 12px;
 
       a {
         color: #0b84b2;
@@ -865,6 +907,16 @@ New styles for new version of the page
         .pro .icon {
           margin-right: 0;
           margin-left: 3px;
+        }
+      }
+
+      .field {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        label {
+          margin: 0;
         }
       }
     }
@@ -983,95 +1035,75 @@ New styles for new version of the page
     .previous-button,
     .next-button {
       z-index: 1;
-      position: absolute;
-      bottom: -80px;
-      background-color: black;
+      background-color: #282828;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 16px;
       font-weight: 500;
       transition: 0.3s all ease-out;
-      padding: 10px 10px;
-      border-radius: 5px;
       cursor: pointer;
+      font-size: 14px;
+      gap: 8px;
+      border-radius: 4px;
+      padding: 4px 12px 6px;
+      line-height: 17px;
 
       &.inactive {
-        background-color: #f9f9f9;
-        color: #d9d9d9;
+        background-color: #E5E5E5 !important;
+        color: #A3A3A3;
         cursor: auto;
       }
 
+      &:hover {
+        background: #151515;
+      }
+
       span {
-        width: 20px;
-        height: 15px;
+        width: 12px;
+        height: 12px;
       }
     }
 
     .previous-button {
-      left: 0;
-
       span {
-        background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
-        margin-right: 8px;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMyAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIuMTAzOTcgNS4zMzY5OEgxMS40Mjc1QzExLjYwMjIgNS4zMzY5OCAxMS43NDg0IDUuMjc4MDMgMTEuODY2MSA1LjE2MDE0QzExLjk4NCA1LjA0MjM4IDEyLjA0MyA0Ljg5NjE3IDEyLjA0MyA0LjcyMTUxQzEyLjA0MyA0LjU0Njg2IDExLjk4NCA0LjQwMDY1IDExLjg2NjEgNC4yODI4OUMxMS43NDg0IDQuMTY0OTkgMTEuNjAyMiA0LjEwNjA0IDExLjQyNzUgNC4xMDYwNEgyLjEwMzk3TDQuODA1NjcgMS40MDQzNEM0LjkyNzY3IDEuMjgyMiA0Ljk4NzkyIDEuMTM5MzUgNC45ODY0MSAwLjk3NTc2OUM0Ljk4NDc3IDAuODEyMTkxIDQuOTI0NTIgMC42NjY3MzYgNC44MDU2NyAwLjUzOTQwMkM0LjY3ODM0IDAuNDEyMjA1IDQuNTMyMTMgMC4zNDY0ODYgNC4zNjcwNSAwLjM0MjI0NkM0LjIwMTgzIDAuMzM4MDA2IDQuMDU1NTUgMC4zOTk1NTMgMy45MjgyMiAwLjUyNjg4N0wwLjI1Mjg0NCA0LjIwMjI2QzAuMTc1OTc5IDQuMjc5MTMgMC4xMjE4MTggNC4zNjAxNiAwLjA5MDM1OTcgNC40NDUzN0MwLjA1ODc2NjQgNC41MzA1OCAwLjA0Mjk2ODggNC42MjI2MyAwLjA0Mjk2ODggNC43MjE1MUMwLjA0Mjk2ODggNC44MjA0IDAuMDU4NzY2NCA0LjkxMjQ0IDAuMDkwMzU5NyA0Ljk5NzY1QzAuMTIxODE4IDUuMDgyODYgMC4xNzU5NzkgNS4xNjM5IDAuMjUyODQ0IDUuMjQwNzZMMy45MjgyMiA4LjkxNjE0QzQuMDUwMzUgOS4wMzgxNCA0LjE5NTI2IDkuMDk4MzggNC4zNjI5NCA5LjA5Njg4QzQuNTMwNzYgOS4wOTUyNCA0LjY3ODM0IDkuMDMwODIgNC44MDU2NyA4LjkwMzYyQzQuOTI0NTIgOC43NzYyOSA0Ljk4NjA3IDguNjMyMTMgNC45OTAzMSA4LjQ3MTE1QzQuOTk0NTUgOC4zMTAxNyA0LjkzMyA4LjE2NjAyIDQuODA1NjcgOC4wMzg2OEwyLjEwMzk3IDUuMzM2OThaIiBmaWxsPSIjZmZmIi8+Cjwvc3ZnPgo=") no-repeat center center / contain;
       }
 
       &.inactive span {
-        background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAxMyAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE4NTg2XzE1MjkpIj4KPHBhdGggZD0iTTIuMTAzOTcgNy4zMzY5OEgxMS40Mjc1QzExLjYwMjIgNy4zMzY5OCAxMS43NDg0IDcuMjc4MDMgMTEuODY2MSA3LjE2MDE0QzExLjk4NCA3LjA0MjM4IDEyLjA0MyA2Ljg5NjE3IDEyLjA0MyA2LjcyMTUxQzEyLjA0MyA2LjU0Njg2IDExLjk4NCA2LjQwMDY1IDExLjg2NjEgNi4yODI4OUMxMS43NDg0IDYuMTY0OTkgMTEuNjAyMiA2LjEwNjA0IDExLjQyNzUgNi4xMDYwNEgyLjEwMzk3TDQuODA1NjcgMy40MDQzNEM0LjkyNzY3IDMuMjgyMiA0Ljk4NzkyIDMuMTM5MzUgNC45ODY0MSAyLjk3NTc3QzQuOTg0NzcgMi44MTIxOSA0LjkyNDUyIDIuNjY2NzQgNC44MDU2NyAyLjUzOTRDNC42NzgzNCAyLjQxMjIxIDQuNTMyMTMgMi4zNDY0OSA0LjM2NzA1IDIuMzQyMjVDNC4yMDE4MyAyLjMzODAxIDQuMDU1NTUgMi4zOTk1NSAzLjkyODIyIDIuNTI2ODlMMC4yNTI4NDQgNi4yMDIyNkMwLjE3NTk3OSA2LjI3OTEzIDAuMTIxODE4IDYuMzYwMTYgMC4wOTAzNTk3IDYuNDQ1MzdDMC4wNTg3NjY0IDYuNTMwNTggMC4wNDI5Njg4IDYuNjIyNjMgMC4wNDI5Njg4IDYuNzIxNTFDMC4wNDI5Njg4IDYuODIwNCAwLjA1ODc2NjQgNi45MTI0NCAwLjA5MDM1OTcgNi45OTc2NUMwLjEyMTgxOCA3LjA4Mjg2IDAuMTc1OTc5IDcuMTYzOSAwLjI1Mjg0NCA3LjI0MDc2TDMuOTI4MjIgMTAuOTE2MUM0LjA1MDM1IDExLjAzODEgNC4xOTUyNiAxMS4wOTg0IDQuMzYyOTQgMTEuMDk2OUM0LjUzMDc2IDExLjA5NTIgNC42NzgzNCAxMS4wMzA4IDQuODA1NjcgMTAuOTAzNkM0LjkyNDUyIDEwLjc3NjMgNC45ODYwNyAxMC42MzIxIDQuOTkwMzEgMTAuNDcxMkM0Ljk5NDU1IDEwLjMxMDIgNC45MzMgMTAuMTY2IDQuODA1NjcgMTAuMDM4N0wyLjEwMzk3IDcuMzM2OThaIiBmaWxsPSIjQTNBM0EzIi8+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMTg1ODZfMTUyOSI+CjxyZWN0IHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMDQyOTY4OCAwLjcxOTQ4MikiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K") no-repeat center center / contain;
       }
     }
 
     .next-button {
-      right: 0;
-
       span {
-        background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
-        margin-left: 8px;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAxMyAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE4NTg2XzEwNzIpIj4KPHBhdGggZD0iTTkuOTgxOTcgNy4zMzY5OEgwLjY1ODQzOEMwLjQ4Mzc4MSA3LjMzNjk4IDAuMzM3NTczIDcuMjc4MDMgMC4yMTk4MTMgNy4xNjAxNEMwLjEwMTkxNyA3LjA0MjM4IDAuMDQyOTY4OCA2Ljg5NjE3IDAuMDQyOTY4OCA2LjcyMTUxQzAuMDQyOTY4OCA2LjU0Njg2IDAuMTAxOTE3IDYuNDAwNjUgMC4yMTk4MTMgNi4yODI4OUMwLjMzNzU3MyA2LjE2NDk5IDAuNDgzNzgxIDYuMTA2MDQgMC42NTg0MzggNi4xMDYwNEg5Ljk4MTk3TDcuMjgwMjcgMy40MDQzNEM3LjE1ODI3IDMuMjgyMiA3LjA5ODAyIDMuMTM5MzUgNy4wOTk1MiAyLjk3NTc3QzcuMTAxMTcgMi44MTIxOSA3LjE2MTQxIDIuNjY2NzQgNy4yODAyNyAyLjUzOTRDNy40MDc2IDIuNDEyMjEgNy41NTM4MSAyLjM0NjQ5IDcuNzE4ODkgMi4zNDIyNUM3Ljg4NDExIDIuMzM4MDEgOC4wMzAzOSAyLjM5OTU1IDguMTU3NzIgMi41MjY4OUwxMS44MzMxIDYuMjAyMjZDMTEuOTEgNi4yNzkxMyAxMS45NjQxIDYuMzYwMTYgMTEuOTk1NiA2LjQ0NTM3QzEyLjAyNzIgNi41MzA1OCAxMi4wNDMgNi42MjI2MyAxMi4wNDMgNi43MjE1MUMxMi4wNDMgNi44MjA0IDEyLjAyNzIgNi45MTI0NCAxMS45OTU2IDYuOTk3NjVDMTEuOTY0MSA3LjA4Mjg2IDExLjkxIDcuMTYzOSAxMS44MzMxIDcuMjQwNzZMOC4xNTc3MiAxMC45MTYxQzguMDM1NTggMTEuMDM4MSA3Ljg5MDY3IDExLjA5ODQgNy43MjI5OSAxMS4wOTY5QzcuNTU1MTggMTEuMDk1MiA3LjQwNzYgMTEuMDMwOCA3LjI4MDI3IDEwLjkwMzZDNy4xNjE0MSAxMC43NzYzIDcuMDk5ODcgMTAuNjMyMSA3LjA5NTYzIDEwLjQ3MTJDNy4wOTEzOSAxMC4zMTAyIDcuMTUyOTMgMTAuMTY2IDcuMjgwMjcgMTAuMDM4N0w5Ljk4MTk3IDcuMzM2OThaIiBmaWxsPSJ3aGl0ZSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE4NTg2XzEwNzIiPgo8cmVjdCB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IndoaXRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjA0Mjk2ODggMC43MTk0ODIpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==") no-repeat center center / contain;
       }
 
       &.inactive span {
-        background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+        background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAxMyAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE4NTg2XzEwNzIpIj4KPHBhdGggZD0iTTkuOTgxOTcgNy4zMzY5OEgwLjY1ODQzOEMwLjQ4Mzc4MSA3LjMzNjk4IDAuMzM3NTczIDcuMjc4MDMgMC4yMTk4MTMgNy4xNjAxNEMwLjEwMTkxNyA3LjA0MjM4IDAuMDQyOTY4OCA2Ljg5NjE3IDAuMDQyOTY4OCA2LjcyMTUxQzAuMDQyOTY4OCA2LjU0Njg2IDAuMTAxOTE3IDYuNDAwNjUgMC4yMTk4MTMgNi4yODI4OUMwLjMzNzU3MyA2LjE2NDk5IDAuNDgzNzgxIDYuMTA2MDQgMC42NTg0MzggNi4xMDYwNEg5Ljk4MTk3TDcuMjgwMjcgMy40MDQzNEM3LjE1ODI3IDMuMjgyMiA3LjA5ODAyIDMuMTM5MzUgNy4wOTk1MiAyLjk3NTc3QzcuMTAxMTcgMi44MTIxOSA3LjE2MTQxIDIuNjY2NzQgNy4yODAyNyAyLjUzOTRDNy40MDc2IDIuNDEyMjEgNy41NTM4MSAyLjM0NjQ5IDcuNzE4ODkgMi4zNDIyNUM3Ljg4NDExIDIuMzM4MDEgOC4wMzAzOSAyLjM5OTU1IDguMTU3NzIgMi41MjY4OUwxMS44MzMxIDYuMjAyMjZDMTEuOTEgNi4yNzkxMyAxMS45NjQxIDYuMzYwMTYgMTEuOTk1NiA2LjQ0NTM3QzEyLjAyNzIgNi41MzA1OCAxMi4wNDMgNi42MjI2MyAxMi4wNDMgNi43MjE1MUMxMi4wNDMgNi44MjA0IDEyLjAyNzIgNi45MTI0NCAxMS45OTU2IDYuOTk3NjVDMTEuOTY0MSA3LjA4Mjg2IDExLjkxIDcuMTYzOSAxMS44MzMxIDcuMjQwNzZMOC4xNTc3MiAxMC45MTYxQzguMDM1NTggMTEuMDM4MSA3Ljg5MDY3IDExLjA5ODQgNy43MjI5OSAxMS4wOTY5QzcuNTU1MTggMTEuMDk1MiA3LjQwNzYgMTEuMDMwOCA3LjI4MDI3IDEwLjkwMzZDNy4xNjE0MSAxMC43NzYzIDcuMDk5ODcgMTAuNjMyMSA3LjA5NTYzIDEwLjQ3MTJDNy4wOTEzOSAxMC4zMTAyIDcuMTUyOTMgMTAuMTY2IDcuMjgwMjcgMTAuMDM4N0w5Ljk4MTk3IDcuMzM2OThaIiBmaWxsPSIjQTNBM0EzIi8+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMTg1ODZfMTA3MiI+CjxyZWN0IHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMDQyOTY4OCAwLjcxOTQ4MikiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K") no-repeat center center / contain;
       }
     }
 
     .rtl & {
-      .previous-button {
+      .previous-button, .next-button {
         span {
-          background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
-          margin-right: 0;
-          margin-left: 8px;
-        }
-
-        &.inactive span {
-          background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
-        }
-      }
-
-      .next-button {
-        span {
-          background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
-          margin-left: 0px;
-          margin-right: 8px;
-        }
-
-        &.inactive span {
-          background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+          transform: rotate(180deg);
         }
       }
     }
+  }
 
-    @media (max-width: 400px) {
-      padding: 10px 10px;
-
-      .previous-button {
-        left: 10px;
-      }
-
-      .next-button {
-        right: 10px;
-      }
-    }
+  &__action {
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    bottom: -121px;
+    max-width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   @media (max-width: 400px) {

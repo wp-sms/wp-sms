@@ -33,13 +33,13 @@
             <form method="post" action="">
                 <?php wp_nonce_field('update-options'); ?>
 
-                <div class="from-field">
+                <div class="from-field wpsms-sendsms__form-filed">
                     <label for="wp_get_sender"><?php esc_html_e('From', 'wp-sms'); ?></label>
                     <input type="text" name="wp_get_sender" id="wp_get_sender" value="<?php echo esc_html($smsObject->from); ?>" maxlength="18"/>
                 </div>
 
 
-                <div class="to-field">
+                <div class="to-field wpsms-sendsms__form-filed">
                     <label for="select_sender"><?php esc_html_e('To', 'wp-sms'); ?></label>
 
                     <select name="wp_send_to" id="select_sender">
@@ -68,7 +68,7 @@
                 </div>
 
 
-                <div class="wpsms-value wpsms-group wpsms-group-field">
+                <div class="wpsms-value wpsms-group wpsms-group-field wpsms-sendsms__form-filed">
                     <label><?php esc_html_e('Select Group', 'wp-sms'); ?></label>
                     <?php if (count($get_group_result)) : ?>
                         <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
@@ -157,12 +157,12 @@
 
                 <div class="content-field">
                     <label for="wp_get_message"><?php esc_html_e('Message', 'wp-sms'); ?></label>
-                    <textarea rows="5" name="wp_get_message wpsms-input" id="wp_get_message" placeholder="<?php esc_html_e('Write your SMS message here ...', 'wp-sms'); ?>"></textarea>
+                    <textarea rows="5" name="wp_get_message wpsms-input" class="wpsms-sendsms__field" id="wp_get_message" placeholder="<?php esc_html_e('Write your SMS message here ...', 'wp-sms'); ?>"></textarea>
                 </div>
 
-                <div class="mms-media-field">
+                <div class="mms-media-field wpsms-sendsms__form-filed">
                     <label><?php esc_html_e('Choice MMS media', 'wp-sms'); ?></label>
-                    <div>
+                    <div class="mms-media-field__content">
                         <?php if ($smsObject->supportMedia) : ?>
                             <div><a href="#" class="wpsms-upload-button button">Upload image</a>
                             </div>
@@ -181,26 +181,26 @@
                     </div>
                 </div>
 
-                <div class="schedule-field pro-field">
+                <div class="schedule-field pro-field wpsms-sendsms__form-filed">
                     <div class="field">
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro'); ?>" style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span>Go PRO</a>
+                    <a  style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
                 </div>
 
-                <div class="set-date-field">
+                <div class="set-date-field wpsms-sendsms__form-filed">
                     <label for="datepicker"><?php esc_html_e('Set date', 'wp-sms'); ?></label>
                     <input type="text" id="datepicker" readonly="readonly" name="wpsms_scheduled"/>
                     <p class="field-description"><?php echo esc_html__("Site's time zone", 'wp-sms') . ': ' . esc_html(wp_timezone_string()); ?></p>
                 </div>
 
-                <div class="repeat-field">
+                <div class="repeat-field wpsms-sendsms__form-filed">
                     <input type="checkbox" id="wpsms_repeat_status" name="repeat_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                     <label for="wpsms_repeat_status"><?php esc_html_e('Repeat?', 'wp-sms'); ?></label>
                 </div>
 
-                <div class="repeat-every-field">
+                <div class="repeat-every-field wpsms-sendsms__form-filed">
                     <label for="repeat-interval"><?php esc_html_e('Repeat every', 'wp-sms'); ?></label>
                     <div>
                         <input type="number" name="wpsms_repeat-interval" id="repeat-interval" min=1 value=1>
@@ -213,7 +213,7 @@
                     </div>
                 </div>
 
-                <div class="repeat-end-field">
+                <div class="repeat-end-field wpsms-sendsms__form-filed">
                     <div class="date-picker">
                         <label for="repeat_ends_on"><?php esc_html_e('End on', 'wp-sms'); ?></label>
                         <input type="text" id="repeat_ends_on" readonly="readonly" name="wpsms_repeat_ends_on">
@@ -229,11 +229,14 @@
                         <label><?php esc_html_e('Send as a Flash', 'wp-sms'); ?></label>
 
                         <div class="radio-options">
-                            <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
-                            <label for="flash_yes"><?php esc_html_e('Yes', 'wp-sms'); ?></label>
-
-                            <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
-                            <label for="flash_no"><?php esc_html_e('No', 'wp-sms'); ?></label>
+                            <div class="radio-options__fields">
+                                <input type="radio" id="flash_yes" name="wp_flash" value="true"/>
+                                <label for="flash_yes"><?php esc_html_e('Yes', 'wp-sms'); ?></label>
+                            </div>
+                            <div class="radio-options__fields">
+                                <input type="radio" id="flash_no" name="wp_flash" value="false" checked="checked"/>
+                                <label for="flash_no"><?php esc_html_e('No', 'wp-sms'); ?></label>
+                            </div>
                         </div>
 
                         <p class="field-description">
@@ -269,9 +272,10 @@
                 <a class="sendsms-again-button" id="SendSMSAgain"><?php esc_html_e('Send Again', 'wp-sms'); ?></a>
                 <button type="submit" class="sendsms-button" name="SendSMS"><?php esc_html_e('Send SMS', 'wp-sms'); ?></button>
             </form>
-
-            <div class="previous-button"><span></span><?php esc_html_e('Prev', 'wp-sms') ?></div>
-            <div class="next-button"><?php esc_html_e('Next', 'wp-sms') ?><span></span></div>
+            <div class="wpsms-sendsms__action">
+                <div class="previous-button"><span></span><?php esc_html_e('Prev', 'wp-sms') ?></div>
+                <div class="next-button"><?php esc_html_e('Next', 'wp-sms') ?><span></span></div>
+            </div>
         </div>
     </div>
 </div>
