@@ -1262,9 +1262,6 @@ body.wps_page.toplevel_page_wps_overview_page #screen-meta-links {
   }
 }
 
-.wpsms-wrap textarea:not(#feedback-bird-app textarea) {
-  max-width: calc(100% - 45px);
-}
 
 .wpsms-wrap input[type="checkbox"]:focus {
   box-shadow: none !important;
