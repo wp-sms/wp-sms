@@ -1,3 +1,6 @@
+v6.9.x - 2025-xx-xx
+- **Fix**: Fix type in send-sms.php
+
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
