@@ -1,6 +1,13 @@
 ﻿jQuery(document).ready(function () {
     wpsmsRepeatingMessages.init();
 
+    jQuery('.wpsms-sendsms select').each(function () {
+        jQuery(this).select2({
+            minimumResultsForSearch: Infinity,
+            dropdownCssClass: 'wpsms-sendsms-select2-dropdown'
+        });
+    });
+
     jQuery("#wp_get_message").counter({
         count: 'up',
         goal: 'sky',
