@@ -106,6 +106,7 @@
 
     const WpSmsSelect2Options = {
         placeholder: "Please select",
+        dropdownCssClass: 'wpsms-select2-dropdown',
     };
 
     if (WpSmsExportForm.length) {

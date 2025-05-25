@@ -4,9 +4,23 @@
     jQuery('.wpsms-sendsms select').each(function () {
         jQuery(this).select2({
             minimumResultsForSearch: Infinity,
-            dropdownCssClass: 'wpsms-sendsms-select2-dropdown'
+            dropdownCssClass: 'wpsms-sendsms-select2-dropdown',
+            templateResult: formatOptions,
+            templateSelection: formatOptions
         });
+
+
     });
+    function formatOptions(data) {
+        if (!data.element) {
+            return data.text;
+        }
+        var formattedOption = data.text;
+        if (jQuery(data.element).data('target')) {
+            formattedOption = jQuery(`<span class='js-wp-sms-openPremiumModal' data-target='${jQuery(data.element).data('target')}'>${data.text}</span>`);
+        }
+        return formattedOption;
+    }
 
     jQuery("#wp_get_message").counter({
         count: 'up',
@@ -496,6 +510,7 @@
                 escapeMarkup: function (markup) {
                     return markup;
                 },
+                dropdownCssClass: 'wpsms-sendsms-select2-dropdown'
             });
         },
 

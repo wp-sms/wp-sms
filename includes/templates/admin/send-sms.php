@@ -49,17 +49,11 @@
                         </option>
                         <option value="users" id="wp_users"><?php esc_html_e('WordPress\'s Users', 'wp-sms'); ?>
                         </option>
-                        <option value="wc-customers" id="wc_users" <?php disabled(!$proIsActive); ?>>
-                            <?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?>
-                            <?php if (!$proIsActive) : ?>
-                                <span>(<?php esc_html_e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
-                            <?php endif; ?>
+                        <option value="wc-customers" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openPremiumModal' ;}?>" data-target="" id="wc_users" <?php disabled(!$proIsActive); ?>>
+                            <span data-target="wp-sms-pro" class="js-wp-sms-openPremiumModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
                         </option>
-                        <option value="bp-users" id="bp_users" <?php disabled(!$proIsActive); ?>>
+                        <option value="bp-users" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openPremiumModal' ;}?>" id="bp_users" <?php disabled(!$proIsActive); ?>>
                             <?php esc_html_e('BuddyPress\'s Users', 'wp-sms'); ?>
-                            <?php if (!$proIsActive) : ?>
-                                <span>(<?php esc_html_e('Requires Pro Pack!', 'wp-sms'); ?>)</span>
-                            <?php endif; ?>
                         </option>
                         <?php do_action('wp_sms_form_send_to_select_option', $smsObject, $proIsActive); ?>
                         <option value="numbers" id="wp_tellephone"><?php esc_html_e('Number(s)', 'wp-sms'); ?>
