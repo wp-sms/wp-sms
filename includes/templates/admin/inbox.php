@@ -24,13 +24,13 @@
                     <li>
                         <?php echo sprintf('<a target="_blank" href="%s">%s</a> %s',
                             esc_url(WP_SMS_SITE . '/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'),
-                            esc_html__('Unlock the All-in-One Suite', 'wp-sms'),
+                            esc_html__('Unlock the All-in-One', 'wp-sms'),
                             esc_html__('— every premium add-on, Two-Way included', 'wp-sms')) ?>
                     </li>
                     <li>
                         <?php echo sprintf('%s <a target="_blank" href="%s">%s</a>',
                             esc_html__('Just need conversations?', 'wp-sms'),
-                            esc_url(WP_SMS_SITE . '/two-way-addon/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'),
+                            esc_url(WP_SMS_SITE . '/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=modal-twoway'),
                             esc_html__('Get the Two-Way add-on', 'wp-sms')) ?>
                     </li>
                 </ul>
