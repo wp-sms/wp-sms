@@ -72,13 +72,23 @@ class NoticeManager extends AbstractNotice
             $notices = [];
         }
 
-        foreach ($this->notices as $id => $notice) {
-            $dismissed = array_key_exists($id, $notices);
-            $link      = $this->generateNoticeLink($id, $notice['url'], $nonce);
+        $current_url = basename($_SERVER['REQUEST_URI']);
 
-            if (!$notice['url'] or (basename($_SERVER['REQUEST_URI']) == $notice['url'] && !$dismissed)) {
-                Helper::notice($notice['message'], 'warning', $notice['dismiss'], $link);
+        foreach ($this->notices as $id => $notice) {
+            $dismissed = isset($notices[$id]) && $notices[$id] === true;
+
+            if ($dismissed) {
+                continue;
             }
+
+            if (!empty($notice['url']) && $notice['url'] !== $current_url) {
+                continue;
+            }
+
+            $link = $this->generateNoticeLink($id, $notice['url'], $nonce);
+
+            // Display the notice
+            Helper::notice($notice['message'], 'warning', $notice['dismiss'], $link);
         }
     }
 
