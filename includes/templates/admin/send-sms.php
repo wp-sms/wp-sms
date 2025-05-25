@@ -68,7 +68,7 @@
                 </div>
 
 
-                <div class="wpsms-value wpsms-group wpsms-group-field wpsms-sendsms__form-filed">
+                <div class="wpsms-value wpsms-group wpsms-group-field">
                     <label><?php esc_html_e('Select Group', 'wp-sms'); ?></label>
                     <?php if (count($get_group_result)) : ?>
                         <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
@@ -135,12 +135,12 @@
                 <div class="wpsms-value wpsms-numbers wpsms-numbers-field">
                     <label for="wp_get_number"><?php esc_html_e('Write Numbers', 'wp-sms'); ?></label>
                     <div class="clearfix"></div>
-                    <textarea cols="80" rows="5" style="direction:ltr;margin-top: 10px;" id="wp_get_number" name="wp_get_number"></textarea>
+                    <textarea cols="80" rows="5" class="wpsms-sendsms__field" id="wp_get_number" name="wp_get_number"></textarea>
                     <div class="clearfix"></div>
-                    <div style="font-size: 14px"><?php esc_html_e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?>
+                    <div class="send-sms__description"><?php esc_html_e('Separate the numbers with comma (,) or enter in each lines.', 'wp-sms'); ?>
                     </div>
                     <?php if ($smsObject->validateNumber) : ?>
-                        <div style="margin-top: 10px">
+                        <div class="send-sms__description">
                             <?php 
                                 // translators: %s: Gateway description
                                 echo sprintf(esc_html__('Gateway description: %s', 'wp-sms'), '<code>' . wp_kses_post($smsObject->validateNumber) . '</code>'); 
@@ -186,7 +186,7 @@
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a  style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" class="pro not-pro"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
+                    <a style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" data-target="first-step" class="pro not-pro js-wp-sms-openPremiumModal"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
                 </div>
 
                 <div class="set-date-field wpsms-sendsms__form-filed">
@@ -252,11 +252,11 @@
                         <p></p>
                     </div>
 
-                    <div>
+                    <div class="wpsms-sendsms__form-filed">
                         <h4><?php esc_html_e('From', 'wp-sms') ?></h4>
                         <p class="preview__message__number"></p>
                     </div>
-                    <div>
+                    <div class="wpsms-sendsms__form-filed">
                         <h4><?php esc_html_e('Content', 'wp-sms') ?></h4>
                         <p class="preview__message__message">
                             <span class="icon"></span>

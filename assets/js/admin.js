@@ -1507,8 +1507,9 @@ jQuery(document).ready(function ($) {
     return null;
   }
   var WpSmsSelect2Options = {
-    placeholder: "Please select"
+    placeholder: "Please select",
   };
+
   if (WpSmsExportForm.length) {
     WpSmsSelect2Options.dropdownParent = WpSmsSelect2.parent();
   }
