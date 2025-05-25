@@ -304,10 +304,13 @@ class AnonymizedUsageDataProvider
     public static function getSettings()
     {
         $settings = [
+            // Basic Information
             'version'                               => [
                 'label' => esc_html__('Version', 'wp-sms'),
                 'value' => WP_SMS_VERSION,
             ],
+
+            // Mobile Field Settings
             'adminMobileNumber'                     => [
                 'label' => esc_html__('Admin Mobile Number', 'wp-sms'),
                 'value' => OptionUtil::get('admin_mobile_number'),
@@ -318,19 +321,80 @@ class AnonymizedUsageDataProvider
                 'value' => OptionUtil::get('add_mobile_field'),
                 'debug' => OptionUtil::get('add_mobile_field'),
             ],
+            'mobileFieldMandatoryStatus'            => [
+                'label' => esc_html__('Mobile Field Mandatory Status', 'wp-sms'),
+                'value' => OptionUtil::get('optional_mobile_field') === '0' ? 'Required' : 'Optional',
+                'debug' => OptionUtil::get('optional_mobile_field'),
+            ],
+
+            // GDPR Settings
+            'gdprCompliance'                        => [
+                'label' => esc_html__('GDPR Compliance Enhancements', 'wp-sms'),
+                'value' => OptionUtil::get('gdpr_compliance') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('gdpr_compliance'),
+            ],
+            'gdprCheckboxDefault'                   => [
+                'label' => esc_html__('GDPR Checkbox Default', 'wp-sms'),
+                'value' => ucfirst(OptionUtil::get('newsletter_form_gdpr_confirm_checkbox')),
+                'debug' => OptionUtil::get('newsletter_form_gdpr_confirm_checkbox'),
+            ],
+
+            // Display Settings
+            'accountCreditInMenu'                   => [
+                'label' => esc_html__('Admin Menu Display', 'wp-sms'),
+                'value' => OptionUtil::get('account_credit_in_menu') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('account_credit_in_menu'),
+            ],
+            'accountCreditInSendsms'                => [
+                'label' => esc_html__('SMS Page Display', 'wp-sms'),
+                'value' => OptionUtil::get('account_credit_in_sendsms') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('account_credit_in_sendsms'),
+            ],
+            'disableDefaultFormStyling'             => [
+                'label' => esc_html__('Disable Default Form Styling', 'wp-sms'),
+                'value' => OptionUtil::get('disable_style_in_front') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('disable_style_in_front'),
+            ],
+
+            // SMS Gateway Settings
+            'gatewayName'                           => [
+                'label' => esc_html__('Gateway Name', 'wp-sms'),
+                'value' => OptionUtil::get('gateway_name'),
+                'debug' => OptionUtil::get('gateway_name'),
+            ],
+            'smsDeliveryMethod'                     => [
+                'label' => esc_html__('Delivery Method', 'wp-sms'),
+                'value' => OptionUtil::get('sms_delivery_method'),
+                'debug' => OptionUtil::get('sms_delivery_method'),
+            ],
+            'unicodeMessaging'                      => [
+                'label' => esc_html__('Unicode Messaging', 'wp-sms'),
+                'value' => OptionUtil::get('send_unicode') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('send_unicode'),
+            ],
+            'numberFormatting'                      => [
+                'label' => esc_html__('Number Formatting', 'wp-sms'),
+                'value' => OptionUtil::get('clean_numbers') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('clean_numbers'),
+            ],
+            'restrictToLocalNumbers'                => [
+                'label' => esc_html__('Restrict to Local Numbers', 'wp-sms'),
+                'value' => OptionUtil::get('send_only_local_numbers') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('send_only_local_numbers'),
+            ],
             'internationalMobile'                   => [
                 'label' => esc_html__('International Mobile', 'wp-sms'),
-                'value' => OptionUtil::get('international_mobile'),
+                'value' => OptionUtil::get('international_mobile') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('international_mobile'),
             ],
             'internationalMobileOnlyCountries'      => [
                 'label' => esc_html__('International Mobile Only Countries', 'wp-sms'),
-                'value' => OptionUtil::get('international_mobile_only_countries'),
+                'value' => implode(', ', (array)OptionUtil::get('international_mobile_only_countries')),
                 'debug' => OptionUtil::get('international_mobile_only_countries'),
             ],
             'internationalMobilePreferredCountries' => [
                 'label' => esc_html__('International Mobile Preferred Countries', 'wp-sms'),
-                'value' => OptionUtil::get('international_mobile_preferred_countries'),
+                'value' => implode(', ', (array)OptionUtil::get('international_mobile_preferred_countries')),
                 'debug' => OptionUtil::get('international_mobile_preferred_countries'),
             ],
             'mobileCountyCode'                      => [
@@ -338,15 +402,124 @@ class AnonymizedUsageDataProvider
                 'value' => OptionUtil::get('mobile_county_code'),
                 'debug' => OptionUtil::get('mobile_county_code'),
             ],
-            'gatewayName'                           => [
-                'label' => esc_html__('Gateway Name', 'wp-sms'),
-                'value' => OptionUtil::get('gateway_name'),
-                'debug' => OptionUtil::get('gateway_name'),
+
+            // Newsletter Settings
+            'groupVisibilityInForm'                 => [
+                'label' => esc_html__('Group Visibility in Form', 'wp-sms'),
+                'value' => OptionUtil::get('newsletter_form_groups') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('newsletter_form_groups'),
             ],
-            'smsDeliveryMethod'                     => [
-                'label' => esc_html__('SMS Delivery Method', 'wp-sms'),
-                'value' => OptionUtil::get('sms_delivery_method'),
-                'debug' => OptionUtil::get('sms_delivery_method'),
+            'subscriptionConfirmation'              => [
+                'label' => esc_html__('Subscription Confirmation', 'wp-sms'),
+                'value' => OptionUtil::get('newsletter_form_verify') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('newsletter_form_verify'),
+            ],
+            'welcomeSmsStatus'                      => [
+                'label' => esc_html__('Welcome SMS Status', 'wp-sms'),
+                'value' => OptionUtil::get('newsletter_form_welcome') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('newsletter_form_welcome'),
+            ],
+
+            // Notification Settings
+            'newPostAlertsStatus'                   => [
+                'label' => esc_html__('New Post Alerts Status', 'wp-sms'),
+                'value' => OptionUtil::get('notif_publish_new_post') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('notif_publish_new_post'),
+            ],
+            'notificationRecipients'                => [
+                'label' => esc_html__('Notification Recipients', 'wp-sms'),
+                'value' => ucfirst(OptionUtil::get('notif_publish_new_post_receiver')),
+                'debug' => OptionUtil::get('notif_publish_new_post_receiver'),
+            ],
+            'forceSend'                             => [
+                'label' => esc_html__('Force Send', 'wp-sms'),
+                'value' => OptionUtil::get('notif_publish_new_post_force') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('notif_publish_new_post_force'),
+            ],
+            'sendMms'                               => [
+                'label' => esc_html__('Send MMS', 'wp-sms'),
+                'value' => OptionUtil::get('notif_publish_new_send_mms') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('notif_publish_new_send_mms'),
+            ],
+            'postContentWordsLimit'                 => [
+                'label' => esc_html__('Post Content Words Limit', 'wp-sms'),
+                'value' => OptionUtil::get('notif_publish_new_post_words_count'),
+                'debug' => OptionUtil::get('notif_publish_new_post_words_count'),
+            ],
+            'postAuthorNotificationStatus'          => [
+                'label' => esc_html__('Post Author Notification Status', 'wp-sms'),
+                'value' => OptionUtil::get('notif_publish_new_post_author') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('notif_publish_new_post_author'),
+            ],
+            'postAuthorNotificationTitle'           => [
+                'label' => esc_html__('Post Author Notification Title', 'wp-sms'),
+                'value' => OptionUtil::get('notif_publish_new_post_author_title'),
+                'debug' => OptionUtil::get('notif_publish_new_post_author_title'),
+            ],
+
+            // Message Button Settings
+            'messageButtonStatus'                   => [
+                'label' => esc_html__('Message Button Status', 'wp-sms'),
+                'value' => OptionUtil::get('chatbox_message_button') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('chatbox_message_button'),
+            ],
+            'buttonPosition'                        => [
+                'label' => esc_html__('Button Position', 'wp-sms'),
+                'value' => ucwords(str_replace('_', ' ', OptionUtil::get('chatbox_button_position'))),
+                'debug' => OptionUtil::get('chatbox_button_position'),
+            ],
+            'disableWpSmsLogo'                      => [
+                'label' => esc_html__('Disable WP SMS Logo', 'wp-sms'),
+                'value' => OptionUtil::get('chatbox_disable_logo') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('chatbox_disable_logo'),
+            ],
+            'resourceLinksStatus'                   => [
+                'label' => esc_html__('Resource Links Status', 'wp-sms'),
+                'value' => OptionUtil::get('chatbox_links_enabled') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('chatbox_links_enabled'),
+            ],
+
+            // Reporting Settings
+            'reportWpsmsStatistics'                 => [
+                'label' => esc_html__('SMS Performance Reports', 'wp-sms'),
+                'value' => OptionUtil::get('report_wpsms_statistics') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('report_wpsms_statistics'),
+            ],
+            'notifyErrorsToAdminEmail'              => [
+                'label' => esc_html__('SMS Transmission Error Alerts', 'wp-sms'),
+                'value' => OptionUtil::get('notify_errors_to_admin_email') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('notify_errors_to_admin_email'),
+            ],
+
+            // URL Shortener
+            'shortUrlStatus'                        => [
+                'label' => esc_html__('Shorten URLs', 'wp-sms'),
+                'value' => OptionUtil::get('short_url_status') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('short_url_status'),
+            ],
+
+            // Webhooks
+            'outgoingSmsWebhook'                    => [
+                'label' => esc_html__('Outgoing SMS Webhook', 'wp-sms'),
+                'value' => !empty(OptionUtil::get('new_sms_webhook')) ? 'Configured' : 'Not configured',
+                'debug' => OptionUtil::get('new_sms_webhook'),
+            ],
+            'subscriberRegistrationWebhook'         => [
+                'label' => esc_html__('Subscriber Registration Webhook', 'wp-sms'),
+                'value' => !empty(OptionUtil::get('new_subscriber_webhook')) ? 'Configured' : 'Not configured',
+                'debug' => OptionUtil::get('new_subscriber_webhook'),
+            ],
+            'incomingSmsWebhook'                    => [
+                'label' => esc_html__('Incoming SMS Webhook', 'wp-sms'),
+                'value' => !empty(OptionUtil::get('new_incoming_sms_webhook')) ? 'Configured' : 'Not configured',
+                'debug' => OptionUtil::get('new_incoming_sms_webhook'),
+            ],
+
+            // reCAPTCHA
+            'recaptchaStatus'                       => [
+                'label' => esc_html__('Google reCAPTCHA Status', 'wp-sms'),
+                'value' => OptionUtil::get('g_recaptcha_status') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('g_recaptcha_status'),
             ],
         ];
 
