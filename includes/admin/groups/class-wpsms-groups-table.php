@@ -143,7 +143,13 @@ class Subscribers_Groups_List_Table extends \WP_List_Table
         //Detect when a bulk action is being triggered...
         // Search action
         if (isset($_GET['s'])) {
-            $prepare     = $this->db->prepare("SELECT * from `{$this->tb_prefix}sms_subscribes_group` WHERE name LIKE %s", '%' . $this->db->esc_like($_GET['s']) . '%');
+            $search = sanitize_text_field($_GET['s']);
+            $like   = '%' . $this->db->esc_like($search) . '%';
+
+            $prepare = $this->db->prepare(
+                "SELECT * FROM `{$this->tb_prefix}sms_subscribes_group` WHERE name LIKE %s",
+                $like
+            );
             $this->data  = $this->get_data($prepare);
             $this->count = $this->get_total($prepare);
         }
