@@ -25,7 +25,6 @@ if (!defined('ABSPATH')) {
 
 class WP_SMS
 {
-    const MIN_PHP_VERSION = '7.4';
     /**
      * Plugin instance.
      *
@@ -62,9 +61,6 @@ class WP_SMS
 
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'activate'));
         register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'deactivate'));
-
-        add_action('admin_init', [$this, 'handlePhpVersionNoticeDismissal']);
-        add_action('admin_init', [$this, 'maybeShowPhpVersionNotice']);
     }
 
     /**
@@ -251,22 +247,6 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
     }
-
-    public function maybeShowPhpVersionNotice()
-    {
-        if (version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '<')) {
-            return;
-        }
-
-        $noticeManager = NoticeManager::getInstance();
-
-        // Build dismissible message with optional link
-        $message = __('Starting with WP SMS v7.1, the plugin requires PHP version 7.2 or higher. Support for PHP 5.6 has been officially dropped. To learn more about this change and why it’s important, please read our <a href="#" target="_blank">blog post</a>.', 'wp-sms');
-
-        // Register using static notice system with dismiss support
-        $noticeManager->registerNotice('php_version_warning', $message, true);
-    }
-
 
     /**
      * @return \WP_SMS\Pro\Scheduled
