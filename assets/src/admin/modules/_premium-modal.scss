@@ -125,8 +125,10 @@
         @media(min-width: 769px) {
           width: calc(100% - 210px);
         }
-
-        p {
+        .wp-sms-modal__premium-step__desc{
+          margin: 0!important;
+        }
+        p , .wp-sms-modal__premium-step__desc{
           font-size: 14px;
           font-weight: 400;
           color: #292D32;
