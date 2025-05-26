@@ -806,6 +806,7 @@ class Gateway
                 'raygansms'      => 'raygansms.com',
                 'signalads'      => 'signalads.com',
                 'matinsms'       => 'MatinSMS.ir',
+                'melipayamak'    => 'melipayamak.ir',
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
