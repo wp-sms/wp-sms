@@ -10,6 +10,7 @@ use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
 use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
+use WP_SMS\Services\Subscriber\SubscriberManager;
 use WP_SMS\Shortcode\ShortcodeManager;
 use WP_SMS\User\MobileFieldManager;
 use WP_SMS\Webhook\WebhookManager;
@@ -180,6 +181,7 @@ class WP_SMS
         (new FormidableManager())->init();
         (new ForminatorManager())->init();
         (new ShortcodeManager())->init();
+        (new SubscriberManager())->init();
 
         if (is_admin()) {
             // Admin legacy classes.

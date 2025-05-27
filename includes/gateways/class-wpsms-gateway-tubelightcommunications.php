@@ -2,39 +2,57 @@
 
 namespace WP_SMS\Gateway;
 
-class tubelightcommunications extends \WP_SMS\Gateway
+use Exception;
+use WP_Error;
+use WP_SMS\Gateway;
+
+class tubelightcommunications extends Gateway
 {
-    private $wsdl_link = "https://webpostservice.com";
-    public $documentUrl = 'https://wp-sms-pro.com/resources/tubelight-communications-sms-gateway-configuration/';
-    public $unitrial = true;
-    public $unit;
-    public $flash = "disable";
-    public $isflash = false;
-    public $template_id = '';
-    public $base_url = '';
-    public $has_key = true;
-    public $validateNumber = "919811xxxxxx";
-    public $gatewayFields = [
-        'has_key'     => [
-            'id'   => 'gateway_key',
-            'name' => 'API Key',
-            'desc' => 'Enter API key of gateway.',
-        ],
-        'from'        => [
-            'id'   => 'gateway_sender_id',
-            'name' => 'Sender number',
-            'desc' => 'Sender number or sender ID',
-        ]
-    ];
+    private     $wsdl_link = "https://portal.tubelightcommunications.com";
+    public      $unitrial = true;
+    public      $unit;
+    public      $flash = "disable";
+    public      $isflash = false;
+    public      $template_id = '';
+    public      $validateNumber = "919811xxxxxx";
+    public      $supportMedia = true;
+    public      $route = 'sms';
 
     public function __construct()
     {
         parent::__construct();
-        $this->help = __('For send messages, send variables and message id in this format: <b>message|template_id</b>', 'wp-sms');
+        $this->help = __('<b>SMS Route</b>: Please follow this format in your messages: <pre>message|template_id</pre><br><b>WhatsApp Route</b>: Please follow this format in your messages: <pre>var1:var2:var3:var4|template_name</pre>', 'wp-sms');
+        $this->gatewayFields  = [
+            'username'       => [
+                'id'   => 'gateway_username',
+                'name' => 'Username',
+                'desc' => 'Username provided by Tubelight',
+            ],
+            'password'       => [
+                'id'   => 'gateway_password',
+                'name' => 'Password',
+                'desc' => 'Password provided by Tubelight',
+            ],
+            'from'           => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender number',
+                'desc' => 'Sender number or sender ID',
+            ],
+            'route'          => [
+                'id'      => 'route',
+                'name'    => esc_html__('Route', 'wp-sms'),
+                'type'    => 'select',
+                'options' => [
+                    "sms"      => esc_html__('SMS', 'wp-sms'),
+                    'whatsapp' => esc_html__('WhatsApp', 'wp-sms'),
+                ],
+                'desc'    => esc_html__('Please select the route.', 'wp-sms'),
+            ],
+        ];
     }
 
     /**
-     * @return string|\WP_Error
+     * Send SMS
      */
     public function SendSMS()
     {
@@ -67,124 +85,159 @@ class tubelightcommunications extends \WP_SMS\Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-
-            // Get the credit.
-            $credit = $this->GetCredit();
-
-            // Check gateway credit
-            if (is_wp_error($credit)) {
-                throw new \Exception($credit->get_error_message());
+            // Get access token
+            $token = $this->accessToken();
+            if (is_wp_error($token)) {
+                throw new Exception('Authorization Error.');
             }
 
-            $message = $this->getTemplateIdAndMessageBody();
+            // Get template and message body
+            $templateMessage = $this->getTemplateIdAndMessageBody();
+            $template = $templateMessage['template_id'] ?? null;
+            $message = $templateMessage['message'] ?? null;
 
-            $response = $this->request('POST', "{$this->wsdl_link}/sendsms_v1.0/chakra.php", [], [
-                'headers' => [
-                    'Content-Type' => 'application/json'
+            if (empty($message)) {
+                throw new Exception('Invalid Message Format');
+            }
+
+            $messageVars = explode(':', $message);
+
+            $params = [
+                'headers'   => [
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
                 ],
-                'body'    => wp_json_encode([
-                    'authentication' => [
-                        'key'     => $this->has_key,
-                        'version' => '1.0',
-                        'channel' => '0',
-                    ],
-                    'message'        => [
-                        'smsdata' => array_map(function ($number) use ($message) {
-                            return [
-                                'destination' => $number,
-                                'source'      => $this->from,
-                                'type'        => 'TEXT',
-                                'content'     => urlencode($message['message']),
-                                'tempId'      => $message['template_id'],
-                            ];
-                        }, $this->to),
-                    ],
-                ])
-            ]);
+            ];
 
-            $errorMessage = $this->getErrorMessage($response);
-
-            if ($errorMessage) {
-                throw new \Exception($errorMessage);
+            // Process SMS
+            if ($this->route === 'sms') {
+                return $this->sendSMSMessage($params, $template, $message);
             }
 
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            // Process WhatsApp
+            if ($this->route === 'whatsapp') {
+                return $this->sendWhatsAppMessage($params, $template, $messageVars);
+            }
 
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $response);
+            throw new Exception('Invalid Route.');
 
-            return $response;
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-            return new \WP_Error('send-sms', $e->getMessage());
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
     }
 
     /**
-     * @return int|\WP_Error
+     * Get available credit
      */
     public function GetCredit()
     {
         try {
+            $token = $this->accessToken();
 
-            $response = $this->request('GET', "{$this->wsdl_link}/sendsms_v2.0/checkbalance.php", [
-                'apikey' => urlencode($this->has_key),
-            ]);
-
-            $errorMessage = $this->getErrorMessage($response);
-
-            if ($errorMessage) {
-                throw new \Exception($errorMessage);
+            if (is_wp_error($token)) {
+                return $token;
             }
 
-            return $response;
+            $params = [
+                'headers'   => [
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ]
+            ];
+
+            $response = $this->request('POST', $this->wsdl_link . '/sms/api/v1/balance', [], $params);
+
+            return $response->balance;
 
         } catch (\Exception $e) {
             return new \WP_Error('account-credit', $e->getMessage());
         }
     }
 
-    private function getErrorMessage($errorCode)
+    /**
+     * Get access token
+     */
+    private function accessToken()
     {
-        if (is_array($errorCode)) {
-            foreach ($errorCode as $item) {
-                if ($item->code == 200) {
-                    return false;
-                } else {
-                    return $item->cause;
-                }
+        try {
+            if (empty($this->username) || empty($this->password)) {
+                throw new Exception('Please enter Username and Password.');
             }
+
+            $params = [
+                'headers' => [
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                ],
+                'body'    => wp_json_encode([
+                    'username'      => $this->username,
+                    'password'      => $this->password,
+                ]),
+            ];
+
+            $response = $this->request('POST', $this->wsdl_link . '/api/authentication/login', [], $params);
+
+            return $response->accessToken;
+
+        } catch (Exception $e) {
+            return new WP_Error('authorization', $e->getMessage());
+        }
+    }
+
+    private function sendSMSMessage($params, $template, $message)
+    {
+        $params['body'] = wp_json_encode(array_map(function ($number) use ($message, $template) {
+                return [
+                    'sender'        => $this->from,
+                    'mobileNo'      => $number,
+                    'messageType'   => 'TEXT',
+                    'messages'      => $message,
+                    'tempId'        => $template ?? '',
+                ];
+            }, $this->to));
+        
+        $response = $this->request('POST', $this->wsdl_link . '/sms/api/v1/websms/bulksend', [], $params);
+
+        $this->log($this->from, $this->msg, $this->to, $response);
+        do_action('wp_sms_send', $response);
+
+        return $response;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function sendWhatsAppMessage($params, $template, $messageVars)
+    {
+        if (empty($template) || empty($messageVars)) {
+            throw new Exception('Invalid Message Format');
         }
 
-        switch ($errorCode) {
-            case 'ERR_LOGIN':
-                return 'The response code is returned if user login is invalid in System.';
-            case 'ERR_USERNAME_PASSWORD':
-                return 'The response code is returned if username or password is not formed well; that is for invalid characters other than [a-z, A-Z, 0-9, -].';
-            case 'ERR_MSGID':
-                return 'The response code is returned in case of wrong or invalid Message id.';
-            case 'DELIVRD':
-                return 'Delivered to destination';
-            case 'UNDELIV':
-                return 'Message is undeliverable';
-            case 'EXPIRED':
-                return 'Validity period has expired';
-            case 'REJECTD':
-                return 'Message is in rejected state';
-            case 'DELETED':
-                return 'Message is deleted due to flood control mechanism.';
-            case 'UNKNOWN':
-                return 'Message is in unknown state';
-            default:
-                return false;
+        foreach ($this->to as $number) {
+            try {
+                $params['body'] = wp_json_encode([
+                    'to'      => [$number],
+                    'message' => [
+                        'template_name' => $template,
+                        'type'          => 'template',
+                        'body_params'   => $messageVars,
+                        'header_params' => $this->media,
+                    ]
+                ]);
+                
+                $response = $this->request('POST', $this->wsdl_link . '/whatsapp/api/v1/send', [], $params);
+
+                $this->log($this->from, $this->msg, $this->to, $response);
+                do_action('wp_sms_send', $response);
+
+                return $response;
+            } catch (\Exception $e) {
+                $this->log($this->from, $this->msg, $number, $e->getMessage(), 'error');
+            }
         }
     }
 }
