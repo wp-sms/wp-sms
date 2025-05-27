@@ -179,20 +179,20 @@ class Newsletter
 
         $metaValue = Helper::prepareMobileNumberQuery($number);
 
-        // Prepare each value in $metaValue
-        foreach ($metaValue as &$value) {
-            $value = $wpdb->prepare('%s', $value);
+        if (!is_array($metaValue) || empty($metaValue)) {
+            return null;
         }
 
-        $placeholders = implode(', ', $metaValue);
-        $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
+        $placeholders = array_fill(0, count($metaValue), '%s');
+        $placeholders = implode(', ', $placeholders);
 
+        $sql = $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ($placeholders)",
+            $metaValue
+        );
 
-        $result = $wpdb->get_row($sql);
-
-        if ($result) {
-            return $result;
-        }
+        // Execute the query and return the result
+        return $wpdb->get_row($sql);
     }
 
     /**
