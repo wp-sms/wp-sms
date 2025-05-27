@@ -57,8 +57,21 @@ class NoticeManager extends AbstractNotice
             $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
         }
 
-        // translators: %s: Newsletter link
-        $this->registerNotice('marketing_newsletter', sprintf(__('Stay informed and receive exclusive offers, <a href="%s" target="_blank">Subscribe to our newsletter here</a>!', 'wp-sms'), 'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share'), true, 'admin.php?page=wp-sms-settings');
+        if (version_compare(PHP_VERSION, '7.2', '>')) {
+            $message = __('Starting with WP SMS v7.1, the plugin requires PHP version 7.2 or higher. Support for PHP 5.6 has been officially dropped. To learn more about this change and why it’s important, please read our <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank">blog post</a>.', 'wp-sms');
+
+            $this->registerNotice('php_version_warning', wp_kses_post($message), true);
+        }
+
+        $this->registerNotice(
+            'marketing_newsletter',
+            sprintf(
+                __('Stay informed and receive exclusive offers, <a href="%s" target="_blank">Subscribe to our newsletter here</a>!', 'wp-sms'),
+                'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share'
+            ),
+            true,
+            'admin.php?page=wp-sms-settings'
+        );
     }
 
     /**
@@ -72,13 +85,23 @@ class NoticeManager extends AbstractNotice
             $notices = [];
         }
 
-        foreach ($this->notices as $id => $notice) {
-            $dismissed = array_key_exists($id, $notices);
-            $link      = $this->generateNoticeLink($id, $notice['url'], $nonce);
+        $current_url = basename($_SERVER['REQUEST_URI']);
 
-            if (!$notice['url'] or (basename($_SERVER['REQUEST_URI']) == $notice['url'] && !$dismissed)) {
-                Helper::notice($notice['message'], 'warning', $notice['dismiss'], $link);
+        foreach ($this->notices as $id => $notice) {
+            $dismissed = isset($notices[$id]) && $notices[$id] === true;
+
+            if ($dismissed) {
+                continue;
             }
+
+            if (!empty($notice['url']) && $notice['url'] !== $current_url) {
+                continue;
+            }
+
+            $link = $this->generateNoticeLink($id, $notice['url'], $nonce);
+
+            // Display the notice
+            Helper::notice($notice['message'], 'warning', $notice['dismiss'], $link);
         }
     }
 
