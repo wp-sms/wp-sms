@@ -179,6 +179,11 @@ class gatewayapi extends \WP_SMS\Gateway
                 ]
             ]);
 
+            if (is_wp_error($res)) {
+                $this->accountBalance = (object)['credit' => 0, 'currency' => ''];
+                return $this->accountBalance;
+            }
+
             $responseBody = json_decode($res['body']);
 
             if ($res['response']['code'] === 200) {
