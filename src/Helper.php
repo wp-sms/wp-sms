@@ -486,25 +486,37 @@ class Helper
 
     public static function prepareMobileNumberQuery($number)
     {
-        $metaValue[]    = $number;
-        $numberWithPlus = '+' . $number;
+        $metaValue   = array();
+        $metaValue[] = $number;
+
+        // Use NumberParser for normalization and validation
+        $numberParser     = new \WP_SMS\Components\NumberParser($number);
+        $normalizedNumber = $numberParser->getNormalizedNumber();
+
+        // Add original number if it was different from normalized version
+        if ($number != $normalizedNumber) {
+            $metaValue[] = $number;
+        }
+
+        $metaValue[]    = $normalizedNumber;
+        $numberWithPlus = '+' . ltrim($normalizedNumber, '+');
 
         // Check if number is international format or not and add country code to meta value
-        if (substr($number, 0, 1) != '+') {
-            $metaValue[] = $numberWithPlus;
-            $number      = $numberWithPlus;
+        if (substr($normalizedNumber, 0, 1) != '+') {
+            $metaValue[]      = $numberWithPlus;
+            $normalizedNumber = $numberWithPlus;
         } else {
-            $metaValue[] = ltrim($number, '+');
+            $metaValue[] = ltrim($normalizedNumber, '+');
         }
 
         // Remove the country code from prefix of number +144444444 -> 44444444
         foreach (wp_sms_countries()->getCountriesMerged() as $countryCode => $countryName) {
-            if (strpos($number, $countryCode) === 0) {
-                $metaValue[] = substr($number, strlen($countryCode));
+            if (strpos($normalizedNumber, $countryCode) === 0) {
+                $metaValue[] = substr($normalizedNumber, strlen($countryCode));
             }
         }
 
-        return $metaValue;
+        return array_unique($metaValue);
     }
 
     /**
