@@ -6,6 +6,7 @@ use Forminator_API;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -31,11 +32,13 @@ class Settings
         'pro_ultimate_members'
     ];
 
+    private $isPremium;
     private $proIsInstalled;
     private $wooProIsInstalled;
 
     private $active_tab;
     private $contentRestricted;
+    private $showGRecaptchaBadge = false;
 
     /**
      * @return string
@@ -56,8 +59,27 @@ class Settings
     public function __construct()
     {
         $this->setting_name      = $this->getCurrentOptionName();
+        $this->isPremium = LicenseHelper::isPluginLicenseValid();
         $this->proIsInstalled    = Version::pro_is_active();
-        $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->wooProIsInstalled = LicenseHelper::isPluginLicenseValid('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+
+        $woocommerceLicenseKey = LicenseHelper::getPluginLicense('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $woocommerceLicenseInfo = LicenseHelper::getLicenseInfo($woocommerceLicenseKey);
+
+        // If neither Pro nor Woo Pro is installed, show the badge
+        if (!$this->isPremium && !$this->wooProIsInstalled) {
+            $this->showGRecaptchaBadge = true;
+        }
+        // If Pro is not installed, but Woo Pro is installed,
+        // and Woo Pro license is not 'single-site' (i.e., it's likely 'none' or invalid),
+        // then show the badge
+        elseif (
+            !$this->isPremium &&
+            $this->wooProIsInstalled &&
+            ($woocommerceLicenseInfo && $woocommerceLicenseInfo['type'] !== 'single-site')
+        ) {
+            $this->showGRecaptchaBadge = true;
+        }
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -1866,7 +1888,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        !$this->proIsInstalled ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        $this->showGRecaptchaBadge ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
                     'type' => 'header',
