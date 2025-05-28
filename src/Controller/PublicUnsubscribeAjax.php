@@ -3,6 +3,7 @@
 namespace WP_SMS\Controller;
 
 use Exception;
+use WP_SMS\Components\NumberParser;
 use WP_SMS\Newsletter;
 use WP_SMS\Option;
 use WP_SMS\Services\Subscriber\SubscriberUtil;
@@ -25,10 +26,12 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
         $group_id       = $this->get('group_id', 0);
         $groups_enabled = Option::getOption('newsletter_form_groups');
 
-        if (!Newsletter::getSubscriberByMobile($number)) {
+        $number     = NumberParser::toEnglishNumerals($number);
+        $subscriber = Newsletter::getSubscriberByMobile($number);
+        if (!$subscriber) {
             throw new Exception(esc_html__('The provided mobile number is not subscribed.', 'wp-sms'));
         }
-
+        $number   = $subscriber->mobile;
         $groupIds = is_array($group_id) ? $group_id : array($group_id);
 
         if ($groups_enabled && !empty(array_filter($groupIds))) {

@@ -83,7 +83,9 @@ class NumberParser
             return '';
         }
 
-        $this->normalizedPhoneNumber = preg_replace('/[^\d+]/', '', $this->rawPhoneNumber);
+        $number = self::toEnglishNumerals($this->rawPhoneNumber);
+
+        $this->normalizedPhoneNumber = preg_replace('/[^\d+]/', '', $number);
         $this->normalizedPhoneNumber = ltrim($this->normalizedPhoneNumber, '0');
 
         return $this->normalizedPhoneNumber;
@@ -217,6 +219,21 @@ class NumberParser
         return $phoneNumber;
     }
 
+    /**
+     * Convert non-English numerals to English numerals.
+     *
+     * @param string $number Input number string
+     * @return string Number with English numerals only
+     */
+    public static function toEnglishNumerals($number)
+    {
+        return strtr($number, array(
+            '۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4',
+            '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9',
+            '٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4',
+            '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9'
+        ));
+    }
     /**
      * Checks if the phone number exists in usermeta.
      *
