@@ -57,8 +57,17 @@ class NoticeManager extends AbstractNotice
             $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
         }
 
-        if (version_compare(PHP_VERSION, '7.2', '>')) {
-            $message = __('Starting with WP SMS v7.1, the plugin requires PHP version 7.2 or higher. Support for PHP 5.6 has been officially dropped. To learn more about this change and why it’s important, please read our <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank">blog post</a>.', 'wp-sms');
+        if (version_compare(PHP_VERSION, '7.2', '<')) {
+            $current_version = PHP_VERSION;
+            $message = sprintf(
+                __('
+            <strong>WP SMS notice – PHP upgrade required</strong><br>
+            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher. 
+            Please upgrade your server’s PHP version before installing the update. 
+            <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank">More details</a>.
+        ', 'wp-sms'),
+                esc_html($current_version)
+            );
 
             $this->registerNotice('php_version_warning', wp_kses_post($message), true);
         }

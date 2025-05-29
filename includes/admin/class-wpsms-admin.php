@@ -85,6 +85,7 @@ class Admin
         }
 
         $screen = get_current_screen();
+        wp_enqueue_style('admin-global', WP_SMS_URL . 'assets/css/admin-global.css', [], WP_SMS_VERSION);
 
         // Register main plugin style
         wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', [], WP_SMS_VERSION);
@@ -99,7 +100,7 @@ class Admin
             if (stristr($screen->id, 'wp-sms')) {
                 wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', [], WP_SMS_VERSION);
                 wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION, false);
-                
+
                 wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', [], WP_SMS_VERSION, false);
                 // tooltip
                 wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', [], WP_SMS_VERSION);
