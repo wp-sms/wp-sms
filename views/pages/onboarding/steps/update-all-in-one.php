@@ -63,7 +63,7 @@
                         </svg>
                         <div class="c-feature-card__content">
                             <h2 class="c-feature-card__title"><?php esc_html_e('Membership & Booking Integrations', 'wp-sms'); ?></h2>
-                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Automate sign‑up confirmations, cancelation, and booking reminders.', 'wp-sms'); ?></p>
+                            <p class="c-feature-card__desc u-m-0"><?php esc_html_e('Automate sign‑up confirmations, cancellations, and booking reminders.', 'wp-sms'); ?></p>
                         </div>
                     </div>
                     <div class="c-feature-card u-flex u-content-start u-align-start">
