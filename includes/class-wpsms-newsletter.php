@@ -173,10 +173,10 @@ class Newsletter
         }
     }
 
-    public static function getSubscriberByMobile($number)
+    public static function getSubscriberByMobile($number, $single = false)
     {
         global $wpdb;
-
+        $results   = [];
         $metaValue = Helper::prepareMobileNumberQuery($number);
 
         // Prepare each value in $metaValue
@@ -184,15 +184,38 @@ class Newsletter
             $value = $wpdb->prepare('%s', $value);
         }
 
-        $placeholders = implode(', ', $metaValue);
-        $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
+        $placeholders    = implode(', ', $metaValue);
+        $exactMatchQuery = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
+        if ($single) {
+            $result = $wpdb->get_row($exactMatchQuery);
+            if ($result) {
+                return $result;
+            }
+        } else {
+            $exactMatches = $wpdb->get_results($exactMatchQuery);
+            if (!empty($exactMatches)) {
+                $results = $exactMatches;
+            }
 
-        $result = $wpdb->get_row($sql);
+            $normalizedMatchQuery = $wpdb->prepare(
+                "SELECT * FROM `{$wpdb->prefix}sms_subscribes` 
+             WHERE REPLACE(REPLACE(REPLACE(mobile, '-', ''), ' ', ''), '+', '') IN ($placeholders)"
+            );
 
-        if ($result) {
-            return $result;
+            $normalizedMatches = $wpdb->get_results($normalizedMatchQuery);
+
+            // Merge results without duplicates (based on ID or mobile)
+            if (!empty($normalizedMatches)) {
+                foreach ($normalizedMatches as $row) {
+                    $results[] = $row;
+                }
+            }
+
+            return $results;
         }
+
+        return null;
     }
 
     /**
