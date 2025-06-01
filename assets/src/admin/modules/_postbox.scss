@@ -217,6 +217,17 @@
   right: auto !important;
 }
 
+body.rtl #feedback-bird-app {
+  float: none !important;
+  margin: 0 !important;
+}
+
+
+.rtl .wpsms-mobile-menu #feedback-bird-app .c-fbb-btn--default > span:before {
+  margin-right: 0 !important;
+  margin-left: 10px;
+}
+
 .wpsms-wrap__top .notice:has(p):not(.e-notice) {
   padding-right: 40px;
 }
@@ -396,6 +407,31 @@
           background-image: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xMC4wNTM0IDE5LjE2NjhDNC45OTA3NyAxOS4xNjY4IDAuODg2NzE5IDE1LjA2MjcgMC44ODY3MTkgMTAuMDAwMkMwLjg4NjcxOSA0LjkzNzU1IDQuOTkwNzcgMC44MzM0OTYgMTAuMDUzNCAwLjgzMzQ5NkMxNS4xMTYgMC44MzM0OTYgMTkuMjIwMSA0LjkzNzU1IDE5LjIyMDEgMTAuMDAwMkMxOS4yMjAxIDE1LjA2MjcgMTUuMTE2IDE5LjE2NjggMTAuMDUzNCAxOS4xNjY4Wk0xMC4wNTM0IDE3LjMzMzVDMTQuMTAzNSAxNy4zMzM1IDE3LjM4NjcgMTQuMDUwMyAxNy4zODY3IDEwLjAwMDJDMTcuMzg2NyA1Ljk1MDA3IDE0LjEwMzUgMi42NjY4MyAxMC4wNTM0IDIuNjY2ODNDNi4wMDMzIDIuNjY2ODMgMi43MjAwNSA1Ljk1MDA3IDIuNzIwMDUgMTAuMDAwMkMyLjcyMDA1IDE0LjA1MDMgNi4wMDMzIDE3LjMzMzUgMTAuMDUzNCAxNy4zMzM1Wk05LjEzNjcyIDEyLjc1MDJIMTAuOTcwMVYxNC41ODM1SDkuMTM2NzJWMTIuNzUwMlpNMTAuOTcwMSAxMS4yNDIzVjExLjgzMzVIOS4xMzY3MlYxMC40NTg1QzkuMTM2NzIgOS45NTIyMiA5LjU0NzExIDkuNTQxODMgMTAuMDUzNCA5LjU0MTgzQzEwLjgxMjggOS41NDE4MyAxMS40Mjg0IDguOTI2MiAxMS40Mjg0IDguMTY2ODNDMTEuNDI4NCA3LjQwNzQ0IDEwLjgxMjggNi43OTE4MyAxMC4wNTM0IDYuNzkxODNDOS4zODYzMyA2Ljc5MTgzIDguODMwMTkgNy4yNjY4NyA4LjcwNDc5IDcuODk3MTJMNi45MDY3NSA3LjUzNzVDNy4xOTkyMiA2LjA2NjkyIDguNDk2ODkgNC45NTg1IDEwLjA1MzQgNC45NTg1QzExLjgyNTMgNC45NTg1IDEzLjI2MTcgNi4zOTQ5MSAxMy4yNjE3IDguMTY2ODNDMTMuMjYxNyA5LjYyMDIgMTIuMjk1MyAxMC44NDc5IDEwLjk3MDEgMTEuMjQyM1oiIGZpbGw9IiM0RTUxNTQiLz4KPC9zdmc+Cg==")
         }
       }
+
+      #feedback-bird-app .c-fbb-btn--default {
+        background: none !important;
+      }
+    }
+  }
+}
+
+.post-type-wpsms-command #feedback-bird-app, .sms_page_wp-sms #feedback-bird-app, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment #feedback-bird-app,
+.sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
+  .c-fbb-btn--default {
+    transition: 0.3s all ease-out;
+    background-color: transparent !important;
+    width: 19px;
+    height: 19px;
+    padding: 0;
+    opacity: 70%;
+    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxOSAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xMjgxOV8xMzA0MykiPgo8cGF0aCBkPSJNNi4zMzM5OCAxMS4wODRDNi4zMzM5OCAxMS4wODQgNy41MjE0OCAxMi42NjczIDkuNTAwNjUgMTIuNjY3M0MxMS40Nzk4IDEyLjY2NzMgMTIuNjY3MyAxMS4wODQgMTIuNjY3MyAxMS4wODRNMTEuODc1NyA3LjEyNTY1SDExLjg4MzZNNy4xMjU2NSA3LjEyNTY1SDcuMTMzNTdNMTcuNDE3MyA5LjUwMDY1QzE3LjQxNzMgMTMuODcyOSAxMy44NzI5IDE3LjQxNzMgOS41MDA2NSAxNy40MTczQzUuMTI4MzkgMTcuNDE3MyAxLjU4Mzk4IDEzLjg3MjkgMS41ODM5OCA5LjUwMDY1QzEuNTgzOTggNS4xMjgzOSA1LjEyODM5IDEuNTgzOTggOS41MDA2NSAxLjU4Mzk4QzEzLjg3MjkgMS41ODM5OCAxNy40MTczIDUuMTI4MzkgMTcuNDE3MyA5LjUwMDY1Wk0xMi4yNzE1IDcuMTI1NjVDMTIuMjcxNSA3LjM0NDI2IDEyLjA5NDIgNy41MjE0OCAxMS44NzU3IDcuNTIxNDhDMTEuNjU3MSA3LjUyMTQ4IDExLjQ3OTggNy4zNDQyNiAxMS40Nzk4IDcuMTI1NjVDMTEuNDc5OCA2LjkwNzA0IDExLjY1NzEgNi43Mjk4MiAxMS44NzU3IDYuNzI5ODJDMTIuMDk0MiA2LjcyOTgyIDEyLjI3MTUgNi45MDcwNCAxMi4yNzE1IDcuMTI1NjVaTTcuNTIxNDggNy4xMjU2NUM3LjUyMTQ4IDcuMzQ0MjYgNy4zNDQyNiA3LjUyMTQ4IDcuMTI1NjUgNy41MjE0OEM2LjkwNzA0IDcuNTIxNDggNi43Mjk4MiA3LjM0NDI2IDYuNzI5ODIgNy4xMjU2NUM2LjcyOTgyIDYuOTA3MDQgNi45MDcwNCA2LjcyOTgyIDcuMTI1NjUgNi43Mjk4MkM3LjM0NDI2IDYuNzI5ODIgNy41MjE0OCA2LjkwNzA0IDcuNTIxNDggNy4xMjU2NVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8xMjgxOV8xMzA0MyI+CjxyZWN0IHdpZHRoPSIxOSIgaGVpZ2h0PSIxOSIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K") center center/100% no-repeat;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg, & > span {
+      display: none;
     }
   }
 }
@@ -726,15 +762,6 @@ body.rtl #screen-meta-links {
 
   .sms_page_wp-sms-subscribers-privacy .privacy_page {
     margin: 0 !important;
-  }
-
-  .wpsms-wrap #flash_no {
-    margin-left: 10px !important;
-  }
-
-  .rtl .wpsms-wrap #flash_no {
-    margin-left: 0 !important;
-    margin-right: 10px !important;
   }
 
   .wpsms-wrap .notice .notice-dismiss {

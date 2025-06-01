@@ -6,55 +6,57 @@
 
 .promotion-modal {
   position: absolute;
-  width: 624px;
-  max-width: calc(100% - 40px);
+  width: 70%;
+  max-width: 556px;
   left: 50%;
-  top: 150px;
-  transform: translateX(-50%);
+  top: 20px;
+  transform: translateX(-50%) ;
   background-color: #fff;
   border-radius: 5px;
   padding: 32px;
   border: 1px solid #eee;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 18px rgba(0,0,0,0.08);
   z-index: 1;
   max-height: 85%;
   overflow-y: auto;
-  box-sizing: border-box;
 
   .promotion-modal__screenshot {
     text-align: center;
 
-    img {
-      width: 399px;
-      max-width: 80%;
-      margin: 0 auto;
+    img{
+      max-height: 283px;
+      max-width: 100%;
     }
   }
 }
 
 .promotion-modal__title {
   font-weight: 700;
-  font-size: 28px;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
   letter-spacing: 0.02em;
   margin-top: 0;
-  margin-bottom: 12px;
-  color: #282828;
-  line-height: 28px;
+  margin-bottom: 32px;
 
   @media screen and (max-width: 990px) {
-    font-size: 18px;
+    font-size:18px;
   }
 }
 
 .promotion-modal__desc {
-  font-size: 16px;
-  color: #262626;
-  font-weight: 400;
-  margin: 0 0 32px;
-  line-height: 26px;
-  padding: 0;
-
-  @media(max-width: 560px) {
+  text-align: center;
+  font-size: 14px;
+  line-height: 24px;
+  color:#5B5856;
+  font-weight: 500;
+  margin: 24px 0;
+  b{
+    display: block;
+    font-weight: 600;
+    color:#1D2327;
+  }
+  @media(max-width: 560px){
     font-size: 13px;
   }
 }
@@ -62,102 +64,92 @@
 .promotion-modal__features {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  flex-direction: column;
+  justify-content: space-between;
+  width: 75%;
+  margin: 0 auto;
 
-  &__title {
-    margin: 32px 0 16px;
-    padding: 0;
-    color: #282828;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
+  @media screen and (max-width: 990px) {
+    width: 70%;
+    flex-direction: column;
   }
+  @media screen and (max-width:560px) {
+    width: 100%;
+  }
+}
+
+.promotion-modal__feature__col {
+  width: auto;
 }
 
 .promotion-modal__features__item {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
-  line-height: 17px;
+  line-height: 16px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  color: #262626;
+  margin-bottom: 11px;
+  gap: 8px;
+  color: #1D2327;
 
-  &:before {
-    content: '';
-    width: 19px;
-    min-width: 19px;
-    height: 19px;
-    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAxOSAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkuNDk5NjcgMTguMDMxNkM1LjEyNzQyIDE4LjAzMTYgMS41ODMwMSAxNC40ODcxIDEuNTgzMDEgMTAuMTE0OUMxLjU4MzAxIDUuNzQyNjUgNS4xMjc0MiAyLjE5ODI0IDkuNDk5NjcgMi4xOTgyNEMxMy44NzE5IDIuMTk4MjQgMTcuNDE2MyA1Ljc0MjY1IDE3LjQxNjMgMTAuMTE0OUMxNy40MTYzIDE0LjQ4NzEgMTMuODcxOSAxOC4wMzE2IDkuNDk5NjcgMTguMDMxNlpNOS40OTk2NyAxNi40NDgyQzEyLjk5NzUgMTYuNDQ4MiAxNS44MzMgMTMuNjEyNyAxNS44MzMgMTAuMTE0OUMxNS44MzMgNi42MTcxIDEyLjk5NzUgMy43ODE1OCA5LjQ5OTY3IDMuNzgxNThDNi4wMDE4NyAzLjc4MTU4IDMuMTY2MzQgNi42MTcxIDMuMTY2MzQgMTAuMTE0OUMzLjE2NjM0IDEzLjYxMjcgNi4wMDE4NyAxNi40NDgyIDkuNDk5NjcgMTYuNDQ4MlpNOC43MTAwNyAxMy4yODE2TDUuMzUxMzMgOS45MjI4NUw2LjQ3MDkyIDguODAzMkw4LjcxMDA3IDExLjA0MjRMMTMuMTg4NCA2LjU2NDA2TDE0LjMwOCA3LjY4MzY1TDguNzEwMDcgMTMuMjgxNloiIGZpbGw9IiNFQTU4MEMiLz4KPC9zdmc+Cg==") center center no-repeat;
-    display: inline-block;
+  span.dashicons-saved{
+    font-size: 14px;
+    width: 14px;
+    height: 15px;
+    line-height: 16px;
+    &:before{
+      content: '';
+      width: 15px;
+      height: 15px;
+      background-image: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE3IiBoZWlnaHQ9IjE3IiB2aWV3Qm94PSIwIDAgMTcgMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik04LjQ5OTY3IDE2LjY0NzNDNC4xMjc0MiAxNi42NDczIDAuNTgzMDA4IDEzLjEwMjggMC41ODMwMDggOC43MzA2M0MwLjU4MzAwOCA0LjM1ODM4IDQuMTI3NDIgMC44MTM5NjUgOC40OTk2NyAwLjgxMzk2NUMxMi44NzE5IDAuODEzOTY1IDE2LjQxNjMgNC4zNTgzOCAxNi40MTYzIDguNzMwNjNDMTYuNDE2MyAxMy4xMDI4IDEyLjg3MTkgMTYuNjQ3MyA4LjQ5OTY3IDE2LjY0NzNaTTguNDk5NjcgMTUuMDY0QzExLjk5NzUgMTUuMDY0IDE0LjgzMyAxMi4yMjg1IDE0LjgzMyA4LjczMDYzQzE0LjgzMyA1LjIzMjgzIDExLjk5NzUgMi4zOTczIDguNDk5NjcgMi4zOTczQzUuMDAxODcgMi4zOTczIDIuMTY2MzQgNS4yMzI4MyAyLjE2NjM0IDguNzMwNjNDMi4xNjYzNCAxMi4yMjg1IDUuMDAxODcgMTUuMDY0IDguNDk5NjcgMTUuMDY0Wk03LjcxMDA3IDExLjg5NzNMNC4zNTEzMyA4LjUzODU3TDUuNDcwOTIgNy40MTg5Mkw3LjcxMDA3IDkuNjU4MTVMMTIuMTg4NCA1LjE3OTc4TDEzLjMwOCA2LjI5OTM3TDcuNzEwMDcgMTEuODk3M1oiIGZpbGw9IiNDMjQyMjUiLz4KPC9zdmc+Cg==");
+      background-repeat: no-repeat;
+      background-size: contain;
+      display: inline-block;
+      background-position: center;
+    }
+
   }
+
 }
 
-.promotion-modal__chat {
-  &__title {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
-    color: #282828;
-    margin-top: 32px;
-    margin-bottom: 12px;
-  }
+.promotion-modal__actions {
+  text-align: center;
+  margin-top: 13px;
 
-  ul {
-    margin: 0;
-    padding-left: 25px;
-    list-style-type: disc;
-
-    .rtl & {
-      padding-left: 0;
-      padding-right: 25px;
+  a.button-primary{
+    background: #C24225;
+    border-color: #C24225;
+    padding: 14px 33px;
+    width: 75%;
+    font-weight: 700 !important;
+    &:hover, &:active , &:focus{
+      background: #b2381d;
+      border-color: #b2381d;
+      box-shadow: none
     }
-
-    li {
-
-      color: #262626;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 24px;
-
-      &::marker {
-        color: #9A3412
-      }
-
+    @media(max-width: 700px){
+      padding: 14px;
     }
-
-    a {
-      color: #9A3412;
-      font-weight: 700;
-      text-decoration: underline;
-
-      &:hover {
-        color: #262626
-      }
+    @media(max-width:560px){
+      padding: 8px;
+      width: 100%;
+      font-size: 11px;
     }
   }
-}
+  p {
+    margin-top: 30px;
+  }
 
-.promotion-modal__footer {
-  margin-top: 8px;
-  font-weight: 400;
-  font-style: italic;
-  font-size: 12px;
-  line-height: 24px;
-  color: #525252;
+  .link {
 
-  a {
-    font-weight: 700;
+    color: #444;
     text-decoration: underline;
-    color: #525252;
 
     &:hover {
-      color: #262626
+      color: #222;
     }
   }
 }
 
-body.modal-open .iti--container {
+body.modal-open .iti--container{
   z-index: 999999;
 }

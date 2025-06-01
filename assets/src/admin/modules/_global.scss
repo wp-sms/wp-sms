@@ -116,7 +116,7 @@
           input[type=text], input[type="tel"], input[type=number], &.subscribers_group_section .select2-container.select2-container--open .select2-selection, .select2-selection, select {
             &:focus, &:active {
               border: 1px solid #C2410C !important;
-              box-shadow: 0 0 0 2px #C2410C33 !important;
+              box-shadow: 0 0 0 2px #C2410C33!important;
             }
           }
 
@@ -153,15 +153,11 @@
       &.select2-container--open {
         .select2-selection {
           border: 1px solid #C2410C !important;
-          box-shadow: 0 0 0 2px #C2410C33 !important;
+          box-shadow: 0 0 0 2px #C2410C33!important;
         }
       }
 
       .select2-selection--multiple {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-wrap: wrap;
 
         .select2-search--inline {
           min-width: 200px;
@@ -206,10 +202,15 @@
         flex-wrap: wrap;
         margin: 0;
 
-        &:not(:has(li)) {
-          display: none;
-        }
+        li:last-child {
+          margin-right: 8px;
 
+          .rtl & {
+            margin-right: 0 !important;
+            margin-left: 8px !important;
+
+          }
+        }
       }
 
       .select2-selection__choice__remove {
@@ -487,6 +488,12 @@
   }
 }
 
+//Mobile header
+.post-type-wpsms-command #feedback-bird-app, .sms_page_wp-sms #feedback-bird-app, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment #feedback-bird-app,
+.sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
+  display: none;
+}
+
 .wpsms-wrap__top {
   h2, h1 {
     margin-top: 0;
@@ -494,14 +501,14 @@
   }
 }
 
-.sms_page_wp-sms-integrations, .sms_page_wp-sms-settings {
+.sms_page_wp-sms-integrations ,.sms_page_wp-sms-settings{
   .wpsms-wrap__top {
     background: transparent;
     border-bottom: none;
     box-shadow: none;
     margin-bottom: 7px;
 
-    h2 {
+    h2{
       font-size: 15px;
       font-weight: 600;
     }
@@ -520,7 +527,33 @@
   .rtl .wpsms-wrap__top h2, .rtl .wpsms-wrap__top h1 {
     float: right
   }
+  .wpsms-header-items-side > #feedback-bird-app {
+    display: none !important;
+  }
+  .wpsms-mobile-menu #feedback-bird-app {
+    padding: 12px;
 
+    .c-fbb-btn--default {
+      color: #4E5154 !important;
+      background: none;
+      width: 100%;
+      opacity: 1 !important;
+
+      & > span {
+        display: flex !important;
+        align-items: center;
+
+        &:before {
+          content: '';
+          margin-right: 10px;
+          width: 16px;
+          height: 19px;
+          display: inline-flex;
+          background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xMC4wNTM0IDE5LjE2NjhDNC45OTA3NyAxOS4xNjY4IDAuODg2NzE5IDE1LjA2MjcgMC44ODY3MTkgMTAuMDAwMkMwLjg4NjcxOSA0LjkzNzU1IDQuOTkwNzcgMC44MzM0OTYgMTAuMDUzNCAwLjgzMzQ5NkMxNS4xMTYgMC44MzM0OTYgMTkuMjIwMSA0LjkzNzU1IDE5LjIyMDEgMTAuMDAwMkMxOS4yMjAxIDE1LjA2MjcgMTUuMTE2IDE5LjE2NjggMTAuMDUzNCAxOS4xNjY4Wk0xMC4wNTM0IDE3LjMzMzVDMTQuMTAzNSAxNy4zMzM1IDE3LjM4NjcgMTQuMDUwMyAxNy4zODY3IDEwLjAwMDJDMTcuMzg2NyA1Ljk1MDA3IDE0LjEwMzUgMi42NjY4MyAxMC4wNTM0IDIuNjY2ODNDNi4wMDMzIDIuNjY2ODMgMi43MjAwNSA1Ljk1MDA3IDIuNzIwMDUgMTAuMDAwMkMyLjcyMDA1IDE0LjA1MDMgNi4wMDMzIDE3LjMzMzUgMTAuMDUzNCAxNy4zMzM1Wk02LjM4NjcyIDEwLjkxNjhIMTMuNzIwMUMxMy43MjAxIDEyLjk0MTggMTIuMDc4NCAxNC41ODM1IDEwLjA1MzQgMTQuNTgzNUM4LjAyODM0IDE0LjU4MzUgNi4zODY3MiAxMi45NDE4IDYuMzg2NzIgMTAuOTE2OFpNNi4zODY3MiA5LjA4MzVDNS42MjczMiA5LjA4MzUgNS4wMTE3MiA4LjQ2Nzg2IDUuMDExNzIgNy43MDg1QzUuMDExNzIgNi45NDkxIDUuNjI3MzIgNi4zMzM1IDYuMzg2NzIgNi4zMzM1QzcuMTQ2MTEgNi4zMzM1IDcuNzYxNzIgNi45NDkxIDcuNzYxNzIgNy43MDg1QzcuNzYxNzIgOC40Njc4NiA3LjE0NjExIDkuMDgzNSA2LjM4NjcyIDkuMDgzNVpNMTMuNzIwMSA5LjA4MzVDMTIuOTYwNyA5LjA4MzUgMTIuMzQ1MSA4LjQ2Nzg2IDEyLjM0NTEgNy43MDg1QzEyLjM0NTEgNi45NDkxIDEyLjk2MDcgNi4zMzM1IDEzLjcyMDEgNi4zMzM1QzE0LjQ3OTQgNi4zMzM1IDE1LjA5NTEgNi45NDkxIDE1LjA5NTEgNy43MDg1QzE1LjA5NTEgOC40Njc4NiAxNC40Nzk0IDkuMDgzNSAxMy43MjAxIDkuMDgzNVoiIGZpbGw9IiM0RTUxNTQiLz4KPC9zdmc+Cg==") center center/contain no-repeat;
+        }
+      }
+    }
+  }
   .wpsms-header-items-side {
     right: 16px !important;
     bottom: 12px !important;
@@ -582,7 +615,7 @@
   float: none
 }
 
-body.sms_page_wp-sms #TB_window ~ .select2-container.select2-container--default .wpsms-select2-tick-dropdown, .wpsms-select2-tick-dropdown {
+.wpsms-select2-tick-dropdown {
   z-index: 9999999 !important;
   border-color: #E7E7E7 !important;
 
@@ -707,13 +740,5 @@ body.sms_page_wp-sms #TB_window ~ .select2-container.select2-container--default 
 
   &:hover {
     color: #A03B1F;
-  }
-}
-
-body.rtl.sms_page_wp-sms {
-  #TB_window {
-    .wp_sms_subscribers_input_text[type="tel"]{
-        direction: rtl!important;
-    }
   }
 }
