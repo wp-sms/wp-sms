@@ -180,7 +180,7 @@
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" data-target="first-step" class="pro not-pro js-wp-sms-openPremiumModal"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
+                    <a style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" data-target="wp-sms-pro" class="pro not-pro js-wp-sms-openPremiumModal"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
                 </div>
 
                 <div class="set-date-field wpsms-sendsms__form-filed">
