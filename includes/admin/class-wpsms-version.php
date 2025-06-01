@@ -31,15 +31,15 @@ class Version
 
     /**
      * Deprecated: Check if Pro pack is enabled
-     * Use LicenseHelper::isPluginLicenseValid() instead
+     * Use LicenseHelper::isPluginLicensedAndActive() instead
      *
-     * @deprecated 7.0.0 Use LicenseHelper::isPluginLicenseValid()
+     * @deprecated 7.0.0 Use LicenseHelper::isPluginLicensedAndActive()
      */
     public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
-        self::maybe_deprecated_function(__METHOD__, 'LicenseHelper::isPluginLicenseValid()');
+        self::maybe_deprecated_function(__METHOD__, 'LicenseHelper::isPluginLicensedAndActive()');
         if ($pluginSlug == 'wp-sms-pro/wp-sms-pro.php') $pluginSlug = 'wp-sms-pro';
-        return LicenseHelper::isPluginLicenseValid($pluginSlug);
+        return LicenseHelper::isPluginLicensedAndActive($pluginSlug);
     }
 
     /**

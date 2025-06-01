@@ -35,7 +35,7 @@ if ($step_name !== 'first-step') {
                 <div>
                     <?php printf(
                         __('Your license includes the %s, but it’s not installed yet. Go to the Add-Ons page to install and %s it, so you can start using all its features.', 'wp-sms'),
-                        '<b>' . esc_attr($step_title) . '</b>',
+                        '<b>' . esc_attr($addon_name) . '</b>',
                         '<b>' . __('activate', 'wp-sms') . '</b>'
                     ); ?>
                 </div>
