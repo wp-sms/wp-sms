@@ -231,7 +231,7 @@ class WP_SMS
                 $wizard->add(StepFactory::create('SmsGateway', $wizard));
                 $wizard->add(StepFactory::create('Configuration', $wizard));
                 $wizard->add(StepFactory::create('TestSetup', $wizard));
-                if (!LicenseHelper::isPluginLicenseValid())
+                if (!LicenseHelper::isPluginLicensedAndActive())
                     $wizard->add(StepFactory::create('Pro', $wizard));
                 $wizard->add(StepFactory::create('Ready', $wizard));
                 $wizard->setup();
