@@ -4,6 +4,7 @@ namespace WP_SMS\Admin\AnonymizedUsageData;
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Gravityforms;
+use WP_SMS\Option as WPSmsOptionsManager;
 use WP_SMS\Quform;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Utils\OptionUtil as Option;
@@ -313,11 +314,6 @@ class AnonymizedUsageDataProvider
             ],
 
             // Mobile Field Settings
-            'adminMobileNumber'                     => [
-                'label' => esc_html__('Admin Mobile Number', 'wp-sms'),
-                'value' => OptionUtil::get('admin_mobile_number'),
-                'debug' => OptionUtil::get('admin_mobile_number'),
-            ],
             'addMobileField'                        => [
                 'label' => esc_html__('Add Mobile Field', 'wp-sms'),
                 'value' => OptionUtil::get('add_mobile_field'),
@@ -351,11 +347,6 @@ class AnonymizedUsageDataProvider
                 'label' => esc_html__('SMS Page Display', 'wp-sms'),
                 'value' => OptionUtil::get('account_credit_in_sendsms') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('account_credit_in_sendsms'),
-            ],
-            'disableDefaultFormStyling'             => [
-                'label' => esc_html__('Disable Default Form Styling', 'wp-sms'),
-                'value' => OptionUtil::get('disable_style_in_front') ? 'Enabled' : 'Disabled',
-                'debug' => OptionUtil::get('disable_style_in_front'),
             ],
 
             // SMS Gateway Settings
@@ -399,6 +390,16 @@ class AnonymizedUsageDataProvider
                 'value' => implode(', ', (array)OptionUtil::get('international_mobile_preferred_countries')),
                 'debug' => OptionUtil::get('international_mobile_preferred_countries'),
             ],
+            'onlyLocalNumbersCountries'             => [
+                'label' => esc_html__('International Only Countries', 'wp-sms'),
+                'value' => implode(', ', (array)OptionUtil::get('international_mobile_only_countries')),
+                'debug' => OptionUtil::get('international_mobile_only_countries'),
+            ],
+            'preferredLocalNumbersCountries'        => [
+                'label' => esc_html__('International Preferred Countries', 'wp-sms'),
+                'value' => implode(', ', (array)OptionUtil::get('international_mobile_preferred_countries')),
+                'debug' => OptionUtil::get('international_mobile_preferred_countries'),
+            ],
             'mobileCountyCode'                      => [
                 'label' => esc_html__('Mobile County Code', 'wp-sms'),
                 'value' => OptionUtil::get('mobile_county_code'),
@@ -421,6 +422,11 @@ class AnonymizedUsageDataProvider
                 'value' => OptionUtil::get('newsletter_form_welcome') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('newsletter_form_welcome'),
             ],
+            'formMultipleGroupSelect'          => [
+                'label' => esc_html__('Group Selection', 'wp-sms'),
+                'value' => OptionUtil::get('newsletter_form_multiple_select') ? 'Enabled' : 'Disabled',
+                'debug' => OptionUtil::get('newsletter_form_multiple_select'),
+            ],
 
             // Notification Settings
             'newPostAlertsStatus'                   => [
@@ -428,23 +434,23 @@ class AnonymizedUsageDataProvider
                 'value' => OptionUtil::get('notif_publish_new_post') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('notif_publish_new_post'),
             ],
-            'notificationRecipients'                => [
-                'label' => esc_html__('Notification Recipients', 'wp-sms'),
+            'newPostAlertsNotificationRecipients'   => [
+                'label' => esc_html__('New Post Alerts Notification Recipients', 'wp-sms'),
                 'value' => ucfirst(OptionUtil::get('notif_publish_new_post_receiver')),
                 'debug' => OptionUtil::get('notif_publish_new_post_receiver'),
             ],
-            'forceSend'                             => [
-                'label' => esc_html__('Force Send', 'wp-sms'),
+            'newPostAlertsForceSend'                => [
+                'label' => esc_html__('New Post Alerts Force Send', 'wp-sms'),
                 'value' => OptionUtil::get('notif_publish_new_post_force') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('notif_publish_new_post_force'),
             ],
-            'sendMms'                               => [
-                'label' => esc_html__('Send MMS', 'wp-sms'),
+            'newPostAlertsSendMms'                  => [
+                'label' => esc_html__('New Post Alerts Send MMS', 'wp-sms'),
                 'value' => OptionUtil::get('notif_publish_new_send_mms') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('notif_publish_new_send_mms'),
             ],
-            'postContentWordsLimit'                 => [
-                'label' => esc_html__('Post Content Words Limit', 'wp-sms'),
+            'newPostAlertsPostContentWordsLimit'    => [
+                'label' => esc_html__('New Post Alerts Post Content Words Limit', 'wp-sms'),
                 'value' => OptionUtil::get('notif_publish_new_post_words_count'),
                 'debug' => OptionUtil::get('notif_publish_new_post_words_count'),
             ],
@@ -452,11 +458,6 @@ class AnonymizedUsageDataProvider
                 'label' => esc_html__('Post Author Notification Status', 'wp-sms'),
                 'value' => OptionUtil::get('notif_publish_new_post_author') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('notif_publish_new_post_author'),
-            ],
-            'postAuthorNotificationTitle'           => [
-                'label' => esc_html__('Post Author Notification Title', 'wp-sms'),
-                'value' => OptionUtil::get('notif_publish_new_post_author_title'),
-                'debug' => OptionUtil::get('notif_publish_new_post_author_title'),
             ],
 
             // Message Button Settings
@@ -527,33 +528,23 @@ class AnonymizedUsageDataProvider
             // Pro: Login & Two-Factor Authentication (2FA)
             'loginWithSms'                          => [
                 'label' => esc_html__('Login With SMS', 'wp-sms'),
-                'value' => OptionUtil::get('login_sms') ? 'Enabled' : 'Disabled',
-                'debug' => OptionUtil::get('login_sms'),
-            ],
-            'loginSmsMessageBody'                   => [
-                'label' => esc_html__('Login SMS Message Body', 'wp-sms'),
-                'value' => !empty(OptionUtil::get('login_sms_message')) ? 'Customized' : 'Default/Empty',
-                'debug' => OptionUtil::get('login_sms_message'),
+                'value' => WPSmsOptionsManager::getOption('login_sms', \true) ? 'Enabled' : 'Disabled',
+                'debug' => WPSmsOptionsManager::getOption('login_sms', \true),
             ],
             'autoRegisterOnLogin'                   => [
                 'label' => esc_html__('Create User on SMS Login', 'wp-sms'),
-                'value' => OptionUtil::get('register_sms') ? 'Enabled' : 'Disabled',
-                'debug' => OptionUtil::get('register_sms'),
+                'value' => WPSmsOptionsManager::getOption('register_sms', \true) ? 'Enabled' : 'Disabled',
+                'debug' => WPSmsOptionsManager::getOption('register_sms', \true),
             ],
             'twoFactorStatus'                       => [
                 'label' => esc_html__('Two-Factor Authentication via SMS', 'wp-sms'),
-                'value' => OptionUtil::get('mobile_verify') ? 'Enabled' : 'Disabled',
-                'debug' => OptionUtil::get('mobile_verify'),
+                'value' => WPSmsOptionsManager::getOption('mobile_verify', \true) ? 'Enabled' : 'Disabled',
+                'debug' => WPSmsOptionsManager::getOption('mobile_verify', \true),
             ],
             'twoFactorPolicy'                       => [
                 'label' => esc_html__('2FA Policy', 'wp-sms'),
-                'value' => ucfirst(str_replace('_', ' ', OptionUtil::get('mobile_verify_method'))),
-                'debug' => OptionUtil::get('mobile_verify_method'),
-            ],
-            'twoFactorSmsMessage'                   => [
-                'label' => esc_html__('2FA SMS Message Body', 'wp-sms'),
-                'value' => !empty(OptionUtil::get('mobile_verify_message')) ? 'Customized' : 'Default/Empty',
-                'debug' => OptionUtil::get('mobile_verify_message'),
+                'value' => ucfirst(str_replace('_', ' ', WPSmsOptionsManager::getOption('mobile_verify_method', \true))),
+                'debug' => WPSmsOptionsManager::getOption('mobile_verify_method', \true),
             ],
 
 
@@ -570,83 +561,22 @@ class AnonymizedUsageDataProvider
                     'label' => esc_html__('Gravity Forms Integration Active', 'wp-sms'),
                     'value' => 'Yes',
                     'debug' => true
-                ],
-                'gfFormsCount'        => [
-                    'label' => esc_html__('Number of Gravity Forms', 'wp-sms'),
-                    'value' => count(\RGFormsModel::get_forms(null, 'title')),
-                    'debug' => count(\RGFormsModel::get_forms(null, 'title'))
                 ]
             ];
 
-            $forms = \RGFormsModel::get_forms(null, 'title');
-            if (!empty($forms)) {
-                foreach ($forms as $form) {
-                    $formId  = $form->id;
-                    $formKey = 'gfForm' . $formId;
-
-                    $gfSettings[$formKey . 'Enabled'] = [
-                        'label' => sprintf(esc_html__('Form %s Notifications Enabled', 'wp-sms'), $form->title),
-                        'value' => OptionUtil::get('gf_notify_enable_form_' . $formId) ? 'Yes' : 'No',
-                        'debug' => OptionUtil::get('gf_notify_enable_form_' . $formId)
-                    ];
-
-                    $gfSettings[$formKey . 'FieldEnabled'] = [
-                        'label' => sprintf(esc_html__('Form %s Field Notifications Enabled', 'wp-sms'), $form->title),
-                        'value' => OptionUtil::get('gf_notify_enable_field_form_' . $formId) ? 'Yes' : 'No',
-                        'debug' => OptionUtil::get('gf_notify_enable_field_form_' . $formId)
-                    ];
-
-                    $gfSettings[$formKey . 'FieldsCount'] = [
-                        'label' => sprintf(esc_html__('Form %s Available Fields Count', 'wp-sms'), $form->title),
-                        'value' => is_array(Gravityforms::get_field($formId)) ? count(Gravityforms::get_field($formId)) : 0,
-                        'debug' => is_array(Gravityforms::get_field($formId)) ? count(Gravityforms::get_field($formId)) : 0
-                    ];
-                }
-            }
             $settings = array_merge($settings, $gfSettings);
         }
 
         if (class_exists('Quform_Repository')) {
-            $quform = new \Quform_Repository();
-            $forms  = $quform->allForms();
+
 
             $qfSettings = [
                 'qfIntegrationActive' => [
                     'label' => esc_html__('Quform Integration Active', 'wp-sms'),
                     'value' => 'Yes',
                     'debug' => true
-                ],
-                'qfFormsCount'        => [
-                    'label' => esc_html__('Number of Quforms', 'wp-sms'),
-                    'value' => count($forms),
-                    'debug' => count($forms)
                 ]
             ];
-
-            if ($forms) {
-                foreach ($forms as $form) {
-                    $formId  = $form['id'];
-                    $formKey = 'qfForm' . $formId;
-
-                    $qfSettings[$formKey . 'Enabled'] = [
-                        'label' => sprintf(esc_html__('Form %s Notifications Enabled', 'wp-sms'), $form['name']),
-                        'value' => OptionUtil::get('qf_notify_enable_form_' . $formId) ? 'Yes' : 'No',
-                        'debug' => OptionUtil::get('qf_notify_enable_form_' . $formId)
-                    ];
-
-                    $qfSettings[$formKey . 'FieldEnabled'] = [
-                        'label' => sprintf(esc_html__('Form %s Field Notifications Enabled', 'wp-sms'), $form['name']),
-                        'value' => OptionUtil::get('qf_notify_enable_field_form_' . $formId) ? 'Yes' : 'No',
-                        'debug' => OptionUtil::get('qf_notify_enable_field_form_' . $formId)
-                    ];
-
-                    $qfSettings[$formKey . 'FieldsCount'] = [
-                        'label' => sprintf(esc_html__('Form %s Available Fields Count', 'wp-sms'), $form['name']),
-                        'value' => is_array(Quform::get_fields($formId)) ? count(Quform::get_fields($formId)) : 0,
-                        'debug' => is_array(Quform::get_fields($formId)) ? count(Quform::get_fields($formId)) : 0
-                    ];
-                }
-            }
 
             $settings = array_merge($settings, $qfSettings);
         }
@@ -661,18 +591,18 @@ class AnonymizedUsageDataProvider
                 ],
                 'eddMobileField'       => [
                     'label' => esc_html__('Mobile Field Enabled', 'wp-sms'),
-                    'value' => OptionUtil::get('edd_mobile_field') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('edd_mobile_field')
+                    'value' => WPSmsOptionsManager::getOption('edd_mobile_field', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('edd_mobile_field', \true)
                 ],
                 'eddNotifyOrder'       => [
                     'label' => esc_html__('New Order Notifications', 'wp-sms'),
-                    'value' => OptionUtil::get('edd_notify_order_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('edd_notify_order_enable')
+                    'value' => WPSmsOptionsManager::getOption('edd_notify_order_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('edd_notify_order_enable', \true)
                 ],
                 'eddNotifyCustomer'    => [
                     'label' => esc_html__('Customer Notifications', 'wp-sms'),
-                    'value' => OptionUtil::get('edd_notify_customer_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('edd_notify_customer_enable')
+                    'value' => WPSmsOptionsManager::getOption('edd_notify_customer_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('edd_notify_customer_enable', \true)
                 ]
             ];
 
@@ -689,28 +619,28 @@ class AnonymizedUsageDataProvider
                 ],
                 'jobMobileFieldEnabled'       => [
                     'label' => esc_html__('Job Mobile Field Enabled', 'wp-sms'),
-                    'value' => OptionUtil::get('job_mobile_field') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('job_mobile_field')
+                    'value' => WPSmsOptionsManager::getOption('job_mobile_field', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('job_mobile_field', \true)
                 ],
                 'jobDisplayMobileEnabled'     => [
                     'label' => esc_html__('Display Mobile Number Enabled', 'wp-sms'),
-                    'value' => OptionUtil::get('job_display_mobile_number') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('job_display_mobile_number')
+                    'value' => WPSmsOptionsManager::getOption('job_display_mobile_number', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('job_display_mobile_number', \true)
                 ],
                 'jobNewJobNotification'       => [
                     'label' => esc_html__('New Job Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('job_notify_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('job_notify_status')
+                    'value' => WPSmsOptionsManager::getOption('job_notify_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('job_notify_status', \true)
                 ],
                 'jobNotificationReceiverType' => [
                     'label' => esc_html__('New Job Notification Receiver Type', 'wp-sms'),
-                    'value' => OptionUtil::get('job_notify_receiver'),
-                    'debug' => OptionUtil::get('job_notify_receiver')
+                    'value' => WPSmsOptionsManager::getOption('job_notify_receiver', \true),
+                    'debug' => WPSmsOptionsManager::getOption('job_notify_receiver', \true)
                 ],
                 'jobEmployerNotification'     => [
                     'label' => esc_html__('Employer Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('job_notify_employer_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('job_notify_employer_status')
+                    'value' => WPSmsOptionsManager::getOption('job_notify_employer_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('job_notify_employer_status', \true)
                 ]
             ];
 
@@ -727,28 +657,28 @@ class AnonymizedUsageDataProvider
                 ],
                 'asNewTicketNotification'    => [
                     'label' => esc_html__('New Ticket Notification', 'wp-sms'),
-                    'value' => OptionUtil::get('as_notify_open_ticket_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('as_notify_open_ticket_status')
+                    'value' => WPSmsOptionsManager::getOption('as_notify_open_ticket_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('as_notify_open_ticket_status', \true)
                 ],
                 'asAdminReplyNotification'   => [
                     'label' => esc_html__('Admin Reply Notification', 'wp-sms'),
-                    'value' => OptionUtil::get('as_notify_admin_reply_ticket_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('as_notify_admin_reply_ticket_status')
+                    'value' => WPSmsOptionsManager::getOption('as_notify_admin_reply_ticket_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('as_notify_admin_reply_ticket_status', \true)
                 ],
                 'asUserReplyNotification'    => [
                     'label' => esc_html__('User Reply Notification', 'wp-sms'),
-                    'value' => OptionUtil::get('as_notify_user_reply_ticket_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('as_notify_user_reply_ticket_status')
+                    'value' => WPSmsOptionsManager::getOption('as_notify_user_reply_ticket_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('as_notify_user_reply_ticket_status', \true)
                 ],
                 'asStatusUpdateNotification' => [
                     'label' => esc_html__('Status Update Notification', 'wp-sms'),
-                    'value' => OptionUtil::get('as_notify_update_ticket_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('as_notify_update_ticket_status')
+                    'value' => WPSmsOptionsManager::getOption('as_notify_update_ticket_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('as_notify_update_ticket_status', \true)
                 ],
                 'asTicketCloseNotification'  => [
                     'label' => esc_html__('Ticket Close Notification', 'wp-sms'),
-                    'value' => OptionUtil::get('as_notify_close_ticket_status') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('as_notify_close_ticket_status')
+                    'value' => WPSmsOptionsManager::getOption('as_notify_close_ticket_status', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('as_notify_close_ticket_status', \true)
                 ]
             ];
 
@@ -765,8 +695,8 @@ class AnonymizedUsageDataProvider
                 ],
                 'umApprovalNotification' => [
                     'label' => esc_html__('User Approval Notification', 'wp-sms'),
-                    'value' => OptionUtil::get('um_send_sms_after_approval') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('um_send_sms_after_approval')
+                    'value' => WPSmsOptionsManager::getOption('um_send_sms_after_approval', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('um_send_sms_after_approval', \true)
                 ]
             ];
 
@@ -783,8 +713,8 @@ class AnonymizedUsageDataProvider
                 ],
                 'formidableMetaboxStatus' => [
                     'label' => esc_html__('Formidable Metabox', 'wp-sms'),
-                    'value' => OptionUtil::get('formidable_metabox') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('formidable_metabox')
+                    'value' => WPSmsOptionsManager::getOption('formidable_metabox', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('formidable_metabox', \true)
                 ]
             ];
 
@@ -799,15 +729,6 @@ class AnonymizedUsageDataProvider
                     'value' => 'Active',
                     'debug' => true
                 ],
-                'forminatorMetaboxForms' => [
-                    'label' => esc_html__('Forminator Forms Configured', 'wp-sms'),
-                    'value' => function_exists('Forminator_API::get_forms')
-                        ? count(Forminator_API::get_forms(null, 1, 100, "publish")) . ' form(s)'
-                        : 'Unavailable',
-                    'debug' => function_exists('Forminator_API::get_forms')
-                        ? Forminator_API::get_forms(null, 1, 100, "publish")
-                        : []
-                ]
             ];
 
             // Merge Forminator settings with existing settings
@@ -818,38 +739,38 @@ class AnonymizedUsageDataProvider
             $bpSettings = [
                 'bpWelcomeSmsStatus'           => [
                     'label' => esc_html__('BuddyPress: Welcome SMS', 'wp-sms'),
-                    'value' => OptionUtil::get('bp_welcome_notification_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('bp_welcome_notification_enable'),
+                    'value' => WPSmsOptionsManager::getOption('bp_welcome_notification_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('bp_welcome_notification_enable', \true),
                 ],
                 'bpMentionNotification'        => [
                     'label' => esc_html__('BuddyPress: Mention Alerts', 'wp-sms'),
-                    'value' => OptionUtil::get('bp_mention_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('bp_mention_enable'),
+                    'value' => WPSmsOptionsManager::getOption('bp_mention_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('bp_mention_enable', \true),
                 ],
                 'bpMentionMessageBody'         => [
                     'label' => esc_html__('BuddyPress: Mention Message Body', 'wp-sms'),
-                    'value' => !empty(OptionUtil::get('bp_mention_message')) ? 'Customized' : 'Empty',
+                    'value' => !empty(WPSmsOptionsManager::getOption('bp_mention_message', \true)) ? 'Customized' : 'Empty',
                     'debug' => 'Hidden for privacy',
                 ],
                 'bpPrivateMessageNotification' => [
                     'label' => esc_html__('BuddyPress: Private Messages', 'wp-sms'),
-                    'value' => OptionUtil::get('bp_private_message_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('bp_private_message_enable'),
+                    'value' => WPSmsOptionsManager::getOption('bp_private_message_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('bp_private_message_enable', \true),
                 ],
                 'bpActivityReplyNotification'  => [
                     'label' => esc_html__('BuddyPress: Activity Replies', 'wp-sms'),
-                    'value' => OptionUtil::get('bp_comments_activity_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('bp_comments_activity_enable'),
+                    'value' => WPSmsOptionsManager::getOption('bp_comments_activity_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('bp_comments_activity_enable', \true),
                 ],
                 'bpActivityReplyMessageBody'   => [
                     'label' => esc_html__('BuddyPress: Activity Reply Message', 'wp-sms'),
-                    'value' => !empty(OptionUtil::get('bp_comments_activity_message')) ? 'Customized' : 'Empty',
+                    'value' => !empty(WPSmsOptionsManager::getOption('bp_comments_activity_message', \true)) ? 'Customized' : 'Empty',
                     'debug' => 'Hidden for privacy',
                 ],
                 'bpCommentReplyNotification'   => [
                     'label' => esc_html__('BuddyPress: Comment Replies', 'wp-sms'),
-                    'value' => OptionUtil::get('bp_comments_reply_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('bp_comments_reply_enable'),
+                    'value' => WPSmsOptionsManager::getOption('bp_comments_reply_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('bp_comments_reply_enable', \true),
                 ]
             ];
 
@@ -860,54 +781,55 @@ class AnonymizedUsageDataProvider
             $wcSettings = [
                 'wcMetaBoxEnable'                       => [
                     'label' => esc_html__('Order Meta Box Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_meta_box_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_meta_box_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_meta_box_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_meta_box_enable', \true),
                 ],
                 'wcNotifyProductEnable'                 => [
                     'label' => esc_html__('New Product Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_notify_product_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_notify_product_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_notify_product_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_notify_product_enable', \true),
                 ],
                 'wcNotifyOrderEnable'                   => [
                     'label' => esc_html__('New Order Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_notify_order_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_notify_order_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_notify_order_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_notify_order_enable', \true),
                 ],
                 'wcNotifyCustomerEnable'                => [
                     'label' => esc_html__('Customer Order Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_notify_customer_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_notify_customer_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_notify_customer_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_notify_customer_enable', \true),
                 ],
                 'wcNotifyStockEnable'                   => [
                     'label' => esc_html__('Low Stock Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_notify_stock_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_notify_stock_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_notify_stock_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_notify_stock_enable', \true),
                 ],
                 'wcCheckoutConfirmationCheckboxEnabled' => [
                     'label' => esc_html__('Checkout Confirmation Checkbox Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_checkout_confirmation_checkbox_enabled') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_checkout_confirmation_checkbox_enabled'),
+                    'value' => WPSmsOptionsManager::getOption('wc_checkout_confirmation_checkbox_enabled', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_checkout_confirmation_checkbox_enabled', \true),
                 ],
                 'wcNotifyStatusEnable'                  => [
                     'label' => esc_html__('Order Status Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_notify_status_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_notify_status_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_notify_status_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_notify_status_enable', \true),
                 ],
                 'wcNotifyByStatusEnable'                => [
                     'label' => esc_html__('Specific Order Status Notification Status', 'wp-sms'),
-                    'value' => OptionUtil::get('wc_notify_by_status_enable') ? 'Enabled' : 'Disabled',
-                    'debug' => OptionUtil::get('wc_notify_by_status_enable'),
+                    'value' => WPSmsOptionsManager::getOption('wc_notify_by_status_enable', \true) ? 'Enabled' : 'Disabled',
+                    'debug' => WPSmsOptionsManager::getOption('wc_notify_by_status_enable', \true),
                 ],
                 'wcNotifyByStatusContentCount'          => [
                     'label' => esc_html__('Number of Configured Status Notifications', 'wp-sms'),
-                    'value' => is_array(OptionUtil::get('wc_notify_by_status_content')) ? count(OptionUtil::get('wc_notify_by_status_content')) : 0,
-                    'debug' => is_array(OptionUtil::get('wc_notify_by_status_content')) ? count(OptionUtil::get('wc_notify_by_status_content')) : 0,
+                    'value' => is_array(WPSmsOptionsManager::getOption('wc_notify_by_status_content', \true)) ? count(WPSmsOptionsManager::getOption('wc_notify_by_status_content', \true)) : 0,
+                    'debug' => is_array(WPSmsOptionsManager::getOption('wc_notify_by_status_content', \true)) ? count(WPSmsOptionsManager::getOption('wc_notify_by_status_content', \true)) : 0,
                 ]
             ];
 
+
             $settings = array_merge($settings, $wcSettings);
         }
-        var_dump(print_r($settings, true));
+
         return $settings;
     }
 }
