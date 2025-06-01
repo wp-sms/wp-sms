@@ -1,4 +1,5 @@
-v6.9.* - 2025-xx-xx
+v6.9.x - 2025-04-x
+- **New**: Added a select input to choose the API endpoint for apigateway.
 - **Fix**: Support wider range of CSV MIME types during the import proccess.
 - **Fix**: Fix scheduled posts notification
 - **Fix**: Fix type in send-sms.php
