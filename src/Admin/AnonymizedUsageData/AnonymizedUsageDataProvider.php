@@ -229,7 +229,7 @@ class AnonymizedUsageDataProvider
         $processedSettings = [];
 
         foreach ($rawSettings as $key => $setting) {
-            $processedSettings[$key] = $setting['debug'] ?? $setting['value'] ?? null;
+            $processedSettings[$key] = $setting['value'] ?? $setting['debug'] ?? null;
         }
 
         return $processedSettings;
@@ -422,7 +422,7 @@ class AnonymizedUsageDataProvider
                 'value' => OptionUtil::get('newsletter_form_welcome') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('newsletter_form_welcome'),
             ],
-            'formMultipleGroupSelect'          => [
+            'formMultipleGroupSelect'               => [
                 'label' => esc_html__('Group Selection', 'wp-sms'),
                 'value' => OptionUtil::get('newsletter_form_multiple_select') ? 'Enabled' : 'Disabled',
                 'debug' => OptionUtil::get('newsletter_form_multiple_select'),
