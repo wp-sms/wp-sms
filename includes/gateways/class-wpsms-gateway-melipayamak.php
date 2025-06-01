@@ -136,7 +136,7 @@ class melipayamak extends \WP_SMS\Gateway
     public function GetCredit()
     {
         // Check username and password
-        if (!$this->username && !$this->password) {
+        if (!$this->username or !$this->password) {
             return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
         }
 
@@ -151,6 +151,7 @@ class melipayamak extends \WP_SMS\Gateway
                 "username" => $this->username,
                 "password" => $this->password
             ))->GetCreditResult;
+
         } catch (\SoapFault $ex) {
             return new \WP_Error('account-credit', $ex->faultstring);
         }

@@ -1,5 +1,9 @@
 v6.9.x - 2025-04-x
 - **New**: Added a select input to choose the API endpoint for apigateway.
+- **Fix**: Support wider range of CSV MIME types during the import proccess.
+- **Fix**: Fix scheduled posts notification
+- **Fix**: Fix type in send-sms.php
+- **Fix**: Remove some down gateways
 
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
