@@ -161,10 +161,10 @@ class Gateway
             'smseagle' => 'smseagle.eu'
         ),
         'australia'      => array(
-            'smsbroadcast'      => 'smsbroadcast.com.au',
-            'textteam'          => 'textteam.com.au',
-            'messagemedia'      => 'messagemedia.com/au',
-            'smscentral'        => 'smscentral.com.au',
+            'smsbroadcast' => 'smsbroadcast.com.au',
+            'textteam'     => 'textteam.com.au',
+            'messagemedia' => 'messagemedia.com/au',
+            'smscentral'   => 'smscentral.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
@@ -680,11 +680,11 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'australia'            => array(
-                'mobilemessage'     =>  'mobilemessage.com.au',
-                'slinteractive'     => 'slinteractive.com.au',
-                'smssolutions'      => 'smssolutionsaustralia.com.au',
-                '_160au'            => '160.com.au',
-                'gunisms'           => 'gunisms.com.au',
+                'mobilemessage' => 'mobilemessage.com.au',
+                'slinteractive' => 'slinteractive.com.au',
+                'smssolutions'  => 'smssolutionsaustralia.com.au',
+                '_160au'        => '160.com.au',
+                'gunisms'       => 'gunisms.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',
@@ -750,63 +750,63 @@ class Gateway
                 'fast2sms'                => 'fast2sms.com'
             ),
             'iran'                 => array(
-                'iransmspanel'   => 'iransmspanel.ir',
-                'markazpayamak'  => 'markazpayamak.ir',
-                'adpdigital'     => 'adpdigital.com',
-                'hostiran'       => 'hostiran.net',
-                'sunwaysms'      => 'sunwaysms.com',
-                'farapayamak'    => 'farapayamak.com',
-                'smsclick'       => 'smsclick.ir',
-                'persiansms'     => 'persiansms.com',
-                'sms_s'          => 'modiresms.com',
-                'smscall'        => 'smscall.ir',
-                'paaz'           => 'paaz.ir',
-                'textsms'        => 'textsms.ir',
-                'loginpanel'     => 'loginpanel.ir',
-                'tcisms'         => 'tcisms.com',
-                'nasrpayam'      => 'nasrPayam.ir',
-                'smsbartar'      => 'sms-bartar.com',
-                'payamresan'     => 'payam-resan.com',
-                'mdpanel'        => 'ippanel.com',
-                'payameroz'      => 'payameroz.ir',
-                'mediana'        => 'mediana.ir',
-                'aradsms'        => 'arad-sms.ir',
-                'aradpayamak'    => 'aradpayamak.net',
-                'sms'            => 'sms.ir',
-                'novin1sms'      => 'novin1sms.ir',
-                'smstoos'        => 'smstoos.ir',
-                'ssmss'          => 'ssmss.ir',
-                'idehpayam'      => 'idehpayam.com',
-                'smsmelli'       => 'smsmelli.com',
-                'smsban'         => 'smsban.ir',
-                'afe'            => 'afe.ir',
-                'asanak'         => 'asanak.ir',
-                '_0098sms'       => '0098sms.com',
-                'spadbs'         => 'spadsms.ir',
-                'bandarsms'      => 'bandarit.ir',
-                'chapargah'      => 'chapargah.ir',
-                'ismsie'         => 'isms.ir',
-                'razpayamak'     => 'razpayamak.com',
-                'bestit'         => 'bestit.co',
-                'adspanel'       => 'adspanel.ir',
-                'mydnspanel'     => 'mydnspanel.com',
-                'payamakaria'    => 'payamakaria.ir',
-                'tsms'           => 'tsms.ir',
-                'parsasms'       => 'parsasms.com',
-                'smsline'        => 'smsline.ir',
-                'parsgreen'      => 'api.ir',
-                'kavenegar'      => 'kavenegar.com',
-                '_18sms'         => '18sms.ir',
-                'sabanovin'      => 'sabanovin.com',
-                'candoosms'      => 'candoosms.com',
-                'hirosms'        => 'hiro-sms.com',
-                'onlinepanel'    => 'onlinepanel.ir',
-                'rayansmspanel'  => 'rayansmspanel.ir',
-                'farazsms'       => 'farazsms.com',
-                'raygansms'      => 'raygansms.com',
-                'signalads'      => 'signalads.com',
-                'matinsms'       => 'MatinSMS.ir',
-                'melipayamak'    => 'melipayamak.ir',
+                'iransmspanel'  => 'iransmspanel.ir',
+                'markazpayamak' => 'markazpayamak.ir',
+                'adpdigital'    => 'adpdigital.com',
+                'hostiran'      => 'hostiran.net',
+                'sunwaysms'     => 'sunwaysms.com',
+                'farapayamak'   => 'farapayamak.com',
+                'smsclick'      => 'smsclick.ir',
+                'persiansms'    => 'persiansms.com',
+                'sms_s'         => 'modiresms.com',
+                'smscall'       => 'smscall.ir',
+                'paaz'          => 'paaz.ir',
+                'textsms'       => 'textsms.ir',
+                'loginpanel'    => 'loginpanel.ir',
+                'tcisms'        => 'tcisms.com',
+                'nasrpayam'     => 'nasrPayam.ir',
+                'smsbartar'     => 'sms-bartar.com',
+                'payamresan'    => 'payam-resan.com',
+                'mdpanel'       => 'ippanel.com',
+                'payameroz'     => 'payameroz.ir',
+                'mediana'       => 'mediana.ir',
+                'aradsms'       => 'arad-sms.ir',
+                'aradpayamak'   => 'aradpayamak.net',
+                'sms'           => 'sms.ir',
+                'novin1sms'     => 'novin1sms.ir',
+                'smstoos'       => 'smstoos.ir',
+                'ssmss'         => 'ssmss.ir',
+                'idehpayam'     => 'idehpayam.com',
+                'smsmelli'      => 'smsmelli.com',
+                'smsban'        => 'smsban.ir',
+                'afe'           => 'afe.ir',
+                'asanak'        => 'asanak.ir',
+                '_0098sms'      => '0098sms.com',
+                'spadbs'        => 'spadsms.ir',
+                'bandarsms'     => 'bandarit.ir',
+                'chapargah'     => 'chapargah.ir',
+                'ismsie'        => 'isms.ir',
+                'razpayamak'    => 'razpayamak.com',
+                'bestit'        => 'bestit.co',
+                'adspanel'      => 'adspanel.ir',
+                'mydnspanel'    => 'mydnspanel.com',
+                'payamakaria'   => 'payamakaria.ir',
+                'tsms'          => 'tsms.ir',
+                'parsasms'      => 'parsasms.com',
+                'smsline'       => 'smsline.ir',
+                'parsgreen'     => 'api.ir',
+                'kavenegar'     => 'kavenegar.com',
+                '_18sms'        => '18sms.ir',
+                'sabanovin'     => 'sabanovin.com',
+                'candoosms'     => 'candoosms.com',
+                'hirosms'       => 'hiro-sms.com',
+                'onlinepanel'   => 'onlinepanel.ir',
+                'rayansmspanel' => 'rayansmspanel.ir',
+                'farazsms'      => 'farazsms.com',
+                'raygansms'     => 'raygansms.com',
+                'signalads'     => 'signalads.com',
+                'matinsms'      => 'MatinSMS.ir',
+                'melipayamak'   => 'melipayamak.ir',
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
@@ -822,8 +822,8 @@ class Gateway
                 'bareedsms'    => 'bareedsms.com',
             ),
             'africa'               => array(
-                '_ebulksms'          => 'ebulksms.com',
-                'africastalking'     => 'africastalking.com',
+                '_ebulksms'      => 'ebulksms.com',
+                'africastalking' => 'africastalking.com',
             ),
             'cyprus'               => array(
                 'websmscy' => 'websms.com.cy',
@@ -835,7 +835,7 @@ class Gateway
                 'eazismspro' => 'eazismspro.com',
             ),
             'greece'               => array(
-                'liveall'  => 'liveall.eu',
+                'liveall' => 'liveall.eu',
             ),
             'malaysia'             => array(
                 'onewaysms' => 'onewaysms.com',
@@ -850,9 +850,9 @@ class Gateway
                 'directsend' => 'directsend.co.kr',
             ),
             'sweden'               => array(
-                'hellosms'      => 'hellosms.se',
-                'prosms'        => 'prosms.se',
-                'cellsynt'      => 'cellsynt',
+                'hellosms' => 'hellosms.se',
+                'prosms'   => 'prosms.se',
+                'cellsynt' => 'cellsynt',
             ),
             'development'          => array(
                 'custom' => __('Custom Gateway', 'wp-sms')
@@ -1432,5 +1432,29 @@ class Gateway
                 'cta_link'    => admin_url('admin.php?page=wp-sms-settings&tab=gateway'),
             ]);
         }
+    }
+
+    /**
+     * Extracts arguments from the message body using a specified separator.
+     *
+     * This method splits the message (`$this->msg`) by the given separator (default is colon `:`)
+     * and returns the resulting parts as an array. If the message cannot be split properly,
+     * it returns null.
+     *
+     * @param string $separator The character used to separate arguments in the message. Default is ":".
+     *
+     * @return array|null Returns an array of message parts if successful, or null if splitting fails.
+     *
+     * @author Amir Pirmoradian <piramir77@gmail.com>
+     */
+    public function getArgsFromPatternedMessages(string $separator = ":"): array|null
+    {
+        $message_body = explode($separator, $this->msg);
+
+        if (is_array($message_body)) {
+            return $message_body;
+        }
+
+        return null;
     }
 }
