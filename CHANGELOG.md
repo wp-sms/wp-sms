@@ -4,6 +4,7 @@ v6.9.x - 2025-04-x
 - **Fix**: Fix scheduled posts notification
 - **Fix**: Fix type in send-sms.php
 - **Fix**: Remove some down gateways
+- **Enhancement**: Refactor MeliPayamak Gateway
 
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
