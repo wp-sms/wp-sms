@@ -102,9 +102,15 @@ class melipayamak extends Gateway
         // Default message fallback
         $this->msg = $message ?? $this->msg;
 
-        // Format pattern arguments if present
-        $pattern_values = $this->getArgsFromPatternedMessages();
-        $formatted_text = $pattern_values ? implode(';', $pattern_values) : $message;
+        if($body_id != null){
+            // Format pattern arguments if present
+            $pattern_values = $this->getArgsFromPatternedMessages();
+            $formatted_text = $pattern_values ? implode(';', $pattern_values) : $message;
+        }else{
+            //No need to format the message if there was no template
+            $formatted_text = $message;
+        }
+
 
         // Decide API type
         $effective_api_type = $api_type_override ?? ($body_id ? 'shared' : 'smart');
