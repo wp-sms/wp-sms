@@ -174,6 +174,11 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+= v7.0 =
+- **Enhancement**: Integrate NumberParser for phone number validation.
+- **Enhancement**: Unsubscription different format support.
+- **Enhancement**: Unsubscription different same subscribers with different formats.
+
 = v6.9.12 - 2025-03-31 =
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.

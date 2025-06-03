@@ -1,3 +1,8 @@
+v7.0
+- **Enhancement**: Integrate NumberParser for phone number validation.
+- **Enhancement**: Unsubscription different format support.
+- **Enhancement**: Unsubscription different same subscribers with different formats.
+
 v6.9.x - 2025-xx-xx
 - **Fix**: Fix type in send-sms.php
 
