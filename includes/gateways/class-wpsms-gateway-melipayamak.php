@@ -2,21 +2,65 @@
 
 namespace WP_SMS\Gateway;
 
-class melipayamak extends \WP_SMS\Gateway
+use WP_Error;
+use WP_SMS\Gateway;
+
+class melipayamak extends Gateway
 {
-    private $wsdl_link = "http://api.payamak-panel.com/post/Send.asmx?wsdl";
     public $tariff = "http://melipayamak.ir/";
     public $unitrial = true;
     public $unit;
     public $flash = "enable";
     public $isflash = false;
+    public string $api_type = 'shared';
+    public string $from_support_one = '';
+    public string $from_support_two = '';
+
+    protected string $base_url = 'https://rest.payamak-panel.com/api/';
 
     public function __construct()
     {
         parent::__construct();
         $this->validateNumber = "09xxxxxxxx";
 
-        @ini_set("soap.wsdl_cache_enabled", "0");
+        // Define configuration fields for the gateway
+        $this->gatewayFields = [
+            'username'         => [
+                'id'   => 'gateway_username',
+                'name' => __('API username', 'wp-sms'),
+                'desc' => __('Enter API username of gateway', 'wp-sms'),
+            ],
+            'password'         => [
+                'id'   => 'gateway_password',
+                'name' => __('API password', 'wp-sms'),
+                'desc' => __('Enter API password of gateway', 'wp-sms'),
+            ],
+            'from'             => [
+                'id'   => 'gateway_sender_id',
+                'name' => __('Sender number', 'wp-sms'),
+                'desc' => __('Sender number or sender ID', 'wp-sms'),
+            ],
+            'api_type'         => [
+                'id'      => 'api_type',
+                'name'    => __('API Type', 'wp-sms'),
+                'desc'    => __('Please select the API type.', 'wp-sms'),
+                'type'    => 'select',
+                'options' => [
+                    'shared' => __('Shared Service Line – Pattern SMS', 'wp-sms'),
+                    'smart'  => __('Smart Line', 'wp-sms'),
+                ]
+            ],
+            'from_support_one' => [
+                'id'   => 'gateway_support_1_sender_id',
+                'name' => __('Backup sender 1 (optional)', 'wp-sms'),
+                'desc' => __('Optional: support sender number used with Smart SMS.', 'wp-sms'),
+            ],
+            'from_support_two' => [
+                'id'   => 'gateway_support_2_sender_id',
+                'name' => __('Backup sender 2 (optional)', 'wp-sms'),
+                'desc' => __('Optional: secondary support sender used with Smart SMS.', 'wp-sms'),
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -31,7 +75,6 @@ class melipayamak extends \WP_SMS\Gateway
          *
          * @param string $this ->from sender number.
          * @since 3.4
-         *
          */
         $this->from = apply_filters('wp_sms_from', $this->from);
 
@@ -40,7 +83,6 @@ class melipayamak extends \WP_SMS\Gateway
          *
          * @param array $this ->to receiver number
          * @since 3.4
-         *
          */
         $this->to = apply_filters('wp_sms_to', $this->to);
 
@@ -49,111 +91,131 @@ class melipayamak extends \WP_SMS\Gateway
          *
          * @param string $this ->msg text message.
          * @since 3.4
-         *
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        $message_parts     = explode("##", $this->msg);
+        $this->msg      = $message_parts[0] ?? '';
+        $api_type_override = $message_parts[1] ?? null;
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
+        // Parse message for pattern and optional API override
+        $message_parts = $this->getTemplateIdAndMessageBody();
+        if(is_array($message_parts)){
+            $body_id = $message_parts['template_id'];
+            $message = $message_parts['message'];
+        }else{
+            [$body_id, $message] = explode('-', $this->msg, 2);
         }
-        $textarray_wp = explode("##", $this->msg);
-        $key          = array_pop($textarray_wp);
-        if (trim($key) == "shared") {
-            try {
-                $text_wp1      = implode(" ", $textarray_wp);
-                $textarray_wp2 = explode("-", $text_wp1);
-                $bodyid        = array_shift($textarray_wp2);
-                $client        = new \SoapClient($this->wsdl_link);
-                for ($i = 0; $i < count($this->to); $i++) {
-                    $data   = [
-                        "username" => $this->username,
-                        "password" => $this->password,
-                        "text"     => $textarray_wp2[0],
-                        "to"       => $this->to[$i],
-                        "bodyId"   => $bodyid
-                    ];
-                    $result = $client->SendByBaseNumber2($data)->SendByBaseNumber2Result;
-                    if ($result > 1000) {
-                        $result = 1;
-                    }
-                    $this->log($this->from, $textarray_wp2[0], $this->to[$i], $result);
-                    do_action('wp_sms_send', $result);
+        $this->msg = $message;
 
-                    return $result;
+        // Format pattern arguments if present
+        $pattern_values = $this->getArgsFromPatternedMessages();
+        if($pattern_values != null){
+            $formatted_text = implode(';', $pattern_values);
+        }else{
+            $formatted_text = $message;
+        }
+
+        // Override API type if provided in message
+        $effective_api_type = $api_type_override !== null ? trim($api_type_override) : $this->api_type;
+
+        try {
+            // Shared SMS block
+            if ($effective_api_type === 'shared') {
+                foreach ($this->to as $recipient) {
+                    $response = $this->request('POST', $this->base_url . 'SendSMS/BaseServiceNumber', [], [
+                        'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                        'body'      => http_build_query([
+                            'username' => $this->username,
+                            'password' => $this->password,
+                            'text'     => $formatted_text,
+                            'to'       => $recipient,
+                            'bodyId'   => $body_id,
+                        ]),
+                        'timeout'   => 20,
+                        'sslverify' => false,
+                    ]);
+
+                    $this->log($this->from, $formatted_text, $recipient, $response);
+                    do_action('wp_sms_send', $response);
+                    return $response;
                 }
-
-            } catch (\SoapFault $ex) {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $ex->faultstring, 'error');
-
-                return new \WP_Error('send-sms', $ex->faultstring);
             }
-        } else {
-            try {
-                $client                 = new \SoapClient($this->wsdl_link);
-                $parameters['username'] = $this->username;
-                $parameters['password'] = $this->password;
-                $parameters['from']     = $this->from;
-                $parameters['to']       = $this->to;
-                $parameters['text']     = $this->msg;
-                $parameters['isflash']  = $this->isflash;
-                $parameters['udh']      = "";
-                $parameters['recId']    = array(0);
-                $parameters['status']   = 0x0;
 
-                $result = $client->SendSms($parameters)->SendSmsResult;
+            // Smart SMS block
+            if ($effective_api_type === 'smart') {
+                $recipients = is_array($this->to) ? implode(',', $this->to) : $this->to;
 
+                $response = $this->request('POST', $this->base_url . 'SmartSMS/Send', [], [
+                    'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                    'body'      => http_build_query([
+                        'username'       => $this->username,
+                        'password'       => $this->password,
+                        'from'           => $this->from,
+                        'to'             => $recipients,
+                        'text'           => $this->msg,
+                        'fromSupportOne' => $this->from_support_one,
+                        'fromSupportTwo' => $this->from_support_two,
+                    ]),
+                    'timeout'   => 20,
+                    'sslverify' => false,
+                ]);
 
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $result);
-
-                /**
-                 * Run hook after send sms.
-                 *
-                 * @param string $result result output.
-                 * @since 2.4
-                 *
-                 */
-                do_action('wp_sms_send', $result);
-
-                return $result;
-            } catch (\SoapFault $ex) {
-                // Log the result
-                $this->log($this->from, $this->msg, $this->to, $ex->faultstring, 'error');
-
-                return new \WP_Error('send-sms', $ex->faultstring);
+                $this->log($this->from, $this->msg, $this->to, $response);
+                do_action('wp_sms_send', $response);
+                return $response;
             }
+
+            // Default SMS block
+            $recipients = is_array($this->to) ? implode(',', $this->to) : $this->to;
+
+            $response = $this->request('POST', $this->base_url . 'SendSMS/SendSMS', [], [
+                'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'body'      => http_build_query([
+                    'username' => $this->username,
+                    'password' => $this->password,
+                    'from'     => $this->from,
+                    'to'       => $recipients,
+                    'text'     => $this->msg,
+                    'isflash'  => $this->isflash ? 'true' : 'false',
+                    'udh'      => '',
+                    'recId'    => '0',
+                    'status'   => '0',
+                ]),
+                'timeout'   => 20,
+                'sslverify' => false,
+            ]);
+
+            $this->log($this->from, $this->msg, $this->to, $response);
+            do_action('wp_sms_send', $response);
+            return $response;
+
+        } catch (\Throwable $ex) {
+            $this->log($this->from, $this->msg, $this->to, $ex->getMessage(), 'error');
+            return new WP_Error('send-sms', $ex->getMessage());
         }
     }
 
     public function GetCredit()
     {
-        // Check username and password
-        if (!$this->username or !$this->password) {
-            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
-        }
-
-        if (!class_exists('SoapClient')) {
-            return new \WP_Error('required-class', esc_html__('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
-        }
-
         try {
-            $client = new \SoapClient($this->wsdl_link);
+            $response = $this->request('POST', $this->base_url . 'SendSMS/GetCredit', [], [
+                'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'body'      => http_build_query([
+                    'username' => $this->username,
+                    'password' => $this->password,
+                ]),
+                'timeout'   => 20,
+                'sslverify' => false,
+            ]);
 
-            return $client->GetCredit(array(
-                "username" => $this->username,
-                "password" => $this->password
-            ))->GetCreditResult;
+            if (isset($response->RetStatus) && $response->RetStatus == 1) {
+                return $response->Value;
+            }
 
-        } catch (\SoapFault $ex) {
-            return new \WP_Error('account-credit', $ex->faultstring);
+            return new WP_Error('account-credit', __('Failed to retrieve credit from MeliPayamak.', 'wp-sms'));
+        } catch (\Throwable $ex) {
+            return new WP_Error('account-credit', $ex->getMessage());
         }
     }
 }
