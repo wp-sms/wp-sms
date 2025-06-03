@@ -59,9 +59,9 @@ class AnonymizedUsageDataManager
         $data = [
             'domain'            => AnonymizedUsageDataProvider::getHomeUrl(),
             'wordpress_version' => AnonymizedUsageDataProvider::getWordPressVersion(),
-            'php_version'       => AnonymizedUsageDataProvider::getPhpVersion() ?? 'not available',
+            'php_version'       => AnonymizedUsageDataProvider::getPhpVersion() ?: 'not available',
             'plugin_version'    => AnonymizedUsageDataProvider::getPluginVersion(),
-            'database_version'  => AnonymizedUsageDataProvider::getDatabaseVersion() ?? 'not available',
+            'database_version'  => AnonymizedUsageDataProvider::getDatabaseVersion() ?: 'not available',
             'server_info'       => AnonymizedUsageDataProvider::getServerInfo(),
             'theme_info'        => AnonymizedUsageDataProvider::getThemeInfo(),
             'plugins'           => AnonymizedUsageDataProvider::getAllPlugins(),
