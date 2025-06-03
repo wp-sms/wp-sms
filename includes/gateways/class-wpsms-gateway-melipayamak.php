@@ -12,7 +12,6 @@ class melipayamak extends Gateway
     public $unit;
     public $flash = "enable";
     public $isflash = false;
-    public string $api_type = 'shared';
     public string $from_support_one = '';
     public string $from_support_two = '';
 
@@ -39,16 +38,6 @@ class melipayamak extends Gateway
                 'id'   => 'gateway_sender_id',
                 'name' => __('Sender number', 'wp-sms'),
                 'desc' => __('Sender number or sender ID', 'wp-sms'),
-            ],
-            'api_type'         => [
-                'id'      => 'api_type',
-                'name'    => __('API Type', 'wp-sms'),
-                'desc'    => __('Please select the API type.', 'wp-sms'),
-                'type'    => 'select',
-                'options' => [
-                    'shared' => __('Shared Service Line – Pattern SMS', 'wp-sms'),
-                    'smart'  => __('Smart Line', 'wp-sms'),
-                ]
             ],
             'from_support_one' => [
                 'id'   => 'gateway_support_1_sender_id',
@@ -94,30 +83,35 @@ class melipayamak extends Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        $message_parts     = explode("##", $this->msg);
-        $this->msg      = $message_parts[0] ?? '';
-        $api_type_override = $message_parts[1] ?? null;
+        // Try to extract method (shared or smart) from the text message
+        [$raw_message, $api_type_override] = array_pad(explode("##", $this->msg, 2), 2, null);
 
-        // Parse message for pattern and optional API override
-        $message_parts = $this->getTemplateIdAndMessageBody();
-        if(is_array($message_parts)){
-            $body_id = $message_parts['template_id'];
-            $message = $message_parts['message'];
-        }else{
-            [$body_id, $message] = explode('-', $this->msg, 2);
+        // Attempt to extract bodyId and message body
+        $body_id = null;
+        $message = $raw_message;
+
+        $template_data = $this->getTemplateIdAndMessageBody();
+
+        if (is_array($template_data)) {
+            $body_id = $template_data['template_id'];
+            $message = $template_data['message'];
+        } elseif (str_contains($message, '-')) {
+            [$body_id, $message] = explode('-', $message, 2);
         }
-        $this->msg = $message;
+
+        // Default message fallback
+        $this->msg = $message ?? $this->msg;
 
         // Format pattern arguments if present
         $pattern_values = $this->getArgsFromPatternedMessages();
-        if($pattern_values != null){
-            $formatted_text = implode(';', $pattern_values);
-        }else{
-            $formatted_text = $message;
-        }
+        $formatted_text = $pattern_values ? implode(';', $pattern_values) : $message;
 
-        // Override API type if provided in message
-        $effective_api_type = $api_type_override !== null ? trim($api_type_override) : $this->api_type;
+        // Decide API type
+        $effective_api_type = $api_type_override ?? ($body_id ? 'shared' : 'smart');
+
+        //set the message to original for better logging
+        $this->msg = $raw_message;
+
 
         try {
             // Shared SMS block
@@ -136,7 +130,7 @@ class melipayamak extends Gateway
                         'sslverify' => false,
                     ]);
 
-                    $this->log($this->from, $formatted_text, $recipient, $response);
+                    $this->log($this->from, $this->msg, $recipient, $response);
                     do_action('wp_sms_send', $response);
                     return $response;
                 }
@@ -145,7 +139,6 @@ class melipayamak extends Gateway
             // Smart SMS block
             if ($effective_api_type === 'smart') {
                 $recipients = is_array($this->to) ? implode(',', $this->to) : $this->to;
-
                 $response = $this->request('POST', $this->base_url . 'SmartSMS/Send', [], [
                     'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
                     'body'      => http_build_query([
@@ -153,7 +146,7 @@ class melipayamak extends Gateway
                         'password'       => $this->password,
                         'from'           => $this->from,
                         'to'             => $recipients,
-                        'text'           => $this->msg,
+                        'text'           => $formatted_text,
                         'fromSupportOne' => $this->from_support_one,
                         'fromSupportTwo' => $this->from_support_two,
                     ]),
@@ -176,7 +169,7 @@ class melipayamak extends Gateway
                     'password' => $this->password,
                     'from'     => $this->from,
                     'to'       => $recipients,
-                    'text'     => $this->msg,
+                    'text'     => $formatted_text,
                     'isflash'  => $this->isflash ? 'true' : 'false',
                     'udh'      => '',
                     'recId'    => '0',
