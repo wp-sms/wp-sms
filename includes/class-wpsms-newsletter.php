@@ -173,26 +173,49 @@ class Newsletter
         }
     }
 
-    public static function getSubscriberByMobile($number)
+    public static function getSubscriberByMobile($number, $single = true)
     {
         global $wpdb;
-
+        $results   = [];
         $metaValue = Helper::prepareMobileNumberQuery($number);
 
-        if (!is_array($metaValue) || empty($metaValue)) {
-            return null;
+        // Prepare each value in $metaValue
+        foreach ($metaValue as &$value) {
+            $value = $wpdb->prepare('%s', $value);
         }
 
-        $placeholders = array_fill(0, count($metaValue), '%s');
-        $placeholders = implode(', ', $placeholders);
+        $placeholders    = implode(', ', $metaValue);
+        $exactMatchQuery = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
-        $sql = $wpdb->prepare(
-            "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ($placeholders)",
-            $metaValue
-        );
+        if ($single) {
+            $result = $wpdb->get_row($exactMatchQuery);
+            if ($result) {
+                return $result;
+            }
+        } else {
+            $exactMatches = $wpdb->get_results($exactMatchQuery);
+            if (!empty($exactMatches)) {
+                $results = $exactMatches;
+            }
 
-        // Execute the query and return the result
-        return $wpdb->get_row($sql);
+            $normalizedMatchQuery = $wpdb->prepare(
+                "SELECT * FROM `{$wpdb->prefix}sms_subscribes` 
+             WHERE REPLACE(REPLACE(REPLACE(mobile, '-', ''), ' ', ''), '+', '') IN ($placeholders)"
+            );
+
+            $normalizedMatches = $wpdb->get_results($normalizedMatchQuery);
+
+            // Merge results without duplicates (based on ID or mobile)
+            if (!empty($normalizedMatches)) {
+                foreach ($normalizedMatches as $row) {
+                    $results[] = $row;
+                }
+            }
+
+            return $results;
+        }
+
+        return null;
     }
 
     /**

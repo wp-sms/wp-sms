@@ -1,3 +1,8 @@
+v7.0
+- **Enhancement**: Integrate NumberParser for phone number validation.
+- **Enhancement**: Unsubscription different format support.
+- **Enhancement**: Unsubscription different same subscribers with different formats.
+
 v6.9.x - 2025-04-x
 - **New**: Added a select input to choose the API endpoint for apigateway.
 - **Fix**: Support wider range of CSV MIME types during the import proccess.
