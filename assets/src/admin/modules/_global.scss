@@ -50,7 +50,7 @@
   }
 
   #wpcontent .wpsms-wrap__main .notice {
-    margin: 20px 0 0 !important;
+    margin: 20px 0 !important;
   }
 
   #wpcontent .notice {
@@ -116,7 +116,7 @@
           input[type=text], input[type="tel"], input[type=number], &.subscribers_group_section .select2-container.select2-container--open .select2-selection, .select2-selection, select {
             &:focus, &:active {
               border: 1px solid #C2410C !important;
-              box-shadow: 0 0 0 2px #C2410C33!important;
+              box-shadow: 0 0 0 2px #C2410C33 !important;
             }
           }
 
@@ -153,11 +153,15 @@
       &.select2-container--open {
         .select2-selection {
           border: 1px solid #C2410C !important;
-          box-shadow: 0 0 0 2px #C2410C33!important;
+          box-shadow: 0 0 0 2px #C2410C33 !important;
         }
       }
 
       .select2-selection--multiple {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
 
         .select2-search--inline {
           min-width: 200px;
@@ -202,15 +206,10 @@
         flex-wrap: wrap;
         margin: 0;
 
-        li:last-child {
-          margin-right: 8px;
-
-          .rtl & {
-            margin-right: 0 !important;
-            margin-left: 8px !important;
-
-          }
+        &:not(:has(li)) {
+          display: none;
         }
+
       }
 
       .select2-selection__choice__remove {
@@ -495,14 +494,14 @@
   }
 }
 
-.sms_page_wp-sms-integrations ,.sms_page_wp-sms-settings{
+.sms_page_wp-sms-integrations, .sms_page_wp-sms-settings {
   .wpsms-wrap__top {
     background: transparent;
     border-bottom: none;
     box-shadow: none;
     margin-bottom: 7px;
 
-    h2{
+    h2 {
       font-size: 15px;
       font-weight: 600;
     }
@@ -583,7 +582,7 @@
   float: none
 }
 
-.wpsms-select2-tick-dropdown {
+body.sms_page_wp-sms #TB_window ~ .select2-container.select2-container--default .wpsms-select2-tick-dropdown, .wpsms-select2-tick-dropdown {
   z-index: 9999999 !important;
   border-color: #E7E7E7 !important;
 
@@ -708,5 +707,13 @@
 
   &:hover {
     color: #A03B1F;
+  }
+}
+
+body.rtl.sms_page_wp-sms {
+  #TB_window {
+    .wp_sms_subscribers_input_text[type="tel"]{
+        direction: rtl!important;
+    }
   }
 }

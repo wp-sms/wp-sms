@@ -2481,7 +2481,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                 if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
                     $disabled = ' disabled';
-                    $name     .= '<span> ' . esc_html__('- (Pro Pack)', 'wp-sms') . '</span>';
+                    $name     .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
                 }
 
                 $selected = selected($option, $value, false);

@@ -112,6 +112,7 @@ class Admin
         }
 
         $screen = get_current_screen();
+        wp_enqueue_style('admin-global', WP_SMS_URL . 'assets/css/admin-global.css', [], WP_SMS_VERSION);
 
         // Register main plugin style
         wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', [], WP_SMS_VERSION);

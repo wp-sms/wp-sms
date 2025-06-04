@@ -57,6 +57,21 @@ class NoticeManager extends AbstractNotice
             $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-settings&tab=pro_wordpress');
         }
 
+        if (version_compare(PHP_VERSION, '7.2', '<')) {
+            $current_version = PHP_VERSION;
+            $message         = sprintf(
+                __('
+            <strong>WP SMS notice – PHP upgrade required</strong><br>
+            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher. 
+            Please upgrade your server’s PHP version before installing the update. 
+            <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank">More details</a>.
+        ', 'wp-sms'),
+                esc_html($current_version)
+            );
+
+            $this->registerNotice('php_version_warning', wp_kses_post($message), true);
+        }
+
         // translators: %s: Newsletter link
         $this->registerNotice('marketing_newsletter', sprintf(__('Stay informed and receive exclusive offers, <a href="%s" target="_blank">Subscribe to our newsletter here</a>!', 'wp-sms'), 'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share'), true, 'admin.php?page=wp-sms-settings');
     }
@@ -73,10 +88,13 @@ class NoticeManager extends AbstractNotice
         }
 
         foreach ($this->notices as $id => $notice) {
-            $dismissed = array_key_exists($id, $notices);
-            $link      = $this->generateNoticeLink($id, $notice['url'], $nonce);
+            if (isset($notices[$id]) && $notices[$id]) {
+                continue;
+            }
 
-            if (!$notice['url'] or (basename($_SERVER['REQUEST_URI']) == $notice['url'] && !$dismissed)) {
+            $link = $this->generateNoticeLink($id, $notice['url'], $nonce);
+
+            if (!$notice['url'] or (basename($_SERVER['REQUEST_URI']) == $notice['url'])) {
                 Helper::notice($notice['message'], 'warning', $notice['dismiss'], $link);
             }
         }
