@@ -173,7 +173,7 @@ class Newsletter
         }
     }
 
-    public static function getSubscriberByMobile($number, $single = false)
+    public static function getSubscriberByMobile($number, $single = true)
     {
         global $wpdb;
         $results   = [];
