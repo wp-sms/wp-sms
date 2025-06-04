@@ -6,6 +6,7 @@ use WP_Error;
 use WP_SMS\Gateway;
 
 class melipayamak extends Gateway {
+	protected $wsdl_link = 'https://rest.payamak-panel.com/api/';
 	public $tariff = "http://melipayamak.ir/";
 	public $unitrial = true;
 	public $unit;
@@ -14,7 +15,6 @@ class melipayamak extends Gateway {
 	public $from_support_one = '';
 	public $from_support_two = '';
 
-	protected $base_url = 'https://rest.payamak-panel.com/api/';
 
 	public function __construct() {
 		parent::__construct();
@@ -117,7 +117,7 @@ class melipayamak extends Gateway {
 		try {
 			if ( $effective_api_type === 'shared' ) {
 				foreach ( $this->to as $recipient ) {
-					$response = $this->request( 'POST', $this->base_url . 'SendSMS/BaseServiceNumber', [], [
+					$response = $this->request( 'POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], [
 						'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
 						'body'      => http_build_query( [
 							'username' => $this->username,
@@ -139,7 +139,7 @@ class melipayamak extends Gateway {
 
 			if ( $effective_api_type === 'smart' ) {
 				$recipients = is_array( $this->to ) ? implode( ',', $this->to ) : $this->to;
-				$response   = $this->request( 'POST', $this->base_url . 'SmartSMS/Send', [], [
+				$response   = $this->request( 'POST', $this->wsdl_link . 'SmartSMS/Send', [], [
 					'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
 					'body'      => http_build_query( [
 						'username'       => $this->username,
@@ -161,7 +161,7 @@ class melipayamak extends Gateway {
 			}
 
 			$recipients = is_array( $this->to ) ? implode( ',', $this->to ) : $this->to;
-			$response   = $this->request( 'POST', $this->base_url . 'SendSMS/SendSMS', [], [
+			$response   = $this->request( 'POST', $this->wsdl_link . 'SendSMS/SendSMS', [], [
 				'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
 				'body'      => http_build_query( [
 					'username' => $this->username,
@@ -191,7 +191,7 @@ class melipayamak extends Gateway {
 
 	public function GetCredit() {
 		try {
-			$response = $this->request( 'POST', $this->base_url . 'SendSMS/GetCredit', [], [
+			$response = $this->request( 'POST', $this->wsdl_link . 'SendSMS/GetCredit', [], [
 				'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
 				'body'      => http_build_query( [
 					'username' => $this->username,
