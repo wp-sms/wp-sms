@@ -1447,7 +1447,7 @@ class Gateway
      *
      * @author Amir Pirmoradian <piramir77@gmail.com>
      */
-    public function getArgsFromPatternedMessages(string $separator = ":"): array|null
+    public function getArgsFromPatternedMessages($separator = ":")
     {
         $message_body = explode($separator, $this->msg);
 
