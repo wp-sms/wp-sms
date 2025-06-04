@@ -5,209 +5,213 @@ namespace WP_SMS\Gateway;
 use WP_Error;
 use WP_SMS\Gateway;
 
-class melipayamak extends Gateway {
-	protected $wsdl_link = 'https://rest.payamak-panel.com/api/';
-	public $tariff = "http://melipayamak.ir/";
-	public $unitrial = true;
-	public $unit;
-	public $flash = "enable";
-	public $isflash = false;
-	public $from_support_one = '';
-	public $from_support_two = '';
+class melipayamak extends Gateway
+{
+    protected $wsdl_link = 'https://rest.payamak-panel.com/api/';
+    public $tariff = "http://melipayamak.ir/";
+    public $unitrial = true;
+    public $unit;
+    public $flash = "enable";
+    public $isflash = false;
+    public $from_support_one = '';
+    public $from_support_two = '';
 
 
-	public function __construct() {
-		parent::__construct();
-		$this->validateNumber = "09xxxxxxxx";
+    public function __construct()
+    {
+        parent::__construct();
+        $this->validateNumber = "09xxxxxxxx";
 
-		$this->gatewayFields = [
-			'username'         => [
-				'id'   => 'gateway_username',
-				'name' => __( 'API username', 'wp-sms' ),
-				'desc' => __( 'Enter API username of gateway', 'wp-sms' ),
-			],
-			'password'         => [
-				'id'   => 'gateway_password',
-				'name' => __( 'API password', 'wp-sms' ),
-				'desc' => __( 'Enter API password of gateway', 'wp-sms' ),
-			],
-			'from'             => [
-				'id'   => 'gateway_sender_id',
-				'name' => __( 'Sender number', 'wp-sms' ),
-				'desc' => __( 'Sender number or sender ID', 'wp-sms' ),
-			],
-			'from_support_one' => [
-				'id'   => 'gateway_support_1_sender_id',
-				'name' => __( 'Backup sender 1 (optional)', 'wp-sms' ),
-				'desc' => __( 'Optional: support sender number used with Smart SMS.', 'wp-sms' ),
-			],
-			'from_support_two' => [
-				'id'   => 'gateway_support_2_sender_id',
-				'name' => __( 'Backup sender 2 (optional)', 'wp-sms' ),
-				'desc' => __( 'Optional: secondary support sender used with Smart SMS.', 'wp-sms' ),
-			],
-		];
-	}
+        $this->gatewayFields = [
+            'username'         => [
+                'id'   => 'gateway_username',
+                'name' => __('API username', 'wp-sms'),
+                'desc' => __('Enter API username of gateway', 'wp-sms'),
+            ],
+            'password'         => [
+                'id'   => 'gateway_password',
+                'name' => __('API password', 'wp-sms'),
+                'desc' => __('Enter API password of gateway', 'wp-sms'),
+            ],
+            'from'             => [
+                'id'   => 'gateway_sender_id',
+                'name' => __('Sender number', 'wp-sms'),
+                'desc' => __('Sender number or sender ID', 'wp-sms'),
+            ],
+            'from_support_one' => [
+                'id'   => 'gateway_support_1_sender_id',
+                'name' => __('Backup sender 1 (optional)', 'wp-sms'),
+                'desc' => __('Optional: support sender number used with Smart SMS.', 'wp-sms'),
+            ],
+            'from_support_two' => [
+                'id'   => 'gateway_support_2_sender_id',
+                'name' => __('Backup sender 2 (optional)', 'wp-sms'),
+                'desc' => __('Optional: secondary support sender used with Smart SMS.', 'wp-sms'),
+            ],
+        ];
+    }
 
-	public function SendSMS() {
-		// Check gateway credit
-		if ( is_wp_error( $this->GetCredit() ) ) {
-			return new \WP_Error( 'account-credit',
-				esc_html__( 'Your account does not credit for sending sms.', 'wp-sms' ) );
-		}
+    public function SendSMS()
+    {
+        // Check gateway credit
+        if (is_wp_error($this->GetCredit())) {
+            return new \WP_Error('account-credit',
+                esc_html__('Your account does not credit for sending sms.', 'wp-sms'));
+        }
 
-		/**
-		 * Modify sender number
-		 *
-		 * @param string $this ->from sender number.
-		 *
-		 * @since 3.4
-		 */
-		$this->from = apply_filters( 'wp_sms_from', $this->from );
+        /**
+         * Modify sender number
+         *
+         * @param string $this ->from sender number.
+         *
+         * @since 3.4
+         */
+        $this->from = apply_filters('wp_sms_from', $this->from);
 
-		/**
-		 * Modify Receiver number
-		 *
-		 * @param array $this ->to receiver number
-		 *
-		 * @since 3.4
-		 */
-		$this->to = apply_filters( 'wp_sms_to', $this->to );
+        /**
+         * Modify Receiver number
+         *
+         * @param array $this ->to receiver number
+         *
+         * @since 3.4
+         */
+        $this->to = apply_filters('wp_sms_to', $this->to);
 
-		/**
-		 * Modify text message
-		 *
-		 * @param string $this ->msg text message.
-		 *
-		 * @since 3.4
-		 */
-		$this->msg = apply_filters( 'wp_sms_msg', $this->msg );
+        /**
+         * Modify text message
+         *
+         * @param string $this ->msg text message.
+         *
+         * @since 3.4
+         */
+        $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-		$parts             = explode( "##", $this->msg, 2 );
-		$raw_message       = isset( $parts[0] ) ? $parts[0] : '';
-		$api_type_override = isset( $parts[1] ) ? $parts[1] : null;
+        $parts             = explode("##", $this->msg, 2);
+        $raw_message       = isset($parts[0]) ? $parts[0] : '';
+        $api_type_override = isset($parts[1]) ? $parts[1] : null;
 
-		$body_id = null;
-		$message = $raw_message;
+        $body_id = null;
+        $message = $raw_message;
 
-		$template_data = $this->getTemplateIdAndMessageBody();
+        $template_data = $this->getTemplateIdAndMessageBody();
 
-		if ( is_array( $template_data ) ) {
-			$body_id = $template_data['template_id'];
-			$message = $template_data['message'];
-		} elseif ( strpos( $message, '-' ) !== false ) {
-			$tmp     = explode( '-', $message, 2 );
-			$body_id = $tmp[0];
-			$message = isset( $tmp[1] ) ? $tmp[1] : $message;
-		}
+        if (is_array($template_data)) {
+            $body_id = $template_data['template_id'];
+            $message = $template_data['message'];
+        } elseif (strpos($message, '-') !== false) {
+            $tmp     = explode('-', $message, 2);
+            $body_id = $tmp[0];
+            $message = isset($tmp[1]) ? $tmp[1] : $message;
+        }
 
-		$this->msg = $message ? $message : $this->msg;
+        $this->msg = $message ? $message : $this->msg;
 
-		if ( $body_id !== null ) {
-			$pattern_values = $this->getArgsFromPatternedMessages();
-			$formatted_text = $pattern_values ? implode( ';', $pattern_values ) : $message;
-		} else {
-			$formatted_text = $message;
-		}
+        if ($body_id !== null) {
+            $pattern_values = $this->getArgsFromPatternedMessages();
+            $formatted_text = $pattern_values ? implode(';', $pattern_values) : $message;
+        } else {
+            $formatted_text = $message;
+        }
 
-		$effective_api_type = isset( $api_type_override ) ? $api_type_override : ( $body_id ? 'shared' : 'smart' );
+        $effective_api_type = isset($api_type_override) ? $api_type_override : ($body_id ? 'shared' : 'smart');
 
-		$this->msg = $raw_message;
+        $this->msg = $raw_message;
 
-		try {
-			if ( $effective_api_type === 'shared' ) {
-				foreach ( $this->to as $recipient ) {
-					$response = $this->request( 'POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], [
-						'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-                        'body' => [
-							'username' => $this->username,
-							'password' => $this->password,
-							'text'     => $formatted_text,
-							'to'       => $recipient,
-							'bodyId'   => $body_id,
+        try {
+            if ($effective_api_type === 'shared') {
+                foreach ($this->to as $recipient) {
+                    $response = $this->request('POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], [
+                        'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                        'body'      => [
+                            'username' => $this->username,
+                            'password' => $this->password,
+                            'text'     => $formatted_text,
+                            'to'       => $recipient,
+                            'bodyId'   => $body_id,
                         ],
-						'timeout'   => 20,
-						'sslverify' => false,
-					] );
+                        'timeout'   => 20,
+                        'sslverify' => false,
+                    ]);
 
-					$this->log( $this->from, $this->msg, $recipient, $response );
-					do_action( 'wp_sms_send', $response );
+                    $this->log($this->from, $this->msg, $recipient, $response);
+                    do_action('wp_sms_send', $response);
 
-					return $response;
-				}
-			}
+                    return $response;
+                }
+            }
 
-			if ( $effective_api_type === 'smart' ) {
-				$recipients = is_array( $this->to ) ? implode( ',', $this->to ) : $this->to;
-				$response   = $this->request( 'POST', $this->wsdl_link . 'SmartSMS/Send', [], [
-					'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-                    'body' => [
-						'username'       => $this->username,
-						'password'       => $this->password,
-						'from'           => $this->from,
-						'to'             => $recipients,
-						'text'           => $formatted_text,
-						'fromSupportOne' => $this->from_support_one,
-						'fromSupportTwo' => $this->from_support_two,
+            if ($effective_api_type === 'smart') {
+                $recipients = is_array($this->to) ? implode(',', $this->to) : $this->to;
+                $response   = $this->request('POST', $this->wsdl_link . 'SmartSMS/Send', [], [
+                    'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                    'body'      => [
+                        'username'       => $this->username,
+                        'password'       => $this->password,
+                        'from'           => $this->from,
+                        'to'             => $recipients,
+                        'text'           => $formatted_text,
+                        'fromSupportOne' => $this->from_support_one,
+                        'fromSupportTwo' => $this->from_support_two,
                     ],
-					'timeout'   => 20,
-					'sslverify' => false,
-				] );
+                    'timeout'   => 20,
+                    'sslverify' => false,
+                ]);
 
-				$this->log( $this->from, $this->msg, $this->to, $response );
-				do_action( 'wp_sms_send', $response );
+                $this->log($this->from, $this->msg, $this->to, $response);
+                do_action('wp_sms_send', $response);
 
-				return $response;
-			}
+                return $response;
+            }
 
-			$recipients = is_array( $this->to ) ? implode( ',', $this->to ) : $this->to;
-			$response   = $this->request( 'POST', $this->wsdl_link . 'SendSMS/SendSMS', [], [
-				'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-                'body' => [
-					'username' => $this->username,
-					'password' => $this->password,
-					'from'     => $this->from,
-					'to'       => $recipients,
-					'text'     => $formatted_text,
-					'isflash'  => $this->isflash ? 'true' : 'false',
-					'udh'      => '',
-					'recId'    => '0',
-					'status'   => '0',
+            $recipients = is_array($this->to) ? implode(',', $this->to) : $this->to;
+            $response   = $this->request('POST', $this->wsdl_link . 'SendSMS/SendSMS', [], [
+                'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'body'      => [
+                    'username' => $this->username,
+                    'password' => $this->password,
+                    'from'     => $this->from,
+                    'to'       => $recipients,
+                    'text'     => $formatted_text,
+                    'isflash'  => $this->isflash ? 'true' : 'false',
+                    'udh'      => '',
+                    'recId'    => '0',
+                    'status'   => '0',
                 ],
-				'timeout'   => 20,
-				'sslverify' => false,
-			] );
+                'timeout'   => 20,
+                'sslverify' => false,
+            ]);
 
-			$this->log( $this->from, $this->msg, $this->to, $response );
-			do_action( 'wp_sms_send', $response );
+            $this->log($this->from, $this->msg, $this->to, $response);
+            do_action('wp_sms_send', $response);
 
-			return $response;
-		} catch ( \Exception $ex ) {
-			$this->log( $this->from, $this->msg, $this->to, $ex->getMessage(), 'error' );
+            return $response;
+        } catch (\Exception $ex) {
+            $this->log($this->from, $this->msg, $this->to, $ex->getMessage(), 'error');
 
-			return new WP_Error( 'send-sms', $ex->getMessage() );
-		}
-	}
+            return new WP_Error('send-sms', $ex->getMessage());
+        }
+    }
 
-	public function GetCredit() {
-		try {
-			$response = $this->request( 'POST', $this->wsdl_link . 'SendSMS/GetCredit', [], [
-				'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-                'body' => [
-					'username' => $this->username,
-					'password' => $this->password,
+    public function GetCredit()
+    {
+        try {
+            $response = $this->request('POST', $this->wsdl_link . 'SendSMS/GetCredit', [], [
+                'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'body'      => [
+                    'username' => $this->username,
+                    'password' => $this->password,
                 ],
-				'timeout'   => 20,
-				'sslverify' => false,
-			] );
+                'timeout'   => 20,
+                'sslverify' => false,
+            ]);
 
-			if ( isset( $response->RetStatus ) && $response->RetStatus == 1 ) {
-				return $response->Value;
-			}
+            if (isset($response->RetStatus) && $response->RetStatus == 1) {
+                return $response->Value;
+            }
 
-			return new WP_Error( 'account-credit', __( 'Failed to retrieve credit from MeliPayamak.', 'wp-sms' ) );
-		} catch ( \Exception $ex ) {
-			return new WP_Error( 'account-credit', $ex->getMessage() );
-		}
-	}
+            return new WP_Error('account-credit', __('Failed to retrieve credit from MeliPayamak.', 'wp-sms'));
+        } catch (\Exception $ex) {
+            return new WP_Error('account-credit', $ex->getMessage());
+        }
+    }
 }
