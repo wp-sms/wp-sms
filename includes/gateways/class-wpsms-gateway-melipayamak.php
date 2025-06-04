@@ -119,13 +119,13 @@ class melipayamak extends Gateway {
 				foreach ( $this->to as $recipient ) {
 					$response = $this->request( 'POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], [
 						'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-						'body'      => http_build_query( [
+                        'body' => [
 							'username' => $this->username,
 							'password' => $this->password,
 							'text'     => $formatted_text,
 							'to'       => $recipient,
 							'bodyId'   => $body_id,
-						] ),
+                        ],
 						'timeout'   => 20,
 						'sslverify' => false,
 					] );
@@ -141,7 +141,7 @@ class melipayamak extends Gateway {
 				$recipients = is_array( $this->to ) ? implode( ',', $this->to ) : $this->to;
 				$response   = $this->request( 'POST', $this->wsdl_link . 'SmartSMS/Send', [], [
 					'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-					'body'      => http_build_query( [
+                    'body' => [
 						'username'       => $this->username,
 						'password'       => $this->password,
 						'from'           => $this->from,
@@ -149,7 +149,7 @@ class melipayamak extends Gateway {
 						'text'           => $formatted_text,
 						'fromSupportOne' => $this->from_support_one,
 						'fromSupportTwo' => $this->from_support_two,
-					] ),
+                    ],
 					'timeout'   => 20,
 					'sslverify' => false,
 				] );
@@ -163,7 +163,7 @@ class melipayamak extends Gateway {
 			$recipients = is_array( $this->to ) ? implode( ',', $this->to ) : $this->to;
 			$response   = $this->request( 'POST', $this->wsdl_link . 'SendSMS/SendSMS', [], [
 				'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-				'body'      => http_build_query( [
+                'body' => [
 					'username' => $this->username,
 					'password' => $this->password,
 					'from'     => $this->from,
@@ -173,7 +173,7 @@ class melipayamak extends Gateway {
 					'udh'      => '',
 					'recId'    => '0',
 					'status'   => '0',
-				] ),
+                ],
 				'timeout'   => 20,
 				'sslverify' => false,
 			] );
@@ -193,10 +193,10 @@ class melipayamak extends Gateway {
 		try {
 			$response = $this->request( 'POST', $this->wsdl_link . 'SendSMS/GetCredit', [], [
 				'headers'   => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
-				'body'      => http_build_query( [
+                'body' => [
 					'username' => $this->username,
 					'password' => $this->password,
-				] ),
+                ],
 				'timeout'   => 20,
 				'sslverify' => false,
 			] );
