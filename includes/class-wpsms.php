@@ -1,14 +1,18 @@
 <?php
 
+use WP_SMS\BackgroundProcess\Async\DataMigrationProcess;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
+use WP_SMS\BackgroundProcess\Async\SchemaMigrationProcess;
+use WP_SMS\BackgroundProcess\Async\TableOperationProcess;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
+use WP_SMS\Services\Database\Managers\MigrationHandler;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\Hooks\HooksManager;
@@ -43,6 +47,12 @@ class WP_SMS
      * @var RemoteRequestQueue $remoteRequestQueue
      */
     private $remoteRequestQueue;
+
+    /**
+     * @var $backgroundProcess
+     */
+    private $backgroundProcess;
+
 
     public function __construct()
     {
@@ -99,6 +109,8 @@ class WP_SMS
 
         $this->includes();
         $this->setupBackgroundProcess();
+        MigrationHandler::init();
+
     }
 
     /**
@@ -125,8 +137,33 @@ class WP_SMS
 
     private function setupBackgroundProcess()
     {
-        $this->remoteRequestAsync = new RemoteRequestAsync();
-        $this->remoteRequestQueue = new RemoteRequestQueue();
+        $this->registerBackgroundProcess(RemoteRequestAsync::class, 'remote_request_async');
+        $this->registerBackgroundProcess(RemoteRequestQueue::class, 'remote_request_queue');
+        $this->registerBackgroundProcess(DataMigrationProcess::class, 'data_migration_process');
+        $this->registerBackgroundProcess(SchemaMigrationProcess::class, 'schema_migration_process');
+        $this->registerBackgroundProcess(TableOperationProcess::class, 'table_operations_process');
+
+    }
+
+    /**
+     * @param $className
+     * @param $processKey
+     * @return void
+     */
+    private function registerBackgroundProcess($className, $processKey)
+    {
+        if (class_exists($className)) {
+            $this->backgroundProcess[$processKey] = new $className();
+        }
+    }
+
+    /**
+     * @param $processKey
+     * @return mixed
+     */
+    public function getBackgroundProcess($processKey)
+    {
+        return $this->backgroundProcess[$processKey];
     }
 
     public function init()
