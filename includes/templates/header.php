@@ -1,18 +1,21 @@
 <?php
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Components\View;
+use WP_SMS\Services\Notification\NotificationFactory;
+use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
 
 $option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
-$tab_url     = add_query_arg(array(
+$tab_url   = add_query_arg(array(
     'settings-updated' => false,
     'tab'              => 'licenses',
     'page'             => 'wp-sms-settings'
 ));
-$active      = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
-$isPremium   = LicenseHelper::isPremiumLicenseAvailable();
+$active    = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
+$isPremium = LicenseHelper::isPremiumLicenseAvailable();
 
 // Get information about active add-ons
 $addons = is_plugin_active('wp-sms-pro/wp-sms-pro.php') ? array('license_wp-sms-pro_status' => false) : array();
@@ -27,6 +30,9 @@ foreach ($addons as $option_key => $status) {
         $addons[$option_key] = true;
     }
 }
+
+$hasUpdatedNotifications = NotificationFactory::hasUpdatedNotifications();
+$displayNotifications    = OptionUtil::get('display_notifications') ? true : false;
 ?>
 <div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>">
     <div class="wpsms-header-logo"></div>
@@ -46,6 +52,10 @@ foreach ($addons as $option_key => $status) {
             echo 'active';
         } ?>"></a>
         <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
+        <?php
+        if ($displayNotifications): ?>
+            <a title="<?php esc_html_e('Notifications', 'wp-statistics'); ?>" class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>"></a>
+        <?php endif; ?>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
             <label for="wpsms-menu-toggle" class="hamburger-menu-container">
@@ -73,6 +83,10 @@ foreach ($addons as $option_key => $status) {
         </div>
     </div>
 </div>
-
+<?php
+if ($displayNotifications) {
+    View::load("components/notification/side-bar", ['notifications' => NotificationFactory::getAllNotifications()]);
+}
+?>
 <?php Modal::showOnce('welcome-premium'); ?>
 <?php Modal::render('all-in-one'); ?>

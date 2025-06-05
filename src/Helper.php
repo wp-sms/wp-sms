@@ -5,6 +5,7 @@ namespace WP_SMS;
 use WC_Blocks_Utils;
 use WP_Error;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Utils\TimeZone;
 
 /**
  * Class WP_SMS
@@ -609,5 +610,12 @@ class Helper
     public static function convertNumber($number)
     {
         return strtr($number, array('۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4', '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9', '٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4', '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9'));
+    }
+
+    public static function getTimezoneCountry()
+    {
+        $timezone    = get_option('timezone_string');
+        $countryCode = TimeZone::getCountry($timezone);
+        return $countryCode;
     }
 }
