@@ -6,6 +6,7 @@ use Forminator_API;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -56,8 +57,8 @@ class Settings
     public function __construct()
     {
         $this->setting_name      = $this->getCurrentOptionName();
-        $this->proIsInstalled    = Version::pro_is_active();
-        $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->proIsInstalled    =  LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
+        $this->wooProIsInstalled = LicenseHelper::isPluginLicenseValid('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -1818,7 +1819,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
+                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'             => array(
