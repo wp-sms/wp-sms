@@ -38,7 +38,7 @@ class Settings
 
     private $active_tab;
     private $contentRestricted;
-    private $showGRecaptchaBadge = false;
+    private $showGRecaptchaBadge = true;
 
     /**
      * @return string
@@ -60,26 +60,10 @@ class Settings
     {
         $this->setting_name      = $this->getCurrentOptionName();
         $this->isPremium = LicenseHelper::isPluginLicenseValid();
-        $this->proIsInstalled    = Version::pro_is_active();
+        $this->proIsInstalled    =  LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
         $this->wooProIsInstalled = LicenseHelper::isPluginLicenseValid('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
-        $woocommerceLicenseKey = LicenseHelper::getPluginLicense('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
-        $woocommerceLicenseInfo = LicenseHelper::getLicenseInfo($woocommerceLicenseKey);
-
-        // If neither Pro nor Woo Pro is installed, show the badge
-        if (!$this->isPremium && !$this->wooProIsInstalled) {
-            $this->showGRecaptchaBadge = true;
-        }
-        // If Pro is not installed, but Woo Pro is installed,
-        // and Woo Pro license is not 'single-site' (i.e., it's likely 'none' or invalid),
-        // then show the badge
-        elseif (
-            !$this->isPremium &&
-            $this->wooProIsInstalled &&
-            ($woocommerceLicenseInfo && $woocommerceLicenseInfo['type'] !== 'single-site')
-        ) {
-            $this->showGRecaptchaBadge = true;
-        }
+        $this->showGRecaptchaBadge = ( !$this->proIsInstalled && !$this->wooProIsInstalled ) || ( !$this->isPremium && $this->proIsInstalled ) ? true : false;
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
