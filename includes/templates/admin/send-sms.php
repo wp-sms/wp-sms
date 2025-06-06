@@ -157,14 +157,19 @@
                 <div class="mms-media-field wpsms-sendsms__form-filed">
                     <label><?php esc_html_e('Choice MMS media', 'wp-sms'); ?></label>
                     <div class="mms-media-field__content">
+                        <div><a href="#" class="wpsms-upload-button"><?php esc_html_e('Upload image', 'wp-sms'); ?></a>
+                        </div>
+                        <div>
+                            <a href="#" class="wpsms-remove-button button" style="display:none"><?php esc_html_e('Remove image', 'wp-sms'); ?></a>
+                        </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
                         <?php if ($smsObject->supportMedia) : ?>
-                            <div><a href="#" class="wpsms-upload-button button">Upload image</a>
+                            <div><a href="#" class="wpsms-upload-button"><?php esc_html_e('Upload image', 'wp-sms'); ?></a>
                             </div>
-                            <div style="margin-top: 11px;">
-                                <a href="#" class="wpsms-remove-button button" style="display:none">Remove image</a>
+                            <div>
+                                <a href="#" class="wpsms-remove-button button" style="display:none"><?php esc_html_e('Remove image', 'wp-sms'); ?></a>
                             </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
                         <?php else: ?>
-                            <p>
+                            <p class="field-description">
                                 <?php 
                                     // translators: %s: Supported gateways link
                                     echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro
