@@ -14,7 +14,6 @@ class NumberParser
     private $rawPhoneNumber;
     private $normalizedPhoneNumber;
     private $validatedPhoneNumber;
-    private $isInternationalInputEnabled;
 
     /**
      * @param string $phoneNumber
@@ -23,11 +22,20 @@ class NumberParser
     {
         $this->rawPhoneNumber = $phoneNumber;
 
-        $this->isInternationalInputEnabled = Option::getOption('international_mobile');
     }
 
     /**
      * Returns the validated phone number in international format.
+     *
+     * @return string|WP_Error
+     */
+    /**
+     * Validate and return the cleaned mobile number.
+     *
+     * @return string|WP_Error
+     */
+    /**
+     * Validate and return the cleaned mobile number.
      *
      * @return string|WP_Error
      */
@@ -44,29 +52,25 @@ class NumberParser
             return new WP_Error('invalid_number', __('Invalid Mobile Number.', 'wp-sms'));
         }
 
-        // Return an error if + doesn't exists and "International Number Input" is enabled
-        if ($this->isInternationalInputEnabled && strpos($phoneNumber, '+') !== 0) {
-            return new WP_Error('invalid_number', __('The mobile number doesn\'t contain the country code.', 'wp-sms'));
+        // Enforce presence of country code (+ prefix is mandatory in E.164)
+        if (strpos($phoneNumber, '+') !== 0) {
+            return new WP_Error('invalid_number', __('The mobile number must include a country code.', 'wp-sms'));
         }
 
-        // Validate length
+        // Validate E.164 length (8–15 characters)
         if (!$this->isLengthValid($phoneNumber)) {
             return new WP_Error('invalid_length', __('The mobile number length is invalid.', 'wp-sms'));
         }
 
-        if ($this->isInternationalInputEnabled) {
-            // Validate the country code
-            if (!$this->isCountryCodeValid($phoneNumber)) {
-                return new WP_Error('invalid_country_code', __('The mobile number is not valid for your country.', 'wp-sms'));
-            }
-        } else {
-            // Manually add the country code
-            $phoneNumber = $this->addSelectedCountryCode($phoneNumber);
+        // Validate the country code itself
+        if (!$this->isCountryCodeValid($phoneNumber)) {
+            return new WP_Error('invalid_country_code', __('The mobile number is not valid for your country.', 'wp-sms'));
         }
 
         $this->validatedPhoneNumber = $phoneNumber;
         return $this->validatedPhoneNumber;
     }
+
 
     /**
      * Returns the normalized/sanitized phone number by removing the leading zero and non-numeric characters (except +).
@@ -105,10 +109,10 @@ class NumberParser
     }
 
     /**
-     * Checks if the phone number length is valid.
+     * Validate phone number length against E.164 standard.
      *
-     * @param string|null $phoneNumber
-     *
+     * @param string|null $phoneNumber Optional phone number to validate.
+     *                                  Defaults to $this->rawPhoneNumber.
      * @return bool
      */
     public function isLengthValid($phoneNumber = null)
@@ -117,16 +121,12 @@ class NumberParser
             $phoneNumber = $this->rawPhoneNumber;
         }
 
-        $length    = strlen($phoneNumber);
-        $minLength = Option::getOption('mobile_terms_minimum');
-        $maxLength = Option::getOption('mobile_terms_maximum');
+        $length = strlen($phoneNumber);
 
-        if ($this->isInternationalInputEnabled || (!$minLength && !$maxLength)) {
-            return $length >= 8 && $length <= 15;
-        }
-
-        return (!$minLength || $length >= $minLength) && (!$maxLength || $length <= $maxLength);
+        // E.164 standard: minimum 8, maximum 15 digits.
+        return $length >= 8 && $length <= 15;
     }
+
 
     /**
      * Checks if the country code is valid based on the `countries.json` file and "Only Countries" option.
@@ -160,7 +160,7 @@ class NumberParser
         /**
          * "Only Countries" option status.
          *
-         * @var array
+         * @var array $onlyCountries
          */
         $onlyCountries = Option::getOption('international_mobile_only_countries');
 
@@ -187,9 +187,17 @@ class NumberParser
      * @param string $phoneNumber
      *
      * @return string
+     * @deprecated 6.9.15  The “Country Code Prefix” setting has been retired.
      */
     public function addSelectedCountryCode($phoneNumber)
     {
+        // Mark the method deprecated in runtime and, if WP_DEBUG is on,
+        // trigger a _doing_it_wrong() notice in the error log.
+        _deprecated_function(
+            __METHOD__,                // Function name.
+            '6.9.15'                        // Version in which it was deprecated.
+        );
+
         $selectedCountryCode = Option::getOption('mobile_county_code');
         if (empty($selectedCountryCode)) {
             if (
@@ -198,7 +206,7 @@ class NumberParser
             ) {
                 return $this->rawPhoneNumber;
             }
-           
+
             return $phoneNumber;
         }
 
