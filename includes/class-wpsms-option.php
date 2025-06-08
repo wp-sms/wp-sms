@@ -28,19 +28,28 @@ class Option
 
 
     /**
-     * Get the only Option that we want
+     * Get a specific WP SMS option value.
      *
-     * @param $option_name
+     * @param string $option_name
      * @param bool $pro
-     *
-     * @return string
+     * @return mixed
      */
     public static function getOption($option_name, $pro = false)
     {
         $options = self::getOptions($pro);
 
-        return isset($options[$option_name]) ? $options[$option_name] : '';
+        $value = isset($options[$option_name]) ? $options[$option_name] : '';
+
+        /**
+         * Filter a WP SMS option before returning it.
+         *
+         * @param mixed $value The option value.
+         * @param string $option_name The name of the option.
+         * @param bool $pro Whether this is coming from the Pro options.
+         */
+        return apply_filters('wp_sms_get_option_value', $value, $option_name, $pro);
     }
+
 
     /**
      * Add an option
