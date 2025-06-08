@@ -9,6 +9,13 @@ v6.9.x - 2025-04-x
 - **Fix**: Fix scheduled posts notification
 - **Fix**: Fix type in send-sms.php
 - **Fix**: Remove some down gateways
+- **Cleanup**:
+    - Removed deprecated options: `mobile_county_code`, `international_mobile`, `mobile_terms_minimum`, and `mobile_terms_maximum`
+    - Added `OptionMigrations` to migrate legacy `mobile_county_code` into `international_mobile_only_countries`
+    - Added `Option::deleteOption()` method for removing individual keys from stored options
+    - Deprecated `applyCountryCode()` method in favor of E.164-based validation
+    - Updated `normalizeNumber()` to remove the dial code based on current country config
+    - All phone number inputs now assume international format and use flag-based input UI
 
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
