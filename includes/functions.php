@@ -262,12 +262,8 @@ function wp_sms_render_mobile_field($args)
 
     $args = wp_parse_args($args, $defaults);
 
-    if (wp_sms_get_option('international_mobile')) {
-        $args['class'] = array_merge(['wp-sms-input-mobile'], $args['class']);
-    } else {
-        $args['min'] = wp_sms_get_option('mobile_terms_minimum');
-        $args['max'] = wp_sms_get_option('mobile_terms_maximum');
-    }
+    $args['class'] = array_merge(['wp-sms-input-mobile'], $args['class']);
+
 
     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo sprintf(
