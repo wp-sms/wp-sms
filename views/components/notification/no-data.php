@@ -9,7 +9,7 @@
                 fill="#56585A"/>
         </svg>
 
-        <h2 class="wpsms-notification-sidebar__card-content"><?php esc_html_e('You’re up to date!', 'wp-statistics'); ?></h2>
-        <p class="wpsms-notification-sidebar__card-content"><?php esc_html_e('No notifications in your', 'wp-statistics'); ?> <?php echo esc_html($tab) ?>.</p>
+        <h2 class="wpsms-notification-sidebar__card-content"><?php esc_html_e('You’re up to date!', 'wp-sms'); ?></h2>
+        <p class="wpsms-notification-sidebar__card-content"><?php esc_html_e('No notifications in your', 'wp-sms'); ?> <?php echo esc_html($tab) ?>.</p>
     </div>
 </div>

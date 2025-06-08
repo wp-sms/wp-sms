@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\Notification;
 
 use WP_SMS\Decorators\NotificationDecorator;
-use WP_SMS\Utils\OptionUtil;
+use WP_SMS\Option;
 
 class NotificationProcessor
 {
@@ -76,7 +76,7 @@ class NotificationProcessor
                 }
             }
 
-            OptionUtil::update('wp_statistics_notifications', $notifications);
+            update_option('wp_sms_notifications', $notifications);
         }
 
         return true;
@@ -96,7 +96,7 @@ class NotificationProcessor
                 $notification['dismiss'] = true;
             }
 
-            OptionUtil::update('wp_statistics_notifications', $notifications);
+            update_option('wp_sms_notifications', $notifications);
         }
 
         return true;
@@ -182,7 +182,7 @@ class NotificationProcessor
         if (isset($notifications['updated']) && !empty($notifications['updated'])) {
             $notifications['updated'] = false;
 
-            update_option('wp_statistics_notifications', $notifications);
+            update_option('wp_sms_notifications', $notifications);
 
             return true;
         }

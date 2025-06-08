@@ -2,8 +2,9 @@
 
 namespace WP_SMS\Services\Notification;
 
-use WP_Statistics\Components\Event;
-use WP_STATISTICS\Option;
+use Exception;
+use WP_SMS\Components\Event;
+use WP_SMS\Option as Option;
 
 class NotificationManager
 {
@@ -15,11 +16,11 @@ class NotificationManager
      */
     public function __construct()
     {
-        if (Option::get('display_notifications')) {
+        if (Option::getOption('plugin_notifications')) {
             add_action('admin_init', [$this, 'registerActions']);
-            Event::schedule('wp_statistics_notification_hook', time(), 'daily', [$this, 'fetchNotification']);
+            Event::schedule('wp_sms_notification_hook', time(), 'daily', [$this, 'fetchNotification']);
         } else {
-            Event::unschedule('wp_statistics_notification_hook');
+            Event::unschedule('wp_sms_notification_hook');
         }
     }
 
@@ -28,6 +29,7 @@ class NotificationManager
      *
      * This method is triggered by the scheduled cron event
      * and retrieves new notifications.
+     * @throws Exception
      */
     public function fetchNotification()
     {

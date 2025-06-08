@@ -93,7 +93,8 @@ class Settings
             update_option($this->setting_name, array(
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
                 'notify_errors_to_admin_email' => 1,
-                'report_wpsms_statistics'      => 1
+                'report_wpsms_statistics'      => 1,
+                'plugin_notifications'         => 1
             ));
         }
 
@@ -1816,6 +1817,19 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'options' => $options,
                     'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
                 ),
+                'plugin_notifications_header'  => array(
+                    'id'   => 'plugin_notifications_header',
+                    'name' => esc_html__('Plugin Notifications', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'plugin_notifications'         => array(
+                    'id'      => 'plugin_notifications',
+                    'name'    => esc_html__('WP SMS Notifications', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'default' => true,
+                    'desc'    => esc_html__('Display important notifications inside the plugin about new versions, feature updates, news, and special offers.', 'wp-sms')
+                ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
                     'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
@@ -2694,7 +2708,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
 
-                         <div class="wpsms-tab-content__box">
+                        <div class="wpsms-tab-content__box">
                             <?php
                             if (isset($args['setting']) && $args['setting'] == true) {
                                 $this->renderWpSetting();
@@ -2719,7 +2733,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     private function renderWpSetting()
     {
         ?>
-         <form method="post" action="options.php">
+        <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);

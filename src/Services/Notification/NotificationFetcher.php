@@ -12,7 +12,7 @@ class NotificationFetcher
      *
      * @var string
      */
-    private $apiUrl = 'https://connect.wp-sms.com';
+    private $apiUrl = 'https://connect.wp-sms-pro.com';
 
     /**
      * Fetches notifications from the remote API and stores them in the WordPress database.
@@ -23,7 +23,7 @@ class NotificationFetcher
     public function fetchNotification()
     {
         try {
-            $pluginSlug = basename(dirname(WP_STATISTICS_MAIN_FILE));
+            $pluginSlug = basename(dirname(WP_SMS_MAIN_FILE));
             $url        = $this->apiUrl . '/api/v1/notifications';
             $method     = 'GET';
             $params     = ['plugin_slug' => $pluginSlug, 'per_page' => 20, 'sortby' => 'activated_at-desc'];
@@ -38,7 +38,7 @@ class NotificationFetcher
                 'cookies'     => array(),
             ];
 
-            $remoteRequest = new RemoteRequest($url, $method, $params, $args);
+            $remoteRequest = new RemoteRequest($method, $url, $args, $params);
 
             $remoteRequest->execute(false, false);
 
@@ -62,17 +62,16 @@ class NotificationFetcher
             $notifications = NotificationProcessor::sortNotificationsByActivatedAt($notifications);
 
             $prevRawNotificationsData = NotificationFactory::getRawNotificationsData();
-
-            if (!update_option('wp_statistics_notifications', $notifications)) {
+            if (!update_option('wp_sms_notifications', $notifications)) {
                 if ($prevRawNotificationsData !== $notifications) {
-                    WP_Statistics()->log('Failed to update wp_statistics_notifications option.', 'error');
+                    WPSms()->log('Failed to update wp_sms_notifications option.', 'error');
                 }
             }
 
             return true;
 
         } catch (Exception $e) {
-            WP_Statistics()->log($e->getMessage(), 'error');
+            WPSms()->log($e->getMessage(), 'error');
             return false;
         }
     }

@@ -1,21 +1,21 @@
 <?php
 
-use WP_Statistics\Components\View;
+use WP_SMS\Components\View;
 
 ?>
 <div class="wpsms-notification-sidebar">
     <div class="wpsms-notification-sidebar__menu">
         <div class="wpsms-notification-sidebar__header">
             <div>
-                <h2 class="wpsms-notification-sidebar__title"><?php esc_html_e('Notifications', 'wp-statistics'); ?></h2>
+                <h2 class="wpsms-notification-sidebar__title"><?php esc_html_e('Notifications', 'wp-sms'); ?></h2>
                 <span class="wpsms-notification-sidebar__close"></span>
             </div>
             <div>
                 <ul class="wpsms-notification-sidebar__tabs">
                     <li class="wpsms-notification-sidebar__tab wpsms-notification-sidebar__tab--active"
-                        data-tab="tab-1"><?php esc_html_e('Inbox', 'wp-statistics'); ?></li>
+                        data-tab="tab-1"><?php esc_html_e('Inbox', 'wp-sms'); ?></li>
                     <li class="wpsms-notification-sidebar__tab"
-                        data-tab="tab-2"><?php esc_html_e('Dismissed', 'wp-statistics'); ?></li>
+                        data-tab="tab-2"><?php esc_html_e('Dismissed', 'wp-sms'); ?></li>
                 </ul>
 
                 <?php if (!empty($notifications)) : ?>
@@ -30,7 +30,7 @@ use WP_Statistics\Components\View;
                     ?>
                     <?php if ($hasNotifications) : ?>
                         <a href="#"
-                           class="wpsms-notification-sidebar__dismiss-all"><?php esc_html_e('Dismiss all', 'wp-statistics'); ?></a>
+                           class="wpsms-notification-sidebar__dismiss-all"><?php esc_html_e('Dismiss all', 'wp-sms'); ?></a>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -46,10 +46,10 @@ use WP_Statistics\Components\View;
                             $hasNotifications = true;
                             View::load("components/notification/card", ['notification' => $notification]);
                         endforeach;
-                        View::load("components/notification/no-data", ['tab' => __('inbox', 'wp-statistics')]);
+                        View::load("components/notification/no-data", ['tab' => __('inbox', 'wp-sms')]);
                     endif;
                     if (!$hasNotifications) {
-                        View::load("components/notification/no-data", ['tab' => __('inbox', 'wp-statistics')]);
+                        View::load("components/notification/no-data", ['tab' => __('inbox', 'wp-sms')]);
                     }
                     ?>
                 </div>
@@ -64,10 +64,10 @@ use WP_Statistics\Components\View;
                             $hasDismissed = true;
                             View::load("components/notification/card", ['notification' => $notification]);
                         endforeach;
-                        View::load("components/notification/no-data", ['tab' => __('dismissed list', 'wp-statistics')]);
+                        View::load("components/notification/no-data", ['tab' => __('dismissed list', 'wp-sms')]);
                     endif;
                     if (!$hasDismissed) {
-                        View::load("components/notification/no-data", ['tab' => __('dismissed list', 'wp-statistics')]);
+                        View::load("components/notification/no-data", ['tab' => __('dismissed list', 'wp-sms')]);
                     }
                     ?>
                 </div>

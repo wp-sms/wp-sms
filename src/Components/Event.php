@@ -144,6 +144,6 @@ class Event
             ]
         ];
 
-        return apply_filters('wp_statistics_cron_schedules', $schedules);
+        return apply_filters('wp_sms_cron_schedules', $schedules);
     }
 }

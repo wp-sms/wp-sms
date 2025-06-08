@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\Notification;
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Utils\PluginHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper as PluginHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Helper;
 use WP_SMS\User\UserHelper as User;
@@ -19,6 +19,7 @@ class NotificationConditionTags
         'is-admin'   => 'isAdminUser',
         'is-premium' => 'isPremiumUser',
         'is-free'    => 'isFreeVersion',
+        'has-addon'  => 'hasAddon',
         'no-premium' => 'noPremiumUser',
     ];
 

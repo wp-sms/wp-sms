@@ -2,8 +2,6 @@
 
 namespace WP_SMS\Services\Notification;
 
-use WP_SMS\Utils\OptionUtil;
-
 class NotificationFactory
 {
     /**
@@ -13,7 +11,7 @@ class NotificationFactory
      */
     public static function getAllNotifications()
     {
-        $rawNotifications = get_option('wp_statistics_notifications', []);
+        $rawNotifications = get_option('wp_sms_notifications', []);
         $notifications    = NotificationProcessor::filterNotificationsByTags($rawNotifications['data'] ?? []);
 
         return NotificationProcessor::decorateNotifications($notifications);
@@ -26,7 +24,7 @@ class NotificationFactory
      */
     public static function getRawNotificationsData()
     {
-        return get_option('wp_statistics_notifications', []);
+        return get_option('wp_sms_notifications', []);
     }
 
     /**
@@ -36,7 +34,7 @@ class NotificationFactory
      */
     public static function hasUpdatedNotifications()
     {
-        $rawNotifications = OptionUtil::get('wp_statistics_notifications', []);
+        $rawNotifications = get_option('wp_sms_notifications', []);
 
         if (!is_array($rawNotifications)) {
             return false;

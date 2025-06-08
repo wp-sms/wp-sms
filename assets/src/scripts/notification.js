@@ -142,7 +142,7 @@ jQuery(document).ready(function () {
 
         let params = {
             'wps_nonce': wps_js.global.rest_api_nonce,
-            'action': 'wp_statistics_dismiss_notification',
+            'action': 'wp_sms_dismiss_notification',
             'notification_id': notificationId
         }
 
@@ -172,7 +172,7 @@ jQuery(document).ready(function () {
 
         let params = {
             'wps_nonce': wps_js.global.rest_api_nonce,
-            'action': 'wp_statistics_update_notifications_status',
+            'action': 'wp_sms_update_notifications_status',
         }
 
         jQuery.ajax({

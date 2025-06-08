@@ -2,8 +2,8 @@
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Components\View;
+use WP_SMS\Option as Option;
 use WP_SMS\Services\Notification\NotificationFactory;
-use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
 
@@ -32,7 +32,7 @@ foreach ($addons as $option_key => $status) {
 }
 
 $hasUpdatedNotifications = NotificationFactory::hasUpdatedNotifications();
-$displayNotifications    = OptionUtil::get('display_notifications') ? true : false;
+$displayNotifications    = (bool)Option::getOption('plugin_notifications');
 ?>
 <div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>">
     <div class="wpsms-header-logo"></div>
@@ -54,7 +54,7 @@ $displayNotifications    = OptionUtil::get('display_notifications') ? true : fal
         <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
         <?php
         if ($displayNotifications): ?>
-            <a title="<?php esc_html_e('Notifications', 'wp-statistics'); ?>" class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>"></a>
+            <a title="<?php esc_html_e('Notifications', 'wp-sms'); ?>" class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>"></a>
         <?php endif; ?>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
