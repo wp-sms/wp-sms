@@ -374,10 +374,6 @@ class Gateway
             add_filter('wp_sms_to', array($this, 'cleanNumbers'), 10);
         }
 
-        // Check option for add country code to prefix numbers
-        if (isset($this->options['mobile_county_code']) and $this->options['mobile_county_code']) {
-            add_filter('wp_sms_to', array($this, 'applyCountryCode'), 20);
-        }
 
         // Check option for send only to local numbers
         if (isset($this->options['send_only_local_numbers']) and $this->options['send_only_local_numbers']) {
@@ -527,15 +523,26 @@ class Gateway
     }
 
     /**
-     * Apply Country code to prefix numbers
+     * [Deprecated] Apply country code to prefix local numbers.
      *
-     * @param $recipients
+     * This method prepends the configured "mobile_county_code" to numbers that
+     * appear to be local (starting with 0 or 00). Now deprecated in favor of
+     * using international input with explicit country codes.
      *
+     * @param array $recipients Array of recipient numbers.
      * @return array
+     * @deprecated 6.9.15 Use fully formatted international numbers instead.
+     *
      */
     public function applyCountryCode($recipients = array())
     {
-        $countryCode = $this->options['mobile_county_code'];
+        _deprecated_function(
+            __METHOD__,
+            '6.9.15',
+            'E.164-based input and storage with intl-tel-input UI'
+        );
+
+        $countryCode = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
 
         if (!$countryCode) {
             return $recipients;
@@ -544,7 +551,6 @@ class Gateway
         $finalNumbers = [];
 
         foreach ($recipients as $recipient) {
-
             if (substr($recipient, 0, 2) === '00') {
                 $reformattedNumber = $countryCode . substr($recipient, 2);
             } elseif (substr($recipient, 0, 1) === '0') {
@@ -560,6 +566,7 @@ class Gateway
 
         return $finalNumbers;
     }
+
 
     /**
      * Send SMS only to local numbers
