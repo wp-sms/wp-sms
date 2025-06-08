@@ -131,11 +131,11 @@ class NoticeManager extends AbstractNotice
         $slug           = 'wp-sms-pro';
         $plugin_handler = new PluginHandler();
 
-        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+        if (!LicenseHelper::isPluginLicenseValid($slug) && $plugin_handler->isPluginActive($slug)) {
             View::load("components/lock-sections/notice-inactive-license-addon");
         }
 
-        if (!LicenseHelper::isPluginLicenseValid($slug)&& !$plugin_handler->isPluginActive($slug)) {
+        if (!LicenseHelper::isPluginLicenseValid($slug) && !$plugin_handler->isPluginActive($slug)) {
             View::load("components/lock-sections/unlock-all-in-one-addon");
         }
     }
