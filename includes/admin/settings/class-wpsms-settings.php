@@ -1334,51 +1334,28 @@ class Settings
                     'type' => 'text',
                     'desc' => esc_html__('Enter a sample format for the mobile number that users will see. Example: "e.g., +1234567890".', 'wp-sms')
                 ),
-                'international_mobile'                     => array(
-                    'id'      => 'international_mobile',
-                    'name'    => esc_html__('International Number Input', 'wp-sms'),
-                    'type'    => 'checkbox',
-                    'options' => $options,
-                    'desc'    => esc_html__('Add a flag dropdown for international format support in the mobile number input field.', 'wp-sms')
-                ),
                 'international_mobile_only_countries'      => array(
-                    'id'        => 'international_mobile_only_countries',
-                    'name'      => esc_html__('Only Countries', 'wp-sms'),
-                    'type'      => 'countryselect',
-                    'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => wp_sms_countries()->getCountries(),
-                    'desc'      => esc_html__('In the dropdown, display only the countries you specify.', 'wp-sms')
+                    'id'      => 'international_mobile_only_countries',
+                    'name'    => esc_html__('Only Countries', 'wp-sms'),
+                    'type'    => 'countryselect',
+                    'options' => wp_sms_countries()->getCountries(),
+                    'desc'    => esc_html__(
+                        'Choose one or more countries to restrict the dropdown. '
+                        . 'Leave blank to show the full country list.',
+                        'wp-sms'
+                    ),
                 ),
+
+                // Preferred Countries
                 'international_mobile_preferred_countries' => array(
-                    'id'        => 'international_mobile_preferred_countries',
-                    'name'      => esc_html__('Preferred Countries', 'wp-sms'),
-                    'type'      => 'countryselect',
-                    'className' => 'js-wpsms-show_if_international_mobile_enabled',
-                    'options'   => wp_sms_countries()->getCountries(),
-                    'desc'      => esc_html__('Specify the countries to appear at the top of the list.', 'wp-sms')
-                ),
-                'mobile_county_code'                       => array(
-                    'id'         => 'mobile_county_code',
-                    'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
-                    'type'       => 'select',
-                    'className'  => 'js-wpsms-show_if_international_mobile_disabled',
-                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global / Local)\'.', 'wp-sms'),
-                    'options'    => array_merge(['0' => esc_html__('No country code (Global / Local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged()),
-                    'attributes' => ['class' => 'js-wpsms-select2'],
-                ),
-                'mobile_terms_minimum'                     => array(
-                    'id'        => 'mobile_terms_minimum',
-                    'name'      => esc_html__('Minimum Length Number', 'wp-sms'),
-                    'type'      => 'number',
-                    'className' => 'js-wpsms-show_if_international_mobile_disabled',
-                    'desc'      => esc_html__('Specify the shortest allowed mobile number.', 'wp-sms'),
-                ),
-                'mobile_terms_maximum'                     => array(
-                    'id'        => 'mobile_terms_maximum',
-                    'name'      => esc_html__('Maximum Length Number', 'wp-sms'),
-                    'type'      => 'number',
-                    'className' => 'js-wpsms-show_if_international_mobile_disabled',
-                    'desc'      => esc_html__('Specify the longest allowed mobile number.', 'wp-sms'),
+                    'id'      => 'international_mobile_preferred_countries',
+                    'name'    => esc_html__('Preferred Countries', 'wp-sms'),
+                    'type'    => 'countryselect',
+                    'options' => wp_sms_countries()->getCountries(),
+                    'desc'    => esc_html__(
+                        'Countries selected here will appear at the top of the dropdown.',
+                        'wp-sms'
+                    ),
                 ),
                 'admin_title_privacy'                      => array(
                     'id'   => 'admin_title_privacy',
