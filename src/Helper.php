@@ -474,15 +474,13 @@ class Helper
      */
     public static function prepareMobileNumber($mobileNumber)
     {
-        $international_mode = Option::getOption('international_mobile') ? true : false;
-        $country_code       = substr($mobileNumber, 0, 1) == '+' ? true : false;
-
-        if ($international_mode and !$country_code) {
+        if (strpos($mobileNumber, '+') !== 0) {
             $mobileNumber = '+' . $mobileNumber;
         }
 
         return $mobileNumber;
     }
+
 
     public static function prepareMobileNumberQuery($number)
     {
