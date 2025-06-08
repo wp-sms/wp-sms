@@ -82,4 +82,24 @@ class Option
 
         update_option($setting_name, $options);
     }
+
+    /**
+     * Delete a specific WP SMS option key from the stored options array.
+     *
+     * @param string $key
+     * @param bool $pro
+     * @return void
+     */
+    public static function deleteOption($key, $pro = false)
+    {
+        $options = self::getOptions($pro);
+
+        if (isset($options[$key])) {
+            unset($options[$key]);
+
+            $setting_name = $pro ? 'wps_pp_settings' : 'wpsms_settings';
+            update_option($setting_name, $options);
+        }
+    }
+
 }
