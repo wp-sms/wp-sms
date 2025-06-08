@@ -242,6 +242,7 @@ class NumberParser
             '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9'
         ));
     }
+
     /**
      * Checks if the phone number exists in usermeta.
      *
