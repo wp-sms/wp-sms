@@ -31,7 +31,7 @@
 
         <div class="wp-sms-lock__footer wp-sms-lock__footer--dashed">
             <p class="wp-sms-lock__footer__desc">
-                <?php esc_html_e('Get WP SMS Pro on its own, or save time with the All-in-One bundle that unlocks every premium add-on we make.', 'wp-sms'); ?>
+                <?php esc_html_e('Get WP SMS Pro on its own, or save money with the All-in-One bundle that unlocks every premium add-on we make.', 'wp-sms'); ?>
             </p>
 
             <div class="wp-sms-lock__actions">
