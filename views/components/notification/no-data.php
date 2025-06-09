@@ -10,6 +10,14 @@
         </svg>
 
         <h2 class="wpsms-notification-sidebar__card-content"><?php esc_html_e('You’re up to date!', 'wp-sms'); ?></h2>
-        <p class="wpsms-notification-sidebar__card-content"><?php esc_html_e('No notifications in your', 'wp-sms'); ?> <?php echo esc_html($tab) ?>.</p>
+        <p class="wps-notification-sidebar__card-content">
+            <?php
+            printf(
+            /* translators: %s: notification tab name */
+                esc_html__('No notifications in your %s.', 'wp-sms'),
+                esc_html($tab)
+            );
+            ?>
+        </p>
     </div>
 </div>
