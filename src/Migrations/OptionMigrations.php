@@ -13,6 +13,7 @@ class OptionMigrations
 
         // Register filter for backward compatibility
         add_filter('wp_sms_get_option_value', [$this, 'filterDeprecatedMobileCountyCode'], 10, 3);
+        add_filter('wp_sms_get_option_value', [$this, 'filterDeprecatedInternationalMobileCheckbox'], 10, 3);
     }
 
     /**
@@ -79,4 +80,29 @@ class OptionMigrations
 
         return '0';
     }
+
+    /**
+     * Handle deprecated 'international_mobile' returning true
+     *
+     * @param mixed $value The original option value.
+     * @param string $key The option key.
+     * @param bool $pro Whether this is a pro option context.
+     * @return mixed
+     */
+    public function filterDeprecatedInternationalMobileCheckbox($value, $key, $pro)
+    {
+        if ($key !== 'international_mobile') {
+            return $value;
+        }
+
+        _deprecated_argument(
+            'wp_sms_get_option_value',
+            '6.9.15',
+            __('The "international_mobile" option is deprecated and is always true.', 'wp-sms')
+        );
+
+
+        return true;
+    }
+
 }
