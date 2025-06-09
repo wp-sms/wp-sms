@@ -45,7 +45,7 @@
             </div>
 
             <div class="wp-sms-lock__footer__info">
-                <?php esc_html_e('30-day money-back guarantee. Instant download & updates.', 'wp-sms'); ?>
+                <?php esc_html_e('14-day money-back guarantee. Instant download & updates.', 'wp-sms'); ?>
             </div>
         </div>
     </div>
