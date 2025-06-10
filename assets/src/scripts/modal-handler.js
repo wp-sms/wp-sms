@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const welcomeSection = document.querySelector('.js-wp-sms-premiumModal-welcome');
     const welcomeModal = document.querySelector('.js-wp-sms-premiumModal-welcome .js-wp-sms-premiumModal');
     const premiumFeatures = document.querySelectorAll('.js-wp-sms-premiumStepFeature');
-    const upgradeButtonBox = document.querySelectorAll('.wp-sms-premium-step__action-container');
+    const upgradeButtonBox = document.querySelectorAll('.wp-sms-aio-step__action-container');
     const premiumBtn = document.querySelectorAll('.js-wp-sms-openPremiumModal')
-    const premiumStepsTitle = document.querySelectorAll('.js-wp-sms-premium-steps__title');
+    const premiumStepsTitle = document.querySelectorAll('.js-wp-sms-aio-steps__title');
     const firstStepHeader = document.querySelectorAll('.js-wp-sms-premium-first-step__head');
     const dynamicTitle = document.querySelector('.js-wp-sms-dynamic-title');
 
@@ -83,12 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hide the premium steps initially
     premiumSteps.forEach(step => {
-        step.classList.remove('wp-sms-modal__premium-step--active');
+        step.classList.remove('wp-sms-modal__aio-step--active');
     });
 
 
     const loadModalImages = () => {
-        document.querySelectorAll('.wp-sms-premium-step__image').forEach((img) => {
+        document.querySelectorAll('.wp-sms-aio-step__image').forEach((img) => {
             img.src = img.dataset.src;
         });
     }
@@ -102,12 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index < 0 || index >= premiumSteps.length) return;
 
         const activeStep = premiumSteps[index];
-        const stepTitle = activeStep.querySelector('.js-wp-sms-premium-step__title');
+        const stepTitle = activeStep.querySelector('.js-wp-sms-aio-step__title');
         if (dynamicTitle && stepTitle) {
             dynamicTitle.textContent = stepTitle.textContent.trim() || 'Default Title';
         }
 
-        premiumSteps.forEach(step => step.classList.remove('wp-sms-modal__premium-step--active'));
+        premiumSteps.forEach(step => step.classList.remove('wp-sms-modal__aio-step--active'));
         if (upgradeButtonBox && upgradeButtonBox.length > 0) {
             upgradeButtonBox.forEach(btn => {
                 if (btn) {
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         premiumFeatures.forEach(feature => feature.classList.remove('active'));
-        premiumSteps[index].classList.add('wp-sms-modal__premium-step--active');
+        premiumSteps[index].classList.add('wp-sms-modal__aio-step--active');
 
         const toggleDisplay = (elements, displayStyle) => {
             elements.forEach(element => {
