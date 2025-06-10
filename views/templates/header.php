@@ -7,10 +7,10 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
 $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
 ?>
 
-<div class="wpsms-adminHeader <?php echo $isPremium ? 'wpsms-adminHeader__premium' : '' ?>">
+<div class="wpsms-adminHeader <?php echo $isPremium ? 'wpsms-adminHeader__aio' : '' ?>">
     <div class="wpsms-adminHeader__logo--container">
          <?php if ($isPremium): ?>
-            <img width="134" height="22" class="wpsms-adminHeader__logo wpsms-adminHeader__logo--premium" src="<?php echo esc_url(apply_filters('wp_sms_header_url', WP_SMS_URL . 'assets/images/wp-sms-premium.svg')); ?>"/>
+            <img width="134" height="22" class="wpsms-adminHeader__logo wpsms-adminHeader__logo--aio" src="<?php echo esc_url(apply_filters('wp_sms_header_url', WP_SMS_URL . 'assets/images/wp-sms-premium.svg')); ?>"/>
          <?php else: ?>
             <img width="134" height="22" class="wpsms-adminHeader__logo" src="<?php echo esc_url(apply_filters('wp_sms_header_url', WP_SMS_URL . 'assets/images/white-header-logo.svg')); ?>"/>
 

@@ -28,7 +28,7 @@ foreach ($addons as $option_key => $status) {
     }
 }
 ?>
-<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>">
+<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__aio' : '' ?>">
     <div class="wpsms-header-logo"></div>
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
