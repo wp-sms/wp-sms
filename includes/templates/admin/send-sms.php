@@ -157,11 +157,6 @@
                 <div class="mms-media-field wpsms-sendsms__form-filed">
                     <label><?php esc_html_e('Choice MMS media', 'wp-sms'); ?></label>
                     <div class="mms-media-field__content">
-                        <div><a href="#" class="wpsms-upload-button"><?php esc_html_e('Upload image', 'wp-sms'); ?></a>
-                        </div>
-                        <div>
-                            <a href="#" class="wpsms-remove-button button" style="display:none"><?php esc_html_e('Remove image', 'wp-sms'); ?></a>
-                        </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
                         <?php if ($smsObject->supportMedia) : ?>
                             <div><a href="#" class="wpsms-upload-button"><?php esc_html_e('Upload image', 'wp-sms'); ?></a>
                             </div>
