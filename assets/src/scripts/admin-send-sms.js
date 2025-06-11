@@ -317,15 +317,15 @@
             let nextTabs = activeTab.nextAll()
 
             if (nextTabs.length < 1) {
-                this.fields.nextButton.element.addClass('inactive')
+                this.fields.nextButton.element.css('opacity', '0').addClass('inactive');
             } else {
-                this.fields.nextButton.element.removeClass('inactive')
+                this.fields.nextButton.element.css('opacity', '1').removeClass('inactive');
             }
 
             if (prevTabs.length < 1) {
-                this.fields.prevButton.element.addClass('inactive')
+                this.fields.prevButton.element.css('opacity', '0').addClass('inactive');
             } else {
-                this.fields.prevButton.element.removeClass('inactive')
+                this.fields.prevButton.element.css('opacity', '1').removeClass('inactive');
             }
         },
 
