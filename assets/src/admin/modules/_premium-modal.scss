@@ -29,7 +29,7 @@
   .wp-sms-modal__aio-step {
     display: none;
 
-    &__desc , &__desc P{
+    &-desc{
       font-weight: 400;
       font-size: 15px;
       line-height: 24px;
@@ -125,10 +125,8 @@
         @media(min-width: 769px) {
           width: calc(100% - 210px);
         }
-        .wp-sms-modal__premium-step__desc{
-          margin: 0!important;
-        }
-        p , .wp-sms-modal__premium-step__desc{
+
+        p {
           font-size: 14px;
           font-weight: 400;
           color: #292D32;

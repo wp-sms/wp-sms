@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const premiumSteps = document.querySelectorAll('.js-wp-sms-premiumModalStep');
     const premiumWelcomeSteps = document.querySelectorAll('.js-wp-sms-premiumModal-welcome .js-wp-sms-premiumModalStep');
     const welcomeSection = document.querySelector('.js-wp-sms-premiumModal-welcome');
-    const welcomeModal = document.querySelector('.js-wp-sms-premiumModal-welcome .js-wp-sms-premiumModal');
     const premiumFeatures = document.querySelectorAll('.js-wp-sms-premiumStepFeature');
     const upgradeButtonBox = document.querySelectorAll('.wp-sms-aio-step__action-container');
     const premiumBtn = document.querySelectorAll('.js-wp-sms-openPremiumModal')
@@ -17,12 +16,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentStepIndex = 1;
 
     if (premiumBtn.length > 0) {
-        premiumBtn.forEach(button => {
+         premiumBtn.forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
+                event.stopPropagation();
                 const href = button.getAttribute('href');
                 const target = button.getAttribute('data-target');
-                openModal(target, href);
+
+                if (target === 'first-step' && !document.querySelector('.js-wp-sms-premiumModal-welcome')) {
+                    const welcomeDiv = document.createElement('div');
+                    welcomeDiv.classList.add('js-wp-sms-premiumModal-welcome');
+                    welcomeDiv.style.display = 'block';
+
+                    const modal = document.querySelector('.wp-sms-modal--premium');
+
+                    if (modal) {
+                         welcomeDiv.appendChild(modal);
+                        document.body.appendChild(welcomeDiv);
+                        showWelcomeModal()
+                    }
+                 } else {
+                    openModal(target, href);
+                }
             });
         });
     }
@@ -95,19 +110,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to show a specific step and sync the sidebar
     const showStep = (index) => {
+        const premiumSteps = document.querySelectorAll('.js-wp-sms-premiumModalStep');
+
+        if (!premiumSteps || index < 0 || index >= premiumSteps.length) {
+            return;
+        }
+
         setTimeout(() => {
             setMaxHeightForAllSteps();
         }, 100);
 
-        if (index < 0 || index >= premiumSteps.length) return;
 
         const activeStep = premiumSteps[index];
-        const stepTitle = activeStep.querySelector('.js-wp-sms-aio-step__title');
-        if (dynamicTitle && stepTitle) {
-            dynamicTitle.textContent = stepTitle.textContent.trim() || 'Default Title';
-        }
+         premiumSteps.forEach(step => step.classList.remove('wp-sms-modal__aio-step--active'));
 
-        premiumSteps.forEach(step => step.classList.remove('wp-sms-modal__aio-step--active'));
+        if(activeStep && activeStep !=='undefined'){
+             const stepTitle = activeStep.querySelector('.js-wp-sms-aio-step__title');
+             if (dynamicTitle && stepTitle) {
+                 dynamicTitle.textContent = stepTitle.textContent.trim() || 'Default Title';
+             }
+            activeStep.classList.add('wp-sms-modal__aio-step--active');
+         }
+
+
+
+
         if (upgradeButtonBox && upgradeButtonBox.length > 0) {
             upgradeButtonBox.forEach(btn => {
                 if (btn) {
@@ -151,19 +178,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to start the auto-slide process
     const startAutoSlide = () => {
         autoSlideInterval = setInterval(() => {
-            currentStepIndex = (currentStepIndex + 1) % premiumWelcomeSteps.length; // Loop through steps
-            showStep(currentStepIndex); // Show the current step and sync sidebar
+            const premiumWelcomeSteps = document.querySelectorAll('.js-wp-sms-premiumModal-welcome .js-wp-sms-premiumModalStep');
+            if (premiumWelcomeSteps.length === 0) {
+                 stopAutoSlide();
+                return;
+            }
+            currentStepIndex = (currentStepIndex + 1) % premiumWelcomeSteps.length;
+            showStep(currentStepIndex);
         }, 5000); // Adjust time interval to 5 seconds
     }
 
-
-    if (welcomeSection) {
+    const showWelcomeModal=()=>{
+         const welcomeModal = document.querySelector('.js-wp-sms-premiumModal-welcome');
+        if (!welcomeModal) {
+             return;
+        }
+        const premiumSteps = document.querySelectorAll('.js-wp-sms-premiumModalStep');
+        if (premiumSteps.length === 0) {
+             return;
+        }
         currentStepIndex = 0;
         loadModalImages();
-        welcomeModal.style.display = 'block';
-        premiumStepsContent.style.display = 'block';
+
+        if (premiumStepsContent) {
+            premiumStepsContent.style.display = 'block';
+        }
+        const modal = document.querySelector('.wp-sms-modal--premium');
+        if (modal) {
+            modal.style.display = 'block';
+            modal.classList.add('wp-sms-modal--open');
+            document.body.style.overflow = 'hidden';
+        }
         showStep(currentStepIndex);
         startAutoSlide();
+    }
+    if (welcomeSection) {
+        showWelcomeModal();
     }
 
     const stopAutoSlide = () => {
@@ -207,6 +257,43 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             this.attachOpenEvent();
             this.attachCloseEvent();
+
+
+            const selectSender = jQuery('#select_sender');
+            if (selectSender.length) {
+                selectSender.select2({
+                    minimumResultsForSearch: Infinity,
+                    dropdownCssClass: 'wpsms-sendsms-select2-dropdown',
+                    templateResult: formatOptions,
+                    templateSelection: formatOptions
+                });
+                function formatOptions(data) {
+                    if (!data.element) {
+                        return data.text;
+                    }
+                    var formattedOption = data.text;
+                    if (jQuery(data.element).data('target')) {
+                        formattedOption = jQuery(`<span class='js-wp-sms-openPremiumModal' data-target='${jQuery(data.element).data('target')}'>${data.text}</span>`);
+                    }
+                    return formattedOption;
+                }
+                selectSender.on('select2:select', (event) => {
+                    const selectedOption = event.target.selectedOptions[0];
+                    if (selectedOption && selectedOption.classList.contains('js-wp-sms-openPremiumModal')) {
+                        event.preventDefault();
+                        const target = selectedOption.getAttribute('data-target');
+                        const href = selectedOption.getAttribute('href') || '#';
+                        openModal(target, href);
+                    }
+                });
+
+                jQuery(document).on('click', '.wpsms-sendsms-select2-dropdown .js-wp-sms-openPremiumModal', function(event) {
+                    event.stopPropagation();
+                    const target = jQuery(this).attr('data-target');
+                    const href = jQuery(this).attr('href') || '#';
+                    openModal(target, href);
+                });
+            }
         }
 
         // Event delegation for opening modals
@@ -234,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         openModal(modalId) {
             const modal = document.getElementById(modalId);
-            if (modal) {
+            if (modal && !modal.classList.contains('wp-sms-modal--open')) {
                 modal.classList.add('wp-sms-modal--open');
             } else {
                 console.error(`Modal with ID "${modalId}" not found.`);
