@@ -504,7 +504,7 @@ class AnonymizedUsageDataProvider
             ],
             'buttonPosition'                      => [
                 'label' => esc_html__('Button Position', 'wp-sms'),
-                'value' => ucwords(str_replace('_', ' ', OptionUtil::get('chatbox_button_position'))),
+                'value' => ucwords(str_replace('_', ' ', OptionUtil::get('chatbox_button_position'))) ?: 'Not Set',
                 'debug' => OptionUtil::get('chatbox_button_position'),
             ],
             'disableWpSmsLogo'                    => [
