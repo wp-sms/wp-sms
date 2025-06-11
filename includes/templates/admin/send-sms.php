@@ -49,10 +49,10 @@
                         </option>
                         <option value="users" id="wp_users"><?php esc_html_e('WordPress\'s Users', 'wp-sms'); ?>
                         </option>
-                        <option value="wc-customers" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openPremiumModal' ;}?>" data-target="" id="wc_users" <?php disabled(!$proIsActive); ?>>
-                            <span data-target="wp-sms-pro" class="js-wp-sms-openPremiumModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
+                        <option value="wc-customers" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openAioModal' ;}?>" data-target="" id="wc_users" <?php disabled(!$proIsActive); ?>>
+                            <span data-target="wp-sms-pro" class="js-wp-sms-openAioModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
                         </option>
-                        <option value="bp-users" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openPremiumModal' ;}?>" id="bp_users" <?php disabled(!$proIsActive); ?>>
+                        <option value="bp-users" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openAioModal' ;}?>" id="bp_users" <?php disabled(!$proIsActive); ?>>
                             <?php esc_html_e('BuddyPress\'s Users', 'wp-sms'); ?>
                         </option>
                         <?php do_action('wp_sms_form_send_to_select_option', $smsObject, $proIsActive); ?>
@@ -180,7 +180,7 @@
                         <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
                         <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                     </div>
-                    <a style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" data-target="wp-sms-pro" class="pro not-pro js-wp-sms-openPremiumModal"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
+                    <a style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" data-target="wp-sms-pro" class="pro not-pro js-wp-sms-openAioModal"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
                 </div>
 
                 <div class="set-date-field wpsms-sendsms__form-filed">

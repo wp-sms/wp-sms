@@ -17,7 +17,7 @@ if ($step_name !== 'first-step') {
 }
 ?>
 
-<div class="wp-sms-modal__aio-step js-wp-sms-premiumModalStep wp-sms-modal__aio-step--<?php echo esc_attr($step_name) ?>">
+<div class="wp-sms-modal__aio-step js-wp-sms-aioModalStep wp-sms-modal__aio-step--<?php echo esc_attr($step_name) ?>">
     <div class="js-wp-sms-aio-steps__head">
         <div class="js-wp-sms-aio-step__title">
             <?php echo esc_html($step_title); ?>
