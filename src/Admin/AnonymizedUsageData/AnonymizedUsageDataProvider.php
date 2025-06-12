@@ -323,19 +323,19 @@ class AnonymizedUsageDataProvider
 
         $addons = [
             'wooPro'     => $pluginHandler->isPluginActive('wp-sms-woocommerce-pro')
-                ? ['woocommerce_pro' => self::getWoocommerceProSetting()['woocommerce_pro'] ?: []]
+                ? self::getWoocommerceProSetting()['woocommerce_pro'] ?: []
                 : 'Not Active',
             'twoWay'     => $pluginHandler->isPluginActive('wp-sms-two-way')
                 ? self::getTwoWayIntegrationSetting()['two_way'] ?: []
                 : 'Not Active',
             'fluent'     => $pluginHandler->isPluginActive('wp-sms-fluent-integrations')
-                ? ['fluentCrm' => self::getFluentIntegrationSetting()['fluent_crm'] ?: []]
+                ? self::getFluentIntegrationSetting() ?: []
                 : 'Not Active',
             'membership' => $pluginHandler->isPluginActive('wp-sms-membership-integrations')
-                ? ['paidMembershipsPro' => self::getPaidMembershipsIntegrationSetting()['paid_memberships_pro'] ?: []]
+                ? self::getMembershipsIntegrationSetting()
                 : 'Not Active',
             'booking'    => $pluginHandler->isPluginActive('wp-sms-booking-integrations')
-                ? ['booking' => self::getBookingIntegrationSetting()]
+                ? self::getBookingIntegrationSetting()
                 : 'Not Active',
         ];
 
@@ -881,7 +881,6 @@ class AnonymizedUsageDataProvider
 
         // === Booking Calendar ===
         $bookingCalendarOptions = array(
-            'booking_calendar_notif_customer_mobile_field'      => __('Booking Calendar: Customer Mobile Field', 'wp-sms'),
             'booking_calendar_notif_admin_new_booking'          => __('Booking Calendar: Admin New Booking Notification', 'wp-sms'),
             'booking_calendar_notif_customer_new_booking'       => __('Booking Calendar: Customer New Booking Notification', 'wp-sms'),
             'booking_calendar_notif_customer_booking_approved'  => __('Booking Calendar: Booking Approved Notification', 'wp-sms'),
@@ -963,7 +962,7 @@ class AnonymizedUsageDataProvider
         // === Woo Bookings ===
         $wooBookingsOptions = array(
             'woo_bookings_notif_admin_new_booking'          => __('Woo Bookings: Admin New Booking', 'wp-sms'),
-            'wooBookingsNotifAdminNewBooking'               => __('Woo Bookings: Admin Cancelled Booking', 'wp-sms'),
+            'woo_bookings_notif_admin_cancelled_booking'    => __('Woo Bookings: Admin Cancelled Booking', 'wp-sms'),
             'woo_bookings_notif_customer_cancelled_booking' => __('Woo Bookings: Customer Cancelled Booking', 'wp-sms'),
             'woo_bookings_notif_customer_confirmed_booking' => __('Woo Bookings: Customer Confirmed Booking', 'wp-sms'),
         );
@@ -1000,71 +999,130 @@ class AnonymizedUsageDataProvider
      */
     public static function getFluentIntegrationSetting()
     {
-        $integrations = array();
+        $integrations = [];
 
-        // === FluentCRM ===
-        $fluentCrmOptions = array(
+        $fluentCrmOptions = [
             'fluent_crm_notif_contact_subscribed'   => __('FluentCRM: Contact Subscribed Notification', 'wp-sms'),
             'fluent_crm_notif_contact_unsubscribed' => __('FluentCRM: Contact Unsubscribed Notification', 'wp-sms'),
             'fluent_crm_notif_contact_pending'      => __('FluentCRM: Contact Pending Notification', 'wp-sms'),
-        );
+        ];
 
-        $fluentCrmSettings = array();
-
+        $fluentCrmSettings = [];
         foreach ($fluentCrmOptions as $key => $label) {
             $raw = \WP_SMS\Utils\OptionUtil::get($key);
 
-            $value = (is_bool($raw) || $raw === '0' || $raw === '1') ? ($raw ? 'Enabled' : 'Disabled') : (is_string($raw) ? $raw : 'Not Set');
+            $value = (is_bool($raw) || $raw === '0' || $raw === '1')
+                ? ($raw ? 'Enabled' : 'Disabled')
+                : (is_string($raw) ? $raw : 'Not Set');
 
             $alias = preg_replace_callback('/_([a-z])/', function ($matches) {
                 return strtoupper($matches[1]);
             }, $key);
 
-            $fluentCrmSettings[$alias] = array(
+            $fluentCrmSettings[$alias] = [
                 'label' => esc_html($label),
                 'value' => $value,
                 'debug' => $raw,
-            );
+            ];
         }
 
-        $integrations['fluent_crm'] = $fluentCrmSettings;
+        $fluentSupportOptions = [
+            'fluent_support_notif_ticket_created'    => __('Fluent Support: Ticket Created', 'wp-sms-fluent-integrations'),
+            'fluent_support_notif_customer_response' => __('Fluent Support: Customer Response', 'wp-sms-fluent-integrations'),
+            'fluent_support_notif_agent_assigned'    => __('Fluent Support: Agent Assigned', 'wp-sms-fluent-integrations'),
+            'fluent_support_notif_ticket_closed'     => __('Fluent Support: Ticket Closed', 'wp-sms-fluent-integrations'),
+        ];
+
+        $fluentSupportSettings = [];
+        foreach ($fluentSupportOptions as $key => $label) {
+            $raw = \WP_SMS\Utils\OptionUtil::get($key);
+
+            $value = (is_bool($raw) || $raw === '0' || $raw === '1')
+                ? ($raw ? 'Enabled' : 'Disabled')
+                : (is_string($raw) ? $raw : 'Not Set');
+
+            $alias = preg_replace_callback('/_([a-z])/', function ($matches) {
+                return strtoupper($matches[1]);
+            }, $key);
+
+            $fluentSupportSettings[$alias] = [
+                'label' => esc_html($label),
+                'value' => $value,
+                'debug' => $raw,
+            ];
+        }
+
+        $integrations['fluent_crm']     = $fluentCrmSettings;
+        $integrations['fluent_support'] = $fluentSupportSettings;
 
         return $integrations;
     }
 
     /**
-     * Retrieves settings for Paid Memberships Pro integration in structured format.
+     * Retrieves settings for Memberships integration in structured format.
      *
      * @return array
      */
-    public static function getPaidMembershipsIntegrationSetting()
+    public static function getMembershipsIntegrationSetting()
     {
-        $integration = array();
+        $integrations = [];
 
-        $options = array(
+        // === Paid Memberships Pro ===
+        $paidMembershipOptions = [
             'pmpro_notif_user_registered'      => __('Paid Memberships Pro: User Registered Notification', 'wp-sms'),
             'pmpro_notif_membership_confirmed' => __('Paid Memberships Pro: Membership Confirmed Notification', 'wp-sms'),
             'pmpro_notif_membership_cancelled' => __('Paid Memberships Pro: Membership Cancelled Notification', 'wp-sms'),
             'pmpro_notif_membership_expired'   => __('Paid Memberships Pro: Membership Expired Notification', 'wp-sms'),
-        );
+        ];
 
-        foreach ($options as $key => $label) {
+        $paidSettings = [];
+        foreach ($paidMembershipOptions as $key => $label) {
             $raw = \WP_SMS\Utils\OptionUtil::get($key);
 
-            $value = (is_bool($raw) || $raw === '0' || $raw === '1') ? ($raw ? 'Enabled' : 'Disabled') : (is_string($raw) ? $raw : 'Not Set');
+            $value = (is_bool($raw) || $raw === '0' || $raw === '1')
+                ? ($raw ? 'Enabled' : 'Disabled')
+                : (is_string($raw) ? $raw : 'Not Set');
 
-            $alias = preg_replace_callback('/_([a-z])/', function ($matches) {
-                return strtoupper($matches[1]);
-            }, $key);
+            $alias = preg_replace_callback('/_([a-z])/', fn($m) => strtoupper($m[1]), $key);
 
-            $integration[$alias] = array(
+            $paidSettings[$alias] = [
                 'label' => esc_html($label),
                 'value' => $value,
                 'debug' => $raw,
-            );
+            ];
         }
 
-        return array('paid_memberships_pro' => $integration);
+        $integrations['paid_memberships_pro'] = $paidSettings;
+
+        // === Simple Membership ===
+        $simpleMembershipOptions = [
+            'sm_notif_admin_user_registered'    => __('Simple Membership: Admin Notified on User Registration', 'wp-sms'),
+            'sm_notif_membership_level_updated' => __('Simple Membership: Membership Level Updated', 'wp-sms'),
+            'sm_notif_membership_expired'       => __('Simple Membership: Membership Expired', 'wp-sms'),
+            'sm_notif_membership_cancelled'     => __('Simple Membership: Membership Cancelled', 'wp-sms'),
+            'sm_notif_admin_payment_recieved'   => __('Simple Membership: Payment Received (Admin)', 'wp-sms'),
+        ];
+
+        $simpleSettings = [];
+        foreach ($simpleMembershipOptions as $key => $label) {
+            $raw = \WP_SMS\Utils\OptionUtil::get($key);
+
+            $value = (is_bool($raw) || $raw === '0' || $raw === '1')
+                ? ($raw ? 'Enabled' : 'Disabled')
+                : (is_string($raw) ? $raw : 'Not Set');
+
+            $alias = preg_replace_callback('/_([a-z])/', fn($m) => strtoupper($m[1]), $key);
+
+            $simpleSettings[$alias] = [
+                'label' => esc_html($label),
+                'value' => $value,
+                'debug' => $raw,
+            ];
+        }
+
+        $integrations['simple_membership'] = $simpleSettings;
+
+        return $integrations;
     }
 
     /**
