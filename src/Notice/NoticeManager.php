@@ -2,6 +2,9 @@
 
 namespace WP_SMS\Notice;
 
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
+use WP_SMS\Components\View;
 use WP_SMS\Option;
 use WP_SMS\Helper;
 
@@ -20,6 +23,31 @@ class NoticeManager extends AbstractNotice
 
         // Flash notices
         add_action('admin_notices', array($this, 'displayFlashNotices'));
+
+        // Addons license notices
+        add_action('wp_sms_pro_before_content_render', [$this, 'displayProNotice']);
+
+        // Woocommerce Pro
+        add_action('wp_sms_woocommerce_pro_before_content_render', [$this, 'displayWoocommerceProLicenseNotice']);
+
+        // Two-Way
+        add_action('wp_sms_two_way_before_content_render', [$this, 'displayTwoLicenseNotice']);
+        add_action('wp_sms_addon_two_way_before_content_render', [$this, 'displayTwoLicenseNotice']);
+
+        // Fluent
+        add_action('wp_sms_addon_fluent_crm_before_content_render', [$this, 'displayFluentLicenseNotice']);
+        add_action('wp_sms_addon_fluent_forms_before_content_render', [$this, 'displayFluentLicenseNotice']);
+        add_action('wp_sms_addon_fluent_support_before_content_render', [$this, 'displayFluentLicenseNotice']);
+
+        // Membership
+        add_action('wp_sms_addon_paid_membership_pro_before_content_render', [$this, 'displayMembershipLicenseNotice']);
+        add_action('wp_sms_addon_simple_membership_before_content_render', [$this, 'displayMembershipLicenseNotice']);
+
+        // Booking
+        add_action('wp_sms_addon_booking_integrations_woo_bookings_before_content_render', [$this, 'displayBookingLicenseNotice']);
+        add_action('wp_sms_addon_booking_integrations_bookingpress_before_content_render', [$this, 'displayBookingLicenseNotice']);
+        add_action('wp_sms_addon_booking_integrations_booking_calendar_before_content_render', [$this, 'displayBookingLicenseNotice']);
+        add_action('wp_sms_addon_booking_integrations_woo_appointments_before_content_render', [$this, 'displayBookingLicenseNotice']);
     }
 
     public static function getInstance()
@@ -112,4 +140,83 @@ class NoticeManager extends AbstractNotice
             Helper::notice($notice['text'], $notice['model']);
         }
     }
+
+    /**
+     * Display license notice for WP SMS Pro core addon
+     */
+    public function displayProNotice()
+    {
+        $slug           = 'wp-sms-pro';
+        $plugin_handler = new PluginHandler();
+
+        if (!LicenseHelper::isPluginLicenseValid($slug) && $plugin_handler->isPluginActive($slug)) {
+            View::load("components/lock-sections/notice-inactive-license-addon");
+        }
+
+        if (!LicenseHelper::isPluginLicenseValid($slug) && !$plugin_handler->isPluginActive($slug)) {
+            View::load("components/lock-sections/unlock-all-in-one-addon");
+        }
+    }
+
+
+    /**
+     * Display license notice for WooCommerce Pro addon
+     */
+    public function displayWoocommerceProLicenseNotice()
+    {
+        $slug = 'wp-sms-woocommerce-pro';
+
+        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+            View::load("components/lock-sections/notice-inactive-license-addon");
+        }
+    }
+
+    /**
+     * Display license notice for Two-Way addon
+     */
+    public function displayTwoLicenseNotice()
+    {
+        $slug = 'wp-sms-two-way';
+
+        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+            View::load("components/lock-sections/notice-inactive-license-addon");
+        }
+    }
+
+    /**
+     * Display license notice for Fluent addons (CRM, Forms, Support)
+     */
+    public function displayFluentLicenseNotice()
+    {
+        $slug = 'wp-sms-fluent-integrations';
+
+        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+            View::load("components/lock-sections/notice-inactive-license-addon");
+        }
+    }
+
+    /**
+     * Display license notice for Membership addons (Paid Memberships Pro, Simple Membership)
+     */
+    public function displayMembershipLicenseNotice()
+    {
+        $slug = 'wp-sms-membership-integrations';
+
+        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+            View::load("components/lock-sections/notice-inactive-license-addon");
+        }
+    }
+
+    /**
+     * Display license notice for Booking integrations (WooCommerce Bookings, BookingPress, Booking Calendar, Woo Appointments)
+     */
+    public function displayBookingLicenseNotice()
+    {
+        $slug = 'wp-sms-booking-integrations';
+
+        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+            View::load("components/lock-sections/notice-inactive-license-addon");
+        }
+    }
+
 }
