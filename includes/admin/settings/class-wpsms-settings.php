@@ -2693,8 +2693,16 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
 
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                        <?php
+                        if (strpos($this->active_tab, 'addon_') !== false) {
+                            do_action("wp_sms_{$this->active_tab}_before_content_render");
+                        }
 
-                         <div class="wpsms-tab-content__box">
+                        if (strpos($this->active_tab, 'pro_') !== false) {
+                            do_action("wp_sms_pro_before_content_render");
+                        }
+                        ?>
+                        <div class="wpsms-tab-content__box">
                             <?php
                             if (isset($args['setting']) && $args['setting'] == true) {
                                 $this->renderWpSetting();
@@ -2719,7 +2727,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     private function renderWpSetting()
     {
         ?>
-         <form method="post" action="options.php">
+        <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);
