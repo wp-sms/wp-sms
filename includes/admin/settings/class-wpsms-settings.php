@@ -1863,6 +1863,18 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type' => 'textarea',
                     'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
+                'share_anonymous_data_header'         => array(
+                    'id'   => 'share_anonymous_data_header',
+                    'name' => esc_html__('Anonymous Usage Data', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'share_anonymous_data'           => array(
+                    'id'       => 'share_anonymous_data',
+                    'name'     => esc_html__('Share Anonymous Data', 'wp-sms'),
+                    'type'     => 'checkbox',
+                    'options'  => $options,
+                    'desc'     => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
+                ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
@@ -2610,6 +2622,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
     /**
      * args[] : header_template
+     * @throws \Exception
      */
     public function render_settings($default = "general", $args = array())
     {
@@ -2623,6 +2636,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            View::load('components/objects/share-anonymous-notice');
             ?>
             <div class="wpsms-wrap__top">
                 <?php do_action('wp_sms_settings_page');
