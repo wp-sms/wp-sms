@@ -182,6 +182,7 @@ class WooCommerceOrderNotification extends Notification
 
     public function getMeta($metaKey)
     {
+        $metaKey   = trim($metaKey, '{}');
         $metaValue = $this->order->get_meta($metaKey);
         return apply_filters("wp_sms_notification_woocommerce_order_meta_key_{$metaKey}", $this->processMetaValue($metaValue));
     }
@@ -195,12 +196,13 @@ class WooCommerceOrderNotification extends Notification
     public function getItemMeta($metaKey)
     {
         $itemMetaValues = [];
+        $metaKey        = trim($metaKey, '{}');
 
         foreach ($this->order->get_items() as $item) {
             /** @var \WC_Product $product */
-            $product = $item->get_product();
+            $product     = $item->get_product();
             $isVariation = $product->is_type('variation');
-            $metaValue = null;
+            $metaValue   = null;
 
             if ($isVariation) {
                 $metaValue = $product->get_meta($metaKey);

@@ -203,4 +203,24 @@ class LicenseHelper
             }
         }
     }
+
+    /**
+     * Checks if the Pro plugin is both licensed and active.
+     *
+     * @param string $slug The slug of the plugin, default is 'wp-sms-pro'.
+     * @return bool
+     */
+    public static function isPluginLicensedAndActive($slug = 'wp-sms-pro')
+    {
+        // Ensure the license is valid
+        if (!self::isPluginLicenseValid($slug)) {
+            return false;
+        }
+
+        // Check plugin activation status
+        $pluginHandler = new \WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler();
+
+        return $pluginHandler->isPluginActive($slug);
+    }
+
 }
