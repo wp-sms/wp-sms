@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\Admin\AdminManager;
 use WP_SMS\BackgroundProcess\Async\DataMigrationProcess;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Async\SchemaMigrationProcess;
@@ -234,6 +235,9 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
+
+            // Initializing managers.
+            (new AdminManager())->init();
         }
 
         if (!is_admin()) {
