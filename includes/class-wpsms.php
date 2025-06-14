@@ -4,6 +4,7 @@ use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
+use WP_SMS\Migrations\MigrationManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Formidable\FormidableManager;
@@ -160,6 +161,9 @@ class WP_SMS
             $mobileFieldManager = new MobileFieldManager();
             $mobileFieldManager->init();
         });
+
+        // Initializing MigrationManager
+        (new MigrationManager())->init();
 
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');

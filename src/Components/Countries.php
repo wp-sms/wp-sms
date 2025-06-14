@@ -137,4 +137,25 @@ class Countries extends Singleton
     {
         return $this->getCountries('allDialCodes', 'code');
     }
+
+    /**
+     * Get the primary dial code for a given country ISO code (e.g. "IR", "US", "DE").
+     *
+     * @param string $countryCode 2-letter ISO country code (uppercase or lowercase).
+     * @return string|null         Dial code (e.g. "+98"), or null if not found.
+     */
+    public function getDialCodeByCountryCode($countryCode)
+    {
+        $countryCode = strtoupper($countryCode);
+
+        //TODO - maybe this can be more optimized
+        foreach ($this->countries as $country) {
+            if (strtoupper($country['code']) === $countryCode) {
+                return $country['dialCode'];
+            }
+        }
+
+        return null;
+    }
+
 }

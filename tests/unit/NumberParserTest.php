@@ -79,7 +79,6 @@ class NumberParserTest extends WP_UnitTestCase
         $numberParser = new NumberParser($validNumber);
         $this->assertEquals($validNumber, $numberParser->getValidNumber());
 
-        Option::updateOption('international_mobile', true);
 
         // Assume invalid country code
         $invalidNumber = '+999' . $this->faker->numerify('########');
