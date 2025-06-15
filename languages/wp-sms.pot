@@ -4161,3 +4161,67 @@ msgstr ""
 msgctxt "block title"
 msgid "Subscribe"
 msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "API username"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Enter API username of gateway"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "API password"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Enter API password of gateway"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Sender number"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Sender number or sender ID"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "API Type"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Please select the API type."
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Shared Service Line – Pattern SMS"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Smart Line"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Backup sender 1 (optional)"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Optional: support sender number used with Smart SMS."
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Backup sender 2 (optional)"
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Optional: secondary support sender used with Smart SMS."
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Your account does not credit for sending sms."
+msgstr ""
+
+#: includes/gateways/melipayamak.php
+msgid "Failed to retrieve credit from MeliPayamak."
+msgstr ""
