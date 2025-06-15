@@ -4,6 +4,7 @@ namespace WP_SMS\Services\Database\Operations;
 
 use Exception;
 use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * Handles custom SELECT queries dynamically on database tables.
@@ -39,10 +40,27 @@ class Select extends AbstractTableOperation
     }
 
     /**
+     * Generate the full table name with prefix for JOIN operations.
+     *
+     * @param string $tableName
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    protected function getFullJoinTableName($tableName)
+    {
+        if (empty($tableName)) {
+            throw new InvalidArgumentException('Join table name must be set before proceeding.');
+        }
+
+        $tableNamePrefix = apply_filters('wp_sms_table_prefix', 'sms', $tableName);
+        return $this->wpdb->prefix . $tableNamePrefix . '_' . $tableName;
+    }
+
+    /**
      * Executes the SELECT query based on arguments.
      *
      * @return $this
-     * @throws RuntimeException if the query fails.
+     * @throws RuntimeException
      */
     public function execute()
     {
@@ -55,29 +73,41 @@ class Select extends AbstractTableOperation
                 throw new RuntimeException("No columns specified for SELECT query.");
             }
 
-            // Build SELECT statement dynamically
             $columns = implode(', ', $this->args['columns']);
-            $sql = "SELECT {$columns} FROM {$this->fullName}";
+            $sql     = "SELECT {$columns} FROM {$this->fullName}";
 
-            // Add WHERE clause if provided
+            // JOIN support
+            if (!empty($this->args['joins']) && is_array($this->args['joins'])) {
+                foreach ($this->args['joins'] as $join) {
+                    if (!isset($join['table'], $join['on'], $join['type'])) {
+                        throw new RuntimeException("Invalid JOIN configuration.");
+                    }
+
+                    $joinTable = $this->getFullJoinTableName($join['table']);
+                    $joinAlias = isset($join['alias']) ? $join['alias'] : $join['table'];
+
+                    $sql .= " {$join['type']} JOIN {$joinTable} AS {$joinAlias} ON {$join['on']}";
+                }
+            }
+
             $params       = [];
             $whereClauses = [];
+            $connector    = strtoupper($this->args['raw_where_type'] ?? 'AND');
 
             if (!empty($this->args['where'])) {
                 foreach ($this->args['where'] as $column => $value) {
                     $whereClauses[] = "`$column` = %s";
-                    $params[] = $value;
+                    $params[]       = $value;
                 }
             }
 
-            // Add WHERE IN clause if provided
             if (!empty($this->args['where_in'])) {
                 foreach ($this->args['where_in'] as $column => $values) {
                     if (!is_array($values) || empty($values)) {
                         throw new RuntimeException("Invalid value for WHERE IN clause.");
                     }
 
-                    $placeholders = implode(',', array_fill(0, count($values), '%s'));
+                    $placeholders   = implode(',', array_fill(0, count($values), '%s'));
                     $whereClauses[] = "`$column` IN ($placeholders)";
                     foreach ($values as $value) {
                         $params[] = $value;
@@ -85,37 +115,36 @@ class Select extends AbstractTableOperation
                 }
             }
 
-            // Add WHERE conditions to SQL query
-            if (!empty($whereClauses)) {
-                $sql .= " WHERE " . implode(' AND ', $whereClauses);
+            if (!empty($this->args['raw_where']) && is_array($this->args['raw_where'])) {
+                foreach ($this->args['raw_where'] as $condition) {
+                    if (!empty($condition) && is_string($condition)) {
+                        $whereClauses[] = "($condition)";
+                    }
+                }
             }
 
-            // Add GROUP BY clause if provided
+            if (!empty($whereClauses)) {
+                $sql .= ' WHERE ' . implode(" $connector ", $whereClauses);
+            }
+
             if (!empty($this->args['group_by'])) {
                 $sql .= " GROUP BY {$this->args['group_by']}";
             }
 
-            // Add ORDER BY clause if provided
             if (!empty($this->args['order_by'])) {
                 $sql .= " ORDER BY {$this->args['order_by']}";
             }
 
-            // Add LIMIT clause if provided
             if (!empty($this->args['limit']) && is_array($this->args['limit']) && count($this->args['limit']) === 2) {
-                $sql .= " LIMIT %d OFFSET %d";
+                $sql      .= " LIMIT %d OFFSET %d";
                 $params[] = $this->args['limit'][0];
                 $params[] = $this->args['limit'][1];
             }
 
-            // Prepare the query with parameters
-            if (!empty($params)) {
-                array_unshift($params, $sql);
-                $preparedQuery = call_user_func_array([$this->wpdb, 'prepare'], $params);
-            } else {
-                $preparedQuery = $sql;
-            }
+            $preparedQuery = !empty($params)
+                ? call_user_func_array([$this->wpdb, 'prepare'], array_merge([$sql], $params))
+                : $sql;
 
-            // Execute the query
             $this->result = $this->wpdb->get_results($preparedQuery, $this->outputFormat);
 
             if ($this->result === false) {
@@ -123,7 +152,7 @@ class Select extends AbstractTableOperation
             }
 
             return $this;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new RuntimeException("SELECT operation failed: " . $e->getMessage());
         }
     }
@@ -131,7 +160,7 @@ class Select extends AbstractTableOperation
     /**
      * Returns the result of the executed query.
      *
-     * @return array|null The query result.
+     * @return array|null
      */
     public function getResult()
     {

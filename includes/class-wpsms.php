@@ -274,6 +274,7 @@ class WP_SMS
                 $wizard->setup();
             });
 
+            new \WP_SMS\BackgroundProcess\Ajax\AjaxBackgroundProcessManager();
         }
 
         if (!is_admin()) {
