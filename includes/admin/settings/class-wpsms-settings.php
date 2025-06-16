@@ -7,6 +7,7 @@ use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Utils\PluginHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -38,7 +39,6 @@ class Settings
 
     private $active_tab;
     private $contentRestricted;
-    private $showGRecaptchaBadge = true;
 
     /**
      * @return string
@@ -60,10 +60,8 @@ class Settings
     {
         $this->setting_name      = $this->getCurrentOptionName();
         $this->isPremium = LicenseHelper::isPluginLicenseValid();
-        $this->proIsInstalled    =  LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
-        $this->wooProIsInstalled = LicenseHelper::isPluginLicenseValid('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
-
-        $this->showGRecaptchaBadge = ( !$this->proIsInstalled && !$this->wooProIsInstalled ) || ( !$this->isPremium && $this->proIsInstalled ) ? true : false;
+        $this->proIsInstalled    =  PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+        $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -1872,7 +1870,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        $this->showGRecaptchaBadge ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        !$this->proIsInstalled && !$this->wooProIsInstalled ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
                     'type' => 'header',
