@@ -7,6 +7,7 @@ use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Utils\PluginHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -57,8 +58,8 @@ class Settings
     public function __construct()
     {
         $this->setting_name      = $this->getCurrentOptionName();
-        $this->proIsInstalled    =  LicenseHelper::isPluginLicenseValid('wp-sms-pro/wp-sms-pro.php');
-        $this->wooProIsInstalled = LicenseHelper::isPluginLicenseValid('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+        $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
