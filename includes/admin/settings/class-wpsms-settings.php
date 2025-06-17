@@ -60,7 +60,7 @@ class Settings
     {
         $this->setting_name      = $this->getCurrentOptionName();
         $this->isPremium = LicenseHelper::isPluginLicenseValid();
-        $this->proIsInstalled    =  PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+        $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
         $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
@@ -1822,7 +1822,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
+                    'name' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) ? esc_html__('URL Shortening via Bitly', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'             => array(
@@ -1831,14 +1831,14 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
                 ),
                 'short_url_api_token'          => array(
                     'id'       => 'short_url_api_token',
                     'name'     => esc_html__('Bitly API Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
                 ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
@@ -1866,6 +1866,18 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'name' => esc_html__('Incoming SMS Handling Webhook', 'wp-sms'),
                     'type' => 'textarea',
                     'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
+                ),
+                'share_anonymous_data_header'         => array(
+                    'id'   => 'share_anonymous_data_header',
+                    'name' => esc_html__('Anonymous Usage Data', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'share_anonymous_data'           => array(
+                    'id'       => 'share_anonymous_data',
+                    'name'     => esc_html__('Share Anonymous Data', 'wp-sms'),
+                    'type'     => 'checkbox',
+                    'options'  => $options,
+                    'desc'     => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
                 ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
@@ -2486,7 +2498,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                 if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
                     $disabled = ' disabled';
-                    $name     .= '<span> ' . esc_html__('- (Pro Pack)', 'wp-sms') . '</span>';
+                    $name     .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
                 }
 
                 $selected = selected($option, $value, false);
@@ -2615,6 +2627,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
     /**
      * args[] : header_template
+     * @throws \Exception
      */
     public function render_settings($default = "general", $args = array())
     {
@@ -2628,6 +2641,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            View::load('components/objects/share-anonymous-notice');
             ?>
             <div class="wpsms-wrap__top">
                 <?php do_action('wp_sms_settings_page');
@@ -2698,8 +2712,16 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
 
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                        <?php
+                        if (strpos($this->active_tab, 'addon_') !== false) {
+                            do_action("wp_sms_{$this->active_tab}_before_content_render");
+                        }
 
-                         <div class="wpsms-tab-content__box">
+                        if (strpos($this->active_tab, 'pro_') !== false) {
+                            do_action("wp_sms_pro_before_content_render");
+                        }
+                        ?>
+                        <div class="wpsms-tab-content__box">
                             <?php
                             if (isset($args['setting']) && $args['setting'] == true) {
                                 $this->renderWpSetting();
@@ -2724,7 +2746,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     private function renderWpSetting()
     {
         ?>
-         <form method="post" action="options.php">
+        <form method="post" action="options.php">
             <table class="form-table">
                 <?php
                 settings_fields($this->setting_name);

@@ -249,7 +249,7 @@ body.rtl #feedback-bird-app {
   box-sizing: border-box;
   z-index: 2;
 
-  &.wpsms-header-banner__premium {
+  &.wpsms-header-banner__aio {
     background: #12121B;
 
     .wpsms-header-logo {
@@ -762,15 +762,6 @@ body.rtl #screen-meta-links {
 
   .sms_page_wp-sms-subscribers-privacy .privacy_page {
     margin: 0 !important;
-  }
-
-  .wpsms-wrap #flash_no {
-    margin-left: 10px !important;
-  }
-
-  .rtl .wpsms-wrap #flash_no {
-    margin-left: 0 !important;
-    margin-right: 10px !important;
   }
 
   .wpsms-wrap .notice .notice-dismiss {

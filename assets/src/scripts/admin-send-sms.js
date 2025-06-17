@@ -1,6 +1,27 @@
 ﻿jQuery(document).ready(function () {
     wpsmsRepeatingMessages.init();
 
+    jQuery('.wpsms-sendsms select').each(function () {
+        jQuery(this).select2({
+            minimumResultsForSearch: Infinity,
+            dropdownCssClass: 'wpsms-sendsms-select2-dropdown',
+            templateResult: formatOptions,
+            templateSelection: formatOptions
+        });
+
+
+    });
+    function formatOptions(data) {
+        if (!data.element) {
+            return data.text;
+        }
+        var formattedOption = data.text;
+        if (jQuery(data.element).data('target')) {
+            formattedOption = jQuery(`<span class='js-wp-sms-openPremiumModal' data-target='${jQuery(data.element).data('target')}'>${data.text}</span>`);
+        }
+        return formattedOption;
+    }
+
     jQuery("#wp_get_message").counter({
         count: 'up',
         goal: 'sky',
@@ -296,15 +317,15 @@
             let nextTabs = activeTab.nextAll()
 
             if (nextTabs.length < 1) {
-                this.fields.nextButton.element.addClass('inactive')
+                this.fields.nextButton.element.css('opacity', '0').addClass('inactive');
             } else {
-                this.fields.nextButton.element.removeClass('inactive')
+                this.fields.nextButton.element.css('opacity', '1').removeClass('inactive');
             }
 
             if (prevTabs.length < 1) {
-                this.fields.prevButton.element.addClass('inactive')
+                this.fields.prevButton.element.css('opacity', '0').addClass('inactive');
             } else {
-                this.fields.prevButton.element.removeClass('inactive')
+                this.fields.prevButton.element.css('opacity', '1').removeClass('inactive');
             }
         },
 
@@ -489,6 +510,7 @@
                 escapeMarkup: function (markup) {
                     return markup;
                 },
+                dropdownCssClass: 'wpsms-sendsms-select2-dropdown'
             });
         },
 
