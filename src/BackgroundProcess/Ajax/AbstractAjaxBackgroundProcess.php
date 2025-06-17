@@ -395,10 +395,9 @@ abstract class AbstractAjaxBackgroundProcess
     public function background_process_action_callback()
     {
         check_ajax_referer('wp_rest', 'wps_nonce');
-
-        if (!Request::isFrom('ajax') || !User::hasCapability('manage')) {
+        if (!Request::isFrom('ajax') || !User::hasCapability('manage_options')) {
             wp_send_json_error([
-                'message' => esc_html__('Unauthorized request or insufficient permissions.', 'wp-statistics')
+                'message' => esc_html__('Unauthorized request or insufficient permissions.', 'wp-sms')
             ]);
         }
 

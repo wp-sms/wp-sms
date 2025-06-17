@@ -73,6 +73,7 @@ class Select extends AbstractTableOperation
                 throw new RuntimeException("No columns specified for SELECT query.");
             }
 
+            // Build SELECT statement dynamically
             $columns = implode(', ', $this->args['columns']);
             $sql     = "SELECT {$columns} FROM {$this->fullName}";
 
@@ -90,6 +91,7 @@ class Select extends AbstractTableOperation
                 }
             }
 
+            // Add WHERE clause if provided
             $params       = [];
             $whereClauses = [];
             $connector    = strtoupper($this->args['raw_where_type'] ?? 'AND');
@@ -101,6 +103,7 @@ class Select extends AbstractTableOperation
                 }
             }
 
+            // Add WHERE IN clause if provided
             if (!empty($this->args['where_in'])) {
                 foreach ($this->args['where_in'] as $column => $values) {
                     if (!is_array($values) || empty($values)) {
@@ -123,28 +126,37 @@ class Select extends AbstractTableOperation
                 }
             }
 
+            // Add WHERE conditions to SQL query
             if (!empty($whereClauses)) {
                 $sql .= ' WHERE ' . implode(" $connector ", $whereClauses);
             }
 
+            // Add GROUP BY clause if provided
             if (!empty($this->args['group_by'])) {
                 $sql .= " GROUP BY {$this->args['group_by']}";
             }
 
+            // Add ORDER BY clause if provided
             if (!empty($this->args['order_by'])) {
                 $sql .= " ORDER BY {$this->args['order_by']}";
             }
 
+            // Add LIMIT clause if provided
             if (!empty($this->args['limit']) && is_array($this->args['limit']) && count($this->args['limit']) === 2) {
                 $sql      .= " LIMIT %d OFFSET %d";
                 $params[] = $this->args['limit'][0];
                 $params[] = $this->args['limit'][1];
             }
 
-            $preparedQuery = !empty($params)
-                ? call_user_func_array([$this->wpdb, 'prepare'], array_merge([$sql], $params))
-                : $sql;
+            // Prepare the query with parameters
+            if (!empty($params)) {
+                array_unshift($params, $sql);
+                $preparedQuery = call_user_func_array([$this->wpdb, 'prepare'], $params);
+            } else {
+                $preparedQuery = $sql;
+            }
 
+            // Execute the query
             $this->result = $this->wpdb->get_results($preparedQuery, $this->outputFormat);
 
             if ($this->result === false) {
@@ -160,7 +172,7 @@ class Select extends AbstractTableOperation
     /**
      * Returns the result of the executed query.
      *
-     * @return array|null
+     * @return array|null The query result.
      */
     public function getResult()
     {

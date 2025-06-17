@@ -2,9 +2,9 @@
 
 namespace WP_SMS\BackgroundProcess\Ajax;
 
-use WP_STATISTICS\Admin_Assets;
-use WP_STATISTICS\Menus;
-use WP_STATISTICS\Option;
+use WP_SMS\Components\Assets;
+use WP_SMS\Utils\MenuUtil as Menus;
+use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Notice\NoticeManager as Notice;
 use WP_SMS\Utils\Request;
 
@@ -40,17 +40,16 @@ class AjaxBackgroundProcessManager
      */
     public function __construct()
     {
+        $this->notice = new Notice();
         add_action('current_screen', [$this, 'handleDoneNotice']);
 
         if (!AjaxBackgroundProcessFactory::needsMigration()) {
             return;
         }
         add_action('admin_enqueue_scripts', [$this, 'registerScript']);
-        add_filter('wp_statistics_ajax_list', [$this, 'addAjax']);
+        add_filter('wp_sms_ajax_list', [$this, 'addAjax']);
         add_action('current_screen', [$this, 'handleNotice']);
         add_action('admin_post_' . self::MIGRATION_ACTION, [$this, 'handleAjaxMigration']);
-
-        $this->notice = new Notice();
     }
 
     /**
@@ -96,8 +95,8 @@ class AjaxBackgroundProcessManager
                     </br>%2$s
                 </p>
             ',
-            esc_html__('WP Statistics: Process Complete', 'wp-statistics'),
-            esc_html__('The Database Migration process has been completed successfully. Thank you for keeping WP Statistics up-to-date!', 'wp-statistics')
+            esc_html__('WP SMS: Process Complete', 'wp-sms'),
+            esc_html__('The Database Migration process has been completed successfully. Thank you for keeping WP SMS up-to-date!', 'wp-sms')
         );
 
         $this->notice->registerNotice('ajax_background_process', $message);
@@ -122,15 +121,15 @@ class AjaxBackgroundProcessManager
 
         if ($status === 'progress') {
             $message = sprintf(
-                '<div id="wp-statistics-background-process-notice">
+                '<div id="wp-sms-background-process-notice">
                     <p><strong>%1$s</strong></p>
                     <p>%2$s (<strong><span class="remain-percentage">0</span>%% %3$s</strong>).</p>
                     <p>%4$s</p>
                 </div>',
-                esc_html__('WP Statistics: Migration In Progress', 'wp-statistics'),
-                esc_html__('Your data is currently migrating in the background', 'wp-statistics'),
-                esc_html__('completed', 'wp-statistics'),
-                esc_html__('Please keep this page open if possible. If you close, the migration will pause. Don’t worry—simply come back to this page to pick up where it left off.', 'wp-statistics')
+                esc_html__('WP SMS: Migration In Progress', 'wp-sms'),
+                esc_html__('Your data is currently migrating in the background', 'wp-sms'),
+                esc_html__('completed', 'wp-sms'),
+                esc_html__('Please keep this page open if possible. If you close, the migration will pause. Don’t worry—simply come back to this page to pick up where it left off.', 'wp-sms')
             );
 
             $this->notice->registerNotice('progress_ajax_background_process', $message);
@@ -156,18 +155,18 @@ class AjaxBackgroundProcessManager
         );
 
         $message = sprintf(
-            '<div id="wp-statistics-background-process-notice">
+            '<div id="wp-sms-background-process-notice">
                 <p><strong>%1$s</strong></p>
                 <p>%2$s <br> %3$s</p>
                 <p><a href="%4$s" id="start-migration-btn" class="button-primary">%5$s</a><a href="%6$s" style="margin: 10px" target="_blank">%7$s</a></p>
             </div>',
-            esc_html__('WP Statistics: Migration Required', 'wp-statistics'),
-            __('A data migration is needed for WP Statistics. Click <strong>Start Migration</strong> below to begin.', 'wp-statistics'),
-            __('<strong>Note:</strong> If you leave this page before the migration finishes, the process will pause. You can always return later to resume.', 'wp-statistics'),
+            esc_html__('WP SMS: Migration Required', 'wp-sms'),
+            __('A data migration is needed for WP SMS. Click <strong>Start Migration</strong> below to begin.', 'wp-sms'),
+            __('<strong>Note:</strong> If you leave this page before the migration finishes, the process will pause. You can always return later to resume.', 'wp-sms'),
             esc_url($migrationUrl),
-            esc_html__('Start Migration', 'wp-statistics'),
-            'https://wp-statistics.com/resources/database-migration-process-guide/?utm_source=wp-statistics&utm_medium=link&utm_campaign=doc',
-            esc_html__('Read More', 'wp-statistics')
+            esc_html__('Start Migration', 'wp-sms'),
+            'https://wp-sms-pro.com/resources/database-migration-process-guide/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+            esc_html__('Read More', 'wp-sms')
         );
 
         $this->notice->registerNotice('start_ajax_background_process', $message);
@@ -184,22 +183,16 @@ class AjaxBackgroundProcessManager
             return;
         }
 
-        wp_enqueue_script(
-            'wp-statistics-ajax-migrator',
-            Admin_Assets::url('background-process.min.js'),
+        Assets::script(
+            'ajax-migrator',
+            'js/background_process.min.js',
             ['jquery'],
-            Admin_Assets::version(),
-            ['in_footer' => true]
-        );
-
-        wp_localize_script(
-            'wp-statistics-ajax-migrator',
-            'Wp_Statistics_Background_Process_Data',
             [
                 'rest_api_nonce' => wp_create_nonce('wp_rest'),
                 'ajax_url'       => admin_url('admin-ajax.php'),
                 'status'         => Option::getOptionGroup('ajax_background_process', 'status', null)
-            ]
+            ],
+            true
         );
     }
 
@@ -210,7 +203,7 @@ class AjaxBackgroundProcessManager
      * - Verifies the security nonce.
      * - Updates the migration status in the database.
      *
-     * @return void
+     * @return false
      */
     public function handleAjaxMigration()
     {
@@ -256,7 +249,7 @@ class AjaxBackgroundProcessManager
             return false;
         }
 
-        if (Menus::in_plugin_page()) {
+        if (Menus::isInPluginPage()) {
             return true;
         }
 

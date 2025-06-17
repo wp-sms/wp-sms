@@ -2,6 +2,7 @@
 
 namespace WP_SMS\BackgroundProcess\Ajax;
 
+use WP_SMS\BackgroundProcess\Ajax\Jobs\MessageStatusMigrator;
 use WP_SMS\Install;
 use WP_SMS\Utils\OptionUtil as Option;
 
@@ -93,7 +94,7 @@ class AjaxBackgroundProcessFactory
      */
     public static function isDataMigrated($key)
     {
-        $isFresh = get_option('wp_statistics_is_fresh', false);
+        $isFresh = get_option('wp_sms_is_fresh', false);
         $jobs    = Option::getOptionGroup('ajax_background_process', 'jobs', []);
 
         if ($isFresh) {
@@ -111,7 +112,7 @@ class AjaxBackgroundProcessFactory
             return true;
         }
 
-        self::$doneJobs = ! empty(self::$doneJobs) ? self::$doneJobs : $jobs;
+        self::$doneJobs = !empty(self::$doneJobs) ? self::$doneJobs : $jobs;
 
         if (empty(self::$doneJobs)) {
             return false;

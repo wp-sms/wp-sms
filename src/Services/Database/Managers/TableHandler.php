@@ -53,6 +53,8 @@ class TableHandler
 
         if (Install::isFresh()) {
             Option::saveOptionGroup('migrated', true, 'db');
+            Option::saveOptionGroup('manual_migration_tasks', [], 'db');
+            Option::saveOptionGroup('auto_migration_tasks', [], 'db');
             Option::saveOptionGroup('version', WP_SMS_VERSION, 'db');
             Option::saveOptionGroup('is_done', true, 'ajax_background_process');
             return;
@@ -83,7 +85,8 @@ class TableHandler
     public static function createTable(string $tableName, array $schema)
     {
         try {
-            DatabaseFactory::table('create')
+            $createOperation = DatabaseFactory::table('create');
+            $createOperation
                 ->setName($tableName)
                 ->setArgs($schema)
                 ->execute();
