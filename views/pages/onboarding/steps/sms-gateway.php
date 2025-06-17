@@ -5,7 +5,7 @@ use WP_SMS\Utils\PluginHelper;
 
 $current_country         = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
 $is_pro_plugin_activated = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
-$has_valid_license       = LicenseHelper::isPluginLicenseValid();
+$has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
 
 ?>
 

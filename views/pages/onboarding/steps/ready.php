@@ -2,7 +2,7 @@
 
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 
-$is_pro = LicenseHelper::isPluginLicenseValid();
+$is_pro = LicenseHelper::isPluginLicensedAndActive();
 ?>
 
 <form method="post">

@@ -176,6 +176,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 == Changelog ==
 = v7.0.0 =
 - **Fix**: Fixed issues with disappearing billing fields on woocommerce legacy and HPOS mode.
+- **New**: Added lock sections in settings/integrations pages (main plugin & addons).
 
 = v6.9.12 - 2025-03-31 =
 - **New**: Added WhatsApp support for the Tubelight gateway.
