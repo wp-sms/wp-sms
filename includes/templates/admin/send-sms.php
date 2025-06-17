@@ -254,7 +254,7 @@
                         <h4><?php esc_html_e('Content', 'wp-sms') ?></h4>
                         <p class="preview__message__message">
                             <span class="icon"></span>
-                            <span class="empty-content"><?php esc_html_e('Sill empty!', 'wp-sms') ?></span>
+                            <span class="empty-content"><?php esc_html_e('Still empty!', 'wp-sms') ?></span>
                         </p>
                     </div>
                     <div>

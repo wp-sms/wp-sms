@@ -172,7 +172,7 @@ class Settings
             'newsletter'     => esc_html__('SMS Newsletter', 'wp-sms'),
             'notifications'  => esc_html__('Notifications', 'wp-sms'),
             'message_button' => esc_html__('Message Button', 'wp-sms'),
-            'advanced'       => esc_html__('Advanced', 'wp-sms'),
+            'advanced'       => esc_html__('Advanced Options', 'wp-sms'),
 
             /*
              * Pro Pack tabs
