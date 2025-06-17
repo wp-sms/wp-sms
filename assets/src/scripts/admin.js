@@ -1,9 +1,24 @@
 ﻿jQuery(document).ready(function ($) {
 
-    jQuery( 'body' ).on( 'thickbox:removed', function() {
+    jQuery('body').on('thickbox:removed', function () {
         jQuery('.iti__country-container').trigger('click');
     });
 
+    $(document).on('click', '.thickbox', function(e) {
+        var $link = $(this);
+        var iconClass = $link.data('icon');
+        var titleText = $link.attr('name');
+
+        setTimeout(function() {
+            if (iconClass && typeof iconClass === 'string' && iconClass.trim() !== '') {
+                $('#TB_title').html(
+                    '<span class="dashicons ' + iconClass + '"></span> ' + titleText
+                );
+            } else {
+                $('#TB_title').html(titleText);
+            }
+        }, 100);
+    });
 
     if (jQuery('#subscribe-meta-box').length) {
         WpSmsMetaBox.init();
@@ -26,8 +41,42 @@
         });
     }
 
-    let WpSmsSelect2 = $('.js-wpsms-select2')
-    let WpSmsExportForm = $('.js-wpSmsExportForm')
+    let WpSmsSelect2 = $('.js-wpsms-select2');
+    let WpSmsExportForm = $('.js-wpSmsExportForm');
+
+    let WpSmsSelect2TickModal = $('.js-wpsmsSelect2TickModal');
+
+    window.prependCheckbox = function(data) {
+        if (!data.id) {
+            return data.text;
+        }
+
+        return $('<div class="checkbox no-margin">').append(
+            $('<label>').append(
+                $('<input type="checkbox" />').prop('checked', data.element.selected)
+            ).append(data.text)
+        );
+    };
+    const wpsms_js = {};
+    wpsms_js.global = wpsms_global;
+
+    wpsms_js._ = function (key) {
+        return (key in this.global.i18n ? this.global.i18n[key] : '');
+    };
+
+
+    if (WpSmsSelect2TickModal.length) {
+        WpSmsSelect2TickModal.select2({
+            dropdownCssClass: 'wpsms-select2-tick-dropdown',
+            placeholder: wpsms_js._('select_groups') ,
+            allowClear: false,
+            templateResult: window.prependCheckbox,
+            templateSelection: function(data) {
+                return data.text;
+            }
+        });
+     }
+
 
     function matchCustom(params, data) {
         // If there are no search terms, return all of the data
@@ -57,6 +106,7 @@
 
     const WpSmsSelect2Options = {
         placeholder: "Please select",
+        dropdownCssClass: 'wpsms-select2-dropdown',
     };
 
     if (WpSmsExportForm.length) {
@@ -66,6 +116,8 @@
     // Select2
     window.WpSmsSelect2 = WpSmsSelect2;
     WpSmsSelect2.select2(WpSmsSelect2Options);
+
+
 
     // Auto submit the gateways form, after changing value
     $("#wpsms_settings\\[gateway_name\\]").on('change', function () {
@@ -289,10 +341,40 @@ class ShowIfEnabled {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('wpsms-menu-toggle');
+    const mobileMenuContent = document.querySelector('.wpsms-menu-content');
+    const hamburgerContainer = document.querySelector('.hamburger-menu-container');
+    if (!menuToggle || !mobileMenuContent || !hamburgerContainer) {
+        return;
+    }
+
+    document.addEventListener('click', function(event) {
+        if (
+            menuToggle.checked &&
+            !mobileMenuContent.contains(event.target) &&
+            !hamburgerContainer.contains(event.target) &&
+            event.target !== menuToggle &&
+            !hamburgerContainer.contains(event.target.closest('.hamburger-menu-container'))
+        ) {
+            menuToggle.checked = false;
+        }
+    });
+
+    menuToggle.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    hamburgerContainer.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const notices = document.querySelectorAll('.notice');
     const promotionModal = document.querySelector('.promotion-modal');
-     if (notices.length > 0  && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings')) ) {
+    if (notices.length > 0 && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
         notices.forEach(notice => {
             notice.classList.remove('inline');
             if (promotionModal) {
@@ -315,13 +397,15 @@ function moveFeedbackBird() {
     if (feedbackBird && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
         if (windowWidth <= 1030) {
             const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
-            license.parentNode.insertBefore(cutDiv, license);
+            if(license) license.parentNode.insertBefore(cutDiv, license);
         } else {
-            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
-            support.appendChild(cutDiv);
+            if (support) {
+                const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
+                if(support) support.appendChild(cutDiv);
+            }
         }
         feedbackBird.style.display = 'block';
-        feedbackBird.setAttribute('title',feedbackBirdTitle.innerHTML);
+        feedbackBird.setAttribute('title', feedbackBirdTitle.innerHTML);
     }
 }
 

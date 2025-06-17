@@ -161,10 +161,10 @@ class Gateway
             'smseagle' => 'smseagle.eu'
         ),
         'australia'      => array(
-            'smsbroadcast'      => 'smsbroadcast.com.au',
-            'textteam'          => 'textteam.com.au',
-            'messagemedia'      => 'messagemedia.com/au',
-            'smscentral'        => 'smscentral.com.au',
+            'smsbroadcast' => 'smsbroadcast.com.au',
+            'textteam'     => 'textteam.com.au',
+            'messagemedia' => 'messagemedia.com/au',
+            'smscentral'   => 'smscentral.com.au',
         ),
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
@@ -207,23 +207,27 @@ class Gateway
      */
     public $gatewayFields = [
         'username' => [
-            'id'   => 'gateway_username',
-            'name' => 'API username',
-            'desc' => 'Enter API username of gateway',
+            'id'           => 'gateway_username',
+            'name'         => 'API Username',
+            'place_holder' => 'e.g., YourGatewayUsername123',
+            'desc'         => 'Enter the username provided by your SMS gateway.',
         ],
         'password' => [
-            'id'   => 'gateway_password',
-            'name' => 'API password',
-            'desc' => 'Enter API password of gateway',
+            'id'           => 'gateway_password',
+            'name'         => 'API Password',
+            'place_holder' => 'e.g., YourGatewayPassword456',
+            'desc'         => 'Enter the password associated with your SMS gateway account.',
         ],
         'from'     => [
-            'id'   => 'gateway_sender_id',
-            'name' => 'Sender number',
-            'desc' => 'Sender number or sender ID',
+            'id'           => 'gateway_sender_id',
+            'name'         => 'Sender Number',
+            'place_holder' => 'e.g., +1 555 123 4567',
+            'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.',
         ],
         'has_key'  => [
             'id'   => 'gateway_key',
-            'name' => 'API key',
+            'name' => 'API Key',
             'desc' => 'Enter API key of gateway'
         ]
     ];
@@ -607,6 +611,27 @@ class Gateway
     }
 
     /**
+     * Check if a gateway exists in the gateway list
+     *
+     * @param string $slug The gateway slug to check
+     * @return bool True if the gateway exists, false otherwise
+     */
+    public static function gatewayExists($slug)
+    {
+        $slug = str_replace(['-', ' '], '', $slug);
+
+        $gateways = self::gateway();
+
+        foreach ($gateways as $region => $gatewayList) {
+            if (array_key_exists($slug, $gatewayList)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return mixed|void
      */
     public static function gateway()
@@ -680,11 +705,11 @@ class Gateway
                 'verimor'  => 'verimor.com.tr',
             ),
             'australia'            => array(
-                'mobilemessage'     =>  'mobilemessage.com.au',
-                'slinteractive'     => 'slinteractive.com.au',
-                'smssolutions'      => 'smssolutionsaustralia.com.au',
-                '_160au'            => '160.com.au',
-                'gunisms'           => 'gunisms.com.au',
+                'mobilemessage' => 'mobilemessage.com.au',
+                'slinteractive' => 'slinteractive.com.au',
+                'smssolutions'  => 'smssolutionsaustralia.com.au',
+                '_160au'        => '160.com.au',
+                'gunisms'       => 'gunisms.com.au',
             ),
             'austria'              => array(
                 'smsgatewayat' => 'sms-gateway.at',
@@ -822,8 +847,8 @@ class Gateway
                 'bareedsms'    => 'bareedsms.com',
             ),
             'africa'               => array(
-                '_ebulksms'          => 'ebulksms.com',
-                'africastalking'     => 'africastalking.com',
+                '_ebulksms'      => 'ebulksms.com',
+                'africastalking' => 'africastalking.com',
             ),
             'cyprus'               => array(
                 'websmscy' => 'websms.com.cy',
@@ -835,7 +860,7 @@ class Gateway
                 'eazismspro' => 'eazismspro.com',
             ),
             'greece'               => array(
-                'liveall'  => 'liveall.eu',
+                'liveall' => 'liveall.eu',
             ),
             'malaysia'             => array(
                 'onewaysms' => 'onewaysms.com',
@@ -850,9 +875,9 @@ class Gateway
                 'directsend' => 'directsend.co.kr',
             ),
             'sweden'               => array(
-                'hellosms'      => 'hellosms.se',
-                'prosms'        => 'prosms.se',
-                'cellsynt'      => 'cellsynt',
+                'hellosms' => 'hellosms.se',
+                'prosms'   => 'prosms.se',
+                'cellsynt' => 'cellsynt',
             ),
             'development'          => array(
                 'custom' => __('Custom Gateway', 'wp-sms')

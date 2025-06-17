@@ -7,7 +7,7 @@ namespace WP_SMS;
     <div class="wpsms-wrap__top">
         <h2><?php esc_html_e('Outbox SMS', 'wp-sms'); ?></h2>
         <div class="wpsms-button-group">
-            <a name="<?php esc_html_e('Export', 'wp-sms'); ?>" href="admin.php?page=wp-sms-outbox#TB_inline?&width=400&height=150&inlineId=wp-sms-export-from" class="thickbox button"><span class="dashicons dashicons-redo"></span> <?php esc_html_e('Export', 'wp-sms'); ?></a>
+            <a title="<span class='wps-tick-title wps-tick-title__export'><?php esc_html_e('Export', 'wp-sms'); ?></span>" name="<?php esc_html_e('Export', 'wp-sms'); ?>" href="admin.php?page=wp-sms-outbox#TB_inline?&width=400&height=150&inlineId=wp-sms-export-from" class="thickbox button"><span class="dashicons dashicons-redo"></span> <?php esc_html_e('Export', 'wp-sms'); ?></a>
         </div>
     </div>
     <div class="wp-header-end"></div>

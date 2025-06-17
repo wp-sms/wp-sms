@@ -28,9 +28,10 @@ class signalads extends \WP_SMS\Gateway
                 'desc' => 'Enter your API key.'
             ],
             'from'    => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender Number',
-                'desc' => 'Enter the SMS Sender number.',
+                'id'           => 'gateway_sender_id',
+                'name'         => 'Sender Number',
+                'place_holder' => 'e.g., +1 555 123 4567',
+                'desc'         => 'Enter the SMS Sender number.',
             ],
         ];
     }

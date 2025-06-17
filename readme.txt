@@ -48,7 +48,7 @@ To use this plugin, you must have an account with one of our supported gateways.
 = Pro Package =
 With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommerce mobile verification, order notifications, and user registration verification are all included in the Pro version.
 
-[Buy Pro Package](https://wp-sms-pro.com/buy/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
+[Buy Pro Package](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
 = Pro Version Features =
 - **Extensive Gateway Support:** Supports more SMS gateways.
 - **Scheduled SMS/MMS:** Schedule SMS/MMS messages to be sent later.
@@ -174,11 +174,6 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v7.0 =
-- **Enhancement**: Integrate NumberParser for phone number validation.
-- **Enhancement**: Unsubscription different format support.
-- **Enhancement**: Unsubscription different same subscribers with different formats.
-
 = v6.9.12 - 2025-03-31 =
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
