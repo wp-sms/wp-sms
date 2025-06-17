@@ -1870,7 +1870,8 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        !$this->isPremium || ( !$this->proIsInstalled && !$this->wooProIsInstalled ) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
+                        (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openPremiumModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
                     'type' => 'header',
@@ -1881,21 +1882,21 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => esc_html__('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
-                    'readonly' => !$this->isPremium || ( !$this->proIsInstalled && !$this->wooProIsInstalled )
+                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
                 'g_recaptcha_site_key'         => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => esc_html__('Site Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => esc_html__('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
-                    'readonly' => !$this->isPremium || ( !$this->proIsInstalled && !$this->wooProIsInstalled )
+                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
                 'g_recaptcha_secret_key'       => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => esc_html__('Secret Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => esc_html__('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . esc_html__('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
-                    'readonly' => !$this->isPremium || ( !$this->proIsInstalled && !$this->wooProIsInstalled )
+                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
             )),
 
