@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.12
+Stable tag: 7.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
