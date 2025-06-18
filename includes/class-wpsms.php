@@ -1,6 +1,5 @@
 <?php
 
-use WP_SMS\BackgroundProcess\Async\DataMigrationProcess;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
@@ -139,7 +138,6 @@ class WP_SMS
     {
         $this->registerBackgroundProcess(RemoteRequestAsync::class, 'remote_request_async');
         $this->registerBackgroundProcess(RemoteRequestQueue::class, 'remote_request_queue');
-        $this->registerBackgroundProcess(DataMigrationProcess::class, 'data_migration_process');
         $this->registerBackgroundProcess(SchemaMigrationProcess::class, 'schema_migration_process');
         $this->registerBackgroundProcess(TableOperationProcess::class, 'table_operations_process');
 
