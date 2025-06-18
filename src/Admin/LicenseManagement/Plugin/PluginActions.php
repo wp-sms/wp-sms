@@ -39,6 +39,9 @@ class PluginActions
             'action' => 'activate_plugin'
         ];
 
+        $list = apply_filters('wp_sms_ajax_list', $list);
+
+
         foreach ($list as $item) {
             $class    = $item['class'];
             $action   = $item['action'];

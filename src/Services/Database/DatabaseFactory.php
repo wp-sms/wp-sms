@@ -2,10 +2,7 @@
 
 namespace WP_SMS\Services\Database;
 
-use WP_SMS\Services\Database\Operations\MultiStepOps\ProcessSubscriberNumbers;
-use WP_SMS\Services\Database\Operations\MultiStepOps\ProcessUserMetaNumbers;
 use WP_SMS\Utils\OptionUtil as Option;
-use WP_SMS\Services\Database\Migrations\DataMigration;
 use WP_SMS\Services\Database\Migrations\SchemaMigration;
 use WP_SMS\Services\Database\Operations\Create;
 use WP_SMS\Services\Database\Operations\Drop;
@@ -28,14 +25,12 @@ class DatabaseFactory
      * @var array
      */
     private static $operations = [
-        'create'                     => Create::class,
-        'update'                     => Update::class,
-        'drop'                       => Drop::class,
-        'inspect'                    => Inspect::class,
-        'insert'                     => Insert::class,
-        'select'                     => Select::class,
-        'process_subscriber_numbers' => ProcessSubscriberNumbers::class,
-        'process_user_meta_numbers'  => ProcessUserMetaNumbers::class
+        'create'  => Create::class,
+        'update'  => Update::class,
+        'drop'    => Drop::class,
+        'inspect' => Inspect::class,
+        'insert'  => Insert::class,
+        'select'  => Select::class,
     ];
 
     /**
@@ -45,7 +40,6 @@ class DatabaseFactory
      */
     private static $migrationTypes = [
         'schema' => SchemaMigration::class,
-        'data'   => DataMigration::class,
     ];
 
     /**

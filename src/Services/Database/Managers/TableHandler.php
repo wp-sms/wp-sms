@@ -7,7 +7,6 @@ use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Services\Database\Schema\Manager;
 
-
 /**
  * Handles database table operations, including creation, inspection,
  * and deletion of tables.
@@ -57,11 +56,14 @@ class TableHandler
             Option::saveOptionGroup('manual_migration_tasks', [], 'db');
             Option::saveOptionGroup('auto_migration_tasks', [], 'db');
             Option::saveOptionGroup('version', WP_SMS_VERSION, 'db');
+            Option::saveOptionGroup('is_done', true, 'ajax_background_process');
             return;
         }
 
         Option::saveOptionGroup('migrated', false, 'db');
         Option::saveOptionGroup('migration_status_detail', null, 'db');
+        Option::saveOptionGroup('is_done', null, 'ajax_background_process');
+        Option::saveOptionGroup('status', null, 'ajax_background_process');
 
         $dismissedNotices = get_option('wp_sms_dismissed_notices', []);
 
