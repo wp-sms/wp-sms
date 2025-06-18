@@ -17,7 +17,7 @@
         }
         var formattedOption = data.text;
         if (jQuery(data.element).data('target')) {
-            formattedOption = jQuery(`<span class='js-wp-sms-openPremiumModal' data-target='${jQuery(data.element).data('target')}'>${data.text}</span>`);
+            formattedOption = jQuery(`<span class='js-wp-sms-openAioModal' data-target='${jQuery(data.element).data('target')}'>${data.text}</span>`);
         }
         return formattedOption;
     }
