@@ -10,6 +10,7 @@ v7.0 -
 - **Fix**: Fix scheduled posts notification
 - **Fix**: Fix type in send-sms.php
 - **Fix**: Remove some down gateways
+- **Fix**: Fix fatal error when passing invalid meta in notification content
 
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
