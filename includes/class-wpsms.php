@@ -3,6 +3,7 @@
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
+use WP_SMS\BackgroundProcess\Async\MobileNumberSyncProcess;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Async\SchemaMigrationProcess;
 use WP_SMS\BackgroundProcess\Async\TableOperationProcess;
@@ -140,6 +141,7 @@ class WP_SMS
         $this->registerBackgroundProcess(RemoteRequestQueue::class, 'remote_request_queue');
         $this->registerBackgroundProcess(SchemaMigrationProcess::class, 'schema_migration_process');
         $this->registerBackgroundProcess(TableOperationProcess::class, 'table_operations_process');
+        $this->registerBackgroundProcess(MobileNumberSyncProcess::class, 'mobile_number_sync');
 
     }
 
@@ -273,6 +275,9 @@ class WP_SMS
             });
 
             new \WP_SMS\BackgroundProcess\Ajax\AjaxBackgroundProcessManager();
+
+            // Watch for changes in the mobile field source setting and trigger synchronization if needed
+            (new \WP_SMS\Services\Settings\MobileFieldSourceWatcher())->register();
         }
 
         if (!is_admin()) {
