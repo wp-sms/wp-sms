@@ -35,6 +35,12 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
             'permission_callback' => [__CLASS__, 'permissions_check'],
         ]);
 
+        register_rest_route('wpsms/v1', '/settings/schema/nested/(?P<path>[a-zA-Z0-9_.-]+)', [
+            'methods'             => 'GET',
+            'callback'            => [__CLASS__, 'getNestedGroup'],
+            'permission_callback' => [__CLASS__, 'permissions_check'],
+        ]);
+
         register_rest_route('wpsms/v1', '/settings/schema/list', [
             'methods'             => 'GET',
             'callback'            => [__CLASS__, 'getGroupList'],
@@ -44,7 +50,7 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
 
     /**
      * GET /settings/schema
-     * Return the entire schema.
+     * Return the entire schema with nested structure.
      *
      * @param WP_REST_Request $request
      * @return \WP_REST_Response
@@ -56,7 +62,7 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
 
     /**
      * GET /settings/schema/category/{category}
-     * Return all groups in a category.
+     * Return all groups in a category (supports nested structure for integrations).
      *
      * @param WP_REST_Request $request
      * @return \WP_REST_Response
@@ -64,17 +70,18 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
     public static function getCategory(WP_REST_Request $request): \WP_REST_Response
     {
         $category = $request->get_param('category');
-        $data     = SchemaRegistry::instance()->exportCategory($category);
-        if (empty($data)) {
-            return self::error("No groups found for category '{$category}'", 404);
+        $schema = SchemaRegistry::instance()->export();
+        
+        if (!isset($schema[$category])) {
+            return self::error("Category '{$category}' not found", 404);
         }
 
-        return self::success($data);
+        return self::success($schema[$category]);
     }
 
     /**
      * GET /settings/schema/group/{group}
-     * Return a specific group’s schema.
+     * Return a specific group's schema by group name.
      *
      * @param WP_REST_Request $request
      * @return \WP_REST_Response
@@ -92,8 +99,29 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
     }
 
     /**
+     * GET /settings/schema/nested/{path}
+     * Return a nested group by its full path (e.g., integrations.contact_forms.contact_form_7).
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public static function getNestedGroup(WP_REST_Request $request): \WP_REST_Response
+    {
+        $path = $request->get_param('path');
+        $schema = SchemaRegistry::instance()->export();
+        
+        $data = self::getNestedData($schema, $path);
+        
+        if ($data === null) {
+            return self::error("Nested path '{$path}' not found", 404);
+        }
+
+        return self::success($data);
+    }
+
+    /**
      * GET /settings/schema/list
-     * Return list of group names and labels only.
+     * Return list of group names and labels with nested structure.
      *
      * @param WP_REST_Request $request
      * @return \WP_REST_Response
@@ -101,5 +129,34 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
     public static function getGroupList(WP_REST_Request $request): \WP_REST_Response
     {
         return self::success(SchemaRegistry::instance()->exportGroupList());
+    }
+
+    /**
+     * Helper method to traverse nested structure and get data by path.
+     *
+     * @param array $data
+     * @param string $path
+     * @return array|null
+     */
+    protected static function getNestedData(array $data, string $path): ?array
+    {
+        $parts = explode('.', $path);
+        $current = $data;
+
+        foreach ($parts as $index => $part) {
+            // Check if the current part exists as a direct key
+            if (!isset($current[$part])) {
+                return null;
+            }
+            
+            $current = $current[$part];
+            
+            // If this is not the last part and current has children, move into children
+            if ($index < count($parts) - 1 && isset($current['children']) && is_array($current['children'])) {
+                $current = $current['children'];
+            }
+        }
+
+        return $current;
     }
 }
