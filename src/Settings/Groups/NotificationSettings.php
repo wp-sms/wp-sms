@@ -13,7 +13,7 @@ class NotificationSettings extends AbstractSettingGroup {
     }
 
     public function getLabel(): string {
-        return 'Notifications Settings';
+        return 'Notifications';
     }
 
     public function getFields(): array {

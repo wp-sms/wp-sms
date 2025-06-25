@@ -14,7 +14,7 @@ class FeatureSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return 'Feature Settings';
+        return 'Feature';
     }
 
     public function getFields(): array

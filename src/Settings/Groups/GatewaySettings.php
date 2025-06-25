@@ -12,7 +12,7 @@ class GatewaySettings extends AbstractSettingGroup {
     }
 
     public function getLabel(): string {
-        return 'Gateway Settings';
+        return 'Gateway';
     }
 
     public function getFields(): array {

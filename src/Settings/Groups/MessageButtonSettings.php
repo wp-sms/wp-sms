@@ -11,7 +11,7 @@ class MessageButtonSettings extends AbstractSettingGroup {
     }
 
     public function getLabel(): string {
-        return 'Message Button Settings';
+        return 'Message Button';
     }
 
     public function getFields(): array {

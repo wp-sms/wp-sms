@@ -16,7 +16,7 @@ class NewsletterSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return 'SMS Newsletter Settings';
+        return 'SMS Newsletter';
     }
 
     public function getFields(): array

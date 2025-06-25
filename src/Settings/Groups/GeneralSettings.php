@@ -11,7 +11,7 @@ class GeneralSettings extends AbstractSettingGroup {
     }
 
     public function getLabel(): string {
-        return 'General Settings';
+        return 'General';
     }
 
     public function getFields(): array {
