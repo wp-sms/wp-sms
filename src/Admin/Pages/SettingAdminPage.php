@@ -4,19 +4,13 @@ namespace WP_SMS\Admin\Pages;
 
 class SettingAdminPage
 {
-    /**
-     * Register all hooks
-     */
-    public function register()
+    public function register(): void
     {
         add_action('admin_menu', [$this, 'registerSettingPage']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
     }
 
-    /**
-     * Add submenu item under WP SMS
-     */
-    public function registerSettingPage()
+    public function registerSettingPage(): void
     {
         add_submenu_page(
             'wp-sms',
@@ -29,65 +23,86 @@ class SettingAdminPage
         );
     }
 
-    /**
-     * Enqueue Vite-compiled assets only for our page
-     */
-    public function enqueueAssets($hook_suffix)
+    public function enqueueAssets(): void
     {
-        // Only enqueue for our page
         if (!isset($_GET['page']) || $_GET['page'] !== 'wp-sms-new-settings') {
             return;
         }
 
-        $manifest_path = WP_SMS_DIR . 'build/settings/.vite/manifest.json';
-        $manifest_url  = WP_SMS_URL . 'build/settings/';
+        // Enqueue WordPress React dependencies
+        wp_enqueue_script('wp-element');
+        wp_enqueue_script('wp-i18n');
+
+        $manifest_path = WP_SMS_DIR . 'admin/build/.vite/manifest.json';
+        $manifest_url  = WP_SMS_URL . 'admin/build/';
 
         if (!file_exists($manifest_path)) {
             return;
         }
 
         $manifest = json_decode(file_get_contents($manifest_path), true);
-
-        // Adjust this key if needed depending on your Vite entry
-        $entry_key = 'src/main.jsx';
-
+        $entry_key = 'src/pages/settings/index.tsx';
         if (!isset($manifest[$entry_key])) {
             return;
         }
 
         $entry = $manifest[$entry_key];
+        $import_handles = [];
 
-        if (isset($entry['file'])) {
-            wp_enqueue_script(
-                'wp-sms-react-settings',
-                $manifest_url . $entry['file'],
-                array(),
-                null,
-                true
-            );
+        // Enqueue imported chunks (not present in this manifest, but keeping logic intact)
+        if (!empty($entry['imports']) && is_array($entry['imports'])) {
+            foreach ($entry['imports'] as $import_key) {
+                if (!empty($manifest[$import_key]['file'])) {
+                    $handle = 'wp-sms-settings-import-' . md5($import_key);
+                    $src    = $manifest_url . $manifest[$import_key]['file'];
+
+                    if (function_exists('wp_enqueue_script_module')) {
+                        wp_enqueue_script_module($handle, $src, ['wp-element', 'wp-i18n']);
+                    } else {
+                        wp_enqueue_script($handle, $src, ['wp-element', 'wp-i18n'], null, true);
+                    }
+
+                    $import_handles[] = $handle;
+                }
+            }
+        }
+        // Enqueue main JS entry
+        $script_url = $manifest_url . $entry['file'];
+        $handle     = 'wp-sms-settings';
+
+        if (function_exists('wp_enqueue_script_module')) {
+            wp_enqueue_script_module($handle, $script_url, array_merge(['wp-element', 'wp-i18n'], $import_handles));
+        } else {
+            wp_enqueue_script($handle, $script_url, array_merge(['wp-element', 'wp-i18n'], $import_handles), null, true);
         }
 
-        if (isset($entry['css']) && is_array($entry['css'])) {
+        // Enqueue CSS
+        if (!empty($entry['css']) && is_array($entry['css'])) {
             foreach ($entry['css'] as $css_file) {
                 wp_enqueue_style(
-                    'wp-sms-react-settings-' . md5($css_file),
+                    'wp-sms-settings-' . md5($css_file),
                     $manifest_url . $css_file,
-                    array(),
+                    [],
                     null
                 );
             }
         }
+
+        // Localize REST settings
+        wp_localize_script(
+            $handle,
+            'WP_SMS_DATA',
+            [
+                'nonce'   => wp_create_nonce('wp_rest'),
+                'restUrl' => esc_url_raw(rest_url('wp-sms/v1/')),
+            ]
+        );
     }
 
-    /**
-     * Render the page container
-     */
-    public function renderSettings($section = 'general', $args = array())
+    public function renderSettings(): void
     {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('New Settings', 'wp-sms') . '</h1>';
-        echo '<div id="wpsms-settings-root"></div>';
+        echo '<div class="wrap wp-sms-settings-wrap">';
+        echo '<div id="wp-sms-settings-root"></div>';
         echo '</div>';
     }
-
 }
