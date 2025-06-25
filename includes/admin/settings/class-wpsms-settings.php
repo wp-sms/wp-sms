@@ -2632,7 +2632,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     public function render_settings($default = "general", $args = array())
     {
         $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && !$this->proIsInstalled;
+        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium) ;
         $args                    = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function
@@ -2672,7 +2672,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                             $proLockIcon = '';
 
                             if ($isProTab) {
-                                if (!$this->proIsInstalled) {
+                                if (!$this->proIsInstalled || !$this->isPremium) {
                                     $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
                                 }
                             }

@@ -4,6 +4,7 @@ namespace WP_SMS\Admin\OnBoarding;
 
 use WP_SMS\Components\Assets;
 use WP_SMS\Components\View;
+use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 use WP_SMS\Notice\NoticeManager;
 
@@ -32,7 +33,7 @@ class WizardManager
             return;
         }
 
-        if (!$this->isOnboarding()) {
+        if (!$this->isOnboarding() && UserHelper::isAdmin()) {
             $this->addActivationNotice();
             return;
         }

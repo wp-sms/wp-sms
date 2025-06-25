@@ -1,6 +1,8 @@
 <?php
 
+use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\LicenseMigration;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
 
@@ -27,6 +29,10 @@ foreach ($addons as $option_key => $status) {
         $addons[$option_key] = true;
     }
 }
+
+$apiCommunicator  = new ApiCommunicator();
+$licenseMigration = new LicenseMigration($apiCommunicator);
+$licenseMigration->migrateOldLicenses();
 ?>
 <div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__aio' : '' ?>">
     <div class="wpsms-header-logo"></div>
