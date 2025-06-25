@@ -50,6 +50,11 @@ class SchemaRegistry
     ];
 
     /**
+     * @var array Nested paths for groups
+     */
+    protected static $nestedPaths = [];
+
+    /**
      * Singleton constructor: initializes all schema groups.
      */
     private function __construct()
@@ -65,16 +70,16 @@ class SchemaRegistry
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
 
-        // Integrations
-        $this->registerGroup(new AwesomeSupportSettings(), 'integrations');
-        $this->registerGroup(new BuddyPressSettings(), 'integrations');
-        $this->registerGroup(new ContactForm7Settings(), 'integrations');
-        $this->registerGroup(new EasyDigitalDownloadsSettings(), 'integrations');
-        $this->registerGroup(new GravityFormsSettings(), 'integrations');
-        $this->registerGroup(new JobManagerSettings(), 'integrations');
-        $this->registerGroup(new QuformSettings(), 'integrations');
-        $this->registerGroup(new UltimateMemberSettings(), 'integrations');
-        $this->registerGroup(new WooCommerceSettings(), 'integrations');
+        // Integrations with nested paths
+        $this->registerGroup(new ContactForm7Settings(), 'integrations', 'integrations.contact_forms.contact_form_7');
+        $this->registerGroup(new GravityFormsSettings(), 'integrations', 'integrations.contact_forms.gravityforms');
+        $this->registerGroup(new QuformSettings(), 'integrations', 'integrations.contact_forms.quform');
+        $this->registerGroup(new BuddyPressSettings(), 'integrations', 'integrations.community_membership.buddypress');
+        $this->registerGroup(new UltimateMemberSettings(), 'integrations', 'integrations.community_membership.ultimate_member');
+        $this->registerGroup(new WooCommerceSettings(), 'integrations', 'integrations.ecommerce.woocommerce');
+        $this->registerGroup(new EasyDigitalDownloadsSettings(), 'integrations', 'integrations.ecommerce.edd');
+        $this->registerGroup(new AwesomeSupportSettings(), 'integrations', 'integrations.support.awesome_support');
+        $this->registerGroup(new JobManagerSettings(), 'integrations', 'integrations.jobs.job_manager');
     }
 
     /**
@@ -92,13 +97,14 @@ class SchemaRegistry
     }
 
     /**
-     * Register a settings group under a specific category.
+     * Register a settings group under a specific category with optional nested path.
      *
      * @param AbstractSettingGroup $group
      * @param string $category
+     * @param string|null $nestedPath Optional dot-separated path for nested structure
      * @return void
      */
-    protected function registerGroup(AbstractSettingGroup $group, string $category)
+    protected function registerGroup(AbstractSettingGroup $group, string $category, ?string $nestedPath = null)
     {
         $name = $group->getName();
 
@@ -111,6 +117,10 @@ class SchemaRegistry
 
         if (!in_array($name, self::$categories[$category], true)) {
             self::$categories[$category][] = $name;
+        }
+
+        if ($nestedPath) {
+            self::$nestedPaths[$name] = $nestedPath;
         }
     }
 
@@ -163,13 +173,7 @@ class SchemaRegistry
      */
     public function export(): array
     {
-        $exported = [];
-
-        foreach (self::$groups as $name => $group) {
-            $exported[$name] = $this->formatGroup($name);
-        }
-
-        return $exported;
+        return $this->buildNestedStructure();
     }
 
     /**
@@ -195,30 +199,135 @@ class SchemaRegistry
     }
 
     /**
-     * Export group names and labels, grouped by category.
+     * Export group names and labels, grouped by category with nested structure.
      *
      * @return array
      */
     public function exportGroupList(): array
     {
-        $categorized = [];
+        return $this->buildNestedStructure(true);
+    }
 
-        foreach (self::$categories as $category => $groupNames) {
-            $categorized[$category] = [];
+    /**
+     * Build nested structure from registered groups.
+     *
+     * @param bool $labelsOnly Whether to return only labels or full field data
+     * @return array
+     */
+    protected function buildNestedStructure(bool $labelsOnly = false): array
+    {
+        $structure = [
+            'core' => [],
+            'addons' => [],
+            'integrations' => [
+                'label' => 'Integrations',
+                'children' => [
+                    'contact_forms' => [
+                        'label' => 'Contact Forms',
+                        'children' => [],
+                    ],
+                    'community_membership' => [
+                        'label' => 'Community & Membership',
+                        'children' => [],
+                    ],
+                    'ecommerce' => [
+                        'label' => 'E-commerce',
+                        'children' => [],
+                    ],
+                    'support' => [
+                        'label' => 'Support',
+                        'children' => [],
+                    ],
+                    'jobs' => [
+                        'label' => 'Jobs',
+                        'children' => [],
+                    ],
+                ],
+            ],
+        ];
 
-            foreach ($groupNames as $name) {
-                $group = $this->getGroup($name);
+        foreach (self::$groups as $name => $group) {
+            $groupData = $labelsOnly ? [
+                'name' => $name,
+                'label' => $group->getLabel(),
+            ] : [
+                'label' => $group->getLabel(),
+                'fields' => array_map(function ($field) {
+                    return $field->toArray();
+                }, $group->getFields()),
+            ];
 
-                if ($group) {
-                    $categorized[$category][] = [
-                        'name'  => $name,
-                        'label' => $group->getLabel(),
-                    ];
+            // Check if this group has a nested path
+            if (isset(self::$nestedPaths[$name])) {
+                $pathParts = explode('.', self::$nestedPaths[$name]);
+                $this->insertIntoNestedStructure($structure, $pathParts, $name, $groupData);
+            } else {
+                // Handle flat structure for core and addons
+                $category = $this->getGroupCategory($name);
+                if ($category && $category !== 'integrations') {
+                    $structure[$category][$name] = $groupData;
                 }
             }
         }
 
-        return $categorized;
+        return $structure;
+    }
+
+    /**
+     * Insert group data into nested structure.
+     *
+     * @param array &$structure
+     * @param array $pathParts
+     * @param string $name
+     * @param array $groupData
+     * @return void
+     */
+    protected function insertIntoNestedStructure(array &$structure, array $pathParts, string $name, array $groupData): void
+    {
+        $current = &$structure;
+        
+        foreach ($pathParts as $index => $part) {
+            if ($index === count($pathParts) - 1) {
+                // Last part - insert the group data using the path part as key
+                $current[$part] = $groupData;
+            } else {
+                // Create intermediate structure if it doesn't exist
+                if (!isset($current[$part])) {
+                    $current[$part] = [
+                        'label' => $this->formatLabel($part),
+                        'children' => [],
+                    ];
+                }
+                $current = &$current[$part]['children'];
+            }
+        }
+    }
+
+    /**
+     * Get the category for a group name.
+     *
+     * @param string $name
+     * @return string|null
+     */
+    protected function getGroupCategory(string $name): ?string
+    {
+        foreach (self::$categories as $category => $groupNames) {
+            if (in_array($name, $groupNames, true)) {
+                return $category;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Format a path part into a readable label.
+     *
+     * @param string $part
+     * @return string
+     */
+    protected function formatLabel(string $part): string
+    {
+        return ucwords(str_replace('_', ' ', $part));
     }
 
     /**
