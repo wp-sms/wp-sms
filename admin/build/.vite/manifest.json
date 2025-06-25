@@ -1,0 +1,11 @@
+{
+  "src/pages/settings/index.tsx": {
+    "file": "settings.js",
+    "name": "settings",
+    "src": "src/pages/settings/index.tsx",
+    "isEntry": true,
+    "css": [
+      "settings.css"
+    ]
+  }
+}
