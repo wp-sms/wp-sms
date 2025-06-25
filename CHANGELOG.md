@@ -11,6 +11,7 @@ v7.0 -
 - **Fix**: Fix type in send-sms.php
 - **Fix**: Remove some down gateways
 - **Fix**: Fix fatal error when passing invalid meta in notification content
+- **Fix**: Fixed messages failing to record on multisite
 
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
