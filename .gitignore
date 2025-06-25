@@ -47,3 +47,4 @@ nbproject
 
 #ignore node_modules
 admin/react-app/node_modules
+.cursorignore
