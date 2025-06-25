@@ -88,13 +88,25 @@ class SettingAdminPage
             }
         }
 
-        // Localize REST settings
+        // Add WP_SMS_DATA to page head to ensure it's available before React loads
+        add_action('admin_head', function() {
+            ?>
+            <script type="text/javascript">
+                window.WP_SMS_DATA = <?php echo json_encode([
+                    'nonce'   => wp_create_nonce('wp_rest'),
+                    'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
+                ]); ?>;
+            </script>
+            <?php
+        });
+
+        // Also localize the script as backup
         wp_localize_script(
             $handle,
             'WP_SMS_DATA',
             [
                 'nonce'   => wp_create_nonce('wp_rest'),
-                'restUrl' => esc_url_raw(rest_url('wp-sms/v1/')),
+                'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
             ]
         );
     }
