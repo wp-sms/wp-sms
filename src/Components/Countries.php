@@ -118,6 +118,11 @@ class Countries extends Singleton
         return $this->getCountries('name', 'dialCode');
     }
 
+    public function getCountryNamesByCode()
+    {
+        return $this->getCountries('name', 'code');
+    }
+
     /**
      * Returns country names with their native name and dial codes as an associative array with their dial codes as the key.
      *
