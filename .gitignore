@@ -43,3 +43,7 @@ nbproject
 # Testing
 /tests/logs
 .phpunit.result.cache
+
+
+#ignore node_modules
+admin/react-app/node_modules
