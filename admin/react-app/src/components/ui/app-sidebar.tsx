@@ -16,9 +16,12 @@ import {
   Calendar,
   ChevronRight,
   Lock,
-  BarChart3,
-  MessageSquare,
-  Home,
+  Layers,
+  Grid3X3,
+  Filter,
+  Repeat,
+  Palette,
+  Zap,
 } from "lucide-react"
 
 import {
@@ -35,25 +38,28 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-} from "../ui/sidebar"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
+} from "@/components/ui/sidebar"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 // Menu data structure with icons
 const menuData = {
-  main: [
-    { title: "Dashboard", url: "/dashboard", icon: Home },
-    { title: "Settings", url: "/settings", icon: Settings },
-    { title: "Messages", url: "/messages", icon: MessageSquare },
-    { title: "Subscribers", url: "/subscribers", icon: Users },
-    { title: "Reports", url: "/reports", icon: BarChart3 },
-  ],
-  settings: [
-    { title: "General", url: "/settings", icon: Settings },
-    { title: "Gateway", url: "/settings?tab=gateway", icon: Wifi },
+  wpSms: [
+    { title: "Setup", url: "/settings/setup", icon: Settings },
+    { title: "Gateway", url: "/settings/gateway", icon: Wifi },
+    { title: "Subscribers", url: "/settings/subscribers", icon: Users },
     { title: "Notifications", url: "/settings/notifications", icon: Bell },
     { title: "SMS Button", url: "/settings/sms-button", icon: MousePointer },
     { title: "Security", url: "/settings/security", icon: Shield, isPro: true },
     { title: "Developer", url: "/settings/developer", icon: Code },
+  ],
+  demos: [
+    { title: "Enhanced Repeater", demoId: "enhanced-repeater", icon: Repeat },
+    { title: "Card Layout", demoId: "comprehensive", icon: Layers },
+    { title: "Column Layout", demoId: "gateway-columns", icon: Grid3X3 },
+    { title: "Security (Locked)", demoId: "security", icon: Shield },
+    { title: "Advanced Fields", demoId: "advanced-fields", icon: Palette },
+    { title: "Filter System", demoId: "filtered-content", icon: Filter },
+    { title: "Enhanced Gateway", demoId: "enhanced-gateway", icon: Zap },
   ],
   integrations: [
     {
@@ -100,9 +106,11 @@ const menuData = {
   ],
 }
 
-interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {}
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  onDemoChange?: (demoId: string) => void
+}
 
-export function AppSidebar({ ...props }: AppSidebarProps) {
+export function AppSidebar({ onDemoChange, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -117,7 +125,7 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">WP SMS</span>
-                <span className="truncate text-xs text-muted-foreground">Admin Panel</span>
+                <span className="truncate text-xs text-muted-foreground">Settings</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -125,17 +133,18 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Main Navigation */}
+        {/* WP SMS Main Menu */}
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel>WP SMS</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuData.main.map((item) => (
+              {menuData.wpSms.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuButton asChild tooltip={`${item.title}${item.isPro ? " (Pro)" : ""}`}>
                     <a href={item.url} className="flex items-center gap-2">
                       <item.icon className="size-4" />
                       <span>{item.title}</span>
+                      {item.isPro && <Lock className="size-3 text-orange-500 ml-auto" />}
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -144,19 +153,20 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Settings Menu */}
+        {/* Demos Menu */}
         <SidebarGroup>
-          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupLabel>Demos</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuData.settings.map((item) => (
+              {menuData.demos.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={`${item.title}${item.isPro ? " (Pro)" : ""}`}>
-                    <a href={item.url} className="flex items-center gap-2">
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                      {item.isPro && <Lock className="size-3 text-orange-500 ml-auto" />}
-                    </a>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    onClick={() => onDemoChange?.(item.demoId)}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <item.icon className="size-4" />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -203,4 +213,4 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
       <SidebarRail />
     </Sidebar>
   )
-}
+} 
