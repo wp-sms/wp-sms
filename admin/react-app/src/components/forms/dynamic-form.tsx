@@ -7,12 +7,14 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
-import { Loader2, AlertCircle } from "lucide-react"
+import { Loader2, AlertCircle, CheckCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
 import { SearchableSelect } from "./searchable-select"
 import { SearchableMultiSelect } from "./searchable-multiselect"
 import { HtmlDescription } from "./html-description"
+import { useFormChanges } from "@/hooks/use-form-changes"
+import { settingsApi, ValidationError } from "@/services/settings-api"
 
 interface FieldOption {
   [key: string]: string | { [key: string]: string }
@@ -44,10 +46,17 @@ interface DynamicFormProps {
   savedValues: Record<string, any> | null
   loading: boolean
   error: string | null
+  onSaveSuccess?: (savedKeys: string[]) => void
 }
 
-export function DynamicForm({ schema, savedValues, loading, error }: DynamicFormProps) {
+export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess }: DynamicFormProps) {
   const [formData, setFormData] = React.useState<Record<string, any>>({})
+  const [saveLoading, setSaveLoading] = React.useState(false)
+  const [saveError, setSaveError] = React.useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+  const [saveSuccess, setSaveSuccess] = React.useState(false)
+
+  const { updateValue, getChangedFields, hasChanges, resetChanges } = useFormChanges(savedValues)
 
   // Initialize form data with saved values or defaults when schema loads
   React.useEffect(() => {
@@ -66,6 +75,72 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
       ...prev,
       [key]: value
     }))
+    updateValue(key, value)
+    setSaveError(null)
+    setFieldErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[key]
+      return newErrors
+    })
+    setSaveSuccess(false)
+  }
+
+  const handleSave = async () => {
+    if (!hasChanges()) {
+      return
+    }
+
+    setSaveLoading(true)
+    setSaveError(null)
+    setFieldErrors({})
+    setSaveSuccess(false)
+
+    try {
+      const changedFields = getChangedFields()
+      const response = await settingsApi.saveSettings(changedFields)
+      
+      if (response.success) {
+        setSaveSuccess(true)
+        resetChanges()
+        if (onSaveSuccess) {
+          onSaveSuccess(Object.keys(changedFields))
+        }
+      }
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        setFieldErrors(error.fields)
+        setSaveError(error.message)
+      } else {
+        setSaveError(error instanceof Error ? error.message : 'Failed to save settings')
+      }
+    } finally {
+      setSaveLoading(false)
+    }
+  }
+
+  const handleReset = () => {
+    if (schema) {
+      const initialData: Record<string, any> = {}
+      schema.fields.forEach(field => {
+        initialData[field.key] = savedValues?.[field.key] ?? field.default
+      })
+      setFormData(initialData)
+      resetChanges()
+      setSaveError(null)
+      setFieldErrors({})
+      setSaveSuccess(false)
+    }
+  }
+
+  const renderFieldError = (fieldKey: string) => {
+    const error = fieldErrors[fieldKey]
+    if (!error) return null
+
+    return (
+      <p className="text-sm text-destructive mt-1">
+        {error}
+      </p>
+    )
   }
 
   const renderField = (field: SchemaField) => {
@@ -95,6 +170,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -110,6 +186,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -127,6 +204,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -142,6 +220,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} className="ml-6" />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -159,6 +238,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -176,6 +256,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -193,6 +274,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -210,6 +292,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -227,6 +310,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -241,6 +325,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
 
@@ -258,6 +343,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             {description && (
               <HtmlDescription content={description} />
             )}
+            {renderFieldError(key)}
           </div>
         )
     }
@@ -316,17 +402,47 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
           {schema.fields
             .sort((a, b) => a.order - b.order)
             .map(renderField)}
           
+          {/* Save Status Messages */}
+          {saveError && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{saveError}</AlertDescription>
+            </Alert>
+          )}
+          
+          {saveSuccess && (
+            <Alert>
+              <CheckCircle className="h-4 w-4" />
+              <AlertDescription>Settings saved successfully!</AlertDescription>
+            </Alert>
+          )}
+          
           <div className="flex justify-end space-x-2 pt-6">
-            <Button type="button" variant="outline">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleReset}
+              disabled={saveLoading || !hasChanges()}
+            >
               Reset
             </Button>
-            <Button type="submit">
-              Save Changes
+            <Button 
+              type="submit"
+              disabled={saveLoading || !hasChanges()}
+            >
+              {saveLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </Button>
           </div>
         </form>
