@@ -108,7 +108,7 @@ class GeneralSettings extends AbstractSettingGroup {
             ]),
             new Field([
                 'key'         => 'international_mobile_only_countries',
-                'type'        => 'countryselect',
+                'type'        => 'multiselect',
                 'label'       => 'Only Countries',
                 'description' => 'Restrict dropdown to specific countries. Leave blank for all.',
                 'options'     => wp_sms_countries()->getCountryNamesByCode(),
@@ -116,7 +116,7 @@ class GeneralSettings extends AbstractSettingGroup {
             ]),
             new Field([
                 'key'         => 'international_mobile_preferred_countries',
-                'type'        => 'countryselect',
+                'type'        => 'multiselect',
                 'label'       => 'Preferred Countries',
                 'description' => 'Countries shown at the top of dropdown.',
                 'options'     => wp_sms_countries()->getCountryNamesByCode(),
