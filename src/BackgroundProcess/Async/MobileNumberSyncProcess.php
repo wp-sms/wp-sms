@@ -58,7 +58,9 @@ class MobileNumberSyncProcess extends WP_Background_Process
             $this->skipped
         );
 
-        $this->setCachedResult('wp_sms_mobile_sync_notice', $message, 60);
+        $notice_id = 'wp_sms_mobile_sync_notice_' . uniqid();
+        $this->setCachedResult($notice_id, $message, 60);
+        set_transient('wp_sms_mobile_sync_last_notice_id', $notice_id, 60);
 
         parent::complete();
     }

@@ -13,8 +13,10 @@ class MobileFieldSourceWatcher
     public function register(): void
     {
         add_filter('pre_update_option_wpsms_settings', [$this, 'maybeSyncMobileField'], 10, 2);
-        if ($msg = $this->getCachedResult('wp_sms_mobile_sync_notice')) {
-            NoticeManager::getInstance()->registerNotice($this->getCacheKey('wp_sms_mobile_sync_notice'), esc_html($msg), true);
+        if ($notice_id = get_transient('wp_sms_mobile_sync_last_notice_id')) {
+            if ($msg = $this->getCachedResult($notice_id)) {
+                NoticeManager::getInstance()->registerNotice($this->getCacheKey($notice_id), esc_html($msg), true);
+            }
         }
     }
 
