@@ -64,9 +64,10 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onGroupSelect?: (groupName: string) => void
+  selectedGroup?: string
 }
 
-export function DynamicSidebar({ onGroupSelect, ...props }: AppSidebarProps) {
+export function DynamicSidebar({ onGroupSelect, selectedGroup, ...props }: AppSidebarProps) {
   const { data, loading, error } = useSchema()
 
   const handleGroupClick = (groupName: string) => {
@@ -170,6 +171,7 @@ export function DynamicSidebar({ onGroupSelect, ...props }: AppSidebarProps) {
                       asChild 
                       tooltip={item.label}
                       onClick={() => handleGroupClick(key)}
+                      className={selectedGroup === key ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
                     >
                       <button className="flex items-center gap-2 w-full text-left">
                         <Settings className="size-4" />
@@ -195,6 +197,7 @@ export function DynamicSidebar({ onGroupSelect, ...props }: AppSidebarProps) {
                       asChild 
                       tooltip={`${item.label} (Pro)`}
                       onClick={() => handleGroupClick(key)}
+                      className={selectedGroup === key ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
                     >
                       <button className="flex items-center gap-2 w-full text-left">
                         <Shield className="size-4" />
@@ -241,6 +244,7 @@ export function DynamicSidebar({ onGroupSelect, ...props }: AppSidebarProps) {
                                       <SidebarMenuSubButton 
                                         asChild
                                         onClick={() => handleGroupClick(childItem.name)}
+                                        className={selectedGroup === childItem.name ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
                                       >
                                         <button className="w-full text-left">
                                           {childItem.label}
