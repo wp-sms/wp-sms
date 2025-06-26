@@ -45,7 +45,7 @@
     line-height: 22px;
     margin: 0;
 
-    a {
+    a:not(.button) {
       font-weight: 400;
       text-decoration: underline;
     }
