@@ -39,23 +39,25 @@ interface GroupSchema {
 
 interface DynamicFormProps {
   schema: GroupSchema | null
+  savedValues: Record<string, any> | null
   loading: boolean
   error: string | null
 }
 
-export function DynamicForm({ schema, loading, error }: DynamicFormProps) {
+export function DynamicForm({ schema, savedValues, loading, error }: DynamicFormProps) {
   const [formData, setFormData] = React.useState<Record<string, any>>({})
 
-  // Initialize form data with defaults when schema loads
+  // Initialize form data with saved values or defaults when schema loads
   React.useEffect(() => {
     if (schema) {
       const initialData: Record<string, any> = {}
       schema.fields.forEach(field => {
-        initialData[field.key] = field.default
+        // Use saved value if available, otherwise use default
+        initialData[field.key] = savedValues?.[field.key] ?? field.default
       })
       setFormData(initialData)
     }
-  }, [schema])
+  }, [schema, savedValues])
 
   const handleFieldChange = (key: string, value: any) => {
     setFormData(prev => ({

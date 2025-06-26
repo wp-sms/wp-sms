@@ -3,10 +3,16 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { DynamicSidebar } from "@/components/layout/dynamic-sidebar"
 import { DynamicForm } from "@/components/forms/dynamic-form"
 import { useGroupSchema } from "@/hooks/use-group-schema"
+import { useGroupValues } from "@/hooks/use-group-values"
 
 export function SettingsPage() {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
-  const { data: groupSchema, loading, error } = useGroupSchema(selectedGroup)
+  const { data: groupSchema, loading: schemaLoading, error: schemaError } = useGroupSchema(selectedGroup)
+  const { data: savedValues, loading: valuesLoading, error: valuesError } = useGroupValues(selectedGroup)
+
+  // Combine loading states
+  const loading = schemaLoading || valuesLoading
+  const error = schemaError || valuesError
 
   return (
     <SidebarProvider>
@@ -22,6 +28,7 @@ export function SettingsPage() {
             </div>
             <DynamicForm 
               schema={groupSchema} 
+              savedValues={savedValues}
               loading={loading} 
               error={error} 
             />
@@ -30,4 +37,4 @@ export function SettingsPage() {
       </div>
     </SidebarProvider>
   )
-}
+} 
