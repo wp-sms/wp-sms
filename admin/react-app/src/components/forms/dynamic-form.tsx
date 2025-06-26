@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Loader2, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
+import { SearchableSelect } from "./searchable-select"
+import { SearchableMultiSelect } from "./searchable-multiselect"
+import { HtmlDescription } from "./html-description"
 
 interface FieldOption {
   [key: string]: string | { [key: string]: string }
@@ -76,7 +78,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             <Separator className="my-4" />
             <h3 className="text-lg font-semibold">{label}</h3>
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
             )}
           </div>
         )
@@ -89,10 +91,9 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
               id={key}
               value={formData[key] || ''}
               onChange={(e) => handleFieldChange(key, e.target.value)}
-              placeholder={description}
             />
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
             )}
           </div>
         )
@@ -105,10 +106,26 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
               id={key}
               value={formData[key] || ''}
               onChange={(e) => handleFieldChange(key, e.target.value)}
+            />
+            {description && (
+              <HtmlDescription content={description} />
+            )}
+          </div>
+        )
+
+      case 'number':
+        return (
+          <div key={key} className="space-y-2">
+            <Label htmlFor={key}>{label}</Label>
+            <Input
+              id={key}
+              type="number"
+              value={formData[key] || ''}
+              onChange={(e) => handleFieldChange(key, e.target.value)}
               placeholder={description}
             />
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
             )}
           </div>
         )
@@ -123,7 +140,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
             />
             <Label htmlFor={key}>{label}</Label>
             {description && (
-              <p className="text-sm text-muted-foreground ml-6">{description}</p>
+              <HtmlDescription content={description} className="ml-6" />
             )}
           </div>
         )
@@ -132,23 +149,15 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
         return (
           <div key={key} className="space-y-2">
             <Label htmlFor={key}>{label}</Label>
-            <Select
+            <SearchableSelect
+              options={options}
               value={formData[key] || ''}
               onValueChange={(value) => handleFieldChange(key, value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select an option" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(options).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {typeof label === 'string' ? label : value}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="Select an option"
+              searchPlaceholder="Search options..."
+            />
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
             )}
           </div>
         )
@@ -157,39 +166,15 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
         return (
           <div key={key} className="space-y-2">
             <Label htmlFor={key}>{label}</Label>
-            <Select
+            <SearchableSelect
+              options={options}
               value={formData[key] || ''}
               onValueChange={(value) => handleFieldChange(key, value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select an option" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(options).map(([groupKey, groupOptions]) => {
-                  if (typeof groupOptions === 'object') {
-                    return (
-                      <div key={groupKey}>
-                        <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
-                          {groupKey}
-                        </div>
-                        {Object.entries(groupOptions).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>
-                            {typeof label === 'string' ? label : value}
-                          </SelectItem>
-                        ))}
-                      </div>
-                    )
-                  }
-                  return (
-                    <SelectItem key={groupKey} value={groupKey}>
-                      {typeof groupOptions === 'string' ? groupOptions : groupKey}
-                    </SelectItem>
-                  )
-                })}
-              </SelectContent>
-            </Select>
+              placeholder="Select an option"
+              searchPlaceholder="Search options..."
+            />
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
             )}
           </div>
         )
@@ -198,23 +183,63 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
         return (
           <div key={key} className="space-y-2">
             <Label htmlFor={key}>{label}</Label>
-            <Select
+            <SearchableSelect
+              options={options}
               value={formData[key] || ''}
               onValueChange={(value) => handleFieldChange(key, value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(options).map(([code, name]) => (
-                  <SelectItem key={code} value={code}>
-                    {typeof name === 'string' ? name : code}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="Select a country"
+              searchPlaceholder="Search countries..."
+            />
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
+            )}
+          </div>
+        )
+
+      case 'multiselect':
+        return (
+          <div key={key} className="space-y-2">
+            <Label htmlFor={key}>{label}</Label>
+            <SearchableMultiSelect
+              options={options}
+              value={Array.isArray(formData[key]) ? formData[key] : []}
+              onValueChange={(value) => handleFieldChange(key, value)}
+              placeholder="Select options"
+              searchPlaceholder="Search options..."
+            />
+            {description && (
+              <HtmlDescription content={description} />
+            )}
+          </div>
+        )
+
+      case 'advancedmultiselect':
+        return (
+          <div key={key} className="space-y-2">
+            <Label htmlFor={key}>{label}</Label>
+            <SearchableMultiSelect
+              options={options}
+              value={Array.isArray(formData[key]) ? formData[key] : []}
+              onValueChange={(value) => handleFieldChange(key, value)}
+              placeholder="Select options"
+              searchPlaceholder="Search options..."
+            />
+            {description && (
+              <HtmlDescription content={description} />
+            )}
+          </div>
+        )
+
+      case 'html':
+        return (
+          <div key={key} className="space-y-2">
+            {label && <Label htmlFor={key}>{label}</Label>}
+            <div 
+              className="[&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_br]:block [&_br]:mb-2"
+              dangerouslySetInnerHTML={{ __html: formData[key] || '' }}
+            />
+            {description && (
+              <HtmlDescription content={description} />
             )}
           </div>
         )
@@ -231,7 +256,7 @@ export function DynamicForm({ schema, savedValues, loading, error }: DynamicForm
               disabled
             />
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <HtmlDescription content={description} />
             )}
           </div>
         )
