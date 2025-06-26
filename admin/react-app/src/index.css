@@ -94,9 +94,6 @@
 }
 
 /* Ensure proper spacing within WordPress admin */
-#wp-sms-settings-root .flex {
-  gap: 0;
-}
 
 /* Prevent horizontal scroll in WP admin */
 #wpcontent, .wp-sms-settings-wrap, #wp-sms-settings-root {
