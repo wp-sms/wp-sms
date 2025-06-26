@@ -87,6 +87,9 @@
       &:hover {
         background: #FDE8E9;
       }
+      &:focus {
+        box-shadow: none;
+      }
     }
 
     .notice--dismiss {

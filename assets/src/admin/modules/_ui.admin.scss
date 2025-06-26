@@ -895,9 +895,9 @@
 }
 
 .wpsms-wrap .button:hover {
-  background: #fff;
-  border-color: #404bf2;
-  color: #000;
+  background: #C2410C;
+  border-color: #C2410C;
+  color: #fff;
 }
 
 .wpsms-wrap .button,
@@ -1082,7 +1082,7 @@
 
 .wpsms-wrap ul.tabs li.current {
   border: 0;
-  border-bottom-color: #404bf2 !important;
+  border-bottom-color: #F97316 !important;
   padding: 20px 8px;
   color: #000;
 }
@@ -2382,14 +2382,15 @@
   }
 
   &.disabled {
-    background: #F1F1F9;
-
+    background: #F5F5F5;
+    color: #A3A3A3;
+    
     span {
-      color: #B2B2CF;
+      color: #A3A3A3;
     }
 
     &:before {
-      background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguNjY2NzEgNi42NjY2N0gxMkw4LjAwMDA0IDEwLjY2NjdMNC4wMDAwNCA2LjY2NjY3SDcuMzMzMzdWMkg4LjY2NjcxVjYuNjY2NjdaTTIuNjY2NzEgMTIuNjY2N0gxMy4zMzM0VjhIMTQuNjY2N1YxMy4zMzMzQzE0LjY2NjcgMTMuNzAxNSAxNC4zNjgyIDE0IDE0IDE0SDIuMDAwMDRDMS42MzE4NSAxNCAxLjMzMzM3IDEzLjcwMTUgMS4zMzMzNyAxMy4zMzMzVjhIMi42NjY3MVYxMi42NjY3WiIgZmlsbD0iI0IyQjJDRiIvPgo8L3N2Zz4K") center center no-repeat;
+      background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguNjY2NzEgNi42NjY2N0gxMkw4LjAwMDA0IDEwLjY2NjdMNC4wMDAwNCA2LjY2NjY3SDcuMzMzMzdWMkg4LjY2NjcxVjYuNjY2NjdaTTIuNjY2NzEgMTIuNjY2N0gxMy4zMzM0VjhIMTQuNjY2N1YxMy4zMzMzQzE0LjY2NjcgMTMuNzAxNSAxNC4zNjgyIDE0IDE0IDE0SDIuMDAwMDRDMS42MzE4NSAxNCAxLjMzMzM3IDEzLjcwMTUgMS4zMzMzNyAxMy4zMzMzVjhIMi42NjY3MVYxMi42NjY3WiIgZmlsbD0iI0EzQTNBMyIvPgo8L3N2Zz4=") center center no-repeat;
     }
   }
 
@@ -2613,8 +2614,8 @@
             }
 
             &:focus, &:active {
-              border: 1px solid #404BF2 !important;
-              box-shadow: 0 0 0 3px #404BF233;
+              border: 1px solid #262626 !important;
+              box-shadow: 0 0 0 3px #E5E5E5;
               outline: 2px solid rgba(0, 0, 0, 0);
             }
           }
@@ -2679,8 +2680,8 @@
 
             &.disabled {
               pointer-events: none;
-              background: #F1F1F9;
-              color: #B2B2CF;
+              background: #F5F5F5;
+              color: #A3A3A3;
               position: relative;
             }
 
@@ -3922,7 +3923,7 @@ a.wpsms-addon__download_active-all {
       &::before {
         content: '' !important;
         background: center center/100% no-repeat;
-        background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C0 1.34315 1.34315 0 3 0H14C15.6569 0 17 1.34315 17 3V14C17 15.6569 15.6569 17 14 17H3C1.34315 17 0 15.6569 0 14V3Z' fill='%23404BF2'/%3E%3Cpath d='M13.3453 5.4563L7.08839 11.7132C7.03297 11.7691 6.95753 11.8005 6.87884 11.8005C6.80014 11.8005 6.72471 11.7691 6.66929 11.7132L3.48769 8.53165C3.43182 8.47623 3.40039 8.40079 3.40039 8.3221C3.40039 8.2434 3.43182 8.16797 3.48769 8.11255L3.90089 7.69936C3.9563 7.64348 4.03174 7.61206 4.11044 7.61206C4.18913 7.61206 4.26457 7.64348 4.31998 7.69936L6.87589 10.2553L12.513 4.61811C12.6298 4.5049 12.8154 4.5049 12.9321 4.61811L13.3453 5.0372C13.4012 5.09262 13.4326 5.16806 13.4326 5.24675C13.4326 5.32545 13.4012 5.40088 13.3453 5.4563Z' fill='white'/%3E%3C/svg%3E%0A") !important;
+        background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C0 1.34315 1.34315 0 3 0H14C15.6569 0 17 1.34315 17 3V14C17 15.6569 15.6569 17 14 17H3C1.34315 17 0 15.6569 0 14V3Z' fill='%23F97316'/%3E%3Cpath d='M13.3453 5.4563L7.08839 11.7132C7.03297 11.7691 6.95753 11.8005 6.87884 11.8005C6.80014 11.8005 6.72471 11.7691 6.66929 11.7132L3.48769 8.53165C3.43182 8.47623 3.40039 8.40079 3.40039 8.3221C3.40039 8.2434 3.43182 8.16797 3.48769 8.11255L3.90089 7.69936C3.9563 7.64348 4.03174 7.61206 4.11044 7.61206C4.18913 7.61206 4.26457 7.64348 4.31998 7.69936L6.87589 10.2553L12.513 4.61811C12.6298 4.5049 12.8154 4.5049 12.9321 4.61811L13.3453 5.0372C13.4012 5.09262 13.4326 5.16806 13.4326 5.24675C13.4326 5.32545 13.4012 5.40088 13.3453 5.4563Z' fill='white'/%3E%3C/svg%3E%0A") !important;
       }
     }
   }
