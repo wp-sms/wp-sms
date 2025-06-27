@@ -16,6 +16,7 @@ import { SearchableMultiSelect } from "./searchable-multiselect"
 import { HtmlDescription } from "./html-description"
 import { SectionCard } from "./section-card"
 import { TagBadge } from "./tag-badge"
+import { GatewayFields } from "./gateway-fields"
 import { useFormChanges } from "@/hooks/use-form-changes"
 import { settingsApi, ValidationError } from "@/services/settings-api"
 
@@ -525,6 +526,13 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
     )
   }
 
+  // Check if this is the gateway group
+  const isGatewayGroup = schema.label.toLowerCase().includes('gateway') || 
+                        schema.sections.some(section => 
+                          section.title.toLowerCase().includes('gateway') ||
+                          section.fields.some(field => field.key === 'gateway_name')
+                        )
+
   return (
     <Card>
       <CardHeader>
@@ -556,17 +564,29 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
               <SectionCard key={section.id} section={section}>
                 {section.fields
                   .sort((a, b) => a.order - b.order)
-                  .map(renderField)}
+                  .map((field, index) => {
+                    const fieldElement = renderField(field)
+                    
+                    // For gateway group, insert gateway fields after the gateway_help field
+                    if (isGatewayGroup && 
+                        section.id === 'sms_gateway_setup' && 
+                        field.key === 'gateway_help') {
+                      return (
+                        <React.Fragment key={field.key}>
+                          {fieldElement}
+                          <GatewayFields
+                            gatewayName={formData.gateway_name}
+                            savedValues={savedValues || {}}
+                            onFieldChange={handleFieldChange}
+                          />
+                        </React.Fragment>
+                      )
+                    }
+                    
+                    return fieldElement
+                  })}
               </SectionCard>
             ))}
-          
-          {/* Success message at bottom as well */}
-          {saveSuccess && (
-            <Alert className="border-green-200 bg-green-50 text-green-800">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">Settings saved successfully!</AlertDescription>
-            </Alert>
-          )}
           
           <div className="flex justify-end space-x-2 pt-6">
             <Button 

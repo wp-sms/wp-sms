@@ -1,8 +1,8 @@
 import type { ReactNode } from "react"
 import { HelpCircle, Lock } from "lucide-react"
-import { Label } from "./label"
-import { Badge } from "./badge"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
+import { Label } from "../ui/label"
+import { Badge } from "../ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 
 interface FieldWrapperProps {
   label: string
