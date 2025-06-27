@@ -2,179 +2,190 @@
 
 namespace WP_SMS\Settings\Groups;
 
-use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
+use WP_SMS\Settings\Field;
+use WP_SMS\Settings\Section;
+use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Tags;
 
-class MessageButtonSettings extends AbstractSettingGroup {
-    public function getName(): string {
+class MessageButtonSettings extends AbstractSettingGroup
+{
+    public function getName(): string
+    {
         return 'message_button';
     }
 
-    public function getLabel(): string {
-        return 'Message Button';
+    public function getLabel(): string
+    {
+        return __('Message Button', 'wp-sms');
     }
 
-    public function getFields(): array {
+    public function getIcon(): string
+    {
+        return LucideIcons::MESSAGE_CIRCLE;
+    }
+
+    public function getSections(): array
+    {
         return [
-            new Field([
-                'key' => 'chatbox',
-                'type' => 'header',
-                'label' => 'Message Button Configuration',
-                'group_label' => 'Message Button',
+            new Section([
+                'id' => 'message_button_configuration',
+                'title' => __('Message Button Configuration', 'wp-sms'),
+                'subtitle' => __('Configure the main message button settings', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'chatbox_message_button',
+                        'label' => __('Message Button', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Switch on to display the Message Button on your site or off to hide it. <a href="#" class="js-wpsms-chatbox-preview">Preview</a>', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_title',
+                        'label' => __('Title', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
+                    ]),
+                ]
             ]),
-            new Field([
-                'key' => 'chatbox_message_button',
-                'type' => 'checkbox',
-                'label' => 'Message Button',
-                'description' => 'Toggle to show or hide the Message Button on your site.',
-                'group_label' => 'Message Button',
+            new Section([
+                'id' => 'button_appearance',
+                'title' => __('Button Appearance', 'wp-sms'),
+                'subtitle' => __('Customize the appearance and position of the message button', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'chatbox_button_text',
+                        'label' => __('Text', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_button_position',
+                        'label' => __('Position', 'wp-sms'),
+                        'type' => 'select',
+                        'description' => __('Choose where the chat button appears on your site.', 'wp-sms'),
+                        'options' => [
+                            'bottom_right' => __('Bottom Right', 'wp-sms'),
+                            'bottom_left' => __('Bottom Left', 'wp-sms'),
+                        ]
+                    ]),
+                ]
             ]),
-            new Field([
-                'key' => 'chatbox_title',
-                'type' => 'text',
-                'label' => 'Title',
-                'description' => "Main title for your chatbox, e.g., 'Chat with Us!'",
-                'group_label' => 'Message Button',
+            new Section([
+                'id' => 'support_team_profiles',
+                'title' => __('Support Team Profiles', 'wp-sms'),
+                'subtitle' => __('Configure team member profiles for the chatbox', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'chatbox_team_members',
+                        'label' => __('Team Members', 'wp-sms'),
+                        'type' => 'repeater',
+                        'description' => __('Add team members to display in the chatbox', 'wp-sms'),
+                        'options' => [
+                            'template' => 'admin/fields/field-team-member-repeater.php',
+                        ]
+                    ]),
+                ]
             ]),
-            new Field([
-                'key' => 'chatbox_button',
-                'type' => 'header',
-                'label' => 'Button Appearance',
-                'group_label' => 'Message Button',
+            new Section([
+                'id' => 'additional_chatbox_options',
+                'title' => __('Additional Chatbox Options', 'wp-sms'),
+                'subtitle' => __('Customize colors, animations, and other visual elements', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'chatbox_color',
+                        'label' => __('Chatbox Color', 'wp-sms'),
+                        'type' => 'color',
+                        'description' => __('Choose your chat button\'s background color and header color.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_text_color',
+                        'label' => __('Chatbox Text Color', 'wp-sms'),
+                        'type' => 'color',
+                        'description' => __('Select the color for your button and header text.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_footer_text',
+                        'label' => __('Footer Text', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_footer_text_color',
+                        'label' => __('Footer Text Color', 'wp-sms'),
+                        'type' => 'color',
+                        'description' => __('Select your footer text color.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_footer_link_title',
+                        'label' => __('Footer Link Title', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_footer_link_url',
+                        'label' => __('Footer Link URL', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Enter the URL of the chatbox footer link.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_animation_effect',
+                        'label' => __('Animation Effect', 'wp-sms'),
+                        'type' => 'select',
+                        'description' => __('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms'),
+                        'options' => [
+                            '' => __('None', 'wp-sms'),
+                            'fade' => __('Fade In', 'wp-sms'),
+                            'slide' => __('Slide Up', 'wp-sms'),
+                        ]
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_disable_logo',
+                        'label' => __('Disable WP SMS Logo', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Check this box to disable the WP SMS logo in the footer of the chatbox.', 'wp-sms')
+                    ]),
+                ]
             ]),
-            new Field([
-                'key' => 'chatbox_button_text',
-                'type' => 'text',
-                'label' => 'Text',
-                'description' => "The message displayed on the chat button, e.g., 'Talk to Us'",
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_button_position',
-                'type' => 'select',
-                'label' => 'Position',
-                'description' => 'Choose where the chat button appears on your site.',
-                'options' => [
-                    'bottom_right' => 'Bottom Right',
-                    'bottom_left' => 'Bottom Left',
-                ],
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_team_member',
-                'type' => 'header',
-                'label' => 'Support Team Profiles',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_team_members',
-                'type' => 'repeater',
-                'label' => 'Team Members',
-                'description' => 'Add members to appear in the chat support list.',
-                'repeatable' => true,
-                'options' => [
-                    'template' => 'admin/fields/field-team-member-repeater.php',
-                ],
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_miscellaneous',
-                'type' => 'header',
-                'label' => 'Additional Chatbox Options',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_color',
-                'type' => 'color',
-                'label' => 'Chatbox Color',
-                'description' => "Choose your chat button's background and header color.",
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_text_color',
-                'type' => 'color',
-                'label' => 'Chatbox Text Color',
-                'description' => 'Select the color for your button and header text.',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_footer_text',
-                'type' => 'text',
-                'label' => 'Footer Text',
-                'description' => "Text displayed in the chatbox footer, e.g., 'Chat with us on WhatsApp for instant support!'",
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_footer_text_color',
-                'type' => 'color',
-                'label' => 'Footer Text Color',
-                'description' => 'Select your footer text color.',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_footer_link_title',
-                'type' => 'text',
-                'label' => 'Footer Link Title',
-                'description' => "Add a link title in the footer, e.g., 'Related Articles'",
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_footer_link_url',
-                'type' => 'text',
-                'label' => 'Footer Link URL',
-                'description' => 'Enter the URL for the footer link.',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_animation_effect',
-                'type' => 'select',
-                'label' => 'Animation Effect',
-                'description' => 'Choose an effect for chatbox entry or hover state.',
-                'options' => [
-                    '' => 'None',
-                    'fade' => 'Fade In',
-                    'slide' => 'Slide Up',
-                ],
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_disable_logo',
-                'type' => 'checkbox',
-                'label' => 'Disable WP SMS Logo',
-                'description' => 'Check to remove the WP SMS branding from the footer.',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_link',
-                'type' => 'header',
-                'label' => 'Informational Links',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_links_enabled',
-                'type' => 'checkbox',
-                'label' => 'Resource Links',
-                'description' => 'Turn on to show resource links in the chatbox.',
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_links_title',
-                'type' => 'text',
-                'label' => 'Section Title',
-                'description' => "The heading for your resource links, e.g., 'Quick Links'",
-                'group_label' => 'Message Button',
-            ]),
-            new Field([
-                'key' => 'chatbox_links',
-                'type' => 'repeater',
-                'label' => 'Links',
-                'description' => 'Define multiple resource links shown inside the chatbox.',
-                'repeatable' => true,
-                'options' => [
-                    'template' => 'admin/fields/field-resource-link-repeater.php',
-                ],
-                'group_label' => 'Message Button',
+            new Section([
+                'id' => 'informational_links',
+                'title' => __('Informational Links', 'wp-sms'),
+                'subtitle' => __('Configure resource links displayed in the chatbox', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'chatbox_links_enabled',
+                        'label' => __('Resource Links', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Turn on to show resource links in the chatbox.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_links_title',
+                        'label' => __('Section Title', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms'),
+                        'show_if' => ['chatbox_links_enabled' => true]
+                    ]),
+                    new Field([
+                        'key' => 'chatbox_links',
+                        'label' => __('Links', 'wp-sms'),
+                        'type' => 'repeater',
+                        'description' => __('Add resource links to display in the chatbox', 'wp-sms'),
+                        'options' => [
+                            'template' => 'admin/fields/field-resource-link-repeater.php',
+                        ],
+                        'show_if' => ['chatbox_links_enabled' => true]
+                    ]),
+                ]
             ]),
         ];
+    }
+
+    public function getFields(): array
+    {
+        // Legacy method - return all fields from all sections for backward compatibility
+        $allFields = [];
+        foreach ($this->getSections() as $section) {
+            $allFields = array_merge($allFields, $section->getFields());
+        }
+        return $allFields;
     }
 }

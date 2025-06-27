@@ -5,6 +5,9 @@ namespace WP_SMS\Settings\Groups;
 use WP_SMS\Gateway;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
+use WP_SMS\Settings\Section;
+use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Tags;
 
 class GatewaySettings extends AbstractSettingGroup {
     public function getName(): string {
@@ -12,175 +15,186 @@ class GatewaySettings extends AbstractSettingGroup {
     }
 
     public function getLabel(): string {
-        return 'Gateway';
+        return __('SMS Gateway', 'wp-sms');
+    }
+
+    public function getIcon(): string {
+        return LucideIcons::MESSAGE_SQUARE;
+    }
+
+    public function getSections(): array {
+        return [
+            new Section([
+                'id' => 'sms_gateway_setup',
+                'title' => __('SMS Gateway Setup', 'wp-sms'),
+                'subtitle' => __('Configure your SMS gateway provider settings', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'gateway_name',
+                        'label' => __('Choose the Gateway', 'wp-sms'),
+                        'type' => 'advancedselect',
+                        'description' => __('Select your preferred SMS Gateway to send messages.', 'wp-sms'),
+                        'options' => Gateway::gateway()
+                    ]),
+                    new Field([
+                        'key' => 'gateway_help',
+                        'label' => __('Gateway Guide', 'wp-sms'),
+                        'type' => 'html',
+                        'description' => '',
+                        'options' => Gateway::help()
+                    ]),
+                    new Field([
+                        'key' => 'gateway_username',
+                        'label' => __('API Username', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Enter API username of gateway', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'gateway_password',
+                        'label' => __('API Password', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Enter API password of gateway', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'gateway_sender_id',
+                        'label' => __('Sender ID/Number', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Sender number or sender ID', 'wp-sms'),
+                        'default' => Gateway::from()
+                    ]),
+                    new Field([
+                        'key' => 'gateway_key',
+                        'label' => __('API Key', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Enter API key of gateway', 'wp-sms')
+                    ]),
+                ]
+            ]),
+            new Section([
+                'id' => 'gateway_overview',
+                'title' => __('Gateway Overview', 'wp-sms'),
+                'subtitle' => __('View your gateway status and capabilities', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'account_credit',
+                        'label' => __('Status', 'wp-sms'),
+                        'type' => 'html',
+                        'description' => '',
+                        'options' => Gateway::status()
+                    ]),
+                    new Field([
+                        'key' => 'account_response',
+                        'label' => __('Balance / Credit', 'wp-sms'),
+                        'type' => 'html',
+                        'description' => '',
+                        'options' => Gateway::response()
+                    ]),
+                    new Field([
+                        'key' => 'incoming_message',
+                        'label' => __('Incoming Message', 'wp-sms'),
+                        'type' => 'html',
+                        'description' => '',
+                        'options' => Gateway::incoming_message_status()
+                    ]),
+                    new Field([
+                        'key' => 'bulk_send',
+                        'label' => __('Send Bulk SMS', 'wp-sms'),
+                        'type' => 'html',
+                        'description' => '',
+                        'options' => Gateway::bulk_status()
+                    ]),
+                    new Field([
+                        'key' => 'media_support',
+                        'label' => __('Send MMS', 'wp-sms'),
+                        'type' => 'html',
+                        'description' => '',
+                        'options' => Gateway::mms_status()
+                    ]),
+                ]
+            ]),
+            new Section([
+                'id' => 'account_balance_visibility',
+                'title' => __('Account Balance Visibility', 'wp-sms'),
+                'subtitle' => __('Configure where account credit information is displayed', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'account_credit_in_menu',
+                        'label' => __('Admin Menu Display', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Shows account credit in the admin menu.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'account_credit_in_sendsms',
+                        'label' => __('SMS Page Display', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Displays account credit on the SMS sending page.', 'wp-sms')
+                    ]),
+                ]
+            ]),
+            new Section([
+                'id' => 'sms_dispatch_optimization',
+                'title' => __('SMS Dispatch & Number Optimization', 'wp-sms'),
+                'subtitle' => __('Configure SMS delivery methods and number handling', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'sms_delivery_method',
+                        'label' => __('Delivery Method', 'wp-sms'),
+                        'type' => 'select',
+                        'description' => __('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.', 'wp-sms'),
+                        'options' => [
+                            'api_direct_send' => __('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.', 'wp-sms'),
+                            'api_async_send' => __('Scheduled SMS Delivery: Configures API to send messages at predetermined times.', 'wp-sms'),
+                            'api_queued_send' => __('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.', 'wp-sms'),
+                        ]
+                    ]),
+                    new Field([
+                        'key' => 'send_unicode',
+                        'label' => __('Unicode Messaging', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send messages in languages that use non-English characters, like Persian, Arabic, Chinese, or Cyrillic.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'clean_numbers',
+                        'label' => __('Number Formatting', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Strips spaces from phone numbers before sending.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'send_only_local_numbers',
+                        'label' => __('Restrict to Local Numbers', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send messages to numbers within the same country to avoid international fees.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'only_local_numbers_countries',
+                        'label' => __('Allowed Countries for SMS', 'wp-sms'),
+                        'type' => 'multiselect',
+                        'description' => __('Specify countries allowed for SMS delivery. Only listed countries will receive messages.', 'wp-sms'),
+                        'options' => $this->getCountriesOptions(),
+                        'show_if' => ['send_only_local_numbers' => true]
+                    ]),
+                ]
+            ]),
+        ];
+    }
+
+    private function getCountriesOptions(): array {
+        $countries = wp_sms_countries()->getCountriesMerged();
+        $options = [];
+        
+        foreach ($countries as $key => $value) {
+            $options[] = [$key => $value];
+        }
+        
+        return $options;
     }
 
     public function getFields(): array {
-        return [
-            new Field([
-                'key'         => 'gateway_title',
-                'type'        => 'header',
-                'label'       => 'SMS Gateway Setup',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_name',
-                'type'        => 'advancedselect',
-                'label'       => 'Choose the Gateway',
-                'description' => 'Select your preferred SMS Gateway to send messages.',
-                'options'     => Gateway::gateway(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_help',
-                'type'        => 'html',
-                'label'       => 'Gateway Guide',
-                'options'     => Gateway::help(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_username',
-                'type'        => 'text',
-                'label'       => 'API Username',
-                'description' => 'Enter API username of gateway',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_password',
-                'type'        => 'text',
-                'label'       => 'API Password',
-                'description' => 'Enter API password of gateway',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_sender_id',
-                'type'        => 'text',
-                'label'       => 'Sender ID/Number',
-                'description' => 'Sender number or sender ID',
-                'default'     => Gateway::from(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_key',
-                'type'        => 'text',
-                'label'       => 'API Key',
-                'description' => 'Enter API key of gateway',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'gateway_status_title',
-                'type'        => 'header',
-                'label'       => 'Gateway Overview',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'account_credit',
-                'type'        => 'html',
-                'label'       => 'Status',
-                'description' => 'Dynamic gateway status',
-                'options'     => Gateway::status(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'account_response',
-                'type'        => 'html',
-                'label'       => 'Balance / Credit',
-                'description' => 'Dynamic gateway balance',
-                'options'     => Gateway::response(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'incoming_message',
-                'type'        => 'html',
-                'label'       => 'Incoming Message',
-                'description' => 'Indicates support for receiving SMS',
-                'options'     => Gateway::incoming_message_status(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'bulk_send',
-                'type'        => 'html',
-                'label'       => 'Send Bulk SMS',
-                'description' => 'Indicates support for sending SMS in bulk',
-                'options'     => Gateway::bulk_status(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'media_support',
-                'type'        => 'html',
-                'label'       => 'Send MMS',
-                'description' => 'Indicates support for multimedia messages (MMS)',
-                'options'     => Gateway::mms_status(),
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'account_credit_title',
-                'type'        => 'header',
-                'label'       => 'Account Balance Visibility',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'account_credit_in_menu',
-                'type'        => 'checkbox',
-                'label'       => 'Admin Menu Display',
-                'description' => 'Shows account credit in the admin menu.',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'account_credit_in_sendsms',
-                'type'        => 'checkbox',
-                'label'       => 'SMS Page Display',
-                'description' => 'Displays account credit on the SMS sending page.',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'message_title',
-                'type'        => 'header',
-                'label'       => 'SMS Dispatch & Number Optimization',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'sms_delivery_method',
-                'type'        => 'select',
-                'label'       => 'Delivery Method',
-                'description' => 'Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.',
-                'options'     => [
-                    'api_direct_send' => 'Send SMS Instantly: Activates immediate dispatch of messages via API upon request.',
-                    'api_async_send'  => 'Scheduled SMS Delivery: Configures API to send messages at predetermined times.',
-                    'api_queued_send' => 'Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.',
-                ],
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'send_unicode',
-                'type'        => 'checkbox',
-                'label'       => 'Unicode Messaging',
-                'description' => 'Send messages in languages that use non-English characters, like Persian, Arabic, Chinese, or Cyrillic.',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'clean_numbers',
-                'type'        => 'checkbox',
-                'label'       => 'Number Formatting',
-                'description' => 'Strips spaces from phone numbers before sending.',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'send_only_local_numbers',
-                'type'        => 'checkbox',
-                'label'       => 'Restrict to Local Numbers',
-                'description' => 'Send messages to numbers within the same country to avoid international fees.',
-                'group_label' => 'Gateway',
-            ]),
-            new Field([
-                'key'         => 'only_local_numbers_countries',
-                'type'        => 'multiselect',
-                'label'       => 'Allowed Countries for SMS',
-                'description' => 'Specify countries allowed for SMS delivery. Only listed countries will receive messages.',
-                'show_if'     => ['send_only_local_numbers' => true],
-                'options'     => wp_sms_countries()->getCountriesMerged(),
-                'group_label' => 'Gateway',
-            ]),
-        ];
+        // Legacy method - return all fields from all sections for backward compatibility
+        $allFields = [];
+        foreach ($this->getSections() as $section) {
+            $allFields = array_merge($allFields, $section->getFields());
+        }
+        return $allFields;
     }
 }
