@@ -63,7 +63,6 @@ class SchemaRegistry
         // Core groups
         $this->registerGroup(new GeneralSettings(), 'core');
         $this->registerGroup(new GatewaySettings(), 'core');
-        $this->registerGroup(new FeatureSettings(), 'core');
         $this->registerGroup(new MessageButtonSettings(), 'core');
         $this->registerGroup(new NotificationSettings(), 'core');
         $this->registerGroup(new AdvancedSettings(), 'core');
