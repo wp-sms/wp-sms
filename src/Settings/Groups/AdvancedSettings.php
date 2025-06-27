@@ -75,7 +75,7 @@ class AdvancedSettings extends AbstractSettingGroup
                 'id' => 'webhooks_configuration',
                 'title' => __('Webhooks Configuration', 'wp-sms'),
                 'subtitle' => __('Set up your system\'s Webhook URLs to integrate with external services.', 'wp-sms'),
-                'help_url' => '/resources/webhooks/',
+                'help_url' => WP_SMS_SITE . '/resources/webhooks/',
                 'fields' => [
                     new Field([
                         'key' => 'new_sms_webhook',

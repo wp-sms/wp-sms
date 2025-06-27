@@ -37,7 +37,7 @@ class UltimateMemberSettings extends AbstractSettingGroup
                 'id' => 'user_approval_notification',
                 'title' => __('Notification', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for Ultimate Member user approval', 'wp-sms'),
-                'help_url' => '/resources/ultimate-member-and-wp-sms-integration/',
+                'help_url' => WP_SMS_SITE . '/resources/ultimate-member-and-wp-sms-integration/',
                 'fields' => [
                     new Field([
                         'key' => 'um_send_sms_after_approval',

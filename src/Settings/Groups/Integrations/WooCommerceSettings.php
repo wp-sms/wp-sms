@@ -57,7 +57,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'new_product_notification',
                 'title' => __('Notify for new product', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for new product publications', 'wp-sms'),
-                'help_url' => '/resources/woocommerce-sms-variables-and-order-meta/',
+                'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
                 'fields' => [
                     new Field([
                         'key' => 'wc_notify_product_enable',
@@ -103,7 +103,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'new_order_notification',
                 'title' => __('Notify for new order', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for new order submissions', 'wp-sms'),
-                'help_url' => '/resources/woocommerce-sms-variables-and-order-meta/',
+                'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
                 'fields' => [
                     new Field([
                         'key' => 'wc_notify_order_enable',
@@ -129,7 +129,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'customer_order_notification',
                 'title' => __('Notify to customer order', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications sent to customers for their orders', 'wp-sms'),
-                'help_url' => '/resources/woocommerce-sms-variables-and-order-meta/',
+                'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
                 'fields' => [
                     new Field([
                         'key' => 'wc_notify_customer_enable',
@@ -149,7 +149,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'stock_notification',
                 'title' => __('Notify of stock', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for low stock alerts', 'wp-sms'),
-                'help_url' => '/resources/woocommerce-sms-variables-and-order-meta/',
+                'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
                 'fields' => [
                     new Field([
                         'key' => 'wc_notify_stock_enable',
@@ -188,7 +188,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'order_status_notification',
                 'title' => __('Notify of order status', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for order status changes', 'wp-sms'),
-                'help_url' => '/resources/woocommerce-sms-variables-and-order-meta/',
+                'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
                 'fields' => [
                     new Field([
                         'key' => 'wc_notify_status_enable',
@@ -208,7 +208,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'specific_order_status_notification',
                 'title' => __('Notify of specific order status', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for specific order statuses', 'wp-sms'),
-                'help_url' => '/resources/woocommerce-sms-variables-and-order-meta/',
+                'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
                 'fields' => [
                     new Field([
                         'key' => 'wc_notify_by_status_enable',

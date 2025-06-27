@@ -70,7 +70,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                 'id' => 'form_notifications_' . $form->id,
                 'title' => sprintf(__('Form notifications (%s)', 'wp-sms'), $form->title),
                 'subtitle' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form->title),
-                'help_url' => '/resources/integrate-wp-sms-pro-with-gravity-forms/',
+                'help_url' => WP_SMS_SITE . '/resources/integrate-wp-sms-pro-with-gravity-forms/',
                 'fields' => [
                     new Field([
                         'key' => 'gf_notify_enable_form_' . $form->id,

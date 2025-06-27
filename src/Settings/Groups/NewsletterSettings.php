@@ -34,7 +34,7 @@ class NewsletterSettings extends AbstractSettingGroup
                 'id' => 'sms_newsletter_configuration',
                 'title' => __('SMS Newsletter Configuration', 'wp-sms'),
                 'subtitle' => __('Configure how visitors subscribe to your SMS notifications.', 'wp-sms'),
-                'help_url' => '/resources/add-sms-subscriber-form/',
+                'help_url' => WP_SMS_SITE . '/resources/add-sms-subscriber-form/',
                 'fields' => [
                     new Field([
                         'key' => 'newsletter_form_groups',
@@ -77,7 +77,7 @@ class NewsletterSettings extends AbstractSettingGroup
                 'id' => 'welcome_sms_setup',
                 'title' => __('Welcome SMS Setup', 'wp-sms'),
                 'subtitle' => __('Set up automatic SMS messages for new subscribers.', 'wp-sms'),
-                'help_url' => '/resources/send-welcome-sms-to-new-subscribers/',
+                'help_url' => WP_SMS_SITE . '/resources/send-welcome-sms-to-new-subscribers/',
                 'fields' => [
                     new Field([
                         'key' => 'newsletter_form_welcome',

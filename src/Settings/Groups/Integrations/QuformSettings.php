@@ -72,7 +72,7 @@ class QuformSettings extends AbstractSettingGroup
                 'id' => 'form_notifications_' . $form['id'],
                 'title' => sprintf(__('Form notifications: (%s)', 'wp-sms'), $form['name']),
                 'subtitle' => sprintf(__('By enabling this option you can send SMS notification once the %s form is submitted', 'wp-sms'), $form['name']),
-                'help_url' => '/resources/integrate-wp-sms-pro-with-quform/',
+                'help_url' => WP_SMS_SITE . '/resources/integrate-wp-sms-pro-with-quform/',
                 'fields' => [
                     new Field([
                         'key' => 'qf_notify_enable_form_' . $form['id'],
