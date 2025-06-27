@@ -5,6 +5,8 @@ namespace WP_SMS\Settings\Abstracts;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\Version;
+use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Section;
 
 abstract class AbstractSettingGroup
 {
@@ -30,6 +32,34 @@ abstract class AbstractSettingGroup
     public abstract function getLabel(): string;
 
     public abstract function getFields(): array;
+
+    /**
+     * Get the Lucide icon name for this group
+     *
+     * @return string
+     */
+    public function getIcon(): string
+    {
+        return LucideIcons::getDefault();
+    }
+
+    /**
+     * Get sections for this group
+     *
+     * @return array
+     */
+    public function getSections(): array
+    {
+        // Default: create one section with all fields
+        return [
+            new Section([
+                'id' => 'default',
+                'title' => $this->getLabel(),
+                'order' => 1,
+                'fields' => $this->getFields(),
+            ])
+        ];
+    }
 
     public function getUMRegisterFormFields(): array
     {
