@@ -131,6 +131,13 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
     }
   }, [schema, savedValues])
 
+  // Hide notices when switching groups
+  React.useEffect(() => {
+    setSaveSuccess(false);
+    setSaveError(null);
+    setFieldErrors({});
+  }, [schema]);
+
   const handleFieldChange = (key: string, value: any) => {
     setFormData(prev => ({
       ...prev,

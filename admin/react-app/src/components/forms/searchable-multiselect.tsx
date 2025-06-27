@@ -7,6 +7,21 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  useSortable,
+  arrayMove,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface FieldOption {
   [key: string]: string | { [key: string]: string }
@@ -21,6 +36,37 @@ interface SearchableMultiSelectProps {
   emptyText?: string
   className?: string
   sortable?: boolean
+}
+
+function DraggableBadge({ item, idx, onRemove, listeners, attributes, isDragging, transform, transition }: any) {
+  return (
+    <Badge
+      key={item.value}
+      variant="secondary"
+      className={`mr-1 mb-1 flex items-center cursor-move ${isDragging ? 'opacity-50' : ''}`}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      {...attributes}
+      {...listeners}
+    >
+      {item.label}
+      <button
+        type="button"
+        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onRemove(item.value)
+          }
+        }}
+        onMouseDown={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+        onClick={() => onRemove(item.value)}
+      >
+        <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+      </button>
+    </Badge>
+  );
 }
 
 export function SearchableMultiSelect({
@@ -69,16 +115,18 @@ export function SearchableMultiSelect({
     onValueChange(value.filter(v => v !== optionValue))
   }
 
-  const handleMove = (optionValue: string, direction: 'up' | 'down') => {
-    const idx = value.indexOf(optionValue);
-    if (idx === -1) return;
-    const newValue = [...value];
-    if (direction === 'up' && idx > 0) {
-      [newValue[idx - 1], newValue[idx]] = [newValue[idx], newValue[idx - 1]];
-    } else if (direction === 'down' && idx < newValue.length - 1) {
-      [newValue[idx], newValue[idx + 1]] = [newValue[idx + 1], newValue[idx]];
+  // DnD-kit setup
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = value.indexOf(active.id as string);
+      const newIndex = value.indexOf(over?.id as string);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onValueChange(arrayMove(value, oldIndex, newIndex));
+      }
     }
-    onValueChange(newValue);
   };
 
   const selectedItems = value.map(v => ({
@@ -98,53 +146,47 @@ export function SearchableMultiSelect({
           >
             <div className="flex flex-wrap gap-1 flex-1">
               {selectedItems.length > 0 ? (
-                selectedItems.map((item, idx) => (
-                  <Badge
-                    key={item.value}
-                    variant="secondary"
-                    className="mr-1 mb-1 flex items-center"
-                  >
-                    {item.label}
-                    {sortable && (
-                      <span className="flex flex-col ml-1">
-                        <button
-                          type="button"
-                          className="p-0.5"
-                          disabled={idx === 0}
-                          onClick={(e) => { e.stopPropagation(); handleMove(item.value, 'up'); }}
-                          tabIndex={-1}
-                        >
-                          <ArrowUp className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                        </button>
-                        <button
-                          type="button"
-                          className="p-0.5"
-                          disabled={idx === selectedItems.length - 1}
-                          onClick={(e) => { e.stopPropagation(); handleMove(item.value, 'down'); }}
-                          tabIndex={-1}
-                        >
-                          <ArrowDown className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                        </button>
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleRemove(item.value)
-                        }
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                      }}
-                      onClick={() => handleRemove(item.value)}
+                sortable ? (
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={value} strategy={verticalListSortingStrategy}>
+                      {selectedItems.map((item, idx) => (
+                        <SortableBadge
+                          key={item.value}
+                          id={item.value}
+                          item={item}
+                          idx={idx}
+                          onRemove={handleRemove}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                ) : (
+                  selectedItems.map((item, idx) => (
+                    <Badge
+                      key={item.value}
+                      variant="secondary"
+                      className="mr-1 mb-1 flex items-center"
                     >
-                      <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                    </button>
-                  </Badge>
-                ))
+                      {item.label}
+                      <button
+                        type="button"
+                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleRemove(item.value)
+                          }
+                        }}
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                        }}
+                        onClick={() => handleRemove(item.value)}
+                      >
+                        <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                      </button>
+                    </Badge>
+                  ))
+                )
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
@@ -196,4 +238,22 @@ export function SearchableMultiSelect({
       </Popover>
     </div>
   )
+}
+
+function SortableBadge({ id, item, idx, onRemove }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  return (
+    <span ref={setNodeRef} style={{ display: 'inline-block' }}>
+      <DraggableBadge
+        item={item}
+        idx={idx}
+        onRemove={onRemove}
+        listeners={listeners}
+        attributes={attributes}
+        isDragging={isDragging}
+        transform={transform}
+        transition={transition}
+      />
+    </span>
+  );
 } 
