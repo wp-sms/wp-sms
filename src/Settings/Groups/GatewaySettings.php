@@ -43,30 +43,36 @@ class GatewaySettings extends AbstractSettingGroup {
                         'description' => '',
                         'options' => Gateway::help()
                     ]),
+                    // Note: Gateway-specific fields will be loaded dynamically via REST API
+                    // These are the default fields that will be shown when no gateway is selected
                     new Field([
                         'key' => 'gateway_username',
                         'label' => __('API Username', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter API username of gateway', 'wp-sms')
+                        'description' => __('Enter API username of gateway', 'wp-sms'),
+                        'show_if' => ['gateway_name' => 'default']
                     ]),
                     new Field([
                         'key' => 'gateway_password',
                         'label' => __('API Password', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter API password of gateway', 'wp-sms')
+                        'description' => __('Enter API password of gateway', 'wp-sms'),
+                        'show_if' => ['gateway_name' => 'default']
                     ]),
                     new Field([
                         'key' => 'gateway_sender_id',
                         'label' => __('Sender ID/Number', 'wp-sms'),
                         'type' => 'text',
                         'description' => __('Sender number or sender ID', 'wp-sms'),
-                        'default' => Gateway::from()
+                        'default' => Gateway::from(),
+                        'show_if' => ['gateway_name' => 'default']
                     ]),
                     new Field([
                         'key' => 'gateway_key',
                         'label' => __('API Key', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter API key of gateway', 'wp-sms')
+                        'description' => __('Enter API key of gateway', 'wp-sms'),
+                        'show_if' => ['gateway_name' => 'default']
                     ]),
                 ]
             ]),
