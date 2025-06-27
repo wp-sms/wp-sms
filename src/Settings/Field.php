@@ -21,6 +21,8 @@ class Field
     public $repeatable;
     public $tag;
     public $readonly;
+    public $optionsDependsOn;
+    public $sortable;
 
     public function __construct(array $args)
     {
@@ -41,6 +43,8 @@ class Field
         $this->repeatable       = $args['repeatable'] ?? false;
         $this->tag              = $args['tag'] ?? null;
         $this->readonly         = $args['readonly'] ?? false;
+        $this->optionsDependsOn = $args['options_depends_on'] ?? null;
+        $this->sortable         = $args['sortable'] ?? false;
     }
 
     public function toArray(): array
@@ -61,6 +65,8 @@ class Field
             'repeatable'  => $this->repeatable,
             'tag'         => $this->tag,
             'readonly'    => $this->readonly,
+            'options_depends_on' => $this->optionsDependsOn,
+            'sortable'    => $this->sortable,
             // Exclude callbacks from output to avoid serializing closures
         ];
     }
