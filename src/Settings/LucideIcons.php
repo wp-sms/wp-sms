@@ -42,6 +42,7 @@ class LucideIcons
     public const CROWN = 'Crown';
     public const TEST_TUBE = 'TestTube';
     public const CLOCK = 'Clock';
+    public const BADGE_CHECK = 'BadgeCheck';
     
     /**
      * Get all available icons
