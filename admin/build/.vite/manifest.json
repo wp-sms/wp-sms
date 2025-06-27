@@ -1,9 +1,16 @@
 {
+  "_vendor.js": {
+    "file": "vendor.js",
+    "name": "vendor"
+  },
   "src/pages/settings/index.tsx": {
     "file": "settings.js",
     "name": "settings",
     "src": "src/pages/settings/index.tsx",
     "isEntry": true,
+    "imports": [
+      "_vendor.js"
+    ],
     "css": [
       "settings.css"
     ]
