@@ -22,6 +22,8 @@ interface SchemaField {
   repeatable: boolean
   tag?: string
   readonly?: boolean
+  placeholder?: string
+  fieldGroups?: any[]
 }
 
 interface SchemaSection {

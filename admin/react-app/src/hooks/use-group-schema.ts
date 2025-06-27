@@ -18,6 +18,8 @@ interface SchemaField {
   showIf: { [key: string]: string } | null
   hideIf: { [key: string]: string } | null
   repeatable: boolean
+  placeholder?: string
+  fieldGroups?: any[]
 }
 
 interface GroupSchema {

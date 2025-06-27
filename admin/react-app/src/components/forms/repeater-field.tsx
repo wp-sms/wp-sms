@@ -1,13 +1,23 @@
 "use client"
 import type { ReactNode } from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Trash2, GripVertical, HelpCircle, Lock } from "lucide-react"
-import { Button } from "./button"
-import { Label } from "./label"
-import { Badge } from "./badge"
-import { Card, CardContent, CardHeader } from "./card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
-import { ConfirmationDialog } from "./confirmation-dialog"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 // @dnd-kit imports
 import {
@@ -60,10 +70,6 @@ function SortableItem({ id, index, isLocked, canRemove, onRemove, children }: So
     transition,
   }
 
-  const confirmDelete = () => {
-    setDeleteIndex(true)
-  }
-
   const handleConfirmDelete = () => {
     onRemove()
     setDeleteIndex(false)
@@ -97,9 +103,9 @@ function SortableItem({ id, index, isLocked, canRemove, onRemove, children }: So
               type="button"
               variant="ghost"
               size="sm"
-              onClick={confirmDelete}
               disabled={!canRemove || isLocked}
               className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+              onClick={() => setDeleteIndex(true)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -109,16 +115,20 @@ function SortableItem({ id, index, isLocked, canRemove, onRemove, children }: So
       </Card>
 
       {/* Confirmation Dialog */}
-      <ConfirmationDialog
-        open={deleteIndex}
-        onOpenChange={(open) => !open && setDeleteIndex(false)}
-        title="Delete Item"
-        description={`Are you sure you want to delete Item ${index + 1}? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
-        variant="destructive"
-        onConfirm={handleConfirmDelete}
-      />
+      <AlertDialog open={deleteIndex} onOpenChange={setDeleteIndex}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Item</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete Item {index + 1}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
@@ -142,6 +152,16 @@ export function RepeaterField({
       id: item.id || `item-${Date.now()}-${index}`,
     })),
   )
+
+  // Update items when value prop changes (e.g., when API data loads)
+  useEffect(() => {
+    setItems(
+      value.map((item, index) => ({
+        ...item,
+        id: item.id || `item-${Date.now()}-${index}`,
+      }))
+    )
+  }, [value])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -285,6 +305,16 @@ export function ColumnRepeaterField({
       id: item.id || `item-${Date.now()}-${index}`,
     })),
   )
+
+  // Update items when value prop changes (e.g., when API data loads)
+  useEffect(() => {
+    setItems(
+      value.map((item, index) => ({
+        ...item,
+        id: item.id || `item-${Date.now()}-${index}`,
+      }))
+    )
+  }, [value])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

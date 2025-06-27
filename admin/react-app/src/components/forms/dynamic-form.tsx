@@ -19,6 +19,8 @@ import { TagBadge } from "./tag-badge"
 import { GatewayFields } from "./gateway-fields"
 import { useFormChanges } from "@/hooks/use-form-changes"
 import { settingsApi, ValidationError } from "@/services/settings-api"
+import { RepeaterField } from "./repeater-field"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface FieldOption {
   [key: string]: string | { [key: string]: string }
@@ -42,6 +44,8 @@ interface SchemaField {
   readonly?: boolean
   options_depends_on?: string
   sortable?: boolean
+  placeholder?: string
+  fieldGroups?: any[]
 }
 
 interface SchemaSection {
@@ -109,6 +113,68 @@ function getDynamicOptions(field: SchemaField, formData: Record<string, any>): F
   return filtered;
 }
 
+// Custom hook for WordPress media uploader
+function useWordPressMediaUploader() {
+  const openMediaUploader = (callback: (url: string) => void) => {
+    // Check if wp.media is available (WordPress media uploader)
+    if (typeof window !== 'undefined' && (window as any).wp && (window as any).wp.media) {
+      try {
+        const mediaUploader = (window as any).wp.media({
+          title: 'Select Image',
+          button: {
+            text: 'Use this image'
+          },
+          multiple: false
+        })
+
+        mediaUploader.on('select', () => {
+          const attachment = mediaUploader.state().get('selection').first().toJSON()
+          callback(attachment.url)
+        })
+
+        mediaUploader.open()
+      } catch (error) {
+        console.error('Error opening WordPress media uploader:', error)
+        // Fallback to file input
+        openFileInput(callback)
+      }
+    } else {
+      console.warn('WordPress media uploader not available, using fallback')
+      // Fallback: create a file input
+      openFileInput(callback)
+    }
+  }
+
+  const openFileInput = (callback: (url: string) => void) => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.style.display = 'none'
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (file) {
+        // Create a temporary URL for the file
+        const url = URL.createObjectURL(file)
+        callback(url)
+        
+        // Clean up the temporary URL after a delay
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+      }
+      
+      // Clean up the input
+      if (document.body.contains(input)) {
+        document.body.removeChild(input)
+      }
+    }
+    
+    document.body.appendChild(input)
+    input.click()
+  }
+
+  return { openMediaUploader }
+}
+
 export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess }: DynamicFormProps) {
   const [formData, setFormData] = React.useState<Record<string, any>>({})
   const [saveLoading, setSaveLoading] = React.useState(false)
@@ -117,6 +183,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   const [saveSuccess, setSaveSuccess] = React.useState(false)
 
   const { updateValue, getChangedFields, hasChanges, resetChanges } = useFormChanges(savedValues)
+  const { openMediaUploader } = useWordPressMediaUploader()
 
   // Initialize form data with saved values or defaults when schema loads
   React.useEffect(() => {
@@ -475,6 +542,137 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 className="[&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_br]:block [&_br]:mb-2"
                 dangerouslySetInnerHTML={{ __html: formData[key] || '' }}
               />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
+
+        case 'repeater':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <RepeaterField
+                label=""
+                description=""
+                value={Array.isArray(formData[key]) ? formData[key] : []}
+                onChange={(value) => handleFieldChange(key, value)}
+                addButtonText={`Add ${label}`}
+              >
+                {(index, onUpdate, onRemove) => {
+                  const itemData = formData[key]?.[index] || {}
+                  const fieldGroups = field.fieldGroups || []
+                  
+                  return (
+                    <div className="space-y-4">
+                      {fieldGroups.map((group: any) => (
+                        <div key={group.key} className="space-y-4">
+                          {group.label && (
+                            <h4 className="text-sm font-medium text-muted-foreground">{group.label}</h4>
+                          )}
+                          {group.description && (
+                            <p className="text-xs text-muted-foreground">{group.description}</p>
+                          )}
+                          <div className={`grid gap-4 ${
+                            group.layout === '2-column' ? 'grid-cols-1 md:grid-cols-2' : 
+                            group.layout === '3-column' ? 'grid-cols-1 md:grid-cols-3' : 
+                            'grid-cols-1'
+                          }`}>
+                            {group.fields.map((groupField: any) => {
+                              const fieldKey = `${key}[${index}][${groupField.key}]`
+                              const fieldValue = itemData[groupField.key] || ''
+                              
+                              return (
+                                <div key={groupField.key} className="space-y-2">
+                                  <Label htmlFor={fieldKey}>{groupField.label}</Label>
+                                  {groupField.type === 'text' && (
+                                    <Input
+                                      id={fieldKey}
+                                      value={fieldValue}
+                                      onChange={(e) => {
+                                        const newData = { ...itemData, [groupField.key]: e.target.value }
+                                        onUpdate(newData)
+                                      }}
+                                      placeholder={groupField.placeholder || ''}
+                                    />
+                                  )}
+                                  {groupField.type === 'select' && (
+                                    <Select
+                                      value={fieldValue}
+                                      onValueChange={(value) => {
+                                        const newData = { ...itemData, [groupField.key]: value }
+                                        onUpdate(newData)
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder={groupField.placeholder || 'Select an option'} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {Object.entries(groupField.options || {}).map(([value, label]) => (
+                                          <SelectItem key={value} value={value}>
+                                            {label as string}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  )}
+                                  {groupField.type === 'image' && (
+                                    <div className="space-y-2">
+                                      <div className="flex items-center gap-2">
+                                        <Input
+                                          id={fieldKey}
+                                          value={fieldValue}
+                                          onChange={(e) => {
+                                            const newData = { ...itemData, [groupField.key]: e.target.value }
+                                            onUpdate(newData)
+                                          }}
+                                          placeholder={groupField.placeholder || 'Image URL'}
+                                        />
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => {
+                                            openMediaUploader((url) => {
+                                              const newData = { ...itemData, [groupField.key]: url }
+                                              onUpdate(newData)
+                                            })
+                                          }}
+                                        >
+                                          Upload
+                                        </Button>
+                                      </div>
+                                      {fieldValue && (
+                                        <div className="mt-2">
+                                          <img 
+                                            src={fieldValue} 
+                                            alt="Preview" 
+                                            className="max-w-full h-20 object-cover rounded border"
+                                            onError={(e) => {
+                                              e.currentTarget.style.display = 'none'
+                                            }}
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                  {groupField.description && (
+                                    <p className="text-xs text-muted-foreground">{groupField.description}</p>
+                                  )}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }}
+              </RepeaterField>
               {description && (
                 <HtmlDescription content={description} />
               )}
