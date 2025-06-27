@@ -105,6 +105,8 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
         if (onSaveSuccess) {
           onSaveSuccess(Object.keys(changedFields))
         }
+        // Auto scroll to top after successful save
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -403,11 +405,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
       </CardHeader>
       <CardContent>
         <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-          {schema.fields
-            .sort((a, b) => a.order - b.order)
-            .map(renderField)}
-          
-          {/* Save Status Messages */}
+          {/* Save Status Messages - Positioned at top */}
           {saveError && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -416,9 +414,21 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
           )}
           
           {saveSuccess && (
-            <Alert>
-              <CheckCircle className="h-4 w-4" />
-              <AlertDescription>Settings saved successfully!</AlertDescription>
+            <Alert className="border-green-200 bg-green-50 text-green-800">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">Settings saved successfully!</AlertDescription>
+            </Alert>
+          )}
+          
+          {schema.fields
+            .sort((a, b) => a.order - b.order)
+            .map(renderField)}
+          
+          {/* Success message at bottom as well */}
+          {saveSuccess && (
+            <Alert className="border-green-200 bg-green-50 text-green-800">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">Settings saved successfully!</AlertDescription>
             </Alert>
           )}
           
