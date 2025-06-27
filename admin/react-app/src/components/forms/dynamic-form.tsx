@@ -122,12 +122,25 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   React.useEffect(() => {
     if (schema) {
       const initialData: Record<string, any> = {}
+      
+      // Initialize with schema fields
       schema.sections.forEach(section => {
         section.fields.forEach(field => {
           // Use saved value if available, otherwise use default
           initialData[field.key] = savedValues?.[field.key] ?? field.default
         })
       })
+      
+      // Also include any gateway fields that might be in savedValues
+      if (savedValues) {
+        Object.keys(savedValues).forEach(key => {
+          // If this key is not already in initialData (i.e., it's a gateway field)
+          if (!(key in initialData)) {
+            initialData[key] = savedValues[key]
+          }
+        })
+      }
+      
       setFormData(initialData)
     }
   }, [schema, savedValues])
@@ -192,11 +205,24 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   const handleReset = () => {
     if (schema) {
       const initialData: Record<string, any> = {}
+      
+      // Initialize with schema fields
       schema.sections.forEach(section => {
         section.fields.forEach(field => {
           initialData[field.key] = savedValues?.[field.key] ?? field.default
         })
       })
+      
+      // Also include any gateway fields that might be in savedValues
+      if (savedValues) {
+        Object.keys(savedValues).forEach(key => {
+          // If this key is not already in initialData (i.e., it's a gateway field)
+          if (!(key in initialData)) {
+            initialData[key] = savedValues[key]
+          }
+        })
+      }
+      
       setFormData(initialData)
       resetChanges()
       setSaveError(null)
@@ -456,6 +482,37 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
             </div>
           )
 
+        case 'color':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="color"
+                  value={formData[key] || '#ff6b35'}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
+                  disabled={readonly}
+                  className="w-12 h-10 p-1 border rounded cursor-pointer"
+                />
+                <Input
+                  type="text"
+                  value={formData[key] || ''}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
+                  disabled={readonly}
+                  className="flex-1"
+                  placeholder="#ff6b35"
+                />
+              </div>
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
+
         default:
           return (
             <div className="space-y-2">
@@ -576,7 +633,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                           {fieldElement}
                           <GatewayFields
                             gatewayName={formData.gateway_name}
-                            savedValues={savedValues || {}}
+                            formData={formData}
                             onFieldChange={handleFieldChange}
                           />
                         </React.Fragment>

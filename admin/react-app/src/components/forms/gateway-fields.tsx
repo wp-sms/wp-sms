@@ -3,19 +3,30 @@ import { useGatewayFields } from '@/hooks/use-gateway-fields'
 import { TextField, PasswordField } from './settings-fields'
 import { SelectField } from './settings-fields'
 import { TextareaField } from './settings-fields'
-import { FieldWrapper } from './field-wrapper'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2 } from 'lucide-react'
 
 interface GatewayFieldsProps {
   gatewayName: string | null
-  savedValues: { [key: string]: any }
+  formData: { [key: string]: any }
   onFieldChange: (key: string, value: any) => void
 }
 
-export function GatewayFields({ gatewayName, savedValues, onFieldChange }: GatewayFieldsProps) {
+export function GatewayFields({ gatewayName, formData, onFieldChange }: GatewayFieldsProps) {
   const { data: gatewayFields, loading, error } = useGatewayFields(gatewayName)
+
+  // Initialize gateway fields in form data when they are loaded
+  React.useEffect(() => {
+    if (gatewayFields && gatewayFields.length > 0) {
+      gatewayFields.forEach(field => {
+        // Only initialize if the field doesn't already have a value
+        if (!(field.id in formData)) {
+          onFieldChange(field.id, '')
+        }
+      })
+    }
+  }, [gatewayFields, formData, onFieldChange])
 
   if (loading) {
     return (
@@ -56,7 +67,7 @@ export function GatewayFields({ gatewayName, savedValues, onFieldChange }: Gatew
       </CardHeader>
       <CardContent className="space-y-6">
         {gatewayFields.map((field) => {
-          const value = savedValues[field.id] || ''
+          const value = formData[field.id] || ''
           
           switch (field.type) {
             case 'select':
