@@ -81,27 +81,33 @@ export function SearchableMultiSelect({
 }: SearchableMultiSelectProps) {
   const [open, setOpen] = React.useState(false)
 
-  // Flatten options to handle both simple and grouped options or array
-  const flattenedOptions: Record<string, string> = {}
-  if (Array.isArray(options)) {
-    options.forEach((opt: any) => {
-      if (typeof opt === 'object' && 'value' in opt && 'label' in opt) {
-        flattenedOptions[opt.value] = opt.label
-      }
-    })
-  } else {
-    Object.entries(options).forEach(([key, option]) => {
-      if (typeof option === 'string') {
-        flattenedOptions[key] = option
-      } else if (typeof option === 'object') {
-        // Handle grouped options
-        Object.entries(option).forEach(([subKey, subOption]) => {
-          if (typeof subOption === 'string') {
-            flattenedOptions[subKey] = subOption
+  // Check if options are grouped (has nested objects)
+  const isGrouped = !Array.isArray(options) && Object.values(options).some(option => typeof option === 'object')
+
+  // Get option label by value
+  const getOptionLabel = (optionValue: string): string => {
+    if (Array.isArray(options)) {
+      const option = options.find((opt: any) => opt.value === optionValue || Object.keys(opt)[0] === optionValue)
+      return option ? (option.label || Object.values(option)[0]) : optionValue
+    }
+    
+    if (isGrouped) {
+      // Search through grouped options
+      for (const [groupKey, groupOptions] of Object.entries(options)) {
+        if (typeof groupOptions === 'object') {
+          for (const [key, label] of Object.entries(groupOptions)) {
+            if (key === optionValue) {
+              return label as string
+            }
           }
-        })
+        }
       }
-    })
+    } else {
+      // Simple key-value options
+      return options[optionValue] || optionValue
+    }
+    
+    return optionValue
   }
 
   const handleSelect = (optionValue: string) => {
@@ -131,7 +137,7 @@ export function SearchableMultiSelect({
 
   const selectedItems = value.map(v => ({
     value: v,
-    label: flattenedOptions[v] || v
+    label: getOptionLabel(v)
   }))
 
   return (
@@ -198,40 +204,126 @@ export function SearchableMultiSelect({
             <CommandInput placeholder={searchPlaceholder} />
             <CommandList>
               <CommandEmpty>{emptyText}</CommandEmpty>
-              <CommandGroup>
-                {Object.entries(flattenedOptions).map(([optionValue, optionLabel]) => (
-                  <CommandItem
-                    key={optionValue}
-                    onSelect={() => handleSelect(optionValue)}
-                  >
-                    <div
-                      className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        value.includes(optionValue)
-                          ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible"
-                      )}
-                    >
-                      {value.includes(optionValue) && (
-                        <svg
-                          className="h-3 w-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+              {isGrouped ? (
+                // Render grouped options
+                Object.entries(options).map(([groupKey, groupOptions]) => {
+                  if (typeof groupOptions === 'object') {
+                    return (
+                      <CommandGroup key={groupKey} heading={groupKey}>
+                        {Object.entries(groupOptions).map(([optionKey, optionLabel]) => (
+                          <CommandItem
+                            key={optionKey}
+                            onSelect={() => handleSelect(optionKey)}
+                          >
+                            <div
+                              className={cn(
+                                "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                value.includes(optionKey)
+                                  ? "bg-primary text-primary-foreground"
+                                  : "opacity-50 [&_svg]:invisible"
+                              )}
+                            >
+                              {value.includes(optionKey) && (
+                                <svg
+                                  className="h-3 w-3"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                            {optionLabel}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    )
+                  }
+                  return null
+                })
+              ) : Array.isArray(options) ? (
+                // Render array options
+                <CommandGroup>
+                  {options.map((opt: any) => {
+                    const optionValue = opt.value || Object.keys(opt)[0]
+                    const optionLabel = opt.label || Object.values(opt)[0]
+                    return (
+                      <CommandItem
+                        key={optionValue}
+                        onSelect={() => handleSelect(optionValue)}
+                      >
+                        <div
+                          className={cn(
+                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                            value.includes(optionValue)
+                              ? "bg-primary text-primary-foreground"
+                              : "opacity-50 [&_svg]:invisible"
+                          )}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    {optionLabel}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                          {value.includes(optionValue) && (
+                            <svg
+                              className="h-3 w-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                        {optionLabel}
+                      </CommandItem>
+                    )
+                  })}
+                </CommandGroup>
+              ) : (
+                // Render simple key-value options
+                <CommandGroup>
+                  {Object.entries(options).map(([optionKey, optionLabel]) => (
+                    <CommandItem
+                      key={optionKey}
+                      onSelect={() => handleSelect(optionKey)}
+                    >
+                      <div
+                        className={cn(
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          value.includes(optionKey)
+                            ? "bg-primary text-primary-foreground"
+                            : "opacity-50 [&_svg]:invisible"
+                        )}
+                      >
+                        {value.includes(optionKey) && (
+                          <svg
+                            className="h-3 w-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      {optionLabel}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>
