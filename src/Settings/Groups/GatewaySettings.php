@@ -85,36 +85,56 @@ class GatewaySettings extends AbstractSettingGroup {
                         'key' => 'account_credit',
                         'label' => __('Status', 'wp-sms'),
                         'type' => 'html',
-                        'description' => '',
-                        'options' => Gateway::status()
+                        'description' => Gateway::status() ?: '<span class="wpsms-indicator__status inactive">
+    <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
+    </svg>
+    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+</span>'
                     ]),
                     new Field([
                         'key' => 'account_response',
                         'label' => __('Balance / Credit', 'wp-sms'),
                         'type' => 'html',
-                        'description' => '',
-                        'options' => Gateway::response()
+                        'description' => Gateway::response() ?: '<span class="wpsms-indicator__status inactive">
+    <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
+    </svg>
+    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+</span>'
                     ]),
                     new Field([
                         'key' => 'incoming_message',
                         'label' => __('Incoming Message', 'wp-sms'),
                         'type' => 'html',
-                        'description' => '',
-                        'options' => Gateway::incoming_message_status()
+                        'description' => Gateway::incoming_message_status() ?: '<span class="wpsms-indicator__status inactive">
+    <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
+    </svg>
+    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+</span>'
                     ]),
                     new Field([
                         'key' => 'bulk_send',
                         'label' => __('Send Bulk SMS', 'wp-sms'),
                         'type' => 'html',
-                        'description' => '',
-                        'options' => Gateway::bulk_status()
+                        'description' => Gateway::bulk_status() ?: '<span class="wpsms-indicator__status inactive">
+    <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
+    </svg>
+    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+</span>'
                     ]),
                     new Field([
                         'key' => 'media_support',
                         'label' => __('Send MMS', 'wp-sms'),
                         'type' => 'html',
-                        'description' => '',
-                        'options' => Gateway::mms_status()
+                        'description' => Gateway::mms_status() ?: '<span class="wpsms-indicator__status inactive">
+    <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
+    </svg>
+    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+</span>'
                     ]),
                 ]
             ]),
