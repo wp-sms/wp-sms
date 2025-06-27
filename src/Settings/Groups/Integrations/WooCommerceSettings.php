@@ -225,6 +225,39 @@ class WooCommerceSettings extends AbstractSettingGroup
                             'template' => 'admin/fields/field-wc-status-repeater.php',
                             'order_statuses' => wc_get_order_statuses(),
                             'variables' => NotificationFactory::getWooCommerceOrder()->printVariables()
+                        ],
+                        'repeatable' => true,
+                        'field_groups' => [
+                            new \WP_SMS\Settings\FieldGroup([
+                                'key' => 'order_status_message_group',
+                                'label' => __('Order Status Message Group', 'wp-sms'),
+                                'fields' => [
+                                    new Field([
+                                        'key' => 'order_status',
+                                        'label' => __('Order Status', 'wp-sms'),
+                                        'type' => 'select',
+                                        'options' => wc_get_order_statuses(),
+                                        'description' => __('Please choose an order status', 'wp-sms'),
+                                    ]),
+                                    new Field([
+                                        'key' => 'notify_status',
+                                        'label' => __('Notify Status', 'wp-sms'),
+                                        'type' => 'select',
+                                        'options' => [
+                                            '1' => __('Enable', 'wp-sms'),
+                                            '2' => __('Disable', 'wp-sms'),
+                                        ],
+                                        'description' => __('Please select notify status', 'wp-sms'),
+                                    ]),
+                                    new Field([
+                                        'key' => 'message',
+                                        'label' => __('Message', 'wp-sms'),
+                                        'type' => 'textarea',
+                                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables(),
+                                        'rows' => 3,
+                                    ]),
+                                ]
+                            ])
                         ]
                     ]),
                 ]
