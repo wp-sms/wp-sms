@@ -7,12 +7,15 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
-import { Loader2, AlertCircle, CheckCircle } from "lucide-react"
+import { Loader2, AlertCircle, CheckCircle, ExternalLink, HelpCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
 import { SearchableSelect } from "./searchable-select"
 import { SearchableMultiSelect } from "./searchable-multiselect"
 import { HtmlDescription } from "./html-description"
+import { SectionCard } from "./section-card"
+import { TagBadge } from "./tag-badge"
 import { useFormChanges } from "@/hooks/use-form-changes"
 import { settingsApi, ValidationError } from "@/services/settings-api"
 
@@ -34,11 +37,26 @@ interface SchemaField {
   showIf: { [key: string]: string } | null
   hideIf: { [key: string]: string } | null
   repeatable: boolean
+  tag?: string
+  readonly?: boolean
+}
+
+interface SchemaSection {
+  id: string
+  title: string
+  subtitle: string
+  helpUrl: string
+  tag?: string
+  order: number
+  fields: SchemaField[]
+  readonly?: boolean
+  layout: string
 }
 
 interface GroupSchema {
   label: string
-  fields: SchemaField[]
+  icon: string
+  sections: SchemaSection[]
 }
 
 interface DynamicFormProps {
@@ -62,9 +80,11 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   React.useEffect(() => {
     if (schema) {
       const initialData: Record<string, any> = {}
-      schema.fields.forEach(field => {
-        // Use saved value if available, otherwise use default
-        initialData[field.key] = savedValues?.[field.key] ?? field.default
+      schema.sections.forEach(section => {
+        section.fields.forEach(field => {
+          // Use saved value if available, otherwise use default
+          initialData[field.key] = savedValues?.[field.key] ?? field.default
+        })
       })
       setFormData(initialData)
     }
@@ -123,8 +143,10 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   const handleReset = () => {
     if (schema) {
       const initialData: Record<string, any> = {}
-      schema.fields.forEach(field => {
-        initialData[field.key] = savedValues?.[field.key] ?? field.default
+      schema.sections.forEach(section => {
+        section.fields.forEach(field => {
+          initialData[field.key] = savedValues?.[field.key] ?? field.default
+        })
       })
       setFormData(initialData)
       resetChanges()
@@ -146,209 +168,249 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   }
 
   const renderField = (field: SchemaField) => {
-    const { key, type, label, description, options } = field
+    const { key, type, label, description, options, tag, readonly } = field
 
-    switch (type) {
-      case 'header':
-        return (
-          <div key={key} className="space-y-2">
-            <Separator className="my-4" />
-            <h3 className="text-lg font-semibold">{label}</h3>
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-          </div>
-        )
+    const fieldContent = (() => {
+      switch (type) {
+        case 'header':
+          return (
+            <div className="space-y-2">
+              <Separator className="my-4" />
+              <h3 className="text-lg font-semibold">{label}</h3>
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+            </div>
+          )
 
-      case 'text':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <Input
-              id={key}
-              value={formData[key] || ''}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'text':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <Input
+                id={key}
+                value={formData[key] || ''}
+                onChange={(e) => handleFieldChange(key, e.target.value)}
+                disabled={readonly}
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'textarea':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <Textarea
-              id={key}
-              value={formData[key] || ''}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'textarea':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <Textarea
+                id={key}
+                value={formData[key] || ''}
+                onChange={(e) => handleFieldChange(key, e.target.value)}
+                disabled={readonly}
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'number':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <Input
-              id={key}
-              type="number"
-              value={formData[key] || ''}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-              placeholder={description}
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'number':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <Input
+                id={key}
+                type="number"
+                value={formData[key] || ''}
+                onChange={(e) => handleFieldChange(key, e.target.value)}
+                placeholder={description}
+                disabled={readonly}
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'checkbox':
-        return (
-          <div key={key} className="flex items-center space-x-2">
-            <Checkbox
-              id={key}
-              checked={formData[key] || false}
-              onCheckedChange={(checked) => handleFieldChange(key, checked)}
-            />
-            <Label htmlFor={key}>{label}</Label>
-            {description && (
-              <HtmlDescription content={description} className="ml-6" />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'checkbox':
+          return (
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id={key}
+                checked={formData[key] || false}
+                onCheckedChange={(checked) => handleFieldChange(key, checked)}
+                disabled={readonly}
+              />
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'select':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <SearchableSelect
-              options={options}
-              value={formData[key] || ''}
-              onValueChange={(value) => handleFieldChange(key, value)}
-              placeholder="Select an option"
-              searchPlaceholder="Search options..."
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'select':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <SearchableSelect
+                options={options}
+                value={formData[key] || ''}
+                onValueChange={(value) => handleFieldChange(key, value)}
+                placeholder="Select an option"
+                searchPlaceholder="Search options..."
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'advancedselect':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <SearchableSelect
-              options={options}
-              value={formData[key] || ''}
-              onValueChange={(value) => handleFieldChange(key, value)}
-              placeholder="Select an option"
-              searchPlaceholder="Search options..."
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'advancedselect':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <SearchableSelect
+                options={options}
+                value={formData[key] || ''}
+                onValueChange={(value) => handleFieldChange(key, value)}
+                placeholder="Select an option"
+                searchPlaceholder="Search options..."
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'countryselect':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <SearchableSelect
-              options={options}
-              value={formData[key] || ''}
-              onValueChange={(value) => handleFieldChange(key, value)}
-              placeholder="Select a country"
-              searchPlaceholder="Search countries..."
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'countryselect':
+          return (
+            <div key={key} className="space-y-2">
+              <Label htmlFor={key}>{label}</Label>
+              <SearchableSelect
+                options={options}
+                value={formData[key] || ''}
+                onValueChange={(value) => handleFieldChange(key, value)}
+                placeholder="Select a country"
+                searchPlaceholder="Search countries..."
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'multiselect':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <SearchableMultiSelect
-              options={options}
-              value={Array.isArray(formData[key]) ? formData[key] : []}
-              onValueChange={(value) => handleFieldChange(key, value)}
-              placeholder="Select options"
-              searchPlaceholder="Search options..."
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'multiselect':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <SearchableMultiSelect
+                options={options}
+                value={Array.isArray(formData[key]) ? formData[key] : []}
+                onValueChange={(value) => handleFieldChange(key, value)}
+                placeholder="Select options"
+                searchPlaceholder="Search options..."
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'advancedmultiselect':
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <SearchableMultiSelect
-              options={options}
-              value={Array.isArray(formData[key]) ? formData[key] : []}
-              onValueChange={(value) => handleFieldChange(key, value)}
-              placeholder="Select options"
-              searchPlaceholder="Search options..."
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'advancedmultiselect':
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <SearchableMultiSelect
+                options={options}
+                value={Array.isArray(formData[key]) ? formData[key] : []}
+                onValueChange={(value) => handleFieldChange(key, value)}
+                placeholder="Select options"
+                searchPlaceholder="Search options..."
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      case 'html':
-        return (
-          <div key={key} className="space-y-2">
-            {label && <Label htmlFor={key}>{label}</Label>}
-            <div 
-              className="[&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_br]:block [&_br]:mb-2"
-              dangerouslySetInnerHTML={{ __html: formData[key] || '' }}
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
+        case 'html':
+          return (
+            <div className="space-y-2">
+              {label && (
+                <div className="flex items-center gap-2">
+                  <Label htmlFor={key}>{label}</Label>
+                  {tag && <TagBadge tag={tag} />}
+                </div>
+              )}
+              <div 
+                className="[&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_br]:block [&_br]:mb-2"
+                dangerouslySetInnerHTML={{ __html: formData[key] || '' }}
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
 
-      default:
-        return (
-          <div key={key} className="space-y-2">
-            <Label htmlFor={key}>{label}</Label>
-            <Input
-              id={key}
-              value={formData[key] || ''}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-              placeholder={`Unsupported field type: ${type}`}
-              disabled
-            />
-            {description && (
-              <HtmlDescription content={description} />
-            )}
-            {renderFieldError(key)}
-          </div>
-        )
-    }
+        default:
+          return (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor={key}>{label}</Label>
+                {tag && <TagBadge tag={tag} />}
+              </div>
+              <Input
+                id={key}
+                value={formData[key] || ''}
+                onChange={(e) => handleFieldChange(key, e.target.value)}
+                placeholder={`Unsupported field type: ${type}`}
+                disabled
+              />
+              {description && (
+                <HtmlDescription content={description} />
+              )}
+              {renderFieldError(key)}
+            </div>
+          )
+      }
+    })()
+
+    return <div key={key}>{fieldContent}</div>
   }
 
   if (loading) {
@@ -420,9 +482,15 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
             </Alert>
           )}
           
-          {schema.fields
+          {schema.sections
             .sort((a, b) => a.order - b.order)
-            .map(renderField)}
+            .map(section => (
+              <SectionCard key={section.id} section={section}>
+                {section.fields
+                  .sort((a, b) => a.order - b.order)
+                  .map(renderField)}
+              </SectionCard>
+            ))}
           
           {/* Success message at bottom as well */}
           {saveSuccess && (

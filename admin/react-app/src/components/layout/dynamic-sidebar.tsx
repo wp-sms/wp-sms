@@ -20,6 +20,12 @@ import {
   Home,
   Loader2,
   AlertCircle,
+  Cog,
+  Send,
+  Zap,
+  Star,
+  MessageCircle,
+  Newspaper,
 } from "lucide-react"
 
 import {
@@ -60,6 +66,36 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   edd: ShoppingCart,
   awesome_support: Bell,
   job_manager: Users,
+}
+
+// Icon mapping for all Lucide icons
+const lucideIconMap: Record<string, React.ComponentType<any>> = {
+  Settings,
+  Cog,
+  MessageSquare,
+  Send,
+  Zap,
+  Star,
+  Bell,
+  Mail,
+  Users,
+  MousePointer,
+  MessageCircle,
+  Shield,
+  Lock,
+  ShoppingCart,
+  UserCheck,
+  GraduationCap,
+  Calendar,
+  BarChart3,
+  Newspaper,
+  // Add more icons as needed
+}
+
+// Helper function to render dynamic icons
+const renderIcon = (iconName: string, className: string = "size-4") => {
+  const IconComponent = lucideIconMap[iconName] || Settings
+  return <IconComponent className={className} />
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -174,7 +210,7 @@ export function DynamicSidebar({ onGroupSelect, selectedGroup, ...props }: AppSi
                       className={selectedGroup === key ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
                     >
                       <button className="flex items-center gap-2 w-full text-left">
-                        <Settings className="size-4" />
+                        {renderIcon(item.icon || 'Settings')}
                         <span>{item.label}</span>
                       </button>
                     </SidebarMenuButton>
@@ -200,7 +236,7 @@ export function DynamicSidebar({ onGroupSelect, selectedGroup, ...props }: AppSi
                       className={selectedGroup === key ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}
                     >
                       <button className="flex items-center gap-2 w-full text-left">
-                        <Shield className="size-4" />
+                        {renderIcon(item.icon || 'Shield')}
                         <span>{item.label}</span>
                         <Lock className="size-3 text-orange-500 ml-auto" />
                       </button>
