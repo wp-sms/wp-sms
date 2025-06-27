@@ -20,11 +20,6 @@ class AwesomeSupportSettings extends AbstractSettingGroup
         return __('Awesome Support', 'wp-sms');
     }
 
-    public function getIcon(): string
-    {
-        return LucideIcons::HELP_CIRCLE;
-    }
-
     public function getSections(): array
     {
         if (!class_exists('Awesome_Support')) {

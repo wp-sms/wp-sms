@@ -19,11 +19,6 @@ class JobManagerSettings extends AbstractSettingGroup
         return __('Job Manager', 'wp-sms');
     }
 
-    public function getIcon(): string
-    {
-        return LucideIcons::BRIEFCASE;
-    }
-
     public function getSections(): array
     {
         if (!class_exists('WP_Job_Manager')) {

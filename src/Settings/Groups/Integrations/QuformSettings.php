@@ -20,11 +20,6 @@ class QuformSettings extends AbstractSettingGroup
         return __('Quform', 'wp-sms');
     }
 
-    public function getIcon(): string
-    {
-        return LucideIcons::FILE_FORM;
-    }
-
     public function getSections(): array
     {
         if (!class_exists('Quform_Repository')) {

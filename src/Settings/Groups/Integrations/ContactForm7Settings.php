@@ -5,7 +5,6 @@ namespace WP_SMS\Settings\Groups\Integrations;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
-use WP_SMS\Settings\LucideIcons;
 
 class ContactForm7Settings extends AbstractSettingGroup
 {
@@ -17,11 +16,6 @@ class ContactForm7Settings extends AbstractSettingGroup
     public function getLabel(): string
     {
         return __('Contact Form 7', 'wp-sms');
-    }
-
-    public function getIcon(): string
-    {
-        return LucideIcons::MAIL;
     }
 
     public function getSections(): array

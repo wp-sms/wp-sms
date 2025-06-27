@@ -19,11 +19,6 @@ class BuddyPressSettings extends AbstractSettingGroup
         return __('BuddyPress', 'wp-sms');
     }
 
-    public function getIcon(): string
-    {
-        return LucideIcons::USERS;
-    }
-
     public function getSections(): array
     {
         if (!class_exists('BuddyPress')) {

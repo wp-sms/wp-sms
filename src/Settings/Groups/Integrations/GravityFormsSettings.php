@@ -5,7 +5,6 @@ namespace WP_SMS\Settings\Groups\Integrations;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
-use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Services\Formidable\Gravityforms;
 
 class GravityFormsSettings extends AbstractSettingGroup
@@ -18,11 +17,6 @@ class GravityFormsSettings extends AbstractSettingGroup
     public function getLabel(): string
     {
         return __('Gravity Forms', 'wp-sms');
-    }
-
-    public function getIcon(): string
-    {
-        return LucideIcons::FILE_TEXT;
     }
 
     public function getSections(): array

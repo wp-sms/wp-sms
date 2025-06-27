@@ -5,7 +5,6 @@ namespace WP_SMS\Settings\Groups\Integrations;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
-use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Notification\NotificationFactory;
 
 class UltimateMemberSettings extends AbstractSettingGroup
@@ -18,11 +17,6 @@ class UltimateMemberSettings extends AbstractSettingGroup
     public function getLabel(): string
     {
         return __('Ultimate Member', 'wp-sms');
-    }
-
-    public function getIcon(): string
-    {
-        return LucideIcons::USER_CHECK;
     }
 
     public function getSections(): array

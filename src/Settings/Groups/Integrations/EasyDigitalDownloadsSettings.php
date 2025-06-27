@@ -5,7 +5,6 @@ namespace WP_SMS\Settings\Groups\Integrations;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
-use WP_SMS\Settings\LucideIcons;
 
 class EasyDigitalDownloadsSettings extends AbstractSettingGroup
 {
@@ -19,10 +18,6 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
         return __('Easy Digital Downloads', 'wp-sms');
     }
 
-    public function getIcon(): string
-    {
-        return LucideIcons::DOWNLOAD;
-    }
 
     public function getSections(): array
     {
