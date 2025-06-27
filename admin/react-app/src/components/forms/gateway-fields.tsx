@@ -66,7 +66,7 @@ export function GatewayFields({ gatewayName, formData, onFieldChange }: GatewayF
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {gatewayFields.map((field) => {
+        {(gatewayFields || []).map((field) => {
           const value = formData[field.id] || ''
           
           switch (field.type) {
