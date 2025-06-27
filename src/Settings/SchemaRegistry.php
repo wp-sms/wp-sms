@@ -3,6 +3,7 @@
 namespace WP_SMS\Settings;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
+use WP_SMS\Settings\Groups\AdvancedSettings;
 use WP_SMS\Settings\Groups\FeatureSettings;
 use WP_SMS\Settings\Groups\GatewaySettings;
 use WP_SMS\Settings\Groups\GeneralSettings;
@@ -65,6 +66,7 @@ class SchemaRegistry
         $this->registerGroup(new FeatureSettings(), 'core');
         $this->registerGroup(new MessageButtonSettings(), 'core');
         $this->registerGroup(new NotificationSettings(), 'core');
+        $this->registerGroup(new AdvancedSettings(), 'core');
         $this->registerGroup(new NewsletterSettings(), 'core');
 
         // Addons
@@ -247,15 +249,18 @@ class SchemaRegistry
         ];
 
         foreach (self::$groups as $name => $group) {
-            $groupData = $labelsOnly ? [
-                'name' => $name,
-                'label' => $group->getLabel(),
-            ] : [
-                'label' => $group->getLabel(),
-                'fields' => array_map(function ($field) {
-                    return $field->toArray();
-                }, $group->getFields()),
-            ];
+            if ($labelsOnly) {
+                $groupData = [
+                    'name' => $name,
+                    'label' => $group->getLabel(),
+                    'icon' => $group->getIcon(),
+                ];
+            } else {
+                $groupData = $this->formatGroup($name);
+                if (!$groupData) {
+                    continue;
+                }
+            }
 
             // Check if this group has a nested path
             if (isset(self::$nestedPaths[$name])) {
@@ -344,11 +349,17 @@ class SchemaRegistry
             return null;
         }
 
+        $sections = $group->getSections();
+        usort($sections, function($a, $b) {
+            return $a->order <=> $b->order;
+        });
+
         return [
-            'label'  => $group->getLabel(),
-            'fields' => array_map(function ($field) {
-                return $field->toArray();
-            }, $group->getFields()),
+            'label' => $group->getLabel(),
+            'icon' => $group->getIcon(),
+            'sections' => array_map(function($section) {
+                return $section->toArray();
+            }, $sections),
         ];
     }
 }
