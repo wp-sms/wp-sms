@@ -27,17 +27,23 @@ export function FieldWrapper({
 }: FieldWrapperProps) {
   return (
     <TooltipProvider>
-      <div className={`space-y-2 ${isLocked ? "opacity-60" : ""}`}>
+      <div className={`space-y-2 ${isLocked ? "opacity-50" : ""}`}>
         <div className="flex items-center gap-2">
           <Label
             htmlFor={htmlFor}
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${isLocked ? 'text-muted-foreground' : ''}`}
           >
             {label}
             {isRequired && <span className="text-destructive ml-1">*</span>}
           </Label>
 
-          {tooltip && (
+          {isLocked && (
+            <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+              Read Only
+            </Badge>
+          )}
+
+          {tooltip && !isLocked && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
@@ -48,7 +54,7 @@ export function FieldWrapper({
             </Tooltip>
           )}
 
-          {isPro && (
+          {isPro && !isLocked && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800 hover:bg-orange-200">
@@ -65,7 +71,11 @@ export function FieldWrapper({
 
         <div className={isLocked ? "pointer-events-none" : ""}>{children}</div>
 
-        {description && <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>}
+        {description && (
+          <p className={`text-sm leading-relaxed ${isLocked ? 'text-muted-foreground opacity-70' : 'text-muted-foreground'}`}>
+            {description}
+          </p>
+        )}
       </div>
     </TooltipProvider>
   )

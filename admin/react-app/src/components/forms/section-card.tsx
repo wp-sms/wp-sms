@@ -68,12 +68,17 @@ export function SectionCard({ section, children }: SectionCardProps) {
   }
 
   return (
-    <Card className="mb-6">
+    <Card className={`mb-6 ${section.readonly ? 'opacity-60 pointer-events-none' : ''}`}>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <CardTitle className="text-xl">{section.title}</CardTitle>
+              {section.readonly && (
+                <Badge variant="secondary" className="bg-gray-100 text-gray-600">
+                  Read Only
+                </Badge>
+              )}
               {tagInfo && (
                 <Badge variant="secondary" className={tagInfo.color}>
                   {TagIcon && <TagIcon className="w-3 h-3 mr-1" />}
@@ -87,7 +92,7 @@ export function SectionCard({ section, children }: SectionCardProps) {
               </CardDescription>
             )}
           </div>
-          {section.helpUrl && (
+          {section.helpUrl && !section.readonly && (
             <Button
               variant="ghost"
               size="sm"

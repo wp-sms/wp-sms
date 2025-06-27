@@ -343,9 +343,14 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
 
         case 'text':
           return (
-            <div className="space-y-2">
+            <div className={`space-y-2 ${readonly ? 'opacity-50' : ''}`}>
               <div className="flex items-center gap-2">
-                <Label htmlFor={key}>{label}</Label>
+                <Label htmlFor={key} className={readonly ? 'text-muted-foreground' : ''}>{label}</Label>
+                {readonly && (
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    Read Only
+                  </Badge>
+                )}
                 {tag && <TagBadge tag={tag} />}
               </div>
               <Input
@@ -355,7 +360,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 disabled={readonly}
               />
               {description && (
-                <HtmlDescription content={description} />
+                <div className={readonly ? 'opacity-70' : ''}>
+                  <HtmlDescription content={description} />
+                </div>
               )}
               {renderFieldError(key)}
             </div>
@@ -363,9 +370,14 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
 
         case 'textarea':
           return (
-            <div className="space-y-2">
+            <div className={`space-y-2 ${readonly ? 'opacity-50' : ''}`}>
               <div className="flex items-center gap-2">
-                <Label htmlFor={key}>{label}</Label>
+                <Label htmlFor={key} className={readonly ? 'text-muted-foreground' : ''}>{label}</Label>
+                {readonly && (
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    Read Only
+                  </Badge>
+                )}
                 {tag && <TagBadge tag={tag} />}
               </div>
               <Textarea
@@ -375,7 +387,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 disabled={readonly}
               />
               {description && (
-                <HtmlDescription content={description} />
+                <div className={readonly ? 'opacity-70' : ''}>
+                  <HtmlDescription content={description} />
+                </div>
               )}
               {renderFieldError(key)}
             </div>
@@ -383,9 +397,14 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
 
         case 'number':
           return (
-            <div className="space-y-2">
+            <div className={`space-y-2 ${readonly ? 'opacity-50' : ''}`}>
               <div className="flex items-center gap-2">
-                <Label htmlFor={key}>{label}</Label>
+                <Label htmlFor={key} className={readonly ? 'text-muted-foreground' : ''}>{label}</Label>
+                {readonly && (
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    Read Only
+                  </Badge>
+                )}
                 {tag && <TagBadge tag={tag} />}
               </div>
               <Input
@@ -397,7 +416,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 disabled={readonly}
               />
               {description && (
-                <HtmlDescription content={description} />
+                <div className={readonly ? 'opacity-70' : ''}>
+                  <HtmlDescription content={description} />
+                </div>
               )}
               {renderFieldError(key)}
             </div>
@@ -405,7 +426,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
 
         case 'checkbox':
           return (
-            <div className="flex items-center space-x-2">
+            <div className={`flex items-center space-x-2 ${readonly ? 'opacity-50' : ''}`}>
               <Checkbox
                 id={key}
                 checked={formData[key] || false}
@@ -413,11 +434,18 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 disabled={readonly}
               />
               <div className="flex items-center gap-2">
-                <Label htmlFor={key}>{label}</Label>
+                <Label htmlFor={key} className={readonly ? 'text-muted-foreground' : ''}>{label}</Label>
+                {readonly && (
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    Read Only
+                  </Badge>
+                )}
                 {tag && <TagBadge tag={tag} />}
               </div>
               {description && (
-                <HtmlDescription content={description} />
+                <div className={readonly ? 'opacity-70' : ''}>
+                  <HtmlDescription content={description} />
+                </div>
               )}
               {renderFieldError(key)}
             </div>
@@ -426,9 +454,14 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
         case 'select':
           const selectOptions = getDynamicOptions(field, formData);
           return (
-            <div className="space-y-2">
+            <div className={`space-y-2 ${readonly ? 'opacity-50' : ''}`}>
               <div className="flex items-center gap-2">
-                <Label htmlFor={key}>{label}</Label>
+                <Label htmlFor={key} className={readonly ? 'text-muted-foreground' : ''}>{label}</Label>
+                {readonly && (
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    Read Only
+                  </Badge>
+                )}
                 {tag && <TagBadge tag={tag} />}
               </div>
               <SearchableSelect
@@ -439,7 +472,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 searchPlaceholder="Search options..."
               />
               {description && (
-                <HtmlDescription content={description} />
+                <div className={readonly ? 'opacity-70' : ''}>
+                  <HtmlDescription content={description} />
+                </div>
               )}
               {renderFieldError(key)}
             </div>
@@ -447,9 +482,14 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
 
         case 'advancedselect':
           return (
-            <div className="space-y-2">
+            <div className={`space-y-2 ${readonly ? 'opacity-50' : ''}`}>
               <div className="flex items-center gap-2">
-                <Label htmlFor={key}>{label}</Label>
+                <Label htmlFor={key} className={readonly ? 'text-muted-foreground' : ''}>{label}</Label>
+                {readonly && (
+                  <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                    Read Only
+                  </Badge>
+                )}
                 {tag && <TagBadge tag={tag} />}
               </div>
               <SearchableSelect
@@ -460,7 +500,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 searchPlaceholder="Search options..."
               />
               {description && (
-                <HtmlDescription content={description} />
+                <div className={readonly ? 'opacity-70' : ''}>
+                  <HtmlDescription content={description} />
+                </div>
               )}
               {renderFieldError(key)}
             </div>
