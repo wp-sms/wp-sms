@@ -183,6 +183,19 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
             </div>
           )
 
+        case 'notice':
+          return (
+            <Alert className="border-blue-200 bg-blue-50 text-blue-800">
+              <AlertCircle className="h-4 w-4 text-blue-600" />
+              <AlertDescription className="text-blue-800">
+                <div className="font-medium">{label}</div>
+                {description && (
+                  <div className="mt-1 text-sm" dangerouslySetInnerHTML={{ __html: description }} />
+                )}
+              </AlertDescription>
+            </Alert>
+          )
+
         case 'text':
           return (
             <div className="space-y-2">

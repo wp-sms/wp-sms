@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 interface SchemaItem {
   name: string
   label: string
+  icon?: string
 }
 
 interface SchemaGroup {

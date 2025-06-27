@@ -26,6 +26,7 @@ import {
   Star,
   MessageCircle,
   Newspaper,
+  BadgeCheck,
 } from "lucide-react"
 
 import {
@@ -89,6 +90,7 @@ const lucideIconMap: Record<string, React.ComponentType<any>> = {
   Calendar,
   BarChart3,
   Newspaper,
+  BadgeCheck,
   // Add more icons as needed
 }
 
