@@ -19,6 +19,8 @@ class Field
     public $validateCallback;
     public $sanitizeCallback;
     public $repeatable;
+    public $tag;
+    public $readonly;
 
     public function __construct(array $args)
     {
@@ -37,6 +39,8 @@ class Field
         $this->validateCallback = $args['validate_callback'] ?? FieldValidator::get($this->type);
         $this->sanitizeCallback = $args['sanitize_callback'] ?? null;
         $this->repeatable       = $args['repeatable'] ?? false;
+        $this->tag              = $args['tag'] ?? null;
+        $this->readonly         = $args['readonly'] ?? false;
     }
 
     public function toArray(): array
@@ -55,6 +59,8 @@ class Field
             'showIf'      => $this->showIf,
             'hideIf'      => $this->hideIf,
             'repeatable'  => $this->repeatable,
+            'tag'         => $this->tag,
+            'readonly'    => $this->readonly,
             // Exclude callbacks from output to avoid serializing closures
         ];
     }
@@ -81,5 +87,23 @@ class Field
         return $this->options ?? [];
     }
 
+    /**
+     * Check if field has a tag
+     *
+     * @return bool
+     */
+    public function hasTag(): bool
+    {
+        return !empty($this->tag);
+    }
 
+    /**
+     * Check if field is readonly
+     *
+     * @return bool
+     */
+    public function isReadonly(): bool
+    {
+        return $this->readonly;
+    }
 }
