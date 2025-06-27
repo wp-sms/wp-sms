@@ -16,6 +16,7 @@ export default defineConfig({
         emptyOutDir: true,
         manifest: true,
         watch: process.env.WATCH === 'true' ? {} : null,
+        chunkSizeWarningLimit: 1000,
         rollupOptions: {
             input: {
                 settings: path.resolve(__dirname, 'src/pages/settings/index.tsx'),
@@ -24,6 +25,11 @@ export default defineConfig({
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return 'vendor';
+                    }
+                },
             },
         },
     },
