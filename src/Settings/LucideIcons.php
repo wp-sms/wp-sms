@@ -44,6 +44,8 @@ class LucideIcons
     public const string CLOCK = 'Clock';
     public const string BADGE_CHECK = 'BadgeCheck';
     public const string FILE_TEXT = 'FileText';
+    public const string FILE_FORM = 'FileForm';
+    public const string DOWNLOAD = 'Download';
     
     /**
      * Get all available icons
