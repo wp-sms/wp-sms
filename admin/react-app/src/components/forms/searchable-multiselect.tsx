@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { X } from "lucide-react"
+import { X, ArrowUp, ArrowDown } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
@@ -13,13 +13,14 @@ interface FieldOption {
 }
 
 interface SearchableMultiSelectProps {
-  options: FieldOption
+  options: FieldOption | any[]
   value: string[]
   onValueChange: (value: string[]) => void
   placeholder?: string
   searchPlaceholder?: string
   emptyText?: string
   className?: string
+  sortable?: boolean
 }
 
 export function SearchableMultiSelect({
@@ -30,23 +31,32 @@ export function SearchableMultiSelect({
   searchPlaceholder = "Search options...",
   emptyText = "No options found.",
   className,
+  sortable = false,
 }: SearchableMultiSelectProps) {
   const [open, setOpen] = React.useState(false)
 
-  // Flatten options to handle both simple and grouped options
+  // Flatten options to handle both simple and grouped options or array
   const flattenedOptions: Record<string, string> = {}
-  Object.entries(options).forEach(([key, option]) => {
-    if (typeof option === 'string') {
-      flattenedOptions[key] = option
-    } else if (typeof option === 'object') {
-      // Handle grouped options
-      Object.entries(option).forEach(([subKey, subOption]) => {
-        if (typeof subOption === 'string') {
-          flattenedOptions[subKey] = subOption
-        }
-      })
-    }
-  })
+  if (Array.isArray(options)) {
+    options.forEach((opt: any) => {
+      if (typeof opt === 'object' && 'value' in opt && 'label' in opt) {
+        flattenedOptions[opt.value] = opt.label
+      }
+    })
+  } else {
+    Object.entries(options).forEach(([key, option]) => {
+      if (typeof option === 'string') {
+        flattenedOptions[key] = option
+      } else if (typeof option === 'object') {
+        // Handle grouped options
+        Object.entries(option).forEach(([subKey, subOption]) => {
+          if (typeof subOption === 'string') {
+            flattenedOptions[subKey] = subOption
+          }
+        })
+      }
+    })
+  }
 
   const handleSelect = (optionValue: string) => {
     const newValue = value.includes(optionValue)
@@ -58,6 +68,18 @@ export function SearchableMultiSelect({
   const handleRemove = (optionValue: string) => {
     onValueChange(value.filter(v => v !== optionValue))
   }
+
+  const handleMove = (optionValue: string, direction: 'up' | 'down') => {
+    const idx = value.indexOf(optionValue);
+    if (idx === -1) return;
+    const newValue = [...value];
+    if (direction === 'up' && idx > 0) {
+      [newValue[idx - 1], newValue[idx]] = [newValue[idx], newValue[idx - 1]];
+    } else if (direction === 'down' && idx < newValue.length - 1) {
+      [newValue[idx], newValue[idx + 1]] = [newValue[idx + 1], newValue[idx]];
+    }
+    onValueChange(newValue);
+  };
 
   const selectedItems = value.map(v => ({
     value: v,
@@ -76,13 +98,35 @@ export function SearchableMultiSelect({
           >
             <div className="flex flex-wrap gap-1 flex-1">
               {selectedItems.length > 0 ? (
-                selectedItems.map((item) => (
+                selectedItems.map((item, idx) => (
                   <Badge
                     key={item.value}
                     variant="secondary"
-                    className="mr-1 mb-1"
+                    className="mr-1 mb-1 flex items-center"
                   >
                     {item.label}
+                    {sortable && (
+                      <span className="flex flex-col ml-1">
+                        <button
+                          type="button"
+                          className="p-0.5"
+                          disabled={idx === 0}
+                          onClick={(e) => { e.stopPropagation(); handleMove(item.value, 'up'); }}
+                          tabIndex={-1}
+                        >
+                          <ArrowUp className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                        </button>
+                        <button
+                          type="button"
+                          className="p-0.5"
+                          disabled={idx === selectedItems.length - 1}
+                          onClick={(e) => { e.stopPropagation(); handleMove(item.value, 'down'); }}
+                          tabIndex={-1}
+                        >
+                          <ArrowDown className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                        </button>
+                      </span>
+                    )}
                     <button
                       type="button"
                       className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"

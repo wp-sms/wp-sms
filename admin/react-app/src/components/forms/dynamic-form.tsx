@@ -31,7 +31,7 @@ interface SchemaField {
   default: any
   groupLabel: string
   section: string | null
-  options: FieldOption
+  options: FieldOption | any[]
   order: number
   doc: string
   showIf: { [key: string]: string } | null
@@ -39,6 +39,8 @@ interface SchemaField {
   repeatable: boolean
   tag?: string
   readonly?: boolean
+  options_depends_on?: string
+  sortable?: boolean
 }
 
 interface SchemaSection {
@@ -86,6 +88,24 @@ function shouldFieldBeVisible(field: SchemaField, formData: Record<string, any>)
     }
   }
   return true
+}
+
+// Helper to filter options dynamically
+function getDynamicOptions(field: SchemaField, formData: Record<string, any>): FieldOption | any[] {
+  if (!field.options_depends_on) return field.options;
+  const depKey = field.options_depends_on;
+  const depValue = formData[depKey];
+  if (!depValue || depValue.length === 0) return field.options;
+  // If options is an array of objects [{value, label}], filter by value
+  if (Array.isArray(field.options)) {
+    return field.options.filter((opt: any) => depValue.includes(opt.value ?? Object.keys(opt)[0]));
+  }
+  // If options is an object {value: label}, filter keys
+  const filtered: FieldOption = {};
+  Object.entries(field.options).forEach(([k, v]) => {
+    if (depValue.includes(k)) filtered[k] = v;
+  });
+  return filtered;
 }
 
 export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess }: DynamicFormProps) {
@@ -303,6 +323,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
           )
 
         case 'select':
+          const selectOptions = getDynamicOptions(field, formData);
           return (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -310,7 +331,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 {tag && <TagBadge tag={tag} />}
               </div>
               <SearchableSelect
-                options={options}
+                options={selectOptions}
                 value={formData[key] || ''}
                 onValueChange={(value) => handleFieldChange(key, value)}
                 placeholder="Select an option"
@@ -331,7 +352,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 {tag && <TagBadge tag={tag} />}
               </div>
               <SearchableSelect
-                options={options}
+                options={getDynamicOptions(field, formData) as any[]}
                 value={formData[key] || ''}
                 onValueChange={(value) => handleFieldChange(key, value)}
                 placeholder="Select an option"
@@ -349,7 +370,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
             <div key={key} className="space-y-2">
               <Label htmlFor={key}>{label}</Label>
               <SearchableSelect
-                options={options}
+                options={getDynamicOptions(field, formData) as any[]}
                 value={formData[key] || ''}
                 onValueChange={(value) => handleFieldChange(key, value)}
                 placeholder="Select a country"
@@ -363,6 +384,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
           )
 
         case 'multiselect':
+          const multiOptions = getDynamicOptions(field, formData);
           return (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -370,11 +392,12 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 {tag && <TagBadge tag={tag} />}
               </div>
               <SearchableMultiSelect
-                options={options}
+                options={multiOptions}
                 value={Array.isArray(formData[key]) ? formData[key] : []}
                 onValueChange={(value) => handleFieldChange(key, value)}
                 placeholder="Select options"
                 searchPlaceholder="Search options..."
+                sortable={field.sortable}
               />
               {description && (
                 <HtmlDescription content={description} />
@@ -391,11 +414,12 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 {tag && <TagBadge tag={tag} />}
               </div>
               <SearchableMultiSelect
-                options={options}
+                options={getDynamicOptions(field, formData) as any[]}
                 value={Array.isArray(formData[key]) ? formData[key] : []}
                 onValueChange={(value) => handleFieldChange(key, value)}
                 placeholder="Select options"
                 searchPlaceholder="Search options..."
+                sortable={field.sortable}
               />
               {description && (
                 <HtmlDescription content={description} />

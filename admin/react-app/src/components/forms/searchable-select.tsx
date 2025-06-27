@@ -12,7 +12,7 @@ interface FieldOption {
 }
 
 interface SearchableSelectProps {
-  options: FieldOption
+  options: FieldOption | any[]
   value: string
   onValueChange: (value: string) => void
   placeholder?: string
@@ -32,20 +32,28 @@ export function SearchableSelect({
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false)
 
-  // Flatten options to handle both simple and grouped options
+  // Flatten options to handle both simple and grouped options or array
   const flattenedOptions: Record<string, string> = {}
-  Object.entries(options).forEach(([key, option]) => {
-    if (typeof option === 'string') {
-      flattenedOptions[key] = option
-    } else if (typeof option === 'object') {
-      // Handle grouped options
-      Object.entries(option).forEach(([subKey, subOption]) => {
-        if (typeof subOption === 'string') {
-          flattenedOptions[subKey] = subOption
-        }
-      })
-    }
-  })
+  if (Array.isArray(options)) {
+    options.forEach((opt: any) => {
+      if (typeof opt === 'object' && 'value' in opt && 'label' in opt) {
+        flattenedOptions[opt.value] = opt.label
+      }
+    })
+  } else {
+    Object.entries(options).forEach(([key, option]) => {
+      if (typeof option === 'string') {
+        flattenedOptions[key] = option
+      } else if (typeof option === 'object') {
+        // Handle grouped options
+        Object.entries(option).forEach(([subKey, subOption]) => {
+          if (typeof subOption === 'string') {
+            flattenedOptions[subKey] = subOption
+          }
+        })
+      }
+    })
+  }
 
   const selectedOption = value ? flattenedOptions[value] : null
 
