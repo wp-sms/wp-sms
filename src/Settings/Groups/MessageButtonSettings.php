@@ -7,6 +7,7 @@ use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Settings\Tags;
+use WP_SMS\Settings\FieldGroup;
 
 class MessageButtonSettings extends AbstractSettingGroup
 {
@@ -80,8 +81,64 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'label' => __('Team Members', 'wp-sms'),
                         'type' => 'repeater',
                         'description' => __('Add team members to display in the chatbox', 'wp-sms'),
-                        'options' => [
-                            'template' => 'admin/fields/field-team-member-repeater.php',
+                        'repeatable' => true,
+                        'field_groups' => [
+                            new FieldGroup([
+                                'key' => 'team_member',
+                                'label' => __('Team Member', 'wp-sms'),
+                                'description' => __('Configure team member details', 'wp-sms'),
+                                'layout' => '2-column',
+                                'fields' => [
+                                    new Field([
+                                        'key' => 'member_name',
+                                        'label' => __('Name', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('Team member\'s name, e.g., \'Jane Doe\'', 'wp-sms'),
+                                        'placeholder' => __('Emily Brown', 'wp-sms')
+                                    ]),
+                                    new Field([
+                                        'key' => 'member_role',
+                                        'label' => __('Role', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('Team member\'s department or role, e.g., \'Customer Support\'', 'wp-sms'),
+                                        'placeholder' => __('Marketing Manager', 'wp-sms')
+                                    ]),
+                                    new Field([
+                                        'key' => 'member_photo',
+                                        'label' => __('Photo', 'wp-sms'),
+                                        'type' => 'image',
+                                        'description' => __('Upload team member\'s photo.', 'wp-sms')
+                                    ]),
+                                    new Field([
+                                        'key' => 'member_availability',
+                                        'label' => __('Availability', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('State team member\'s chat hours, e.g., \'Available 10AM-5PM PST.\'', 'wp-sms'),
+                                        'placeholder' => __('Available 10AM-5PM PST', 'wp-sms')
+                                    ]),
+                                    new Field([
+                                        'key' => 'member_contact_type',
+                                        'label' => __('Contact Type', 'wp-sms'),
+                                        'type' => 'select',
+                                        'description' => __('Set visitor communication methods, e.g., WhatsApp, Email.', 'wp-sms'),
+                                        'options' => [
+                                            'whatsapp' => __('WhatsApp', 'wp-sms'),
+                                            'call' => __('Phone Call', 'wp-sms'),
+                                            'facebook' => __('Facebook Messenger', 'wp-sms'),
+                                            'telegram' => __('Telegram', 'wp-sms'),
+                                            'sms' => __('SMS', 'wp-sms'),
+                                            'email' => __('E-mail', 'wp-sms')
+                                        ]
+                                    ]),
+                                    new Field([
+                                        'key' => 'member_contact_value',
+                                        'label' => __('Contact Value', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('Provide contact details for the chosen method.', 'wp-sms'),
+                                        'placeholder' => __('+1122334455', 'wp-sms')
+                                    ])
+                                ]
+                            ])
                         ]
                     ]),
                 ]
@@ -169,8 +226,37 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'label' => __('Links', 'wp-sms'),
                         'type' => 'repeater',
                         'description' => __('Add resource links to display in the chatbox', 'wp-sms'),
-                        'options' => [
-                            'template' => 'admin/fields/field-resource-link-repeater.php',
+                        'repeatable' => true,
+                        'field_groups' => [
+                            new FieldGroup([
+                                'key' => 'resource_link',
+                                'label' => __('Resource Link', 'wp-sms'),
+                                'description' => __('Configure resource link details', 'wp-sms'),
+                                'layout' => '2-column',
+                                'fields' => [
+                                    new Field([
+                                        'key' => 'link_title',
+                                        'label' => __('Link Title', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('The text that will be displayed for this link', 'wp-sms'),
+                                        'placeholder' => __('Help Center', 'wp-sms')
+                                    ]),
+                                    new Field([
+                                        'key' => 'link_url',
+                                        'label' => __('Link URL', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('The URL where this link will redirect', 'wp-sms'),
+                                        'placeholder' => __('https://example.com/help', 'wp-sms')
+                                    ]),
+                                    new Field([
+                                        'key' => 'link_icon',
+                                        'label' => __('Link Icon', 'wp-sms'),
+                                        'type' => 'text',
+                                        'description' => __('Optional icon name (Lucide icon)', 'wp-sms'),
+                                        'placeholder' => __('HelpCircle', 'wp-sms')
+                                    ])
+                                ]
+                            ])
                         ],
                         'show_if' => ['chatbox_links_enabled' => true]
                     ]),

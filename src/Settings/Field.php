@@ -23,6 +23,8 @@ class Field
     public $readonly;
     public $optionsDependsOn;
     public $sortable;
+    public $fieldGroups;
+    public $placeholder;
 
     public function __construct(array $args)
     {
@@ -45,11 +47,13 @@ class Field
         $this->readonly         = $args['readonly'] ?? false;
         $this->optionsDependsOn = $args['options_depends_on'] ?? null;
         $this->sortable         = $args['sortable'] ?? false;
+        $this->fieldGroups      = $args['field_groups'] ?? [];
+        $this->placeholder      = $args['placeholder'] ?? '';
     }
 
     public function toArray(): array
     {
-        return [
+        $array = [
             'key'         => $this->key,
             'type'        => $this->type,
             'label'       => $this->label,
@@ -67,8 +71,16 @@ class Field
             'readonly'    => $this->readonly,
             'options_depends_on' => $this->optionsDependsOn,
             'sortable'    => $this->sortable,
+            'placeholder' => $this->placeholder,
             // Exclude callbacks from output to avoid serializing closures
         ];
+
+        // Add field groups if they exist
+        if (!empty($this->fieldGroups)) {
+            $array['fieldGroups'] = array_map(fn($group) => $group->toArray(), $this->fieldGroups);
+        }
+
+        return $array;
     }
 
 

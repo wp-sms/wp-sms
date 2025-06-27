@@ -29,6 +29,9 @@ class SettingAdminPage
             return;
         }
 
+        // Enqueue WordPress media uploader
+        wp_enqueue_media();
+
         // Enqueue WordPress React dependencies
         wp_enqueue_script('wp-element');
         wp_enqueue_script('wp-i18n');

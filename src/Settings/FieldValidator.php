@@ -27,6 +27,7 @@ class FieldValidator
 
             case 'text':
             case 'textarea':
+            case 'image':
                 return function ($value) {
                     return is_string($value) ? true : 'Must be a string';
                 };
