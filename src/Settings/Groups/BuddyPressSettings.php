@@ -30,9 +30,16 @@ class BuddyPressSettings extends AbstractSettingGroup
             return [
                 new Section([
                     'id' => 'buddypress_not_active',
-                    'title' => __('Not active', 'wp-sms'),
-                    'subtitle' => __('BuddyPress plugin should be installed to show the options.', 'wp-sms'),
-                    'fields' => []
+                    'title' => __('BuddyPress Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for BuddyPress activities', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'buddypress_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('BuddyPress plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }

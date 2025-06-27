@@ -30,9 +30,16 @@ class JobManagerSettings extends AbstractSettingGroup
             return [
                 new Section([
                     'id' => 'job_manager_not_active',
-                    'title' => __('Not active', 'wp-sms'),
-                    'subtitle' => __('Job Manager plugin should be installed to show the options.', 'wp-sms'),
-                    'fields' => []
+                    'title' => __('Job Manager Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for job applications and submissions', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'job_manager_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('WP Job Manager plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }

@@ -30,9 +30,16 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
             return [
                 new Section([
                     'id' => 'edd_not_active',
-                    'title' => __('Not active', 'wp-sms'),
-                    'subtitle' => __('Easy Digital Downloads plugin should be installed to show the options.', 'wp-sms'),
-                    'fields' => []
+                    'title' => __('Easy Digital Downloads Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for EDD purchases and downloads', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'edd_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('Easy Digital Downloads plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }

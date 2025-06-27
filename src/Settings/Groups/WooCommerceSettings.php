@@ -31,9 +31,16 @@ class WooCommerceSettings extends AbstractSettingGroup
             return [
                 new Section([
                     'id' => 'woocommerce_not_active',
-                    'title' => __('Not active', 'wp-sms'),
-                    'subtitle' => __('WooCommerce plugin should be installed to show the options.', 'wp-sms'),
-                    'fields' => []
+                    'title' => __('WooCommerce Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for WooCommerce activities', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'woocommerce_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('WooCommerce plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }

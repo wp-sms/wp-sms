@@ -31,9 +31,16 @@ class QuformSettings extends AbstractSettingGroup
             return [
                 new Section([
                     'id' => 'quform_not_active',
-                    'title' => __('Not active', 'wp-sms'),
-                    'subtitle' => __('Quform plugin should be enable to run this tab', 'wp-sms'),
-                    'fields' => []
+                    'title' => __('Quform Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for Quform submissions', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'quform_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('Quform plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }

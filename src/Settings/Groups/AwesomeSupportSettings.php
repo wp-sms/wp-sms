@@ -31,9 +31,16 @@ class AwesomeSupportSettings extends AbstractSettingGroup
             return [
                 new Section([
                     'id' => 'awesome_support_not_active',
-                    'title' => __('Not active', 'wp-sms'),
-                    'subtitle' => __('Awesome Support plugin should be installed to show the options.', 'wp-sms'),
-                    'fields' => []
+                    'title' => __('Awesome Support Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for support tickets', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'awesome_support_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('Awesome Support plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }

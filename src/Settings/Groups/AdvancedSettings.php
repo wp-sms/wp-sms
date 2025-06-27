@@ -23,7 +23,7 @@ class AdvancedSettings extends AbstractSettingGroup
 
     public function getIcon(): string
     {
-        return LucideIcons::SETTINGS_2;
+        return LucideIcons::BADGE_CHECK;
     }
 
     public function getSections(): array
