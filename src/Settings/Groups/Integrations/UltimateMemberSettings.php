@@ -4,6 +4,8 @@ namespace WP_SMS\Settings\Groups\Integrations;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
+use WP_SMS\Settings\Section;
+use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Notification\NotificationFactory;
 
 class UltimateMemberSettings extends AbstractSettingGroup
@@ -15,50 +17,58 @@ class UltimateMemberSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return 'Ultimate Member Integration Settings';
+        return __('Ultimate Member', 'wp-sms');
     }
 
-    public function isAvailable(): bool
+    public function getIcon(): string
     {
-        return function_exists('um_user');
+        return LucideIcons::USER_CHECK;
     }
 
-    public function getFields(): array
+    public function getSections(): array
     {
-        if (! $this->isAvailable()) {
+        if (!function_exists('um_user')) {
             return [
-                new Field([
-                    'key'         => 'um_notify_form',
-                    'type'        => 'notice',
-                    'label'       => 'Not active',
-                    'description' => 'Ultimate Member plugin should be enabled to run this tab',
-                    'group_label' => 'Ultimate Member',
+                new Section([
+                    'id' => 'ultimate_member_not_active',
+                    'title' => __('Not active', 'wp-sms'),
+                    'subtitle' => __('Ultimate Member plugin should be enable to run this tab', 'wp-sms'),
+                    'fields' => []
                 ])
             ];
         }
 
         return [
-            new Field([
-                'key'         => 'um_notification_header',
-                'type'        => 'header',
-                'label'       => 'Notification',
-                'description' => 'Section heading for approval notifications',
-                'group_label' => 'Ultimate Member',
-            ]),
-            new Field([
-                'key'         => 'um_send_sms_after_approval',
-                'type'        => 'checkbox',
-                'label'       => 'Send SMS after approval',
-                'description' => 'Send SMS to user after they are approved in Ultimate Member',
-                'group_label' => 'Ultimate Member',
-            ]),
-            new Field([
-                'key'         => 'um_message_body',
-                'type'        => 'textarea',
-                'label'       => 'Message body',
-                'description' => 'SMS message content. Variables: <code>%user_login%</code>, <code>%user_email%</code>, <code>%display_name%</code>, etc.<br>' . NotificationFactory::getUser()->printVariables(),
-                'group_label' => 'Ultimate Member',
+            new Section([
+                'id' => 'user_approval_notification',
+                'title' => __('Notification', 'wp-sms'),
+                'subtitle' => __('Configure SMS notifications for Ultimate Member user approval', 'wp-sms'),
+                'help_url' => '/resources/ultimate-member-and-wp-sms-integration/',
+                'fields' => [
+                    new Field([
+                        'key' => 'um_send_sms_after_approval',
+                        'label' => __('Send SMS after approval', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send SMS after the user is approved', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'um_message_body',
+                        'label' => __('Message body', 'wp-sms'),
+                        'type' => 'textarea',
+                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
+                    ]),
+                ]
             ]),
         ];
     }
-}
+
+    public function getFields(): array
+    {
+        // Legacy method - return all fields from all sections for backward compatibility
+        $allFields = [];
+        foreach ($this->getSections() as $section) {
+            $allFields = array_merge($allFields, $section->getFields());
+        }
+        return $allFields;
+    }
+} 

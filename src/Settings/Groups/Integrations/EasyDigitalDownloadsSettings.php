@@ -4,101 +4,128 @@ namespace WP_SMS\Settings\Groups\Integrations;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
+use WP_SMS\Settings\Section;
+use WP_SMS\Settings\LucideIcons;
 
 class EasyDigitalDownloadsSettings extends AbstractSettingGroup
 {
     public function getName(): string
     {
-        return 'edd';
+        return 'easy_digital_downloads';
     }
 
     public function getLabel(): string
     {
-        return 'Easy Digital Downloads Integration Settings';
+        return __('Easy Digital Downloads', 'wp-sms');
     }
 
-    public function isAvailable(): bool
+    public function getIcon(): string
     {
-        return class_exists('Easy_Digital_Downloads');
+        return LucideIcons::DOWNLOAD;
     }
 
-    public function getFields(): array
+    public function getSections(): array
     {
-        if (! $this->isAvailable()) {
+        if (!class_exists('Easy_Digital_Downloads')) {
             return [
-                new Field([
-                    'key'         => 'edd_fields',
-                    'type'        => 'notice',
-                    'label'       => 'Not active',
-                    'description' => 'Easy Digital Downloads plugin should be installed to show the options.',
-                    'group_label' => 'EDD',
+                new Section([
+                    'id' => 'edd_not_active',
+                    'title' => __('Easy Digital Downloads Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for EDD purchases and downloads', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'edd_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('Easy Digital Downloads plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }
 
         return [
-            new Field([
-                'key'         => 'edd_fields',
-                'type'        => 'header',
-                'label'       => 'Fields',
-                'group_label' => 'EDD',
+            new Section([
+                'id' => 'checkout_fields',
+                'title' => __('Fields', 'wp-sms'),
+                'subtitle' => __('Configure checkout form fields for Easy Digital Downloads', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'edd_mobile_field',
+                        'label' => __('Mobile field', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Add mobile field to checkout page', 'wp-sms')
+                    ]),
+                ]
             ]),
-            new Field([
-                'key'         => 'edd_mobile_field',
-                'type'        => 'checkbox',
-                'label'       => 'Mobile field',
-                'description' => 'Adds a mobile number field to the EDD checkout page',
-                'group_label' => 'EDD',
+            new Section([
+                'id' => 'new_order_notification',
+                'title' => __('Notify for new order', 'wp-sms'),
+                'subtitle' => __('Configure SMS notifications for new EDD order completions', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'edd_notify_order_enable',
+                        'label' => __('Send SMS', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send SMS to number when a payment is marked as complete.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'edd_notify_order_receiver',
+                        'label' => __('SMS receiver', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'edd_notify_order_message',
+                        'label' => __('Message body', 'wp-sms'),
+                        'type' => 'textarea',
+                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                            sprintf(
+                                // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                                __('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
+                                '<code>%edd_email%</code>',
+                                '<code>%edd_first%</code>',
+                                '<code>%edd_last%</code>'
+                            )
+                    ]),
+                ]
             ]),
-
-            new Field([
-                'key'         => 'edd_notify_order',
-                'type'        => 'header',
-                'label'       => 'Notify for new order',
-                'group_label' => 'EDD',
-            ]),
-            new Field([
-                'key'         => 'edd_notify_order_enable',
-                'type'        => 'checkbox',
-                'label'       => 'Send SMS',
-                'description' => 'Sends SMS when payment is marked complete',
-                'group_label' => 'EDD',
-            ]),
-            new Field([
-                'key'         => 'edd_notify_order_receiver',
-                'type'        => 'text',
-                'label'       => 'SMS receiver',
-                'description' => 'Enter one or more mobile numbers (comma-separated)',
-                'group_label' => 'EDD',
-            ]),
-            new Field([
-                'key'         => 'edd_notify_order_message',
-                'type'        => 'textarea',
-                'label'       => 'Message body',
-                'description' => 'Template for admin SMS. Placeholders: <code>%edd_email%</code>, <code>%edd_first%</code>, <code>%edd_last%</code>',
-                'group_label' => 'EDD',
-            ]),
-
-            new Field([
-                'key'         => 'edd_notify_customer',
-                'type'        => 'header',
-                'label'       => 'Notify to customer order',
-                'group_label' => 'EDD',
-            ]),
-            new Field([
-                'key'         => 'edd_notify_customer_enable',
-                'type'        => 'checkbox',
-                'label'       => 'Send SMS',
-                'description' => 'Sends SMS to customer when payment is completed',
-                'group_label' => 'EDD',
-            ]),
-            new Field([
-                'key'         => 'edd_notify_customer_message',
-                'type'        => 'textarea',
-                'label'       => 'Message body',
-                'description' => 'Template for customer SMS. Placeholders: <code>%edd_email%</code>, <code>%edd_first%</code>, <code>%edd_last%</code>',
-                'group_label' => 'EDD',
+            new Section([
+                'id' => 'customer_order_notification',
+                'title' => __('Notify to customer order', 'wp-sms'),
+                'subtitle' => __('Configure SMS notifications sent to customers for their EDD orders', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'edd_notify_customer_enable',
+                        'label' => __('Send SMS', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send SMS to customer when a payment is marked as complete.', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'edd_notify_customer_message',
+                        'label' => __('Message body', 'wp-sms'),
+                        'type' => 'textarea',
+                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                            sprintf(
+                                // translators: %1$s: Email, %2$s: First name, %3$s: Last name
+                                __('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
+                                '<code>%edd_email%</code>',
+                                '<code>%edd_first%</code>',
+                                '<code>%edd_last%</code>'
+                            )
+                    ]),
+                ]
             ]),
         ];
     }
-}
+
+    public function getFields(): array
+    {
+        // Legacy method - return all fields from all sections for backward compatibility
+        $allFields = [];
+        foreach ($this->getSections() as $section) {
+            $allFields = array_merge($allFields, $section->getFields());
+        }
+        return $allFields;
+    }
+} 

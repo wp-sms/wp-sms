@@ -4,6 +4,8 @@ namespace WP_SMS\Settings\Groups\Integrations;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
+use WP_SMS\Settings\Section;
+use WP_SMS\Settings\LucideIcons;
 
 class JobManagerSettings extends AbstractSettingGroup
 {
@@ -14,116 +16,167 @@ class JobManagerSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return 'WP Job Manager Integration Settings';
+        return __('Job Manager', 'wp-sms');
     }
 
-    public function isAvailable(): bool
+    public function getIcon(): string
     {
-        return class_exists('WP_Job_Manager');
+        return LucideIcons::BRIEFCASE;
     }
 
-    public function getFields(): array
+    public function getSections(): array
     {
-        if (! $this->isAvailable()) {
+        if (!class_exists('WP_Job_Manager')) {
             return [
-                new Field([
-                    'key'         => 'job_fields',
-                    'type'        => 'notice',
-                    'label'       => 'Not active',
-                    'description' => 'Job Manager plugin should be installed to show the options.',
-                    'group_label' => 'Job Manager',
+                new Section([
+                    'id' => 'job_manager_not_active',
+                    'title' => __('Job Manager Integration', 'wp-sms'),
+                    'subtitle' => __('Configure SMS notifications for job applications and submissions', 'wp-sms'),
+                    'fields' => [
+                        new Field([
+                            'key' => 'job_manager_not_active_notice',
+                            'label' => __('Not active', 'wp-sms'),
+                            'type' => 'notice',
+                            'description' => __('WP Job Manager plugin should be installed to show the options.', 'wp-sms')
+                        ])
+                    ]
                 ])
             ];
         }
 
         return [
-            new Field([
-                'key'         => 'job_fields',
-                'type'        => 'header',
-                'label'       => 'Mobile field',
-                'group_label' => 'Job Manager',
+            new Section([
+                'id' => 'mobile_field_configuration',
+                'title' => __('Mobile field', 'wp-sms'),
+                'subtitle' => __('Configure mobile field integration with Job Manager forms', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'job_mobile_field',
+                        'label' => __('Mobile field', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Add Mobile field to Post a job form', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'job_display_mobile_number',
+                        'label' => __('Display Mobile', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Display Mobile number on the single job page', 'wp-sms')
+                    ]),
+                ]
             ]),
-            new Field([
-                'key'         => 'job_mobile_field',
-                'type'        => 'checkbox',
-                'label'       => 'Mobile field',
-                'description' => 'Add mobile number field to "Post a Job" form',
-                'group_label' => 'Job Manager',
+            new Section([
+                'id' => 'new_job_notification',
+                'title' => __('Notify for new job', 'wp-sms'),
+                'subtitle' => __('Configure SMS notifications for new job submissions', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'job_notify_status',
+                        'label' => __('Send SMS', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send SMS when submit new job', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'job_notify_receiver',
+                        'label' => __('SMS receiver', 'wp-sms'),
+                        'type' => 'select',
+                        'options' => [
+                            'subscriber' => __('Subscriber(s)', 'wp-sms'),
+                            'number' => __('Number(s)', 'wp-sms')
+                        ],
+                        'description' => __('Please select the SMS receiver(s).', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'job_notify_receiver_subscribers',
+                        'label' => __('Subscribe group', 'wp-sms'),
+                        'type' => 'select',
+                        'options' => $this->getSubscribeGroups(),
+                        'description' => __('Please select the group of subscribers that you want to receive the SMS.', 'wp-sms'),
+                        'show_if' => ['job_notify_receiver' => 'subscriber']
+                    ]),
+                    new Field([
+                        'key' => 'job_notify_receiver_numbers',
+                        'label' => __('Number(s)', 'wp-sms'),
+                        'type' => 'text',
+                        'description' => __('Please enter mobile number for get sms. You can separate the numbers with the Latin comma.', 'wp-sms'),
+                        'show_if' => ['job_notify_receiver' => 'number']
+                    ]),
+                    new Field([
+                        'key' => 'job_notify_message',
+                        'label' => __('Message body', 'wp-sms'),
+                        'type' => 'textarea',
+                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                            sprintf(
+                                // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                                __('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
+                                '<code>%job_id%</code>',
+                                '<code>%job_title%</code>',
+                                '<code>%job_description%</code>',
+                                '<code>%job_location%</code>',
+                                '<code>%job_type%</code>',
+                                '<code>%job_mobile%</code>',
+                                '<code>%company_name%</code>',
+                                '<code>%website%</code>'
+                            )
+                    ]),
+                ]
             ]),
-            new Field([
-                'key'         => 'job_display_mobile_number',
-                'type'        => 'checkbox',
-                'label'       => 'Display Mobile',
-                'description' => 'Show mobile number on the single job listing page',
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify',
-                'type'        => 'header',
-                'label'       => 'Notify for new job',
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_status',
-                'type'        => 'checkbox',
-                'label'       => 'Send SMS',
-                'description' => 'Send SMS when a new job is submitted',
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_receiver',
-                'type'        => 'select',
-                'label'       => 'SMS receiver',
-                'description' => 'Choose subscriber group or manual number(s)',
-                'options'     => [
-                    'subscriber' => 'Subscriber(s)',
-                    'number'     => 'Number(s)'
-                ],
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_receiver_subscribers',
-                'type'        => 'select',
-                'label'       => 'Subscribe group',
-                'description' => 'Group of subscribers to receive job alerts',
-                'show_if'     => ['job_notify_receiver' => 'subscriber'],
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_receiver_numbers',
-                'type'        => 'text',
-                'label'       => 'Number(s)',
-                'description' => 'Enter one or more mobile numbers (comma-separated)',
-                'show_if'     => ['job_notify_receiver' => 'number'],
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_message',
-                'type'        => 'textarea',
-                'label'       => 'Message body (Admin)',
-                'description' => 'Message content for admin notification. Placeholders: <code>%job_id%</code>, <code>%job_title%</code>, <code>%company_name%</code>, etc.',
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_employer',
-                'type'        => 'header',
-                'label'       => 'Notify to Employer',
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_employer_status',
-                'type'        => 'checkbox',
-                'label'       => 'Send SMS',
-                'description' => 'Send SMS to employer when job is approved',
-                'group_label' => 'Job Manager',
-            ]),
-            new Field([
-                'key'         => 'job_notify_employer_message',
-                'type'        => 'textarea',
-                'label'       => 'Message body (Employer)',
-                'description' => 'Message content for employer. Placeholders: <code>%job_id%</code>, <code>%job_title%</code>, <code>%company_name%</code>, <code>%website%</code>, etc.',
-                'group_label' => 'Job Manager',
+            new Section([
+                'id' => 'employer_notification',
+                'title' => __('Notify to Employer', 'wp-sms'),
+                'subtitle' => __('Configure SMS notifications sent to employers when jobs are approved', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'job_notify_employer_status',
+                        'label' => __('Send SMS', 'wp-sms'),
+                        'type' => 'checkbox',
+                        'description' => __('Send SMS to employer when the job approved', 'wp-sms')
+                    ]),
+                    new Field([
+                        'key' => 'job_notify_employer_message',
+                        'label' => __('Message body', 'wp-sms'),
+                        'type' => 'textarea',
+                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
+                            sprintf(
+                                // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
+                                __('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
+                                '<code>%job_id%</code>',
+                                '<code>%job_title%</code>',
+                                '<code>%job_description%</code>',
+                                '<code>%job_location%</code>',
+                                '<code>%job_type%</code>',
+                                '<code>%job_mobile%</code>',
+                                '<code>%company_name%</code>',
+                                '<code>%website%</code>'
+                            )
+                    ]),
+                ]
             ]),
         ];
     }
-}
+
+    private function getSubscribeGroups(): array
+    {
+        global $wpdb;
+        
+        $groups = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}sms_subscribes_group");
+        $options = [];
+        
+        if ($groups) {
+            foreach ($groups as $group) {
+                $options[$group->ID] = $group->name;
+            }
+        }
+        
+        return $options;
+    }
+
+    public function getFields(): array
+    {
+        // Legacy method - return all fields from all sections for backward compatibility
+        $allFields = [];
+        foreach ($this->getSections() as $section) {
+            $allFields = array_merge($allFields, $section->getFields());
+        }
+        return $allFields;
+    }
+} 
