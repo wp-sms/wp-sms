@@ -117,18 +117,18 @@ class GeneralSettings extends AbstractSettingGroup {
                     new Field([
                         'key' => 'international_mobile_only_countries',
                         'label' => __('Only Countries', 'wp-sms'),
-                        'type' => 'countryselect',
+                        'type' => 'multiselect',
                         'description' => __('In the dropdown, display only the countries you specify.', 'wp-sms'),
                         'show_if' => ['international_mobile' => true],
-                        'options' => wp_sms_countries()->getCountries()
+                        'options' => wp_sms_countries()->getCountryNamesByDialCode()
                     ]),
                     new Field([
                         'key' => 'international_mobile_preferred_countries',
                         'label' => __('Preferred Countries', 'wp-sms'),
-                        'type' => 'countryselect',
+                        'type' => 'multiselect',
                         'description' => __('Specify the countries to appear at the top of the list.', 'wp-sms'),
                         'show_if' => ['international_mobile' => true],
-                        'options' => wp_sms_countries()->getCountries()
+                        'options' => wp_sms_countries()->getCountryNamesByDialCode()
                     ]),
                     new Field([
                         'key' => 'mobile_county_code',
