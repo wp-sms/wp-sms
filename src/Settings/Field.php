@@ -25,6 +25,10 @@ class Field
     public $sortable;
     public $fieldGroups;
     public $placeholder;
+    public $min;
+    public $max;
+    public $step;
+    public $rows;
 
     public function __construct(array $args)
     {
@@ -49,6 +53,10 @@ class Field
         $this->sortable         = $args['sortable'] ?? false;
         $this->fieldGroups      = $args['field_groups'] ?? [];
         $this->placeholder      = $args['placeholder'] ?? '';
+        $this->min              = $args['min'] ?? null;
+        $this->max              = $args['max'] ?? null;
+        $this->step             = $args['step'] ?? null;
+        $this->rows             = $args['rows'] ?? null;
     }
 
     public function toArray(): array
@@ -72,6 +80,10 @@ class Field
             'options_depends_on' => $this->optionsDependsOn,
             'sortable'    => $this->sortable,
             'placeholder' => $this->placeholder,
+            'min'         => $this->min,
+            'max'         => $this->max,
+            'step'        => $this->step,
+            'rows'        => $this->rows,
             // Exclude callbacks from output to avoid serializing closures
         ];
 

@@ -46,6 +46,10 @@ interface SchemaField {
   sortable?: boolean
   placeholder?: string
   fieldGroups?: any[]
+  min?: number
+  max?: number
+  step?: number
+  rows?: number
 }
 
 interface SchemaSection {
@@ -385,6 +389,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 value={formData[key] || ''}
                 onChange={(e) => handleFieldChange(key, e.target.value)}
                 disabled={readonly}
+                rows={field.rows}
               />
               {description && (
                 <div className={readonly ? 'opacity-70' : ''}>
@@ -413,6 +418,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
                 value={formData[key] || ''}
                 onChange={(e) => handleFieldChange(key, e.target.value)}
                 placeholder={description}
+                min={field.min}
+                max={field.max}
+                step={field.step}
                 disabled={readonly}
               />
               {description && (
