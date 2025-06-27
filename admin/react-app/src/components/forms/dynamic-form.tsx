@@ -67,6 +67,27 @@ interface DynamicFormProps {
   onSaveSuccess?: (savedKeys: string[]) => void
 }
 
+// Utility to evaluate showIf/hideIf conditions
+function shouldFieldBeVisible(field: SchemaField, formData: Record<string, any>): boolean {
+  // If showIf is set, all conditions must match
+  if (field.showIf) {
+    for (const [depKey, depValue] of Object.entries(field.showIf)) {
+      if (formData[depKey] !== depValue) {
+        return false
+      }
+    }
+  }
+  // If hideIf is set, any match hides the field
+  if (field.hideIf) {
+    for (const [depKey, depValue] of Object.entries(field.hideIf)) {
+      if (formData[depKey] === depValue) {
+        return false
+      }
+    }
+  }
+  return true
+}
+
 export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess }: DynamicFormProps) {
   const [formData, setFormData] = React.useState<Record<string, any>>({})
   const [saveLoading, setSaveLoading] = React.useState(false)
@@ -168,6 +189,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   }
 
   const renderField = (field: SchemaField) => {
+    // Evaluate showIf/hideIf before rendering
+    if (!shouldFieldBeVisible(field, formData)) return null;
+
     const { key, type, label, description, options, tag, readonly } = field
 
     const fieldContent = (() => {
