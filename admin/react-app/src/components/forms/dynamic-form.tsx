@@ -122,6 +122,28 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
     setSaveSuccess(false)
   }
 
+  // Scroll to top after save
+  React.useEffect(() => {
+    if (saveSuccess) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [saveSuccess])
+
+  // Warn on unsaved changes
+  React.useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasChanges()) {
+        e.preventDefault()
+        e.returnValue = ''
+        return ''
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [formData, fieldErrors])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
