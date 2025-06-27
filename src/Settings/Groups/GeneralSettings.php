@@ -128,6 +128,8 @@ class GeneralSettings extends AbstractSettingGroup {
                         'type' => 'multiselect',
                         'description' => __('Specify the countries to appear at the top of the list.', 'wp-sms'),
                         'show_if' => ['international_mobile' => true],
+                        'options_depends_on' => 'international_mobile_only_countries',
+                        'sortable' => true,
                         'options' => wp_sms_countries()->getCountryNamesByDialCode()
                     ]),
                     new Field([
