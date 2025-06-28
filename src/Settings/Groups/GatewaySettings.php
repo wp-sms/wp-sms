@@ -28,53 +28,7 @@ class GatewaySettings extends AbstractSettingGroup {
                 'id' => 'sms_gateway_setup',
                 'title' => __('SMS Gateway Setup', 'wp-sms'),
                 'subtitle' => __('Configure your SMS gateway provider settings', 'wp-sms'),
-                'fields' => [
-                    new Field([
-                        'key' => 'gateway_name',
-                        'label' => __('Choose the Gateway', 'wp-sms'),
-                        'type' => 'advancedselect',
-                        'description' => __('Select your preferred SMS Gateway to send messages.', 'wp-sms'),
-                        'options' => Gateway::gateway()
-                    ]),
-                    new Field([
-                        'key' => 'gateway_help',
-                        'label' => __('Gateway Guide', 'wp-sms'),
-                        'type' => 'html',
-                        'description' => '',
-                        'options' => Gateway::help()
-                    ]),
-                    // Note: Gateway-specific fields will be loaded dynamically via REST API
-                    // These are the default fields that will be shown when no gateway is selected
-                    new Field([
-                        'key' => 'gateway_username',
-                        'label' => __('API Username', 'wp-sms'),
-                        'type' => 'text',
-                        'description' => __('Enter API username of gateway', 'wp-sms'),
-                        'show_if' => ['gateway_name' => 'default']
-                    ]),
-                    new Field([
-                        'key' => 'gateway_password',
-                        'label' => __('API Password', 'wp-sms'),
-                        'type' => 'text',
-                        'description' => __('Enter API password of gateway', 'wp-sms'),
-                        'show_if' => ['gateway_name' => 'default']
-                    ]),
-                    new Field([
-                        'key' => 'gateway_sender_id',
-                        'label' => __('Sender ID/Number', 'wp-sms'),
-                        'type' => 'text',
-                        'description' => __('Sender number or sender ID', 'wp-sms'),
-                        'default' => Gateway::from(),
-                        'show_if' => ['gateway_name' => 'default']
-                    ]),
-                    new Field([
-                        'key' => 'gateway_key',
-                        'label' => __('API Key', 'wp-sms'),
-                        'type' => 'text',
-                        'description' => __('Enter API key of gateway', 'wp-sms'),
-                        'show_if' => ['gateway_name' => 'default']
-                    ]),
-                ]
+                'fields' => $this->getGatewaySetupFields()
             ]),
             new Section([
                 'id' => 'gateway_overview',
@@ -202,6 +156,93 @@ class GatewaySettings extends AbstractSettingGroup {
                 ]
             ]),
         ];
+    }
+
+    /**
+     * Get dynamic gateway setup fields based on the selected gateway
+     */
+    private function getGatewaySetupFields(): array {
+        $fields = [
+            new Field([
+                'key' => 'gateway_name',
+                'label' => __('Choose the Gateway', 'wp-sms'),
+                'type' => 'advancedselect',
+                'description' => __('Select your preferred SMS Gateway to send messages.', 'wp-sms'),
+                'options' => Gateway::gateway(),
+                'auto_save_and_refresh' => true
+            ]),
+            new Field([
+                'key' => 'gateway_help',
+                'label' => __('Gateway Guide', 'wp-sms'),
+                'type' => 'html',
+                'description' => '',
+                'options' => Gateway::help()
+            ])
+        ];
+
+        // Get the current gateway settings using the existing filter
+        $gatewaySettings = $this->getFilteredGatewaySettings();
+        
+        // Add dynamic gateway fields (hidden from UI since React handles them)
+        foreach ($gatewaySettings as $key => $setting) {
+            if (in_array($key, ['gateway_name', 'gateway_help'])) {
+                continue; // Skip these as they're already added
+            }
+
+            $fieldConfig = [
+                'key' => $key,
+                'label' => $setting['name'] ?? $key,
+                'type' => $setting['type'] ?? 'text',
+                'description' => $setting['description'] ?? '',
+                'hidden' => true, // Hide from UI since React handles these dynamically
+            ];
+
+            // Add options if available
+            if (!empty($setting['options'])) {
+                $fieldConfig['options'] = $setting['options'];
+            }
+
+            // Add default value for sender_id
+            if ($key === 'gateway_sender_id') {
+                $fieldConfig['default'] = Gateway::from();
+            }
+
+            $fields[] = new Field($fieldConfig);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Get filtered gateway settings using the existing filter system
+     */
+    private function getFilteredGatewaySettings(): array {
+        // Default gateway settings
+        $defaultSettings = [
+            'gateway_username' => [
+                'name' => __('API Username', 'wp-sms'),
+                'type' => 'text',
+                'description' => __('Enter API username of gateway', 'wp-sms'),
+            ],
+            'gateway_password' => [
+                'name' => __('API Password', 'wp-sms'),
+                'type' => 'text',
+                'description' => __('Enter API password of gateway', 'wp-sms'),
+            ],
+            'gateway_sender_id' => [
+                'name' => __('Sender ID/Number', 'wp-sms'),
+                'type' => 'text',
+                'description' => __('Sender number or sender ID', 'wp-sms'),
+            ],
+            'gateway_key' => [
+                'name' => __('API Key', 'wp-sms'),
+                'type' => 'text',
+                'description' => __('Enter API key of gateway', 'wp-sms'),
+            ],
+        ];
+
+        // Apply the existing filter to get gateway-specific settings
+        return apply_filters('wp_sms_gateway_settings', $defaultSettings);
     }
 
     private function getCountriesOptions(): array {

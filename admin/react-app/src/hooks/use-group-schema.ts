@@ -24,6 +24,8 @@ interface SchemaField {
 
 interface GroupSchema {
   label: string
+  icon: string
+  sections: any[]
   fields: SchemaField[]
 }
 
@@ -31,6 +33,7 @@ interface UseGroupSchemaReturn {
   data: GroupSchema | null
   loading: boolean
   error: string | null
+  refresh: () => void
 }
 
 // Declare global WordPress variables
@@ -48,51 +51,55 @@ export function useGroupSchema(groupName: string | null): UseGroupSchemaReturn {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchGroupSchema = async () => {
-      if (!groupName) {
-        setData(null)
-        return
-      }
-
-      try {
-        setLoading(true)
-        setError(null)
-        
-        // Use localized WordPress variables
-        const wpSmsData = window.WP_SMS_DATA
-        if (!wpSmsData) {
-          throw new Error('WP_SMS_DATA not available')
-        }
-        
-        const response = await fetch(`${wpSmsData.restUrl}settings/schema/group/${groupName}`, {
-          headers: {
-            'X-WP-Nonce': wpSmsData.nonce,
-            'Content-Type': 'application/json',
-          },
-        })
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        
-        const result = await response.json()
-        
-        if (!result.success) {
-          throw new Error(result.message || 'Failed to fetch group schema')
-        }
-        
-        setData(result.data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        console.error('Failed to fetch group schema:', err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchGroupSchema = async () => {
+    if (!groupName) {
+      setData(null)
+      return
     }
 
+    try {
+      setLoading(true)
+      setError(null)
+      
+      // Use localized WordPress variables
+      const wpSmsData = window.WP_SMS_DATA
+      if (!wpSmsData) {
+        throw new Error('WP_SMS_DATA not available')
+      }
+      
+      const response = await fetch(`${wpSmsData.restUrl}settings/schema/group/${groupName}`, {
+        headers: {
+          'X-WP-Nonce': wpSmsData.nonce,
+          'Content-Type': 'application/json',
+        },
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to fetch group schema')
+      }
+      
+      setData(result.data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+      console.error('Failed to fetch group schema:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
     fetchGroupSchema()
   }, [groupName])
 
-  return { data, loading, error }
+  const refresh = () => {
+    fetchGroupSchema()
+  }
+
+  return { data, loading, error, refresh }
 } 

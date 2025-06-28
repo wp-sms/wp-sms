@@ -14,7 +14,7 @@ import { shouldFieldBeVisible } from "./utils"
 import { DynamicFormProps, SchemaField } from "./types"
 import * as LucideIcons from "lucide-react"
 
-export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess }: DynamicFormProps) {
+export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess, onSchemaRefresh }: DynamicFormProps) {
   const [formData, setFormData] = React.useState<Record<string, any>>({})
   const [saveLoading, setSaveLoading] = React.useState(false)
   const [saveError, setSaveError] = React.useState<string | null>(null)
@@ -62,6 +62,16 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
   const handleFieldChange = (key: string, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }))
     updateValue(key, value)
+    
+    // Handle auto_save_and_refresh fields
+    const field = schema?.sections
+      .flatMap(section => section.fields)
+      .find(field => field.key === key)
+    
+    if (field?.auto_save_and_refresh) {
+      saveFieldAndRefreshSchema(key, value)
+    }
+    
     // Clear field error when user starts typing
     if (fieldErrors[key]) {
       setFieldErrors(prev => {
@@ -69,6 +79,32 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
         delete newErrors[key]
         return newErrors
       })
+    }
+  }
+
+  const saveFieldAndRefreshSchema = async (key: string, value: any) => {
+    try {
+      setSaveLoading(true)
+      setSaveError(null)
+      
+      const response = await settingsApi.saveSettings({ [key]: value })
+      
+      if (response.success) {
+        setSaveSuccess(true)
+        resetChanges()
+        
+        // Trigger schema refresh
+        onSchemaRefresh?.()
+        
+        // Hide success message after 3 seconds
+        setTimeout(() => setSaveSuccess(false), 3000)
+      } else {
+        setSaveError('Failed to save field and refresh schema')
+      }
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'An unexpected error occurred')
+    } finally {
+      setSaveLoading(false)
     }
   }
 

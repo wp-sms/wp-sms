@@ -18,6 +18,8 @@ export interface SchemaField {
   repeatable: boolean
   tag?: string
   readonly?: boolean
+  hidden?: boolean
+  auto_save_and_refresh?: boolean
   options_depends_on?: string
   sortable?: boolean
   placeholder?: string
@@ -52,6 +54,7 @@ export interface DynamicFormProps {
   loading: boolean
   error: string | null
   onSaveSuccess?: (savedKeys: string[]) => void
+  onSchemaRefresh?: () => void
 }
 
 export interface FieldRendererProps {

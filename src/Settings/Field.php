@@ -29,6 +29,8 @@ class Field
     public $max;
     public $step;
     public $rows;
+    public $hidden;
+    public $autoSaveAndRefresh;
 
     public function __construct(array $args)
     {
@@ -57,6 +59,8 @@ class Field
         $this->max              = $args['max'] ?? null;
         $this->step             = $args['step'] ?? null;
         $this->rows             = $args['rows'] ?? null;
+        $this->hidden           = $args['hidden'] ?? false;
+        $this->autoSaveAndRefresh = $args['auto_save_and_refresh'] ?? false;
     }
 
     public function toArray(): array
@@ -84,6 +88,8 @@ class Field
             'max'         => $this->max,
             'step'        => $this->step,
             'rows'        => $this->rows,
+            'hidden'      => $this->hidden,
+            'auto_save_and_refresh' => $this->autoSaveAndRefresh,
             // Exclude callbacks from output to avoid serializing closures
         ];
 
