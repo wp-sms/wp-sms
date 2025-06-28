@@ -12,6 +12,7 @@ import { FieldRendererProps, SchemaField } from './types'
 import { getDynamicOptions } from './utils'
 import { useWordPressMediaUploader } from './hooks/use-wordpress-media-uploader'
 import { ColorField } from './settings-fields'
+import { PhoneField } from './fields/phone-field'
 
 interface FieldRendererFactoryProps extends FieldRendererProps {
   formData: Record<string, any>
@@ -127,6 +128,12 @@ export function FieldRenderer({ field, value, onChange, error, formData }: Field
         </RepeaterField>
       )
 
+    case 'color':
+      return <ColorField label={fieldWithOptions.label} value={value} onChange={onChange} description={fieldWithOptions.description} />
+
+    case 'tel':
+      return <PhoneField field={fieldWithOptions} value={value} onChange={onChange} error={error} />
+
     case 'gateway':
       return <GatewayFields field={fieldWithOptions} value={value} onChange={onChange} error={error} />
 
@@ -141,9 +148,6 @@ export function FieldRenderer({ field, value, onChange, error, formData }: Field
 
     case 'image':
       return <ImageField field={fieldWithOptions} value={value} onChange={onChange} />
-
-    case 'color':
-      return <ColorField label={fieldWithOptions.label} value={value} onChange={onChange} description={fieldWithOptions.description} />
 
     default:
       console.warn(`Unknown field type: ${type}`)
