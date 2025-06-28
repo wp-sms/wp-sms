@@ -35,7 +35,7 @@ class GeneralSettings extends AbstractSettingGroup {
                     new Field([
                         'key' => 'admin_mobile_number',
                         'label' => __('Admin Mobile Number', 'wp-sms'),
-                        'type' => 'text',
+                        'type' => 'tel',
                         'description' => __('Mobile number where the administrator will receive notifications.', 'wp-sms')
                     ]),
                 ]
