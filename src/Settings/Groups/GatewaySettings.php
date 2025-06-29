@@ -43,7 +43,7 @@ class GatewaySettings extends AbstractSettingGroup {
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+    <span>Not Available
 </span>'
                     ]),
                     new Field([
@@ -54,7 +54,7 @@ class GatewaySettings extends AbstractSettingGroup {
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+    <span>Not Available
 </span>'
                     ]),
                     new Field([
@@ -65,7 +65,7 @@ class GatewaySettings extends AbstractSettingGroup {
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+    <span>Not Available
 </span>'
                     ]),
                     new Field([
@@ -76,7 +76,7 @@ class GatewaySettings extends AbstractSettingGroup {
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+    <span>Not Available
 </span>'
                     ]),
                     new Field([
@@ -87,7 +87,7 @@ class GatewaySettings extends AbstractSettingGroup {
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span><a href="https://wp-sms-pro.com/product/wp-sms-two-way" target="_blank">Not Available</a></span>
+    <span>Not Available
 </span>'
                     ]),
                 ]
