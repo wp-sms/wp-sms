@@ -62,6 +62,17 @@ class Section
     }
 
     /**
+     * Set all fields for this section
+     *
+     * @param array $fields
+     * @return void
+     */
+    public function setFields(array $fields): void
+    {
+        $this->fields = $fields;
+    }
+
+    /**
      * Get all fields in this section
      *
      * @return array

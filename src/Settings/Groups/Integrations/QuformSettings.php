@@ -6,7 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
-use WP_SMS\Services\Formidable\Quform;
+use WP_SMS\Quform;
 
 class QuformSettings extends AbstractSettingGroup
 {

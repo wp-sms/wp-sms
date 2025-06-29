@@ -5,7 +5,7 @@ namespace WP_SMS\Settings\Groups\Integrations;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
-use WP_SMS\Services\Formidable\Gravityforms;
+use WP_SMS\Gravityforms;
 
 class GravityFormsSettings extends AbstractSettingGroup
 {
