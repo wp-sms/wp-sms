@@ -8,6 +8,7 @@ class SettingAdminPage
     {
         add_action('admin_menu', [$this, 'registerSettingPage']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
+        add_action('admin_notices', [$this, 'removeOtherPluginNotices'], 0);
     }
 
     public function registerSettingPage(): void
@@ -21,6 +22,25 @@ class SettingAdminPage
             [$this, 'renderSettings'],
             6
         );
+    }
+
+    /**
+     * Remove admin notices from other plugins on WP-SMS settings page
+     */
+    public function removeOtherPluginNotices(): void
+    {
+        if (!isset($_GET['page']) || $_GET['page'] !== 'wp-sms-new-settings') {
+            return;
+        }
+
+        // Remove all admin notices except WP-SMS ones
+        remove_all_actions('admin_notices');
+        remove_all_actions('all_admin_notices');
+        
+        // Re-add only WP-SMS notices if needed
+        add_action('admin_notices', function() {
+            // WP-SMS specific notices can be added here if needed
+        });
     }
 
     public function enqueueAssets(): void
