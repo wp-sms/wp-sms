@@ -14,7 +14,7 @@ import { shouldFieldBeVisible, getDynamicOptions } from "./utils"
 import { DynamicFormProps, SchemaField } from "./types"
 import * as LucideIcons from "lucide-react"
 
-export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess, onSchemaRefresh }: DynamicFormProps) {
+export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess, onSchemaRefresh, onValuesRefresh }: DynamicFormProps) {
   const [formData, setFormData] = React.useState<Record<string, any>>({})
   const [saveLoading, setSaveLoading] = React.useState(false)
   const [saveError, setSaveError] = React.useState<string | null>(null)
@@ -127,6 +127,9 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
         
         // Trigger schema refresh
         onSchemaRefresh?.()
+        
+        // Trigger values refresh to get updated field values
+        onValuesRefresh?.()
         
         // Hide success message after 3 seconds
         setTimeout(() => setSaveSuccess(false), 3000)

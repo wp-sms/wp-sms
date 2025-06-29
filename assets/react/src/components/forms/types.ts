@@ -55,6 +55,7 @@ export interface DynamicFormProps {
   error: string | null
   onSaveSuccess?: (savedKeys: string[]) => void
   onSchemaRefresh?: () => void
+  onValuesRefresh?: () => void
 }
 
 export interface FieldRendererProps {

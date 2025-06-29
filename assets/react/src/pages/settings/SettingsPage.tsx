@@ -14,7 +14,7 @@ export function SettingsPage() {
 
   const [selectedGroup, setSelectedGroup] = useState<string>(getInitialGroup)
   const { data: groupSchema, loading: schemaLoading, error: schemaError, refresh: refreshSchema } = useGroupSchema(selectedGroup)
-  const { data: savedValues, loading: valuesLoading, error: valuesError } = useGroupValues(selectedGroup)
+  const { data: savedValues, loading: valuesLoading, error: valuesError, refresh: refreshValues } = useGroupValues(selectedGroup)
 
   // Update URL when group changes
   const handleGroupSelect = (group: string) => {
@@ -59,6 +59,7 @@ export function SettingsPage() {
               loading={loading} 
               error={error}
               onSchemaRefresh={refreshSchema}
+              onValuesRefresh={refreshValues}
             />
           </div>
         </div>
