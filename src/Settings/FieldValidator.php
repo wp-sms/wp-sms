@@ -67,14 +67,14 @@ class FieldValidator
 
         if (is_array($value)) {
             foreach ($value as $v) {
-                if (!in_array($v, $validOptions, true)) {
+                if (!in_array($v, $validOptions)) {
                     return "Invalid option selected: '{$v}'";
                 }
             }
             return true;
         }
-
-        if (!in_array($value, $validOptions, true)) {
+        
+        if (!in_array($value, $validOptions)) {
             return "Invalid option selected: '{$value}'";
         }
 
