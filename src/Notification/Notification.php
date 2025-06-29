@@ -69,13 +69,31 @@ class Notification
 
             // First replace regular variables
             if (strpos($finalMessage, $variable) !== false) {
+                $replacement = '';
 
                 // Replace variable with callback
                 if (is_callable([$this, $callBack])) {
-                    $finalMessage = str_replace($variable, $this->$callBack(), $finalMessage);
+                    try {
+                        $reflection = new \ReflectionMethod($this, $callBack);
+                        if ($reflection->getNumberOfRequiredParameters() === 0) {
+                            $replacement = $this->$callBack();
+                        } else {
+                            \WP_SMS::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
+                            continue;
+                        }
+                    } catch (\Throwable $e) {
+                        \WP_SMS::log('Variable replacement error: ' . $e->getMessage(), 'error');
+                        continue;
+                    }
                 } else {
-                    $finalMessage = str_replace($variable, $callBack, $finalMessage);
+                    $replacement = $callBack;
                 }
+
+                if (is_array($replacement)) {
+                    $replacement = implode(', ', $replacement);
+                }
+
+                $finalMessage = str_replace($variable, (string)$replacement, $finalMessage);
             }
         }
 
@@ -95,12 +113,29 @@ class Notification
             // Retrieve value using corresponding handler method, if available
             if (isset($metaHandlers[$metaType]) && method_exists($this, $metaHandlers[$metaType])) {
                 $handlerMethod = $metaHandlers[$metaType];
-                $metaValue     = $this->$handlerMethod($metaKey);
 
-                // Replace the meta variable in the message if value is found
-                if ($metaValue !== null) {
-                    $finalMessage = str_replace($metaVariable, $metaValue, $finalMessage);
+                try {
+                    $metaValue = $this->$handlerMethod($metaKey);
+
+                    if ($metaValue !== null) {
+                        if (is_array($metaValue)) {
+                            $metaValue = implode(', ', $metaValue);
+                        }
+
+                        $finalMessage = str_replace($metaVariable, (string)$metaValue, $finalMessage);
+                    } else {
+                        \WP_SMS::log("Meta value for '{$metaVariable}' is null or not found.", 'warning');
+                    }
+                } catch (\Throwable $e) {
+                    \WP_SMS::log(json_encode([
+                        'error'     => $e->getMessage(),
+                        'meta_type' => $metaType,
+                        'meta_key'  => $metaKey,
+                        'variable'  => $metaVariable,
+                    ]), 'error');
                 }
+            } else {
+                \WP_SMS::log("Handler method for meta type '{$metaType}' not found.", 'warning');
             }
         }
 

@@ -101,4 +101,79 @@ class NumberParserTest extends WP_UnitTestCase
         $isDuplicate = NumberParser::isDuplicateInUsermeta($duplicateNumber);
         $this->assertTrue($isDuplicate);
     }
+
+    /**
+     * Test that getValidNumber() properly handles Persian numerals.
+     */
+    public function testGetValidNumberWithPersianNumerals()
+    {
+        $persianNumber = '+۹۸۹۱۲۳۴۵۶۷۸۹'; // Persian numerals for +989123456789
+        $numberParser = new NumberParser($persianNumber);
+
+        $expected = '+989123456789';
+        $this->assertEquals($expected, $numberParser->getValidNumber());
+    }
+
+    /**
+     * Test that getValidNumber() properly handles Arabic numerals.
+     */
+    public function testGetValidNumberWithArabicNumerals()
+    {
+        $arabicNumber = '+٩٨٩١٢٣٤٥٦٧٨٩'; // Arabic numerals for +989123456789
+        $numberParser = new NumberParser($arabicNumber);
+
+        $expected = '+989123456789';
+        $this->assertEquals($expected, $numberParser->getValidNumber());
+    }
+
+    /**
+     * Test that getValidNumber() works with mixed numerals.
+     */
+    public function testGetValidNumberWithMixedNumerals()
+    {
+        $mixedNumber = '+۹۸9١٢3٤56۷89'; // Mixed Persian, Arabic and English numerals
+        $numberParser = new NumberParser($mixedNumber);
+
+        $expected = '+989123456789';
+        $this->assertEquals($expected, $numberParser->getValidNumber());
+    }
+
+    /**
+     * Test that getValidNumber() works with non-numeral characters.
+     */
+    public function testGetValidNumberWithNonNumeralCharacters()
+    {
+        $numberWithText = 'Phone: +۹۸(۹۱۲)۳۴۵-۶۷۸۹';
+        $numberParser = new NumberParser($numberWithText);
+
+        $expected = '+989123456789';
+        $this->assertEquals($expected, $numberParser->getValidNumber());
+    }
+
+    /**
+     * Test that getValidNumber() validates length after numeral conversion.
+     */
+    public function testGetValidNumberLengthAfterNumeralConversion()
+    {
+        // This Persian number would be too short after conversion
+        $shortNumber = '+۹۸۹۱۲'; // Converts to +98912 (5 digits)
+        $numberParser = new NumberParser($shortNumber);
+
+        $result = $numberParser->getValidNumber();
+        $this->assertWPError($result);
+        $this->assertStringContainsString('invalid_length', $result->get_error_code());
+    }
+
+    /**
+     * Test that getValidNumber() validates format after numeral conversion.
+     */
+    public function testGetValidNumberFormatAfterNumeralConversion()
+    {
+        // This contains non-numeric characters that should be removed
+        $invalidNumber = '+۹۸۹hello۱۲۳'; // After conversion: +989hello123
+        $numberParser = new NumberParser($invalidNumber);
+
+        $result = $numberParser->getValidNumber();
+        $this->assertWPError($result);
+    }
 }

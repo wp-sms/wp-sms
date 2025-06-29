@@ -16,8 +16,6 @@ class WooCommerceOrderNotification extends Notification
         '%billing_last_name%'           => 'getLastName',
         '%billing_company%'             => 'getCompany',
         '%billing_address%'             => 'getAddress',
-        '%billing_postcode%'            => 'getPostCode',
-        '%payment_method%'              => 'getPaymentMethod',
         '%order_edit_url%'              => 'getEditOrderUrl',
         '%billing_phone%'               => 'getBillingPhone',
         '%billing_email%'               => 'getBillingEmail',
@@ -83,16 +81,6 @@ class WooCommerceOrderNotification extends Notification
     public function getAddress()
     {
         return $this->order->get_billing_address_1();
-    }
-
-    public function getPostCode()
-    {
-        return $this->order->get_billing_postcode();
-    }
-
-    public function getPaymentMethod()
-    {
-        return $this->order->get_payment_method_title();
     }
 
     public function getEditOrderUrl()
@@ -194,6 +182,7 @@ class WooCommerceOrderNotification extends Notification
 
     public function getMeta($metaKey)
     {
+        $metaKey   = trim($metaKey, '{}');
         $metaValue = $this->order->get_meta($metaKey);
         return apply_filters("wp_sms_notification_woocommerce_order_meta_key_{$metaKey}", $this->processMetaValue($metaValue));
     }
@@ -207,12 +196,13 @@ class WooCommerceOrderNotification extends Notification
     public function getItemMeta($metaKey)
     {
         $itemMetaValues = [];
+        $metaKey        = trim($metaKey, '{}');
 
         foreach ($this->order->get_items() as $item) {
             /** @var \WC_Product $product */
-            $product = $item->get_product();
+            $product     = $item->get_product();
             $isVariation = $product->is_type('variation');
-            $metaValue = null;
+            $metaValue   = null;
 
             if ($isVariation) {
                 $metaValue = $product->get_meta($metaKey);

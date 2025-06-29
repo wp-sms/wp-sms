@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.12
+Stable tag: 7.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,7 +48,7 @@ To use this plugin, you must have an account with one of our supported gateways.
 = Pro Package =
 With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommerce mobile verification, order notifications, and user registration verification are all included in the Pro version.
 
-[Buy Pro Package](https://wp-sms-pro.com/buy/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
+[Buy Pro Package](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
 = Pro Version Features =
 - **Extensive Gateway Support:** Supports more SMS gateways.
 - **Scheduled SMS/MMS:** Schedule SMS/MMS messages to be sent later.

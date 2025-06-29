@@ -23,9 +23,10 @@ class oursms extends \WP_SMS\Gateway
         $this->help           = "To get API token, <a href='https://www.youtube.com/watch?v=UfZlQ4wq3JA' target='_blank'>watch This video</a>";
         $this->gatewayFields  = [
             'username' => [
-                'id'   => 'gateway_username',
-                'name' => 'API username',
-                'desc' => 'Enter API username of gateway',
+                'id'           => 'gateway_username',
+                'name'         => 'API Username',
+                'place_holder' => 'e.g., YourGatewayUsername123',
+                'desc'         => 'Enter the username provided by your SMS gateway.',
             ],
             'has_key'  => [
                 'id'   => 'gateway_key',

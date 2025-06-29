@@ -1,0 +1,28 @@
+.c-feature-card {
+  width: 100%;
+  box-sizing: border-box;
+  gap: 14px;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+.c-feature-card__title {
+   font-size: 16px;
+  font-weight: 500;
+  line-height: 19px;
+  color:#242121 ;
+  margin: 0;
+}
+
+.c-feature-card__content{
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+.c-feature-card__desc{
+  color: #5F5F5F;
+   font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+}

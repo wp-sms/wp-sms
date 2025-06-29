@@ -15,6 +15,34 @@ class Install
     {
         add_action('wpmu_new_blog', array($this, 'add_table_on_create_blog'), 10, 1);
         add_filter('wpmu_drop_tables', array($this, 'remove_table_on_delete_blog'));
+
+        // Upgrade Plugin
+        add_action('plugins_loaded', array($this, 'plugin_upgrades'));
+    }
+
+    /**
+     * Execute a callback on all blogs in a multisite network or the current site.
+     */
+    public static function executeOnSingleOrMultiSite($method)
+    {
+        global $wpdb;
+
+        if (!method_exists(__CLASS__, $method)) {
+            return;
+        }
+
+        if (is_multisite()) {
+            $blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs}");
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
+
+                call_user_func(array(__CLASS__, $method));
+
+                restore_current_blog();
+            }
+        } else {
+            call_user_func(array(__CLASS__, $method));
+        }
     }
 
     /**
@@ -24,20 +52,7 @@ class Install
      */
     public static function create_table($network_wide)
     {
-        global $wpdb;
-
-        if (is_multisite() && $network_wide) {
-            $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
-            foreach ($blog_ids as $blog_id) {
-                switch_to_blog($blog_id);
-
-                self::table_sql();
-
-                restore_current_blog();
-            }
-        } else {
-            self::table_sql();
-        }
+        self::executeOnSingleOrMultiSite("table_sql");
     }
 
     /**
@@ -112,10 +127,14 @@ class Install
 
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
+    }
 
-        if (is_admin()) {
-            self::upgrade();
-        }
+    /**
+     * Plugin Upgrades
+     */
+    public static function plugin_upgrades()
+    {
+        self::executeOnSingleOrMultiSite("upgrade");
     }
 
     /**
@@ -219,6 +238,8 @@ class Install
             switch_to_blog($blog_id);
 
             self::table_sql();
+
+            self::upgrade();
 
             restore_current_blog();
         }

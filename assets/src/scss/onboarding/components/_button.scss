@@ -1,0 +1,107 @@
+.c-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  padding: 6px 24px;
+  min-width: 108px;
+  text-align: center;
+  outline: 0;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  &:active , &:focus{
+    outline: 0;
+    box-shadow: none;
+  }
+  @include mq(tablet) {
+    min-width: 125px;
+  }
+  &[disabled]{
+    background: $grey-color-4!important;
+    color: #B2B2B2!important;
+    cursor: default;
+    border-color:transparent;
+    &:hover{
+      background: $grey-color-4!important;
+      color: #B2B2B2!important;
+      opacity: 1;
+    }
+  }
+}
+.c-btn--primary {
+  color: $white-color!important;
+  background-color: $primary-orange;
+  border:1px solid $primary-orange;
+  &:hover {
+    opacity: 0.7;
+   }
+  &-light{
+    background-color: $white-color;
+    color: $primary-orange!important;
+    border:1px solid $primary-orange;
+    font-weight: 500;
+    &:hover{
+      background: $primary-orange;
+      color: $white-color!important;
+      opacity: 0.7;
+    }
+    &:focus , &:active{
+      outline: none;
+       box-shadow: none;
+    }
+  }
+
+  &.loading{
+    background: #C2410C4D;
+    position: relative;
+    color: transparent!important;
+    border-color: transparent;
+    pointer-events: none;
+
+    &:before{
+      content: '';
+      left: 41%;
+      top: 9px;
+      position: absolute;
+      z-index: 19 !important;
+      animation: loading-bar-spinner 400ms linear infinite;
+      width: 11px;
+      height: 11px;
+      border: solid 3px transparent;
+      border-top-color: #ffffff !important;
+      border-left-color: #fffdfcb3 !important;
+      border-radius: 50%;
+     }
+  }
+}
+
+.c-btn--light {
+  color: $black-color;
+  background-color: $grey-color-3;
+}
+.c-btn--ghost {
+  color: $black-color;
+  background-color: transparent;
+  border-radius: 3px;
+  border: 1px solid $grey-color-3;
+}
+
+.c-btn--mainready{
+    width: 154px;
+}
+
+@keyframes loading-bar-spinner {
+  0% {
+    transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

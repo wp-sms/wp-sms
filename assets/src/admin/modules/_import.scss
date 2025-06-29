@@ -2,6 +2,11 @@
   #TB_ajaxContent {
     overflow: auto;
     max-height: 450px;
+    position: relative;
+
+    .wpsms-sendsms__overlay{
+      height: 100%;
+    }
   }
 
   .wp-sms-upload-form {
@@ -16,5 +21,78 @@
     select {
       width: 100%;
     }
+
   }
+
+  &.rtl{
+    #TB_ajaxContent {
+      tr{
+        .dashicons-arrow-right-alt:before{
+          content: "\f340";
+        }
+      }
+    }
+  }
+
+  .wp-sms-upload-box {
+    margin-bottom:18px;
+  }
+
+  .wp-sms-upload-area {
+    border: 1px dashed #AAAAAA;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    background: #FAFAFA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    flex-direction: column;
+
+    &:hover{
+      .wp-sms-choose-file-btn {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  .wp-sms-choose-file-btn {
+    background-color: transparent;
+    border: 1px solid #C2410C;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #C2410C;
+    font-weight: 500;
+    line-height: 16px;
+    display: flex;
+   }
+
+  .wps-has-header{
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .file-name {
+    color: #282828;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .supported-formats {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #282828;
+    display: flex;
+   }
+
 }

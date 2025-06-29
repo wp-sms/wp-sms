@@ -148,22 +148,37 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 
     public function registerFieldInAdminOrderBillingForm($billingFields)
     {
-        // Backward compatibility
-        if (empty($_GET['post'])) {
-            return;
+        global $pagenow;
+
+        $orderId = 0;
+
+        if (isset($_GET['post']) && 'post.php' === $pagenow) {
+            $orderId = absint($_GET['post']);
+        } elseif (isset($_GET['id'])) {
+            $orderId = absint($_GET['id']);
         }
 
-        $orderId = sanitize_text_field($_GET['post']);
-        $mobile  = get_post_meta($orderId, $this->getUserMobileFieldName(), true);
+        $order  = wc_get_order($orderId);
+        $mobile = '';
+
+        if ($order) {
+            $mobile = $order->get_meta($this->getUserMobileFieldName(), true);
+
+            if (empty($mobile)) {
+                $mobile = get_post_meta($orderId, $this->getUserMobileFieldName(), true);
+            }
+        }
 
         $billingFields[$this->getUserMobileFieldName()] = [
             'label' => esc_html__('Mobile Number', 'wp-sms'),
-            'class' => 'wp-sms-input-mobile',
-            'value' => $mobile
+            'value' => $mobile,
+            'show'  => true,
+            'class' => 'wp-sms-input-mobile'
         ];
 
         return $billingFields;
     }
+
 
     public function updateCustomerMobileNumberAfterUpdateTheOrder($orderId, $data)
     {
@@ -199,15 +214,21 @@ class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
         $mobileNumber = Helper::sanitizeMobileNumber($mobileNumber);
         $mobileNumber = str_replace(' ', '', $mobileNumber);
 
-        // Update in order meta
-        update_post_meta($orderId, $this->getUserMobileFieldName(), $mobileNumber);
+        $order = wc_get_order($orderId);
 
-        // Update in user meta
-        $userId = get_post_meta($orderId, '_customer_user', true);
+        if (!$order) {
+            return;
+        }
 
-        if ($userId and $userId != 0) {
+        $order->update_meta_data($this->getUserMobileFieldName(), $mobileNumber);
+
+        $userId = $order->get_customer_id();
+
+        if ($userId) {
             update_user_meta($userId, $this->getUserMobileFieldName(), $mobileNumber);
         }
+
+        $order->save();
     }
 
     /**
