@@ -10,7 +10,7 @@ import { FieldRenderer } from "./field-renderer"
 import { useFormChanges } from "@/hooks/use-form-changes"
 import { settingsApi, ValidationError } from "@/services/settings-api"
 import { useWordPressMediaUploader } from "./hooks/use-wordpress-media-uploader"
-import { shouldFieldBeVisible } from "./utils"
+import { shouldFieldBeVisible, getDynamicOptions } from "./utils"
 import { DynamicFormProps, SchemaField } from "./types"
 import * as LucideIcons from "lucide-react"
 
@@ -70,6 +70,38 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
     
     if (field?.auto_save_and_refresh) {
       saveFieldAndRefreshSchema(key, value)
+    }
+    
+    // Clean up dependent field values when source field changes
+    if (schema) {
+      const dependentFields = schema.sections
+        .flatMap(section => section.fields)
+        .filter(field => field.options_depends_on === key)
+      
+      dependentFields.forEach(depField => {
+        const currentValue = formData[depField.key]
+        if (currentValue && Array.isArray(currentValue)) {
+          // Get available options for the dependent field
+          const availableOptions = getDynamicOptions(depField, { ...formData, [key]: value })
+          
+          // Filter out values that are no longer available
+          let filteredValue: string[]
+          if (Array.isArray(availableOptions)) {
+            const availableValues = availableOptions.map((opt: any) => opt.value || Object.keys(opt)[0])
+            filteredValue = currentValue.filter(v => availableValues.includes(v))
+          } else {
+            // For object-based options
+            const availableValues = Object.keys(availableOptions)
+            filteredValue = currentValue.filter(v => availableValues.includes(v))
+          }
+          
+          // Update the dependent field if values were removed
+          if (filteredValue.length !== currentValue.length) {
+            setFormData(prev => ({ ...prev, [depField.key]: filteredValue }))
+            updateValue(depField.key, filteredValue)
+          }
+        }
+      })
     }
     
     // Clear field error when user starts typing
