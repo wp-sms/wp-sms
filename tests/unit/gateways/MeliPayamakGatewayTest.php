@@ -6,7 +6,7 @@ use WP_UnitTestCase;
 use WP_SMS\Gateway\melipayamak;
 
 // Manually load the MeliPayamak gateway class since it's not autoloaded in tests
-require_once dirname(__DIR__, 2) . '/includes/gateways/class-wpsms-gateway-melipayamak.php';
+require_once dirname(__DIR__, 3) . '/includes/gateways/class-wpsms-gateway-melipayamak.php';
 
 /**
  * Test class for MeliPayamak gateway message parsing logic
