@@ -12,7 +12,7 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: '../build',
+        outDir: '../../public/admin',
         emptyOutDir: true,
         manifest: true,
         watch: process.env.WATCH === 'true' ? {} : null,
