@@ -120,7 +120,7 @@ class GeneralSettings extends AbstractSettingGroup {
                         'type' => 'multiselect',
                         'description' => __('In the dropdown, display only the countries you specify.', 'wp-sms'),
                         'show_if' => ['international_mobile' => true],
-                        'options' => wp_sms_countries()->getCountryNamesByDialCode()
+                        'options' => wp_sms_countries()->getCountryNamesByCode()
                     ]),
                     new Field([
                         'key' => 'international_mobile_preferred_countries',
@@ -130,7 +130,7 @@ class GeneralSettings extends AbstractSettingGroup {
                         'show_if' => ['international_mobile' => true],
                         'options_depends_on' => 'international_mobile_only_countries',
                         'sortable' => true,
-                        'options' => wp_sms_countries()->getCountryNamesByDialCode()
+                        'options' => wp_sms_countries()->getCountryNamesByCode()
                     ]),
                     new Field([
                         'key' => 'mobile_county_code',
