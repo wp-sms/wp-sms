@@ -21,6 +21,17 @@
     select {
       width: 100%;
     }
+
+  }
+
+  &.rtl{
+    #TB_ajaxContent {
+      tr{
+        .dashicons-arrow-right-alt:before{
+          content: "\f340";
+        }
+      }
+    }
   }
 
   .wp-sms-upload-box {

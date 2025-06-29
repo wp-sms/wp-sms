@@ -287,7 +287,10 @@
   height: 33px;
   box-sizing: border-box;
   cursor: pointer;
-
+  .rtl &{
+    flex-direction: row-reverse;
+  }
+  
   &:hover {
     background: #FFFFFF33;
     color: #fff;

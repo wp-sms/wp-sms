@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
     }
     if (wpSmsItiTel) {
         const body = document.body;
-        const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
+        const direction = 'ltr';
         wpSmsItiTel.setAttribute('dir', direction);
         wpSmsItiTel.setAttribute('autocomplete', 'off');
         wpSmsItiTel.value = '';
@@ -48,7 +48,8 @@ jQuery(document).ready(function ($) {
             allowDropdown: true,
             strictMode: true,
             useFullscreenPopup: false,
-            dropdownContainer: body.classList.contains('rtl') ? null : body,
+            // dropdownContainer: body.classList.contains('rtl') ? null : body,
+            dropdownContainer: body,
             nationalMode: false,
             autoPlaceholder: "polite",
             utilsScript: wp_sms_intel_tel_util.util_js,
