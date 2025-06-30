@@ -401,6 +401,10 @@
       right: auto !important;
     }
   }
+
+  .updated {
+    display: none !important;
+  }
 }
 
 .sms-woo-pro_page_wp-sms-woo-pro-settings,
@@ -735,4 +739,8 @@
   &:hover {
     color: #A03B1F;
   }
+}
+
+.wpsms-text-warning{
+  color: #F97316;
 }
