@@ -84,7 +84,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
 
                         $isActive    = $pluginHandler->isPluginActive($slug);
                         $isInstalled = $pluginHandler->isPluginInstalled($slug);
-                        $hasLicense  = LicenseHelper::isPluginLicensedAndActive($slug);
+                        $hasLicense  = LicenseHelper::isPluginLicenseValid($slug);
 
                         if ($hasLicense && $isActive) {
                             $class = 'activated';

@@ -13,7 +13,7 @@ $isPremium   = isset($isPremium) ? $isPremium : false;
 if ($step_name !== 'first-step') {
     $isActive    = $pluginHandler->isPluginActive($step_name);
     $isInstalled = $pluginHandler->isPluginInstalled($step_name);
-    $hasLicense  = LicenseHelper::isPluginLicensedAndActive($step_name);
+    $hasLicense  = LicenseHelper::isPluginLicenseValid($step_name);
 }
 ?>
 
