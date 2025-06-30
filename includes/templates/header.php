@@ -3,18 +3,19 @@
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\LicenseMigration;
+use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
 
 $option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
-$tab_url     = add_query_arg(array(
+$tab_url   = add_query_arg(array(
     'settings-updated' => false,
     'tab'              => 'licenses',
     'page'             => 'wp-sms-settings'
 ));
-$active      = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
-$isPremium   = LicenseHelper::isPremiumLicenseAvailable();
+$active    = isset($_GET['tab']) && $_GET['tab'] == 'licenses' ? 'active' : '';
+$isPremium = LicenseHelper::isPremiumLicenseAvailable();
 
 // Get information about active add-ons
 $addons = is_plugin_active('wp-sms-pro/wp-sms-pro.php') ? array('license_wp-sms-pro_status' => false) : array();
@@ -80,5 +81,11 @@ $licenseMigration->migrateOldLicenses();
     </div>
 </div>
 
-<?php Modal::showOnce('welcome-premium'); ?>
+<?php
+add_action('admin_footer', function () {
+    if (MenuUtil::isInPluginPage()) {
+        Modal::showOnce('welcome-premium');
+    }
+}, 20);
+?>
 <?php Modal::render('all-in-one'); ?>
