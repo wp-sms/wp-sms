@@ -33,7 +33,11 @@ class WizardManager
             return;
         }
 
-        if (!$this->isOnboarding() && UserHelper::isAdmin()) {
+        if (!UserHelper::isAdmin()) {
+            return;
+        }
+
+        if (!$this->isOnboarding()) {
             $this->addActivationNotice();
             return;
         }
