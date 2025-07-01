@@ -41,7 +41,7 @@ if ($step_name !== 'first-step') {
                 </div>
             </div>
         <?php endif; ?>
-        <?php if (!$hasLicense && $isInstalled) : ?>
+        <?php if (!$hasLicense && $isActive) : ?>
             <div class="wp-sms-aio-step__notice wp-sms-aio-step__notice--warning">
                 <div>
                     <?php printf(
