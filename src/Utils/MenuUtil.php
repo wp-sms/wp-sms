@@ -147,10 +147,19 @@ class MenuUtil
     public static function isInPluginPage(): bool
     {
         global $pagenow;
+
         if (is_admin() && $pagenow === 'admin.php' && isset($_REQUEST['page'])) {
-            $pageName = self::getPageKeyFromSlug(sanitize_text_field($_REQUEST['page']));
+            $page = sanitize_text_field($_REQUEST['page']);
+
+            if ($page === self::$parentSlug) {
+                return true;
+            }
+
+            // Check for subpages
+            $pageName = self::getPageKeyFromSlug($page);
             return is_array($pageName) && count($pageName) > 0;
         }
+        error_log($pagenow);
         return false;
     }
 
