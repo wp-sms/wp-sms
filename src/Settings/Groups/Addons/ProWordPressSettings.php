@@ -14,7 +14,7 @@ class ProWordPressSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return 'Pro WordPress (Login & OTP) Settings';
+        return 'Pro WordPress (Login & OTP)';
     }
 
     public function getFields(): array
