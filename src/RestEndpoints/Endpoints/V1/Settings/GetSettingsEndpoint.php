@@ -2,7 +2,7 @@
 
 namespace WP_SMS\RestEndpoints\Endpoints\V1\Settings;
 
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\RestEndpoints\Abstracts\AbstractSettingsEndpoint;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\SchemaRegistry;

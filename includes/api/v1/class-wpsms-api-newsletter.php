@@ -6,7 +6,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\RestApi;
 use WP_SMS\Services\Subscriber\SubscriberUtil;
 
