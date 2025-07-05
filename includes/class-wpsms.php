@@ -190,8 +190,7 @@ class WP_SMS
      */
     public function includes()
     {
-        // Autoloader
-        require_once WP_SMS_DIR . "vendor/autoload.php";
+        
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');

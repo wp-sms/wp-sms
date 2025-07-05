@@ -4,7 +4,7 @@ namespace WP_SMS\Services\Subscriber;
 
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 /**
  * @todo this old-level class should be refactored, have to keep it for now but let's get rid of it in the future

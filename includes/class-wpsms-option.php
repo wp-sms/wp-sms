@@ -1,4 +1,8 @@
 <?php
+// Deprecated: This file has been moved to src/Settings/Option.php
+// Please update your imports to use WP_SMS\Settings\Option
+//
+// This file will be removed in a future release.
 
 namespace WP_SMS;
 

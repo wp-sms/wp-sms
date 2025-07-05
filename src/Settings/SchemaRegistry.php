@@ -13,6 +13,7 @@ use WP_SMS\Settings\Groups\NotificationSettings;
 
 // Addons
 use WP_SMS\Settings\Groups\Addons\ProWordPressSettings;
+use WP_SMS\Settings\Groups\Addons\TwoWaySettings;
 
 // Integrations
 use WP_SMS\Settings\Groups\Integrations\AwesomeSupportSettings;
@@ -70,6 +71,7 @@ class SchemaRegistry
 
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
+        $this->registerGroup(new TwoWaySettings(), 'addons');
 
         // Integrations with nested paths
         $this->registerGroup(new ContactForm7Settings(), 'integrations', 'integrations.contact_forms.contact_form_7');

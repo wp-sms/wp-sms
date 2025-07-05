@@ -5,7 +5,7 @@ namespace WP_SMS\User\MobileFieldHandler;
 use WP_SMS\Blocks\WooMobileField;
 use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 {

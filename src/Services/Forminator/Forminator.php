@@ -4,7 +4,7 @@ namespace WP_SMS\Services\Forminator;
 
 use Forminator_API;
 use WP_SMS\Notification\NotificationFactory;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 class Forminator
 {

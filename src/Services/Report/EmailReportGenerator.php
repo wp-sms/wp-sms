@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\Report;
 
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\Version;
 
 class EmailReportGenerator

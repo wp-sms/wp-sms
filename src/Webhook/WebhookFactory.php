@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Webhook;
 
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 /**
  * Class WebhookFactory
