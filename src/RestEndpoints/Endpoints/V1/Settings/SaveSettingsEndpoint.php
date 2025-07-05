@@ -2,7 +2,7 @@
 
 namespace WP_SMS\RestEndpoints\Endpoints\V1\Settings;
 
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\RestEndpoints\Abstracts\AbstractSettingsEndpoint;
 use WP_SMS\Settings\SchemaValidator;
 use WP_REST_Request;

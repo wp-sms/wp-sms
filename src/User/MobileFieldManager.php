@@ -2,7 +2,7 @@
 
 namespace WP_SMS\User;
 
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 class MobileFieldManager
 {
