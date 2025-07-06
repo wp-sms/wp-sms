@@ -9,34 +9,68 @@ if (!defined('ABSPATH')) {
 class Option
 {
     /**
+     * Array of acceptable addon names
+     *
+     * @var array
+     */
+    private static $acceptable_addons = [
+        'pro',
+        'two_way',
+        'booking_integrations',
+        'fluent_integrations'
+    ];
+
+    /**
+     * Resolve the option key based on addon parameter
+     *
+     * @param string|null $addon
+     * @return string
+     */
+    private static function resolveOptionKey($addon = null)
+    {
+        // TODO: Integrate schema/validator here for validation
+        
+        // Handle addon-specific option keys
+        if ($addon !== null) {
+            // Validate addon name
+            if (!in_array($addon, self::$acceptable_addons)) {
+                // TODO: Add proper error handling/logging for invalid addon names
+                return 'wp_sms_settings';
+            }
+            return 'wp_sms_' . $addon . '_settings';
+        }
+        
+        // Default option key for free version
+        return 'wp_sms_settings';
+    }
+
+    /**
      * Get the whole Plugin Options
      *
-     * @param string $setting_name
-     * @param bool $pro
+     * @param string|null $addon
+     * @param string $setting_name (deprecated - kept for backward compatibility)
      *
      * @return mixed|void
      */
-    public static function getOptions($pro = false, $setting_name = 'wpsms_settings')
+    public static function getOptions($addon = null, $setting_name = 'wp_sms_settings')
     {
-        if ($pro) {
-            $setting_name = 'wps_pp_settings';
-        }
+        $option_key = self::resolveOptionKey($addon);
 
         // TODO: Integrate schema/validator here for validation
-        return get_option($setting_name, array());
+        return get_option($option_key, array());
     }
 
     /**
      * Get the only Option that we want
      *
-     * @param $option_name
-     * @param bool $pro
+     * @param string $option_name
+     * @param string|null $addon
      *
      * @return string
      */
-    public static function getOption($option_name, $pro = false)
+    public static function getOption($option_name, $addon = null)
     {
-        $options = self::getOptions($pro);
+        $options = self::getOptions($addon, 'wp_sms_settings');
 
         // TODO: Integrate schema/validator here for validation
         return isset($options[$option_name]) ? $options[$option_name] : '';
@@ -45,34 +79,32 @@ class Option
     /**
      * Add an option
      *
-     * @param $option_name
-     * @param $option_value
+     * @param string $option_name
+     * @param mixed $option_value
+     * @param string|null $addon
      */
-    public static function addOption($option_name, $option_value)
+    public static function addOption($option_name, $option_value, $addon = null)
     {
+        $option_key = self::resolveOptionKey($addon);
+        
         // TODO: Integrate schema/validator here for validation
-        add_option($option_name, $option_value);
+        add_option($option_key, $option_value);
     }
 
     /**
      * Update Option
      *
-     * @param $key
-     * @param $value
-     * @param bool $pro
+     * @param string $key
+     * @param mixed $value
+     * @param string|null $addon
      */
-    public static function updateOption($key, $value, $pro = false)
+    public static function updateOption($key, $value, $addon = null)
     {
-        if ($pro) {
-            $setting_name = 'wps_pp_settings';
-        } else {
-            $setting_name = 'wpsms_settings';
-        }
-
-        $options       = self::getOptions($pro);
+        $option_key = self::resolveOptionKey($addon);
+        $options = self::getOptions($addon, 'wp_sms_settings');
         $options[$key] = $value;
 
         // TODO: Integrate schema/validator here for validation
-        update_option($setting_name, $options);
+        update_option($option_key, $options);
     }
 } 
