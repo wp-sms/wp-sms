@@ -4,7 +4,6 @@ namespace WP_SMS\Settings;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Groups\AdvancedSettings;
-use WP_SMS\Settings\Groups\FeatureSettings;
 use WP_SMS\Settings\Groups\GatewaySettings;
 use WP_SMS\Settings\Groups\GeneralSettings;
 use WP_SMS\Settings\Groups\MessageButtonSettings;
@@ -14,6 +13,10 @@ use WP_SMS\Settings\Groups\NotificationSettings;
 // Addons
 use WP_SMS\Settings\Groups\Addons\ProWordPressSettings;
 use WP_SMS\Settings\Groups\Addons\TwoWaySettings;
+use WP_SMS\Settings\Groups\Addons\FluentCRMSettings;
+use WP_SMS\Settings\Groups\Addons\FluentFormsSettings;
+use WP_SMS\Settings\Groups\Addons\FluentSupportSettings;
+
 
 // Integrations
 use WP_SMS\Settings\Groups\Integrations\AwesomeSupportSettings;
@@ -72,6 +75,9 @@ class SchemaRegistry
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
         $this->registerGroup(new TwoWaySettings(), 'addons');
+        $this->registerGroup(new FluentCRMSettings(), 'addons');
+        $this->registerGroup(new FluentFormsSettings(), 'addons');
+        $this->registerGroup(new FluentSupportSettings(), 'addons');
 
         // Integrations with nested paths
         $this->registerGroup(new ContactForm7Settings(), 'integrations', 'integrations.contact_forms.contact_form_7');
