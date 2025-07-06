@@ -16,6 +16,10 @@ use WP_SMS\Settings\Groups\Addons\TwoWaySettings;
 use WP_SMS\Settings\Groups\Addons\FluentCRMSettings;
 use WP_SMS\Settings\Groups\Addons\FluentFormsSettings;
 use WP_SMS\Settings\Groups\Addons\FluentSupportSettings;
+use WP_SMS\Settings\Groups\Addons\BookingCalendarSettings;
+use WP_SMS\Settings\Groups\Addons\WooAppointmentsSettings;
+use WP_SMS\Settings\Groups\Addons\BookingPressSettings;
+use WP_SMS\Settings\Groups\Addons\WooBookingsSettings;
 
 
 // Integrations
@@ -78,6 +82,10 @@ class SchemaRegistry
         $this->registerGroup(new FluentCRMSettings(), 'addons');
         $this->registerGroup(new FluentFormsSettings(), 'addons');
         $this->registerGroup(new FluentSupportSettings(), 'addons');
+        $this->registerGroup(new BookingCalendarSettings(), 'addons');
+        $this->registerGroup(new WooAppointmentsSettings(), 'addons');
+        $this->registerGroup(new BookingPressSettings(), 'addons');
+        $this->registerGroup(new WooBookingsSettings(), 'addons');
 
         // Integrations with nested paths
         $this->registerGroup(new ContactForm7Settings(), 'integrations', 'integrations.contact_forms.contact_form_7');
