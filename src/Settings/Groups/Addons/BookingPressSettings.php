@@ -248,4 +248,9 @@ class BookingPressSettings extends AbstractSettingGroup
         return class_exists('WPSmsBookingIntegrationsPlugin\WPSmsBookingIntegrationsPlugin') && 
                class_exists('BookingPress');
     }
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'booking_integrations';
+    }
 } 

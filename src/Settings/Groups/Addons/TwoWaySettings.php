@@ -388,4 +388,9 @@ class TwoWaySettings extends AbstractSettingGroup
             . $resetButton
             . $description;
     }
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'two_way';
+    }
 } 
