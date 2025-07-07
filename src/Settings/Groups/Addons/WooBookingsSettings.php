@@ -169,4 +169,9 @@ class WooBookingsSettings extends AbstractSettingGroup
         return class_exists('WPSmsBookingIntegrationsPlugin\WPSmsBookingIntegrationsPlugin') && 
                class_exists('WC_Bookings');
     }
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'booking_integrations';
+    }
 } 
