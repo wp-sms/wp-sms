@@ -4,7 +4,7 @@ namespace WP_SMS\Services\WooCommerce;
 
 use WP_SMS\Blocks\WooSmsOptInBlock;
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 class WooCommerceCheckout
 {

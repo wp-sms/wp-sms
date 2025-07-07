@@ -31,12 +31,18 @@ export class ValidationError extends Error {
 }
 
 export class SettingsApiService {
-  async saveSettings(settings: Record<string, any>): Promise<SaveSettingsResponse> {
+  async saveSettings(settings: Record<string, any>, addon?: string | null): Promise<SaveSettingsResponse> {
     try {
       const wpSmsData = window.WP_SMS_DATA
       const url = `${wpSmsData.restUrl}settings/save`
       
-      console.log('Saving settings to:', url)
+      console.log('Saving settings to:', url, 'with addon:', addon)
+      
+      // Prepare the request body with addon parameter
+      const requestBody = {
+        settings: settings,
+        addon: addon
+      }
       
       const response = await fetch(url, {
         method: 'PUT',
@@ -44,7 +50,7 @@ export class SettingsApiService {
           'Content-Type': 'application/json',
           'X-WP-Nonce': wpSmsData.nonce,
         },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(requestBody),
       })
 
       const data = await response.json()

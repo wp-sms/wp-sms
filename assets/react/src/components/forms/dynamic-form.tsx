@@ -119,7 +119,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
       setSaveLoading(true)
       setSaveError(null)
       
-      const response = await settingsApi.saveSettings({ [key]: value })
+      const response = await settingsApi.saveSettings({ [key]: value }, schema?.addon)
       
       if (response.success) {
         setSaveSuccess(true)
@@ -159,7 +159,7 @@ export function DynamicForm({ schema, savedValues, loading, error, onSaveSuccess
         return
       }
 
-      const response = await settingsApi.saveSettings(changedFields)
+      const response = await settingsApi.saveSettings(changedFields, schema.addon)
       
       if (response.success) {
         setSaveSuccess(true)

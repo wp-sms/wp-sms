@@ -5,7 +5,7 @@ use WP_SMS\Newsletter;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Settings\Tags;

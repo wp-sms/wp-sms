@@ -3,7 +3,7 @@
 namespace WP_SMS\User\MobileFieldHandler;
 
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 class WordPressMobileFieldHandler extends AbstractFieldHandler
 {

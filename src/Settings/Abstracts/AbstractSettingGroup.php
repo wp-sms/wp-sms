@@ -207,4 +207,15 @@ abstract class AbstractSettingGroup
 
         return $roles;
     }
+
+    /**
+     * Get the option key name for this group.
+     * Returns null for core groups, addon name for addon groups.
+     *
+     * @return string|null
+     */
+    public function getOptionKeyName(): ?string
+    {
+        return null;
+    }
 }

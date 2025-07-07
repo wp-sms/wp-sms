@@ -5,6 +5,7 @@ namespace WP_SMS;
 use WC_Blocks_Utils;
 use WP_Error;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Settings\Option;
 
 /**
  * Class WP_SMS

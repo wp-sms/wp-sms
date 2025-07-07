@@ -25,6 +25,7 @@ interface SchemaField {
 interface GroupSchema {
   label: string
   icon: string
+  addon?: string | null
   sections: any[]
   fields: SchemaField[]
 }

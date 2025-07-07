@@ -4,7 +4,7 @@ namespace WP_SMS\Components;
 
 use WP_Error;
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 /**
  * A utility class for validating and normalizing phone numbers.
