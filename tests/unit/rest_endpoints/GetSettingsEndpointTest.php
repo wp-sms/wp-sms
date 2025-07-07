@@ -13,7 +13,7 @@ class GetSettingsEndpointTest extends TestCase
         $default = $fields[0]->default;
 
         // Set the option value using the actual Option class
-        \WP_SMS\Option::updateOption($key, 'custom_value', null);
+        \WP_SMS\Settings\Option::updateOption($key, 'custom_value', null);
 
         $ref = new \ReflectionClass(GetSettingsEndpoint::class);
         $method = $ref->getMethod('resolveValues');
@@ -23,7 +23,7 @@ class GetSettingsEndpointTest extends TestCase
         $this->assertEquals('custom_value', $result[$key]);
 
         // Clean up: restore the default value
-        \WP_SMS\Option::updateOption($key, $default, null);
+        \WP_SMS\Settings\Option::updateOption($key, $default, null);
     }
 
     public function testResolveValuesFallsBackToDefault()
