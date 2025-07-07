@@ -14,6 +14,8 @@ use WP_Error;
  */
 class SaveSettingsEndpoint extends AbstractSettingsEndpoint
 {
+
+
     /**
      * Register the save endpoint.
      */
@@ -35,20 +37,30 @@ class SaveSettingsEndpoint extends AbstractSettingsEndpoint
     public static function handle(WP_REST_Request $request)
     {
         $input = self::get_json($request);
+        
+        // Extract addon parameter from request body
+        $addon = $input['addon'] ?? null;
+        $settings = $input['settings'] ?? $input; // Support both formats for backward compatibility
+        
+        // Remove addon from settings if it was included
+        unset($settings['addon']);
 
-        list($validated, $errors) = SchemaValidator::validate($input);
+        list($validated, $errors) = SchemaValidator::validate($settings);
 
         if (!empty($errors)) {
             return self::validation_error($errors);
         }
 
-        // Save each key individually to avoid overwriting untouched fields
+        $savedKeys = [];
+
+        // Save all settings with the specified addon
         foreach ($validated as $key => $value) {
-            Option::updateOption($key, $value, false); // core-only for now
+            Option::updateOption($key, $value, $addon);
+            $savedKeys[] = $key;
         }
 
         return self::success([
-            'saved_keys' => array_keys($validated),
+            'saved_keys' => $savedKeys,
         ]);
     }
 }
