@@ -17,7 +17,7 @@ class Option
         'pro',
         'two_way',
         'booking_integrations',
-        'fluent_integrations'
+        'fluent_integrations',
     ];
 
     /**

@@ -340,6 +340,17 @@ class SchemaRegistry
     }
 
     /**
+     * Check if a group is an addon.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function isAddonGroup(string $name): bool
+    {
+        return $this->getGroupCategory($name) === 'addons';
+    }
+
+    /**
      * Format a path part into a readable label.
      *
      * @param string $part
@@ -372,6 +383,7 @@ class SchemaRegistry
         return [
             'label' => $group->getLabel(),
             'icon' => $group->getIcon(),
+            'addon' => $group->getOptionKeyName(),
             'sections' => array_map(function($section) {
                 return $section->toArray();
             }, $sections),

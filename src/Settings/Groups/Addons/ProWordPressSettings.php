@@ -82,4 +82,9 @@ class ProWordPressSettings extends AbstractSettingGroup
             ]),
         ];
     }
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'pro';
+    }
 }

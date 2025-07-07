@@ -209,4 +209,9 @@ class FluentCRMSettings extends AbstractSettingGroup
         $html .= '</div>';
         return $html;
     }
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'fluent_integrations';
+    }
 } 

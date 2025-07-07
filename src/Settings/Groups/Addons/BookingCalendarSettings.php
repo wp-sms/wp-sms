@@ -197,4 +197,9 @@ class BookingCalendarSettings extends AbstractSettingGroup
 
         return $fieldData;
     }
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'booking_integrations';
+    }
 } 
