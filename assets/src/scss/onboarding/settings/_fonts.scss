@@ -1,0 +1,39 @@
+/* barlow Regular - Latin */
+@font-face {
+  font-family: 'barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/barlow-v5-latin-regular.woff2') format('woff2'),
+  url('../fonts/barlow-v5-latin-regular.woff') format('woff');
+}
+
+/* barlow 500 - Latin */
+@font-face {
+  font-family: 'barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/barlow-medium.woff2') format('woff2'),
+  url('../fonts/barlow-medium.woff') format('woff');
+}
+
+/* barlow 600 - Latin */
+@font-face {
+  font-family: 'barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/barlow-semi-bold..woff2') format('woff2'),
+  url('../fonts/barlow-semi-bold..woff') format('woff');
+}
+
+/* barlow 700 - Latin */
+@font-face {
+  font-family: 'barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/barlow-v5-latin-700.woff2') format('woff2'),
+  url('../fonts/barlow-v5-latin-700.woff') format('woff');
+}

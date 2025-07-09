@@ -9,7 +9,7 @@
 
     <!-- Show request message the client -->
     <div class="wpsms-wrap wpsms-export-popup">
-        <div class="wp-sms-popup-messages"></div>
+        <div class="wp-sms-popup-messages js-wpSmsErrorMessage wpsms-admin-notice"></div>
     </div>
 
     <form class="js-wpSmsExportForm">
@@ -17,26 +17,34 @@
         <input class="wp-sms-export-type" type="hidden" value="subscriber">
         <table>
             <tr>
-                <td style="padding-top: 10px;">
+                <td>
                     <?php if (count($groups)) : ?>
                         <div class="wpsms-value wpsms-group">
                             <p class="thickbox-description"><?php esc_html_e("You can choose to export a specific group(s) by selecting them, or export all subscribers by leaving the input form blank.", 'wp-sms') ?></p>
-                            <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the group(s).', 'wp-sms'); ?>" style="width: 100% !important;">
-                                <?php foreach ($groups as $group): ?>
-                                    <option value="<?php echo esc_attr($group->ID); ?>">
-                                        <?php echo esc_html__('Group ', 'wp-sms') . esc_html($group->name); ?>
-                                    </option>
-
-                                <?php endforeach; ?>
-                            </select>
                         </div>
                     <?php endif; ?>
+                </td>
+            </tr>
+            <?php if (count($groups)) : ?>
+                <tr class="subscribers_group_section">
+                    <td>
+                        <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsmsSelect2TickModal" data-placeholder="<?php esc_html_e('Please select the group(s).', 'wp-sms'); ?>" style="width: 100% !important;">
+                            <?php foreach ($groups as $group): ?>
+                                <option value="<?php echo esc_attr($group->ID); ?>">
+                                    <?php echo esc_html__('Group ', 'wp-sms') . esc_html($group->name); ?>
+                                </option>
+
+                            <?php endforeach; ?>
+                        </select></td>
+                </tr>
+            <?php endif; ?>
+            <tr>
+                <td>
                     <p> <?php _e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
                 </td>
             </tr>
-
             <tr>
-                <td colspan="2" style="padding-top: 10px;">
+                <td>
                     <input type="submit" class="button-primary js-wpSmsExportButton" value="<?php esc_html_e('Export', 'wp-sms'); ?>"/>
                 </td>
             </tr>

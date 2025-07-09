@@ -1,10 +1,15 @@
 jQuery(document).ready(function () {
+    jQuery('#wp-sms-input-file').on('change', function () {
+        let fileName = this.files.length > 0 ? this.files[0].name : 'file-name.csv';
+        jQuery('.file-name').text(fileName);
+     });
     wpSmsImportSubscriber.init();
 });
 
 let wpSmsImportSubscriber = {
 
     init: function () {
+
         this.setFields()
         this.uploadEventListener()
         this.selectColumnFileHeaderEventListener()
@@ -21,7 +26,7 @@ let wpSmsImportSubscriber = {
         this.refreshButton = jQuery('.js-wpSmsRefreshButton')
         this.loadingSpinner = jQuery('.js-wpSmsOverlay')
         this.messageModal = jQuery('.js-wpSmsMessageModal')
-        this.modalErrorMessage = jQuery('.js-wpSmsErrorMessage')
+        this.modalErrorMessage = this.messageModal.find('.js-wpSmsErrorMessage');
         this.importStep2 = jQuery('.js-WpSmsImportStep2')
         this.hasHeader = jQuery('.js-wpSmsFileHasHeader')
         this.importResult = jQuery('.js-WpSmsImportResult')

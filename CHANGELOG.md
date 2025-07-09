@@ -1,3 +1,19 @@
+v7.0 - 2025-07-09
+- **New:** Introduced an Onboarding Process to simplify gateway integration.
+- **New:** Launched a new Add-on Manager for easier add-on installation and updates.
+- **New:** Introduced WP SMS All-in-One package.
+- **Enhancement:** Removed the FeedbackBird button and its related functionality.
+- **Enhancement:** Integrated NumberParser for better phone number validation.
+- **Enhancement:** Improved newsletter unsubscription handling based on different user inputs.
+- **Enhancement:** Added support for a wider range of CSV MIME types during import.
+- **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
+- **Enhancement:** Improved overall UX across the plugin.
+- **Fix:** Fixed disappearing billing fields in WooCommerce (Legacy and HPOS modes).
+- **Fix:** Fixed scheduled post notification issues.
+- **Fix:** Removed deprecated gateways.
+- **Fix:** Resolved fatal error when passing invalid meta in notification content.
+- **Fix:** Fixed message logging issues on multisite installations.
+
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.

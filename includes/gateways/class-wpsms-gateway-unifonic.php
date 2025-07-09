@@ -14,25 +14,29 @@ class unifonic extends \WP_SMS\Gateway
     public function __construct()
     {
         parent::__construct();
-        $this->bulk_send = true;
-        $this->has_key   = true;
-        $this->gatewayFields = [
+        $this->bulk_send      = true;
+        $this->has_key        = true;
+        $this->gatewayFields  = [
             'username' => [
-                'id'   => 'gateway_username',
-                'name' => 'API username',
-                'desc' => 'Enter API username of gateway',
+                'id'           => 'gateway_username',
+                'name'         => 'API Username',
+                'place_holder' => 'e.g., YourGatewayUsername123',
+                'desc'         => 'Enter the username provided by your SMS gateway.',
             ],
             'password' => [
-                'id'   => 'gateway_password',
-                'name' => 'API password',
-                'desc' => 'Enter API password of gateway',
+                'id'           => 'gateway_password',
+                'name'         => 'API Password',
+                'place_holder' => 'e.g., YourGatewayPassword456',
+                'desc'         => 'Enter the password associated with your SMS gateway account.',
             ],
             'from'     => [
-                'id'   => 'gateway_sender_id',
-                'name' => 'Sender number',
-                'desc' => 'Sender number or sender ID',
+                'id'           => 'gateway_sender_id',
+                'name'         => 'Sender Number',
+                'place_holder' => 'e.g., +1 555 123 4567',
+                'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
+It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.',
             ],
-            'has_key' => [
+            'has_key'  => [
                 'id'   => 'gateway_key',
                 'name' => 'AppSid',
                 'desc' => 'Enter AppSid token of gateway. Check link: <a href="https://software.unifonic.com/en/devtools/restApp" target="_blank">Click Here</a>'
@@ -88,13 +92,13 @@ class unifonic extends \WP_SMS\Gateway
         $country_code = isset($this->options['mobile_county_code']) ? $this->options['mobile_county_code'] : '';
 
         foreach ($this->to as $number) {
-            $to = $this->clean_number($number, $country_code);
+            $to       = $this->clean_number($number, $country_code);
             $response = wp_remote_post($this->wsdl_link . 'SMS/messages', [
                 'headers' => [
                     'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
-                    'Accept' => 'application/json',
+                    'Accept'        => 'application/json',
                 ],
-                'body' => [
+                'body'    => [
                     'AppSid'    => $this->has_key,
                     'SenderID'  => $this->from,
                     'Recipient' => $to,
@@ -116,7 +120,7 @@ class unifonic extends \WP_SMS\Gateway
         if ($response_code == '200') {
             $result = json_decode($response['body']);
 
-            if ( isset($result->success) and $result->success == 'true' ) {
+            if (isset($result->success) and $result->success == 'true') {
 
                 // Log the result
                 $this->log($this->from, $this->msg, $this->to, $result);

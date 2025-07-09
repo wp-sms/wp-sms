@@ -174,10 +174,17 @@ class Subscribers_List_Table extends \WP_List_Table
         // Detect when a bulk action is being triggered
 
         // Search action
-        if (isset($_GET['s']) and $_GET['s']) {
-            $metaValue   = Helper::prepareMobileNumberQuery($this->db->esc_like($_GET['s']));
-            $metaValue   = "'" . implode("','", $metaValue) . "'";
-            $prepare     = $this->db->prepare("SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE name LIKE %s OR mobile IN ({$metaValue})", '%' . $this->db->esc_like($_GET['s']) . '%');
+        if (isset($_GET['s']) && $_GET['s']) {
+            $search    = sanitize_text_field($_GET['s']);
+            $metaValue = Helper::prepareMobileNumberQuery($this->db->esc_like($search));
+
+            $placeholders = implode(', ', array_fill(0, count($metaValue), '%s'));
+            $sql          = "SELECT * FROM `{$this->tb_prefix}sms_subscribes` WHERE name LIKE %s OR mobile IN ($placeholders)";
+
+            $args = array_merge(array("%$search%"), $metaValue);
+
+            $prepare = call_user_func_array(array($this->db, 'prepare'), array_merge(array($sql), $args));
+
             $this->data  = $this->get_data($prepare);
             $this->count = $this->get_total($prepare);
         }

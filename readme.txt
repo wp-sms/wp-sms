@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 6.9.12
+Stable tag: 7.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,7 +48,7 @@ To use this plugin, you must have an account with one of our supported gateways.
 = Pro Package =
 With WP SMS Pro, you can integrate with more plugins and SMS gateways. WooCommerce mobile verification, order notifications, and user registration verification are all included in the Pro version.
 
-[Buy Pro Package](https://wp-sms-pro.com/buy/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
+[Buy Pro Package](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=pro)
 = Pro Version Features =
 - **Extensive Gateway Support:** Supports more SMS gateways.
 - **Scheduled SMS/MMS:** Schedule SMS/MMS messages to be sent later.
@@ -174,54 +174,20 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-= v6.9.12 - 2025-03-31 =
-- **New**: Added WhatsApp support for the Tubelight gateway.
-- **Enhancement**: Upgraded to the latest version of the Tubelight API.
-- **Enhancement**: Updated integration with the MatinSMS gateway.
-- **Fix**: Expanded support for a wider range of CSV MIME types for the subscriber import process.
-- **Fix**: Removed deprecated/inactive gateways and their associated class files.
-- **Fix**: Fixed issue where the welcome message was not being sent to new subscribers.
-- **Fix**: Resolved issues with the unsubscribe functionality in the subscription form.
-
-= v6.9.11 - 2025-02-25 =
-- **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
-- **Fix**: Resolved issue with rendering new lines in the Outbox.
-- **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
-- **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
-- **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
-
-= v6.9.10 - 2025-01-22 =
-- **New**: Add **Mobile Message Gateway** (Australia).
-- **New**: Add **HelloSMS Gateway** (Sweden).
-- **Fix**: Resolve issues with adding and updating subscriber groups.
-- **Fix**: Address the `_load_textdomain_just_in_time` notice.
-- **Fix**: Correct SMS sending to registering users in the login form.
-- **Enhancement**: Add capability test for displaying widgets.
-- **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
-
-= v6.9.9 - 2024-12-23 =
-- **Fix**: Resolved issue with SMS login functionality.
-- **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.
-- **Dev** Added new filters for developers:
-  - `wp_sms_notification_woocommerce_order_item`
-  - `wp_sms_otp_rate_limit_time_interval`
-  - `wp_sms_otp_rate_limit_count`
-
-= v6.9.8 - 2024-11-24 =
-- **Enhancement**: Updated SMS Point and DirectSend gateways for improved reliability.
-- **Enhancement**: Added support for sending messages with multiple templates for gateway SmsGatewayHub.
-- **Enhancement**: Refactored Notifications Class; fixed SMS notifications for the latest WordPress version.
-- **Enhancement**: Ensured compatibility with PHP 8.3.
-- **Enhancement**: Added validation for empty SMS content to ensure compatibility.
-- **Fix**: Resolved a translation loading issue to maintain compatibility with WordPress v6.7.
-
-= v6.9.7 - 2024-10-27 =
-- **Enhancement**: Ensured full compatibility with WordPress version 6.7.
-- **Enhancement**: Improved filters for order item meta to handle array meta values in WooCommerce order notifications.
-- **Enhancement**: Improved privacy by hashing usernames during mobile registration and allowing updates to hashed usernames at login.
-- **Enhancement**: Added support for the `redirect_to` parameter in mobile login for better redirection handling.
-- **Enhancement**: Improved number parsing and validation for mobile numbers.
-- **Fix**: Fixed intlTelInput initialization issue in WooCommerce checkout and addressed minor bugs.
-- **Fix**: Resolved conflict with mobile number handling with creating new users in the Admin panel.
+v7.0 - 2025-07-09
+- **New:** Introduced an Onboarding Process to simplify gateway integration.
+- **New:** Launched a new Add-on Manager for easier add-on installation and updates.
+- **New:** Introduced WP SMS All-in-One package.
+- **Enhancement:** Removed the FeedbackBird button and its related functionality.
+- **Enhancement:** Integrated NumberParser for better phone number validation.
+- **Enhancement:** Improved newsletter unsubscription handling based on different user inputs.
+- **Enhancement:** Added support for a wider range of CSV MIME types during import.
+- **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
+- **Enhancement:** Improved overall UX across the plugin.
+- **Fix:** Fixed disappearing billing fields in WooCommerce (Legacy and HPOS modes).
+- **Fix:** Fixed scheduled post notification issues.
+- **Fix:** Removed deprecated gateways.
+- **Fix:** Resolved fatal error when passing invalid meta in notification content.
+- **Fix:** Fixed message logging issues on multisite installations.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
