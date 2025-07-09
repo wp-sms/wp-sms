@@ -668,6 +668,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'sendapp'          => 'Sendapp SMS',
                 'sendappWhatsApp'  => 'Sendapp Whathapp',
                 'smsto'            => 'sms.to',
+                'threema'          => 'threema.ch'
             ),
             'united kingdom'       => array(
                 'reachinteractive' => 'reach-interactive.com',
