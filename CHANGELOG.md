@@ -1,19 +1,18 @@
-v7.0 - 
-- **Enhancement**: Removed the FeedbackBird button from the header along with its related functionality.
-- **Fix**: Fixed issues with disappearing billing fields on woocommerce legacy and HPOS mode.
-- **New**: Added lock sections in settings/integrations pages (main plugin & addons).
-- **Enhancement**: Integrate NumberParser for phone number validation.
-- **Enhancement**: Unsubscription different format support.
-- **Enhancement**: Unsubscription different same subscribers with different formats.
-- **New**: Added a select input to choose the API endpoint for apigateway.
-- **Fix**: Support wider range of CSV MIME types during the import proccess.
-- **Fix**: Fix scheduled posts notification
-- **Fix**: Fix type in send-sms.php
-- **Fix**: Remove some down gateways
-- **Enhancement**: Refactor MeliPayamak Gateway
-- **Fix**: Fix fatal error when passing invalid meta in notification content
-- **Fix**: Fixed messages failing to record on multisite
-
+v7.0 - 2025-07-09
+- **New:** Introduced an Onboarding Process to simplify gateway integration.
+- **New:** Launched a new Add-on Manager for easier add-on installation and updates.
+- **New:** Introduced WP SMS All-in-One package.
+- **Enhancement:** Removed the FeedbackBird button and its related functionality.
+- **Enhancement:** Integrated NumberParser for better phone number validation.
+- **Enhancement:** Improved newsletter unsubscription handling based on different user inputs.
+- **Enhancement:** Added support for a wider range of CSV MIME types during import.
+- **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
+- **Enhancement:** Improved overall UX across the plugin.
+- **Fix:** Fixed disappearing billing fields in WooCommerce (Legacy and HPOS modes).
+- **Fix:** Fixed scheduled post notification issues.
+- **Fix:** Removed deprecated gateways.
+- **Fix:** Resolved fatal error when passing invalid meta in notification content.
+- **Fix:** Fixed message logging issues on multisite installations.
 
 v6.9.12 - 2025-03-31
 - **New**: Added WhatsApp support for the Tubelight gateway.
