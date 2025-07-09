@@ -143,7 +143,6 @@ class LicenseManagementManager
             $this->handledPlugins[] = $pluginSlug;
 
         } catch (Exception $e) {
-            //todo
             WP_SMS::log(sprintf('Failed to initialize PluginUpdater for %s: %s', $pluginSlug, $e->getMessage()));
         }
     }

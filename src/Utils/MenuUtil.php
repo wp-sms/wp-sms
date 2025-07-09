@@ -159,7 +159,6 @@ class MenuUtil
             $pageName = self::getPageKeyFromSlug($page);
             return is_array($pageName) && count($pageName) > 0;
         }
-        error_log($pagenow);
         return false;
     }
 
