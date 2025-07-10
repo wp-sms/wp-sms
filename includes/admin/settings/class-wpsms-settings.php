@@ -94,7 +94,6 @@ class Settings
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
                 'notify_errors_to_admin_email' => 1,
                 'report_wpsms_statistics'      => 1,
-                'plugin_notifications'         => 1
             ));
         }
 
