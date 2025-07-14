@@ -13,7 +13,8 @@ class threema extends Gateway
     public $tariff = 'https://threema.ch/en/gateway';
     public $unitrial = false;
     public $unit;
-    public $help = 'Enter your Threema Gateway credentials. The recipient must be a valid Threema ID.';
+    public $help = 'Enter your Threema Gateway credentials.';
+    public $documentUrl = 'https://gateway.threema.ch/en/developer/api';
     public $supportMedia = false;
     public $supportIncoming = false;
 
@@ -25,8 +26,8 @@ class threema extends Gateway
             'username' => [
                 'id'           => 'gateway_username',
                 'name'         => 'Threema Gateway ID',
-                'place_holder' => 'e.g., AB1C2DE3',
-                'desc'         => 'Enter your Threema Gateway ID.',
+                'place_holder' => 'e.g., *B1C2DE3',
+                'desc'         => 'Enter your Threema Gateway ID. (Starts with *)',
             ],
             'password' => [
                 'id'           => 'gateway_password',
