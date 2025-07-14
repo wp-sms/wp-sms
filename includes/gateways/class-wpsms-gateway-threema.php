@@ -53,11 +53,10 @@ class threema extends Gateway
 
         try {
             if (empty($this->username) || empty($this->password)) {
-                throw new Exception(__('Threema Gateway credentials not set.', 'wp-sms-pro'));
+                throw new Exception(__('Threema Gateway credentials not set.', 'wp-sms'));
             }
 
             foreach ($this->to as $recipient) {
-                // Prepare POST body
                 $body = [
                     'from'   => $this->from ?: $this->username,
                     'phone'  => $recipient,
@@ -76,14 +75,40 @@ class threema extends Gateway
                 $response = wp_remote_post(self::API_URL, $args);
 
                 if (is_wp_error($response)) {
-                    throw new Exception('Request error: ' . $response->get_error_message());
+                    throw new Exception(sprintf(__('Request error: %s', 'wp-sms'), $response->get_error_message()));
                 }
 
                 $status_code   = wp_remote_retrieve_response_code($response);
                 $response_body = wp_remote_retrieve_body($response);
 
                 if ($status_code < 200 || $status_code >= 300) {
-                    throw new Exception('Threema send failed. HTTP ' . $status_code . ': ' . $response_body);
+                    switch ($status_code) {
+                        case 400:
+                            $error_msg = __('Invalid recipient ID or account not set up for basic mode.', 'wp-sms');
+                            break;
+                        case 401:
+                            $error_msg = __('Invalid API identity or secret.', 'wp-sms');
+                            break;
+                        case 402:
+                            $error_msg = __('No credits remaining in your Threema Gateway account.', 'wp-sms');
+                            break;
+                        case 404:
+                            $error_msg = __('Recipient could not be found (ID, phone, or email).', 'wp-sms');
+                            break;
+                        case 413:
+                            $error_msg = __('Message too long. Max 3500 characters.', 'wp-sms');
+                            break;
+                        case 429:
+                            $error_msg = __('Rate limit exceeded. Please slow down requests.', 'wp-sms');
+                            break;
+                        case 500:
+                            $error_msg = __('Temporary Threema internal server error. Try again later.', 'wp-sms');
+                            break;
+                        default:
+                            $error_msg = sprintf(__('Unknown error. HTTP %d', 'wp-sms'), $status_code);
+                    }
+
+                    throw new Exception(sprintf(__('Threema send failed (%d): %s', 'wp-sms'), $status_code, $error_msg));
                 }
 
                 $this->log($this->from, $this->msg, [$recipient], $response_body);
