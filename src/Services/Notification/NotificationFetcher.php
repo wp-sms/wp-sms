@@ -38,7 +38,7 @@ class NotificationFetcher
                 'cookies'     => array(),
             ];
 
-            $remoteRequest = new RemoteRequest($method, $url, $args, $params);
+            $remoteRequest = new RemoteRequest($method, $url, $params, $args);
 
             $remoteRequest->execute(false, false);
 

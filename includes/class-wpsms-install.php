@@ -16,6 +16,29 @@ class Install
 
     public function __construct()
     {
+        add_action('init', array($this, 'initializeSettingOnUpgrade'));
+    }
+
+    public function initializeSettingOnUpgrade()
+    {
+        $currentSettingsVersion = get_option('wp_sms_settings_version');
+        $targetSettingsVersion  = WP_SMS_VERSION;
+
+        $initializedSettings = get_option('wp_sms_initialized_settings', array());
+
+        if (version_compare($currentSettingsVersion, $targetSettingsVersion, '<')) {
+
+            if (!in_array('plugin_notifications', $initializedSettings)) {
+                if (\WP_SMS\Option::getOption('plugin_notifications') == false) {
+                    \WP_SMS\Option::updateOption('plugin_notifications', true);
+                }
+
+                $initializedSettings[] = 'plugin_notifications';
+            }
+
+            update_option('wp_sms_settings_version', $targetSettingsVersion);
+            update_option('wp_sms_initialized_settings', $initializedSettings);
+        }
     }
 
     /**

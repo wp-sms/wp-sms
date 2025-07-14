@@ -141,13 +141,13 @@ jQuery(document).ready(function () {
         jQuery('.wpsms-notification-sidebar__cards--dismissed .wpsms-notification-sidebar__no-card').remove();
 
         let params = {
-            'wps_nonce': wps_js.global.rest_api_nonce,
+            'wps_nonce': wpsms_global.rest_api_nonce,
             'action': 'wp_sms_dismiss_notification',
             'notification_id': notificationId
         }
 
         jQuery.ajax({
-            url: wps_js.global.admin_url + 'admin-ajax.php',
+            url: wpsms_global.admin_url + 'admin-ajax.php',
             type: 'GET',
             dataType: 'json',
             data: params,
@@ -171,12 +171,12 @@ jQuery(document).ready(function () {
         $this.removeClass('wpsms-notifications--has-items');
 
         let params = {
-            'wps_nonce': wps_js.global.rest_api_nonce,
+            'wps_nonce': wpsms_global.rest_api_nonce,
             'action': 'wp_sms_update_notifications_status',
         }
 
         jQuery.ajax({
-            url: wps_js.global.admin_url + 'admin-ajax.php',
+            url: wpsms_global.admin_url + 'admin-ajax.php',
             type: 'GET',
             dataType: 'json',
             data: params,
