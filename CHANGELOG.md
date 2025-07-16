@@ -1,3 +1,6 @@
+v7.x
+- **Fix:** Fixed variable rendering in message content.
+
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
 - **New:** Launched a new Add-on Manager for easier add-on installation and updates.

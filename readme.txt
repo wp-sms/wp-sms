@@ -174,6 +174,9 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
+v7.x
+- **Fix:** Fixed variable rendering in message content.
+
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
 - **New:** Launched a new Add-on Manager for easier add-on installation and updates.
