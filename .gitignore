@@ -34,6 +34,8 @@ nbproject
 # node_modules
 /node_modules
 assets/react/node_modules
+frontend/node_modules
+frontend/build
 
 # Build Folder
 /build
