@@ -66,7 +66,7 @@ class OptionMigrations
 
         _deprecated_argument(
             'wp_sms_get_option_value',
-            '6.9.15',
+            '7.0.1',
             __('The "mobile_county_code" option is deprecated. Please use "international_mobile_only_countries" instead.', 'wp-sms')
         );
 
@@ -97,7 +97,7 @@ class OptionMigrations
 
         _deprecated_argument(
             'wp_sms_get_option_value',
-            '6.9.15',
+            '7.0.1',
             __('The "international_mobile" option is deprecated and is always true.', 'wp-sms')
         );
 

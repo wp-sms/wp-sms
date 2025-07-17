@@ -531,14 +531,14 @@ class Gateway
      *
      * @param array $recipients Array of recipient numbers.
      * @return array
-     * @deprecated 6.9.15 Use fully formatted international numbers instead.
+     * @deprecated 7.0.1 Use fully formatted international numbers instead.
      *
      */
     public function applyCountryCode($recipients = array())
     {
         _deprecated_function(
             __METHOD__,
-            '6.9.15',
+            '7.0.1',
             'E.164-based input and storage with intl-tel-input UI'
         );
 

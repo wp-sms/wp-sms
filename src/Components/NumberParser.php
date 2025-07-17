@@ -187,7 +187,7 @@ class NumberParser
      * @param string $phoneNumber
      *
      * @return string
-     * @deprecated 6.9.15  The “Country Code Prefix” setting has been retired.
+     * @deprecated 7.0.1  The “Country Code Prefix” setting has been retired.
      */
     public function addSelectedCountryCode($phoneNumber)
     {
@@ -195,7 +195,7 @@ class NumberParser
         // trigger a _doing_it_wrong() notice in the error log.
         _deprecated_function(
             __METHOD__,                // Function name.
-            '6.9.15'                        // Version in which it was deprecated.
+            '7.0.1'                        // Version in which it was deprecated.
         );
 
         $selectedCountryCode = Option::getOption('mobile_county_code');
