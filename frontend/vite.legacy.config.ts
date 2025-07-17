@@ -11,7 +11,7 @@ export default defineConfig({
         copyPublicDir: false,
         rollupOptions: {
             input: {
-                // Admin scripts
+                //js
                 'quick-reply': resolve(__dirname, 'legacy/scripts/quick-reply.js'),
                 'import-subscriber': resolve(__dirname, 'legacy/scripts/import-subscriber.js'),
                 'edit-subscriber': resolve(__dirname, 'legacy/scripts/edit-subscriber.js'),
@@ -37,30 +37,24 @@ export default defineConfig({
                 'admin-privacy-data': resolve(__dirname, 'legacy/scripts/admin-privacy-data.js'),
                 'admin-order-view': resolve(__dirname, 'legacy/scripts/admin-order-view.js'),
                 'admin-dashboard-stats-widget': resolve(__dirname, 'legacy/scripts/admin-dashboard-stats-widget.js'),
-                // Frontend scripts
                 'frontend-blocks': resolve(__dirname, 'legacy/scripts/blocks.js'),
 
-                //css folder
-                'admin-bar': resolve(__dirname, 'legacy/css/admin-bar.css'),
+                //css
+                'admin-bar-styles': resolve(__dirname, 'legacy/css/admin-bar.css'),
                 'chatbox-styles': resolve(__dirname, 'legacy/css/chatbox.min.css'),
                 'flatpickr-styles': resolve(__dirname, 'legacy/css/flatpickr.min.css'),
                 'intlTelInput-styles': resolve(__dirname, 'legacy/css/intlTelInput.css'),
-                rtl: resolve(__dirname, 'legacy/css/rtl.css'),
+                'rtl-styles': resolve(__dirname, 'legacy/css/rtl.css'),
                 'select2-styles': resolve(__dirname, 'legacy/css/select2.min.css'),
-                subscribe: resolve(__dirname, 'legacy/css/subscribe.css'),
-                'system-info': resolve(__dirname, 'legacy/css/system-info.css'),
-                tooltipster: resolve(__dirname, 'legacy/css/tooltipster.bundle.css'),
-                // rest of css files
-                'admin-style': resolve(__dirname, 'legacy/admin/admin.scss'),
+                'subscribe-styles': resolve(__dirname, 'legacy/css/subscribe.css'),
+                'system-info-styles': resolve(__dirname, 'legacy/css/system-info.css'),
+                'tooltipster-styles': resolve(__dirname, 'legacy/css/tooltipster.bundle.css'),
+
+                'admin-styles': resolve(__dirname, 'legacy/admin/admin.scss'),
                 'front-styles': resolve(__dirname, 'legacy/scss/front-styles.scss'),
-                mail: resolve(__dirname, 'legacy/scss/mail.scss'),
+                'mail-styles': resolve(__dirname, 'legacy/scss/mail.scss'),
             },
             output: {
-                // entryFileNames: '[name].min.js',
-                // format: 'es',
-                // preserveModules: false,
-                // dir: './build/legacy',
-
                 entryFileNames: '[name].js',
                 chunkFileNames: 'chunks/[name].js',
                 assetFileNames: 'assets/[name].[ext]',

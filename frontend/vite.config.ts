@@ -18,6 +18,11 @@ export default defineConfig({
             '@types': resolve(__dirname, './src/types'),
             '@assets': resolve(__dirname, './src/assets'),
             '@layouts': resolve(__dirname, './src/layouts'),
+            '@core': resolve(__dirname, './src/core'),
+            '@hooks': resolve(__dirname, './src/hooks'),
+            '@models': resolve(__dirname, './src/models'),
+            '@pages': resolve(__dirname, './src/pages'),
+            '@routes': resolve(__dirname, './src/routes'),
         },
     },
     build: {
@@ -29,10 +34,12 @@ export default defineConfig({
                 admin: resolve(__dirname, 'src/pages/dashboard/index.tsx'),
                 settings: resolve(__dirname, 'src/pages/settings/index.tsx'),
                 settingsPermissions: resolve(__dirname, 'src/pages/settings/permissions.tsx'),
-                globals: resolve(__dirname, 'src/globals.css'),
                 // Add blocks
                 sendSmsBlock: resolve(__dirname, 'src/blocks/send-sms/index.ts'),
                 // subscribeBlock: resolve(__dirname, 'src/blocks/subscribe/index.ts'),
+
+                // css
+                globals: resolve(__dirname, 'src/globals.css'),
             },
             output: {
                 // entryFileNames: '[name]-[hash].js',
