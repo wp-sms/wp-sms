@@ -1,0 +1,290 @@
+/**
+Order View Page
+*/
+#wpsms-woocommerceSendSMS {
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .wpsms-orderSmsMetabox__overlay {
+    max-height: 100%;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    width: 100%;
+    z-index: 3;
+    height: 100vh;
+    top: 0;
+    left: 0;
+
+    .wpsms-orderSmsMetabox__overlay__spinner {
+      width: 60px;
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .wpsms-orderSmsMetabox {
+    padding: 12px;
+    position: relative;
+  }
+
+  .wpsms-orderSmsMetabox__toField,
+  .wpsms-orderSmsMetabox__messageField {
+    margin-bottom: 25px;
+  }
+
+  label {
+    text-transform: uppercase;
+    text-align: left;
+    color: #222;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  select,
+  textarea {
+    border: 1px solid #828282;
+    border-radius: 2px;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    display: block;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    background-color: #fff;
+    color: #2c3338;
+
+    &:focus {
+      box-shadow: none;
+      border-color: #F88E40 !important;
+      outline: none;
+    }
+  }
+
+  .wpsms-orderSmsMetabox__variables {
+    background-color: white;
+    border-radius: 2px;
+    padding: 12px;
+    border: 1px solid #828282;
+
+    .wpsms-orderSmsMetabox__variables__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+
+      label {
+        margin: 0;
+      }
+
+      .wpsms-orderSmsMetabox__variables__icon {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        transform: translateY(-3px);
+        margin-left: 6px;
+        transition: .3s all ease-out;
+        background: url("../images/icons/up-dark-chev.png") no-repeat center center/contain;
+
+        &.expanded {
+          transform: rotateZ(180deg);
+        }
+      }
+    }
+
+    .wpsms-orderSmsMetabox__variables__shortCodes {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      margin-top: 15px;
+      display: none;
+
+      code {
+        display: block;
+        background: rgba(0, 0, 0, .07);
+        color: #5b5b5b;
+        border-radius: 6px;
+        padding: 3px 7px;
+        font-size: 13px;
+        margin-bottom: 6px;
+        cursor: pointer;
+        transition: .3s all ease-out;
+
+        &:hover {
+          background: rgba(0, 0, 0, .2);
+        }
+      }
+    }
+  }
+
+  button[name='send_sms'] {
+    text-decoration: none;
+    background: #F88E40;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 25px;
+    transition: all 0.3s ease-out;
+    border-radius: 2px;
+    padding: 10px 10px;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      background-color: #EF771F;
+    }
+
+    &.sending {
+      background-color: #f9f9f9;
+      color: #a1a1a1;
+      cursor: not-allowed;
+      pointer-events: none;
+
+      &:after {
+        content: 'sending...';
+      }
+    }
+  }
+
+  .wpsms-orderSmsMetabox__result {
+    display: none;
+    width: 100%;
+    padding: 12px;
+
+    .wpsms-orderSmsMetabox__result__tryAgain {
+      text-decoration: none;
+      background: #F88E40;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 400;
+      margin-top: 25px;
+      transition: all 0.3s ease-out;
+      border-radius: 2px;
+      padding: 10px 10px;
+      color: white;
+      cursor: pointer;
+      outline: none;
+      width: 100%;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        background-color: #EF771F;
+      }
+    }
+
+    .wpsms-orderSmsMetabox__result__receiver,
+    .wpsms-orderSmsMetabox__result__message {
+      margin-bottom: 15px;
+
+      h6 {
+        text-transform: uppercase;
+        text-align: left;
+        color: #222;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+
+      p {
+        font-size: 14px;
+        color: #A1A1A1;
+      }
+    }
+
+    .wpsms-orderSmsMetabox__result__report {
+      padding: 10px 15px;
+      border: 1px solid #f0f0f1;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      transition: .3s all ease-out;
+
+      .wpsms-orderSmsMetabox__result__icon {
+        display: inline-block;
+        transform: translateY(5px);
+        width: 20px;
+        height: 20px;
+        margin-right: 6px;
+        transition: .3s all ease-out;
+      }
+
+      &.success .wpsms-orderSmsMetabox__result__icon {
+        background: url("../images/icons/green-check-fill.png") no-repeat center center / contain;
+      }
+
+      &.error .wpsms-orderSmsMetabox__result__icon {
+        background: url("../images/icons/red-alert.png") no-repeat center center / contain;
+      }
+
+      p {
+        font-size: 15px;
+        font-weight: 400;
+        color: #545454;
+        line-height: 1.8 !important;
+        margin-bottom: 20px;
+        text-align: justify;
+        display: inline;
+      }
+    }
+  }
+}
+
+#woocommerce-order-notes {
+  .wpsms-addNoteMetabox__elements {
+    display: none;
+  }
+
+  label[for="wpsms_note_send"] {
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  .wpsms-addNoteMetabox__result__report {
+    padding: 10px 15px;
+    border: 1px solid #f0f0f1;
+    border-radius: 8px;
+    margin: 10px 0;
+    transition: .3s all ease-out;
+    display: none;
+
+    .wpsms-addNoteMetabox__result__icon {
+      display: inline-block;
+      transform: translateY(5px);
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+      transition: .3s all ease-out;
+    }
+
+    &.success .wpsms-addNoteMetabox__result__icon {
+      background: url("../images/icons/green-check-fill.png") no-repeat center center / contain;
+    }
+
+    &.error .wpsms-addNoteMetabox__result__icon {
+      background: url("../images/icons/red-alert.png") no-repeat center center / contain;
+    }
+
+    p {
+      font-size: 15px;
+      font-weight: 400;
+      color: #545454;
+      line-height: 1.8 !important;
+      margin-bottom: 20px;
+      text-align: justify;
+      display: inline;
+    }
+  }
+}

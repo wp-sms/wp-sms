@@ -1,0 +1,32 @@
+.wpsms-button {
+  background: #F88E40 !important;
+  border-radius: 8px;
+  display: inline-block;
+  cursor: pointer;
+  color: #fff !important;
+  font-family: inherit;
+  padding: 13px 32px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18px;
+  text-decoration: none;
+  border: none !important;
+  transition: 0.2s ease-in-out;
+  width: 100%;
+
+  &:focus, &:active {
+    text-decoration: none !important;
+  }
+
+  &:hover {
+    background: #EF771F !important;
+    text-decoration: none !important;
+  }
+
+  &:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+    pointer-events: none;
+  }
+}

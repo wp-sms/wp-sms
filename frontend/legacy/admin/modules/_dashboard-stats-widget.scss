@@ -1,0 +1,79 @@
+#wp-sms-stats-widget {
+    .inside {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .stats-widget {
+
+        position: relative;
+
+        .controls {
+            box-sizing: border-box;
+            display: flex;
+            margin-top: 0;
+            justify-content: space-between;
+            padding: 13px;
+            width: 100%;
+            background-color: #fafafa;
+        }
+
+        .totals {
+            width: 100%;
+            border-collapse: collapse;
+
+            tr {
+                display: flex;
+                font-size: 1.1em;
+            }
+
+            td {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px 0;
+                border: 1px solid #eee;
+                flex-grow: 1;
+                flex-basis: 0;
+
+                img {
+                    margin-right: 5px;
+                    width: 18px;
+                }
+            }
+        }
+
+        .chart {
+            padding: 10px;
+        }
+
+        .two-way-promotion {
+            display: none;
+            background-color: white;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            width: 70%;
+            text-align: center;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+                rgba(0, 0, 0, 0.22) 0px 15px 12px;
+        }
+
+        .blur {
+            filter: blur(3px);
+        }
+    }
+}
+
+.rtl {
+    .stats-widget{
+        .totals{
+            img {
+              margin-right: 0;
+              margin-left: 5px;
+            }
+        }
+    }
+}

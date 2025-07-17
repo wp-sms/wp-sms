@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "wp-sms-blocks/send-sms",
+  "title": "Send SMS",
+  "category": "wp-sms-blocks",
+  "icon": "email",
+  "description": "Send SMS form block",
+  "editorScript": "wp-sms-send-sms-block-editor",
+  "editorStyle": "wp-sms-send-sms-block-editor",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Send SMS"
+    },
+    "description": {
+      "type": "string",
+      "default": "Please use this form for sending SMS"
+    },
+    "onlyLoggedUsers": {
+      "type": "boolean",
+      "default": false
+    },
+    "userRole": {
+      "type": "string",
+      "default": "administrator"
+    },
+    "maxCharacters": {
+      "type": "number",
+      "default": 160
+    },
+    "receiver": {
+      "type": "string",
+      "default": "numbers"
+    },
+    "subscriberGroup": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "example": {
+    "attributes": {
+      "title": "Send SMS",
+      "description": "Please use this form for sending SMS"
+    }
+  },
+  "supports": {
+    "html": false
+  }
+}

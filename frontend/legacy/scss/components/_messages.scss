@@ -1,0 +1,31 @@
+.wpsms-subscribe__messages {
+  //margin: 16px 0;
+}
+
+.wpsms-subscribe__messages {
+  display: block;
+  margin: 0 0 7px;
+  width: 100%;
+}
+
+.wpsms-subscribe__message {
+  box-sizing: border-box;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.6;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  color: #222;
+  margin: 16px 0;
+  display: block;
+  border-radius: 8px;
+}
+
+.wpsms-subscribe__message--error {
+  border-color: #aa2a2a;
+}
+
+.wpsms-subscribe__message--success {
+  border-color: #65B15C;
+}

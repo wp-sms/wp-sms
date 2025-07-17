@@ -1,0 +1,1084 @@
+/**
+Send SMS page
+ */
+
+.send-sms-post {
+  label {
+    font-weight: 600;
+    color: #222222;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .wpsms-field-help {
+    font-size: 13px;
+    color: #5b5b5b;
+    font-weight: 400;
+    margin-top: 6px;
+  }
+
+  textarea {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #d0d1d6;
+    padding: 10px 10px;
+    height: 180px;
+  }
+
+  select,
+  input {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #d0d1d6;
+    padding: 8px 12px;
+    min-width: 230px;
+  }
+
+  td {
+    vertical-align: top;
+  }
+
+  .select2-container--below,
+  .select2-container--default,
+  .select2-container--focus {
+    width: 100% !important;
+  }
+
+  .description {
+    font-weight: 600;
+    color: #222222;
+    max-width: 400px;
+  }
+
+  .short-codes {
+    min-width: 270px;
+    max-width: 400px;
+  }
+
+  .short-codes code {
+    display: inline-block;
+    background: rgba(0, 0, 0, .07);
+    border-radius: 4px;
+    padding: 0px 6px 1px 6px;
+    color: #5b5b5b;
+    cursor: pointer;
+    margin-bottom: 6px;
+    font-weight: 400;
+    transition: 0.3s all ease-out;
+    font-size: 12px;
+
+    &:hover {
+      background: rgba(0, 0, 0, .2);
+    }
+  }
+
+  .sms-shortcode-label {
+    font-weight: 700;
+    margin-bottom: 12px;
+    margin-top: 32px;
+    text-transform: uppercase;
+  }
+}
+
+.wpsms-settings-header-field {
+  font-size: 12px;
+  font-weight: normal;
+  color: #7f7f7f;
+  white-space: normal;
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  @media screen and (max-width: 768px) {
+    align-items: self-end;
+    flex-direction: column;
+  }
+
+  .wpsms-settings-description-title {
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
+
+.rtl .wpsms-settings-header-field .wpsms-settings-description-title {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.wpsms-settings-description-header {
+  display: inline-block;
+
+  a {
+    color: #F88E40;
+    background: #f1e6df;
+    text-decoration: none;
+    line-height: 24px;
+    font-size: 11px;
+    border-radius: 2px;
+    font-weight: 600;
+    padding: 0 7px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important;
+
+    .dashicons {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    &:hover {
+      color: #EF771F;
+      background: #f3dfd2;
+    }
+  }
+}
+
+.wpsms-settings-description-header .dashicons {
+  font-size: 15px;
+  display: inherit;
+}
+
+.wpsms-sendsms__preview {
+  margin-left: 32px;
+  margin-top: 10px;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+
+  .preview {
+    background-color: #fff;
+    border: 1px solid #e7e7e7;
+    box-sizing: border-box;
+    border-radius: 55px;
+    height: 550px;
+    width: 285px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .preview__screen {
+      margin-top: 30px;
+      border: 1px solid #e7e7e7;
+      width: 80%;
+      height: 72%;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+    }
+
+    .preview__button {
+      border: 1px solid #e7e7e7;
+      width: 30%;
+      height: 10px;
+    }
+  }
+}
+
+.preview__message {
+  background: #f7f7f7;
+  border-radius: 15px 15px 15px 0;
+  width: 85%;
+  padding: 10px 15px;
+  max-height: 380px;
+}
+
+.preview__message__number,
+.preview__message__message {
+  margin: 0 0 16px;
+  color: #5b5b5b;
+}
+
+.preview__message__number {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 22px;
+}
+
+.preview__message__message-wrapper {
+  max-height: 265px;
+  overflow-y: auto;
+}
+
+.preview__message__message {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 22px;
+  overflow-y: visible;
+  word-break: break-word;
+  padding: 0 5px;
+}
+
+.preview__message__image {
+  margin: 10px 0;
+}
+
+.preview__message__date {
+  margin: 0;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 16px;
+  color: #808080;
+  text-align: right;
+}
+
+.wpsms-sendsms__overlay {
+  display: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  width: 100%;
+  z-index: 3;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+
+.wpsms-sendsms__overlay__spinner {
+  width: 100px;
+  margin: auto;
+  display: block;
+  background: 0 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.wpsms-wrap .wpsms-wrap__main__notice {
+  display: none !important;
+
+  &.not-hidden {
+    display: flex !important;
+  }
+}
+
+.wpsms-users-roles {
+  margin-top: 10px;
+}
+
+.wpsms-wrap #datepicker {
+  background-color: #fff;
+}
+
+// RTL
+.rtl {
+  .wpsms-sendsms__preview {
+    margin: 10px 32px 0 0;
+  }
+
+  .preview__message__date,
+  .preview__message__number {
+    direction: ltr;
+    text-align: right;
+  }
+}
+
+// Mobile
+
+@media screen and (max-width: 768px) {
+  .wpsms-wrap__main {
+    .select2-container {
+      width: 100% !important;
+    }
+
+    #wp_get_message {
+      width: 100% !important;
+    }
+  }
+
+  .wpsms-header-banner {
+    max-width: 100%;
+  }
+}
+
+/**
+New styles for new version of the page
+ */
+.wpsms-sendsms {
+  background-color: white;
+  position: relative;
+  padding: 20px 20px;
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+  }
+
+  $dark-gray: #222222;
+  $brand-orange: #f26c2d;
+  $brand-highlight: #ff8349;
+  $borders-color: #828282;
+
+  .sendsms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    position: relative;
+
+    .budget {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      .icon {
+        margin-right: 7px;
+        width: 25px;
+        height: 25px;
+        background: url("../images/icons/box-icon.png") no-repeat center center / contain;
+      }
+
+      p {
+        color: $dark-gray;
+        font-weight: 300;
+        font-size: 15px;
+
+        span {
+          font-weight: 600;
+        }
+      }
+    }
+
+    .pro-button {
+      color: $brand-orange;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      .icon {
+        margin-left: 5px;
+        width: 12px;
+        height: 12px;
+        background: url("../images/icons/orange-chev.png") no-repeat center center / contain;
+      }
+
+      &.is-pro {
+        .icon {
+          background: url("../images/icons/orange-star.png") no-repeat center center / contain;
+          width: 15px;
+          height: 15px;
+          transform: translateY(-2px);
+        }
+      }
+    }
+
+    .rtl & {
+      .pro-button {
+        .icon {
+          margin-left: 0;
+          margin-right: 5px;
+          transform: scaleX(-1);
+        }
+      }
+
+      .budget {
+        .icon {
+          margin-left: 7px;
+          margin-right: 0px;
+        }
+      }
+    }
+
+    @media (max-width: 400px) {
+      flex-wrap: wrap;
+
+      .pro-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        .rtl & {
+          right: auto;
+          left: 0;
+        }
+      }
+    }
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 600;
+    color: $dark-gray;
+    margin: 0;
+
+    @media (max-width: 400px) {
+      margin: 10px 0 30px 0;
+    }
+  }
+
+  .sendsms-tabs {
+    max-width: 500px;
+    margin: 40px auto 0px auto;
+
+    display: flex;
+    //align-items: center;
+    justify-content: space-between;
+
+    .tab {
+      font-size: 15px;
+      font-weight: 500;
+      color: $dark-gray;
+      text-align: center;
+      position: relative;
+      display: block;
+      flex: 0 0 25%;
+      cursor: pointer;
+      padding: 10px 0;
+      transition: .3s all ease-out;
+
+      &.active::before,
+      &.passed::before {
+        content: "";
+        width: 100%;
+        height: 3px;
+        position: absolute;
+        background-color: $brand-orange;
+        top: 61px;
+        left: 50%;
+        transform: translateX(-50%);
+        //transition: .3s all ease-out;
+      }
+
+      &.active::before {
+        width: 100%;
+        left: 0;
+      }
+
+      &#content::before {
+        transform: translateX(0);
+      }
+
+      &#content.active::before {
+        width: 0;
+      }
+
+      &::after {
+        content: "";
+        background: url("../images/icons/next-step-outline.png") no-repeat center center / contain;
+        width: 18px;
+        height: 18px;
+        position: absolute;
+        top: 53px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        transition: .3s all ease-out;
+      }
+
+      &.passed::after,
+      &.active::after {
+        background: url("../images/icons/next-step-fill.png") no-repeat center center / contain;
+      }
+
+      &.active {
+        color: $brand-orange;
+      }
+    }
+
+    .rtl & {
+      .tab::after {
+        transform: scaleX(-1) translateX(50%);
+      }
+
+      .tab.passed::before,
+      .tab.active::before {
+        left: auto;
+        right: 50%;
+        transform: translateX(50%);
+      }
+
+      .tab.active::before {
+        left: auto;
+        right: 0;
+      }
+    }
+
+    @media (max-width: 400px) {
+      margin-top: 0px;
+
+      .tab {
+        font-size: 14px;
+
+        &.passed::before,
+        &.active::before {
+          top: 49px;
+        }
+
+        &::after {
+          top: 42px;
+        }
+      }
+    }
+  }
+
+  .sendsms-tabs-line {
+    width: 100%;
+    height: 2px;
+    background-color: #f0f0f1;
+    margin-bottom: 80px;
+    margin-top: 24px;
+
+    @media (max-width: 400px) {
+      margin-bottom: 30px;
+      margin-top: 12px;
+    }
+  }
+
+  .sendsms-content {
+    max-width: 500px;
+    margin: auto;
+    position: relative;
+    min-height: 40vh;
+    margin-bottom: 100px;
+
+    .select2-container {
+      min-width: 350px;
+
+      &:not(.TB_ajaxContent) {
+        min-width: 285px;
+      }
+
+      .select2-selection--single {
+        height: 45px;
+        border-color: #5b5b5b;
+        border-radius: 2px;
+
+        .select2-selection__rendered {
+          line-height: 33px;
+          padding-left: 14px;
+        }
+
+        .select2-selection__arrow {
+          top: 8px !important;
+          right: 7px !important;
+        }
+      }
+
+      .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #f88d40;
+      }
+
+      .select2-selection--multiple {
+        padding: 3px 2px;
+      }
+
+      .select2-search--inline {
+        .select2-search__field {
+          height: 26px;
+        }
+      }
+    }
+
+
+    .wpsms-sendsms-result {
+      padding: 10px 15px;
+      border: 1px solid #f0f0f1;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      display: none;
+      transition: .3s all ease-out;
+
+      p {
+        color: $dark-gray;
+        line-height: 1.8 !important;
+        font-size: 16px;
+        text-align: justify;
+        display: inline;
+      }
+
+      .icon {
+        display: inline-block;
+        transform: translateY(5px);
+        width: 20px;
+        height: 20px;
+        margin-right: 6px;
+        transition: .3s all ease-out;
+      }
+
+      &.success .icon {
+        background: url("../images/icons/green-check-fill.png") no-repeat center center / contain;
+      }
+
+      &.error .icon {
+        background: url("../images/icons/red-alert.png") no-repeat center center / contain;
+      }
+
+      .rtl & {
+        .icon {
+          margin-right: 0px;
+          margin-left: 8px;
+        }
+      }
+    }
+
+    .content-field,
+    .mms-media-field,
+    .bulk-field,
+    .from-field,
+    .repeat-field,
+    .repeat-every-field,
+    .wpsms-users-field,
+    .wpsms-group-field,
+    .repeat-end-field,
+    .other-scheduled-field,
+    .flash-field,
+    .to-field,
+    .set-date-field,
+    .schedule-field {
+      margin: 30px 0;
+
+      @media (max-width: 400px) {
+        margin: 20px 0;
+      }
+    }
+
+    .mms-media-field .wpsms-upload-button {
+      margin: 10px 0;
+    }
+
+    .flash-field {
+      margin-top: 40px;
+
+      .radio-options {
+        display: block;
+        margin: 20px 0;
+
+        input[type="radio"]:checked {
+          transform: translateY(1px);
+
+          &::before {
+            transform: translateX(1px);
+          }
+
+          @media (max-width: 400px) {
+            &::before {
+              transform: translateX(0);
+            }
+          }
+        }
+      }
+    }
+
+    .repeat-end-field {
+      display: flex;
+      align-items: center;
+
+      .date-picker {
+        flex: 0 0 60%;
+      }
+
+      .repeat-forever {
+        margin-left: 20px;
+        transform: translateY(7px);
+      }
+
+      .rtl & {
+        .repeat-forever {
+          margin-left: 0px;
+          margin-right: 20px;
+        }
+      }
+    }
+
+    label {
+      text-transform: uppercase;
+      text-align: left;
+      color: $dark-gray;
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    textarea {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      max-width: none;
+    }
+
+    span.select2 {
+      display: block;
+      max-width: none;
+      margin: 10px 0;
+    }
+
+    input[type="text"] {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      display: block;
+
+      .rtl & {
+        direction: ltr;
+        text-align: left;
+      }
+    }
+
+    .repeat-every-field {
+      select {
+        display: inline-block;
+        width: 80px;
+        margin-left: 10px;
+      }
+
+      input {
+        display: inline-block;
+        width: 80px;
+      }
+
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .rtl & {
+        select {
+          margin-left: 0;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    input[type="select"] {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    select {
+      border: 1px solid $borders-color;
+      border-radius: 3px;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      display: block;
+      max-width: none;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      background-color: $brand-orange;
+      border: none !important;
+      margin-right: 10px;
+      transform: translateY(2px);
+
+      &:checked {
+        background-color: $brand-orange;
+
+        &::before {
+          height: 20px !important;
+          width: 20px !important;
+          transform: translate(1px, 1px);
+
+          .rtl & {
+            transform: translate(-2px, 2px);
+          }
+        }
+      }
+
+      .rtl & {
+        margin-right: 0px;
+        margin-left: 5px;
+      }
+    }
+
+    .field-description {
+      color: #545454;
+      font-size: 15px;
+      text-align: justify;
+      line-height: 1.8 !important;
+      margin-bottom: 10px;
+
+      a {
+        color: #0b84b2;
+      }
+    }
+
+    .pro-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .pro {
+        border-radius: 3px;
+        background-color: #ffcc00;
+        padding: 2px 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        text-transform: uppercase;
+        transition: 0.3s all ease-out;
+        font-size: 12px;
+        font-weight: 400;
+
+        .icon {
+          width: 11px;
+          height: 11px;
+          margin-right: 3px;
+          background: url("../images/icons/star.png") no-repeat center center /
+            contain;
+          transition: 0.3s all ease-out;
+        }
+
+        &.not-pro .icon {
+          background: url("../images/icons/dark-lock.png") no-repeat center center / contain;
+        }
+
+        &:hover {
+          background-color: black;
+          color: white;
+
+          .icon {
+            background: url("../images/icons/white-star.png") no-repeat center center / contain;
+          }
+
+          &.not-pro .icon {
+            background: url("../images/icons/white-lock.png") no-repeat center center / contain;
+          }
+        }
+      }
+
+      .rtl & {
+        .pro .icon {
+          margin-right: 0;
+          margin-left: 3px;
+        }
+      }
+    }
+
+    .summary {
+      margin: 40px 0;
+
+      h4 {
+        text-align: left;
+        font-weight: 600;
+        color: $dark-gray;
+        margin: 5px 0;
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 15px;
+        font-weight: 400;
+        color: #545454;
+        line-height: 1.8 !important;
+        margin-bottom: 20px;
+
+        &.preview__message__message {
+
+          .icon {
+            width: 17px;
+            height: 17px;
+            display: inline-block;
+            transform: translateY(3px);
+            margin-right: 5px;
+            background: url("../images/icons/orange-alert.png") no-repeat center center / contain;
+          }
+
+          .empty-content {
+            color: $brand-orange;
+          }
+        }
+      }
+
+      .receiver {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        p {
+          margin: 5px 0;
+
+          &::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: url("../images/icons/send-icon.png") no-repeat center center/ contain;
+            display: inline-block;
+            transform: translateY(2px);
+            margin-right: 7px;
+          }
+        }
+
+        span {
+          font-size: 15px;
+          display: inline-block;
+        }
+      }
+
+      .rtl & {
+        h4 {
+          text-align: right;
+        }
+
+        p.preview__message__message {
+          .icon {
+            margin-right: 0px;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+
+    .sendsms-button,
+    .sendsms-again-button {
+      background-color: $brand-orange;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 400;
+      margin: 50px 0;
+      transition: all 0.3s ease-out;
+      border-radius: 8px;
+      padding: 10px 10px;
+      color: white;
+      cursor: pointer;
+      outline: none;
+      width: 100%;
+      border: none;
+
+      &#SendSMSAgain {
+        display: block;
+        background-color: black;
+      }
+
+      &.send-again {
+        display: none;
+      }
+
+      &:hover {
+        background-color: $brand-highlight;
+      }
+
+      &.inactive {
+        background-color: #f9f9f9;
+        color: #a1a1a1;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+
+    .previous-button,
+    .next-button {
+      z-index: 1;
+      position: absolute;
+      bottom: -80px;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      transition: 0.3s all ease-out;
+      padding: 10px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &.inactive {
+        background-color: #f9f9f9;
+        color: #d9d9d9;
+        cursor: auto;
+      }
+
+      span {
+        width: 20px;
+        height: 15px;
+      }
+    }
+
+    .previous-button {
+      left: 0;
+
+      span {
+        background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
+        margin-right: 8px;
+      }
+
+      &.inactive span {
+        background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+      }
+    }
+
+    .next-button {
+      right: 0;
+
+      span {
+        background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
+        margin-left: 8px;
+      }
+
+      &.inactive span {
+        background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+      }
+    }
+
+    .rtl & {
+      .previous-button {
+        span {
+          background: url("../images/icons/right-arrow.png") no-repeat center center / contain;
+          margin-right: 0;
+          margin-left: 8px;
+        }
+
+        &.inactive span {
+          background: url("../images/icons/right-arrow-gray.png") no-repeat center center / contain;
+        }
+      }
+
+      .next-button {
+        span {
+          background: url("../images/icons/left-arrow.png") no-repeat center center / contain;
+          margin-left: 0px;
+          margin-right: 8px;
+        }
+
+        &.inactive span {
+          background: url("../images/icons/left-arrow-gray.png") no-repeat center center / contain;
+        }
+      }
+    }
+
+    @media (max-width: 400px) {
+      padding: 10px 10px;
+
+      .previous-button {
+        left: 10px;
+      }
+
+      .next-button {
+        right: 10px;
+      }
+    }
+  }
+
+  @media (max-width: 400px) {
+    padding: 20px 10px;
+  }
+}
+
+#wpbody-content:has(.wpsms-sendsms) {
+  padding-bottom: 0px;
+  min-height: 100vh;
+  position: relative;
+}
+
+body.wp-admin:has(.wpsms-sendsms) {
+  background-color: white;
+}
+

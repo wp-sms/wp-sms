@@ -1,0 +1,20 @@
+.sms_page_wp-sms {
+  #TB_ajaxContent {
+    overflow: auto;
+    max-height: 450px;
+  }
+
+  .wp-sms-upload-form {
+    table {
+      width: 100%;
+    }
+
+    td {
+      width: 33%;
+    }
+
+    select {
+      width: 100%;
+    }
+  }
+}

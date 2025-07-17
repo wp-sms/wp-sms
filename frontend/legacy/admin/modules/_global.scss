@@ -1,0 +1,344 @@
+.sms_page_wp-sms,
+.sms_page_wp-sms-settings,
+.sms_page_wp-sms-subscribers-privacy,
+.sms_page_wp-sms-inbox,
+.sms_page_wp-sms-add-ons,
+.toplevel_page_wp-sms,
+.sms_page_wp-sms-outbox,
+.sms_page_wp-sms-subscribers,
+.sms_page_wp-sms-subscribers-group,
+.sms_page_wp-sms-settings.sms_page_wp-sms-pro,
+.sms_page_wp-sms-scheduled,
+.sms_page_wp-sms-commands {
+
+  #wpcontent {
+    padding: 0;
+  }
+
+  .wpsms-wrap {
+    margin: 0;
+
+    .wrap__title {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  #wpcontent .notice {
+    margin: 20px !important;
+  }
+
+  #wpcontent .wpsms-wrap__main .notice {
+    margin: 20px 0 0 !important;
+  }
+
+  #wpcontent .notice {
+    margin: 20px !important;
+  }
+
+  #wpcontent .notice {
+    margin: 20px 0 !important;
+  }
+
+  #wpcontent .notice {
+    margin: 20px !important;
+  }
+
+  #TB_window {
+    input[type="text"], input[type="number"], select {
+      padding: 8px 16px;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      border: 1px solid #5B5B5B !important;
+      box-sizing: border-box;
+      border-radius: 2px;
+      height: 38px;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      box-shadow: 0 0 0 1px #F88E40;
+      border-color: #F88E40 !important;
+      outline: 2px solid transparent;
+    }
+
+    select:hover, select:hover option {
+      color: #000 !important;
+    }
+
+    input[type="text"]::placeholder, input[type="number"]::placeholder, select::placeholder {
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      color: #000000;
+    }
+
+    input[type="checkbox"] {
+      background: #fff;
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      border: 1px solid #5B5B5B !important;
+      transition: 0.2s;
+      min-height: 16px !important;
+      min-width: 16px !important;
+    }
+
+    input[type="checkbox"]:hover {
+      border-color: #F88E40 !important;
+    }
+
+    input[type="checkbox"]:checked {
+      background: #F88E40;
+      border-color: #F88E40 !important;
+    }
+
+    input[type="checkbox"]:checked::before {
+      margin: -.04rem 0 0 -.9rem !important;
+      content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23fff%27%2F%3E%3C%2Fsvg%3E") !important;
+      height: 1rem !important;
+      width: 1rem !important;
+    }
+
+    .button {
+      background: #fff;
+      border: 1px solid #D6D6D6;
+      box-sizing: border-box;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      border-radius: 2px;
+      color: #000;
+      transition: 0.2s;
+    }
+
+
+    .button-primary {
+      font-weight: 600 !important;
+      font-size: 16px;
+      line-height: 17px;
+      padding: 13px 24px;
+      border-radius: 2px;
+      transition: 0.2s;
+      background: #F88E40;
+      border-color: #F88E40;
+      color: #fff !important;
+    }
+
+    .button-primary:hover {
+      background-color: #EF771F;
+      border-color: #EF771F;
+    }
+
+    .button-primary:focus {
+      background-color: #EF771F;
+      border-color: #EF771F;
+      box-shadow: 0 0 0 1px #EF771F;
+      outline: 2px solid transparent;
+    }
+
+    #TB_title {
+      height: 50px;
+      font-size: 15px;
+    }
+
+    #TB_ajaxWindowTitle {
+      padding: 10px 29px 10px 10px;
+    }
+
+    #TB_closeAjaxWindow {
+      button {
+        top: 10px;
+        right: 10px;
+
+        &:hover .tb-close-icon {
+          color: #EF771F;
+        }
+
+        &:focus .tb-close-icon {
+          color: #EF771F;
+          box-shadow: 0 0 0 1px #EF771F;
+          outline: 2px solid transparent;
+        }
+      }
+    }
+
+    .iti--allow-dropdown input {
+      padding-right: 6px !important;
+      padding-left: 52px !important;
+      left: auto !important;
+      right: auto !important;
+    }
+  }
+}
+
+.sms_page_wp-sms-commands {
+  .wpsms-header-banner {
+    margin-left: 0 !important;
+  }
+
+  .wpsms-wrap-woo-pro {
+    margin-left: 0 !important;
+  }
+}
+
+.sms_page_wp-sms-commands #wpbody-content {
+  margin: 0;
+
+  .wrap {
+    margin: 10px 20px 0 20px !important;
+  }
+}
+
+.sms_page_wp-sms-commands.rtl .wpsms-wrap-woo-pro {
+  margin: 0 !important;
+}
+
+.wrap.wpsms-wrap {
+  margin: 0;
+}
+
+.sms_page_wp-sms.rtl {
+  table {
+    td, th {
+      text-align: right !important;
+    }
+  }
+
+  #TB_closeWindowButton {
+    right: auto !important;
+    left: 10px;
+  }
+
+  #TB_ajaxWindowTitle {
+    padding: 10px 10px 10px 29px !important;
+    text-align: right !important;
+  }
+
+  .select2-selection--multiple .select2-selection__choice {
+    margin-left: 0;
+    margin-right: 5px;
+  }
+
+  .select2-container .select2-search--inline .select2-search__field {
+    margin-left: 0;
+    margin-right: 5px;
+  }
+}
+
+.footer-left-wpsms {
+  font-weight: 400;
+  text-decoration: none !important;
+  color: #50575E !important
+}
+
+.wp-sms-woo-commerce-pro-settings {
+  textarea, .select2-container {
+    max-width: 100% !important;
+  }
+}
+
+//Mobile header
+.post-type-wpsms-command #feedback-bird-app, .sms_page_wp-sms #feedback-bird-app, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment #feedback-bird-app,
+.sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
+  display: none;
+}
+
+.wpsms-wrap__top {
+  h2, h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (max-width: 1030px) {
+  .rtl .wpsms-wrap__top h2, .rtl .wpsms-wrap__top h1 {
+    float: right
+  }
+  .wpsms-header-items-side > #feedback-bird-app {
+    display: none !important;
+  }
+  .wpsms-mobile-menu #feedback-bird-app {
+    padding: 12px;
+
+    .c-fbb-btn--default {
+      color: #4E5154 !important;
+      background: none;
+      width: 100%;
+      opacity: 1 !important;
+
+      & > span {
+        display: flex !important;
+        align-items: center;
+
+        &:before {
+          content: '';
+          margin-right: 10px;
+          width: 16px;
+          height: 19px;
+          display: inline-flex;
+          background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xMC4wNTM0IDE5LjE2NjhDNC45OTA3NyAxOS4xNjY4IDAuODg2NzE5IDE1LjA2MjcgMC44ODY3MTkgMTAuMDAwMkMwLjg4NjcxOSA0LjkzNzU1IDQuOTkwNzcgMC44MzM0OTYgMTAuMDUzNCAwLjgzMzQ5NkMxNS4xMTYgMC44MzM0OTYgMTkuMjIwMSA0LjkzNzU1IDE5LjIyMDEgMTAuMDAwMkMxOS4yMjAxIDE1LjA2MjcgMTUuMTE2IDE5LjE2NjggMTAuMDUzNCAxOS4xNjY4Wk0xMC4wNTM0IDE3LjMzMzVDMTQuMTAzNSAxNy4zMzM1IDE3LjM4NjcgMTQuMDUwMyAxNy4zODY3IDEwLjAwMDJDMTcuMzg2NyA1Ljk1MDA3IDE0LjEwMzUgMi42NjY4MyAxMC4wNTM0IDIuNjY2ODNDNi4wMDMzIDIuNjY2ODMgMi43MjAwNSA1Ljk1MDA3IDIuNzIwMDUgMTAuMDAwMkMyLjcyMDA1IDE0LjA1MDMgNi4wMDMzIDE3LjMzMzUgMTAuMDUzNCAxNy4zMzM1Wk02LjM4NjcyIDEwLjkxNjhIMTMuNzIwMUMxMy43MjAxIDEyLjk0MTggMTIuMDc4NCAxNC41ODM1IDEwLjA1MzQgMTQuNTgzNUM4LjAyODM0IDE0LjU4MzUgNi4zODY3MiAxMi45NDE4IDYuMzg2NzIgMTAuOTE2OFpNNi4zODY3MiA5LjA4MzVDNS42MjczMiA5LjA4MzUgNS4wMTE3MiA4LjQ2Nzg2IDUuMDExNzIgNy43MDg1QzUuMDExNzIgNi45NDkxIDUuNjI3MzIgNi4zMzM1IDYuMzg2NzIgNi4zMzM1QzcuMTQ2MTEgNi4zMzM1IDcuNzYxNzIgNi45NDkxIDcuNzYxNzIgNy43MDg1QzcuNzYxNzIgOC40Njc4NiA3LjE0NjExIDkuMDgzNSA2LjM4NjcyIDkuMDgzNVpNMTMuNzIwMSA5LjA4MzVDMTIuOTYwNyA5LjA4MzUgMTIuMzQ1MSA4LjQ2Nzg2IDEyLjM0NTEgNy43MDg1QzEyLjM0NTEgNi45NDkxIDEyLjk2MDcgNi4zMzM1IDEzLjcyMDEgNi4zMzM1QzE0LjQ3OTQgNi4zMzM1IDE1LjA5NTEgNi45NDkxIDE1LjA5NTEgNy43MDg1QzE1LjA5NTEgOC40Njc4NiAxNC40Nzk0IDkuMDgzNSAxMy43MjAxIDkuMDgzNVoiIGZpbGw9IiM0RTUxNTQiLz4KPC9zdmc+Cg==") center center/contain no-repeat;
+        }
+      }
+    }
+  }
+  .wpsms-header-items-side {
+    right: 24px !important;
+    bottom: 6px !important;
+
+    .wpsms-mobile-menu {
+      display: block;
+    }
+  }
+  .wpsms-header-items-side {
+    & > .license-status, & > .setting, & > .support {
+      display: none !important;
+    }
+  }
+  .wpsms-wrap-woo-pro a.page-title-action {
+    display: inline-block;
+  }
+  .sms_page_wp-sms #show-settings-link {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 20px;
+    min-height: 33px;
+
+    &:after {
+      bottom: -1px;
+    }
+  }
+  .wpsms-header-banner .wpsms-header-logo {
+    width: 109px !important;
+    height: 30px !important;
+  }
+  .wpsms-header-banner .wpsms-header-items-flex {
+    .outbox, .integrations {
+      display: none !important;
+    }
+  }
+  .wpsms-wrap__top {
+    display: block !important;
+    padding: 15px 19px !important;
+
+    h2, h1 {
+      display: inline !important;
+      float: left;
+      margin-top: 8px;
+    }
+
+    .wpsms-button-group {
+      display: inline !important;
+
+      a {
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.post-type-wpsms-command .subsubsub {
+  float: none
+}
