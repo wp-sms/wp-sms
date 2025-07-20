@@ -47,6 +47,7 @@ class Manager
                 'sender'    => 'VARCHAR(20) NOT NULL',
                 'message'   => 'TEXT NOT NULL',
                 'recipient' => 'TEXT NOT NULL',
+                'media'     => 'TEXT',
                 'response'  => 'TEXT NOT NULL',
                 'status'    => 'VARCHAR(10) NOT NULL',
             ],
