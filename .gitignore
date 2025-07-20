@@ -48,3 +48,5 @@ frontend/build
 .phpunit.result.cache
 
 .cursorignore
+*storybook.log
+storybook-static
