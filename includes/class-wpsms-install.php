@@ -70,9 +70,6 @@ class Install
         require_once WP_SMS_DIR . 'src/Services/Database/Managers/TableHandler.php';
 
         global $wp_sms_db_version, $wpdb;
-
-        add_option('wp_sms_db_version', WP_SMS_VERSION);
-
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
 
@@ -95,6 +92,7 @@ class Install
         }
 
         $this->markBackgroundProcessAsInitiated();
+        add_option('wp_sms_db_version', WP_SMS_VERSION);
     }
 
     private function markBackgroundProcessAsInitiated()
