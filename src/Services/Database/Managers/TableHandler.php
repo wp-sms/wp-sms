@@ -18,10 +18,7 @@ use WP_SMS\Services\Database\Schema\Manager;
 class TableHandler
 {
     /**
-     * Create all database tables if they do not already exist.
-     *
-     * This method iterates through all known table names, inspects each table,
-     * and creates it if it is missing using the predefined schema.
+     * Create all database tables and add missing columns if they don't exist.
      *
      * @return void
      * @throws \RuntimeException If a table creation or inspection fails.
@@ -38,11 +35,10 @@ class TableHandler
 
                 if (!$inspect->getResult()) {
                     $schema = Manager::getSchemaForTable($tableName);
-
-                    DatabaseFactory::table('create')
-                        ->setName($tableName)
-                        ->setArgs($schema)
-                        ->execute();
+                    self::createTable($tableName, $schema);
+                } else {
+                    $schema = Manager::getSchemaForTable($tableName);
+                    self::addMissingColumns($tableName, $schema);
                 }
             } catch (\Exception $e) {
                 throw new \RuntimeException("Failed to inspect or create table `$tableName`: " . $e->getMessage(), 0, $e);
@@ -75,13 +71,35 @@ class TableHandler
     }
 
     /**
-     * Create a single table.
+     * Add missing columns to an existing table.
      *
-     * @param string $tableName The name of the table to create.
-     * @param array $schema The schema for the table.
+     * @param string $tableName The name of the table
+     * @param array $schema The expected schema including columns
      * @return void
-     * @throws \RuntimeException If the table creation fails.
+     * @throws \RuntimeException If column addition fails
      */
+    public static function addMissingColumns(string $tableName, array $schema)
+    {
+        global $wpdb;
+
+        if (!isset($schema['columns'])) {
+            return;
+        }
+        $prefixedTableName   = $wpdb->prefix . 'sms_' . $tableName;
+        $existingColumns     = $wpdb->get_results("SHOW COLUMNS FROM `{$prefixedTableName}`", ARRAY_A);
+        $existingColumnNames = array_column($existingColumns, 'Field');
+
+        foreach ($schema['columns'] as $columnName => $definition) {
+            if (!in_array($columnName, $existingColumnNames)) {
+                try {
+                    $wpdb->query("ALTER TABLE `{$prefixedTableName}` ADD COLUMN `{$columnName}` {$definition}");
+                } catch (\Exception $e) {
+                    throw new \RuntimeException("Failed to add column `{$columnName}` to table `{$prefixedTableName}`: " . $e->getMessage());
+                }
+            }
+        }
+    }
+
     public static function createTable(string $tableName, array $schema)
     {
         try {
