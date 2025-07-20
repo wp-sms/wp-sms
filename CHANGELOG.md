@@ -1,5 +1,6 @@
 v7.x
 - **Fix:** Fixed variable rendering in message content.
+- **Fix:** Fixed showing migration failed notice on not valid licenses.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
