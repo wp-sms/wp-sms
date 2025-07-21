@@ -65,15 +65,26 @@ class WP_SMS
 
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'activate'));
         register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'deactivate'));
+
+        add_action('init', array($this, 'upgrade'));
     }
 
     /**
-     * Install And Upgrade plugin
+     * Install plugin
      */
     public function activate($network_wide)
     {
         $class = new \WP_SMS\Install();
         $class->install($network_wide);
+    }
+
+    /**
+     * Upgrade plugin
+     */
+    public function upgrade()
+    {
+        $class = new \WP_SMS\Install();
+        $class->upgrade();
     }
 
     /**

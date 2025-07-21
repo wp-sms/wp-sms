@@ -16,6 +16,7 @@ class Install
 
     public function __construct()
     {
+        add_action('delete_blog', [$this, 'onSiteDelete'], 10, 2);
     }
 
     /**
@@ -73,10 +74,6 @@ class Install
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
 
-        if (is_admin()) {
-            self::upgrade();
-        }
-
         if (is_multisite() && $network_wide) {
             $blog_ids = $wpdb->get_col("SELECT `blog_id` FROM $wpdb->blogs");
             foreach ($blog_ids as $blog_id) {
@@ -110,6 +107,30 @@ class Install
      * Upgrade plugin requirements if needed
      */
     public function upgrade()
+    {
+        if (is_multisite()) {
+            $site_ids = get_sites(['fields' => 'ids']);
+            foreach ($site_ids as $site_id) {
+                switch_to_blog($site_id);
+                $this->runUpgradeForCurrentSite();
+                restore_current_blog();
+            }
+        } else {
+            $this->runUpgradeForCurrentSite();
+        }
+    }
+
+    /**
+     * Run upgrade routine for the current site context.
+     *
+     * This method checks the current database version and applies
+     * schema updates, table modifications, and new column additions.
+     * It is designed to be safely used in a multisite environment
+     * with switch_to_blog().
+     *
+     * @return void
+     */
+    private function runUpgradeForCurrentSite()
     {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -199,6 +220,33 @@ class Install
             $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
         }
     }
+
+    /**
+     * Handle site deletion in multisite: drop plugin tables
+     *
+     * @param int $blog_id
+     * @param bool $drop Whether to drop tables (true by default)
+     */
+    public static function onSiteDelete($blog_id, $drop = true)
+    {
+        if (!$drop || !is_multisite()) {
+            return;
+        }
+
+        switch_to_blog($blog_id);
+
+        try {
+            TableHandler::dropAllTables();
+        } catch (\Exception $e) {
+            WPSms()::log(
+                sprintf(__('WP SMS cleanup failed for site %d: %s', 'wp-sms'), $blog_id, $e->getMessage()),
+                'error'
+            );
+        }
+
+        restore_current_blog();
+    }
+
 
     /**
      * Create sms_otp table

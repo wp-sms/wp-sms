@@ -90,11 +90,18 @@ class TableHandler
         $existingColumnNames = array_column($existingColumns, 'Field');
 
         foreach ($schema['columns'] as $columnName => $definition) {
-            if (!in_array($columnName, $existingColumnNames)) {
-                try {
-                    $wpdb->query("ALTER TABLE `{$prefixedTableName}` ADD COLUMN `{$columnName}` {$definition}");
-                } catch (\Exception $e) {
-                    throw new \RuntimeException("Failed to add column `{$columnName}` to table `{$prefixedTableName}`: " . $e->getMessage());
+            $existingColumn = array_filter($existingColumns, function ($col) use ($columnName) {
+                return $col['Field'] === $columnName;
+            });
+
+            if (!$existingColumn) {
+                $wpdb->query("ALTER TABLE `{$prefixedTableName}` ADD COLUMN `{$columnName}` {$definition}");
+            } else {
+                $actualType   = strtoupper($existingColumn[array_key_first($existingColumn)]['Type']);
+                $expectedType = strtoupper($definition);
+
+                if ($actualType !== $expectedType) {
+                    $wpdb->query("ALTER TABLE `{$prefixedTableName}` MODIFY COLUMN `{$columnName}` {$definition}");
                 }
             }
         }

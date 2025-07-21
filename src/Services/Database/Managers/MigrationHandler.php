@@ -6,6 +6,7 @@ use WP_SMS\BackgroundProcess\Async\BackgroundProcessMonitor;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
+use WP_SMS\Utils\Request;
 
 /**
  * Handles database migration processes, including schema migrations
