@@ -80,14 +80,14 @@ class Admin
 
         // Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
-            wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', [], WP_SMS_VERSION);
+            wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'frontend/build/legacy/assets/admin-bar-styles.css', [], WP_SMS_VERSION);
             wp_enqueue_style('wpsms-admin-bar');
         }
 
         $screen = get_current_screen();
 
         // Register main plugin style
-        wp_register_style('wpsms-admin', WP_SMS_URL . 'assets/css/admin.css', [], WP_SMS_VERSION);
+        wp_register_style('wpsms-admin', WP_SMS_URL . 'frontend/build/legacy/assets/admin-styles.css', [], WP_SMS_VERSION);
 
         /**
          * Whole setting page's assets
@@ -97,13 +97,13 @@ class Admin
             wp_enqueue_script('wp-color-picker');
 
             if (stristr($screen->id, 'wp-sms')) {
-                wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', [], WP_SMS_VERSION);
-                wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION, false);
+                wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'frontend/build/legacy/assets/flatpickr-styles.css', [], WP_SMS_VERSION);
+                wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'frontend/build/legacy/flatpickr.js', array('jquery'), WP_SMS_VERSION, false);
                 
-                wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', [], WP_SMS_VERSION, false);
+                wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'frontend/build/legacy/jquery-repeater.js', [], WP_SMS_VERSION, false);
                 // tooltip
-                wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', [], WP_SMS_VERSION);
-                wp_enqueue_script('wpsms-tooltip', WP_SMS_URL . 'assets/js/tooltipster.bundle.js', [], WP_SMS_VERSION, false);
+                wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'frontend/build/legacy/assets/tooltipster-styles.css', [], WP_SMS_VERSION);
+                wp_enqueue_script('wpsms-tooltip', WP_SMS_URL . 'frontend/build/legacy/tooltipster-bundle.js', [], WP_SMS_VERSION, false);
             }
 
             if (!did_action('wp_enqueue_media')) {
@@ -113,7 +113,7 @@ class Admin
             wp_enqueue_style('wpsms-admin');
 
             if (is_rtl()) {
-                wp_enqueue_style('wpsms-rtl', WP_SMS_URL . 'assets/css/rtl.css', [], WP_SMS_VERSION);
+                wp_enqueue_style('wpsms-rtl', WP_SMS_URL . 'frontend/build/legacy/assets/rtl.css', [], WP_SMS_VERSION);
             }
         }
 
@@ -127,15 +127,15 @@ class Admin
         }
         $customer_mobile = \WP_SMS\Helper::getWooCommerceCustomerNumberByOrderId($order_id);
 
-        wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', [], WP_SMS_VERSION);
-        wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', [], WP_SMS_VERSION, false);
-        wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'assets/js/jquery.word-and-character-counter.min.js', [], WP_SMS_VERSION, false);
+        wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'frontend/build/legacy/assets/select2-styles.css', [], WP_SMS_VERSION);
+        wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'frontend/build/legacy/select2.js', [], WP_SMS_VERSION, false);
+        wp_enqueue_script('wpsms-word-and-character-counter', WP_SMS_URL . 'frontend/build/legacy/jquery-word-and-character-counter.min.js', [], WP_SMS_VERSION, false);
 
 
         $admin_script_deps = ['jquery', 'wp-color-picker', 'jquery-ui-spinner'];
         $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
 
-        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', $admin_script_deps, WP_SMS_VERSION, false);
+        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'frontend/build/legacy/admin.js', $admin_script_deps, WP_SMS_VERSION, false);
         wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', []));
         wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Object', array(
                 'restUrls'        => array(
@@ -181,10 +181,10 @@ class Admin
          * Contact Form 7 SMS Notification Tab
          */
         if ($screen->id == 'toplevel_page_wpcf7') {
-            wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'assets/css/select2.min.css', [], WP_SMS_VERSION);
-            wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'assets/js/select2.min.js', [], WP_SMS_VERSION, false);
+            wp_enqueue_style('wpsms-select2', WP_SMS_URL . 'frontend/build/legacy/assets/select2-styles.css', [], WP_SMS_VERSION);
+            wp_enqueue_script('wpsms-select2', WP_SMS_URL . 'frontend/build/legacy/select2.js', [], WP_SMS_VERSION, false);
             wp_enqueue_style('wpsms-admin');
-            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'assets/js/admin.min.js', [], WP_SMS_VERSION, false);
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'frontend/build/legacy/admin.js', [], WP_SMS_VERSION, false);
         }
     }
 

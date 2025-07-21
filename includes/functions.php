@@ -298,7 +298,7 @@ function wp_sms_render_quick_reply($number, $group_id = false)
 
     $numbers          = explode(',', $number);
     $result           = '';
-    $quick_reply_icon = plugins_url('wp-sms/assets/images/quick-reply-icon.svg');
+    $quick_reply_icon = plugins_url('wp-sms/frontend/build/images/quick-reply-icon.svg');
 
     if (count($numbers) > 1) {
         foreach ($numbers as $item) {
