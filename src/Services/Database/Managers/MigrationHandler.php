@@ -109,6 +109,10 @@ class MigrationHandler
                     continue;
                 }
 
+                if (version_compare($version, WP_SMS_VERSION, '>')) {
+                    continue;
+                }
+
                 $allVersions[] = $version;
 
                 $versionMappings[$version][] = [
@@ -360,6 +364,8 @@ class MigrationHandler
             'task'    => '',
             'type'    => $type
         ]);
+
+        Option::saveOptionGroup('version', $version, 'db');
     }
 
     /**
