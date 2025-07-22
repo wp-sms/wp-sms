@@ -4,7 +4,7 @@ import copy from 'rollup-plugin-copy';
 
 export default defineConfig({
     build: {
-        target: 'es2015', // For better browser compatibility
+        target: 'es2015',
         outDir: './build/legacy',
         manifest: true,
         emptyOutDir: true,
@@ -12,30 +12,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 //js
-                'quick-reply': resolve(__dirname, 'legacy/scripts/quick-reply.js'),
-                'import-subscriber': resolve(__dirname, 'legacy/scripts/import-subscriber.js'),
-                'edit-subscriber': resolve(__dirname, 'legacy/scripts/edit-subscriber.js'),
-                'edit-group': resolve(__dirname, 'legacy/scripts/edit-group.js'),
-                chatbox: resolve(__dirname, 'legacy/js/chatbox.min.js'),
-                'editor-blocks': resolve(__dirname, 'legacy/js/editor.blocks.js'),
-                frontend: resolve(__dirname, 'legacy/js/frontend.min.js'),
-                'jquery-repeater': resolve(__dirname, 'legacy/js/jquery.repeater.min.js'),
-                'jquery-word-and-character-counter.min': resolve(
-                    __dirname,
-                    'legacy/js/jquery.word-and-character-counter.min.js'
-                ),
-
-                'intel-script': resolve(__dirname, 'legacy/js/intel/intel-script.js'),
-                intlTelInput: resolve(__dirname, 'legacy/js/intel/intlTelInput.min.js'),
-                utils: resolve(__dirname, 'legacy/js/intel/utils.js'),
-                chart: resolve(__dirname, 'legacy/scripts/chart.min.js'),
-                admin: resolve(__dirname, 'legacy/scripts/admin.js'),
-                'admin-export': resolve(__dirname, 'legacy/scripts/admin-export.js'),
-                'admin-send-sms': resolve(__dirname, 'legacy/scripts/admin-send-sms.js'),
-                'admin-privacy-data': resolve(__dirname, 'legacy/scripts/admin-privacy-data.js'),
-                'admin-order-view': resolve(__dirname, 'legacy/scripts/admin-order-view.js'),
-                'admin-dashboard-stats-widget': resolve(__dirname, 'legacy/scripts/admin-dashboard-stats-widget.js'),
-                'frontend-blocks': resolve(__dirname, 'legacy/scripts/blocks.js'),
+                admin: resolve(__dirname, 'legacy/js/admin.js'),
+                frontend: resolve(__dirname, 'legacy/scripts/blocks.js'),
 
                 //css
                 'admin-bar-styles': resolve(__dirname, 'legacy/css/admin-bar.css'),
@@ -47,7 +25,6 @@ export default defineConfig({
                 'subscribe-styles': resolve(__dirname, 'legacy/css/subscribe.css'),
                 'system-info-styles': resolve(__dirname, 'legacy/css/system-info.css'),
                 'tooltipster-styles': resolve(__dirname, 'legacy/css/tooltipster.bundle.css'),
-
                 'admin-styles': resolve(__dirname, 'legacy/admin/admin.scss'),
                 'front-styles': resolve(__dirname, 'legacy/scss/front-styles.scss'),
                 'mail-styles': resolve(__dirname, 'legacy/scss/mail.scss'),
@@ -61,15 +38,27 @@ export default defineConfig({
                 copy({
                     targets: [
                         {
-                            src: 'legacy/js/select2.js',
+                            src: 'legacy/static/select2.js',
                             dest: 'build/legacy',
                         },
                         {
-                            src: 'legacy/js/flatpickr.js',
+                            src: 'legacy/static/flatpickr.js',
                             dest: 'build/legacy',
                         },
                         {
-                            src: 'legacy/js/tooltipster-bundle.js',
+                            src: 'legacy/static/tooltipster-bundle.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/static/chatbox.min.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/static/jquery-repeater.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/static/jquery-word-and-character-counter.min.js',
                             dest: 'build/legacy',
                         },
                     ],

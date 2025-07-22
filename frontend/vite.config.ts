@@ -23,6 +23,7 @@ export default defineConfig({
             '@models': resolve(__dirname, './src/models'),
             '@pages': resolve(__dirname, './src/pages'),
             '@routes': resolve(__dirname, './src/routes'),
+            '@documents': resolve(__dirname, './src/documents'),
         },
     },
     build: {
