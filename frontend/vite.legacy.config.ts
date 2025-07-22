@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
-import { readdirSync } from 'node:fs';
+import copy from 'rollup-plugin-copy';
 
 export default defineConfig({
     build: {
@@ -18,15 +18,13 @@ export default defineConfig({
                 'edit-group': resolve(__dirname, 'legacy/scripts/edit-group.js'),
                 chatbox: resolve(__dirname, 'legacy/js/chatbox.min.js'),
                 'editor-blocks': resolve(__dirname, 'legacy/js/editor.blocks.js'),
-                flatpickr: resolve(__dirname, 'legacy/js/flatpickr.min.js'),
                 frontend: resolve(__dirname, 'legacy/js/frontend.min.js'),
                 'jquery-repeater': resolve(__dirname, 'legacy/js/jquery.repeater.min.js'),
                 'jquery-word-and-character-counter.min': resolve(
                     __dirname,
                     'legacy/js/jquery.word-and-character-counter.min.js'
                 ),
-                'tooltipster-bundle': resolve(__dirname, 'legacy/js/tooltipster.bundle.js'),
-                select2: resolve(__dirname, 'legacy/js/select2.min.js'),
+
                 'intel-script': resolve(__dirname, 'legacy/js/intel/intel-script.js'),
                 intlTelInput: resolve(__dirname, 'legacy/js/intel/intlTelInput.min.js'),
                 utils: resolve(__dirname, 'legacy/js/intel/utils.js'),
@@ -59,6 +57,25 @@ export default defineConfig({
                 chunkFileNames: 'chunks/[name].js',
                 assetFileNames: 'assets/[name].[ext]',
             },
+            plugins: [
+                copy({
+                    targets: [
+                        {
+                            src: 'legacy/js/select2.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/js/flatpickr.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/js/tooltipster-bundle.js',
+                            dest: 'build/legacy',
+                        },
+                    ],
+                    hook: 'writeBundle',
+                }),
+            ],
         },
     },
 });
