@@ -1,24 +1,29 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter as Router } from 'react-router-dom';
-import SettingsRoutes from '@/routes/settings';
-import { SettingsLayout } from '@/layouts/settings-layout';
-import Providers from '@/providers';
+// import { HashRouter as Router } from 'react-router-dom';
+// import SettingsRoutes from '@/routes/settings';
+// import { SettingsLayout } from '@/layouts/settings-layout';
+// import Providers from '@/providers';
 
 const Settings = () => {
     return (
-        <Providers>
-            <Router>
-                <SettingsLayout>
-                    <SettingsRoutes />
-                </SettingsLayout>
-            </Router>
-        </Providers>
+        <div>
+            <h1>Settings</h1>
+        </div>
     );
+
+    // return (
+    //     <Providers>
+    //         <Router>
+    //             <SettingsLayout>
+    //                 <SettingsRoutes />
+    //             </SettingsLayout>
+    //         </Router>
+    //     </Providers>
+    // );
 };
 
-// Mount the app
-const container = document.getElementById('my-test-plugin-settings-root');
+const container = document.getElementById('wp-sms-settings-root');
 if (container) {
     const root = createRoot(container);
     root.render(
