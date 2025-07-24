@@ -25,7 +25,7 @@ class Manager
                 'status'        => 'TINYINT(1)',
                 'activate_key'  => 'INT(11)',
                 'custom_fields' => 'TEXT NULL',
-                'group_ID'      => 'INT(5)',
+                'group_ID'      => 'BIGINT(20)',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'

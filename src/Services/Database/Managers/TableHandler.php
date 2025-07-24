@@ -36,9 +36,6 @@ class TableHandler
                 if (!$inspect->getResult()) {
                     $schema = Manager::getSchemaForTable($tableName);
                     self::createTable($tableName, $schema);
-                } else {
-                    $schema = Manager::getSchemaForTable($tableName);
-                    self::addMissingColumns($tableName, $schema);
                 }
             } catch (\Exception $e) {
                 throw new \RuntimeException("Failed to inspect or create table `$tableName`: " . $e->getMessage(), 0, $e);
@@ -67,43 +64,6 @@ class TableHandler
             $dismissedNotices = array_diff($dismissedNotices, ['database_manual_migration_progress']);
 
             update_option('wp_sms_dismissed_notices', $dismissedNotices);
-        }
-    }
-
-    /**
-     * Add missing columns to an existing table.
-     *
-     * @param string $tableName The name of the table
-     * @param array $schema The expected schema including columns
-     * @return void
-     * @throws \RuntimeException If column addition fails
-     */
-    public static function addMissingColumns(string $tableName, array $schema)
-    {
-        global $wpdb;
-
-        if (!isset($schema['columns'])) {
-            return;
-        }
-        $prefixedTableName   = $wpdb->prefix . 'sms_' . $tableName;
-        $existingColumns     = $wpdb->get_results("SHOW COLUMNS FROM `{$prefixedTableName}`", ARRAY_A);
-        $existingColumnNames = array_column($existingColumns, 'Field');
-
-        foreach ($schema['columns'] as $columnName => $definition) {
-            $existingColumn = array_filter($existingColumns, function ($col) use ($columnName) {
-                return $col['Field'] === $columnName;
-            });
-
-            if (!$existingColumn) {
-                $wpdb->query("ALTER TABLE `{$prefixedTableName}` ADD COLUMN `{$columnName}` {$definition}");
-            } else {
-                $actualType   = strtoupper($existingColumn[array_key_first($existingColumn)]['Type']);
-                $expectedType = strtoupper($definition);
-
-                if ($actualType !== $expectedType) {
-                    $wpdb->query("ALTER TABLE `{$prefixedTableName}` MODIFY COLUMN `{$columnName}` {$definition}");
-                }
-            }
         }
     }
 
