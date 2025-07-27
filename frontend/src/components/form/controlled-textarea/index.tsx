@@ -9,8 +9,13 @@ export const ControlledTextarea: React.FC<ControlledTextareaProps> = ({ ...props
         <Controller
             name={props?.name ?? ''}
             control={control}
-            render={({ field }) => {
-                return <Textarea {...field} {...props} />;
+            render={({ field, fieldState }) => {
+                return (
+                    <>
+                        <Textarea aria-invalid={fieldState.invalid} {...field} {...props} />
+                        {fieldState.error && <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>}
+                    </>
+                );
             }}
         />
     );
