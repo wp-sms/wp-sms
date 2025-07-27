@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Api\V1;
 
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -177,7 +178,7 @@ class Newsletter extends RestApi
         // Get parameters from request
         $params         = $request->get_params();
         $numberParser   = new NumberParser($params['mobile']);
-        $number         = $numberParser->getValidNumber();
+        $number         = ($numberParser->getValidNumber() instanceof WP_Error) ? $params['mobile'] : $numberParser->getValidNumber();
         $group_id       = isset($params['group_id']) ? $params['group_id'] : 0;
         $groups_enabled = Option::getOption('newsletter_form_groups');
 
