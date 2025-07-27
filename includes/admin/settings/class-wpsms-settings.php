@@ -1263,7 +1263,7 @@ class Settings
                 'admin_mobile_number'                      => array(
                     'id'   => 'admin_mobile_number',
                     'name' => esc_html__('Admin Mobile Number', 'wp-sms'),
-                    'type' => 'text',
+                    'type' => 'phone',
                     'desc' => esc_html__('Mobile number where the administrator will receive notifications.', 'wp-sms')
                 ),
                 'mobile_field'                             => array(
@@ -2606,6 +2606,26 @@ class Settings
 
         $default = isset($args['std']) ? $args['std'] : '';
         $html    = sprintf('<input type="text" class="wpsms-color-picker" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]" value="%2$s" data-default-color="%3$s" /><p class="description"> %4$s</p>', esc_attr($args['id']), esc_attr($value), esc_attr($default), wp_kses_post($args['desc']));
+
+        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    public function phone_callback($args)
+    {
+        if (isset($this->options[$args['id']])) {
+            $value = $this->options[$args['id']];
+        } else {
+            $value = isset($args['std']) ? $args['std'] : '';
+        }
+
+        $size = (isset($args['size']) && !is_null($args['size'])) ? $args['size'] : 'regular';
+        $html = sprintf(
+            '<input type="tel" class="%1$s-text wp-sms-input-mobile" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]" value="%3$s" /><p class="description"> %4$s</p>',
+            esc_attr($size),
+            esc_attr($args['id']),
+            esc_attr(stripslashes($value)), 
+            wp_kses_post($args['desc'])
+        );
 
         echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
