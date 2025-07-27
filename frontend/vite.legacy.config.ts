@@ -7,7 +7,7 @@ export default defineConfig({
         target: 'es2015',
         outDir: './build/legacy',
         manifest: true,
-        emptyOutDir: true,
+        emptyOutDir: false,
         copyPublicDir: false,
         rollupOptions: {
             input: {

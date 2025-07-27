@@ -10,6 +10,7 @@ export default defineConfig({
             localsConvention: 'camelCase',
         },
     },
+
     resolve: {
         alias: {
             '@': resolve(__dirname, './src'),
@@ -24,6 +25,7 @@ export default defineConfig({
             '@pages': resolve(__dirname, './src/pages'),
             '@routes': resolve(__dirname, './src/routes'),
             '@documents': resolve(__dirname, './src/documents'),
+            '@stores': resolve(__dirname, './src/stores'),
         },
     },
     build: {
@@ -32,9 +34,8 @@ export default defineConfig({
         outDir: './build',
         rollupOptions: {
             input: {
-                admin: resolve(__dirname, 'src/pages/dashboard/index.tsx'),
                 settings: resolve(__dirname, 'src/pages/settings/index.tsx'),
-                settingsPermissions: resolve(__dirname, 'src/pages/settings/permissions.tsx'),
+                settingsDynamicPages: resolve(__dirname, 'src/pages/settings/dynamic-pages.tsx'),
                 // Add blocks
                 sendSmsBlock: resolve(__dirname, 'src/blocks/send-sms/index.ts'),
                 // subscribeBlock: resolve(__dirname, 'src/blocks/subscribe/index.ts'),
@@ -53,7 +54,7 @@ export default defineConfig({
             },
         },
 
-        emptyOutDir: true,
+        emptyOutDir: false,
     },
     server: {
         port: 5173,
