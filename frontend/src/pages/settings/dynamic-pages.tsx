@@ -38,8 +38,6 @@ const SettingsDynamicPages = () => {
             try {
                 const [groupSchemaRes, groupValuesRes] = await Promise.all([groupSchemaPromise, groupValuesPromise]);
 
-                console.log({ groupSchemaRes, groupValuesRes });
-
                 return groupValuesRes?.data ?? {};
             } catch (error) {
                 return {};
@@ -70,8 +68,6 @@ const SettingsDynamicPages = () => {
     const handleReset = useCallback(() => {
         form.reset(form.formState.defaultValues);
     }, [form]);
-
-    console.log({ formValues });
 
     return (
         <div className="p-6">

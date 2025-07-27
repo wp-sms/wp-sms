@@ -10,13 +10,8 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Link } from 'react-router-dom';
-import { useSidebarStore } from '@/stores/sidebar';
 
 export const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
-    const { isOpen } = useSidebarStore();
-
-    console.log({ isOpen });
-
     return (
         <div className="wrap flex w-full min-h-screen">
             <SettingsSidebar />
