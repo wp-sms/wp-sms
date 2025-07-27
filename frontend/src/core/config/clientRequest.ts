@@ -21,7 +21,7 @@ const instance = axios.create({
  */
 instance.interceptors.request.use(
     async (request) => {
-        Object.assign({}, request.headers, HEADERS);
+        Object.assign(request.headers, HEADERS);
 
         if (request.params && Object.keys(request.params).length) {
             for (const key of Object.keys(request.params)) {
