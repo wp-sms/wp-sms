@@ -1,12 +1,11 @@
 @import 'tailwindcss';
-
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
     --background: hsl(0 0% 100%);
-    --foreground: hsl(20 14.3% 4.1%);
+    --foreground:  	hsl(0, 0%, 20%);
     --card: hsl(0 0% 100%);
     --card-foreground: hsl(20 14.3% 4.1%);
     --popover: hsl(0 0% 100%);
@@ -124,6 +123,25 @@
     margin: 0;
     padding: 0;
 }
+
+/* Reset h1 */
+#wp-sms-settings-root h1 {
+    @apply text-xl font-bold text-foreground
+}
+
+/* Reset h2 */
+#wp-sms-settings-root h2 {
+    @apply text-lg font-bold text-foreground
+}
+
+#wp-sms-settings-root h3 {
+    @apply text-base font-bold text-foreground
+}
+
+#wp-sms-settings-root input {
+    @apply border-input rounded-md shadow-none outline-none
+}
+
 
 /* Remove link underlines */
 #wp-sms-settings-root a {
