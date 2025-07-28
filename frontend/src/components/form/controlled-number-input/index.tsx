@@ -1,16 +1,16 @@
+import { Input } from '@/components/ui/input';
 import { Controller, useFormContext } from 'react-hook-form';
-import type { ControlledTextareaProps } from './types';
-import { Textarea } from '@/components/ui/textarea';
-import { CustomSkeleton } from '@/components/ui/custom-skeleton';
+import type { ControlledNumberInputProps } from './types';
 import { FieldLabel } from '../label';
 import { FieldDescription } from '../description';
 import { FieldMessage } from '../message';
+import { CustomSkeleton } from '@/components/ui/custom-skeleton';
 
-export const ControlledTextarea: React.FC<ControlledTextareaProps> = ({
+export const ControlledNumberInput: React.FC<ControlledNumberInputProps> = ({
     name,
     label,
     description,
-    isLoading,
+    isLoading = false,
     ...props
 }) => {
     const { control } = useFormContext();
@@ -27,7 +27,7 @@ export const ControlledTextarea: React.FC<ControlledTextareaProps> = ({
                         </CustomSkeleton>
 
                         <CustomSkeleton isLoading={isLoading}>
-                            <Textarea aria-invalid={fieldState.invalid} {...field} {...props} />
+                            <Input type="number" aria-invalid={fieldState.invalid} {...field} {...props} />
                         </CustomSkeleton>
 
                         <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">

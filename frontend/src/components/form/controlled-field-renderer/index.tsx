@@ -7,17 +7,26 @@ import { SimpleHtmlRenderer } from '@/components/ui/simple-html-renderer';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useEffect } from 'react';
 import { useDebounce } from '@/core/hooks/useDebounce';
+import { ControlledPhone } from '../controlled-phone';
+import { ControlledTextarea } from '../controlled-textarea';
+import { ControlledNumberInput } from '../controlled-number-input';
 
 export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
     const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
         text: ControlledInput,
-        number: ControlledInput,
+        textarea: ControlledTextarea,
+        number: ControlledNumberInput,
+
         select: ControlledSelect,
-        checkbox: ControlledCheckbox,
         advancedselect: ControlledSelect,
+        countryselect: ControlledSelect,
+
         multiselect: ControlledInput,
+
+        checkbox: ControlledCheckbox,
         html: SimpleHtmlRenderer,
         repeater: ControlledInput,
+        tel: ControlledPhone,
     };
 
     const fieldValue = useWatch({ name: schema?.key, exact: true });
@@ -29,8 +38,8 @@ export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = (
     useEffect(() => {
         const defaultValue = formState?.defaultValues?.[schema?.key];
 
-        if (!schema.auto_save_and_refresh && defaultValue !== fieldValue) {
-            console.log('saved');
+        if (schema.auto_save_and_refresh && defaultValue !== fieldValue) {
+            console.log('saved', fieldValue);
         }
     }, [schema?.key, debouncedFieldValue, formState?.defaultValues]);
 

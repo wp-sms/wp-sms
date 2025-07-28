@@ -5,12 +5,17 @@ import { FieldLabel } from '../label';
 import { FieldDescription } from '../description';
 import { FieldMessage } from '../message';
 import { CustomSkeleton } from '@/components/ui/custom-skeleton';
+import { FieldWrapper } from '../field-wrapper';
 
 export const ControlledInput: React.FC<ControlledInputProps> = ({
     name,
     label,
     description,
-    isLoading = false,
+    tooltip,
+    isPro,
+    isRequired,
+    isLocked,
+    isLoading,
     ...props
 }) => {
     const { control } = useFormContext();
@@ -20,6 +25,18 @@ export const ControlledInput: React.FC<ControlledInputProps> = ({
             name={name ?? ''}
             control={control}
             render={({ field, fieldState }) => {
+                return (
+                    <FieldWrapper
+                        label={label}
+                        description={description}
+                        isLoading={isLoading}
+                        error={fieldState?.error?.message}
+                        isLocked={isLocked}
+                    >
+                        <Input aria-invalid={fieldState.invalid} {...field} {...props} />
+                    </FieldWrapper>
+                );
+
                 return (
                     <div className="flex flex-col gap-y-1.5">
                         <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">

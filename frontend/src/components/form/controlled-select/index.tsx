@@ -13,6 +13,7 @@ import { FieldLabel } from '../label';
 import { FieldDescription } from '../description';
 import { FieldMessage } from '../message';
 import { CustomSkeleton } from '@/components/ui/custom-skeleton';
+import { toOptions } from '@/utils/toOptions';
 
 export const ControlledSelect: React.FC<ControlledSelectProps> = ({
     name,
@@ -66,31 +67,35 @@ export const ControlledSelect: React.FC<ControlledSelectProps> = ({
                                 </SelectTrigger>
 
                                 <SelectContent {...SelectContentProps}>
-                                    {Object.entries(options ?? {})?.map(([key, value]) => {
-                                        if (typeof value === 'string') {
+                                    {toOptions(options)?.map((item) => {
+                                        if (item?.children) {
                                             return (
-                                                <SelectItem key={`select-item-${key}`} value={key} {...SelectItemProps}>
-                                                    {value}
-                                                </SelectItem>
+                                                <SelectGroup key={`select-group-${item.value}`} {...SelectGroupProps}>
+                                                    <SelectLabel>{item.label}</SelectLabel>
+
+                                                    {item.children?.map((child) => {
+                                                        return (
+                                                            <SelectItem
+                                                                key={`group-select-item-${child.value}`}
+                                                                value={String(child.value)}
+                                                                {...SelectItemProps}
+                                                            >
+                                                                {child.label}
+                                                            </SelectItem>
+                                                        );
+                                                    })}
+                                                </SelectGroup>
                                             );
                                         }
 
                                         return (
-                                            <SelectGroup key={`select-group-${key}`} {...SelectGroupProps}>
-                                                <SelectLabel>{key}</SelectLabel>
-
-                                                {Object.entries(value ?? {})?.map(([k, v]) => {
-                                                    return (
-                                                        <SelectItem
-                                                            key={`group-select-item-${k}`}
-                                                            value={String(k)}
-                                                            {...SelectItemProps}
-                                                        >
-                                                            {v}
-                                                        </SelectItem>
-                                                    );
-                                                })}
-                                            </SelectGroup>
+                                            <SelectItem
+                                                key={`select-item-${item.value}`}
+                                                value={item.value}
+                                                {...SelectItemProps}
+                                            >
+                                                {item.value}
+                                            </SelectItem>
                                         );
                                     })}
                                 </SelectContent>
