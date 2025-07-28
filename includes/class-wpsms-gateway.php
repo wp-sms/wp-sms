@@ -98,7 +98,8 @@ class Gateway
             'telesign'       => 'telesign.com',
             'mysms'          => 'mysms.com',
             'brevo'          => 'brevo.com',
-            'cloudtalk'      => 'cloudtalk.io'
+            'cloudtalk'      => 'cloudtalk.io',
+            'threema'        => 'threema.ch'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
