@@ -2,6 +2,7 @@ v7.x
 - **Fix:** Fixed variable rendering in message content.
 - **Fix:** Fixed showing migration failed notice on not valid licenses.
 - **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
+- **Add:** Added plugin information to the Site Health Info section for easier diagnostics.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
