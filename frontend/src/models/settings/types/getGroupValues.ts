@@ -6,9 +6,11 @@ export type GetGroupValuesParams = {
     }>;
 };
 
+export type GroupValues = Record<string, unknown>;
+
 export type GetGroupValuesResponse = {
     success: boolean;
-    data: Record<string, unknown>;
+    data: GroupValues;
 };
 
 export type UseGetGroupValuesType = {

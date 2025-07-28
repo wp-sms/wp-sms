@@ -18,7 +18,10 @@ export type SchemaFieldType =
     | 'number'
     | 'multiselect'
     | 'repeater'
-    | 'html';
+    | 'html'
+    | 'tel'
+    | 'countryselect'
+    | 'textarea';
 
 export type SchemaField = {
     key: string;
