@@ -18,14 +18,14 @@ class Manager
     private static $tablesSchema = [
         'subscribes'       => [
             'columns'     => [
-                'ID'            => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'            => 'INT(10) NOT NULL AUTO_INCREMENT',
                 'date'          => 'DATETIME',
                 'name'          => 'VARCHAR(250)',
                 'mobile'        => 'VARCHAR(20) NOT NULL',
                 'status'        => 'TINYINT(1)',
                 'activate_key'  => 'INT(11)',
                 'custom_fields' => 'TEXT NULL',
-                'group_ID'      => 'BIGINT(20)',
+                'group_ID'      => 'INT(5)',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'
@@ -33,7 +33,7 @@ class Manager
         ],
         'subscribes_group' => [
             'columns'     => [
-                'ID'   => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'   => 'INT(10) NOT NULL AUTO_INCREMENT',
                 'name' => 'VARCHAR(250)',
             ],
             'constraints' => [
@@ -42,12 +42,12 @@ class Manager
         ],
         'send'             => [
             'columns'     => [
-                'ID'        => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'        => 'INT(10) NOT NULL AUTO_INCREMENT',
                 'date'      => 'DATETIME',
                 'sender'    => 'VARCHAR(20) NOT NULL',
                 'message'   => 'TEXT NOT NULL',
                 'recipient' => 'TEXT NOT NULL',
-                'media'     => 'TEXT',
+                'media'     => 'TEXT NULL',
                 'response'  => 'TEXT NOT NULL',
                 'status'    => 'VARCHAR(10) NOT NULL',
             ],
@@ -57,11 +57,11 @@ class Manager
         ],
         'otp'              => [
             'columns'     => [
-                'ID'           => 'BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT',
+                'ID'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'phone_number' => 'VARCHAR(20) NOT NULL',
                 'agent'        => 'VARCHAR(255) NOT NULL',
                 'code'         => 'CHAR(32) NOT NULL',
-                'created_at'   => 'INT(10) UNSIGNED NOT NULL',
+                'created_at'   => 'INT UNSIGNED NOT NULL',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'
@@ -69,12 +69,12 @@ class Manager
         ],
         'otp_attempts'     => [
             'columns'     => [
-                'ID'           => 'BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT',
+                'ID'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'phone_number' => 'VARCHAR(20) NOT NULL',
                 'agent'        => 'VARCHAR(255) NOT NULL',
                 'code'         => 'VARCHAR(255) NOT NULL',
                 'result'       => 'TINYINT(1) NOT NULL',
-                'time'         => 'INT(10) UNSIGNED NOT NULL',
+                'time'         => 'INT UNSIGNED NOT NULL',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)',

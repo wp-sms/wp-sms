@@ -24,12 +24,6 @@ class MigrationHandler
     private const MIGRATION_ACTION = 'run_manual_migration';
 
     /**
-     * Action for triggering retry manual migration.
-     * @var string
-     */
-    private const MIGRATION_RETRY_ACTION = 'retry_manual_migration';
-
-    /**
      * Nonce name for manual migration action.
      * @var string
      */
@@ -42,9 +36,34 @@ class MigrationHandler
      */
     public static function init()
     {
-        add_action('admin_post_' . self::MIGRATION_RETRY_ACTION, [self::class, 'retryManualMigration']);
-        add_action('admin_init', [self::class, 'handleMigrationEvents']);
+        add_action('admin_init', [self::class, 'maybeRunMultisiteMigrations']);
     }
+
+    public static function maybeRunMultisiteMigrations()
+    {
+        if (is_multisite() && is_main_site()) {
+            self::runMultisiteMigrations();
+        } else {
+            self::handleMigrationEvents();
+        }
+    }
+
+
+    public static function runMultisiteMigrations()
+    {
+        $originalBlogId = get_current_blog_id();
+
+        $sites = get_sites(['number' => 0]);
+
+        foreach ($sites as $site) {
+            switch_to_blog($site->blog_id);
+            self::handleMigrationEvents();
+            restore_current_blog();
+        }
+
+        switch_to_blog($originalBlogId); // Restore original blog just in case
+    }
+
 
     /**
      * Handle migration events and status notices.
@@ -76,10 +95,16 @@ class MigrationHandler
             return;
         }
 
-        $migrationData = self::collectMigrationData();
-        self::processMigrations($migrationData['versions'], $migrationData['mappings'], $process);
-
-        self::finalizeMigrationProcess($process);
+        try {
+            $migrationData = self::collectMigrationData();
+            self::processMigrations($migrationData['versions'], $migrationData['mappings'], $process);
+            self::finalizeMigrationProcess($process);
+        } catch (\Throwable $e) {
+            Option::saveOptionGroup('migration_status_detail', [
+                'status'  => 'failed',
+                'message' => $e->getMessage()
+            ], 'db');
+        }
     }
 
     /**
@@ -210,62 +235,15 @@ class MigrationHandler
      */
     private static function buildActionUrl($type = '')
     {
-        $action = self::MIGRATION_ACTION;
-
-        if ($type === 'retry') {
-            $action = self::MIGRATION_RETRY_ACTION;
-        }
-
         return add_query_arg(
             [
-                'action' => $action,
+                'action' => self::MIGRATION_ACTION,
                 'nonce'  => wp_create_nonce(self::MIGRATION_NONCE)
             ],
             admin_url('admin-post.php')
         );
     }
 
-    /**
-     * Retries the manual migration process.
-     *
-     * @return void
-     */
-    public static function retryManualMigration()
-    {
-        if (!self::validateMigrationRequest('retry')) {
-            self::handleRedirect();
-            return;
-        }
-
-        $schemaProcess = WPSms()->getBackgroundProcess('schema_migration_process');
-        $schemaProcess->stopProcess();
-
-        if ($schemaProcess->is_active()) {
-            self::handleRedirect();
-            return;
-        }
-
-        $migrationData = self::collectMigrationData();
-        self::processMigrations($migrationData['versions'], $migrationData['mappings'], $schemaProcess);
-
-        $manualTasks = Option::getOptionGroup('db', 'manual_migration_tasks', []);
-
-        if (empty($manualTasks)) {
-            self::handleRedirect();
-            return;
-        }
-
-        $dataProcess = WPSms()->getBackgroundProcess('data_migration_process');
-        $dataProcess->stopProcess();
-
-        if ($dataProcess->is_active()) {
-            self::handleRedirect();
-            return;
-        }
-
-        self::processManualTasks($manualTasks, $dataProcess);
-        self::handleRedirect();
-    }
 
     /**
      * Validate the incoming manual migration request.
@@ -275,10 +253,6 @@ class MigrationHandler
     private static function validateMigrationRequest($type = '')
     {
         $action = self::MIGRATION_ACTION;
-
-        if ($type === 'retry') {
-            $action = self::MIGRATION_RETRY_ACTION;
-        }
 
         if (!Request::compare('action', $action)) {
             return false;
@@ -425,17 +399,14 @@ class MigrationHandler
                         <strong>%1$s</strong>
                         </br>%2$s
                         </br><strong>%3$s</strong> %4$s
-                        </br><a href="%5$s" class="button button-primary" style="margin-top: 10px;">%6$s</a>
-                        <a href="%7$s" style="margin: 10px" target="_blank">%8$s</a>
+                        </br><a href="%5$s" style="margin-top: 10px" target="_blank">%6$s</a>
                     </p>
                 ',
                 esc_html__('WP SMS: Process Failed', 'wp-sms'),
                 esc_html__('The Database Migration process encountered an error and could not be completed.', 'wp-sms'),
                 esc_html__('Error:', 'wp-sms'),
                 esc_html($details['message'] ?? ''),
-                esc_url($actionUrl),
-                esc_html__('Retry Process', 'wp-sms'),
-                esc_url('https://wp-sms.com/support/?utm_source=wp-sms&utm_medium=link&utm_campaign=db-error'),
+                esc_url('https://wp-sms-pro.com/support/?utm_source=wp-sms&utm_medium=link&utm_campaign=db-error'),
                 esc_html__('Contact Support', 'wp-sms')
             );
             $notice  = NoticeManager::getInstance();
