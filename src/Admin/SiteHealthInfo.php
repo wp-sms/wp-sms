@@ -2,9 +2,9 @@
 
 namespace WP_SMS\Admin;
 
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Option;
-use WPSmsWooPro\Core\Helper as WooProHelper;
 
 class SiteHealthInfo
 {
@@ -18,9 +18,9 @@ class SiteHealthInfo
     public function addSmsPluginInfo($info)
     {
         $info[self::DEBUG_INFO_SLUG] = array(
-            'label'       => esc_html__('WP SMS', 'wp-sms'),
+            'label' => esc_html__('WP SMS', 'wp-sms'),
             'description' => esc_html__('This section provides debug information about your WP SMS plugin settings.', 'wp-sms'),
-            'fields'      => $this->getSmsSettings(),
+            'fields' => $this->getSmsSettings(),
         );
 
         return $info;
@@ -29,6 +29,9 @@ class SiteHealthInfo
     protected function getSmsSettings()
     {
         $settings = array();
+
+        $pluginHandler = new PluginHandler();
+        $wooProActive = $pluginHandler->isPluginActive('wp-sms-woocommerce-pro');
 
         $yesNo = function ($value) {
             return $value ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms');
@@ -183,57 +186,63 @@ class SiteHealthInfo
         );
 
         // WooCommerce Pro Add-ons
-        $wooProFields = array(
-            'cart_abandonment_recovery_status'        => __('WooPro: Cart Abandonment Recovery', 'wp-sms'),
-            'cart_abandonment_threshold'              => __('WooPro: Cart abandonment threshold', 'wp-sms'),
-            'cart_overwrite_number_during_checkout'   => __('WooPro: Cart abandonment Overwrite mobile number', 'wp-sms'),
-            'cart_create_coupon'                      => __('WooPro: Cart abandonment Create coupon', 'wp-sms'),
-            'cart_abandonment_send_sms_time_interval' => __('WooPro: Cart abandonment Send sms after', 'wp-sms'),
-            'login_with_sms_status'                   => __('WooPro: Show Button in Login Page', 'wp-sms'),
-            'login_with_sms_forgot_status'            => __('WooPro: Show Button in Forgot Password Page', 'wp-sms'),
-            'reset_password_status'                   => __('WooPro: Enable SMS Password Reset', 'wp-sms'),
-            'checkout_confirmation_checkbox_enabled'  => __('WooPro: Confirmation Checkbox', 'wp-sms'),
-            'checkout_mobile_verification_enabled'    => __('WooPro: Enable Mobile Verification', 'wp-sms'),
-        );
+        if ($wooProActive) {
+            $woo = function ($key, $default = null) {
+                return \WPSmsWooPro\Core\Helper::getOption($key, $default);
+            };
 
-        foreach ($wooProFields as $key => $label) {
-            $raw   = $woo($key);
-            $value = '';
-
-            if ($key === 'cart_overwrite_number_during_checkout') {
-                $value = ($raw === 'skip')
-                    ? __('Do not update', 'wp-sms')
-                    : __('Update phone number', 'wp-sms');
-            } elseif (in_array($key, array('cart_abandonment_threshold', 'cart_abandonment_send_sms_time_interval'), true)) {
-                if (is_array($raw)) {
-                    $parts = array();
-                    if (!empty($raw['days']) && $raw['days'] !== '0') {
-                        $parts[] = $raw['days'] . ' ' . _n('day', 'days', (int)$raw['days'], 'wp-sms');
-                    }
-                    if (!empty($raw['hours']) && $raw['hours'] !== '0') {
-                        $parts[] = $raw['hours'] . ' ' . _n('hour', 'hours', (int)$raw['hours'], 'wp-sms');
-                    }
-                    if (!empty($raw['minutes']) && $raw['minutes'] !== '0') {
-                        $parts[] = $raw['minutes'] . ' ' . _n('minute', 'minutes', (int)$raw['minutes'], 'wp-sms');
-                    }
-                    $value = $parts ? implode(', ', $parts) : 'Not Set';
-                } else {
-                    $value = 'Not Set';
-                }
-            } elseif (in_array($raw, array(true, '1', 1, 'yes'), true)) {
-                $value = __('Enabled', 'wp-sms');
-            } elseif (in_array($raw, array(false, '0', 0, 'no'), true)) {
-                $value = __('Disabled', 'wp-sms');
-            } elseif ($raw === null || $raw === '') {
-                $value = __('Not Set', 'wp-sms');
-            } else {
-                $value = (string)$raw;
-            }
-
-            $settings['woo_' . $key] = array(
-                'label' => $label,
-                'value' => $value,
+            $wooProFields = array(
+                'cart_abandonment_recovery_status'        => __('WooPro: Cart Abandonment Recovery', 'wp-sms'),
+                'cart_abandonment_threshold'              => __('WooPro: Cart abandonment threshold', 'wp-sms'),
+                'cart_overwrite_number_during_checkout'   => __('WooPro: Cart abandonment Overwrite mobile number', 'wp-sms'),
+                'cart_create_coupon'                      => __('WooPro: Cart abandonment Create coupon', 'wp-sms'),
+                'cart_abandonment_send_sms_time_interval' => __('WooPro: Cart abandonment Send sms after', 'wp-sms'),
+                'login_with_sms_status'                   => __('WooPro: Show Button in Login Page', 'wp-sms'),
+                'login_with_sms_forgot_status'            => __('WooPro: Show Button in Forgot Password Page', 'wp-sms'),
+                'reset_password_status'                   => __('WooPro: Enable SMS Password Reset', 'wp-sms'),
+                'checkout_confirmation_checkbox_enabled'  => __('WooPro: Confirmation Checkbox', 'wp-sms'),
+                'checkout_mobile_verification_enabled'    => __('WooPro: Enable Mobile Verification', 'wp-sms'),
             );
+
+            foreach ($wooProFields as $key => $label) {
+                $raw   = $woo($key);
+                $value = '';
+
+                if ($key === 'cart_overwrite_number_during_checkout') {
+                    $value = ($raw === 'skip')
+                        ? __('Do not update', 'wp-sms')
+                        : __('Update phone number', 'wp-sms');
+                } elseif (in_array($key, array('cart_abandonment_threshold', 'cart_abandonment_send_sms_time_interval'), true)) {
+                    if (is_array($raw)) {
+                        $parts = array();
+                        if (!empty($raw['days']) && $raw['days'] !== '0') {
+                            $parts[] = $raw['days'] . ' ' . _n('day', 'days', (int)$raw['days'], 'wp-sms');
+                        }
+                        if (!empty($raw['hours']) && $raw['hours'] !== '0') {
+                            $parts[] = $raw['hours'] . ' ' . _n('hour', 'hours', (int)$raw['hours'], 'wp-sms');
+                        }
+                        if (!empty($raw['minutes']) && $raw['minutes'] !== '0') {
+                            $parts[] = $raw['minutes'] . ' ' . _n('minute', 'minutes', (int)$raw['minutes'], 'wp-sms');
+                        }
+                        $value = $parts ? implode(', ', $parts) : 'Not Set';
+                    } else {
+                        $value = 'Not Set';
+                    }
+                } elseif (in_array($raw, array(true, '1', 1, 'yes'), true)) {
+                    $value = __('Enabled', 'wp-sms');
+                } elseif (in_array($raw, array(false, '0', 0, 'no'), true)) {
+                    $value = __('Disabled', 'wp-sms');
+                } elseif ($raw === null || $raw === '') {
+                    $value = __('Not Set', 'wp-sms');
+                } else {
+                    $value = (string)$raw;
+                }
+
+                $settings['woo_' . $key] = array(
+                    'label' => $label,
+                    'value' => $value,
+                );
+            }
         }
 
 
