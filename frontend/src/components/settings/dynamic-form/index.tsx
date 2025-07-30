@@ -3,7 +3,7 @@ import type { SettingsDynamicFormProps } from './types';
 import { ControlledFieldRenderer } from '@/components/form/controlled-field-renderer';
 import { DynamicFieldsSkeleton } from '../dynamic-fields-skeleton';
 import { SettingsGroupTitle } from '../group-title';
-import { SettingsSectionTitle } from '../section-title';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const SettingsDynamicForm: React.FC<SettingsDynamicFormProps> = ({
     groupSchema,
@@ -26,13 +26,16 @@ export const SettingsDynamicForm: React.FC<SettingsDynamicFormProps> = ({
 
             {groupSchema?.sections?.map((section, idx) => {
                 return (
-                    <section
-                        key={`${section?.id}-${idx}`}
-                        className="flex flex-col gap-y-4 border border-border p-4 rounded-lg"
-                    >
-                        <SettingsSectionTitle title={section?.title} subtitle={section?.subtitle} />
+                    <Card key={`${section?.id}-${idx}`} className="flex flex-col gap-y-4">
+                        <CardHeader>
+                            <CardHeader>
+                                <CardTitle>{section?.title}</CardTitle>
 
-                        <div className="flex flex-col gap-y-8 max-w-2xl">
+                                <CardDescription>{section?.subtitle}</CardDescription>
+                            </CardHeader>
+                        </CardHeader>
+
+                        <CardContent className="flex flex-col gap-y-8 max-w-3xl">
                             {section?.fields?.map((field) => {
                                 const shouldShow = Object.entries(field?.showIf ?? {}).every(([key, expectedValue]) => {
                                     return formValues[key] === expectedValue;
@@ -54,8 +57,8 @@ export const SettingsDynamicForm: React.FC<SettingsDynamicFormProps> = ({
                                     />
                                 );
                             })}
-                        </div>
-                    </section>
+                        </CardContent>
+                    </Card>
                 );
             })}
         </div>

@@ -1,17 +1,17 @@
 import { SettingsDynamicForm } from '@/components/settings';
 import { SettingsFormActions } from '@/components/settings/form-actions';
 import { Form } from '@/components/ui/form';
+import { useStableCallback } from '@/core/hooks';
 import { useGetGroupSchema, useGetGroupValues } from '@/models/settings';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
 const SettingsDynamicPages = () => {
     const { name } = useParams();
 
-    // get data for render ui of dynamic form
     const {
         data: groupSchema,
-        promise: groupSchemaPromise,
         isLoading: isGroupSchemaLoading,
         isRefetching: isGroupSchemaRefetching,
     } = useGetGroupSchema({
@@ -20,9 +20,8 @@ const SettingsDynamicPages = () => {
         },
     });
 
-    // get data to fill default values of form
     const {
-        promise: groupValuesPromise,
+        data: groupValues,
         isLoading: isGroupValuesLoading,
         isRefetching: isGroupValuesRefetching,
     } = useGetGroupValues({
@@ -32,19 +31,18 @@ const SettingsDynamicPages = () => {
     });
 
     const form = useForm({
-        defaultValues: async () => {
-            try {
-                // wait for both promises to resolve so we can make sure that the form is filled with the correct values
-                const [groupSchemaRes, groupValuesRes] = await Promise.all([groupSchemaPromise, groupValuesPromise]);
-
-                return groupValuesRes?.data ?? {};
-            } catch (error) {
-                return {};
-            }
-        },
+        defaultValues: {},
     });
 
-    console.log(form.watch());
+    const initForm = useStableCallback(async () => {
+        if (groupValues?.data && groupSchema?.data) {
+            form.reset(groupValues?.data ?? {});
+        }
+    }, [groupValues?.data, groupSchema?.data, form]);
+
+    useEffect(() => {
+        initForm();
+    }, [groupValues?.data, groupSchema?.data]);
 
     return (
         <div className="p-6">
