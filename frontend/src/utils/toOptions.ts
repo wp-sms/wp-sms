@@ -25,6 +25,15 @@ export function toOptions(
         });
     }
 
+    if (!Array.isArray(data) && Object.values(data).every((option) => typeof option === 'string')) {
+        return Object.entries(data ?? {}).map(([key, value]) => {
+            return {
+                value: (key || value) as string,
+                label: (value || key) as string,
+            };
+        });
+    }
+
     if (Array.isArray(data)) {
         return data?.map((opt) => {
             const optionValue = opt.value || Object.keys(opt)[0];
