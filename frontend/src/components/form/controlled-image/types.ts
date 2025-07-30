@@ -1,5 +1,5 @@
 import type { ControlledFieldProps } from '../field-wrapper/types';
 
-export type ControlledColorProps = {
+export type ControlledImageProps = {
     name: string;
 } & ControlledFieldProps;

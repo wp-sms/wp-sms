@@ -7,15 +7,13 @@ import type {
     SelectTriggerProps,
     SelectValueProps,
 } from '@radix-ui/react-select';
+import type { ControlledFieldProps } from '../field-wrapper/types';
 
 export type ControlledSelectProps = {
     name: string;
     options: FieldOption;
-    isLoading?: boolean;
     readOnly?: boolean;
     disabled?: boolean;
-    label?: string;
-    description?: string;
     placeholder?: string;
     selectProps?: SelectProps;
     triggerProps?: SelectTriggerProps;
@@ -23,4 +21,4 @@ export type ControlledSelectProps = {
     SelectContentProps?: SelectContentProps;
     SelectGroupProps?: SelectGroupProps;
     SelectItemProps?: SelectItemProps;
-};
+} & ControlledFieldProps;

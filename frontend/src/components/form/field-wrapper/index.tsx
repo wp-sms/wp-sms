@@ -6,25 +6,27 @@ import { FieldMessage } from '../message';
 import clsx from 'clsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle, Lock } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
+import { TagBadge } from '@/components/ui/tag-badge';
 
 export const FieldWrapper: React.FC<FieldWrapperProps> = ({
     label,
     description,
     tooltip,
-    isPro = false,
-    isRequired = false,
     isLocked = false,
     isLoading = false,
+    readonly = false,
+    tag,
+    direction = 'column',
     children,
     error,
 }) => {
     return (
         <TooltipProvider>
-            <div className={clsx('flex flex-col gap-y-2', isLocked && 'opacity-50')}>
+            <div className={clsx('flex flex-col gap-1.5', isLocked && 'opacity-70')}>
                 <div className="flex items-center gap-2">
                     <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">
-                        <FieldLabel text={label} />
+                        <FieldLabel text={label} isInvalid={!!error} />
                     </CustomSkeleton>
 
                     {isLocked && (
@@ -45,34 +47,32 @@ export const FieldWrapper: React.FC<FieldWrapperProps> = ({
                         </Tooltip>
                     )}
 
-                    {isPro && !isLocked && (
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Badge
-                                    variant="secondary"
-                                    className="text-xs bg-orange-100 text-orange-800 hover:bg-orange-200"
-                                >
-                                    <Lock className="mr-1 h-3 w-3" />
-                                    Pro
-                                </Badge>
-                            </TooltipTrigger>
-
-                            <TooltipContent>
-                                <p>This feature requires WP SMS Pro</p>
-                            </TooltipContent>
-                        </Tooltip>
+                    {readonly && (
+                        <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                            Read Only
+                        </Badge>
                     )}
+
+                    {tag && <TagBadge tag={tag} />}
                 </div>
 
-                <CustomSkeleton isLoading={isLoading} className={clsx(isLocked && 'pointer-events-none')}>
-                    {children}
-                </CustomSkeleton>
+                <div
+                    className={clsx(
+                        'flex gap-2',
 
-                <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">
-                    <FieldDescription text={description} />
-                </CustomSkeleton>
+                        direction === 'row' ? 'flex-row items-center' : 'flex-col'
+                    )}
+                >
+                    <CustomSkeleton isLoading={isLoading} className={clsx(isLocked && 'pointer-events-none')}>
+                        {children}
+                    </CustomSkeleton>
 
-                <FieldMessage text={error} />
+                    <FieldMessage text={error} />
+
+                    <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">
+                        <FieldDescription text={description} />
+                    </CustomSkeleton>
+                </div>
             </div>
         </TooltipProvider>
     );

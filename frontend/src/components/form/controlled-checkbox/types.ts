@@ -1,8 +1,7 @@
 import type { CheckboxProps } from '@radix-ui/react-checkbox';
+import type { ControlledFieldProps } from '../field-wrapper/types';
 
 export type ControlledCheckboxProps = {
     name: string;
-    label?: string;
-    description?: string;
-    isLoading?: boolean;
-} & CheckboxProps;
+} & CheckboxProps &
+    ControlledFieldProps;

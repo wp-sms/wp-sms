@@ -1,23 +1,24 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import type { ControlledCheckboxProps } from './types';
-import { Checkbox } from '@/components/ui/checkbox';
+import type { ControlledMultiselectProps } from './types';
 import { FieldWrapper } from '../field-wrapper';
+import { MultiSelect } from '@/components/ui/multiselect';
+import { toOptions } from '@/utils/toOptions';
 
-export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
+export const ControlledMultiselect: React.FC<ControlledMultiselectProps> = ({
     name,
     label,
     description,
     tooltip,
     tag,
     isLocked,
+    options,
     isLoading,
-    ...props
 }) => {
     const { control } = useFormContext();
 
     return (
         <Controller
-            name={name}
+            name={name ?? ''}
             control={control}
             render={({ field, fieldState }) => {
                 return (
@@ -29,9 +30,14 @@ export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
                         isLocked={isLocked}
                         tag={tag}
                         tooltip={tooltip}
-                        direction="row"
                     >
-                        <Checkbox id={name} checked={field.value} onCheckedChange={field.onChange} {...props} />
+                        <MultiSelect
+                            aria-invalid={fieldState?.invalid || !!fieldState?.error}
+                            value={field?.value ?? []}
+                            options={toOptions(options) ?? []}
+                            defaultValue={field?.value ?? []}
+                            onValueChange={field?.onChange}
+                        />
                     </FieldWrapper>
                 );
             }}

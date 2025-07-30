@@ -10,8 +10,13 @@ import { useDebounce } from '@/core/hooks/useDebounce';
 import { ControlledPhone } from '../controlled-phone';
 import { ControlledTextarea } from '../controlled-textarea';
 import { ControlledNumberInput } from '../controlled-number-input';
-import { useQueryClient } from '@tanstack/react-query';
-import { getGroupValuesOptions, useSaveSettingsValues } from '@/models/settings';
+import { useSaveSettingsValues } from '@/models/settings';
+import { ControlledMultiselect } from '../controlled-multiselect';
+import { ControlledColor } from '../controlled-color';
+import { ControlledRepeater } from '../controlled-repeater';
+import { HeaderField } from '@/components/ui/header-field';
+import { NoticeField } from '@/components/ui/notice-field';
+import { ControlledImage } from '../controlled-image';
 
 export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
     const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
@@ -23,39 +28,27 @@ export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = (
         advancedselect: ControlledSelect,
         countryselect: ControlledSelect,
 
-        multiselect: ControlledInput,
+        multiselect: ControlledMultiselect,
 
         checkbox: ControlledCheckbox,
         html: SimpleHtmlRenderer,
-        repeater: ControlledInput,
+        repeater: ControlledRepeater,
         tel: ControlledPhone,
+        color: ControlledColor,
+
+        header: HeaderField,
+        notice: NoticeField,
+
+        image: ControlledImage,
     };
 
     const fieldValue = useWatch({ name: schema?.key, exact: true });
 
-    const { formState, setValue } = useFormContext();
+    const { formState } = useFormContext();
 
     const debouncedFieldValue = useDebounce(fieldValue, 500);
 
-    const queryClient = useQueryClient();
-
-    const saveSettings = useSaveSettingsValues({
-        onSuccess: (response, variables) => {
-            for (const field in variables) {
-                queryClient.setQueryData(
-                    getGroupValuesOptions({ params: { groupName: name ?? 'general' } }).queryKey,
-                    (old: any) => {
-                        return {
-                            ...old,
-                            [field]: variables[field],
-                        };
-                    }
-                );
-
-                setValue(field, variables[field]);
-            }
-        },
-    });
+    const saveSettings = useSaveSettingsValues();
 
     useEffect(() => {
         const defaultValue = formState?.defaultValues?.[schema?.key];
@@ -78,8 +71,16 @@ export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = (
             options={schema?.options}
             description={schema?.description}
             disabled={schema?.readonly}
-            htmlContent={schema?.description}
+            htmlContent={
+                schema?.type === 'html' && !schema?.description && typeof schema?.options === 'string'
+                    ? schema?.options
+                    : schema?.description
+            }
             isLoading={isLoading}
+            isLocked={schema?.readonly}
+            tag={schema?.tag}
+            isRequired={false}
+            fieldGroups={schema?.fieldGroups}
         />
     );
 };

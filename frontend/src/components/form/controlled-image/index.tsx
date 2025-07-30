@@ -1,9 +1,11 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import type { ControlledCheckboxProps } from './types';
-import { Checkbox } from '@/components/ui/checkbox';
 import { FieldWrapper } from '../field-wrapper';
+import { useWordPressMediaUploader } from '@/core/hooks';
+import type { ControlledImageProps } from './types';
+import { Button } from '@/components/ui/button';
+import { CloudUpload } from 'lucide-react';
 
-export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
+export const ControlledImage: React.FC<ControlledImageProps> = ({
     name,
     label,
     description,
@@ -11,14 +13,15 @@ export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
     tag,
     isLocked,
     isLoading,
-    ...props
 }) => {
+    const { openMediaUploader } = useWordPressMediaUploader();
+
     const { control } = useFormContext();
 
     return (
         <Controller
-            name={name}
             control={control}
+            name={name}
             render={({ field, fieldState }) => {
                 return (
                     <FieldWrapper
@@ -29,9 +32,12 @@ export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
                         isLocked={isLocked}
                         tag={tag}
                         tooltip={tooltip}
-                        direction="row"
                     >
-                        <Checkbox id={name} checked={field.value} onCheckedChange={field.onChange} {...props} />
+                        <Button variant="outline" type="button" onClick={() => openMediaUploader(field.onChange)}>
+                            <CloudUpload />
+
+                            {field.value ? 'Change Image' : 'Select Image'}
+                        </Button>
                     </FieldWrapper>
                 );
             }}

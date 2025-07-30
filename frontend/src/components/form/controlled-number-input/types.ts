@@ -1,5 +1,3 @@
-export type ControlledNumberInputProps = React.ComponentProps<'input'> & {
-    label?: string;
-    description?: string;
-    isLoading?: boolean;
-};
+import type { ControlledFieldProps } from '../field-wrapper/types';
+
+export type ControlledNumberInputProps = React.ComponentProps<'input'> & ControlledFieldProps;

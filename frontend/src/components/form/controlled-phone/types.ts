@@ -1,3 +1,5 @@
+import type { ControlledFieldProps } from '../field-wrapper/types';
+
 export type Country = {
     id: number;
     name: string;
@@ -9,8 +11,5 @@ export type Country = {
     unicode: string;
     flag: string;
 };
-export type ControlledPhoneProps = React.ComponentProps<'input'> & {
-    label?: string;
-    description?: string;
-    isLoading?: boolean;
-};
+
+export type ControlledPhoneProps = React.ComponentProps<'input'> & ControlledFieldProps;

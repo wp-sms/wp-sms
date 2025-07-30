@@ -7,36 +7,31 @@ import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import type { ControlledPhoneProps, Country } from './types';
 import parsePhoneNumber from 'libphonenumber-js';
-import { CustomSkeleton } from '@/components/ui/custom-skeleton';
-import { FieldDescription } from '../description';
-import { FieldMessage } from '../message';
-import { FieldLabel } from '../label';
+import { FieldWrapper } from '../field-wrapper';
 
-export const ControlledPhone: React.FC<ControlledPhoneProps> = ({ name, label, description, isLoading = false }) => {
+export const ControlledPhone: React.FC<ControlledPhoneProps> = ({
+    name,
+    label,
+    description,
+    tooltip,
+    tag,
+    isLocked,
+    isLoading,
+}) => {
     const { control } = useFormContext();
     const [jsonData, setJsonData] = useState<Country[]>([]);
-    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-
-    const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(undefined);
 
     const dataService = WordPressDataService.getInstance();
 
     useEffect(() => {
         const loadData = async () => {
             try {
-                setLoading(true);
-
                 const response = await fetch(`${dataService.getBuildUrl()}countries.json`);
                 const importedData = (await response.json()) as Country[];
 
                 setJsonData(importedData);
-
-                setSelectedCountry(importedData?.find((item) => item.code === 'US'));
-            } catch (error) {
-            } finally {
-                setLoading(false);
-            }
+            } catch (error) {}
         };
 
         loadData();
@@ -50,12 +45,22 @@ export const ControlledPhone: React.FC<ControlledPhoneProps> = ({ name, label, d
             render={({ field, fieldState }) => {
                 const phoneUtil = parsePhoneNumber(`+${field?.value}`);
 
-                return (
-                    <div className="flex flex-col gap-y-1.5">
-                        <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">
-                            <FieldLabel text={label} />
-                        </CustomSkeleton>
+                let selectedCountry = jsonData?.find((item) =>
+                    phoneUtil?.countryCallingCode
+                        ? item.dialCode === `+${phoneUtil?.countryCallingCode}`
+                        : item.code === 'US'
+                );
 
+                return (
+                    <FieldWrapper
+                        label={label}
+                        description={description}
+                        isLoading={isLoading}
+                        error={fieldState?.error?.message}
+                        isLocked={isLocked}
+                        tag={tag}
+                        tooltip={tooltip}
+                    >
                         <div className="flex border border-border rounded-lg focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] transition-all duration-300">
                             <div>
                                 <Popover open={open} onOpenChange={setOpen}>
@@ -86,12 +91,9 @@ export const ControlledPhone: React.FC<ControlledPhoneProps> = ({ name, label, d
 
                                                             const finalValue = `${dialCode.replace('+', '')}${phoneUtil?.nationalNumber}`;
 
-                                                            setSelectedCountry(
-                                                                jsonData?.find(
-                                                                    (item) =>
-                                                                        item?.code === code &&
-                                                                        item.dialCode === dialCode
-                                                                )
+                                                            selectedCountry = jsonData?.find(
+                                                                (item) =>
+                                                                    item?.code === code && item.dialCode === dialCode
                                                             );
 
                                                             field?.onChange(finalValue);
@@ -121,13 +123,7 @@ export const ControlledPhone: React.FC<ControlledPhoneProps> = ({ name, label, d
                                 }}
                             />
                         </div>
-
-                        <CustomSkeleton isLoading={isLoading} wrapperClassName="flex">
-                            <FieldDescription text={description} />
-                        </CustomSkeleton>
-
-                        <FieldMessage text={fieldState?.error?.message} />
-                    </div>
+                    </FieldWrapper>
                 );
             }}
         />
