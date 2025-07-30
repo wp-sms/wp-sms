@@ -131,15 +131,23 @@
 
 /* Reset h2 */
 #wp-sms-settings-root h2 {
-    @apply text-lg font-bold text-foreground
+    @apply text-lg font-bold text-foreground m-0
 }
 
 #wp-sms-settings-root h3 {
     @apply text-base font-bold text-foreground
 }
 
-#wp-sms-settings-root input {
-    @apply border-input rounded-md shadow-none outline-none
+    #wp-sms-settings-root input {
+        @apply border-input rounded-md shadow-none outline-none
+    }
+
+    #wp-sms-settings-root textarea {
+        @apply border-input rounded-md shadow-none outline-none
+    }
+
+#wp-sms-settings-root input[aria-invalid="true"] {
+    @apply border-destructive
 }
 
 
