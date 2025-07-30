@@ -19,14 +19,14 @@ export const CustomSkeleton: React.FC<CustomSkeletonProps> = ({ isLoading, child
                         'data-[loaded=true]:before:-z-10',
                         'data-[loaded=true]:before:animate-none',
                         'data-[loaded=true]:after:opacity-0',
-                        'transition-background !duration-300',
+                        'transition-background !duration-200',
                     ]
                 )}
                 data-loaded={isLoading ? 'false' : 'true'}
             >
                 <div
                     className={clsx(
-                        'transition-opacity motion-reduce:transition-none !duration-300',
+                        'transition-opacity motion-reduce:transition-none !duration-200',
                         isLoading ? 'opacity-0 group-data-[loaded=true]:opacity-100' : 'opacity-100',
                         className
                     )}
