@@ -21,7 +21,25 @@ export type SchemaFieldType =
     | 'html'
     | 'tel'
     | 'countryselect'
-    | 'textarea';
+    | 'textarea'
+    | 'color'
+    | 'header'
+    | 'notice'
+    | 'image';
+
+export type SchemaFieldLayout =
+    | '2-column'
+    | '1-column'
+    | '3-column'
+    | '4-column'
+    | '5-column'
+    | '6-column'
+    | '7-column'
+    | '8-column'
+    | '9-column'
+    | '10-column'
+    | '11-column'
+    | '12-column';
 
 export type SchemaField = {
     key: string;
@@ -33,11 +51,19 @@ export type SchemaField = {
     options: FieldOption;
     order: number;
     doc: string;
+    tag: string | null;
     showIf: { [key: string]: string } | null;
     hideIf: { [key: string]: string } | null;
     repeatable: boolean;
     placeholder?: string;
-    fieldGroups?: any[];
+    fieldGroups?: {
+        key: string;
+        label: string;
+        description: string;
+        order: number;
+        layout: SchemaFieldLayout;
+        fields: SchemaField[];
+    }[];
     auto_save_and_refresh: boolean;
     default: unknown;
     hidden: boolean;
