@@ -4,6 +4,7 @@ v7.x
 - **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
 - **Fix:** Properly replace special tags (e.g., %_site_title%) in message content using WPCF7_MailTag to avoid PHP notices and ensure correct output.
 - **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
+- **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
