@@ -1,4 +1,4 @@
-v7.x
+v7.0.1 - 2025-07-** =
 - **Fix:** Fixed variable rendering in message content.
 - **Fix:** Fixed showing migration failed notice on not valid licenses.
 - **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
