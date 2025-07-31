@@ -17,6 +17,8 @@ import { ControlledRepeater } from '../controlled-repeater';
 import { HeaderField } from '@/components/ui/header-field';
 import { NoticeField } from '@/components/ui/notice-field';
 import { ControlledImage } from '../controlled-image';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
     const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
@@ -61,7 +63,12 @@ export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = (
     const FieldComponent = FieldComponentMap?.[schema?.type];
 
     if (!FieldComponent) {
-        return null;
+        return (
+            <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>Not supported field type.</AlertDescription>
+            </Alert>
+        );
     }
 
     return (

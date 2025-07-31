@@ -29,10 +29,21 @@ export default defineConfig({
         },
     },
     build: {
+        sourcemap: false,
+        reportCompressedSize: false,
+        chunkSizeWarningLimit: 1000,
         manifest: true,
         target: 'es2022',
         outDir: './build',
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true,
+            },
+        },
         rollupOptions: {
+            treeshake: 'recommended',
             input: {
                 settings: resolve(__dirname, 'src/pages/settings/index.tsx'),
                 settingsDynamicPages: resolve(__dirname, 'src/pages/settings/dynamic-pages.tsx'),
@@ -51,6 +62,12 @@ export default defineConfig({
                 entryFileNames: '[name].js',
                 chunkFileNames: 'chunks/[name].js',
                 assetFileNames: 'assets/[name].[ext]',
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return 'vendor';
+                    }
+                },
+                experimentalMinChunkSize: 1000,
             },
         },
 
@@ -59,5 +76,10 @@ export default defineConfig({
     server: {
         port: 5173,
         cors: true,
+    },
+    optimizeDeps: {
+        include: ['react', 'react-dom', 'react-router-dom', 'react-hook-form', 'zustand', 'lucide-react'],
+        exclude: ['@wordpress/element'],
+        force: false,
     },
 });

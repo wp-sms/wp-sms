@@ -11,8 +11,8 @@ export const SettingsSidebar: React.FC = () => {
     const { isOpen } = useSidebarStore();
 
     return (
-        <div className={clsx('bg-white w-72 p-5 border-r border-r-border overflow-hidsden !transition-all')}>
-            <aside className="flex flex-col gap-y-10 sticky top-12 transition-all z-10">
+        <aside className={clsx('bg-white w-72 p-5 border-r border-r-border overflow-hidsden !transition-all')}>
+            <div className="flex flex-col gap-y-10 sticky top-12 transition-all z-10">
                 {isOpen && (
                     <section className="flex items-center gap-x-2.5">
                         <div className="size-10 rounded-lg bg-primary flex items-center justify-center">
@@ -76,7 +76,7 @@ export const SettingsSidebar: React.FC = () => {
                         </SidebarGroup>
                     )}
                 </section>
-            </aside>
-        </div>
+            </div>
+        </aside>
     );
 };

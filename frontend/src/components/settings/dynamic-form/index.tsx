@@ -4,6 +4,8 @@ import { ControlledFieldRenderer } from '@/components/form/controlled-field-rend
 import { DynamicFieldsSkeleton } from '../dynamic-fields-skeleton';
 import { SettingsGroupTitle } from '../group-title';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export const SettingsDynamicForm: React.FC<SettingsDynamicFormProps> = ({
     groupSchema,
@@ -17,7 +19,12 @@ export const SettingsDynamicForm: React.FC<SettingsDynamicFormProps> = ({
     }
 
     if (!groupSchema) {
-        return null;
+        return (
+            <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>No settings schema available.</AlertDescription>
+            </Alert>
+        );
     }
 
     return (
