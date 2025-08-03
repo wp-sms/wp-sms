@@ -72,10 +72,16 @@ $displayNotifications    = (bool)Option::getOption('plugin_notifications');
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-settings', 'link_text' => __('Settings', 'wp-sms'), 'icon_class' => 'settings', 'badge_count' => null]);
                 ?>
+
                 <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="help">
                     <span class="icon"></span>
                     <?php esc_html_e('Help Center', 'wp-sms'); ?>
                 </a>
+                <?php if ($displayNotifications): ?>
+                    <a class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>">
+                        <span class="icon"></span><span><?php esc_html_e('Notifications', 'wp-sms'); ?></span>
+                    </a>
+                <?php endif; ?>
                 <div class="wpsms-license">
                     <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons, 'tab_url' => $tab_url]); ?>
                 </div>

@@ -7,6 +7,17 @@ body.admin-bar .wpsms-notification-sidebar {
   }
 }
 
+.wpsms-no-scroll {
+  overflow: hidden;
+  height: 100%;
+  padding-right: var(--scrollbar-width);
+
+  .rtl & {
+    padding-right: unset;
+    padding-left: var(--scrollbar-width);
+  }
+}
+
 .wpsms-notification-sidebar {
   position: fixed;
   top: 0;
@@ -188,6 +199,7 @@ body.admin-bar .wpsms-notification-sidebar {
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    text-decoration: none;
 
     &:hover {
       color: #0C0C0D;
@@ -284,7 +296,7 @@ body.admin-bar .wpsms-notification-sidebar {
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
-      background-color: #B1B6FF33 !important;
+      background-color: #E5E5E5 !important;
     }
 
     svg, img {
@@ -359,24 +371,19 @@ body.admin-bar .wpsms-notification-sidebar {
   a.wpsms-notification-sidebar__button {
     padding: 7.5px 16px;
     border-radius: 4px;
-    background: #F6F6FF;
-    border: 1px solid #C3C9D5;
+    background: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(212, 212, 212, 1);
     color: #0C0C0D;
     font-size: 13px;
     font-weight: 400;
     line-height: 14px;
     word-break: break-word;
-
-    &:hover, &:focus {
-      border: 1px solid #BCC2CD;
-      background: #E9E9FF;
-      color: #0C0C0D;
-    }
+    text-decoration: none;
 
   }
 
   a.wpsms-notification-sidebar__dismiss {
-    color: #A9AAAE;
+    color: #737373;
     font-size: 13px;
     font-weight: 400;
     line-height: 15px;
