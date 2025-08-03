@@ -3,6 +3,8 @@
 namespace WP_SMS\Admin;
 
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
+use WP_SMS\Gateway;
+use WP_SMS\Option as WPSmsOptionsManager;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Option;
 
@@ -18,9 +20,9 @@ class SiteHealthInfo
     public function addSmsPluginInfo($info)
     {
         $info[self::DEBUG_INFO_SLUG] = array(
-            'label' => esc_html__('WP SMS', 'wp-sms'),
+            'label'       => esc_html__('WP SMS', 'wp-sms'),
             'description' => esc_html__('This section provides debug information about your WP SMS plugin settings.', 'wp-sms'),
-            'fields' => $this->getSmsSettings(),
+            'fields'      => $this->getSmsSettings(),
         );
 
         return $info;
@@ -28,10 +30,11 @@ class SiteHealthInfo
 
     protected function getSmsSettings()
     {
+        global $sms;
         $settings = array();
 
         $pluginHandler = new PluginHandler();
-        $wooProActive = $pluginHandler->isPluginActive('wp-sms-woocommerce-pro');
+        $wooProActive  = $pluginHandler->isPluginActive('wp-sms-woocommerce-pro');
 
         $yesNo = function ($value) {
             return $value ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms');
@@ -57,7 +60,7 @@ class SiteHealthInfo
 
         $settings['db_version'] = array(
             'label' => __('Database Version', 'wp-sms'),
-            'value' => OptionUtil::getOptionGroup('db', 'version', '0.0.0'),
+            'value' => get_option('wp_sms_db_version', 'Not Set'),
         );
 
         $settings['mobile_field_source'] = array(
@@ -68,11 +71,6 @@ class SiteHealthInfo
         $settings['mobile_field_mandatory'] = array(
             'label' => __('Mobile Field Mandatory Status', 'wp-sms'),
             'value' => $raw('optional_mobile_field') === '0' ? 'Required' : 'Optional',
-        );
-
-        $settings['international_number_input'] = array(
-            'label' => __('International Number Input', 'wp-sms'),
-            'value' => $yesNo($raw('international_mobile')),
         );
 
         $settings['only_countries'] = array(
@@ -86,38 +84,42 @@ class SiteHealthInfo
         );
 
         $settings['gateway_name'] = array(
-            'label' => __('SMS Gateway Choose the Gateway', 'wp-sms'),
+            'label' => __('SMS Gateway Nane', 'wp-sms'),
             'value' => $toCamelCase($raw('gateway_name', 'Not Configured')),
         );
 
         $settings['gateway_status'] = array(
             'label' => __('SMS Gateway Status', 'wp-sms'),
-            'value' => $raw('gateway_name') ? 'Configured' : 'Not Configured',
-        );
-
-        $settings['gateway_credit'] = array(
-            'label' => __('SMS Gateway Balance / Credit', 'wp-sms'),
-            'value' => get_option('wp_sms_credit') ?: 'Not Available',
+            'value' => Gateway::status(true) ? 'Active' : 'Inactive',
         );
 
         $settings['incoming_message'] = array(
             'label' => __('SMS Gateway Incoming Message', 'wp-sms'),
-            'value' => $yesNo($raw('new_incoming_sms_webhook')),
+            'value' => $yesNo($sms->supportIncoming),
         );
 
         $settings['send_bulk_sms'] = array(
             'label' => __('SMS Gateway Send Bulk SMS', 'wp-sms'),
-            'value' => $yesNo($raw('bulk_sms_feature_enabled')),
+            'value' => $yesNo($sms->bulk_send),
         );
 
         $settings['send_mms'] = array(
             'label' => __('SMS Gateway Send MMS', 'wp-sms'),
-            'value' => $yesNo($raw('mms_feature_enabled')),
+            'value' => $yesNo($sms->supportMedia),
         );
+
+        $deliveryOptions = array(
+            'api_direct_send' => esc_html__('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.', 'wp-sms'),
+            'api_async_send'  => esc_html__('Scheduled SMS Delivery: Configures API to send messages at predetermined times.', 'wp-sms'),
+            'api_queued_send' => esc_html__('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.', 'wp-sms'),
+        );
+
+        $deliveryKey   = $raw('sms_delivery_method', 'not_set');
+        $deliveryLabel = $deliveryOptions[$deliveryKey] ?? __('Not Set', 'wp-sms');
 
         $settings['delivery_method'] = array(
             'label' => __('SMS Gateway Delivery Method', 'wp-sms'),
-            'value' => $toCamelCase($raw('sms_delivery_method', 'Not Set')),
+            'value' => $deliveryLabel,
         );
 
         $settings['unicode_messaging'] = array(
@@ -130,10 +132,20 @@ class SiteHealthInfo
             'value' => $yesNo($raw('clean_numbers')),
         );
 
+        $restrictLocal    = $raw('send_only_local_numbers');
+        $allowedCountries = (array)$raw('only_local_numbers_countries');
+
+        $restrictText = $yesNo($restrictLocal);
+
+        if ($restrictLocal && !empty($allowedCountries)) {
+            $restrictText .= ' — ' . implode(', ', $allowedCountries);
+        }
+
         $settings['restrict_to_local'] = array(
             'label' => __('SMS Gateway Restrict to Local Numbers', 'wp-sms'),
-            'value' => $yesNo($raw('send_only_local_numbers')),
+            'value' => $restrictText,
         );
+
 
         $settings['group_visibility'] = array(
             'label' => __('SMS Newsletter Group Visibility in Form', 'wp-sms'),
@@ -172,12 +184,17 @@ class SiteHealthInfo
 
         $settings['login_with_sms'] = array(
             'label' => __('Login With SMS', 'wp-sms'),
-            'value' => $yesNo(Option::getOption('login_sms')),
+            'value' => $yesNo(WPSmsOptionsManager::getOption('login_sms', \true)),
         );
 
         $settings['two_factor'] = array(
             'label' => __('Two-Factor Authentication with SMS', 'wp-sms'),
-            'value' => $yesNo(Option::getOption('mobile_verify')),
+            'value' => $yesNo(WPSmsOptionsManager::getOption('mobile_verify', \true)),
+        );
+
+        $settings['auto_register_on_login'] = array(
+            'label' => __('Two-Factor Authentication with SMS', 'wp-sms'),
+            'value' => $yesNo(WPSmsOptionsManager::getOption('register_sms', \true)),
         );
 
         $settings['cf7_metabox'] = array(
@@ -192,23 +209,33 @@ class SiteHealthInfo
             };
 
             $wooProFields = array(
-                'cart_abandonment_recovery_status'        => __('WooPro: Cart Abandonment Recovery', 'wp-sms'),
-                'cart_abandonment_threshold'              => __('WooPro: Cart abandonment threshold', 'wp-sms'),
-                'cart_overwrite_number_during_checkout'   => __('WooPro: Cart abandonment Overwrite mobile number', 'wp-sms'),
-                'cart_create_coupon'                      => __('WooPro: Cart abandonment Create coupon', 'wp-sms'),
-                'cart_abandonment_send_sms_time_interval' => __('WooPro: Cart abandonment Send sms after', 'wp-sms'),
-                'login_with_sms_status'                   => __('WooPro: Show Button in Login Page', 'wp-sms'),
-                'login_with_sms_forgot_status'            => __('WooPro: Show Button in Forgot Password Page', 'wp-sms'),
-                'reset_password_status'                   => __('WooPro: Enable SMS Password Reset', 'wp-sms'),
-                'checkout_confirmation_checkbox_enabled'  => __('WooPro: Confirmation Checkbox', 'wp-sms'),
-                'checkout_mobile_verification_enabled'    => __('WooPro: Enable Mobile Verification', 'wp-sms'),
+                'cart_abandonment_recovery_status'                    => __('WooPro: Cart Abandonment Recovery', 'wp-sms'),
+                'cart_abandonment_threshold'                          => __('WooPro: Cart abandonment threshold', 'wp-sms'),
+                'cart_overwrite_number_during_checkout'               => __('WooPro: Cart abandonment Overwrite mobile number', 'wp-sms'),
+                'cart_create_coupon'                                  => __('WooPro: Cart abandonment Create coupon', 'wp-sms'),
+                'cart_abandonment_send_sms_time_interval'             => __('WooPro: Cart abandonment Send sms after', 'wp-sms'),
+                'login_with_sms_status'                               => __('WooPro: Show Button in Login Page', 'wp-sms'),
+                'login_with_sms_forgot_status'                        => __('WooPro: Show Button in Forgot Password Page', 'wp-sms'),
+                'reset_password_status'                               => __('WooPro: Enable SMS Password Reset', 'wp-sms'),
+                'checkout_confirmation_checkbox_enabled'              => __('WooPro: Confirmation Checkbox', 'wp-sms'),
+                'checkout_mobile_verification_enabled'                => __('WooPro: Enable Mobile Verification', 'wp-sms'),
+                'register_user_via_sms_status'                        => __('WooPro: Automatic Registration via SMS', 'wp-sms'),
+                'checkout_mobile_verification_skip_logged_in_enabled' => __('WooPro: Skip Verification for Logged-In Users', 'wp-sms'),
+                'checkout_mobile_verification_countries_whitelist'    => __('WooPro: Required Countries for Mobile Verification', 'wp-sms'),
             );
 
             foreach ($wooProFields as $key => $label) {
                 $raw   = $woo($key);
                 $value = '';
-
-                if ($key === 'cart_overwrite_number_during_checkout') {
+                if ($key === 'register_user_via_sms_status' || $key === 'checkout_mobile_verification_skip_logged_in_enabled') {
+                    $value = in_array($raw, array(true, '1', 1, 'yes'), true)
+                        ? __('Enabled', 'wp-sms')
+                        : __('Disabled', 'wp-sms');
+                } elseif ($key === 'checkout_mobile_verification_countries_whitelist') {
+                    $value = is_array($raw) && !empty($raw)
+                        ? implode(', ', $raw)
+                        : __('Not Set', 'wp-sms');
+                } else if ($key === 'cart_overwrite_number_during_checkout') {
                     $value = ($raw === 'skip')
                         ? __('Do not update', 'wp-sms')
                         : __('Update phone number', 'wp-sms');
