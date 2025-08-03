@@ -170,7 +170,6 @@ class Gateway
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
             'turbosms'   => 'turbosms.ua',
-            'smstraffic' => 'smstraffic.eu',
         ),
         'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
