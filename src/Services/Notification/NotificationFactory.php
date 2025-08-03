@@ -34,12 +34,15 @@ class NotificationFactory
      */
     public static function hasUpdatedNotifications()
     {
-        $rawNotifications = get_option('wp_sms_notifications', []);
+        $rawNotifications = self::getRawNotificationsData();
+        $notifications    = NotificationProcessor::filterNotificationsByTags($rawNotifications['data'] ?? []);
 
-        if (!is_array($rawNotifications)) {
-            return false;
+        foreach ($notifications as $notification) {
+            if (empty($notification['dismiss'])) {
+                return true;
+            }
         }
 
-        return !empty($rawNotifications['updated']) ? (bool)$rawNotifications['updated'] : false;
+        return false;
     }
 }
