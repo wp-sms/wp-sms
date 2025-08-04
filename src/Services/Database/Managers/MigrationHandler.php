@@ -3,7 +3,6 @@
 namespace WP_SMS\Services\Database\Managers;
 
 use WP_SMS\BackgroundProcess\Async\BackgroundProcessMonitor;
-use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Utils\Request;
@@ -13,7 +12,6 @@ use WP_SMS\Utils\Request;
  * and manual migration tasks.
  *
  * This class provides methods to initialize migration hooks, run migrations,
- * display notices for pending manual migrations, and process manual migration tasks.
  */
 class MigrationHandler
 {
@@ -66,21 +64,17 @@ class MigrationHandler
 
 
     /**
-     * Handle migration events and status notices.
-     *
      * This method runs pending database migration tasks and then displays
-     * any relevant notices about migration progress or failure.
      *
      * @return void
      */
     public static function handleMigrationEvents()
     {
-        self::handleMigrationStatusNotices();
         self::runMigrations();
     }
 
     /**
-     * Run schema migrations and prepare manual migration notices if required.
+     * Run schema migrations.
      *
      * @return void
      */
@@ -367,50 +361,5 @@ class MigrationHandler
         $referer = wp_get_referer();
         wp_redirect($referer ?: admin_url());
         exit;
-    }
-
-    /**
-     * Handles displaying notices based on the current migration status.
-     *
-     * This method checks the `migration_status_detail` option to determine the
-     * current status of the migration process. It displays appropriate notices
-     * for progress, completion, or failure of the migration.
-     *
-     * @return void
-     */
-    public static function handleMigrationStatusNotices()
-    {
-        $details = Option::getOptionGroup('db', 'migration_status_detail', null);
-
-        if (empty($details['status'])) {
-            return;
-        }
-
-        $status = $details['status'];
-
-        if ($status === 'failed') {
-            BackgroundProcessMonitor::deleteOption('data_migration_process');
-
-            $actionUrl = self::buildActionUrl('retry');
-
-            $message = sprintf(
-                '
-                    <p>
-                        <strong>%1$s</strong>
-                        </br>%2$s
-                        </br><strong>%3$s</strong> %4$s
-                        </br><a href="%5$s" style="margin-top: 10px" target="_blank">%6$s</a>
-                    </p>
-                ',
-                esc_html__('WP SMS: Process Failed', 'wp-sms'),
-                esc_html__('The Database Migration process encountered an error and could not be completed.', 'wp-sms'),
-                esc_html__('Error:', 'wp-sms'),
-                esc_html($details['message'] ?? ''),
-                esc_url('https://wp-sms-pro.com/support/?utm_source=wp-sms&utm_medium=link&utm_campaign=db-error'),
-                esc_html__('Contact Support', 'wp-sms')
-            );
-            $notice  = NoticeManager::getInstance();
-            $notice->registerNotice('database_manual_migration_failed', $message, false);
-        }
     }
 }
