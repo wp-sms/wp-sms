@@ -380,6 +380,9 @@ body.admin-bar .wpsms-notification-sidebar {
     word-break: break-word;
     text-decoration: none;
 
+    &:hover {
+      background-color: #FFEDD5;
+    }
   }
 
   a.wpsms-notification-sidebar__dismiss {
