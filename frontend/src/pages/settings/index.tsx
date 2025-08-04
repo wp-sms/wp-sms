@@ -4,6 +4,7 @@ import { HashRouter as Router } from 'react-router-dom';
 import SettingsRoutes from '@/routes/settings';
 import { SettingsLayout } from '@/layouts/settings-layout';
 import Providers from '@/providers';
+import '../../globals.css';
 
 const Settings = () => {
     return (
