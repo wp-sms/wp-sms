@@ -2,12 +2,18 @@
 
 namespace WP_SMS\Services\OTP\AuthChannel\OTP;
 
+use WP_SMS\Services\OTP\Contracts\Interfaces\AuthChannelInterface;
 use WP_SMS\Services\OTP\Models\OtpSessionModel;
 
-class OtpService
+class OtpService implements AuthChannelInterface
 {
     protected int $defaultTtl = 300;
     protected int $defaultCodeLength = 6;
+
+    public function getKey(): string
+    {
+        return 'otp';
+    }
 
     /**
      * Generate a new OTP and persist it in the database.

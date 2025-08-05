@@ -4,12 +4,24 @@ namespace WP_SMS\Services\OTP\AuthChannel\MagicLink;
 
 use WP_SMS\Services\OTP\Models\MagicLinkModel;
 use WP_SMS\Services\OTP\AuthChannel\MagicLink\MagicLinkPayload;
+use WP_SMS\Services\OTP\Contracts\Interfaces\AuthChannelInterface;
 
-class MagicLinkService
+class MagicLinkService implements AuthChannelInterface
 {
     protected int $defaultTtl = 600;
     protected string $loginUrlBase = '/?magic_login=1';
 
+    public function getKey(): string
+    {
+        return 'magic_link';
+    }
+
+    public function exists(string $flowId): bool
+    {
+        return MagicLinkModel::exists(['flow_id' => $flowId]);
+    }
+
+    
     /**
      * Generate a new magic login link for a given user and flow ID.
      */
