@@ -145,6 +145,23 @@ class Manager
                 'UNIQUE KEY unique_session_id (session_id)'
             ],
         ],
+        'magic_links' => [
+            'columns' => [
+                'id'          => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+                'flow_id'     => 'CHAR(36) NOT NULL',
+                'user_id'     => 'BIGINT UNSIGNED NOT NULL',
+                'token_hash'  => 'CHAR(64) NOT NULL',
+                'expires_at'  => 'DATETIME NOT NULL',
+                'used_at'     => 'DATETIME NULL',
+                'created_at'  => 'DATETIME NOT NULL',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)',
+                'UNIQUE KEY unique_flow_id (flow_id)',
+                'KEY idx_magic_user (user_id)',
+                'KEY idx_magic_expires (expires_at)'
+            ],
+        ],
     ];
 
     /**
