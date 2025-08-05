@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Services\OTP\Delivery;
+namespace WP_SMS\Services\OTP\Delivery\Email;
 
 use WP_SMS\Services\OTP\Contracts\Interfaces\DeliveryChannelInterface;
 
