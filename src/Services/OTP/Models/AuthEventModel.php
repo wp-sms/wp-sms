@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Services\Mfa\Model;
+namespace WP_SMS\Services\OTP\Models;
 
 use WP_SMS\Contracts\Abstracts\AbstractBaseModel;
 
