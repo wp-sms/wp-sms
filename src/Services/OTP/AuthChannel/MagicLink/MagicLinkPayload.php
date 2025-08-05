@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Services\Authentication\Channels\MagicLink;
+namespace WP_SMS\Services\OTP\AuthChannel\MagicLink;
 
 class MagicLinkPayload
 {
