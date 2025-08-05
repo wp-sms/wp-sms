@@ -4,6 +4,8 @@ namespace WP_SMS\Services\OTP\Delivery;
 
 use InvalidArgumentException;
 use WP_SMS\Services\OTP\Contracts\Interfaces\DeliveryChannelInterface;
+use WP_SMS\Services\OTP\Delivery\Email\EmailChannel;
+use WP_SMS\Services\OTP\Delivery\PhoneNumber\SmsChannel;
 
 class DeliveryChannelManager
 {
