@@ -86,7 +86,7 @@ abstract class AbstractBaseModel
     /**
      * Update current object in the DB.
      */
-    public function update(array $data = null): int
+    public function update(array $data = []): int
     {
         if (!isset($this->id)) {
             throw new \RuntimeException('Cannot update: id is not set.');
@@ -138,9 +138,13 @@ abstract class AbstractBaseModel
     /**
      * Static proxy for findAll().
      */
-    public static function findAll(array $where = [], int $limit = null, string $orderBy = null): array
+    public static function findAll(array $where = [], int $limit = 0, string $orderBy = ''): array
     {
         return (new static())->findAll($where, $limit, $orderBy);
     }
 
+    public static function exists(array $where): bool
+    {
+        return static::find($where) !== null;
+    }
 }
