@@ -56,52 +56,6 @@ abstract class AbstractBaseModel
     }
 
     /**
-     * Get a single record by WHERE clause.
-     */
-    public function find(array $where)
-    {
-        $sql = "SELECT * FROM {$this->table} WHERE ";
-        $clauses = [];
-        $values = [];
-
-        foreach ($where as $col => $val) {
-            $clauses[] = "$col = " . $this->determineFormat($val);
-            $values[] = $val;
-        }
-
-        $sql .= implode(' AND ', $clauses) . ' LIMIT 1';
-        return $this->db->get_row($this->db->prepare($sql, ...$values), ARRAY_A);
-    }
-
-    /**
-     * Find multiple rows.
-     */
-    public function findAll(array $where = [], int $limit = null, string $orderBy = null): array
-    {
-        $sql = "SELECT * FROM {$this->table}";
-        $values = [];
-
-        if ($where) {
-            $clauses = [];
-            foreach ($where as $col => $val) {
-                $clauses[] = "$col = " . $this->determineFormat($val);
-                $values[] = $val;
-            }
-            $sql .= ' WHERE ' . implode(' AND ', $clauses);
-        }
-
-        if ($orderBy) {
-            $sql .= ' ORDER BY ' . esc_sql($orderBy);
-        }
-
-        if ($limit) {
-            $sql .= ' LIMIT ' . intval($limit);
-        }
-
-        return $this->db->get_results($this->db->prepare($sql, ...$values), ARRAY_A);
-    }
-
-    /**
      * Insert a new row.
      */
     public static function insert(array $data): int
@@ -173,4 +127,20 @@ abstract class AbstractBaseModel
 
         return '%s';
     }
+        /**
+     * Static proxy for find().
+     */
+    public static function find(array $where)
+    {
+        return (new static())->find($where);
+    }
+
+    /**
+     * Static proxy for findAll().
+     */
+    public static function findAll(array $where = [], int $limit = null, string $orderBy = null): array
+    {
+        return (new static())->findAll($where, $limit, $orderBy);
+    }
+
 }
