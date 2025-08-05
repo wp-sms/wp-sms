@@ -2,7 +2,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title><?php echo esc_html($email_title); ?></title>
     <style type="text/css">
-        <?php echo file_get_contents(WP_SMS_DIR . 'assets/css/mail.css'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents ?>
+        <?php echo file_get_contents(WP_SMS_DIR . 'frontend/build/legacy/assets/mail-styles.css'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents ?>
     </style>
 </head>
 
@@ -11,12 +11,12 @@
 
     <div class="main-section">
 
-        <table class="header" style="background-image: url(<?php echo esc_url(WP_SMS_URL . 'assets/images/email-background.jpg'); ?>);">
+        <table class="header" style="background-image: url(<?php echo esc_url(WP_SMS_URL . 'frontend/build/images/email-background.jpg'); ?>);">
             <tr>
                 <td></td>
                 <td style="vertical-align: bottom; width:35%;">
                     <a href="<?php echo esc_url(WP_SMS_SITE); ?>" target="_blank" class="wp-sms-logo">
-                        <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/email-logo.png'); ?>">
+                        <img src="<?php echo esc_url(WP_SMS_URL . '/frontend/build/images/email-logo.png'); ?>">
                     </a>
                 </td>
             </tr>

@@ -56,8 +56,8 @@ class SettingAdminPage
         wp_enqueue_script('wp-element');
         wp_enqueue_script('wp-i18n');
 
-        $manifest_path = WP_SMS_DIR . 'public/admin/.vite/manifest.json';
-        $manifest_url  = WP_SMS_URL . 'public/admin/';
+        $manifest_path = WP_SMS_DIR . 'frontend/build/.vite/manifest.json';
+        $manifest_url  = WP_SMS_URL . 'frontend/build/';
 
         if (!file_exists($manifest_path)) {
             return;
@@ -118,6 +118,7 @@ class SettingAdminPage
                 window.WP_SMS_DATA = <?php echo json_encode([
                     'nonce'   => wp_create_nonce('wp_rest'),
                     'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
+                    'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL
                 ]); ?>;
             </script>
             <?php
@@ -130,6 +131,7 @@ class SettingAdminPage
             [
                 'nonce'   => wp_create_nonce('wp_rest'),
                 'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
+                'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL
             ]
         );
     }

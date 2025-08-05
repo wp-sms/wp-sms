@@ -11,24 +11,24 @@
     <table>
         <tr>
             <td>
-                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/success-sms.png'); ?>" class="icon"/>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'frontend/build/images/icons/success-sms.png'); ?>" class="icon"/>
                 <span class="value"><?php echo esc_html($sms_data['success']); ?></span>
                 <span class="name"><?php esc_html_e('Successful SMS', 'wp-sms'); ?></span>
             </td>
             <td>
-                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/failed-sms.png'); ?>" class="icon"/>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'frontend/build/images/icons/failed-sms.png'); ?>" class="icon"/>
                 <span class="value"><?php echo esc_html($sms_data['failed']); ?></span>
                 <span class="name"><?php esc_html_e('Failed SMS', 'wp-sms'); ?></span>
             </td>
         </tr>
         <tr>
             <td>
-                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/active-user.png'); ?>" class="icon"/>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'frontend/build/images/icons/active-user.png'); ?>" class="icon"/>
                 <span class="value"><?php echo esc_html($subscription_data['activeSubscribers']); ?></span>
                 <span class="name"><?php esc_html_e('New Active Subscribers SMS', 'wp-sms'); ?></span>
             </td>
             <td>
-                <img src="<?php echo esc_url(WP_SMS_URL . 'assets/images/icons/added-user.png'); ?>" class="icon"/>
+                <img src="<?php echo esc_url(WP_SMS_URL . 'frontend/build/images/icons/added-user.png'); ?>" class="icon"/>
                 <span class="value"><?php echo esc_html($subscription_data['deactiveSubscribers']); ?></span>
                 <span class="name"><?php esc_html_e('New Deactive Subscribers', 'wp-sms'); ?></span>
             </td>

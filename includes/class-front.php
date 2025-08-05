@@ -30,18 +30,18 @@ class Front
 
         //Register admin-bar.css for whole admin area
         if (is_admin_bar_showing()) {
-            wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'assets/css/admin-bar.css', true, WP_SMS_VERSION);
+            wp_register_style('wpsms-admin-bar', WP_SMS_URL . 'frontend/build/legacy/assets/admin-bar-styles.css', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-admin-bar');
         }
 
         // Check if "Disable Style" in frontend is active or not
         if (!wp_sms_get_option('disable_style_in_front')) {
-            wp_register_style('wpsms-front', WP_SMS_URL . 'assets/css/front-styles.css', true, WP_SMS_VERSION);
+            wp_register_style('wpsms-front', WP_SMS_URL . 'frontend/build/legacy/assets/front-styles.css', true, WP_SMS_VERSION);
             wp_enqueue_style('wpsms-front');
         }
 
         // Register subscriber form script
-        wp_register_script('wp-sms-front-script', WP_SMS_URL . 'assets/js/frontend.min.js', ['jquery'], WP_SMS_VERSION, true);
+        wp_register_script('wp-sms-front-script', WP_SMS_URL . 'frontend/build/legacy/frontend.js', ['jquery'], WP_SMS_VERSION, true);
         wp_enqueue_script('wp-sms-front-script');
 
         wp_localize_script("wp-sms-front-script", 'wpsms_ajax_object', array(

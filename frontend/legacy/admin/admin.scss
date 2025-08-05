@@ -1,0 +1,20 @@
+@use 'modules/utilities';
+@use 'modules/tabs';
+@use 'modules/privacy-page';
+@use 'modules/scheduled-page';
+@use 'modules/fields';
+@use 'modules/buttons';
+@use 'modules/global';
+@use 'modules/send-sms-page';
+@use 'modules/order-view-page';
+@use 'modules/postbox';
+@use 'modules/dashboard-stats-widget';
+@use 'modules/quick-reply';
+@use 'modules/table-list';
+
+// Add-ons
+@use 'modules/add-ons/add-ons';
+@use 'modules/add-ons/card';
+
+// Modal
+@use 'modules/modal';
