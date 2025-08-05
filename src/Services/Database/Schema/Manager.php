@@ -81,7 +81,69 @@ class Manager
                 'PRIMARY KEY (id)',
                 'KEY user_id (user_id)'
             ],
-        ]
+        ],
+        // Added tables for MFA and Auth Event logging
+        'mfa_identifiers' => [
+            'columns' => [
+                'id'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+                'user_id'      => 'BIGINT UNSIGNED NOT NULL',
+                "factor_type" => "ENUM('phone','email','totp','webauthn','backup') NOT NULL",
+                'factor_value' => 'VARBINARY(255) NOT NULL',
+                'value_hash'   => 'CHAR(64) NOT NULL',
+                'verified'     => 'BOOLEAN NOT NULL DEFAULT FALSE',
+                'created_at'   => 'DATETIME NOT NULL',
+                'verified_at'  => 'DATETIME NULL',
+                'last_used_at' => 'DATETIME NULL',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)',
+                'UNIQUE KEY unique_factor_type_value_hash (factor_type, value_hash)',
+                'KEY idx_mfa_user (user_id)',
+                'KEY idx_mfa_value_hash (value_hash)',
+                'KEY idx_mfa_user_type (user_id, factor_type)'
+            ],
+        ],
+        'auth_event' => [
+            'columns' => [
+                'id'              => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+                'event_id'        => 'CHAR(36) NOT NULL',
+                'flow_id'         => 'CHAR(36) NOT NULL',
+                'timestamp_utc'   => 'TIMESTAMP NOT NULL',
+                'user_id'         => 'BIGINT NULL',
+                'channel'         => 'VARCHAR(64) NOT NULL',
+                'event_type'      => 'VARCHAR(64) NOT NULL',
+                'result'          => 'VARCHAR(32) NOT NULL',
+                'client_ip_masked' => 'VARCHAR(64) NULL',
+                'geo_country'     => 'CHAR(2) NULL',
+                'wp_role'         => 'VARCHAR(32) NULL',
+                'vendor_sid'      => 'VARCHAR(64) NULL',
+                'vendor_status'   => 'VARCHAR(32) NULL',
+                'factor_id'       => 'CHAR(36) NULL',
+                'attempt_count'   => 'SMALLINT NULL',
+                'retention_days'  => 'SMALLINT NOT NULL DEFAULT 30',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)',
+                'UNIQUE KEY unique_event_id (event_id)',
+                'KEY idx_auth_flow (flow_id)',
+                'KEY idx_auth_user_ts (user_id, timestamp_utc DESC)',
+                'KEY idx_auth_factor (factor_id)'
+            ],
+        ],
+        'otp_sessions' => [
+            'columns' => [
+                'id'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+                'session_id' => 'CHAR(36) NOT NULL',
+                'phone'      => 'VARCHAR(20) NOT NULL',
+                'otp_hash'   => 'CHAR(64) NOT NULL',
+                'expires_at' => 'DATETIME NOT NULL',
+                'attempt_count' => 'INT NOT NULL DEFAULT 0',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (id)',
+                'UNIQUE KEY unique_session_id (session_id)'
+            ],
+        ],
     ];
 
     /**
