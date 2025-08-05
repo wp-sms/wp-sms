@@ -121,6 +121,7 @@ class Manager
                 'factor_id'       => 'CHAR(36) NULL',
                 'attempt_count'   => 'SMALLINT NULL',
                 'retention_days'  => 'SMALLINT NOT NULL DEFAULT 30',
+                'user_agent'      => 'TEXT NULL',
             ],
             'constraints' => [
                 'PRIMARY KEY (id)',
