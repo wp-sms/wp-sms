@@ -134,7 +134,7 @@ class Manager
         'otp_sessions' => [
             'columns' => [
                 'id'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
-                'session_id' => 'CHAR(36) NOT NULL',
+                'flow_id' => 'CHAR(36) NOT NULL',
                 'phone'      => 'VARCHAR(20) NOT NULL',
                 'otp_hash'   => 'CHAR(64) NOT NULL',
                 'expires_at' => 'DATETIME NOT NULL',
@@ -142,7 +142,7 @@ class Manager
             ],
             'constraints' => [
                 'PRIMARY KEY (id)',
-                'UNIQUE KEY unique_session_id (session_id)'
+                'UNIQUE KEY unique_flow_id (flow_id)'
             ],
         ],
         'magic_links' => [
