@@ -1,10 +1,6 @@
 <?php
 
-<<<<<<< HEAD
 namespace WP_SMS\Services\OTP\Models;
-=======
-namespace WP_SMS\Services\Authentication\Channels\MagicLink;
->>>>>>> 85ec64ed (feat: implement MagicLink service and model for secure authentication via magic links)
 
 use WP_SMS\Contracts\Abstracts\AbstractBaseModel;
 
