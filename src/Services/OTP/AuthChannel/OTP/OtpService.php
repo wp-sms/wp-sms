@@ -1,13 +1,12 @@
 <?php
 
-namespace WP_SMS\Services\OTP\Channels\Otp;
+namespace WP_SMS\Services\OTP\AuthChannel\OTP;
 
 use WP_SMS\Services\OTP\Models\OtpSessionModel;
-use WP_User;
 
 class OtpService
 {
-    protected int $defaultTtl = 300; // in seconds
+    protected int $defaultTtl = 300;
     protected int $defaultCodeLength = 6;
 
     /**

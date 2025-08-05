@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Services\OTP\Channels\Otp;
+namespace WP_SMS\Services\OTP\AuthChannelManager\OTP;
 
 class OtpPayload
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace WP_SMS\Services\Authentication\Channels\MagicLink;
+namespace WP_SMS\Services\OTP\AuthChannel\MagicLink;
 
-use WP_SMS\Services\Authentication\Channels\MagicLink\MagicLinkModel;
-use WP_SMS\Services\Authentication\Channels\MagicLink\MagicLinkPayload;
+use WP_SMS\Services\OTP\Models\MagicLinkModel;
+use WP_SMS\Services\OTP\AuthChannel\MagicLink\MagicLinkPayload;
 
 class MagicLinkService
 {
-    protected int $defaultTtl = 600; // Link expiry in seconds (default: 10 minutes)
-    protected string $loginUrlBase = '/?magic_login=1'; // Base path, customizable via filter
+    protected int $defaultTtl = 600;
+    protected string $loginUrlBase = '/?magic_login=1';
 
     /**
      * Generate a new magic login link for a given user and flow ID.
