@@ -103,8 +103,8 @@ class LicenseManagementManager
                 NoticeManager::getInstance()->registerNotice(
                     'license_validation',
                     sprintf(
-                        esc_html__('Failed to validate license: %s', 'wp-sms'),
-                        esc_html($e->getMessage())
+                        wp_kses_post(__('Failed to validate license: %s', 'wp-sms')),
+                        wp_kses_post($e->getMessage())
                     ),
                     true
                 );
