@@ -5,6 +5,7 @@ v7.0.1 - 2025-07-** =
 - **Fix:** Properly replace special tags (e.g., %_site_title%) in message content using WPCF7_MailTag to avoid PHP notices and ensure correct output.
 - **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
+- **New:** License keys can now be defined in `wp-config.php` using constants (e.g. `WP_SMS_LICENSE`) and will be automatically validated on `init`.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
