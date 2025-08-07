@@ -60,7 +60,7 @@ class ProcessSubscriberNumbers extends AbstractTableOperation
                     $status = $subscriber['status'];
 
                     DatabaseFactory::table('insert')
-                        ->setName('numbers')
+                        ->setName('sms_numbers')
                         ->setArgs([
                             'conditions' => [
                                 'number' => $mobile,

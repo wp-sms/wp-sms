@@ -1,3 +1,6 @@
+v7.1
+- **New**: Adding notification system to receive important updates and promotions. 
+
 v7.0.0 - 
 - **Enhancement**: Removed the FeedbackBird button from the header along with its related functionality.
 - **Fix**: Fixed issues with disappearing billing fields on woocommerce legacy and HPOS mode.

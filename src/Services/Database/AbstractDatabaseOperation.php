@@ -105,7 +105,7 @@ abstract class AbstractDatabaseOperation implements DatabaseManager
             throw new \InvalidArgumentException('Table name must be set before proceeding.');
         }
 
-        $this->fullName = $this->wpdb->prefix . 'sms_' . $this->tableName;
+        $this->fullName = $this->wpdb->prefix . $this->tableName;
     }
 
     /**
