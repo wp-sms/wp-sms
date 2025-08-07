@@ -13,10 +13,20 @@ class UserHelper
      */
     public static function generateHashedUsername($mobileNumber)
     {
-        $hashedMobile = substr(wp_hash(str_replace('+', '', $mobileNumber)), 0, 8);
-        $username     = 'wpsms_' . $hashedMobile;
+        $baseHash     = substr(wp_hash(str_replace('+', '', $mobileNumber)), 0, 8);
+        $baseUsername = 'wpsms_' . $baseHash;
 
-        return apply_filters('wp_sms_registration_username', $username, $mobileNumber);
+        $baseUsername = apply_filters('wp_sms_registration_username', $baseUsername, $mobileNumber);
+
+        $username = $baseUsername;
+        $i        = 1;
+
+        while (username_exists($username)) {
+            $username = $baseUsername . '_' . $i;
+            $i++;
+        }
+
+        return $username;
     }
 
     /**
@@ -163,8 +173,8 @@ class UserHelper
      */
     public static function getLastLogin($userId = false)
     {
-        $userId    = $userId ?: get_current_user_id();
-        $sessions  = get_user_meta($userId, 'session_tokens', true);
+        $userId   = $userId ?: get_current_user_id();
+        $sessions = get_user_meta($userId, 'session_tokens', true);
 
         if (!empty($sessions)) {
             $sessions = array_values($sessions);
