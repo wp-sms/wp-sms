@@ -341,7 +341,7 @@ class SiteHealthInfo
 
             $settings['formidable_metabox'] = [
                 'label' => __('Formidable Metabox', 'wp-sms'),
-                'value' => $yesNo(WPSmsOptionsManager::getOption('formidable_metabox', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('formidable_metabox'))
             ];
         }
 
