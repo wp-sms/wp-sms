@@ -6,6 +6,7 @@ v7.0.1 - 2025-07-** =
 - **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs (notif_publish_new_taxonomy_and_term).
+- **New:** License keys can now be defined in `wp-config.php` using constants (e.g. `WP_SMS_LICENSE`) and will be automatically validated on `init`.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
