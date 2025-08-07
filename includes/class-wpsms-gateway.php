@@ -894,13 +894,16 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     /**
      * @return string
      */
-    public static function status()
+    public static function status($return = false)
     {
         try {
             global $sms;
 
             //Check that, Are we in the Gateway WP_SMS tab setting page or not?
-            if (is_admin() and isset($_REQUEST['page']) and isset($_REQUEST['tab']) and $_REQUEST['page'] == 'wp-sms-settings' and $_REQUEST['tab'] == 'gateway') {
+            if (
+                (is_admin() && isset($_REQUEST['page'], $_REQUEST['tab']) && $_REQUEST['page'] === 'wp-sms-settings' && $_REQUEST['tab'] === 'gateway')
+                || $return === true
+            ) {
 
                 // Get credit
                 $result = $sms->GetCredit();
@@ -911,6 +914,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                     // Update credit
                     update_option('wpsms_gateway_credit', 0);
+
+                    if ($return) {
+                        return false;
+                    }
 
                     return Helper::loadTemplate('admin/label-button.php', array(
                         'type'  => 'inactive',
@@ -923,7 +930,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 }
                 self::$get_response = var_export($result, true);
 
-                // Return html
+                if ($return) {
+                    return true;
+                }
+
                 return Helper::loadTemplate('admin/label-button.php', array(
                     'type'  => 'active',
                     'label' => esc_html__('Active', 'wp-sms')
@@ -931,6 +941,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             }
         } catch (Exception $e) {
             self::$get_response = $e->getMessage();
+
+            if ($return) {
+                return false;
+            }
+
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
                 'label' => esc_html__('Inactive', 'wp-sms')
