@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 7.0
+Stable tag: 7.0.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -174,8 +174,12 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-v7.x
+v7.0.1 - 2025-07-** =
 - **Fix:** Fixed variable rendering in message content.
+- **Fix:** Fixed showing migration failed notice on not valid licenses.
+- **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
+- **Fix:** Properly replace special tags (e.g., %_site_title%) in message content using WPCF7_MailTag to avoid PHP notices and ensure correct output.
+- **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.

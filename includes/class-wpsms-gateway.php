@@ -98,7 +98,8 @@ class Gateway
             'telesign'       => 'telesign.com',
             'mysms'          => 'mysms.com',
             'brevo'          => 'brevo.com',
-            'cloudtalk'      => 'cloudtalk.io'
+            'cloudtalk'      => 'cloudtalk.io',
+            'threema'        => 'threema.ch'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -169,7 +170,6 @@ class Gateway
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
             'turbosms'   => 'turbosms.ua',
-            'smstraffic' => 'smstraffic.eu',
         ),
         'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
