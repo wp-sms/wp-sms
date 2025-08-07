@@ -2,10 +2,13 @@ v7.0.1 - 2025-07-** =
 - **Fix:** Fixed variable rendering in message content.
 - **Fix:** Fixed showing migration failed notice on not valid licenses.
 - **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
+- **Add:** Added plugin information to the Site Health Info section for easier diagnostics.
 - **Fix:** Properly replace special tags (e.g., %_site_title%) in message content using WPCF7_MailTag to avoid PHP notices and ensure correct output.
 - **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Fix:** Resolved an issue where SMS-based registration would fail if a username generated from a phone number already existed. The username generation logic now appends a numeric suffix to ensure uniqueness, allowing users to re-register with previously used phone numbers without conflict.
+- **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs (notif_publish_new_taxonomy_and_term).
+- **New:** License keys can now be defined in `wp-config.php` using constants (e.g. `WP_SMS_LICENSE`) and will be automatically validated on `init`.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
