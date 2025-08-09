@@ -1,24 +1,63 @@
-import { Bell, Shield } from 'lucide-react';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { Bell, Shield, PanelLeftOpen } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 export const OtpHeader: React.FC = () => {
+    const location = useLocation();
+    const currentPage = location.pathname.replace('/', '') || 'activities';
+    
+    // Map page names to display names
+    const getPageDisplayName = (page: string) => {
+        const pageMap: Record<string, string> = {
+            'activities': 'Activities',
+            'logs': 'Logs',
+            'channels': 'Channels',
+            'brandings': 'Brandings',
+            'settings': 'Settings'
+        };
+        return pageMap[page] || 'Activities';
+    };
     return (
-        <header className="border-b border-border bg-white px-6 py-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-x-3">
-                    <div className="size-8 rounded-lg bg-primary flex items-center justify-center">
-                        <Shield className="text-white" size={18} />
-                    </div>
-                    <div>
-                        <h1 className="text-lg font-semibold text-gray-900">OTP Management</h1>
-                        <p className="text-sm text-gray-500">Manage your OTP settings and activities</p>
-                    </div>
-                </div>
+        <header className="border-b border-b-border p-3 sticky top-8 bg-white z-10">
+            <div className="flex items-center gap-x-4">
+                <Button size="icon" variant="ghost" className="cursor-pointer">
+                    <PanelLeftOpen className="text-foreground/85" size={22} />
+                </Button>
 
-                <div className="flex items-center gap-x-3">
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <Bell className="text-gray-600" size={18} />
-                    </button>
-                </div>
+                <div className="w-[1px] h-5 bg-border rotate-180" />
+
+                <Breadcrumb>
+                    <BreadcrumbList className="!list-none !ml-1">
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild>
+                                <Link to="/">WP SMS</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator />
+
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild>
+                                <Link to="/">OTP Management</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator />
+
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild>
+                                <Link to={`/${currentPage}`}>{getPageDisplayName(currentPage)}</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
             </div>
         </header>
     );
