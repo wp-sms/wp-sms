@@ -47,6 +47,9 @@ export default defineConfig({
             input: {
                 settings: resolve(__dirname, 'src/pages/settings/index.tsx'),
                 settingsDynamicPages: resolve(__dirname, 'src/pages/settings/dynamic-pages.tsx'),
+                // Add OTP pages
+                otp: resolve(__dirname, 'src/pages/otp/index.tsx'),
+                otpDynamicPages: resolve(__dirname, 'src/pages/otp/dynamic-pages.tsx'),
                 // Add blocks
                 sendSmsBlock: resolve(__dirname, 'src/blocks/send-sms/index.ts'),
                 // subscribeBlock: resolve(__dirname, 'src/blocks/subscribe/index.ts'),
