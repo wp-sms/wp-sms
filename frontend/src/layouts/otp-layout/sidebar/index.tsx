@@ -36,8 +36,8 @@ export const OtpSidebar: React.FC = () => {
     ];
 
     return (
-        <aside className={clsx('bg-white w-72 p-5 border-r border-r-border overflow-hidden !transition-all')}>
-            <div className="flex flex-col gap-y-10 sticky top-12 transition-all z-10">
+        <aside className={clsx('bg-gray-50 w-72 p-5 border-r border-gray-200 overflow-hidden !transition-all')}>
+            <div className="flex flex-col gap-y-10 sticky transition-all z-10">
                 {isOpen && (
                     <section className="flex items-center gap-x-2.5">
                         <div className="size-10 rounded-lg bg-primary flex items-center justify-center">
