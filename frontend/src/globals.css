@@ -166,3 +166,17 @@
     padding-left: 0;
     margin: 0;
 }
+
+/* Custom animations */
+@keyframes slide-in-right {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in-right 0.3s ease-out;
+}
