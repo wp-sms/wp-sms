@@ -139,7 +139,8 @@ class Gateway
             'revesms'   => 'smpp.ajuratech.com',
         ),
         'china'          => array(
-            'juhe' => 'juhe.cn'
+            'juhe'     => 'juhe.cn',
+            'rongyida' => 'rongyida',
         ),
         'palestine'      => array(
             'htd' => 'htd.ps',
