@@ -9,6 +9,7 @@ v7.0.1 - 2025-07-** =
 - **Fix:** Resolved an issue where SMS-based registration would fail if a username generated from a phone number already existed. The username generation logic now appends a numeric suffix to ensure uniqueness, allowing users to re-register with previously used phone numbers without conflict.
 - **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs (notif_publish_new_taxonomy_and_term).
 - **New:** License keys can now be defined in `wp-config.php` using constants (e.g. `WP_SMS_LICENSE`) and will be automatically validated on `init`.
+- **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
 
 v7.0 - 2025-07-09
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
