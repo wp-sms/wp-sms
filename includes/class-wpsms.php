@@ -11,6 +11,7 @@ use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
+use WP_SMS\Services\Email\EmailManager;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\Hooks\HooksManager;
@@ -257,6 +258,7 @@ class WP_SMS
 
         // Anonymous Data sharing
         $anonymizedUsageDataManager = new AnonymizedUsageDataManager();
+        (new EmailManager())->init();
     }
 
     /**

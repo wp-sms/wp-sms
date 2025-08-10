@@ -48,6 +48,15 @@ class RegisterUserViaPhone
     private function saveMetas()
     {
         update_user_meta($this->userId, Helper::getUserMobileFieldName(), $this->mobileNumber);
+        // Add a flag to identify phone-registered users
+        update_user_meta($this->userId, 'wpsms_phone_registered', true);
+    }
+
+    // Add this to your UserHelper class
+    public static function isPhoneRegistered($userId = false)
+    {
+        $userId = $userId ?: get_current_user_id();
+        return (bool)UserHelper::getMeta('wpsms_phone_registered', true, $userId);
     }
 
     /**
