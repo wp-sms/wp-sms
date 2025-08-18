@@ -1,15 +1,15 @@
-v7.0.1 - 2025-07-** =
+v7.0.1 - 2025-08-18 =
+- **New:** License keys can now be set via `wp-config.php` using constants like `WP_STATISTICS_LICENSE` and are automatically validated on init.
+- **New:** Added plugin information to the Site Health Info section for easier diagnostics.
+- **New:** Added the Threema gateway to Pro gateways
 - **Fix:** Fixed variable rendering in message content.
 - **Fix:** Fixed showing migration failed notice on not valid licenses.
 - **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
-- **Add:** Added plugin information to the Site Health Info section for easier diagnostics.
-- **Fix:** Properly replace special tags (e.g., %_site_title%) in message content using WPCF7_MailTag to avoid PHP notices and ensure correct output.
+- **Fix:** Properly replace special tags (e.g., `%_site_title%`) in message content of CF7.
 - **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
+- **Fix:** SMS registration now handles duplicate usernames by adding a numeric suffix, allowing re-registration with the same phone number.
+- **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
-- **Fix:** Resolved an issue where SMS-based registration would fail if a username generated from a phone number already existed. The username generation logic now appends a numeric suffix to ensure uniqueness, allowing users to re-register with previously used phone numbers without conflict.
-- **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs (notif_publish_new_taxonomy_and_term).
-- **New:** License keys can now be defined in `wp-config.php` using constants (e.g. `WP_SMS_LICENSE`) and will be automatically validated on `init`.
-- **New:** Added the Threema gateway to Pro gateways
 - **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
 
 v7.0 - 2025-07-09
