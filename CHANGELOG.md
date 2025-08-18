@@ -1,4 +1,4 @@
-v7.0.1 - 2025-08-18 =
+= v7.0.2 - 2025-08-18 =
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
 - **New:** Added the Threema gateway to Pro gateways
@@ -12,7 +12,7 @@ v7.0.1 - 2025-08-18 =
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
 
-v7.0 - 2025-07-09
+= v7.0 - 2025-07-09 =
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
 - **New:** Launched a new Add-on Manager for easier add-on installation and updates.
 - **New:** Introduced WP SMS All-in-One package.
@@ -28,7 +28,7 @@ v7.0 - 2025-07-09
 - **Fix:** Resolved fatal error when passing invalid meta in notification content.
 - **Fix:** Fixed message logging issues on multisite installations.
 
-v6.9.12 - 2025-03-31
+= v6.9.12 - 2025-03-31 =
 - **New**: Added WhatsApp support for the Tubelight gateway.
 - **Enhancement**: Upgraded to the latest version of the Tubelight API.
 - **Enhancement**: Updated integration with the MatinSMS gateway.
@@ -37,14 +37,14 @@ v6.9.12 - 2025-03-31
 - **Fix**: Fixed issue where the welcome message was not being sent to new subscribers.
 - **Fix**: Resolved issues with the unsubscribe functionality in the subscription form.
 
-v6.9.11 - 2025-02-25
+= v6.9.11 - 2025-02-25 =
 - **New**: Added support for `%billing_postcode%` and `%payment_method%` placeholders in WooCommerce notifications, and support for variable products in the `%order_item_meta_{key-name}%` placeholder for better order item details.
 - **Fix**: Resolved issue with rendering new lines in the Outbox.
 - **Fix**: Corrected display of order items in the `%order_items%` variable to show each item on a separate line.
 - **Fix**: Fixed 'Not found the number!' error during newsletter subscription confirmation.
 - **Enhancement**: Implemented PSR-4 autoloading, replacing manual includes for improved performance and maintainability.
 
-v6.9.10 - 2025-01-22 =
+= v6.9.10 - 2025-01-22 =
 - **New**: Add **Mobile Message Gateway** (Australia).
 - **New**: Add **HelloSMS Gateway** (Sweden).
 - **Fix**: Resolve issues with adding and updating subscriber groups.
@@ -53,7 +53,7 @@ v6.9.10 - 2025-01-22 =
 - **Enhancement**: Add capability test for displaying widgets.
 - **Enhancement**: Free gateways are now prioritized above pro gateways in the list.
 
-v6.9.9 - 2024-12-23
+= v6.9.9 - 2024-12-23 =
 - **Fix**: Resolved issue with SMS login functionality.
 - **Fix**: Corrected support for multiple meta variables and spaces in WooCommerce order variable notifications.
 - **Dev** Added new filters for developers:
