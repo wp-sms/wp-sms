@@ -174,7 +174,7 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 * If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
 
 == Changelog ==
-v7.0.1 - 2025-08-18 =
+v7.0.1 - 2025-08-18
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
 - **New:** Added the Threema gateway to Pro gateways
