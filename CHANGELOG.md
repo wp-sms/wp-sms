@@ -1,5 +1,5 @@
 v7.0.1 - 2025-08-18 =
-- **New:** License keys can now be set via `wp-config.php` using constants like `WP_STATISTICS_LICENSE` and are automatically validated on init.
+- **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
 - **New:** Added the Threema gateway to Pro gateways
 - **Fix:** Fixed variable rendering in message content.
