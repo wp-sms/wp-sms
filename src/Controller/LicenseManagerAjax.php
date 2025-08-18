@@ -7,6 +7,7 @@ use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
+use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 
 class LicenseManagerAjax extends AjaxControllerAbstract
@@ -68,6 +69,10 @@ class LicenseManagerAjax extends AjaxControllerAbstract
 
     private function downloadPlugin()
     {
+        if (!UserHelper::hasCapability('install_plugins')) {
+            wp_send_json_error(__('You are not allowed to install plugins.', 'wp-sms'), 403);
+        }
+
         try {
             $licenseKey = Request::has('license_key') ? wp_unslash(Request::get('license_key')) : false;
             $pluginSlug = Request::has('plugin_slug') ? wp_unslash(Request::get('plugin_slug')) : false;
@@ -126,6 +131,10 @@ class LicenseManagerAjax extends AjaxControllerAbstract
 
     private function activatePlugin()
     {
+        if (!UserHelper::hasCapability('activate_plugins')) {
+            wp_send_json_error(__('You are not allowed to activate plugins.', 'wp-sms'), 403);
+        }
+
         try {
             $pluginSlug = Request::has('plugin_slug') ? wp_unslash(Request::get('plugin_slug')) : false;
 

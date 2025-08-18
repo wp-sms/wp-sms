@@ -4,6 +4,7 @@ namespace WP_SMS\Admin\LicenseManagement\Abstracts;
 
 use WP_SMS\Components\Singleton;
 use WP_SMS\Menus;
+use WP_SMS\Utils\MenuUtil;
 
 abstract class BasePage extends Singleton
 {
@@ -11,7 +12,7 @@ abstract class BasePage extends Singleton
 
     public function __construct()
     {
-            $this->init();
+        $this->init();
     }
 
     protected function init()
@@ -20,6 +21,8 @@ abstract class BasePage extends Singleton
 
     protected function disableScreenOption()
     {
-        add_filter('screen_options_show_screen', '__return_false');
+        if (MenuUtil::isInPluginPage()) {
+            add_filter('screen_options_show_screen', '__return_false');
+        }
     }
 }

@@ -279,6 +279,11 @@ class Notifications
         if (!in_array($post->post_type, $specified_post_types)) {
             return;
         }
+
+        if (!$this->postMatchesSelectedTaxonomyTerms($postID)) {
+            return;
+        }
+
         // Validate required request params
         if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
             return;
@@ -413,6 +418,30 @@ class Notifications
 
         return $specified_post_types;
     }
+
+    private function postMatchesSelectedTaxonomyTerms($postID)
+    {
+        $selectedTermIds = Option::getOption('notif_publish_new_taxonomy_and_term');
+
+        if (empty($selectedTermIds) || !is_array($selectedTermIds)) {
+            return true;
+        }
+
+        $taxonomies = get_post_taxonomies($postID);
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_the_terms($postID, $taxonomy);
+            if (!empty($terms) && !is_wp_error($terms)) {
+                foreach ($terms as $term) {
+                    if (in_array($term->term_id, $selectedTermIds)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
 }
 
 new Notifications();

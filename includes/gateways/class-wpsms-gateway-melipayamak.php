@@ -7,15 +7,15 @@ use WP_SMS\Gateway;
 
 class melipayamak extends Gateway
 {
-    protected $wsdl_link = 'https://rest.payamak-panel.com/api/';
-    public $tariff = "http://melipayamak.ir/";
-    public $unitrial = true;
+    protected $wsdl_link        = 'https://rest.payamak-panel.com/api/';
+    public $tariff              = "http://melipayamak.ir/";
+    public $unitrial            = true;
     public $unit;
-    public $flash = "enable";
-    public $isflash = false;
-    public $from_support_one = '';
-    public $from_support_two = '';
-
+    public $flash               = "enable";
+    public $isflash             = false;
+    public $from_support_one    = '';
+    public $from_support_two    = '';
+    public $documentUrl         = "https://www.melipayamak.com/lab/wordpress-sending-sms-plugin-wp-smsn/";
 
     public function __construct()
     {

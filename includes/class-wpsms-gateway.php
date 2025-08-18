@@ -37,9 +37,7 @@ class Gateway
             'msg91'          => 'msg91.com',
             'msg360'         => 'msg360.in',
             'ovh'            => 'ovh.com',
-            'livesms'        => 'livesms.eu',
             'thesmsworld'    => 'thesmsworld.com',
-            'ozioma'         => 'ozioma.net',
             'pswin'          => 'pswin.com',
             'ra'             => 'ra.sa',
             'smsfactor'      => 'smsfactor.com',
@@ -61,7 +59,6 @@ class Gateway
             'smsmisr'        => 'smsmisr.com',
             'smsbuddy'       => 'thesmsbuddy.com',
             'smsnoc'         => 'smsnoc.com',
-            'smsgateway'     => 'smsgateway.me',
             'bandwidth'      => 'bandwidth.com',
             '_4jawaly'       => '4jawaly.net',
             'tyntec'         => 'tyntec.com',
@@ -82,13 +79,11 @@ class Gateway
             'mimsms'         => 'mimsms.com',
             'vatansms'       => 'vatansms.com',
             'smsmessenger'   => 'smsmessenger.co.za',
-            'zipwhip'        => 'zipwhip.com',
             'teletopiasms'   => 'teletopiasms.no',
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
             'sendinblue'     => 'sendinblue.com',
-            'whatsappapi'    => 'app.whatsapp-api.net',
             'rapidsms'       => 'rapidsms.net',
             'apifon'         => 'apifon.com',
             'awssns'         => 'aws.amazon.com',
@@ -98,7 +93,8 @@ class Gateway
             'telesign'       => 'telesign.com',
             'mysms'          => 'mysms.com',
             'brevo'          => 'brevo.com',
-            'cloudtalk'      => 'cloudtalk.io'
+            'cloudtalk'      => 'cloudtalk.io',
+            'threema'        => 'threema.ch'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -133,8 +129,6 @@ class Gateway
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
-            'smsdone'   => 'smsd.one',
-            'micron'    => 'microntechbd.com',
             'revesms'   => 'smpp.ajuratech.com',
         ),
         'china'          => array(
@@ -169,7 +163,6 @@ class Gateway
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
             'turbosms'   => 'turbosms.ua',
-            'smstraffic' => 'smstraffic.eu',
         ),
         'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
@@ -654,15 +647,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'easysendsms'      => 'easysendsms.com',
                 'wali'             => 'wali.chat',
                 'torpedos'         => 'torpedos, smsplus.com.br',
-                'smss'             => 'smss.co',
-                'bearsms'          => 'bearsms',
                 'cheapglobalsms'   => 'cheapglobalsms.com',
                 'instantalerts'    => 'instantalerts.co',
-                'mobtexting'       => 'mobtexting.com',
                 'sms77'            => 'sms77.de (seven)',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
-                'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
                 'aobox'            => 'aobox.it',
                 'sendapp'          => 'Sendapp SMS',
@@ -753,7 +742,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             ),
             'italy'                => array(
                 'smshosting' => 'smshosting.it',
-                'dot4all'    => 'sms4marketing.it',
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
             ),
@@ -783,12 +771,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'farapayamak'   => 'farapayamak.com',
                 'smsclick'      => 'smsclick.ir',
                 'persiansms'    => 'persiansms.com',
-                'sms_s'         => 'modiresms.com',
                 'smscall'       => 'smscall.ir',
                 'paaz'          => 'paaz.ir',
                 'textsms'       => 'textsms.ir',
                 'loginpanel'    => 'loginpanel.ir',
-                'tcisms'        => 'tcisms.com',
                 'nasrpayam'     => 'nasrPayam.ir',
                 'smsbartar'     => 'sms-bartar.com',
                 'payamresan'    => 'payam-resan.com',
@@ -796,7 +782,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'payameroz'     => 'payameroz.ir',
                 'mediana'       => 'mediana.ir',
                 'aradsms'       => 'arad-sms.ir',
-                'aradpayamak'   => 'aradpayamak.net',
                 'sms'           => 'sms.ir',
                 'novin1sms'     => 'novin1sms.ir',
                 'smstoos'       => 'smstoos.ir',
@@ -840,7 +825,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'deewan'       => 'deewan.sa',
                 'jawalbsms'    => 'jawalbsms.ws',
                 'unifonic'     => 'unifonic.com',
-                'asr3sms'      => 'asr3sms.com',
                 'mobiledotnet' => 'mobile.net.sa',
                 'zain'         => 'zain.im',
                 'safasms'      => 'safa-sms.com',
@@ -894,13 +878,16 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     /**
      * @return string
      */
-    public static function status()
+    public static function status($return = false)
     {
         try {
             global $sms;
 
             //Check that, Are we in the Gateway WP_SMS tab setting page or not?
-            if (is_admin() and isset($_REQUEST['page']) and isset($_REQUEST['tab']) and $_REQUEST['page'] == 'wp-sms-settings' and $_REQUEST['tab'] == 'gateway') {
+            if (
+                (is_admin() && isset($_REQUEST['page'], $_REQUEST['tab']) && $_REQUEST['page'] === 'wp-sms-settings' && $_REQUEST['tab'] === 'gateway')
+                || $return === true
+            ) {
 
                 // Get credit
                 $result = $sms->GetCredit();
@@ -911,6 +898,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                     // Update credit
                     update_option('wpsms_gateway_credit', 0);
+
+                    if ($return) {
+                        return false;
+                    }
 
                     return Helper::loadTemplate('admin/label-button.php', array(
                         'type'  => 'inactive',
@@ -923,7 +914,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 }
                 self::$get_response = var_export($result, true);
 
-                // Return html
+                if ($return) {
+                    return true;
+                }
+
                 return Helper::loadTemplate('admin/label-button.php', array(
                     'type'  => 'active',
                     'label' => esc_html__('Active', 'wp-sms')
@@ -931,6 +925,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             }
         } catch (Exception $e) {
             self::$get_response = $e->getMessage();
+
+            if ($return) {
+                return false;
+            }
+
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
                 'label' => esc_html__('Inactive', 'wp-sms')

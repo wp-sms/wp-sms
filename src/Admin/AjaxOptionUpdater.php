@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Admin;
 
+use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 use WP_SMS\Components\Ajax;
 use WP_SMS\Utils\OptionUtil as Option;
@@ -34,6 +35,10 @@ class AjaxOptionUpdater
     {
         try {
             check_ajax_referer('wp_rest', 'wpsms_nonce');
+
+            if (!UserHelper::hasCapability('manage_options')) {
+                wp_send_json_error(__('You are not allowed to update settings.', 'wp-sms'), 403);
+            }
 
             $option = Request::get('option');
             $value  = Request::get('value');

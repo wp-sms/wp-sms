@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WPCF7_MailTag;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -45,9 +47,9 @@ class Integrations
         $get_group_result = Newsletter::getGroups();
 
         $args = [
-            'get_group_result'  => $get_group_result, 
-            'cf7_options'       => $cf7_options, 
-            'cf7_options_field' => $cf7_options_field, 
+            'get_group_result'  => $get_group_result,
+            'cf7_options'       => $cf7_options,
+            'cf7_options_field' => $cf7_options_field,
         ];
 
         echo Helper::loadTemplate('wpcf7-form.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -65,6 +67,29 @@ class Integrations
         $cf7_options_field = get_option('wpcf7_sms_form' . $form->id());
         $this->set_cf7_data();
 
+        $cf7_tags  = ['_post_id', '_post_title', '_post_url', '_post_name', '_site_url', '_site_title'];
+        $form_tags = $this->cf7_data;
+
+        $replace_tags = function ($text) use ($cf7_tags, $form_tags) {
+            return preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) use ($cf7_tags, $form_tags) {
+                $tag = $matches[1];
+
+                if (in_array($tag, $cf7_tags)) {
+                    return apply_filters(
+                        'wpcf7_special_mail_tags',
+                        null,
+                        $tag,
+                        '',
+                        new WPCF7_MailTag($tag, 'text', $tag)
+                    );
+                } elseif (array_key_exists($tag, $form_tags)) {
+                    return $form_tags[$tag];
+                } else {
+                    return $matches[0];
+                }
+            }, $text);
+        };
+
         /**
          * Send SMS to the specific number or subscribers' group
          */
@@ -79,45 +104,28 @@ class Integrations
                     $to = explode(',', $cf7_options['phone']);
                     break;
             }
-            
-            $message = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
-                $cf7_tags  = ['_post_id', '_post_title', '_post_url', '_post_name', '_site_url', '_site_title'];
-                $form_tags = $this->cf7_data;
-                $tag       = $matches[1];
 
-                if (in_array($tag, $cf7_tags)) {
-                    return apply_filters('wpcf7_special_mail_tags', null, $tag, false);
-                } elseif (array_key_exists($tag, $form_tags)) {
-                    return $this->cf7_data[$tag];
-                } else {
-                    return $matches[0];
-                }
-            }, $cf7_options['message']);
+            $message = $replace_tags($cf7_options['message']);
 
             if ($to && count($to) && $message) {
-                wp_sms_send($to, $message);
+                foreach ($to as $number) {
+                    wp_sms_send($number, $message);
+                }
             }
         }
 
         /**
          * Send SMS to a specific field
          */
-        if ($cf7_options_field['message'] && $cf7_options_field['phone']) {
-            $to = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
-                foreach ($matches as $item) {
-                    if (isset($this->cf7_data[$item])) {
-                        return $this->cf7_data[$item];
-                    }
-                }
-            }, $cf7_options_field['phone']);
+        if (!empty($cf7_options_field['message']) && !empty($cf7_options_field['phone'])) {
+            $to = $replace_tags($cf7_options_field['phone']);
 
             // Check if the type of the field is select.
             foreach ($form->scan_form_tags() as $scan_form_tag) {
-                if ($scan_form_tag['basetype'] == 'select') {
+                if ($scan_form_tag['basetype'] === 'select') {
                     foreach ($scan_form_tag['raw_values'] as $raw_value) {
                         $option = explode('|', $raw_value);
-
-                        if (isset($option[0]) and $option[0] == $to) {
+                        if (isset($option[0], $option[1]) && $option[0] === $to) {
                             $to = $option[1];
                         }
                     }
@@ -130,17 +138,13 @@ class Integrations
                 $to = explode('|', $to);
             }
 
-            $to      = is_array($to) ? $to : array($to);
-            $message = preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) {
-                foreach ($matches as $item) {
-                    if (isset($this->cf7_data[$item])) {
-                        return $this->cf7_data[$item];
-                    }
-                }
-            }, $cf7_options_field['message']);
+            $to      = is_array($to) ? $to : [$to];
+            $message = $replace_tags($cf7_options_field['message']);
 
             if ($to && count($to) && $message) {
-                wp_sms_send($to, $message);
+                foreach ($to as $number) {
+                    wp_sms_send($number, $message);
+                }
             }
         }
     }
