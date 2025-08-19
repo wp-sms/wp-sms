@@ -44,6 +44,17 @@ abstract class AbstractSettingGroup
     }
 
     /**
+     * Check if this settings group should be visible in API endpoints.
+     * Override this method in child classes to hide specific groups.
+     *
+     * @return bool
+     */
+    public function isApiVisible(): bool
+    {
+        return true;
+    }
+
+    /**
      * Get sections for this group
      *
      * @return array
