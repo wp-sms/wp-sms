@@ -10,6 +10,7 @@ use WP_SMS\Settings\Groups\GeneralSettings;
 use WP_SMS\Settings\Groups\MessageButtonSettings;
 use WP_SMS\Settings\Groups\NewsletterSettings;
 use WP_SMS\Settings\Groups\NotificationSettings;
+use WP_SMS\Settings\Groups\OTPSettings;
 
 // Addons
 use WP_SMS\Settings\Groups\Addons\ProWordPressSettings;
@@ -67,6 +68,7 @@ class SchemaRegistry
         $this->registerGroup(new NotificationSettings(), 'core');
         $this->registerGroup(new AdvancedSettings(), 'core');
         $this->registerGroup(new NewsletterSettings(), 'core');
+        $this->registerGroup(new OTPSettings(), 'core');
 
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
@@ -151,7 +153,10 @@ class SchemaRegistry
         }
 
         foreach (self::$categories[$category] as $name) {
-            $groups[$name] = $this->getGroup($name)->getFields();
+            $group = $this->getGroup($name);
+            if ($group && $group->isApiVisible()) {
+                $groups[$name] = $group->getFields();
+            }
         }
 
         return $groups;
@@ -164,7 +169,58 @@ class SchemaRegistry
      */
     public function all()
     {
+        $visibleGroups = [];
+        foreach (self::$groups as $name => $group) {
+            if ($group->isApiVisible()) {
+                $visibleGroups[$name] = $group;
+            }
+        }
+        return $visibleGroups;
+    }
+
+    /**
+     * Get all registered groups including hidden ones (raw objects).
+     *
+     * @return AbstractSettingGroup[]
+     */
+    public function allGroupsIncludingHidden()
+    {
         return self::$groups;
+    }
+
+    /**
+     * Get a group by its name, including hidden groups.
+     *
+     * @param string $name
+     * @return AbstractSettingGroup|null
+     */
+    public function getGroupIncludingHidden(string $name): ?AbstractSettingGroup
+    {
+        return self::$groups[$name] ?? null;
+    }
+
+    /**
+     * Get all groups in a given category, including hidden ones.
+     *
+     * @param string $category
+     * @return array
+     */
+    public function getCategoryIncludingHidden(string $category): array
+    {
+        $groups = [];
+
+        if (!isset(self::$categories[$category])) {
+            return $groups;
+        }
+
+        foreach (self::$categories[$category] as $name) {
+            $group = $this->getGroupIncludingHidden($name);
+            if ($group) {
+                $groups[$name] = $group->getFields();
+            }
+        }
+
+        return $groups;
     }
 
     /**
@@ -175,6 +231,16 @@ class SchemaRegistry
     public function export(): array
     {
         return $this->buildNestedStructure();
+    }
+
+    /**
+     * Export the full schema including hidden groups.
+     *
+     * @return array
+     */
+    public function exportIncludingHidden(): array
+    {
+        return $this->buildNestedStructure(false, true);
     }
 
     /**
@@ -196,6 +262,25 @@ class SchemaRegistry
      */
     public function exportGroup(string $name): ?array
     {
+        $group = $this->getGroup($name);
+        if (!$group || !$group->isApiVisible()) {
+            return null;
+        }
+        return $this->formatGroup($name);
+    }
+
+    /**
+     * Export a single group schema by name, including hidden groups.
+     *
+     * @param string $name
+     * @return array|null
+     */
+    public function exportGroupIncludingHidden(string $name): ?array
+    {
+        $group = $this->getGroupIncludingHidden($name);
+        if (!$group) {
+            return null;
+        }
         return $this->formatGroup($name);
     }
 
@@ -210,12 +295,23 @@ class SchemaRegistry
     }
 
     /**
+     * Export group names and labels, grouped by category with nested structure, including hidden groups.
+     *
+     * @return array
+     */
+    public function exportGroupListIncludingHidden(): array
+    {
+        return $this->buildNestedStructure(true, true);
+    }
+
+    /**
      * Build nested structure from registered groups.
      *
      * @param bool $labelsOnly Whether to return only labels or full field data
+     * @param bool $includeHidden Whether to include hidden groups
      * @return array
      */
-    protected function buildNestedStructure(bool $labelsOnly = false): array
+    protected function buildNestedStructure(bool $labelsOnly = false, bool $includeHidden = false): array
     {
         $structure = [
             'core' => [],
@@ -248,6 +344,11 @@ class SchemaRegistry
         ];
 
         foreach (self::$groups as $name => $group) {
+            // Skip groups that are not API visible if not including hidden
+            if (!$group->isApiVisible() && !$includeHidden) {
+                continue;
+            }
+
             if ($labelsOnly) {
                 $groupData = [
                     'name' => $name,
