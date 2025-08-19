@@ -21,30 +21,65 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
             'methods'             => 'GET',
             'callback'            => [__CLASS__, 'getAll'],
             'permission_callback' => [__CLASS__, 'permissions_check'],
+            'args'                => [
+                'include_hidden' => [
+                    'description' => 'Include hidden groups in the response',
+                    'type'        => 'boolean',
+                    'default'     => false,
+                ],
+            ],
         ]);
 
         register_rest_route('wpsms/v1', '/settings/schema/category/(?P<category>[a-zA-Z0-9_-]+)', [
             'methods'             => 'GET',
             'callback'            => [__CLASS__, 'getCategory'],
             'permission_callback' => [__CLASS__, 'permissions_check'],
+            'args'                => [
+                'include_hidden' => [
+                    'description' => 'Include hidden groups in the response',
+                    'type'        => 'boolean',
+                    'default'     => false,
+                ],
+            ],
         ]);
 
         register_rest_route('wpsms/v1', '/settings/schema/group/(?P<group>[a-zA-Z0-9_-]+)', [
             'methods'             => 'GET',
             'callback'            => [__CLASS__, 'getGroup'],
             'permission_callback' => [__CLASS__, 'permissions_check'],
+            'args'                => [
+                'include_hidden' => [
+                    'description' => 'Include hidden groups in the response',
+                    'type'        => 'boolean',
+                    'default'     => false,
+                ],
+            ],
         ]);
 
         register_rest_route('wpsms/v1', '/settings/schema/nested/(?P<path>[a-zA-Z0-9_.-]+)', [
             'methods'             => 'GET',
             'callback'            => [__CLASS__, 'getNestedGroup'],
             'permission_callback' => [__CLASS__, 'permissions_check'],
+            'args'                => [
+                'include_hidden' => [
+                    'description' => 'Include hidden groups in the response',
+                    'type'        => 'boolean',
+                    'default'     => false,
+                ],
+            ],
         ]);
 
         register_rest_route('wpsms/v1', '/settings/schema/list', [
             'methods'             => 'GET',
             'callback'            => [__CLASS__, 'getGroupList'],
             'permission_callback' => [__CLASS__, 'permissions_check'],
+            'args'                => [
+                'include_hidden' => [
+                    'description' => 'Include hidden groups in the response',
+                    'type'        => 'boolean',
+                    'default'     => false,
+                ],
+            ],
         ]);
     }
 
@@ -57,7 +92,15 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
      */
     public static function getAll(WP_REST_Request $request): \WP_REST_Response
     {
-        return self::success(SchemaRegistry::instance()->export());
+        $includeHidden = $request->get_param('include_hidden') == 'true';
+        if ($includeHidden) {
+            // Export all groups including hidden ones
+            $schema = SchemaRegistry::instance()->exportIncludingHidden();
+        } else {
+            $schema = SchemaRegistry::instance()->export();
+        }
+        
+        return self::success($schema);
     }
 
     /**
@@ -70,7 +113,13 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
     public static function getCategory(WP_REST_Request $request): \WP_REST_Response
     {
         $category = $request->get_param('category');
-        $schema = SchemaRegistry::instance()->export();
+        $includeHidden = $request->get_param('include_hidden') == 'true';
+        
+        if ($includeHidden) {
+            $schema = SchemaRegistry::instance()->exportIncludingHidden();
+        } else {
+            $schema = SchemaRegistry::instance()->export();
+        }
         
         if (!isset($schema[$category])) {
             return self::error("Category '{$category}' not found", 404);
@@ -89,7 +138,13 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
     public static function getGroup(WP_REST_Request $request): \WP_REST_Response
     {
         $group = $request->get_param('group');
-        $data  = SchemaRegistry::instance()->exportGroup($group);
+        $includeHidden = $request->get_param('include_hidden') == 'true';
+        
+        if ($includeHidden) {
+            $data = SchemaRegistry::instance()->exportGroupIncludingHidden($group);
+        } else {
+            $data = SchemaRegistry::instance()->exportGroup($group);
+        }
 
         if ($data === null) {
             return self::error("Group '{$group}' not found", 404);
@@ -128,6 +183,11 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
      */
     public static function getGroupList(WP_REST_Request $request): \WP_REST_Response
     {
+        $includeHidden = $request->get_param('include_hidden') == 'true';
+        if ($includeHidden) {
+            return self::success(SchemaRegistry::instance()->exportGroupListIncludingHidden());
+        }
+        
         return self::success(SchemaRegistry::instance()->exportGroupList());
     }
 
