@@ -62,4 +62,14 @@ class OtpSessionModel extends AbstractBaseModel
     {
         static::deleteBy(['flow_id' => $flowId]);
     }
+
+    public static function hasUnexpiredSession(string $phone): bool
+    {
+        return static::exists(['phone' => $phone, 'expires_at' => DateUtils::getUnexpiredSqlCondition()]);
+    }
+
+    public static function getByFlowId(string $flowId): array
+    {
+        return static::find(['flow_id' => $flowId]);
+    }
 }
