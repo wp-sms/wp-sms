@@ -19,6 +19,15 @@ class OTPManager extends AbstractService
 
     protected function boot(): void
     {
-        (new OTPAdminPage())->init();
+
+        $services = [
+            //Admin Pages
+            new OTPAdminPage(),
+            
+        ];
+
+        foreach ($services as $service) {
+            $service->init();
+        }
     }
 }
