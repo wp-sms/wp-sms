@@ -9,16 +9,24 @@ class EmailManager
 {
     public function init()
     {
-        add_filter('wp_mail', [$this, 'filterPhoneRegisteredEmails']);
+        add_filter('pre_wp_mail', [$this, 'preFilterPhoneRegisteredEmails'], 10, 2);
     }
 
-    public function filterPhoneRegisteredEmails($args)
+    /**
+     * pre_wp_mail short-circuit filter.
+     *
+     * @param null|bool|\WP_Error $pre Null to continue default sending, or a bool/WP_Error to short-circuit.
+     * @param array $atts Full mail atts: ['to','subject','message','headers','attachments'].
+     * @return null|bool|\WP_Error
+     */
+    public function preFilterPhoneRegisteredEmails($pre, $atts)
     {
-        if (empty($args['to'])) {
-            return $args;
+        if (empty($atts['to'])) {
+            return $pre;
         }
 
-        $recipients = is_array($args['to']) ? $args['to'] : explode(',', $args['to']);
+        $originalTo = $atts['to'];
+        $recipients = is_array($originalTo) ? $originalTo : explode(',', $originalTo);
         $filtered   = [];
 
         foreach ($recipients as $email) {
@@ -44,8 +52,35 @@ class EmailManager
             }
         }
 
-        $args['to'] = is_array($args['to']) ? $filtered : implode(',', $filtered);
-        return $args;
+        if (empty($filtered)) {
+            return true;
+        }
+
+        $normalizedOriginal = array_map('trim', is_array($originalTo) ? $originalTo : explode(',', $originalTo));
+        $normalizedFiltered = array_map('trim', $filtered);
+
+        $o = $normalizedOriginal;
+        $f = $normalizedFiltered;
+        sort($o);
+        sort($f);
+        if ($o === $f) {
+            return $pre;
+        }
+
+        remove_filter('pre_wp_mail', [$this, 'preFilterPhoneRegisteredEmails'], 10);
+        try {
+            $result = wp_mail(
+                is_array($originalTo) ? $filtered : implode(',', $filtered),
+                $atts['subject'] ?? '',
+                $atts['message'] ?? '',
+                $atts['headers'] ?? '',
+                $atts['attachments'] ?? []
+            );
+        } finally {
+            add_filter('pre_wp_mail', [$this, 'preFilterPhoneRegisteredEmails'], 10, 2);
+        }
+
+        return $result;
     }
 
     private function isGeneratedEmail($email): bool
