@@ -4,7 +4,7 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.7
-Requires PHP: 5.6
+Requires PHP: 7.2
 Stable tag: 6.9.12
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
