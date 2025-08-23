@@ -296,6 +296,7 @@ class Admin
             'no_results_found'             => __('No results found', 'wp-sms'),
             'fix_highlight'                => __('Please fix the highlighted field(s) below.', 'wp-sms'),
             'search'                       => __('Search ...', 'wp-sms'),
+            'users_with_number'            => __('Users have the mobile number.', 'wp-sms')
         ];
     }
 

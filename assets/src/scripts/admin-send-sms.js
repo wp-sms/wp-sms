@@ -52,6 +52,76 @@
         });
     }
 
+
+    jQuery(document).ready(function ($) {
+        $.ajax({
+            url: wpsms_global.admin_url + 'admin-ajax.php',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                action: 'wp_sms_get_user_roles_and_mobile_count',
+                wpsms_nonce: wpsms_global.rest_api_nonce
+            }
+        })
+            .done(function (response) {
+                if (response && response.success) {
+                    $('#users-mobile-count').text(response.data.total_mobile_count || 0);
+
+                    var $select = $('select[name="wpsms_roles[]"]');
+                    $select.empty();
+                    $.each(response.data.roles, function (index, role) {
+                        var optionText = role.name + ' (' + role.count + ' ' + wpsms_global.i18n['users_with_number'] + ')';                        $select.append(
+                            $('<option>', {
+                                value: role.id,
+                                html: optionText,
+                                disabled: role.count === 0
+                            })
+                        );
+                    });
+
+                } else {
+                    console.warn('AJAX responded but not success:', response);
+                }
+            })
+            .fail(function (xhr) {
+                console.error('AJAX error', xhr.status, xhr.responseText);
+            });
+
+        $('select[name="wpsms_roles[]"], select[name="wpsms_groups[]"]').on('change', function () {
+            var $select = $(this);
+            var value = $select.val();
+            var type = $select.attr('name') === 'wpsms_roles[]' ? 'roles' : 'wc-customers';
+
+            var $indicator = $('#wc-customers-count');
+            var $b = $indicator.find('b');
+
+            $.ajax({
+                url: wpsms_global.admin_url + 'admin-ajax.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'wp_sms_get_recipient_counts',
+                    wpsms_nonce: wpsms_global.rest_api_nonce,
+                    type: type,
+                    value: value
+                }
+            })
+                .done(function (response) {
+                    if (response && response.success) {
+                        $b.text((response.data.count || 0));
+                        self.manageRecipients && self.manageRecipients();
+                    } else {
+                        $b.text('0');
+                        console.warn('AJAX responded but not success:', response);
+                    }
+                })
+                .fail(function (xhr) {
+                    $b.text('0');
+                    console.error('AJAX error', xhr.status, xhr.responseText);
+                });
+        });
+    });
+
     jQuery(".preview__message__number").html(jQuery("#wp_get_sender").val());
 
     if (jQuery("#wp_get_message").val()) {
@@ -272,8 +342,36 @@
                 self.manageNavigationKeys()
             });
 
-            self.fields.toField.element.find('select').on('change', function () {
-                self.manageRecipients()
+            jQuery(self.fields.toField.element).find('select').on('change', function () {
+                var $select = jQuery(this);
+                var value = $select.val();
+
+                var $indicator = jQuery('#wc-customers-count');
+                var $b = $indicator.find('b');
+
+                jQuery.ajax({
+                    url: wpsms_global.admin_url + 'admin-ajax.php',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'wp_sms_get_recipient_counts',
+                        wpsms_nonce: wpsms_global.rest_api_nonce,
+                        type: value
+                    }
+                })
+                    .done(function (response) {
+                        if (response && response.success) {
+                            $b.text((response.data.count || 0));
+                            self.manageRecipients && self.manageRecipients();
+                        } else {
+                            $b.text('0');
+                            console.warn('AJAX responded but not success:', response);
+                        }
+                    })
+                    .fail(function (xhr) {
+                        $b.text('0');
+                        console.error('AJAX error', xhr.status, xhr.responseText);
+                    });
             });
 
             self.fields.scheduleField.element.find('input[type="checkbox"]').on('change', function () {
