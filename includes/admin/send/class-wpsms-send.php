@@ -29,54 +29,6 @@ class SMS_Send
     }
 
 
-    public function ajax_get_recipient_counts()
-    {
-        check_ajax_referer('wp_rest', 'wpsms_nonce');
-        $type  = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : '';
-        $value = isset($_POST['value']) ? sanitize_text_field($_POST['value']) : '';
-        $count = 0;
-
-        switch ($type) {
-            case 'roles':
-                $result = Helper::getUsersMobileNumberCountsWithRoleDetails();
-                $count  = $result['roles'][$value]['count'] ?? 0;
-                break;
-
-            case 'wc-customers':
-                $numbers = Helper::getWooCommerceCustomersNumbers();
-                $count   = count($numbers);
-                break;
-
-            case 'bp-members':
-                if (class_exists('BuddyPress') && class_exists('WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress')) {
-                    $count = \WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress::getTotalMobileNumbers();
-                }
-                break;
-        }
-
-        wp_send_json_success(['count' => $count]);
-    }
-
-    public function ajax_get_user_roles_and_mobile_count()
-    {
-        check_ajax_referer('wp_rest', 'wpsms_nonce');
-        $result = Helper::getUsersMobileNumberCountsWithRoleDetails();
-
-        $roles = [];
-        foreach ($result['roles'] as $role_key => $role_data) {
-            $roles[] = [
-                'id'    => $role_key,
-                'name'  => $role_data['name'],
-                'count' => $role_data['count']
-            ];
-        }
-
-        wp_send_json_success([
-            'total_mobile_count' => $result['total']['count'],
-            'roles'              => $roles
-        ]);
-    }
-
     /**
      * Sending sms admin page
      *

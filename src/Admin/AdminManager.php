@@ -15,7 +15,6 @@ class AdminManager
         $this->initNoticeHandler();
         $this->initAjaxOptionUpdater();
         $this->initSiteHealthInfo();
-        $this->initSendSmsPageRecipientCounts();
     }
 
     private function initFooterModifier()
@@ -76,12 +75,5 @@ class AdminManager
             );
         }
         return $content;
-    }
-
-    private function initSendSmsPageRecipientCounts()
-    {
-        $sendSmsObj = new SMS_Send();
-        Ajax::register('get_recipient_counts', [$sendSmsObj, 'ajax_get_recipient_counts'], false);
-        Ajax::register('get_user_roles_and_mobile_count', [$sendSmsObj, 'ajax_get_user_roles_and_mobile_count'], false);
     }
 }

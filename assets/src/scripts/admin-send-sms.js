@@ -11,6 +11,7 @@
 
 
     });
+
     function formatOptions(data) {
         if (!data.element) {
             return data.text;
@@ -55,13 +56,9 @@
 
     jQuery(document).ready(function ($) {
         $.ajax({
-            url: wpsms_global.admin_url + 'admin-ajax.php',
+            url: WP_Sms_Admin_Object.ajaxUrls.UserRolesMobileCountAjax,
             method: 'POST',
             dataType: 'json',
-            data: {
-                action: 'wp_sms_get_user_roles_and_mobile_count',
-                wpsms_nonce: wpsms_global.rest_api_nonce
-            }
         })
             .done(function (response) {
                 if (response && response.success) {
@@ -70,7 +67,8 @@
                     var $select = $('select[name="wpsms_roles[]"]');
                     $select.empty();
                     $.each(response.data.roles, function (index, role) {
-                        var optionText = role.name + ' (' + role.count + ' ' + wpsms_global.i18n['users_with_number'] + ')';                        $select.append(
+                        var optionText = role.name + ' (' + role.count + ' ' + wpsms_global.i18n['users_with_number'] + ')';
+                        $select.append(
                             $('<option>', {
                                 value: role.id,
                                 html: optionText,
@@ -96,12 +94,10 @@
             var $b = $indicator.find('b');
 
             $.ajax({
-                url: wpsms_global.admin_url + 'admin-ajax.php',
+                url: WP_Sms_Admin_Object.ajaxUrls.RecipientCountsAjax,
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'wp_sms_get_recipient_counts',
-                    wpsms_nonce: wpsms_global.rest_api_nonce,
                     type: type,
                     value: value
                 }
@@ -345,18 +341,18 @@
             jQuery(self.fields.toField.element).find('select').on('change', function () {
                 var $select = jQuery(this);
                 var value = $select.val();
+                var type = $select.attr('name') === 'wpsms_roles[]' ? 'roles' : 'wc-customers';
 
                 var $indicator = jQuery('#wc-customers-count');
                 var $b = $indicator.find('b');
 
                 jQuery.ajax({
-                    url: wpsms_global.admin_url + 'admin-ajax.php',
+                    url: WP_Sms_Admin_Object.ajaxUrls.RecipientCountsAjax,
                     method: 'POST',
                     dataType: 'json',
                     data: {
-                        action: 'wp_sms_get_recipient_counts',
-                        wpsms_nonce: wpsms_global.rest_api_nonce,
-                        type: value
+                        type: type,
+                        value: value
                     }
                 })
                     .done(function (response) {
