@@ -37,10 +37,16 @@ class RegisterUserViaPhone
             return new \WP_Error('number_exists', __('Another user with this phone number already exists.', 'wp-sms'));
         }
 
-        $this->userId = register_new_user(
-            $this->generateUniqueUsername(),
-            $this->generateUniqueEmail()
-        );
+        add_filter('wp_send_new_user_notification_to_user', '__return_false');
+
+        try {
+            $this->userId = register_new_user(
+                $this->generateUniqueUsername(),
+                $this->generateUniqueEmail()
+            );
+        } finally {
+            remove_filter('wp_send_new_user_notification_to_user', '__return_false');
+        }
 
         return $this->userId;
     }
@@ -48,15 +54,6 @@ class RegisterUserViaPhone
     private function saveMetas()
     {
         update_user_meta($this->userId, Helper::getUserMobileFieldName(), $this->mobileNumber);
-        // Add a flag to identify phone-registered users
-        update_user_meta($this->userId, 'wpsms_phone_registered', true);
-    }
-
-    // Add this to your UserHelper class
-    public static function isPhoneRegistered($userId = false)
-    {
-        $userId = $userId ?: get_current_user_id();
-        return (bool)UserHelper::getMeta('wpsms_phone_registered', true, $userId);
     }
 
     /**

@@ -4,7 +4,6 @@ namespace WP_SMS\User;
 
 class UserHelper
 {
-    const GENERATED_EMAIL_PREFIX = 'wpsms_';
     /**
      * Generates a username using the hashed mobile number.
      *
@@ -15,8 +14,7 @@ class UserHelper
     public static function generateHashedUsername($mobileNumber)
     {
         $baseHash     = substr(wp_hash(str_replace('+', '', $mobileNumber)), 0, 8);
-        $baseUsername = self::GENERATED_EMAIL_PREFIX . $baseHash;
-
+        $baseUsername = 'wpsms_' . $baseHash;
         $baseUsername = apply_filters('wp_sms_registration_username', $baseUsername, $mobileNumber);
 
         $username = $baseUsername;
