@@ -15,7 +15,6 @@ class UserHelper
     {
         $baseHash     = substr(wp_hash(str_replace('+', '', $mobileNumber)), 0, 8);
         $baseUsername = 'wpsms_' . $baseHash;
-
         $baseUsername = apply_filters('wp_sms_registration_username', $baseUsername, $mobileNumber);
 
         $username = $baseUsername;
