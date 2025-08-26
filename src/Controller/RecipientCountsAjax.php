@@ -3,9 +3,12 @@
 namespace WP_SMS\Controller;
 
 use WP_SMS\Helper;
+use WP_SMS\Traits\TransientCacheTrait;
 
 class RecipientCountsAjax extends AjaxControllerAbstract
 {
+    use TransientCacheTrait;
+
     /**
      * Action slug used for admin-ajax and nonce.
      * Nonce name => 'wp_sms_get_recipient_counts'
@@ -20,19 +23,30 @@ class RecipientCountsAjax extends AjaxControllerAbstract
 
     protected function run()
     {
-        $type  = $this->get('type');           // roles | wc-customers | bp-members
-        $value = $this->get('value');          // role key (when type === roles)
+        $type  = $this->get('type');
+        $value = $this->get('value');
         $count = 0;
+
+        $cacheInput = 'recipient_counts:' . wp_json_encode([
+                'type'  => $type,
+                'value' => $value,
+            ]);
+
+        $cached = $this->getCachedResult($cacheInput);
+        if ($cached !== false && is_array($cached) && array_key_exists('count', $cached)) {
+            wp_send_json_success(['count' => (int)$cached['count']]);
+        }
 
         switch ($type) {
             case 'roles':
+            case 'users':
                 if ($value === null || $value === '') {
                     // translators: %s: field name
                     throw new \Exception(sprintf(esc_html__('Field %s is required.', 'wp-sms'), 'value'));
                 }
 
                 $result = Helper::getUsersMobileNumberCountsWithRoleDetails();
-                $count  = isset($result['roles'][$value]['count']) ? (int)$result['roles'][$value]['count'] : 0;
+                $count  = isset($result['total']['count']) ? (int)$result['total']['count'] : 0;
                 break;
 
             case 'wc-customers':
@@ -40,7 +54,11 @@ class RecipientCountsAjax extends AjaxControllerAbstract
                 $count   = is_array($numbers) ? count($numbers) : 0;
                 break;
 
-            case 'bp-members':
+            case 'subscribers':
+                $count = 0;
+                break;
+
+            case 'bp-users':
                 if (class_exists('BuddyPress') && class_exists('\WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress')) {
                     /** @noinspection PhpFullyQualifiedNameUsageInspection */
                     $count = (int)\WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress::getTotalMobileNumbers();
@@ -52,6 +70,8 @@ class RecipientCountsAjax extends AjaxControllerAbstract
             default:
                 wp_send_json_error(__('Invalid type.', 'wp-sms'), 400);
         }
+
+        $this->setCachedResult($cacheInput, ['count' => $count], 15 * MINUTE_IN_SECONDS);
 
         wp_send_json_success(['count' => $count]);
     }

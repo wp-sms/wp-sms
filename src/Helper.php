@@ -308,9 +308,7 @@ class Helper
             }
 
             foreach ($customers as $customer) {
-                if (!empty($customer->$fieldKey)) {
-                    $numbers[] = $customer->$fieldKey;
-                }
+                $numbers[] = $customer->$fieldKey;
             }
 
             $page++;

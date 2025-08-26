@@ -55,40 +55,10 @@
 
 
     jQuery(document).ready(function ($) {
-        $.ajax({
-            url: WP_Sms_Admin_Object.ajaxUrls.UserRolesMobileCountAjax,
-            method: 'POST',
-            dataType: 'json',
-        })
-            .done(function (response) {
-                if (response && response.success) {
-                    $('#users-mobile-count').text(response.data.total_mobile_count || 0);
-
-                    var $select = $('select[name="wpsms_roles[]"]');
-                    $select.empty();
-                    $.each(response.data.roles, function (index, role) {
-                        var optionText = role.name + ' (' + role.count + ' ' + wpsms_global.i18n['users_with_number'] + ')';
-                        $select.append(
-                            $('<option>', {
-                                value: role.id,
-                                html: optionText,
-                                disabled: role.count === 0
-                            })
-                        );
-                    });
-
-                } else {
-                    console.warn('AJAX responded but not success:', response);
-                }
-            })
-            .fail(function (xhr) {
-                console.error('AJAX error', xhr.status, xhr.responseText);
-            });
-
         $('select[name="wpsms_roles[]"], select[name="wpsms_groups[]"]').on('change', function () {
             var $select = $(this);
             var value = $select.val();
-            var type = $select.attr('name') === 'wpsms_roles[]' ? 'roles' : 'wc-customers';
+            var type = $select.attr('name') === 'wpsms_roles[]' ? 'roles' : 'groups';
 
             var $indicator = $('#wc-customers-count');
             var $b = $indicator.find('b');
@@ -341,11 +311,41 @@
             jQuery(self.fields.toField.element).find('select').on('change', function () {
                 var $select = jQuery(this);
                 var value = $select.val();
-                var type = $select.attr('name') === 'wpsms_roles[]' ? 'roles' : 'wc-customers';
+                var type = $select.val();
 
                 var $indicator = jQuery('#wc-customers-count');
                 var $b = $indicator.find('b');
+                if (value === 'roles') {
+                    jQuery.ajax({
+                        url: WP_Sms_Admin_Object.ajaxUrls.UserRolesMobileCountAjax,
+                        method: 'POST',
+                        dataType: 'json',
+                    })
+                        .done(function (response) {
+                            if (response && response.success) {
+                                jQuery('#users-mobile-count').text(response.data.total_mobile_count || 0);
 
+                                var $select = jQuery('select[name="wpsms_roles[]"]');
+                                $select.empty();
+                                jQuery.each(response.data.roles, function (index, role) {
+                                    var optionText = role.name + ' (' + role.count + ' ' + wpsms_global.i18n['users_with_number'] + ')';
+                                    $select.append(
+                                        jQuery('<option>', {
+                                            value: role.id,
+                                            html: optionText,
+                                            disabled: role.count === 0
+                                        })
+                                    );
+                                });
+
+                            } else {
+                                console.warn('AJAX responded but not success:', response);
+                            }
+                        })
+                        .fail(function (xhr) {
+                            console.error('AJAX error', xhr.status, xhr.responseText);
+                        });
+                }
                 jQuery.ajax({
                     url: WP_Sms_Admin_Object.ajaxUrls.RecipientCountsAjax,
                     method: 'POST',

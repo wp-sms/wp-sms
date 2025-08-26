@@ -3,9 +3,12 @@
 namespace WP_SMS\Controller;
 
 use WP_SMS\Helper;
+use WP_SMS\Traits\TransientCacheTrait;
 
 class UserRolesMobileCountAjax extends AjaxControllerAbstract
 {
+    use TransientCacheTrait;
+
     /**
      * Action slug used for admin-ajax and nonce.
      * Nonce name => 'wp_sms_get_user_roles_mobile_count'
@@ -14,6 +17,13 @@ class UserRolesMobileCountAjax extends AjaxControllerAbstract
 
     protected function run()
     {
+        $cacheKey = 'user_roles_mobile_count';
+
+        $cached = $this->getCachedResult($cacheKey);
+        if ($cached !== false && is_array($cached)) {
+            wp_send_json_success($cached);
+        }
+
         $result = Helper::getUsersMobileNumberCountsWithRoleDetails();
 
         $roles = [];
@@ -29,9 +39,13 @@ class UserRolesMobileCountAjax extends AjaxControllerAbstract
 
         $total = isset($result['total']['count']) ? (int)$result['total']['count'] : 0;
 
-        wp_send_json_success([
+        $response = [
             'total_mobile_count' => $total,
             'roles'              => $roles,
-        ]);
+        ];
+
+        $this->setCachedResult($cacheKey, $response, 15 * MINUTE_IN_SECONDS);
+
+        wp_send_json_success($response);
     }
 }
