@@ -43,5 +43,27 @@ class SchemaMigration extends AbstractMigrationOperation
      *
      * @var array
      */
-    protected $migrationSteps = [];
+    protected $migrationSteps = [
+        '7.3.0' => [
+            'addChannelColumnToSmsSendTable'
+        ]
+    ];
+
+    public function addChannelColumnToSmsSendTable()
+    {
+        $this->ensureConnection();
+
+        try {
+            DatabaseFactory::table('update')
+                ->setName('send')
+                ->setArgs([
+                    'add' => [
+                        'channel' => "ENUM('sms', 'email') NOT NULL DEFAULT 'sms'",
+                    ]
+                ])
+                ->execute();
+        } catch (Exception $e) {
+            $this->setErrorStatus($e->getMessage());
+        }
+    }
 }
