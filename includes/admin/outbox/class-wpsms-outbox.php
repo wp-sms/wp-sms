@@ -49,11 +49,13 @@ class Outbox_List_Table extends \WP_List_Table
                 return nl2br(esc_html($item[$column_name]));
             case 'recipient':
                 $html = '<details>
-						  <summary>' . esc_html__('View more...', 'wp-sms') . '</summary>
-						  <p>' . wp_sms_render_quick_reply($item[$column_name]) . '</p>
-						</details>';
-
+                      <summary>' . esc_html__('View more...', 'wp-sms') . '</summary>
+                      <p>' . wp_sms_render_quick_reply($item[$column_name]) . '</p>
+                    </details>';
                 return $html;
+            case 'channel':
+                $value = isset($item['channel']) && $item['channel'] !== '' ? $item['channel'] : __('SMS', 'wp-sms');
+                return esc_html($value);
             default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
@@ -79,7 +81,16 @@ class Outbox_List_Table extends \WP_List_Table
             'label' => ($item['status'] == 'success' ? esc_html__('Success', 'wp-sms') : esc_html__('Failed', 'wp-sms'))
         ));
 
-        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, esc_html__('API Response', 'wp-sms'), $item['response']);
+        $summary_label = ($item['channel'] === 'sms')
+            ? esc_html__('API Response', 'wp-sms')
+            : esc_html__('Response', 'wp-sms');
+
+        return sprintf(
+            '%s <details><summary>%s</summary><p>%s</p></details>',
+            $status,
+            $summary_label,
+            $item['response']
+        );
     }
 
     function column_sender($item)
@@ -128,6 +139,7 @@ class Outbox_List_Table extends \WP_List_Table
             'recipient' => esc_html__('Recipient', 'wp-sms'),
             'media'     => esc_html__('Media', 'wp-sms'),
             'status'    => esc_html__('Status', 'wp-sms'),
+            'channel'   => esc_html__('Channel', 'wp-sms'),
         );
     }
 
@@ -140,7 +152,8 @@ class Outbox_List_Table extends \WP_List_Table
             'message'   => array('message', false),   //true means it's already sorted
             'recipient' => array('recipient', false), //true means it's already sorted
             'media'     => array('media', false), //true means it's already sorted
-            'status'    => array('status', false) //true means it's already sorted
+            'status'    => array('status', false), //true means it's already sorted
+            'channel'    => array('channel', false), //true means it's already sorted
 
         );
     }
@@ -383,7 +396,7 @@ class Outbox
         $list_table->prepare_items();
 
         $args = [
-            'list_table' => $list_table, 
+            'list_table' => $list_table,
         ];
 
         echo Helper::loadTemplate('admin/outbox.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

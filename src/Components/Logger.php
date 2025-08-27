@@ -11,9 +11,10 @@ class Logger
      * @param $response
      * @param $status
      * @param $media
+     * @param string $channel
      * @return bool|int|\mysqli_result|resource|null
      */
-    public static function logOutbox($sender, $message, $to, $response, $status = 'success', $media = array())
+    public static function logOutbox($sender, $message, $to, $response, $status = 'success', $media = array(), $channel = 'sms')
     {
         /**
          * Backward compatibility
@@ -36,6 +37,7 @@ class Logger
             'response'  => var_export($response, true),
             'media'     => serialize($media),
             'status'    => $status,
+            'channel'   => $channel,
         ));
 
         /**

@@ -23,8 +23,8 @@ abstract class AbstractSettingGroup
 
     public function __construct()
     {
-        $this->proIsInstalled    = Version::pro_is_active();
-        $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->proIsInstalled    = Version::pro_is_active() ?? false;
+        $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php') ?? false;
     }
 
     public abstract function getName(): string;
