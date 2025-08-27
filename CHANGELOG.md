@@ -1,3 +1,6 @@
+v7.3
+- **New**: Add **Email Delivery System**.
+
 v6.9.* - 2025-xx-xx
 - **Fix**: Support wider range of CSV MIME types during the import proccess.
 
