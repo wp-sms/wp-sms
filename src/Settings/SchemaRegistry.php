@@ -4,6 +4,7 @@ namespace WP_SMS\Settings;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Groups\AdvancedSettings;
+use WP_SMS\Settings\Groups\EmailSettings;
 use WP_SMS\Settings\Groups\FeatureSettings;
 use WP_SMS\Settings\Groups\GatewaySettings;
 use WP_SMS\Settings\Groups\GeneralSettings;
@@ -46,8 +47,8 @@ class SchemaRegistry
      * @var array Categorized group names
      */
     protected static $categories = [
-        'core' => [],
-        'addons' => [],
+        'core'         => [],
+        'addons'       => [],
         'integrations' => [],
     ];
 
@@ -69,6 +70,7 @@ class SchemaRegistry
         $this->registerGroup(new AdvancedSettings(), 'core');
         $this->registerGroup(new NewsletterSettings(), 'core');
         $this->registerGroup(new OTPChannelSettings(), 'core');
+        $this->registerGroup(new EmailSettings(), 'core');
 
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
@@ -314,29 +316,29 @@ class SchemaRegistry
     protected function buildNestedStructure(bool $labelsOnly = false, bool $includeHidden = false): array
     {
         $structure = [
-            'core' => [],
-            'addons' => [],
+            'core'         => [],
+            'addons'       => [],
             'integrations' => [
-                'label' => 'Integrations',
+                'label'    => 'Integrations',
                 'children' => [
-                    'contact_forms' => [
-                        'label' => 'Contact Forms',
+                    'contact_forms'        => [
+                        'label'    => 'Contact Forms',
                         'children' => [],
                     ],
                     'community_membership' => [
-                        'label' => 'Community & Membership',
+                        'label'    => 'Community & Membership',
                         'children' => [],
                     ],
-                    'ecommerce' => [
-                        'label' => 'E-commerce',
+                    'ecommerce'            => [
+                        'label'    => 'E-commerce',
                         'children' => [],
                     ],
-                    'support' => [
-                        'label' => 'Support',
+                    'support'              => [
+                        'label'    => 'Support',
                         'children' => [],
                     ],
-                    'jobs' => [
-                        'label' => 'Jobs',
+                    'jobs'                 => [
+                        'label'    => 'Jobs',
                         'children' => [],
                     ],
                 ],
@@ -351,9 +353,9 @@ class SchemaRegistry
 
             if ($labelsOnly) {
                 $groupData = [
-                    'name' => $name,
+                    'name'  => $name,
                     'label' => $group->getLabel(),
-                    'icon' => $group->getIcon(),
+                    'icon'  => $group->getIcon(),
                 ];
             } else {
                 $groupData = $this->formatGroup($name);
@@ -390,7 +392,7 @@ class SchemaRegistry
     protected function insertIntoNestedStructure(array &$structure, array $pathParts, string $name, array $groupData): void
     {
         $current = &$structure;
-        
+
         foreach ($pathParts as $index => $part) {
             if ($index === count($pathParts) - 1) {
                 // Last part - insert the group data using the path part as key
@@ -399,7 +401,7 @@ class SchemaRegistry
                 // Create intermediate structure if it doesn't exist
                 if (!isset($current[$part])) {
                     $current[$part] = [
-                        'label' => $this->formatLabel($part),
+                        'label'    => $this->formatLabel($part),
                         'children' => [],
                     ];
                 }
@@ -450,14 +452,14 @@ class SchemaRegistry
         }
 
         $sections = $group->getSections();
-        usort($sections, function($a, $b) {
+        usort($sections, function ($a, $b) {
             return $a->order <=> $b->order;
         });
 
         return [
-            'label' => $group->getLabel(),
-            'icon' => $group->getIcon(),
-            'sections' => array_map(function($section) {
+            'label'    => $group->getLabel(),
+            'icon'     => $group->getIcon(),
+            'sections' => array_map(function ($section) {
                 return $section->toArray();
             }, $sections),
         ];
