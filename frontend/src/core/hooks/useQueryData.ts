@@ -1,10 +1,5 @@
-import {
-  isServer,
-  useIsFetching,
-  useQueryClient,
-  type QueryKey,
-} from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { isServer, useIsFetching, useQueryClient, type QueryKey } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 /**
  * A custom hook to retrieve and manage query data from React Query.

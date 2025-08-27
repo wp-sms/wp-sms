@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "watch": "WATCH=true vite build",
+    "watch": "vite build --watch",
     "build": "rm -rf build && vite build && pnpm run build:legacy",
     "build:modern": "rm -rf build && vite build",
     "build:legacy": "rm -rf build/legacy && vite build --config vite.legacy.config.ts",

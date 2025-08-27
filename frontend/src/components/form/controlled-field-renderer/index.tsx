@@ -21,73 +21,73 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
-    const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
-        text: ControlledInput,
-        textarea: ControlledTextarea,
-        number: ControlledNumberInput,
+  const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
+    text: ControlledInput,
+    textarea: ControlledTextarea,
+    number: ControlledNumberInput,
 
-        select: ControlledSelect,
-        advancedselect: ControlledSelect,
-        countryselect: ControlledSelect,
+    select: ControlledSelect,
+    advancedselect: ControlledSelect,
+    countryselect: ControlledSelect,
 
-        multiselect: ControlledMultiselect,
+    multiselect: ControlledMultiselect,
 
-        checkbox: ControlledCheckbox,
-        html: SimpleHtmlRenderer,
-        repeater: ControlledRepeater,
-        tel: ControlledPhone,
-        color: ControlledColor,
+    checkbox: ControlledCheckbox,
+    html: SimpleHtmlRenderer,
+    repeater: ControlledRepeater,
+    tel: ControlledPhone,
+    color: ControlledColor,
 
-        header: HeaderField,
-        notice: NoticeField,
+    header: HeaderField,
+    notice: NoticeField,
 
-        image: ControlledImage,
-    };
+    image: ControlledImage,
+  };
 
-    const fieldValue = useWatch({ name: schema?.key, exact: true });
+  const fieldValue = useWatch({ name: schema?.key, exact: true });
 
-    const { formState } = useFormContext();
+  const { formState } = useFormContext();
 
-    const debouncedFieldValue = useDebounce(fieldValue, 500);
+  const debouncedFieldValue = useDebounce(fieldValue, 500);
 
-    const saveSettings = useSaveSettingsValues();
+  const saveSettings = useSaveSettingsValues();
 
-    useEffect(() => {
-        const defaultValue = formState?.defaultValues?.[schema?.key];
+  useEffect(() => {
+    const defaultValue = formState?.defaultValues?.[schema?.key];
 
-        if (schema.auto_save_and_refresh && defaultValue !== fieldValue) {
-            saveSettings.mutate({ [schema?.key]: fieldValue });
-        }
-    }, [schema?.key, debouncedFieldValue, formState?.defaultValues]);
-
-    const FieldComponent = FieldComponentMap?.[schema?.type];
-
-    if (!FieldComponent) {
-        return (
-            <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>Not supported field type.</AlertDescription>
-            </Alert>
-        );
+    if (schema.auto_save_and_refresh && defaultValue !== fieldValue) {
+      saveSettings.mutate({ [schema?.key]: fieldValue });
     }
+  }, [schema?.key, debouncedFieldValue, formState?.defaultValues]);
 
+  const FieldComponent = FieldComponentMap?.[schema?.type];
+
+  if (!FieldComponent) {
     return (
-        <FieldComponent
-            name={schema?.key}
-            label={schema?.label}
-            options={schema?.options}
-            description={schema?.description}
-            disabled={schema?.readonly}
-            htmlContent={
-                schema?.type === 'html' && !schema?.description && typeof schema?.options === 'string'
-                    ? schema?.options
-                    : schema?.description
-            }
-            isLoading={isLoading}
-            isLocked={schema?.readonly}
-            tag={schema?.tag}
-            isRequired={false}
-            fieldGroups={schema?.fieldGroups}
-        />
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>Not supported field type.</AlertDescription>
+      </Alert>
     );
+  }
+
+  return (
+    <FieldComponent
+      name={schema?.key}
+      label={schema?.label}
+      options={schema?.options}
+      description={schema?.description}
+      disabled={schema?.readonly}
+      htmlContent={
+        schema?.type === 'html' && !schema?.description && typeof schema?.options === 'string'
+          ? schema?.options
+          : schema?.description
+      }
+      isLoading={isLoading}
+      isLocked={schema?.readonly}
+      tag={schema?.tag}
+      isRequired={false}
+      fieldGroups={schema?.fieldGroups}
+    />
+  );
 };

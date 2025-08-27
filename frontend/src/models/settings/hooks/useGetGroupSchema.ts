@@ -3,5 +3,5 @@ import { getGroupSchemaOptions } from '../options/getGroupSchema';
 import type { UseGetGroupSchemaType } from '../types/getGroupSchema';
 
 export function useGetGroupSchema(options?: UseGetGroupSchemaType['options']) {
-    return useQuery(getGroupSchemaOptions(options));
+  return useQuery(getGroupSchemaOptions(options));
 }

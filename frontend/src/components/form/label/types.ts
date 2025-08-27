@@ -1,5 +1,5 @@
 export type FieldLabelProps = {
-    text?: string;
-    htmlFor?: string;
-    isInvalid?: boolean;
+  text?: string;
+  htmlFor?: string;
+  isInvalid?: boolean;
 };

@@ -4,68 +4,67 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --background: hsl(0 0% 100%);
-    --foreground:  	hsl(0, 0%, 20%);
-    --card: hsl(0 0% 100%);
-    --card-foreground: hsl(20 14.3% 4.1%);
-    --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(20 14.3% 4.1%);
-    --primary: #f88e40;
-    --primary-foreground: hsl(60 9.1% 97.8%);
-    --secondary: hsl(60 4.8% 95.9%);
-    --secondary-foreground: hsl(24 9.8% 10%);
-    --muted: hsl(60 4.8% 95.9%);
-    --muted-foreground: hsl(25 5.3% 44.7%);
-    --accent: hsl(60 4.8% 95.9%);
-    --accent-foreground: hsl(24 9.8% 10%);
-    --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(60 9.1% 97.8%);
-    --border: hsl(20 5.9% 90%);
-    --input: hsl(20 5.9% 90%);
-    --ring: hsl(24.6 95% 53.1%);
-    --radius: 0.75rem;
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0, 0%, 20%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(20 14.3% 4.1%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(20 14.3% 4.1%);
+  --primary: #f88e40;
+  --primary-foreground: hsl(60 9.1% 97.8%);
+  --secondary: hsl(60 4.8% 95.9%);
+  --secondary-foreground: hsl(24 9.8% 10%);
+  --muted: hsl(60 4.8% 95.9%);
+  --muted-foreground: hsl(25 5.3% 44.7%);
+  --accent: hsl(60 4.8% 95.9%);
+  --accent-foreground: hsl(24 9.8% 10%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(60 9.1% 97.8%);
+  --border: hsl(20 5.9% 90%);
+  --input: hsl(20 5.9% 90%);
+  --ring: hsl(24.6 95% 53.1%);
+  --radius: 0.75rem;
 }
 
 @theme inline {
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
- 
   body {
     @apply bg-background text-foreground;
   }
@@ -73,33 +72,33 @@
 
 /* WordPress Admin Integration Styles */
 .wp-sms-settings-wrap {
-    max-width: 100% !important;
-    padding: 0 !important;
+  max-width: 100% !important;
+  padding: 0 !important;
 }
 #wp-sms-settings-root {
-    position: relative;
-    width: 100%;
-    height: auto;
-    min-height: 600px;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 600px;
 }
 
 #wp-sms-settings-root a {
-    color: unset;
-    box-shadow: unset;
-    outline: unset;
-    border: unset;
+  color: unset;
+  box-shadow: unset;
+  outline: unset;
+  border: unset;
 }
 
 /* Ensure sidebar doesn't conflict with WordPress admin */
 #wp-sms-settings-root [data-sidebar='sidebar'] {
-    position: relative !important;
-    z-index: 1;
+  position: relative !important;
+  z-index: 1;
 }
 
 /* Override WordPress admin styles that might interfere */
 #wp-sms-settings-root .wrap {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /* Ensure proper spacing within WordPress admin */
@@ -108,61 +107,65 @@
 #wpcontent,
 .wp-sms-settings-wrap,
 #wp-sms-settings-root {
-    overflow-x: visible !important;
+  overflow-x: visible !important;
 }
-
-
 
 /* reset style */
 
 /* Reset margins and padding for common elements */
-#wp-sms-settings-root p, #wp-sms-settings-root h1, #wp-sms-settings-root h2,
-#wp-sms-settings-root h3, #wp-sms-settings-root h4, #wp-sms-settings-root h5,
-#wp-sms-settings-root h6, #wp-sms-settings-root ul, #wp-sms-settings-root ol,
+#wp-sms-settings-root p,
+#wp-sms-settings-root h1,
+#wp-sms-settings-root h2,
+#wp-sms-settings-root h3,
+#wp-sms-settings-root h4,
+#wp-sms-settings-root h5,
+#wp-sms-settings-root h6,
+#wp-sms-settings-root ul,
+#wp-sms-settings-root ol,
 #wp-sms-settings-root li {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /* Reset h1 */
 #wp-sms-settings-root h1 {
-    @apply text-xl font-bold text-foreground
+  @apply text-xl font-bold text-foreground;
 }
 
 /* Reset h2 */
 #wp-sms-settings-root h2 {
-    @apply text-lg font-bold text-foreground m-0
+  @apply text-lg font-bold text-foreground m-0;
 }
 
 #wp-sms-settings-root h3 {
-    @apply text-base font-bold text-foreground
+  @apply text-base font-bold text-foreground;
 }
 
-    #wp-sms-settings-root input {
-        @apply border-input rounded-md shadow-none outline-none
-    }
-
-    #wp-sms-settings-root textarea {
-        @apply border-input rounded-md shadow-none outline-none
-    }
-
-#wp-sms-settings-root input[aria-invalid="true"] {
-    @apply border-destructive
+#wp-sms-settings-root input {
+  @apply border-input rounded-md shadow-none outline-none;
 }
 
+#wp-sms-settings-root textarea {
+  @apply border-input rounded-md shadow-none outline-none;
+}
+
+#wp-sms-settings-root input[aria-invalid='true'] {
+  @apply border-destructive;
+}
 
 /* Remove link underlines */
 #wp-sms-settings-root a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 #wp-sms-settings-root a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Remove default list styling */
-#wp-sms-settings-root ul, #wp-sms-settings-root ol {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
+#wp-sms-settings-root ul,
+#wp-sms-settings-root ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }

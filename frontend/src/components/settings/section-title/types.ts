@@ -1,4 +1,4 @@
 export type SettingsSectionTitleProps = {
-    title: string;
-    subtitle: string;
+  title: string;
+  subtitle: string;
 };

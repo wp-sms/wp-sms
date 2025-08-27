@@ -13,4 +13,4 @@ declare global {
 // Export React and ReactDOM
 export * from 'react';
 export * from 'react-dom';
-export default React; 
+export default React;

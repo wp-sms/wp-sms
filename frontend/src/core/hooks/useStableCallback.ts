@@ -1,4 +1,4 @@
-import { type DependencyList, useCallback, useEffect, useRef } from "react";
+import { type DependencyList, useCallback, useEffect, useRef } from 'react';
 /**
  * An stable callback for use in useEffect that prevents infinite loops and ensures up-to-date execution..
  *
@@ -6,10 +6,7 @@ import { type DependencyList, useCallback, useEffect, useRef } from "react";
  * @param dependencies - Dependencies for the useCallback.
  * @returns A stable version of the callback that can be used without dependency issues in useEffect without passing it as dependency.
  */
-export function useStableCallback<T extends (...args: any[]) => any>(
-  callback: T,
-  dependencies: DependencyList
-): T {
+export function useStableCallback<T extends (...args: any[]) => any>(callback: T, dependencies: DependencyList): T {
   const memoizedCallback = useCallback(callback, dependencies);
 
   // Use useRef to store the latest version of the callback

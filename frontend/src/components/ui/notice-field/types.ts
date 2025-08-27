@@ -1,4 +1,4 @@
 export type NoticeFieldProps = {
-    label: string;
-    description?: string;
+  label: string;
+  description?: string;
 };

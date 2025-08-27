@@ -1,3 +1,3 @@
 export type FieldDescriptionProps = {
-    text?: string;
+  text?: string;
 };

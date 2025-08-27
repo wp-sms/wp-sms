@@ -36,9 +36,9 @@ class SettingAdminPage
         // Remove all admin notices except WP-SMS ones
         remove_all_actions('admin_notices');
         remove_all_actions('all_admin_notices');
-        
+
         // Re-add only WP-SMS notices if needed
-        add_action('admin_notices', function() {
+        add_action('admin_notices', function () {
             // WP-SMS specific notices can be added here if needed
         });
     }
@@ -112,16 +112,16 @@ class SettingAdminPage
         }
 
         // Add WP_SMS_DATA to page head to ensure it's available before React loads
-        add_action('admin_head', function() {
-            ?>
+        add_action('admin_head', function () {
+?>
             <script type="text/javascript">
                 window.WP_SMS_DATA = <?php echo json_encode([
-                    'nonce'   => wp_create_nonce('wp_rest'),
-                    'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
-                    'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL
-                ]); ?>;
+                                            'nonce'   => wp_create_nonce('wp_rest'),
+                                            'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
+                                            'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL
+                                        ]); ?>;
             </script>
-            <?php
+<?php
         });
 
         // Also localize the script as backup
@@ -138,7 +138,7 @@ class SettingAdminPage
 
     public function renderSettings(): void
     {
-        echo '<div class="wrap wp-sms-settings-wrap">';
+        echo '<div class="wrap wp-sms-settings-wrap" style="border: 1px solid red;">';
         echo '<div id="wp-sms-settings-root"></div>';
         echo '</div>';
     }

@@ -1,5 +1,5 @@
-import { useQueryClient, type QueryKey } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useQueryClient, type QueryKey } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
 
 /**
  * A custom hook to invalidate a query in React Query, triggering a refetch.
@@ -25,7 +25,7 @@ export function useInvalidateQuery(queryKey: QueryKey) {
     try {
       await queryClient.invalidateQueries({
         queryKey: queryKey,
-        type: "all",
+        type: 'all',
       });
     } catch (error) {
     } finally {

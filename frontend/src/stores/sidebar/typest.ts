@@ -1,4 +1,4 @@
 export type SidebarStoreType = {
-    isOpen: boolean;
-    toggleSidebar: VoidFunction;
+  isOpen: boolean;
+  toggleSidebar: VoidFunction;
 };

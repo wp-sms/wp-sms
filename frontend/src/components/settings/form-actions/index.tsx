@@ -6,46 +6,46 @@ import { useFormContext } from 'react-hook-form';
 import { toast } from 'sonner';
 
 export const SettingsFormActions: React.FC = () => {
-    const { formState, reset, handleSubmit, setError } = useFormContext();
+  const { formState, reset, handleSubmit, setError } = useFormContext();
 
-    const saveSettings = useSaveSettingsValues();
+  const saveSettings = useSaveSettingsValues();
 
-    const handleSave = useCallback(
-        async (values: Record<string, any>) => {
-            const valuesToSave = pickFormDirtyValues(formState.dirtyFields, values);
+  const handleSave = useCallback(
+    async (values: Record<string, any>) => {
+      const valuesToSave = pickFormDirtyValues(formState.dirtyFields, values);
 
-            try {
-                await saveSettings.mutateAsync(valuesToSave);
-                reset(values);
-            } catch (error: any) {
-                toast.error('Failed to save settings', {
-                    position: 'top-center',
-                    className: '!p-4',
-                });
+      try {
+        await saveSettings.mutateAsync(valuesToSave);
+        reset(values);
+      } catch (error: any) {
+        toast.error('Failed to save settings', {
+          position: 'top-center',
+          className: '!p-4',
+        });
 
-                for (const field in error?.response?.data?.data?.fields) {
-                    setError(field, {
-                        message: error?.response?.data?.data?.fields[field],
-                    });
-                }
-            }
-        },
-        [formState.dirtyFields, saveSettings, reset]
-    );
+        for (const field in error?.response?.data?.data?.fields) {
+          setError(field, {
+            message: error?.response?.data?.data?.fields[field],
+          });
+        }
+      }
+    },
+    [formState.dirtyFields, saveSettings, reset]
+  );
 
-    const handleReset = useCallback(() => {
-        reset(formState.defaultValues);
-    }, [reset, formState]);
+  const handleReset = useCallback(() => {
+    reset(formState.defaultValues);
+  }, [reset, formState]);
 
-    return (
-        <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
-            <Button disabled={!formState.isDirty} type="submit" onClick={handleSubmit(handleSave)}>
-                Save Changes
-            </Button>
+  return (
+    <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
+      <Button disabled={!formState.isDirty} type="submit" onClick={handleSubmit(handleSave)}>
+        Save Changes
+      </Button>
 
-            <Button disabled={!formState.isDirty} type="reset" variant="secondary" onClick={handleReset}>
-                Reset
-            </Button>
-        </div>
-    );
+      <Button disabled={!formState.isDirty} type="reset" variant="secondary" onClick={handleReset}>
+        Reset
+      </Button>
+    </div>
+  );
 };

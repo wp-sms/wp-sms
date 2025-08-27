@@ -1,4 +1,4 @@
 export type SettingsGroupTitleProps = {
-    label: string;
-    icon: string;
+  label: string;
+  icon: string;
 };

@@ -1,5 +1,5 @@
 export type SimpleHtmlRendererProps = {
-    label?: string;
-    name?: string;
-    htmlContent?: string;
+  label?: string;
+  name?: string;
+  htmlContent?: string;
 };

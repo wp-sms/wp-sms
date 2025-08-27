@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 
 interface UseTimerOptions {
   initialSeconds?: number;
@@ -30,10 +30,10 @@ const secondsToTimeObject = (totalSeconds: number): TimeObject => {
   const seconds = totalSeconds % 60;
 
   return {
-    days: days.toString().padStart(2, "0"),
-    hours: hours.toString().padStart(2, "0"),
-    minutes: minutes.toString().padStart(2, "0"),
-    seconds: seconds.toString().padStart(2, "0"),
+    days: days.toString().padStart(2, '0'),
+    hours: hours.toString().padStart(2, '0'),
+    minutes: minutes.toString().padStart(2, '0'),
+    seconds: seconds.toString().padStart(2, '0'),
   };
 };
 

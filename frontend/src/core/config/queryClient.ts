@@ -13,16 +13,16 @@ let browserQueryClient: QueryClient | undefined = undefined;
  * @returns {QueryClient} A new instance of QueryClient.
  */
 export function makeQueryClient(): QueryClient {
-    return new QueryClient({
-        defaultOptions: {
-            queries: {
-                staleTime: 60 * 1000 * 5, // Data is considered fresh for 5 minutes (reduces unnecessary refetching)
-                refetchOnWindowFocus: false, // Prevents automatic refetching when the window regains focus
-                retry: 1, // Retries failed queries only once
-                experimental_prefetchInRender: true, // Enables experimental prefetching during render
-            },
-        },
-    });
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000 * 5, // Data is considered fresh for 5 minutes (reduces unnecessary refetching)
+        refetchOnWindowFocus: false, // Prevents automatic refetching when the window regains focus
+        retry: 1, // Retries failed queries only once
+        experimental_prefetchInRender: true, // Enables experimental prefetching during render
+      },
+    },
+  });
 }
 
 /**
@@ -34,12 +34,12 @@ export function makeQueryClient(): QueryClient {
  * @returns {QueryClient} A QueryClient instance.
  */
 export function getQueryClient(): QueryClient {
-    if (isServer) {
-        return makeQueryClient(); // Always return a new instance on the server
-    } else {
-        if (!browserQueryClient) {
-            browserQueryClient = makeQueryClient(); // Create a singleton instance in the browser
-        }
-        return browserQueryClient;
+  if (isServer) {
+    return makeQueryClient(); // Always return a new instance on the server
+  } else {
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient(); // Create a singleton instance in the browser
     }
+    return browserQueryClient;
+  }
 }
