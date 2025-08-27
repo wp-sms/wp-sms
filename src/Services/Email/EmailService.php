@@ -9,6 +9,37 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * EmailService
+ *
+ * Facade around WordPress `wp_mail()` with plugin settings support.
+ *
+ * Features:
+ * - Respects plugin settings (enabled/disabled, from name/email, reply-to, debug logging).
+ * - Normalizes headers (adds Content-Type, From, Reply-To if missing).
+ * - Logs all send attempts via EmailLogger (with optional debug detail).
+ * - Wraps result in an EmailResult object.
+ *
+ * Usage example:
+ *
+ * use WP_SMS\Services\Email\EmailService;
+ *
+ * $result = EmailService::send([
+ *     'to'          => 'user@example.com',
+ *     'subject'     => 'Welcome!',
+ *     'body'        => 'Thanks for signing up.',
+ *     'headers'     => ['Content-Type: text/html; charset=UTF-8'],
+ *     'attachments' => [ WP_SMS_URL . '/uploads/welcome.pdf' ],
+ * ]);
+ *
+ * if ($result->success) {
+ *     // Sent successfully
+ * } else {
+ *     error_log('Email failed: ' . $result->error);
+ * }
+ */
+
+
 class EmailService
 {
     /**
