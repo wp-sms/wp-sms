@@ -967,7 +967,6 @@
         }
 
 
-
         /**
          * Internationalization helper
          */
