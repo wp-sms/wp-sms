@@ -14,6 +14,8 @@ export default defineConfig({
                 //js
                 admin: resolve(__dirname, 'legacy/js/admin.js'),
                 frontend: resolve(__dirname, 'legacy/scripts/blocks.js'),
+                'auth-form': resolve(__dirname, 'legacy/js/auth-form.js'),
+                'auth-modal': resolve(__dirname, 'legacy/js/auth-modal.js'),
 
                 //css
                 'admin-bar-styles': resolve(__dirname, 'legacy/css/admin-bar.css'),
@@ -28,6 +30,7 @@ export default defineConfig({
                 'admin-styles': resolve(__dirname, 'legacy/admin/admin.scss'),
                 'front-styles': resolve(__dirname, 'legacy/scss/front-styles.scss'),
                 'mail-styles': resolve(__dirname, 'legacy/scss/mail.scss'),
+                'auth-styles': resolve(__dirname, 'legacy/css/auth-form.css'),
             },
             output: {
                 entryFileNames: '[name].js',
@@ -59,6 +62,14 @@ export default defineConfig({
                         },
                         {
                             src: 'legacy/static/jquery-word-and-character-counter.min.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/js/auth-form.js',
+                            dest: 'build/legacy',
+                        },
+                        {
+                            src: 'legacy/js/auth-modal.js',
                             dest: 'build/legacy',
                         },
                     ],
