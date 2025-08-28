@@ -54,18 +54,6 @@ class OTPChannelSettings extends AbstractSettingGroup
                         'default' => false,
                         'sub_fields' => [
                             new Field([
-                                'key' => 'username_verification_method',
-                                'label' => __('Verification Method', 'wp-sms'),
-                                'type' => 'multiselect',
-                                'description' => __('Select verification methods for username channel', 'wp-sms'),
-                                'options' => [
-                                    'otp' => __('OTP Code', 'wp-sms'),
-                                    'link' => __('Verification Link', 'wp-sms'),
-                                    'both' => __('Both Methods', 'wp-sms'),
-                                ],
-                                'default' => ['otp'],
-                            ]),
-                            new Field([
                                 'key' => 'username_min_length',
                                 'label' => __('Minimum Length', 'wp-sms'),
                                 'type' => 'number',
@@ -96,6 +84,43 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'type' => 'checkbox',
                                 'description' => __('Treat usernames as case sensitive', 'wp-sms'),
                                 'default' => false,
+                            ]),
+                            new Field([
+                                'key' => 'username_allowed_characters',
+                                'label' => __('Allowed Characters', 'wp-sms'),
+                                'type' => 'multiselect',
+                                'description' => __('Select which characters are allowed in usernames', 'wp-sms'),
+                                'options' => [
+                                    'alphanumeric' => __('Alphanumeric (a-z, A-Z, 0-9)', 'wp-sms'),
+                                    'underscores' => __('Underscores (_)', 'wp-sms'),
+                                    'hyphens' => __('Hyphens (-)', 'wp-sms'),
+                                    'dots' => __('Dots (.)', 'wp-sms'),
+                                ],
+                                'default' => ['alphanumeric', 'underscores', 'hyphens', 'dots'],
+                            ]),
+                            new Field([
+                                'key' => 'username_reserved_words',
+                                'label' => __('Reserved Words (Blacklist)', 'wp-sms'),
+                                'type' => 'textarea',
+                                'description' => __('Comma-separated list of reserved usernames that cannot be used', 'wp-sms'),
+                                'placeholder' => 'admin, root, system, test, demo',
+                                'default' => 'admin, root, system, test, demo',
+                                'rows' => 3,
+                            ]),
+                            new Field([
+                                'key' => 'username_real_time_check',
+                                'label' => __('Real-time Availability Check', 'wp-sms'),
+                                'type' => 'checkbox',
+                                'description' => __('Check username availability in real-time as user types', 'wp-sms'),
+                                'default' => true,
+                            ]),
+                            new Field([
+                                'key' => 'username_field_label',
+                                'label' => __('Username Field Label', 'wp-sms'),
+                                'type' => 'text',
+                                'description' => __('Custom label for the username field in forms', 'wp-sms'),
+                                'default' => __('Username', 'wp-sms'),
+                                'placeholder' => __('Username', 'wp-sms'),
                             ]),
                         ]
                     ]),
