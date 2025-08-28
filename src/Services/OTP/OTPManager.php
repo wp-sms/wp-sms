@@ -4,6 +4,10 @@ namespace WP_SMS\Services\OTP;
 
 use WP_SMS\Contracts\Abstracts\AbstractService;
 use WP_SMS\Services\OTP\Admin\Pages\OTPAdminPage;
+use WP_SMS\Services\OTP\Shortcodes\AuthShortcodes;
+use WP_SMS\Services\OTP\Templates\AuthTemplates;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Auth\AuthRestAPIEndpoints;
+use WP_SMS\Services\OTP\Assets\AuthAssets;
 
 class OTPManager extends AbstractService
 {
@@ -19,11 +23,15 @@ class OTPManager extends AbstractService
 
     protected function boot(): void
     {
-
         $services = [
-            //Admin Pages
+            // Admin Pages
             new OTPAdminPage(),
             
+            // Authentication Components
+            new AuthAssets(),
+            new AuthShortcodes(),
+            new AuthTemplates(),
+            new AuthRestAPIEndpoints(),
         ];
 
         foreach ($services as $service) {
