@@ -10,7 +10,7 @@ use WP_SMS\Settings\Groups\GeneralSettings;
 use WP_SMS\Settings\Groups\MessageButtonSettings;
 use WP_SMS\Settings\Groups\NewsletterSettings;
 use WP_SMS\Settings\Groups\NotificationSettings;
-use WP_SMS\Settings\Groups\OTPSettings;
+use WP_SMS\Settings\Groups\OTPChannelSettings;
 
 // Addons
 use WP_SMS\Settings\Groups\Addons\ProWordPressSettings;
@@ -68,7 +68,7 @@ class SchemaRegistry
         $this->registerGroup(new NotificationSettings(), 'core');
         $this->registerGroup(new AdvancedSettings(), 'core');
         $this->registerGroup(new NewsletterSettings(), 'core');
-        $this->registerGroup(new OTPSettings(), 'core');
+        $this->registerGroup(new OTPChannelSettings(), 'core');
 
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
