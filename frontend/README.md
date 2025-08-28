@@ -21,6 +21,7 @@ assets/react/
 ## Build Output
 
 All build files are output to `public/admin/` directory:
+
 - JavaScript bundles
 - CSS files
 - Asset manifest
@@ -29,10 +30,12 @@ All build files are output to `public/admin/` directory:
 ## Development
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 
 ### Setup
+
 ```bash
 cd assets/react
 npm install
@@ -60,6 +63,7 @@ npm run lint
 ### WordPress Integration
 
 The React app is integrated with WordPress through:
+
 - `src/Admin/Pages/SettingAdminPage.php` - Enqueues React assets
 - REST API endpoints for data communication
 - WordPress admin hooks and filters
@@ -67,17 +71,20 @@ The React app is integrated with WordPress through:
 ## File Organization
 
 ### Components
+
 - `ui/` - Basic UI components (buttons, inputs, etc.)
 - `forms/` - Form-specific components
 - `layout/` - Layout components (headers, sidebars, etc.)
 - `features/` - Feature-specific components
 
 ### Pages
+
 - `settings/` - Settings page components
 - `dashboard/` - Dashboard components
 - `subscribers/` - Subscriber management
 
 ### Services
+
 - API calls to WordPress REST endpoints
 - Data transformation utilities
 - WordPress-specific integrations
@@ -85,6 +92,7 @@ The React app is integrated with WordPress through:
 ## Build Configuration
 
 The build is configured in `vite.config.ts`:
+
 - Output directory: `../../public/admin`
 - Asset optimization
 - Code splitting
@@ -95,4 +103,4 @@ The build is configured in `vite.config.ts`:
 - Uses WordPress REST API for data
 - Integrates with WordPress admin interface
 - Supports WordPress i18n for translations
-- Compatible with WordPress security measures 
+- Compatible with WordPress security measures

@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import { resolve } from 'node:path';
-import copy from 'rollup-plugin-copy';
+import { defineConfig } from 'vite'
+import { resolve } from 'node:path'
+import copy from 'rollup-plugin-copy'
 
 export default defineConfig({
   build: {
@@ -67,4 +67,4 @@ export default defineConfig({
       ],
     },
   },
-});
+})

@@ -1,6 +1,8 @@
 # Build output
 dist/
 build/
+public/
+legacy/
 
 # Dependencies
 node_modules/
@@ -26,3 +28,8 @@ coverage/
 # System files
 .DS_Store
 Thumbs.db 
+
+package-lock.json
+pnpm-lock.yaml
+
+.storybook

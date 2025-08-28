@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
-import { resolve } from 'node:path';
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import { resolve } from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -64,7 +64,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name].[ext]',
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            return 'vendor';
+            return 'vendor'
           }
         },
         experimentalMinChunkSize: 1000,
@@ -82,4 +82,4 @@ export default defineConfig({
     exclude: ['@wordpress/element'],
     force: false,
   },
-});
+})

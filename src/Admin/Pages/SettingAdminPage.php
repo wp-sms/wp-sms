@@ -138,7 +138,7 @@ class SettingAdminPage
 
     public function renderSettings(): void
     {
-        echo '<div class="wrap wp-sms-settings-wrap" style="border: 1px solid red;">';
+        echo '<div class="wrap wp-sms-settings-wrap">';
         echo '<div id="wp-sms-settings-root"></div>';
         echo '</div>';
     }

@@ -1,8 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { PropsWithChildren } from 'react';
-import { Toaster } from './components/ui/sonner';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { PropsWithChildren } from 'react'
+import { Toaster } from './components/ui/sonner'
 
-const Providers: React.FC<PropsWithChildren<unknown>> = ({ children }) => {
+const Providers = ({ children }: PropsWithChildren) => {
   const client = new QueryClient({
     defaultOptions: {
       queries: {
@@ -12,14 +12,14 @@ const Providers: React.FC<PropsWithChildren<unknown>> = ({ children }) => {
         experimental_prefetchInRender: true,
       },
     },
-  });
+  })
 
   return (
     <QueryClientProvider client={client}>
       <Toaster />
       {children}
     </QueryClientProvider>
-  );
-};
+  )
+}
 
-export default Providers;
+export default Providers
