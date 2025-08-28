@@ -79,7 +79,14 @@ class Section
      */
     public function getFields(): array
     {
-        return $this->fields;
+        $fields = $this->fields;
+        // Add sub fields to the fields array
+        foreach ($fields as $field) {
+            if ($field->subFields) {
+                $fields = array_merge($fields, $field->subFields);
+            }
+        }
+        return $fields;
     }
 
     /**
