@@ -9,8 +9,13 @@ export function getGroupSchemaOptions(options?: UseGetGroupSchemaType['options']
         queryKey: ['group-schema', params],
         queryFn: async () => {
             const url = `/settings/schema/group/${params?.groupName}`;
-
-            const response = await clientRequest.get<UseGetGroupSchemaType['response']>(url);
+            
+            // Add include_hidden=true to access hidden settings groups like OTP
+            const response = await clientRequest.get<UseGetGroupSchemaType['response']>(url, {
+                params: {
+                    include_hidden: 'true'
+                }
+            });
 
             return response.data;
         },

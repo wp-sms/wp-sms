@@ -20,7 +20,11 @@ import { ControlledImage } from '../controlled-image';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
-export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
+export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ 
+    schema, 
+    isLoading = false,
+    onSubFieldsClick
+}) => {
     const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
         text: ControlledInput,
         textarea: ControlledTextarea,
@@ -73,21 +77,17 @@ export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = (
 
     return (
         <FieldComponent
-            name={schema?.key}
-            label={schema?.label}
-            options={schema?.options}
-            description={schema?.description}
-            disabled={schema?.readonly}
-            htmlContent={
-                schema?.type === 'html' && !schema?.description && typeof schema?.options === 'string'
-                    ? schema?.options
-                    : schema?.description
-            }
+            name={schema.key}
+            label={schema.label}
+            description={schema.description}
+            tooltip={schema.doc}
+            tag={schema.tag}
+            isLocked={schema.readonly}
             isLoading={isLoading}
-            isLocked={schema?.readonly}
-            tag={schema?.tag}
-            isRequired={false}
             fieldGroups={schema?.fieldGroups}
+            sub_fields={schema?.sub_fields}
+            onSubFieldsClick={onSubFieldsClick}
+            {...schema}
         />
     );
 };

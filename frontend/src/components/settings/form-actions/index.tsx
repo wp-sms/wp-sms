@@ -38,7 +38,7 @@ export const SettingsFormActions: React.FC = () => {
     }, [reset, formState]);
 
     return (
-        <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
+        <div className="flex items-center gap-x-3 sticky bottom-0 p-3 z-50 mt-2">
             <Button disabled={!formState.isDirty} type="submit" onClick={handleSubmit(handleSave)}>
                 Save Changes
             </Button>

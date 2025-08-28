@@ -64,6 +64,7 @@ export type SchemaField = {
         layout: SchemaFieldLayout;
         fields: SchemaField[];
     }[];
+    sub_fields?: SchemaField[]; // Changed from subFields to sub_fields to match backend
     auto_save_and_refresh: boolean;
     default: unknown;
     hidden: boolean;
