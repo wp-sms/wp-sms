@@ -48,13 +48,13 @@ class OTPChannelSettings extends AbstractSettingGroup
                 'fields' => [
                     // Username Channel
                     new Field([
-                        'key' => 'username_channel',
+                        'key' => 'otp_channel_username',
                         'label' => __('Username', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
                         'sub_fields' => [
                             new Field([
-                                'key' => 'username_min_length',
+                                'key' => 'otp_channel_username_min_length',
                                 'label' => __('Minimum Length', 'wp-sms'),
                                 'type' => 'number',
                                 'description' => __('Minimum username length requirement', 'wp-sms'),
@@ -63,7 +63,7 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'max' => 10,
                             ]),
                             new Field([
-                                'key' => 'username_max_length',
+                                'key' => 'otp_channel_username_max_length',
                                 'label' => __('Maximum Length', 'wp-sms'),
                                 'type' => 'number',
                                 'description' => __('Maximum username length requirement', 'wp-sms'),
@@ -72,21 +72,21 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'max' => 50,
                             ]),
                             new Field([
-                                'key' => 'username_unique_requirement',
+                                'key' => 'otp_channel_username_unique_requirement',
                                 'label' => __('Require Unique Username', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Ensure usernames are unique across the system', 'wp-sms'),
                                 'default' => true,
                             ]),
                             new Field([
-                                'key' => 'username_case_sensitive',
+                                'key' => 'otp_channel_username_case_sensitive',
                                 'label' => __('Case Sensitive', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Treat usernames as case sensitive', 'wp-sms'),
                                 'default' => false,
                             ]),
                             new Field([
-                                'key' => 'username_allowed_characters',
+                                'key' => 'otp_channel_username_allowed_characters',
                                 'label' => __('Allowed Characters', 'wp-sms'),
                                 'type' => 'multiselect',
                                 'description' => __('Select which characters are allowed in usernames', 'wp-sms'),
@@ -99,7 +99,7 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'default' => ['alphanumeric', 'underscores', 'hyphens', 'dots'],
                             ]),
                             new Field([
-                                'key' => 'username_reserved_words',
+                                'key' => 'otp_channel_username_reserved_words',
                                 'label' => __('Reserved Words (Blacklist)', 'wp-sms'),
                                 'type' => 'textarea',
                                 'description' => __('Comma-separated list of reserved usernames that cannot be used', 'wp-sms'),
@@ -108,14 +108,14 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'rows' => 3,
                             ]),
                             new Field([
-                                'key' => 'username_real_time_check',
+                                'key' => 'otp_channel_username_real_time_check',
                                 'label' => __('Real-time Availability Check', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Check username availability in real-time as user types', 'wp-sms'),
                                 'default' => true,
                             ]),
                             new Field([
-                                'key' => 'username_field_label',
+                                'key' => 'otp_channel_username_field_label',
                                 'label' => __('Username Field Label', 'wp-sms'),
                                 'type' => 'text',
                                 'description' => __('Custom label for the username field in forms', 'wp-sms'),
@@ -126,7 +126,7 @@ class OTPChannelSettings extends AbstractSettingGroup
                     ]),
                     // Password Channel
                     new Field([
-                        'key' => 'password_channel',
+                        'key' => 'otp_channel_password',
                         'label' => __('Password', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
@@ -209,7 +209,7 @@ class OTPChannelSettings extends AbstractSettingGroup
                     ]),
                     // Phone Channel
                     new Field([
-                        'key' => 'phone_channel',
+                        'key' => 'otp_channel_phone',
                         'label' => __('Phone Channel', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
@@ -293,7 +293,7 @@ class OTPChannelSettings extends AbstractSettingGroup
                     ]),
                     // Email Channel
                     new Field([
-                        'key' => 'email_channel',
+                        'key' => 'otp_channel_email',
                         'label' => __('Email', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
