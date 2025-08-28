@@ -22,11 +22,11 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-     "types": ["vite/client"],
+    "types": ["vite/client"],
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
-     "@/*": ["./src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]
