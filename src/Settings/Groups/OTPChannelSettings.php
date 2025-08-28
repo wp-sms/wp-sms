@@ -7,7 +7,7 @@ use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
 
-class OTPSettings extends AbstractSettingGroup
+class OTPChannelSettings extends AbstractSettingGroup
 {
     public function getName(): string
     {
@@ -16,7 +16,7 @@ class OTPSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return __('OTP Settings', 'wp-sms');
+        return __('OTP Channels', 'wp-sms');
     }
 
     public function getIcon(): string
@@ -25,14 +25,16 @@ class OTPSettings extends AbstractSettingGroup
     }
 
     /**
-     * Hide OTP Settings from API endpoints by default.
+     * Hide OTP Channels from API endpoints by default.
      * This group contains sensitive OTP configuration that should not be exposed.
      *
      * @return bool
      */
     public function isApiVisible(): bool
     {
-        return false;
+        // TODO: Hide OTP Channels from API endpoints by default.
+        // This group contains sensitive OTP configuration that should not be exposed.
+        return true;
     }
 
     public function getSections(): array
@@ -46,11 +48,11 @@ class OTPSettings extends AbstractSettingGroup
                 'fields' => [
                     // Username Channel
                     new Field([
-                        'key' => 'username_channel_enabled',
+                        'key' => 'username_channel',
                         'label' => __('Username', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
-                        'subFields' => [
+                        'sub_fields' => [
                             new Field([
                                 'key' => 'username_verification_method',
                                 'label' => __('Verification Method', 'wp-sms'),
@@ -99,11 +101,11 @@ class OTPSettings extends AbstractSettingGroup
                     ]),
                     // Password Channel
                     new Field([
-                        'key' => 'password_channel_enabled',
+                        'key' => 'password_channel',
                         'label' => __('Password', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
-                        'subFields' => [
+                        'sub_fields' => [
                             new Field([
                                 'key' => 'password_verification_method',
                                 'label' => __('Verification Method', 'wp-sms'),
@@ -182,11 +184,11 @@ class OTPSettings extends AbstractSettingGroup
                     ]),
                     // Phone Channel
                     new Field([
-                        'key' => 'phone_channel_enabled',
+                        'key' => 'phone_channel',
                         'label' => __('Phone Channel', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
-                        'subFields' => [
+                        'sub_fields' => [
                             new Field([
                                 'key' => 'phone_verification_method',
                                 'label' => __('Verification Method', 'wp-sms'),
@@ -219,14 +221,14 @@ class OTPSettings extends AbstractSettingGroup
                                 'step' => 30,
                             ]),
                             new Field([
-                                'key' => 'phone_sms_enabled',
+                                'key' => 'phone_sms',
                                 'label' => __('Enable SMS Delivery', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Allow OTP delivery via SMS', 'wp-sms'),
                                 'default' => true,
                             ]),
                             new Field([
-                                'key' => 'phone_whatsapp_enabled',
+                                'key' => 'phone_whatsapp',
                                 'label' => __('Enable WhatsApp Delivery', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Allow OTP delivery via WhatsApp (Coming Soon)', 'wp-sms'),
@@ -234,7 +236,7 @@ class OTPSettings extends AbstractSettingGroup
                                 'readonly' => true,
                             ]),
                             new Field([
-                                'key' => 'phone_viber_enabled',
+                                'key' => 'phone_viber',
                                 'label' => __('Enable Viber Delivery', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Allow OTP delivery via Viber (Coming Soon)', 'wp-sms'),
@@ -242,7 +244,7 @@ class OTPSettings extends AbstractSettingGroup
                                 'readonly' => true,
                             ]),
                             new Field([
-                                'key' => 'phone_call_enabled',
+                                'key' => 'phone_call',
                                 'label' => __('Enable Phone Call Delivery', 'wp-sms'),
                                 'type' => 'checkbox',
                                 'description' => __('Allow OTP delivery via phone call (Coming Soon)', 'wp-sms'),
@@ -260,17 +262,17 @@ class OTPSettings extends AbstractSettingGroup
                                     'nexmo' => __('Vonage (Nexmo)', 'wp-sms'),
                                     'aws' => __('AWS SNS', 'wp-sms'),
                                 ],
-                                'show_if' => ['phone_sms_enabled' => true],
+                                'show_if' => ['phone_sms' => true],
                             ]),
                         ]
                     ]),
                     // Email Channel
                     new Field([
-                        'key' => 'email_channel_enabled',
+                        'key' => 'email_channel',
                         'label' => __('Email', 'wp-sms'),
                         'type' => 'checkbox',
                         'default' => false,
-                        'subFields' => [
+                        'sub_fields' => [
                             new Field([
                                 'key' => 'email_verification_method',
                                 'label' => __('Verification Method', 'wp-sms'),
@@ -336,6 +338,7 @@ class OTPSettings extends AbstractSettingGroup
         foreach ($this->getSections() as $section) {
             $allFields = array_merge($allFields, $section->getFields());
         }
+
         return $allFields;
     }
 }
