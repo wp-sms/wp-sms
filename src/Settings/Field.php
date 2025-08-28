@@ -31,6 +31,7 @@ class Field
     public $rows;
     public $hidden;
     public $autoSaveAndRefresh;
+    public $subFields;
 
     public function __construct(array $args)
     {
@@ -61,6 +62,7 @@ class Field
         $this->rows             = $args['rows'] ?? null;
         $this->hidden           = $args['hidden'] ?? false;
         $this->autoSaveAndRefresh = $args['auto_save_and_refresh'] ?? false;
+        $this->subFields          = $args['sub_fields'] ?? [];
     }
 
     public function toArray(): array
@@ -80,6 +82,7 @@ class Field
             'hideIf'      => $this->hideIf,
             'repeatable'  => $this->repeatable,
             'tag'         => $this->tag,
+            'sub_fields'   => $this->subFields,
             'readonly'    => $this->readonly,
             'options_depends_on' => $this->optionsDependsOn,
             'sortable'    => $this->sortable,
