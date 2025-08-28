@@ -47,6 +47,19 @@ class OTPChannelSettings extends AbstractSettingGroup
                 'subtitle' => __('Configure OTP verification channels and their settings', 'wp-sms'),
                 'order' => 2,
                 'fields' => [
+                    // Login Flow Selection
+                    new Field([
+                        'key' => 'otp_channel_login_flow',
+                        'label' => __('Login Flow', 'wp-sms'),
+                        'type' => 'select',
+                        'description' => __('Select the primary authentication flow for your application', 'wp-sms'),
+                        'options' => [
+                            'identifier_first' => __('Identifier First (Phone/Email verification on signup, supports Passkeys)', 'wp-sms'),
+                            'identifier_password' => __('Identifier + Password (Traditional username/password)', 'wp-sms'),
+                            'identifier_biometrics' => __('Identifier First + Biometrics (Phone/Email + Biometric)', 'wp-sms'),
+                        ],
+                        'default' => 'identifier_first',
+                    ]),
                     // Username Channel
                     new Field([
                         'key' => 'otp_channel_username',
