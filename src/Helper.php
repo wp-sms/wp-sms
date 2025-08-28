@@ -269,38 +269,39 @@ class Helper
      */
     public static function getWooCommerceCustomersNumbers($roles = [])
     {
-        $fieldKey     = self::getUserMobileFieldName();
-        $numbers      = [];
-        $page         = 1;
-        $usersPerPage = 100;
+        $fieldKey = self::getUserMobileFieldName();
+        $baseArgs = array(
+            'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+                'relation' => 'OR',
+                array(
+                    'key'     => $fieldKey,
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+                array(
+                    'key'     => '_billing_phone',
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+            ),
+            'fields'     => 'all_with_meta',
+        );
+
+        if ($roles) {
+            $baseArgs['role__in'] = $roles;
+        }
+
+        $baseArgs = apply_filters('wp_sms_wc_mobile_numbers_query_args', $baseArgs);
+
+        $per_page = 300;
+        $offset   = 0;
+        $numbers  = array();
 
         do {
-            $args = array(
-                'meta_query' => array(
-                    'relation' => 'OR',
-                    array(
-                        'key'     => $fieldKey,
-                        'value'   => '',
-                        'compare' => '!=',
-                    ),
-                    array(
-                        'key'     => '_billing_phone',
-                        'value'   => '',
-                        'compare' => '!=',
-                    ),
-                ),
-                'fields'     => 'all_with_meta',
-                'number'     => $usersPerPage,
-                'paged'      => $page,
-                'orderby'    => 'ID',
-                'order'      => 'ASC'
-            );
+            $args           = $baseArgs;
+            $args['number'] = $per_page;
+            $args['offset'] = $offset;
 
-            if ($roles) {
-                $args['role__in'] = $roles;
-            }
-
-            $args      = apply_filters('wp_sms_wc_mobile_numbers_query_args', $args);
             $customers = get_users($args);
 
             if (empty($customers)) {
@@ -308,16 +309,17 @@ class Helper
             }
 
             foreach ($customers as $customer) {
-                $numbers[] = $customer->$fieldKey;
+                $num = get_user_meta($customer->ID, $fieldKey, true);
+                if ($num === '') {
+                    $num = get_user_meta($customer->ID, '_billing_phone', true);
+                }
+                if ($num !== '') {
+                    $numbers[] = $num;
+                }
             }
 
-            $page++;
-
-            if ($page > 50) {
-                break;
-            }
-
-        } while (count($customers) === $usersPerPage);
+            $offset += $per_page;
+        } while (count($customers) === $per_page);
 
         // Backward compatibility with new custom WooCommerce order table.
         if (get_option('woocommerce_custom_orders_table_enabled')) {
@@ -329,15 +331,12 @@ class Helper
 
         $normalizedNumbers = [];
         foreach ($numbers as $number) {
-            if (empty($number)) {
-                continue;
-            }
             $normalizedNumber = self::normalizeNumber($number);
             // Use normalized number as key to avoid duplicates
             $normalizedNumbers[$normalizedNumber] = $number;
         }
 
-        return array_values($normalizedNumbers);
+        return array_values(array_unique($normalizedNumbers));
     }
 
     /**
