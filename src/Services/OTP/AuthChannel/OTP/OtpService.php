@@ -30,7 +30,7 @@ class OtpService implements AuthChannelInterface
     /**
      * Generate a new OTP and persist it in the database.
      */
-    public function generate(string $flowId, int $userId, ?string $phone = null, ?string $email = null, string $preferredChannel = 'sms'): string
+    public function generate(string $flowId, ?string $phone = null, ?string $email = null, string $preferredChannel = 'sms'): string
     {
         // Generate secure OTP
         $length = $this->defaultCodeLength;
@@ -46,13 +46,11 @@ class OtpService implements AuthChannelInterface
         $otpCode = str_pad((string) $otp, $length, '0', STR_PAD_LEFT);
 
         // Determine the primary identifier and channel
-        $primaryIdentifier = $phone ?: $email;
-        $primaryChannel = $phone ? 'sms' : 'email';
+        $primaryChannel = $preferredChannel ?: ($phone ? 'sms' : 'email');
 
         // Save to DB with delivery information
         OtpSessionModel::createSession(
             flowId: $flowId,
-            userId: $userId,
             code: $otpCode,
             expiresInSeconds: $this->defaultTtl,
             phone: $phone,
@@ -76,10 +74,9 @@ class OtpService implements AuthChannelInterface
         ];
 
         // Determine if this is a phone number or email
-        $isPhone = $this->isPhoneNumber($identifier);
         $isEmail = $this->isEmail($identifier);
-
-        if (!$isPhone && !$isEmail) {
+        $isPhone = $isEmail ? false : true;
+        if (!$isEmail && !$isPhone) {
             $result['error'] = 'Invalid identifier format';
             return $result;
         }
@@ -102,7 +99,7 @@ class OtpService implements AuthChannelInterface
         }
 
         // Primary channel failed, try fallback if enabled
-        if (count($channels) > 1 && $this->isFallbackEnabled($isPhone ? 'phone' : 'email')) {
+        if (count($channels) > 1 && $this->isFallbackEnabled($isPhone ? 'sms' : 'email')) {
             $fallbackChannel = $channels[1];
             $fallbackResult = $this->sendViaChannel($fallbackChannel, $identifier, $otpCode, $context);
 
@@ -239,14 +236,7 @@ class OtpService implements AuthChannelInterface
         return isset($settings['fallback_enabled']) ? $settings['fallback_enabled'] : false;
     }
 
-    /**
-     * Check if identifier is a phone number
-     */
-    protected function isPhoneNumber(string $identifier): bool
-    {
-        // Basic phone number validation - can be enhanced
-        return preg_match('/^[\+]?[1-9][\d]{0,15}$/', preg_replace('/[^0-9+]/', '', $identifier));
-    }
+
 
     /**
      * Check if identifier is an email
@@ -273,7 +263,7 @@ class OtpService implements AuthChannelInterface
         }
 
         $inputHash = hash('sha256', $input);
-        $isValid = hash_equals($record['code_hash'], $inputHash);
+        $isValid = hash_equals($record['otp_hash'], $inputHash);
 
         if ($isValid) {
             $this->invalidate($flowId);
