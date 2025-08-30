@@ -25,13 +25,12 @@ class MagicLinkService implements AuthChannelInterface
     /**
      * Generate a new magic login link for a given user and flow ID.
      */
-    public function generate(int $userId, string $flowId): string
+    public function generate(string $flowId): string
     {
         $token = bin2hex(random_bytes(16)); // Secure 32-char token
 
         MagicLinkModel::createSession(
             flowId: $flowId,
-            userId: $userId,
             token: $token,
             expiresInSeconds: $this->defaultTtl
         );
@@ -55,7 +54,7 @@ class MagicLinkService implements AuthChannelInterface
     /**
      * Validate a magic link token and return the user ID if valid.
      */
-    public function validate(string $flowId, string $inputToken): ?int
+    public function validate(string $flowId, string $inputToken): ?string
     {
         $record = MagicLinkModel::find(['flow_id' => $flowId]);
 
@@ -65,7 +64,6 @@ class MagicLinkService implements AuthChannelInterface
 
         $payload = new MagicLinkPayload(
             flowId: $record['flow_id'],
-            userId: (int) $record['user_id'],
             tokenHash: $record['token_hash'],
             expiresAt: strtotime($record['expires_at']),
             usedAt: $record['used_at'] ? strtotime($record['used_at']) : null,
@@ -82,7 +80,7 @@ class MagicLinkService implements AuthChannelInterface
         // Mark the token as used (one-time use)
         MagicLinkModel::markAsUsed($flowId);
 
-        return $payload->userId;
+        return $payload->flowId;
     }
 
     /**
