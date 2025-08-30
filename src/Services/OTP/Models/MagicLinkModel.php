@@ -31,8 +31,6 @@ class MagicLinkModel extends AbstractBaseModel
         $data = [
             'flow_id'     => $flowId,
             'token_hash'  => $hash,
-            'identifier'  => $identifier,
-            'identifier_type'  => $identifierType,
             'expires_at'  => $expires,
             'created_at'  => $now,
         ];
