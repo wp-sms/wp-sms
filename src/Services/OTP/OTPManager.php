@@ -8,6 +8,7 @@ use WP_SMS\Services\OTP\Shortcodes\AuthShortcodes;
 use WP_SMS\Services\OTP\Templates\AuthTemplates;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Auth\AuthRestAPIEndpoints;
 use WP_SMS\Services\OTP\Assets\AuthAssets;
+use  WP_SMS\Services\OTP\RestAPIEndpoints\OTP\OTPRestAPIEndpoints;
 
 class OTPManager extends AbstractService
 {
@@ -32,6 +33,7 @@ class OTPManager extends AbstractService
             new AuthShortcodes(),
             new AuthTemplates(),
             new AuthRestAPIEndpoints(),
+            new OTPRestAPIEndpoints(),
         ];
 
         foreach ($services as $service) {
