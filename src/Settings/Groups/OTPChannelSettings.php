@@ -344,6 +344,13 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'default' => true,
                             ]),
                             new Field([
+                                'key' => 'otp_channel_phone_fallback_enabled',
+                                'label' => __('Enable Fallback to Email', 'wp-sms'),
+                                'type' => 'checkbox',
+                                'description' => __('Automatically send OTP via email if SMS delivery fails', 'wp-sms'),
+                                'default' => true,
+                            ]),
+                            new Field([
                                 'key' => 'otp_channel_phone_sms',
                                 'label' => __('Enable SMS Delivery', 'wp-sms'),
                                 'type' => 'checkbox',
@@ -502,6 +509,13 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'min' => 60,
                                 'max' => 1800,
                                 'step' => 30,
+                            ]),
+                            new Field([
+                                'key' => 'otp_channel_email_fallback_enabled',
+                                'label' => __('Enable Fallback to SMS', 'wp-sms'),
+                                'type' => 'checkbox',
+                                'description' => __('Automatically send OTP via SMS if email delivery fails', 'wp-sms'),
+                                'default' => true,
                             ]),
                             new Field([
                                 'key' => 'otp_channel_email_scheduling',
