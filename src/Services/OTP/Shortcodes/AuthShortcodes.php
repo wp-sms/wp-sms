@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Services\OTP\Shortcodes;
 
+use WP_SMS\Services\OTP\OTPChannelHelper;
+
 /**
  * Authentication Shortcodes
  *
@@ -46,6 +48,7 @@ class AuthShortcodes
             'default_tab' => 'login',
             'fields' => 'username,email,phone,password',
             'class' => '',
+            'mfa' => 'true',
         ], $atts, 'wpsms_login_form');
 
         $this->enqueueAssets();
@@ -62,8 +65,9 @@ class AuthShortcodes
             'methods' => 'password,otp,magic',
             'tabs' => 'false',
             'default_tab' => 'register',
-            'fields' => 'username,email,phone,password',
+            'fields' => 'email,phone,password',
             'class' => '',
+            'mfa' => 'false',
         ], $atts, 'wpsms_register_form');
 
         $this->enqueueAssets();
@@ -82,6 +86,7 @@ class AuthShortcodes
             'default_tab' => 'login',
             'fields' => 'username,email,phone,password',
             'class' => '',
+            'mfa' => 'true',
         ], $atts, 'wpsms_auth_form');
 
         $this->enqueueAssets();
@@ -119,12 +124,15 @@ class AuthShortcodes
             'default_tab' => $atts['default_tab'],
             'fields' => $fields,
             'class' => $atts['class'],
+            'mfa' => filter_var($atts['mfa'] ?? 'true', FILTER_VALIDATE_BOOLEAN),
             'restBase' => rest_url('wpsms/v1'),
             'nonces' => [
                 'auth' => wp_create_nonce('wpsms_auth'),
             ],
             'globals' => [
                 'enabledFields' => $enabledFields,
+                'channelSettings' => $this->getChannelSettings(),
+                'mfaChannels' => $this->getMfaChannels(),
             ],
         ];
 
@@ -141,18 +149,39 @@ class AuthShortcodes
     }
 
     /**
-     * Get globally enabled fields from settings
+     * Get globally enabled fields from OTP channel settings
      */
     protected function getEnabledFields(): array
     {
-        // Default to all enabled - can be filtered by settings
+        // Get enabled fields from OTP channel settings
         $fields = [
-            'username' => true,
-            'email' => true,
-            'phone' => true,
-            'password' => true,
+            'username' => OTPChannelHelper::isChannelEnabled('username'),
+            'email' => OTPChannelHelper::isChannelEnabled('email'),
+            'phone' => OTPChannelHelper::isChannelEnabled('phone'),
+            'password' => OTPChannelHelper::isChannelEnabled('password'),
         ];
 
         return apply_filters('wpsms_auth_allowed_fields', $fields, []);
+    }
+
+    /**
+     * Get channel settings for frontend configuration
+     */
+    protected function getChannelSettings(): array
+    {
+        return [
+            'username' => OTPChannelHelper::getChannelSettings('username'),
+            'password' => OTPChannelHelper::getChannelSettings('password'),
+            'phone' => OTPChannelHelper::getChannelSettings('phone'),
+            'email' => OTPChannelHelper::getChannelSettings('email'),
+        ];
+    }
+
+    /**
+     * Get MFA channels for frontend configuration
+     */
+    protected function getMfaChannels(): array
+    {
+        return OTPChannelHelper::getMfaChannels();
     }
 }
