@@ -12,11 +12,16 @@ class DeliveryChannelManager
     /**
      * @var DeliveryChannelInterface[]
      */
-    protected array $channels = [
-        'email' => EmailChannel::class,
-        'sms'   => SmsChannel::class,
-    ];
+    protected array $channels = [];
 
+
+    public function __construct()
+    {
+        $this->channels = [
+            'email' => new EmailChannel(),
+            'sms'   => new SmsChannel()
+        ];
+    }
     /**
      * Register a channel.
      */
