@@ -76,12 +76,85 @@ class OtpSessionModel extends AbstractBaseModel
         static::deleteBy(['flow_id' => $flowId]);
     }
 
+    /**
+     * Check if there's an unexpired session for a phone number
+     */
     public static function hasUnexpiredSession(string $phone): bool
     {
-        return static::exists(['phone' => $phone, 'expires_at' => DateUtils::getUnexpiredSqlCondition()]);
+        $sessions = static::findAll(['phone' => $phone]);
+        
+        foreach ($sessions as $session) {
+            if (strtotime($session['expires_at']) > time()) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
-    public static function getByFlowId(string $flowId): array
+    /**
+     * Check if there's an unexpired session for an email
+     */
+    public static function hasUnexpiredSessionByEmail(string $email): bool
+    {
+        $sessions = static::findAll(['email' => $email]);
+        
+        foreach ($sessions as $session) {
+            if (strtotime($session['expires_at']) > time()) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Get the most recent unexpired session for a phone number
+     */
+    public static function getMostRecentUnexpiredSession(string $phone): ?array
+    {
+        $sessions = static::findAll(['phone' => $phone]);
+        
+        $unexpiredSessions = array_filter($sessions, function($session) {
+            return strtotime($session['expires_at']) > time();
+        });
+        
+        if (empty($unexpiredSessions)) {
+            return null;
+        }
+        
+        // Sort by created_at descending and return the most recent
+        usort($unexpiredSessions, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+        
+        return $unexpiredSessions[0];
+    }
+
+    /**
+     * Get the most recent unexpired session for an email
+     */
+    public static function getMostRecentUnexpiredSessionByEmail(string $email): ?array
+    {
+        $sessions = static::findAll(['email' => $email]);
+        
+        $unexpiredSessions = array_filter($sessions, function($session) {
+            return strtotime($session['expires_at']) > time();
+        });
+        
+        if (empty($unexpiredSessions)) {
+            return null;
+        }
+        
+        // Sort by created_at descending and return the most recent
+        usort($unexpiredSessions, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+        
+        return $unexpiredSessions[0];
+    }
+
+    public static function getByFlowId(string $flowId)
     {
         return static::find(['flow_id' => $flowId]);
     }
