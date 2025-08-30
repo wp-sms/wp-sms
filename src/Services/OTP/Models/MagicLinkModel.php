@@ -8,6 +8,8 @@ class MagicLinkModel extends AbstractBaseModel
 {
     public ?string $flow_id = null;
     public ?string $token_hash = null;
+    public ?string $identifier = null;
+    public ?string $identifier_type = null;
     public ?string $expires_at = null;
     public ?string $used_at = null;
     public ?string $created_at = null;
@@ -20,7 +22,7 @@ class MagicLinkModel extends AbstractBaseModel
     /**
      * Create a new magic link session.
      */
-    public static function createSession(string $flowId, string $token, int $expiresInSeconds): string
+    public static function createSession(string $flowId, string $token, string $identifier, string $identifierType, int $expiresInSeconds): string
     {
         $now = current_time('mysql');
         $expires = gmdate('Y-m-d H:i:s', time() + $expiresInSeconds);
@@ -29,6 +31,8 @@ class MagicLinkModel extends AbstractBaseModel
         static::insert([
             'flow_id'     => $flowId,
             'token_hash'  => $hash,
+            'identifier'  => $identifier,
+            'identifier_type'  => $identifierType,
             'expires_at'  => $expires,
             'created_at'  => $now,
         ]);
@@ -39,9 +43,9 @@ class MagicLinkModel extends AbstractBaseModel
     /**
      * Validate a magic link token.
      */
-    public static function validateToken(string $flowId, string $inputToken): bool
+    public static function validateToken(string $flowId, string $inputToken, string $identifier, string $identifierType): bool
     {
-        $record = static::find(['flow_id' => $flowId]);
+        $record = static::find(['flow_id' => $flowId, 'identifier' => $identifier, 'identifier_type' => $identifierType]);
 
         if (! $record) {
             return false;
@@ -62,19 +66,19 @@ class MagicLinkModel extends AbstractBaseModel
     /**
      * Mark magic link as used.
      */
-    public static function markAsUsed(string $flowId): void
+    public static function markAsUsed(string $flowId, string $identifier, string $identifierType): void
     {
         static::updateBy(
             ['used_at' => current_time('mysql')],
-            ['flow_id' => $flowId]
+            ['flow_id' => $flowId, 'identifier' => $identifier, 'identifier_type' => $identifierType]
         );
     }
 
     /**
      * Delete a magic link record.
      */
-    public static function deleteByFlowId(string $flowId): void
+    public static function deleteByFlowId(string $flowId, string $identifier, string $identifierType): void
     {
-        static::deleteBy(['flow_id' => $flowId]);
+        static::deleteBy(['flow_id' => $flowId, 'identifier' => $identifier, 'identifier_type' => $identifierType]);
     }
 }

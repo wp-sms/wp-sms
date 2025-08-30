@@ -155,6 +155,8 @@ class Manager
                 'id'          => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'flow_id'     => 'CHAR(36) NOT NULL',
                 'token_hash'  => 'CHAR(64) NOT NULL',
+                'identifier' => 'VARCHAR(255) NOT NULL',
+                'identifier_type' => 'ENUM("phone", "email") NOT NULL',
                 'expires_at'  => 'DATETIME NOT NULL',
                 'used_at'     => 'DATETIME NULL',
                 'created_at'  => 'DATETIME NOT NULL',
@@ -162,6 +164,7 @@ class Manager
             'constraints' => [
                 'PRIMARY KEY (id)',
                 'UNIQUE KEY unique_flow_id (flow_id)',
+                'KEY idx_magic_identifier (identifier, identifier_type)',
                 'KEY idx_magic_expires (expires_at)'
             ],
         ],
