@@ -46,6 +46,7 @@ class Manager
                 'date'      => 'DATETIME',
                 'sender'    => 'VARCHAR(20) NOT NULL',
                 'message'   => 'TEXT NOT NULL',
+                'media'     => 'TEXT NOT NULL',
                 'recipient' => 'TEXT NOT NULL',
                 'response'  => 'TEXT NOT NULL',
                 'status'    => "VARCHAR(10) NOT NULL",
