@@ -35,7 +35,6 @@ class OTPChannelHelper
     public static function getChannelSettings(string $channel): array
     {
         $settings = [];
-
         switch ($channel) {
             case 'username':
                 $settings = [
@@ -52,7 +51,6 @@ class OTPChannelHelper
                     'allow_signin' => self::getChannelSetting('username', 'allow_signin', true),
                 ];
                 break;
-
             case 'password':
                 $settings = [
                     'enabled' => self::isChannelEnabled('password'),
@@ -68,7 +66,6 @@ class OTPChannelHelper
                     'allow_signin' => self::getChannelSetting('password', 'allow_signin', true),
                 ];
                 break;
-
             case 'phone':
                 $settings = [
                     'enabled' => self::isChannelEnabled('phone'),
@@ -87,7 +84,6 @@ class OTPChannelHelper
                     'use_as_mfa' => self::getChannelSetting('phone', 'use_as_mfa', false),
                 ];
                 break;
-
             case 'email':
                 $settings = [
                     'enabled' => self::isChannelEnabled('email'),
@@ -102,7 +98,6 @@ class OTPChannelHelper
                 ];
                 break;
         }
-
         return $settings;
     }
     /**
