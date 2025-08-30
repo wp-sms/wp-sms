@@ -65,11 +65,11 @@ class OTPRestAPIEndpoints
 
         $ip = $this->getClientIp($request);
 
-        // // 2. Apply rate limiting
-        // $rateLimitResult = $this->checkRateLimits($identifier['value'], $ip);
-        // if (is_wp_error($rateLimitResult)) {
-        //     return $rateLimitResult;
-        // }
+        // 2. Apply rate limiting
+        $rateLimitResult = $this->checkRateLimits($identifier['value'], $ip);
+        if (is_wp_error($rateLimitResult)) {
+            return $rateLimitResult;
+        }
 
         // 3. Check for existing session
         $existingSession = $this->checkExistingSession($identifier, $ip);
