@@ -103,7 +103,7 @@ class Manager
                 'KEY idx_mfa_user_type (user_id, factor_type)'
             ],
         ],
-        'auth_event' => [
+        'auth_events' => [
             'columns' => [
                 'id'              => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'event_id'        => 'CHAR(36) NOT NULL',
@@ -141,6 +141,7 @@ class Manager
                 'expires_at' => 'DATETIME NOT NULL',
                 'attempt_count' => 'INT NOT NULL DEFAULT 0',
                 'channel'    => 'VARCHAR(32) NOT NULL DEFAULT "sms"',
+                'created_at' => 'DATETIME NOT NULL',
             ],
             'constraints' => [
                 'PRIMARY KEY (id)',
@@ -154,7 +155,6 @@ class Manager
             'columns' => [
                 'id'          => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'flow_id'     => 'CHAR(36) NOT NULL',
-                'user_id'     => 'BIGINT UNSIGNED NOT NULL',
                 'token_hash'  => 'CHAR(64) NOT NULL',
                 'expires_at'  => 'DATETIME NOT NULL',
                 'used_at'     => 'DATETIME NULL',
@@ -163,7 +163,6 @@ class Manager
             'constraints' => [
                 'PRIMARY KEY (id)',
                 'UNIQUE KEY unique_flow_id (flow_id)',
-                'KEY idx_magic_user (user_id)',
                 'KEY idx_magic_expires (expires_at)'
             ],
         ],
