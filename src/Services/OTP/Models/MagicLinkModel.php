@@ -22,20 +22,25 @@ class MagicLinkModel extends AbstractBaseModel
     /**
      * Create a new magic link session.
      */
-    public static function createSession(string $flowId, string $token, string $identifier, string $identifierType, int $expiresInSeconds): string
+    public static function createSession(string $flowId, string $token, string $identifier = null, string $identifierType = null, int $expiresInSeconds = 600): string
     {
         $now = current_time('mysql');
         $expires = gmdate('Y-m-d H:i:s', time() + $expiresInSeconds);
         $hash = hash('sha256', $token);
 
-        static::insert([
+        $data = [
             'flow_id'     => $flowId,
             'token_hash'  => $hash,
-            'identifier'  => $identifier,
-            'identifier_type'  => $identifierType,
             'expires_at'  => $expires,
             'created_at'  => $now,
-        ]);
+        ];
+
+        if ($identifier && $identifierType) {
+            $data['identifier'] = $identifier;
+            $data['identifier_type'] = $identifierType;
+        }
+
+        static::insert($data);
 
         return $flowId;
     }
@@ -66,19 +71,33 @@ class MagicLinkModel extends AbstractBaseModel
     /**
      * Mark magic link as used.
      */
-    public static function markAsUsed(string $flowId, string $identifier, string $identifierType): void
+    public static function markAsUsed(string $flowId, string $identifier = null, string $identifierType = null): void
     {
+        $conditions = ['flow_id' => $flowId];
+        
+        if ($identifier && $identifierType) {
+            $conditions['identifier'] = $identifier;
+            $conditions['identifier_type'] = $identifierType;
+        }
+
         static::updateBy(
             ['used_at' => current_time('mysql')],
-            ['flow_id' => $flowId, 'identifier' => $identifier, 'identifier_type' => $identifierType]
+            $conditions
         );
     }
 
     /**
      * Delete a magic link record.
      */
-    public static function deleteByFlowId(string $flowId, string $identifier, string $identifierType): void
+    public static function deleteByFlowId(string $flowId, string $identifier = null, string $identifierType = null): void
     {
-        static::deleteBy(['flow_id' => $flowId, 'identifier' => $identifier, 'identifier_type' => $identifierType]);
+        $conditions = ['flow_id' => $flowId];
+        
+        if ($identifier && $identifierType) {
+            $conditions['identifier'] = $identifier;
+            $conditions['identifier_type'] = $identifierType;
+        }
+
+        static::deleteBy($conditions);
     }
 }
