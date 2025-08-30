@@ -127,12 +127,82 @@ abstract class AbstractBaseModel
 
         return '%s';
     }
-        /**
+
+    /**
+     * Find a single row by WHERE conditions.
+     */
+    protected function findRow(array $where)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE ";
+        $conditions = [];
+        $values = [];
+        
+        foreach ($where as $column => $value) {
+            if ($value === null) {
+                $conditions[] = "`{$column}` IS NULL";
+            } else {
+                $conditions[] = "`{$column}` = %s";
+                $values[] = $value;
+            }
+        }
+        
+        $sql .= implode(' AND ', $conditions);
+        $sql .= ' LIMIT 1';
+        if (!empty($values)) {
+            $sql = $this->db->prepare($sql, ...$values);
+        }
+        
+        $result = $this->db->get_row($sql, ARRAY_A);
+        return $result ?: null;
+    }
+
+    /**
+     * Find all rows by WHERE conditions.
+     */
+    protected function findRows(array $where = [], int $limit = 0, string $orderBy = ''): array
+    {
+        $sql = "SELECT * FROM {$this->table}";
+        $values = [];
+        
+        if (!empty($where)) {
+            $sql .= " WHERE ";
+            $conditions = [];
+            
+            foreach ($where as $column => $value) {
+                if ($value === null) {
+                    $conditions[] = "`{$column}` IS NULL";
+                } else {
+                    $conditions[] = "`{$column}` = %s";
+                    $values[] = $value;
+                }
+            }
+            
+            $sql .= implode(' AND ', $conditions);
+        }
+        
+        if ($orderBy) {
+            $sql .= " ORDER BY {$orderBy}";
+        }
+        
+        if ($limit > 0) {
+            $sql .= " LIMIT {$limit}";
+        }
+        
+        if (!empty($values)) {
+            $sql = $this->db->prepare($sql, ...$values);
+        }
+        
+        return $this->db->get_results($sql, ARRAY_A) ?: [];
+    }
+
+
+
+    /**
      * Static proxy for find().
      */
     public static function find(array $where)
     {
-        return (new static())->find($where);
+        return (new static())->findRow($where);
     }
 
     /**
@@ -140,7 +210,7 @@ abstract class AbstractBaseModel
      */
     public static function findAll(array $where = [], int $limit = 0, string $orderBy = ''): array
     {
-        return (new static())->findAll($where, $limit, $orderBy);
+        return (new static())->findRows($where, $limit, $orderBy);
     }
 
     public static function exists(array $where): bool
