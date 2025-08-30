@@ -26,7 +26,7 @@ class AuthEventModel extends AbstractBaseModel
 
     protected static function getTableName(): string
     {
-        return static::table('auth_event');
+        return static::table('sms_auth_events');
     }
 
     /**

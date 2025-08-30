@@ -7,7 +7,6 @@ use WP_SMS\Contracts\Abstracts\AbstractBaseModel;
 class MagicLinkModel extends AbstractBaseModel
 {
     public ?string $flow_id = null;
-    public ?int $user_id = null;
     public ?string $token_hash = null;
     public ?string $expires_at = null;
     public ?string $used_at = null;
@@ -15,13 +14,13 @@ class MagicLinkModel extends AbstractBaseModel
 
     protected static function getTableName(): string
     {
-        return static::table('magic_links');
+        return static::table('sms_magic_links');
     }
 
     /**
      * Create a new magic link session.
      */
-    public static function createSession(string $flowId, int $userId, string $token, int $expiresInSeconds): string
+    public static function createSession(string $flowId, string $token, int $expiresInSeconds): string
     {
         $now = current_time('mysql');
         $expires = gmdate('Y-m-d H:i:s', time() + $expiresInSeconds);
@@ -29,7 +28,6 @@ class MagicLinkModel extends AbstractBaseModel
 
         static::insert([
             'flow_id'     => $flowId,
-            'user_id'     => $userId,
             'token_hash'  => $hash,
             'expires_at'  => $expires,
             'created_at'  => $now,

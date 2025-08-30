@@ -8,7 +8,6 @@ use WP_SMS\Utils\DateUtils;
 class OtpSessionModel extends AbstractBaseModel
 {
     public ?string $flow_id = null;
-    public ?int $user_id = null;
     public ?string $phone = null;
     public ?string $email = null;
     public ?string $code_hash = null;
@@ -19,13 +18,13 @@ class OtpSessionModel extends AbstractBaseModel
 
     protected static function getTableName(): string
     {
-        return static::table('otp_sessions');
+        return static::table('sms_otp_sessions');
     }
 
     /**
      * Create a new OTP session.
      */
-    public static function createSession(string $flowId, int $userId, string $code, int $expiresInSeconds, ?string $phone = null, ?string $email = null, string $channel = 'sms'): string
+    public static function createSession(string $flowId, string $code, int $expiresInSeconds, ?string $phone = null, ?string $email = null, string $channel = 'sms'): string
     {
         $now = current_time('mysql');
         $expires = gmdate('Y-m-d H:i:s', time() + $expiresInSeconds);
@@ -33,8 +32,7 @@ class OtpSessionModel extends AbstractBaseModel
 
         $data = [
             'flow_id'    => $flowId,
-            'user_id'    => $userId,
-            'code_hash'  => $hash,
+            'otp_hash'  => $hash,
             'expires_at' => $expires,
             'channel'    => $channel,
             'created_at' => $now,
