@@ -5,11 +5,10 @@ namespace WP_SMS\Services\OTP\AuthChannel\MagicLink;
 class MagicLinkPayload
 {
     public function __construct(
-        public readonly string $flowId,
-        public readonly int $userId,
+        public readonly string $flowId, 
         public readonly string $tokenHash,
         public readonly int $expiresAt,
-        public readonly ?int $usedAt = null,
+        public readonly ?string $usedAt = null,
     ) {}
 
     public function isExpired(): bool
