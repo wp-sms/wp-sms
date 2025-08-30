@@ -50,33 +50,40 @@ class OtpRestController
     public function sendOtp(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $phone = $request->get_param('phone');
+        $email = $request->get_param('email');
         $ip    = $request->get_header('X-Forwarded-For') ?: $request->get_header('REMOTE_ADDR');
 
-        if (! $phone) {
-            return new WP_Error('invalid_phone', __('Invalid phone number.', 'wp-sms'), ['status' => 400]);
+        // Validate that at least one identifier is provided
+        if (!$phone && !$email) {
+            return new WP_Error('invalid_identifier', __('Phone number or email is required.', 'wp-sms'), ['status' => 400]);
         }
 
+        // Determine the primary identifier and channel
+        $primaryIdentifier = $phone ?: $email;
+        $primaryChannel = $phone ? 'sms' : 'email';
+
         // Rate limit keys
-        $rateKeyPhone = 'otp:phone:' . md5($phone);
+        $rateKeyIdentifier = 'otp:identifier:' . md5($primaryIdentifier);
         $rateKeyIp    = 'otp:ip:' . md5($ip);
 
         // Apply rate limiting
-        if (! $this->rateLimiter->isAllowed($rateKeyPhone) || ! $this->rateLimiter->isAllowed($rateKeyIp)) {
+        if (! $this->rateLimiter->isAllowed($rateKeyIdentifier) || ! $this->rateLimiter->isAllowed($rateKeyIp)) {
             return new WP_Error('rate_limited', __('Too many OTP requests. Please try again later.', 'wp-sms'), ['status' => 429]);
         }
 
         // Check for existing unexpired session
-        if (OtpSessionModel::exists(['phone' => $phone, 'expires_at' => DateUtils::getUnexpiredSqlCondition()])) {
-            $existing = OtpSessionModel::findAll(['phone' => $phone, 'expires_at' => DateUtils::getUnexpiredSqlCondition()]);
+        $identifierField = $phone ? 'phone' : 'email';
+        if (OtpSessionModel::exists([$identifierField => $primaryIdentifier, 'expires_at' => DateUtils::getUnexpiredSqlCondition()])) {
+            $existing = OtpSessionModel::findAll([$identifierField => $primaryIdentifier, 'expires_at' => DateUtils::getUnexpiredSqlCondition()]);
             $active   = $existing[0];
 
             try {
                 AuthEventModel::insert([
                     'event_id'         => wp_generate_uuid4(),
-                    'flow_id'          => $active['session_id'],
+                    'flow_id'          => $active['flow_id'],
                     'timestamp_utc'    => DateUtils::getCurrentUtcDateTime(),
                     'user_id'          => null,
-                    'channel'          => 'sms',
+                    'channel'          => $active['channel'] ?? 'sms',
                     'event_type'       => 'duplicate_request',
                     'result'           => 'deny',
                     'client_ip_masked' => $ip,
@@ -86,56 +93,90 @@ class OtpRestController
                 error_log("[WP-SMS] Failed to log duplicate request: " . $e->getMessage());
             }
 
-            return new WP_Error('existing_session', __('An OTP has already been sent to this number.', 'wp-sms'), [
+            return new WP_Error('existing_session', __('An OTP has already been sent to this identifier.', 'wp-sms'), [
                 'status'            => 409,
-                'session_id'        => $active['session_id'],
+                'session_id'        => $active['flow_id'],
                 'expires_at'        => DateUtils::utcDateTimeToTimestamp($active['expires_at']),
                 'remaining_seconds' => DateUtils::getSecondsRemaining($active['expires_at']),
             ]);
         }
 
-        // Generate OTP
-        $code       = $this->otpService->generate(flowId: $sessionId = wp_generate_uuid4(), userId: 0);
-        $otpHash    = hash('sha256', $code);
-        $expiresAt  = gmdate('Y-m-d H:i:s', time() + 300); // 5 mins
-
-        // Save session
-        OtpSessionModel::insert([
-            'session_id'    => $sessionId,
-            'phone'         => $phone,
-            'otp_hash'      => $otpHash,
-            'expires_at'    => $expiresAt,
-            'attempt_count' => 0,
-        ]);
+        // Generate OTP and save session
+        $sessionId = wp_generate_uuid4();
+        $code = $this->otpService->generate(
+            flowId: $sessionId, 
+            userId: 0, 
+            phone: $phone, 
+            email: $email, 
+            preferredChannel: $primaryChannel
+        );
 
         // Increment rate limits
-        $this->rateLimiter->increment($rateKeyPhone);
+        $this->rateLimiter->increment($rateKeyIdentifier);
         $this->rateLimiter->increment($rateKeyIp);
 
-        // TODO: Send via channel service (e.g., SmsChannel)
-        error_log("[WP-SMS] Sending OTP to {$phone}: {$code}");
+        // Send OTP via OTP service with fallback support
+        $deliveryResult = $this->otpService->sendOTP(
+            $primaryIdentifier,
+            $code,
+            $primaryChannel,
+            [
+                'session_id' => $sessionId,
+                'sms_message' => sprintf(__('Your verification code is: %s', 'wp-sms'), $code),
+                'email_message' => sprintf(__('Your verification code is: %s', 'wp-sms'), $code),
+                'email_subject' => __('Your Verification Code', 'wp-sms'),
+            ]
+        );
 
-        // Log event
+        if (!$deliveryResult['success']) {
+            // Log delivery failure
+            try {
+                AuthEventModel::insert([
+                    'event_id'         => wp_generate_uuid4(),
+                    'flow_id'          => $sessionId,
+                    'timestamp_utc'    => DateUtils::getCurrentUtcDateTime(),
+                    'user_id'          => null,
+                    'channel'          => $primaryChannel,
+                    'event_type'       => 'delivery_failed',
+                    'result'           => 'deny',
+                    'client_ip_masked' => $ip,
+                    'retention_days'   => 30,
+                ]);
+            } catch (\Exception $e) {
+                error_log("[WP-SMS] Failed to log delivery failure: " . $e->getMessage());
+            }
+
+            return new WP_Error('delivery_failed', __('Failed to send OTP. Please try again later.', 'wp-sms'), ['status' => 500]);
+        }
+
+        // Log successful delivery
         try {
             AuthEventModel::insert([
                 'event_id'         => wp_generate_uuid4(),
                 'flow_id'          => $sessionId,
                 'timestamp_utc'    => DateUtils::getCurrentUtcDateTime(),
                 'user_id'          => null,
-                'channel'          => 'sms',
+                'channel'          => $deliveryResult['channel_used'],
                 'event_type'       => 'sent',
                 'result'           => 'allow',
                 'client_ip_masked' => $ip,
                 'retention_days'   => 30,
+                'fallback_used'    => $deliveryResult['fallback_used'] ? 1 : 0,
             ]);
         } catch (\Exception $e) {
             error_log("[WP-SMS] Failed to log OTP send event: " . $e->getMessage());
         }
 
+        // Get session data for expiration time
+        $session = OtpSessionModel::getByFlowId($sessionId);
+        $expiresAt = $session ? $session['expires_at'] : null;
+
         return new WP_REST_Response([
             'session_id'       => $sessionId,
-            'expires_at'       => strtotime($expiresAt),
+            'expires_at'       => $expiresAt ? strtotime($expiresAt) : null,
             'resend_cooldown'  => 60, // TODO: make configurable
+            'channel_used'     => $deliveryResult['channel_used'],
+            'fallback_used'    => $deliveryResult['fallback_used'],
         ]);
     }
 
@@ -164,18 +205,22 @@ class OtpRestController
             OtpSessionModel::updateBy(['attempt_count' => $attempts], ['session_id' => $sessionId]);
         }
 
-        AuthEventModel::insert([
-            'event_id'         => wp_generate_uuid4(),
-            'flow_id'          => $sessionId,
-            'timestamp_utc'    => DateUtils::getCurrentUtcDateTime(),
-            'user_id'          => null,
-            'channel'          => 'sms',
-            'event_type'       => $eventType,
-            'result'           => $result,
-            'client_ip_masked' => $ip,
-            'attempt_count'    => $attempts,
-            'retention_days'   => 30,
-        ]);
+        try {
+            AuthEventModel::insert([
+                'event_id'         => wp_generate_uuid4(),
+                'flow_id'          => $sessionId,
+                'timestamp_utc'    => DateUtils::getCurrentUtcDateTime(),
+                'user_id'          => null,
+                'channel'          => $session['channel'] ?? 'sms', // Use stored channel or default
+                'event_type'       => $eventType,
+                'result'           => $result,
+                'client_ip_masked' => $ip,
+                'attempt_count'    => $attempts,
+                'retention_days'   => 30,
+            ]);
+        } catch (\Exception $e) {
+            error_log("[WP-SMS] Failed to log OTP verification event: " . $e->getMessage());
+        }
 
         return new WP_REST_Response([
             'verified'       => $status === true,
