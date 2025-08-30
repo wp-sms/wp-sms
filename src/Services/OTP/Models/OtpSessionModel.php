@@ -8,8 +8,8 @@ use WP_SMS\Utils\DateUtils;
 class OtpSessionModel extends AbstractBaseModel
 {
     public ?string $flow_id = null;
-    public ?string $phone = null;
-    public ?string $email = null;
+    public ?string $identifier = null;
+    public ?string $identifier_type = null;
     public ?string $code_hash = null;
     public ?string $expires_at = null;
     public ?int $attempt_count = null;
@@ -39,10 +39,12 @@ class OtpSessionModel extends AbstractBaseModel
         ];
 
         if ($phone) {
-            $data['phone'] = $phone;
+            $data['identifier'] = $phone;
+            $data['identifier_type'] = 'phone';
         }
         if ($email) {
-            $data['email'] = $email;
+            $data['identifier'] = $email;
+            $data['identifier_type'] = 'email';
         }
 
         static::insert($data);
@@ -81,7 +83,7 @@ class OtpSessionModel extends AbstractBaseModel
      */
     public static function hasUnexpiredSession(string $phone): bool
     {
-        $sessions = static::findAll(['phone' => $phone]);
+        $sessions = static::findAll(['identifier' => $phone, 'identifier_type' => 'phone']);
         
         foreach ($sessions as $session) {
             if (strtotime($session['expires_at']) > time()) {
@@ -97,7 +99,7 @@ class OtpSessionModel extends AbstractBaseModel
      */
     public static function hasUnexpiredSessionByEmail(string $email): bool
     {
-        $sessions = static::findAll(['email' => $email]);
+        $sessions = static::findAll(['identifier' => $email, 'identifier_type' => 'email']);
         
         foreach ($sessions as $session) {
             if (strtotime($session['expires_at']) > time()) {
@@ -113,7 +115,7 @@ class OtpSessionModel extends AbstractBaseModel
      */
     public static function getMostRecentUnexpiredSession(string $phone): ?array
     {
-        $sessions = static::findAll(['phone' => $phone]);
+        $sessions = static::findAll(['identifier' => $phone, 'identifier_type' => 'phone']);
         
         $unexpiredSessions = array_filter($sessions, function($session) {
             return strtotime($session['expires_at']) > time();
@@ -136,7 +138,7 @@ class OtpSessionModel extends AbstractBaseModel
      */
     public static function getMostRecentUnexpiredSessionByEmail(string $email): ?array
     {
-        $sessions = static::findAll(['email' => $email]);
+        $sessions = static::findAll(['identifier' => $email, 'identifier_type' => 'email']);
         
         $unexpiredSessions = array_filter($sessions, function($session) {
             return strtotime($session['expires_at']) > time();

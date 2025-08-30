@@ -135,8 +135,8 @@ class Manager
             'columns' => [
                 'id'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'flow_id' => 'CHAR(36) NOT NULL',
-                'phone'      => 'VARCHAR(20) NULL',
-                'email'      => 'VARCHAR(255) NULL',
+                'identifier' => 'VARCHAR(255) NOT NULL',
+                'identifier_type' => 'ENUM("phone", "email") NOT NULL',
                 'otp_hash'   => 'CHAR(64) NOT NULL',
                 'expires_at' => 'DATETIME NOT NULL',
                 'attempt_count' => 'INT NOT NULL DEFAULT 0',
@@ -146,8 +146,7 @@ class Manager
             'constraints' => [
                 'PRIMARY KEY (id)',
                 'UNIQUE KEY unique_flow_id (flow_id)',
-                'KEY idx_otp_phone (phone)',
-                'KEY idx_otp_email (email)',
+                'KEY idx_otp_identifier (identifier, identifier_type)',
                 'KEY idx_otp_expires (expires_at)'
             ],
         ],
