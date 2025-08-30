@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\OTP\Models;
 
 use WP_SMS\Contracts\Abstracts\AbstractBaseModel;
-class MfaFactorModel extends AbstractBaseModel
+class IdentifierModel extends AbstractBaseModel
 {
     public ?int $user_id = null;
     public ?string $factor_type = null;
@@ -15,7 +15,7 @@ class MfaFactorModel extends AbstractBaseModel
 
     protected static function getTableName(): string
     {
-        return static::table('mfa_identifiers');
+        return static::table('identifiers');
     }
 
     /**

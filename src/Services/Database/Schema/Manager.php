@@ -83,7 +83,7 @@ class Manager
             ],
         ],
         // Added tables for MFA and Auth Event logging
-        'mfa_identifiers' => [
+        'identifiers' => [
             'columns' => [
                 'id'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
                 'user_id'      => 'BIGINT UNSIGNED NOT NULL',
@@ -167,6 +167,7 @@ class Manager
                 'KEY idx_magic_expires (expires_at)'
             ],
         ],
+
     ];
 
     /**
