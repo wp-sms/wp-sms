@@ -242,7 +242,6 @@ class OtpService implements AuthChannelInterface
     }
 
 
-
     /**
      * Check if identifier is an email
      */
