@@ -15,7 +15,7 @@ class IdentifierModel extends AbstractBaseModel
 
     protected static function getTableName(): string
     {
-        return static::table('sms_identifiers');
+        return static::table('identifiers');
     }
 
     /**
