@@ -3,13 +3,18 @@
 namespace WP_SMS\Services\OTP\Models;
 
 use WP_SMS\Contracts\Abstracts\AbstractBaseModel;
+use WP_SMS\Utils\DateUtils;
 
 class OtpSessionModel extends AbstractBaseModel
 {
     public ?string $flow_id = null;
     public ?int $user_id = null;
+    public ?string $phone = null;
+    public ?string $email = null;
     public ?string $code_hash = null;
     public ?string $expires_at = null;
+    public ?int $attempt_count = null;
+    public ?string $channel = null;
     public ?string $created_at = null;
 
     protected static function getTableName(): string
@@ -20,19 +25,29 @@ class OtpSessionModel extends AbstractBaseModel
     /**
      * Create a new OTP session.
      */
-    public static function createSession(string $flowId, int $userId, string $code, int $expiresInSeconds): string
+    public static function createSession(string $flowId, int $userId, string $code, int $expiresInSeconds, ?string $phone = null, ?string $email = null, string $channel = 'sms'): string
     {
         $now = current_time('mysql');
         $expires = gmdate('Y-m-d H:i:s', time() + $expiresInSeconds);
         $hash = hash('sha256', $code);
 
-        static::insert([
+        $data = [
             'flow_id'    => $flowId,
             'user_id'    => $userId,
             'code_hash'  => $hash,
             'expires_at' => $expires,
+            'channel'    => $channel,
             'created_at' => $now,
-        ]);
+        ];
+
+        if ($phone) {
+            $data['phone'] = $phone;
+        }
+        if ($email) {
+            $data['email'] = $email;
+        }
+
+        static::insert($data);
 
         return $flowId;
     }
