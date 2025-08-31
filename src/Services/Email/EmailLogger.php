@@ -15,7 +15,7 @@ class EmailLogger
      * @param array $row
      * @param array $settings
      * @param array $headers
-     * @param $body
+     * @param string $body
      * @param array $attachments
      * @return bool|int|\mysqli_result|resource|null
      */
@@ -27,10 +27,10 @@ class EmailLogger
             'subject' => '',
             'success' => false,
             'error'   => null,
-            'context' => ['ms' => 0]
+            'context' => ['ms' => 0],
         ], $row);
 
-        $debug = !empty($settings['debug_logging']);
+        $debug = self::isDebugEnabled($row, $settings, $headers, $body);
 
         $debugHeaders = $debug
             ? (isset($row['headers']) ? (array)$row['headers'] : (array)$headers)
@@ -79,6 +79,29 @@ class EmailLogger
             }
             return false;
         }
+    }
+
+    /**
+     * Filter-driven debug flag (headers/body preview).
+     *
+     * Filter: wpsms_email_debug_logging_enabled
+     *
+     * @param array $row
+     * @param array $settings
+     * @param array $headers
+     * @param string $body
+     * @return bool
+     */
+    private static function isDebugEnabled(array $row, array $settings, array $headers, $body): bool
+    {
+        return (bool) apply_filters(
+            'wpsms_email_debug_logging_enabled',
+            false,
+            $row,
+            $settings,
+            $headers,
+            (string) $body
+        );
     }
 
     /**
