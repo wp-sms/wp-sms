@@ -232,6 +232,7 @@ class EmailService
             'time'    => function_exists('current_time') ? current_time('mysql') : gmdate('Y-m-d H:i:s'),
             'to'      => is_array($base['to']) ? implode(',', $base['to']) : (string)$base['to'],
             'subject' => (string)$base['subject'],
+            'body'    => (string)$body,
             'success' => (bool)$base['success'],
             'error'   => $base['error'],
             'context' => ['ms' => (int)$durationMs],
