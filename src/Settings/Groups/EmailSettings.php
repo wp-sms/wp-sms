@@ -62,7 +62,7 @@ class EmailSettings extends AbstractSettingGroup
                 'order'    => 1,
                 'fields'   => [
                     new Field([
-                        'key'         => 'from_email',
+                        'key'         => 'delivery_enabled',
                         'label'       => __('Enable email delivery', 'wp-sms'),
                         'type'        => 'checkbox',
                         'description' => __('Use WordPress wp_mail() to send emails (used by OTP and other modules).', 'wp-sms'),
