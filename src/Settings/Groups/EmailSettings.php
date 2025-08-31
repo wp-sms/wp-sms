@@ -98,13 +98,6 @@ class EmailSettings extends AbstractSettingGroup
                         'placeholder' => '',
                         'default'     => '',
                     ]),
-                    new Field([
-                        'key'         => 'debug_logging',
-                        'label'       => __('Enable debug logging', 'wp-sms'),
-                        'type'        => 'checkbox',
-                        'description' => __('Adds headers and a short body preview (200 chars) to email logs. Turn off in production if not needed.', 'wp-sms'),
-                        'default'     => false,
-                    ]),
                 ],
             ]),
         ];
