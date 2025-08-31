@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { PropsWithChildren } from 'react'
+
 import { Toaster } from './components/ui/sonner'
 
 const Providers = ({ children }: PropsWithChildren) => {

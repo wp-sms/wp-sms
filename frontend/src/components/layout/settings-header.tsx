@@ -1,3 +1,6 @@
+import { PanelLeftOpen } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,8 +10,6 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { useSidebarStore } from '@/stores/use-sidebar-store'
-import { PanelLeftOpen } from 'lucide-react'
-import { Link } from 'react-router-dom'
 
 export const SettingsHeader = () => {
   const { toggleSidebar } = useSidebarStore()

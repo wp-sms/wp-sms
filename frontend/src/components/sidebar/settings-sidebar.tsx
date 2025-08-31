@@ -1,10 +1,12 @@
+import clsx from 'clsx'
+import { Settings } from 'lucide-react'
+
+import { useGetSettingSchemaList } from '@/services/settings/use-get-setting-schema-list'
+import { useSidebarStore } from '@/stores/use-sidebar-store'
+
 import { SidebarGroup } from './sidebar-group'
 import { SidebarItem } from './sidebar-item'
 import { SidebarNestedItem } from './sidebar-nested-item'
-import { Settings } from 'lucide-react'
-import { useSidebarStore } from '@/stores/use-sidebar-store'
-import clsx from 'clsx'
-import { useGetSettingSchemaList } from '@/services/settings/use-get-setting-schema-list'
 
 export const SettingsSidebar: React.FC = () => {
   const { data: settingSchemaList } = useGetSettingSchemaList()

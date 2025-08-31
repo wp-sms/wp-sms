@@ -1,4 +1,4 @@
-import { isServer, useIsFetching, useQueryClient, type QueryKey } from '@tanstack/react-query'
+import { isServer, type QueryKey,useIsFetching, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
 /**

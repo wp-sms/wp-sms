@@ -1,7 +1,7 @@
-import { SettingsSidebar } from '../sidebar/settings-sidebar'
-
-import { SettingsHeader } from './settings-header'
 import type { PropsWithChildren } from 'react'
+
+import { SettingsSidebar } from '../sidebar/settings-sidebar'
+import { SettingsHeader } from './settings-header'
 
 type SettingsLayoutProps = PropsWithChildren
 

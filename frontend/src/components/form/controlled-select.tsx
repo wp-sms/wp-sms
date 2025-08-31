@@ -1,3 +1,13 @@
+import type {
+  SelectContentProps,
+  SelectGroupProps,
+  SelectItemProps,
+  SelectProps,
+  SelectTriggerProps,
+  SelectValueProps,
+} from '@radix-ui/react-select'
+import { Controller, useFormContext } from 'react-hook-form'
+
 import {
   Select,
   SelectContent,
@@ -7,20 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Controller, useFormContext } from 'react-hook-form'
 import { toOptions } from '@/lib/to-options'
-import { FieldWrapper } from './field-wrapper'
-
 import type { FieldOption } from '@/types/settings/group-schema'
-import type {
-  SelectContentProps,
-  SelectGroupProps,
-  SelectItemProps,
-  SelectProps,
-  SelectTriggerProps,
-  SelectValueProps,
-} from '@radix-ui/react-select'
+
 import type { ControlledFieldProps } from './field-wrapper'
+import { FieldWrapper } from './field-wrapper'
 
 export type ControlledSelectProps = {
   name: string

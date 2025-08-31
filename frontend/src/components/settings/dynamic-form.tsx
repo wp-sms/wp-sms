@@ -1,11 +1,13 @@
+import { AlertCircle } from 'lucide-react'
 import { useWatch } from 'react-hook-form'
-import type { GroupSchema } from '@/types/settings/group-schema'
+
 import { ControlledFieldRenderer } from '@/components/form/controlled-field-renderer'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import type { GroupSchema } from '@/types/settings/group-schema'
+
 import { DynamicFieldsSkeleton } from './dynamic-fields-skeleton'
 import { SettingsGroupTitle } from './group-title'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle } from 'lucide-react'
 
 export type SettingsDynamicFormProps = {
   groupSchema: GroupSchema | null | undefined

@@ -1,5 +1,6 @@
-import { Label } from '@/components/ui/label'
 import clsx from 'clsx'
+
+import { Label } from '@/components/ui/label'
 
 export type FieldLabelProps = {
   text?: string

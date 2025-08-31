@@ -1,12 +1,13 @@
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { useParams } from 'react-router-dom'
+
 import { SettingsDynamicForm } from '@/components/settings/dynamic-form'
 import { SettingsFormActions } from '@/components/settings/form-actions'
 import { Form } from '@/components/ui/form'
 import { useStableCallback } from '@/hooks/use-stable-callback'
 import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
 import { useGetGroupValues } from '@/services/settings/use-get-group-values'
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { useParams } from 'react-router-dom'
 
 const SettingsDynamicPages = () => {
   const { name } = useParams()

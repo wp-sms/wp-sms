@@ -1,5 +1,6 @@
+import { AlertTriangle, Beaker, Clock,Crown, Sparkles, TestTube } from 'lucide-react'
+
 import { Badge } from '@/components/ui/badge'
-import { Sparkles, AlertTriangle, Beaker, Crown, TestTube, Clock } from 'lucide-react'
 
 type TagBadgeProp = {
   tag: string
