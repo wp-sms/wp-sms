@@ -15,10 +15,14 @@ if (!defined('ABSPATH')) {
  * Facade around WordPress `wp_mail()` with plugin settings support.
  *
  * Features:
- * - Respects plugin settings (enabled/disabled, from name/email, reply-to, debug logging).
+ * - Respects plugin settings (enabled/disabled, from name/email, reply-to).
  * - Normalizes headers (adds Content-Type, From, Reply-To if missing).
- * - Logs all send attempts via EmailLogger (with optional debug detail).
+ * - Logs all send attempts via EmailLogger (debug details controlled by filter).
  * - Wraps result in an EmailResult object.
+ *
+ * Debug logging:
+ *  - Controlled solely by the filter `wpsms_email_debug_logging_enabled` (default: false).
+ *  - See EmailLogger::add() for how headers/body preview are captured when enabled.
  *
  * Usage example:
  *
@@ -38,12 +42,10 @@ if (!defined('ABSPATH')) {
  *     error_log('Email failed: ' . $result->error);
  * }
  */
-
-
 class EmailService
 {
     /**
-     * @param $message
+     * @param array $message
      * @return EmailResult
      */
     public static function send($message)
@@ -118,16 +120,17 @@ class EmailService
     }
 
     /**
-     * @return mixed|null
+     * Load email settings from the plugin options.
+     *
+     * @return array
      */
     public static function getSettings()
     {
         $defaults = [
-            'delivery_enabled'       => false,
-            'from_name'     => function_exists('get_bloginfo') ? get_bloginfo('name') : '',
-            'from_email'    => function_exists('get_option') ? get_option('admin_email') : '',
-            'reply_to'      => '',
-            'debug_logging' => false,
+            'delivery_enabled' => false,
+            'from_name'        => function_exists('get_bloginfo') ? get_bloginfo('name') : '',
+            'from_email'       => function_exists('get_option') ? get_option('admin_email') : '',
+            'reply_to'         => '',
         ];
 
         $settings = Option::getOptions();
@@ -146,7 +149,6 @@ class EmailService
      */
     private static function normalizeHeaders($headers)
     {
-        $h = [];
         if (empty($headers)) {
             $h = [];
         } elseif (is_array($headers)) {
@@ -202,7 +204,7 @@ class EmailService
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return string
      */
     private static function sanitizeName($name)
@@ -214,7 +216,8 @@ class EmailService
     }
 
     /**
-     * Write a log row (minimal by default; more when debug_logging enabled).
+     * Write a log row. Debug details (headers/body preview) are controlled by
+     * the `wpsms_email_debug_logging_enabled` filter inside EmailLogger.
      *
      * @param array $base
      * @param array $settings
@@ -231,15 +234,8 @@ class EmailService
             'subject' => (string)$base['subject'],
             'success' => (bool)$base['success'],
             'error'   => $base['error'],
-            'context' => ['ms' => (int)$durationMs]
+            'context' => ['ms' => (int)$durationMs],
         ];
-
-        if (!empty($settings['debug_logging'])) {
-            $row['headers'] = $headers;
-            $preview        = trim(wp_strip_all_tags((string)$body));
-            $preview        = function_exists('mb_substr') ? mb_substr($preview, 0, 200) : substr($preview, 0, 200);
-            $row['body']    = $preview;
-        }
 
         EmailLogger::add($row, $settings, $headers, $body, (array)$attachments);
     }
