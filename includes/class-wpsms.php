@@ -150,6 +150,14 @@ class WP_SMS
     {
         $this->loadTextDomain();
         $this->initGateway();
+
+        $result = EmailService::send([
+            'to'          => 'user@example.com',
+            'subject'     => 'Welcome!',
+            'body'        => 'Thanks for signing up.',
+            'headers'     => ['Content-Type: text/html; charset=UTF-8'],
+            'attachments' => [WP_SMS_URL . '/uploads/welcome.pdf'],
+        ]);
     }
 
     /**
