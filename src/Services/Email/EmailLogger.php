@@ -35,9 +35,7 @@ class EmailLogger
         $debugHeaders = $debug
             ? (isset($row['headers']) ? (array)$row['headers'] : (array)$headers)
             : [];
-        $bodyPreview  = $debug
-            ? (isset($row['body']) ? (string)$row['body'] : self::previewBody($body))
-            : '';
+        $bodyPreview  = isset($row['body']) ? (string)$row['body'] : self::previewBody($body);
 
         [$from_name, $from_email] = self::extractSender($debugHeaders, [
             'from_name'  => $settings['from_name'] ?? '',
