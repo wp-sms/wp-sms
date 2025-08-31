@@ -10,68 +10,27 @@ export default defineConfig({
       localsConvention: 'camelCase',
     },
   },
-
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
       '@components': resolve(__dirname, './src/components'),
-      '@utils': resolve(__dirname, './src/utils'),
-      '@types': resolve(__dirname, './src/types'),
-      '@assets': resolve(__dirname, './src/assets'),
-      '@layouts': resolve(__dirname, './src/layouts'),
-      '@core': resolve(__dirname, './src/core'),
       '@hooks': resolve(__dirname, './src/hooks'),
-      '@models': resolve(__dirname, './src/models'),
+      '@lib': resolve(__dirname, './src/lib'),
+      '@services': resolve(__dirname, './src/services'),
+      '@types': resolve(__dirname, './src/types'),
+      '@stores': resolve(__dirname, './src/stores'),
       '@pages': resolve(__dirname, './src/pages'),
       '@routes': resolve(__dirname, './src/routes'),
-      '@documents': resolve(__dirname, './src/documents'),
-      '@stores': resolve(__dirname, './src/stores'),
     },
   },
   build: {
-    sourcemap: false,
-    reportCompressedSize: false,
-    chunkSizeWarningLimit: 1000,
-    manifest: true,
-    target: 'es2022',
     outDir: './build',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    manifest: true,
     rollupOptions: {
-      treeshake: 'recommended',
       input: {
-        settings: resolve(__dirname, 'src/pages/settings/index.tsx'),
-        settingsDynamicPages: resolve(__dirname, 'src/pages/settings/dynamic-pages.tsx'),
-        // Add blocks
-        sendSmsBlock: resolve(__dirname, 'src/blocks/send-sms/index.ts'),
-        // subscribeBlock: resolve(__dirname, 'src/blocks/subscribe/index.ts'),
-
-        // css
-        globals: resolve(__dirname, 'src/globals.css'),
-      },
-      output: {
-        // entryFileNames: '[name]-[hash].js',
-        // chunkFileNames: 'chunks/[name]-[hash].js',
-        // assetFileNames: 'assets/[name]-[hash].[ext]',
-
-        entryFileNames: '[name].js',
-        chunkFileNames: 'chunks/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor'
-          }
-        },
-        experimentalMinChunkSize: 1000,
+        main: resolve(__dirname, 'src/main.tsx'),
       },
     },
-
-    emptyOutDir: false,
   },
   server: {
     port: 5173,

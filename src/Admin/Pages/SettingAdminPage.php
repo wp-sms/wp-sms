@@ -64,7 +64,7 @@ class SettingAdminPage
         }
 
         $manifest = json_decode(file_get_contents($manifest_path), true);
-        $entry_key = 'src/pages/settings/index.tsx';
+        $entry_key = 'src/main.tsx';
         if (!isset($manifest[$entry_key])) {
             return;
         }
