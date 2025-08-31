@@ -1,26 +1,28 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { PropsWithChildren } from 'react'
 
-import { Toaster } from './components/ui/sonner'
-
-const Providers = ({ children }: PropsWithChildren) => {
-  const client = new QueryClient({
+// Query client configuration
+const createQueryClient = () => {
+  return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000 * 5,
+        staleTime: 5 * 60 * 1000, // 5 minutes
         refetchOnWindowFocus: false,
         retry: 1,
         experimental_prefetchInRender: true,
       },
+      mutations: {
+        retry: 1,
+      },
     },
   })
+}
 
-  return (
-    <QueryClientProvider client={client}>
-      <Toaster />
-      {children}
-    </QueryClientProvider>
-  )
+// Global providers wrapper
+const Providers = ({ children }: PropsWithChildren) => {
+  const queryClient = createQueryClient()
+
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 
 export default Providers
