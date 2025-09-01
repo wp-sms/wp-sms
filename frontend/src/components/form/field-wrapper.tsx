@@ -1,13 +1,15 @@
-import { CustomSkeleton } from '@/components/ui/custom-skeleton'
-import { FieldLabel } from './label'
-import { FieldDescription } from './description'
-import { FieldMessage } from './message'
 import clsx from 'clsx'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Badge } from '@/components/ui/badge'
 import { HelpCircle } from 'lucide-react'
-import { TagBadge } from '@/components/ui/tag-badge'
 import type { PropsWithChildren } from 'react'
+
+import { Badge } from '@/components/ui/badge'
+import { CustomSkeleton } from '@/components/ui/custom-skeleton'
+import { TagBadge } from '@/components/ui/tag-badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+
+import { FieldDescription } from './description'
+import { FieldLabel } from './label'
+import { FieldMessage } from './message'
 
 export type ControlledFieldProps = {
   label?: string
@@ -22,7 +24,7 @@ export type ControlledFieldProps = {
 
 export type FieldWrapperProps = PropsWithChildren<ControlledFieldProps & { direction?: 'row' | 'column' }>
 
-export const FieldWrapper: React.FC<FieldWrapperProps> = ({
+export const FieldWrapper = ({
   label,
   description,
   tooltip,

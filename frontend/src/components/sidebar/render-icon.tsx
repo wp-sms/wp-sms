@@ -1,27 +1,26 @@
-import {
-  Settings,
-  Users,
-  Bell,
-  Mail,
-  UserCheck,
-  ShoppingCart,
-  GraduationCap,
-  Calendar,
-  MessageSquare,
-  Cog,
-  Send,
-  Zap,
-  Star,
-  MousePointer,
-  MessageCircle,
-  Shield,
-  BarChart3,
-  Newspaper,
-  BadgeCheck,
-  Lock,
-} from 'lucide-react'
-
 import type { LucideProps } from 'lucide-react'
+import {
+  BadgeCheck,
+  BarChart3,
+  Bell,
+  Calendar,
+  Cog,
+  GraduationCap,
+  Lock,
+  Mail,
+  MessageCircle,
+  MessageSquare,
+  MousePointer,
+  Newspaper,
+  Send,
+  Settings,
+  Shield,
+  ShoppingCart,
+  Star,
+  UserCheck,
+  Users,
+  Zap,
+} from 'lucide-react'
 
 export type RenderIconProps = {
   iconName: string
@@ -66,7 +65,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   BadgeCheck,
 }
 
-export const RenderIcon: React.FC<RenderIconProps> = ({ iconName, ...props }) => {
+export const RenderIcon = ({ iconName, ...props }: RenderIconProps) => {
   const IconComponent = iconMap?.[iconName] || Settings
   return <IconComponent {...props} />
 }

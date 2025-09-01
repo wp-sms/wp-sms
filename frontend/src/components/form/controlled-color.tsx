@@ -1,13 +1,15 @@
 import { Controller, useFormContext } from 'react-hook-form'
-import type { ControlledFieldProps } from './field-wrapper'
+
 import { Input } from '@/components/ui/input'
+
+import type { ControlledFieldProps } from './field-wrapper'
 import { FieldWrapper } from './field-wrapper'
 
 export type ControlledColorProps = {
   name: string
 } & ControlledFieldProps
 
-export const ControlledColor: React.FC<ControlledColorProps> = ({
+export const ControlledColor = ({
   name,
   label,
   description,
@@ -15,7 +17,7 @@ export const ControlledColor: React.FC<ControlledColorProps> = ({
   tag,
   isLocked,
   isLoading,
-}) => {
+}: ControlledColorProps) => {
   const { control } = useFormContext()
 
   return (

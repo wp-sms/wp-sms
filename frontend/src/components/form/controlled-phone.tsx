@@ -1,9 +1,11 @@
-import { Controller, useFormContext } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Controller, useFormContext } from 'react-hook-form'
+
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
 import type { ControlledFieldProps } from './field-wrapper'
 
 export type Country = {
@@ -20,18 +22,12 @@ export type Country = {
 
 export type ControlledPhoneProps = React.ComponentProps<'input'> & ControlledFieldProps
 import parsePhoneNumber from 'libphonenumber-js'
-import { FieldWrapper } from './field-wrapper'
+
 import { WordPressDataService } from '@/lib/data-service'
 
-export const ControlledPhone: React.FC<ControlledPhoneProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  isLoading,
-}) => {
+import { FieldWrapper } from './field-wrapper'
+
+export const ControlledPhone = ({ name, label, description, tooltip, tag, isLocked, isLoading }) => {
   const { control } = useFormContext()
   const [jsonData, setJsonData] = useState<Country[]>([])
   const [open, setOpen] = useState(false)

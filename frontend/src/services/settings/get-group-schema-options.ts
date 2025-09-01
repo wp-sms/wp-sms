@@ -1,6 +1,8 @@
 import { queryOptions } from '@tanstack/react-query'
-import type { UseGetGroupSchemaType } from '../../types/settings/group-schema'
+
 import { clientRequest } from '@/lib/client-request'
+
+import type { UseGetGroupSchemaType } from '../../types/settings/group-schema'
 
 export function getGroupSchemaOptions(options?: UseGetGroupSchemaType['options']) {
   const { params, ...restOptions } = options || {}

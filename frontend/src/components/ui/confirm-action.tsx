@@ -1,3 +1,5 @@
+import type { PropsWithChildren } from 'react'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,8 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from './alert-dialog'
-
-import type { PropsWithChildren } from 'react'
 
 export type ConfirmActionProps = PropsWithChildren<{
   onConfirm: () => void

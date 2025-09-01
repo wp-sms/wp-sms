@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { clientRequest } from '@/lib/client-request'
+
 import { useInvalidateQuery } from '@/hooks/use-invalidate-query'
-import { getGroupValuesOptions } from './get-group-values-options'
-import { getGroupSchemaOptions } from './get-group-schema-options'
+import { clientRequest } from '@/lib/client-request'
 import type { UseSaveSettingsValuesType } from '@/types/settings/save-values'
+
+import { getGroupSchemaOptions } from './get-group-schema-options'
+import { getGroupValuesOptions } from './get-group-values-options'
 
 export function useSaveSettingsValues(options?: UseSaveSettingsValuesType['options']) {
   const { onSuccess, ...restOptions } = options ?? {}

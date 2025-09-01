@@ -1,23 +1,17 @@
-import { Controller, useFormContext } from 'react-hook-form'
-import { FieldWrapper } from './field-wrapper'
-import type { ControlledFieldProps } from './field-wrapper'
-import { Button } from '@/components/ui/button'
 import { CloudUpload } from 'lucide-react'
+import { Controller, useFormContext } from 'react-hook-form'
+
+import { Button } from '@/components/ui/button'
 import { useWordPressMediaUploader } from '@/hooks/use-wordpress-media-uploader'
+
+import type { ControlledFieldProps } from './field-wrapper'
+import { FieldWrapper } from './field-wrapper'
 
 export type ControlledImageProps = {
   name: string
 } & ControlledFieldProps
 
-export const ControlledImage: React.FC<ControlledImageProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  isLoading,
-}) => {
+export const ControlledImage = ({ name, label, description, tooltip, tag, isLocked, isLoading }) => {
   const { openMediaUploader } = useWordPressMediaUploader()
 
   const { control } = useFormContext()

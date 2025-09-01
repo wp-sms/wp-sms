@@ -1,20 +1,13 @@
-import { Input } from '@/components/ui/input'
 import { Controller, useFormContext } from 'react-hook-form'
+
+import { Input } from '@/components/ui/input'
+
 import type { ControlledFieldProps } from './field-wrapper'
 import { FieldWrapper } from './field-wrapper'
 
 export type ControlledNumberInputProps = React.ComponentProps<'input'> & ControlledFieldProps
 
-export const ControlledNumberInput: React.FC<ControlledNumberInputProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  isLoading,
-  ...props
-}) => {
+export const ControlledNumberInput = ({ name, label, description, tooltip, tag, isLocked, isLoading, ...props }) => {
   const { control } = useFormContext()
 
   return (

@@ -1,5 +1,6 @@
-import { FieldLabel } from '@/components/form/label'
 import DOMPurify from 'dompurify'
+
+import { FieldLabel } from '@/components/form/label'
 
 export type SimpleHtmlRendererProps = {
   label?: string

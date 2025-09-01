@@ -1,7 +1,9 @@
-import { Controller, useFormContext } from 'react-hook-form'
 import type { CheckboxProps } from '@radix-ui/react-checkbox'
-import type { ControlledFieldProps } from './field-wrapper'
+import { Controller, useFormContext } from 'react-hook-form'
+
 import { Checkbox } from '@/components/ui/checkbox'
+
+import type { ControlledFieldProps } from './field-wrapper'
 import { FieldWrapper } from './field-wrapper'
 
 export type ControlledCheckboxProps = {
@@ -9,7 +11,7 @@ export type ControlledCheckboxProps = {
 } & CheckboxProps &
   ControlledFieldProps
 
-export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
+export const ControlledCheckbox = ({
   name,
   label,
   description,
@@ -18,7 +20,7 @@ export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
   isLocked,
   isLoading,
   ...props
-}) => {
+}: ControlledCheckboxProps) => {
   const { control } = useFormContext()
 
   return (

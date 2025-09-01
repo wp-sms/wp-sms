@@ -1,9 +1,11 @@
 import { Controller, useFormContext } from 'react-hook-form'
-import type { FieldOption } from '@/types/settings/group-schema'
-import type { ControlledFieldProps } from './field-wrapper'
-import { FieldWrapper } from './field-wrapper'
+
 import { MultiSelect } from '@/components/ui/multiselect'
 import { toOptions } from '@/lib/to-options'
+import type { FieldOption } from '@/types/settings/group-schema'
+
+import type { ControlledFieldProps } from './field-wrapper'
+import { FieldWrapper } from './field-wrapper'
 
 export type ControlledMultiselectProps = {
   options: FieldOption
@@ -11,16 +13,7 @@ export type ControlledMultiselectProps = {
   name: string
 } & ControlledFieldProps
 
-export const ControlledMultiselect: React.FC<ControlledMultiselectProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  options,
-  isLoading,
-}) => {
+export const ControlledMultiselect = ({ name, label, description, tooltip, tag, isLocked, options, isLoading }) => {
   const { control } = useFormContext()
 
   return (

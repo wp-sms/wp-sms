@@ -1,32 +1,34 @@
-import type { SchemaFieldType } from '@/types/settings/group-schema'
-import { ControlledInput } from './controlled-input'
-import type { SchemaField } from '@/types/settings/group-schema'
-import { ControlledSelect } from './controlled-select'
-import { ControlledCheckbox } from './controlled-checkbox'
-import { SimpleHtmlRenderer } from '@/components/ui/simple-html-rendere'
-import { useFormContext, useWatch } from 'react-hook-form'
+import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
-import { useDebounce } from '@/hooks/use-debounce'
-import { ControlledPhone } from './controlled-phone'
-import { ControlledTextarea } from './controlled-textarea'
-import { ControlledNumberInput } from './controlled-number-input'
-import { ControlledMultiselect } from './controlled-multiselect'
-import { ControlledColor } from './controlled-color'
-import { ControlledRepeater } from './controlled-repeater'
+import { useFormContext, useWatch } from 'react-hook-form'
+
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { HeaderField } from '@/components/ui/header-field'
 import { NoticeField } from '@/components/ui/notice-field'
-import { ControlledImage } from './controlled-image'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle } from 'lucide-react'
+import { SimpleHtmlRenderer } from '@/components/ui/simple-html-rendere'
+import { useDebounce } from '@/hooks/use-debounce'
 import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
+import type { SchemaFieldType } from '@/types/settings/group-schema'
+import type { SchemaField } from '@/types/settings/group-schema'
+
+import { ControlledCheckbox } from './controlled-checkbox'
+import { ControlledColor } from './controlled-color'
+import { ControlledImage } from './controlled-image'
+import { ControlledInput } from './controlled-input'
+import { ControlledMultiselect } from './controlled-multiselect'
+import { ControlledNumberInput } from './controlled-number-input'
+import { ControlledPhone } from './controlled-phone'
+import { ControlledRepeater } from './controlled-repeater'
+import { ControlledSelect } from './controlled-select'
+import { ControlledTextarea } from './controlled-textarea'
 
 export type ControlledFieldRendererProps = {
   schema: SchemaField
   isLoading?: boolean
 }
 
-export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
-  const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
+export const ControlledFieldRenderer = ({ schema, isLoading = false }: ControlledFieldRendererProps) => {
+  const FieldComponentMap: Record<SchemaFieldType, (props: any) => JSX.Element> = {
     text: ControlledInput,
     textarea: ControlledTextarea,
     number: ControlledNumberInput,

@@ -1,7 +1,20 @@
-import './globals.css'
+import { HashRouter as Router } from 'react-router-dom'
 
-function App() {
-  return <div className="flex flex-col min-h-screen"></div>
+import { SettingsLayout } from '@/components/layout/settings-layout'
+import Providers from '@/providers'
+import AppRoutes from '@/routes/root'
+
+import { Toaster } from './components/ui/sonner'
+
+export const App = () => {
+  return (
+    <Providers>
+      <Router>
+        <SettingsLayout>
+          <AppRoutes />
+        </SettingsLayout>
+      </Router>
+      <Toaster />
+    </Providers>
+  )
 }
-
-export default App

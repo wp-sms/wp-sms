@@ -1,5 +1,7 @@
-import SettingsDynamicPages from '@/pages/settings/dynamic-pages'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { lazy } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+
+const SettingsDynamicPages = lazy(() => import('@/pages/settings/dynamic-pages'))
 
 const SettingsRoutes = () => {
   return (

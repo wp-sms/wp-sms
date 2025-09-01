@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom'
-import { RenderIcon } from './render-icon'
 import clsx from 'clsx'
 import type { PropsWithChildren } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+
+import { RenderIcon } from './render-icon'
 
 export type SidebarItemProps = PropsWithChildren<{
   icon?: string

@@ -3,7 +3,7 @@ export type SettingsSectionTitleProps = {
   subtitle: string
 }
 
-export const SettingsSectionTitle: React.FC<SettingsSectionTitleProps> = ({ title, subtitle }) => {
+export const SettingsSectionTitle = ({ title, subtitle }: SettingsSectionTitleProps) => {
   return (
     <div className="flex flex-col gap-y-0.5">
       <h3>{title}</h3>

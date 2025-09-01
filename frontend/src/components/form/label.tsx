@@ -1,5 +1,6 @@
-import { Label } from '@/components/ui/label'
 import clsx from 'clsx'
+
+import { Label } from '@/components/ui/label'
 
 export type FieldLabelProps = {
   text?: string
@@ -7,7 +8,7 @@ export type FieldLabelProps = {
   isInvalid?: boolean
 }
 
-export const FieldLabel: React.FC<FieldLabelProps> = ({ text, htmlFor, isInvalid = false }) => {
+export const FieldLabel = ({ text, htmlFor, isInvalid = false }: FieldLabelProps) => {
   if (!text) {
     return null
   }

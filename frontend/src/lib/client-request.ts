@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import { WordPressDataService } from './data-service'
 
 const dataService = WordPressDataService.getInstance()

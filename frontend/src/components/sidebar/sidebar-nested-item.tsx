@@ -1,8 +1,9 @@
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
-import { SidebarItem } from './sidebar-item'
 import { ChevronRightIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+
+import { SidebarItem } from './sidebar-item'
 
 export type SidebarNestedItemProps = {
   title: string

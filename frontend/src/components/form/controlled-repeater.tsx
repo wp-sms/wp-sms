@@ -1,12 +1,13 @@
-import { useFieldArray, useWatch } from 'react-hook-form'
-import { ControlledFieldRenderer } from './controlled-field-renderer'
 import { cva } from 'class-variance-authority'
 import { Grip, Plus, Trash2Icon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { useCallback } from 'react'
-import { ConfirmAction } from '@/components/ui/confirm-action'
+import { useFieldArray, useWatch } from 'react-hook-form'
 
+import { Button } from '@/components/ui/button'
+import { ConfirmAction } from '@/components/ui/confirm-action'
 import type { SchemaField, SchemaFieldLayout } from '@/types/settings/group-schema'
+
+import { ControlledFieldRenderer } from './controlled-field-renderer'
 
 export type ControlledRepeaterProps = {
   name: string
@@ -36,7 +37,7 @@ const layoutVariants = cva('', {
   },
 })
 
-export const ControlledRepeater: React.FC<ControlledRepeaterProps> = ({ name, fieldGroups, layout = '2-column' }) => {
+export const ControlledRepeater = ({ name, fieldGroups, layout = '2-column' }: ControlledRepeaterProps) => {
   const formValues = useWatch()
 
   const { fields, append, remove } = useFieldArray({ name: name })

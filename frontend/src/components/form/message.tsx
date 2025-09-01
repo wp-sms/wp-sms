@@ -2,7 +2,7 @@ export type FieldMessageProps = {
   text?: string
 }
 
-export const FieldMessage: React.FC<FieldMessageProps> = ({ text }) => {
+export const FieldMessage = ({ text }: FieldMessageProps) => {
   if (!text) {
     return null
   }
