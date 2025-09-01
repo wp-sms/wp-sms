@@ -27,8 +27,8 @@ export type ControlledFieldRendererProps = {
   isLoading?: boolean
 }
 
-export const ControlledFieldRenderer: React.FC<ControlledFieldRendererProps> = ({ schema, isLoading = false }) => {
-  const FieldComponentMap: Record<SchemaFieldType, React.FC<any>> = {
+export const ControlledFieldRenderer = ({ schema, isLoading = false }: ControlledFieldRendererProps) => {
+  const FieldComponentMap: Record<SchemaFieldType, (props: any) => JSX.Element> = {
     text: ControlledInput,
     textarea: ControlledTextarea,
     number: ControlledNumberInput,

@@ -65,7 +65,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   BadgeCheck,
 }
 
-export const RenderIcon: React.FC<RenderIconProps> = ({ iconName, ...props }) => {
+export const RenderIcon = ({ iconName, ...props }: RenderIconProps) => {
   const IconComponent = iconMap?.[iconName] || Settings
   return <IconComponent {...props} />
 }

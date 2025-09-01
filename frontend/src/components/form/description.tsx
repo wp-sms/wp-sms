@@ -2,7 +2,7 @@ export type FieldDescriptionProps = {
   text?: string
 }
 
-export const FieldDescription: React.FC<FieldDescriptionProps> = ({ text }) => {
+export const FieldDescription = ({ text }: FieldDescriptionProps) => {
   if (!text) {
     return null
   }

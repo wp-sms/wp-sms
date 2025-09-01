@@ -37,7 +37,7 @@ export type ControlledSelectProps = {
   SelectItemProps?: SelectItemProps
 } & ControlledFieldProps
 
-export const ControlledSelect: React.FC<ControlledSelectProps> = ({
+export const ControlledSelect = ({
   name,
   options,
   placeholder,

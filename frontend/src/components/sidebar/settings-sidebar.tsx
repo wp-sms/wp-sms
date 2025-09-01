@@ -8,7 +8,7 @@ import { SidebarGroup } from './sidebar-group'
 import { SidebarItem } from './sidebar-item'
 import { SidebarNestedItem } from './sidebar-nested-item'
 
-export const SettingsSidebar: React.FC = () => {
+export const SettingsSidebar = () => {
   const { data: settingSchemaList } = useGetSettingSchemaList()
   const { isOpen } = useSidebarStore()
 

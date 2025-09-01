@@ -2,20 +2,11 @@ import { Controller, useFormContext } from 'react-hook-form'
 
 import { Textarea } from '@/components/ui/textarea'
 
-import { type ControlledFieldProps,FieldWrapper } from './field-wrapper'
+import { type ControlledFieldProps, FieldWrapper } from './field-wrapper'
 
 export type ControlledTextareaProps = React.ComponentProps<'textarea'> & ControlledFieldProps
 
-export const ControlledTextarea: React.FC<ControlledTextareaProps> = ({
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  isLoading,
-  name,
-  ...props
-}) => {
+export const ControlledTextarea = ({ label, description, tooltip, tag, isLocked, isLoading, name, ...props }) => {
   const { control } = useFormContext()
 
   return (

@@ -15,11 +15,7 @@ export type SettingsDynamicFormProps = {
   isRefreshing?: boolean
 }
 
-export const SettingsDynamicForm: React.FC<SettingsDynamicFormProps> = ({
-  groupSchema,
-  isInitialLoading,
-  isRefreshing,
-}) => {
+export const SettingsDynamicForm = ({ groupSchema, isInitialLoading, isRefreshing }) => {
   const formValues = useWatch()
 
   if (isInitialLoading) {

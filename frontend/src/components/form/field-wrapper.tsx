@@ -24,7 +24,7 @@ export type ControlledFieldProps = {
 
 export type FieldWrapperProps = PropsWithChildren<ControlledFieldProps & { direction?: 'row' | 'column' }>
 
-export const FieldWrapper: React.FC<FieldWrapperProps> = ({
+export const FieldWrapper = ({
   label,
   description,
   tooltip,

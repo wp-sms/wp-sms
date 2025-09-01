@@ -37,7 +37,7 @@ const layoutVariants = cva('', {
   },
 })
 
-export const ControlledRepeater: React.FC<ControlledRepeaterProps> = ({ name, fieldGroups, layout = '2-column' }) => {
+export const ControlledRepeater = ({ name, fieldGroups, layout = '2-column' }: ControlledRepeaterProps) => {
   const formValues = useWatch()
 
   const { fields, append, remove } = useFieldArray({ name: name })

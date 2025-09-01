@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { pickFormDirtyValues } from '@/lib/pick-form-dirty-values'
 import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
 
-export const SettingsFormActions: React.FC = () => {
+export const SettingsFormActions = () => {
   const { formState, reset, handleSubmit, setError } = useFormContext()
 
   const saveSettings = useSaveSettingsValues()

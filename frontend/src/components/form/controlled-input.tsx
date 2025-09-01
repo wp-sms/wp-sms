@@ -7,16 +7,7 @@ import { FieldWrapper } from './field-wrapper'
 
 export type ControlledInputProps = React.ComponentProps<'input'> & ControlledFieldProps
 
-export const ControlledInput: React.FC<ControlledInputProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  isLoading,
-  ...props
-}) => {
+export const ControlledInput = ({ name, label, description, tooltip, tag, isLocked, isLoading, ...props }) => {
   const { control } = useFormContext()
 
   return (

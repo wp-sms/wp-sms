@@ -9,7 +9,7 @@ export type ControlledColorProps = {
   name: string
 } & ControlledFieldProps
 
-export const ControlledColor: React.FC<ControlledColorProps> = ({
+export const ControlledColor = ({
   name,
   label,
   description,
@@ -17,7 +17,7 @@ export const ControlledColor: React.FC<ControlledColorProps> = ({
   tag,
   isLocked,
   isLoading,
-}) => {
+}: ControlledColorProps) => {
   const { control } = useFormContext()
 
   return (

@@ -5,7 +5,7 @@ export type SettingsGroupTitleProps = {
   icon: string
 }
 
-export const SettingsGroupTitle: React.FC<SettingsGroupTitleProps> = ({ label, icon }) => {
+export const SettingsGroupTitle = ({ label, icon }: SettingsGroupTitleProps) => {
   return (
     <div className="flex items-center gap-x-2 border border-border p-4 rounded-lg">
       <div className="bg-primary/15 size-10 rounded-lg flex items-center justify-center">

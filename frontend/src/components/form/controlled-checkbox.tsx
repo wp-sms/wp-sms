@@ -11,7 +11,7 @@ export type ControlledCheckboxProps = {
 } & CheckboxProps &
   ControlledFieldProps
 
-export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
+export const ControlledCheckbox = ({
   name,
   label,
   description,
@@ -20,7 +20,7 @@ export const ControlledCheckbox: React.FC<ControlledCheckboxProps> = ({
   isLocked,
   isLoading,
   ...props
-}) => {
+}: ControlledCheckboxProps) => {
   const { control } = useFormContext()
 
   return (

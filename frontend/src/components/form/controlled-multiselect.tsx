@@ -13,16 +13,7 @@ export type ControlledMultiselectProps = {
   name: string
 } & ControlledFieldProps
 
-export const ControlledMultiselect: React.FC<ControlledMultiselectProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  options,
-  isLoading,
-}) => {
+export const ControlledMultiselect = ({ name, label, description, tooltip, tag, isLocked, options, isLoading }) => {
   const { control } = useFormContext()
 
   return (

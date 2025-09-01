@@ -27,15 +27,7 @@ import { WordPressDataService } from '@/lib/data-service'
 
 import { FieldWrapper } from './field-wrapper'
 
-export const ControlledPhone: React.FC<ControlledPhoneProps> = ({
-  name,
-  label,
-  description,
-  tooltip,
-  tag,
-  isLocked,
-  isLoading,
-}) => {
+export const ControlledPhone = ({ name, label, description, tooltip, tag, isLocked, isLoading }) => {
   const { control } = useFormContext()
   const [jsonData, setJsonData] = useState<Country[]>([])
   const [open, setOpen] = useState(false)
