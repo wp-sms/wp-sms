@@ -12,6 +12,7 @@ use WP_SMS\Notice\NoticeManager;
 use WP_SMS\RestEndpoints\RestEndpointManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Database\Managers\MigrationHandler;
+use WP_SMS\Services\Email\EmailService;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
@@ -228,12 +229,12 @@ class WP_SMS
         $services = [
             new OTPManager(),
         ];
-        
+
         foreach ($services as $service) {
             $service->init();
         }
 
-        
+
         if (is_admin()) {
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
