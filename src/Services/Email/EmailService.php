@@ -133,14 +133,16 @@ class EmailService
             'reply_to'         => '',
         ];
 
-        $settings = Option::getOptions();
+        $settings = [];
 
-        if (!is_array($settings)) {
-            $settings = [];
+        foreach ($defaults as $key => $fallback) {
+            $value          = Option::getOption($key);
+            $settings[$key] = ($value === '' || $value === null) ? $fallback : $value;
         }
 
-        $settings = wp_parse_args($settings, $defaults);
-        return array_intersect_key($settings, $defaults);
+        $settings['delivery_enabled'] = (bool)$settings['delivery_enabled'];
+
+        return $settings;
     }
 
     /**
@@ -150,24 +152,24 @@ class EmailService
     private static function normalizeHeaders($headers)
     {
         if (empty($headers)) {
-            $h = [];
+            $normalizedHeaders = [];
         } elseif (is_array($headers)) {
-            $h = $headers;
+            $normalizedHeaders = $headers;
         } else {
-            $h = [(string)$headers];
+            $normalizedHeaders = [(string) $headers];
         }
 
         $hasContentType = false;
-        foreach ($h as $line) {
+        foreach ($normalizedHeaders as $line) {
             if (stripos($line, 'content-type:') === 0) {
                 $hasContentType = true;
                 break;
             }
         }
         if (!$hasContentType) {
-            $h[] = 'Content-Type: text/plain; charset=UTF-8';
+            $normalizedHeaders[] = 'Content-Type: text/plain; charset=UTF-8';
         }
-        return $h;
+        return $normalizedHeaders;
     }
 
     /**
