@@ -42,8 +42,8 @@ class TemplateRenderer
             $val = $context[$key] ?? '';
 
             if (is_string($val) || is_numeric($val)) {
-                if (str_ends_with($key, '_link')) {
-                    return esc_url($val);
+                if (substr($key, -5) === '_link') {
+                    return esc_url((string)$val);
                 }
                 return esc_html((string)$val);
             }
