@@ -54,9 +54,9 @@ class Features
     public function load_international_input()
     {
         //Register IntelTelInput Assets
-        wp_enqueue_style('wpsms-intel-tel-input', WP_SMS_URL . 'frontend/build/legacy/assets/intlTelInput-styles.css', true, '24.5.0');
-        wp_enqueue_script('wpsms-intel-tel-input', WP_SMS_URL . 'frontend/build/legacy/intel/intlTelInput.min.js', array('jquery'), '24.5.0', true);
-        wp_enqueue_script('wpsms-intel-script', WP_SMS_URL . 'frontend/build/legacy/intel/intel-script.js', true, WP_SMS_VERSION, true);
+        wp_enqueue_style('wpsms-intel-tel-input', WP_SMS_URL . 'frontend/build-legacy/assets/intlTelInput-styles.css', true, '24.5.0');
+        wp_enqueue_script('wpsms-intel-tel-input', WP_SMS_URL . 'frontend/build-legacy/intel/intlTelInput.min.js', array('jquery'), '24.5.0', true);
+        wp_enqueue_script('wpsms-intel-script', WP_SMS_URL . 'frontend/build-legacy/intel/intel-script.js', true, WP_SMS_VERSION, true);
 
         // Localize the IntelTelInput
         $tel_intel_vars             = array();
@@ -64,7 +64,7 @@ class Features
         $preferred_countries_option = Option::getOption('international_mobile_preferred_countries');
 
         if ($only_countries_option) {
-             $tel_intel_vars['only_countries'] = $only_countries_option;
+            $tel_intel_vars['only_countries'] = $only_countries_option;
         } else {
             $tel_intel_vars['only_countries'] = '';
         }
@@ -75,7 +75,7 @@ class Features
             $tel_intel_vars['preferred_countries'] = '';
         }
 
-        $tel_intel_vars['util_js'] = WP_SMS_URL . 'frontend/build/legacy/intel/utils.js';
+        $tel_intel_vars['util_js'] = WP_SMS_URL . 'frontend/build-legacy/intel/utils.js';
 
         $tel_intel_vars['mobile_field_id']        = Helper::getWooCommerceCheckoutMobileField();
         $tel_intel_vars['add_mobile_field']       = Option::getOption('add_mobile_field');

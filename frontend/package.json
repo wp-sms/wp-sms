@@ -8,7 +8,7 @@
     "watch": "vite build --watch",
     "build": "rm -rf build && vite build && pnpm run build:legacy",
     "build:modern": "rm -rf build && vite build",
-    "build:legacy": "rm -rf build/legacy && vite build --config vite.legacy.config.ts",
+    "build:legacy": "rm -rf build-legacy && vite build --config vite.legacy.config.ts",
     "build:watch": "vite build --watch && pnpm run build:legacy",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
