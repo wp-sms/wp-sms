@@ -53,41 +53,6 @@
         });
     }
 
-
-    jQuery(document).ready(function ($) {
-        $('select[name="wpsms_roles[]"], select[name="wpsms_groups[]"]').on('change', function () {
-            var $select = $(this);
-            var value = $select.val();
-            var type = $select.attr('name') === 'wpsms_roles[]' ? 'roles' : 'groups';
-
-            var $indicator = $('#wc-customers-count');
-            var $b = $indicator.find('b');
-
-            $.ajax({
-                url: WP_Sms_Admin_Object.ajaxUrls.RecipientCountsAjax,
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    type: type,
-                    value: value
-                }
-            })
-                .done(function (response) {
-                    if (response && response.success) {
-                        $b.text((response.data.count || 0));
-                        self.manageRecipients && self.manageRecipients();
-                    } else {
-                        $b.text('0');
-                        console.warn('AJAX responded but not success:', response);
-                    }
-                })
-                .fail(function (xhr) {
-                    $b.text('0');
-                    console.error('AJAX error', xhr.status, xhr.responseText);
-                });
-        });
-    });
-
     jQuery(".preview__message__number").html(jQuery("#wp_get_sender").val());
 
     if (jQuery("#wp_get_message").val()) {
@@ -315,11 +280,15 @@
 
                 var $indicator = jQuery('#wc-customers-count');
                 var $b = $indicator.find('b');
+                var $overlay = jQuery('.wpsms-sendsms__overlay');
                 if (value === 'roles') {
                     jQuery.ajax({
                         url: WP_Sms_Admin_Object.ajaxUrls.UserRolesMobileCountAjax,
                         method: 'POST',
                         dataType: 'json',
+                        beforeSend: function () {
+                            $overlay.show();
+                        }
                     })
                         .done(function (response) {
                             if (response && response.success) {
@@ -344,6 +313,9 @@
                         })
                         .fail(function (xhr) {
                             console.error('AJAX error', xhr.status, xhr.responseText);
+                        })
+                        .always(function () {
+                            $overlay.hide();
                         });
                 }
                 jQuery.ajax({
@@ -352,7 +324,10 @@
                     dataType: 'json',
                     data: {
                         type: type,
-                        value: value
+                        value: value,
+                        beforeSend: function () {
+                            $overlay.show();
+                        }
                     }
                 })
                     .done(function (response) {
@@ -367,6 +342,9 @@
                     .fail(function (xhr) {
                         $b.text('0');
                         console.error('AJAX error', xhr.status, xhr.responseText);
+                    })
+                    .always(function () {
+                        $overlay.hide();
                     });
             });
 
