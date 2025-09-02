@@ -281,6 +281,13 @@
                 var $indicator = jQuery('#wc-customers-count');
                 var $b = $indicator.find('b');
                 var $overlay = jQuery('.wpsms-sendsms__overlay');
+
+                if (type === 'numbers' || type === 'subscribers') {
+                    self.manageRecipients && self.manageRecipients();
+                    $b.text('0');
+                    return;
+                }
+
                 if (value === 'roles') {
                     jQuery.ajax({
                         url: WP_Sms_Admin_Object.ajaxUrls.UserRolesMobileCountAjax,
