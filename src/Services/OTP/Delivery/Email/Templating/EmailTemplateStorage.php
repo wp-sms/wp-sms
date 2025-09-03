@@ -57,12 +57,11 @@ class EmailTemplateStorage
             if ($revert) {
                 return null;
             }
-            if ($subject !== '' || $body !== '') {
-                return [
-                    'subject' => $this->truncate($subject),
-                    'body'    => $this->truncate($body),
-                ];
-            }
+            $defaults = EmailTemplateRegistry::get($id);
+            return [
+                'subject' => $subject !== '' ? $this->truncate($subject) : $defaults->defaultSubject,
+                'body'    => $body !== '' ? $this->truncate($body) : $defaults->defaultBody,
+            ];
         }
 
         $all = $this->load();
