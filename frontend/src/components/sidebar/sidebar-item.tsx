@@ -1,6 +1,6 @@
+import { Link, useLocation } from '@tanstack/react-router'
 import clsx from 'clsx'
 import type { PropsWithChildren } from 'react'
-import { Link, useLocation } from '@tanstack/react-router'
 
 import { RenderIcon } from './render-icon'
 

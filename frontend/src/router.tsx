@@ -1,7 +1,7 @@
+import type { QueryClient } from '@tanstack/react-query'
 import { createHashHistory, createRouter } from '@tanstack/react-router'
 
 import { routeTree } from './routeTree.gen'
-import type { QueryClient } from '@tanstack/react-query'
 
 export const createAppRouter = (queryClient: QueryClient) => {
   const hashHistory = createHashHistory()

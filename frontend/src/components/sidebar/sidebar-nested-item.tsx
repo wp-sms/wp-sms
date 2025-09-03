@@ -1,7 +1,7 @@
+import { Link, useLocation } from '@tanstack/react-router'
 import clsx from 'clsx'
 import { ChevronRightIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from '@tanstack/react-router'
 
 import { SidebarItem } from './sidebar-item'
 

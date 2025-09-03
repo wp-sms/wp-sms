@@ -1,6 +1,6 @@
+import { useParams } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams } from '@tanstack/react-router'
 
 import { SettingsDynamicForm } from '@/components/settings/dynamic-form'
 import { SettingsFormActions } from '@/components/settings/form-actions'
