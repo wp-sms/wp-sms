@@ -6,6 +6,40 @@ use WP_SMS\Services\Email\EmailService;
 use WP_SMS\Services\OTP\Contracts\Interfaces\DeliveryChannelInterface;
 use WP_SMS\Services\OTP\Delivery\Email\Templating\TemplateRenderer;
 
+/**
+ * Class EmailChannel
+ *
+ * Delivery channel for sending OTP, magic links, and password reset messages over email.
+ *
+ * ## Usage
+ *
+ * $channel = new \WP_SMS\Services\OTP\Delivery\Email\EmailChannel();
+ *
+ * // Send OTP code
+ * $channel->send('user@example.com', '', [
+ *     'template'           => EmailTemplate::TYPE_OTP_CODE,
+ *     'otp_code'           => 123456,
+ *     'expires_in_minutes' => '2',
+ *     'user_display_name'  => 'John Doe',
+ * ]);
+ *
+ * // Send magic login link
+ * $channel->send('user@example.com', '', [
+ *     'template'           => EmailTemplate::TYPE_MAGIC_LINK,
+ *     'magic_link'         => 'https://example.com/magic-login?token=xyz',
+ *     'expires_in_minutes' => '15',
+ *     'user_display_name'  => 'John Doe',
+ * ]);
+ *
+ * // Send password reset link
+ * $channel->send('user@example.com', '', [
+ *     'template'           => EmailTemplate::TYPE_PASSWORD_RESET,
+ *     'reset_link'         => 'https://example.com/reset-password?token=abc',
+ *     'expires_in_minutes' => '30',
+ *     'user_display_name'  => 'John Doe',
+ * ]);
+ *
+ */
 class EmailChannel implements DeliveryChannelInterface
 {
     /**
