@@ -11,6 +11,7 @@
 - **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
+- **Enhancement:** Improve send-sms page performance by loading recipients via AJAX instead of during initial page render.
 - **New:** Block new user email for phone-registered users.
 
 = v7.0 - 2025-07-09 =

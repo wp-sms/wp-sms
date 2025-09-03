@@ -175,12 +175,14 @@ class Admin
                     'users'   => get_rest_url(null, 'wp/v2/users')
                 ),
                 'ajaxUrls'        => array(
-                    'export'              => \WP_SMS\Controller\ExportAjax::url(),
-                    'uploadSubscriberCsv' => \WP_SMS\Controller\UploadSubscriberCsv::url(),
-                    'importSubscriberCsv' => \WP_SMS\Controller\ImportSubscriberCsv::url(),
-                    'privacyData'         => \WP_SMS\Controller\PrivacyDataAjax::url(),
-                    'subscribe'           => \WP_SMS\Controller\SubscriberFormAjax::url(),
-                    'group'               => \WP_SMS\Controller\GroupFormAjax::url(),
+                    'export'                   => \WP_SMS\Controller\ExportAjax::url(),
+                    'uploadSubscriberCsv'      => \WP_SMS\Controller\UploadSubscriberCsv::url(),
+                    'importSubscriberCsv'      => \WP_SMS\Controller\ImportSubscriberCsv::url(),
+                    'privacyData'              => \WP_SMS\Controller\PrivacyDataAjax::url(),
+                    'subscribe'                => \WP_SMS\Controller\SubscriberFormAjax::url(),
+                    'group'                    => \WP_SMS\Controller\GroupFormAjax::url(),
+                    'RecipientCountsAjax'      => \WP_SMS\Controller\RecipientCountsAjax::url(),
+                    'UserRolesMobileCountAjax' => \WP_SMS\Controller\UserRolesMobileCountAjax::url(),
                 ),
                 'lang'            => array(
                     'checkbox_label' => esc_html__('Send SMS?', 'wp-sms'),
@@ -296,6 +298,7 @@ class Admin
             'no_results_found'             => __('No results found', 'wp-sms'),
             'fix_highlight'                => __('Please fix the highlighted field(s) below.', 'wp-sms'),
             'search'                       => __('Search ...', 'wp-sms'),
+            'users_with_number'            => __('Users have the mobile number.', 'wp-sms')
         ];
     }
 
