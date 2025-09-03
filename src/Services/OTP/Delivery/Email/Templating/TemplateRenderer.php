@@ -21,8 +21,8 @@ class TemplateRenderer
         $storage = new EmailTemplateStorage();
         $custom  = $storage->getCustom($def->id);
 
-        $subjectTmpl = $custom['subject'] ?? $def->default_subject;
-        $bodyTmpl    = $custom['body'] ?? $def->default_body;
+        $subjectTmpl = $custom['subject'] ?? $def->defaultSubject;
+        $bodyTmpl    = $custom['body'] ?? $def->defaultBody;
 
         $subjectTmpl = apply_filters('wpsms_email_template_subject', $subjectTmpl, $def->id, $context);
         $bodyTmpl    = apply_filters('wpsms_email_template_body', $bodyTmpl, $def->id, $context);
