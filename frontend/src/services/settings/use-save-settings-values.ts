@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { useParams } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
 import { useInvalidateQuery } from '@/hooks/use-invalidate-query'
@@ -12,7 +12,7 @@ import { getGroupValuesOptions } from './get-group-values-options'
 export function useSaveSettingsValues(options?: UseSaveSettingsValuesType['options']) {
   const { onSuccess, ...restOptions } = options ?? {}
 
-  const { name } = useParams()
+  const { name } = useParams({ from: '/$name' })
 
   const { invalidateQuery: refreshGroupValues } = useInvalidateQuery(
     getGroupValuesOptions({ params: { groupName: name ?? 'general' } }).queryKey

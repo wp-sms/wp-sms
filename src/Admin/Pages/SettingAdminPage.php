@@ -53,63 +53,10 @@ class SettingAdminPage
         wp_enqueue_media();
 
         // Enqueue WordPress React dependencies
-        wp_enqueue_script('wp-element');
         wp_enqueue_script('wp-i18n');
 
-        $manifest_path = WP_SMS_DIR . 'frontend/build/.vite/manifest.json';
-        $manifest_url  = WP_SMS_URL . 'frontend/build/';
-
-        if (!file_exists($manifest_path)) {
-            return;
-        }
-
-        $manifest = json_decode(file_get_contents($manifest_path), true);
-        $entry_key = 'src/main.tsx';
-        if (!isset($manifest[$entry_key])) {
-            return;
-        }
-
-        $entry = $manifest[$entry_key];
-        $import_handles = [];
-
-        // Enqueue imported chunks (not present in this manifest, but keeping logic intact)
-        if (!empty($entry['imports']) && is_array($entry['imports'])) {
-            foreach ($entry['imports'] as $import_key) {
-                if (!empty($manifest[$import_key]['file'])) {
-                    $handle = 'wp-sms-settings-import-' . md5($import_key);
-                    $src    = $manifest_url . $manifest[$import_key]['file'];
-
-                    if (function_exists('wp_enqueue_script_module')) {
-                        wp_enqueue_script_module($handle, $src, ['wp-element', 'wp-i18n']);
-                    } else {
-                        wp_enqueue_script($handle, $src, ['wp-element', 'wp-i18n'], null, true);
-                    }
-
-                    $import_handles[] = $handle;
-                }
-            }
-        }
-        // Enqueue main JS entry
-        $script_url = $manifest_url . $entry['file'];
-        $handle     = 'wp-sms-settings';
-
-        if (function_exists('wp_enqueue_script_module')) {
-            wp_enqueue_script_module($handle, $script_url, array_merge(['wp-element', 'wp-i18n'], $import_handles));
-        } else {
-            wp_enqueue_script($handle, $script_url, array_merge(['wp-element', 'wp-i18n'], $import_handles), null, true);
-        }
-
-        // Enqueue CSS
-        if (!empty($entry['css']) && is_array($entry['css'])) {
-            foreach ($entry['css'] as $css_file) {
-                wp_enqueue_style(
-                    'wp-sms-settings-' . md5($css_file),
-                    $manifest_url . $css_file,
-                    [],
-                    null
-                );
-            }
-        }
+        // Load assets directly from build folder
+        $this->enqueueBuildAssets();
 
         // Add WP_SMS_DATA to page head to ensure it's available before React loads
         add_action('admin_head', function () {
@@ -126,7 +73,7 @@ class SettingAdminPage
 
         // Also localize the script as backup
         wp_localize_script(
-            $handle,
+            'wp-sms-settings',
             'WP_SMS_DATA',
             [
                 'nonce'   => wp_create_nonce('wp_rest'),
@@ -134,6 +81,63 @@ class SettingAdminPage
                 'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL
             ]
         );
+    }
+
+    /**
+     * Enqueue assets directly from build folder
+     */
+    private function enqueueBuildAssets(): void
+    {
+        $build_url = WP_SMS_FRONTEND_BUILD_URL;
+        $build_dir = WP_SMS_DIR . 'frontend/build/assets/';
+
+        // Find main CSS file
+        $main_css = $this->findAssetFile($build_dir, 'main-', '.css');
+        if ($main_css) {
+            wp_enqueue_style(
+                'wp-sms-settings-styles',
+                $build_url . 'assets/' . $main_css,
+                [],
+                WP_SMS_VERSION
+            );
+        }
+
+        // Find main JS file
+        $main_js = $this->findAssetFile($build_dir, 'main-', '.js');
+        if ($main_js) {
+            $handle = 'wp-sms-settings';
+            $script_url = $build_url . 'assets/' . $main_js;
+
+            if (function_exists('wp_enqueue_script_module')) {
+                wp_enqueue_script_module($handle, $script_url, ['wp-i18n']);
+            } else {
+                wp_enqueue_script($handle, $script_url, ['wp-i18n'], WP_SMS_VERSION, true);
+            }
+        }
+
+        // Find dynamic pages JS file (optional)
+        $dynamic_js = $this->findAssetFile($build_dir, 'dynamic-pages-', '.js');
+        if ($dynamic_js) {
+            $dynamic_script_url = $build_url . 'assets/' . $dynamic_js;
+            if (function_exists('wp_enqueue_script_module')) {
+                wp_enqueue_script_module('wp-sms-dynamic-pages', $dynamic_script_url, ['wp-i18n']);
+            } else {
+                wp_enqueue_script('wp-sms-dynamic-pages', $dynamic_script_url, ['wp-i18n'], WP_SMS_VERSION, true);
+            }
+        }
+    }
+
+    /**
+     * Find asset file by prefix and extension
+     */
+    private function findAssetFile(string $directory, string $prefix, string $extension): ?string
+    {
+        if (!is_dir($directory)) {
+            return null;
+        }
+
+        $files = glob($directory . $prefix . '*' . $extension);
+        return !empty($files) ? basename($files[0]) : null;
     }
 
     public function renderSettings(): void

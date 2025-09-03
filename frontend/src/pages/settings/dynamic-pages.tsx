@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams } from 'react-router-dom'
+import { useParams } from '@tanstack/react-router'
 
 import { SettingsDynamicForm } from '@/components/settings/dynamic-form'
 import { SettingsFormActions } from '@/components/settings/form-actions'
@@ -10,7 +10,7 @@ import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
 import { useGetGroupValues } from '@/services/settings/use-get-group-values'
 
 const SettingsDynamicPages = () => {
-  const { name } = useParams()
+  const { name } = useParams({ from: '/$name' })
 
   const {
     data: groupSchema,
