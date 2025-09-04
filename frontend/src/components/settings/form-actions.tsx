@@ -19,10 +19,7 @@ export const SettingsFormActions = () => {
         await saveSettings.mutateAsync(valuesToSave)
         reset(values)
       } catch (error: any) {
-        toast.error('Failed to save settings', {
-          position: 'top-center',
-          className: '!p-4',
-        })
+        toast.error('Failed to save settings')
 
         for (const field in error?.response?.data?.data?.fields) {
           setError(field, {
