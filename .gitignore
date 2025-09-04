@@ -51,3 +51,6 @@ frontend/build-legacy
 .cursorignore
 *storybook.log
 storybook-static
+
+.env
+.env.*

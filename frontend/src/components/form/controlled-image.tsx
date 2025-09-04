@@ -11,7 +11,15 @@ export type ControlledImageProps = {
   name: string
 } & ControlledFieldProps
 
-export const ControlledImage = ({ name, label, description, tooltip, tag, isLocked, isLoading }) => {
+export const ControlledImage = ({
+  name,
+  label,
+  description,
+  tooltip,
+  tag,
+  isLocked,
+  isLoading,
+}: ControlledImageProps) => {
   const { openMediaUploader } = useWordPressMediaUploader()
 
   const { control } = useFormContext()
