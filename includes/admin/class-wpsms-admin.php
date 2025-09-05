@@ -136,10 +136,16 @@ class Admin
         $admin_script_deps = ['jquery', 'wp-color-picker', 'jquery-ui-spinner'];
         $statsWidget       = new \WP_SMS\Widget\Widgets\StatsWidget();
 
-        wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'frontend/build-legacy/admin.js', $admin_script_deps, WP_SMS_VERSION, false);
-        wp_localize_script('wpsms-admin', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', []));
+        if (function_exists('wp_enqueue_script_module')) {
+            wp_enqueue_script_module('wpsms-admin', WP_SMS_URL . 'frontend/build-legacy/admin.js', array_merge($admin_script_deps, ['wpsms-admin-data']), WP_SMS_VERSION);
+        } else {
+            wp_enqueue_script('wpsms-admin', WP_SMS_URL . 'frontend/build-legacy/admin.js', $admin_script_deps, WP_SMS_VERSION, false);
+            wp_script_add_data('wpsms-admin', 'type', 'module');
+        }
+
+        wp_localize_script('wpsms-select2', 'WP_Sms_Admin_Dashboard_Object', apply_filters('wp_sms_stats_widget_data', []));
         wp_localize_script(
-            'wpsms-admin',
+            'wpsms-select2',
             'WP_Sms_Admin_Object',
             array(
                 'restUrls'        => array(
