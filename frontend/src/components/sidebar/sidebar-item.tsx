@@ -1,6 +1,6 @@
+import { Link, useLocation } from '@tanstack/react-router'
 import clsx from 'clsx'
 import type { PropsWithChildren } from 'react'
-import { Link, useLocation } from 'react-router-dom'
 
 import { RenderIcon } from './render-icon'
 
@@ -45,7 +45,7 @@ export const SidebarItem = ({ icon, title, href, onClick, endContent, showTitle 
   }
 
   return (
-    <Link className="contents" to={href}>
+    <Link className="contents" to={'/$name'} params={{ name: href }}>
       <div
         className={clsx(
           'flex items-center gap-x-2 justify-between py-2 px-3  active:scale-95 rounded-sm transition-all cursor-pointer select-none',

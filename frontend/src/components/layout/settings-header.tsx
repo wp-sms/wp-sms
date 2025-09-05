@@ -1,11 +1,12 @@
+import { Link, useParams } from '@tanstack/react-router'
 import { PanelLeftOpen } from 'lucide-react'
-import { Link } from 'react-router-dom'
 
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
@@ -13,6 +14,7 @@ import { useSidebarStore } from '@/stores/use-sidebar-store'
 
 export const SettingsHeader = () => {
   const { toggleSidebar } = useSidebarStore()
+  const { name } = useParams({ from: '/$name' })
 
   return (
     <header className="border-b border-b-border p-3 sticky top-8 bg-white z-10">
@@ -42,9 +44,7 @@ export const SettingsHeader = () => {
             <BreadcrumbSeparator />
 
             <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/">General</Link>
-              </BreadcrumbLink>
+              <BreadcrumbPage className="capitalize">{name?.replace(/_/g, ' ') ?? 'General'}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

@@ -6,7 +6,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   build: {
     target: 'es2015',
-    outDir: './build/legacy',
+    outDir: './build-legacy',
     manifest: true,
     emptyOutDir: false,
     copyPublicDir: false,
@@ -40,27 +40,27 @@ export default defineConfig({
           targets: [
             {
               src: 'legacy/static/select2.js',
-              dest: 'build/legacy',
+              dest: 'build-legacy',
             },
             {
               src: 'legacy/static/flatpickr.js',
-              dest: 'build/legacy',
+              dest: 'build-legacy',
             },
             {
               src: 'legacy/static/tooltipster-bundle.js',
-              dest: 'build/legacy',
+              dest: 'build-legacy',
             },
             {
               src: 'legacy/static/chatbox.min.js',
-              dest: 'build/legacy',
+              dest: 'build-legacy',
             },
             {
               src: 'legacy/static/jquery-repeater.js',
-              dest: 'build/legacy',
+              dest: 'build-legacy',
             },
             {
               src: 'legacy/static/jquery-word-and-character-counter.min.js',
-              dest: 'build/legacy',
+              dest: 'build-legacy',
             },
           ],
           hook: 'writeBundle',

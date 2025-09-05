@@ -1,7 +1,7 @@
+import { Link, useLocation } from '@tanstack/react-router'
 import clsx from 'clsx'
 import { ChevronRightIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
 
 import { SidebarItem } from './sidebar-item'
 
@@ -45,12 +45,13 @@ export const SidebarNestedItem = ({ title, icon, items, showTitle = true }: Side
       <div className={clsx('grid', isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]')}>
         <div className="overflow-hidden ">
           <div className="mt-3 ml-5 pl-3 border-l border-l-gray-300 flex flex-col gap-y-3 mb-3">
-            {Object.entries(items ?? {})?.map(([key, value]) => {
+            {Object.entries(items ?? {})?.map(([_, value]) => {
               const isActive = location.pathname === `/${value?.name}`
 
               return (
                 <Link
-                  to={value?.name}
+                  to={'/$name'}
+                  params={{ name: value?.name }}
                   key={`nested-item-${title}-${value?.name}`}
                   className={clsx(
                     ' hover:font-medium cursor-pointer block ',

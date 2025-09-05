@@ -1,11 +1,20 @@
 import { resolve } from 'node:path'
 
 import tailwindcss from '@tailwindcss/vite'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  base: './',
+  plugins: [
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
+    react(),
+    tailwindcss(),
+  ],
   css: {
     modules: {
       localsConvention: 'camelCase',
@@ -24,9 +33,13 @@ export default defineConfig({
       '@routes': resolve(__dirname, './src/routes'),
     },
   },
+  esbuild: {
+    treeShaking: true,
+    drop: ['console', 'debugger'],
+  },
   build: {
     outDir: './build',
-    manifest: true,
+    minify: 'terser',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/main.tsx'),

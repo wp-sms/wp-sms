@@ -36,6 +36,7 @@ nbproject
 assets/react/node_modules
 frontend/node_modules
 frontend/build
+frontend/build-legacy
 
 # Build Folder
 /build

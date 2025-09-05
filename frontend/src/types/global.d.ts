@@ -1,3 +1,5 @@
+import type { QueryClient } from '@tanstack/react-query'
+
 declare global {
   interface Window {
     WP_SMS_DATA?: {
@@ -8,6 +10,10 @@ declare global {
 
     wp: any
   }
+}
+
+interface RouterContext {
+  queryClient: QueryClient
 }
 
 // TODO: Dont know the usage of these consts
