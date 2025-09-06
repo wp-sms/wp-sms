@@ -43,6 +43,7 @@ frontend/build-legacy
 
 #vscode
 .vscode
+.cursor
 
 # Testing
 /tests/logs
