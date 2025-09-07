@@ -16,7 +16,7 @@ export type SidebarItemProps = PropsWithChildren<{
 export const SidebarItem = ({ icon, title, href, onClick, endContent, showTitle = true }: SidebarItemProps) => {
   const location = useLocation()
 
-  const isActive = location.pathname === `/${href}`
+  const isActive = location.pathname === `/settings/${href}`
 
   if (!href) {
     return (
@@ -45,7 +45,7 @@ export const SidebarItem = ({ icon, title, href, onClick, endContent, showTitle 
   }
 
   return (
-    <Link className="contents" to={'/$name'} params={{ name: href }}>
+    <Link className="contents" to={'/settings/$name'} params={{ name: href }}>
       <div
         className={clsx(
           'flex items-center gap-x-2 justify-between py-2 px-3  active:scale-95 rounded-sm transition-all cursor-pointer select-none',

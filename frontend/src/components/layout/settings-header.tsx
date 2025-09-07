@@ -14,7 +14,7 @@ import { useSidebarStore } from '@/stores/use-sidebar-store'
 
 export const SettingsHeader = () => {
   const { toggleSidebar } = useSidebarStore()
-  const { name } = useParams({ from: '/$name' })
+  const { name } = useParams({ from: '/settings/_layout/$name' })
 
   return (
     <header className="border-b border-b-border p-3 sticky top-8 bg-white z-10">

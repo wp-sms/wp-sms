@@ -25,12 +25,12 @@ export const SidebarNestedItem = ({ title, icon, items, showTitle = true }: Side
   const location = useLocation()
 
   useEffect(() => {
-    const shouldOpen = Object.entries(items ?? {}).some(([key, value]) => {
-      return location.pathname === `/${value?.name}`
+    const shouldOpen = Object.entries(items ?? {}).some(([_, value]) => {
+      return location.pathname === `/settings/${value?.name}`
     })
 
     setIsOpen(shouldOpen)
-  }, [location.pathname])
+  }, [location.pathname, items])
 
   return (
     <div>
@@ -50,7 +50,7 @@ export const SidebarNestedItem = ({ title, icon, items, showTitle = true }: Side
 
               return (
                 <Link
-                  to={'/$name'}
+                  to={'/settings/$name'}
                   params={{ name: value?.name }}
                   key={`nested-item-${title}-${value?.name}`}
                   className={clsx(

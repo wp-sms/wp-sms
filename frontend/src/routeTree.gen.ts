@@ -8,13 +8,19 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as NameRouteImport } from './routes/$name'
-import { Route as IndexRouteImport } from './routes/index'
+import { createFileRoute } from '@tanstack/react-router'
 
-const NameRoute = NameRouteImport.update({
-  id: '/$name',
-  path: '/$name',
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as OtpIndexRouteImport } from './routes/otp/index'
+import { Route as SettingsLayoutRouteImport } from './routes/settings/_layout'
+import { Route as SettingsLayoutNameRouteImport } from './routes/settings/_layout.$name'
+
+const SettingsRouteImport = createFileRoute('/settings')()
+
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,40 +28,68 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OtpIndexRoute = OtpIndexRouteImport.update({
+  id: '/otp/',
+  path: '/otp/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsLayoutRoute = SettingsLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsLayoutNameRoute = SettingsLayoutNameRouteImport.update({
+  id: '/$name',
+  path: '/$name',
+  getParentRoute: () => SettingsLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$name': typeof NameRoute
+  '/settings': typeof SettingsLayoutRouteWithChildren
+  '/otp': typeof OtpIndexRoute
+  '/settings/$name': typeof SettingsLayoutNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$name': typeof NameRoute
+  '/settings': typeof SettingsLayoutRouteWithChildren
+  '/otp': typeof OtpIndexRoute
+  '/settings/$name': typeof SettingsLayoutNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$name': typeof NameRoute
+  '/settings': typeof SettingsRouteWithChildren
+  '/settings/_layout': typeof SettingsLayoutRouteWithChildren
+  '/otp/': typeof OtpIndexRoute
+  '/settings/_layout/$name': typeof SettingsLayoutNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$name'
+  fullPaths: '/' | '/settings' | '/otp' | '/settings/$name'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$name'
-  id: '__root__' | '/' | '/$name'
+  to: '/' | '/settings' | '/otp' | '/settings/$name'
+  id:
+    | '__root__'
+    | '/'
+    | '/settings'
+    | '/settings/_layout'
+    | '/otp/'
+    | '/settings/_layout/$name'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  NameRoute: typeof NameRoute
+  SettingsRoute: typeof SettingsRouteWithChildren
+  OtpIndexRoute: typeof OtpIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/$name': {
-      id: '/$name'
-      path: '/$name'
-      fullPath: '/$name'
-      preLoaderRoute: typeof NameRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -65,12 +99,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/otp/': {
+      id: '/otp/'
+      path: '/otp'
+      fullPath: '/otp'
+      preLoaderRoute: typeof OtpIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/_layout': {
+      id: '/settings/_layout'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsLayoutRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/_layout/$name': {
+      id: '/settings/_layout/$name'
+      path: '/$name'
+      fullPath: '/settings/$name'
+      preLoaderRoute: typeof SettingsLayoutNameRouteImport
+      parentRoute: typeof SettingsLayoutRoute
+    }
   }
 }
 
+interface SettingsLayoutRouteChildren {
+  SettingsLayoutNameRoute: typeof SettingsLayoutNameRoute
+}
+
+const SettingsLayoutRouteChildren: SettingsLayoutRouteChildren = {
+  SettingsLayoutNameRoute: SettingsLayoutNameRoute,
+}
+
+const SettingsLayoutRouteWithChildren = SettingsLayoutRoute._addFileChildren(
+  SettingsLayoutRouteChildren,
+)
+
+interface SettingsRouteChildren {
+  SettingsLayoutRoute: typeof SettingsLayoutRouteWithChildren
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsLayoutRoute: SettingsLayoutRouteWithChildren,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  NameRoute: NameRoute,
+  SettingsRoute: SettingsRouteWithChildren,
+  OtpIndexRoute: OtpIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -9,7 +9,7 @@ import { useStableCallback } from '@/hooks/use-stable-callback'
 import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
 import { useGetGroupValues } from '@/services/settings/use-get-group-values'
 
-export const Route = createFileRoute('/$name')({
+export const Route = createFileRoute('/settings/_layout/$name')({
   component: RouteComponent,
 })
 
