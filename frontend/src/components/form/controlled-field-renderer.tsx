@@ -1,5 +1,5 @@
 import { AlertCircle } from 'lucide-react'
-import { useEffect } from 'react'
+import { type JSX, useEffect } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'

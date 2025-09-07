@@ -35,7 +35,7 @@ export const FieldWrapper = ({
   direction = 'column',
   children,
   error,
-}) => {
+}: FieldWrapperProps) => {
   return (
     <TooltipProvider>
       <div className={clsx('flex flex-col gap-1.5', isLocked && 'opacity-70')}>

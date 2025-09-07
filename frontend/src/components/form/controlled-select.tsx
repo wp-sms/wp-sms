@@ -55,7 +55,7 @@ export const ControlledSelect = ({
   tag,
   isLocked,
   isLoading,
-}) => {
+}: ControlledSelectProps) => {
   const { control } = useFormContext()
 
   return (
@@ -114,7 +114,7 @@ export const ControlledSelect = ({
 
                   return (
                     <SelectItem key={`select-item-${item.value}`} value={item?.value} {...SelectItemProps}>
-                      {item.value}
+                      {item.label}
                     </SelectItem>
                   )
                 })}

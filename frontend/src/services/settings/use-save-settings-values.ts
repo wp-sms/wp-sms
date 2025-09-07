@@ -35,15 +35,9 @@ export function useSaveSettingsValues(options?: UseSaveSettingsValuesType['optio
         await refreshGroupValues()
         await refreshGroupSchema()
 
-        toast.success('Settings saved successfully', {
-          position: 'top-center',
-          className: '!p-4',
-        })
-      } catch (error) {
-        toast.info('Settings saved but form refresh failed', {
-          position: 'top-center',
-          className: '!p-4',
-        })
+        toast.success('Settings saved successfully')
+      } catch {
+        toast.info('Settings saved but form refresh failed')
       }
 
       onSuccess?.(...args)

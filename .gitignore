@@ -43,6 +43,7 @@ frontend/build-legacy
 
 #vscode
 .vscode
+.cursor
 
 # Testing
 /tests/logs
@@ -51,3 +52,6 @@ frontend/build-legacy
 .cursorignore
 *storybook.log
 storybook-static
+
+.env
+.env.*
