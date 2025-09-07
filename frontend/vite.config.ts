@@ -33,13 +33,8 @@ export default defineConfig({
       '@routes': resolve(__dirname, './src/routes'),
     },
   },
-  esbuild: {
-    treeShaking: true,
-    drop: ['console', 'debugger'],
-  },
   build: {
     outDir: './build',
-    minify: 'terser',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/main.tsx'),

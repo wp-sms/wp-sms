@@ -6,7 +6,16 @@ import { type ControlledFieldProps, FieldWrapper } from './field-wrapper'
 
 export type ControlledTextareaProps = React.ComponentProps<'textarea'> & ControlledFieldProps
 
-export const ControlledTextarea = ({ label, description, tooltip, tag, isLocked, isLoading, name, ...props }) => {
+export const ControlledTextarea = ({
+  label,
+  description,
+  tooltip,
+  tag,
+  isLocked,
+  isLoading,
+  name,
+  ...props
+}: ControlledTextareaProps) => {
   const { control } = useFormContext()
 
   return (

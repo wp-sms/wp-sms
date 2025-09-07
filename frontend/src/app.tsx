@@ -12,7 +12,7 @@ export const App = () => {
   return (
     <QueryClientProvider client={createQueryClient()}>
       <RouterProvider router={router} context={{ queryClient }} />
-      <Toaster />
+      <Toaster position="top-center" richColors toastOptions={{ className: '!p-4' }} />
     </QueryClientProvider>
   )
 }
