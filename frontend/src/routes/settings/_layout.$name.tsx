@@ -51,18 +51,16 @@ function RouteComponent() {
   }, [groupValues?.data, groupSchema?.data, initForm])
 
   return (
-    <div className="p-6">
-      <Form {...form}>
-        <div className="flex flex-col gap-y-4">
-          <SettingsDynamicForm
-            groupSchema={groupSchema?.data}
-            isInitialLoading={isGroupSchemaLoading || isGroupValuesLoading}
-            isRefreshing={isGroupSchemaRefetching || isGroupValuesRefetching}
-          />
+    <Form {...form}>
+      <div className="flex flex-col gap-y-4">
+        <SettingsDynamicForm
+          groupSchema={groupSchema?.data}
+          isInitialLoading={isGroupSchemaLoading || isGroupValuesLoading}
+          isRefreshing={isGroupSchemaRefetching || isGroupValuesRefetching}
+        />
 
-          <SettingsFormActions />
-        </div>
-      </Form>
-    </div>
+        <SettingsFormActions />
+      </div>
+    </Form>
   )
 }

@@ -1,9 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/otp/')({
-  component: RouteComponent,
+  beforeLoad: () => {
+    throw redirect({ to: '/otp/activity' })
+  },
 })
-
-function RouteComponent() {
-  return <div>Hello "/otp/"!</div>
-}
