@@ -14,13 +14,6 @@ use InvalidArgumentException;
 class Select extends AbstractTableOperation
 {
     /**
-     * Stores the result of the executed query.
-     *
-     * @var array|null
-     */
-    private $result;
-
-    /**
      * Output format (ARRAY_A, ARRAY_N, OBJECT).
      *
      * @var string
@@ -42,14 +35,14 @@ class Select extends AbstractTableOperation
     /**
      * Generate the full table name with prefix for JOIN operations.
      *
-     * @param string $tableName
-     * @return string
-     * @throws InvalidArgumentException
+     * @param string $tableName The raw table name without prefix.
+     * @return string The full prefixed table name.
+     * @throws \InvalidArgumentException If the table name is empty.
      */
     protected function getFullJoinTableName($tableName)
     {
         if (empty($tableName)) {
-            throw new InvalidArgumentException('Join table name must be set before proceeding.');
+            throw new \InvalidArgumentException('Join table name must be set before proceeding.');
         }
 
         $tableNamePrefix = apply_filters('wp_sms_table_prefix', 'sms', $tableName);
@@ -77,7 +70,6 @@ class Select extends AbstractTableOperation
             $columns = implode(', ', $this->args['columns']);
             $sql     = "SELECT {$columns} FROM {$this->fullName}";
 
-            // JOIN support
             if (!empty($this->args['joins']) && is_array($this->args['joins'])) {
                 foreach ($this->args['joins'] as $join) {
                     if (!isset($join['table'], $join['on'], $join['type'])) {

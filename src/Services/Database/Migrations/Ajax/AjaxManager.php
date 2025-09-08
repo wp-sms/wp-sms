@@ -1,11 +1,11 @@
 <?php
 
-namespace WP_SMS\BackgroundProcess\Ajax;
+namespace WP_SMS\Services\Database\Migrations\Ajax;
 
 use WP_SMS\Components\Assets;
+use WP_SMS\Notice\NoticeManager as Notice;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\OptionUtil as Option;
-use WP_SMS\Notice\NoticeManager as Notice;
 use WP_SMS\Utils\Request;
 
 /**
@@ -17,7 +17,7 @@ use WP_SMS\Utils\Request;
  * - Managing the AJAX request lifecycle for triggering and running migrations.
  * - Ensuring migrations are executed sequentially and their status is tracked persistently.
  */
-class AjaxBackgroundProcessManager
+class AjaxManager
 {
     private $notice;
     /**
@@ -43,7 +43,7 @@ class AjaxBackgroundProcessManager
         $this->notice = new Notice();
         add_action('current_screen', [$this, 'handleDoneNotice']);
 
-        if (!AjaxBackgroundProcessFactory::needsMigration()) {
+        if (!AjaxFactory::needsMigration()) {
             return;
         }
         add_action('admin_enqueue_scripts', [$this, 'registerScript']);
@@ -61,7 +61,7 @@ class AjaxBackgroundProcessManager
     public function addAjax($list)
     {
         $list[] = [
-            'class'  => !AjaxBackgroundProcessFactory::isDatabaseMigrated() ? null : AjaxBackgroundProcessFactory::getCurrentMigrate(),
+            'class'  => !AjaxFactory::isDatabaseMigrated() ? null : AjaxFactory::getCurrentMigrate(),
             'action' => 'background_process',
             'public' => false
         ];
@@ -136,7 +136,7 @@ class AjaxBackgroundProcessManager
             return;
         }
 
-        $isMigrated = AjaxBackgroundProcessFactory::isDatabaseMigrated();
+        $isMigrated = AjaxFactory::isDatabaseMigrated();
 
         if (!$isMigrated) {
             return;
@@ -203,7 +203,7 @@ class AjaxBackgroundProcessManager
      * - Verifies the security nonce.
      * - Updates the migration status in the database.
      *
-     * @return false
+     * @return void
      */
     public function handleAjaxMigration()
     {

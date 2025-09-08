@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Services\Database\Migrations;
+namespace WP_SMS\Abstracts;
 
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\AbstractDatabaseOperation;
@@ -11,7 +11,7 @@ use WP_SMS\Services\Database\AbstractDatabaseOperation;
  * Provides methods for managing migration versions, executing migration steps,
  * and handling metadata related to database migrations.
  */
-abstract class AbstractMigrationOperation extends AbstractDatabaseOperation
+abstract class BaseMigrationOperation extends AbstractDatabaseOperation
 {
     /**
      * Target database version for this migration.

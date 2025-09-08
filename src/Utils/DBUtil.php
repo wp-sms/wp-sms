@@ -26,7 +26,7 @@ class DBUtil
      * @param string $table
      * @return string
      */
-    private static function getTableName($table)
+    public static function getTableName($table)
     {
         return str_ireplace(['[prefix]', '[name]'], [self::prefix(), $table], self::$tableStructure);
     }

@@ -1,14 +1,15 @@
 <?php
 
-namespace WP_SMS\Services\Database\Migrations;
+namespace WP_SMS\Services\Database\Migrations\Schema;
 
 use Exception;
+use WP_SMS\Abstracts\BaseMigrationOperation;
 use WP_SMS\Services\Database\DatabaseFactory;
 
 /**
  * Manages migrations related to database schema.
  */
-class SchemaMigration extends AbstractMigrationOperation
+class SchemaMigration extends BaseMigrationOperation
 {
     /**
      * The name of the migration operation.
@@ -44,4 +45,5 @@ class SchemaMigration extends AbstractMigrationOperation
      * @var array
      */
     protected $migrationSteps = [];
+
 }

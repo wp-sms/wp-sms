@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Services\Database\Managers;
 
-use WP_SMS\Install;
+use WP_SMS\Core\CoreFactory;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Services\Database\Schema\Manager;
@@ -35,7 +35,11 @@ class TableHandler
 
                 if (!$inspect->getResult()) {
                     $schema = Manager::getSchemaForTable($tableName);
-                    self::createTable($tableName, $schema);
+
+                    DatabaseFactory::table('create')
+                        ->setName($tableName)
+                        ->setArgs($schema)
+                        ->execute();
                 }
             } catch (\Exception $e) {
                 throw new \RuntimeException("Failed to inspect or create table `$tableName`: " . $e->getMessage(), 0, $e);
@@ -44,10 +48,8 @@ class TableHandler
 
         Option::saveOptionGroup('check', false, 'db');
 
-        if (Install::isFresh()) {
+        if (CoreFactory::isFresh()) {
             Option::saveOptionGroup('migrated', true, 'db');
-            Option::saveOptionGroup('manual_migration_tasks', [], 'db');
-            Option::saveOptionGroup('auto_migration_tasks', [], 'db');
             Option::saveOptionGroup('version', WP_SMS_VERSION, 'db');
             Option::saveOptionGroup('is_done', true, 'ajax_background_process');
             return;
@@ -57,6 +59,8 @@ class TableHandler
         Option::saveOptionGroup('migration_status_detail', null, 'db');
         Option::saveOptionGroup('is_done', null, 'ajax_background_process');
         Option::saveOptionGroup('status', null, 'ajax_background_process');
+        Option::saveOptionGroup('completed', false, 'queue_background_process');
+        Option::saveOptionGroup('status', null, 'queue_background_process');
 
         $dismissedNotices = get_option('wp_sms_dismissed_notices', []);
 
@@ -67,6 +71,14 @@ class TableHandler
         }
     }
 
+    /**
+     * Create a single table.
+     *
+     * @param string $tableName The name of the table to create.
+     * @param array $schema The schema for the table.
+     * @return void
+     * @throws \RuntimeException If the table creation fails.
+     */
     public static function createTable(string $tableName, array $schema)
     {
         try {

@@ -3,13 +3,15 @@
 namespace WP_SMS\Services\Database;
 
 use WP_SMS\Utils\OptionUtil as Option;
-use WP_SMS\Services\Database\Migrations\SchemaMigration;
+use WP_SMS\Services\Database\Migrations\Schema\SchemaMigration;
 use WP_SMS\Services\Database\Operations\Create;
 use WP_SMS\Services\Database\Operations\Drop;
 use WP_SMS\Services\Database\Operations\Insert;
 use WP_SMS\Services\Database\Operations\Inspect;
 use WP_SMS\Services\Database\Operations\Select;
 use WP_SMS\Services\Database\Operations\Update;
+use WP_SMS\Services\Database\Operations\InspectColumns;
+use WP_SMS\Services\Database\Operations\Repair;
 
 /**
  * Factory for creating database operation and migration instances.
@@ -25,12 +27,14 @@ class DatabaseFactory
      * @var array
      */
     private static $operations = [
-        'create'  => Create::class,
-        'update'  => Update::class,
-        'drop'    => Drop::class,
-        'inspect' => Inspect::class,
-        'insert'  => Insert::class,
-        'select'  => Select::class,
+        'create'          => Create::class,
+        'update'          => Update::class,
+        'drop'            => Drop::class,
+        'inspect'         => Inspect::class,
+        'insert'          => Insert::class,
+        'select'          => Select::class,
+        'repair'          => Repair::class,
+        'inspect_columns' => InspectColumns::class,
     ];
 
     /**
@@ -42,6 +46,9 @@ class DatabaseFactory
         'schema' => SchemaMigration::class,
     ];
 
+    private static $operationInstance = [];
+
+
     /**
      * Create an instance of a specific table operation.
      *
@@ -52,6 +59,11 @@ class DatabaseFactory
     public static function table($operation)
     {
         $operation = strtolower($operation);
+
+        if (!empty(self::$operationInstance[$operation])) {
+            return self::$operationInstance[$operation];
+        }
+
         if (!isset(self::$operations[$operation])) {
             throw new \InvalidArgumentException("Invalid operation: {$operation}");
         }
@@ -62,7 +74,9 @@ class DatabaseFactory
             throw new \InvalidArgumentException("Class not exist: {$providerClass}");
         }
 
-        return new $providerClass();
+        self::$operationInstance[$operation] = new $providerClass();
+
+        return self::$operationInstance[$operation];
     }
 
     /**

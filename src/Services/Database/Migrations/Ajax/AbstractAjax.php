@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_SMS\BackgroundProcess\Ajax;
+namespace WP_SMS\Services\Database\Migrations\Ajax;
 
-use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\User\UserHelper as User;
+use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Utils\Request;
 
 /**
@@ -16,7 +16,7 @@ use WP_SMS\Utils\Request;
  * It maintains a list of registered migrations, handles the retrieval of pending tasks,
  * and ensures proper state tracking to resume operations in case of interruptions.
  */
-abstract class AbstractAjaxBackgroundProcess
+abstract class AbstractAjax
 {
     /**
      * Number of records processed per batch.
@@ -120,7 +120,7 @@ abstract class AbstractAjaxBackgroundProcess
     {
         $completedMigrations = Option::getOptionGroup('ajax_background_process', 'jobs', []);
 
-        $pendingMigrations = array_diff(array_keys(AjaxBackgroundProcessFactory::$migrations), $completedMigrations);
+        $pendingMigrations = array_diff(array_keys(AjaxFactory::$migrations), $completedMigrations);
 
         if (empty($pendingMigrations)) {
             return null;
@@ -129,7 +129,7 @@ abstract class AbstractAjaxBackgroundProcess
         $nextMigrationKey = reset($pendingMigrations);
 
         self::$currentProcessKey = $nextMigrationKey;
-        self::$currentProcess    = AjaxBackgroundProcessFactory::$migrations[$nextMigrationKey];
+        self::$currentProcess    = AjaxFactory::$migrations[$nextMigrationKey];
 
         if (!class_exists(self::$currentProcess)) {
             return null;
@@ -209,10 +209,10 @@ abstract class AbstractAjaxBackgroundProcess
     public static function getMigrations($key = null)
     {
         if ($key === null) {
-            return AjaxBackgroundProcessFactory::$migrations;
+            return AjaxFactory::$migrations;
         }
 
-        return AjaxBackgroundProcessFactory::$migrations[$key] ?? null;
+        return AjaxFactory::$migrations[$key] ?? null;
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class AbstractAjaxBackgroundProcess
     {
         $completedMigrations = Option::getOptionGroup('ajax_background_process', 'jobs', []);
 
-        $completedMigrationKey = array_search($migrationClassName, AjaxBackgroundProcessFactory::$migrations, true);
+        $completedMigrationKey = array_search($migrationClassName, AjaxFactory::$migrations, true);
 
         if ($completedMigrationKey !== false) {
             $completedMigrations[] = $completedMigrationKey;
