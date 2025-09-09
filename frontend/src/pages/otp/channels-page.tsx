@@ -1,5 +1,6 @@
+import { AlertCircle, Save, Settings, Shield } from 'lucide-react';
 import React, { useState } from 'react';
-import { Settings, Save, AlertCircle, Shield } from 'lucide-react';
+
 import { ChannelSettingsSidebar } from './channel-settings-sidebar';
 
 interface Channel {

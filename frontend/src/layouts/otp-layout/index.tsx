@@ -1,6 +1,6 @@
+import { OtpHeader } from './header';
 import { OtpSidebar } from './sidebar';
 import type { OtpLayoutProps } from './types';
-import { OtpHeader } from './header';
 
 export const OtpLayout: React.FC<OtpLayoutProps> = ({ children }) => {
     return (

@@ -1,8 +1,9 @@
 'use client';
+import clsx from 'clsx';
 import { Link, useLocation } from 'react-router-dom';
+
 import { RenderIcon } from '../render-icon';
 import type { SidebarItemProps } from './types';
-import clsx from 'clsx';
 
 export const SidebarItem: React.FC<SidebarItemProps> = ({
     icon,

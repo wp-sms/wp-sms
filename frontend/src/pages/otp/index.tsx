@@ -1,10 +1,12 @@
+import '../../globals.css';
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter as Router } from 'react-router-dom';
-import OtpRoutes from '@/routes/otp';
+
 import { OtpLayout } from '@/layouts/otp-layout';
 import Providers from '@/providers';
-import '../../globals.css';
+import OtpRoutes from '@/routes/otp';
 
 const Otp = () => {
     return (

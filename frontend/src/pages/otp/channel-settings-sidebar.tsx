@@ -1,5 +1,5 @@
+import { Settings,X } from 'lucide-react';
 import React from 'react';
-import { X, Settings } from 'lucide-react';
 
 interface Channel {
     id: string;

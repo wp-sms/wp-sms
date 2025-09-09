@@ -1,8 +1,10 @@
+import clsx from 'clsx';
+import {Shield } from 'lucide-react';
+
+import { useSidebarStore } from '@/stores/sidebar';
+
 import { SidebarGroup } from './sidebar-group';
 import { SidebarItem } from './sidebar-item';
-import { Shield, Activity, FileText, MessageSquare, Palette, Settings } from 'lucide-react';
-import { useSidebarStore } from '@/stores/sidebar';
-import clsx from 'clsx';
 
 export const OtpSidebar: React.FC = () => {
     const { isOpen } = useSidebarStore();
