@@ -9,16 +9,16 @@ class SampleMigrator extends AbstractAjax
 {
     protected function getTotal($needCaching = true)
     {
-        WP_SMS::log('Ajax: getTotal triggered');
+        // Silence is golden
     }
 
     protected function calculateOffset()
     {
-        WP_SMS::log('Ajax: calculateOffset triggered');
+        // Silence is golden
     }
 
     protected function migrate()
     {
-        WP_SMS::log('Ajax: migrate triggered');
+        WP_SMS::log('Ajax: migrate triggered.');
     }
 }

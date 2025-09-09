@@ -52,7 +52,7 @@ class SchemaMigration extends BaseMigrationOperation
 
     public function sampleSchemaMigration()
     {
-        \WP_SMS::log('sampleSchemaMigration triggered.');
+        \WP_SMS::log('Schema: sampleSchemaMigration triggered.');
     }
 
 }

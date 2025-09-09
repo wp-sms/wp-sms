@@ -28,6 +28,6 @@ class QueueMigration extends BaseMigrationOperation
 
     public function sampleQueueMigration()
     {
-        \WP_SMS::log('sampleQueueMigration triggered');
+        \WP_SMS::log('Queue: sampleQueueMigration triggered.');
     }
 }
