@@ -12,7 +12,7 @@ class OTPChannelSettings extends AbstractSettingGroup
 {
     public function getName(): string
     {
-        return 'otp';
+        return 'otp-channel';
     }
 
     public function getLabel(): string
@@ -35,7 +35,7 @@ class OTPChannelSettings extends AbstractSettingGroup
     {
         // TODO: Hide OTP Channels from API endpoints by default.
         // This group contains sensitive OTP configuration that should not be exposed.
-        return true;
+        return false;
     }
 
     public function getSections(): array
@@ -565,108 +565,6 @@ class OTPChannelSettings extends AbstractSettingGroup
                     ]),
                 ]
             ]),
-            new Section([
-                'id'       => 'branding_email_templates',
-                'title'    => __('Branding', 'wp-sms'),
-                'subtitle' => __('Email Templates', 'wp-sms'),
-                'order'    => 99,
-                'fields'   => [
-                    new Field([
-                        'key'               => 'email_tpl_otp_subject',
-                        'label'             => __('OTP Code Email — Subject', 'wp-sms'),
-                        'type'              => 'text',
-                        'group_label'       => __('OTP Code Email', 'wp-sms'),
-                        'description'       => sprintf(
-                            __('Placeholders: %s', 'wp-sms'),
-                            esc_html('{{otp_code}} {{expires_in_minutes}} {{user_display_name}} {{site_name}}')
-                        ),
-                        'placeholder'       => __('Your login code for {{site_name}}', 'wp-sms'),
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'subject'],
-                    ]),
-                    new Field([
-                        'key'               => 'email_tpl_otp_body',
-                        'label'             => __('OTP Code Email — Body (HTML or Text)', 'wp-sms'),
-                        'type'              => 'textarea',
-                        'rows'              => 10,
-                        'group_label'       => __('OTP Code Email', 'wp-sms'),
-                        'description'       => __('Basic HTML allowed: a, p, strong, em, ul, ol, li, br, pre, code. Max 5000 chars. Also {{otp_code}} {{expires_in_minutes}} {{user_display_name}} {{site_name}} are available', 'wp-sms'),
-                        'placeholder'       => __("Hi {{user_display_name}},\n\nYour one-time code is: {{otp_code}}\nThis code will expire in {{expires_in_minutes}} minutes.\n\nIf you didn’t request this, you can safely ignore this email.", 'wp-sms'),
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'body'],
-                    ]),
-                    new Field([
-                        'key'               => 'email_tpl_otp_revert',
-                        'label'             => __('Revert to Default', 'wp-sms'),
-                        'type'              => 'checkbox',
-                        'group_label'       => __('OTP Code Email', 'wp-sms'),
-                        'description'       => __('If checked, this template uses the default subject and body.', 'wp-sms'),
-                        'default'           => false,
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'revert'],
-                    ]),
-
-                    new Field([
-                        'key'               => 'email_tpl_magic_subject',
-                        'label'             => __('Magic Link Email — Subject', 'wp-sms'),
-                        'type'              => 'text',
-                        'group_label'       => __('Magic Link Email', 'wp-sms'),
-                        'description'       => sprintf(
-                            __('Placeholders: %s', 'wp-sms'),
-                            esc_html('{{magic_link}} {{user_display_name}} {{expires_in_minutes}} {{site_name}}')
-                        ),
-                        'placeholder'       => __('Secure Login to {{site_name}}', 'wp-sms'),
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'subject'],
-                    ]),
-                    new Field([
-                        'key'               => 'email_tpl_magic_body',
-                        'label'             => __('Magic Link Email — Body (HTML or Text)', 'wp-sms'),
-                        'type'              => 'textarea',
-                        'rows'              => 10,
-                        'group_label'       => __('Magic Link Email', 'wp-sms'),
-                        'description'       => __('Basic HTML allowed: a, p, strong, em, ul, ol, li, br, pre, code. Max 5000 chars. Also {{magic_link}} {{user_display_name}} {{expires_in_minutes}} {{site_name}} are available.', 'wp-sms'),
-                        'placeholder'       => __("Hi {{user_display_name}},\n\nClick the link below to log in:\n{{magic_link}}\n\nThis link expires in {{expires_in_minutes}} minutes.\nIf you didn’t request this, you can ignore this message.", 'wp-sms'),
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'body'],
-                    ]),
-                    new Field([
-                        'key'               => 'email_tpl_magic_revert',
-                        'label'             => __('Revert to Default', 'wp-sms'),
-                        'type'              => 'checkbox',
-                        'group_label'       => __('Magic Link Email', 'wp-sms'),
-                        'default'           => false,
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'revert'],
-                    ]),
-
-                    new Field([
-                        'key'               => 'email_tpl_reset_subject',
-                        'label'             => __('Password Reset Email — Subject', 'wp-sms'),
-                        'type'              => 'text',
-                        'group_label'       => __('Password Reset Email', 'wp-sms'),
-                        'description'       => sprintf(
-                            __('Placeholders: %s', 'wp-sms'),
-                            esc_html('{{reset_link}} {{user_display_name}} {{expires_in_minutes}} {{site_name}}')
-                        ),
-                        'placeholder'       => __('Reset your password – {{site_name}}', 'wp-sms'),
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'subject'],
-                    ]),
-                    new Field([
-                        'key'               => 'email_tpl_reset_body',
-                        'label'             => __('Password Reset Email — Body (HTML or Text)', 'wp-sms'),
-                        'type'              => 'textarea',
-                        'rows'              => 10,
-                        'group_label'       => __('Password Reset Email', 'wp-sms'),
-                        'description'       => __('Basic HTML allowed: a, p, strong, em, ul, ol, li, br, pre, code. Max 5000 chars. Also {{reset_link}} {{user_display_name}} {{expires_in_minutes}} {{site_name}} are available.', 'wp-sms'),
-                        'placeholder'       => __("Hi {{user_display_name}},\n\nUse the link below to reset your password:\n{{reset_link}}\n\nThis link is valid for {{expires_in_minutes}} minutes.\nIf you didn’t request this, you can ignore this email.", 'wp-sms'),
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'body'],
-                    ]),
-                    new Field([
-                        'key'               => 'email_tpl_reset_revert',
-                        'label'             => __('Revert to Default', 'wp-sms'),
-                        'type'              => 'checkbox',
-                        'group_label'       => __('Password Reset Email', 'wp-sms'),
-                        'default'           => false,
-                        'sanitize_callback' => ['\\WP_SMS\\Services\\OTP\\Delivery\\Email\\Templating\\SanitizeCallbacks', 'revert'],
-                    ]),
-                ],
-            ]),
-
         ];
     }
 
