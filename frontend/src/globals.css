@@ -323,10 +323,11 @@
 }
 
 /* Remove default list styling */
-#wp-sms-settings-root ul, #wp-sms-settings-root ol {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
+#wp-sms-react-root ul,
+#wp-sms-react-root ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }
 
 /* Custom animations */
