@@ -12,7 +12,7 @@ import { getGroupValuesOptions } from './get-group-values-options'
 export function useSaveSettingsValues(options?: UseSaveSettingsValuesType['options']) {
   const { onSuccess, ...restOptions } = options ?? {}
 
-  const { name } = useParams({ from: '/$name' })
+  const { name } = useParams({ from: '/settings/_layout/$name' })
 
   const { invalidateQuery: refreshGroupValues } = useInvalidateQuery(
     getGroupValuesOptions({ params: { groupName: name ?? 'general' } }).queryKey

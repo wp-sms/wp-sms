@@ -9,7 +9,7 @@ import { useStableCallback } from '@/hooks/use-stable-callback'
 import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
 import { useGetGroupValues } from '@/services/settings/use-get-group-values'
 
-export const Route = createFileRoute('/$name')({
+export const Route = createFileRoute('/settings/_layout/$name')({
   component: RouteComponent,
 })
 
@@ -51,18 +51,16 @@ function RouteComponent() {
   }, [groupValues?.data, groupSchema?.data, initForm])
 
   return (
-    <div className="p-6">
-      <Form {...form}>
-        <div className="flex flex-col gap-y-4">
-          <SettingsDynamicForm
-            groupSchema={groupSchema?.data}
-            isInitialLoading={isGroupSchemaLoading || isGroupValuesLoading}
-            isRefreshing={isGroupSchemaRefetching || isGroupValuesRefetching}
-          />
+    <Form {...form}>
+      <div className="flex flex-col gap-y-4">
+        <SettingsDynamicForm
+          groupSchema={groupSchema?.data}
+          isInitialLoading={isGroupSchemaLoading || isGroupValuesLoading}
+          isRefreshing={isGroupSchemaRefetching || isGroupValuesRefetching}
+        />
 
-          <SettingsFormActions />
-        </div>
-      </Form>
-    </div>
+        <SettingsFormActions />
+      </div>
+    </Form>
   )
 }

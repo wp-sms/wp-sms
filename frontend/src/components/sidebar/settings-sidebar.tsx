@@ -36,7 +36,7 @@ export const SettingsSidebar = () => {
         <section className="flex flex-col gap-y-5">
           {settingSchemaList?.data?.core && (
             <SidebarGroup title="Core Settings" showTitle={!!isOpen}>
-              {Object.entries(settingSchemaList?.data?.core ?? {})?.map(([key, value]) => {
+              {Object.entries(settingSchemaList?.data?.core ?? {})?.map(([_, value]) => {
                 return (
                   <SidebarItem
                     showTitle={!!isOpen}
@@ -52,7 +52,7 @@ export const SettingsSidebar = () => {
 
           {settingSchemaList?.data?.addons && (
             <SidebarGroup title="Addons" showTitle={!!isOpen}>
-              {Object.entries(settingSchemaList?.data?.addons ?? {})?.map(([key, value]) => {
+              {Object.entries(settingSchemaList?.data?.addons ?? {})?.map(([_, value]) => {
                 return (
                   <SidebarItem
                     showTitle={!!isOpen}

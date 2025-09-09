@@ -26,6 +26,7 @@ export type ControlledPhoneProps = React.ComponentProps<'input'> & ControlledFie
 import parsePhoneNumber from 'libphonenumber-js'
 
 import { WordPressDataService } from '@/lib/data-service'
+import { validatePhoneNumber } from '@/lib/phone-validation'
 
 import { FieldWrapper } from './field-wrapper'
 
@@ -59,11 +60,21 @@ export const ControlledPhone = ({
     loadData()
   }, [dataService])
 
+  // Phone number validation function
+  const validatePhone = (value: string) => {
+    const result = validatePhoneNumber(value)
+    return result.isValid ? true : result.error
+  }
+
   return (
     <Controller
       name={name ?? ''}
       control={control}
       defaultValue=""
+      rules={{
+        validate: validatePhone,
+        required: 'Phone number is required',
+      }}
       render={({ field, fieldState }) => {
         // Initialize from field value ONCE when component first loads
         if (field?.value && typeof field.value === 'string' && !initialized && jsonData.length > 0) {
@@ -104,7 +115,14 @@ export const ControlledPhone = ({
             tag={tag}
             tooltip={tooltip}
           >
-            <div className="flex border border-border rounded-lg focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px] transition-all duration-300">
+            <div
+              className={cn(
+                'flex border rounded-lg focus-within:ring-[3px] transition-all duration-300',
+                fieldState?.error
+                  ? 'border-destructive focus-within:border-destructive focus-within:ring-destructive/50'
+                  : 'border-border focus-within:border-ring focus-within:ring-ring/50'
+              )}
+            >
               <div>
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
@@ -163,7 +181,11 @@ export const ControlledPhone = ({
               <Input
                 value={phoneNumber}
                 placeholder="Enter phone number"
-                className="border-none focus:border-0 focus-visible:border-0 focus-within:!border-0 focus-visible:ring-0 focus-within:ring-0"
+                className={cn(
+                  'border-none focus:border-0 focus-visible:border-0 focus-within:!border-0 focus-visible:ring-0 focus-within:ring-0',
+                  fieldState?.error && 'text-destructive'
+                )}
+                aria-invalid={fieldState?.invalid || !!fieldState?.error}
                 onChange={(e) => {
                   const inputValue = e.target.value.replace(/\D/g, '') // Remove non-digits
                   handlePhoneNumberChange(inputValue)

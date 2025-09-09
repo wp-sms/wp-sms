@@ -8,13 +8,32 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as NameRouteImport } from './routes/$name'
-import { Route as IndexRouteImport } from './routes/index'
+import { createFileRoute } from '@tanstack/react-router'
 
-const NameRoute = NameRouteImport.update({
-  id: '/$name',
-  path: '/$name',
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as OtpIndexRouteImport } from './routes/otp/index'
+import { Route as SettingsLayoutRouteImport } from './routes/settings/_layout'
+import { Route as OtpLayoutRouteImport } from './routes/otp/_layout'
+import { Route as SettingsLayoutNameRouteImport } from './routes/settings/_layout.$name'
+import { Route as OtpLayoutSettingsRouteImport } from './routes/otp/_layout/settings'
+import { Route as OtpLayoutLogsRouteImport } from './routes/otp/_layout/logs'
+import { Route as OtpLayoutBrandingRouteImport } from './routes/otp/_layout/branding'
+import { Route as OtpLayoutAuthenticationChannelsRouteImport } from './routes/otp/_layout/authentication-channels'
+import { Route as OtpLayoutActivityRouteImport } from './routes/otp/_layout/activity'
+
+const SettingsRouteImport = createFileRoute('/settings')()
+const OtpRouteImport = createFileRoute('/otp')()
+
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OtpRoute = OtpRouteImport.update({
+  id: '/otp',
+  path: '/otp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,40 +41,158 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const OtpIndexRoute = OtpIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OtpRoute,
+} as any)
+const SettingsLayoutRoute = SettingsLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const OtpLayoutRoute = OtpLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => OtpRoute,
+} as any)
+const SettingsLayoutNameRoute = SettingsLayoutNameRouteImport.update({
+  id: '/$name',
+  path: '/$name',
+  getParentRoute: () => SettingsLayoutRoute,
+} as any)
+const OtpLayoutSettingsRoute = OtpLayoutSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OtpLayoutRoute,
+} as any)
+const OtpLayoutLogsRoute = OtpLayoutLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => OtpLayoutRoute,
+} as any)
+const OtpLayoutBrandingRoute = OtpLayoutBrandingRouteImport.update({
+  id: '/branding',
+  path: '/branding',
+  getParentRoute: () => OtpLayoutRoute,
+} as any)
+const OtpLayoutAuthenticationChannelsRoute =
+  OtpLayoutAuthenticationChannelsRouteImport.update({
+    id: '/authentication-channels',
+    path: '/authentication-channels',
+    getParentRoute: () => OtpLayoutRoute,
+  } as any)
+const OtpLayoutActivityRoute = OtpLayoutActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => OtpLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$name': typeof NameRoute
+  '/otp': typeof OtpLayoutRouteWithChildren
+  '/settings': typeof SettingsLayoutRouteWithChildren
+  '/otp/': typeof OtpIndexRoute
+  '/settings/': typeof SettingsIndexRoute
+  '/otp/activity': typeof OtpLayoutActivityRoute
+  '/otp/authentication-channels': typeof OtpLayoutAuthenticationChannelsRoute
+  '/otp/branding': typeof OtpLayoutBrandingRoute
+  '/otp/logs': typeof OtpLayoutLogsRoute
+  '/otp/settings': typeof OtpLayoutSettingsRoute
+  '/settings/$name': typeof SettingsLayoutNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$name': typeof NameRoute
+  '/otp': typeof OtpIndexRoute
+  '/settings': typeof SettingsIndexRoute
+  '/otp/activity': typeof OtpLayoutActivityRoute
+  '/otp/authentication-channels': typeof OtpLayoutAuthenticationChannelsRoute
+  '/otp/branding': typeof OtpLayoutBrandingRoute
+  '/otp/logs': typeof OtpLayoutLogsRoute
+  '/otp/settings': typeof OtpLayoutSettingsRoute
+  '/settings/$name': typeof SettingsLayoutNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$name': typeof NameRoute
+  '/otp': typeof OtpRouteWithChildren
+  '/otp/_layout': typeof OtpLayoutRouteWithChildren
+  '/settings': typeof SettingsRouteWithChildren
+  '/settings/_layout': typeof SettingsLayoutRouteWithChildren
+  '/otp/': typeof OtpIndexRoute
+  '/settings/': typeof SettingsIndexRoute
+  '/otp/_layout/activity': typeof OtpLayoutActivityRoute
+  '/otp/_layout/authentication-channels': typeof OtpLayoutAuthenticationChannelsRoute
+  '/otp/_layout/branding': typeof OtpLayoutBrandingRoute
+  '/otp/_layout/logs': typeof OtpLayoutLogsRoute
+  '/otp/_layout/settings': typeof OtpLayoutSettingsRoute
+  '/settings/_layout/$name': typeof SettingsLayoutNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$name'
+  fullPaths:
+    | '/'
+    | '/otp'
+    | '/settings'
+    | '/otp/'
+    | '/settings/'
+    | '/otp/activity'
+    | '/otp/authentication-channels'
+    | '/otp/branding'
+    | '/otp/logs'
+    | '/otp/settings'
+    | '/settings/$name'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$name'
-  id: '__root__' | '/' | '/$name'
+  to:
+    | '/'
+    | '/otp'
+    | '/settings'
+    | '/otp/activity'
+    | '/otp/authentication-channels'
+    | '/otp/branding'
+    | '/otp/logs'
+    | '/otp/settings'
+    | '/settings/$name'
+  id:
+    | '__root__'
+    | '/'
+    | '/otp'
+    | '/otp/_layout'
+    | '/settings'
+    | '/settings/_layout'
+    | '/otp/'
+    | '/settings/'
+    | '/otp/_layout/activity'
+    | '/otp/_layout/authentication-channels'
+    | '/otp/_layout/branding'
+    | '/otp/_layout/logs'
+    | '/otp/_layout/settings'
+    | '/settings/_layout/$name'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  NameRoute: typeof NameRoute
+  OtpRoute: typeof OtpRouteWithChildren
+  SettingsRoute: typeof SettingsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/$name': {
-      id: '/$name'
-      path: '/$name'
-      fullPath: '/$name'
-      preLoaderRoute: typeof NameRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/otp': {
+      id: '/otp'
+      path: '/otp'
+      fullPath: '/otp'
+      preLoaderRoute: typeof OtpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -65,12 +202,141 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/': {
+      id: '/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/otp/': {
+      id: '/otp/'
+      path: '/'
+      fullPath: '/otp/'
+      preLoaderRoute: typeof OtpIndexRouteImport
+      parentRoute: typeof OtpRoute
+    }
+    '/settings/_layout': {
+      id: '/settings/_layout'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsLayoutRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/otp/_layout': {
+      id: '/otp/_layout'
+      path: '/otp'
+      fullPath: '/otp'
+      preLoaderRoute: typeof OtpLayoutRouteImport
+      parentRoute: typeof OtpRoute
+    }
+    '/settings/_layout/$name': {
+      id: '/settings/_layout/$name'
+      path: '/$name'
+      fullPath: '/settings/$name'
+      preLoaderRoute: typeof SettingsLayoutNameRouteImport
+      parentRoute: typeof SettingsLayoutRoute
+    }
+    '/otp/_layout/settings': {
+      id: '/otp/_layout/settings'
+      path: '/settings'
+      fullPath: '/otp/settings'
+      preLoaderRoute: typeof OtpLayoutSettingsRouteImport
+      parentRoute: typeof OtpLayoutRoute
+    }
+    '/otp/_layout/logs': {
+      id: '/otp/_layout/logs'
+      path: '/logs'
+      fullPath: '/otp/logs'
+      preLoaderRoute: typeof OtpLayoutLogsRouteImport
+      parentRoute: typeof OtpLayoutRoute
+    }
+    '/otp/_layout/branding': {
+      id: '/otp/_layout/branding'
+      path: '/branding'
+      fullPath: '/otp/branding'
+      preLoaderRoute: typeof OtpLayoutBrandingRouteImport
+      parentRoute: typeof OtpLayoutRoute
+    }
+    '/otp/_layout/authentication-channels': {
+      id: '/otp/_layout/authentication-channels'
+      path: '/authentication-channels'
+      fullPath: '/otp/authentication-channels'
+      preLoaderRoute: typeof OtpLayoutAuthenticationChannelsRouteImport
+      parentRoute: typeof OtpLayoutRoute
+    }
+    '/otp/_layout/activity': {
+      id: '/otp/_layout/activity'
+      path: '/activity'
+      fullPath: '/otp/activity'
+      preLoaderRoute: typeof OtpLayoutActivityRouteImport
+      parentRoute: typeof OtpLayoutRoute
+    }
   }
 }
 
+interface OtpLayoutRouteChildren {
+  OtpLayoutActivityRoute: typeof OtpLayoutActivityRoute
+  OtpLayoutAuthenticationChannelsRoute: typeof OtpLayoutAuthenticationChannelsRoute
+  OtpLayoutBrandingRoute: typeof OtpLayoutBrandingRoute
+  OtpLayoutLogsRoute: typeof OtpLayoutLogsRoute
+  OtpLayoutSettingsRoute: typeof OtpLayoutSettingsRoute
+}
+
+const OtpLayoutRouteChildren: OtpLayoutRouteChildren = {
+  OtpLayoutActivityRoute: OtpLayoutActivityRoute,
+  OtpLayoutAuthenticationChannelsRoute: OtpLayoutAuthenticationChannelsRoute,
+  OtpLayoutBrandingRoute: OtpLayoutBrandingRoute,
+  OtpLayoutLogsRoute: OtpLayoutLogsRoute,
+  OtpLayoutSettingsRoute: OtpLayoutSettingsRoute,
+}
+
+const OtpLayoutRouteWithChildren = OtpLayoutRoute._addFileChildren(
+  OtpLayoutRouteChildren,
+)
+
+interface OtpRouteChildren {
+  OtpLayoutRoute: typeof OtpLayoutRouteWithChildren
+  OtpIndexRoute: typeof OtpIndexRoute
+}
+
+const OtpRouteChildren: OtpRouteChildren = {
+  OtpLayoutRoute: OtpLayoutRouteWithChildren,
+  OtpIndexRoute: OtpIndexRoute,
+}
+
+const OtpRouteWithChildren = OtpRoute._addFileChildren(OtpRouteChildren)
+
+interface SettingsLayoutRouteChildren {
+  SettingsLayoutNameRoute: typeof SettingsLayoutNameRoute
+}
+
+const SettingsLayoutRouteChildren: SettingsLayoutRouteChildren = {
+  SettingsLayoutNameRoute: SettingsLayoutNameRoute,
+}
+
+const SettingsLayoutRouteWithChildren = SettingsLayoutRoute._addFileChildren(
+  SettingsLayoutRouteChildren,
+)
+
+interface SettingsRouteChildren {
+  SettingsLayoutRoute: typeof SettingsLayoutRouteWithChildren
+  SettingsIndexRoute: typeof SettingsIndexRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsLayoutRoute: SettingsLayoutRouteWithChildren,
+  SettingsIndexRoute: SettingsIndexRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  NameRoute: NameRoute,
+  OtpRoute: OtpRouteWithChildren,
+  SettingsRoute: SettingsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
