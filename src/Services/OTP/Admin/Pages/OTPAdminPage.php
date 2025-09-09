@@ -87,7 +87,7 @@ class OTPAdminPage extends AbstractService
                     'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
                     'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
                     'assets' => $assets,
-                    'starting_point' => 'otp/activity'
+                    'react_starting_point' => '#/otp/activity'
                 ]); ?>;
             </script>
 <?php
@@ -103,7 +103,7 @@ class OTPAdminPage extends AbstractService
                 'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
                 'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
                 'assets' => $assets,
-                'starting_point' => 'otp/activity'
+                'react_starting_point' => '#/otp/activity'
             ]
         );
     }
