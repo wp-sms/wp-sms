@@ -1,5 +1,6 @@
-import { useParams } from 'react-router-dom';
 import { Shield } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+
 import ChannelsPage from './channels-page';
 
 const OtpDynamicPages = () => {

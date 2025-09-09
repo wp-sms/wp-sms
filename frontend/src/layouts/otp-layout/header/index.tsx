@@ -1,3 +1,6 @@
+import { PanelLeftOpen } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -6,8 +9,6 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import { Bell, Shield, PanelLeftOpen } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
 
 export const OtpHeader: React.FC = () => {
     const location = useLocation();

@@ -1,9 +1,10 @@
+import { Settings,X } from 'lucide-react';
 import React from 'react';
-import { X, Settings } from 'lucide-react';
-import type { SchemaField } from '@/models/settings/types/getGroupSchema';
-import { ControlledFieldRenderer } from '@/components/form/controlled-field-renderer';
 import { useFormContext } from 'react-hook-form';
+
+import { ControlledFieldRenderer } from '@/components/form/controlled-field-renderer';
 import { clientRequest } from '@/core/config';
+import type { SchemaField } from '@/models/settings/types/getGroupSchema';
 
 interface SubFieldsSidebarProps {
     fieldName: string;
