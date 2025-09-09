@@ -82,7 +82,8 @@ class Field
             'hideIf'      => $this->hideIf,
             'repeatable'  => $this->repeatable,
             'tag'         => $this->tag,
-            'sub_fields'   => $this->subFields,
+            // for eachsubfield it the toArray should be called
+            'sub_fields'   => array_map(fn($subField) => $subField->toArray(), $this->subFields),
             'readonly'    => $this->readonly,
             'options_depends_on' => $this->optionsDependsOn,
             'sortable'    => $this->sortable,
