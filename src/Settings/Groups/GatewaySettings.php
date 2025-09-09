@@ -194,7 +194,7 @@ class GatewaySettings extends AbstractSettingGroup {
                 'label' => $setting['name'] ?? $key,
                 'type' => $setting['type'] ?? 'text',
                 'description' => $setting['description'] ?? '',
-                'hidden' => true, // Hide from UI since React handles these dynamically
+                'hidden' => false, // Hide from UI since React handles these dynamically
             ];
 
             // Add options if available
