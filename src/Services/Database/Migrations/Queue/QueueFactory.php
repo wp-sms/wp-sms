@@ -3,7 +3,6 @@
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
 use WP_SMS;
-use WP_SMS\Core\CoreFactory;
 use WP_SMS\Utils\OptionUtil as Option;
 
 /**
@@ -99,7 +98,7 @@ class QueueFactory
             return false;
         }
 
-        if (CoreFactory::isFresh()) {
+        if (WP_SMS\Install::isFresh()) {
             $allStepIdentifiers = array_keys(self::getQueueMigration()->getMigrationSteps());
             self::saveCompletedSteps($allStepIdentifiers);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Service\Database;
+namespace WP_SMS\Services\Database;
 
 /**
  * Helper methods that are used by the database service.

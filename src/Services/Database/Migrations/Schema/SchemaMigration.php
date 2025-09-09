@@ -44,6 +44,15 @@ class SchemaMigration extends BaseMigrationOperation
      *
      * @var array
      */
-    protected $migrationSteps = [];
+    protected $migrationSteps = [
+        '7.1' => [
+            'sampleSchemaMigration',
+        ],
+    ];
+
+    public function sampleSchemaMigration()
+    {
+        \WP_SMS::log('sampleSchemaMigration triggered.');
+    }
 
 }

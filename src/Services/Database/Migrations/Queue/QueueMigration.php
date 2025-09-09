@@ -22,5 +22,12 @@ class QueueMigration extends BaseMigrationOperation
      *
      * @var array<string, string> Array mapping step names to method names
      */
-    protected $migrationSteps = [];
+    protected $migrationSteps = [
+        'sampleQueueMigration' => 'sampleQueueMigration'
+    ];
+
+    public function sampleQueueMigration()
+    {
+        \WP_SMS::log('sampleQueueMigration triggered');
+    }
 }

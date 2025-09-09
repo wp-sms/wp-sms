@@ -4,11 +4,14 @@ namespace WP_SMS;
 
 use WP_SMS\Services\Database\Managers\TableHandler;
 use WP_SMS\Utils\OptionUtil as Option;
+use WP_SMS\Services\Database\Managers\SchemaMaintainer;
+use WP_SMS\Services\Database\Migrations\Schema\SchemaManager;
 
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
+//todo: this class should be migrated to Core.
 class Install
 {
     const TABLE_OTP          = 'sms_otp';
@@ -209,6 +212,8 @@ class Install
             $this->checkIsFresh();
 
             TableHandler::createAllTables();
+            SchemaManager::init();
+            SchemaMaintainer::repair(true);
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }

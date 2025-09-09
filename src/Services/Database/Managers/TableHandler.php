@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Services\Database\Managers;
 
-use WP_SMS\Core\CoreFactory;
+use WP_SMS\Install;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Services\Database\Schema\Manager;
@@ -48,7 +48,7 @@ class TableHandler
 
         Option::saveOptionGroup('check', false, 'db');
 
-        if (CoreFactory::isFresh()) {
+        if (Install::isFresh()) {
             Option::saveOptionGroup('migrated', true, 'db');
             Option::saveOptionGroup('version', WP_SMS_VERSION, 'db');
             Option::saveOptionGroup('is_done', true, 'ajax_background_process');

@@ -2,10 +2,11 @@
 
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
+use WP_SMS\Helper;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Notice\NoticeManager as Notice;
-use WP_SMS\Service\Database\DatabaseHelper;
+use WP_SMS\Services\Database\DatabaseHelper;
 use WP_SMS\Utils\Request;
 
 /**
@@ -84,7 +85,8 @@ class QueueManager
             esc_html__('thanks for staying up to date!', 'wp-sms')
         );
 
-        Notice::addFlashNotice($message, 'success', false);
+        $notice = Notice::getInstance();
+        $notice->registerNotice('queue_migration_result_success', $message, true);
         Option::saveOptionGroup('status', null, 'queue_background_process');
     }
 
@@ -132,8 +134,8 @@ class QueueManager
             esc_url($migrationUrl),
             esc_html__('Update Now', 'wp-sms')
         );
-
-        Notice::addNotice($message, 'start_queue_background_process', 'warning', false);
+        $notice  = Notice::getInstance();
+        $notice->registerNotice('start_queue_background_process', $message, true);
     }
 
     /**

@@ -2,7 +2,8 @@
 
 namespace WP_SMS\Services\Database\Migrations\Ajax;
 
-use WP_SMS\Core\CoreFactory;
+use WP_SMS\Install;
+use WP_SMS\Services\Database\Migrations\Ajax\Jobs\SampleMigrator;
 use WP_SMS\Utils\OptionUtil as Option;
 
 /**
@@ -21,7 +22,9 @@ class AjaxFactory
      *
      * @var array
      */
-    public static $migrations = [];
+    public static $migrations = [
+        'sample_migrate' => SampleMigrator::class,
+    ];
 
     /**
      * Cached list of completed migration job keys.
@@ -47,7 +50,7 @@ class AjaxFactory
             return;
         }
 
-        if (CoreFactory::isFresh()) {
+        if (Install::isFresh()) {
             $jobs = array_keys(self::$migrations);
 
             Option::saveOptionGroup('jobs', $jobs, 'ajax_background_process');

@@ -282,7 +282,6 @@ class WP_SMS
             });
 
             new \WP_SMS\Services\Database\Migrations\Ajax\AjaxManager();
-            new \WP_SMS\Services\Database\Migrations\Ajax\AjaxManager();
             new \WP_SMS\Services\Database\Migrations\Queue\QueueManager();
         }
 
