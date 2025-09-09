@@ -71,11 +71,12 @@ class SettingAdminPage
             </script>
             <script type="text/javascript">
                 window.WP_SMS_DATA = <?php echo json_encode([
-                                            'nonce'   => wp_create_nonce('wp_rest'),
-                                            'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
-                                            'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
-                                            'assets' => $assets
-                                        ]); ?>;
+                    'nonce'   => wp_create_nonce('wp_rest'),
+                    'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
+                    'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
+                    'assets' => $assets,
+                    'react_starting_point' => '#settings/general'
+                ]); ?>;
             </script>
 <?php
         });
@@ -89,7 +90,8 @@ class SettingAdminPage
                 'nonce'   => wp_create_nonce('wp_rest'),
                 'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
                 'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
-                'assets' => $assets
+                'assets' => $assets,
+                'react_starting_point' => '#settings/general'
             ]
         );
     }
