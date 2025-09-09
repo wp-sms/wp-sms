@@ -71,18 +71,18 @@
 }
 
 /* WordPress Admin Integration Styles */
-.wp-sms-settings-wrap {
+.wp-sms-react-wrap {
   max-width: 100% !important;
   padding: 0 !important;
 }
-#wp-sms-settings-root {
+#wp-sms-react-root {
   position: relative;
   width: 100%;
   height: auto;
   min-height: 600px;
 }
 
-#wp-sms-settings-root a {
+#wp-sms-react-root a {
   color: unset;
   box-shadow: unset;
   outline: unset;
@@ -90,13 +90,13 @@
 }
 
 /* Ensure sidebar doesn't conflict with WordPress admin */
-#wp-sms-settings-root [data-sidebar='sidebar'] {
+#wp-sms-react-root [data-sidebar='sidebar'] {
   position: relative !important;
   z-index: 1;
 }
 
 /* Override WordPress admin styles that might interfere */
-#wp-sms-settings-root .wrap {
+#wp-sms-react-root .wrap {
   margin: 0;
   padding: 0;
 }
@@ -105,66 +105,66 @@
 
 /* Prevent horizontal scroll in WP admin */
 #wpcontent,
-.wp-sms-settings-wrap,
-#wp-sms-settings-root {
+.wp-sms-react-wrap,
+#wp-sms-react-root {
   overflow-x: visible !important;
 }
 
 /* reset style */
 
 /* Reset margins and padding for common elements */
-#wp-sms-settings-root p,
-#wp-sms-settings-root h1,
-#wp-sms-settings-root h2,
-#wp-sms-settings-root h3,
-#wp-sms-settings-root h4,
-#wp-sms-settings-root h5,
-#wp-sms-settings-root h6,
-#wp-sms-settings-root ul,
-#wp-sms-settings-root ol,
-#wp-sms-settings-root li {
+#wp-sms-react-root p,
+#wp-sms-react-root h1,
+#wp-sms-react-root h2,
+#wp-sms-react-root h3,
+#wp-sms-react-root h4,
+#wp-sms-react-root h5,
+#wp-sms-react-root h6,
+#wp-sms-react-root ul,
+#wp-sms-react-root ol,
+#wp-sms-react-root li {
   margin: 0;
   padding: 0;
 }
 
 /* Reset h1 */
-#wp-sms-settings-root h1 {
+#wp-sms-react-root h1 {
   @apply text-xl font-bold text-foreground;
 }
 
 /* Reset h2 */
-#wp-sms-settings-root h2 {
+#wp-sms-react-root h2 {
   @apply text-lg font-bold text-foreground m-0;
 }
 
-#wp-sms-settings-root h3 {
+#wp-sms-react-root h3 {
   @apply text-base font-bold text-foreground;
 }
 
-#wp-sms-settings-root input {
+#wp-sms-react-root input {
   @apply border-input rounded-md shadow-none outline-none;
 }
 
-#wp-sms-settings-root textarea {
+#wp-sms-react-root textarea {
   @apply border-input rounded-md shadow-none outline-none;
 }
 
-#wp-sms-settings-root input[aria-invalid='true'] {
+#wp-sms-react-root input[aria-invalid='true'] {
   @apply border-destructive;
 }
 
 /* Remove link underlines */
-#wp-sms-settings-root a {
+#wp-sms-react-root a {
   text-decoration: none;
   color: inherit;
 }
-#wp-sms-settings-root a:hover {
+#wp-sms-react-root a:hover {
   text-decoration: underline;
 }
 
 /* Remove default list styling */
-#wp-sms-settings-root ul,
-#wp-sms-settings-root ol {
+#wp-sms-react-root ul,
+#wp-sms-react-root ol {
   list-style: none;
   padding-left: 0;
   margin: 0;
