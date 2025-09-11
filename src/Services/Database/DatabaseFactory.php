@@ -18,6 +18,10 @@ use WP_SMS\Services\Database\Operations\Repair;
  *
  * This class provides methods to create specific operations (e.g., create, update, drop)
  * and manage different migration types (e.g., schema, data).
+ *
+ * @package   Database
+ * @version   1.4.0
+ * @since     7.1
  */
 class DatabaseFactory
 {
