@@ -10,6 +10,7 @@ use WP_SMS\Services\OTP\RestAPIEndpoints\Auth\AuthRestAPIEndpoints;
 use WP_SMS\Services\OTP\Assets\AuthAssets;
 use WP_SMS\Services\OTP\RestAPIEndpoints\OTP\OTPRestAPIEndpoints;
 use WP_SMS\Services\OTP\RestAPIEndpoints\MagicLink\MagicLinkRestAPIEndpoints;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterApiEndpoints;
 
 class OTPManager extends AbstractService
 {
@@ -35,6 +36,7 @@ class OTPManager extends AbstractService
             new AuthTemplates(),
             new AuthRestAPIEndpoints(),
             new OTPRestAPIEndpoints(),
+            new RegisterApiEndpoints(),
             new MagicLinkRestAPIEndpoints(),
         ];
 
