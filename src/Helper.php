@@ -5,6 +5,7 @@ namespace WP_SMS;
 use WC_Blocks_Utils;
 use WP_Error;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Utils\TimeZone;
 use WP_SMS\Utils\OptionUtil;
 
 /**
@@ -732,5 +733,12 @@ class Helper
         }
 
         return $default_manage_cap;
+    }
+
+    public static function getTimezoneCountry()
+    {
+        $timezone    = get_option('timezone_string');
+        $countryCode = TimeZone::getCountry($timezone);
+        return $countryCode;
     }
 }

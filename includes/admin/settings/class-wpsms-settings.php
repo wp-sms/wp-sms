@@ -97,7 +97,7 @@ class Settings
             update_option($this->setting_name, array(
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
                 'notify_errors_to_admin_email' => 1,
-                'report_wpsms_statistics'      => 1
+                'report_wpsms_statistics'      => 1,
             ));
         }
 
@@ -1819,6 +1819,19 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
+                ),
+                'plugin_notifications_header'  => array(
+                    'id'   => 'plugin_notifications_header',
+                    'name' => esc_html__('Plugin Notifications', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'plugin_notifications'         => array(
+                    'id'      => 'plugin_notifications',
+                    'name'    => esc_html__('WP SMS Notifications', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'default' => true,
+                    'desc'    => esc_html__('Display important notifications inside the plugin about new versions, feature updates, news, and special offers.', 'wp-sms')
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',

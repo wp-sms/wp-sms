@@ -39,18 +39,18 @@ class OptionUtil
     public static function defaultOptions()
     {
         return [
-            'enable_notifications'            => true,
-            'default_country_code'            => '+1',
-            'sms_provider'                    => 'twilio',
-            'api_key'                         => '',
-            'api_secret'                      => '',
-            'send_sms_to_admin'               => true,
-            'admin_phone_number'              => '',
-            'enable_otp'                      => true,
-            'otp_expiry_time'                 => 5, // minutes
-            'otp_message_template'            => 'Your OTP is {{OTP}}',
-            'user_registration_sms'           => false,
-            'user_registration_template'      => 'Welcome, {{USER_NAME}}!',
+            'enable_notifications'       => true,
+            'default_country_code'       => '+1',
+            'sms_provider'               => 'twilio',
+            'api_key'                    => '',
+            'api_secret'                 => '',
+            'send_sms_to_admin'          => true,
+            'admin_phone_number'         => '',
+            'enable_otp'                 => true,
+            'otp_expiry_time'            => 5, // minutes
+            'otp_message_template'       => 'Your OTP is {{OTP}}',
+            'user_registration_sms'      => false,
+            'user_registration_template' => 'Welcome, {{USER_NAME}}!',
         ];
     }
 
@@ -103,7 +103,7 @@ class OptionUtil
      */
     public static function update($optionName, $value)
     {
-        $options = self::getOptions();
+        $options              = self::getOptions();
         $options[$optionName] = $value;
         self::saveOptions($options);
     }
@@ -140,7 +140,7 @@ class OptionUtil
             return false;
         }
 
-        $userOptions = get_user_meta($userId, self::$optName, true) ?: [];
+        $userOptions          = get_user_meta($userId, self::$optName, true) ?: [];
         $userOptions[$option] = $value;
 
         return update_user_meta($userId, self::$optName, $userOptions);
@@ -219,6 +219,9 @@ class OptionUtil
     {
         $settingName = "wp_sms_{$group}";
         $options     = get_option($settingName, []);
+        if (!is_array($options)) {
+            $options = array();
+        }
         $options[$key] = $value;
 
         update_option($settingName, $options);
@@ -242,7 +245,12 @@ class OptionUtil
         }
     }
 
-    public static function checkOptionRequire($item = array(), $condition_key = 'require')
+    /**
+     * @param $item
+     * @param $conditionKey
+     * @return bool
+     */
+    public static function checkOptionRequire($item = array(), $conditionKey = 'require')
     {
 
         // Default is True
@@ -250,7 +258,7 @@ class OptionUtil
 
         // Check Require Params
         if (array_key_exists('require', $item)) {
-            foreach ($item[$condition_key] as $if => $value) {
+            foreach ($item[$conditionKey] as $if => $value) {
 
                 // Check Type of Condition
                 if (($value === true and !OptionUtil::get($if)) || ($value === false and OptionUtil::get($if))) {
