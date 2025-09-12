@@ -27,12 +27,22 @@
     border-radius: 4px;
     height: 40px;
     outline: none!important;
+ 
+    &.wp-sms-input-iti-tel{
+      padding-right: 12px !important;
+      padding-left: 48px !important;
+    }
 
     &::placeholder {
       color: #9D9793;
       font-size: 14px!important;
       line-height: 15px;
     }
+  }
+
+  .iti__country-container{
+    left: 0 !important;
+    right: auto !important;
   }
 
   input[type="submit"] {
@@ -134,6 +144,10 @@
     padding: 16px 32px;
   }
 
+  .rtl &{
+    text-align: right;
+  }
+
   li {
     margin-bottom: 12px;
 
@@ -148,12 +162,20 @@
 
   &--success {
     background: $green-bg;
-    border-left: 3px solid $green
+    border-left: 3px solid $green;
+    .rtl &{
+      border-left: none;
+      border-right: 3px solid $green;
+    }
   }
 
   &--danger {
     background: $alert-danger-bg;
-    border-left: 3px solid $alert-danger-border
+    border-left: 3px solid $alert-danger-border;
+    .rtl &{
+      border-left: none;
+      border-right: 3px solid $alert-danger-border;
+    }
   }
 
   &--success>span ,  &--danger>span{
@@ -344,4 +366,29 @@
   border:none;
   box-shadow: none;
   outline: none;
+}
+
+.iti--inline-dropdown .iti__dropdown-content{
+  direction: ltr;
+}
+.iti--container{
+  width: 449px !important;
+}
+.iti--allow-dropdown.iti--show-flags{
+  width: 449px !important;
+}
+
+[dir=rtl] .iti__country-list .iti__flag, [dir=rtl] .iti__country-name {
+    margin-left: 0;
+    margin-right: var(--iti-spacer-horizontal);
+}
+
+.iti__selected-country-primary{
+  direction: ltr;
+  .iti__arrow {
+    [dir=rtl] &{
+      margin-left: var(--iti-arrow-padding);
+      margin-right: 0;
+    }
+  }
 }

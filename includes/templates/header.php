@@ -1,9 +1,12 @@
 <?php
 
+use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Components\View;
 use WP_SMS\Option as Option;
 use WP_SMS\Services\Notification\NotificationFactory;
+use WP_SMS\Admin\LicenseManagement\LicenseMigration;
+use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
 
@@ -33,8 +36,11 @@ foreach ($addons as $option_key => $status) {
 
 $hasUpdatedNotifications = NotificationFactory::hasUpdatedNotifications();
 $displayNotifications    = (bool)Option::getOption('plugin_notifications');
+$apiCommunicator  = new ApiCommunicator();
+$licenseMigration = new LicenseMigration($apiCommunicator);
+$licenseMigration->migrateOldLicenses();
 ?>
-<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__premium' : '' ?>">
+<div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__aio' : '' ?>">
     <div class="wpsms-header-logo"></div>
     <!-- Header Items -->
     <div class="wpsms-header-items-flex">
@@ -94,4 +100,12 @@ if ($displayNotifications) {
 }
 ?>
 <?php Modal::showOnce('welcome-premium'); ?>
+
+<?php
+add_action('admin_footer', function () {
+    if (MenuUtil::isInPluginPage()) {
+        Modal::showOnce('welcome-premium');
+    }
+}, 20);
+?>
 <?php Modal::render('all-in-one'); ?>

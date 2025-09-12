@@ -43,6 +43,13 @@ class RemoteRequest
             'method' => strtoupper($method)
         ]);
 
+        if (defined('WP_SMS_API_USERNAME') && defined('WP_SMS_API_PASSWORD')) {
+            if (empty($this->parsedParams['headers']['Authorization'])) {
+                $this->parsedParams['headers']['Authorization'] =
+                    'Basic ' . base64_encode(WP_SMS_API_USERNAME . ':' . WP_SMS_API_PASSWORD);
+            }
+        }
+
         /**
          * Store the method
          */

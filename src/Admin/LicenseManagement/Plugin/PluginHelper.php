@@ -28,11 +28,10 @@ class PluginHelper
         $result = [];
 
         try {
-            $apiCommunicator    = new ApiCommunicator();
-            $products           = $apiCommunicator->getProducts();
+            $apiCommunicator = new ApiCommunicator();
+            $products        = $apiCommunicator->getProducts();
         } catch (Exception $e) {
-            //todo implement
-//            WPSms::->log($e->getMessage(), 'error');
+            WPSms()::log($e->getMessage(), 'error');
             $products = [];
         }
 

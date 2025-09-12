@@ -123,6 +123,12 @@ class Notifications
         if (Option::getOption('notif_publish_new_post')) {
             add_action('add_meta_boxes', [$this, 'notification_meta_box']);
             add_action('wp_insert_post', [$this, 'notify_subscribers_for_published_post'], 10, 3);
+            add_action('future_to_publish', [$this, 'handle_scheduled_post_published'], 10, 1);
+            add_action('transition_post_status', function ($new, $old, $post) {
+                if ($new === 'draft') {
+                    delete_post_meta($post->ID, '_wpsms_notification_sent');
+                }
+            }, 10, 3);
         }
     }
 
@@ -263,47 +269,110 @@ class Notifications
      */
     public function notify_subscribers_for_published_post($postID, $post, $update)
     {
-        if ($post->post_status !== 'publish' && $post->post_status !== 'future') {
+        // Only proceed for 'publish' or 'future' status
+        if (!in_array($post->post_status, ['publish', 'future'])) {
             return;
         }
 
+        // Check if post type is allowed
         $specified_post_types = $this->extractPostTypeFromOption('notif_publish_new_post_type');
-
         if (!in_array($post->post_type, $specified_post_types)) {
             return;
         }
 
+        if (!$this->postMatchesSelectedTaxonomyTerms($postID)) {
+            return;
+        }
+
+        // Validate required request params
         if (!isset($_REQUEST['wpsms_text_template']) || $_REQUEST['wps_send_to'] == '0') {
             return;
         }
 
-        // Process recipients and send notifications
-        $recipients = isset($_REQUEST['wps_send_to']) ? sanitize_text_field($_REQUEST['wps_send_to']) : '';
+        $recipients = sanitize_text_field($_REQUEST['wps_send_to']);
         $message    = sanitize_text_field($_REQUEST['wpsms_text_template']);
-        $receiver   = [];
+
+        // If post is scheduled (future), handle differently
+        if ($post->post_status === 'future') {
+            $this->handleFuturePost($postID, $recipients, $message);
+            return;
+        }
+
+        if (get_post_meta($postID, '_wpsms_notification_sent', true)) {
+            return;
+        }
+
+
+        // Only send if publish date is now or future
+        $post_time    = strtotime($post->post_date);
+        $current_time = current_time('timestamp');
+        if ($post_time > $current_time) {
+            return;
+        }
+
+        $receiver = $this->getReceivers($recipients);
+
+        if (!empty($receiver) && $message) {
+            $notification = NotificationFactory::getPost($postID);
+            $notification->send($message, $receiver);
+
+            // Mark as sent
+            update_post_meta($postID, '_wpsms_notification_sent', true);
+        }
+    }
+
+    private function handleFuturePost($postID, $recipients, $message)
+    {
+        update_post_meta($postID, 'wpsms_scheduled_send_to', $recipients);
+        update_post_meta($postID, 'wpsms_scheduled_message_template', $message);
+
+        $receiver = $this->getReceivers($recipients);
+        update_post_meta($postID, 'wpsms_scheduled_receivers', $receiver);
+    }
+
+    private function getReceivers($recipients)
+    {
+        $receiver = [];
 
         switch ($recipients) {
             case 'subscriber':
-                $group = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : 'all';
-                if ($group === 'all') {
-                    $receiver = Newsletter::getSubscribers(null, true);
-                } else {
-                    $receiver = Newsletter::getSubscribers([$group], true);
-                }
+                $group    = isset($_REQUEST['wps_subscribe_group']) ? sanitize_text_field($_REQUEST['wps_subscribe_group']) : 'all';
+                $receiver = $group === 'all' ? Newsletter::getSubscribers(null, true) : Newsletter::getSubscribers([$group], true);
                 break;
             case 'numbers':
                 $raw_numbers = isset($_REQUEST['wps_mobile_numbers']) ? sanitize_text_field($_REQUEST['wps_mobile_numbers']) : '';
-                $receiver = explode(',', $raw_numbers);
+                $receiver    = explode(',', $raw_numbers);
                 break;
             case 'users':
                 $receiver = Helper::getUsersMobileNumbers(Option::getOption('notif_publish_new_post_users'));
                 break;
         }
 
+        return $receiver;
+    }
+
+    public function handle_scheduled_post_published($post)
+    {
+        // Retrieve the metadata stored for the scheduled post
+        $recipients = get_post_meta($post->ID, 'wpsms_scheduled_send_to', true);
+        $message    = get_post_meta($post->ID, 'wpsms_scheduled_message_template', true);
+        $receiver   = get_post_meta($post->ID, 'wpsms_scheduled_receivers', true);
+
+        // Early return if any required data is missing
+        if (empty($recipients) || empty($message) || empty($receiver)) {
+            return;
+        }
+
+        // Send the SMS notification
         if (!empty($receiver) && $message) {
-            $notification = NotificationFactory::getPost($postID);
+            $notification = NotificationFactory::getPost($post->ID);
             $notification->send($message, $receiver);
         }
+
+        // Clean up the metadata after sending the notification
+        delete_post_meta($post->ID, 'wpsms_scheduled_send_to');
+        delete_post_meta($post->ID, 'wpsms_scheduled_message_template');
+        delete_post_meta($post->ID, 'wpsms_scheduled_receivers');
     }
 
     /**
@@ -349,6 +418,30 @@ class Notifications
 
         return $specified_post_types;
     }
+
+    private function postMatchesSelectedTaxonomyTerms($postID)
+    {
+        $selectedTermIds = Option::getOption('notif_publish_new_taxonomy_and_term');
+
+        if (empty($selectedTermIds) || !is_array($selectedTermIds)) {
+            return true;
+        }
+
+        $taxonomies = get_post_taxonomies($postID);
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_the_terms($postID, $taxonomy);
+            if (!empty($terms) && !is_wp_error($terms)) {
+                foreach ($terms as $term) {
+                    if (in_array($term->term_id, $selectedTermIds)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
 }
 
 new Notifications();

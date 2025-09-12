@@ -71,15 +71,19 @@ class Notification
             if (strpos($finalMessage, $variable) !== false) {
                 $replacement = '';
 
-                // Replace variable with callback
+                // Check if callable and attempt to replace
                 if (is_callable([$this, $callBack])) {
                     try {
-                        $reflection = new \ReflectionMethod($this, $callBack);
-                        if ($reflection->getNumberOfRequiredParameters() === 0) {
-                            $replacement = $this->$callBack();
+                        if (method_exists($this, $callBack)) {
+                            $reflection = new \ReflectionMethod($this, $callBack);
+                            if ($reflection->getNumberOfRequiredParameters() === 0) {
+                                $replacement = $this->$callBack();
+                            } else {
+                                \WP_SMS::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
+                                continue;
+                            }
                         } else {
-                            \WP_SMS::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
-                            continue;
+                            $replacement = $this->$callBack();
                         }
                     } catch (\Throwable $e) {
                         \WP_SMS::log('Variable replacement error: ' . $e->getMessage(), 'error');

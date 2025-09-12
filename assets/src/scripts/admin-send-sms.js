@@ -1,6 +1,28 @@
 ﻿jQuery(document).ready(function () {
     wpsmsRepeatingMessages.init();
 
+    jQuery('.wpsms-sendsms select').each(function () {
+        jQuery(this).select2({
+            minimumResultsForSearch: Infinity,
+            dropdownCssClass: 'wpsms-sendsms-select2-dropdown',
+            templateResult: formatOptions,
+            templateSelection: formatOptions
+        });
+
+
+    });
+
+    function formatOptions(data) {
+        if (!data.element) {
+            return data.text;
+        }
+        var formattedOption = data.text;
+        if (jQuery(data.element).data('target')) {
+            formattedOption = jQuery(`<span class='js-wp-sms-openAioModal' data-target='${jQuery(data.element).data('target')}'>${data.text}</span>`);
+        }
+        return formattedOption;
+    }
+
     jQuery("#wp_get_message").counter({
         count: 'up',
         goal: 'sky',
@@ -251,8 +273,86 @@
                 self.manageNavigationKeys()
             });
 
-            self.fields.toField.element.find('select').on('change', function () {
-                self.manageRecipients()
+            jQuery(self.fields.toField.element).find('select').on('change', function () {
+                var $select = jQuery(this);
+                var value = $select.val();
+                var type = $select.val();
+
+                var $indicator = jQuery('#wc-customers-count');
+                var $b = $indicator.find('b');
+                var $overlay = jQuery('.wpsms-sendsms__overlay');
+
+                if (type === 'numbers' || type === 'subscribers') {
+                    self.manageRecipients && self.manageRecipients();
+                    $b.text('0');
+                    return;
+                }
+
+                if (value === 'roles') {
+                    jQuery.ajax({
+                        url: WP_Sms_Admin_Object.ajaxUrls.UserRolesMobileCountAjax,
+                        method: 'POST',
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $overlay.show();
+                        }
+                    })
+                        .done(function (response) {
+                            if (response && response.success) {
+                                jQuery('#users-mobile-count').text(response.data.total_mobile_count || 0);
+
+                                var $select = jQuery('select[name="wpsms_roles[]"]');
+                                $select.empty();
+                                jQuery.each(response.data.roles, function (index, role) {
+                                    var optionText = role.name + ' (' + role.count + ' ' + wpsms_global.i18n['users_with_number'] + ')';
+                                    $select.append(
+                                        jQuery('<option>', {
+                                            value: role.id,
+                                            html: optionText,
+                                            disabled: role.count === 0
+                                        })
+                                    );
+                                });
+
+                            } else {
+                                console.warn('AJAX responded but not success:', response);
+                            }
+                        })
+                        .fail(function (xhr) {
+                            console.error('AJAX error', xhr.status, xhr.responseText);
+                        })
+                        .always(function () {
+                            $overlay.hide();
+                        });
+                }
+                jQuery.ajax({
+                    url: WP_Sms_Admin_Object.ajaxUrls.RecipientCountsAjax,
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: type,
+                        value: value,
+                        beforeSend: function () {
+                            $overlay.show();
+                        }
+                    }
+                })
+                    .done(function (response) {
+                        if (response && response.success) {
+                            $b.text((response.data.count || 0));
+                            self.manageRecipients && self.manageRecipients();
+                        } else {
+                            $b.text('0');
+                            console.warn('AJAX responded but not success:', response);
+                        }
+                    })
+                    .fail(function (xhr) {
+                        $b.text('0');
+                        console.error('AJAX error', xhr.status, xhr.responseText);
+                    })
+                    .always(function () {
+                        $overlay.hide();
+                    });
             });
 
             self.fields.scheduleField.element.find('input[type="checkbox"]').on('change', function () {
@@ -296,15 +396,15 @@
             let nextTabs = activeTab.nextAll()
 
             if (nextTabs.length < 1) {
-                this.fields.nextButton.element.addClass('inactive')
+                this.fields.nextButton.element.css('opacity', '0').addClass('inactive');
             } else {
-                this.fields.nextButton.element.removeClass('inactive')
+                this.fields.nextButton.element.css('opacity', '1').removeClass('inactive');
             }
 
             if (prevTabs.length < 1) {
-                this.fields.prevButton.element.addClass('inactive')
+                this.fields.prevButton.element.css('opacity', '0').addClass('inactive');
             } else {
-                this.fields.prevButton.element.removeClass('inactive')
+                this.fields.prevButton.element.css('opacity', '1').removeClass('inactive');
             }
         },
 
@@ -489,6 +589,7 @@
                 escapeMarkup: function (markup) {
                     return markup;
                 },
+                dropdownCssClass: 'wpsms-sendsms-select2-dropdown'
             });
         },
 

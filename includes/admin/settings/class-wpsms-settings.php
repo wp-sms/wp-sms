@@ -6,6 +6,8 @@ use Forminator_API;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Utils\PluginHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -31,6 +33,7 @@ class Settings
         'pro_ultimate_members'
     ];
 
+    private $isPremium;
     private $proIsInstalled;
     private $wooProIsInstalled;
 
@@ -56,8 +59,9 @@ class Settings
     public function __construct()
     {
         $this->setting_name      = $this->getCurrentOptionName();
-        $this->proIsInstalled    = Version::pro_is_active();
-        $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->isPremium = LicenseHelper::isPluginLicenseValid();
+        $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+        $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -168,7 +172,7 @@ class Settings
             'newsletter'     => esc_html__('SMS Newsletter', 'wp-sms'),
             'notifications'  => esc_html__('Notifications', 'wp-sms'),
             'message_button' => esc_html__('Message Button', 'wp-sms'),
-            'advanced'       => esc_html__('Advanced', 'wp-sms'),
+            'advanced'       => esc_html__('Advanced Options', 'wp-sms'),
 
             /*
              * Pro Pack tabs
@@ -1831,7 +1835,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled ? esc_html__('URL Shortening via Bitly (Pro)', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
+                    'name' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) ? esc_html__('URL Shortening via Bitly', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
                 ),
                 'short_url_status'             => array(
@@ -1840,14 +1844,14 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
                 ),
                 'short_url_api_token'          => array(
                     'id'       => 'short_url_api_token',
                     'name'     => esc_html__('Bitly API Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
                 ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
@@ -1876,10 +1880,23 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type' => 'textarea',
                     'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
+                'share_anonymous_data_header'         => array(
+                    'id'   => 'share_anonymous_data_header',
+                    'name' => esc_html__('Anonymous Usage Data', 'wp-sms'),
+                    'type' => 'header',
+                ),
+                'share_anonymous_data'           => array(
+                    'id'       => 'share_anonymous_data',
+                    'name'     => esc_html__('Share Anonymous Data', 'wp-sms'),
+                    'type'     => 'checkbox',
+                    'options'  => $options,
+                    'desc'     => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
+                ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        !$this->proIsInstalled ? esc_html__('Google reCAPTCHA Integration (Pro / WooCommerce Pro)', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
+                        // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
+                        (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
                     'type' => 'header',
@@ -1890,21 +1907,21 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => esc_html__('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
+                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
                 'g_recaptcha_site_key'         => array(
                     'id'       => 'g_recaptcha_site_key',
                     'name'     => esc_html__('Site Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => esc_html__('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
-                    'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
+                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
                 'g_recaptcha_secret_key'       => array(
                     'id'       => 'g_recaptcha_secret_key',
                     'name'     => esc_html__('Secret Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => esc_html__('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . esc_html__('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled && !$this->wooProIsInstalled
+                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
             )),
 
@@ -2623,11 +2640,12 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
     /**
      * args[] : header_template
+     * @throws \Exception
      */
     public function render_settings($default = "general", $args = array())
     {
         $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && !$this->proIsInstalled;
+        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium) ;
         $args                    = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function
@@ -2636,6 +2654,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         ob_start(); ?>
         <div class="wrap wpsms-wrap wpsms-settings-wrap">
             <?php echo isset($args['header_template']) ? Helper::loadTemplate($args['header_template']) : Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            View::load('components/objects/share-anonymous-notice');
             ?>
             <div class="wpsms-wrap__top">
                 <?php do_action('wp_sms_settings_page');
@@ -2666,7 +2685,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                             $proLockIcon = '';
 
                             if ($isProTab) {
-                                if (!$this->proIsInstalled) {
+                                if (!$this->proIsInstalled || !$this->isPremium) {
                                     $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
                                 }
                             }
@@ -2706,7 +2725,15 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
 
                     <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                        <?php
+                        if (strpos($this->active_tab, 'addon_') !== false) {
+                            do_action("wp_sms_{$this->active_tab}_before_content_render");
+                        }
 
+                        if (strpos($this->active_tab, 'pro_') !== false) {
+                            do_action("wp_sms_pro_before_content_render");
+                        }
+                        ?>
                         <div class="wpsms-tab-content__box">
                             <?php
                             if (isset($args['setting']) && $args['setting'] == true) {

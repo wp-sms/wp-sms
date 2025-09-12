@@ -37,9 +37,7 @@ class Gateway
             'msg91'          => 'msg91.com',
             'msg360'         => 'msg360.in',
             'ovh'            => 'ovh.com',
-            'livesms'        => 'livesms.eu',
             'thesmsworld'    => 'thesmsworld.com',
-            'ozioma'         => 'ozioma.net',
             'pswin'          => 'pswin.com',
             'ra'             => 'ra.sa',
             'smsfactor'      => 'smsfactor.com',
@@ -61,7 +59,6 @@ class Gateway
             'smsmisr'        => 'smsmisr.com',
             'smsbuddy'       => 'thesmsbuddy.com',
             'smsnoc'         => 'smsnoc.com',
-            'smsgateway'     => 'smsgateway.me',
             'bandwidth'      => 'bandwidth.com',
             '_4jawaly'       => '4jawaly.net',
             'tyntec'         => 'tyntec.com',
@@ -82,13 +79,11 @@ class Gateway
             'mimsms'         => 'mimsms.com',
             'vatansms'       => 'vatansms.com',
             'smsmessenger'   => 'smsmessenger.co.za',
-            'zipwhip'        => 'zipwhip.com',
             'teletopiasms'   => 'teletopiasms.no',
             'sinch'          => 'sinch.com',
             'linkmobility'   => 'linkmobility.no',
             'smspoh'         => 'smspoh.com',
             'sendinblue'     => 'sendinblue.com',
-            'whatsappapi'    => 'app.whatsapp-api.net',
             'rapidsms'       => 'rapidsms.net',
             'apifon'         => 'apifon.com',
             'awssns'         => 'aws.amazon.com',
@@ -98,7 +93,8 @@ class Gateway
             'telesign'       => 'telesign.com',
             'mysms'          => 'mysms.com',
             'brevo'          => 'brevo.com',
-            'cloudtalk'      => 'cloudtalk.io'
+            'cloudtalk'      => 'cloudtalk.io',
+            'threema'        => 'threema.ch'
         ),
         'united states'  => array(
             'telnyx' => 'telnyx.com',
@@ -133,8 +129,6 @@ class Gateway
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
-            'smsdone'   => 'smsd.one',
-            'micron'    => 'microntechbd.com',
             'revesms'   => 'smpp.ajuratech.com',
         ),
         'china'          => array(
@@ -169,7 +163,6 @@ class Gateway
         'russia'         => array(
             'sigmasms'   => 'sigmasms.ru',
             'turbosms'   => 'turbosms.ua',
-            'smstraffic' => 'smstraffic.eu',
         ),
         'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
@@ -654,15 +647,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'easysendsms'      => 'easysendsms.com',
                 'wali'             => 'wali.chat',
                 'torpedos'         => 'torpedos, smsplus.com.br',
-                'smss'             => 'smss.co',
-                'bearsms'          => 'bearsms',
                 'cheapglobalsms'   => 'cheapglobalsms.com',
                 'instantalerts'    => 'instantalerts.co',
-                'mobtexting'       => 'mobtexting.com',
                 'sms77'            => 'sms77.de (seven)',
                 'unisender'        => 'unisender.com',
                 'uwaziimobile'     => 'uwaziimobile.com',
-                'waapi'            => 'whatsappmessagesbywaapi.co',
                 'dexatel'          => 'dexatel.com',
                 'aobox'            => 'aobox.it',
                 'sendapp'          => 'Sendapp SMS',
@@ -753,7 +742,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             ),
             'italy'                => array(
                 'smshosting' => 'smshosting.it',
-                'dot4all'    => 'sms4marketing.it',
                 'comilio'    => 'comilio.it',
                 'aruba'      => 'aruba.it',
             ),
@@ -775,125 +763,60 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'fast2sms'                => 'fast2sms.com'
             ),
             'iran'                 => array(
-                'iransmspanel'   => 'iransmspanel.ir',
-                'chaparpanel'    => 'chaparpanel.ir',
-                'markazpayamak'  => 'markazpayamak.ir',
-                'adpdigital'     => 'adpdigital.com',
-                'hostiran'       => 'hostiran.net',
-                'sunwaysms'      => 'sunwaysms.com',
-                'farapayamak'    => 'farapayamak.com',
-                'smsde'          => 'smsde.ir',
-                'payamakde'      => 'payamakde.ir',
-                'panizsms'       => 'panizsms.com',
-                'sepehritc'      => 'sepehritc.com',
-                'payameavval'    => 'payameavval.com',
-                'smsclick'       => 'smsclick.ir',
-                'persiansms'     => 'persiansms.com',
-                'ariaideh'       => 'ariaideh.com',
-                'sms_s'          => 'modiresms.com',
-                'sadat24'        => 'sadat24.ir',
-                'smscall'        => 'smscall.ir',
-                'tablighsmsi'    => 'tablighsmsi.com',
-                'paaz'           => 'paaz.ir',
-                'textsms'        => 'textsms.ir',
-                'jahanpayamak'   => 'jahanpayamak.info',
-                'opilo'          => 'opilo.com',
-                'barzinsms'      => 'barzinsms.ir',
-                'smsmart'        => 'smsmart.ir',
-                'loginpanel'     => 'loginpanel.ir',
-                'imencms'        => 'imencms.com',
-                'tcisms'         => 'tcisms.com',
-                'caffeweb'       => 'caffeweb.com',
-                'nasrpayam'      => 'nasrPayam.ir',
-                'smsbartar'      => 'sms-bartar.com',
-                'fayasms'        => 'fayasms.ir',
-                'payamresan'     => 'payam-resan.com',
-                'mdpanel'        => 'ippanel.com',
-                'payameroz'      => 'payameroz.ir',
-                'niazpardaz'     => 'niazpardaz.com',
-                'niazpardazcom'  => 'niazpardaz.com - New',
-                'hisms'          => 'hi-sms.ir',
-                'joghataysms'    => '051sms.ir',
-                'mediana'        => 'mediana.ir',
-                'aradsms'        => 'arad-sms.ir',
-                'asiapayamak'    => 'webdade.com',
-                'sharifpardazan' => '2345.ir',
-                'aradpayamak'    => 'aradpayamak.net',
-                'sarabsms'       => 'sarabsms.ir',
-                'ponishasms'     => 'ponishasms.ir',
-                'payamakalmas'   => 'payamakalmas.ir',
-                'sms'            => 'sms.ir',
-                'popaksms'       => 'popaksms.ir',
-                'novin1sms'      => 'novin1sms.ir',
-                '_500sms'        => '500sms.ir',
-                'matinsms'       => 'MatinSMS.ir',
-                'iranspk'        => 'iranspk.ir',
-                'freepayamak'    => 'freepayamak.ir',
-                'itpayamak'      => 'itpayamak.ir',
-                'irsmsland'      => 'irsmsland.ir',
-                'avalpayam'      => 'avalpayam.com',
-                'smstoos'        => 'smstoos.ir',
-                'smsmaster'      => 'smsmaster.ir',
-                'ssmss'          => 'ssmss.ir',
-                'isun'           => 'isun.company',
-                'idehpayam'      => 'idehpayam.com',
-                'smsarak'        => 'smsarak.ir',
-                'novinpayamak'   => 'novinpayamak.com',
-                'melipayamak'    => 'melipayamak.ir',
-                'postgah'        => 'postgah.net',
-                'smsfa'          => 'smsfa.net',
-                'rayanbit'       => 'rayanbit.net',
-                'smsmelli'       => 'smsmelli.com',
-                'smsban'         => 'smsban.ir',
-                'smsroo'         => 'smsroo.ir',
-                'navidsoft'      => 'navid-soft.ir',
-                'afe'            => 'afe.ir',
-                'smshooshmand'   => 'smshooshmand.com',
-                'asanak'         => 'asanak.ir',
-                'payamakpanel'   => 'payamak-panel.com',
-                'barmanpayamak'  => 'barmanpayamak.ir',
-                'farazpayam'     => 'farazpayam.com',
-                '_0098sms'       => '0098sms.com',
-                'amansoft'       => 'amansoft.ir',
-                'faraed'         => 'faraed.com',
-                'spadbs'         => 'spadsms.ir',
-                'bandarsms'      => 'bandarit.ir',
-                'tgfsms'         => 'tgfsms.ir',
-                'payamgah'       => 'payamgah.net',
-                'sabasms'        => 'sabasms.biz',
-                'chapargah'      => 'chapargah.ir',
-                'yashilsms'      => 'yashil-sms.ir',
-                'ismsie'         => 'isms.ir',
-                'wifisms'        => 'wifisms.ir',
-                'razpayamak'     => 'razpayamak.com',
-                'bestit'         => 'bestit.co',
-                'pegahpayamak'   => 'pegah-payamak.ir',
-                'adspanel'       => 'adspanel.ir',
-                'mydnspanel'     => 'mydnspanel.com',
-                'esms24'         => 'esms24.ir',
-                'payamakaria'    => 'payamakaria.ir',
-                'pichakhost'     => 'sitralweb.com',
-                'tsms'           => 'tsms.ir',
-                'parsasms'       => 'parsasms.com',
-                'modiranweb'     => 'modiranweb.net',
-                'smsline'        => 'smsline.ir',
-                'iransms'        => 'iransms.co',
-                'arkapayamak'    => 'arkapayamak.ir',
-                'smsservice'     => 'smsservice.ir',
-                'parsgreen'      => 'api.ir',
-                'firstpayamak'   => 'firstpayamak.ir',
-                'kavenegar'      => 'kavenegar.com',
-                '_18sms'         => '18sms.ir',
-                'eshare'         => 'eshare.com',
-                'abrestan'       => 'abrestan.com',
-                'sabanovin'      => 'sabanovin.com',
-                'candoosms'      => 'candoosms.com',
-                'hirosms'        => 'hiro-sms.com',
-                'onlinepanel'    => 'onlinepanel.ir',
-                'rayansmspanel'  => 'rayansmspanel.ir',
-                'farazsms'       => 'farazsms.com',
-                'raygansms'      => 'raygansms.com',
-                'signalads'      => 'signalads.com'
+                'iransmspanel'  => 'iransmspanel.ir',
+                'markazpayamak' => 'markazpayamak.ir',
+                'adpdigital'    => 'adpdigital.com',
+                'hostiran'      => 'hostiran.net',
+                'sunwaysms'     => 'sunwaysms.com',
+                'farapayamak'   => 'farapayamak.com',
+                'smsclick'      => 'smsclick.ir',
+                'persiansms'    => 'persiansms.com',
+                'smscall'       => 'smscall.ir',
+                'paaz'          => 'paaz.ir',
+                'textsms'       => 'textsms.ir',
+                'loginpanel'    => 'loginpanel.ir',
+                'nasrpayam'     => 'nasrPayam.ir',
+                'smsbartar'     => 'sms-bartar.com',
+                'payamresan'    => 'payam-resan.com',
+                'mdpanel'       => 'ippanel.com',
+                'payameroz'     => 'payameroz.ir',
+                'mediana'       => 'mediana.ir',
+                'aradsms'       => 'arad-sms.ir',
+                'sms'           => 'sms.ir',
+                'novin1sms'     => 'novin1sms.ir',
+                'smstoos'       => 'smstoos.ir',
+                'ssmss'         => 'ssmss.ir',
+                'idehpayam'     => 'idehpayam.com',
+                'smsmelli'      => 'smsmelli.com',
+                'smsban'        => 'smsban.ir',
+                'afe'           => 'afe.ir',
+                'asanak'        => 'asanak.ir',
+                '_0098sms'      => '0098sms.com',
+                'spadbs'        => 'spadsms.ir',
+                'bandarsms'     => 'bandarit.ir',
+                'chapargah'     => 'chapargah.ir',
+                'ismsie'        => 'isms.ir',
+                'razpayamak'    => 'razpayamak.com',
+                'bestit'        => 'bestit.co',
+                'adspanel'      => 'adspanel.ir',
+                'mydnspanel'    => 'mydnspanel.com',
+                'payamakaria'   => 'payamakaria.ir',
+                'tsms'          => 'tsms.ir',
+                'parsasms'      => 'parsasms.com',
+                'smsline'       => 'smsline.ir',
+                'parsgreen'     => 'api.ir',
+                'kavenegar'     => 'kavenegar.com',
+                '_18sms'        => '18sms.ir',
+                'sabanovin'     => 'sabanovin.com',
+                'candoosms'     => 'candoosms.com',
+                'hirosms'       => 'hiro-sms.com',
+                'onlinepanel'   => 'onlinepanel.ir',
+                'rayansmspanel' => 'rayansmspanel.ir',
+                'farazsms'      => 'farazsms.com',
+                'raygansms'     => 'raygansms.com',
+                'signalads'     => 'signalads.com',
+                'matinsms'      => 'MatinSMS.ir',
+                'melipayamak'   => 'melipayamak.ir',
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
@@ -902,7 +825,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'deewan'       => 'deewan.sa',
                 'jawalbsms'    => 'jawalbsms.ws',
                 'unifonic'     => 'unifonic.com',
-                'asr3sms'      => 'asr3sms.com',
                 'mobiledotnet' => 'mobile.net.sa',
                 'zain'         => 'zain.im',
                 'safasms'      => 'safa-sms.com',
@@ -956,13 +878,16 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     /**
      * @return string
      */
-    public static function status()
+    public static function status($return = false)
     {
         try {
             global $sms;
 
             //Check that, Are we in the Gateway WP_SMS tab setting page or not?
-            if (is_admin() and isset($_REQUEST['page']) and isset($_REQUEST['tab']) and $_REQUEST['page'] == 'wp-sms-settings' and $_REQUEST['tab'] == 'gateway') {
+            if (
+                (is_admin() && isset($_REQUEST['page'], $_REQUEST['tab']) && $_REQUEST['page'] === 'wp-sms-settings' && $_REQUEST['tab'] === 'gateway')
+                || $return === true
+            ) {
 
                 // Get credit
                 $result = $sms->GetCredit();
@@ -973,6 +898,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                     // Update credit
                     update_option('wpsms_gateway_credit', 0);
+
+                    if ($return) {
+                        return false;
+                    }
 
                     return Helper::loadTemplate('admin/label-button.php', array(
                         'type'  => 'inactive',
@@ -985,7 +914,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 }
                 self::$get_response = var_export($result, true);
 
-                // Return html
+                if ($return) {
+                    return true;
+                }
+
                 return Helper::loadTemplate('admin/label-button.php', array(
                     'type'  => 'active',
                     'label' => esc_html__('Active', 'wp-sms')
@@ -993,6 +925,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             }
         } catch (Exception $e) {
             self::$get_response = $e->getMessage();
+
+            if ($return) {
+                return false;
+            }
+
             return Helper::loadTemplate('admin/label-button.php', array(
                 'type'  => 'inactive',
                 'label' => esc_html__('Inactive', 'wp-sms')
@@ -1519,5 +1456,29 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'cta_link'    => admin_url('admin.php?page=wp-sms-settings&tab=gateway'),
             ]);
         }
+    }
+
+    /**
+     * Extracts arguments from the message body using a specified separator.
+     *
+     * This method splits the message (`$this->msg`) by the given separator (default is colon `:`)
+     * and returns the resulting parts as an array. If the message cannot be split properly,
+     * it returns null.
+     *
+     * @param string $separator The character used to separate arguments in the message. Default is ":".
+     *
+     * @return array|null Returns an array of message parts if successful, or null if splitting fails.
+     *
+     * @author Amir Pirmoradian <piramir77@gmail.com>
+     */
+    public function getArgsFromPatternedMessages($separator = ":")
+    {
+        $message_body = explode($separator, $this->msg);
+
+        if (is_array($message_body)) {
+            return $message_body;
+        }
+
+        return null;
     }
 }

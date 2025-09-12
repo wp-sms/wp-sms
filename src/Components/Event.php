@@ -1,5 +1,6 @@
 <?php
 namespace WP_SMS\Components;
+namespace WP_SMS\Components;
 class Event
 {
     /**
@@ -16,10 +17,10 @@ class Event
     /**
      * Schedules a WordPress event hook if it is not already scheduled.
      *
-     * @param string    $hook       The action hook of the event.
-     * @param int       $timestamp  The timestamp for when the event should occur.
-     * @param string    $recurrence How often the event should be repeated.
-     * @param mixed     $callback   The callback of the event.
+     * @param string $hook The action hook of the event.
+     * @param int $timestamp The timestamp for when the event should occur.
+     * @param string $recurrence How often the event should be repeated.
+     * @param mixed $callback The callback of the event.
      *
      * @return void
      */
@@ -87,6 +88,12 @@ class Event
         }
     }
 
+    /**
+     * Retrieves an array of schedules with their intervals and display names.
+     *
+     * @return array
+     * @throws \Exception
+     */
     public static function getSchedules()
     {
         $timestamp = time();

@@ -1,5 +1,5 @@
 
-.wp-sms-modal--premium {
+.wp-sms-modal--aio {
   position: fixed;
   background: #000000b3;
   top: 0;
@@ -26,10 +26,10 @@
     box-sizing: border-box;
   }
 
-  .wp-sms-modal__premium-step {
+  .wp-sms-modal__aio-step {
     display: none;
 
-    &__desc , &__desc P{
+    &-desc{
       font-weight: 400;
       font-size: 15px;
       line-height: 24px;
@@ -46,7 +46,7 @@
     }
   }
 
-  .wp-sms-modal__content--premium-steps {
+  .wp-sms-modal__content--aio-steps {
     display: none;
     width: 820px;
     padding: 32px;
@@ -54,15 +54,15 @@
     max-width: 86%;
   }
 
-  .wp-sms-modal__premium-step--active {
+  .wp-sms-modal__aio-step--active {
     display: block; /* Show the active step */
   }
 
-  .wp-sms-premium-step {
+  .wp-sms-aio-step {
 
     &__header {
       position: relative;
-      span.wp-sms-premium-step__skip {
+      span.wp-sms-aio-step__skip {
         width: 30px;
         height: 30px;
         display: inline-block;
@@ -82,7 +82,7 @@
         }
       }
 
-      .wp-sms-premium-step__title{
+      .wp-sms-aio-step__title{
         color: $dim-black-color;
         font-weight: 500;
         font-size: 21px;
@@ -117,18 +117,16 @@
         gap: 24px;
       }
 
-      .js-wp-sms-premium-step__title{
+      .js-wp-sms-aio-step__title{
         display: none;
       }
 
-      .wp-sms-premium-step__content {
+      .wp-sms-aio-step__content {
         @media(min-width: 769px) {
           width: calc(100% - 210px);
         }
-        .wp-sms-modal__premium-step__desc{
-          margin: 0!important;
-        }
-        p , .wp-sms-modal__premium-step__desc{
+
+        p {
           font-size: 14px;
           font-weight: 400;
           color: #292D32;
@@ -147,7 +145,7 @@
         }
       }
 
-      .wp-sms-premium-step__image {
+      .wp-sms-aio-step__image {
         width: 100%;
         margin-top: 16px;
         height: auto;
@@ -157,7 +155,7 @@
         }
       }
 
-      .js-wp-sms-premium-step__title {
+      .js-wp-sms-aio-step__title {
         font-weight: 500;
         font-size: 21px;
         margin-top: -40px;
@@ -179,7 +177,7 @@
         color: #0C0C0D;
       }
 
-      .wp-sms-premium-step__features-list {
+      .wp-sms-aio-step__features-list {
         margin: 0;
         display: flex;
         flex-direction: column;
@@ -230,7 +228,7 @@
             background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxOSAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC44MzQyIDQuNzVMOC4xNTY1MiAxMS40Mjc3TDQuNzAwMTQgNy45NzEyOUwzLjU2MjUgOS4xMDg5M0w4LjE1NjUyIDEzLjcwMzdMMTUuOTcyNiA1Ljg4ODQ0TDE0LjgzNDIgNC43NVoiIGZpbGw9IiNBOUFBQUUiLz4KPC9zdmc+Cg==") center center no-repeat;
           }
 
-          .wp-sms-premium-step__feature-badge {
+          .wp-sms-aio-step__feature-badge {
             color: #56585A;
             background: #EEEFF1;
             padding: 2px 6px;
@@ -243,14 +241,14 @@
         }
       }
 
-      .wp-sms-premium-step__actions {
+      .wp-sms-aio-step__actions {
         width: 100%;
         text-align: center;
         margin-top: 30px;
 
 
-        .js-wp-sms-premium-steps__side-buttons {
-          .wp-sms-premium-step__action-container {
+        .js-wp-sms-aio-steps__side-buttons {
+          .wp-sms-aio-step__action-container {
             display: none;
 
             &.active {
@@ -258,12 +256,12 @@
             }
           }
 
-          .wp-sms-premium-step__action-btn--upgrade--active {
+          .wp-sms-aio-step__action-btn--upgrade--active {
             display: flex;
           }
         }
 
-        .wp-sms-premium-step__action-btn {
+        .wp-sms-aio-step__action-btn {
           padding: 8px 28px;
           border-radius: 4px;
           font-size: 14px;

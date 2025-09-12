@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
     }
     if (wpSmsItiTel) {
         const body = document.body;
-        const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
+        const direction = 'ltr';
         wpSmsItiTel.setAttribute('dir', direction);
         wpSmsItiTel.setAttribute('autocomplete', 'off');
         wpSmsItiTel.value = '';
@@ -48,7 +48,8 @@ jQuery(document).ready(function ($) {
             allowDropdown: true,
             strictMode: true,
             useFullscreenPopup: false,
-            dropdownContainer: body.classList.contains('rtl') ? null : body,
+            // dropdownContainer: body.classList.contains('rtl') ? null : body,
+            dropdownContainer: body,
             nationalMode: false,
             autoPlaceholder: "polite",
             utilsScript: wp_sms_intel_tel_util.util_js,
@@ -174,6 +175,36 @@ jQuery(document).ready(function ($) {
             return $(td).find('span').data('sort') || 0;
         });
     };
+
+    function parseListAttr(val) {
+        return (val || '')
+            .toString()
+            .toLowerCase()
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+
+    DataTable.ext.search.push(function (settings, data, dataIndex) {
+        const sel = document.getElementById('filterCountries');
+        if (!sel) return true;
+
+        const selected = (sel.value || '').toString().trim();
+        if (!selected || selected.toLowerCase() === 'all') return true;
+
+        const needle = selected.toLowerCase();
+        const rowNode = settings.aoData[dataIndex].nTr;
+
+        const countries = parseListAttr(rowNode.getAttribute('data-countries'));
+        const regions   = parseListAttr(rowNode.getAttribute('data-regions'));
+
+        if (needle === 'global') {
+            return countries.includes('global') || regions.includes('global');
+        }
+        // Match if either countries OR regions contain the selected label
+        return countries.includes(needle) || regions.includes(needle);
+    });
+
     let table = new DataTable('.js-table', {
         searching: true,
         info: false,
@@ -226,21 +257,14 @@ jQuery(document).ready(function ($) {
         table.column(0).search(this.value).draw();
     });
 
-
-    let chosen_country = $('.chosen-country').val();
-
-    if ($('#filterCountries option[value="' + chosen_country + '"]').length > 0) {
-        $('#filterCountries').val(chosen_country).trigger('change');
-        table.column(3).search(chosen_country).draw();
+    let chosen_origin = $('.chosen-origin').val() || $('.chosen-country').val() || '';
+    if (chosen_origin && $('#filterCountries option[value="' + chosen_origin + '"]').length > 0) {
+        $('#filterCountries').val(chosen_origin).trigger('change.select2');
+        table.draw();
     }
 
-    $('#filterCountries').on('select2:select', function (e) {
-        let selectedCountry = e.params.data.id;
-        if (selectedCountry === 'All') {
-            table.column(3).search('').draw();
-        } else {
-            table.column(3).search(selectedCountry).draw();
-        }
+    $('#filterCountries').on('select2:select change', function () {
+        table.draw();
     });
 
     // Navigation step click event
