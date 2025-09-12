@@ -26,130 +26,131 @@ class GatewaySettings extends AbstractSettingGroup {
         return [
             new Section([
                 'id' => 'sms_gateway_setup',
-                'title' => __('SMS Gateway Setup', 'wp-sms'),
-                'subtitle' => __('Configure your SMS gateway provider settings', 'wp-sms'),
+                'title' => __('Connect Your Gateway', 'wp-sms'),
+                'subtitle' => __('Set your provider and add the needed credentials.', 'wp-sms'),
                 'fields' => $this->getGatewaySetupFields()
             ]),
             new Section([
                 'id' => 'gateway_overview',
-                'title' => __('Gateway Overview', 'wp-sms'),
-                'subtitle' => __('View your gateway status and capabilities', 'wp-sms'),
+                'title' => __('Gateway Status', 'wp-sms'),
+                'subtitle' => __('Check connection and what your gateway supports.', 'wp-sms'),
+                // Note: Consider adding a "Refresh status" action to re-check balance and capabilities
                 'fields' => [
                     new Field([
                         'key' => 'account_credit',
-                        'label' => __('Status', 'wp-sms'),
+                        'label' => __('Connection Status', 'wp-sms'),
                         'type' => 'html',
                         'description' => Gateway::status() ?: '<span class="wpsms-indicator__status inactive">
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span>Not Available
+    <span>Unavailable
 </span>'
                     ]),
                     new Field([
                         'key' => 'account_response',
-                        'label' => __('Balance / Credit', 'wp-sms'),
+                        'label' => __('Account Balance', 'wp-sms'),
                         'type' => 'html',
                         'description' => Gateway::response() ?: '<span class="wpsms-indicator__status inactive">
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span>Not Available
+    <span>Unavailable
 </span>'
                     ]),
                     new Field([
                         'key' => 'incoming_message',
-                        'label' => __('Incoming Message', 'wp-sms'),
+                        'label' => __('Inbound SMS', 'wp-sms'),
                         'type' => 'html',
                         'description' => Gateway::incoming_message_status() ?: '<span class="wpsms-indicator__status inactive">
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span>Not Available
+    <span>Unavailable
 </span>'
                     ]),
                     new Field([
                         'key' => 'bulk_send',
-                        'label' => __('Send Bulk SMS', 'wp-sms'),
+                        'label' => __('Bulk Sending', 'wp-sms'),
                         'type' => 'html',
                         'description' => Gateway::bulk_status() ?: '<span class="wpsms-indicator__status inactive">
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span>Not Available
+    <span>Unavailable
 </span>'
                     ]),
                     new Field([
                         'key' => 'media_support',
-                        'label' => __('Send MMS', 'wp-sms'),
+                        'label' => __('MMS Support', 'wp-sms'),
                         'type' => 'html',
                         'description' => Gateway::mms_status() ?: '<span class="wpsms-indicator__status inactive">
     <svg viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg">
         <circle cx="3" cy="2" r="1" stroke-width="2"></circle>
     </svg>
-    <span>Not Available
+    <span>Unavailable
 </span>'
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'account_balance_visibility',
-                'title' => __('Account Balance Visibility', 'wp-sms'),
-                'subtitle' => __('Configure where account credit information is displayed', 'wp-sms'),
+                'title' => __('Balance Display', 'wp-sms'),
+                'subtitle' => __('Choose where to show your account balance.', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'account_credit_in_menu',
-                        'label' => __('Admin Menu Display', 'wp-sms'),
+                        'label' => __('Show Balance in Admin Menu', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Shows account credit in the admin menu.', 'wp-sms')
+                        'description' => __('Show your balance in the sidebar menu.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'account_credit_in_sendsms',
-                        'label' => __('SMS Page Display', 'wp-sms'),
+                        'label' => __('Show Balance on Send SMS Page', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Displays account credit on the SMS sending page.', 'wp-sms')
+                        'description' => __('Show your balance on the Send SMS screen.', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'sms_dispatch_optimization',
-                'title' => __('SMS Dispatch & Number Optimization', 'wp-sms'),
-                'subtitle' => __('Configure SMS delivery methods and number handling', 'wp-sms'),
+                'title' => __('Sending and Numbers', 'wp-sms'),
+                'subtitle' => __('Choose how to send messages and how to handle numbers.', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'sms_delivery_method',
                         'label' => __('Delivery Method', 'wp-sms'),
                         'type' => 'select',
-                        'description' => __('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.', 'wp-sms'),
+                        'description' => __('Choose how messages are sent. Large lists are queued automatically when recipients exceed 20.', 'wp-sms'),
                         'options' => [
-                            'api_direct_send' => __('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.', 'wp-sms'),
-                            'api_async_send' => __('Scheduled SMS Delivery: Configures API to send messages at predetermined times.', 'wp-sms'),
-                            'api_queued_send' => __('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.', 'wp-sms'),
+                            'api_direct_send' => __('Send Instantly', 'wp-sms'),
+                            'api_async_send' => __('Schedule Send', 'wp-sms'),
+                            'api_queued_send' => __('Queue for Bulk', 'wp-sms'),
                         ]
                     ]),
                     new Field([
                         'key' => 'send_unicode',
-                        'label' => __('Unicode Messaging', 'wp-sms'),
+                        'label' => __('Unicode Messages', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Send messages in languages that use non-English characters, like Persian, Arabic, Chinese, or Cyrillic.', 'wp-sms')
+                        'description' => __('Allow non-Latin characters such as Persian or Arabic. This reduces the characters allowed per SMS.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'clean_numbers',
-                        'label' => __('Number Formatting', 'wp-sms'),
+                        'label' => __('Normalize Numbers', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Strips spaces from phone numbers before sending.', 'wp-sms')
+                        'description' => __('Remove spaces and common separators before sending.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'send_only_local_numbers',
-                        'label' => __('Restrict to Local Numbers', 'wp-sms'),
+                        'label' => __('Limit Delivery by Country', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Send messages to numbers within the same country to avoid international fees.', 'wp-sms')
+                        'description' => __('Send only to selected countries to avoid international fees.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'only_local_numbers_countries',
-                        'label' => __('Allowed Countries for SMS', 'wp-sms'),
+                        'label' => __('Allowed Countries', 'wp-sms'),
                         'type' => 'multiselect',
-                        'description' => __('Specify countries allowed for SMS delivery. Only listed countries will receive messages.', 'wp-sms'),
+                        'description' => __('Only numbers from these countries will receive messages.', 'wp-sms'),
                         'options' => $this->getCountriesOptions(),
                         'show_if' => ['send_only_local_numbers' => true]
                     ]),
@@ -165,9 +166,9 @@ class GatewaySettings extends AbstractSettingGroup {
         $fields = [
             new Field([
                 'key' => 'gateway_name',
-                'label' => __('Choose the Gateway', 'wp-sms'),
+                'label' => __('Gateway Provider', 'wp-sms'),
                 'type' => 'advancedselect',
-                'description' => __('Select your preferred SMS Gateway to send messages.', 'wp-sms'),
+                'description' => __('Select the SMS gateway you want to use.', 'wp-sms'),
                 'options' => Gateway::gateway(),
                 'auto_save_and_refresh' => true
             ]),
@@ -175,7 +176,7 @@ class GatewaySettings extends AbstractSettingGroup {
                 'key' => 'gateway_help',
                 'label' => __('Gateway Guide', 'wp-sms'),
                 'type' => 'html',
-                'description' => '',
+                'description' => __('See setup steps and tips for your selected gateway.', 'wp-sms'),
                 'options' => Gateway::help()
             ])
         ];
@@ -222,22 +223,22 @@ class GatewaySettings extends AbstractSettingGroup {
             'gateway_username' => [
                 'name' => __('API Username', 'wp-sms'),
                 'type' => 'text',
-                'description' => __('Enter API username of gateway', 'wp-sms'),
+                'description' => __('Your API username from the gateway dashboard.', 'wp-sms'),
             ],
             'gateway_password' => [
                 'name' => __('API Password', 'wp-sms'),
                 'type' => 'text',
-                'description' => __('Enter API password of gateway', 'wp-sms'),
+                'description' => __('Your API password or token if required.', 'wp-sms'),
             ],
             'gateway_sender_id' => [
-                'name' => __('Sender ID/Number', 'wp-sms'),
+                'name' => __('Sender ID or Number', 'wp-sms'),
                 'type' => 'text',
-                'description' => __('Sender number or sender ID', 'wp-sms'),
+                'description' => __('The number or approved sender ID used for outgoing SMS.', 'wp-sms'),
             ],
             'gateway_key' => [
                 'name' => __('API Key', 'wp-sms'),
                 'type' => 'text',
-                'description' => __('Enter API key of gateway', 'wp-sms'),
+                'description' => __('Your API key from the gateway dashboard.', 'wp-sms'),
             ],
         ];
 
