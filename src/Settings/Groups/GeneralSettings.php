@@ -30,73 +30,79 @@ class GeneralSettings extends AbstractSettingGroup {
             new Section([
                 'id' => 'administrator_notifications',
                 'title' => __('Administrator Notifications', 'wp-sms'),
-                'subtitle' => __('Configure administrator notification settings', 'wp-sms'),
+                'subtitle' => __('Choose where admin SMS alerts are sent.', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'admin_mobile_number',
-                        'label' => __('Admin Mobile Number', 'wp-sms'),
+                        'label' => __('Admin mobile number', 'wp-sms'),
                         'type' => 'tel',
-                        'description' => __('Mobile number where the administrator will receive notifications.', 'wp-sms')
+                        'description' => __('WP SMS sends admin alerts to this number.', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'mobile_field_configuration',
-                'title' => __('Mobile Field Configuration', 'wp-sms'),
-                'subtitle' => __('Configure mobile number field settings for user profiles and forms', 'wp-sms'),
+                'title' => __('Mobile Number Field', 'wp-sms'),
+                'subtitle' => __('Add or reuse a mobile field in profiles and checkout. Set validation and country options.', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'add_mobile_field',
                         'label' => __('Mobile Number Field Source', 'wp-sms'),
                         'type' => 'advancedselect',
-                        'description' => __('Create a new mobile number field or use an existing phone field.', 'wp-sms'),
+                        'description' => __('Create a new mobile number field or reuse an existing one.', 'wp-sms'),
                         'options' => [
+                            'disable' => __('Disable', 'wp-sms'),
                             'WordPress' => [
-                                'disable' => __('Disable', 'wp-sms'),
-                                'add_mobile_field_in_profile' => __('Insert a mobile number field into user profiles', 'wp-sms')
+                                'add_mobile_field_in_profile' => __('Add to user profiles', 'wp-sms')
                             ],
                             'WooCommerce' => [
-                                'add_mobile_field_in_wc_billing' => __('Add a mobile number field to billing and checkout pages', 'wp-sms'),
-                                'use_phone_field_in_wc_billing' => __('Use the existing billing phone field', 'wp-sms')
+                                'add_mobile_field_in_wc_billing' => __('Add to billing and checkout', 'wp-sms'),
+                                'use_phone_field_in_wc_billing' => __('Use Billing phone field', 'wp-sms')
+                            ],
+                            'Ultimate Member' => [
+                                'use_ultimate_member_mobile_field' => __('Use existing field', 'wp-sms')
+                            ],
+                            'BuddyPress' => [
+                                'use_buddypress_mobile_field' => __('Use existing field', 'wp-sms')
                             ]
                         ]
                     ]),
                     new Field([
                         'key' => 'um_sync_field_name',
-                        'label' => __('Select the Existing Field', 'wp-sms'),
+                        'label' => __('Ultimate Member field to sync', 'wp-sms'),
                         'type' => 'select',
-                        'description' => __('Select the field from ultimate member register form that you want to be synced(Default is "Mobile Number").', 'wp-sms'),
+                        'description' => __('Choose the Ultimate Member registration field to sync as the mobile number. Default is "Mobile Number".', 'wp-sms'),
                         'options' => $this->getUmRegisterFormFields(),
                         'default' => 'mobile_number',
                         'show_if' => ['add_mobile_field' => 'use_ultimate_member_mobile_field']
                     ]),
                     new Field([
                         'key' => 'um_sync_previous_members',
-                        'label' => __('Sync Old Members Too?', 'wp-sms'),
+                        'label' => __('Sync existing members', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms'),
+                        'description' => __('Also sync numbers for members who registered before this option was enabled.', 'wp-sms'),
                         'show_if' => ['add_mobile_field' => 'use_ultimate_member_mobile_field']
                     ]),
                     new Field([
                         'key' => 'bp_mobile_field_id',
-                        'label' => __('Select the Existing Field', 'wp-sms'),
+                        'label' => __('BuddyPress field', 'wp-sms'),
                         'type' => 'advancedselect',
-                        'description' => __('Select the BuddyPress field', 'wp-sms'),
+                        'description' => __('Choose the BuddyPress profile field that stores the mobile number.', 'wp-sms'),
                         'options' => $this->getBuddyPressProfileFields(),
                         'show_if' => ['add_mobile_field' => 'use_buddypress_mobile_field']
                     ]),
                     new Field([
                         'key' => 'bp_sync_fields',
-                        'label' => __('Sync Fields', 'wp-sms'),
+                        'label' => __('Sync BuddyPress numbers', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Sync and compatibility the BuddyPress mobile numbers with plugin.', 'wp-sms'),
+                        'description' => __('Keep BuddyPress mobile numbers in sync with WP SMS.', 'wp-sms'),
                         'show_if' => ['add_mobile_field' => 'use_buddypress_mobile_field']
                     ]),
                     new Field([
                         'key' => 'optional_mobile_field',
-                        'label' => __('Mobile Field Mandatory Status', 'wp-sms'),
+                        'label' => __('Required or optional', 'wp-sms'),
                         'type' => 'select',
-                        'description' => __('Set the mobile number field as optional or required.', 'wp-sms'),
+                        'description' => __('Choose whether users must provide a mobile number.', 'wp-sms'),
                         'options' => [
                             '0' => __('Required', 'wp-sms'),
                             'optional' => __('Optional', 'wp-sms')
@@ -104,29 +110,30 @@ class GeneralSettings extends AbstractSettingGroup {
                     ]),
                     new Field([
                         'key' => 'mobile_terms_field_place_holder',
-                        'label' => __('Mobile Field Placeholder', 'wp-sms'),
+                        'label' => __('Placeholder text', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter a sample format for the mobile number that users will see. Example: "e.g., +1234567890".', 'wp-sms')
+                        'description' => __('Example shown inside the field. For example: +1234567890.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'international_mobile',
-                        'label' => __('International Number Input', 'wp-sms'),
+                        'label' => __('International input', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Add a flag dropdown for international format support in the mobile number input field.', 'wp-sms')
+                        'description' => __('Show a country dropdown with flags and format numbers in international format.', 'wp-sms'),
+                        'helper' => __('When enabled, the default country code and min or max digits settings are ignored.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'international_mobile_only_countries',
-                        'label' => __('Only Countries', 'wp-sms'),
+                        'label' => __('Allowed countries', 'wp-sms'),
                         'type' => 'multiselect',
-                        'description' => __('In the dropdown, display only the countries you specify.', 'wp-sms'),
+                        'description' => __('Only show these countries in the dropdown.', 'wp-sms'),
                         'show_if' => ['international_mobile' => true],
                         'options' => wp_sms_countries()->getCountryNamesByCode()
                     ]),
                     new Field([
                         'key' => 'international_mobile_preferred_countries',
-                        'label' => __('Preferred Countries', 'wp-sms'),
+                        'label' => __('Pinned countries (top of list)', 'wp-sms'),
                         'type' => 'multiselect',
-                        'description' => __('Specify the countries to appear at the top of the list.', 'wp-sms'),
+                        'description' => __('These countries appear at the top of the dropdown.', 'wp-sms'),
                         'show_if' => ['international_mobile' => true],
                         'options_depends_on' => 'international_mobile_only_countries',
                         'sortable' => true,
@@ -134,39 +141,38 @@ class GeneralSettings extends AbstractSettingGroup {
                     ]),
                     new Field([
                         'key' => 'mobile_county_code',
-                        'label' => __('Country Code Prefix', 'wp-sms'),
+                        'label' => __('Default country code', 'wp-sms'),
                         'type' => 'select',
-                        'description' => __('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global / Local)\'.', 'wp-sms'),
+                        'description' => __('Used when International input is off. Choose a code to prepend. Select "No country code (Global or local)" for local numbers.', 'wp-sms'),
                         'hide_if' => ['international_mobile' => true],
-                        'options' => array_merge(['0' => __('No country code (Global / Local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged())
+                        'options' => array_merge(['0' => __('No country code (Global or local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged())
                     ]),
                     new Field([
                         'key' => 'mobile_terms_minimum',
-                        'label' => __('Minimum Length Number', 'wp-sms'),
+                        'label' => __('Minimum digits', 'wp-sms'),
                         'type' => 'number',
-                        'description' => __('Specify the shortest allowed mobile number.', 'wp-sms'),
+                        'description' => __('Smallest allowed number length. Symbols are ignored.', 'wp-sms'),
                         'hide_if' => ['international_mobile' => true]
                     ]),
                     new Field([
                         'key' => 'mobile_terms_maximum',
-                        'label' => __('Maximum Length Number', 'wp-sms'),
+                        'label' => __('Maximum digits', 'wp-sms'),
                         'type' => 'number',
-                        'description' => __('Specify the longest allowed mobile number.', 'wp-sms'),
+                        'description' => __('Largest allowed number length. Symbols are ignored.', 'wp-sms'),
                         'hide_if' => ['international_mobile' => true]
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'data_protection_settings',
-                'title' => __('Data Protection Settings', 'wp-sms'),
-                'subtitle' => __('Enhance user privacy with GDPR-focused settings. Activate to ensure compliance with data protection regulations and provide users with transparency and control over their personal information.', 'wp-sms'),
+                'title' => __('Privacy and GDPR', 'wp-sms'),
+                'subtitle' => __('Tools that help you respect user privacy and handle GDPR requests.', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'gdpr_compliance',
-                        'label' => __('GDPR Compliance Enhancements', 'wp-sms'),
+                        'label' => __('Enable GDPR tools', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Implements GDPR adherence by enabling user data export and deletion via mobile number and adding a consent checkbox for SMS newsletter subscriptions.', 'wp-sms'),
-                        'tag' => Tags::NEW
+                        'description' => __('Adds a consent checkbox for SMS marketing. Lets users request export or deletion of their data by mobile number.', 'wp-sms'),
                     ]),
                 ]
             ]),
