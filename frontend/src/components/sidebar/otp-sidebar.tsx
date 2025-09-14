@@ -17,7 +17,7 @@ import {
 import { useSidebar } from '@/hooks/use-sidebar'
 import { RenderIcon } from '@/lib/render-icon'
 
-import { ThemeToggle } from '../theme-toggle'
+import { RenderIcon } from '../../lib/render-icon'
 
 export const OTPSidebar = () => {
   const location = useLocation()

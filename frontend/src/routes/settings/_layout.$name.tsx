@@ -1,13 +1,13 @@
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { AlertCircle } from 'lucide-react'
+import { useEffect } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 
-import { SchemaForm } from '@/components/form/schema-form'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
-import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
-import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
-import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
+import { SettingsDynamicForm } from '@/components/settings/dynamic-form'
+import { SettingsFormActions } from '@/components/settings/form-actions'
+import { useStableCallback } from '@/hooks/use-stable-callback'
+import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
+import { useGetGroupValues } from '@/services/settings/use-get-group-values'
 
 export const Route = createFileRoute('/settings/_layout/$name')({
   loader: ({ context, params }) => {
@@ -43,5 +43,21 @@ function RouteComponent() {
     await mutateAsync(values)
   }
 
-  return <SchemaForm formSchema={schema} defaultValues={defaultValues} onSubmit={handleSubmit} />
+  useEffect(() => {
+    initForm()
+  }, [groupValues?.data, groupSchema?.data, initForm])
+
+  return (
+    <FormProvider {...form}>
+      <div className="flex flex-col gap-y-4">
+        <SettingsDynamicForm
+          groupSchema={groupSchema?.data}
+          isInitialLoading={isGroupSchemaLoading || isGroupValuesLoading}
+          isRefreshing={isGroupSchemaRefetching || isGroupValuesRefetching}
+        />
+
+        <SettingsFormActions />
+      </div>
+    </FormProvider>
+  )
 }
