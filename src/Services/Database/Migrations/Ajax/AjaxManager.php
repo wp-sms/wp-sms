@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\Database\Migrations\Ajax;
 
 use WP_SMS\Components\Assets;
-use WP_SMS\Notice\NoticeManager as Notice;
+use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Utils\Request;
@@ -40,7 +40,7 @@ class AjaxManager
      */
     public function __construct()
     {
-        $this->notice = new Notice();
+        $this->notice = NoticeManager::getInstance();
         add_action('current_screen', [$this, 'handleDoneNotice']);
 
         if (!AjaxFactory::needsMigration()) {
