@@ -130,7 +130,7 @@ class QueueManager
                 <p><a href="%3$s" id="start-queue-migration-btn" class="button-primary">%4$s</a></p>
             </div>',
             esc_html__('WP SMS needs a quick update', 'wp-sms'),
-            __('Run this brief update to keep your stats accurate.', 'wp-sms'),
+            __('Run it to keep the plugin working smoothly.', 'wp-sms'),
             esc_url($migrationUrl),
             esc_html__('Update Now', 'wp-sms')
         );
