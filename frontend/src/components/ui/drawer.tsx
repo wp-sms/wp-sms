@@ -32,9 +32,13 @@ function DrawerOverlay({ className, ...props }: React.ComponentProps<typeof Draw
   )
 }
 
-function DrawerContent({ className, children, ...props }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
-  return (
-    <DrawerPortal data-slot="drawer-portal">
+interface DrawerContentProps extends React.ComponentProps<typeof DrawerPrimitive.Content> {
+  usePortal?: boolean
+}
+
+function DrawerContent({ className, children, usePortal = false, ...props }: DrawerContentProps) {
+  const content = (
+    <>
       <DrawerOverlay />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
@@ -51,8 +55,10 @@ function DrawerContent({ className, children, ...props }: React.ComponentProps<t
         <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
         {children}
       </DrawerPrimitive.Content>
-    </DrawerPortal>
+    </>
   )
+
+  return usePortal ? <DrawerPortal data-slot="drawer-portal">{content}</DrawerPortal> : content
 }
 
 function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
