@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
+import { useNewSaveSettingsValues } from '@/services/settings/use-save-settings-values'
 import type { SchemaField } from '@/types/settings/group-schema'
 
 export const Route = createFileRoute('/otp/_layout/authentication-channels')({
@@ -27,21 +28,42 @@ export const Route = createFileRoute('/otp/_layout/authentication-channels')({
 function RouteComponent() {
   const { data: result } = useSuspenseQuery(getSchemaByGroup({ groupName: 'otp-channel', include_hidden: true }))
   const { data: valuesResult } = useSuspenseQuery(getSettingsValuesByGroup({ groupName: 'otp-channel' }))
+  const { mutateAsync } = useNewSaveSettingsValues({ groupName: 'otp-channel', include_hidden: true })
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedField, setSelectedField] = useState<SchemaField | null>(null)
 
   const groupSchema = result.data.data
 
-  console.log(valuesResult)
+  // const getDirtyFields = () => {
+  //   return Object.entries(form.state.fields)
+  //     .filter(([_, field]) => field.state.meta.isDirty)
+  //     .map(([name]) => name)
+  // }
 
   const form = useForm({
     defaultValues: valuesResult?.data?.data ?? {},
     onSubmit: async ({ value }) => {
-      // Add your submission logic here
-      await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate API call
+      // Collect all possible field keys from schema (including sub-fields)
+      const collectFieldKeys = (fields: SchemaField[] = []): string[] => {
+        return fields.flatMap((f) => [f.key, ...collectFieldKeys(getFieldSubFields(f))])
+      }
 
-      console.log('Form submitted with values:', value)
+      const allFieldKeys = groupSchema?.sections?.flatMap((s) => collectFieldKeys(s.fields ?? [])) ?? []
+
+      // Determine which fields are dirty using form field state
+      const dirtyFieldNames = allFieldKeys.filter((key) => Boolean(form.getFieldMeta?.(key as string)?.isDirty))
+
+      const dirtyValues = dirtyFieldNames.reduce<Record<string, unknown>>((acc, key) => {
+        acc[key] = (value as Record<string, unknown>)[key]
+        return acc
+      }, {})
+
+      if (Object.keys(dirtyValues).length === 0) {
+        return
+      }
+
+      await mutateAsync(dirtyValues)
     },
   })
 
@@ -139,11 +161,16 @@ function RouteComponent() {
         ))}
 
         <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
-          <Button disabled={!form.state.isDirty} type="submit">
+          <Button disabled={!form.state.isDirty || form.state.isSubmitting} type="submit">
             Save Changes
           </Button>
 
-          <Button disabled={!form.state.isDirty} type="reset" variant="secondary" onClick={() => form.reset()}>
+          <Button
+            disabled={!form.state.isDirty || form.state.isSubmitting}
+            type="reset"
+            variant="secondary"
+            onClick={() => form.reset()}
+          >
             Reset
           </Button>
         </div>
