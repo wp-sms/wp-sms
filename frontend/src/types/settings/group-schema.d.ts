@@ -104,25 +104,7 @@ type UseGetGroupSchemaType = {
   response: GetGroupSchemaResponse
 }
 interface GetSchemaByGroupParams {
-  groupName:
-    | 'otp-channel' // this group name is hidden by default
-    | 'general'
-    | 'gateway'
-    | 'message_button'
-    | 'notifications'
-    | 'advanced'
-    | 'newsletter'
-    | 'email'
-    | 'pro_wordpress'
-    | 'contact_form7'
-    | 'gravity_forms'
-    | 'quform'
-    | 'buddypress'
-    | 'ultimate_member'
-    | 'woocommerce'
-    | 'easy_digital_downloads'
-    | 'job_manager'
-    | 'awesome_support'
+  groupName: SettingGroupName
   include_hidden?: boolean
 }
 

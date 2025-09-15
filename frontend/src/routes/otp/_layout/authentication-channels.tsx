@@ -4,6 +4,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { AlertCircle, X } from 'lucide-react'
 import { useState } from 'react'
 
+import type { FieldValue } from '@/components/form/new/field-renderer'
 import { FormField } from '@/components/form/new/form-field'
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -11,25 +12,31 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
+import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
 import type { SchemaField } from '@/types/settings/group-schema'
 
 export const Route = createFileRoute('/otp/_layout/authentication-channels')({
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(getSchemaByGroup({ groupName: 'otp-channel', include_hidden: true })),
+    Promise.all([
+      context.queryClient.ensureQueryData(getSchemaByGroup({ groupName: 'otp-channel', include_hidden: true })),
+      context.queryClient.ensureQueryData(getSettingsValuesByGroup({ groupName: 'otp-channel' })),
+    ]),
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const { data: result } = useSuspenseQuery(getSchemaByGroup({ groupName: 'otp-channel', include_hidden: true }))
+  const { data: valuesResult } = useSuspenseQuery(getSettingsValuesByGroup({ groupName: 'otp-channel' }))
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedField, setSelectedField] = useState<SchemaField | null>(null)
 
   const groupSchema = result.data.data
 
-  console.log(groupSchema)
+  console.log(valuesResult)
 
   const form = useForm({
+    defaultValues: valuesResult?.data?.data ?? {},
     onSubmit: async ({ value }) => {
       // Add your submission logic here
       await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate API call
@@ -53,9 +60,30 @@ function RouteComponent() {
       <form.Field
         key={field.key}
         name={field.key}
-        children={(fieldApi) => (
-          <FormField field={field} fieldApi={fieldApi} isSubField={isSubField} onOpenSubFields={handleOpenSubFields} />
-        )}
+        children={(fieldApi) => {
+          const adaptedFieldApi = {
+            name: fieldApi.name,
+            state: {
+              value: fieldApi.state.value as FieldValue,
+              meta: {
+                errors: Array.isArray(fieldApi.state.meta.errors)
+                  ? (fieldApi.state.meta.errors as unknown[]).filter((e): e is string => typeof e === 'string')
+                  : [],
+              },
+            },
+            handleBlur: fieldApi.handleBlur,
+            handleChange: (value: unknown) => fieldApi.handleChange(value),
+          }
+
+          return (
+            <FormField
+              field={field}
+              fieldApi={adaptedFieldApi}
+              isSubField={isSubField}
+              onOpenSubFields={handleOpenSubFields}
+            />
+          )
+        }}
       />
     )
   }
