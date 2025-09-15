@@ -125,11 +125,12 @@ class Gateway
             'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'     => array(
-            'esmsbd'    => 'esms.com.bd',
-            'bulksmsbd' => 'bulksmsbd.com',
-            'btssms'    => 'btssms.com',
-            'greenweb'  => 'greenweb.com.bd',
-            'revesms'   => 'smpp.ajuratech.com',
+            'esmsbd'      => 'esms.com.bd',
+            'bulksmsbd'   => 'bulksmsbd.com',
+            'btssms'      => 'btssms.com',
+            'greenweb'    => 'greenweb.com.bd',
+            'revesms'     => 'smpp.ajuratech.com',
+            'sslwireless' => 'sslwireless.com',
         ),
         'china'          => array(
             'juhe' => 'juhe.cn'
@@ -161,8 +162,8 @@ class Gateway
             'smscentral'   => 'smscentral.com.au',
         ),
         'russia'         => array(
-            'sigmasms'   => 'sigmasms.ru',
-            'turbosms'   => 'turbosms.ua',
+            'sigmasms' => 'sigmasms.ru',
+            'turbosms' => 'turbosms.ua',
         ),
         'malaysia'       => array(
             'klasiksms' => 'klasiksms.com',
