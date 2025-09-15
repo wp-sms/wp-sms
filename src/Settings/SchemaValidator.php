@@ -17,7 +17,7 @@ class SchemaValidator
         $cleaned = [];
         $errors  = [];
 
-        $schema = SchemaRegistry::instance()->all();
+        $schema = SchemaRegistry::instance()->allGroupsIncludingHidden();
 
         foreach ($schema as $groupName => $group) {
             foreach ($group->getFields() as $field) {
