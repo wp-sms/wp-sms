@@ -3,6 +3,7 @@
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
 use WP_SMS\Helper;
+use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Notice\NoticeManager as Notice;
@@ -150,6 +151,15 @@ class QueueManager
      */
     public function handleQueueMigration()
     {
+        if (!UserHelper::hasCapability('manage_options')) {
+            wp_die(
+                __('You do not have sufficient permissions to run the queue migration process.', 'wp-sms'),
+                __('Permission Denied', 'wp-sms'),
+                [
+                    'response' => 403
+                ]
+            );
+        }
         if (!Request::compare('action', self::MIGRATION_ACTION) || !QueueFactory::needsMigration()) {
             return false;
         }
@@ -213,7 +223,7 @@ class QueueManager
      */
     private function isValidMigrationContext()
     {
-        if (!current_user_can('manage_options')) {
+        if (!UserHelper::hasCapability('manage_options')) {
             return false;
         }
 
