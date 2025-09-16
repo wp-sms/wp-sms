@@ -44,6 +44,7 @@ frontend/build-legacy
 #vscode
 .vscode
 .cursor
+.kiro
 
 # Testing
 /tests/logs
