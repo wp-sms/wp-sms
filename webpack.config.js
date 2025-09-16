@@ -17,6 +17,8 @@ module.exports = {
             './assets/src/scripts/admin-dashboard-stats-widget.js',
             './assets/src/scripts/chart.min.js',
             './assets/src/scripts/modal-handler.js',
+            './assets/src/scripts/notification.js',
+            './assets/src/scripts/option-updater.js',
         ],
         frontend: [
             './assets/src/scripts/blocks.js',

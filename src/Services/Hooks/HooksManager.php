@@ -34,7 +34,7 @@ class HooksManager
         ];
 
         if (!$isPremium) {
-            $premiumLink = '<a class="wpsms-premium-link-btn" target="_blank" href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins">' . esc_html__('Get All-in-One', 'wp-sms') . '</a>';
+            $premiumLink = '<a class="wpsms-aio-link-btn" target="_blank" href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=plugins">' . esc_html__('Get All-in-One', 'wp-sms') . '</a>';
             array_unshift($customLinks, $premiumLink);
         }
 

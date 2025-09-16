@@ -11,7 +11,7 @@ class OptionUtil
      *
      * @var string
      */
-    public static $optName = 'wp_sms_options';
+    public static $optName = 'wpsms_settings';
 
     /**
      * WP_SMS option name prefix.
@@ -88,7 +88,7 @@ class OptionUtil
         $options = self::getOptions();
 
         if (!array_key_exists($optionName, $options)) {
-            return $default ?? false;
+            return isset($default) ? $default : false;
         }
 
         return apply_filters("wp_sms_option_{$optionName}", $options[$optionName]);
@@ -123,7 +123,7 @@ class OptionUtil
         }
 
         $userOptions = get_user_meta($userId, self::$optName, true) ?: [];
-        return $userOptions[$option] ?? $default;
+        return isset($userOptions[$option]) ? $userOptions[$option] : $default;
     }
 
     /**
@@ -175,7 +175,7 @@ class OptionUtil
         $options = get_option($settingName);
         $options = is_array($options) ? $options : [];
 
-        return $options[$optionName] ?? $default;
+        return isset($options[$optionName]) ? $options[$optionName] : $default;
     }
 
     /**
@@ -204,7 +204,7 @@ class OptionUtil
         $settingName = "wp_sms_{$group}";
         $options     = get_option($settingName, []);
 
-        return $key ? ($options[$key] ?? $default) : $options;
+        return $key ? (isset($options[$key]) ? $options[$key] : $default) : $options;
     }
 
     /**

@@ -35,18 +35,6 @@
 }
 
 .rtl .wpsms-wrap {
-  .button {
-     font-weight: 600 !important;
-    font-size: 14px;
-    line-height: 17px;
-    padding: 15px 16px;
-    border-radius: 2px;
-    transition: 0.2s;
-    &:disabled {
-      background-color: #808080 !important;
-    }
-  }
-
   .notice.wpsms-admin-notice .button {
     font-weight: 400!important;
     padding: 0 10px;
@@ -85,7 +73,7 @@
 }
 
 .wpsms-wrap .button-primary,
-.wp-sms-widgets .button-primary, {
+.wp-sms-widgets .button-primary {
   font-weight: 600 !important;
   font-size: 14px;
   line-height: 17px;

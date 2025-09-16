@@ -44,7 +44,7 @@ class LicenseMigration
                         continue;
                     }
 
-                    if (!$this->migrateLicense($addonSlug, $license)) {
+                    if (!$this->migrateLicense($addonSlug, $license) && !LicenseHelper::isPluginLicenseValid($addonSlug)) {
                         $allLicensesMigrated = false;
                     }
                 }

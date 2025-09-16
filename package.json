@@ -24,7 +24,7 @@
     "@wordpress/components": "^23.8.0",
     "@wordpress/dependency-extraction-webpack-plugin": "^5.6.0",
     "@wordpress/env": "^5.7.0",
-    "@wordpress/scripts": "^26.0.0",
+    "@wordpress/scripts": "^30.17.0",
     "breakpoint-sass": "^2.7.1",
     "clean-webpack-plugin": "^4.0.0",
     "concurrently": "^7.5.0",

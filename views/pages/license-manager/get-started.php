@@ -37,16 +37,16 @@ use WP_SMS\Utils\MenuUtil;
                 ?>
             </div>
         </div>
-        <div class="wpsms-review_premium">
+        <div class="wpsms-review_aio">
             <div>
-                <div class="wpsms-review_premium__content">
+                <div class="wpsms-review_aio__content">
                     <h4><?php esc_html_e('Love WP SMS All-In-One? Let Us Know!', 'wp-sms'); ?></h4>
                     <p><?php esc_html_e('Thanks for choosing WP SMS All-In-One! If you’re enjoying the new features, please leave us a 5-star review. Your feedback helps us improve!', 'wp-sms'); ?></p>
                     <p><?php esc_html_e('Thanks for being part of our community!', 'wp-sms'); ?></p>
                 </div>
-                <div class="wpsms-review_premium__actions">
-                    <a href="https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post" target="_blank" class="wpsms-review_premium__actions__review-btn"><?php esc_html_e('Write a Review', 'wp-sms'); ?></a>
-                    <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms')); ?>" class="wpsms-review_premium__actions__overview-btn"><?php esc_html_e('No, take me to the Send SMS page', 'wp-sms'); ?></a>
+                <div class="wpsms-review_aio__actions">
+                    <a href="https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post" target="_blank" class="wpsms-review_aio__actions__review-btn"><?php esc_html_e('Write a Review', 'wp-sms'); ?></a>
+                    <a href="<?php echo esc_url(MenuUtil::getAdminUrl('wp-sms')); ?>" class="wpsms-review_aio__actions__overview-btn"><?php esc_html_e('No, take me to the Send SMS page', 'wp-sms'); ?></a>
                 </div>
             </div>
         </div>

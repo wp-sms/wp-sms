@@ -245,6 +245,9 @@
   border-radius: 2px !important;
 }
 
+.wpsms-wrap #feedback-bird-app .o-fbb-input:focus {
+  border-color: #F88E40;
+}
 
 .wpsms-wrap textarea:not(.select2-selection textarea):focus {
   border-color: #F88E40 !important;

@@ -33,25 +33,53 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
             <?php
             // Collect all unique countries from gateways
             $all_countries = [];
+            $all_regions   = [];
+
             foreach ($gateways as $gateway) {
                 if (!empty($gateway->fields->gateway_attributes->country)) {
-                    $countries = is_array($gateway->fields->gateway_attributes->country)
+                    $countries     = is_array($gateway->fields->gateway_attributes->country)
                         ? $gateway->fields->gateway_attributes->country
                         : explode(',', $gateway->fields->gateway_attributes->country);
-
                     $all_countries = array_merge($all_countries, array_map('trim', $countries));
+                }
+
+                if (!empty($gateway->fields->gateway_attributes->region)) {
+                    foreach ($gateway->fields->gateway_attributes->region as $region) {
+                        if (is_object($region) && isset($region->label)) {
+                            $all_regions[] = $region->label;
+                        } elseif (is_array($region) && isset($region['label'])) {
+                            $all_regions[] = $region['label'];
+                        } elseif (is_string($region)) {
+                            $all_regions[] = $region;
+                        }
+                    }
                 }
             }
             $all_countries = array_unique($all_countries);
             sort($all_countries);
+
+            $all_regions = array_unique($all_regions);
+            sort($all_regions);
             ?>
-            <input class="chosen-country" disabled type="hidden" value="<?php echo esc_html($current_country) ?>">
+            <input class="chosen-origin" disabled type="hidden" value="<?php echo esc_html($current_country) ?>">
             <select id="filterCountries" name="countries">
-                <option value="All"><?php esc_html_e('All countries', 'wp-sms'); ?></option>
-                <option value="global"><?php esc_html_e('Global', 'wp-sms'); ?></option>
-                <?php foreach ($all_countries as $country): ?>
-                    <option value="<?php echo esc_attr($country); ?>"><?php echo esc_html($country); ?></option>
-                <?php endforeach; ?>
+                <option value="All"><?php esc_html_e('All origins', 'wp-sms'); ?></option>
+
+                <?php if (!empty($all_regions)): ?>
+                    <optgroup label="<?php esc_attr_e('Regions', 'wp-sms'); ?>">
+                        <?php foreach ($all_regions as $region): ?>
+                            <option value="<?php echo esc_attr($region); ?>"><?php echo esc_html($region); ?></option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                <?php endif; ?>
+
+                <?php if (!empty($all_countries)): ?>
+                    <optgroup label="<?php esc_attr_e('Countries', 'wp-sms'); ?>">
+                        <?php foreach ($all_countries as $country): ?>
+                            <option value="<?php echo esc_attr($country); ?>"><?php echo esc_html($country); ?></option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                <?php endif; ?>
             </select>
         </div>
     </div>
@@ -99,6 +127,7 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                     $country_list   = '';
                     $is_pro_gateway = false;
                     $badges         = [];
+                    $region         = '';
 
                     if (isset($gateway->fields->gateway_attributes->is_deprecated) && $gateway->fields->gateway_attributes->is_deprecated) continue;
 
@@ -110,6 +139,10 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                                     : explode(',', $gateway->fields->gateway_attributes->country);
                                 $countries    = array_map('trim', $countries);
                                 $country_list = implode(', ', $countries);
+                            }
+
+                            if (!empty($gateway->fields->gateway_attributes->region)) {
+                                $region = is_array($gateway->fields->gateway_attributes->region) ? implode(', ', array_map('trim', (wp_list_pluck((array)$gateway->fields->gateway_attributes->region, 'label') ?: (array)$gateway->fields->gateway_attributes->region))) : trim((string)$gateway->fields->gateway_attributes->region);
                             }
 
                             if (isset($gateway->fields->gateway_attributes->wp_sms_pro)) {
@@ -166,6 +199,7 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                                       data-sort="<?php echo !empty($gateway->fields->gateway_attributes->whatsapp_support) ? '0' : '1'; ?>"></span>
                             </td>
                             <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($country_list); ?></span></td>
+                            <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($region); ?></span></td>
                             <td class="u-text-center">
                                 <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
                                     <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
@@ -182,7 +216,7 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
 
                         $selected = ($current_gateway === $slug) ? 'checked' : '';
                         ?>
-                        <tr class="gateway-row  <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>">
+                        <tr class="gateway-row  <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>" data-regions="<?php echo esc_attr(strtolower($region)); ?>">
                             <td>
                                 <div class="c-table-gateway__info">
                                     <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
