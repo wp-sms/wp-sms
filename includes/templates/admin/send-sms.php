@@ -49,10 +49,14 @@
                         </option>
                         <option value="users" id="wp_users"><?php esc_html_e('WordPress\'s Users', 'wp-sms'); ?>
                         </option>
-                        <option value="wc-customers" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openAioModal' ;}?>" data-target="" id="wc_users" <?php disabled(!$proIsActive); ?>>
+                        <option value="wc-customers" data-target="wp-sms-pro" class="<?php if (!$proIsActive) {
+                            echo 'js-wp-sms-openAioModal';
+                        } ?>" data-target="" id="wc_users" <?php disabled(!$proIsActive); ?>>
                             <span data-target="wp-sms-pro" class="js-wp-sms-openAioModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
                         </option>
-                        <option value="bp-users" data-target="wp-sms-pro" class="<?php if (!$proIsActive){echo 'js-wp-sms-openAioModal' ;}?>" id="bp_users" <?php disabled(!$proIsActive); ?>>
+                        <option value="bp-users" data-target="wp-sms-pro" class="<?php if (!$proIsActive) {
+                            echo 'js-wp-sms-openAioModal';
+                        } ?>" id="bp_users" <?php disabled(!$proIsActive); ?>>
                             <?php esc_html_e('BuddyPress\'s Users', 'wp-sms'); ?>
                         </option>
                         <?php do_action('wp_sms_form_send_to_select_option', $smsObject, $proIsActive); ?>
@@ -68,9 +72,9 @@
                         <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
                             <?php foreach ($get_group_result as $items): ?>
                                 <option value="<?php echo esc_attr($items->ID); ?>">
-                                    <?php 
-                                        // translators: %s: Group name
-                                        echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name)); 
+                                    <?php
+                                    // translators: %s: Group name
+                                    echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name));
                                     ?>
                                 </option>
                             <?php endforeach; ?>
@@ -89,21 +93,9 @@
                 <div class="wpsms-value wpsms-roles wpsms-users-roles wpsms-users-field">
                     <label for="wpsms_roles"><?php esc_html_e('Select The Role', 'wp-sms'); ?></label>
                     <select id="wpsms_roles" name="wpsms_roles[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Role', 'wp-sms'); ?>">
-                        <?php foreach ($wpsms_list_of_role as $key_item => $val_item): ?>
-                            <option value="<?php echo esc_attr($key_item); ?>"
-                                <?php echo $val_item['count'] < 1 ? " disabled" : ''; ?>><?php echo esc_html($val_item['name']); ?>
-                                (<?php 
-                                    // translators: %s: Number of users
-                                    echo sprintf('<b>%s</b> ' . __('Users have the mobile number.', 'wp-sms'), esc_attr($val_item['count']));
-                                ?>)
-                            </option>
-                        <?php endforeach; ?>
                     </select>
                     <p class="field-description wpsms-users">
-                        <?php 
-                            // translators: %s: Number of users
-                            echo sprintf(__('<b>%s</b> Users have the mobile number.', 'wp-sms'), $get_users_mobile);
-                        ?>
+                        <b id="users-mobile-count">0</b> <?php esc_html_e('Users with mobile numbers.', 'wp-sms'); ?>
                     </p>
                 </div>
 
@@ -116,12 +108,16 @@
                     </p>
                 </div>
 
-                <p class="field-description wpsms-value wpsms-wc-users" style="display: none;">
-                    <?php echo sprintf('<b>%s</b> ' . esc_html__('Customers have the mobile number.', 'wp-sms'), count($woocommerceCustomers)); ?>
+                <p class="field-description wpsms-value wpsms-wc-users" style="display: none;" data-text="<?php esc_attr_e('Customers have the mobile number.', 'wp-sms'); ?>">
+                    <span id="wc-customers-count" data-type="wc_customers">
+                        <?php echo sprintf(__('<b>%s</b> Customers have the mobile number.', 'wp-sms'), '0'); ?>
+                    </span>
                 </p>
 
-                <p class="field-description wpsms-value wpsms-bp-users" style="display: none;">
-                    <span><?php echo sprintf('<b>%s</b> ' . esc_html__('Users have the mobile number in their profile.', 'wp-sms'), count($buddyPressMobileNumbers)); ?></span>
+                <p class="field-description wpsms-value wpsms-bp-users" style="display: none;" data-text="<?php esc_attr_e('Users have the mobile number in their profile.', 'wp-sms'); ?>">
+                    <span id="bp-users-count" data-type="bp_members">
+                        <?php echo sprintf(__('<b>%s</b> Users have the mobile number in their profile.', 'wp-sms'), '0'); ?>
+                    </span>
                 </p>
 
                 <?php do_action('wp_sms_form_send_to_value', $smsObject, $proIsActive); ?>
@@ -135,9 +131,9 @@
                     </div>
                     <?php if ($smsObject->validateNumber) : ?>
                         <div class="send-sms__description">
-                            <?php 
-                                // translators: %s: Gateway description
-                                echo sprintf(esc_html__('Gateway description: %s', 'wp-sms'), '<code>' . wp_kses_post($smsObject->validateNumber) . '</code>'); 
+                            <?php
+                            // translators: %s: Gateway description
+                            echo sprintf(esc_html__('Gateway description: %s', 'wp-sms'), '<code>' . wp_kses_post($smsObject->validateNumber) . '</code>');
                             ?>
                         </div>
                     <?php endif; ?>
@@ -165,9 +161,9 @@
                             </div><input type="hidden" class="wpsms-mms-image" name="wpsms_mms_image[]" value=""/>
                         <?php else: ?>
                             <p class="field-description">
-                                <?php 
-                                    // translators: %s: Supported gateways link
-                                    echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro
+                                <?php
+                                // translators: %s: Supported gateways link
+                                echo sprintf(__('This gateway doesn\'t support the MMS, <a href="%s" target="_blank">click here</a> to see which gateways support it.', 'wp-sms'), WP_SMS_SITE . '/gateways?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro
                                     '); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 ?>
                             </p>
@@ -273,5 +269,3 @@
         </div>
     </div>
 </div>
-
-

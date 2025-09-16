@@ -270,7 +270,7 @@ class Helper
     public static function getWooCommerceCustomersNumbers($roles = [])
     {
         $fieldKey = self::getUserMobileFieldName();
-        $args     = array(
+        $baseArgs = array(
             'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 'relation' => 'OR',
                 array(
@@ -285,20 +285,41 @@ class Helper
                 ),
             ),
             'fields'     => 'all_with_meta',
-            'number'     => 1000
         );
 
         if ($roles) {
-            $args['role__in'] = $roles;
+            $baseArgs['role__in'] = $roles;
         }
 
-        $args      = apply_filters('wp_sms_wc_mobile_numbers_query_args', $args);
-        $customers = get_users($args);
-        $numbers   = array();
+        $baseArgs = apply_filters('wp_sms_wc_mobile_numbers_query_args', $baseArgs);
 
-        foreach ($customers as $customer) {
-            $numbers[] = $customer->$fieldKey;
-        }
+        $per_page = 300;
+        $offset   = 0;
+        $numbers  = array();
+
+        do {
+            $args           = $baseArgs;
+            $args['number'] = $per_page;
+            $args['offset'] = $offset;
+
+            $customers = get_users($args);
+
+            if (empty($customers)) {
+                break;
+            }
+
+            foreach ($customers as $customer) {
+                $num = get_user_meta($customer->ID, $fieldKey, true);
+                if ($num === '') {
+                    $num = get_user_meta($customer->ID, '_billing_phone', true);
+                }
+                if ($num !== '') {
+                    $numbers[] = $num;
+                }
+            }
+
+            $offset += $per_page;
+        } while (count($customers) === $per_page);
 
         // Backward compatibility with new custom WooCommerce order table.
         if (get_option('woocommerce_custom_orders_table_enabled')) {
@@ -315,10 +336,7 @@ class Helper
             $normalizedNumbers[$normalizedNumber] = $number;
         }
 
-        // Convert associative array back to indexed array
-        $numbers = array_values($normalizedNumbers);
-
-        return array_unique($numbers);
+        return array_values(array_unique($normalizedNumbers));
     }
 
     /**
