@@ -4,6 +4,7 @@ namespace WP_SMS\Services\Database\Migrations\Ajax;
 
 use WP_SMS\Components\Assets;
 use WP_SMS\Notice\NoticeManager;
+use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Utils\Request;
@@ -207,6 +208,15 @@ class AjaxManager
      */
     public function handleAjaxMigration()
     {
+        if (!UserHelper::hasCapability('manage_options')) {
+            wp_die(
+                __('You do not have sufficient permissions to run the ajax migration process.', 'wp-sms'),
+                __('Permission Denied', 'wp-sms'),
+                [
+                    'response' => 403
+                ]
+            );
+        }
         if (!Request::compare('action', self::MIGRATION_ACTION)) {
             return false;
         }
