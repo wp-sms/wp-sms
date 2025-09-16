@@ -46,6 +46,7 @@ frontend/build-legacy
 .cursor
 .claude
 CLAUDE.md
+.kiro
 
 # Testing
 /tests/logs
