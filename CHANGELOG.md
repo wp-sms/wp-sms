@@ -1,3 +1,7 @@
+= v7.0.3 - 2025-09-17 =
+- **Enhancement:** Improve send-sms page performance by loading recipients via AJAX instead of during initial page render.
+- **New:** Block new user email for phone-registered users.
+
 = v7.0.2 - 2025-08-18 =
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
@@ -11,8 +15,6 @@
 - **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
-- **Enhancement:** Improve send-sms page performance by loading recipients via AJAX instead of during initial page render.
-- **New:** Block new user email for phone-registered users.
 
 = v7.0 - 2025-07-09 =
 - **New:** Introduced an Onboarding Process to simplify gateway integration.
