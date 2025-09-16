@@ -2,7 +2,6 @@
 
 namespace WP_SMS\Services\Subscriber;
 
-use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\Option;
@@ -23,30 +22,22 @@ class SubscriberUtil
      */
     public static function subscribe($name, $mobile, $group = false, $customFields = array())
     {
-        if (empty($name) || empty($mobile)) {
+        if (empty($name) or empty($mobile)) {
             return new \WP_Error('subscribe', esc_html__('Name and Mobile Number are required!', 'wp-sms'));
         }
 
-        // Use NumberParser instance
-        $numberParser = new NumberParser($mobile);
-        $validNumber = $numberParser->getValidNumber();
+        $mobile = Helper::convertNumber($mobile);
 
-        if (is_wp_error($validNumber)) {
-            return $validNumber;
-        }
-        $mobile = $validNumber;
         // Delete inactive subscribes with this number
         Newsletter::deleteInactiveSubscribersByMobile($mobile);
 
         $groupIds = wp_unslash($group);
 
-        if (!is_null($groupIds)) {
+        if (!is_null($groupIds))
             $groupIds = json_decode($groupIds);
-        }
 
-        if (!is_array($groupIds)) {
+        if (!is_array($groupIds))
             $groupIds = array($groupIds);
-        }
 
         $groupIds = array_map('intval', $groupIds);
 

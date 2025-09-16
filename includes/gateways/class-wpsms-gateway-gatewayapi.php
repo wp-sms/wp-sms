@@ -4,10 +4,9 @@ namespace WP_SMS\Gateway;
 
 class gatewayapi extends \WP_SMS\Gateway
 {
-    private $wsdl_link;
+    private $wsdl_link = "https://gatewayapi.com/rest";
     public $tariff = "https://gatewayapi.com";
     public $has_key = true;
-    public $endpoint;
     public $unit;
     public $unitrial = true;
     public $flash = "disable";
@@ -19,20 +18,6 @@ class gatewayapi extends \WP_SMS\Gateway
     {
         parent::__construct();
         $this->validateNumber = "45xxxxxxxx or 49xxxxxxxxxxx";
-        
-        $this->gatewayFields['endpoint'] = [
-            'id'      => 'gateway_endpoint',
-            'name'    => 'API Endpoint',
-            'desc'    => 'Select the API endpoint based on your region',
-            'type'    => 'select',
-            'options' => [
-                'https://gatewayapi.com/rest' => 'GatewayAPI.com',
-                'https://gatewayapi.eu/rest'  => 'GatewayAPI.eu'
-            ]
-        ];
-
-        // Set the API endpoint based on the selected option
-        $this->wsdl_link = $this->options['gateway_endpoint'] ?? 'https://gatewayapi.com/rest';
     }
 
     public function SendSMS()
@@ -193,11 +178,6 @@ class gatewayapi extends \WP_SMS\Gateway
                     'Authorization' => 'Basic ' . base64_encode("$this->has_key:")
                 ]
             ]);
-
-            if (is_wp_error($res)) {
-                $this->accountBalance = (object)['credit' => 0, 'currency' => ''];
-                return $this->accountBalance;
-            }
 
             $responseBody = json_decode($res['body']);
 

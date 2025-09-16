@@ -5,8 +5,6 @@ namespace WP_SMS;
 use WC_Blocks_Utils;
 use WP_Error;
 use WP_SMS\Components\NumberParser;
-use WP_SMS\Utils\TimeZone;
-use WP_SMS\Utils\OptionUtil;
 
 /**
  * Class WP_SMS
@@ -271,7 +269,7 @@ class Helper
     public static function getWooCommerceCustomersNumbers($roles = [])
     {
         $fieldKey = self::getUserMobileFieldName();
-        $baseArgs = array(
+        $args     = array(
             'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 'relation' => 'OR',
                 array(
@@ -286,41 +284,20 @@ class Helper
                 ),
             ),
             'fields'     => 'all_with_meta',
+            'number'     => 1000
         );
 
         if ($roles) {
-            $baseArgs['role__in'] = $roles;
+            $args['role__in'] = $roles;
         }
 
-        $baseArgs = apply_filters('wp_sms_wc_mobile_numbers_query_args', $baseArgs);
+        $args      = apply_filters('wp_sms_wc_mobile_numbers_query_args', $args);
+        $customers = get_users($args);
+        $numbers   = array();
 
-        $per_page = 300;
-        $offset   = 0;
-        $numbers  = array();
-
-        do {
-            $args           = $baseArgs;
-            $args['number'] = $per_page;
-            $args['offset'] = $offset;
-
-            $customers = get_users($args);
-
-            if (empty($customers)) {
-                break;
-            }
-
-            foreach ($customers as $customer) {
-                $num = get_user_meta($customer->ID, $fieldKey, true);
-                if ($num === '') {
-                    $num = get_user_meta($customer->ID, '_billing_phone', true);
-                }
-                if ($num !== '') {
-                    $numbers[] = $num;
-                }
-            }
-
-            $offset += $per_page;
-        } while (count($customers) === $per_page);
+        foreach ($customers as $customer) {
+            $numbers[] = $customer->$fieldKey;
+        }
 
         // Backward compatibility with new custom WooCommerce order table.
         if (get_option('woocommerce_custom_orders_table_enabled')) {
@@ -337,7 +314,10 @@ class Helper
             $normalizedNumbers[$normalizedNumber] = $number;
         }
 
-        return array_values(array_unique($normalizedNumbers));
+        // Convert associative array back to indexed array
+        $numbers = array_values($normalizedNumbers);
+
+        return array_unique($numbers);
     }
 
     /**
@@ -506,37 +486,25 @@ class Helper
 
     public static function prepareMobileNumberQuery($number)
     {
-        $metaValue   = array();
-        $metaValue[] = $number;
-
-        // Use NumberParser for normalization and validation
-        $numberParser     = new \WP_SMS\Components\NumberParser($number);
-        $normalizedNumber = $numberParser->getNormalizedNumber();
-
-        // Add original number if it was different from normalized version
-        if ($number != $normalizedNumber) {
-            $metaValue[] = $number;
-        }
-
-        $metaValue[]    = $normalizedNumber;
-        $numberWithPlus = '+' . ltrim($normalizedNumber, '+');
+        $metaValue[]    = $number;
+        $numberWithPlus = '+' . $number;
 
         // Check if number is international format or not and add country code to meta value
-        if (substr($normalizedNumber, 0, 1) != '+') {
-            $metaValue[]      = $numberWithPlus;
-            $normalizedNumber = $numberWithPlus;
+        if (substr($number, 0, 1) != '+') {
+            $metaValue[] = $numberWithPlus;
+            $number      = $numberWithPlus;
         } else {
-            $metaValue[] = ltrim($normalizedNumber, '+');
+            $metaValue[] = ltrim($number, '+');
         }
 
         // Remove the country code from prefix of number +144444444 -> 44444444
         foreach (wp_sms_countries()->getCountriesMerged() as $countryCode => $countryName) {
-            if (strpos($normalizedNumber, $countryCode) === 0) {
-                $metaValue[] = substr($normalizedNumber, strlen($countryCode));
+            if (strpos($number, $countryCode) === 0) {
+                $metaValue[] = substr($number, strlen($countryCode));
             }
         }
 
-        return array_unique($metaValue);
+        return $metaValue;
     }
 
     /**
@@ -634,111 +602,12 @@ class Helper
     /**
      * Convert persian/hindi/arabic numbers to english
      *
-     * @param string $number
+     * @param $number
+     *
      * @return string
-     * @deprecated 3.0.0 Use toEnglishNumerals() instead
      */
     public static function convertNumber($number)
     {
-        _deprecated_function(__METHOD__, '7.1.0', 'toEnglishNumerals');
-        return NumberParser::toEnglishNumerals($number);
-    }
-
-    public static function checkMemoryLimit()
-    {
-        if (!function_exists('memory_get_peak_usage') or !function_exists('ini_get')) {
-            return false;
-        }
-
-        $memoryLimit = ini_get('memory_limit');
-
-        if (memory_get_peak_usage(true) > self::convertBytes($memoryLimit)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check User Access To WP SMS Admin
-     *
-     * @param string $type [manage | read ]
-     * @param string|boolean $export
-     * @return bool
-     */
-    public static function userAccess($type = 'both', $export = false)
-    {
-
-        //List Of Default Cap
-        $list = array(
-            'manage' => array('manage_capability', 'manage_options'),
-            'read'   => array('read_capability', 'manage_options')
-        );
-
-        //User User Cap
-        $cap = 'both';
-        if (!empty($type) and array_key_exists($type, $list)) {
-            $cap = $type;
-        }
-
-        //Check Export Cap name or Validation current_can_user
-        if ($export == "cap") {
-            return self::ExistCapability(OptionUtil::get($list[$cap][0], $list[$cap][1]));
-        }
-
-        //Check Access
-        switch ($type) {
-            case "manage":
-            case "read":
-                return current_user_can(self::ExistCapability(OptionUtil::get($list[$cap][0], $list[$cap][1])));
-                break;
-            case "both":
-                foreach (array('manage', 'read') as $c) {
-                    if (self::userAccess($c) === true) {
-                        return true;
-                    }
-                }
-                break;
-        }
-
-        return false;
-    }
-
-    /**
-     * Validation User Capability
-     *
-     * @default manage_options
-     * @param string $capability Capability
-     * @return string 'manage_options'
-     */
-    public static function ExistCapability($capability)
-    {
-        global $wp_roles;
-
-        $default_manage_cap = 'manage_options';
-
-
-        if (!is_object($wp_roles) || !is_array($wp_roles->roles)) {
-            return $default_manage_cap;
-        }
-
-        foreach ($wp_roles->roles as $role) {
-            $cap_list = $role['capabilities'];
-
-            foreach ($cap_list as $key => $cap) {
-                if ($capability == $key) {
-                    return $capability;
-                }
-            }
-        }
-
-        return $default_manage_cap;
-    }
-
-    public static function getTimezoneCountry()
-    {
-        $timezone    = get_option('timezone_string');
-        $countryCode = TimeZone::getCountry($timezone);
-        return $countryCode;
+        return strtr($number, array('۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4', '۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9', '٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4', '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9'));
     }
 }

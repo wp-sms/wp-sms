@@ -77,10 +77,6 @@ class Install
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
 
-        if (is_admin()) {
-            self::upgrade();
-        }
-
         if (is_multisite() && $network_wide) {
             $blog_ids = $wpdb->get_col("SELECT `blog_id` FROM $wpdb->blogs");
             foreach ($blog_ids as $blog_id) {

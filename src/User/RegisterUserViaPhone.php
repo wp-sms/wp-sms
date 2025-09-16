@@ -37,16 +37,10 @@ class RegisterUserViaPhone
             return new \WP_Error('number_exists', __('Another user with this phone number already exists.', 'wp-sms'));
         }
 
-        add_filter('wp_send_new_user_notification_to_user', '__return_false');
-
-        try {
-            $this->userId = register_new_user(
-                $this->generateUniqueUsername(),
-                $this->generateUniqueEmail()
-            );
-        } finally {
-            remove_filter('wp_send_new_user_notification_to_user', '__return_false');
-        }
+        $this->userId = register_new_user(
+            $this->generateUniqueUsername(),
+            $this->generateUniqueEmail()
+        );
 
         return $this->userId;
     }
