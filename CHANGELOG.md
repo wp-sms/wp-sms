@@ -1,6 +1,6 @@
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improve send-sms page performance by loading recipients via AJAX instead of during initial page render.
-- **New:** Block new user email for phone-registered users.
+- **Enhancement:** Prevent to try sending email to user that registered via phone.
 
 = v7.0.2 - 2025-08-18 =
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.

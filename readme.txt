@@ -5,7 +5,7 @@ Tags: sms, notification, woocommerce, twilio, whatsapp
 Requires at least: 4.1
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 7.0.2
+Stable tag: 7.0.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,10 +170,11 @@ WP SMS includes a [Messaging Button](https://wp-sms-pro.com/message-button?utm_s
 `DELETE: wpsms/v1/newsletter` to: `POST: wpsms/v1/newsletter/unsubscribe`
 `PUT: wpsms/v1/newsletter` to: `POST: wpsms/v1/newsletter/verify`
 
-= v5.6 =
-* If you have installed the Pro Pack (wp-sms-pro), please make sure that's updated to greater than v3.3
-
 == Changelog ==
+= v7.0.3 - 2025-09-17 =
+- **Enhancement:** Improve send-sms page performance by loading recipients via AJAX instead of during initial page render.
+- **Enhancement:** Prevent to try sending email to user that registered via phone.
+
 v7.0.2 - 2025-08-18
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
