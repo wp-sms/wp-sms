@@ -179,7 +179,19 @@ class UserHelper
             delete_user_meta($userId, 'wpsms_identifier');
             delete_user_meta($userId, 'wpsms_identifier_type');
 
-            
+            //update user email based on the verified identifiers
+            $verifiedIdentifiers = self::getVerifiedIdentifiers($userId);
+            if (isset($verifiedIdentifiers['email'])) {
+                $user->user_email = $verifiedIdentifiers['email']['identifier'];
+                wp_update_user($user);
+            }
+
+            //update user phone based on the verified identifiers
+            if (isset($verifiedIdentifiers['phone'])) {
+                $user->user_phone = $verifiedIdentifiers['phone']['identifier'];
+                wp_update_user($user);
+            }
+
             // Apply filters
             do_action('wpsms_user_activated', $user);
         }
