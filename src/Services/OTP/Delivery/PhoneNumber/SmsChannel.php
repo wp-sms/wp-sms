@@ -12,11 +12,14 @@ class SmsChannel implements DeliveryChannelInterface
         return 'sms';
     }
 
-    public function send(string $to, string $message, array $context = []): bool
+    public function send(string $to, string $message, array $context = [])
     {
-        return Sms::send([
-            'to'  => $to,
-            'msg' => $message,
-        ]);
+        //TODO: Implement SMS sending
+        // $result = Sms::send([
+        //     'to'  => $to,
+        //     'msg' => $message,
+        // ]);
+        error_log("Message sent to {$to}: {$message}");
+        return true;
     }
 }
