@@ -6,9 +6,7 @@ use WP_SMS\Services\OTP\Contracts\Interfaces\AuthChannelInterface;
 use WP_SMS\Services\OTP\Models\OtpSessionModel;
 use WP_SMS\Services\OTP\OTPChannelHelper;
 use WP_SMS\Services\OTP\Delivery\DeliveryChannelManager;
-use WP_SMS\Services\OTP\Delivery\Email\EmailChannel;
-use WP_SMS\Services\OTP\Delivery\PhoneNumber\SmsChannel;
-
+use WP_SMS\Services\OTP\Contracts\Interfaces\DeliveryChannelInterface;
 class OtpService implements AuthChannelInterface
 {
     protected int $defaultTtl = 300;
@@ -30,8 +28,18 @@ class OtpService implements AuthChannelInterface
     /**
      * Generate a new OTP and persist it in the database.
      */
-    public function generate(string $flowId, ?string $phone = null, ?string $email = null, string $preferredChannel = 'sms'): string
+    public function generate(string $flowId, string $identifier)
     {
+        // Validate identifier
+        if (empty($identifier)) {
+            throw new \InvalidArgumentException('Identifier must be provided');
+        }
+
+        // Check if there's already an unexpired session for this identifier
+        if ($this->hasUnexpiredSession($identifier)) {
+            throw new \Exception('An unexpired OTP session already exists for this identifier. Please wait before requesting a new code.');
+        }
+
         // Generate secure OTP
         $length = $this->defaultCodeLength;
         $length = max(4, min(10, $length));
@@ -45,20 +53,24 @@ class OtpService implements AuthChannelInterface
         $otp = $code % (10 ** $length);
         $otpCode = str_pad((string) $otp, $length, '0', STR_PAD_LEFT);
 
-        // Determine the primary identifier and channel
-        $primaryChannel = $preferredChannel ?: ($phone ? 'sms' : 'email');
+        // Determine the primary channel based on identifier type
+        $identifierType = $this->getIdentifierType($identifier);
+        if (!$identifierType) {
+            throw new \InvalidArgumentException('Invalid identifier format');
+        }
+        
+        $primaryChannel = $identifierType === 'phone' ? 'sms' : 'email';
 
         // Save to DB with delivery information
-        OtpSessionModel::createSession(
+        $otpSession = OtpSessionModel::createSession(
             flowId: $flowId,
             code: $otpCode,
             expiresInSeconds: $this->defaultTtl,
-            phone: $phone,
-            email: $email,
+            identifier: $identifier,
             channel: $primaryChannel
         );
 
-        return $otpCode;
+        return $otpSession;
     }
 
     /**
@@ -69,46 +81,24 @@ class OtpService implements AuthChannelInterface
         $result = [
             'success' => false,
             'channel_used' => null,
-            'fallback_used' => false,
             'error' => null,
         ];
 
-        // Determine if this is a phone number or email
-        $isEmail = $this->isEmail($identifier);
-        $isPhone = $isEmail ? false : true;
-        if (!$isEmail && !$isPhone) {
+        // Determine identifier type
+        $identifierType = $this->getIdentifierType($identifier);
+        if (!$identifierType) {
             $result['error'] = 'Invalid identifier format';
             return $result;
         }
 
-        // Set up channels based on identifier type
-        if ($isPhone) {
-            $channels = $this->getPhoneChannels($preferredChannel);
-        } else {
-            $channels = $this->getEmailChannels($preferredChannel);
-        }
-
+        $deliveryChannels = $this->channelManager->get($identifierType === 'phone' ? 'sms' : 'email');
         // Try to send via preferred channel first
-        $primaryChannel = $channels[0];
-        $primaryResult = $this->sendViaChannel($primaryChannel, $identifier, $otpCode, $context);
+        $primaryResult = $this->sendViaChannel($deliveryChannels, $identifier, $otpCode, $context);
 
         if ($primaryResult['success']) {
             $result['success'] = true;
-            $result['channel_used'] = $primaryChannel;
+            $result['channel_used'] = $deliveryChannels->getKey();
             return $result;
-        }
-
-        // Primary channel failed, try fallback if enabled
-        if (count($channels) > 1 && $this->isFallbackEnabled($isPhone ? 'sms' : 'email')) {
-            $fallbackChannel = $channels[1];
-            $fallbackResult = $this->sendViaChannel($fallbackChannel, $identifier, $otpCode, $context);
-
-            if ($fallbackResult['success']) {
-                $result['success'] = true;
-                $result['channel_used'] = $fallbackChannel;
-                $result['fallback_used'] = true;
-                return $result;
-            }
         }
 
         // All channels failed
@@ -117,88 +107,27 @@ class OtpService implements AuthChannelInterface
     }
 
     /**
-     * Get available channels for phone number
-     */
-    protected function getPhoneChannels(string $preferredChannel): array
-    {
-        $channels = [];
-        $phoneSettings = $this->channelHelper->getChannelSettings('phone');
-
-        if ($phoneSettings['enabled']) {
-            if ($preferredChannel === 'sms' && $phoneSettings['sms']) {
-                $channels[] = 'sms';
-            }
-            
-            // Add other phone channels if enabled
-            if ($phoneSettings['whatsapp']) {
-                $channels[] = 'whatsapp';
-            }
-            if ($phoneSettings['viber']) {
-                $channels[] = 'viber';
-            }
-            if ($phoneSettings['call']) {
-                $channels[] = 'call';
-            }
-
-            // If SMS wasn't the preferred channel, add it as fallback
-            if ($preferredChannel !== 'sms' && $phoneSettings['sms'] && !in_array('sms', $channels)) {
-                $channels[] = 'sms';
-            }
-        }
-
-        // Add email as fallback if enabled
-        if ($this->channelHelper->isChannelEnabled('email') && $phoneSettings['fallback_enabled']) {
-            $channels[] = 'email';
-        }
-
-        return $channels;
-    }
-
-    /**
-     * Get available channels for email
-     */
-    protected function getEmailChannels(string $preferredChannel): array
-    {
-        $channels = [];
-        $emailSettings = $this->channelHelper->getChannelSettings('email');
-
-        if ($emailSettings['enabled']) {
-            if ($preferredChannel === 'email') {
-                $channels[] = 'email';
-            }
-        }
-
-        // Add SMS as fallback if enabled
-        if ($this->channelHelper->isChannelEnabled('phone') && $emailSettings['fallback_enabled']) {
-            $channels[] = 'sms';
-        }
-
-        return $channels;
-    }
-
-    /**
      * Send OTP via a specific channel
      */
-    protected function sendViaChannel(string $channel, string $identifier, string $otpCode, array $context): array
+    protected function sendViaChannel(DeliveryChannelInterface $channel, string $identifier, string $otpCode, array $context): array
     {
         try {
-            $channelService = $this->channelManager->get($channel);
             
             // Prepare message based on channel
             $message = $this->prepareMessage($channel, $otpCode, $context);
             
             // Send via channel
-            $success = $channelService->send($identifier, $message, $context);
+            $success = $channel->send($identifier, $message, $context);
             
             return [
                 'success' => $success,
-                'channel' => $channel,
+                'channel' => $channel->getKey(),
                 'error' => $success ? null : "Failed to send via {$channel}"
             ];
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'channel' => $channel,
+                'channel' => $channel->getKey(),
                 'error' => $e->getMessage()
             ];
         }
@@ -207,12 +136,13 @@ class OtpService implements AuthChannelInterface
     /**
      * Prepare message content based on channel
      */
-    protected function prepareMessage(string $channel, string $otpCode, array $context): string
+    protected function prepareMessage(DeliveryChannelInterface $channel, string $otpCode, array $context): string
     {
         $defaultMessage = sprintf(__('Your verification code is: %s', 'wp-sms'), $otpCode);
         
         switch ($channel) {
             case 'sms':
+            case 'phone':
                 return $context['sms_message'] ?? $defaultMessage;
             case 'email':
                 return $context['email_message'] ?? $defaultMessage;
@@ -230,19 +160,37 @@ class OtpService implements AuthChannelInterface
     /**
      * Check if fallback is enabled for a channel
      */
-    protected function isFallbackEnabled(string $channel): bool
+    protected function isFallbackEnabled(DeliveryChannelInterface $channel): bool
     {
-        $settings = $this->channelHelper->getChannelSettings($channel);
+        $settings = $this->channelHelper->getChannelSettings($channel->getKey());
         return isset($settings['fallback_enabled']) ? $settings['fallback_enabled'] : false;
     }
 
+
+    /**
+     * Get the type of identifier (email or phone)
+     */
+    protected function getIdentifierType(string $identifier): ?string
+    {
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL) !== false) {
+            return 'email';
+        }
+        
+        // Check if it's a valid phone number
+        $cleanNumber = preg_replace('/[^\d+]/', '', $identifier);
+        if (preg_match('/^(\+\d{7,15}|\d{7,15})$/', $cleanNumber)) {
+            return 'phone';
+        }
+        
+        return null;
+    }
 
     /**
      * Check if identifier is an email
      */
     protected function isEmail(string $identifier): bool
     {
-        return filter_var($identifier, FILTER_VALIDATE_EMAIL) !== false;
+        return $this->getIdentifierType($identifier) === 'email';
     }
 
     /**
@@ -250,7 +198,7 @@ class OtpService implements AuthChannelInterface
      */
     public function validate(string $flowId, string $input): bool
     {
-        $record = OtpSessionModel::find(['flow_id' => $flowId]);
+        $record = OtpSessionModel::getByFlowId($flowId);
 
         if (! $record) {
             return false;
@@ -262,7 +210,7 @@ class OtpService implements AuthChannelInterface
         }
 
         $inputHash = hash('sha256', $input);
-        $isValid = hash_equals($record['otp_hash'], $inputHash);
+        $isValid = hash_equals($record['code_hash'], $inputHash);
 
         if ($isValid) {
             $this->invalidate($flowId);
@@ -284,12 +232,48 @@ class OtpService implements AuthChannelInterface
      */
     public function exists(string $flowId): bool
     {
-        $record = OtpSessionModel::find(['flow_id' => $flowId]);
+        $record = OtpSessionModel::getByFlowId($flowId);
 
         if (! $record) {
             return false;
         }
 
         return strtotime($record['expires_at']) >= time();
+    }
+
+    /**
+     * Check if there's an unexpired session for an identifier
+     */
+    public function hasUnexpiredSession(string $identifier): bool
+    {
+        return OtpSessionModel::hasUnexpiredSessionByIdentifier($identifier);
+    }
+
+    /**
+     * Get the most recent unexpired session for an identifier
+     */
+    public function getMostRecentUnexpiredSession(string $identifier): ?array
+    {
+        return OtpSessionModel::getMostRecentUnexpiredSessionByIdentifier($identifier);
+    }
+
+    /**
+     * Invalidate all sessions for an identifier
+     */
+    public function invalidateAllSessionsForIdentifier(string $identifier): void
+    {
+        OtpSessionModel::deleteBy(['identifier' => $identifier]);
+    }
+
+    /**
+     * Generate a new OTP, invalidating any existing sessions for the identifier first
+     */
+    public function generateWithInvalidation(string $flowId, string $identifier): string
+    {
+        // Invalidate any existing sessions for this identifier
+        $this->invalidateAllSessionsForIdentifier($identifier);
+        
+        // Generate new OTP
+        return $this->generate($flowId, $identifier);
     }
 }
