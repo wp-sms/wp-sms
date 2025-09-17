@@ -94,7 +94,7 @@ class UserHelper
     public static function getUserByFlowId(string $flowId): ?\WP_User
     {
         $users = get_users([
-            'meta_key' => 'flow_id',
+            'meta_key' => 'wpsms_flow_id',
             'meta_value' => $flowId,
             'number' => 1,
         ]);
@@ -267,9 +267,78 @@ class UserHelper
     }
 
     /**
+     * Mark an identifier as verified for a user
+     */
+    public static function markIdentifierVerified(int $userId, string $identifier): bool
+    {
+        $user = get_user_by('id', $userId);
+        if (!$user) {
+            return false;
+        }
+
+        $identifierType = self::getIdentifierType($identifier);
+        $verifiedIdentifiers = get_user_meta($userId, 'wpsms_verified_identifiers', true) ?: [];
+        
+        // Add the verified identifier
+        $verifiedIdentifiers[$identifierType] = [
+            'identifier' => $identifier,
+            'verified_at' => current_time('mysql'),
+        ];
+
+        $updated = update_user_meta($userId, 'wpsms_verified_identifiers', $verifiedIdentifiers);
+        
+        if ($updated) {
+            do_action('wpsms_identifier_verified', $user, $identifier, $identifierType);
+        }
+
+        return $updated !== false;
+    }
+
+    /**
+     * Get verified identifiers for a user
+     */
+    public static function getVerifiedIdentifiers(int $userId): array
+    {
+        return get_user_meta($userId, 'wpsms_verified_identifiers', true) ?: [];
+    }
+
+    /**
+     * Check if all required identifiers are verified
+     */
+    public static function areAllRequiredIdentifiersVerified(int $userId, array $requiredChannels): bool
+    {
+        $verifiedIdentifiers = self::getVerifiedIdentifiers($userId);
+        
+        foreach ($requiredChannels as $channel => $settings) {
+            if ($settings['required'] && !isset($verifiedIdentifiers[$channel])) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Get next required identifier type
+     */
+    public static function getNextRequiredIdentifier(int $userId, array $requiredChannels): ?string
+    {
+        $verifiedIdentifiers = self::getVerifiedIdentifiers($userId);
+        
+        foreach ($requiredChannels as $channel => $settings) {
+            if ($settings['required'] && !isset($verifiedIdentifiers[$channel])) {
+                return $channel;
+            }
+        }
+        
+        return null;
+    }
+
+
+    /**
      * Get identifier type (email or phone)
      */
-    private static function getIdentifierType(string $identifier): string
+    public static function getIdentifierType(string $identifier): string
     {
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
             return 'email';
