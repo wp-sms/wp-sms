@@ -175,6 +175,10 @@ class UserHelper
         if ($updated) {
             // Add activation timestamp
             update_user_meta($userId, 'wpsms_activated_at', current_time('mysql'));
+            delete_user_meta($userId, 'wpsms_flow_id');
+            delete_user_meta($userId, 'wpsms_identifier');
+            delete_user_meta($userId, 'wpsms_identifier_type');
+
             
             // Apply filters
             do_action('wpsms_user_activated', $user);
