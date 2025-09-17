@@ -10,6 +10,7 @@ use WP_SMS\Services\OTP\Assets\AuthAssets;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterInitApiEndpoints;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterStartAPIEndpoint;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterVerifyAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterAddIdentifierAPIEndpoint;
 
 class OTPManager extends AbstractService
 {
@@ -36,6 +37,7 @@ class OTPManager extends AbstractService
             new RegisterInitApiEndpoints(),
             new RegisterStartAPIEndpoint(),
             new RegisterVerifyAPIEndpoint(),
+            new RegisterAddIdentifierAPIEndpoint(),
         ];
 
         foreach ($services as $service) {
