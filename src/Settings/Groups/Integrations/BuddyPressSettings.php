@@ -21,159 +21,133 @@ class BuddyPressSettings extends AbstractSettingGroup
 
     public function getSections(): array
     {
-        if (!class_exists('BuddyPress')) {
-            return [
-                new Section([
-                    'id' => 'buddypress_not_active',
-                    'title' => __('BuddyPress Integration', 'wp-sms'),
-                    'subtitle' => __('Configure SMS notifications for BuddyPress activities', 'wp-sms'),
-                    'fields' => [
-                        new Field([
-                            'key' => 'buddypress_not_active_notice',
-                            'label' => __('Not active', 'wp-sms'),
-                            'type' => 'notice',
-                            'description' => __('BuddyPress plugin should be installed to show the options.', 'wp-sms')
-                        ])
-                    ]
-                ])
-            ];
+        $isPluginActive = class_exists('BuddyPress');
+        $sections = [];
+
+        // Always show plugin status notice first when plugin is inactive
+        if (!$isPluginActive) {
+            $sections[] = new Section([
+                'id' => 'buddypress_integration',
+                'title' => __('BuddyPress Integration', 'wp-sms'),
+                'subtitle' => __('Connect SMS alerts to BuddyPress activities', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key' => 'buddypress_not_active_notice',
+                        'label' => __('Not active', 'wp-sms'),
+                        'type' => 'notice',
+                        'description' => __('Install and activate the BuddyPress plugin to see these options.', 'wp-sms')
+                    ])
+                ]
+            ]);
         }
 
-        return [
-            new Section([
-                'id' => 'welcome_notification',
-                'title' => __('Welcome Notification', 'wp-sms'),
-                'subtitle' => __('By enabling this option you can send welcome SMS to new BuddyPress users', 'wp-sms'),
-                'fields' => [
-                    new Field([
-                        'key' => 'bp_welcome_notification_enable',
-                        'label' => __('Status', 'wp-sms'),
-                        'type' => 'checkbox',
-                        'description' => __('Send an SMS to user when register on BuddyPress.', 'wp-sms')
-                    ]),
-                    new Field([
-                        'key' => 'bp_welcome_notification_message',
-                        'label' => __('Message body', 'wp-sms'),
-                        'type' => 'textarea',
-                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                            sprintf(
-                                // translators: %1$s: User login, %2$s: User email, %3$s: User display name
-                                __('User login: %1$s, User email: %2$s, User display name: %3$s', 'wp-sms'),
-                                '<code>%user_login%</code>',
-                                '<code>%user_email%</code>',
-                                '<code>%display_name%</code>'
-                            )
-                    ]),
-                ]
-            ]),
-            new Section([
-                'id' => 'mention_notification',
-                'title' => __('Mention Notification', 'wp-sms'),
-                'subtitle' => __('Configure SMS notifications for user mentions', 'wp-sms'),
-                'fields' => [
-                    new Field([
-                        'key' => 'bp_mention_enable',
-                        'label' => __('Send SMS', 'wp-sms'),
-                        'type' => 'checkbox',
-                        'description' => __('Send SMS to user when someone mentioned. for example @admin', 'wp-sms')
-                    ]),
-                    new Field([
-                        'key' => 'bp_mention_message',
-                        'label' => __('Message body', 'wp-sms'),
-                        'type' => 'textarea',
-                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                            sprintf(
-                                // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
-                                __('Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s', 'wp-sms'),
-                                '<code>%posted_user_display_name%</code>',
-                                '<code>%primary_link%</code>',
-                                '<code>%time%</code>',
-                                '<code>%message%</code>',
-                                '<code>%receiver_user_display_name%</code>'
-                            )
-                    ]),
-                ]
-            ]),
-            new Section([
-                'id' => 'private_message_notification',
-                'title' => __('Private Message Notification', 'wp-sms'),
-                'subtitle' => __('Configure SMS notifications for private messages', 'wp-sms'),
-                'fields' => [
-                    new Field([
-                        'key' => 'bp_private_message_enable',
-                        'label' => __('Send SMS', 'wp-sms'),
-                        'type' => 'checkbox',
-                        'description' => __('Send SMS notification when user received a private message', 'wp-sms')
-                    ]),
-                    new Field([
-                        'key' => 'bp_private_message_content',
-                        'label' => __('Message body', 'wp-sms'),
-                        'type' => 'textarea',
-                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                            sprintf(
-                                // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
-                                __('Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s', 'wp-sms'),
-                                '<code>%sender_display_name%</code>',
-                                '<code>%subject%</code>',
-                                '<code>%message%</code>',
-                                '<code>%message_url%</code>'
-                            )
-                    ]),
-                ]
-            ]),
-            new Section([
-                'id' => 'user_activity_comments',
-                'title' => __('User activity comments', 'wp-sms'),
-                'subtitle' => __('Configure SMS notifications for activity comment replies', 'wp-sms'),
-                'fields' => [
-                    new Field([
-                        'key' => 'bp_comments_activity_enable',
-                        'label' => __('Send SMS', 'wp-sms'),
-                        'type' => 'checkbox',
-                        'description' => __('Send SMS to user when the user get a reply on activity', 'wp-sms')
-                    ]),
-                    new Field([
-                        'key' => 'bp_comments_activity_message',
-                        'label' => __('Message body', 'wp-sms'),
-                        'type' => 'textarea',
-                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                            sprintf(
-                                // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-                                __('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
-                                '<code>%posted_user_display_name%</code>',
-                                '<code>%comment%</code>',
-                                '<code>%receiver_user_display_name%</code>'
-                            )
-                    ]),
-                ]
-            ]),
-            new Section([
-                'id' => 'user_reply_comments',
-                'title' => __('User reply comments', 'wp-sms'),
-                'subtitle' => __('Configure SMS notifications for comment replies', 'wp-sms'),
-                'fields' => [
-                    new Field([
-                        'key' => 'bp_comments_reply_enable',
-                        'label' => __('Send SMS', 'wp-sms'),
-                        'type' => 'checkbox',
-                        'description' => __('Send SMS to user when the user get a reply on comment', 'wp-sms')
-                    ]),
-                    new Field([
-                        'key' => 'bp_comments_reply_message',
-                        'label' => __('Message body', 'wp-sms'),
-                        'type' => 'textarea',
-                        'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                            sprintf(
-                                // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-                                __('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
-                                '<code>%posted_user_display_name%</code>',
-                                '<code>%comment%</code>',
-                                '<code>%receiver_user_display_name%</code>'
-                            )
-                    ]),
-                ]
-            ]),
-        ];
+        $sections[] = new Section([
+            'id' => 'welcome_notification',
+            'title' => __('Welcome Notification', 'wp-sms'),
+            'subtitle' => __('Send a welcome SMS to new BuddyPress users', 'wp-sms'),
+            'fields' => [
+                new Field([
+                    'key' => 'bp_welcome_notification_enable',
+                    'label' => __('Enable', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'description' => __('Send an SMS to users when they register in BuddyPress.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+                new Field([
+                    'key' => 'bp_welcome_notification_message',
+                    'label' => __('SMS Template', 'wp-sms'),
+                    'type' => 'textarea',
+                    'description' => __('Write the SMS text. You can use placeholders: %user_login%, %user_email%, %display_name%.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+            ]
+        ]);
+        $sections[] = new Section([
+            'id' => 'mention_notification',
+            'title' => __('Mention Notification', 'wp-sms'),
+            'subtitle' => __('Alert users when they are mentioned', 'wp-sms'),
+            'fields' => [
+                new Field([
+                    'key' => 'bp_mention_enable',
+                    'label' => __('Enable', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'description' => __('Send an SMS when a user is mentioned, for example @admin.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+                new Field([
+                    'key' => 'bp_mention_message',
+                    'label' => __('SMS Template', 'wp-sms'),
+                    'type' => 'textarea',
+                    'description' => __('Write the SMS text. You can use placeholders: %posted_user_display_name%, %primary_link%, %time%, %message%, %receiver_user_display_name%.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+            ]
+        ]);
+        $sections[] = new Section([
+            'id' => 'private_message_notification',
+            'title' => __('Private Message Notification', 'wp-sms'),
+            'subtitle' => __('Alert users about new private messages', 'wp-sms'),
+            'fields' => [
+                new Field([
+                    'key' => 'bp_private_message_enable',
+                    'label' => __('Enable', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'description' => __('Send an SMS when a user receives a private message.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+                new Field([
+                    'key' => 'bp_private_message_content',
+                    'label' => __('SMS Template', 'wp-sms'),
+                    'type' => 'textarea',
+                    'description' => __('Write the SMS text. You can use placeholders: %sender_display_name%, %subject%, %message%, %message_url%.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+            ]
+        ]);
+        $sections[] = new Section([
+            'id' => 'user_activity_comments',
+            'title' => __('Activity Replies', 'wp-sms'),
+            'subtitle' => __('Notify users when someone replies to their activity', 'wp-sms'),
+            'fields' => [
+                new Field([
+                    'key' => 'bp_comments_activity_enable',
+                    'label' => __('Enable', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'description' => __('Send an SMS when a user receives a reply on an activity update.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+                new Field([
+                    'key' => 'bp_comments_activity_message',
+                    'label' => __('SMS Template', 'wp-sms'),
+                    'type' => 'textarea',
+                    'description' => __('Write the SMS text. You can use placeholders: %posted_user_display_name%, %comment%, %receiver_user_display_name%.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+            ]
+        ]);
+        $sections[] = new Section([
+            'id' => 'user_reply_comments',
+            'title' => __('Comment Replies', 'wp-sms'),
+            'subtitle' => __('Notify users when someone replies to their comment', 'wp-sms'),
+            'fields' => [
+                new Field([
+                    'key' => 'bp_comments_reply_enable',
+                    'label' => __('Enable', 'wp-sms'),
+                    'type' => 'checkbox',
+                    'description' => __('Send an SMS when a user receives a reply on a comment.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+                new Field([
+                    'key' => 'bp_comments_reply_message',
+                    'label' => __('SMS Template', 'wp-sms'),
+                    'type' => 'textarea',
+                    'description' => __('Write the SMS text. You can use placeholders: %posted_user_display_name%, %comment%, %receiver_user_display_name%.', 'wp-sms'),
+                    'readonly' => !$isPluginActive
+                ]),
+            ]
+        ]);
+
+        return $sections;
     }
 
     public function getFields(): array

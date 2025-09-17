@@ -32,84 +32,85 @@ class NewsletterSettings extends AbstractSettingGroup
         return [
             new Section([
                 'id' => 'sms_newsletter_configuration',
-                'title' => __('SMS Newsletter Configuration', 'wp-sms'),
-                'subtitle' => __('Configure how visitors subscribe to your SMS notifications.', 'wp-sms'),
+                'title' => __('Subscription Form', 'wp-sms'),
+                'subtitle' => __('Choose how visitors subscribe.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/add-sms-subscriber-form/',
                 'fields' => [
                     new Field([
                         'key' => 'newsletter_form_groups',
-                        'label' => __('Group Visibility in Form', 'wp-sms'),
+                        'label' => __('Show groups on form', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Show available groups on the subscription form.', 'wp-sms')
+                        'description' => __('Display your subscriber groups on the signup form.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'newsletter_form_multiple_select',
-                        'label' => __('Group Selection', 'wp-sms'),
+                        'label' => __('Allow joining multiple groups', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Allow subscribers to join multiple groups from the form.', 'wp-sms'),
+                        'description' => __('Let visitors pick more than one group.', 'wp-sms'),
                         'show_if' => ['newsletter_form_groups' => true]
                     ]),
                     new Field([
                         'key' => 'newsletter_form_specified_groups',
-                        'label' => __('Groups to Display', 'wp-sms'),
+                        'label' => __('Groups shown on form', 'wp-sms'),
                         'type' => 'multiselect',
-                        'description' => __('Choose which groups appear on the subscription form.', 'wp-sms'),
+                        'description' => __('Select which groups appear in the form.', 'wp-sms'),
                         'options' => $this->getNewsletterGroups(),
                         'show_if' => ['newsletter_form_groups' => true]
                     ]),
                     new Field([
                         'key' => 'newsletter_form_default_group',
-                        'label' => __('Default Group for New Subscribers', 'wp-sms'),
+                        'label' => __('Default group', 'wp-sms'),
                         'type' => 'select',
-                        'description' => __('Set a group that all new subscribers will join by default.', 'wp-sms'),
+                        'description' => __('Add every new subscriber to this group by default.', 'wp-sms'),
                         'options' => $this->getSubscribeGroups(),
                         'show_if' => ['newsletter_form_groups' => true]
                     ]),
                     new Field([
                         'key' => 'newsletter_form_verify',
-                        'label' => __('Subscription Confirmation', 'wp-sms'),
+                        'label' => __('Require SMS verification', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Subscribers must enter a code received by SMS to complete their subscription.', 'wp-sms')
+                        'description' => __('Send a one-time code that subscribers must enter to confirm their number.', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'welcome_sms_setup',
-                'title' => __('Welcome SMS Setup', 'wp-sms'),
-                'subtitle' => __('Set up automatic SMS messages for new subscribers.', 'wp-sms'),
+                'title' => __('Welcome SMS', 'wp-sms'),
+                'subtitle' => __('Send an automatic message after someone subscribes.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/send-welcome-sms-to-new-subscribers/',
                 'fields' => [
                     new Field([
                         'key' => 'newsletter_form_welcome',
-                        'label' => __('Status', 'wp-sms'),
+                        'label' => __('Send a welcome SMS', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Sends a welcome SMS to new subscribers when they sign up.', 'wp-sms')
+                        'description' => __('Automatically send a welcome message after a subscription is confirmed.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'newsletter_form_welcome_text',
-                        'label' => __('Welcome Message Content', 'wp-sms'),
+                        'label' => __('Welcome message', 'wp-sms'),
                         'type' => 'textarea',
-                        'description' => __('Customize the SMS message sent to new subscribers. Use placeholders for personalized details: ', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables()
+                        'show_if' => ['newsletter_form_welcome' => true],
+                        'description' => __('Write the text for your welcome SMS. You can use these placeholders: ', 'wp-sms') . '<br>' . NotificationFactory::getSubscriber()->printVariables() . '<br>' . __('Keep it short. If your gateway supports opt-out keywords, add a line like "Reply STOP to unsubscribe."', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'appearance_customization',
-                'title' => __('Appearance Customization', 'wp-sms'),
-                'subtitle' => __('Customize the visual appearance of the newsletter form', 'wp-sms'),
+                'title' => __('Form Design', 'wp-sms'),
+                'subtitle' => __('Use your theme styles.', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'disable_style_in_front',
-                        'label' => __('Disable Default Form Styling', 'wp-sms'),
+                        'label' => __('Use theme styling', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Remove the plugin\'s default styling from the subscription form if preferred.', 'wp-sms')
+                        'description' => __('Turn off the plugin\'s default form styles and rely on your theme or custom CSS.', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'data_protection_settings',
-                'title' => __('Data Protection Settings', 'wp-sms'),
-                'subtitle' => __('Set up how you comply with data protection regulations', 'wp-sms'),
+                'title' => __('Consent and Data Protection', 'wp-sms'),
+                'subtitle' => __('Collect clear consent on your form.', 'wp-sms'),
                 'fields' => $this->getGdprFields()
             ]),
         ];
@@ -130,7 +131,7 @@ class NewsletterSettings extends AbstractSettingGroup
     private function getSubscribeGroups(): array
     {
         $groups = Newsletter::getGroups();
-        $options = [0 => __('All', 'wp-sms')];
+        $options = [0 => __('No default group', 'wp-sms')];
         
         foreach ($groups as $group) {
             $options[$group->ID] = $group->name;
@@ -145,28 +146,28 @@ class NewsletterSettings extends AbstractSettingGroup
             return [
                 new Field([
                     'key' => 'newsletter_form_gdpr_text',
-                    'label' => __('Consent Text', 'wp-sms'),
+                    'label' => __('Consent message', 'wp-sms'),
                     'type' => 'textarea',
-                    'description' => __('Provide a clear message that informs subscribers how their data will be used and that their consent is required. For example: "I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy."', 'wp-sms')
+                    'description' => __('Tell people what you send and how you use their data. Example: "I agree to receive SMS updates and accept the Privacy Policy."', 'wp-sms')
                 ]),
                 new Field([
                     'key' => 'newsletter_form_gdpr_confirm_checkbox',
-                    'label' => __('Checkbox Default', 'wp-sms'),
+                    'label' => __('Consent checkbox default', 'wp-sms'),
                     'type' => 'select',
                     'options' => [
-                        'checked' => __('Checked', 'wp-sms'),
-                        'unchecked' => __('Unchecked', 'wp-sms')
+                        'unchecked' => __('Unchecked (recommended)', 'wp-sms'),
+                        'checked' => __('Checked', 'wp-sms')
                     ],
-                    'description' => __('Leave the consent checkbox unchecked by default to comply with privacy laws, which require active, explicit consent from users.', 'wp-sms')
+                    'description' => __('Leave this unchecked to require active consent.', 'wp-sms')
                 ])
             ];
         } else {
             return [
                 new Field([
                     'key' => 'gdpr_notify',
-                    'label' => __('GDPR Compliance', 'wp-sms'),
+                    'label' => __('Data Protection', 'wp-sms'),
                     'type' => 'notice',
-                    'description' => __('To get more option for GDPR, you should enable that in the general tab.', 'wp-sms')
+                    'description' => __('To manage consent on this form, enable Data Protection in Settings → General.', 'wp-sms')
                 ])
             ];
         }

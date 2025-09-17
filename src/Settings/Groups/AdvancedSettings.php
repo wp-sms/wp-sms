@@ -31,41 +31,41 @@ class AdvancedSettings extends AbstractSettingGroup
         return [
             new Section([
                 'id' => 'administrative_reporting',
-                'title' => __('Administrative Reporting', 'wp-sms'),
-                'subtitle' => __('Configure automated reporting and error notifications', 'wp-sms'),
+                'title' => __('Monitoring & Reports', 'wp-sms'),
+                'subtitle' => __('Set up weekly stats and delivery error alerts', 'wp-sms'),
                 'fields' => [
                     new Field([
                         'key' => 'report_wpsms_statistics',
-                        'label' => __('SMS Performance Reports', 'wp-sms'),
+                        'label' => __('Weekly SMS Report', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Sends weekly SMS performance statistics to the admin email.', 'wp-sms')
+                        'description' => __('Sends a weekly summary of sent, delivered, and failed messages to the admin email.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'notify_errors_to_admin_email',
-                        'label' => __('SMS Transmission Error Alerts', 'wp-sms'),
+                        'label' => __('Send Error Alerts', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
+                        'description' => __('Emails the admin when an SMS fails to send.', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'url_shortening',
-                'title' => $this->getUrlShorteningTitle(),
-                'subtitle' => __('Configure URL shortening via Bitly service', 'wp-sms'),
+                'title' => __('URL Shortening via Bitly', 'wp-sms'),
+                'subtitle' => __('Shorten links with Bitly and track clicks', 'wp-sms'),
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'short_url_status',
-                        'label' => __('Shorten URLs', 'wp-sms'),
+                        'label' => __('Enable Link Shortening', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
+                        'description' => __('Shortens URLs in messages using Bitly.', 'wp-sms'),
                         'readonly' => !$this->proIsInstalled(),
-                        'tag' => !$this->proIsInstalled() ? Tags::PRO : null
                     ]),
                     new Field([
                         'key' => 'short_url_api_token',
-                        'label' => __('Bitly API Key', 'wp-sms'),
+                        'label' => __('Bitly API Token', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
+                        'description' => __('Paste your Bitly API token. Get it from your Bitly account settings.', 'wp-sms'),
                         'readonly' => !$this->proIsInstalled(),
                         'show_if' => ['short_url_status' => true]
                     ]),
@@ -73,48 +73,48 @@ class AdvancedSettings extends AbstractSettingGroup
             ]),
             new Section([
                 'id' => 'webhooks_configuration',
-                'title' => __('Webhooks Configuration', 'wp-sms'),
-                'subtitle' => __('Set up your system\'s Webhook URLs to integrate with external services.', 'wp-sms'),
+                'title' => __('Webhooks', 'wp-sms'),
+                'subtitle' => __('Send events to external services. One URL per line.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/webhooks/',
                 'fields' => [
                     new Field([
                         'key' => 'new_sms_webhook',
                         'label' => __('Outgoing SMS Webhook', 'wp-sms'),
                         'type' => 'textarea',
-                        'description' => __('Configure the Webhook URL to which notifications are sent after an SMS dispatch from your system. Please enter a secure URL (HTTPS).', 'wp-sms')
+                        'description' => __('Notify this URL after a message is sent. HTTPS required. One URL per line.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'new_subscriber_webhook',
-                        'label' => __('Subscriber Registration Webhook', 'wp-sms'),
+                        'label' => __('New Subscriber Webhook', 'wp-sms'),
                         'type' => 'textarea',
-                        'description' => __('Provide the Webhook URL that will be triggered when a new subscriber registers. Ensure the URL uses the HTTPS protocol.', 'wp-sms')
+                        'description' => __('Triggered when a user subscribes. HTTPS required. One URL per line.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'new_incoming_sms_webhook',
-                        'label' => __('Incoming SMS Handling Webhook', 'wp-sms'),
+                        'label' => __('Incoming SMS Webhook', 'wp-sms'),
                         'type' => 'textarea',
-                        'description' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . __('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>'
+                        'description' => __('For the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on. Called when an SMS is received. HTTPS required. One URL per line.', 'wp-sms')
                     ]),
                 ]
             ]),
             new Section([
                 'id' => 'google_recaptcha_integration',
-                'title' => $this->getRecaptchaTitle(),
-                'subtitle' => __('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms'),
+                'title' => __('Google reCAPTCHA Integration', 'wp-sms'),
+                'subtitle' => __('Protect request-SMS actions from spam', 'wp-sms'),
+                'tag' => (!$this->proIsInstalled() && !$this->wooProIsInstalled()) ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'g_recaptcha_status',
-                        'label' => __('Activate', 'wp-sms'),
+                        'label' => __('Enable reCAPTCHA', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
+                        'description' => __('Require reCAPTCHA for request-SMS actions.', 'wp-sms'),
                         'readonly' => !$this->proIsInstalled() && !$this->wooProIsInstalled(),
-                        'tag' => (!$this->proIsInstalled() && !$this->wooProIsInstalled()) ? Tags::PRO : null
                     ]),
                     new Field([
                         'key' => 'g_recaptcha_site_key',
                         'label' => __('Site Key', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
+                        'description' => __('Your public reCAPTCHA site key.', 'wp-sms'),
                         'readonly' => !$this->proIsInstalled() && !$this->wooProIsInstalled(),
                         'show_if' => ['g_recaptcha_status' => true]
                     ]),
@@ -122,7 +122,7 @@ class AdvancedSettings extends AbstractSettingGroup
                         'key' => 'g_recaptcha_secret_key',
                         'label' => __('Secret Key', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . __('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
+                        'description' => __('Your private reCAPTCHA secret key. Keep this confidential.', 'wp-sms'),
                         'readonly' => !$this->proIsInstalled() && !$this->wooProIsInstalled(),
                         'show_if' => ['g_recaptcha_status' => true]
                     ]),
@@ -131,21 +131,6 @@ class AdvancedSettings extends AbstractSettingGroup
         ];
     }
 
-    private function getUrlShorteningTitle(): string
-    {
-        if (!$this->proIsInstalled()) {
-            return __('URL Shortening via Bitly (Pro)', 'wp-sms');
-        }
-        return __('URL Shortening via Bitly', 'wp-sms');
-    }
-
-    private function getRecaptchaTitle(): string
-    {
-        if (!$this->proIsInstalled() && !$this->wooProIsInstalled()) {
-            return __('Google reCAPTCHA Integration (Pro / WooCommerce Pro)', 'wp-sms');
-        }
-        return __('Google reCAPTCHA Integration', 'wp-sms');
-    }
 
     public function getFields(): array
     {
