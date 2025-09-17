@@ -210,7 +210,7 @@ class OtpService implements AuthChannelInterface
         }
 
         $inputHash = hash('sha256', $input);
-        $isValid = hash_equals($record['code_hash'], $inputHash);
+        $isValid = hash_equals($record['otp_hash'], $inputHash);
 
         if ($isValid) {
             $this->invalidate($flowId);
