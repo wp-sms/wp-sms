@@ -8,9 +8,6 @@ use WP_REST_Request;
 use WP_Error;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Abstracts\RestAPIEndpointsAbstract;
 use WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper;
-use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterStartAPIEndpoint;
-use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterVerifyAPIEndpoint;
-use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterAddIdentifierAPIEndpoint;
 
 class RegisterInitApiEndpoints extends RestAPIEndpointsAbstract
 {
