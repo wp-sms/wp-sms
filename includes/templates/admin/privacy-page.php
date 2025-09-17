@@ -35,7 +35,7 @@
         </form>
 
         <div class="wpsms-privacyGdpr">
-            <p style="text-align: center;"><img src="<?php echo esc_url(WP_SMS_URL) . '/assets/images/gdpr.svg'; ?>" alt="GDPR"></p>
+            <p style="text-align: center;"><img src="<?php echo esc_url(WP_SMS_URL) . '/frontend/build/images/gdpr.svg'; ?>" alt="GDPR"></p>
             <p class="text-lead">
                 <?php echo esc_html__('WP SMS plugin is GDPR-compliant, enabling users to export or delete their plugin-related data as per Article 17 of GDPR. To manage personal data site-wide, use the "Export Personal Data" or "Erase Personal Data" pages.', 'wp-sms'); ?>
             </p>

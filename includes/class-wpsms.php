@@ -1,5 +1,6 @@
 <?php
 
+use WP_SMS\Admin\AdminManager;
 use WP_SMS\BackgroundProcess\Async\DataMigrationProcess;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Async\SchemaMigrationProcess;
@@ -8,6 +9,7 @@ use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
 use WP_SMS\Notice\NoticeManager;
+use WP_SMS\RestEndpoints\RestEndpointManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Database\Managers\MigrationHandler;
 use WP_SMS\Services\Formidable\FormidableManager;
@@ -220,6 +222,7 @@ class WP_SMS
         (new FormidableManager())->init();
         (new ForminatorManager())->init();
         (new ShortcodeManager())->init();
+        (new RestEndpointManager())->init();
 
         if (is_admin()) {
             // Admin legacy classes.
@@ -234,6 +237,9 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
+
+            // Initializing managers.
+            (new AdminManager())->init();
         }
 
         if (!is_admin()) {

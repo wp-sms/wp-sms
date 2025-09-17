@@ -1,11 +1,11 @@
 <div class="wrap wpsms-wrap">
     <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
     <div class="wpsms-wrap__main wpsms-inbox-page">
-        <img class="background-img" src="<?php echo esc_url(WP_SMS_URL . '/assets/images/blurred-inbox.jpg'); ?>" alt="">
+        <img class="background-img" src="<?php echo esc_url(WP_SMS_URL . '/frontend/build/images/blurred-inbox.jpg'); ?>" alt="">
         <div class="promotion-modal">
             <h3 class="promotion-modal__title"><?php esc_html_e('View Inbox / Incoming Messages', 'wp-sms'); ?></h3>
             <div class="promotion-modal__screenshot">
-                <img src="<?php echo esc_url(WP_SMS_URL . '/assets/images/wp-sms-two-way-chagemode.png'); ?>" alt="">
+                <img src="<?php echo esc_url(WP_SMS_URL . '/frontend/build/images/wp-sms-two-way-chagemode.png'); ?>" alt="">
             </div>
             <p class="promotion-modal__desc"><?php _e('<b>Chat Mode is now live in WP SMS Two Way!</b> This powerful feature enhances your communication by allowing you'); ?></p>
             <div class="promotion-modal__features">

@@ -33,13 +33,25 @@ nbproject
 
 # node_modules
 /node_modules
+assets/react/node_modules
+frontend/node_modules
+frontend/build
+frontend/build-legacy
 
 # Build Folder
 /build
 
 #vscode
 .vscode
+.cursor
 
 # Testing
 /tests/logs
 .phpunit.result.cache
+
+.cursorignore
+*storybook.log
+storybook-static
+
+.env
+.env.*
