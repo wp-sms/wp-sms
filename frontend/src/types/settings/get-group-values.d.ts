@@ -14,6 +14,15 @@ type GetGroupValuesResponse = {
 }
 
 type UseGetGroupValuesType = {
-  options: Partial<UseQueryOptions<any, any, GetGroupValuesResponse, any>> & GetGroupValuesParams
+  options: Partial<UseQueryOptions<unknown, unknown, GetGroupValuesResponse, unknown>> & GetGroupValuesParams
   response: GetGroupValuesResponse
+}
+
+interface GetSettingsValuesByGroupParams {
+  groupName: SettingGroupName
+}
+
+interface GetSettingsValuesByGroupResponse {
+  success: boolean
+  data: GroupValues
 }

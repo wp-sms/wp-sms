@@ -2,7 +2,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import clsx from 'clsx'
 import type { PropsWithChildren } from 'react'
 
-import { RenderIcon } from './render-icon'
+import { RenderIcon } from '../../lib/render-icon'
 
 export type SidebarItemProps = PropsWithChildren<{
   icon?: string

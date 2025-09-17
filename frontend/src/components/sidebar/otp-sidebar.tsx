@@ -4,7 +4,7 @@ import { Fingerprint } from 'lucide-react'
 
 import { useSidebarStore } from '@/stores/use-sidebar-store'
 
-import { RenderIcon } from './render-icon'
+import { RenderIcon } from '../../lib/render-icon'
 
 export const OTPSidebar = () => {
   const location = useLocation()

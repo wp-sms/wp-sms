@@ -1,11 +1,11 @@
-import { RenderIcon } from '@/components/sidebar/render-icon'
+import { RenderIcon } from '@/lib/render-icon'
 
-export type SettingsGroupTitleProps = {
+export type GroupTitleProps = {
   label: string
   icon: string
 }
 
-export const SettingsGroupTitle = ({ label, icon }: SettingsGroupTitleProps) => {
+export const GroupTitle = ({ label, icon }: GroupTitleProps) => {
   return (
     <div className="flex items-center gap-x-2 border border-border p-4 rounded-lg">
       <div className="bg-primary/15 size-10 rounded-lg flex items-center justify-center">

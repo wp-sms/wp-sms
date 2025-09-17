@@ -1,10 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { SettingsDynamicForm } from '@/components/settings/dynamic-form'
 import { SettingsFormActions } from '@/components/settings/form-actions'
-import { Form } from '@/components/ui/form'
 import { useStableCallback } from '@/hooks/use-stable-callback'
 import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
 import { useGetGroupValues } from '@/services/settings/use-get-group-values'
@@ -51,7 +50,7 @@ function RouteComponent() {
   }, [groupValues?.data, groupSchema?.data, initForm])
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <div className="flex flex-col gap-y-4">
         <SettingsDynamicForm
           groupSchema={groupSchema?.data}
@@ -61,6 +60,6 @@ function RouteComponent() {
 
         <SettingsFormActions />
       </div>
-    </Form>
+    </FormProvider>
   )
 }
