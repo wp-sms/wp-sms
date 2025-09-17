@@ -8,8 +8,11 @@ use WP_REST_Request;
 use WP_Error;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Abstracts\RestAPIEndpointsAbstract;
 use WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterStartAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterVerifyAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterAddIdentifierAPIEndpoint;
 
-class RegisterApiEndpoints extends RestAPIEndpointsAbstract
+class RegisterInitApiEndpoints extends RestAPIEndpointsAbstract
 {
 
     /**
@@ -17,11 +20,13 @@ class RegisterApiEndpoints extends RestAPIEndpointsAbstract
      */
     public function registerRoutes(): void
     {
+        // Register init endpoint
         register_rest_route('wpsms/v1', '/register/init', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'initRegister'],
             'permission_callback' => '__return_true',
         ]);
+        
     }
 
     /**
