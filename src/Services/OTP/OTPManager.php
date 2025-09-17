@@ -6,11 +6,9 @@ use WP_SMS\Contracts\Abstracts\AbstractService;
 use WP_SMS\Services\OTP\Admin\Pages\OTPAdminPage;
 use WP_SMS\Services\OTP\Shortcodes\AuthShortcodes;
 use WP_SMS\Services\OTP\Templates\AuthTemplates;
-use WP_SMS\Services\OTP\RestAPIEndpoints\Auth\AuthRestAPIEndpoints;
 use WP_SMS\Services\OTP\Assets\AuthAssets;
-use WP_SMS\Services\OTP\RestAPIEndpoints\OTP\OTPRestAPIEndpoints;
-use WP_SMS\Services\OTP\RestAPIEndpoints\MagicLink\MagicLinkRestAPIEndpoints;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterApiEndpoints;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterStartAPIEndpoint;
 
 class OTPManager extends AbstractService
 {
@@ -34,10 +32,8 @@ class OTPManager extends AbstractService
             new AuthAssets(),
             new AuthShortcodes(),
             new AuthTemplates(),
-            new AuthRestAPIEndpoints(),
-            new OTPRestAPIEndpoints(),
             new RegisterApiEndpoints(),
-            new MagicLinkRestAPIEndpoints(),
+            new RegisterStartAPIEndpoint(),
         ];
 
         foreach ($services as $service) {
