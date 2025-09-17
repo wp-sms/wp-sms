@@ -7,7 +7,7 @@ interface DeliveryChannelInterface
     /**
      * Send a message (OTP, link, etc.) to the destination.
      */
-    public function send(string $to, string $message, array $context = []): bool;
+    public function send(string $to, string $message, array $context = []);
 
     /**
      * Return a unique key to identify this channel (e.g., 'sms', 'email').
