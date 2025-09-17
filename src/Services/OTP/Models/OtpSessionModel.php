@@ -11,6 +11,7 @@ class OtpSessionModel extends AbstractBaseModel
     public ?string $identifier = null;
     public ?string $identifier_type = null;
     public ?string $code_hash = null;
+    public ?string $code = null;
     public ?string $expires_at = null;
     public ?int $attempt_count = null;
     public ?string $channel = null;
@@ -24,32 +25,44 @@ class OtpSessionModel extends AbstractBaseModel
     /**
      * Create a new OTP session.
      */
-    public static function createSession(string $flowId, string $code, int $expiresInSeconds, ?string $phone = null, ?string $email = null, string $channel = 'sms'): string
+    public static function createSession(string $flowId, string $code, int $expiresInSeconds, string $identifier, string $channel = 'sms')
     {
+        // Check if there's already an unexpired session for this identifier
+        if (static::hasUnexpiredSessionByIdentifier($identifier)) {
+            throw new \Exception('An unexpired OTP session already exists for this identifier.');
+        }
+
+        // Determine identifier type based on the identifier itself
+        $identifierType = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
         $now = current_time('mysql');
         $expires = gmdate('Y-m-d H:i:s', time() + $expiresInSeconds);
         $hash = hash('sha256', $code);
 
         $data = [
-            'flow_id'    => $flowId,
-            'otp_hash'  => $hash,
-            'expires_at' => $expires,
-            'channel'    => $channel,
-            'created_at' => $now,
+            'flow_id'        => $flowId,
+            'otp_hash'       => $hash,
+            'expires_at'     => $expires,
+            'channel'        => $channel,
+            'created_at'     => $now,
+            'identifier'     => $identifier,
+            'identifier_type'=> $identifierType,
         ];
 
-        if ($phone) {
-            $data['identifier'] = $phone;
-            $data['identifier_type'] = 'phone';
-        }
-        if ($email) {
-            $data['identifier'] = $email;
-            $data['identifier_type'] = 'email';
-        }
-
-        static::insert($data);
-
-        return $flowId;
+        $otpSession = static::insert($data);
+        $otpSessionModel = new self();
+        $otpSessionModel->id = $otpSession;
+        $otpSessionModel->flow_id = $flowId;
+        $otpSessionModel->identifier = $identifier;
+        $otpSessionModel->identifier_type = $identifierType;
+        $otpSessionModel->code_hash = $hash;
+        $otpSessionModel->code = $code;
+        $otpSessionModel->expires_at = $expires;
+        $otpSessionModel->attempt_count = 0;
+        $otpSessionModel->channel = $channel;
+        $otpSessionModel->created_at = $now;
+        
+        return $otpSessionModel;
     }
 
     /**
@@ -79,11 +92,11 @@ class OtpSessionModel extends AbstractBaseModel
     }
 
     /**
-     * Check if there's an unexpired session for a phone number
+     * Check if there's an unexpired session for an identifier (email or phone)
      */
-    public static function hasUnexpiredSession(string $phone): bool
+    public static function hasUnexpiredSessionByIdentifier(string $identifier): bool
     {
-        $sessions = static::findAll(['identifier' => $phone, 'identifier_type' => 'phone']);
+        $sessions = static::findAll(['identifier' => $identifier]);
         
         foreach ($sessions as $session) {
             if (strtotime($session['expires_at']) > time()) {
@@ -95,50 +108,11 @@ class OtpSessionModel extends AbstractBaseModel
     }
 
     /**
-     * Check if there's an unexpired session for an email
+     * Get the most recent unexpired session for an identifier (email or phone)
      */
-    public static function hasUnexpiredSessionByEmail(string $email): bool
+    public static function getMostRecentUnexpiredSessionByIdentifier(string $identifier): ?array
     {
-        $sessions = static::findAll(['identifier' => $email, 'identifier_type' => 'email']);
-        
-        foreach ($sessions as $session) {
-            if (strtotime($session['expires_at']) > time()) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    /**
-     * Get the most recent unexpired session for a phone number
-     */
-    public static function getMostRecentUnexpiredSession(string $phone): ?array
-    {
-        $sessions = static::findAll(['identifier' => $phone, 'identifier_type' => 'phone']);
-        
-        $unexpiredSessions = array_filter($sessions, function($session) {
-            return strtotime($session['expires_at']) > time();
-        });
-        
-        if (empty($unexpiredSessions)) {
-            return null;
-        }
-        
-        // Sort by created_at descending and return the most recent
-        usort($unexpiredSessions, function($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
-        
-        return $unexpiredSessions[0];
-    }
-
-    /**
-     * Get the most recent unexpired session for an email
-     */
-    public static function getMostRecentUnexpiredSessionByEmail(string $email): ?array
-    {
-        $sessions = static::findAll(['identifier' => $email, 'identifier_type' => 'email']);
+        $sessions = static::findAll(['identifier' => $identifier]);
         
         $unexpiredSessions = array_filter($sessions, function($session) {
             return strtotime($session['expires_at']) > time();
