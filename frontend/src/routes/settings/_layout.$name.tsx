@@ -1,65 +1,47 @@
+import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { AlertCircle } from 'lucide-react'
 
-import { SettingsDynamicForm } from '@/components/settings/dynamic-form'
-import { SettingsFormActions } from '@/components/settings/form-actions'
-import { useStableCallback } from '@/hooks/use-stable-callback'
-import { useGetGroupSchema } from '@/services/settings/use-get-group-schema'
-import { useGetGroupValues } from '@/services/settings/use-get-group-values'
+import { SchemaForm } from '@/components/form/schema-form'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
+import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
+import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
+import { useNewSaveSettingsValues } from '@/services/settings/use-save-settings-values'
 
 export const Route = createFileRoute('/settings/_layout/$name')({
+  loader: ({ context, params }) => {
+    const name = (params.name || 'general') as SettingGroupName
+    return Promise.all([
+      context.queryClient.ensureQueryData(getSchemaByGroup({ groupName: name || 'general' })),
+      context.queryClient.ensureQueryData(getSettingsValuesByGroup({ groupName: name })),
+    ])
+  },
   component: RouteComponent,
+  pendingComponent: () => <SettingsSchemaSkeleton />,
+  errorComponent: () => (
+    <Alert>
+      <AlertCircle className="h-4 w-4" />
+      <AlertDescription>Something went wrong!</AlertDescription>
+    </Alert>
+  ),
 })
 
 function RouteComponent() {
-  const { name } = Route.useParams()
+  const name = Route.useParams().name as SettingGroupName
 
-  const {
-    data: groupSchema,
-    isLoading: isGroupSchemaLoading,
-    isRefetching: isGroupSchemaRefetching,
-  } = useGetGroupSchema({
-    params: {
-      groupName: name ?? 'general',
-    },
+  const [schemaResult, valuesResult] = useSuspenseQueries({
+    queries: [getSchemaByGroup({ groupName: name }), getSettingsValuesByGroup({ groupName: name })],
   })
 
-  const {
-    data: groupValues,
-    isLoading: isGroupValuesLoading,
-    isRefetching: isGroupValuesRefetching,
-  } = useGetGroupValues({
-    params: {
-      groupName: name ?? 'general',
-    },
-  })
+  const { mutateAsync } = useNewSaveSettingsValues({ groupName: (name ?? 'general') as SettingGroupName })
 
-  const form = useForm({
-    defaultValues: {},
-  })
+  const schema = schemaResult.data.data.data
+  const defaultValues = valuesResult.data.data.data
 
-  const initForm = useStableCallback(async () => {
-    if (groupValues?.data && groupSchema?.data) {
-      form.reset(groupValues?.data ?? {})
-    }
-  }, [groupValues?.data, groupSchema?.data, form])
+  const handleSubmit = async (values: Record<string, unknown>) => {
+    await mutateAsync(values)
+  }
 
-  useEffect(() => {
-    initForm()
-  }, [groupValues?.data, groupSchema?.data, initForm])
-
-  return (
-    <FormProvider {...form}>
-      <div className="flex flex-col gap-y-4">
-        <SettingsDynamicForm
-          groupSchema={groupSchema?.data}
-          isInitialLoading={isGroupSchemaLoading || isGroupValuesLoading}
-          isRefreshing={isGroupSchemaRefetching || isGroupValuesRefetching}
-        />
-
-        <SettingsFormActions />
-      </div>
-    </FormProvider>
-  )
+  return <SchemaForm schema={schema} defaultValues={defaultValues} onSubmit={handleSubmit} />
 }

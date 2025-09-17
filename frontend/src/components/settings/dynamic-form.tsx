@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import type { GroupSchema } from '@/types/settings/group-schema'
 
 import { GroupTitle } from '../layout/group-title'
-import { DynamicFieldsSkeleton } from './dynamic-fields-skeleton'
+import { SettingsSchemaSkeleton } from '../ui/skeleton'
 
 export type SettingsDynamicFormProps = {
   groupSchema: GroupSchema | null | undefined
@@ -19,7 +19,7 @@ export const SettingsDynamicForm = ({ groupSchema, isInitialLoading, isRefreshin
   const formValues = useWatch()
 
   if (isInitialLoading) {
-    return <DynamicFieldsSkeleton />
+    return <SettingsSchemaSkeleton />
   }
 
   if (!groupSchema) {
