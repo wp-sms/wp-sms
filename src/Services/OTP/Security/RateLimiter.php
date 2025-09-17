@@ -7,7 +7,7 @@ class RateLimiter
     protected int $defaultTtl = 300;
     protected int $defaultLimit = 5;
 
-    public function isAllowed(string $key, int $maxAttempts = 5, int $ttl = 300): bool
+    public function isAllowed(string $key, int $maxAttempts = 15, int $ttl = 300): bool
     {
         $max = $maxAttempts ?? $this->defaultLimit;
         $ttl = $ttl ?? $this->defaultTtl;
