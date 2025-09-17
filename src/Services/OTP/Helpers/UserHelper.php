@@ -186,10 +186,9 @@ class UserHelper
                 wp_update_user($user);
             }
 
-            //update user phone based on the verified identifiers
+            //update user phone based on the verified identifiers as usermeta wpsms_phone
             if (isset($verifiedIdentifiers['phone'])) {
-                $user->user_phone = $verifiedIdentifiers['phone']['identifier'];
-                wp_update_user($user);
+                update_user_meta($userId, 'wpsms_phone', $verifiedIdentifiers['phone']['identifier']);
             }
 
             // Apply filters
