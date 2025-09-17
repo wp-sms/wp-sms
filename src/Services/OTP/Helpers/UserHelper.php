@@ -136,6 +136,13 @@ class UserHelper
             return false;
         }
 
+         // Add wpsms_ prefix to meta keys
+         $prefixedMeta = [];
+         foreach ($metaData as $key => $value) {
+             $prefixedMeta['wpsms_' . $key] = $value;
+         }
+         $metaData = $prefixedMeta;
+
         $success = true;
         foreach ($metaData as $key => $value) {
             $result = update_user_meta($userId, $key, $value);
