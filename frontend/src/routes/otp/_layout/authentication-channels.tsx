@@ -35,12 +35,6 @@ function RouteComponent() {
 
   const groupSchema = result.data.data
 
-  // const getDirtyFields = () => {
-  //   return Object.entries(form.state.fields)
-  //     .filter(([_, field]) => field.state.meta.isDirty)
-  //     .map(([name]) => name)
-  // }
-
   const form = useForm({
     defaultValues: valuesResult?.data?.data ?? {},
     onSubmit: async ({ value }) => {
@@ -160,20 +154,24 @@ function RouteComponent() {
           </Card>
         ))}
 
-        <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
-          <Button disabled={!form.state.isDirty || form.state.isSubmitting} type="submit">
-            Save Changes
-          </Button>
+        <form.Subscribe selector={(state) => state.isDirty}>
+          {(isDirty) => (
+            <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
+              <Button disabled={!isDirty || form.state.isSubmitting} type="submit">
+                Save Changes
+              </Button>
 
-          <Button
-            disabled={!form.state.isDirty || form.state.isSubmitting}
-            type="reset"
-            variant="secondary"
-            onClick={() => form.reset()}
-          >
-            Reset
-          </Button>
-        </div>
+              <Button
+                disabled={!isDirty || form.state.isSubmitting}
+                type="reset"
+                variant="secondary"
+                onClick={() => form.reset()}
+              >
+                Reset
+              </Button>
+            </div>
+          )}
+        </form.Subscribe>
       </form>
 
       {/* Sub-fields Drawer */}
