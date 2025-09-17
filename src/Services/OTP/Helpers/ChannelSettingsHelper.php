@@ -306,7 +306,7 @@ class ChannelSettingsHelper
         $requiredChannels = [];
 
         foreach ($channels as $name => $config) {
-            if (isset($config['required']) && $config['required']) {
+            if (isset($config['required']) && $config['required'] && $config['enabled']) {
                 $requiredChannels[$name] = $config;
             }
         }
