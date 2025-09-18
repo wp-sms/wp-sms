@@ -62,8 +62,19 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'options'     => [
                                     'otp'  => __('OTP Code', 'wp-sms'),
                                     'link' => __('Verification Link', 'wp-sms'),
+                                    'password' => __('Password', 'wp-sms'),
                                 ],
                                 'default'     => ['otp'],
+                            ]),
+                            new Field([
+                                'key'         => 'otp_channel_phone_password_is_required',
+                                'label'       => __('Password is Required', 'wp-sms'),
+                                'type'        => 'checkbox',
+                                'description' => __('Password is required during user registration', 'wp-sms'),
+                                'default'     => false,
+                                'show_if'     => [
+                                    'otp_channel_phone_verification_method' => 'password',
+                                ],
                             ]),
                             new Field([
                                 'key'         => 'otp_channel_phone_otp_digits',
@@ -166,8 +177,19 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'options'     => [
                                     'otp'  => __('OTP Code', 'wp-sms'),
                                     'link' => __('Verification Link', 'wp-sms'),
+                                    'password' => __('Password', 'wp-sms'),
                                 ],
                                 'default'     => ['otp'],
+                            ]),
+                            new Field([
+                                'key'         => 'otp_channel_email_password_is_required',
+                                'label'       => __('Password is Required', 'wp-sms'),
+                                'type'        => 'checkbox',
+                                'description' => __('Password is required during user registration', 'wp-sms'),
+                                'default'     => false,
+                                'show_if'     => [
+                                    'otp_channel_email_verification_method' => 'password',
+                                ],
                             ]),
                             new Field([
                                 'key'         => 'otp_channel_email_otp_digits',
@@ -206,7 +228,7 @@ class OTPChannelSettings extends AbstractSettingGroup
                                 'key'         => 'otp_channel_email_allow_username_on_login',
                                 'label'       => __('Allow Username Feild On Login', 'wp-sms'),
                                 'type'        => 'checkbox',
-                                'description' => __('', 'wp-sms'),
+                                'description' => __('Allow username field on login', 'wp-sms'),
                                 'default'     => true,
                             ]),
                             new Field([
