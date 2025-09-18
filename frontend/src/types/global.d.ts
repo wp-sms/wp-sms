@@ -6,6 +6,7 @@ declare global {
       nonce: string
       restUrl: string
       frontend_build_url: string
+      react_starting_point: string
     }
 
     wp: any

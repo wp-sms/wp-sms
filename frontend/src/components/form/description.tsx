@@ -28,12 +28,12 @@ export const FieldDescription = ({ text }: FieldDescriptionProps) => {
   if (hasHtmlTags) {
     return (
       <div
-        className="text-xs font-normal text-muted-foreground [&_code]:cursor-pointer"
+        className="text-xs font-normal text-muted-foreground [&_code]:cursor-pointer !m-0"
         dangerouslySetInnerHTML={{ __html: text }}
         onClick={handleCodeClick}
       />
     )
   }
 
-  return <p className="text-xs font-normal text-muted-foreground">{text}</p>
+  return <p className="text-xs font-normal text-muted-foreground !m-0">{text}</p>
 }
