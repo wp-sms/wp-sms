@@ -173,10 +173,10 @@ class Newsletter
         }
     }
 
-    public static function getSubscriberByMobile($number, $single = true)
+    public static function getSubscriberByMobile($number)
     {
         global $wpdb;
-        $results   = [];
+
         $metaValue = Helper::prepareMobileNumberQuery($number);
 
         // Prepare each value in $metaValue
@@ -184,38 +184,15 @@ class Newsletter
             $value = $wpdb->prepare('%s', $value);
         }
 
-        $placeholders    = implode(', ', $metaValue);
-        $exactMatchQuery = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
+        $placeholders = implode(', ', $metaValue);
+        $sql          = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
 
-        if ($single) {
-            $result = $wpdb->get_row($exactMatchQuery);
-            if ($result) {
-                return $result;
-            }
-        } else {
-            $exactMatches = $wpdb->get_results($exactMatchQuery);
-            if (!empty($exactMatches)) {
-                $results = $exactMatches;
-            }
 
-            $normalizedMatchQuery = $wpdb->prepare(
-                "SELECT * FROM `{$wpdb->prefix}sms_subscribes` 
-             WHERE REPLACE(REPLACE(REPLACE(mobile, '-', ''), ' ', ''), '+', '') IN ($placeholders)"
-            );
+        $result = $wpdb->get_row($sql);
 
-            $normalizedMatches = $wpdb->get_results($normalizedMatchQuery);
-
-            // Merge results without duplicates (based on ID or mobile)
-            if (!empty($normalizedMatches)) {
-                foreach ($normalizedMatches as $row) {
-                    $results[] = $row;
-                }
-            }
-
-            return $results;
+        if ($result) {
+            return $result;
         }
-
-        return null;
     }
 
     /**
@@ -261,31 +238,31 @@ class Newsletter
             return ['result' => 'error', 'message' => $group_ids->get_error_message()];
         }
 
-        $where        = ['mobile' => $mobile];
-        $deleted_rows = 0;
+        $where   = ['mobile' => $mobile];
+        $success = false;
 
         foreach ($group_ids as $group_id) {
-            $where_clause = ['mobile' => $mobile];
             if (!empty($group_id)) {
-                $where_clause['group_id'] = $group_id;
+                $where['group_id'] = $group_id;
             }
 
-            $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where_clause);
+            $result = $wpdb->delete("{$wpdb->prefix}sms_subscribes", $where);
 
             if ($result !== false) {
-                $deleted_rows += $result; // Add number of deleted rows
+                $success = true; // At least one deletion was successful
             }
         }
-        if ($deleted_rows === 0) {
+        // Handle deletion result
+        if (!$success) {
             return ['result' => 'error', 'message' => esc_html__('The mobile number does not exist in the specified group(s)!', 'wp-sms')];
         }
         /**
          * Run hook after deleting subscriber.
          *
-         * @param int $deleted_rows Number of rows deleted.
+         * @param bool $result Whether the deletion was successful.
          * @since 3.0
          */
-        do_action('wp_sms_delete_subscriber', $deleted_rows);
+        do_action('wp_sms_delete_subscriber', $success);
 
         return ['result' => 'success', 'message' => esc_html__('Successfully canceled the subscription!', 'wp-sms')];
     }

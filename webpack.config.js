@@ -2,7 +2,7 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-    mode:'production',
+    mode: 'production',
     entry: {
         admin: [
             './assets/src/scripts/quick-reply.js',
@@ -17,8 +17,6 @@ module.exports = {
             './assets/src/scripts/admin-dashboard-stats-widget.js',
             './assets/src/scripts/chart.min.js',
             './assets/src/scripts/modal-handler.js',
-            './assets/src/scripts/notification.js',
-            './assets/src/scripts/option-updater.js',
         ],
         frontend: [
             './assets/src/scripts/blocks.js',
@@ -28,6 +26,9 @@ module.exports = {
         ],
         onboarding: [
             './assets/src/scripts/onboarding.js',
+        ],
+        background_process: [
+            './assets/src/scripts/background-process.js',
         ]
     },
     output: {

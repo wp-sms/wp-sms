@@ -8,13 +8,10 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginActions;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginUpdater;
 use WP_SMS\Components\Assets;
-use WP_SMS\Exceptions\LicenseException;
-use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\Request;
 
 class LicenseManagementManager
 {
-    private $apiCommunicator;
     private $pluginHandler;
     private $handledPlugins = [];
 
@@ -27,13 +24,11 @@ class LicenseManagementManager
 
     public function __construct()
     {
-        $this->apiCommunicator = new ApiCommunicator();
-        $this->pluginHandler   = new PluginHandler();
+        $this->pluginHandler = new PluginHandler();
 
         // Initialize the necessary components.
         $this->initActionCallbacks();
 
-        add_action('init', [$this, 'constLicenseValidation']);
         add_action('init', [$this, 'initPluginUpdaters']);
         add_action('admin_init', [$this, 'showPluginActivationNotice']);
         add_filter('wp_sms_enable_upgrade_to_bundle', [$this, 'showUpgradeToBundle']);
@@ -64,55 +59,6 @@ class LicenseManagementManager
     {
         Assets::script('license-manager', 'js/licenseManager.min.js', ['jquery'], [], true);
     }
-
-    /**
-     * Validates licenses for active plugins using constants defined in wp-config.php.
-     *
-     * This method loops through a list of expected plugin license constants,
-     * and for each active plugin with a defined constant and available license key,
-     * it triggers license validation via the API communicator.
-     *
-     * @return void
-     *
-     * @throws Exception if the API call fails
-     */
-    public function constLicenseValidation(): void
-    {
-        if (!defined('WP_SMS_LICENSE')) {
-            return;
-        }
-
-        $licenses = WP_SMS_LICENSE;
-
-        if (is_string($licenses)) {
-            $licenses = array_map('sanitize_text_field', explode(',', $licenses));
-        } elseif (is_array($licenses)) {
-            $licenses = array_map('sanitize_text_field', $licenses);
-        } else {
-            return;
-        }
-
-        foreach ($licenses as $license) {
-            if (LicenseHelper::getLicenseInfo($license)) {
-                continue; // License is already stored, skip validation
-            }
-
-            try {
-                $this->apiCommunicator->validateLicense($license);
-            } catch (LicenseException $e) {
-                NoticeManager::getInstance()->registerNotice(
-                    'license_validation',
-                    sprintf(
-                        wp_kses_post(__('Failed to validate license: %s', 'wp-sms')),
-                        wp_kses_post($e->getMessage())
-                    ),
-                    true
-                );
-                return;
-            }
-        }
-    }
-
 
     public function addMenuItem($items)
     {
@@ -197,6 +143,7 @@ class LicenseManagementManager
             $this->handledPlugins[] = $pluginSlug;
 
         } catch (Exception $e) {
+            //todo
             WP_SMS::log(sprintf('Failed to initialize PluginUpdater for %s: %s', $pluginSlug, $e->getMessage()));
         }
     }

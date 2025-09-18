@@ -4,7 +4,6 @@ namespace WP_SMS\Admin\OnBoarding;
 
 use WP_SMS\Components\Assets;
 use WP_SMS\Components\View;
-use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 use WP_SMS\Notice\NoticeManager;
 
@@ -30,10 +29,6 @@ class WizardManager
         ];
 
         if (in_array(Request::get('page'), $skipped_pages)) {
-            return;
-        }
-
-        if (!UserHelper::isAdmin()) {
             return;
         }
 
