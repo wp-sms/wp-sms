@@ -88,6 +88,9 @@ class UserHelper
         return !empty($users) ? $users[0] : null;
     }
 
+    public static function getUserFlowId($userId){
+        return get_user_meta($userId, 'wpsms_flow_id', true);
+    }
     /**
      * Get user by flow_id
      */
@@ -182,7 +185,7 @@ class UserHelper
 
             // Insert email identifier if verified
             if (isset($verifiedIdentifiers['email'])) {
-                $result = IdentifierModel::insert([
+                IdentifierModel::insert([
                     'user_id' => $userId,
                     'factor_type' => 'email',
                     'factor_value' => $verifiedIdentifiers['email']['identifier'],
@@ -380,6 +383,40 @@ class UserHelper
         }
         
         return null;
+    }
+
+    /**
+     * Check if an identifier is already assigned to any user
+     * Checks both IdentifierModel and user metas
+     */
+    public static function isIdentifierTaken(string $identifier): bool
+    {
+        if (empty($identifier)) {
+            return false;
+        }
+
+        $identifierType = self::getIdentifierType($identifier);
+        
+        // Check in IdentifierModel for verified identifiers
+        $identifierModel = new IdentifierModel();
+        $existingIdentifier = $identifierModel->find([
+            'factor_value' => $identifier,
+            'factor_type' => $identifierType,
+            'verified' => true
+        ]);
+        
+        if ($existingIdentifier) {
+            return true;
+        }
+
+        // Check in user metas for pending users
+        $users = get_users([
+            'meta_key' => 'wpsms_identifier',
+            'meta_value' => $identifier,
+            'number' => 1,
+        ]);
+
+        return !empty($users);
     }
 
     /**
