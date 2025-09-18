@@ -8,6 +8,8 @@ use WP_REST_Request;
 use WP_Error;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Abstracts\RestAPIEndpointsAbstract;
 use WP_SMS\Services\OTP\Helpers\UserHelper;
+use WP_SMS\Services\OTP\Models\OtpSessionModel;
+use WP_SMS\Services\OTP\Models\IdentifierModel;
 
 class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
 {
@@ -53,53 +55,69 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     public function startRegister(WP_REST_Request $request)
     {
         try {
-            // Get and validate request parameters
+            // 1. Parse & normalize
             $identifier = $request->get_param('identifier');
             $ip = $this->getClientIp($request);
+            
+            $identifierType = UserHelper::getIdentifierType($identifier);
+            $identifierMasked = $this->maskIdentifier($identifier, $identifierType);
 
-            // Check rate limiting
+            // 2. Rate limit
             $rateLimitResult = $this->checkRateLimits($identifier, $ip, 'register_init');
             if (is_wp_error($rateLimitResult)) {
                 return $rateLimitResult;
             }
 
-            // Generate flow ID
-            $flowId = uniqid('flow_', true);
-            
-            // Create or get pending user
-            $pendingUser = UserHelper::createPendingUser($identifier, [
-                'flow_id' => $flowId
-            ]);
-            
+            // 3. Availability check
+            if ($this->isIdentifierUnavailable($identifier)) {
+                return $this->createErrorResponse(
+                    'identifier_unavailable',
+                    __('This identifier is already in use.', 'wp-sms'),
+                    409
+                );
+            }
+
+            // 4. Pending user handling
+            $pendingUser = $this->getOrCreatePendingUser($identifier);
             if (!$pendingUser) {
                 return $this->createErrorResponse(
                     'user_creation_failed',
-                    __('Unable to create pending user', 'wp-sms'),
+                    __('Unable to create or retrieve pending user', 'wp-sms'),
                     500
                 );
             }
-            
-            try {
-                $otpSession = $this->otpService->generate(
-                    $flowId,
-                    $identifier
-                );
-            } catch (\Exception $e) {
-                // Handle unexpired session exception
-                if (strpos($e->getMessage(), 'unexpired OTP session') !== false) {
+
+            $flowId = UserHelper::getUserFlowId($pendingUser->ID);
+
+            // 5. OTP session lookup (reuse-first)
+            $existingOtpSession = $this->getExistingOtpSession($flowId);
+            $otpSession = null;
+            $isNewSession = false;
+            if ($existingOtpSession) {
+                // Reuse existing session - do not send OTP
+                $otpSession = $existingOtpSession;
+                $isNewSession = false;
+            } else {
+                // Create new session
+                $otpSession = $this->createNewOtpSession($flowId, $identifier);
+                if (!$otpSession) {
                     return $this->createErrorResponse(
-                        'session_exists',
-                        $e->getMessage(),
-                        409 // Conflict status code
+                        'session_creation_failed',
+                        __('Unable to create OTP session', 'wp-sms'),
+                        500
                     );
                 }
-                // Re-throw other exceptions
-                throw $e;
+                $isNewSession = true;
             }
 
-            // Send OTP via the service (it will determine the best channel)
-            $sendResult = $this->otpService->sendOTP($identifier, $otpSession->code, $otpSession->channel);
-
+            // 6. Send OTP only if it's a new session
+            if ($isNewSession) {
+                $sendResult = $this->otpService->sendOTP($identifier, $otpSession['code'], $otpSession['channel']);
+            } else {
+                // For existing session, just return success without sending
+                $sendResult = ['success' => true, 'channel_used' => $otpSession['channel']];
+            }
+            
             if (!$sendResult['success']) {
                 return $this->createErrorResponse(
                     'otp_send_failed',
@@ -108,24 +126,150 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
                 );
             }
 
-            // Log the auth event
+            // 7. Log + counters
             $this->logAuthEvent($flowId, 'register_init', 'allow', $sendResult['channel_used'], $ip);
-
-            // Increment rate limits
             $this->incrementRateLimits($identifier, $ip, 'register_init');
 
-            // Return success response
+            // 8. Success
+            $successMessage = $isNewSession 
+                ? __('Registration initiated successfully', 'wp-sms')
+                : __('Registration reinitiated successfully', 'wp-sms');
+                
             return $this->createSuccessResponse([
-                'flow_id' => $otpSession->flow_id,
+                'flow_id' => $flowId,
                 'user_id' => $pendingUser->ID,
-                'identifier' => $identifier,
+                'identifier_type' => $identifierType,
+                'identifier_masked' => $identifierMasked,
                 'channel_used' => $sendResult['channel_used'],
+                'otp_ttl_seconds' => $this->getOtpTtlSeconds($otpSession['expires_at']),
                 'next_step' => 'verify',
-            ], __('Registration initiated successfully', 'wp-sms'));
+            ], $successMessage);
             
         } catch (\Exception $e) {
             return $this->handleException($e, 'initRegister');
         }
+    }
+
+    /**
+     * Check if identifier is unavailable (verified in IdentifierModel)
+     */
+    private function isIdentifierUnavailable(string $identifier): bool
+    {
+        $identifierModel = new IdentifierModel();
+        $identifierHash = md5($identifier);
+        $existingIdentifier = $identifierModel->find([
+            'value_hash' => $identifierHash,
+            'verified' => true
+        ]);
+        return !empty($existingIdentifier);
+    }
+
+    /**
+     * Get or create pending user
+     */
+    private function getOrCreatePendingUser(string $identifier): ?\WP_User
+    {
+        // Check if pending user already exists
+        $existingUser = UserHelper::getUserByIdentifier($identifier);
+        if ($existingUser && UserHelper::isPendingUser($existingUser->ID)) {
+            return $existingUser;
+        }
+
+        // Generate flow ID if user doesn't have one
+        $flowId = uniqid('flow_', true);
+        
+        // Create new pending user
+        return UserHelper::createPendingUser($identifier, [
+            'flow_id' => $flowId
+        ]);
+    }
+
+    /**
+     * Get existing OTP session by flow_id
+     */
+    private function getExistingOtpSession(string $flowId): ?array
+    {
+        $existingSession = OtpSessionModel::getByFlowId($flowId);
+        
+        if ($existingSession && strtotime($existingSession['expires_at']) > time()) {
+            return $existingSession;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Create new OTP session
+     */
+    private function createNewOtpSession(string $flowId, string $identifier): ?array
+    {
+        try {
+            $otpSession = $this->otpService->generate($flowId, $identifier);
+            return [
+                'flow_id' => $otpSession->flow_id,
+                'code' => $otpSession->code,
+                'channel' => $otpSession->channel,
+                'expires_at' => $otpSession->expires_at,
+            ];
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get OTP TTL in seconds
+     */
+    private function getOtpTtlSeconds(string $expiresAt): int
+    {
+        $expiresTimestamp = strtotime($expiresAt);
+        $now = time();
+        return max(0, $expiresTimestamp - $now);
+    }
+
+    /**
+     * Mask identifier for privacy
+     */
+    private function maskIdentifier(string $identifier, string $type): string
+    {
+        if ($type === 'email') {
+            return $this->maskEmail($identifier);
+        } else {
+            return $this->maskPhone($identifier);
+        }
+    }
+
+    /**
+     * Mask email for privacy
+     */
+    private function maskEmail(string $email): string
+    {
+        $parts = explode('@', $email);
+        if (count($parts) !== 2) {
+            return $email;
+        }
+        
+        $username = $parts[0];
+        $domain = $parts[1];
+        
+        if (strlen($username) <= 2) {
+            $maskedUsername = $username;
+        } else {
+            $maskedUsername = substr($username, 0, 2) . str_repeat('*', strlen($username) - 2);
+        }
+        
+        return $maskedUsername . '@' . $domain;
+    }
+
+    /**
+     * Mask phone number for privacy
+     */
+    private function maskPhone(string $phone): string
+    {
+        if (strlen($phone) <= 4) {
+            return str_repeat('*', strlen($phone));
+        }
+        
+        return substr($phone, 0, 3) . str_repeat('*', strlen($phone) - 6) . substr($phone, -3);
     }
 
 }
