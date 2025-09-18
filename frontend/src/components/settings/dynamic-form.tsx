@@ -6,8 +6,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import type { GroupSchema } from '@/types/settings/group-schema'
 
+import { GroupTitle } from '../layout/group-title'
 import { DynamicFieldsSkeleton } from './dynamic-fields-skeleton'
-import { SettingsGroupTitle } from './group-title'
 
 export type SettingsDynamicFormProps = {
   groupSchema: GroupSchema | null | undefined
@@ -33,7 +33,7 @@ export const SettingsDynamicForm = ({ groupSchema, isInitialLoading, isRefreshin
 
   return (
     <div className="flex flex-col gap-y-4">
-      <SettingsGroupTitle label={groupSchema?.label} icon={groupSchema?.icon} />
+      <GroupTitle label={groupSchema?.label} icon={groupSchema?.icon} />
 
       {groupSchema?.sections?.map((section, idx) => {
         return (
