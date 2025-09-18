@@ -1,7 +1,7 @@
 <?php
 
 namespace WP_SMS\Services\OTP\Helpers;
-
+use WP_SMS\Services\OTP\Models\IdentifierModel;
 /**
  * User Helper
  *
@@ -178,7 +178,35 @@ class UserHelper
             delete_user_meta($userId, 'wpsms_flow_id');
             delete_user_meta($userId, 'wpsms_identifier');
             delete_user_meta($userId, 'wpsms_identifier_type');
+            $verifiedIdentifiers = self::getVerifiedIdentifiers($userId);
 
+            // Insert email identifier if verified
+            if (isset($verifiedIdentifiers['email'])) {
+                $result = IdentifierModel::insert([
+                    'user_id' => $userId,
+                    'factor_type' => 'email',
+                    'factor_value' => $verifiedIdentifiers['email']['identifier'],
+                    'value_hash' => md5($verifiedIdentifiers['email']['identifier']),
+                    'verified' => true,
+                    'created_at' => current_time('mysql'),
+                    'verified_at' => current_time('mysql'),
+                ]);
+                dd($result, $verifiedIdentifiers, isset($verifiedIdentifiers['email']));
+
+            }
+
+            // Insert phone identifier if verified
+            if (isset($verifiedIdentifiers['phone'])) {
+                IdentifierModel::insert([
+                    'user_id' => $userId,
+                    'factor_type' => 'phone',
+                    'factor_value' => $verifiedIdentifiers['phone']['identifier'],
+                    'value_hash' => md5($verifiedIdentifiers['phone']['identifier']),
+                    'verified' => true,
+                    'created_at' => current_time('mysql'),
+                    'verified_at' => current_time('mysql'),
+                ]);
+            }
             //update user email based on the verified identifiers
             $verifiedIdentifiers = self::getVerifiedIdentifiers($userId);
             if (isset($verifiedIdentifiers['email'])) {
@@ -355,7 +383,6 @@ class UserHelper
         
         return null;
     }
-
 
     /**
      * Get identifier type (email or phone)
