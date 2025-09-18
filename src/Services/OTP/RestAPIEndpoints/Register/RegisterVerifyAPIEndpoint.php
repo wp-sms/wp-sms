@@ -7,9 +7,9 @@ use WP_REST_Response;
 use WP_REST_Request;
 use WP_Error;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Abstracts\RestAPIEndpointsAbstract;
-use WP_SMS\Services\OTP\AuthChannel\OTP\OtpService;
 use WP_SMS\Services\OTP\Helpers\UserHelper;
 use WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper;
+
 class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
 {
 
@@ -155,7 +155,7 @@ class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
                 'flow_id' => $flowId,
                 'status' => $status,
                 'next_step' => $nextStep,
-                'next_required_identifier' => $nextRequiredIdentifier,
+                'next_required_identifier' => $nextRequiredIdentifier ?? null,
                 'verified_identifiers' => UserHelper::getVerifiedIdentifiers($pendingUser->ID),
             ];
 
