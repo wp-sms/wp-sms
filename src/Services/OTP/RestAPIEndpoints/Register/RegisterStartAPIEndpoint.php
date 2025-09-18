@@ -77,6 +77,18 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
                 );
             }
 
+            // 3.1. Additional email check for existing WordPress users
+            if ($identifierType === 'email') {
+                $existingWpUser = get_user_by('email', $identifier);
+                if ($existingWpUser) {
+                    return $this->createErrorResponse(
+                        'email_already_exists',
+                        __('An account with this email already exists. Please try logging in instead.', 'wp-sms'),
+                        409
+                    );
+                }
+            }
+
             // 4. Pending user handling
             $pendingUser = $this->getOrCreatePendingUser($identifier);
             if (!$pendingUser) {
@@ -258,6 +270,24 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         }
         
         return $maskedUsername . '@' . $domain;
+    }
+
+    /**
+     * Validate identifier format
+     */
+    public function validateIdentifier($value, $request, $param)
+    {
+        if (empty($value)) {
+            return new WP_Error('invalid_identifier', __('Identifier is required.', 'wp-sms'));
+        }
+
+        $identifierType = UserHelper::getIdentifierType($value);
+        
+        if ($identifierType === 'unknown') {
+            return new WP_Error('invalid_identifier', __('Invalid identifier format. Please provide a valid email address or phone number.', 'wp-sms'));
+        }
+
+        return true;
     }
 
     /**
