@@ -166,7 +166,7 @@ abstract class RestAPIEndpointsAbstract
         ];
 
         if (!empty($additionalData)) {
-            $response = array_merge($response, $additionalData);
+            $response['data'] = $additionalData;
         }
 
         return new WP_REST_Response($response, $status);
