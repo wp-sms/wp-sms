@@ -265,15 +265,4 @@ class OtpService implements AuthChannelInterface
         OtpSessionModel::deleteBy(['identifier' => $identifier]);
     }
 
-    /**
-     * Generate a new OTP, invalidating any existing sessions for the identifier first
-     */
-    public function generateWithInvalidation(string $flowId, string $identifier): string
-    {
-        // Invalidate any existing sessions for this identifier
-        $this->invalidateAllSessionsForIdentifier($identifier);
-        
-        // Generate new OTP
-        return $this->generate($flowId, $identifier);
-    }
 }
