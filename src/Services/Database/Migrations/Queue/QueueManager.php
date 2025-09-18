@@ -2,9 +2,7 @@
 
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
-use WP_SMS\Helper;
-use WP_SMS\User\UserHelper;
-use WP_SMS\Utils\MenuUtil as Menus;
+use WP_SMS\Abstracts\BaseMigrationManager;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Notice\NoticeManager as Notice;
 use WP_SMS\Services\Database\DatabaseHelper;
@@ -17,7 +15,7 @@ use WP_SMS\Utils\Request;
  * This class provides a comprehensive queue migration system with automatic execution,
  * user notifications, and proper security handling.
  */
-class QueueManager
+class QueueManager extends BaseMigrationManager
 {
     /**
      * The action slug used for manually triggering the queue migration.
@@ -151,20 +149,18 @@ class QueueManager
      */
     public function handleQueueMigration()
     {
-        if (!UserHelper::hasCapability('manage_options')) {
-            wp_die(
-                __('You do not have sufficient permissions to run the queue migration process.', 'wp-sms'),
-                __('Permission Denied', 'wp-sms'),
-                [
-                    'response' => 403
-                ]
-            );
-        }
-        if (!Request::compare('action', self::MIGRATION_ACTION) || !QueueFactory::needsMigration()) {
+
+        check_admin_referer(self::MIGRATION_NONCE, 'nonce');
+
+        if (!Request::compare('action', self::MIGRATION_ACTION)) {
             return false;
         }
 
-        check_admin_referer(self::MIGRATION_NONCE, 'nonce');
+        $this->verifyMigrationPermission();
+
+        if (!QueueFactory::needsMigration()) {
+            return false;
+        }
 
         $this->executeAllMigrations();
 
@@ -210,28 +206,6 @@ class QueueManager
 
         wp_redirect(esc_url_raw($redirectUrl));
         exit;
-    }
-
-    /**
-     * Validates whether the current admin page and user have access to handle migration-related functionality.
-     *
-     * This method performs security checks to ensure that:
-     * - The current user has the 'manage_options' capability
-     * - The current page is a WP SMS plugin page
-     *
-     * @return bool True if the context is valid for migration operations, false otherwise
-     */
-    private function isValidMigrationContext()
-    {
-        if (!UserHelper::hasCapability('manage_options')) {
-            return false;
-        }
-
-        if (Menus::isInPluginPage()) {
-            return true;
-        }
-
-        return false;
     }
 }
 

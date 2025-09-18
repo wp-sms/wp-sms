@@ -2,10 +2,10 @@
 
 namespace WP_SMS\Services\Database\Migrations\Ajax;
 
+
+use WP_SMS\Abstracts\BaseMigrationManager;
 use WP_SMS\Components\Assets;
 use WP_SMS\Notice\NoticeManager;
-use WP_SMS\User\UserHelper;
-use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Utils\Request;
 
@@ -18,7 +18,7 @@ use WP_SMS\Utils\Request;
  * - Managing the AJAX request lifecycle for triggering and running migrations.
  * - Ensuring migrations are executed sequentially and their status is tracked persistently.
  */
-class AjaxManager
+class AjaxManager extends BaseMigrationManager
 {
     private $notice;
     /**
@@ -208,21 +208,12 @@ class AjaxManager
      */
     public function handleAjaxMigration()
     {
-        if (!UserHelper::hasCapability('manage_options')) {
-            wp_die(
-                __('You do not have sufficient permissions to run the ajax migration process.', 'wp-sms'),
-                __('Permission Denied', 'wp-sms'),
-                [
-                    'response' => 403
-                ]
-            );
-        }
+        check_admin_referer(self::MIGRATION_NONCE, 'nonce');
         if (!Request::compare('action', self::MIGRATION_ACTION)) {
             return false;
         }
 
-        check_admin_referer(self::MIGRATION_NONCE, 'nonce');
-
+        $this->verifyMigrationPermission();
         Option::saveOptionGroup('status', 'progress', 'ajax_background_process');
 
         $this->handleRedirect();
@@ -243,26 +234,5 @@ class AjaxManager
 
         wp_redirect(esc_url_raw($redirect_url));
         exit;
-    }
-
-    /**
-     * Validates whether the current admin page and user have access to handle migration-related functionality.
-     *
-     * Checks if the user has sufficient permissions and if the current page belongs to the plugin's pages.
-     * Used to control when migration notices and background processes should be active.
-     *
-     * @return bool
-     */
-    private function isValidMigrationContext()
-    {
-        if (!current_user_can('manage_options')) {
-            return false;
-        }
-
-        if (Menus::isInPluginPage()) {
-            return true;
-        }
-
-        return false;
     }
 }
