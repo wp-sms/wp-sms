@@ -191,8 +191,6 @@ class UserHelper
                     'created_at' => current_time('mysql'),
                     'verified_at' => current_time('mysql'),
                 ]);
-                dd($result, $verifiedIdentifiers, isset($verifiedIdentifiers['email']));
-
             }
 
             // Insert phone identifier if verified
