@@ -16,10 +16,6 @@ use WP_SMS\Services\OTP\AuthChannel\OTPMagicLink\OTPMagicLinkCombinedChannel;
 
 class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
 {
-
-    /**
-     * Register REST API routes for OTP endpoints.
-     */
     public function registerRoutes(): void
     {
         register_rest_route('wpsms/v1', '/register/start', [
@@ -30,12 +26,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         ]);
     }
 
-    /**
-     * Get arguments for the start register endpoint
-     *
-     * @return array
-     */
-    private function getStartRegisterArgs()
+    private function getStartRegisterArgs(): array
     {
         return [
             'identifier' => [
@@ -48,424 +39,455 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         ];
     }
 
-
-    /**
-     * Initialize registration endpoint - handles POST request for registration initiation
-     *
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response|WP_Error
-     */
+    /** ---------- Public entry (pipeline) ---------- */
     public function startRegister(WP_REST_Request $request)
     {
         try {
-            // 1. Parse & normalize
-            $identifier = $request->get_param('identifier');
-            $ip = $this->getClientIp($request);
-            
-            $identifierType = UserHelper::getIdentifierType($identifier);
-            $identifierMasked = $this->maskIdentifier($identifier, $identifierType);
+            $ctx = $this->initContext($request);
 
-            // 2. Rate limit
-            $rateLimitResult = $this->checkRateLimits($identifier, $ip, 'register_init');
-            if (is_wp_error($rateLimitResult)) {
-                return $rateLimitResult;
-            }
+            $this->enforceRateLimit($ctx);
+            $this->enforceAvailability($ctx);
+            $this->resolvePendingUser($ctx);
+            $this->loadChannelSettings($ctx);
+            $this->validateAuthMethodsAllowed($ctx);
+            $this->initArtifacts($ctx);
+            $this->sendArtifacts($ctx);
+            $this->finalizeAndLog($ctx);
 
-            // 3. Availability check
-            if ($this->isIdentifierUnavailable($identifier)) {
-                return $this->createErrorResponse(
-                    'identifier_unavailable',
-                    __('This identifier is already in use.', 'wp-sms'),
-                    409
-                );
-            }
+            return $this->buildSuccessResponse($ctx);
 
-            // 3.1. Additional email check for existing WordPress users
-            if ($identifierType === 'email') {
-                $existingWpUser = get_user_by('email', $identifier);
-                $isPendingUser = $existingWpUser ? UserHelper::isPendingUser($existingWpUser->ID) : false;
-                if ($existingWpUser && !$isPendingUser) {
-                    return $this->createErrorResponse(
-                        'email_already_exists',
-                        __('An account with this email already exists. Please try logging in instead.', 'wp-sms'),
-                        409
-                    );
-                }
-            }
-
-            // 4. Pending user handling
-            $pendingUser = $this->getOrCreatePendingUser($identifier);
-            if (!$pendingUser) {
-                return $this->createErrorResponse(
-                    'user_creation_failed',
-                    __('Unable to create or retrieve pending user', 'wp-sms'),
-                    500
-                );
-            }
-
-            $identifierChannelData = $this->channelSettingsHelper->getChannelData($identifierType);
-            $allowPassword = $identifierChannelData['allow_password'];
-            $allowOtp = $identifierChannelData['allow_otp'];
-            $allowMagic = $identifierChannelData['allow_magic'];
-            $otpDigits = $identifierChannelData['otp_digits'];
-            $passwordIsRequired = $identifierChannelData['password_is_required'];
-            $allowSignin = $identifierChannelData['allow_signin'];
-
-            // 5. Validate that at least one authentication method is allowed
-            if (!$allowPassword && !$allowOtp && !$allowMagic) {
-                return $this->createErrorResponse(
-                    'no_auth_method_allowed',
-                    __('No authentication method is enabled for this identifier type. Please contact administrator.', 'wp-sms'),
-                    400
-                );
-            }
-
-            $flowId = UserHelper::getUserFlowId($pendingUser->ID);
-
-            // 6. Initialize authentication sessions
-            $otpSession = null;
-            $magicLink = null;
-            $isNewOtpSession = false;
-            $isNewMagicLink = false;
-            $useCombinedAuth = false;
-
-            // 6.1. Check if both OTP and Magic Link are enabled
-            if ($allowOtp && $allowMagic) {
-                // Use combined auth channel
-                $useCombinedAuth = true;
-                $otpMagicLinkCombinedChannel = new OTPMagicLinkCombinedChannel();
-                
-                // Check if combined auth already exists
-                $hasExistingCombined = $otpMagicLinkCombinedChannel->exists($flowId);
-                if (!$hasExistingCombined) {
-                    // Generate both OTP and Magic Link together
-                    $combinedResult = $otpMagicLinkCombinedChannel->generate($flowId, $identifier, $identifierType, $otpDigits);
-                    $otpSession = $combinedResult['otp_session'];
-                    $magicLink = $combinedResult['magic_link'];
-                    $isNewOtpSession = true;
-                    $isNewMagicLink = true;
-                } else {
-                    // Reuse existing sessions
-                    $otpSession = $this->getExistingOtpSession($flowId);
-                    $magicLink = $this->getExistingMagicLink($flowId);
-                    $isNewOtpSession = false;
-                    $isNewMagicLink = false;
-                }
-            } else {
-                // Use individual auth channels
-                
-                // 6.2. Create OTP session if OTP is allowed
-                if ($allowOtp) {
-                    $existingOtpSession = $this->getExistingOtpSession($flowId);
-                    if ($existingOtpSession) {
-                        // Reuse existing session - do not send OTP
-                        $otpSession = $existingOtpSession;
-                        $isNewOtpSession = false;
-                    } else {
-                        // Create new session
-                        $otpSession = $this->createNewOtpSession($flowId, $identifier, $otpDigits);
-                        if (!$otpSession) {
-                            return $this->createErrorResponse(
-                                'session_creation_failed',
-                                __('Unable to create OTP session', 'wp-sms'),
-                                500
-                            );
-                        }
-                        $isNewOtpSession = true;
-                    }
-                }
-
-                // 6.3. Create Magic Link if Magic Link is allowed
-                if ($allowMagic) {
-                    $hasExistingMagicLink = MagicLinkModel::hasValidLink($flowId);
-                    $magicLinkService = new MagicLinkService();
-                    $magicLink = $magicLinkService->generate($flowId, $identifier, $identifierType);
-                    $isNewMagicLink = !$hasExistingMagicLink;
-                }
-            }
-
-            // 7. Send authentication methods
-            $sendResults = [];
-            
-            if ($useCombinedAuth) {
-                if($isNewOtpSession && $isNewMagicLink) {
-                    // 7.1. Send combined message using combined auth channel
-                    $otpMagicLinkCombinedChannel = new OTPMagicLinkCombinedChannel();
-                    $combinedResult = $otpMagicLinkCombinedChannel->sendCombined($identifier, $otpSession, $magicLink, 'register');
-                    $sendResults['combined'] = $combinedResult;
-                }else{
-                    $combinedResult = [
-                        'success' => true,
-                        'channel_used' => $otpSession['channel'],
-                        'message_type' => 'combined'
-                    ];
-                }
-                
-                if (!$combinedResult['success']) {
-                    return $this->createErrorResponse(
-                        'combined_send_failed',
-                        $combinedResult['error'] ?? __('Failed to send combined authentication message', 'wp-sms'),
-                        500
-                    );
-                }
-            } else {
-                // 7.2. Send individual messages
-                
-                // Send OTP only if it's a new session
-                if ($allowOtp && $isNewOtpSession) {
-                    $otpSendResult = $this->otpService->sendOTP($identifier, $otpSession['code'], $otpSession['channel']);
-                    $sendResults['otp'] = $otpSendResult;
-                    
-                    if (!$otpSendResult['success']) {
-                        return $this->createErrorResponse(
-                            'otp_send_failed',
-                            $otpSendResult['error'] ?? __('Failed to send OTP', 'wp-sms'),
-                            500
-                        );
-                    }
-                } elseif ($allowOtp && !$isNewOtpSession) {
-                    // For existing OTP session, just return success without sending
-                    $sendResults['otp'] = ['success' => true, 'channel_used' => $otpSession['channel']];
-                }
-
-                // Send Magic Link only if it's new
-                if ($allowMagic && $isNewMagicLink) {
-                    $magicLinkService = new MagicLinkService();
-                    $magicLinkSendResult = $magicLinkService->sendMagicLink($identifier, $magicLink);
-                    $sendResults['magic_link'] = $magicLinkSendResult;
-                    
-                    if (!$magicLinkSendResult['success']) {
-                        return $this->createErrorResponse(
-                            'magic_link_send_failed',
-                            $magicLinkSendResult['error'] ?? __('Failed to send Magic Link', 'wp-sms'),
-                            500
-                        );
-                    }
-                } elseif ($allowMagic && !$isNewMagicLink) {
-                    // For existing Magic Link, just return success without sending
-                    $channelUsed = $identifierType === 'email' ? 'email' : 'sms';
-                    $sendResults['magic_link'] = ['success' => true, 'channel_used' => $channelUsed];
-                }
-            }
-
-            // 8. Log + counters
-            $primaryChannel = $identifierType;
-            if (isset($sendResults['combined']['channel_used'])) {
-                $primaryChannel = $sendResults['combined']['channel_used'];
-            } elseif (isset($sendResults['otp']['channel_used'])) {
-                $primaryChannel = $sendResults['otp']['channel_used'];
-            } elseif (isset($sendResults['magic_link']['channel_used'])) {
-                $primaryChannel = $sendResults['magic_link']['channel_used'];
-            }
-            
-            $this->logAuthEvent($flowId, 'register_init', 'allow', $primaryChannel, $ip);
-            $this->incrementRateLimits($identifier, $ip, 'register_init');
-
-            // 9. Success
-            $isNewSession = $isNewOtpSession || $isNewMagicLink;
-            $successMessage = $isNewSession 
-                ? __('Registration initiated successfully', 'wp-sms')
-                : __('Registration reinitiated successfully', 'wp-sms');
-            
-            // Prepare response data
-            $responseData = [
-                'flow_id' => $flowId,
-                'user_id' => $pendingUser->ID,
-                'identifier_type' => $identifierType,
-                'identifier_masked' => $identifierMasked,
-                'next_step' => 'verify',
-            ];
-            
-            // Add OTP data if OTP session exists
-            if ($otpSession) {
-                $responseData['otp_ttl_seconds'] = $this->getOtpTtlSeconds($otpSession['expires_at']);
-                $responseData['otp_enabled'] = true;
-            } else {
-                $responseData['otp_enabled'] = false;
-            }
-            
-            // Add Magic Link data if Magic Link was created
-            if ($magicLink) {
-                $responseData['magic_link_enabled'] = true;
-            } else {
-                $responseData['magic_link_enabled'] = false;
-            }
-            
-            // Add primary channel used
-            if ($primaryChannel) {
-                $responseData['channel_used'] = $primaryChannel;
-            }
-            
-            // Add combined sending information
-            if (isset($sendResults['combined'])) {
-                $responseData['combined_enabled'] = true;
-                $responseData['message_type'] = 'combined';
-            } else {
-                $responseData['combined_enabled'] = false;
-            }
-                
-            return $this->createSuccessResponse($responseData, $successMessage);
-            
+        } catch (WP_Error $we) {
+            return $we;
         } catch (\Exception $e) {
             return $this->handleException($e, 'initRegister');
         }
     }
 
-    /**
-     * Check if identifier is unavailable (verified in IdentifierModel)
-     */
-    private function isIdentifierUnavailable(string $identifier): bool
+    /** ---------- Stage 0: Context ---------- */
+    private function initContext(WP_REST_Request $request): array
     {
-        $identifierModel = new IdentifierModel();
-        $identifierHash = md5($identifier);
-        $existingIdentifier = $identifierModel->find([
-            'value_hash' => $identifierHash,
-            'verified' => true
-        ]);
-        return !empty($existingIdentifier);
+        $identifier     = (string) $request->get_param('identifier');
+        $ip             = $this->getClientIp($request);
+        $identifierType = UserHelper::getIdentifierType($identifier);
+        $identifierNorm = $this->normalizeIdentifier($identifier, $identifierType);
+
+        return [
+            'req' => [
+                'ip'               => $ip,
+                'identifier_raw'   => $identifier,
+                'identifier_type'  => $identifierType,
+                'identifier_norm'  => $identifierNorm,
+                'identifier_masked'=> $this->maskIdentifier($identifier, $identifierType),
+            ],
+            'user' => [
+                'wp'     => null,
+                'flowId' => null,
+            ],
+            'settings' => [
+                'allow_password'      => false,
+                'allow_otp'           => false,
+                'allow_magic'         => false,
+                'otp_digits'          => 6,
+                'password_is_required'=> false,
+                'allow_signin'        => false,
+                'use_combined'        => false,
+            ],
+            'artifacts' => [
+                'otp_session'      => null,
+                'magic_link'       => null,
+                'is_new_otp'       => false,
+                'is_new_magic'     => false,
+            ],
+            'send' => [
+                'results'        => [],
+                'primary_channel'=> null,
+            ],
+            'services' => [
+                'combined'       => null,
+                'magic_service'  => null,
+            ],
+        ];
     }
 
-    /**
-     * Get or create pending user
-     */
-    private function getOrCreatePendingUser(string $identifier): ?\WP_User
+    /** ---------- Stage 1: Rate limit ---------- */
+    private function enforceRateLimit(array &$ctx): void
     {
-        // Check if pending user already exists
-        $existingUser = UserHelper::getUserByIdentifier($identifier);
-        if ($existingUser && UserHelper::isPendingUser($existingUser->ID)) {
-            return $existingUser;
+        $rr = $this->checkRateLimits($ctx['req']['identifier_norm'], $ctx['req']['ip'], 'register_init');
+        if (is_wp_error($rr)) {
+            throw $rr;
+        }
+    }
+
+    /** ---------- Stage 2: Availability checks ---------- */
+    private function enforceAvailability(array &$ctx): void
+    {
+        if ($this->isIdentifierUnavailable($ctx['req']['identifier_norm'], $ctx['req']['identifier_type'])) {
+            throw $this->createErrorResponse('identifier_unavailable', __('This identifier is already in use.', 'wp-sms'), 409);
         }
 
-        // Generate flow ID if user doesn't have one
-        $flowId = uniqid('flow_', true);
-        
-        // Create new pending user
-        return UserHelper::createPendingUser($identifier, [
-            'flow_id' => $flowId
-        ]);
-    }
-
-    /**
-     * Get existing OTP session by flow_id
-     */
-    private function getExistingOtpSession(string $flowId): ?array
-    {
-        $existingSession = OtpSessionModel::getByFlowId($flowId);
-        
-        if ($existingSession && strtotime($existingSession['expires_at']) > time()) {
-            return $existingSession;
+        if ($ctx['req']['identifier_type'] === 'email') {
+            $existing = get_user_by('email', $ctx['req']['identifier_norm']);
+            $isPending = $existing ? UserHelper::isPendingUser($existing->ID) : false;
+            if ($existing && !$isPending) {
+                throw $this->createErrorResponse(
+                    'email_already_exists',
+                    __('An account with this email already exists. Please try logging in instead.', 'wp-sms'),
+                    409
+                );
+            }
         }
-        
-        return null;
     }
 
-    /**
-     * Get existing Magic Link by flow_id
-     */
-    private function getExistingMagicLink(string $flowId)
+    /** ---------- Stage 3: Pending user ---------- */
+    private function resolvePendingUser(array &$ctx): void
     {
-        $existingMagicLink = MagicLinkModel::getExistingValidLink($flowId);
-        
-        if ($existingMagicLink) {
-            return $existingMagicLink;
+        $user = $this->getOrCreatePendingUser($ctx['req']['identifier_norm']);
+        if (!$user) {
+            throw $this->createErrorResponse('user_creation_failed', __('Unable to create or retrieve pending user', 'wp-sms'), 500);
         }
-        
-        return null;
+        $ctx['user']['wp']     = $user;
+        $ctx['user']['flowId'] = UserHelper::getUserFlowId($user->ID);
     }
 
-
-
-    /**
-     * Create new OTP session
-     */
-    private function createNewOtpSession(string $flowId, string $identifier, int $otpDigits): ?array
+    /** ---------- Stage 4: Channel settings ---------- */
+    private function loadChannelSettings(array &$ctx): void
     {
-        try {
-            $otpSession = $this->otpService->generate($flowId, $identifier, $otpDigits);
-            return [
-                'flow_id' => $otpSession->flow_id,
-                'code' => $otpSession->code,
-                'channel' => $otpSession->channel,
-                'expires_at' => $otpSession->expires_at,
+        $d = $this->channelSettingsHelper->getChannelData($ctx['req']['identifier_type']);
+        $ctx['settings']['allow_password']       = !empty($d['allow_password']);
+        $ctx['settings']['allow_otp']            = !empty($d['allow_otp']);
+        $ctx['settings']['allow_magic']          = !empty($d['allow_magic']);
+        $ctx['settings']['otp_digits']           = isset($d['otp_digits']) ? (int) $d['otp_digits'] : 6;
+        $ctx['settings']['password_is_required'] = !empty($d['password_is_required']);
+        $ctx['settings']['allow_signin']         = !empty($d['allow_signin']);
+        $ctx['settings']['use_combined']         = ($ctx['settings']['allow_otp'] && $ctx['settings']['allow_magic']);
+
+        if ($ctx['settings']['allow_magic']) {
+            $ctx['services']['magic_service'] = new MagicLinkService();
+        }
+        if ($ctx['settings']['use_combined']) {
+            $ctx['services']['combined'] = new OTPMagicLinkCombinedChannel();
+        }
+    }
+
+    /** ---------- Stage 5: Validate ---------- */
+    private function validateAuthMethodsAllowed(array &$ctx): void
+    {
+        if (!$ctx['settings']['allow_password'] && !$ctx['settings']['allow_otp'] && !$ctx['settings']['allow_magic']) {
+            throw $this->createErrorResponse(
+                'no_auth_method_allowed',
+                __('No authentication method is enabled for this identifier type. Please contact administrator.', 'wp-sms'),
+                400
+            );
+        }
+    }
+
+    /** ---------- Stage 6: Init artifacts (OTP/Magic) ---------- */
+    private function initArtifacts(array &$ctx): void
+    {
+        $flowId = $ctx['user']['flowId'];
+        $idn    = $ctx['req']['identifier_norm'];
+        $type   = $ctx['req']['identifier_type'];
+        $digits = $ctx['settings']['otp_digits'];
+
+        if ($ctx['settings']['use_combined']) {
+            $this->initArtifactsCombined($ctx, $flowId, $idn, $type, $digits);
+            return;
+        }
+
+        if ($ctx['settings']['allow_otp']) {
+            $existing = $this->getExistingOtpSession($flowId);
+            if ($existing) {
+                $ctx['artifacts']['otp_session'] = $existing;
+            } else {
+                $created = $this->createNewOtpSession($flowId, $idn, $digits);
+                if (!$created) {
+                    throw $this->createErrorResponse('session_creation_failed', __('Unable to create OTP session', 'wp-sms'), 500);
+                }
+                $ctx['artifacts']['otp_session'] = $created;
+                $ctx['artifacts']['is_new_otp']  = true;
+            }
+        }
+
+        if ($ctx['settings']['allow_magic']) {
+            $existingMagic = MagicLinkModel::getExistingValidLink($flowId);
+            if ($existingMagic) {
+                $ctx['artifacts']['magic_link']  = $existingMagic;
+            } else {
+                $ctx['artifacts']['magic_link']  = $ctx['services']['magic_service']->generate($flowId, $idn, $type);
+                $ctx['artifacts']['is_new_magic']= true;
+            }
+        }
+    }
+
+    private function initArtifactsCombined(array &$ctx, string $flowId, string $identifierNorm, string $identifierType, int $otpDigits): void
+    {
+        $combined = $ctx['services']['combined'];
+
+        if (!$combined->exists($flowId)) {
+            $generated = $combined->generate($flowId, $identifierNorm, $identifierType, $otpDigits);
+            $ctx['artifacts']['otp_session'] = $this->mapOtpSessionForResponse($generated['otp_session']);
+            $ctx['artifacts']['magic_link']  = $generated['magic_link'];
+            $ctx['artifacts']['is_new_otp']  = true;
+            $ctx['artifacts']['is_new_magic']= true;
+            return;
+        }
+
+        // Try reuse; regenerate any missing/expired
+        $otp = $this->getExistingOtpSession($flowId);
+        if (!$otp) {
+            $regen = $combined->generate($flowId, $identifierNorm, $identifierType, $otpDigits);
+            $ctx['artifacts']['otp_session'] = $this->mapOtpSessionForResponse($regen['otp_session']);
+            $ctx['artifacts']['magic_link']  = $regen['magic_link'];
+            $ctx['artifacts']['is_new_otp']  = true;
+            $ctx['artifacts']['is_new_magic']= true;
+            return;
+        }
+
+        $ctx['artifacts']['otp_session'] = $otp;
+
+        $magic = $this->getExistingMagicLink($flowId);
+        if (!$magic) {
+            $ctx['artifacts']['magic_link']  = $ctx['services']['magic_service']->generate($flowId, $identifierNorm, $identifierType);
+            $ctx['artifacts']['is_new_magic']= true;
+        } else {
+            $ctx['artifacts']['magic_link']  = $magic;
+        }
+    }
+
+    /** ---------- Stage 7: Send artifacts ---------- */
+    private function sendArtifacts(array &$ctx): void
+    {
+        if ($ctx['settings']['use_combined']) {
+            $this->sendCombined($ctx);
+            return;
+        }
+
+        // OTP
+        if ($ctx['settings']['allow_otp']) {
+            if (!empty($ctx['artifacts']['is_new_otp'])) {
+                $r = $this->otpService->sendOTP(
+                    $ctx['req']['identifier_norm'],
+                    $ctx['artifacts']['otp_session']['code'],
+                    $ctx['artifacts']['otp_session']['channel']
+                );
+                $ctx['send']['results']['otp'] = $r;
+                if (empty($r['success'])) {
+                    throw $this->createErrorResponse('otp_send_failed', !empty($r['error']) ? $r['error'] : __('Failed to send OTP', 'wp-sms'), 500);
+                }
+            } else {
+                $ctx['send']['results']['otp'] = [
+                    'success'      => true,
+                    'channel_used' => isset($ctx['artifacts']['otp_session']['channel']) ? $ctx['artifacts']['otp_session']['channel'] : $ctx['req']['identifier_type'],
+                    'reused'       => true,
+                ];
+            }
+        }
+
+        // Magic
+        if ($ctx['settings']['allow_magic']) {
+            if (!empty($ctx['artifacts']['is_new_magic'])) {
+                $r = $ctx['services']['magic_service']->sendMagicLink($ctx['req']['identifier_norm'], $ctx['artifacts']['magic_link']);
+                $ctx['send']['results']['magic_link'] = $r;
+                if (empty($r['success'])) {
+                    throw $this->createErrorResponse('magic_link_send_failed', !empty($r['error']) ? $r['error'] : __('Failed to send Magic Link', 'wp-sms'), 500);
+                }
+            } else {
+                $channelUsed = ($ctx['req']['identifier_type'] === 'email') ? 'email' : 'sms';
+                $ctx['send']['results']['magic_link'] = [
+                    'success'      => true,
+                    'channel_used' => $channelUsed,
+                    'reused'       => true,
+                ];
+            }
+        }
+    }
+
+    private function sendCombined(array &$ctx): void
+    {
+        $isNewOtp   = !empty($ctx['artifacts']['is_new_otp']);
+        $isNewMagic = !empty($ctx['artifacts']['is_new_magic']);
+
+        if ($isNewOtp && $isNewMagic) {
+            $r = $ctx['services']['combined']->sendCombined(
+                $ctx['req']['identifier_norm'],
+                $ctx['artifacts']['otp_session'],
+                $ctx['artifacts']['magic_link'],
+                'register'
+            );
+            $ctx['send']['results']['combined'] = $r;
+            if (empty($r['success'])) {
+                throw $this->createErrorResponse('combined_send_failed', !empty($r['error']) ? $r['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
+            }
+        } else {
+            $ctx['send']['results']['combined'] = [
+                'success'      => true,
+                'channel_used' => isset($ctx['artifacts']['otp_session']['channel']) ? $ctx['artifacts']['otp_session']['channel'] : $ctx['req']['identifier_type'],
+                'message_type' => 'combined',
+                'reused'       => true,
             ];
-        } catch (\Exception $e) {
-            return null;
         }
     }
 
-
-    /**
-     * Get OTP TTL in seconds
-     */
-    private function getOtpTtlSeconds(string $expiresAt): int
+    /** ---------- Stage 8: Log + rate ---------- */
+    private function finalizeAndLog(array &$ctx): void
     {
-        $expiresTimestamp = strtotime($expiresAt);
-        $now = time();
-        return max(0, $expiresTimestamp - $now);
+        $ctx['send']['primary_channel'] = $this->derivePrimaryChannel($ctx['send']['results'], $ctx['req']['identifier_type']);
+        $this->logAuthEvent($ctx['user']['flowId'], 'register_init', 'allow', $ctx['send']['primary_channel'], $ctx['req']['ip']);
+        $this->incrementRateLimits($ctx['req']['identifier_norm'], $ctx['req']['ip'], 'register_init');
     }
 
-    /**
-     * Mask identifier for privacy
-     */
-    private function maskIdentifier(string $identifier, string $type): string
+    /** ---------- Stage 9: Response ---------- */
+    private function buildSuccessResponse(array $ctx)
     {
-        if ($type === 'email') {
-            return $this->maskEmail($identifier);
-        } else {
-            return $this->maskPhone($identifier);
+        $isNewSession = (!empty($ctx['artifacts']['is_new_otp']) || !empty($ctx['artifacts']['is_new_magic']));
+        $msg = $isNewSession
+            ? __('Registration initiated successfully', 'wp-sms')
+            : __('Registration reinitiated successfully', 'wp-sms');
+
+        $data = [
+            'flow_id'           => $ctx['user']['flowId'],
+            'user_id'           => $ctx['user']['wp']->ID,
+            'identifier_type'   => $ctx['req']['identifier_type'],
+            'identifier_masked' => $ctx['req']['identifier_masked'],
+            'next_step'         => 'verify',
+            'otp_enabled'       => (bool) $ctx['artifacts']['otp_session'],
+            'magic_link_enabled'=> (bool) $ctx['artifacts']['magic_link'],
+            'combined_enabled'  => (bool) $ctx['settings']['use_combined'],
+            'channel_used'      => $ctx['send']['primary_channel'],
+        ];
+
+        if (!empty($ctx['artifacts']['otp_session'])) {
+            $data['otp_ttl_seconds'] = $this->getOtpTtlSeconds($ctx['artifacts']['otp_session']['expires_at']);
         }
+
+        return $this->createSuccessResponse($data, $msg);
     }
 
-    /**
-     * Mask email for privacy
-     */
-    private function maskEmail(string $email): string
-    {
-        $parts = explode('@', $email);
-        if (count($parts) !== 2) {
-            return $email;
-        }
-        
-        $username = $parts[0];
-        $domain = $parts[1];
-        
-        if (strlen($username) <= 2) {
-            $maskedUsername = $username;
-        } else {
-            $maskedUsername = substr($username, 0, 2) . str_repeat('*', strlen($username) - 2);
-        }
-        
-        return $maskedUsername . '@' . $domain;
-    }
-
-    /**
-     * Validate identifier format
-     */
+    /** ---------- Validation ---------- */
     public function validateIdentifier($value, $request, $param)
     {
         if (empty($value)) {
             return new WP_Error('invalid_identifier', __('Identifier is required.', 'wp-sms'));
         }
-
-        $identifierType = UserHelper::getIdentifierType($value);
-        
-        if ($identifierType === 'unknown') {
+        $t = UserHelper::getIdentifierType($value);
+        if ($t === 'unknown') {
             return new WP_Error('invalid_identifier', __('Invalid identifier format. Please provide a valid email address or phone number.', 'wp-sms'));
         }
-
         return true;
     }
 
-    /**
-     * Mask phone number for privacy
-     */
-    private function maskPhone(string $phone): string
+    /** ---------- Shared helpers (unchanged logic, cleaned) ---------- */
+    private function isIdentifierUnavailable(string $identifierNorm, string $type): bool
     {
-        if (strlen($phone) <= 4) {
-            return str_repeat('*', strlen($phone));
-        }
-        
-        return substr($phone, 0, 3) . str_repeat('*', strlen($phone) - 6) . substr($phone, -3);
+        $model  = new IdentifierModel();
+        $hash   = md5($identifierNorm);
+        $found  = $model->find([
+            'value_hash' => $hash,
+            'verified'   => true,
+            // 'factor_type' => ($type === 'email' ? 'email' : 'phone'),
+        ]);
+        return !empty($found);
     }
 
+    private function normalizeIdentifier(string $identifier, string $type): string
+    {
+        $normalized = trim($identifier);
+        if ($type === 'email') {
+            return strtolower($normalized);
+        }
+        $normalized = preg_replace('/[^\d\+]/', '', $normalized);
+        if (strpos($normalized, '+') > 0) {
+            $normalized = '+' . preg_replace('/\+/', '', $normalized);
+        }
+        return $normalized;
+    }
+
+    private function getOrCreatePendingUser(string $identifierNorm): ?\WP_User
+    {
+        $existing = UserHelper::getUserByIdentifier($identifierNorm);
+        if ($existing && UserHelper::isPendingUser($existing->ID)) {
+            return $existing;
+        }
+        $flowId = uniqid('flow_', true);
+        return UserHelper::createPendingUser($identifierNorm, ['flow_id' => $flowId]);
+    }
+
+    private function getExistingOtpSession(string $flowId)
+    {
+        $existing = OtpSessionModel::getByFlowId($flowId);
+        if ($existing && isset($existing['expires_at']) && strtotime($existing['expires_at']) > time()) {
+            return $existing;
+        }
+        return null;
+    }
+
+    private function getExistingMagicLink(string $flowId)
+    {
+        $existing = MagicLinkModel::getExistingValidLink($flowId);
+        return $existing ? $existing : null;
+    }
+
+    private function createNewOtpSession(string $flowId, string $identifierNorm, int $otpDigits)
+    {
+        try {
+            $otp = $this->otpService->generate($flowId, $identifierNorm, $otpDigits);
+            return $this->mapOtpSessionForResponse($otp);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    private function mapOtpSessionForResponse($otpSession): array
+    {
+        if (is_array($otpSession)) {
+            return [
+                'flow_id'    => isset($otpSession['flow_id']) ? $otpSession['flow_id'] : null,
+                'code'       => isset($otpSession['code']) ? $otpSession['code'] : null,
+                'channel'    => isset($otpSession['channel']) ? $otpSession['channel'] : null,
+                'expires_at' => isset($otpSession['expires_at']) ? $otpSession['expires_at'] : null,
+            ];
+        }
+        return [
+            'flow_id'    => isset($otpSession->flow_id) ? $otpSession->flow_id : null,
+            'code'       => isset($otpSession->code) ? $otpSession->code : null,
+            'channel'    => isset($otpSession->channel) ? $otpSession->channel : null,
+            'expires_at' => isset($otpSession->expires_at) ? $otpSession->expires_at : null,
+        ];
+    }
+
+    private function getOtpTtlSeconds(string $expiresAt): int
+    {
+        $expires = strtotime($expiresAt);
+        $now     = time();
+        return max(0, $expires - $now);
+    }
+
+    private function maskIdentifier(string $identifier, string $type): string
+    {
+        return ($type === 'email') ? $this->maskEmail($identifier) : $this->maskPhone($identifier);
+    }
+
+    private function maskEmail(string $email): string
+    {
+        $parts = explode('@', $email);
+        if (count($parts) !== 2) return $email;
+        $u = $parts[0]; $d = $parts[1];
+        $mu = (strlen($u) <= 2) ? $u : substr($u, 0, 2) . str_repeat('*', strlen($u) - 2);
+        return $mu . '@' . $d;
+    }
+
+    private function maskPhone(string $phone): string
+    {
+        $len = strlen($phone);
+        if ($len <= 4) return str_repeat('*', $len);
+        return substr($phone, 0, 3) . str_repeat('*', max(0, $len - 6)) . substr($phone, -3);
+    }
+
+    private function derivePrimaryChannel(array $sendResults, string $identifierType): string
+    {
+        if (isset($sendResults['combined']['channel_used'])) return (string) $sendResults['combined']['channel_used'];
+        if (isset($sendResults['otp']['channel_used'])) return (string) $sendResults['otp']['channel_used'];
+        if (isset($sendResults['magic_link']['channel_used'])) return (string) $sendResults['magic_link']['channel_used'];
+        return $identifierType;
+    }
 }
