@@ -100,4 +100,27 @@ class MagicLinkModel extends AbstractBaseModel
 
         static::deleteBy($conditions);
     }
+
+    /**
+     * Get existing valid magic link by flow_id
+     */
+    public static function getExistingValidLink(string $flowId): ?array
+    {
+        $record = static::find(['flow_id' => $flowId]);
+        if ($record && strtotime($record['expires_at']) > time() && empty($record['used_at'])) {
+            return $record;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Check if magic link exists and is valid (not expired, not used)
+     */
+    public static function hasValidLink(string $flowId): bool
+    {
+        $record = static::find(['flow_id' => $flowId]);
+        
+        return $record && strtotime($record['expires_at']) > time() && empty($record['used_at']);
+    }
 }
