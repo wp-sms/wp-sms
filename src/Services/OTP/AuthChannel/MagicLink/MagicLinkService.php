@@ -28,7 +28,22 @@ class MagicLinkService implements AuthChannelInterface
 
     public function exists(string $flowId): bool
     {
-        return MagicLinkModel::exists(['flow_id' => $flowId]);
+        $record = MagicLinkModel::find(['flow_id' => $flowId]);
+
+        if (! $record) {
+            return false;
+        }
+
+        $isExpired = strtotime($record['expires_at']) < time();
+        $isUsed = !empty($record['used_at']);
+        
+        if ($isExpired || $isUsed) {
+            // Delete expired or used record
+            $this->invalidate($flowId);
+            return false;
+        }
+
+        return true;
     }
 
     
