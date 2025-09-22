@@ -10,7 +10,6 @@ use WP_SMS\Services\OTP\Contracts\Interfaces\DeliveryChannelInterface;
 class OtpService implements AuthChannelInterface
 {
     protected int $defaultTtl = 300;
-    protected int $defaultCodeLength = 6;
     protected DeliveryChannelManager $channelManager;
     protected OTPChannelHelper $channelHelper;
 
@@ -28,7 +27,7 @@ class OtpService implements AuthChannelInterface
     /**
      * Generate a new OTP and persist it in the database.
      */
-    public function generate(string $flowId, string $identifier)
+    public function generate(string $flowId, string $identifier, int $otpDigits = 6)
     {
         // Validate identifier
         if (empty($identifier)) {
@@ -41,7 +40,7 @@ class OtpService implements AuthChannelInterface
         }
 
         // Generate secure OTP
-        $length = $this->defaultCodeLength;
+        $length = $otpDigits;
         $length = max(4, min(10, $length));
         $hash = bin2hex(openssl_random_pseudo_bytes(16));
         $values = array_values(unpack('C*', $hash));
