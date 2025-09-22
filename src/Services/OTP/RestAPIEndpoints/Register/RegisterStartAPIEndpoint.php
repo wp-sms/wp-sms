@@ -99,6 +99,14 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
                 );
             }
 
+            $identifierChannelData = $this->channelSettingsHelper->getChannelData($identifierType);
+            $allowPassword = $identifierChannelData['allow_password'];
+            $allowOtp = $identifierChannelData['allow_otp'];
+            $allowMagic = $identifierChannelData['allow_magic'];
+            $otpDigits = $identifierChannelData['otp_digits'];
+            $passwordIsRequired = $identifierChannelData['password_is_required'];
+            $allowSignin = $identifierChannelData['allow_signin'];
+
             $flowId = UserHelper::getUserFlowId($pendingUser->ID);
 
             // 5. OTP session lookup (reuse-first)
@@ -111,7 +119,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
                 $isNewSession = false;
             } else {
                 // Create new session
-                $otpSession = $this->createNewOtpSession($flowId, $identifier);
+                $otpSession = $this->createNewOtpSession($flowId, $identifier, $otpDigits);
                 if (!$otpSession) {
                     return $this->createErrorResponse(
                         'session_creation_failed',
@@ -213,10 +221,10 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     /**
      * Create new OTP session
      */
-    private function createNewOtpSession(string $flowId, string $identifier): ?array
+    private function createNewOtpSession(string $flowId, string $identifier, int $otpDigits): ?array
     {
         try {
-            $otpSession = $this->otpService->generate($flowId, $identifier);
+            $otpSession = $this->otpService->generate($flowId, $identifier, $otpDigits);
             return [
                 'flow_id' => $otpSession->flow_id,
                 'code' => $otpSession->code,
