@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use WP_SMS\Services\OTP\Contracts\Interfaces\AuthChannelInterface;
 use WP_SMS\Services\OTP\AuthChannel\OTP\OtpService;
 use WP_SMS\Services\OTP\AuthChannel\MagicLink\MagicLinkService;
+use WP_SMS\Services\OTP\AuthChannel\OTPMagicLink\OTPMagicLinkCombinedChannel;
 
 class AuthChannelManager
 {
@@ -15,6 +16,7 @@ class AuthChannelManager
     protected array $channels = [
         'otp' => OtpService::class,
         'magic_link' => MagicLinkService::class,
+        'otp_magic_link_combined' => OTPMagicLinkCombinedChannel::class,
     ];
 
     /**
