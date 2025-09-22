@@ -30,6 +30,20 @@ final class EmailTemplateRegistry
                     __('Reset your password – {{site_name}}', 'wp-sms'),
                     __("Hi {{user_display_name}},\n\nUse the link below to reset your password:\n{{reset_link}}\n\nThis link is valid for {{expires_in_minutes}} minutes.\nIf you didn't request this, you can ignore this email.", 'wp-sms')
                 ),
+                EmailTemplate::TYPE_COMBINED_REGISTER => new EmailTemplate(
+                    EmailTemplate::TYPE_COMBINED_REGISTER,
+                    __('Combined Registration', 'wp-sms'),
+                    ['{{otp_code}}', '{{magic_link}}', '{{expires_in_minutes}}', '{{user_display_name}}', '{{site_name}}'],
+                    __('Complete your registration – {{site_name}}', 'wp-sms'),
+                    __("Hi {{user_display_name}},\n\nComplete your registration using either method:\n\n1. Enter this code: {{otp_code}}\n2. Click this link: {{magic_link}}\n\nBoth options expire in {{expires_in_minutes}} minutes.\nIf you didn't request this, you can ignore this email.", 'wp-sms')
+                ),
+                EmailTemplate::TYPE_COMBINED_LOGIN => new EmailTemplate(
+                    EmailTemplate::TYPE_COMBINED_LOGIN,
+                    __('Combined Login', 'wp-sms'),
+                    ['{{otp_code}}', '{{magic_link}}', '{{expires_in_minutes}}', '{{user_display_name}}', '{{site_name}}'],
+                    __('Secure login to {{site_name}}', 'wp-sms'),
+                    __("Hi {{user_display_name}},\n\nLogin to your account using either method:\n\n1. Enter this code: {{otp_code}}\n2. Click this link: {{magic_link}}\n\nBoth options expire in {{expires_in_minutes}} minutes.\nIf you didn't request this, you can ignore this email.", 'wp-sms')
+                ),
             ];
         }
 

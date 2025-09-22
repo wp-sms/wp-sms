@@ -7,6 +7,8 @@ final class SmsTemplate
     public const TYPE_OTP_CODE       = 'otp_code';
     public const TYPE_MAGIC_LINK     = 'magic_link';
     public const TYPE_PASSWORD_RESET = 'password_reset';
+    public const TYPE_COMBINED_REGISTER = 'combined_register';
+    public const TYPE_COMBINED_LOGIN    = 'combined_login';
 
     /** @var string */
     public $id;
