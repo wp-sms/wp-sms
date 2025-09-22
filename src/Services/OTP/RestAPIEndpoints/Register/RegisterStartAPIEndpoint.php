@@ -148,13 +148,13 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     /** ---------- Stage 4: Channel settings ---------- */
     private function loadChannelSettings(array &$ctx): void
     {
-        $d = $this->channelSettingsHelper->getChannelData($ctx['req']['identifier_type']);
-        $ctx['settings']['allow_password']       = !empty($d['allow_password']);
-        $ctx['settings']['allow_otp']            = !empty($d['allow_otp']);
-        $ctx['settings']['allow_magic']          = !empty($d['allow_magic']);
-        $ctx['settings']['otp_digits']           = isset($d['otp_digits']) ? (int) $d['otp_digits'] : 6;
-        $ctx['settings']['password_is_required'] = !empty($d['password_is_required']);
-        $ctx['settings']['allow_signin']         = !empty($d['allow_signin']);
+        $channelData = $this->channelSettingsHelper->getChannelData($ctx['req']['identifier_type']);
+        $ctx['settings']['allow_password']       = !empty($channelData['allow_password']);
+        $ctx['settings']['allow_otp']            = !empty($channelData['allow_otp']);
+        $ctx['settings']['allow_magic']          = !empty($channelData['allow_magic']);
+        $ctx['settings']['otp_digits']           = isset($channelData['otp_digits']) ? (int) $channelData['otp_digits'] : 6;
+        $ctx['settings']['password_is_required'] = !empty($channelData['password_is_required']);
+        $ctx['settings']['allow_signin']         = !empty($channelData['allow_signin']);
         $ctx['settings']['use_combined']         = ($ctx['settings']['allow_otp'] && $ctx['settings']['allow_magic']);
 
         if ($ctx['settings']['allow_magic']) {
@@ -255,14 +255,14 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         // OTP
         if ($ctx['settings']['allow_otp']) {
             if (!empty($ctx['artifacts']['is_new_otp'])) {
-                $r = $this->otpService->sendOTP(
+                $otpSendResult = $this->otpService->sendOTP(
                     $ctx['req']['identifier_norm'],
                     $ctx['artifacts']['otp_session']['code'],
                     $ctx['artifacts']['otp_session']['channel']
                 );
-                $ctx['send']['results']['otp'] = $r;
-                if (empty($r['success'])) {
-                    throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send OTP', 'wp-sms'), 500);
+                $ctx['send']['results']['otp'] = $otpSendResult;
+                if (empty($otpSendResult['success'])) {
+                    throw new \Exception(!empty($otpSendResult['error']) ? $otpSendResult['error'] : __('Failed to send OTP', 'wp-sms'), 500);
                 }
             } else {
                 $ctx['send']['results']['otp'] = [
@@ -276,10 +276,10 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         // Magic
         if ($ctx['settings']['allow_magic']) {
             if (!empty($ctx['artifacts']['is_new_magic'])) {
-                $r = $ctx['services']['magic_service']->sendMagicLink($ctx['req']['identifier_norm'], $ctx['artifacts']['magic_link']);
-                $ctx['send']['results']['magic_link'] = $r;
-                if (empty($r['success'])) {
-                    throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send Magic Link', 'wp-sms'), 500);
+                $magicLinkSendResult = $ctx['services']['magic_service']->sendMagicLink($ctx['req']['identifier_norm'], $ctx['artifacts']['magic_link']);
+                $ctx['send']['results']['magic_link'] = $magicLinkSendResult;
+                if (empty($magicLinkSendResult['success'])) {
+                    throw new \Exception(!empty($magicLinkSendResult['error']) ? $magicLinkSendResult['error'] : __('Failed to send Magic Link', 'wp-sms'), 500);
                 }
             } else {
                 $channelUsed = ($ctx['req']['identifier_type'] === 'email') ? 'email' : 'sms';
@@ -298,15 +298,15 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         $isNewMagic = !empty($ctx['artifacts']['is_new_magic']);
 
         if ($isNewOtp && $isNewMagic) {
-            $r = $ctx['services']['combined']->sendCombined(
+            $combinedSendResult = $ctx['services']['combined']->sendCombined(
                 $ctx['req']['identifier_norm'],
                 $ctx['artifacts']['otp_session'],
                 $ctx['artifacts']['magic_link'],
                 'register'
             );
-            $ctx['send']['results']['combined'] = $r;
-            if (empty($r['success'])) {
-                throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
+            $ctx['send']['results']['combined'] = $combinedSendResult;
+            if (empty($combinedSendResult['success'])) {
+                throw new \Exception(!empty($combinedSendResult['error']) ? $combinedSendResult['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
             }
         } else {
             $ctx['send']['results']['combined'] = [
@@ -359,8 +359,8 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
         if (empty($value)) {
             return new WP_Error('invalid_identifier', __('Identifier is required.', 'wp-sms'));
         }
-        $t = UserHelper::getIdentifierType($value);
-        if ($t === 'unknown') {
+        $identifierType = UserHelper::getIdentifierType($value);
+        if ($identifierType === 'unknown') {
             return new WP_Error('invalid_identifier', __('Invalid identifier format. Please provide a valid email address or phone number.', 'wp-sms'));
         }
         return true;
@@ -461,9 +461,9 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     {
         $parts = explode('@', $email);
         if (count($parts) !== 2) return $email;
-        $u = $parts[0]; $d = $parts[1];
-        $mu = (strlen($u) <= 2) ? $u : substr($u, 0, 2) . str_repeat('*', strlen($u) - 2);
-        return $mu . '@' . $d;
+        $username = $parts[0]; $domain = $parts[1];
+        $maskedUsername = (strlen($username) <= 2) ? $username : substr($username, 0, 2) . str_repeat('*', strlen($username) - 2);
+        return $maskedUsername . '@' . $domain;
     }
 
     private function maskPhone(string $phone): string

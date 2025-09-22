@@ -179,10 +179,10 @@ class RegisterAddIdentifierAPIEndpoint extends RestAPIEndpointsAbstract
     /** ======================= Stage 6: Validate this type is required ======================= */
     private function validateIdentifierRequired(array &$ctx): void
     {
-        $req = $ctx['required']['channels'];
-        $t   = $ctx['idn']['type'];
+        $requiredChannels = $ctx['required']['channels'];
+        $identifierType   = $ctx['idn']['type'];
 
-        if (!isset($req[$t]) || empty($req[$t]['required'])) {
+        if (!isset($requiredChannels[$identifierType]) || empty($requiredChannels[$identifierType]['required'])) {
             throw new \Exception(__('This identifier type is not required', 'wp-sms'), 400);
         }
     }
@@ -244,13 +244,13 @@ class RegisterAddIdentifierAPIEndpoint extends RestAPIEndpointsAbstract
     {
         $newFlowId = uniqid('flow_', true);
 
-        $ok = UserHelper::updateUserMeta($ctx['user']['wp']->ID, [
+        $updateSuccess = UserHelper::updateUserMeta($ctx['user']['wp']->ID, [
             'identifier'      => $ctx['idn']['norm'],
             'identifier_type' => $ctx['idn']['type'],
             'flow_id'         => $newFlowId,
         ]);
 
-        if (!$ok) {
+        if (!$updateSuccess) {
             throw new \Exception(__('Failed to update user identifier', 'wp-sms'), 500);
         }
 
@@ -298,15 +298,15 @@ class RegisterAddIdentifierAPIEndpoint extends RestAPIEndpointsAbstract
     private function sendArtifacts(array &$ctx): void
     {
         if ($ctx['settings']['use_combined']) {
-            $r = $ctx['services']['combined_channel']->sendCombined(
+            $combinedSendResult = $ctx['services']['combined_channel']->sendCombined(
                 $ctx['idn']['norm'],
                 $ctx['artifacts']['otp_session'],
                 $ctx['artifacts']['magic_link'],
                 'register'
             );
-            $ctx['send']['results']['combined'] = $r;
-            if (empty($r['success'])) {
-                throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
+            $ctx['send']['results']['combined'] = $combinedSendResult;
+            if (empty($combinedSendResult['success'])) {
+                throw new \Exception(!empty($combinedSendResult['error']) ? $combinedSendResult['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
             }
             return;
         }
@@ -404,9 +404,9 @@ class RegisterAddIdentifierAPIEndpoint extends RestAPIEndpointsAbstract
     {
         $parts = explode('@', $email);
         if (count($parts) !== 2) return $email;
-        $u = $parts[0]; $d = $parts[1];
-        $mu = (strlen($u) <= 2) ? $u : substr($u, 0, 2) . str_repeat('*', strlen($u) - 2);
-        return $mu . '@' . $d;
+        $username = $parts[0]; $domain = $parts[1];
+        $maskedUsername = (strlen($username) <= 2) ? $username : substr($username, 0, 2) . str_repeat('*', strlen($username) - 2);
+        return $maskedUsername . '@' . $domain;
     }
 
     private function maskPhone(string $phone): string

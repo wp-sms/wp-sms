@@ -185,19 +185,19 @@ class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
     /** ======================= Stage 6: Perform verification ======================= */
     private function performVerification(array &$ctx): void
     {
-        $ok = false;
+        $verificationSuccess = false;
 
         if ($ctx['verify']['method'] === 'magic') {
             // Validate magic token against flow; service should check expiry & ownership
-            $ok = $ctx['services']['magic']->validate($ctx['req']['flow_id'], $ctx['req']['magic_token']);
+            $verificationSuccess = $ctx['services']['magic']->validate($ctx['req']['flow_id'], $ctx['req']['magic_token']);
             $ctx['verify']['channel_used'] = 'magic';
         } else {
             // OTP verification
-            $ok = $this->otpService->validate($ctx['req']['flow_id'], $ctx['req']['otp_code']);
+            $verificationSuccess = $this->otpService->validate($ctx['req']['flow_id'], $ctx['req']['otp_code']);
             $ctx['verify']['channel_used'] = 'otp';
         }
 
-        if (!$ok) {
+        if (!$verificationSuccess) {
             // On failure: increment limiter and raise 400
             $this->incrementRateLimits($ctx['req']['flow_id'], $ctx['req']['ip'], 'register_verify');
             throw new \Exception(__('Invalid or expired verification code/link', 'wp-sms'), 400);
@@ -207,8 +207,8 @@ class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
     /** ======================= Stage 7: Mark current identifier verified ======================= */
     private function markIdentifierVerified(array &$ctx): void
     {
-        $ok = UserHelper::markIdentifierVerified($ctx['user']['wp']->ID, $ctx['user']['identifier']);
-        if (!$ok) {
+        $markVerifiedSuccess = UserHelper::markIdentifierVerified($ctx['user']['wp']->ID, $ctx['user']['identifier']);
+        if (!$markVerifiedSuccess) {
             throw new \Exception(__('Failed to mark identifier as verified', 'wp-sms'), 500);
         }
     }
