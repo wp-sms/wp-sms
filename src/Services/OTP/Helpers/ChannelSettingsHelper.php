@@ -35,8 +35,6 @@ class ChannelSettingsHelper
         return [
             'email' => self::getEmailChannelData(),
             'phone' => self::getPhoneChannelData(),
-            'username' => self::getUsernameChannelData(),
-            'password' => self::getPasswordChannelData(),
         ];
     }
 
@@ -51,11 +49,13 @@ class ChannelSettingsHelper
         $enabled = (bool) Option::getOption('otp_channel_email', false, false);
         $required = (bool) Option::getOption('otp_channel_email_required_signup', false, false);
         $verify = (bool) Option::getOption('otp_channel_email_verify_signup', false, true);
-        $allowPassword = (bool) Option::getOption('otp_channel_password_allow_signin', false, true);
+        $allowPassword = $enabled && in_array('password', (array) Option::getOption('otp_channel_email_verification_method', false, ['otp']));
         $allowOtp = $enabled && in_array('otp', (array) Option::getOption('otp_channel_email_verification_method', false, ['otp']));
         $allowMagic = $enabled && in_array('link', (array) Option::getOption('otp_channel_email_verification_method', false, ['otp']));
         $otpDigits = (int) Option::getOption('otp_channel_email_otp_digits', false, 6);
-        $fallbackEnabled = (bool) Option::getOption('otp_channel_email_fallback_enabled', false, true);
+        $passwordIsRequired = (bool) Option::getOption('otp_channel_email_password_is_required', false, false);
+        $allowSignin = (bool) Option::getOption('otp_channel_email_allow_signin', false, true); 
+        $allowUsernameOnLogin = (bool) Option::getOption('otp_channel_email_allow_username_on_login', false, true);
 
         return [
             'enabled' => $enabled,
@@ -65,7 +65,9 @@ class ChannelSettingsHelper
             'allow_otp' => $allowOtp,
             'allow_magic' => $allowMagic,
             'otp_digits' => $otpDigits,
-            'fallback_enabled' => $fallbackEnabled,
+            'password_is_required' => $passwordIsRequired,
+            'allow_signin' => $allowSignin,
+            'allow_username_on_login' => $allowUsernameOnLogin,
         ];
     }
 
@@ -84,10 +86,9 @@ class ChannelSettingsHelper
         $allowOtp = $enabled && in_array('otp', (array) Option::getOption('otp_channel_phone_verification_method', false, ['otp']));
         $allowMagic = $enabled && in_array('link', (array) Option::getOption('otp_channel_phone_verification_method', false, ['otp']));
         $otpDigits = (int) Option::getOption('otp_channel_phone_otp_digits', false, 6);
-        $fallbackEnabled = (bool) Option::getOption('otp_channel_phone_fallback_enabled', false, true);
-        $smsEnabled = (bool) Option::getOption('otp_channel_phone_sms', false, true);
-        $smartAuth = (bool) Option::getOption('otp_channel_phone_smart_auth', false, true);
-
+        $passwordIsRequired = (bool) Option::getOption('otp_channel_phone_password_is_required', false, false);
+        $allowSignin = (bool) Option::getOption('otp_channel_phone_allow_signin', false, true);
+        
         return [
             'enabled' => $enabled,
             'required' => $required,
@@ -96,76 +97,11 @@ class ChannelSettingsHelper
             'allow_otp' => $allowOtp,
             'allow_magic' => $allowMagic,
             'otp_digits' => $otpDigits,
-            'fallback_enabled' => $fallbackEnabled,
-            'sms_enabled' => $smsEnabled,
-            'smart_auth' => $smartAuth,
-        ];
-    }
-
-    /**
-     * Get username channel configuration
-     *
-     * @return array
-     */
-    public static function getUsernameChannelData()
-    {
-        $enabled = (bool) Option::getOption('otp_channel_username', false, false);
-        $required = (bool) Option::getOption('otp_channel_username_required_signup', false, true);
-        $minLength = (int) Option::getOption('otp_channel_username_min_length', false, 3);
-        $maxLength = (int) Option::getOption('otp_channel_username_max_length', false, 20);
-        $uniqueRequirement = (bool) Option::getOption('otp_channel_username_unique_requirement', false, true);
-        $caseSensitive = (bool) Option::getOption('otp_channel_username_case_sensitive', false, false);
-        $realTimeCheck = (bool) Option::getOption('otp_channel_username_real_time_check', false, true);
-        $allowSignin = (bool) Option::getOption('otp_channel_username_allow_signin', false, true);
-
-        return [
-            'enabled' => $enabled,
-            'required' => $required,
-            'min_length' => $minLength,
-            'max_length' => $maxLength,
-            'unique_requirement' => $uniqueRequirement,
-            'case_sensitive' => $caseSensitive,
-            'real_time_check' => $realTimeCheck,
+            'password_is_required' => $passwordIsRequired,
             'allow_signin' => $allowSignin,
         ];
     }
 
-    /**
-     * Get password channel configuration
-     * Only includes active (non-readonly) options
-     *
-     * @return array
-     */
-    public static function getPasswordChannelData()
-    {
-        $enabled = (bool) Option::getOption('otp_channel_password', false, false);
-        $required = (bool) Option::getOption('otp_channel_password_required_signup', false, true);
-        $allowSignin = (bool) Option::getOption('otp_channel_password_allow_signin', false, true);
-        
-        // Include password policy settings in the channel
-        $minLength = (int) Option::getOption('otp_channel_password_min_length', false, 8);
-        $maxLength = (int) Option::getOption('otp_channel_password_max_length', false, 128);
-        $requireUppercase = (bool) Option::getOption('otp_channel_password_require_uppercase', false, true);
-        $requireLowercase = (bool) Option::getOption('otp_channel_password_require_lowercase', false, true);
-        $requireNumbers = (bool) Option::getOption('otp_channel_password_require_numbers', false, true);
-        $requireSpecial = (bool) Option::getOption('otp_channel_password_require_special', false, false);
-        $strengthMeter = (bool) Option::getOption('otp_channel_password_strength_meter', false, true);
-        $expiryDays = (int) Option::getOption('otp_channel_password_expiry_days', false, 90);
-
-        return [
-            'enabled' => $enabled,
-            'required' => $required,
-            'allow_signin' => $allowSignin,
-            'min_length' => $minLength,
-            'max_length' => $maxLength,
-            'require_uppercase' => $requireUppercase,
-            'require_lowercase' => $requireLowercase,
-            'require_numbers' => $requireNumbers,
-            'require_special' => $requireSpecial,
-            'strength_meter' => $strengthMeter,
-            'expiry_days' => $expiryDays,
-        ];
-    }
 
     /**
      * Get policies configuration data
