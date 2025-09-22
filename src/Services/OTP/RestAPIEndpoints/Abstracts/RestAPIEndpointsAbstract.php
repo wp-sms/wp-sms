@@ -334,11 +334,17 @@ abstract class RestAPIEndpointsAbstract
         // Log the error for debugging
         error_log("[WP-SMS] Error in {$context}: " . $e->getMessage());
         
-        // Return a generic error response
+        // Use the exception's code if it's a valid HTTP status code, otherwise default to 500
+        $statusCode = $e->getCode();
+        if ($statusCode < 100 || $statusCode >= 600) {
+            $statusCode = 500;
+        }
+        
+        // Return error response using exception message and code
         return $this->createErrorResponse(
-            'internal_server_error',
-            __('An internal server error occurred. Please try again later.', 'wp-sms'),
-            500
+            'operation_failed',
+            $e->getMessage(),
+            $statusCode
         );
     }
 }
