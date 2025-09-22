@@ -241,11 +241,22 @@ class MagicLinkService implements AuthChannelInterface
         try {
             $channelService = $this->channelManager->get($channel);
             
-            // Prepare message based on channel
-            $message = $this->prepareMessage($channel, $magicLinkUrl, $context);
+            // Determine template type based on context
+            $templateType = $context['template'] ?? 'magic_link';
             
-            // Send via channel
-            $success = $channelService->send($identifier, $message, $context);
+            // Prepare context for template rendering
+            $templateContext = $context;
+            $templateContext['template'] = $templateType;
+            $templateContext['magic_link'] = $magicLinkUrl;
+            
+            // Add common context variables
+            $templateContext += [
+                'site_name' => wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES),
+                'user_display_name' => $templateContext['user_display_name'] ?? __('User', 'wp-sms'),
+            ];
+            
+            // Send via channel with template
+            $success = $channelService->send($identifier, '', $templateContext);
             
             return [
                 'success' => $success,
@@ -261,28 +272,6 @@ class MagicLinkService implements AuthChannelInterface
         }
     }
 
-    /**
-     * Prepare message content based on channel
-     */
-    protected function prepareMessage(string $channel, string $magicLinkUrl, array $context): string
-    {
-        $defaultMessage = sprintf(__('Click here to login: %s', 'wp-sms'), $magicLinkUrl);
-        
-        switch ($channel) {
-            case 'sms':
-                return $context['sms_message'] ?? $defaultMessage;
-            case 'email':
-                return $context['email_message'] ?? $defaultMessage;
-            case 'whatsapp':
-                return $context['whatsapp_message'] ?? $defaultMessage;
-            case 'viber':
-                return $context['viber_message'] ?? $defaultMessage;
-            case 'call':
-                return $context['call_message'] ?? $defaultMessage;
-            default:
-                return $defaultMessage;
-        }
-    }
 
     /**
      * Check if fallback is enabled for a channel
