@@ -122,18 +122,14 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     private function enforceAvailability(array &$ctx): void
     {
         if ($this->isIdentifierUnavailable($ctx['req']['identifier_norm'], $ctx['req']['identifier_type'])) {
-            throw $this->createErrorResponse('identifier_unavailable', __('This identifier is already in use.', 'wp-sms'), 409);
+            throw new \Exception(__('This identifier is already in use.', 'wp-sms'), 409);
         }
 
         if ($ctx['req']['identifier_type'] === 'email') {
             $existing = get_user_by('email', $ctx['req']['identifier_norm']);
             $isPending = $existing ? UserHelper::isPendingUser($existing->ID) : false;
             if ($existing && !$isPending) {
-                throw $this->createErrorResponse(
-                    'email_already_exists',
-                    __('An account with this email already exists. Please try logging in instead.', 'wp-sms'),
-                    409
-                );
+                throw new \Exception(__('An account with this email already exists. Please try logging in instead.', 'wp-sms'), 409);
             }
         }
     }
@@ -143,7 +139,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     {
         $user = $this->getOrCreatePendingUser($ctx['req']['identifier_norm']);
         if (!$user) {
-            throw $this->createErrorResponse('user_creation_failed', __('Unable to create or retrieve pending user', 'wp-sms'), 500);
+            throw new \Exception(__('Unable to create or retrieve pending user', 'wp-sms'), 500);
         }
         $ctx['user']['wp']     = $user;
         $ctx['user']['flowId'] = UserHelper::getUserFlowId($user->ID);
@@ -173,11 +169,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     private function validateAuthMethodsAllowed(array &$ctx): void
     {
         if (!$ctx['settings']['allow_password'] && !$ctx['settings']['allow_otp'] && !$ctx['settings']['allow_magic']) {
-            throw $this->createErrorResponse(
-                'no_auth_method_allowed',
-                __('No authentication method is enabled for this identifier type. Please contact administrator.', 'wp-sms'),
-                400
-            );
+            throw new \Exception(__('No authentication method is enabled for this identifier type. Please contact administrator.', 'wp-sms'), 400);
         }
     }
 
@@ -201,7 +193,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
             } else {
                 $created = $this->createNewOtpSession($flowId, $idn, $digits);
                 if (!$created) {
-                    throw $this->createErrorResponse('session_creation_failed', __('Unable to create OTP session', 'wp-sms'), 500);
+                    throw new \Exception(__('Unable to create OTP session', 'wp-sms'), 500);
                 }
                 $ctx['artifacts']['otp_session'] = $created;
                 $ctx['artifacts']['is_new_otp']  = true;
@@ -222,7 +214,6 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
     private function initArtifactsCombined(array &$ctx, string $flowId, string $identifierNorm, string $identifierType, int $otpDigits): void
     {
         $combined = $ctx['services']['combined'];
-
         if (!$combined->exists($flowId)) {
             $generated = $combined->generate($flowId, $identifierNorm, $identifierType, $otpDigits);
             $ctx['artifacts']['otp_session'] = $this->mapOtpSessionForResponse($generated['otp_session']);
@@ -231,7 +222,6 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
             $ctx['artifacts']['is_new_magic']= true;
             return;
         }
-
         // Try reuse; regenerate any missing/expired
         $otp = $this->getExistingOtpSession($flowId);
         if (!$otp) {
@@ -272,7 +262,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
                 );
                 $ctx['send']['results']['otp'] = $r;
                 if (empty($r['success'])) {
-                    throw $this->createErrorResponse('otp_send_failed', !empty($r['error']) ? $r['error'] : __('Failed to send OTP', 'wp-sms'), 500);
+                    throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send OTP', 'wp-sms'), 500);
                 }
             } else {
                 $ctx['send']['results']['otp'] = [
@@ -289,7 +279,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
                 $r = $ctx['services']['magic_service']->sendMagicLink($ctx['req']['identifier_norm'], $ctx['artifacts']['magic_link']);
                 $ctx['send']['results']['magic_link'] = $r;
                 if (empty($r['success'])) {
-                    throw $this->createErrorResponse('magic_link_send_failed', !empty($r['error']) ? $r['error'] : __('Failed to send Magic Link', 'wp-sms'), 500);
+                    throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send Magic Link', 'wp-sms'), 500);
                 }
             } else {
                 $channelUsed = ($ctx['req']['identifier_type'] === 'email') ? 'email' : 'sms';
@@ -316,7 +306,7 @@ class RegisterStartAPIEndpoint extends RestAPIEndpointsAbstract
             );
             $ctx['send']['results']['combined'] = $r;
             if (empty($r['success'])) {
-                throw $this->createErrorResponse('combined_send_failed', !empty($r['error']) ? $r['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
+                throw new \Exception(!empty($r['error']) ? $r['error'] : __('Failed to send combined authentication message', 'wp-sms'), 500);
             }
         } else {
             $ctx['send']['results']['combined'] = [
