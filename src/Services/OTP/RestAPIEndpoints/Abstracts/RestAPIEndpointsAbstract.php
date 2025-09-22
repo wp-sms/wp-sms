@@ -9,6 +9,7 @@ use WP_SMS\Services\OTP\AuthChannel\OTP\OtpService;
 use WP_SMS\Services\OTP\Models\AuthEventModel;
 use WP_SMS\Services\OTP\Security\RateLimiter;
 use WP_SMS\Utils\DateUtils;
+use WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper;
 
 abstract class RestAPIEndpointsAbstract
 {
@@ -18,10 +19,14 @@ abstract class RestAPIEndpointsAbstract
     /** @var RateLimiter */
     protected $rateLimiter;
 
+    /** @var ChannelSettingsHelper */
+    protected $channelSettingsHelper;
+
     public function __construct()
     {
         $this->otpService = new OtpService();
         $this->rateLimiter = new RateLimiter();
+        $this->channelSettingsHelper = new ChannelSettingsHelper();
     }
 
     /**
