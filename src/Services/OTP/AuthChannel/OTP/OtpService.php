@@ -111,12 +111,22 @@ class OtpService implements AuthChannelInterface
     protected function sendViaChannel(DeliveryChannelInterface $channel, string $identifier, string $otpCode, array $context): array
     {
         try {
+            // Determine template type based on context
+            $templateType = $context['template'] ?? 'otp_code';
             
-            // Prepare message based on channel
-            $message = $this->prepareMessage($channel, $otpCode, $context);
+            // Prepare context for template rendering
+            $templateContext = $context;
+            $templateContext['template'] = $templateType;
+            $templateContext['otp_code'] = $otpCode;
             
-            // Send via channel
-            $success = $channel->send($identifier, $message, $context);
+            // Add common context variables
+            $templateContext += [
+                'site_name' => wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES),
+                'user_display_name' => $templateContext['user_display_name'] ?? __('User', 'wp-sms'),
+            ];
+            
+            // Send via channel with template
+            $success = $channel->send($identifier, '', $templateContext);
             
             return [
                 'success' => $success,
@@ -132,29 +142,6 @@ class OtpService implements AuthChannelInterface
         }
     }
 
-    /**
-     * Prepare message content based on channel
-     */
-    protected function prepareMessage(DeliveryChannelInterface $channel, string $otpCode, array $context): string
-    {
-        $defaultMessage = sprintf(__('Your verification code is: %s', 'wp-sms'), $otpCode);
-        
-        switch ($channel) {
-            case 'sms':
-            case 'phone':
-                return $context['sms_message'] ?? $defaultMessage;
-            case 'email':
-                return $context['email_message'] ?? $defaultMessage;
-            case 'whatsapp':
-                return $context['whatsapp_message'] ?? $defaultMessage;
-            case 'viber':
-                return $context['viber_message'] ?? $defaultMessage;
-            case 'call':
-                return $context['call_message'] ?? $defaultMessage;
-            default:
-                return $defaultMessage;
-        }
-    }
 
     /**
      * Check if fallback is enabled for a channel
@@ -228,6 +215,7 @@ class OtpService implements AuthChannelInterface
 
     /**
      * Check whether a session exists and is not expired.
+     * If expired, the record will be deleted.
      */
     public function exists(string $flowId): bool
     {
@@ -237,7 +225,15 @@ class OtpService implements AuthChannelInterface
             return false;
         }
 
-        return strtotime($record['expires_at']) >= time();
+        $isExpired = strtotime($record['expires_at']) < time();
+        
+        if ($isExpired) {
+            // Delete expired record
+            $this->invalidate($flowId);
+            return false;
+        }
+
+        return true;
     }
 
     /**
