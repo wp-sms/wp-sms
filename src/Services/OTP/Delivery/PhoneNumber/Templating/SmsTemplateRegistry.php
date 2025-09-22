@@ -27,6 +27,18 @@ final class SmsTemplateRegistry
                     ['{{user_display_name}}, {{reset_link}}', '{{expires_in_minutes}}', '{{user_display_name}}', '{{site_name}}'],
                     __("Reset {{site_name}} password: {{reset_link}} (valid {{expires_in_minutes}} min).", 'wp-sms')
                 ),
+                SmsTemplate::TYPE_COMBINED_REGISTER => new SmsTemplate(
+                    SmsTemplate::TYPE_COMBINED_REGISTER,
+                    __('Combined Registration (SMS)', 'wp-sms'),
+                    ['{{otp_code}}', '{{magic_link}}', '{{expires_in_minutes}}', '{{user_display_name}}', '{{site_name}}'],
+                    __("{{user_display_name}}, {{site_name}} registration: Code {{otp_code}} OR click {{magic_link}} (valid {{expires_in_minutes}} min).", 'wp-sms')
+                ),
+                SmsTemplate::TYPE_COMBINED_LOGIN => new SmsTemplate(
+                    SmsTemplate::TYPE_COMBINED_LOGIN,
+                    __('Combined Login (SMS)', 'wp-sms'),
+                    ['{{otp_code}}', '{{magic_link}}', '{{expires_in_minutes}}', '{{user_display_name}}', '{{site_name}}'],
+                    __("{{user_display_name}}, {{site_name}} login: Code {{otp_code}} OR click {{magic_link}} (valid {{expires_in_minutes}} min).", 'wp-sms')
+                ),
             ];
         }
 
