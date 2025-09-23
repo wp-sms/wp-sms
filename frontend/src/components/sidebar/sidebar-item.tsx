@@ -48,8 +48,10 @@ export const SidebarItem = ({ icon, title, href, onClick, endContent, showTitle 
     <Link className="contents" to={'/settings/$name'} params={{ name: href }}>
       <div
         className={clsx(
-          'flex items-center gap-x-2 justify-between py-2 px-3  active:scale-95 rounded-sm transition-all cursor-pointer select-none',
-          isActive ? '' : 'hover:bg-gray-200/85 active:bg-gray-300/85'
+          'flex items-center gap-x-2 justify-between py-2 px-3 active:scale-95 rounded-sm transition-all cursor-pointer select-none',
+          isActive
+            ? 'bg-sidebar-active text-sidebar-active-foreground hover:bg-sidebar-active hover:text-sidebar-active-foreground'
+            : 'hover:bg-gray-200/85 active:bg-gray-300/85'
         )}
       >
         <div className="flex items-center gap-x-2">

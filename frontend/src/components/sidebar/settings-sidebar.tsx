@@ -1,21 +1,22 @@
 import clsx from 'clsx'
-import { Settings } from 'lucide-react'
+import { PanelLeftOpen, Settings } from 'lucide-react'
 
 import { useGetSettingSchemaList } from '@/services/settings/use-get-setting-schema-list'
 import { useSidebarStore } from '@/stores/use-sidebar-store'
 
+import { Button } from '../ui/button'
 import { SidebarGroup } from './sidebar-group'
 import { SidebarItem } from './sidebar-item'
 import { SidebarNestedItem } from './sidebar-nested-item'
 
 export const SettingsSidebar = () => {
   const { data: settingSchemaList } = useGetSettingSchemaList()
-  const { isOpen } = useSidebarStore()
+  const { isOpen, toggleSidebar } = useSidebarStore()
 
   return (
     <aside
       className={clsx(
-        'bg-white p-4 border-r border-r-border overflow-hidsden !transition-all',
+        'bg-sidebar p-4 border-r border-r-border overflow-hidsden !transition-all',
         isOpen ? 'w-72' : 'w-auto'
       )}
     >
@@ -30,6 +31,10 @@ export const SettingsSidebar = () => {
               <span className="text-gray-900 font-medium">WP SMS</span>
               <span className="text-gray-500">Settings</span>
             </div>
+
+            <Button onClick={toggleSidebar} size="icon" variant="ghost" className="cursor-pointer">
+              <PanelLeftOpen className="text-foreground/85" size={22} />
+            </Button>
           </section>
         )}
 

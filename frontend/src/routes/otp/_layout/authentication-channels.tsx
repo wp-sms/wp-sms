@@ -71,7 +71,6 @@ function RouteComponent() {
             handleBlur: () => {},
             handleChange: () => {},
           }}
-          isSubField={true}
         />
       </div>
     )

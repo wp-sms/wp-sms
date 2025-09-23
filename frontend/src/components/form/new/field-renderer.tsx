@@ -62,10 +62,11 @@ export type SimpleFieldApi = {
 type FieldRendererProps = {
   field: SchemaField
   fieldApi: SimpleFieldApi
-  isSubField?: boolean
   onOpenSubFields?: (field: SchemaField) => void
   onFieldValueChange?: (name: string, value: FieldValue) => void
   formValues?: Record<string, unknown>
+  defaultValues?: Record<string, unknown>
+  groupName?: SettingGroupName
 }
 
 type FieldHelperFunctions = {
@@ -213,19 +214,20 @@ const SelectField = ({
         aria-disabled={field.readonly}
         aria-readonly={field.readonly}
         className="w-full"
+        id={field.key}
       >
-        <SelectValue id={field.key} className="w-full" placeholder={field.placeholder} />
+        <SelectValue className="w-full" placeholder={field.placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {toOptions(field.options)?.map((item) => {
+        {toOptions(field.options)?.map((item, index) => {
           if (item?.children) {
             return (
-              <SelectGroup key={`select-group-${item.value}`}>
+              <SelectGroup key={`select-group-${item.value}-${index}`}>
                 <SelectLabel>{item.label}</SelectLabel>
 
-                {item.children?.map((child) => {
+                {item.children?.map((child, j) => {
                   return (
-                    <SelectItem key={`group-select-item-${child.value}`} value={String(child.value)}>
+                    <SelectItem key={`group-select-item-${child.value}${j}`} value={String(child.value)}>
                       {child.label}
                     </SelectItem>
                   )
@@ -235,7 +237,7 @@ const SelectField = ({
           }
 
           return (
-            <SelectItem key={`select-item-${item.value}`} value={item?.value}>
+            <SelectItem key={`select-item-${item.value}-${index}`} value={String(item.value)}>
               {item.label}
             </SelectItem>
           )
@@ -256,7 +258,8 @@ const MultiselectField = ({
   fieldValue: FieldValue
   fieldState: { errors: string[] }
 }) => {
-  const selectedValues = Array.isArray(fieldValue) ? fieldValue : []
+  const selectedValues =
+    Array.isArray(fieldValue) && fieldValue.every((item) => typeof item === 'string') ? (fieldValue as string[]) : []
 
   return (
     <MultiSelect
@@ -381,19 +384,23 @@ const RepeaterField = ({
   field,
   fieldApi,
   fieldValue,
-  _onFieldValueChange,
+  // _onFieldValueChange - unused in this implementation
   formValues,
+  defaultValues,
+  groupName,
 }: {
   field: SchemaField
   fieldApi: SimpleFieldApi
   fieldValue: FieldValue
   _onFieldValueChange?: (name: string, value: FieldValue) => void
   formValues?: Record<string, unknown>
+  defaultValues?: Record<string, unknown>
+  groupName?: SettingGroupName
 }) => {
   const fieldsArray = useMemo(() => {
     if (Array.isArray(fieldValue)) {
       // Check if it's an array of objects (RepeaterItem[])
-      if (fieldValue.every(item => typeof item === 'object' && item !== null)) {
+      if (fieldValue.every((item) => typeof item === 'object' && item !== null)) {
         return fieldValue as RepeaterItem[]
       }
     }
@@ -404,9 +411,7 @@ const RepeaterField = ({
 
   const handleAddItem = useCallback(() => {
     const firstItem = fieldsArray?.[0]
-    const newFieldData = firstItem ? Object.fromEntries(
-      Object.entries(firstItem).map(([key]) => [key, null])
-    ) : {}
+    const newFieldData = firstItem ? Object.fromEntries(Object.entries(firstItem).map(([key]) => [key, null])) : {}
     const newItem: RepeaterItem = { ...newFieldData, id: `item-${Date.now()}` }
     const newArray = [...fieldsArray, newItem]
     fieldApi.handleChange(newArray as FieldValue)
@@ -471,7 +476,10 @@ const RepeaterField = ({
                     const subFieldApi: SimpleFieldApi = {
                       name: `${field.key}.${idx}.${subField.key}`,
                       state: {
-                        value: item && typeof item === 'object' ? item[subField.key] : undefined,
+                        value:
+                          item && typeof item === 'object' && subField.key in item
+                            ? (item[subField.key] as FieldValue)
+                            : undefined,
                         meta: { errors: [] },
                       },
                       handleBlur: () => {},
@@ -483,7 +491,8 @@ const RepeaterField = ({
                         key={`group-${group?.key}-field-${subField?.key}`}
                         field={{ ...subField, key: `${field.key}.${idx}.${subField?.key}` }}
                         fieldApi={subFieldApi}
-                        isSubField={true}
+                        defaultValues={defaultValues}
+                        groupName={groupName}
                       />
                     )
                   })}
@@ -509,12 +518,11 @@ const RepeaterField = ({
 }
 
 const TelField = ({
-  _field,
+  // _field - unused in this implementation
   fieldApi,
   fieldValue,
   fieldState,
 }: {
-  _field: SchemaField
   fieldApi: SimpleFieldApi
   fieldValue: FieldValue
   fieldState: { errors: string[] }
@@ -652,22 +660,17 @@ const TelField = ({
 }
 
 const ImageField = ({
-  _field,
+  // _field - unused in this implementation
   fieldApi,
   fieldValue,
 }: {
-  _field: SchemaField
   fieldApi: SimpleFieldApi
   fieldValue: FieldValue
 }) => {
   const { openMediaUploader } = useWordPressMediaUploader()
 
   return (
-    <Button
-      variant="outline"
-      type="button"
-      onClick={() => openMediaUploader(fieldApi.handleChange)}
-    >
+    <Button variant="outline" type="button" onClick={() => openMediaUploader(fieldApi.handleChange)}>
       <CloudUpload />
       {fieldValue ? 'Change Image' : 'Select Image'}
     </Button>
@@ -675,7 +678,15 @@ const ImageField = ({
 }
 
 // Main field renderer component
-export const FieldRenderer = ({ field, fieldApi, isSubField = false, onOpenSubFields, onFieldValueChange, formValues }: FieldRendererProps) => {
+export const FieldRenderer = ({
+  field,
+  fieldApi,
+  onOpenSubFields,
+  onFieldValueChange,
+  formValues,
+  defaultValues,
+  groupName,
+}: FieldRendererProps) => {
   const fieldValue = fieldApi.state.value
   const fieldState = fieldApi.state.meta
 
@@ -720,15 +731,17 @@ export const FieldRenderer = ({ field, fieldApi, isSubField = false, onOpenSubFi
             fieldApi={fieldApi}
             fieldValue={fieldValue}
             _onFieldValueChange={onFieldValueChange}
+            defaultValues={defaultValues}
             formValues={formValues}
+            groupName={groupName}
           />
         )
 
       case 'tel':
-        return <TelField _field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        return <TelField fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
 
       case 'image':
-        return <ImageField _field={field} fieldApi={fieldApi} fieldValue={fieldValue} />
+        return <ImageField fieldApi={fieldApi} fieldValue={fieldValue} />
 
       default:
         return <div>Unsupported field type: {field.type}</div>

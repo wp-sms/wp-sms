@@ -1,60 +1,161 @@
-@import 'tailwindcss';
+@import 'tailwindcss' important;
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  --container-center: true;
+  --container-padding: 2rem;
+  --container-screen-2xl: 1400px;
+}
+
+:root {
+  --radius: 0.5rem;
   --background: hsl(0 0% 100%);
-  --foreground: hsl(0, 0%, 20%);
+  --foreground: hsl(20 14% 4%);
   --card: hsl(0 0% 100%);
-  --card-foreground: hsl(20 14.3% 4.1%);
+  --card-foreground: hsl(20 14% 4%);
   --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(20 14.3% 4.1%);
-  --primary: #f88e40;
-  --primary-foreground: hsl(60 9.1% 97.8%);
-  --secondary: hsl(60 4.8% 95.9%);
-  --secondary-foreground: hsl(24 9.8% 10%);
-  --muted: hsl(60 4.8% 95.9%);
-  --muted-foreground: hsl(25 5.3% 44.7%);
-  --accent: hsl(60 4.8% 95.9%);
-  --accent-foreground: hsl(24 9.8% 10%);
+  --popover-foreground: hsl(20 14% 4%);
+  --primary: hsl(25 95% 48%);
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(25 100% 96%);
+  --secondary-foreground: hsl(25 95% 45%);
+  --muted: hsl(0 0% 96%);
+  --muted-foreground: hsl(0 0% 45%);
+  --accent: hsl(25 100% 96%);
+  --accent-foreground: hsl(25 95% 45%);
   --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(60 9.1% 97.8%);
-  --border: hsl(20 5.9% 90%);
-  --input: hsl(20 5.9% 90%);
-  --ring: hsl(24.6 95% 53.1%);
-  --radius: 0.75rem;
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(25 20% 88%);
+  --input: hsl(25 20% 88%);
+  --ring: hsl(25 95% 53%);
+  --success: hsl(142 76% 36%);
+  --success-foreground: hsl(0 0% 98%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: hsl(0 0% 98%);
+
+  /* Orange gradient tokens */
+  --gradient-primary: linear-gradient(135deg, hsl(25 95% 53%), hsl(15 88% 58%));
+  --gradient-subtle: linear-gradient(180deg, hsl(25 100% 98%), hsl(25 100% 96%));
+
+  /* Shadows */
+  --shadow-elegant: 0 10px 30px -10px hsl(25 95% 53% / 0.2);
+  --shadow-glow: 0 0 40px hsl(25 95% 53% / 0.15);
+
+  --sidebar-active: hsl(24 100% 94%);
+  --sidebar-active-foreground: hsl(20 14% 4%);
+  --sidebar-background: hsl(34 100% 95%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(25 95% 53%);
+  --sidebar-accent-foreground: hsl(0 0% 98%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+  --header-bg: hsla(15, 75%, 28%, 1);
+
+  /* WordPress admin colors */
+  --wp-blue-foreground: hsl(0 0% 98%);
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+}
+
+.dark {
+  --background: hsl(20 14% 4%);
+  --foreground: hsl(0 0% 95%);
+  --card: hsl(20 14% 6%);
+  --card-foreground: hsl(0 0% 95%);
+  --popover: hsl(20 14% 6%);
+  --popover-foreground: hsl(0 0% 95%);
+  --primary: hsl(25 95% 48%);
+  --primary-foreground: hsl(20 14% 4%);
+  --secondary: hsl(20 14% 10%);
+  --secondary-foreground: hsl(0 0% 95%);
+  --muted: hsl(20 14% 10%);
+  --muted-foreground: hsl(20 5% 64%);
+  --accent: hsl(20 14% 10%);
+  --accent-foreground: hsl(0 0% 95%);
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(0 0% 95%);
+  --border: hsl(20 14% 15%);
+  --input: hsl(20 14% 15%);
+  --ring: hsl(25 95% 53%);
+  --success: hsl(142 76% 36%);
+  --success-foreground: hsl(0 0% 98%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: hsl(0 0% 98%);
+
+  --gradient-primary: linear-gradient(135deg, hsl(25 95% 53%), hsl(15 88% 58%));
+  --gradient-subtle: linear-gradient(180deg, hsl(20 14% 6%), hsl(20 14% 10%));
+
+  --shadow-elegant: 0 10px 30px -10px hsl(25 95% 53% / 0.3);
+  --shadow-glow: 0 0 40px hsl(25 95% 53% / 0.2);
+
+  --sidebar-active: hsl(24 100% 94%);
+  --sidebar-active-foreground: hsl(20 14% 4%);
+  --sidebar-background: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(25 95% 53%);
+  --sidebar-accent-foreground: hsl(0 0% 98%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+  --header-bg: hsla(15, 75%, 28%, 1);
+
+  --wp-blue: hsl(207 90% 54%);
+  --wp-blue-foreground: hsl(0 0% 98%);
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
 }
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-sidebar: var(--sidebar-background);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -62,9 +163,68 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-active-foreground: var(--sidebar-active-foreground);
+
+  --color-header: var(--header-bg);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
 }
 
+/* Keyframes for animations */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Utility extensions */
+@utility bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+
+@utility bg-gradient-subtle {
+  background-image: var(--gradient-subtle);
+}
+
+@utility shadow-elegant {
+  box-shadow: var(--shadow-elegant);
+}
+
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Base styles */
 @layer base {
+  * {
+    @apply border-border;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -75,6 +235,7 @@
   max-width: 100% !important;
   padding: 0 !important;
 }
+
 #wp-sms-react-root {
   position: relative;
   width: 100%;

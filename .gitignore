@@ -44,6 +44,8 @@ frontend/build-legacy
 #vscode
 .vscode
 .cursor
+.claude
+CLAUDE.md
 
 # Testing
 /tests/logs

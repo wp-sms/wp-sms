@@ -18,11 +18,11 @@ type ExternalFieldApiLike = {
 type FormFieldProps = {
   field: SchemaField
   fieldApi: ExternalFieldApiLike
-  isSubField?: boolean
   onOpenSubFields?: (field: SchemaField) => void
+  defaultValues?: Record<string, unknown>
 }
 
-export const FormField = ({ field, fieldApi, isSubField = false, onOpenSubFields }: FormFieldProps) => {
+export const FormField = ({ field, fieldApi, onOpenSubFields, defaultValues }: FormFieldProps) => {
   // Convert TanStack Form FieldApi to our SimpleFieldApi
   const simpleFieldApi: SimpleFieldApi = {
     name: fieldApi.name,
@@ -38,7 +38,12 @@ export const FormField = ({ field, fieldApi, isSubField = false, onOpenSubFields
   }
 
   return (
-    <FieldRenderer field={field} fieldApi={simpleFieldApi} isSubField={isSubField} onOpenSubFields={onOpenSubFields} />
+    <FieldRenderer
+      field={field}
+      fieldApi={simpleFieldApi}
+      onOpenSubFields={onOpenSubFields}
+      defaultValues={defaultValues}
+    />
   )
 }
 

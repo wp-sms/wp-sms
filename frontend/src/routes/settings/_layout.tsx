@@ -1,26 +1,24 @@
-import { createFileRoute, Outlet, useParams } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import { Header } from '@/components/layout/header'
-import { SettingsSidebar } from '@/components/sidebar/settings-sidebar'
+import { AppSidebar } from '@/components/sidebar/new-settings-sidebar'
+import { SidebarInset } from '@/components/ui/sidebar'
+import { SidebarProvider } from '@/providers/sidebar-provider'
 
 export const Route = createFileRoute('/settings/_layout')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { name } = useParams({ from: '/settings/_layout/$name' })
-
   return (
-    <div className="wrap flex w-full min-h-screen">
-      <SettingsSidebar />
-
-      <div className="flex-1 bg-white">
-        <Header currentPage={name || 'General'} />
-
-        <main className="p-6">
-          <Outlet />
-        </main>
-      </div>
+    <div className="wrap flex w-full min-h-screen relative">
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <main className="p-6 flex-1 ">
+            <Outlet />
+          </main>
+        </SidebarInset>
+      </SidebarProvider>
     </div>
   )
 }

@@ -30,7 +30,7 @@ type UseSchemaFormOptions = {
 export const useSchemaForm = ({ defaultValues, schema, onSubmit }: UseSchemaFormOptions) => {
   const form = useForm({
     defaultValues,
-    onSubmit: async ({ value }) => {
+    onSubmit: async () => {
       const dirtyValues = getDirtyFormValues(form, schema)
 
       if (Object.keys(dirtyValues).length === 0) {

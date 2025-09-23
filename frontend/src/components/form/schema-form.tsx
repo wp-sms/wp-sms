@@ -1,7 +1,7 @@
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Save } from 'lucide-react'
 
 import type { FieldValue } from '@/components/form/new/field-renderer'
-import { FormField } from '@/components/form/new/form-field'
+import { FormField as FormFieldComponent } from '@/components/form/new/form-field'
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -48,11 +48,12 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
           }
 
           return (
-            <FormField
+            <FormFieldComponent
               field={field}
               fieldApi={adaptedFieldApi}
               isSubField={isSubField}
               onOpenSubFields={onFieldAction}
+              defaultValues={defaultValues}
             />
           )
         }}
@@ -78,9 +79,9 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
         e.stopPropagation()
         form.handleSubmit()
       }}
-      className="flex flex-col gap-y-4"
+      className="flex flex-col gap-y-6"
     >
-      <GroupTitle label={schema.label || ''} icon={schema.icon} />
+      <GroupTitle label={schema.label || ''} />
 
       {schema.sections.map((section, index) => (
         <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
@@ -96,11 +97,7 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
 
       <form.Subscribe selector={(state) => state.isDirty}>
         {(isDirty) => (
-          <div className="flex items-center gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
-            <Button disabled={!isDirty || form.state.isSubmitting} type="submit">
-              Save Changes
-            </Button>
-
+          <div className="flex items-center justify-end gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
             <Button
               disabled={!isDirty || form.state.isSubmitting}
               type="reset"
@@ -108,6 +105,11 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
               onClick={() => form.reset()}
             >
               Reset
+            </Button>
+
+            <Button disabled={!isDirty || form.state.isSubmitting} type="submit">
+              <Save />
+              Save Changes
             </Button>
           </div>
         )}
