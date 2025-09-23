@@ -704,6 +704,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'smsgatewayat' => 'sms-gateway.at',
             ),
             'spain'                => array(
+                'smses'      => 'sms.es',
                 'altiria'    => 'altiria.com',
                 'afilnet'    => 'afilnet.com',
                 'labsmobile' => 'labsmobile.com',
