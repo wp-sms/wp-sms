@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import { AppSidebar } from '@/components/sidebar/new-settings-sidebar'
+import { SettingsSidebar } from '@/components/sidebar/settings-sidebar'
 import { SidebarInset } from '@/components/ui/sidebar'
 import { SidebarProvider } from '@/providers/sidebar-provider'
 
@@ -12,7 +12,7 @@ function RouteComponent() {
   return (
     <div className="wrap flex w-full min-h-screen relative">
       <SidebarProvider>
-        <AppSidebar />
+        <SettingsSidebar />
         <SidebarInset>
           <main className="p-6 flex-1 ">
             <Outlet />
