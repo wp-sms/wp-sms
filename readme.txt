@@ -1,7 +1,7 @@
 ﻿=== WP SMS – Ultimate SMS & MMS Notifications, OTP, 2FA, and WooCommerce & Forms Integrations ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, mms, otp, 2fa, notification, woocommerce, forms, twilio, whatsapp
+Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
 Tested up to: 6.8
 Requires PHP: 5.6
@@ -9,7 +9,7 @@ Stable tag: 7.0.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Send SMS/MMS, OTP, and 2FA directly from WordPress using 300+ gateways like Twilio, WhatsApp, and Plivo. Power up WooCommerce, forms, and memberships with instant SMS alerts.
+Send SMS/MMS, OTP & 2FA messages, WooCommerce updates, and bulk campaigns with 300+ gateways and plugin integrations.
 
 == Description ==
 ### 🚀 The most complete SMS solution for WordPress
