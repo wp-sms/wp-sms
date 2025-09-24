@@ -13,7 +13,7 @@ class smses extends Gateway
      *
      * @var string
      */
-    private $wsdl_link = "http://194.0.137.110:32161/bulk/sendsms";
+    private $wsdl_link = "http://194.0.137.110:32161/bulk/";
 
     /**
      * The website or tariff page of the SMS service provider.
@@ -60,30 +60,6 @@ class smses extends Gateway
      * @var bool
      */
     public $bulk_send = false;
-
-    /**
-     * Gateway fields
-     *
-     * @var array
-     */
-    public $gatewayFields = [
-        'username' => [
-            'id'   => 'gateway_username',
-            'name' => 'API Username',
-            'desc' => 'Enter the username provided by your SMS gateway.',
-        ],
-        'password' => [
-            'id'   => 'gateway_password',
-            'name' => 'API Password',
-            'desc' => 'Enter the password associated with your SMS gateway account.',
-        ],
-        'from'     => [
-            'id'           => 'gateway_sender_id',
-            'name'         => 'Sender Number',
-            'place_holder' => 'Enter sender number or name (A-Z, 0-9)',
-            'desc'         => 'Specify the SMS sender. You can enter a numeric phone number or an alphanumeric name.',
-        ],
-    ];
 
     /**
      * smses constructor.
@@ -135,55 +111,7 @@ class smses extends Gateway
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            $body = [
-                'type'     => 'text',
-                'auth'     => [
-                    'username' => $this->username,
-                    'password' => $this->password,
-                ],
-                'sender'   => $this->from,
-                'receiver' => $this->formatReceiverNumber($this->to[0]),
-                'text'     => $this->msg,
-                'dcs'      => 'gsm',
-            ];
-
-            if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
-                $body['dcs'] = 'ucs';
-            }
-
-            if ($this->isflash) {
-                $body['flash'] = $this->isflash;
-            }
-
-            $args = [
-                'headers' => array(
-                    'content-type' => 'application/json'
-                ),
-                'body'    => json_encode($body),
-            ];
-
-            $remoteRequest = $this->request('POST', $this->wsdl_link, [], $args);
-            $response      = $remoteRequest->getResponseBody();
-            $responseCode  = $remoteRequest->getResponseCode();
-
-            if ($responseCode !== 200) {
-                throw new Exception($response, $responseCode);
-            }
-
-            //log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
-
-            /**
-             * Run hook after send sms.
-             *
-             * @param string $response result output.
-             * @since 2.4
-             *
-             */
-            do_action('wp_sms_send', $response);
-
-            return $response;
-
+            return $this->sendDefaultApiSms();
         } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
@@ -192,7 +120,62 @@ class smses extends Gateway
     }
 
     /**
+     * Send SMS using the default API endpoint.
      *
+     * @return string|WP_Error
+     *
+     * @throws Exception
+     */
+    private function sendDefaultApiSms()
+    {
+        $body = [
+            'type'     => 'text',
+            'auth'     => [
+                'username' => $this->username,
+                'password' => $this->password,
+            ],
+            'sender'   => $this->from,
+            'receiver' => $this->formatReceiverNumber($this->to[0]),
+            'text'     => $this->msg,
+            'dcs'      => 'gsm',
+        ];
+
+        if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
+            $body['dcs'] = 'ucs';
+        }
+
+        if ($this->isflash) {
+            $body['flash'] = $this->isflash;
+        }
+
+        $args = [
+            'headers' => array(
+                'content-type' => 'application/json'
+            ),
+            'body'    => json_encode($body),
+        ];
+
+        $response = $this->request('POST', $this->wsdl_link . 'sendsms', [], $args);
+
+        //log the result
+        $this->log($this->from, $this->msg, $this->to, $response);
+
+        /**
+         * Run hook after send sms.
+         *
+         * @param string $response result output.
+         * @since 2.4
+         *
+         */
+        do_action('wp_sms_send', $response);
+
+        return $response;
+    }
+
+    /**
+     * Retrieve account credit balance from the SMS service provider.
+     *
+     * @return null
      */
     public function GetCredit()
     {
@@ -206,7 +189,7 @@ class smses extends Gateway
      *
      * @return string
      */
-    public function formatReceiverNumber($number)
+    private function formatReceiverNumber($number)
     {
         return preg_replace('/\D+/', '', $number);
     }
