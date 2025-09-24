@@ -51,7 +51,6 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
             <FormFieldComponent
               field={field}
               fieldApi={adaptedFieldApi}
-              isSubField={isSubField}
               onOpenSubFields={onFieldAction}
               defaultValues={defaultValues}
             />
