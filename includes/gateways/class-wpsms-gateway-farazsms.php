@@ -9,208 +9,251 @@ use WP_Error;
 class farazsms extends Gateway
 {
     /**
-     * API Base URL
+     * API Base URL.
      *
      * @var string
      */
     private $wsdl_link = "https://api.iranpayamak.com/";
 
     /**
-     * Pricing page URL
+     * Pricing page URL.
      *
      * @var string
      */
     public $tariff = "https://iranpayamak.com/price/";
 
     /**
-     * Whether trial unit is supported
+     * Whether trial credit is supported.
      *
      * @var bool
      */
     public $unitrial = true;
 
     /**
-     * Unit for credit balance
+     * Unit for credit balance.
      *
      * @var string
      */
     public $unit;
 
     /**
-     * Flash SMS support
+     * Flash SMS support.
      *
      * @var string
      */
     public $flash = "disable";
 
     /**
-     * Whether flash SMS is enabled
+     * Whether flash SMS is enabled.
      *
      * @var bool
      */
     public $isflash = false;
 
     /**
-     * API key availability
+     * API key required flag.
      *
      * @var bool
      */
     public $has_key = true;
 
     /**
-     * Gateway settings fields
-     *
-     * @var array
-     */
-    public $gatewayFields = [
-        'from'    => [
-            'id'           => 'gateway_sender_id',
-            'name'         => 'Sender Number',
-            'place_holder' => 'e.g., 50002178584000',
-            'desc'         => 'This is the number or sender ID displayed on recipients’ devices.
-It might be a phone number (e.g., 50002178584000) or an alphanumeric ID if supported by your gateway.',
-        ],
-        'has_key' => [
-            'id'   => 'gateway_key',
-            'name' => 'API Key',
-            'desc' => 'Enter API key of gateway'
-        ]
-    ];
-
-    /**
-     * Validation format for numbers
+     * Template ID for Service-Line API.
      *
      * @var string
      */
-    public $validateNumber = "09xxxxxxxx";
+    public $template_id;
 
     /**
-     * Constructor
+     * Gateway API key.
+     *
+     * @var string
+     */
+    public $api_key;
+
+    /**
+     * Constructor.
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->gatewayFields = [
+            'from'        => [
+                'id'           => 'gateway_sender_id',
+                'name'         => __('Sender Number', 'wp-sms'),
+                'place_holder' => __('e.g., 50002178584000', 'wp-sms'),
+                'desc'         => __('Number or sender ID shown on recipient’s device.', 'wp-sms'),
+            ],
+            'has_key'     => [
+                'id'   => 'gateway_key',
+                'name' => __('API Key', 'wp-sms'),
+                'desc' => __('Enter your gateway API key.', 'wp-sms'),
+            ],
+            'template_id' => [
+                'id'   => 'template_id',
+                'name' => __('Template ID', 'wp-sms'),
+                'desc' => __('Enter template ID for Service-Line API (if used).', 'wp-sms'),
+            ],
+        ];
+        $this->template_id   = $this->options['template_id'];
+        $this->api_key       = $this->options['gateway_key'];
     }
 
     /**
-     * Send SMS message
+     * Send SMS message.
      *
-     * @return mixed|WP_Error Response from API or WP_Error on failure
+     * @return object|WP_Error Response object on success, WP_Error on failure.
      */
     public function SendSMS()
     {
+        if (empty($this->api_key)) {
+            return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
+        }
+
         $credit = $this->GetCredit();
         if (is_wp_error($credit)) {
             return $credit;
         }
 
-        // Allow filtering sender number
+        // Filters for customization.
         $this->from = apply_filters('wp_sms_from', $this->from);
-
-        // Allow filtering receiver numbers
-        $this->to = apply_filters('wp_sms_to', $this->to);
-
-        // Allow filtering message text
-        $this->msg = apply_filters('wp_sms_msg', $this->msg);
+        $this->to   = apply_filters('wp_sms_to', $this->to);
+        $this->msg  = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            return $this->sendSimpleSMS();
-        } catch (Exception $e) {
-            // Log error and return WP_Error
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-            return new WP_Error('send-sms', $e->getMessage());
-        }
-    }
-
-    /**
-     * Get account credit balance
-     *
-     * @return float|WP_Error Balance amount or WP_Error on failure
-     */
-    public function GetCredit()
-    {
-        if (empty($this->options['gateway_key'])) {
-            return new WP_Error('account-credit', esc_html__('API Key is required.', 'wp-sms'));
-        }
-
-        try {
-            $args = [
-                'headers' => array(
-                    'Accept'       => 'application/json',
-                    'content-type' => 'application/json',
-                    'Api-Key'      => $this->options['gateway_key']
-                ),
-            ];
-
-            $response = $this->request('GET', $this->wsdl_link . 'ws/v1/account/balance', [], $args);
-
-            if (isset($response->status) && $response->status == 'success') {
-                return $response->data->balance_amount;
+            if (!empty($this->template_id) && preg_match('/\{.*?\}%.*?%/', $this->msg)) {
+                $response = $this->sendTemplateSMS();
+            } else {
+                $response = $this->sendSimpleSMS();
             }
 
-            return new WP_Error('account-credit', esc_html__('Failed to retrieve credit.', 'wp-sms'));
-        } catch (Exception $e) {
-            return new WP_Error('account-credit', $e->getMessage());
-        }
-    }
+            if (is_wp_error($response)) {
+                $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+                return $response;
+            }
 
-    /**
-     * Send a simple SMS message
-     *
-     * @return mixed|WP_Error Response from API or WP_Error on failure
-     */
-    private function sendSimpleSMS()
-    {
-        if (empty($this->options['gateway_key'])) {
-            return new WP_Error('send-sms', esc_html__('API Key is required.', 'wp-sms'));
-        }
+            if (!isset($response->status) || $response->status !== 'success') {
+                return new WP_Error('send-sms-error', __('Failed to send SMS.', 'wp-sms'));
+            }
 
-        try {
-            $body = [
-                'text'          => $this->msg,
-                'line_number'   => $this->from,
-                'recipients'    => $this->formatReceiverNumbers($this->to),
-                'number_format' => 'english'
-            ];
-
-            $args = [
-                'headers' => array(
-                    'Accept'       => 'application/json',
-                    'content-type' => 'application/json',
-                    'Api-Key'      => $this->options['gateway_key']
-                ),
-                'body'    => json_encode($body),
-            ];
-
-            $response = $this->request('POST', $this->wsdl_link . 'ws/v1/sms/simple', [], $args);
-
-            // Log the response
             $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
-             * Action hook after sending SMS
+             * Fires after an SMS is sent.
              *
-             * @param mixed $response API response
+             * @param object $response API response object.
              */
             do_action('wp_sms_send', $response);
 
-            // Check response status
-            if (isset($response->status) && $response->status !== 'success') {
-                return new WP_Error('send-sms', esc_html__('Failed to send SMS.', 'wp-sms'));
-            }
-
             return $response;
         } catch (Exception $e) {
-            return new WP_Error('send-sms', $e->getMessage());
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            return new WP_Error('send-sms-error', $e->getMessage());
         }
     }
 
     /**
-     * Format receiver phone numbers to standard format
+     * Get account credit balance.
      *
-     * @param array|string $numbers List of numbers or single number
+     * @return float|WP_Error Balance amount on success, WP_Error on failure.
+     */
+    public function GetCredit()
+    {
+        try {
+            $params = [
+                'headers' => [
+                    'Accept'       => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Api-Key'      => $this->api_key,
+                ],
+            ];
+
+            $response = $this->request('GET', $this->wsdl_link . 'ws/v1/account/balance', [], $params);
+
+            if (isset($response->status) && $response->status === 'success') {
+                return $response->data->balance_amount;
+            }
+
+            return new WP_Error('account-credit-error', __('Failed to retrieve credit.', 'wp-sms'));
+        } catch (Exception $e) {
+            return new WP_Error('account-credit-error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Send a simple SMS message.
      *
-     * @return array Formatted numbers
+     * @return object API response object.
+     * @throws Exception If request fails.
+     */
+    private function sendSimpleSMS()
+    {
+        $body = [
+            'text'          => $this->msg,
+            'line_number'   => $this->from,
+            'recipients'    => $this->formatReceiverNumbers($this->to),
+            'number_format' => 'english',
+        ];
+
+        $params = [
+            'headers' => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+                'Api-Key'      => $this->api_key,
+            ],
+            'body'    => json_encode($body),
+        ];
+
+        return $this->request('POST', $this->wsdl_link . 'ws/v1/sms/simple', [], $params);
+    }
+
+    /**
+     * Send SMS using template-based API (Service-Line).
+     *
+     * Parses message placeholders like `{NAME}%Ali%`.
+     *
+     * @return object|WP_Error API response object, or WP_Error on failure.
+     * @throws Exception If request fails.
+     */
+    private function sendTemplateSMS()
+    {
+        if (!preg_match_all('/\{(.*?)\}%(.+?)%/', $this->msg, $matches)) {
+            return new WP_Error('invalid-template', __('Message does not contain valid template placeholders.', 'wp-sms'));
+        }
+
+        $attributes = [];
+        foreach ($matches[1] as $i => $varName) {
+            $attributes[$varName] = $matches[2][$i];
+        }
+
+        $body = [
+            'code'          => $this->template_id,
+            'attributes'    => $attributes,
+            'recipient'     => $this->formatReceiverNumbers($this->to)[0],
+            'line_number'   => $this->from,
+            'number_format' => 'english',
+        ];
+
+        $params = [
+            'headers' => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+                'Api-Key'      => $this->api_key,
+            ],
+            'body'    => wp_json_encode($body),
+        ];
+
+        return $this->request('POST', $this->wsdl_link . 'ws/v1/sms/pattern', [], $params);
+    }
+
+    /**
+     * Format receiver phone numbers.
+     *
+     * Ensures numbers are in local `09xxxxxxxxx` format.
+     *
+     * @param array|string $numbers Phone number(s).
+     * @return array Formatted phone numbers.
      */
     private function formatReceiverNumbers($numbers)
     {
@@ -218,19 +261,19 @@ It might be a phone number (e.g., 50002178584000) or an alphanumeric ID if suppo
             $numbers = [$numbers];
         }
 
-        $formattedNumbers = [];
+        $formatted = [];
         foreach ($numbers as $number) {
-            $cleanNumber = preg_replace('/\D+/', '', $number);
+            $clean = preg_replace('/\D+/', '', $number);
 
-            if (substr($cleanNumber, 0, 2) === '98') {
-                $formattedNumbers[] = '0' . substr($cleanNumber, 2);
-            } elseif (strlen($cleanNumber) === 10 && substr($cleanNumber, 0, 1) === '9') {
-                $formattedNumbers[] = '0' . $cleanNumber;
+            if (substr($clean, 0, 2) === '98') {
+                $formatted[] = '0' . substr($clean, 2);
+            } elseif (strlen($clean) === 10 && substr($clean, 0, 1) === '9') {
+                $formatted[] = '0' . $clean;
             } else {
-                $formattedNumbers[] = $cleanNumber;
+                $formatted[] = $clean;
             }
         }
 
-        return $formattedNumbers;
+        return $formatted;
     }
 }
