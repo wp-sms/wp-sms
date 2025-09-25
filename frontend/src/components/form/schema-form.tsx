@@ -1,35 +1,34 @@
 import { AlertCircle, Save } from 'lucide-react'
 
-import type { FieldValue } from '@/components/form/new/field-renderer'
-import { FormField as FormFieldComponent } from '@/components/form/new/form-field'
+import { FormField as FormFieldComponent } from '@/components/form/form-field'
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { type FormSchema, useSchemaForm } from '@/hooks/use-schema-form'
-import type { SchemaField } from '@/types/settings/group-schema'
+import { type AppFormType, type FormSchema, useApplicationForm } from '@/hooks/use-application-form'
+import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
 
 type SchemaFormProps = {
-  schema: FormSchema | null
+  formSchema: FormSchema | null
   defaultValues: Record<string, unknown>
   onSubmit: (values: Record<string, unknown>) => Promise<void>
   onFieldAction?: (field: SchemaField) => void
 }
 
-export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: SchemaFormProps) => {
-  const { form, shouldShowField } = useSchemaForm({
+export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction }: SchemaFormProps) => {
+  const { form, shouldShowField } = useApplicationForm({
     defaultValues,
     onSubmit,
-    schema,
+    formSchema,
   })
 
-  const renderField = (field: SchemaField, isSubField = false) => {
+  const renderField = (localForm: AppFormType, field: SchemaField) => {
     if (!shouldShowField(field)) {
       return null
     }
 
     return (
-      <form.Field
+      <localForm.AppField
         key={field.key}
         name={field.key}
         children={(fieldApi) => {
@@ -60,7 +59,7 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
     )
   }
 
-  if (!schema) {
+  if (!formSchema) {
     return (
       <div className="container mx-auto py-8">
         <Alert variant="destructive">
@@ -80,16 +79,16 @@ export const SchemaForm = ({ schema, defaultValues, onSubmit, onFieldAction }: S
       }}
       className="flex flex-col gap-y-6"
     >
-      <GroupTitle label={schema.label || ''} />
+      <GroupTitle label={formSchema.label || ''} />
 
-      {schema.sections.map((section, index) => (
+      {formSchema.sections.map((section, index) => (
         <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
           <CardHeader>
             <CardTitle>{section.title}</CardTitle>
             {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
           </CardHeader>
           <CardContent className="flex flex-col gap-y-8">
-            {section.fields?.map((field) => renderField(field))}
+            {section.fields?.map((field) => renderField(form, field))}
           </CardContent>
         </Card>
       ))}

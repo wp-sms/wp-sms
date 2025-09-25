@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
-import { useNewSaveSettingsValues } from '@/services/settings/use-save-settings-values'
+import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
 
 export const Route = createFileRoute('/settings/_layout/$name')({
   loader: ({ context, params }) => {
@@ -34,7 +34,7 @@ function RouteComponent() {
     queries: [getSchemaByGroup({ groupName: name }), getSettingsValuesByGroup({ groupName: name })],
   })
 
-  const { mutateAsync } = useNewSaveSettingsValues({ groupName: (name ?? 'general') as SettingGroupName })
+  const { mutateAsync } = useSaveSettingsValues({ groupName: (name ?? 'general') as SettingGroupName })
 
   const schema = schemaResult.data.data.data
   const defaultValues = valuesResult.data.data.data
@@ -43,5 +43,5 @@ function RouteComponent() {
     await mutateAsync(values)
   }
 
-  return <SchemaForm schema={schema} defaultValues={defaultValues} onSubmit={handleSubmit} />
+  return <SchemaForm formSchema={schema} defaultValues={defaultValues} onSubmit={handleSubmit} />
 }

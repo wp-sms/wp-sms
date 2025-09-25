@@ -3,18 +3,17 @@ import { createFileRoute } from '@tanstack/react-router'
 import { AlertCircle, X } from 'lucide-react'
 import { useState } from 'react'
 
-import type { FieldValue } from '@/components/form/new/field-renderer'
-import { FormField } from '@/components/form/new/form-field'
+import { FormField } from '@/components/form/form-field'
 import { SchemaForm } from '@/components/form/schema-form'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
-import { useSchemaForm } from '@/hooks/use-schema-form'
+import { useApplicationForm } from '@/hooks/use-application-form'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
-import { useNewSaveSettingsValues } from '@/services/settings/use-save-settings-values'
-import type { SchemaField } from '@/types/settings/group-schema'
+import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
+import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
 
 export const Route = createFileRoute('/otp/_layout/authentication-channels')({
   loader: ({ context }) =>
@@ -35,7 +34,7 @@ export const Route = createFileRoute('/otp/_layout/authentication-channels')({
 function RouteComponent() {
   const { data: result } = useSuspenseQuery(getSchemaByGroup({ groupName: 'otp-channel', include_hidden: true }))
   const { data: valuesResult } = useSuspenseQuery(getSettingsValuesByGroup({ groupName: 'otp-channel' }))
-  const { mutateAsync } = useNewSaveSettingsValues({ groupName: 'otp-channel', include_hidden: true })
+  const { mutateAsync } = useSaveSettingsValues({ groupName: 'otp-channel', include_hidden: true })
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedField, setSelectedField] = useState<SchemaField | null>(null)
@@ -51,7 +50,7 @@ function RouteComponent() {
     setDrawerOpen(true)
   }
 
-  const { getSubFields } = useSchemaForm({
+  const { getSubFields } = useApplicationForm({
     defaultValues: valuesResult?.data?.data ?? {},
     onSubmit: handleSubmit,
     schema,
@@ -79,7 +78,7 @@ function RouteComponent() {
   return (
     <>
       <SchemaForm
-        schema={schema}
+        formSchema={schema}
         defaultValues={valuesResult?.data?.data ?? {}}
         onSubmit={handleSubmit}
         onFieldAction={handleFieldAction}

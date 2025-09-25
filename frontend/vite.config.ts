@@ -46,7 +46,7 @@ export default defineConfig({
     cors: true,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'react-hook-form', 'zustand', 'lucide-react'],
+    include: ['react', 'react-dom', 'lucide-react'],
     exclude: ['@wordpress/element'],
     force: false,
   },

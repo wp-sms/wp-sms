@@ -1,6 +1,6 @@
-import type { SchemaField } from '@/types/settings/group-schema'
+import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
 
-import { FieldRenderer, type FieldValue, type SimpleFieldApi } from './field-renderer'
+import { FieldRenderer, type SimpleFieldApi } from './field-renderer'
 
 // Minimal shape we need from TanStack's FieldApi
 type ExternalFieldApiLike = {

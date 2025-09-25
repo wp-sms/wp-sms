@@ -1,5 +1,8 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 
+// Specific types for field rendering
+type FieldValue = string | number | boolean | string[] | Record<string, unknown>[] | null | undefined
+
 type GetGroupSchemaParams = {
   params?: Partial<{
     groupName: string
