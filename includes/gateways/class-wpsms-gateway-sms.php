@@ -15,6 +15,16 @@ class sms extends Gateway
     public $isflash = false;
     public $gateway_key;
 
+    /**
+     * Template ID for Service-Line SMS.ir API.
+     *
+     * This ID corresponds to the SMS template defined in the SMS.ir panel.
+     * Used when sending template-based messages via sendTemplateSMS().
+     *
+     * @var int
+     */
+    public $template_id;
+
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +41,11 @@ class sms extends Gateway
                 'id'   => 'from',
                 'name' => __('Sender Number', 'wp-sms'),
                 'desc' => __('Enter your Sender Number/Name', 'wp-sms'),
+            ],
+            'template_id' => [
+                'id'   => 'template_id',
+                'name' => __('Template ID', 'wp-sms'),
+                'desc' => __('Enter your Template ID for Service-Line API', 'wp-sms'),
             ],
         ];
     }
@@ -73,20 +88,24 @@ class sms extends Gateway
                 return new WP_Error('account-credit', 'Please enter your API KEY and Sender Number.');
             }
 
-            $params = [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'ACCEPT'       => 'application/json',
-                    'X-API-KEY'    => $this->gateway_key,
-                ],
-                'body'    => wp_json_encode([
-                    'lineNumber'  => $this->from,
-                    'messageText' => $this->msg,
-                    'mobiles'     => $this->to,
-                ])
-            ];
+            if (!empty($this->template_id) && preg_match('/\{.*?\}%.*?%/', $this->msg)) {
+                $response = $this->SendTemplateSMS();
+            } else {
+                $params = [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'ACCEPT'       => 'application/json',
+                        'X-API-KEY'    => $this->gateway_key,
+                    ],
+                    'body'    => wp_json_encode([
+                        'lineNumber'  => $this->from,
+                        'messageText' => $this->msg,
+                        'mobiles'     => $this->to,
+                    ])
+                ];
 
-            $response = $this->request('POST', $this->wsdl_link . 'send/bulk', [], $params);
+                $response = $this->request('POST', $this->wsdl_link . 'send/bulk', [], $params);
+            }
 
             $this->log($this->from, $this->msg, $this->to, $response);
 
@@ -132,4 +151,57 @@ class sms extends Gateway
         }
     }
 
+    /**
+     * Send SMS using the Service-Line template (SMS.ir) API.
+     *
+     * This method parses the message ($this->msg) for template placeholders in the format:
+     * {PARAM_NAME}%value%
+     *
+     * For example:
+     *   $this->msg = "Hello {NAME}%Ali%, your code is {CODE}%123456%";
+     *
+     * The method converts these placeholders into parameters for the template API.
+     *
+     * Requirements:
+     * - $this->template_id must be set (Template ID from SMS.ir panel)
+     * - $this->to[0] must contain the recipient mobile number
+     * - $this->gateway_key must contain the SMS.ir API key
+     *
+     * @return object|WP_Error
+     *   - On success: API response as an object
+     *   - On failure: WP_Error object with error details
+     *
+     * @throws Exception
+     */
+    private function sendTemplateSMS()
+    {
+        if (!preg_match_all('/\{(.*?)\}%(.+?)%/', $this->msg, $matches)) {
+            return new WP_Error('send-sms', esc_html__('Message does not contain valid template placeholders.', 'wp-sms'));
+        }
+
+        $parameters = [];
+        foreach ($matches[1] as $i => $paramName) {
+            $parameters[] = [
+                "name"  => $paramName,
+                "value" => $matches[2][$i]
+            ];
+        }
+
+        $body = [
+            'templateId' => (int)$this->template_id,
+            'mobile'     => $this->to[0],
+            'parameters' => $parameters,
+        ];
+
+        $params = [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'ACCEPT'       => 'application/json',
+                'X-API-KEY'    => $this->gateway_key,
+            ],
+            'body'    => wp_json_encode($body),
+        ];
+
+        return $this->request('POST', $this->wsdl_link . 'send/verify', [], $params);
+    }
 }
