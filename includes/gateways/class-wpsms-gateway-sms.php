@@ -2,120 +2,168 @@
 
 namespace WP_SMS\Gateway;
 
+use WP_SMS\Gateway;
 use Exception;
 use WP_Error;
-use WP_SMS\Gateway;
 
 class sms extends Gateway
 {
+    /**
+     * API Base URL.
+     *
+     * @var string
+     */
     private $wsdl_link = "https://api.sms.ir/v1/";
-    public $unitrial = false;
-    public $unit;
-    public $flash = "disable";
-    public $isflash = false;
-    public $gateway_key;
 
     /**
-     * Template ID for Service-Line SMS.ir API.
+     * Pricing page URL.
      *
-     * This ID corresponds to the SMS template defined in the SMS.ir panel.
-     * Used when sending template-based messages via sendTemplateSMS().
+     * @var string
+     */
+    public $tariff = "https://sms.ir/pricing/";
+
+    /**
+     * Whether trial credit is supported.
+     *
+     * @var bool
+     */
+    public $unitrial = false;
+
+    /**
+     * Unit for credit balance.
+     *
+     * @var string
+     */
+    public $unit;
+
+    /**
+     * Flash SMS support.
+     *
+     * @var string
+     */
+    public $flash = "disable";
+
+    /**
+     * Whether flash SMS is enabled.
+     *
+     * @var bool
+     */
+    public $isflash = false;
+
+    /**
+     * API key required flag.
+     *
+     * @var bool
+     */
+    public $has_key = true;
+
+    /**
+     * Template ID for Service-Line API.
      *
      * @var int
      */
     public $template_id;
 
+    /**
+     * Gateway API key.
+     *
+     * @var string
+     */
+    public $api_key;
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         parent::__construct();
-        $this->bulk_send       = true;
-        $this->supportMedia    = false;
-        $this->supportIncoming = false;
-        $this->gatewayFields   = [
-            'gateway_key' => [
+
+        $this->gatewayFields = [
+            'from'        => [
+                'id'           => 'gateway_sender_id',
+                'name'         => __('Sender Number', 'wp-sms'),
+                'place_holder' => __('e.g., 50002178584000', 'wp-sms'),
+                'desc'         => __('Number or sender ID shown on recipient’s device.', 'wp-sms'),
+            ],
+            'has_key'     => [
                 'id'   => 'gateway_key',
                 'name' => __('API Key', 'wp-sms'),
-                'desc' => __('Enter your API KEY', 'wp-sms'),
-            ],
-            'from'        => [
-                'id'   => 'from',
-                'name' => __('Sender Number', 'wp-sms'),
-                'desc' => __('Enter your Sender Number/Name', 'wp-sms'),
+                'desc' => __('Enter your gateway API key.', 'wp-sms'),
             ],
             'template_id' => [
                 'id'   => 'template_id',
                 'name' => __('Template ID', 'wp-sms'),
-                'desc' => __('Enter your Template ID for Service-Line API', 'wp-sms'),
+                'desc' => __('Enter template ID for Service-Line API (if used).', 'wp-sms'),
             ],
         ];
+        $this->api_key       = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
     }
 
+    /**
+     * Sets the template ID based on the current message.
+     *
+     * This method extracts the template ID from the message (if present) using
+     * `getTemplateIdAndMessageBody()`. If no template ID is found in the message,
+     * it falls back to the `template_id` defined in the gateway options.
+     * If neither is available, the template ID will be set to an empty string.
+     *
+     * Usage: Call this method after setting `$this->msg` to ensure the template ID
+     * is correctly determined before sending the SMS.
+     *
+     * @return void
+     */
+    public function setTemplateIdFromMessage()
+    {
+        $templateData      = $this->getTemplateIdAndMessageBody();
+        $this->template_id = !empty($templateData['template_id']) ? $templateData['template_id'] : (!empty($this->options['template_id']) ? $this->options['template_id'] : '');
+    }
+
+    /**
+     * Send SMS message.
+     *
+     * @return object|WP_Error Response object on success, WP_Error on failure.
+     */
     public function SendSMS()
     {
+        if (empty($this->api_key)) {
+            return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
+        }
 
-        /**
-         * Modify sender number
-         *
-         * @param string $this ->from sender number.
-         *
-         * @since 3.4
-         *
-         */
+        $credit = $this->GetCredit();
+        if (is_wp_error($credit)) {
+            return $credit;
+        }
+
+        // Filters for customization.
         $this->from = apply_filters('wp_sms_from', $this->from);
+        $this->to   = apply_filters('wp_sms_to', $this->to);
+        $this->msg  = apply_filters('wp_sms_msg', $this->msg);
 
-        /**
-         * Modify Receiver number
-         *
-         * @param array $this ->to receiver number
-         *
-         * @since 3.4
-         *
-         */
-        $this->to = apply_filters('wp_sms_to', $this->to);
-
-        /**
-         * Modify text message
-         *
-         * @param string $this ->msg text message.
-         *
-         * @since 3.4
-         *
-         */
-        $this->msg = apply_filters('wp_sms_msg', $this->msg);
+        $this->setTemplateIdFromMessage();
 
         try {
-            if (empty($this->gateway_key) || empty($this->from)) {
-                return new WP_Error('account-credit', 'Please enter your API KEY and Sender Number.');
+            if (!empty($this->template_id) && preg_match('/\{.*?\}%.*?%/', $this->msg)) {
+                $response = $this->sendTemplateSMS();
+            } else {
+                $response = $this->sendSimpleSMS();
             }
 
-            if (!empty($this->template_id) && preg_match('/\{.*?\}%.*?%/', $this->msg)) {
-                $response = $this->SendTemplateSMS();
-            } else {
-                $params = [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'ACCEPT'       => 'application/json',
-                        'X-API-KEY'    => $this->gateway_key,
-                    ],
-                    'body'    => wp_json_encode([
-                        'lineNumber'  => $this->from,
-                        'messageText' => $this->msg,
-                        'mobiles'     => $this->to,
-                    ])
-                ];
+            if (is_wp_error($response)) {
+                $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
 
-                $response = $this->request('POST', $this->wsdl_link . 'send/bulk', [], $params);
+                return $response;
+            }
+
+            if (!isset($response->status) || $response->status !== 1) {
+                return new WP_Error('send-sms-error', __('Failed to send SMS.', 'wp-sms'));
             }
 
             $this->log($this->from, $this->msg, $this->to, $response);
 
             /**
-             * Run hook after send sms.
+             * Fires after an SMS is sent.
              *
-             * @param string $result result output.
-             *
-             * @since 2.4
-             *
+             * @param object $response API response object.
              */
             do_action('wp_sms_send', $response);
 
@@ -124,59 +172,77 @@ class sms extends Gateway
         } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
 
-            return new WP_Error('send-sms', $e->getMessage());
+            return new WP_Error('send-sms-error', $e->getMessage());
         }
 
     }
 
+    /**
+     * Get account credit balance.
+     *
+     * @return float|WP_Error Balance amount on success, WP_Error on failure.
+     */
     public function GetCredit()
     {
         try {
-            if (empty($this->gateway_key) || empty($this->from)) {
-                return new WP_Error('account-credit', 'Please enter your API KEY and Sender Number.');
-            }
-
             $params = [
                 'headers' => [
-                    'ACCEPT'    => 'application/json',
-                    'X-API-KEY' => $this->gateway_key,
+                    'Accept'       => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'X-API-KEY'    => $this->api_key,
                 ]
             ];
 
             $response = $this->request('GET', $this->wsdl_link . 'credit', [], $params);
 
-            return $response->data;
+            if (isset($response->status) && $response->status === 1) {
+                return $response->data;
+            }
+
+            return new WP_Error('account-credit-error', __('Failed to retrieve credit.', 'wp-sms'));
         } catch (Exception $e) {
-            return new WP_Error('account-credit', $e->getMessage());
+            return new WP_Error('account-credit-error', $e->getMessage());
         }
     }
 
     /**
-     * Send SMS using the Service-Line template (SMS.ir) API.
+     * Send a simple SMS message.
      *
-     * This method parses the message ($this->msg) for template placeholders in the format:
-     * {PARAM_NAME}%value%
+     * @return object API response object.
+     * @throws Exception If request fails.
+     */
+    private function sendSimpleSMS()
+    {
+        $body = [
+            'lineNumber'  => $this->from,
+            'messageText' => $this->msg,
+            'mobiles'     => $this->to,
+        ];
+
+        $params = [
+            'headers' => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+                'X-API-KEY'    => $this->api_key,
+            ],
+            'body'    => json_encode($body),
+        ];
+
+        return $this->request('POST', $this->wsdl_link . 'send/bulk', [], $params);
+    }
+
+    /**
+     * Send SMS using template-based API (Service-Line).
      *
-     * For example:
-     *   $this->msg = "Hello {NAME}%Ali%, your code is {CODE}%123456%";
+     * Parses message placeholders like `{NAME}%Ali%`.
      *
-     * The method converts these placeholders into parameters for the template API.
-     *
-     * Requirements:
-     * - $this->template_id must be set (Template ID from SMS.ir panel)
-     * - $this->to[0] must contain the recipient mobile number
-     * - $this->gateway_key must contain the SMS.ir API key
-     *
-     * @return object|WP_Error
-     *   - On success: API response as an object
-     *   - On failure: WP_Error object with error details
-     *
-     * @throws Exception
+     * @return object|WP_Error API response object, or WP_Error on failure.
+     * @throws Exception If request fails.
      */
     private function sendTemplateSMS()
     {
         if (!preg_match_all('/\{(.*?)\}%(.+?)%/', $this->msg, $matches)) {
-            return new WP_Error('send-sms', esc_html__('Message does not contain valid template placeholders.', 'wp-sms'));
+            return new WP_Error('invalid-template', __('Message does not contain valid template placeholders.', 'wp-sms'));
         }
 
         $parameters = [];
@@ -197,7 +263,7 @@ class sms extends Gateway
             'headers' => [
                 'Content-Type' => 'application/json',
                 'ACCEPT'       => 'application/json',
-                'X-API-KEY'    => $this->gateway_key,
+                'X-API-KEY'    => $this->api_key,
             ],
             'body'    => wp_json_encode($body),
         ];
