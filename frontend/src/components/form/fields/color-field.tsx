@@ -1,41 +1,46 @@
-import { Input } from '@/components/ui/input'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { useStore } from '@tanstack/react-form'
 
-import type { SimpleFieldApi } from '../field-renderer'
+import { Input } from '@/components/ui/input'
+import { useFieldContext } from '@/context/form-context'
+import type { SchemaField } from '@/types/settings/group-schema'
+
+import { FieldWrapper } from '../field-wrapper'
 
 type ColorFieldProps = {
-  field: SchemaField
-  fieldApi: SimpleFieldApi
-  fieldValue: FieldValue
-  fieldState: { errors: string[] }
+  schema: SchemaField
 }
 
-export const ColorField = ({ field, fieldApi, fieldValue, fieldState }: ColorFieldProps) => {
+export const ColorField = ({ schema }: ColorFieldProps) => {
+  const field = useFieldContext<string>()
+
+  const errors = useStore(field.store, (state) => state.meta.errors)
+
   return (
-    <div className="flex items-center gap-2">
-      <Input
-        type="color"
-        id={field.key}
-        name={fieldApi.name}
-        defaultValue={String(field.default || '')}
-        value={String(fieldValue || '')}
-        onBlur={fieldApi.handleBlur}
-        onChange={(e) => fieldApi.handleChange(e.target.value)}
-        disabled={field.readonly}
-        aria-invalid={!!fieldState.errors.length}
-        className="w-12 h-10 p-1 border rounded cursor-pointer"
-      />
-      <Input
-        type="text"
-        placeholder={field.placeholder}
-        defaultValue={String(field.default || '')}
-        value={String(fieldValue || '')}
-        onBlur={fieldApi.handleBlur}
-        onChange={(e) => fieldApi.handleChange(e.target.value)}
-        disabled={field.readonly}
-        aria-invalid={!!fieldState.errors.length}
-        className="flex-1"
-      />
-    </div>
+    <FieldWrapper errors={errors} schema={schema}>
+      <div className="flex items-center gap-2">
+        <Input
+          type="color"
+          id={schema.key}
+          defaultValue={String(schema.default || '')}
+          value={String(field.state.value || '')}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+          disabled={schema.readonly}
+          aria-invalid={!!errors.length}
+          className="w-12 h-10 p-1 border rounded cursor-pointer"
+        />
+        <Input
+          type="text"
+          placeholder={schema.placeholder}
+          defaultValue={String(schema.default || '')}
+          value={String(field.state.value || '')}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+          disabled={schema.readonly}
+          aria-invalid={!!errors.length}
+          className="flex-1"
+        />
+      </div>
+    </FieldWrapper>
   )
 }

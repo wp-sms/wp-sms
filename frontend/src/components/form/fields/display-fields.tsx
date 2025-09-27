@@ -4,39 +4,35 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import type { SchemaField } from '@/types/settings/group-schema'
 
-type HtmlRendererProps = {
-  field: SchemaField
+import { FieldWrapper } from '../field-wrapper'
+
+type Props = {
+  schema: SchemaField
 }
 
-export const HtmlRenderer = ({ field }: HtmlRendererProps) => {
-  return field.options ? (
-    <div className="font-light text-sm" dangerouslySetInnerHTML={{ __html: field.options }} />
+export const HtmlRenderer = ({ schema }: Props) => {
+  return schema.options ? (
+    <FieldWrapper schema={schema} errors={[]}>
+      <div className="font-light text-sm" dangerouslySetInnerHTML={{ __html: schema.options }} />
+    </FieldWrapper>
   ) : null
 }
 
-type HeaderProps = {
-  field: SchemaField
-}
-
-export const Header = ({ field }: HeaderProps) => {
+export const Header = ({ schema }: Props) => {
   return (
-    <div>
+    <FieldWrapper schema={schema} errors={[]}>
       <Separator className="my-2" />
-      <div className="font-extrabold text-sm">{field.groupLabel}</div>
-    </div>
+      <div className="font-extrabold text-sm">{schema.groupLabel}</div>
+    </FieldWrapper>
   )
 }
 
-type NoticeProps = {
-  field: SchemaField
-}
-
-export const Notice = ({ field }: NoticeProps) => {
+export const Notice = ({ schema }: Props) => {
   return (
     <Alert variant="default">
       <AlertCircle />
-      <AlertTitle>{field.label}</AlertTitle>
-      <AlertDescription>{field.description}</AlertDescription>
+      <AlertTitle>{schema.label}</AlertTitle>
+      <AlertDescription>{schema.description}</AlertDescription>
     </Alert>
   )
 }

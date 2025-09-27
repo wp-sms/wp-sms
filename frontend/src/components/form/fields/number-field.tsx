@@ -1,30 +1,35 @@
-import { Input } from '@/components/ui/input'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { useStore } from '@tanstack/react-form'
 
-import type { SimpleFieldApi } from '../field-renderer'
+import { Input } from '@/components/ui/input'
+import { useFieldContext } from '@/context/form-context'
+import type { SchemaField } from '@/types/settings/group-schema'
+
+import { FieldWrapper } from '../field-wrapper'
 
 type NumberFieldProps = {
-  field: SchemaField
-  fieldApi: SimpleFieldApi
-  fieldValue: FieldValue
-  fieldState: { errors: string[] }
+  schema: SchemaField
 }
 
-export const NumberField = ({ field, fieldApi, fieldValue, fieldState }: NumberFieldProps) => {
+export const NumberField = ({ schema }: NumberFieldProps) => {
+  const field = useFieldContext<number>()
+
+  const errors = useStore(field.store, (state) => state.meta.errors)
+
   return (
-    <Input
-      id={field.key}
-      name={fieldApi.name}
-      type="number"
-      min={field.min || undefined}
-      max={field.max || undefined}
-      step={field.step || undefined}
-      defaultValue={String(field.default || '')}
-      value={String(fieldValue || '')}
-      onBlur={fieldApi.handleBlur}
-      onChange={(e) => fieldApi.handleChange(parseFloat(e.target.value) || 0)}
-      disabled={field.readonly}
-      aria-invalid={!!fieldState.errors.length}
-    />
+    <FieldWrapper schema={schema} errors={errors}>
+      <Input
+        id={schema.key}
+        type="number"
+        min={schema.min || undefined}
+        max={schema.max || undefined}
+        step={schema.step || undefined}
+        defaultValue={String(schema.default || '')}
+        value={String(field.state.value || '')}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(parseFloat(e.target.value) || 0)}
+        disabled={schema.readonly}
+        aria-invalid={!!errors.length}
+      />
+    </FieldWrapper>
   )
 }

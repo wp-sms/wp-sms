@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { AlertCircle, X } from 'lucide-react'
 import { useState } from 'react'
 
-import { FormField } from '@/components/form/form-field'
+import { FieldRenderer } from '@/components/form/field-renderer'
 import { SchemaForm } from '@/components/form/schema-form'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import { useApplicationForm } from '@/hooks/use-application-form'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
 import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import type { SchemaField } from '@/types/settings/group-schema'
 
 export const Route = createFileRoute('/otp/_layout/authentication-channels')({
   loader: ({ context }) =>
@@ -50,30 +50,11 @@ function RouteComponent() {
     setDrawerOpen(true)
   }
 
-  const { getSubFields } = useApplicationForm({
+  const { form, shouldShowField, getSubFields } = useApplicationForm({
     defaultValues: valuesResult?.data?.data ?? {},
     onSubmit: handleSubmit,
-    schema,
+    formSchema: schema,
   })
-
-  const renderSubField = (field: SchemaField) => {
-    return (
-      <div key={field.key} className="space-y-4">
-        <FormField
-          field={field}
-          fieldApi={{
-            name: field.key,
-            state: {
-              value: valuesResult?.data?.data?.[field.key] as FieldValue,
-              meta: { errors: [] },
-            },
-            handleBlur: () => {},
-            handleChange: () => {},
-          }}
-        />
-      </div>
-    )
-  }
 
   return (
     <>
@@ -95,7 +76,12 @@ function RouteComponent() {
           </DrawerHeader>
           <div className="flex-1 overflow-y-auto p-4">
             {selectedField && getSubFields(selectedField).length > 0 && (
-              <div className="space-y-6">{getSubFields(selectedField).map((field) => renderSubField(field))}</div>
+              <div className="space-y-6">
+                {getSubFields(selectedField).map((field) => {
+                  if (!shouldShowField(field)) return null
+                  return <FieldRenderer form={form} schema={field} onOpenSubFields={handleFieldAction} />
+                })}
+              </div>
             )}
           </div>
         </DrawerContent>

@@ -1,28 +1,33 @@
-import { Textarea } from '@/components/ui/textarea'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { useStore } from '@tanstack/react-form'
 
-import type { SimpleFieldApi } from '../field-renderer'
+import { Textarea } from '@/components/ui/textarea'
+import { useFieldContext } from '@/context/form-context'
+import type { SchemaField } from '@/types/settings/group-schema'
+
+import { FieldWrapper } from '../field-wrapper'
 
 type TextareaFieldProps = {
-  field: SchemaField
-  fieldApi: SimpleFieldApi
-  fieldValue: FieldValue
-  fieldState: { errors: string[] }
+  schema: SchemaField
 }
 
-export const TextareaField = ({ field, fieldApi, fieldValue, fieldState }: TextareaFieldProps) => {
+export const TextareaField = ({ schema }: TextareaFieldProps) => {
+  const field = useFieldContext<string>()
+
+  const errors = useStore(field.store, (state) => state.meta.errors)
+
   return (
-    <Textarea
-      id={field.key}
-      name={fieldApi.name}
-      placeholder={field.placeholder}
-      defaultValue={String(field.default || '')}
-      value={String(fieldValue || '')}
-      onBlur={fieldApi.handleBlur}
-      onChange={(e) => fieldApi.handleChange(e.target.value)}
-      disabled={field.readonly}
-      rows={field.rows || 3}
-      aria-invalid={!!fieldState.errors.length}
-    />
+    <FieldWrapper schema={schema} errors={errors}>
+      <Textarea
+        id={schema.key}
+        placeholder={schema.placeholder}
+        defaultValue={String(schema.default || '')}
+        value={String(field.state.value || '')}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+        disabled={schema.readonly}
+        rows={schema.rows || 3}
+        aria-invalid={!!errors.length}
+      />
+    </FieldWrapper>
   )
 }

@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { TagBadge } from '@/components/ui/tag-badge'
 import type { SchemaField } from '@/types/settings/group-schema'
 
-import { FieldDescription } from './description'
+import { FieldDescription } from './field-description'
 
 export const FieldWrapper = ({
   schema,

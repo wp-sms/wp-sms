@@ -1,140 +1,93 @@
 import { Settings } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { withForm } from '@/hooks/use-form'
+import type { SchemaField } from '@/types/settings/group-schema'
 
-import { fieldHelpers } from './field-helpers'
-import { FieldWrapper } from './field-wrapper'
-import { CheckboxField } from './fields/checkbox-field'
-import { ColorField } from './fields/color-field'
-import { Header, HtmlRenderer, Notice } from './fields/display-fields'
-import { ImageField } from './fields/image-field'
-import { MultiselectField } from './fields/multiselect-field'
-import { NumberField } from './fields/number-field'
-import { RepeaterField } from './fields/repeater-field'
-import { SelectField } from './fields/select-field'
-import { TelField } from './fields/tel-field'
-import { TextField } from './fields/text-field'
-import { TextareaField } from './fields/textarea-field'
+import { Button } from '../ui/button'
 
-// Simplified FieldApi type for our use case
-export type SimpleFieldApi = {
-  name: string
-  state: {
-    value: FieldValue
-    meta: {
-      errors: string[]
-    }
-  }
-  handleBlur: () => void
-  handleChange: (value: FieldValue) => void
-}
-
-type FieldRendererProps = {
-  field: SchemaField
-  fieldApi: SimpleFieldApi
+interface FieldRendererProps {
+  schema: SchemaField
   onOpenSubFields?: (field: SchemaField) => void
-  onFieldValueChange?: (name: string, value: FieldValue) => void
-  formValues?: Record<string, unknown>
-  defaultValues?: Record<string, unknown>
-  groupName?: SettingGroupName
 }
 
-export const FieldRenderer = ({
-  field,
-  fieldApi,
-  onOpenSubFields,
-  onFieldValueChange,
-  formValues,
-  defaultValues,
-  groupName,
-}: FieldRendererProps) => {
-  const fieldValue = fieldApi.state.value
-  const fieldState = fieldApi.state.meta
+export const FieldRenderer = withForm({
+  props: {
+    schema: {} as SchemaField,
+    onOpenSubFields: () => {},
+  } as FieldRendererProps,
+  render: ({ form, ...props }) => {
+    const { schema, onOpenSubFields } = props as FieldRendererProps
+    const subFields = schema.sub_fields || []
+    const hasSubFields = subFields.length > 0
 
-  const renderFieldContent = () => {
-    switch (field.type) {
-      case 'text':
-        return <TextField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+    const renderFieldContent = () => {
+      switch (schema.type) {
+        case 'text':
+          return <form.AppField name={schema.key} children={(field) => <field.TextField schema={schema} />} />
 
-      case 'textarea':
-        return <TextareaField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'textarea':
+          return <form.AppField name={schema.key} children={(field) => <field.TextareaField schema={schema} />} />
 
-      case 'number':
-        return <NumberField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'number':
+          return <form.AppField name={schema.key} children={(field) => <field.NumberField schema={schema} />} />
 
-      case 'select':
-      case 'advancedselect':
-      case 'countryselect':
-        return <SelectField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'select':
+        case 'advancedselect':
+        case 'countryselect':
+          return <form.AppField name={schema.key} children={(field) => <field.SelectField schema={schema} />} />
 
-      case 'multiselect':
-        return <MultiselectField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'multiselect':
+          return <form.AppField name={schema.key} children={(field) => <field.MultiselectField schema={schema} />} />
 
-      case 'checkbox':
-        return <CheckboxField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'checkbox':
+          return <form.AppField name={schema.key} children={(field) => <field.CheckboxField schema={schema} />} />
 
-      case 'html':
-        return <HtmlRenderer field={field} />
+        case 'html':
+          return <form.AppField name={schema.key} children={(field) => <field.HtmlRenderer schema={schema} />} />
 
-      case 'header':
-        return <Header field={field} />
+        case 'header':
+          return <form.AppField name={schema.key} children={(field) => <field.Header schema={schema} />} />
 
-      case 'color':
-        return <ColorField field={field} fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'color':
+          return <form.AppField name={schema.key} children={(field) => <field.ColorField schema={schema} />} />
 
-      case 'notice':
-        return <Notice field={field} />
+        case 'notice':
+          return <form.AppField name={schema.key} children={(field) => <field.Notice schema={schema} />} />
 
-      case 'repeater':
-        return (
-          <RepeaterField
-            field={field}
-            fieldApi={fieldApi}
-            fieldValue={fieldValue}
-            onFieldValueChange={onFieldValueChange}
-            defaultValues={defaultValues}
-            formValues={formValues}
-            groupName={groupName}
-          />
-        )
+        case 'repeater':
+          return (
+            <form.AppField
+              name={schema.key}
+              children={(field) => <field.RepeaterField schema={schema} form={form} />}
+            />
+          )
 
-      case 'tel':
-        return <TelField fieldApi={fieldApi} fieldValue={fieldValue} fieldState={fieldState} />
+        case 'tel':
+          return <form.AppField name={schema.key} children={(field) => <field.TelField schema={schema} />} />
 
-      case 'image':
-        return <ImageField fieldApi={fieldApi} fieldValue={fieldValue} />
+        case 'image':
+          return <form.AppField name={schema.key} children={(field) => <field.ImageField schema={schema} />} />
 
-      default:
-        return <div>Unsupported field type: {field.type}</div>
+        default:
+          return <div>Unsupported field type: {schema.type}</div>
+      }
     }
-  }
 
-  const subFields = fieldHelpers.getFieldSubFields(field)
-  const hasSubFields = subFields.length > 0
-
-  return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1">
-        {field.type === 'notice' ? (
-          renderFieldContent()
-        ) : (
-          <FieldWrapper schema={field} errors={fieldState.errors}>
-            {renderFieldContent()}
-          </FieldWrapper>
+    return (
+      <div className="flex items-center gap-2">
+        <div className="flex-1">{renderFieldContent()}</div>
+        {hasSubFields && onOpenSubFields && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => onOpenSubFields(schema)}
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <Settings />
+          </Button>
         )}
       </div>
-      {hasSubFields && onOpenSubFields && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => onOpenSubFields(field)}
-          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-        >
-          <Settings className="h-4 w-4" />
-        </Button>
-      )}
-    </div>
-  )
-}
+    )
+  },
+})

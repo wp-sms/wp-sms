@@ -1,72 +1,19 @@
-import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
+import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
 
-import { CheckboxField } from '@/components/form/fields/checkbox-field'
-import { ColorField } from '@/components/form/fields/color-field'
-import { Header, HtmlRenderer, Notice } from '@/components/form/fields/display-fields'
-import { ImageField } from '@/components/form/fields/image-field'
-import { MultiselectField } from '@/components/form/fields/multiselect-field'
-import { NumberField } from '@/components/form/fields/number-field'
-import { RepeaterField } from '@/components/form/fields/repeater-field'
-import { SelectField } from '@/components/form/fields/select-field'
-import { TelField } from '@/components/form/fields/tel-field'
-import { TextField } from '@/components/form/fields/text-field'
-import { TextareaField } from '@/components/form/fields/textarea-field'
-
-export type FormField = {
-  key: string
-  hidden?: boolean
-  showIf?: Record<string, unknown> | null
-  hideIf?: Record<string, unknown> | null
-  sub_fields?: FormField[]
-}
-
-export type FormSection = {
-  id?: string
-  title: string
-  subtitle?: string
-  fields?: FormField[]
-}
-
-export type FormSchema = {
-  label: string
-  icon?: string
-  sections: FormSection[]
-}
+import { useAppForm } from './use-form'
 
 export type UseSchemaFormOptions = {
   defaultValues: Record<string, unknown>
-  formSchema?: FormSchema | null
+  formSchema?: GroupSchema | null
   onSubmit: (values: Record<string, unknown>) => Promise<void>
 }
-
-const { fieldContext, formContext } = createFormHookContexts()
-
-const { useAppForm } = createFormHook({
-  fieldComponents: {
-    CheckboxField,
-    ColorField,
-    ImageField,
-    MultiselectField,
-    NumberField,
-    RepeaterField,
-    SelectField,
-    TelField,
-    TextField,
-    TextareaField,
-    HtmlRenderer,
-    Header,
-    Notice,
-  },
-  formComponents: {},
-  fieldContext,
-  formContext,
-})
 
 export type AppFormType = ReturnType<typeof useAppForm>
 
 export const useApplicationForm = ({ defaultValues, formSchema, onSubmit }: UseSchemaFormOptions) => {
   const form = useAppForm({
     defaultValues,
+    validators: {},
     onSubmit: async () => {
       const dirtyValues = getDirtyFormValues(form, formSchema)
 
@@ -80,13 +27,13 @@ export const useApplicationForm = ({ defaultValues, formSchema, onSubmit }: UseS
 
   const getDirtyFormValues = (
     form: Pick<AppFormType, 'getFieldMeta' | 'getFieldValue'>,
-    schema?: FormSchema | null
+    schema?: GroupSchema | null
   ) => {
     if (!schema?.sections) {
       return {}
     }
 
-    const collectAllFieldKeys = (fields: FormField[] = []): string[] => {
+    const collectAllFieldKeys = (fields: SchemaField[] = []): string[] => {
       return fields.flatMap((field) => [field.key, ...collectAllFieldKeys(field.sub_fields || [])])
     }
 
@@ -100,7 +47,7 @@ export const useApplicationForm = ({ defaultValues, formSchema, onSubmit }: UseS
     }, {})
   }
 
-  const shouldShowField = (field: FormField) => {
+  const shouldShowField = (field: SchemaField) => {
     const shouldShow = Object.entries(field.showIf ?? {}).every(([key, expectedValue]) => {
       return form.getFieldValue(key) === expectedValue
     })
@@ -112,7 +59,7 @@ export const useApplicationForm = ({ defaultValues, formSchema, onSubmit }: UseS
     return shouldShow && !shouldHide && !field.hidden
   }
 
-  const getSubFields = (field: FormField) => {
+  const getSubFields = (field: SchemaField) => {
     return field.sub_fields || []
   }
 

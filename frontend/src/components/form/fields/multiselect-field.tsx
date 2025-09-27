@@ -1,27 +1,31 @@
-import { MultiSelect } from '@/components/ui/multiselect'
-import { toOptions } from '@/lib/to-options'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { useStore } from '@tanstack/react-form'
 
-import type { SimpleFieldApi } from '../field-renderer'
+import { MultiSelect } from '@/components/ui/multiselect'
+import { useFieldContext } from '@/context/form-context'
+import { toOptions } from '@/lib/to-options'
+import type { SchemaField } from '@/types/settings/group-schema'
 
 type MultiselectFieldProps = {
-  field: SchemaField
-  fieldApi: SimpleFieldApi
-  fieldValue: FieldValue
-  fieldState: { errors: string[] }
+  schema: SchemaField
 }
 
-export const MultiselectField = ({ field, fieldApi, fieldValue, fieldState }: MultiselectFieldProps) => {
+export const MultiselectField = ({ schema }: MultiselectFieldProps) => {
+  const field = useFieldContext<string[]>()
+
+  const errors = useStore(field.store, (state) => state.meta.errors)
+
+  const fieldValue = field.state.value
+
   const selectedValues =
     Array.isArray(fieldValue) && fieldValue.every((item) => typeof item === 'string') ? (fieldValue as string[]) : []
 
   return (
     <MultiSelect
-      aria-invalid={!!fieldState.errors.length}
+      aria-invalid={!!errors.length}
       value={selectedValues ?? []}
-      options={toOptions(field.options) ?? []}
-      onValueChange={fieldApi.handleChange}
-      onBlur={fieldApi.handleBlur}
+      options={toOptions(schema.options) ?? []}
+      onValueChange={field.handleChange}
+      onBlur={field.handleBlur}
     />
   )
 }

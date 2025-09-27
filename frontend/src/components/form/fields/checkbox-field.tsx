@@ -1,25 +1,31 @@
-import { Checkbox } from '@/components/ui/checkbox'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { useStore } from '@tanstack/react-form'
 
-import type { SimpleFieldApi } from '../field-renderer'
+import { Checkbox } from '@/components/ui/checkbox'
+import { useFieldContext } from '@/context/form-context'
+import type { SchemaField } from '@/types/settings/group-schema'
+
+import { FieldWrapper } from '../field-wrapper'
 
 type CheckboxFieldProps = {
-  field: SchemaField
-  fieldApi: SimpleFieldApi
-  fieldValue: FieldValue
-  fieldState: { errors: string[] }
+  schema: SchemaField
 }
 
-export const CheckboxField = ({ field, fieldApi, fieldValue, fieldState }: CheckboxFieldProps) => {
+export const CheckboxField = ({ schema }: CheckboxFieldProps) => {
+  const field = useFieldContext<boolean>()
+
+  const errors = useStore(field.store, (state) => state.meta.errors)
+
   return (
-    <Checkbox
-      id={field.key}
-      name={fieldApi.name}
-      defaultChecked={Boolean(field.default)}
-      checked={Boolean(fieldValue)}
-      onCheckedChange={(checked) => fieldApi.handleChange(checked)}
-      disabled={field.readonly}
-      aria-invalid={!!fieldState.errors.length}
-    />
+    <FieldWrapper errors={errors} schema={schema}>
+      <Checkbox
+        id={schema.key}
+        defaultChecked={Boolean(schema.default)}
+        checked={Boolean(field.state.value)}
+        onCheckedChange={(checked) => field.handleChange(checked === true)}
+        onBlur={field.handleBlur}
+        disabled={schema.readonly}
+        aria-invalid={!!errors.length}
+      />
+    </FieldWrapper>
   )
 }

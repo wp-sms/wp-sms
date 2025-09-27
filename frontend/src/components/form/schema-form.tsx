@@ -1,15 +1,15 @@
-import { AlertCircle, Save } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 
-import { FormField as FormFieldComponent } from '@/components/form/form-field'
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { type AppFormType, type FormSchema, useApplicationForm } from '@/hooks/use-application-form'
-import type { FieldValue, SchemaField } from '@/types/settings/group-schema'
+import { useApplicationForm } from '@/hooks/use-application-form'
+import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
+
+import { FieldRenderer } from './field-renderer'
 
 type SchemaFormProps = {
-  formSchema: FormSchema | null
+  formSchema: GroupSchema | null
   defaultValues: Record<string, unknown>
   onSubmit: (values: Record<string, unknown>) => Promise<void>
   onFieldAction?: (field: SchemaField) => void
@@ -21,43 +21,6 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
     onSubmit,
     formSchema,
   })
-
-  const renderField = (localForm: AppFormType, field: SchemaField) => {
-    if (!shouldShowField(field)) {
-      return null
-    }
-
-    return (
-      <localForm.AppField
-        key={field.key}
-        name={field.key}
-        children={(fieldApi) => {
-          const adaptedFieldApi = {
-            name: fieldApi.name,
-            state: {
-              value: fieldApi.state.value as FieldValue,
-              meta: {
-                errors: Array.isArray(fieldApi.state.meta.errors)
-                  ? (fieldApi.state.meta.errors as unknown[]).filter((e): e is string => typeof e === 'string')
-                  : [],
-              },
-            },
-            handleBlur: fieldApi.handleBlur,
-            handleChange: (value: unknown) => fieldApi.handleChange(value),
-          }
-
-          return (
-            <FormFieldComponent
-              field={field}
-              fieldApi={adaptedFieldApi}
-              onOpenSubFields={onFieldAction}
-              defaultValues={defaultValues}
-            />
-          )
-        }}
-      />
-    )
-  }
 
   if (!formSchema) {
     return (
@@ -88,30 +51,17 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
             {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
           </CardHeader>
           <CardContent className="flex flex-col gap-y-8">
-            {section.fields?.map((field) => renderField(form, field))}
+            {section.fields?.map((field) => {
+              if (!shouldShowField(field)) return null
+              return <FieldRenderer form={form} schema={field} onOpenSubFields={onFieldAction} />
+            })}
           </CardContent>
         </Card>
       ))}
 
-      <form.Subscribe selector={(state) => state.isDirty}>
-        {(isDirty) => (
-          <div className="flex items-center justify-end gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
-            <Button
-              disabled={!isDirty || form.state.isSubmitting}
-              type="reset"
-              variant="secondary"
-              onClick={() => form.reset()}
-            >
-              Reset
-            </Button>
-
-            <Button disabled={!isDirty || form.state.isSubmitting} type="submit">
-              <Save />
-              Save Changes
-            </Button>
-          </div>
-        )}
-      </form.Subscribe>
+      <form.AppForm>
+        <form.FormActions />
+      </form.AppForm>
     </form>
   )
 }
