@@ -220,12 +220,13 @@ function wp_sms_get_option($option_name, $pro = false, $setting_name = '')
  * @param bool $is_flash (optional) Whether the message should be sent as a flash message. Defaults to false.
  * @param string|null $from (optional) The sender phone number. Defaults to null.
  * @param array $mediaUrls (optional) An array of media URLs to be sent along with the message. Defaults to an empty array.
+ * @param array $variablesArray (optional)
  *
  * @return bool Whether the SMS message was successfully sent.
  */
-function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
+function wp_sms_send($to, $msg, $is_flash = false, $from = null, $mediaUrls = [], $variablesArray = [])
 {
-    $smsDispatcher = new SmsDispatcher($to, $msg, $is_flash, $from, $mediaUrls);
+    $smsDispatcher = new SmsDispatcher($to, $msg, $is_flash, $from, $mediaUrls, $variablesArray);
     return $smsDispatcher->dispatch();
 }
 

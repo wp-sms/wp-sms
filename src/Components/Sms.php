@@ -53,10 +53,11 @@ class Sms
             return new WP_Error('empty_message', __('Message content cannot be empty. Please provide a valid SMS message.', 'wp-sms'));
         }
 
-        $sms->isflash = isset($parameters['is_flash']) ? $parameters['is_flash'] : false;
-        $sms->to      = Helper::removeDuplicateNumbers($to);
-        $sms->msg     = $parameters['msg'];
-        $sms->media   = isset($parameters['mediaUrls']) ? $parameters['mediaUrls'] : [];
+        $sms->isflash        = isset($parameters['is_flash']) ? $parameters['is_flash'] : false;
+        $sms->to             = Helper::removeDuplicateNumbers($to);
+        $sms->msg            = $parameters['msg'];
+        $sms->media          = isset($parameters['mediaUrls']) ? $parameters['mediaUrls'] : [];
+        $sms->variablesArray = isset($parameters['variablesArray']) ? $parameters['variablesArray'] : [];
 
         if (isset($parameters['from']) && $parameters['from']) {
             $sms->from = $parameters['from'];
