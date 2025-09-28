@@ -364,7 +364,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      *
      * @var array
      */
-    public $variablesArray = [];
+    public $messageVariables = [];
 
     public function __construct()
     {
