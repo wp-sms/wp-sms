@@ -1,5 +1,8 @@
+import { useStore } from '@tanstack/react-form'
 import { Settings } from 'lucide-react'
+import { useCallback, useEffect, useRef } from 'react'
 
+import type { AppFormType } from '@/hooks/use-application-form'
 import { withForm } from '@/hooks/use-form'
 import type { SchemaField } from '@/types/settings/group-schema'
 
@@ -8,15 +11,70 @@ import { Button } from '../ui/button'
 interface FieldRendererProps {
   schema: SchemaField
   onOpenSubFields?: (field: SchemaField) => void
+  onSubmit?: (values: Record<string, unknown>) => Promise<void>
+}
+
+interface AutoSaveWrapperProps {
+  form: AppFormType
+  schema: SchemaField
+  onSubmit?: (values: Record<string, unknown>) => Promise<void>
+  children: React.ReactNode
+}
+
+const AutoSaveWrapper = ({ form, schema, onSubmit, children }: AutoSaveWrapperProps) => {
+  const autoSaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const fieldValue = useStore(form.baseStore, (state) => (state.values as Record<string, unknown>)[schema.key])
+  const previousValue = useRef(fieldValue)
+
+  const handleAutoSave = useCallback(async () => {
+    if (!onSubmit || !schema.auto_save_and_refresh) {
+      return
+    }
+
+    try {
+      const autoSaveData = { [schema.key]: fieldValue }
+      await onSubmit(autoSaveData)
+    } catch (error) {
+      console.error('Auto-save failed:', error)
+    }
+  }, [onSubmit, schema.auto_save_and_refresh, schema.key, fieldValue])
+
+  useEffect(() => {
+    if (!schema.auto_save_and_refresh || fieldValue === previousValue.current) {
+      return
+    }
+
+    // Clear existing timeout
+    if (autoSaveTimeout.current) {
+      clearTimeout(autoSaveTimeout.current)
+    }
+
+    // Set new timeout for auto-save
+    autoSaveTimeout.current = setTimeout(() => {
+      handleAutoSave()
+    }, 500)
+
+    // Update previous value
+    previousValue.current = fieldValue
+
+    return () => {
+      if (autoSaveTimeout.current) {
+        clearTimeout(autoSaveTimeout.current)
+      }
+    }
+  }, [fieldValue, schema.auto_save_and_refresh, handleAutoSave])
+
+  return <>{children}</>
 }
 
 export const FieldRenderer = withForm({
   props: {
     schema: {} as SchemaField,
     onOpenSubFields: () => {},
+    onSubmit: async () => {},
   } as FieldRendererProps,
   render: ({ form, ...props }) => {
-    const { schema, onOpenSubFields } = props as FieldRendererProps
+    const { schema, onOpenSubFields, onSubmit } = props as FieldRendererProps
     const subFields = schema.sub_fields || []
     const hasSubFields = subFields.length > 0
 
@@ -74,20 +132,22 @@ export const FieldRenderer = withForm({
     }
 
     return (
-      <div className="flex items-center gap-2">
-        <div className="flex-1">{renderFieldContent()}</div>
-        {hasSubFields && onOpenSubFields && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => onOpenSubFields(schema)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-          >
-            <Settings />
-          </Button>
-        )}
-      </div>
+      <AutoSaveWrapper form={form} schema={schema} onSubmit={onSubmit}>
+        <div className="flex items-center gap-2">
+          <div className="flex-1">{renderFieldContent()}</div>
+          {hasSubFields && onOpenSubFields && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onOpenSubFields(schema)}
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+            >
+              <Settings />
+            </Button>
+          )}
+        </div>
+      </AutoSaveWrapper>
     )
   },
 })

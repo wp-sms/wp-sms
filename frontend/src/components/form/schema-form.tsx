@@ -53,7 +53,7 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
           <CardContent className="flex flex-col gap-y-8">
             {section.fields?.map((field) => {
               if (!shouldShowField(field)) return null
-              return <FieldRenderer form={form} schema={field} onOpenSubFields={onFieldAction} />
+              return <FieldRenderer form={form} schema={field} onOpenSubFields={onFieldAction} onSubmit={onSubmit} />
             })}
           </CardContent>
         </Card>
