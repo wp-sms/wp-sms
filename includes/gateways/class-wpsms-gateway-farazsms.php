@@ -96,8 +96,26 @@ class farazsms extends Gateway
                 'desc' => __('Enter template ID for Service-Line API (if used).', 'wp-sms'),
             ],
         ];
-        $this->template_id   = $this->options['template_id'];
         $this->api_key       = $this->options['gateway_key'];
+    }
+
+    /**
+     * Sets the template ID based on the current message.
+     *
+     * This method extracts the template ID from the message (if present) using
+     * `getTemplateIdAndMessageBody()`. If no template ID is found in the message,
+     * it falls back to the `template_id` defined in the gateway options.
+     * If neither is available, the template ID will be set to an empty string.
+     *
+     * Usage: Call this method after setting `$this->msg` to ensure the template ID
+     * is correctly determined before sending the SMS.
+     *
+     * @return void
+     */
+    public function setTemplateIdFromMessage()
+    {
+        $templateData      = $this->getTemplateIdAndMessageBody();
+        $this->template_id = !empty($templateData['template_id']) ? $templateData['template_id'] : (!empty($this->options['template_id']) ? $this->options['template_id'] : '');
     }
 
     /**
@@ -120,6 +138,8 @@ class farazsms extends Gateway
         $this->from = apply_filters('wp_sms_from', $this->from);
         $this->to   = apply_filters('wp_sms_to', $this->to);
         $this->msg  = apply_filters('wp_sms_msg', $this->msg);
+
+        $this->setTemplateIdFromMessage();
 
         try {
             if (!empty($this->template_id) && preg_match('/\{.*?\}%.*?%/', $this->msg)) {
