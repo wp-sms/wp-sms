@@ -55,56 +55,67 @@ class SiteHealthInfo
         $settings['plugin_version'] = array(
             'label' => 'Plugin Version',
             'value' => defined('WP_SMS_VERSION') ? WP_SMS_VERSION : 'N/A',
+            'debug' => defined('WP_SMS_VERSION') ? WP_SMS_VERSION : 'N/A',
         );
 
         $settings['db_version'] = array(
             'label' => 'Database Version',
             'value' => get_option('wp_sms_db_version', 'Not Set'),
+            'debug' => get_option('wp_sms_db_version', 'Not Set'),
         );
 
         $settings['mobile_field_source'] = array(
             'label' => 'Mobile Number Field Source',
             'value' => $toCamelCase($raw('add_mobile_field', 'Not Set')),
+            'debug' => $toCamelCase($raw('add_mobile_field', 'Not Set')),
         );
 
         $settings['mobile_field_mandatory'] = array(
             'label' => 'Mobile Field Mandatory Status',
             'value' => $raw('optional_mobile_field') === '0' ? 'Required' : 'Optional',
+            'debug' => $raw('optional_mobile_field') === '0' ? 'Required' : 'Optional',
         );
 
         $settings['only_countries'] = array(
             'label' => 'Only Countries',
             'value' => implode(', ', (array)$raw('international_mobile_only_countries')) ?: 'Not Set',
+            'debug' => implode(', ', (array)$raw('international_mobile_only_countries')) ?: 'Not Set',
         );
 
         $settings['preferred_countries'] = array(
             'label' => 'Preferred Countries',
             'value' => implode(', ', (array)$raw('international_mobile_preferred_countries')) ?: 'Not Set',
+            'debug' => implode(', ', (array)$raw('international_mobile_preferred_countries')) ?: 'Not Set',
         );
 
         $settings['gateway_name'] = array(
             'label' => 'SMS Gateway Name',
             'value' => $toCamelCase($raw('gateway_name', 'Not Configured')),
+            'debug' => $toCamelCase($raw('gateway_name', 'Not Configured')),
         );
 
         $settings['gateway_status'] = array(
             'label' => 'SMS Gateway Status',
             'value' => Gateway::status(true) ? 'Active' : 'Inactive',
+            'debug' => Gateway::status(true) ? 'Active' : 'Inactive',
         );
 
         $settings['incoming_message'] = array(
             'label' => 'SMS Gateway Incoming Message',
             'value' => $yesNo($sms->supportIncoming),
+            'debug' => $yesNo($sms->supportIncoming),
         );
 
         $settings['send_bulk_sms'] = array(
             'label' => 'SMS Gateway Send Bulk SMS',
             'value' => $yesNo($sms->bulk_send),
+            'debug' => $yesNo($sms->bulk_send),
         );
 
         $settings['send_mms'] = array(
             'label' => 'SMS Gateway Send MMS',
             'value' => $yesNo($sms->supportMedia),
+            'debug' => $yesNo($sms->supportMedia),
         );
 
         $deliveryOptions = array(
@@ -119,16 +130,19 @@ class SiteHealthInfo
         $settings['delivery_method'] = array(
             'label' => 'SMS Gateway Delivery Method',
             'value' => $deliveryLabel,
+            'debug' => $deliveryLabel,
         );
 
         $settings['unicode_messaging'] = array(
             'label' => 'SMS Gateway Unicode Messaging',
             'value' => $yesNo($raw('send_unicode')),
+            'debug' => $yesNo($raw('send_unicode')),
         );
 
         $settings['number_formatting'] = array(
             'label' => 'SMS Gateway Number Formatting',
             'value' => $yesNo($raw('clean_numbers')),
+            'debug' => $yesNo($raw('clean_numbers')),
         );
 
         $restrictLocal    = $raw('send_only_local_numbers');
@@ -143,62 +157,74 @@ class SiteHealthInfo
         $settings['restrict_to_local'] = array(
             'label' => 'SMS Gateway Restrict to Local Numbers',
             'value' => $restrictText,
+            'debug' => $restrictText,
         );
 
 
         $settings['group_visibility'] = array(
             'label' => 'SMS Newsletter Group Visibility in Form',
             'value' => $yesNo($raw('newsletter_form_groups')),
+            'debug' => $yesNo($raw('newsletter_form_groups')),
         );
 
         $settings['group_selection'] = array(
             'label' => 'SMS Newsletter Group Selection',
             'value' => $yesNo($raw('newsletter_form_multiple_select')),
+            'debug' => $yesNo($raw('newsletter_form_multiple_select')),
         );
 
         $settings['subscription_confirmation'] = array(
             'label' => 'SMS Newsletter Subscription Confirmation',
             'value' => $yesNo($raw('newsletter_form_verify')),
+            'debug' => $yesNo($raw('newsletter_form_verify')),
         );
 
         $settings['message_button'] = array(
             'label' => 'Message Button Status',
             'value' => $yesNo($raw('chatbox_message_button')),
+            'debug' => $yesNo($raw('chatbox_message_button')),
         );
 
         $settings['performance_reports'] = array(
             'label' => 'SMS Performance Reports',
             'value' => $yesNo($raw('report_wpsms_statistics')),
+            'debug' => $yesNo($raw('report_wpsms_statistics')),
         );
 
         $settings['shorten_urls'] = array(
             'label' => 'Shorten URLs',
             'value' => $yesNo($raw('short_url_status')),
+            'debug' => $yesNo($raw('short_url_status')),
         );
 
         $settings['recaptcha'] = array(
             'label' => 'Google reCAPTCHA Integration',
             'value' => $yesNo($raw('g_recaptcha_status')),
+            'debug' => $yesNo($raw('g_recaptcha_status')),
         );
 
         $settings['login_with_sms'] = array(
             'label' => 'Login With SMS',
             'value' => $yesNo(WPSmsOptionsManager::getOption('login_sms', true)),
+            'debug' => $yesNo(WPSmsOptionsManager::getOption('login_sms', true)),
         );
 
         $settings['two_factor'] = array(
             'label' => 'Two-Factor Authentication with SMS',
             'value' => $yesNo(WPSmsOptionsManager::getOption('mobile_verify', true)),
+            'debug' => $yesNo(WPSmsOptionsManager::getOption('mobile_verify', true)),
         );
 
         $settings['auto_register_on_login'] = array(
             'label' => 'Create User on SMS Login',
             'value' => $yesNo(WPSmsOptionsManager::getOption('register_sms', true)),
+            'debug' => $yesNo(WPSmsOptionsManager::getOption('register_sms', true)),
         );
 
         $settings['cf7_metabox'] = array(
             'label' => 'Contact Form 7 Metabox',
             'value' => $yesNo($raw('cf7_metabox')),
+            'debug' => $yesNo($raw('cf7_metabox')),
         );
 
         return array_merge($settings, $this->getIntegrationSettings());
@@ -218,6 +244,7 @@ class SiteHealthInfo
             $settings['gravityforms_integration'] = [
                 'label' => 'Gravity Forms Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
         }
 
@@ -226,6 +253,7 @@ class SiteHealthInfo
             $settings['quform_integration'] = [
                 'label' => 'Quform Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
         }
 
@@ -234,21 +262,25 @@ class SiteHealthInfo
             $settings['edd_integration'] = [
                 'label' => 'EDD Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['edd_mobile_field'] = [
                 'label' => 'EDD Mobile Field',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('edd_mobile_field', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('edd_mobile_field', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('edd_mobile_field', true))
             ];
 
             $settings['edd_notify_order'] = [
                 'label' => 'EDD New Order Notifications',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('edd_notify_order_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('edd_notify_order_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('edd_notify_order_enable', true)),
             ];
 
             $settings['edd_notify_customer'] = [
                 'label' => 'EDD Customer Notifications',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('edd_notify_customer_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('edd_notify_customer_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('edd_notify_customer_enable', true)),
             ];
         }
 
@@ -257,31 +289,37 @@ class SiteHealthInfo
             $settings['job_manager_integration'] = [
                 'label' => 'WP Job Manager Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['job_mobile_field'] = [
                 'label' => 'Job Mobile Field',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('job_mobile_field', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('job_mobile_field', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('job_mobile_field', true)),
             ];
 
             $settings['job_display_mobile'] = [
                 'label' => 'Display Mobile Number',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('job_display_mobile_number', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('job_display_mobile_number', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('job_display_mobile_number', true)),
             ];
 
             $settings['job_new_job_notification'] = [
                 'label' => 'New Job Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('job_notify_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('job_notify_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('job_notify_status', true)),
             ];
 
             $settings['job_notification_receiver'] = [
                 'label' => 'Job Notification Receiver',
-                'value' => WPSmsOptionsManager::getOption('job_notify_receiver', true)
+                'value' => WPSmsOptionsManager::getOption('job_notify_receiver', true),
+                'debug' => WPSmsOptionsManager::getOption('job_notify_receiver', true),
             ];
 
             $settings['job_employer_notification'] = [
                 'label' => 'Employer Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('job_notify_employer_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('job_notify_employer_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('job_notify_employer_status', true)),
             ];
         }
 
@@ -290,31 +328,37 @@ class SiteHealthInfo
             $settings['awesome_support_integration'] = [
                 'label' => 'Awesome Support Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['as_new_ticket_notification'] = [
                 'label' => 'New Ticket Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_open_ticket_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_open_ticket_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('as_notify_open_ticket_status', true)),
             ];
 
             $settings['as_admin_reply_notification'] = [
                 'label' => 'Admin Reply Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_admin_reply_ticket_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_admin_reply_ticket_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('as_notify_admin_reply_ticket_status', true)),
             ];
 
             $settings['as_user_reply_notification'] = [
                 'label' => 'User Reply Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_user_reply_ticket_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_user_reply_ticket_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('as_notify_user_reply_ticket_status', true)),
             ];
 
             $settings['as_status_update_notification'] = [
                 'label' => 'Status Update Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_update_ticket_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_update_ticket_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('as_notify_update_ticket_status', true)),
             ];
 
             $settings['as_ticket_close_notification'] = [
                 'label' => 'Ticket Close Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_close_ticket_status', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('as_notify_close_ticket_status', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('as_notify_close_ticket_status', true)),
             ];
         }
 
@@ -323,11 +367,13 @@ class SiteHealthInfo
             $settings['ultimate_member_integration'] = [
                 'label' => 'Ultimate Member Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['um_approval_notification'] = [
                 'label' => 'Ultimate Member User Approval Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('um_send_sms_after_approval', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('um_send_sms_after_approval', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('um_send_sms_after_approval', true)),
             ];
         }
 
@@ -336,11 +382,13 @@ class SiteHealthInfo
             $settings['formidable_integration'] = [
                 'label' => 'Formidable Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['formidable_metabox'] = [
                 'label' => 'Formidable Metabox',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('formidable_metabox'))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('formidable_metabox')),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('formidable_metabox')),
             ];
         }
 
@@ -349,6 +397,7 @@ class SiteHealthInfo
             $settings['forminator_integration'] = [
                 'label' => 'Forminator Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
         }
 
@@ -357,31 +406,37 @@ class SiteHealthInfo
             $settings['buddypress_integration'] = [
                 'label' => 'BuddyPress Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['bp_welcome_sms'] = [
                 'label' => 'BuddyPress Welcome SMS',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_welcome_notification_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_welcome_notification_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('bp_welcome_notification_enable', true)),
             ];
 
             $settings['bp_mention_notification'] = [
                 'label' => 'BuddyPress Mention Alerts',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_mention_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_mention_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('bp_mention_enable', true)),
             ];
 
             $settings['bp_private_message_notification'] = [
                 'label' => 'BuddyPress Private Messages',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_private_message_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_private_message_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('bp_private_message_enable', true)),
             ];
 
             $settings['bp_activity_reply_notification'] = [
                 'label' => 'BuddyPress Activity Replies',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_comments_activity_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_comments_activity_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('bp_comments_activity_enable', true)),
             ];
 
             $settings['bp_comment_reply_notification'] = [
                 'label' => 'BuddyPress Comment Replies',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_comments_reply_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('bp_comments_reply_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('bp_comments_reply_enable', true)),
             ];
         }
 
@@ -390,53 +445,63 @@ class SiteHealthInfo
             $settings['woocommerce_integration'] = [
                 'label' => 'WooCommerce Integration',
                 'value' => 'Enabled',
+                'debug' => 'Enabled',
             ];
 
             $settings['wc_meta_box'] = [
                 'label' => 'WooCommerce Order Meta Box',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_meta_box_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_meta_box_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_meta_box_enable', true)),
             ];
 
             $settings['wc_notify_product'] = [
                 'label' => 'WooCommerce New Product Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_product_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_product_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_product_enable', true)),
             ];
 
             $settings['wc_notify_order'] = [
                 'label' => 'WooCommerce New Order Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_order_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_order_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_order_enable', true)),
             ];
 
             $settings['wc_notify_customer'] = [
                 'label' => 'WooCommerce Customer Order Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_customer_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_customer_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_customer_enable', true)),
             ];
 
             $settings['wc_notify_stock'] = [
                 'label' => 'WooCommerce Low Stock Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_stock_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_stock_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_stock_enable', true)),
             ];
 
             $settings['wc_checkout_confirmation'] = [
                 'label' => 'WooCommerce Checkout Confirmation Checkbox',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_checkout_confirmation_checkbox_enabled', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_checkout_confirmation_checkbox_enabled', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_checkout_confirmation_checkbox_enabled', true)),
             ];
 
             $settings['wc_notify_status'] = [
                 'label' => 'WooCommerce Order Status Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_status_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_status_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_status_enable', true)),
             ];
 
             $settings['wc_notify_by_status'] = [
                 'label' => 'WooCommerce Specific Order Status Notification',
-                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_by_status_enable', true))
+                'value' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_by_status_enable', true)),
+                'debug' => $yesNo(WPSmsOptionsManager::getOption('wc_notify_by_status_enable', true)),
             ];
 
             $statusCount                        = is_array(WPSmsOptionsManager::getOption('wc_notify_by_status_content', true)) ?
                 count(WPSmsOptionsManager::getOption('wc_notify_by_status_content', true)) : 0;
             $settings['wc_notify_status_count'] = [
                 'label' => 'WooCommerce Configured Status Notifications',
-                'value' => $statusCount
+                'value' => $statusCount,
+                'debug' => $statusCount
             ];
         }
 
@@ -538,6 +603,7 @@ class SiteHealthInfo
             $settings['woo_' . $key] = array(
                 'label' => $label,
                 'value' => $value,
+                'debug' => $value,
             );
         }
 
@@ -593,6 +659,7 @@ class SiteHealthInfo
             $settings[] = [
                 'label' => esc_html($label),
                 'value' => $value,
+                'debug' => $value,
             ];
         }
 
@@ -630,6 +697,7 @@ class SiteHealthInfo
             $settings[] = [
                 'label' => esc_html($label),
                 'value' => $value,
+                'debug' => $value,
             ];
         }
 
@@ -669,6 +737,7 @@ class SiteHealthInfo
             $settings[] = [
                 'label' => esc_html($label),
                 'value' => $value,
+                'debug' => $value,
             ];
         }
 
@@ -698,6 +767,7 @@ class SiteHealthInfo
             $settings[] = [
                 'label' => esc_html($label),
                 'value' => $value,
+                'debug' => $value,
             ];
         }
 
