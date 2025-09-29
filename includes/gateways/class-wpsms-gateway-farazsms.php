@@ -62,7 +62,7 @@ class farazsms extends Gateway
      *
      * @var string
      */
-    public $template_id;
+    public $template_id = null;
 
     /**
      * Gateway API key.
@@ -79,21 +79,16 @@ class farazsms extends Gateway
         parent::__construct();
 
         $this->gatewayFields = [
-            'from'        => [
+            'from'    => [
                 'id'           => 'gateway_sender_id',
                 'name'         => __('Sender Number', 'wp-sms'),
                 'place_holder' => __('e.g., 50002178584000', 'wp-sms'),
                 'desc'         => __('Number or sender ID shown on recipient’s device.', 'wp-sms'),
             ],
-            'has_key'     => [
+            'has_key' => [
                 'id'   => 'gateway_key',
                 'name' => __('API Key', 'wp-sms'),
                 'desc' => __('Enter your gateway API key.', 'wp-sms'),
-            ],
-            'template_id' => [
-                'id'   => 'template_id',
-                'name' => __('Template ID', 'wp-sms'),
-                'desc' => __('Enter template ID for Service-Line API (if used).', 'wp-sms'),
             ],
         ];
         $this->api_key       = $this->options['gateway_key'];
@@ -102,20 +97,19 @@ class farazsms extends Gateway
     /**
      * Sets the template ID based on the current message.
      *
-     * This method extracts the template ID from the message (if present) using
-     * `getTemplateIdAndMessageBody()`. If no template ID is found in the message,
-     * it falls back to the `template_id` defined in the gateway options.
-     * If neither is available, the template ID will be set to an empty string.
-     *
-     * Usage: Call this method after setting `$this->msg` to ensure the template ID
-     * is correctly determined before sending the SMS.
-     *
      * @return void
      */
-    public function setTemplateIdFromMessage()
+    public function setTemplateIdAndMessageBody()
     {
-        $templateData      = $this->getTemplateIdAndMessageBody();
-        $this->template_id = !empty($templateData['template_id']) ? $templateData['template_id'] : (!empty($this->options['template_id']) ? $this->options['template_id'] : '');
+        $templateData = $this->getTemplateIdAndMessageBody();
+
+        if (!empty($templateData['template_id'])) {
+            $this->template_id = $templateData['template_id'];
+        }
+
+        if (!empty($templateData['message'])) {
+            $this->msg = $templateData['message'];
+        }
     }
 
     /**
@@ -134,15 +128,15 @@ class farazsms extends Gateway
             return $credit;
         }
 
+        $this->setTemplateIdAndMessageBody();
+
         // Filters for customization.
         $this->from = apply_filters('wp_sms_from', $this->from);
         $this->to   = apply_filters('wp_sms_to', $this->to);
         $this->msg  = apply_filters('wp_sms_msg', $this->msg);
 
-        $this->setTemplateIdFromMessage();
-
         try {
-            if (!empty($this->template_id) && preg_match('/\{.*?\}%.*?%/', $this->msg)) {
+            if (!empty($this->template_id) && !empty($this->messageVariables)) {
                 $response = $this->sendTemplateSMS();
             } else {
                 $response = $this->sendSimpleSMS();
@@ -238,18 +232,13 @@ class farazsms extends Gateway
      */
     private function sendTemplateSMS()
     {
-        if (!preg_match_all('/\{(.*?)\}%(.+?)%/', $this->msg, $matches)) {
+        if (empty($this->messageVariables)) {
             return new WP_Error('invalid-template', __('Message does not contain valid template placeholders.', 'wp-sms'));
-        }
-
-        $attributes = [];
-        foreach ($matches[1] as $i => $varName) {
-            $attributes[$varName] = $matches[2][$i];
         }
 
         $body = [
             'code'          => $this->template_id,
-            'attributes'    => $attributes,
+            'attributes'    => $this->messageVariables,
             'recipient'     => $this->formatReceiverNumbers($this->to)[0],
             'line_number'   => $this->from,
             'number_format' => 'english',
