@@ -193,6 +193,9 @@ class Gateway
         'philippine'     => array(
             'semaphore' => 'semaphore.co',
         ),
+        'united arab emirates' => [
+            'smsala'    => 'smsala'
+        ]
     );
 
     /**
