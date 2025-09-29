@@ -3,6 +3,7 @@ import { lazy } from 'react'
 
 import { FormActions } from '@/components/form/form-actions'
 import { fieldContext, formContext } from '@/context/form-context'
+import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
 
 const CheckboxField = lazy(() =>
   import('@/components/form/fields/checkbox-field').then((m) => ({ default: m.CheckboxField }))
@@ -54,3 +55,25 @@ export const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldContext,
   formContext,
 })
+
+export const getDirtyFormValues = (
+  form: Pick<ReturnType<typeof useAppForm>, 'getFieldMeta' | 'getFieldValue'>,
+  schema?: GroupSchema | null
+) => {
+  if (!schema?.sections) {
+    return {}
+  }
+
+  const collectAllFieldKeys = (fields: SchemaField[] = []): string[] => {
+    return fields.flatMap((field) => [field.key, ...collectAllFieldKeys(field.sub_fields || [])])
+  }
+
+  const allFieldKeys = schema.sections.flatMap((section) => collectAllFieldKeys(section.fields || []))
+
+  const dirtyFieldNames = allFieldKeys.filter((key) => Boolean(form.getFieldMeta?.(key)?.isDirty))
+
+  return dirtyFieldNames.reduce<Record<string, unknown>>((acc, key) => {
+    acc[key] = form.getFieldValue(key)
+    return acc
+  }, {})
+}

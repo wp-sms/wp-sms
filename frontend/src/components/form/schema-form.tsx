@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useApplicationForm } from '@/hooks/use-application-form'
+import { getDirtyFormValues, useAppForm } from '@/hooks/use-form'
 import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
 
 import { FieldRenderer } from './field-renderer'
@@ -17,10 +17,17 @@ type SchemaFormProps = {
 }
 
 export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction }: SchemaFormProps) => {
-  const { form, shouldShowField } = useApplicationForm({
+  const form = useAppForm({
     defaultValues,
-    onSubmit,
-    formSchema,
+    onSubmit: async () => {
+      const dirtyValues = getDirtyFormValues(form, formSchema)
+
+      if (Object.keys(dirtyValues).length === 0) {
+        return
+      }
+
+      await onSubmit(dirtyValues)
+    },
   })
 
   useEffect(() => {
@@ -56,10 +63,15 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
             {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
           </CardHeader>
           <CardContent className="flex flex-col gap-y-8">
-            {section.fields?.map((field) => {
-              if (!shouldShowField(field)) return null
-              return <FieldRenderer form={form} schema={field} onOpenSubFields={onFieldAction} onSubmit={onSubmit} />
-            })}
+            {section.fields?.map((field) => (
+              <FieldRenderer
+                key={field.key}
+                form={form}
+                schema={field}
+                onOpenSubFields={onFieldAction}
+                onSubmit={onSubmit}
+              />
+            ))}
           </CardContent>
         </Card>
       ))}

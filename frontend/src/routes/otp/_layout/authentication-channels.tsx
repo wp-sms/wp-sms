@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
-import { useApplicationForm } from '@/hooks/use-application-form'
+import { useAppForm } from '@/hooks/use-form'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
 import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
@@ -50,10 +50,9 @@ function RouteComponent() {
     setDrawerOpen(true)
   }
 
-  const { form, shouldShowField, getSubFields } = useApplicationForm({
+  const form = useAppForm({
     defaultValues: valuesResult?.data?.data ?? {},
     onSubmit: handleSubmit,
-    formSchema: schema,
   })
 
   return (
@@ -75,12 +74,11 @@ function RouteComponent() {
             </Button>
           </DrawerHeader>
           <div className="flex-1 overflow-y-auto p-4">
-            {selectedField && getSubFields(selectedField).length > 0 && (
+            {selectedField && selectedField.sub_fields && selectedField.sub_fields.length > 0 && (
               <div className="space-y-6">
-                {getSubFields(selectedField).map((field) => {
-                  if (!shouldShowField(field)) return null
-                  return <FieldRenderer form={form} schema={field} onOpenSubFields={handleFieldAction} />
-                })}
+                {selectedField.sub_fields.map((field) => (
+                  <FieldRenderer key={field.key} form={form} schema={field} onOpenSubFields={handleFieldAction} />
+                ))}
               </div>
             )}
           </div>
