@@ -1,3 +1,6 @@
+7.x - 2025-10-xx
+- New: Support SMSALA gateway in WP SMS Pro.
+
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
 - **Enhancement:** Prevented sending emails to users who registered with only a phone number. 
