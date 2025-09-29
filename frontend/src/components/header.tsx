@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { CircleQuestionMark, Inbox, MessageSquarePlus, Puzzle, Send, Settings } from 'lucide-react'
+import { CircleQuestionMark, Crown, Inbox, MessageSquarePlus, Puzzle, Send, Settings } from 'lucide-react'
 
 import { Button } from './ui/button'
 
@@ -60,6 +60,12 @@ export function Header() {
         ))}
         <li></li>
       </ul>
+      <Button variant="default" asChild>
+        <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=header" target="_blank">
+          <Crown />
+          Upgrade
+        </a>
+      </Button>
       <Button asChild variant="ghost" className={linkClasses}>
         <Link to="/settings/$name" params={{ name: 'general' }}>
           <Settings />

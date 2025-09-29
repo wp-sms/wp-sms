@@ -21,8 +21,8 @@ export const ColorField = ({ schema }: ColorFieldProps) => {
         <Input
           type="color"
           id={schema.key}
-          defaultValue={String(schema.default || '')}
-          value={String(field.state.value || '')}
+          defaultValue={String(schema.default || '#000')}
+          value={String(field.state.value)}
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
           disabled={schema.readonly}
@@ -32,8 +32,8 @@ export const ColorField = ({ schema }: ColorFieldProps) => {
         <Input
           type="text"
           placeholder={schema.placeholder}
-          defaultValue={String(schema.default || '')}
-          value={String(field.state.value || '')}
+          defaultValue={String(schema.default || '#000')}
+          value={String(field.state.value)}
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
           disabled={schema.readonly}

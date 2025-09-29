@@ -44,17 +44,14 @@ const AutoSaveWrapper = ({ form, schema, onSubmit, children }: AutoSaveWrapperPr
       return
     }
 
-    // Clear existing timeout
     if (autoSaveTimeout.current) {
       clearTimeout(autoSaveTimeout.current)
     }
 
-    // Set new timeout for auto-save
     autoSaveTimeout.current = setTimeout(() => {
       handleAutoSave()
     }, 500)
 
-    // Update previous value
     previousValue.current = fieldValue
 
     return () => {

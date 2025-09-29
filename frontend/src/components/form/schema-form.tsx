@@ -1,4 +1,5 @@
 import { AlertCircle } from 'lucide-react'
+import { useEffect } from 'react'
 
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -21,6 +22,10 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
     onSubmit,
     formSchema,
   })
+
+  useEffect(() => {
+    form.reset(defaultValues)
+  }, [defaultValues, form])
 
   if (!formSchema) {
     return (

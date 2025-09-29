@@ -5,6 +5,8 @@ import { useFieldContext } from '@/context/form-context'
 import { toOptions } from '@/lib/to-options'
 import type { SchemaField } from '@/types/settings/group-schema'
 
+import { FieldWrapper } from '../field-wrapper'
+
 type MultiselectFieldProps = {
   schema: SchemaField
 }
@@ -20,12 +22,14 @@ export const MultiselectField = ({ schema }: MultiselectFieldProps) => {
     Array.isArray(fieldValue) && fieldValue.every((item) => typeof item === 'string') ? (fieldValue as string[]) : []
 
   return (
-    <MultiSelect
-      aria-invalid={!!errors.length}
-      value={selectedValues ?? []}
-      options={toOptions(schema.options) ?? []}
-      onValueChange={field.handleChange}
-      onBlur={field.handleBlur}
-    />
+    <FieldWrapper schema={schema} errors={errors}>
+      <MultiSelect
+        aria-invalid={!!errors.length}
+        value={selectedValues ?? []}
+        options={toOptions(schema.options) ?? []}
+        onValueChange={field.handleChange}
+        onBlur={field.handleBlur}
+      />
+    </FieldWrapper>
   )
 }
