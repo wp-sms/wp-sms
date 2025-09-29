@@ -9,46 +9,42 @@ use WP_Error;
 class smses extends Gateway
 {
     /**
-     * Base URL or web service endpoint for sending API requests.
+     * API Base URL.
      *
      * @var string
      */
     private $wsdl_link = "http://194.0.137.110:32161/bulk/";
 
     /**
-     * The website or tariff page of the SMS service provider.
+     * Pricing page URL.
      *
      * @var string
      */
     public $tariff = "https://sms.es/";
 
     /**
-     * Indicates whether the service provides a trial (test) mode.
-     * If true, you can test the service without purchasing credits.
+     * Whether trial credit is supported.
      *
      * @var bool
      */
     public $unitrial = false;
 
     /**
-     * The unit of SMS credit (e.g., "SMS" or "credit").
-     * This is usually set after receiving a response from the API.
+     * Unit for credit balance.
      *
-     * @var string|null
+     * @var string
      */
     public $unit;
 
     /**
-     * Indicates whether the service supports sending Flash SMS.
-     * Can be "enable" or "disable".
+     * Flash SMS support.
      *
      * @var string
      */
     public $flash = "enable";
 
     /**
-     * Determines if the current message should be sent as a Flash SMS.
-     * Default is false, meaning messages are sent as normal SMS.
+     * Whether flash SMS is enabled.
      *
      * @var bool
      */
@@ -62,9 +58,14 @@ class smses extends Gateway
     public $bulk_send = false;
 
     /**
-     * smses constructor.
+     * Whether the incoming message is supported
      *
-     * Calls the parent Gateway constructor.
+     * @var bool
+     */
+    public $supportIncoming = true;
+
+    /**
+     * Constructor.
      */
     public function __construct()
     {
@@ -72,61 +73,66 @@ class smses extends Gateway
     }
 
     /**
-     * Send an SMS message.
+     * Send SMS message.
      *
-     * @return string|WP_Error
-     *
-     * @since 1.0
+     * @return object|WP_Error Response object on success, WP_Error on failure.
      */
     public function SendSMS()
     {
-        /**
-         * Modify sender number
-         *
-         * @param string $this ->from sender number.
-         *
-         * @since 3.4
-         *
-         */
+        if (empty($this->username) || empty($this->password)) {
+            return new WP_Error('missing-credentials', __('Username and Password are required.', 'wp-sms'));
+        }
+
+        // Filters for customization.
         $this->from = apply_filters('wp_sms_from', $this->from);
-
-        /**
-         * Modify Receiver number
-         *
-         * @param array $this ->to receiver number
-         *
-         * @since 3.4
-         *
-         */
-        $this->to = apply_filters('wp_sms_to', $this->to);
-
-        /**
-         * Modify text message
-         *
-         * @param string $this ->msg text message.
-         *
-         * @since 3.4
-         *
-         */
-        $this->msg = apply_filters('wp_sms_msg', $this->msg);
+        $this->to   = apply_filters('wp_sms_to', $this->to);
+        $this->msg  = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            return $this->sendDefaultApiSms();
+            $response = $this->sendSimpleSMS();
+
+            if (is_wp_error($response)) {
+                $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+                return $response;
+            }
+
+            if (!empty($response->error)) {
+                return new WP_Error('send-sms-error', __('Failed to send SMS.', 'wp-sms'));
+            }
+
+            $this->log($this->from, $this->msg, $this->to, $response);
+
+            /**
+             * Fires after an SMS is sent.
+             *
+             * @param object $response API response object.
+             */
+            do_action('wp_sms_send', $response);
+
+            return $response;
         } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-
-            return new WP_Error('send-sms', $e->getMessage());
+            return new WP_Error('send-sms-error', $e->getMessage());
         }
     }
 
     /**
-     * Send SMS using the default API endpoint.
+     * Get account credit balance.
      *
-     * @return string|WP_Error
-     *
-     * @throws Exception
+     * @return null
      */
-    private function sendDefaultApiSms()
+    public function GetCredit()
+    {
+        return null;
+    }
+
+    /**
+     * Send a simple SMS message.
+     *
+     * @return object API response object.
+     * @throws Exception If request fails.
+     */
+    private function sendSimpleSMS()
     {
         $body = [
             'type'     => 'text',
@@ -148,38 +154,15 @@ class smses extends Gateway
             $body['flash'] = $this->isflash;
         }
 
-        $args = [
+        $params = [
             'headers' => array(
-                'content-type' => 'application/json'
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
             ),
             'body'    => json_encode($body),
         ];
 
-        $response = $this->request('POST', $this->wsdl_link . 'sendsms', [], $args);
-
-        //log the result
-        $this->log($this->from, $this->msg, $this->to, $response);
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param string $response result output.
-         * @since 2.4
-         *
-         */
-        do_action('wp_sms_send', $response);
-
-        return $response;
-    }
-
-    /**
-     * Retrieve account credit balance from the SMS service provider.
-     *
-     * @return null
-     */
-    public function GetCredit()
-    {
-        return null;
+        return $this->request('POST', $this->wsdl_link . 'sendsms', [], $params);
     }
 
     /**
