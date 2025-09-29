@@ -165,4 +165,90 @@ class NotificationTest extends WP_UnitTestCase
         );
     }
 
+    /**
+     * Test that processMessage handles an empty message.
+     *
+     * Ensures that when the message template is empty,
+     * both the parsed output message and parsed variables
+     * return as empty values.
+     */
+    public function testProcessMessageWithEmptyMessage()
+    {
+        $notification = NotificationFactory::getCustom();
+
+        $reflection = new \ReflectionClass($notification);
+        $method     = $reflection->getMethod('processMessage');
+        $method->setAccessible(true);
+        $method->invoke($notification, '');
+
+        $this->assertSame('', $notification->getOutputMessage(''));
+        $this->assertSame([], $notification->getOutputVariables());
+    }
+
+    /**
+     * Test that processMessage replaces simple registered variables.
+     *
+     * Ensures that variables like %name% and %age% are correctly replaced
+     * within the message template, and that the replaced variables are stored
+     * in getOutputVariables().
+     */
+    public function testProcessMessageReplacesSimpleVariables()
+    {
+        $notification = NotificationFactory::getCustom();
+        $notification->registerVariables([
+            '%name%' => 'Sara',
+            '%age%'  => 28,
+        ]);
+
+        $template = 'My name is %name% and I am %age% years old.';
+
+        $reflection = new \ReflectionClass($notification);
+        $method     = $reflection->getMethod('processMessage');
+        $method->setAccessible(true);
+        $method->invoke($notification, $template);
+
+        $this->assertSame(
+            'My name is Sara and I am 28 years old.',
+            $notification->getOutputMessage($template)
+        );
+
+        $this->assertEquals(
+            ['name' => 'Sara', 'age' => '28'],
+            $notification->getOutputVariables()
+        );
+    }
+
+    /**
+     * Test that processMessage replaces WooCommerce order meta variables.
+     *
+     * Ensures that placeholders like %order_meta_tracking_number%
+     * are replaced with the correct order meta values, and that
+     * the variables are properly stored in getOutputVariables().
+     */
+    public function testProcessMessageReplacesOrderMeta()
+    {
+        $orderId = $this->factory()->post->create(['post_type' => 'shop_order']);
+        $order   = wc_get_order($orderId);
+        $order->update_meta_data('tracking_number', 'XYZ123');
+        $order->save();
+
+        $notification = NotificationFactory::getWooCommerceOrder($order);
+
+        $template = 'Your tracking number is %order_meta_tracking_number%';
+
+        $reflection = new \ReflectionClass($notification);
+        $method     = $reflection->getMethod('processMessage');
+        $method->setAccessible(true);
+        $method->invoke($notification, $template);
+
+        $this->assertSame(
+            'Your tracking number is XYZ123',
+            $notification->getOutputMessage($template)
+        );
+
+        $this->assertEquals(
+            ['order_meta_tracking_number' => 'XYZ123'],
+            $notification->getOutputVariables()
+        );
+    }
 }
