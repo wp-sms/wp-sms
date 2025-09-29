@@ -359,6 +359,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public static $get_response;
 
+    /**
+     * An array to hold message variables.
+     *
+     * @var array
+     */
+    public $messageVariables = [];
+
     public function __construct()
     {
         global $wpdb;
