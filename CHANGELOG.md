@@ -1,4 +1,5 @@
-7.x - 2025-10-xx
+= v7.x.x - 2025-x-x =
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
 - New: Support SMSALA gateway in WP SMS Pro.
 
 = v7.0.3 - 2025-09-17 =
