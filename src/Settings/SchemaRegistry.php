@@ -12,6 +12,7 @@ use WP_SMS\Settings\Groups\MessageButtonSettings;
 use WP_SMS\Settings\Groups\NewsletterSettings;
 use WP_SMS\Settings\Groups\NotificationSettings;
 use WP_SMS\Settings\Groups\OTPChannelSettings;
+use WP_SMS\Settings\Groups\OTPBrandingSettings;
 
 // Addons
 use WP_SMS\Settings\Groups\Addons\ProWordPressSettings;
@@ -69,7 +70,6 @@ class SchemaRegistry
         $this->registerGroup(new NotificationSettings(), 'core');
         $this->registerGroup(new AdvancedSettings(), 'core');
         $this->registerGroup(new NewsletterSettings(), 'core');
-        $this->registerGroup(new OTPChannelSettings(), 'core');
         $this->registerGroup(new EmailSettings(), 'core');
 
         // Addons
@@ -85,6 +85,10 @@ class SchemaRegistry
         $this->registerGroup(new EasyDigitalDownloadsSettings(), 'integrations', 'integrations.ecommerce.edd');
         $this->registerGroup(new AwesomeSupportSettings(), 'integrations', 'integrations.support.awesome_support');
         $this->registerGroup(new JobManagerSettings(), 'integrations', 'integrations.jobs.job_manager');
+
+        // OTP
+        $this->registerGroup(new OTPChannelSettings(), 'core');
+        $this->registerGroup(new OTPBrandingSettings(), 'core');
     }
 
     /**
@@ -459,6 +463,7 @@ class SchemaRegistry
         return [
             'label'    => $group->getLabel(),
             'icon'     => $group->getIcon(),
+            'layout'   => $group->getLayout(),
             'sections' => array_map(function ($section) {
                 return $section->toArray();
             }, $sections),
