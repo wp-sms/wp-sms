@@ -34,6 +34,15 @@ abstract class AbstractSettingGroup
     public abstract function getFields(): array;
 
     /**
+     * Get the layout for this group
+     *
+     * @return string
+     */
+    public function getLayout(){
+        return 'default';
+    }
+
+    /**
      * Get the Lucide icon name for this group
      *
      * @return string
