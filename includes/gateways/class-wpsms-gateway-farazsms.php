@@ -91,7 +91,7 @@ class farazsms extends Gateway
                 'desc' => __('Enter your gateway API key.', 'wp-sms'),
             ],
         ];
-        $this->api_key       = $this->options['gateway_key'];
+        $this->api_key       = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
     }
 
     /**
