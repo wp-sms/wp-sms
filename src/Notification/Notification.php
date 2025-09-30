@@ -10,6 +10,25 @@ class Notification
     protected $optIn = true;
 
     /**
+     * Stores the processed message after variable replacement
+     * @var string|null
+     */
+    protected $parsedMessage = null;
+
+    /**
+     * Stores the processed variables after replacement
+     * @var array
+     */
+    protected $parsedVariables = [];
+
+    /**
+     * Stores the original message passed to getOutputMessage
+     * to detect if re-processing is needed
+     * @var string|null
+     */
+    protected $parsedMessageOriginal = null;
+
+    /**
      * @param $message
      * @param $to
      * @param array $mediaUrls
@@ -32,7 +51,12 @@ class Notification
             return;
         }
 
-        $response = wp_sms_send($to, $this->getOutputMessage($message), $isFlash, $senderId, $mediaUrls);
+        $this->processMessage($message);
+
+        $finalMessage   = $this->parsedMessage;
+        $messageVariables = $this->parsedVariables;
+
+        $response = wp_sms_send($to, $finalMessage, $isFlash, $senderId, $mediaUrls, $messageVariables);
 
         /**
          * If response is true, call success method
@@ -47,113 +71,20 @@ class Notification
         return $response;
     }
 
+    /**
+     * Get the final output message after processing all variables
+     *
+     * @param string $message The message template
+     * @return string Processed message with variables replaced
+     */
     public function getOutputMessage($message)
     {
-        if (empty($message)) {
-            return $message;
+        if ($this->parsedMessage === null || $this->parsedMessageOriginal !== $message) {
+            $this->processMessage($message);
+            $this->parsedMessageOriginal = $message;
         }
 
-        /**
-         * Filters the variables to replace in the message content
-         *
-         * @param array $variables Array containing message variables parsed from the argument.
-         * @param string $content Default message content before replacing variables.
-         *
-         * @since 5.7.6
-         *
-         */
-        $variables    = apply_filters('wp_sms_output_variables', $this->variables, $message);
-        $finalMessage = $message;
-
-        foreach ($variables as $variable => $callBack) {
-
-            // First replace regular variables
-            if (strpos($finalMessage, $variable) !== false) {
-                $replacement = '';
-
-                // Check if callable and attempt to replace
-                if (is_callable([$this, $callBack])) {
-                    try {
-                        if (method_exists($this, $callBack)) {
-                            $reflection = new \ReflectionMethod($this, $callBack);
-                            if ($reflection->getNumberOfRequiredParameters() === 0) {
-                                $replacement = $this->$callBack();
-                            } else {
-                                \WP_SMS::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
-                                continue;
-                            }
-                        } else {
-                            $replacement = $this->$callBack();
-                        }
-                    } catch (\Throwable $e) {
-                        \WP_SMS::log('Variable replacement error: ' . $e->getMessage(), 'error');
-                        continue;
-                    }
-                } else {
-                    $replacement = $callBack;
-                }
-
-                if (is_array($replacement)) {
-                    $replacement = implode(', ', $replacement);
-                }
-
-                $finalMessage = str_replace($variable, (string)$replacement, $finalMessage);
-            }
-        }
-
-        // Replace meta variables
-        preg_match_all("/%order_(meta|item_meta)_(.+?)%/", $finalMessage, $matches);
-
-        // Map meta types to their corresponding retrieval methods
-        $metaHandlers = [
-            'meta'      => 'getMeta',
-            'item_meta' => 'getItemMeta',
-        ];
-
-        foreach ($matches[0] as $index => $metaVariable) {
-            $metaType = $matches[1][$index]; // 'meta' OR 'item_meta'
-            $metaKey  = $matches[2][$index]; // key name
-
-            // Retrieve value using corresponding handler method, if available
-            if (isset($metaHandlers[$metaType]) && method_exists($this, $metaHandlers[$metaType])) {
-                $handlerMethod = $metaHandlers[$metaType];
-
-                try {
-                    $metaValue = $this->$handlerMethod($metaKey);
-
-                    if ($metaValue !== null) {
-                        if (is_array($metaValue)) {
-                            $metaValue = implode(', ', $metaValue);
-                        }
-
-                        $finalMessage = str_replace($metaVariable, (string)$metaValue, $finalMessage);
-                    } else {
-                        \WP_SMS::log("Meta value for '{$metaVariable}' is null or not found.", 'warning');
-                    }
-                } catch (\Throwable $e) {
-                    \WP_SMS::log(json_encode([
-                        'error'     => $e->getMessage(),
-                        'meta_type' => $metaType,
-                        'meta_key'  => $metaKey,
-                        'variable'  => $metaVariable,
-                    ]), 'error');
-                }
-            } else {
-                \WP_SMS::log("Handler method for meta type '{$metaType}' not found.", 'warning');
-            }
-        }
-
-        /**
-         * Filters the final message content after replacing variables
-         *
-         * @param string $message Message content after replacing variables.
-         * @param string $content Default message content before replacing variables.
-         * @param array $variables Array containing message variables parsed from the argument.
-         *
-         * @since 5.7.6
-         *
-         */
-        return apply_filters('wp_sms_output_variables_message', $finalMessage, $message, $variables);
+        return $this->parsedMessage;
     }
 
     public function printVariables()
@@ -164,5 +95,117 @@ class Notification
     public function getVariables()
     {
         return $this->variables;
+    }
+
+    /**
+     * Process the message and replace all registered variables including meta variables
+     *
+     * @param string $message The message template to process
+     * @return void
+     */
+    protected function processMessage($message)
+    {
+        if (empty($message)) {
+            $this->parsedMessage   = '';
+            $this->parsedVariables = [];
+            return;
+        }
+
+        $variables    = apply_filters('wp_sms_output_variables', $this->variables, $message);
+        $finalMessage = $message;
+        $replacedVars = [];
+
+        foreach ($variables as $variable => $callBack) {
+            if (strpos($finalMessage, $variable) === false) continue;
+
+            $replacement = '';
+
+            if (is_callable([$this, $callBack])) {
+                try {
+                    if (method_exists($this, $callBack)) {
+                        $reflection = new \ReflectionMethod($this, $callBack);
+                        if ($reflection->getNumberOfRequiredParameters() === 0) {
+                            $replacement = $this->$callBack();
+                        } else {
+                            \WP_SMS::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
+                            continue;
+                        }
+                    } else {
+                        $replacement = $this->$callBack();
+                    }
+                } catch (\Throwable $e) {
+                    \WP_SMS::log('Variable replacement error: ' . $e->getMessage(), 'error');
+                    continue;
+                }
+            } else {
+                $replacement = $callBack;
+            }
+
+            if (is_array($replacement)) {
+                $replacement = implode(', ', $replacement);
+            }
+
+            $cleanKey                = trim($variable, '%');
+            $replacedVars[$cleanKey] = (string)$replacement;
+            $finalMessage            = str_replace($variable, (string)$replacement, $finalMessage);
+        }
+
+        preg_match_all("/%order_(meta|item_meta)_(.+?)%/", $finalMessage, $matches);
+        $metaHandlers = [
+            'meta'      => 'getMeta',
+            'item_meta' => 'getItemMeta',
+        ];
+
+        foreach ($matches[0] as $index => $metaVariable) {
+            $metaType = $matches[1][$index];
+            $metaKey  = $matches[2][$index];
+
+            if (!isset($metaHandlers[$metaType])) {
+                \WP_SMS::log("Handler method for meta type '{$metaType}' not found.", 'warning');
+                continue;
+            }
+
+            $handlerMethod = $metaHandlers[$metaType];
+            if (!method_exists($this, $handlerMethod)) {
+                \WP_SMS::log("Handler method '{$handlerMethod}' not found.", 'warning');
+                continue;
+            }
+
+            try {
+                $metaValue = $this->$handlerMethod($metaKey);
+
+                if ($metaValue !== null) {
+                    if (is_array($metaValue)) {
+                        $metaValue = implode(', ', $metaValue);
+                    }
+
+                    $cleanKey                = trim($metaVariable, '%');
+                    $replacedVars[$cleanKey] = (string)$metaValue;
+                    $finalMessage            = str_replace($metaVariable, (string)$metaValue, $finalMessage);
+                } else {
+                    \WP_SMS::log("Meta value for '{$metaVariable}' is null or not found.", 'warning');
+                }
+            } catch (\Throwable $e) {
+                \WP_SMS::log(json_encode([
+                    'error'     => $e->getMessage(),
+                    'meta_type' => $metaType,
+                    'meta_key'  => $metaKey,
+                    'variable'  => $metaVariable,
+                ]), 'error');
+            }
+        }
+
+        $this->parsedMessage   = apply_filters('wp_sms_output_variables_message', $finalMessage, $message, $variables);
+        $this->parsedVariables = $replacedVars;
+    }
+
+    /**
+     * Get the array of processed variables after replacement
+     *
+     * @return array Key-value array of replaced variables
+     */
+    public function getOutputVariables()
+    {
+        return $this->parsedVariables;
     }
 }

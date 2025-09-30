@@ -14,7 +14,7 @@ class SmsDispatcher
 {
     private $smsArguments;
 
-    public function __construct($to, $msg, $is_flash = false, $from = null, $mediaUrls = [])
+    public function __construct($to, $msg, $is_flash = false, $from = null, $mediaUrls = [], $messageVariables = [])
     {
         // Backward compatibility
         if (!is_array($to)) {
@@ -22,11 +22,12 @@ class SmsDispatcher
         }
 
         $this->smsArguments = [
-            'to'        => $to,
-            'msg'       => $msg,
-            'is_flash'  => $is_flash,
-            'from'      => $from,
-            'mediaUrls' => $mediaUrls,
+            'to'               => $to,
+            'msg'              => $msg,
+            'is_flash'         => $is_flash,
+            'from'             => $from,
+            'mediaUrls'        => $mediaUrls,
+            'messageVariables' => $messageVariables,
         ];
     }
 
