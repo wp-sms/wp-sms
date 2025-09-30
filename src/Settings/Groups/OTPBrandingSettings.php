@@ -38,34 +38,37 @@ class OTPBrandingSettings extends AbstractSettingGroup
                 'title'    => __('Colors', 'wp-sms'),
                 'subtitle' => __('Customize the color scheme for OTP forms and widgets', 'wp-sms'),
                 'fields'   => [
+                    // Buttons
                     new Field([
                         'key'         => 'otp_primary_button_color',
-                        'label'       => __('Primary Button Color', 'wp-sms'),
+                        'label'       => __('Primary Button', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Background color for primary buttons', 'wp-sms'),
                         'default'     => '#0073aa',
                     ]),
                     new Field([
                         'key'         => 'otp_primary_button_label_color',
-                        'label'       => __('Primary Button Label Color', 'wp-sms'),
+                        'label'       => __('Primary Button Label', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Text color for primary button labels', 'wp-sms'),
                         'default'     => '#ffffff',
                     ]),
                     new Field([
                         'key'         => 'otp_secondary_button_border_color',
-                        'label'       => __('Secondary Button Border Color', 'wp-sms'),
+                        'label'       => __('Sec Button Border', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Border color for secondary buttons', 'wp-sms'),
                         'default'     => '#0073aa',
                     ]),
                     new Field([
                         'key'         => 'otp_secondary_button_label_color',
-                        'label'       => __('Secondary Button Label Color', 'wp-sms'),
+                        'label'       => __('Sec Button Label', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Text color for secondary button labels', 'wp-sms'),
                         'default'     => '#0073aa',
                     ]),
+            
+                    // Generic states
                     new Field([
                         'key'         => 'otp_focus_color',
                         'label'       => __('Focus Color', 'wp-sms'),
@@ -87,26 +90,91 @@ class OTPBrandingSettings extends AbstractSettingGroup
                         'description' => __('Color for links and clickable elements', 'wp-sms'),
                         'default'     => '#0073aa',
                     ]),
+            
+                    // Body + Widget
                     new Field([
                         'key'         => 'otp_body_color',
-                        'label'       => __('Body Color', 'wp-sms'),
+                        'label'       => __('Body', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Main text color for body content', 'wp-sms'),
                         'default'     => '#333333',
                     ]),
                     new Field([
-                        'key'         => 'otp_widget_bg_color',
-                        'label'       => __('Widget Background Color', 'wp-sms'),
+                        'key'         => 'otp_widget_background_color',
+                        'label'       => __('Widget Bg', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Background color for OTP widgets', 'wp-sms'),
                         'default'     => '#ffffff',
                     ]),
                     new Field([
                         'key'         => 'otp_widget_border_color',
-                        'label'       => __('Widget Border Color', 'wp-sms'),
+                        'label'       => __('Widget Border', 'wp-sms'),
                         'type'        => 'color',
                         'description' => __('Border color for OTP widgets', 'wp-sms'),
-                        'default'     => '#e1e1e1',
+                        'default'     => '#c9cace',
+                    ]),
+            
+                    // All others (kept; not in the "don’t have" list)
+                    new Field([
+                        'key'         => 'otp_base_focus_color',
+                        'label'       => __('Base Focus Color', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Base focus color for form elements', 'wp-sms'),
+                        'default'     => '#635dff',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_base_hover_color',
+                        'label'       => __('Base Hover Color', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Base hover color for interactive elements', 'wp-sms'),
+                        'default'     => '#000000',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_input_labels_placeholders',
+                        'label'       => __('Input Labels & Placeholders', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Color for input labels and placeholder text', 'wp-sms'),
+                        'default'     => '#65676e',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_input_filled_text',
+                        'label'       => __('Input Filled Text', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Color for text in filled input fields', 'wp-sms'),
+                        'default'     => '#000000',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_input_border',
+                        'label'       => __('Input Border', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Border color for input fields', 'wp-sms'),
+                        'default'     => '#c9cace',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_input_background',
+                        'label'       => __('Input Background', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Background color for input fields', 'wp-sms'),
+                        'default'     => '#ffffff',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_icons_color',
+                        'label'       => __('Icons', 'wp-sms'),
+                        'type'        => 'color',
+                        'description' => __('Color for icons and symbols', 'wp-sms'),
+                        'default'     => '#65676e',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_captcha_widget_theme',
+                        'label'       => __('Captcha Widget Theme', 'wp-sms'),
+                        'type'        => 'select',
+                        'description' => __('Theme for captcha widgets', 'wp-sms'),
+                        'options'     => [
+                            'light' => __('Light', 'wp-sms'),
+                            'dark'  => __('Dark', 'wp-sms'),
+                            'auto'  => __('Auto (Based on user preference)', 'wp-sms'),
+                        ],
+                        'default'     => 'light',
                     ]),
                 ]
             ]),
@@ -116,42 +184,20 @@ class OTPBrandingSettings extends AbstractSettingGroup
                 'subtitle' => __('Configure typography settings for OTP forms', 'wp-sms'),
                 'fields'   => [
                     new Field([
-                        'key'         => 'otp_font_family',
-                        'label'       => __('Font Family', 'wp-sms'),
-                        'type'        => 'advancedselect',
-                        'description' => __('Choose a font family for OTP forms. You can upload a custom font or use a web font.', 'wp-sms'),
-                        'options'     => [
-                            'default' => __('Default (System Font)', 'wp-sms'),
-                            'google'  => __('Google Fonts', 'wp-sms'),
-                            'custom'  => __('Custom Font', 'wp-sms'),
-                        ],
-                        'default'     => 'default',
+                        'key'         => 'otp_font_file',
+                        'label'       => __('Font File', 'wp-sms'),
+                        'type'        => 'media',
+                        'description' => __('Upload your custom font file', 'wp-sms'),
                     ]),
                     new Field([
-                        'key'         => 'otp_google_font',
-                        'label'       => __('Google Font', 'wp-sms'),
-                        'type'        => 'select',
-                        'description' => __('Select a Google Font', 'wp-sms'),
-                        'options'     => $this->getGoogleFonts(),
-                        'show_if'     => ['otp_font_family' => 'google'],
-                    ]),
-                    new Field([
-                        'key'         => 'otp_custom_font_url',
-                        'label'       => __('Custom Font URL', 'wp-sms'),
+                        'key'         => 'otp_font_link',
+                        'label'       => __('Font Link', 'wp-sms'),
                         'type'        => 'url',
-                        'description' => __('Enter the URL of your custom font (CSS file)', 'wp-sms'),
-                        'show_if'     => ['otp_font_family' => 'custom'],
-                    ]),
-                    new Field([
-                        'key'         => 'otp_custom_font_name',
-                        'label'       => __('Custom Font Name', 'wp-sms'),
-                        'type'        => 'text',
-                        'description' => __('Enter the font family name (e.g., "My Custom Font")', 'wp-sms'),
-                        'show_if'     => ['otp_font_family' => 'custom'],
+                        'description' => __('Enter the URL of your font (CSS file)', 'wp-sms'),
                     ]),
                     new Field([
                         'key'         => 'otp_base_font_size',
-                        'label'       => __('Base Font Size', 'wp-sms'),
+                        'label'       => __('Base Size', 'wp-sms'),
                         'type'        => 'number',
                         'description' => __('Base font size in pixels', 'wp-sms'),
                         'default'     => 16,
@@ -214,30 +260,56 @@ class OTPBrandingSettings extends AbstractSettingGroup
                 'subtitle' => __('Configure widget appearance and branding', 'wp-sms'),
                 'fields'   => [
                     new Field([
-                        'key'         => 'otp_widget_logo',
-                        'label'       => __('Widget Logo', 'wp-sms'),
-                        'type'        => 'media',
-                        'description' => __('Upload or select a logo to display in OTP widgets', 'wp-sms'),
+                        'key'         => 'otp_widget_logo_position',
+                        'label'       => __('Logo Position', 'wp-sms'),
+                        'type'        => 'select',
+                        'description' => __('Position of the logo in the widget', 'wp-sms'),
+                        'options'     => [
+                            'left'   => __('Left', 'wp-sms'),
+                            'center' => __('Center', 'wp-sms'),
+                            'right'  => __('Right', 'wp-sms'),
+                            'none'   => __('None', 'wp-sms'),
+                        ],
+                        'default'     => 'center',
                     ]),
                     new Field([
-                        'key'         => 'otp_widget_title',
-                        'label'       => __('Widget Title', 'wp-sms'),
-                        'type'        => 'text',
-                        'description' => __('Title displayed in OTP widgets', 'wp-sms'),
-                        'default'     => __('Verify Your Phone Number', 'wp-sms'),
+                        'key'         => 'otp_widget_logo_url',
+                        'label'       => __('Logo URL', 'wp-sms'),
+                        'type'        => 'image',
+                        'description' => __('Logo image', 'wp-sms'),
                     ]),
                     new Field([
-                        'key'         => 'otp_widget_subtitle',
-                        'label'       => __('Widget Subtitle', 'wp-sms'),
-                        'type'        => 'textarea',
-                        'description' => __('Subtitle or description text for OTP widgets', 'wp-sms'),
-                        'default'     => __('Enter the verification code sent to your phone', 'wp-sms'),
+                        'key'         => 'otp_widget_logo_height',
+                        'label'       => __('Logo Height', 'wp-sms'),
+                        'type'        => 'number',
+                        'description' => __('Height of the logo in pixels', 'wp-sms'),
+                        'default'     => 52,
+                        'min'         => 1,
+                        'max'         => 100,
+                        'step'        => 1,
                     ]),
                     new Field([
-                        'key'         => 'otp_widget_footer_text',
-                        'label'       => __('Widget Footer Text', 'wp-sms'),
-                        'type'        => 'textarea',
-                        'description' => __('Footer text displayed in OTP widgets', 'wp-sms'),
+                        'key'         => 'otp_widget_header_text_alignment',
+                        'label'       => __('Header Text Alignment', 'wp-sms'),
+                        'type'        => 'select',
+                        'description' => __('Alignment of header text in the widget', 'wp-sms'),
+                        'options'     => [
+                            'left'   => __('Left', 'wp-sms'),
+                            'center' => __('Center', 'wp-sms'),
+                            'right'  => __('Right', 'wp-sms'),
+                        ],
+                        'default'     => 'center',
+                    ]),
+                    new Field([
+                        'key'         => 'otp_widget_social_buttons_layout',
+                        'label'       => __('Social Buttons Layout', 'wp-sms'),
+                        'type'        => 'select',
+                        'description' => __('Layout position for social login buttons', 'wp-sms'),
+                        'options'     => [
+                            'bottom' => __('Bottom', 'wp-sms'),
+                            'top'    => __('Top', 'wp-sms'),
+                        ],
+                        'default'     => 'bottom',
                     ]),
                 ]
             ]),
@@ -312,69 +384,12 @@ class OTPBrandingSettings extends AbstractSettingGroup
                         'label'       => __('Background Image', 'wp-sms'),
                         'type'        => 'media',
                         'description' => __('Upload a background image for OTP pages', 'wp-sms'),
-                    ]),
-                    new Field([
-                        'key'         => 'otp_page_background_repeat',
-                        'label'       => __('Background Repeat', 'wp-sms'),
-                        'type'        => 'select',
-                        'description' => __('How the background image should repeat', 'wp-sms'),
-                        'options'     => [
-                            'no-repeat' => __('No Repeat', 'wp-sms'),
-                            'repeat'    => __('Repeat', 'wp-sms'),
-                            'repeat-x'  => __('Repeat Horizontally', 'wp-sms'),
-                            'repeat-y'  => __('Repeat Vertically', 'wp-sms'),
-                        ],
-                        'default'     => 'no-repeat',
-                        'show_if'     => ['otp_page_background_image' => '!empty'],
-                    ]),
-                    new Field([
-                        'key'         => 'otp_page_background_size',
-                        'label'       => __('Background Size', 'wp-sms'),
-                        'type'        => 'select',
-                        'description' => __('How the background image should be sized', 'wp-sms'),
-                        'options'     => [
-                            'auto'    => __('Auto', 'wp-sms'),
-                            'cover'   => __('Cover', 'wp-sms'),
-                            'contain' => __('Contain', 'wp-sms'),
-                        ],
-                        'default'     => 'cover',
-                        'show_if'     => ['otp_page_background_image' => '!empty'],
-                    ]),
+                    ])
                 ]
             ]),
         ];
     }
 
-    /**
-     * Get list of popular Google Fonts
-     *
-     * @return array
-     */
-    private function getGoogleFonts(): array
-    {
-        return [
-            'Open Sans'           => 'Open Sans',
-            'Roboto'              => 'Roboto',
-            'Lato'                => 'Lato',
-            'Montserrat'          => 'Montserrat',
-            'Source Sans Pro'     => 'Source Sans Pro',
-            'Poppins'             => 'Poppins',
-            'Nunito'              => 'Nunito',
-            'Inter'               => 'Inter',
-            'Playfair Display'    => 'Playfair Display',
-            'Merriweather'        => 'Merriweather',
-            'PT Sans'             => 'PT Sans',
-            'Ubuntu'              => 'Ubuntu',
-            'Crimson Text'        => 'Crimson Text',
-            'Fira Sans'           => 'Fira Sans',
-            'Libre Baskerville'   => 'Libre Baskerville',
-            'Droid Sans'          => 'Droid Sans',
-            'Droid Serif'         => 'Droid Serif',
-            'Oswald'              => 'Oswald',
-            'Raleway'             => 'Raleway',
-            'PT Serif'            => 'PT Serif',
-        ];
-    }
 
     public function getFields(): array
     {
