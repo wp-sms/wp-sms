@@ -4347,6 +4347,10 @@ snapshots:
     dependencies:
       '@tanstack/store': 0.7.4
 
+  '@tanstack/form-core@1.19.4':
+    dependencies:
+      '@tanstack/store': 0.7.4
+
   '@tanstack/history@1.131.2': {}
 
   '@tanstack/query-core@5.83.0': {}

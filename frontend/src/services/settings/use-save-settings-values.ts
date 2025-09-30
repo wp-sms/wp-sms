@@ -74,3 +74,33 @@ export function useNewSaveSettingsValues(params: SaveSettingsValuesParams) {
     onError: () => toast.error('Something went wrong!'),
   })
 }
+
+export function useNewSaveSettingsValues(params: SaveSettingsValuesParams) {
+  const { invalidateQuery: invalidateGetSchemaByGroup } = useInvalidateQuery(
+    getSchemaByGroup({
+      groupName: params.groupName || 'general',
+      include_hidden: params.include_hidden,
+    }).queryKey
+  )
+
+  const { invalidateQuery: invalidateGetSettingsValuesByGroup } = useInvalidateQuery(
+    getSettingsValuesByGroup({
+      groupName: params.groupName || 'general',
+    }).queryKey
+  )
+
+  return useMutation({
+    mutationFn: (body: SaveSettingsValuesBody) => clientRequest.put<SaveSettingsValuesResponse>('/settings/save', body),
+    onSuccess: async () => {
+      try {
+        await invalidateGetSchemaByGroup()
+        await invalidateGetSettingsValuesByGroup()
+
+        toast.success('Settings saved successfully')
+      } catch {
+        toast.info('Settings saved but form refresh failed')
+      }
+    },
+    onError: () => toast.error('Something went wrong!'),
+  })
+}

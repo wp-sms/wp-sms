@@ -24,16 +24,6 @@ class OtpService implements AuthChannelInterface
         return 'otp';
     }
 
-    public function getKey(): string
-    {
-        return 'otp';
-    }
-
-    public function getKey(): string
-    {
-        return 'otp';
-    }
-
     /**
      * Generate a new OTP and persist it in the database.
      */
