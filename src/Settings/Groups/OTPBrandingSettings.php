@@ -30,6 +30,11 @@ class OTPBrandingSettings extends AbstractSettingGroup
         return 'sections-as-tabs';
     }
 
+    public function isApiVisible(): bool
+    {
+        return false;
+    }
+
     public function getSections(): array
     {
         return [
