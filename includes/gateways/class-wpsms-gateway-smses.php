@@ -51,13 +51,6 @@ class smses extends Gateway
     public $isflash = false;
 
     /**
-     * Whether bulk SMS sending is supported
-     *
-     * @var bool
-     */
-    public $bulk_send = false;
-
-    /**
      * Whether the incoming message is supported
      *
      * @var bool
@@ -134,35 +127,41 @@ class smses extends Gateway
      */
     private function sendSimpleSMS()
     {
-        $body = [
-            'type'     => 'text',
-            'auth'     => [
-                'username' => $this->username,
-                'password' => $this->password,
-            ],
-            'sender'   => $this->from,
-            'receiver' => $this->formatReceiverNumber($this->to[0]),
-            'text'     => $this->msg,
-            'dcs'      => 'gsm',
-        ];
+        $responses = [];
 
-        if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
-            $body['dcs'] = 'ucs';
+        foreach ($this->to as $number) {
+            $body = [
+                'type'     => 'text',
+                'auth'     => [
+                    'username' => $this->username,
+                    'password' => $this->password,
+                ],
+                'sender'   => $this->from,
+                'receiver' => $this->formatReceiverNumber($number),
+                'text'     => $this->msg,
+                'dcs'      => 'gsm',
+            ];
+
+            if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
+                $body['dcs'] = 'ucs';
+            }
+
+            if ($this->isflash) {
+                $body['flash'] = $this->isflash;
+            }
+
+            $params = [
+                'headers' => array(
+                    'Accept'       => 'application/json',
+                    'Content-Type' => 'application/json',
+                ),
+                'body'    => json_encode($body),
+            ];
+
+            $responses[$number] = $this->request('POST', $this->wsdl_link . 'sendsms', [], $params);
         }
 
-        if ($this->isflash) {
-            $body['flash'] = $this->isflash;
-        }
-
-        $params = [
-            'headers' => array(
-                'Accept'       => 'application/json',
-                'Content-Type' => 'application/json',
-            ),
-            'body'    => json_encode($body),
-        ];
-
-        return $this->request('POST', $this->wsdl_link . 'sendsms', [], $params);
+        return end($responses);
     }
 
     /**
