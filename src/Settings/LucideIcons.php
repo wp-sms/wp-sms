@@ -46,6 +46,7 @@ class LucideIcons
     public const FILE_TEXT = 'FileText';
     public const FILE_FORM = 'FileForm';
     public const DOWNLOAD = 'Download';
+    public const PALETTE = 'Palette';
     
     /**
      * Get all available icons
