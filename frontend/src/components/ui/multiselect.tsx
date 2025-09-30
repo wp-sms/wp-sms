@@ -1,7 +1,7 @@
 // src/components/multi-select.tsx
 
 import { cva, type VariantProps } from 'class-variance-authority'
-import { CheckIcon, ChevronDown, WandSparkles,XCircle, XIcon } from 'lucide-react'
+import { CheckIcon, ChevronDown, WandSparkles, XCircle, XIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { Badge } from '@/components/ui/badge'
@@ -242,7 +242,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             )}
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start" onEscapeKeyDown={() => setIsPopoverOpen(false)}>
+        <PopoverContent className="w-auto p-0 z-[200]" align="start" onEscapeKeyDown={() => setIsPopoverOpen(false)}>
           <Command>
             <CommandInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
             <CommandList>

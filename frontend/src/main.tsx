@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client'
 
 import { App } from './app'
 
-const container = document.getElementById('wp-sms-settings-root')
+const container = document.getElementById('wp-sms-react-root')
 
 if (container) {
   const root = createRoot(container)

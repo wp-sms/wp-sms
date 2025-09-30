@@ -1,0 +1,596 @@
+/**
+ * WP-SMS Authentication Form Styles
+ * 
+ * Provides styling for authentication forms, tabs, and modal overlays.
+ */
+
+/* Base container */
+.wpsms-auth {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Form container */
+.wpsms-auth-form {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Tabs */
+.wpsms-auth-form__tabs {
+    display: flex;
+    border-bottom: 1px solid #e1e5e9;
+    background: #f8f9fa;
+}
+
+.wpsms-auth-form__tab {
+    flex: 1;
+    padding: 16px 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.wpsms-auth-form__tab:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.wpsms-auth-form__tab.active {
+    color: #007cba;
+    border-bottom-color: #007cba;
+    background: #fff;
+}
+
+/* Method switcher */
+.wpsms-auth-form__methods {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e1e5e9;
+    padding: 8px;
+    gap: 4px;
+}
+
+.wpsms-auth-form__method {
+    flex: 1;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
+
+.wpsms-auth-form__method:hover {
+    border-color: #007cba;
+    color: #007cba;
+}
+
+.wpsms-auth-form__method.active {
+    background: #007cba;
+    border-color: #007cba;
+    color: #fff;
+}
+
+/* Forms container */
+.wpsms-auth-form__forms {
+    padding: 24px;
+}
+
+/* Individual forms */
+.wpsms-auth-form__form {
+    display: none;
+}
+
+.wpsms-auth-form__form.active {
+    display: block;
+}
+
+/* Form fields */
+.wpsms-auth-form__field {
+    margin-bottom: 20px;
+}
+
+.wpsms-auth-form__label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+}
+
+.wpsms-auth-form__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.wpsms-auth-form__input:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+}
+
+.wpsms-auth-form__input.error {
+    border-color: #dc3545;
+}
+
+.wpsms-auth-form__input:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* OTP inputs */
+.wpsms-auth-form__otp-inputs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.wpsms-auth-form__otp-input {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    transition: border-color 0.2s ease;
+}
+
+.wpsms-auth-form__otp-input:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+}
+
+/* Resend button */
+.wpsms-auth-form__resend {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.wpsms-auth-form__resend-btn {
+    background: none;
+    border: none;
+    color: #007cba;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.wpsms-auth-form__resend-btn:hover:not(:disabled) {
+    background: rgba(0, 124, 186, 0.1);
+}
+
+.wpsms-auth-form__resend-btn:disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+/* Form actions */
+.wpsms-auth-form__actions {
+    margin-top: 24px;
+}
+
+.wpsms-auth-form__submit {
+    width: 100%;
+    padding: 14px 24px;
+    background: #007cba;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.wpsms-auth-form__submit:hover:not(:disabled) {
+    background: #005a87;
+}
+
+.wpsms-auth-form__submit:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Status messages */
+.wpsms-auth-form__status {
+    margin-top: 20px;
+}
+
+.wpsms-auth-form__message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.wpsms-auth-form__message--success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.wpsms-auth-form__message--error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.wpsms-auth-form__message--info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Field errors */
+.wpsms-auth-form__field-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* Magic link status */
+.wpsms-auth-form__magic-status {
+    background: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 16px;
+    text-align: center;
+}
+
+.wpsms-auth-form__message {
+    margin: 0;
+    color: #005a87;
+    font-weight: 500;
+}
+
+/* Modal styles */
+.wpsms-auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+
+.wpsms-auth-modal-overlay--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.wpsms-auth-modal {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.wpsms-auth-modal--visible {
+    transform: scale(1);
+}
+
+.wpsms-auth-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e1e5e9;
+    background: #f8f9fa;
+}
+
+.wpsms-auth-modal__title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.wpsms-auth-modal__close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wpsms-auth-modal__close:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.wpsms-auth-modal__body {
+    padding: 24px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Page template styles */
+.wpsms-auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.wpsms-auth-page__container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.wpsms-auth-page__content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    padding: 40px;
+    text-align: center;
+}
+
+.wpsms-auth-page__title {
+    margin: 0 0 16px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.wpsms-auth-page__description {
+    margin: 0 0 32px 0;
+    color: #718096;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.wpsms-auth-page__footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.wpsms-auth-page__footer p {
+    margin: 0;
+    color: #718096;
+    font-size: 14px;
+}
+
+.wpsms-auth-page__footer a {
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.wpsms-auth-page__footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .wpsms-auth {
+        max-width: 100%;
+        margin: 0 16px;
+    }
+    
+    .wpsms-auth-form__forms {
+        padding: 20px;
+    }
+    
+    .wpsms-auth-form__tabs {
+        flex-direction: column;
+    }
+    
+    .wpsms-auth-form__tab {
+        border-bottom: none;
+        border-right: 3px solid transparent;
+    }
+    
+    .wpsms-auth-form__tab.active {
+        border-right-color: #007cba;
+        border-bottom-color: transparent;
+    }
+    
+    .wpsms-auth-form__methods {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .wpsms-auth-form__otp-inputs {
+        gap: 6px;
+    }
+    
+    .wpsms-auth-form__otp-input {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .wpsms-auth-modal {
+        max-width: 95vw;
+        margin: 20px;
+    }
+    
+    .wpsms-auth-modal__header {
+        padding: 16px 20px;
+    }
+    
+    .wpsms-auth-modal__body {
+        padding: 20px;
+    }
+    
+    .wpsms-auth-page {
+        padding: 20px;
+    }
+    
+    .wpsms-auth-page__content {
+        padding: 32px 24px;
+    }
+    
+    .wpsms-auth-page__title {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wpsms-auth-form__forms {
+        padding: 16px;
+    }
+    
+    .wpsms-auth-form__input {
+        padding: 10px 14px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    .wpsms-auth-form__submit {
+        padding: 12px 20px;
+    }
+    
+    .wpsms-auth-modal__header {
+        padding: 12px 16px;
+    }
+    
+    .wpsms-auth-modal__body {
+        padding: 16px;
+    }
+    
+    .wpsms-auth-page__content {
+        padding: 24px 20px;
+    }
+}
+
+/* Dark mode support (placeholder) */
+@media (prefers-color-scheme: dark) {
+    .wpsms-auth {
+        color: #e2e8f0;
+    }
+    
+    .wpsms-auth-form {
+        background: #1a202c;
+        color: #e2e8f0;
+    }
+    
+    .wpsms-auth-form__input {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .wpsms-auth-form__input:focus {
+        border-color: #63b3ed;
+        box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+    }
+    
+    .wpsms-auth-form__tabs {
+        background: #2d3748;
+        border-bottom-color: #4a5568;
+    }
+    
+    .wpsms-auth-form__tab {
+        color: #a0aec0;
+    }
+    
+    .wpsms-auth-form__tab:hover {
+        background: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .wpsms-auth-form__tab.active {
+        background: #1a202c;
+        color: #63b3ed;
+    }
+    
+    .wpsms-auth-form__methods {
+        background: #2d3748;
+        border-bottom-color: #4a5568;
+    }
+    
+    .wpsms-auth-form__method {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #a0aec0;
+    }
+    
+    .wpsms-auth-form__method:hover {
+        border-color: #63b3ed;
+        color: #63b3ed;
+    }
+    
+    .wpsms-auth-form__method.active {
+        background: #63b3ed;
+        border-color: #63b3ed;
+        color: #1a202c;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .wpsms-auth-form__input {
+        border-width: 3px;
+    }
+    
+    .wpsms-auth-form__submit {
+        border: 3px solid #000;
+    }
+    
+    .wpsms-auth-form__tab.active {
+        border-bottom-width: 4px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .wpsms-auth-form__input,
+    .wpsms-auth-form__submit,
+    .wpsms-auth-form__tab,
+    .wpsms-auth-form__method,
+    .wpsms-auth-modal,
+    .wpsms-auth-modal-overlay {
+        transition: none;
+    }
+}

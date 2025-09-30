@@ -74,7 +74,8 @@ class SettingAdminPage
                                             'nonce'   => wp_create_nonce('wp_rest'),
                                             'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
                                             'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
-                                            'assets' => $assets
+                                            'assets' => $assets,
+                                            'react_starting_point' => '#settings/general'
                                         ]); ?>;
             </script>
 <?php
@@ -287,7 +288,7 @@ class SettingAdminPage
     public function renderSettings(): void
     {
         echo '<div class="wrap wp-sms-settings-wrap">';
-        echo '<div id="wp-sms-settings-root"></div>';
+        echo '<div id="wp-sms-react-root"></div>';
         echo '</div>';
     }
 }

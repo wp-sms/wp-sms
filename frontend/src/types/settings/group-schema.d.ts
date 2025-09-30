@@ -1,5 +1,8 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 
+// Specific types for field rendering
+type FieldValue = string | number | boolean | string[] | Record<string, unknown>[] | null | undefined
+
 type GetGroupSchemaParams = {
   params?: Partial<{
     groupName: string
@@ -46,7 +49,7 @@ type SchemaField = {
   type: SchemaFieldType
   label: string
   description: string
-  groupLabel: string
+  groupLabel: string | null
   section: string | null
   options: FieldOption
   order: number
@@ -71,6 +74,11 @@ type SchemaField = {
   max: number | null
   options_depends_on: null
   readonly: boolean
+  validateCallback: Record<string, unknown> | []
+  sanitizeCallback: string | null
+  step: number | null
+  rows: number | null
+  sub_fields?: SchemaField[]
 }
 
 type SchemaSection = {
@@ -95,6 +103,14 @@ type GetGroupSchemaResponse = {
 }
 
 type UseGetGroupSchemaType = {
-  options: Partial<UseQueryOptions<any, any, GetGroupSchemaResponse, any>> & GetGroupSchemaParams
+  options: Partial<UseQueryOptions<unknown, unknown, GetGroupSchemaResponse, unknown>> & GetGroupSchemaParams
   response: GetGroupSchemaResponse
+}
+interface GetSchemaByGroupParams {
+  groupName: SettingGroupName
+  include_hidden?: boolean
+}
+
+interface GetSchemaByGroupResponse {
+  data: GroupSchema | null
 }
