@@ -23,7 +23,4 @@ class QueueMigration extends BaseMigrationOperation
      * @var array<string, string> Array mapping step names to method names
      */
     protected $migrationSteps = [];
-
-    public function sampleQueueMigration()
-    {}
 }
