@@ -19,7 +19,7 @@ class Gateway
      * Set pro gateways
      */
     public static $proGateways = array(
-        'global'         => array(
+        'global'               => array(
             'twilio'         => 'twilio.com',
             'plivo'          => 'plivo.com',
             'clickatell'     => 'clickatell.com',
@@ -96,105 +96,105 @@ class Gateway
             'cloudtalk'      => 'cloudtalk.io',
             'threema'        => 'threema.ch'
         ),
-        'united states'  => array(
+        'united states'        => array(
             'telnyx' => 'telnyx.com',
         ),
-        'germany'        => array(
+        'germany'              => array(
             'gtxmessaging' => 'gtx-messaging.com',
         ),
-        'united kingdom' => array(
+        'united kingdom'       => array(
             'firetext' => 'firetext.co.uk',
         ),
-        'french'         => array(
+        'french'               => array(
             'linkmobilityFr' => 'linkmobility.fr',
         ),
-        'africa'         => array(
+        'africa'               => array(
             'jusibe'      => 'jusibe.com',
             'montymobile' => 'montymobile.com',
             'hubtel'      => 'hubtel.com',
         ),
-        'romania'        => array(
+        'romania'              => array(
             'sendsms'  => 'sendsms.ro',
             'smschef'  => 'smschef.com',
             'nobelsms' => 'nobelsms.com',
         ),
-        'arabic'         => array(
+        'arabic'               => array(
             'kwtsms'      => 'kwtsms.com',
             'taqnyat'     => 'taqnyat.sa',
             'mobishastra' => 'mobishastra.com',
             'brqsms'      => 'brqsms.com',
         ),
-        'bangladesh'     => array(
+        'bangladesh'           => array(
             'esmsbd'    => 'esms.com.bd',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
             'revesms'   => 'smpp.ajuratech.com',
         ),
-        'china'          => array(
+        'china'                => array(
             'juhe' => 'juhe.cn'
         ),
-        'palestine'      => array(
+        'palestine'            => array(
             'htd' => 'htd.ps',
         ),
-        'pakistan'       => array(
+        'pakistan'             => array(
             'sendpk' => 'sendpk.com',
         ),
-        'uzbakistan'     => array(
+        'uzbakistan'           => array(
             'eskiz' => 'eskiz.uz',
         ),
-        'india'          => array(
+        'india'                => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
             'smsbharti'        => 'smsbharti.com'
         ),
-        'srilanka'       => array(
+        'srilanka'             => array(
             'notify' => 'notify.lk'
         ),
-        'poland'         => array(
+        'poland'               => array(
             'smseagle' => 'smseagle.eu'
         ),
-        'australia'      => array(
+        'australia'            => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
             'textteam'     => 'textteam.com.au',
             'messagemedia' => 'messagemedia.com/au',
             'smscentral'   => 'smscentral.com.au',
         ),
-        'russia'         => array(
-            'sigmasms'   => 'sigmasms.ru',
-            'turbosms'   => 'turbosms.ua',
+        'russia'               => array(
+            'sigmasms' => 'sigmasms.ru',
+            'turbosms' => 'turbosms.ua',
         ),
-        'malaysia'       => array(
+        'malaysia'             => array(
             'klasiksms' => 'klasiksms.com',
         ),
-        'mexico'         => array(
+        'mexico'               => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
-        'iran'           => array(
+        'iran'                 => array(
             'mehrafraz' => 'mehrafraz.com/fa',
         ),
-        'indonesia'      => array(
+        'indonesia'            => array(
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
         ),
-        'taiwan'         => array(
+        'taiwan'               => array(
             'mitake'  => 'mitake.com.tw',
             'every8d' => 'teamplus.tech',
         ),
-        'thailand'       => array(
+        'thailand'             => array(
             'mailbit' => 'mailbit.co.th',
         ),
-        'south korea'    => array(
+        'south korea'          => array(
             'nhncloud' => 'nhncloud.com/kr',
         ),
-        'morocco'        => array(
+        'morocco'              => array(
             'bulksmsMa' => 'bulksms.ma'
         ),
-        'philippine'     => array(
+        'philippine'           => array(
             'semaphore' => 'semaphore.co',
         ),
         'united arab emirates' => [
-            'smsala'    => 'smsala'
+            'smsala' => 'smsala'
         ]
     );
 
@@ -1101,7 +1101,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return $request->execute($throwFailedHttpCodeResponse);
+        return $request->execute($throwFailedHttpCodeResponse, false);
     }
 
     /**
