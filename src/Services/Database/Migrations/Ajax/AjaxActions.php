@@ -28,13 +28,9 @@ class AjaxActions
     public function backgroundProcess()
     {
         try {
-            if (AjaxFactory::isDatabaseMigrated()) {
-                AjaxFactory::getCurrentMigrate();
-
-                Ajax::success(esc_html__('Database migrated successfully.', 'wp-sms'));
-            } else {
-                Ajax::success(esc_html__('No migration needed.', 'wp-sms'));
-            }
+            $this->verifyAjaxRequest();
+            $this->checkAdminReferrer('wp_rest', 'wps_nonce');
+            $this->checkCapability('manage_options');
         } catch (Exception $e) {
             Ajax::error($e->getMessage(), null, $e->getCode());
         }
