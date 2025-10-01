@@ -232,15 +232,11 @@
 
 /* WordPress Admin Integration Styles */
 .wp-sms-react-wrap {
-  max-width: 100% !important;
-  padding: 0 !important;
+  @apply p-0 m-0 -mb-7;
 }
 
 #wp-sms-react-root {
-  position: relative;
-  width: 100%;
-  height: auto;
-  min-height: 600px;
+  @apply relative h-auto min-h-[600px] -ms-5;
 }
 
 #wp-sms-react-root a {
