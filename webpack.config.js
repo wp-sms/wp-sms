@@ -27,9 +27,6 @@ module.exports = {
         onboarding: [
             './assets/src/scripts/onboarding.js',
         ],
-        background_process: [
-            './assets/src/scripts/background-process.js',
-        ]
     },
     output: {
         filename: '[name].min.js',
