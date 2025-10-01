@@ -9,6 +9,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { getDirtyFormValues, useAppForm } from '@/hooks/use-form'
 import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { FieldRenderer } from './field-renderer'
 
 type SchemaFormProps = {
@@ -66,25 +67,60 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit }: SchemaFormPr
       >
         <GroupTitle label={formSchema.label || ''} />
 
-        {formSchema.sections.map((section, index) => (
-          <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
-            <CardHeader>
-              <CardTitle>{section.title}</CardTitle>
-              {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
-            </CardHeader>
-            <CardContent className="flex flex-col gap-y-8">
-              {section.fields?.map((field) => (
-                <FieldRenderer
-                  key={field.key}
-                  form={form}
-                  schema={field}
-                  onOpenSubFields={handleFieldAction}
-                  onSubmit={onSubmit}
-                />
-              ))}
-            </CardContent>
-          </Card>
-        ))}
+        {formSchema.layout === 'default' ? (
+          formSchema.sections.map((section, index) => (
+            <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
+              <CardHeader>
+                <CardTitle>{section.title}</CardTitle>
+                {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
+              </CardHeader>
+              <CardContent className="flex flex-col gap-y-8">
+                {section.fields?.map((field) => (
+                  <FieldRenderer
+                    key={field.key}
+                    form={form}
+                    schema={field}
+                    onOpenSubFields={handleFieldAction}
+                    onSubmit={onSubmit}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Tabs defaultValue={formSchema.sections[0].id} className="w-full">
+            <TabsList>
+              {formSchema.sections.map((section) => {
+                return (
+                  <TabsTrigger value={section.id} key={section.id}>
+                    {section.title}
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
+            {formSchema.sections.map((section, index) => (
+              <TabsContent key={section.id} value={section.id}>
+                <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
+                  <CardHeader>
+                    <CardTitle>{section.title}</CardTitle>
+                    {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
+                  </CardHeader>
+                  <CardContent className="flex flex-col gap-y-8">
+                    {section.fields?.map((field) => (
+                      <FieldRenderer
+                        key={field.key}
+                        form={form}
+                        schema={field}
+                        onOpenSubFields={handleFieldAction}
+                        onSubmit={onSubmit}
+                      />
+                    ))}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
 
         <form.AppForm>
           <form.FormActions />
