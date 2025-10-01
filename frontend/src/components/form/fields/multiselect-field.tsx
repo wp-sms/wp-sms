@@ -25,7 +25,7 @@ export const MultiselectField = ({ schema }: MultiselectFieldProps) => {
     <FieldWrapper schema={schema} errors={errors}>
       <MultiSelect
         aria-invalid={!!errors.length}
-        value={selectedValues ?? []}
+        defaultValue={selectedValues ?? []}
         options={toOptions(schema.options) ?? []}
         onValueChange={field.handleChange}
         onBlur={field.handleBlur}
