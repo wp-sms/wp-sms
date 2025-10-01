@@ -2,9 +2,9 @@
 
 namespace WP_SMS\Gateway;
 
-use WP_SMS\Gateway;
 use Exception;
 use WP_Error;
+use WP_SMS\Gateway;
 
 class sms extends Gateway
 {
@@ -91,6 +91,24 @@ class sms extends Gateway
                 'desc' => __('Enter your gateway API key.', 'wp-sms'),
             ],
         ];
+
+        $this->help = "
+<div dir='rtl'><h3>ارسال پیامک با قالب (قالب خدماتی)</h3>
+<ol>
+  <li><strong>قالب را در پنل پیامک ثبت و تأیید کنید</strong><br>
+    متن قالب و متغیرها باید دقیقاً همان چیزی باشند که در افزونه مینویسید ولی بین <code>##</code> قرار بگیرد..<br>
+    <code style='direction: rtl'>سلام #billing_first_name#، سفارش #order_id# با موفقیت ثبت شد.</code>
+  </li>
+  <li><strong>در افزونه همان متن را بنویسید و کد قالب را با «|» بعد از متن پیامک اضافه کنید</strong><br>
+    <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
+  </li>
+</ol>
+<p><strong>نکات مهم</strong></p>
+<ul>
+  <li>نام متغیرها در سمت پنل پیامک باید بین <code>##</code> قرار بگیرند؛ مانند <code>#billing_first_name#</code> و <code>#order_id#</code>.</li>
+  <li>اگر <code>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
+</ul></div>";
+
         $this->api_key       = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
     }
 
