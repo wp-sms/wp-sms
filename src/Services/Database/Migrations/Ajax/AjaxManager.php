@@ -48,26 +48,20 @@ class AjaxManager extends BaseMigrationManager
             return;
         }
         add_action('admin_enqueue_scripts', [$this, 'registerScript']);
-        add_filter('wp_sms_ajax_list', [$this, 'addAjax']);
+        add_filter('admin_init', [$this, 'registerAjaxCallbacks']);
         add_action('current_screen', [$this, 'handleNotice']);
         add_action('admin_post_' . self::MIGRATION_ACTION, [$this, 'handleAjaxMigration']);
     }
 
     /**
-     * Adds the migration process to the AJAX action list.
+     * Registers AJAX callbacks for handling asynchronous requests.
      *
-     * @param array $list List of existing AJAX actions.
-     * @return array Updated list including migration.
+     * @return void
      */
-    public function addAjax($list)
+    public function registerAjaxCallbacks()
     {
-        $list[] = [
-            'class'  => !AjaxFactory::isDatabaseMigrated() ? null : AjaxFactory::getCurrentMigrate(),
-            'action' => 'background_process',
-            'public' => false
-        ];
-
-        return $list;
+        $ajaxActions = new AjaxActions();
+        $ajaxActions->register();
     }
 
     /**
