@@ -19,8 +19,7 @@ export const CheckboxField = ({ schema }: CheckboxFieldProps) => {
     <FieldWrapper errors={errors} schema={schema}>
       <Checkbox
         id={schema.key}
-        defaultChecked={Boolean(schema.default)}
-        checked={Boolean(field.state.value)}
+        checked={Boolean(field.state.value || schema.default)}
         onCheckedChange={(checked) => field.handleChange(checked === true)}
         onBlur={field.handleBlur}
         disabled={schema.readonly}

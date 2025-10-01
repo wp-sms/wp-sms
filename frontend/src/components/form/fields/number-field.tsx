@@ -23,8 +23,7 @@ export const NumberField = ({ schema }: NumberFieldProps) => {
         min={schema.min || undefined}
         max={schema.max || undefined}
         step={schema.step || undefined}
-        defaultValue={String(schema.default || '')}
-        value={String(field.state.value || '')}
+        value={String(field.state.value || schema.default || '')}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(parseFloat(e.target.value) || 0)}
         disabled={schema.readonly}
