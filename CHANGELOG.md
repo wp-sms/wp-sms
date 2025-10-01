@@ -1,4 +1,7 @@
 = v7.x.x - 2025-x-x =
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- New: Support SMSALA gateway in WP SMS Pro.
+- **Fix:** Disabled caching to prevent duplicate responses for similar messages.
 - **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
 
 = v7.0.3 - 2025-09-17 =
