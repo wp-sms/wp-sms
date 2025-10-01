@@ -47,7 +47,7 @@ abstract class BaseMigrationManager
      */
     protected function verifyMigrationPermission()
     {
-        if (!User::hasCapability('manage_options')) {
+        if (User::hasCapability('manage_options')) {
             return;
         }
 

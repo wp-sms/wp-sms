@@ -187,6 +187,10 @@ class UserHelper
         }
 
         if (is_multisite()) {
+            if (is_super_admin()) {
+                return true;
+            }
+
             return current_user_can_for_site(get_current_blog_id(), $capability);
         }
 
