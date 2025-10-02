@@ -19,7 +19,7 @@ class MeliPayamakGatewayTest extends WP_UnitTestCase
      */
     protected $gateway;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->gateway = new melipayamak();
