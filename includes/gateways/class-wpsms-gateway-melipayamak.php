@@ -58,6 +58,20 @@ class melipayamak extends Gateway
     public $template_id = null;
 
     /**
+     * Backup sender number 1.
+     *
+     * @var string
+     */
+    public $from_support_one = '';
+
+    /**
+     * Backup sender number 2.
+     *
+     * @var string
+     */
+    public $from_support_two = '';
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -65,20 +79,30 @@ class melipayamak extends Gateway
         parent::__construct();
 
         $this->gatewayFields = [
-            'username' => [
+            'username'         => [
                 'id'   => 'gateway_username',
                 'name' => __('API Username', 'wp-sms'),
                 'desc' => __('Enter the API username provided by your SMS gateway.', 'wp-sms'),
             ],
-            'password' => [
+            'password'         => [
                 'id'   => 'gateway_password',
                 'name' => __('API Password', 'wp-sms'),
                 'desc' => __('Enter the API password provided by your SMS gateway.', 'wp-sms'),
             ],
-            'from'     => [
+            'from'             => [
                 'id'   => 'gateway_sender_id',
                 'name' => __('Sender Number', 'wp-sms'),
                 'desc' => __('Enter the sender number or sender ID registered with your SMS gateway.', 'wp-sms'),
+            ],
+            'from_support_one' => [
+                'id'   => 'gateway_support_1_sender_id',
+                'name' => __('Backup sender 1 (optional)', 'wp-sms'),
+                'desc' => __('Optional: support sender number used with Smart SMS.', 'wp-sms'),
+            ],
+            'from_support_two' => [
+                'id'   => 'gateway_support_2_sender_id',
+                'name' => __('Backup sender 2 (optional)', 'wp-sms'),
+                'desc' => __('Optional: secondary support sender used with Smart SMS.', 'wp-sms'),
             ],
         ];
     }
@@ -130,7 +154,7 @@ class melipayamak extends Gateway
             } else {
                 $response = $this->sendSimpleSMS();
             }
-            
+
             if (is_wp_error($response)) {
                 $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
                 return $response;
@@ -211,6 +235,14 @@ class melipayamak extends Gateway
             $body['isflash'] = $this->isflash;
         }
 
+        if (!empty($this->from_support_one)) {
+            $body['fromSupportOne'] = $this->from_support_one;
+        }
+
+        if (!empty($this->from_support_two)) {
+            $body['fromSupportTwo'] = $this->from_support_two;
+        }
+
         $params = [
             'headers' => [
                 'Content-Type' => 'application/x-www-form-urlencoded',
@@ -218,7 +250,7 @@ class melipayamak extends Gateway
             'body'    => $body,
         ];
 
-        return $this->request('POST', $this->wsdl_link . 'SendSMS/SendSMS', [], $params);
+        return $this->request('POST', $this->wsdl_link . 'SmartSMS/Send', [], $params);
     }
 
     /**
