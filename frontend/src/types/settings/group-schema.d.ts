@@ -29,6 +29,8 @@ type SchemaFieldType =
   | 'header'
   | 'notice'
   | 'image'
+  | 'url'
+  | 'media'
 
 type SchemaFieldLayout =
   | '2-column'
