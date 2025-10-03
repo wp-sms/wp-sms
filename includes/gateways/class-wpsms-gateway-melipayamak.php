@@ -72,6 +72,13 @@ class melipayamak extends Gateway
     public $from_support_two = '';
 
     /**
+     * Gateway document url
+     *
+     * @var string
+     */
+    public $documentUrl = "https://www.melipayamak.com/lab/wordpress-sending-sms-plugin-wp-smsn/";
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -157,6 +164,7 @@ class melipayamak extends Gateway
 
             if (is_wp_error($response)) {
                 $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
+
                 return $response;
             }
 
@@ -265,24 +273,29 @@ class melipayamak extends Gateway
             return new WP_Error('invalid-template', __('Message does not contain valid template placeholders.', 'wp-sms'));
         }
 
+        $receivers     = $this->formatReceiverNumbers($this->to);
+        $responses     = [];
         $messageValues = array_values($this->messageVariables);
 
-        $body = [
-            'username' => $this->username,
-            'password' => $this->password,
-            'text'     => implode(';', $messageValues),
-            'to'       => $this->formatReceiverNumbers($this->to)[0],
-            'bodyId'   => (int)$this->template_id,
-        ];
+        foreach ($receivers as $receiver) {
+            $body   = [
+                'username' => $this->username,
+                'password' => $this->password,
+                'text'     => implode(';', $messageValues),
+                'to'       => $receiver,
+                'bodyId'   => (int)$this->template_id,
+            ];
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body'    => $body,
+            ];
 
-        $params = [
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-            'body'    => $body,
-        ];
+            $responses[] = $this->request('POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], $params);
+        }
 
-        return $this->request('POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], $params);
+        return end($responses);
     }
 
     /**
@@ -291,6 +304,7 @@ class melipayamak extends Gateway
      * Ensures numbers are in local `09xxxxxxxxx` format.
      *
      * @param array|string $numbers Phone number(s).
+     *
      * @return array Formatted phone numbers.
      */
     private function formatReceiverNumbers($numbers)
