@@ -127,7 +127,7 @@ export function Combobox({
         </PopoverTrigger>
         <PopoverContent align="start" className={cn('w-full p-0', contentClassName)}>
           <Command defaultValue={value}>
-            <CommandInput placeholder={searchPlaceholder} />
+            {options.length > 10 && <CommandInput placeholder={searchPlaceholder} />}
             <CommandList ref={commandListRef}>
               <CommandEmpty>{emptyMessage}</CommandEmpty>
               {options.map((option, index) => {
