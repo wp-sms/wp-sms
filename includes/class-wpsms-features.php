@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Settings\Option;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly

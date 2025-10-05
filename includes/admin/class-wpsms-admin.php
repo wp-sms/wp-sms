@@ -1,6 +1,7 @@
 <?php
 
 namespace WP_SMS;
+use WP_SMS\Settings\Option;
 
 class Admin
 {

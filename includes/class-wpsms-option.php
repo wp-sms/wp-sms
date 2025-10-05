@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
+/**
+ * @deprecated This class has been moved to src/Settings/Option.php
+ * Please use WP_SMS\Settings\Option instead
+ */
 class Option
 {
 
