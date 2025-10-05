@@ -10,7 +10,7 @@ export const FormActions = () => {
   return (
     <form.Subscribe selector={(state) => state.isDirty}>
       {(isDirty) => (
-        <div className="flex items-center justify-end gap-x-3 sticky bottom-0 bg-background p-3 z-50 mt-2">
+        <div className="flex items-center justify-end gap-x-3 sticky bottom-0 bg-background py-3 z-50 mt-2">
           <Button
             disabled={!isDirty || form.state.isSubmitting}
             type="reset"

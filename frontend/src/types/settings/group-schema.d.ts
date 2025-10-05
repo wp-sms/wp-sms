@@ -29,6 +29,8 @@ type SchemaFieldType =
   | 'header'
   | 'notice'
   | 'image'
+  | 'url'
+  | 'media'
 
 type SchemaFieldLayout =
   | '2-column'
@@ -95,6 +97,7 @@ type SchemaSection = {
 type GroupSchema = {
   icon: string
   label: string
+  layout: 'default' | 'sections-as-tabs'
   sections: SchemaSection[]
 }
 

@@ -1,19 +1,13 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { AlertCircle, X } from 'lucide-react'
-import { useState } from 'react'
+import { AlertCircle } from 'lucide-react'
 
-import { FieldRenderer } from '@/components/form/field-renderer'
 import { SchemaForm } from '@/components/form/schema-form'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
-import { useAppForm } from '@/hooks/use-form'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
 import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
-import type { SchemaField } from '@/types/settings/group-schema'
 
 export const Route = createFileRoute('/otp/_layout/authentication-channels')({
   loader: ({ context }) =>
@@ -36,54 +30,11 @@ function RouteComponent() {
   const { data: valuesResult } = useSuspenseQuery(getSettingsValuesByGroup({ groupName: 'otp-channel' }))
   const { mutateAsync } = useSaveSettingsValues({ groupName: 'otp-channel', include_hidden: true })
 
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [selectedField, setSelectedField] = useState<SchemaField | null>(null)
-
   const schema = result.data.data
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     await mutateAsync(values)
   }
 
-  const handleFieldAction = (field: SchemaField) => {
-    setSelectedField(field)
-    setDrawerOpen(true)
-  }
-
-  const form = useAppForm({
-    defaultValues: valuesResult?.data?.data ?? {},
-    onSubmit: handleSubmit,
-  })
-
-  return (
-    <>
-      <SchemaForm
-        formSchema={schema}
-        defaultValues={valuesResult?.data?.data ?? {}}
-        onSubmit={handleSubmit}
-        onFieldAction={handleFieldAction}
-      />
-
-      {/* Sub-fields Drawer */}
-      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="right">
-        <DrawerContent className="h-full w-96 mr-0 rounded-none">
-          <DrawerHeader className="flex flex-row items-center justify-between">
-            <DrawerTitle>{selectedField ? `${selectedField.label} Settings` : 'Field Settings'}</DrawerTitle>
-            <Button variant="ghost" size="sm" onClick={() => setDrawerOpen(false)} className="h-8 w-8 p-0">
-              <X className="h-4 w-4" />
-            </Button>
-          </DrawerHeader>
-          <div className="flex-1 overflow-y-auto p-4">
-            {selectedField && selectedField.sub_fields && selectedField.sub_fields.length > 0 && (
-              <div className="space-y-6">
-                {selectedField.sub_fields.map((field) => (
-                  <FieldRenderer key={field.key} form={form} schema={field} onOpenSubFields={handleFieldAction} />
-                ))}
-              </div>
-            )}
-          </div>
-        </DrawerContent>
-      </Drawer>
-    </>
-  )
+  return <SchemaForm formSchema={schema} defaultValues={valuesResult?.data?.data ?? {}} onSubmit={handleSubmit} />
 }

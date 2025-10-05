@@ -21,8 +21,7 @@ export const TextField = ({ schema }: TextFieldProps) => {
         id={schema.key}
         type="text"
         placeholder={schema.placeholder}
-        defaultValue={String(schema.default || '')}
-        value={String(field.state.value || '')}
+        value={String(field.state.value || schema.default || '')}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         disabled={schema.readonly}
