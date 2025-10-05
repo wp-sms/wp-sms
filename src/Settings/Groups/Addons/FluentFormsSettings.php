@@ -26,6 +26,12 @@ class FluentFormsSettings extends AbstractSettingGroup
         return LucideIcons::FILE_TEXT;
     }
 
+    public function getMetaData(){
+        return [
+            'addon' => 'fluent_integrations',
+        ];
+    }
+
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();

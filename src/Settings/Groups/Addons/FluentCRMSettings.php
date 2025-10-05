@@ -25,6 +25,11 @@ class FluentCRMSettings extends AbstractSettingGroup
     {
         return LucideIcons::USERS;
     }
+    public function getMetaData(){
+        return [
+            'addon' => 'fluent_integrations',
+        ];
+    }
 
     public function getSections(): array
     {

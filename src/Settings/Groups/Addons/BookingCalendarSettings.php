@@ -25,6 +25,12 @@ class BookingCalendarSettings extends AbstractSettingGroup
         return LucideIcons::CALENDAR;
     }
 
+    public function getMetaData(){
+        return [
+            'addon' => 'booking_integrations',
+        ];
+    }
+
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();
