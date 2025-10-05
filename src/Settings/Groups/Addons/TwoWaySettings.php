@@ -44,6 +44,12 @@ class TwoWaySettings extends AbstractSettingGroup
         return LucideIcons::MESSAGE_CIRCLE;
     }
 
+    public function getMetaData(){
+        return [
+            'addon' => 'two_way',
+        ];
+    }
+
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();

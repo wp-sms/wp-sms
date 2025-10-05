@@ -26,6 +26,12 @@ class FluentSupportSettings extends AbstractSettingGroup
         return LucideIcons::HELP_CIRCLE;
     }
 
+    public function getMetaData(){
+        return [
+            'addon' => 'fluent_integrations',
+        ];
+    }
+
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();

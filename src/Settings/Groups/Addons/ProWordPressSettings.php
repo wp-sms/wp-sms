@@ -17,6 +17,12 @@ class ProWordPressSettings extends AbstractSettingGroup
         return 'Pro WordPress (Login & OTP)';
     }
 
+    public function getMetaData(){
+        return [
+            'addon' => 'pro',
+        ];
+    }
+
     public function getFields(): array
     {
         return [

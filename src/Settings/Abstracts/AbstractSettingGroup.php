@@ -27,18 +27,28 @@ abstract class AbstractSettingGroup
         $this->wooProIsInstalled = Version::pro_is_installed('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
     }
 
-    public abstract function getName(): string;
+    public abstract function getName();
 
-    public abstract function getLabel(): string;
+    public abstract function getLabel();
 
-    public abstract function getFields(): array;
+    public abstract function getFields();
+
+    /**
+     * Get extra fields for this group
+     *
+     * @return array|null
+     */
+    public function getMetaData()
+    {
+        return null;
+    }
 
     /**
      * Get the Lucide icon name for this group
      *
      * @return string
      */
-    public function getIcon(): string
+    public function getIcon()
     {
         return LucideIcons::getDefault();
     }
@@ -48,7 +58,7 @@ abstract class AbstractSettingGroup
      *
      * @return array
      */
-    public function getSections(): array
+    public function getSections()
     {
         // Default: create one section with all fields
         return [
@@ -61,7 +71,7 @@ abstract class AbstractSettingGroup
         ];
     }
 
-    public function getUMRegisterFormFields(): array
+    public function getUMRegisterFormFields()
     {
         $ultimate_member_forms = get_posts(['post_type' => 'um_form']);
 
@@ -82,7 +92,7 @@ abstract class AbstractSettingGroup
         return $return_value;
     }
 
-    public function getBuddyPressProfileFields(): array
+    public function getBuddyPressProfileFields()
     {
         $buddyPressProfileFields = [];
         if (function_exists('bp_xprofile_get_groups')) {
@@ -99,7 +109,7 @@ abstract class AbstractSettingGroup
         return $buddyPressProfileFields;
     }
 
-    public function getSubscriberGroups(): array
+    public function getSubscriberGroups()
     {
         /*
          * Pro Pack fields
@@ -116,12 +126,12 @@ abstract class AbstractSettingGroup
         return $subscribe_groups;
     }
 
-    public function proIsInstalled(): bool
+    public function proIsInstalled()
     {
         return $this->proIsInstalled;
     }
 
-    public function wooProIsInstalled(): bool
+    public function wooProIsInstalled()
     {
         return $this->wooProIsInstalled;
     }
@@ -129,7 +139,7 @@ abstract class AbstractSettingGroup
     /*
      * Get list Post Type
      */
-    public function getListPostType($args = array()): array
+    public function getListPostType($args = array())
     {
         // vars
         $postTypes = array();
@@ -167,7 +177,7 @@ abstract class AbstractSettingGroup
      *
      * @return array
      */
-    public function getTaxonomiesAndTerms(): array
+    public function getTaxonomiesAndTerms()
     {
         $result     = [];
         $taxonomies = get_taxonomies(array(
@@ -196,7 +206,7 @@ abstract class AbstractSettingGroup
     }
 
 
-    public function getRoles(): array
+    public function getRoles()
     {
         $wpSmsListOfRole = Helper::getListOfRoles();
         $roles              = [];
@@ -214,7 +224,7 @@ abstract class AbstractSettingGroup
      *
      * @return string|null
      */
-    public function getOptionKeyName(): ?string
+    public function getOptionKeyName()
     {
         return null;
     }
