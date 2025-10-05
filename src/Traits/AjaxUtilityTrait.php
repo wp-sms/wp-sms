@@ -18,7 +18,7 @@ trait AjaxUtilityTrait
     protected function verifyAjaxRequest()
     {
         if (!Request::isFrom('ajax')) {
-            die(esc_html__('Request is not a valid AJAX request. Please try again!', 'wp-statistics'));
+            die(esc_html__('Request is not a valid AJAX request. Please try again!', 'wp-sms'));
         }
     }
 
@@ -38,7 +38,7 @@ trait AjaxUtilityTrait
         $nonce = Request::get($field);
 
         if (!wp_verify_nonce($nonce, $action)) {
-            throw new Exception(esc_html__('The request does not contain a valid nonce. Please try again.', 'wp-statistics'), 403);
+            throw new Exception(esc_html__('The request does not contain a valid nonce. Please try again.', 'wp-sms'), 403);
         }
     }
 
@@ -52,7 +52,7 @@ trait AjaxUtilityTrait
     protected function checkCapability($cap)
     {
         if (!User::hasCapability($cap)) {
-            throw new Exception(esc_html__('You do not have permission to perform this action. Please contact an administrator.', 'wp-statistics'), 403);
+            throw new Exception(esc_html__('You do not have permission to perform this action. Please contact an administrator.', 'wp-sms'), 403);
         }
     }
 
@@ -71,7 +71,7 @@ trait AjaxUtilityTrait
         $referer  = strtolower(wp_get_referer());
 
         if (!wp_verify_nonce($nonce, $action) || strpos($referer, $adminUrl) !== 0) {
-            throw new Exception(esc_html__('The request does not come from the admin dashboard or is invalid.', 'wp-statistics'), 403);
+            throw new Exception(esc_html__('The request does not come from the admin dashboard or is invalid.', 'wp-sms'), 403);
         }
     }
 }
