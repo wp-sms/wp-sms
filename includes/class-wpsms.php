@@ -202,9 +202,6 @@ class WP_SMS
             $mobileFieldManager->init();
         });
 
-        // Initializing MigrationManager
-        (new MigrationManager())->init();
-
         // Legacy classes.
         $this->include('includes/class-wpsms-features.php');
         $this->include('includes/class-wpsms-notifications.php');
