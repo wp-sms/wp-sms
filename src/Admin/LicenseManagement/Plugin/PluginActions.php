@@ -38,7 +38,22 @@ class PluginActions
             'action' => 'activate_plugin'
         ];
 
-        return $list;
+        foreach ($list as $item) {
+            $class    = $item['class'];
+            $action   = $item['action'];
+            $callback = $action . '_action_callback';
+            $isPublic = isset($item['public']) && $item['public'] == true ? true : false;
+
+            // If callback exists in the class, register the action
+            if (!empty($class) && method_exists($class, $callback)) {
+                add_action('wp_ajax_wp_statistics_' . $action, [$class, $callback]);
+
+                // Register the AJAX callback publicly
+                if ($isPublic) {
+                    add_action('wp_ajax_nopriv_wp_statistics_' . $action, [$class, $callback]);
+                }
+            }
+        }
     }
 
     public function check_license_action_callback()
