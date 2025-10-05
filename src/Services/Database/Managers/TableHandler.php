@@ -56,6 +56,8 @@ class TableHandler
 
         Option::saveOptionGroup('migrated', false, 'db');
         Option::saveOptionGroup('migration_status_detail', null, 'db');
+        Option::saveOptionGroup('completed', false, 'queue_background_process');
+        Option::saveOptionGroup('status', null, 'queue_background_process');
 
         $dismissedNotices = get_option('wp_sms_dismissed_notices', []);
 
