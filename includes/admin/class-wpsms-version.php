@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use WP_SMS\Helper;
+use WP_SMS\Settings\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -193,9 +194,9 @@ class Version
             $licenseIsStillValid = wp_sms_check_remote_license($addOnKey, wp_sms_get_license_key($addOnKey));
 
             if ($licenseIsStillValid) {
-                Option::updateOption("license_{$addOnKey}_status", true);
+                Option::updateOption("license_{$addOnKey}_status", 'pro');
             } else {
-                Option::updateOption("license_{$addOnKey}_status", false);
+                Option::updateOption("license_{$addOnKey}_status");
             }
         }
     }

@@ -34,7 +34,7 @@ class GetSettingsEndpointTest extends TestCase
         $default = $fields[0]->default;
 
         // Remove the option value to test fallback
-        \WP_SMS\Option::updateOption($key, null, null);
+        \WP_SMS\Settings\Option::updateOption($key, null, null);
 
         $ref = new \ReflectionClass(GetSettingsEndpoint::class);
         $method = $ref->getMethod('resolveValues');
