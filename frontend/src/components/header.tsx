@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { CircleQuestionMark, Crown, Inbox, MessageSquarePlus, Puzzle, Send, Settings } from 'lucide-react'
 
 import { Button } from './ui/button'
@@ -33,6 +33,8 @@ const navItems = [
 export function Header() {
   const linkClasses = '!text-white hover:!bg-white/10 hover:!text-white hover:text !no-underline'
 
+  const location = useLocation()
+
   return (
     <header className="bg-header p-4 flex gap-2">
       <div className="flex gap-1 items-center text-white font-medium italic text-xl">
@@ -66,11 +68,13 @@ export function Header() {
           Upgrade
         </a>
       </Button>
-      <Button asChild variant="ghost" className={linkClasses}>
-        <Link to="/settings/$name" params={{ name: 'general' }}>
-          <Settings />
-        </Link>
-      </Button>
+      {!location.pathname.includes('settings') && (
+        <Button asChild variant="ghost" className={linkClasses}>
+          <Link to="/settings/$name" params={{ name: 'general' }}>
+            <Settings />
+          </Link>
+        </Button>
+      )}
       <Button variant="ghost" className={linkClasses}>
         <CircleQuestionMark />
       </Button>
