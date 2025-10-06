@@ -19,7 +19,7 @@ export const SelectField = ({ schema }: SelectFieldProps) => {
   return (
     <FieldWrapper schema={schema} errors={errors}>
       <Combobox
-        value={field.state.value}
+        value={field.state.value || String(schema.default)}
         onValueChange={(value) => field.handleChange(value)}
         options={toOptions(schema.options)}
         disabled={schema.readonly}

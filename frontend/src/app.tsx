@@ -12,7 +12,7 @@ const router = createAppRouter(queryClient)
 
 export const App = () => {
   return (
-    <QueryClientProvider client={createQueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="wp-sms-theme">
         <TooltipProvider>
           <RouterProvider router={router} context={{ queryClient }} />
