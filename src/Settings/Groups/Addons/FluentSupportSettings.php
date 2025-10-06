@@ -35,46 +35,59 @@ class FluentSupportSettings extends AbstractSettingGroup
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();
-        $inactiveNotice = $isPluginActive ? '' : ' <em>(' . __('Plugin not active', 'wp-sms-fluent-integrations') . ')</em>';
-        
-        return [
-            new Section([
-                'id' => 'ticket_created',
-                'title' => __('Ticket Created', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for ticket creation', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getTicketCreatedFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
-                'order' => 1,
-            ]),
-            new Section([
-                'id' => 'customer_response',
-                'title' => __('Replied By Customer', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for customer responses', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getCustomerResponseFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
-                'order' => 2,
-            ]),
-            new Section([
-                'id' => 'agent_assigned',
-                'title' => __('Ticket Assigned', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for ticket assignment', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getAgentAssignedFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
-                'order' => 3,
-            ]),
-            new Section([
-                'id' => 'ticket_closed',
-                'title' => __('Ticket Closed', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for ticket closure', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getTicketClosedFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
-                'order' => 4,
-            ]),
-        ];
+        $sections = [];
+
+        // Always show plugin status notice first when plugin is inactive
+        if (!$isPluginActive) {
+            $sections[] = new Section([
+                'id' => 'fluent_support_integration',
+                'title' => __('Fluent Support Integration', 'wp-sms-fluent-integrations'),
+                'subtitle' => __('Connect Fluent Support to enable SMS options.', 'wp-sms-fluent-integrations'),
+                'fields' => [
+                    new Field([
+                        'key' => 'fluent_support_not_active_notice',
+                        'label' => __('Not active', 'wp-sms-fluent-integrations'),
+                        'type' => 'notice',
+                        'description' => __('Fluent Support is not installed or active. Install and activate Fluent Support to configure SMS notifications.', 'wp-sms-fluent-integrations')
+                    ])
+                ]
+            ]);
+        }
+
+        $sections[] = new Section([
+            'id' => 'ticket_created',
+            'title' => __('Ticket Created', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for ticket creation', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getTicketCreatedFields(),
+            'readonly' => !$isPluginActive,
+            'order' => 1,
+        ]);
+        $sections[] = new Section([
+            'id' => 'customer_response',
+            'title' => __('Replied By Customer', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for customer responses', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getCustomerResponseFields(),
+            'readonly' => !$isPluginActive,
+            'order' => 2,
+        ]);
+        $sections[] = new Section([
+            'id' => 'agent_assigned',
+            'title' => __('Ticket Assigned', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for ticket assignment', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getAgentAssignedFields(),
+            'readonly' => !$isPluginActive,
+            'order' => 3,
+        ]);
+        $sections[] = new Section([
+            'id' => 'ticket_closed',
+            'title' => __('Ticket Closed', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for ticket closure', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getTicketClosedFields(),
+            'readonly' => !$isPluginActive,
+            'order' => 4,
+        ]);
+
+        return $sections;
     }
 
     public function getFields(): array
@@ -112,14 +125,13 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for ticket created', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
             new Field([
                 'key' => 'fluent_support_notif_ticket_created_receiver',
                 'label' => __('Phone number(s)', 'wp-sms-fluent-integrations'),
                 'type' => 'text',
                 'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-fluent-integrations'),
-                'tag' => 'fluentsupport',
+                'readonly' => !$isPluginActive,
             ]),
             new Field([
                 'key' => 'fluent_support_notif_ticket_created_message',
@@ -128,7 +140,6 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
         ];
     }
@@ -157,14 +168,13 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for customer response', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
             new Field([
                 'key' => 'fluent_support_notif_customer_response_receiver',
                 'label' => __('Phone number(s)', 'wp-sms-fluent-integrations'),
                 'type' => 'text',
                 'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-fluent-integrations'),
-                'tag' => 'fluentsupport',
+                'readonly' => !$isPluginActive,
             ]),
             new Field([
                 'key' => 'fluent_support_notif_customer_response_message',
@@ -173,7 +183,6 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
         ];
     }
@@ -202,14 +211,13 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for ticket assigned', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
             new Field([
                 'key' => 'fluent_support_notif_agent_assigned_receiver',
                 'label' => __('Phone number(s)', 'wp-sms-fluent-integrations'),
                 'type' => 'text',
                 'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-fluent-integrations'),
-                'tag' => 'fluentsupport',
+                'readonly' => !$isPluginActive,
             ]),
             new Field([
                 'key' => 'fluent_support_notif_agent_assigned_message',
@@ -218,7 +226,6 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
         ];
     }
@@ -248,14 +255,13 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for ticket closed', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
             new Field([
                 'key' => 'fluent_support_notif_ticket_closed_receiver',
                 'label' => __('Phone number(s)', 'wp-sms-fluent-integrations'),
                 'type' => 'text',
                 'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-fluent-integrations'),
-                'tag' => 'fluentsupport',
+                'readonly' => !$isPluginActive,
             ]),
             new Field([
                 'key' => 'fluent_support_notif_ticket_closed_message',
@@ -264,7 +270,6 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentsupport',
             ]),
         ];
     }

@@ -35,33 +35,26 @@ class FluentFormsSettings extends AbstractSettingGroup
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();
-        $inactiveNotice = $isPluginActive ? '' : ' <em>(' . __('Plugin not active', 'wp-sms-fluent-integrations') . ')</em>';
-        
+        $sections = [];
+
+        // Always show plugin status notice first when plugin is inactive
         if (!$isPluginActive) {
-            return [
-                new Section([
-                    'id' => 'plugin_not_active',
-                    'title' => __('Plugin Not Active', 'wp-sms-fluent-integrations'),
-                    'subtitle' => __('Fluent Forms plugin is not active', 'wp-sms-fluent-integrations'),
-                    'fields' => [
-                        new Field([
-                            'key' => 'fluent_forms_not_active',
-                            'label' => __('Notice', 'wp-sms-fluent-integrations'),
-                            'type' => 'html',
-                            'description' => __('We could not find Fluent Forms plugin. Please install and activate Fluent Forms plugin to use these settings.', 'wp-sms-fluent-integrations'),
-                            'readonly' => true,
-                            'tag' => 'fluentforms',
-                        ]),
-                    ],
-                    'readonly' => true,
-                    'tag' => 'fluentforms',
-                    'order' => 1,
-                ]),
-            ];
+            $sections[] = new Section([
+                'id' => 'fluent_forms_integration',
+                'title' => __('Fluent Forms Integration', 'wp-sms-fluent-integrations'),
+                'subtitle' => __('Connect Fluent Forms to enable SMS options.', 'wp-sms-fluent-integrations'),
+                'fields' => [
+                    new Field([
+                        'key' => 'fluent_forms_not_active_notice',
+                        'label' => __('Not active', 'wp-sms-fluent-integrations'),
+                        'type' => 'notice',
+                        'description' => __('Fluent Forms is not installed or active. Install and activate Fluent Forms to configure SMS notifications.', 'wp-sms-fluent-integrations')
+                    ])
+                ]
+            ]);
         }
 
         $forms = $this->getFluentForms();
-        $sections = [];
 
         if (!empty($forms)) {
             foreach ($forms as $formId => $formTitle) {
@@ -70,7 +63,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                     'title' => sprintf(__('Form: %s', 'wp-sms-fluent-integrations'), $formTitle),
                     'subtitle' => __('Configure SMS notifications for this form', 'wp-sms-fluent-integrations'),
                     'fields' => $this->getFormFields($formId, $formTitle),
-                    'readonly' => false,
+                    'readonly' => !$isPluginActive,
                     'tag' => 'fluentforms',
                     'order' => $formId,
                 ]);
@@ -86,11 +79,11 @@ class FluentFormsSettings extends AbstractSettingGroup
                         'label' => __('Notice', 'wp-sms-fluent-integrations'),
                         'type' => 'html',
                         'description' => __('We could not find any Fluent Forms. Please create forms in Fluent Forms to configure SMS notifications.', 'wp-sms-fluent-integrations'),
-                        'readonly' => true,
+                        'readonly' => !$isPluginActive,
                         'tag' => 'fluentforms',
                     ]),
                 ],
-                'readonly' => true,
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
                 'order' => 1,
             ]);
@@ -118,6 +111,7 @@ class FluentFormsSettings extends AbstractSettingGroup
      */
     private function getFormFields(int $formId, string $formTitle): array
     {
+        $isPluginActive = $this->isPluginActive();
         $formFields = $this->getFormFieldOptions($formId);
         $variables = $this->getFormVariables($formId);
 
@@ -127,6 +121,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'label' => __('Send SMS to a number', 'wp-sms-fluent-integrations'),
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification to a number after form submission', 'wp-sms-fluent-integrations'),
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
             ]),
             new Field([
@@ -134,6 +129,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'label' => __('Phone number(s)', 'wp-sms-fluent-integrations'),
                 'type' => 'text',
                 'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-fluent-integrations'),
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
             ]),
             new Field([
@@ -142,6 +138,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'type' => 'textarea',
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
             ]),
             new Field([
@@ -149,6 +146,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'label' => __('Send SMS to field', 'wp-sms-fluent-integrations'),
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification to a field after form submission', 'wp-sms-fluent-integrations'),
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
             ]),
             new Field([
@@ -157,6 +155,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'type' => 'select',
                 'options' => $formFields,
                 'description' => __('Select the field', 'wp-sms-fluent-integrations'),
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
             ]),
             new Field([
@@ -165,6 +164,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'type' => 'textarea',
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
+                'readonly' => !$isPluginActive,
                 'tag' => 'fluentforms',
             ]),
         ];

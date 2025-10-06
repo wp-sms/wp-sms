@@ -53,37 +53,54 @@ class TwoWaySettings extends AbstractSettingGroup
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();
-        $inactiveNotice = $isPluginActive ? '' : ' <em>(' . __('Plugin not active', 'wp-sms-two-way') . ')</em>';
-        
-        return [
-            new Section([
-                'id' => 'gateway_status',
-                'title' => __('Gateway Status', 'wp-sms-two-way'),
-                'subtitle' => __('View your gateway status and webhook configuration', 'wp-sms-two-way') . $inactiveNotice,
-                'fields' => $this->getGatewayStatusFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
-                'order' => 1,
-            ]),
-            new Section([
-                'id' => 'message_forwarding',
-                'title' => __('Message Forwarding', 'wp-sms-two-way'),
-                'subtitle' => __('Configure forwarding of incoming SMS messages', 'wp-sms-two-way') . $inactiveNotice,
-                'fields' => $this->getMessageForwardingFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
-                'order' => 2,
-            ]),
-            new Section([
-                'id' => 'email_notifications',
-                'title' => __('Email Notifications', 'wp-sms-two-way'),
-                'subtitle' => __('Configure email notifications for incoming SMS messages', 'wp-sms-two-way') . $inactiveNotice,
-                'fields' => $this->getEmailNotificationFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
-                'order' => 3,
-            ]),
-        ];
+        $sections = [];
+
+        // Always show plugin status notice first when plugin is inactive
+        if (!$isPluginActive) {
+            $sections[] = new Section([
+                'id' => 'two_way_integration',
+                'title' => __('Two-Way SMS Integration', 'wp-sms-two-way'),
+                'subtitle' => __('Connect Two-Way SMS to enable SMS options.', 'wp-sms-two-way'),
+                'fields' => [
+                    new Field([
+                        'key' => 'two_way_not_active_notice',
+                        'label' => __('Not active', 'wp-sms-two-way'),
+                        'type' => 'notice',
+                        'description' => __('Two-Way SMS is not installed or active. Install and activate Two-Way SMS to configure SMS notifications.', 'wp-sms-two-way')
+                    ])
+                ]
+            ]);
+        }
+
+        $sections[] = new Section([
+            'id' => 'gateway_status',
+            'title' => __('Gateway Status', 'wp-sms-two-way'),
+            'subtitle' => __('View your gateway status and webhook configuration', 'wp-sms-two-way'),
+            'fields' => $this->getGatewayStatusFields(),
+            'readonly' => !$isPluginActive,
+            'tag' => 'twoway',
+            'order' => 1,
+        ]);
+        $sections[] = new Section([
+            'id' => 'message_forwarding',
+            'title' => __('Message Forwarding', 'wp-sms-two-way'),
+            'subtitle' => __('Configure forwarding of incoming SMS messages', 'wp-sms-two-way'),
+            'fields' => $this->getMessageForwardingFields(),
+            'readonly' => !$isPluginActive,
+            'tag' => 'twoway',
+            'order' => 2,
+        ]);
+        $sections[] = new Section([
+            'id' => 'email_notifications',
+            'title' => __('Email Notifications', 'wp-sms-two-way'),
+            'subtitle' => __('Configure email notifications for incoming SMS messages', 'wp-sms-two-way'),
+            'fields' => $this->getEmailNotificationFields(),
+            'readonly' => !$isPluginActive,
+            'tag' => 'twoway',
+            'order' => 3,
+        ]);
+
+        return $sections;
     }
 
     public function getFields(): array

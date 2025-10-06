@@ -104,10 +104,6 @@ class ProWordPressSettings extends AbstractSettingGroup
         return $allFields;
     }
 
-    public function getOptionKeyName(): ?string
-    {
-        return 'pro';
-    }
 
     public function getOptionKeyName(): ?string
     {

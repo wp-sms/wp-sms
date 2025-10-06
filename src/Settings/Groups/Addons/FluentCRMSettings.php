@@ -34,37 +34,54 @@ class FluentCRMSettings extends AbstractSettingGroup
     public function getSections(): array
     {
         $isPluginActive = $this->isPluginActive();
-        $inactiveNotice = $isPluginActive ? '' : ' <em>(' . __('Plugin not active', 'wp-sms-fluent-integrations') . ')</em>';
-        
-        return [
-            new Section([
-                'id' => 'contact_subscribed',
-                'title' => __('Contact Subscribed', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for contact subscription', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getContactSubscribedFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
-                'order' => 1,
-            ]),
-            new Section([
-                'id' => 'contact_unsubscribed',
-                'title' => __('Contact Unsubscribed', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for contact unsubscription', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getContactUnsubscribedFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
-                'order' => 2,
-            ]),
-            new Section([
-                'id' => 'contact_pending',
-                'title' => __('Contact Pending Subscription', 'wp-sms-fluent-integrations'),
-                'subtitle' => __('Configure SMS notifications for contact pending subscription', 'wp-sms-fluent-integrations') . $inactiveNotice,
-                'fields' => $this->getContactPendingFields(),
-                'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
-                'order' => 3,
-            ]),
-        ];
+        $sections = [];
+
+        // Always show plugin status notice first when plugin is inactive
+        if (!$isPluginActive) {
+            $sections[] = new Section([
+                'id' => 'fluent_crm_integration',
+                'title' => __('Fluent CRM Integration', 'wp-sms-fluent-integrations'),
+                'subtitle' => __('Connect Fluent CRM to enable SMS options.', 'wp-sms-fluent-integrations'),
+                'fields' => [
+                    new Field([
+                        'key' => 'fluent_crm_not_active_notice',
+                        'label' => __('Not active', 'wp-sms-fluent-integrations'),
+                        'type' => 'notice',
+                        'description' => __('Fluent CRM is not installed or active. Install and activate Fluent CRM to configure SMS notifications.', 'wp-sms-fluent-integrations')
+                    ])
+                ]
+            ]);
+        }
+
+        $sections[] = new Section([
+            'id' => 'contact_subscribed',
+            'title' => __('Contact Subscribed', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for contact subscription', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getContactSubscribedFields(),
+            'readonly' => !$isPluginActive,
+            'tag' => 'fluentcrm',
+            'order' => 1,
+        ]);
+        $sections[] = new Section([
+            'id' => 'contact_unsubscribed',
+            'title' => __('Contact Unsubscribed', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for contact unsubscription', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getContactUnsubscribedFields(),
+            'readonly' => !$isPluginActive,
+            'tag' => 'fluentcrm',
+            'order' => 2,
+        ]);
+        $sections[] = new Section([
+            'id' => 'contact_pending',
+            'title' => __('Contact Pending Subscription', 'wp-sms-fluent-integrations'),
+            'subtitle' => __('Configure SMS notifications for contact pending subscription', 'wp-sms-fluent-integrations'),
+            'fields' => $this->getContactPendingFields(),
+            'readonly' => !$isPluginActive,
+            'tag' => 'fluentcrm',
+            'order' => 3,
+        ]);
+
+        return $sections;
     }
 
     public function getFields(): array
