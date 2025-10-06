@@ -90,6 +90,7 @@ return array(
     'WP_SMS\\Notice\\AbstractNotice' => $baseDir . '/src/Notice/AbstractNotice.php',
     'WP_SMS\\Notice\\NoticeManager' => $baseDir . '/src/Notice/NoticeManager.php',
     'WP_SMS\\Notification\\Handler\\AwesomeSupportTicketNotification' => $baseDir . '/src/Notification/Handler/AwesomeSupportTicketNotification.php',
+    'WP_SMS\\Notification\\Handler\\ContactForm7Notification' => $baseDir . '/src/Notification/Handler/ContactForm7Notification.php',
     'WP_SMS\\Notification\\Handler\\CustomNotification' => $baseDir . '/src/Notification/Handler/CustomNotification.php',
     'WP_SMS\\Notification\\Handler\\DefaultNotification' => $baseDir . '/src/Notification/Handler/DefaultNotification.php',
     'WP_SMS\\Notification\\Handler\\FormidableNotification' => $baseDir . '/src/Notification/Handler/FormidableNotification.php',

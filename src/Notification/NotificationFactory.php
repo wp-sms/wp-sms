@@ -17,6 +17,7 @@ use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 use WP_SMS\Notification\Handler\FormidableNotification;
 use WP_SMS\Notification\Handler\WooCommerceAdminOrderNotification;
 use WP_SMS\Notification\Handler\OtpNotification;
+use WP_SMS\Notification\Handler\ContactForm7Notification;
 
 class NotificationFactory
 {
@@ -157,5 +158,13 @@ class NotificationFactory
     public static function getOtp($phoneNumber, $code)
     {
         return new OtpNotification($phoneNumber, $code);
+    }
+
+    /**
+     * @return ContactForm7Notification
+     */
+    public static function getContactForm7($data = [])
+    {
+        return new ContactForm7Notification($data);
     }
 }

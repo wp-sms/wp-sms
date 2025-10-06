@@ -53,7 +53,7 @@ class Notification
 
         $this->processMessage($message);
 
-        $finalMessage   = $this->parsedMessage;
+        $finalMessage     = $this->parsedMessage;
         $messageVariables = $this->parsedVariables;
 
         $response = wp_sms_send($to, $finalMessage, $isFlash, $senderId, $mediaUrls, $messageVariables);

@@ -105,6 +105,7 @@ class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
         'WP_SMS\\Notice\\AbstractNotice' => __DIR__ . '/../..' . '/src/Notice/AbstractNotice.php',
         'WP_SMS\\Notice\\NoticeManager' => __DIR__ . '/../..' . '/src/Notice/NoticeManager.php',
         'WP_SMS\\Notification\\Handler\\AwesomeSupportTicketNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/AwesomeSupportTicketNotification.php',
+        'WP_SMS\\Notification\\Handler\\ContactForm7Notification' => __DIR__ . '/../..' . '/src/Notification/Handler/ContactForm7Notification.php',
         'WP_SMS\\Notification\\Handler\\CustomNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/CustomNotification.php',
         'WP_SMS\\Notification\\Handler\\DefaultNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/DefaultNotification.php',
         'WP_SMS\\Notification\\Handler\\FormidableNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/FormidableNotification.php',
