@@ -38,8 +38,8 @@ class MessageButtonManager
      */
     public function enqueueScripts()
     {
-        Assets::style('chatbox', 'css/chatbox.min.css', []);
-        Assets::script('chatbox', 'js/chatbox.min.js', [], [], true);
+        Assets::style('chatbox', 'assets/chatbox-styles.css', []);
+        Assets::script('chatbox', 'chatbox.min.js', [], [], true);
     }
 
     /**
