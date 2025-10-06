@@ -16,6 +16,8 @@ use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
 use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 use WP_SMS\Notification\Handler\FormidableNotification;
 use WP_SMS\Notification\Handler\WooCommerceAdminOrderNotification;
+use WP_SMS\Notification\Handler\TwoFactorAuthenticationNotification;
+use WP_SMS\Notification\Handler\LoginWithSmsNotification;
 
 class NotificationFactory
 {
@@ -150,4 +152,19 @@ class NotificationFactory
         return new FormidableNotification($form, $data);
     }
 
+    /**
+     * @return TwoFactorAuthenticationNotification
+     */
+    public static function getTwoFactorAuthentication($phoneNumber, $otp)
+    {
+        return new TwoFactorAuthenticationNotification($phoneNumber, $otp);
+    }
+
+    /**
+     * @return LoginWithSmsNotification
+     */
+    public static function getLoginWithSms($phoneNumber, $code)
+    {
+        return new LoginWithSmsNotification($phoneNumber, $code);
+    }
 }
