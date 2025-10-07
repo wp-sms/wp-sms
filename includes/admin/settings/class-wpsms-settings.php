@@ -968,8 +968,7 @@ class Settings
 
         // Get Gravityforms
         if (class_exists('RGFormsModel')) {
-            $forms       = \RGFormsModel::get_forms(null, 'title');
-            $more_fields = '';
+            $forms = \RGFormsModel::get_forms(null, 'title');
 
             if (empty($forms)) {
                 $gf_forms['gf_notify_form'] = array(
@@ -1086,13 +1085,13 @@ class Settings
 
             if ($forms) {
                 foreach ($forms as $form):
-                    $form_fields    = Quform::get_fields($form['id']);
-                    $more_qf_fields = ', ';
+                    $form_fields = Quform::get_fields($form['id']);
+                    $variables   = [];
+
                     if (is_array($form_fields) && count($form_fields)) {
                         foreach ($form_fields as $key => $value) {
-                            $more_qf_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                            $variables["field-{$key}"] = '';
                         }
-                        $more_qf_fields = rtrim($more_qf_fields, ', ');
                     }
 
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
@@ -1120,15 +1119,7 @@ class Settings
                         'id'   => 'qf_notify_message_form_' . $form['id'],
                         'name' => esc_html__('Message body', 'wp-sms'),
                         'type' => 'textarea',
-                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                            sprintf(
-                            // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
-                                esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
-                                '<code>%post_title%</code>',
-                                '<code>%form_url%</code>',
-                                '<code>%referring_url%</code>',
-                                '<code>%content%</code>'
-                            ) . $more_qf_fields
+                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getQuform($variables)->printVariables()
                     );
 
                     if ($form['elements']) {
@@ -1149,15 +1140,7 @@ class Settings
                             'id'   => 'qf_notify_message_field_form_' . $form['id'],
                             'name' => esc_html__('Message body', 'wp-sms'),
                             'type' => 'textarea',
-                            'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                                sprintf(
-                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
-                                    esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
-                                    '<code>%post_title%</code>',
-                                    '<code>%form_url%</code>',
-                                    '<code>%referring_url%</code>',
-                                    '<code>%content%</code>'
-                                ) . $more_qf_fields
+                            'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getQuform($variables)->printVariables()
                         );
                     }
                 endforeach;

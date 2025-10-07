@@ -116,6 +116,7 @@ class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
         'WP_SMS\\Notification\\Handler\\ForminatorNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/ForminatorNotification.php',
         'WP_SMS\\Notification\\Handler\\GravityFormsNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/GravityFormsNotification.php',
         'WP_SMS\\Notification\\Handler\\OtpNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/OtpNotification.php',
+        'WP_SMS\\Notification\\Handler\\QuformNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/QuformNotification.php',
         'WP_SMS\\Notification\\Handler\\SubscriberNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/SubscriberNotification.php',
         'WP_SMS\\Notification\\Handler\\WooCommerceAdminOrderNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/WooCommerceAdminOrderNotification.php',
         'WP_SMS\\Notification\\Handler\\WooCommerceCouponNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/WooCommerceCouponNotification.php',

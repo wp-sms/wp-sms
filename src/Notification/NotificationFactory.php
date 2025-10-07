@@ -23,6 +23,7 @@ use WP_SMS\Notification\Handler\BuddyPressMentionNotification;
 use WP_SMS\Notification\Handler\BuddyPressPrivateMessageNotification;
 use WP_SMS\Notification\Handler\BuddyPressUserCommentsNotification;
 use WP_SMS\Notification\Handler\GravityFormsNotification;
+use WP_SMS\Notification\Handler\QuformNotification;
 
 class NotificationFactory
 {
@@ -211,5 +212,13 @@ class NotificationFactory
     public static function getGravityForms($gformData = [])
     {
         return new GravityFormsNotification($gformData);
+    }
+
+    /**
+     * @return QuformNotification
+     */
+    public static function getQuform($qfData = [])
+    {
+        return new QuformNotification($qfData);
     }
 }
