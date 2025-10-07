@@ -35,6 +35,7 @@ export default defineConfig({
   },
   build: {
     outDir: './build',
+    manifest: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/main.tsx'),
