@@ -985,8 +985,7 @@ class Settings
 
                 if (is_array($form_fields) && count($form_fields)) {
                     foreach ($form_fields as $key => $label) {
-                        $fieldName                       = !empty($label) ? sanitize_title_with_dashes($label) : $key;
-                        $variables["field-{$fieldName}"] = '';
+                        $variables["field-{$key}"] = '';
                     }
                 }
 
