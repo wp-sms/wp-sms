@@ -376,14 +376,7 @@ class Settings
                     'id'   => 'bp_welcome_notification_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: User login, %2$s: User email, %3$s: User display name
-                            esc_html__('User login: %1$s, User email: %2$s, User display name: %3$s', 'wp-sms'),
-                            '<code>%user_login%</code>',
-                            '<code>%user_email%</code>',
-                            '<code>%display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressWelcome()->printVariables()
                 ),
                 'mentions'                        => array(
                     'id'   => 'mentions',
@@ -401,16 +394,7 @@ class Settings
                     'id'   => 'bp_mention_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
-                            esc_html__('Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s', 'wp-sms'),
-                            '<code>%posted_user_display_name%</code>',
-                            '<code>%primary_link%</code>',
-                            '<code>%time%</code>',
-                            '<code>%message%</code>',
-                            '<code>%receiver_user_display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressMention()->printVariables()
                 ),
                 'private_message'                 => array(
                     'id'   => 'private_message',
@@ -428,15 +412,7 @@ class Settings
                     'id'   => 'bp_private_message_content',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
-                            esc_html__('Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s', 'wp-sms'),
-                            '<code>%sender_display_name%</code>',
-                            '<code>%subject%</code>',
-                            '<code>%message%</code>',
-                            '<code>%message_url%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressPrivateMessage()->printVariables()
                 ),
                 'comments_activity'               => array(
                     'id'   => 'comments_activity',
@@ -454,14 +430,7 @@ class Settings
                     'id'   => 'bp_comments_activity_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-                            esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
-                            '<code>%posted_user_display_name%</code>',
-                            '<code>%comment%</code>',
-                            '<code>%receiver_user_display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressUserComments()->printVariables()
                 ),
                 'comments'                        => array(
                     'id'   => 'comments',
@@ -479,14 +448,7 @@ class Settings
                     'id'   => 'bp_comments_reply_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-                            esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
-                            '<code>%posted_user_display_name%</code>',
-                            '<code>%comment%</code>',
-                            '<code>%receiver_user_display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressUserComments()->printVariables()
                 )
             );
         } else {

@@ -18,6 +18,10 @@ use WP_SMS\Notification\Handler\FormidableNotification;
 use WP_SMS\Notification\Handler\WooCommerceAdminOrderNotification;
 use WP_SMS\Notification\Handler\OtpNotification;
 use WP_SMS\Notification\Handler\ContactForm7Notification;
+use WP_SMS\Notification\Handler\BuddyPressWelcomeNotification;
+use WP_SMS\Notification\Handler\BuddyPressMentionNotification;
+use WP_SMS\Notification\Handler\BuddyPressPrivateMessageNotification;
+use WP_SMS\Notification\Handler\BuddyPressUserCommentsNotification;
 
 class NotificationFactory
 {
@@ -155,7 +159,7 @@ class NotificationFactory
     /**
      * @return OtpNotification
      */
-    public static function getOtp($phoneNumber, $code)
+    public static function getOtp($phoneNumber = false, $code = false)
     {
         return new OtpNotification($phoneNumber, $code);
     }
@@ -166,5 +170,37 @@ class NotificationFactory
     public static function getContactForm7($data = [])
     {
         return new ContactForm7Notification($data);
+    }
+
+    /**
+     * @return BuddyPressWelcomeNotification
+     */
+    public static function getBuddyPressWelcome($user = false)
+    {
+        return new BuddyPressWelcomeNotification($user);
+    }
+
+    /**
+     * @return BuddyPressMentionNotification
+     */
+    public static function getBuddyPressMention($bpData = [])
+    {
+        return new BuddyPressMentionNotification($bpData);
+    }
+
+    /**
+     * @return BuddyPressPrivateMessageNotification
+     */
+    public static function getBuddyPressPrivateMessage($bpData = [])
+    {
+        return new BuddyPressPrivateMessageNotification($bpData);
+    }
+
+    /**
+     * @return BuddyPressUserCommentsNotification
+     */
+    public static function getBuddyPressUserComments($bpData = [])
+    {
+        return new BuddyPressUserCommentsNotification($bpData);
     }
 }
