@@ -4,6 +4,20 @@ namespace WP_SMS\Admin\Pages;
 
 class SettingAdminPage
 {
+    /**
+     * Manifest main JS file path
+     *
+     * @var string
+     */
+    private $manifestMainJs = '';
+
+    /**
+     * Manifest main CSS file paths
+     *
+     * @var array
+     */
+    private $manifestMainCss = [];
+
     public function register(): void
     {
         add_action('admin_menu', [$this, 'registerSettingPage']);
@@ -52,23 +66,21 @@ class SettingAdminPage
         // Enqueue WordPress media uploader
         wp_enqueue_media();
 
-        // Enqueue WordPress React dependencies
-        wp_enqueue_script('wp-i18n');
+        // Load manifest
+        $this->loadManifest();
 
-        // Load assets directly from build folder
-        $this->enqueueBuildAssets();
+        // Enqueue CSS files
+        if (!empty($this->manifestMainCss)) {
+            foreach ($this->manifestMainCss as $index => $cssFile) {
+                wp_enqueue_style('wp-sms-settings-' . $index, WP_SMS_FRONTEND_BUILD_URL . $cssFile, [], WP_SMS_VERSION);
+            }
+        }
 
-        // Add import map and WP_SMS_DATA to page head
         add_action('admin_head', function () {
             // Get all registered assets
             $assets = isset($GLOBALS['wp_sms_assets']) ? $GLOBALS['wp_sms_assets'] : [];
 
-            // Create import map for ES modules
-            $import_map = $this->createImportMap();
-?>
-            <script type="importmap">
-                <?php echo json_encode($import_map, JSON_PRETTY_PRINT); ?>
-            </script>
+            ?>
             <script type="text/javascript">
                 window.WP_SMS_DATA = <?php echo json_encode([
                                             'nonce'   => wp_create_nonce('wp_rest'),
@@ -81,208 +93,62 @@ class SettingAdminPage
 <?php
         });
 
-        // Also localize the script as backup
-        $assets = isset($GLOBALS['wp_sms_assets']) ? $GLOBALS['wp_sms_assets'] : [];
-        wp_localize_script(
-            'wp-sms-settings',
-            'WP_SMS_DATA',
-            [
-                'nonce'   => wp_create_nonce('wp_rest'),
-                'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
-                'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
-                'assets' => $assets
-            ]
-        );
+        // Enqueue JS file
+        if (!empty($this->manifestMainJs)) {
+            wp_enqueue_script_module('wp-sms-settings', WP_SMS_FRONTEND_BUILD_URL . $this->manifestMainJs, [], WP_SMS_VERSION);
+
+            // Localize script data
+            wp_localize_script(
+                'wp-sms-settings',
+                'WP_SMS_DATA',
+                $this->getLocalizedData()
+            );
+        }
     }
 
     /**
-     * Enqueue assets directly from build folder
+     * Load Vite manifest file
+     *
+     * @return void
      */
-    private function enqueueBuildAssets(): void
+    private function loadManifest(): void
     {
-        $build_url = WP_SMS_FRONTEND_BUILD_URL;
-        $build_dir = WP_SMS_DIR . 'frontend/build/assets/';
-
-        // Load all CSS files
-        $this->enqueueAllCssFiles($build_url, $build_dir);
-
-        // Load all JS files (main bundle + dynamic chunks)
-        $this->enqueueAllJsFiles($build_url, $build_dir);
-
-        // Load other assets (fonts, images, etc.) - just register them for reference
-        $this->registerOtherAssets($build_url, $build_dir);
-
-        // Debug: Log available files in development
-        $this->debugAvailableFiles($build_dir);
-    }
-
-    /**
-     * Enqueue all CSS files from build directory
-     */
-    private function enqueueAllCssFiles(string $build_url, string $build_dir): void
-    {
-        if (!is_dir($build_dir)) {
+        if (!empty($this->manifestMainJs) && !empty($this->manifestMainCss)) {
             return;
         }
 
-        $css_files = glob($build_dir . '*.css');
+        $manifestPath = WP_SMS_DIR . 'frontend/build/.vite/manifest.json';
 
-        foreach ($css_files as $css_file) {
-            $filename = basename($css_file);
-            $handle = 'wp-sms-' . pathinfo($filename, PATHINFO_FILENAME);
-            $style_url = $build_url . 'assets/' . $filename;
-
-            wp_enqueue_style($handle, $style_url, [], WP_SMS_VERSION);
-        }
-    }
-
-    /**
-     * Enqueue all JS files from build directory (simplified approach)
-     */
-    private function enqueueAllJsFiles(string $build_url, string $build_dir): void
-    {
-        if (!is_dir($build_dir)) {
+        if (!file_exists($manifestPath)) {
             return;
         }
 
-        $js_files = glob($build_dir . '*.js');
+        $manifestContent = file_get_contents($manifestPath);
+        $decodedContent = json_decode($manifestContent, true);
 
-        // Sort files to ensure main loads first
-        usort($js_files, function ($a, $b) {
-            $a_name = basename($a);
-            $b_name = basename($b);
-
-            // Main file gets highest priority
-            if (strpos($a_name, 'main-') === 0) return -1;
-            if (strpos($b_name, 'main-') === 0) return 1;
-
-            return 0;
-        });
-
-        foreach ($js_files as $js_file) {
-            $filename = basename($js_file);
-            $handle = 'wp-sms-' . pathinfo($filename, PATHINFO_FILENAME);
-            $script_url = $build_url . 'assets/' . $filename;
-
-            // Load as ES modules (add type="module" attribute)
-            $deps = strpos($filename, 'main-') === 0 ? ['wp-i18n'] : [];
-            wp_enqueue_script($handle, $script_url, $deps, WP_SMS_VERSION, true);
-        }
-
-        // Add type="module" attribute to all our scripts
-        add_filter('script_loader_tag', [$this, 'addModuleTypeToScripts'], 10, 3);
-    }
-
-    /**
-     * Add type="module" attribute to our script tags
-     */
-    public function addModuleTypeToScripts($tag, $handle, $src): string
-    {
-        // Only add type="module" to our WP-SMS scripts
-        if (strpos($handle, 'wp-sms-') === 0) {
-            return str_replace('<script ', '<script type="module" ', $tag);
-        }
-        return $tag;
-    }
-
-    /**
-     * Register other assets (fonts, images, etc.) for reference
-     */
-    private function registerOtherAssets(string $build_url, string $build_dir): void
-    {
-        if (!is_dir($build_dir)) {
+        if (empty($decodedContent['src/main.tsx'])) {
             return;
         }
 
-        // Get all files that are not JS or CSS
-        $all_files = glob($build_dir . '*');
-        $other_files = array_filter($all_files, function ($file) {
-            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            return !in_array($ext, ['js', 'css']) && is_file($file);
-        });
-
-        foreach ($other_files as $file) {
-            $filename = basename($file);
-            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            $asset_url = $build_url . 'assets/' . $filename;
-
-            // Store asset URLs in a global variable for JavaScript access
-            if (!isset($GLOBALS['wp_sms_assets'])) {
-                $GLOBALS['wp_sms_assets'] = [];
-            }
-            $GLOBALS['wp_sms_assets'][$filename] = $asset_url;
-
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("WP-SMS Registered asset: {$filename} ({$ext})");
-            }
-        }
+        $this->manifestMainJs = $decodedContent['src/main.tsx']['file'] ?? '';
+        $this->manifestMainCss = $decodedContent['src/main.tsx']['css'] ?? [];
     }
 
     /**
-     * Find asset file by prefix and extension
+     * Get localized data for JavaScript
+     *
+     * @return array Localized data for JavaScript
      */
-    private function findAssetFile(string $directory, string $prefix, string $extension): ?string
+    private function getLocalizedData(): array
     {
-        if (!is_dir($directory)) {
-            return null;
-        }
+        $data = [
+            'nonce' => wp_create_nonce('wp_rest'),
+            'restUrl' => esc_url_raw(rest_url('wpsms/v1/')),
+            'frontend_build_url' => WP_SMS_FRONTEND_BUILD_URL,
+            'react_starting_point' => '#settings/general'
+        ];
 
-        $files = glob($directory . $prefix . '*' . $extension);
-        return !empty($files) ? basename($files[0]) : null;
-    }
-
-    /**
-     * Create import map for ES modules
-     */
-    private function createImportMap(): array
-    {
-        $build_url = WP_SMS_FRONTEND_BUILD_URL;
-        $build_dir = WP_SMS_DIR . 'frontend/build/assets/';
-
-        if (!is_dir($build_dir)) {
-            return ['imports' => []];
-        }
-
-        $js_files = glob($build_dir . '*.js');
-        $imports = [];
-
-        // Add base URL for assets directory
-        $assets_base_url = $build_url . 'assets/';
-
-        foreach ($js_files as $js_file) {
-            $filename = basename($js_file);
-            $module_name = './' . $filename;
-            $module_url = $assets_base_url . $filename;
-            $imports[$module_name] = $module_url;
-        }
-
-        return ['imports' => $imports];
-    }
-
-    /**
-     * Debug method to log all available files (can be called for troubleshooting)
-     */
-    private function debugAvailableFiles(string $build_dir): void
-    {
-        if (!defined('WP_DEBUG') || !WP_DEBUG) {
-            return;
-        }
-
-        $js_files = glob($build_dir . '*.js');
-        $css_files = glob($build_dir . '*.css');
-        $all_files = glob($build_dir . '*');
-        $other_files = array_filter($all_files, function ($file) {
-            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            return !in_array($ext, ['js', 'css']) && is_file($file);
-        });
-
-        $js_filenames = array_map('basename', $js_files);
-        $css_filenames = array_map('basename', $css_files);
-        $other_filenames = array_map('basename', $other_files);
-
-        error_log('WP-SMS Available JS files: ' . implode(', ', $js_filenames));
-        error_log('WP-SMS Available CSS files: ' . implode(', ', $css_filenames));
-        error_log('WP-SMS Available other assets: ' . implode(', ', $other_filenames));
+        return apply_filters('wp_sms_settings_localized_data', $data);
     }
 
     public function renderSettings(): void
