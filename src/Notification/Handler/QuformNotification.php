@@ -19,10 +19,9 @@ class QuformNotification extends Notification
      * @var array
      */
     protected $variables = [
-        '%post_title%' => 'getPostTitle',
-        '%ip%'         => 'getIp',
-        '%source_url%' => 'getSourceUrl',
-        '%user_agent%' => 'getUserAgent'
+        '%post_title%'    => 'getPostTitle',
+        '%form_url%'      => 'getFormUrl',
+        '%referring_url%' => 'getReferringUrl',
     ];
 
     /**
@@ -53,32 +52,22 @@ class QuformNotification extends Notification
     }
 
     /**
-     * Get the submitter's IP address.
+     * Get the URL of the submitted form.
      *
-     * @return string|null
+     * @return string|null The form URL if available, null otherwise
      */
-    public function getIp()
+    public function getFormUrl()
     {
-        return $this->qfData['ip'] ?? null;
+        return $this->qfData['form_url'] ?? null;
     }
 
     /**
-     * Get the form submission source URL.
+     * Get the referring URL from which the form was submitted.
      *
-     * @return string|null
+     * @return string|null The referring URL if available, null otherwise
      */
-    public function getSourceUrl()
+    public function getReferringUrl()
     {
-        return $this->qfData['source_url'] ?? null;
-    }
-
-    /**
-     * Get the submitter's browser user agent string.
-     *
-     * @return string|null
-     */
-    public function getUserAgent()
-    {
-        return $this->qfData['user_agent'] ?? null;
+        return $this->qfData['referring_url'] ?? null;
     }
 }
