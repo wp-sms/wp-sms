@@ -59,7 +59,7 @@ class Settings
     public function __construct()
     {
         $this->setting_name      = $this->getCurrentOptionName();
-        $this->isPremium = LicenseHelper::isPluginLicenseValid();
+        $this->isPremium         = LicenseHelper::isPluginLicenseValid();
         $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
         $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
@@ -982,14 +982,13 @@ class Settings
 
             foreach ($forms as $form) {
                 $form_fields = Gravityforms::get_field($form->id);
+                $variables   = [];
 
                 if (is_array($form_fields) && count($form_fields)) {
-                    $more_fields = ', ';
-                    foreach ($form_fields as $key => $value) {
-                        $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                    foreach ($form_fields as $key => $label) {
+                        $fieldName                       = !empty($label) ? sanitize_title_with_dashes($label) : $key;
+                        $variables["field-{$fieldName}"] = '';
                     }
-
-                    $more_fields = rtrim($more_fields, ', ');
                 }
 
                 $gf_forms['gf_notify_form_' . $form->id]          = array(
@@ -1017,16 +1016,7 @@ class Settings
                     'id'   => 'gf_notify_message_form_' . $form->id,
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
-                            esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
-                            '<code>%title%</code>',
-                            '<code>%ip%</code>',
-                            '<code>%source_url%</code>',
-                            '<code>%user_agent%</code>',
-                            '<code>%content%</code>'
-                        ) . $more_fields
+                    'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getGravityForms($variables)->printVariables()
                 );
 
                 if (Gravityforms::get_field($form->id)) {
@@ -1047,16 +1037,7 @@ class Settings
                         'id'   => 'gf_notify_message_field_form_' . $form->id,
                         'name' => esc_html__('Message body', 'wp-sms'),
                         'type' => 'textarea',
-                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                            sprintf(
-                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
-                                esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
-                                '<code>%title%</code>',
-                                '<code>%ip%</code>',
-                                '<code>%source_url%</code>',
-                                '<code>%user_agent%</code>',
-                                '<code>%content%</code>'
-                            ) . $more_fields
+                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getGravityForms($variables)->printVariables()
                     );
                 }
             }
@@ -1793,14 +1774,14 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
                 ),
                 'short_url_api_token'          => array(
                     'id'       => 'short_url_api_token',
                     'name'     => esc_html__('Bitly API Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
                 ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
@@ -1829,22 +1810,22 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type' => 'textarea',
                     'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
-                'share_anonymous_data_header'         => array(
+                'share_anonymous_data_header'  => array(
                     'id'   => 'share_anonymous_data_header',
                     'name' => esc_html__('Anonymous Usage Data', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'share_anonymous_data'           => array(
-                    'id'       => 'share_anonymous_data',
-                    'name'     => esc_html__('Share Anonymous Data', 'wp-sms'),
-                    'type'     => 'checkbox',
-                    'options'  => $options,
-                    'desc'     => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
+                'share_anonymous_data'         => array(
+                    'id'      => 'share_anonymous_data',
+                    'name'    => esc_html__('Share Anonymous Data', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
                 ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
+                    // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
                         (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
@@ -2594,7 +2575,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     public function render_settings($default = "general", $args = array())
     {
         $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium) ;
+        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium);
         $args                    = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function

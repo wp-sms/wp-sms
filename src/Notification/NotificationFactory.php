@@ -22,6 +22,7 @@ use WP_SMS\Notification\Handler\BuddyPressWelcomeNotification;
 use WP_SMS\Notification\Handler\BuddyPressMentionNotification;
 use WP_SMS\Notification\Handler\BuddyPressPrivateMessageNotification;
 use WP_SMS\Notification\Handler\BuddyPressUserCommentsNotification;
+use WP_SMS\Notification\Handler\GravityFormsNotification;
 
 class NotificationFactory
 {
@@ -202,5 +203,13 @@ class NotificationFactory
     public static function getBuddyPressUserComments($bpData = [])
     {
         return new BuddyPressUserCommentsNotification($bpData);
+    }
+
+    /**
+     * @return GravityFormsNotification
+     */
+    public static function getGravityForms($gformData = [])
+    {
+        return new GravityFormsNotification($gformData);
     }
 }

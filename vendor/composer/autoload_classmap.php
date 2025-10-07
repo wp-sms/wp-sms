@@ -99,6 +99,7 @@ return array(
     'WP_SMS\\Notification\\Handler\\DefaultNotification' => $baseDir . '/src/Notification/Handler/DefaultNotification.php',
     'WP_SMS\\Notification\\Handler\\FormidableNotification' => $baseDir . '/src/Notification/Handler/FormidableNotification.php',
     'WP_SMS\\Notification\\Handler\\ForminatorNotification' => $baseDir . '/src/Notification/Handler/ForminatorNotification.php',
+    'WP_SMS\\Notification\\Handler\\GravityFormsNotification' => $baseDir . '/src/Notification/Handler/GravityFormsNotification.php',
     'WP_SMS\\Notification\\Handler\\OtpNotification' => $baseDir . '/src/Notification/Handler/OtpNotification.php',
     'WP_SMS\\Notification\\Handler\\SubscriberNotification' => $baseDir . '/src/Notification/Handler/SubscriberNotification.php',
     'WP_SMS\\Notification\\Handler\\WooCommerceAdminOrderNotification' => $baseDir . '/src/Notification/Handler/WooCommerceAdminOrderNotification.php',
