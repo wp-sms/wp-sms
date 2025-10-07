@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { getDirtyFormValues, useAppForm } from '@/hooks/use-form'
 import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
 
+import { TagBadge } from '../ui/tag-badge'
 import { FieldRenderer } from './field-renderer'
 
 type SchemaFormProps = {
@@ -59,7 +60,10 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
       {formSchema.sections.map((section, index) => (
         <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
           <CardHeader>
-            <CardTitle>{section.title}</CardTitle>
+            <CardTitle>
+              {section.title}
+              {section.tag && <TagBadge className="ms-2" tag={section.tag} />}
+            </CardTitle>
             {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
           </CardHeader>
           <CardContent className="flex flex-col gap-y-8">
