@@ -16,8 +16,8 @@ class Settings
     public $setting_name;
     public $options = array();
     private $optionNames = [
-        'main' => 'wpsms_settings',
-        'pro'  => 'wps_pp_settings'
+        'main' => 'wp_sms_settings',
+        'pro'  => 'wp_sms_pro_settings'
     ];
     private $proTabs = [
         'pro_wordpress',
