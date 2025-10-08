@@ -4,6 +4,8 @@ namespace WP_SMS\Settings\Groups\Addons;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
+use WP_SMS\Settings\Section;
+use WP_SMS\Settings\LucideIcons;
 
 class ProWordPressSettings extends AbstractSettingGroup
 {
@@ -14,72 +16,85 @@ class ProWordPressSettings extends AbstractSettingGroup
 
     public function getLabel(): string
     {
-        return 'Pro WordPress (Login & OTP) Settings';
+        return __('Pro WordPress (Login & OTP)', 'wp-sms');
+    }
+
+    public function getIcon(): string
+    {
+        return LucideIcons::SHIELD;
+    }
+
+    public function getSections(): array
+    {
+        return [
+            new Section([
+                'id' => 'login_with_sms',
+                'title' => __('Login With SMS', 'wp-sms'),
+                'subtitle' => __('Allow users to log in with a verification code sent via SMS.', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key'         => 'login_sms',
+                        'type'        => 'checkbox',
+                        'label'       => __('Status', 'wp-sms'),
+                        'description' => __('Allows users to log in with a verification code sent via SMS.', 'wp-sms'),
+                    ]),
+                    new Field([
+                        'key'         => 'login_sms_message',
+                        'type'        => 'textarea',
+                        'label'       => __('Message body', 'wp-sms'),
+                        'show_if' => ['login_sms' => true],
+                        'description' => __('SMS message format for login. Placeholders: <code>%code%</code>, <code>%user_name%</code>, <code>%full_name%</code>, <code>%site_name%</code>, <code>%site_url%</code>', 'wp-sms'),
+                    ]),
+                    new Field([
+                        'key'         => 'register_sms',
+                        'type'        => 'checkbox',
+                        'label'       => __('User Account Creation on Login', 'wp-sms'),
+                        'description' => __('Automatically register user if logging in via SMS and account does not exist.', 'wp-sms'),
+                        'show_if' => ['login_sms' => true],
+                    ]),
+                ]
+            ]),
+            new Section([
+                'id' => 'two_factor_authentication',
+                'title' => __('Two-Factor Authentication with SMS', 'wp-sms'),
+                'subtitle' => __('Enable SMS verification as part of the login process.', 'wp-sms'),
+                'fields' => [
+                    new Field([
+                        'key'         => 'mobile_verify',
+                        'type'        => 'checkbox',
+                        'label'       => __('Status', 'wp-sms'),
+                        'description' => __('Enable SMS verification as part of the login process.', 'wp-sms'),
+                    ]),
+                    new Field([
+                        'key'         => 'mobile_verify_method',
+                        'type'        => 'select',
+                        'label'       => __('Authentication Policy', 'wp-sms'),
+                        'description' => __('Choose whether 2FA is optional or enforced for all users.', 'wp-sms'),
+                        'show_if' => ['mobile_verify' => true],
+                        'options'     => [
+                            'optional'  => __('Optional - Users can enable/disable it in their profile', 'wp-sms'),
+                            'force_all' => __('Enable for All Users', 'wp-sms'),
+                        ],
+                    ]),
+                    new Field([
+                        'key'         => 'mobile_verify_message',
+                        'type'        => 'textarea',
+                        'label'       => __('Message Content', 'wp-sms'),
+                        'description' => __('SMS format for 2FA. Placeholders: <code>%otp%</code>, <code>%user_name%</code>, <code>%first_name%</code>, <code>%last_name%</code>', 'wp-sms'),
+                        'show_if' => ['mobile_verify' => true],
+                    ]),
+                ]
+            ]),
+        ];
     }
 
     public function getFields(): array
     {
-        return [
-            new Field([
-                'key'         => 'login_title',
-                'type'        => 'header',
-                'label'       => 'Login With SMS',
-                'description' => 'Section heading for login via SMS',
-                'group_label' => 'Login',
-            ]),
-            new Field([
-                'key'         => 'login_sms',
-                'type'        => 'checkbox',
-                'label'       => 'Status',
-                'description' => 'Allows users to log in with a verification code sent via SMS.',
-                'group_label' => 'Login',
-            ]),
-            new Field([
-                'key'         => 'login_sms_message',
-                'type'        => 'textarea',
-                'label'       => 'Message body',
-                'description' => 'SMS message format for login. Placeholders: <code>%code%</code>, <code>%user_name%</code>, <code>%full_name%</code>, <code>%site_name%</code>, <code>%site_url%</code>',
-                'group_label' => 'Login',
-            ]),
-            new Field([
-                'key'         => 'register_sms',
-                'type'        => 'checkbox',
-                'label'       => 'User Account Creation on Login',
-                'description' => 'Automatically register user if logging in via SMS and account does not exist.',
-                'group_label' => 'Login',
-            ]),
-            new Field([
-                'key'         => 'otp_title',
-                'type'        => 'header',
-                'label'       => 'Two-Factor Authentication with SMS',
-                'description' => 'Section heading for 2FA',
-                'group_label' => 'OTP',
-            ]),
-            new Field([
-                'key'         => 'mobile_verify',
-                'type'        => 'checkbox',
-                'label'       => 'Status',
-                'description' => 'Enable SMS verification as part of the login process.',
-                'group_label' => 'OTP',
-            ]),
-            new Field([
-                'key'         => 'mobile_verify_method',
-                'type'        => 'select',
-                'label'       => 'Authentication Policy',
-                'description' => 'Choose whether 2FA is optional or enforced for all users.',
-                'options'     => [
-                    'optional'  => 'Optional - Users can enable/disable it in their profile',
-                    'force_all' => 'Enable for All Users',
-                ],
-                'group_label' => 'OTP',
-            ]),
-            new Field([
-                'key'         => 'mobile_verify_message',
-                'type'        => 'textarea',
-                'label'       => 'Message Content',
-                'description' => 'SMS format for 2FA. Placeholders: <code>%otp%</code>, <code>%user_name%</code>, <code>%first_name%</code>, <code>%last_name%</code>',
-                'group_label' => 'OTP',
-            ]),
-        ];
+        // Legacy method - return all fields from all sections for backward compatibility
+        $allFields = [];
+        foreach ($this->getSections() as $section) {
+            $allFields = array_merge($allFields, $section->getFields());
+        }
+        return $allFields;
     }
 }

@@ -1,6 +1,6 @@
 import { useStore } from '@tanstack/react-form'
 import { Settings } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import type { AppFormType } from '@/hooks/use-application-form'
 import { withForm } from '@/hooks/use-form'
@@ -179,18 +179,20 @@ export const FieldRenderer = withForm({
       <ConditionalRenderer form={form} schema={schema}>
         <AutoSaveWrapper form={form} schema={schema} onSubmit={onSubmit}>
           <div className="flex items-center gap-2">
-            <div className="flex-1">{renderFieldContent()}</div>
-            {hasSubFields && onOpenSubFields && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => onOpenSubFields(schema)}
-                className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-              >
-                <Settings />
-              </Button>
-            )}
+            <Suspense>
+              <div className="flex-1">{renderFieldContent()}</div>
+              {hasSubFields && onOpenSubFields && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onOpenSubFields(schema)}
+                  className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                >
+                  <Settings />
+                </Button>
+              )}
+            </Suspense>
           </div>
         </AutoSaveWrapper>
       </ConditionalRenderer>
