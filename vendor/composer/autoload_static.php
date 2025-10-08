@@ -112,6 +112,7 @@ class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
         'WP_SMS\\Notification\\Handler\\ContactForm7Notification' => __DIR__ . '/../..' . '/src/Notification/Handler/ContactForm7Notification.php',
         'WP_SMS\\Notification\\Handler\\CustomNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/CustomNotification.php',
         'WP_SMS\\Notification\\Handler\\DefaultNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/DefaultNotification.php',
+        'WP_SMS\\Notification\\Handler\\EasyDigitalDownloadsNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/EasyDigitalDownloadsNotification.php',
         'WP_SMS\\Notification\\Handler\\FormidableNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/FormidableNotification.php',
         'WP_SMS\\Notification\\Handler\\ForminatorNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/ForminatorNotification.php',
         'WP_SMS\\Notification\\Handler\\GravityFormsNotification' => __DIR__ . '/../..' . '/src/Notification/Handler/GravityFormsNotification.php',

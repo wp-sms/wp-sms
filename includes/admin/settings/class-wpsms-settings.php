@@ -699,14 +699,7 @@ class Settings
                     'id'   => 'edd_notify_order_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
-                            esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
-                            '<code>%edd_email%</code>',
-                            '<code>%edd_first%</code>',
-                            '<code>%edd_last%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getEasyDigitalDownloads()->printVariables()
                 ),
                 'edd_notify_customer'         => array(
                     'id'   => 'edd_notify_customer',
@@ -724,14 +717,7 @@ class Settings
                     'id'   => 'edd_notify_customer_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
-                            esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
-                            '<code>%edd_email%</code>',
-                            '<code>%edd_first%</code>',
-                            '<code>%edd_last%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getEasyDigitalDownloads()->printVariables()
                 )
             );
         } else {

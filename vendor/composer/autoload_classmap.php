@@ -97,6 +97,7 @@ return array(
     'WP_SMS\\Notification\\Handler\\ContactForm7Notification' => $baseDir . '/src/Notification/Handler/ContactForm7Notification.php',
     'WP_SMS\\Notification\\Handler\\CustomNotification' => $baseDir . '/src/Notification/Handler/CustomNotification.php',
     'WP_SMS\\Notification\\Handler\\DefaultNotification' => $baseDir . '/src/Notification/Handler/DefaultNotification.php',
+    'WP_SMS\\Notification\\Handler\\EasyDigitalDownloadsNotification' => $baseDir . '/src/Notification/Handler/EasyDigitalDownloadsNotification.php',
     'WP_SMS\\Notification\\Handler\\FormidableNotification' => $baseDir . '/src/Notification/Handler/FormidableNotification.php',
     'WP_SMS\\Notification\\Handler\\ForminatorNotification' => $baseDir . '/src/Notification/Handler/ForminatorNotification.php',
     'WP_SMS\\Notification\\Handler\\GravityFormsNotification' => $baseDir . '/src/Notification/Handler/GravityFormsNotification.php',

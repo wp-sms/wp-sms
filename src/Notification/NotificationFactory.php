@@ -24,6 +24,7 @@ use WP_SMS\Notification\Handler\BuddyPressPrivateMessageNotification;
 use WP_SMS\Notification\Handler\BuddyPressUserCommentsNotification;
 use WP_SMS\Notification\Handler\GravityFormsNotification;
 use WP_SMS\Notification\Handler\QuformNotification;
+use WP_SMS\Notification\Handler\EasyDigitalDownloadsNotification;
 
 class NotificationFactory
 {
@@ -220,5 +221,13 @@ class NotificationFactory
     public static function getQuform($qfData = [])
     {
         return new QuformNotification($qfData);
+    }
+
+    /**
+     * @return EasyDigitalDownloadsNotification
+     */
+    public static function getEasyDigitalDownloads($eddData = [])
+    {
+        return new EasyDigitalDownloadsNotification($eddData);
     }
 }
