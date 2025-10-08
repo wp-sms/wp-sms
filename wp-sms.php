@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 include_once __DIR__ . '/includes/defines.php';
 
 // Set the plugin version
-define('WP_SMS_VERSION', '6.9.11');
+define('WP_SMS_VERSION', '7.2.0');
 
 // Autoloader
 require_once WP_SMS_DIR . "vendor/autoload.php";
