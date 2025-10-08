@@ -7,14 +7,24 @@ export type FieldDescriptionProps = {
 }
 
 export const FieldDescription = ({ text }: FieldDescriptionProps) => {
-  const handleCodeClick = useStableCallback(async (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = useStableCallback(async (event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement
+
+    // Handle code snippet copy
     if (target.tagName === 'CODE') {
       const textToCopy = target.textContent || ''
       try {
         await navigator.clipboard.writeText(textToCopy)
         toast.success('Code snippet copied to clipboard')
       } catch {}
+    }
+
+    // Handle chatbox preview link
+    if (target.tagName === 'A' && target.classList.contains('js-wpsms-chatbox-preview')) {
+      event.preventDefault()
+      if ((window as any).toggleWpSmsChatbox) {
+        ;(window as any).toggleWpSmsChatbox()
+      }
     }
   }, [])
 
@@ -30,7 +40,7 @@ export const FieldDescription = ({ text }: FieldDescriptionProps) => {
       <div
         className="text-xs text-muted-foreground [&_code]:cursor-pointer !m-0"
         dangerouslySetInnerHTML={{ __html: text }}
-        onClick={handleCodeClick}
+        onClick={handleClick}
       />
     )
   }
