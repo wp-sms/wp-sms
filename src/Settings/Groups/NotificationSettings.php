@@ -134,12 +134,14 @@ class NotificationSettings extends AbstractSettingGroup {
                         'label' => __('Post Types', 'wp-sms'),
                         'type' => 'multiselect',
                         'options' => $this->getPostTypes(),
+                        'show_if' => ['notif_publish_new_post_author' => true],
                         'description' => __('Choose which post types trigger an author alert.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'notif_publish_new_post_author_template',
                         'label' => __('Message Template', 'wp-sms'),
                         'type' => 'textarea',
+                        'show_if' => ['notif_publish_new_post_author' => true],
                         'description' => __('Write your SMS to the author. Use the variables listed below.', 'wp-sms') . '<br>' . NotificationFactory::getPost()->printVariables()
                     ]),
                 ]
@@ -172,12 +174,14 @@ class NotificationSettings extends AbstractSettingGroup {
                         'key' => 'notif_register_new_user_admin_template',
                         'label' => __('Message to Admin', 'wp-sms'),
                         'type' => 'textarea',
+                        'show_if' => ['notif_register_new_user' => true],
                         'description' => __('SMS template sent to the Admin Mobile Number. Use the variables below.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                     ]),
                     new Field([
                         'key' => 'notif_register_new_user_template',
                         'label' => __('Message to User', 'wp-sms'),
                         'type' => 'textarea',
+                        'show_if' => ['notif_register_new_user' => true],
                         'description' => __('Welcome SMS sent to the new user. Use the variables below.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                     ]),
                 ]
@@ -197,6 +201,7 @@ class NotificationSettings extends AbstractSettingGroup {
                         'key' => 'notif_new_comment_template',
                         'label' => __('Message Template', 'wp-sms'),
                         'type' => 'textarea',
+                        'show_if' => ['notif_new_comment' => true],
                         'description' => __('Write your SMS for comment alerts. Use the variables below.', 'wp-sms') . '<br>' . NotificationFactory::getComment()->printVariables()
                     ]),
                 ]
@@ -217,12 +222,14 @@ class NotificationSettings extends AbstractSettingGroup {
                         'label' => __('User Roles', 'wp-sms'),
                         'type' => 'multiselect',
                         'options' => $this->getRoles(),
+                        'show_if' => ['notif_user_login' => true],
                         'description' => __('Only alert for these roles.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'notif_user_login_template',
                         'label' => __('Message Template', 'wp-sms'),
                         'type' => 'textarea',
+                        'show_if' => ['notif_user_login' => true],
                         'description' => __('Write your SMS for login alerts. Use the variables below.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables()
                     ]),
                 ]
