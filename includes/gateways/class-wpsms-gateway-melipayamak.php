@@ -112,6 +112,34 @@ class melipayamak extends Gateway
                 'desc' => __('Optional: secondary support sender used with Smart SMS.', 'wp-sms'),
             ],
         ];
+
+        $this->help = <<<HTML
+<div dir="rtl">
+  <h3>ارسال پیامک با پترن (الگو)</h3>
+  <ol>
+    <li>
+      <strong>ثبت الگو در پنل پیامک</strong><br>
+      متن پیامک باید شامل نام متغیرها باشد.  
+      <ul>
+        <li>در <strong>پلاگین</strong>: نام متغیرها باید بین <code>%</code> قرار بگیرند؛ مانند <code>%billing_first_name%</code> و <code>%order_id%</code>.</li>
+        <li>در <strong>سامانه پیامکی</strong>: متغیرها به ترتیب شماره‌گذاری می‌شوند؛ مانند <code>{0}</code> و <code>{1}</code>.</li>
+      </ul>
+      مثال متن پیامک:<br>
+      <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.</code><br>
+      <code>سلام {0}، سفارش {1} با موفقیت ثبت شد.</code>
+    </li>
+    <li>
+      <strong>اضافه کردن کد الگو در پلاگین</strong><br>
+      بعد از متن پیامک، کد الگو را با علامت «|» اضافه کنید.<br>
+      مثال: <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
+    </li>
+  </ol>
+  <p><strong>نکات مهم</strong></p>
+  <ul>
+    <li>اگر <code style='direction: rtl'>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
+  </ul>
+</div>
+HTML;
     }
 
     /**
@@ -168,8 +196,8 @@ class melipayamak extends Gateway
                 return $response;
             }
 
-            if (!isset($response->RetStatus) && $response->RetStatus !== 1) {
-                return new WP_Error('send-sms-error', __('Failed to send SMS.', 'wp-sms'));
+            if (isset($response->RetStatus) && $response->RetStatus !== 1) {
+                throw new Exception($this->getErrorMessage($response->RetStatus));
             }
 
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -209,13 +237,18 @@ class melipayamak extends Gateway
                 'body'    => $body,
             ];
 
-            $response = $this->request('POST', $this->wsdl_link . 'SendSMS/GetCredit', [], $params);
+            $response = $this->request('POST', $this->wsdl_link . 'SendSMS/GetCredit', [], $params, false);
 
-            if (isset($response->RetStatus) && $response->RetStatus == 1) {
-                return $response->Value;
+            if (isset($response->RetStatus)) {
+                if ($response->RetStatus === 1) {
+                    return $response->Value ?? 0;
+                }
+
+                throw new Exception($this->getErrorMessage($response->RetStatus));
             }
 
-            return new WP_Error('account-credit-error', __('Failed to retrieve credit.', 'wp-sms'));
+            throw new Exception(__('Invalid response from SMS service.', 'wp-sms'));
+
         } catch (Exception $e) {
             return new WP_Error('account-credit-error', $e->getMessage());
         }
@@ -258,7 +291,7 @@ class melipayamak extends Gateway
             'body'    => $body,
         ];
 
-        return $this->request('POST', $this->wsdl_link . 'SmartSMS/Send', [], $params);
+        return $this->request('POST', $this->wsdl_link . 'SmartSMS/Send', [], $params, false);
     }
 
     /**
@@ -292,7 +325,7 @@ class melipayamak extends Gateway
                 'body'    => $body,
             ];
 
-            $responses[] = $this->request('POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], $params);
+            $responses[] = $this->request('POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], $params, false);
         }
 
         return end($responses);
@@ -327,5 +360,73 @@ class melipayamak extends Gateway
         }
 
         return $formatted;
+    }
+
+    /**
+     * Get error message from the request error code.
+     *
+     * @param int|string $errorCode
+     * @return string
+     */
+    private function getErrorMessage($errorCode)
+    {
+        switch ($errorCode) {
+            case 0:
+                $message = esc_html__('Invalid username or password.', 'wp-sms');
+                break;
+            case 2:
+                $message = esc_html__('Insufficient credit.', 'wp-sms');
+                break;
+            case 3:
+                $message = esc_html__('Daily sending limit reached.', 'wp-sms');
+                break;
+            case 4:
+                $message = esc_html__('Sending volume limit reached.', 'wp-sms');
+                break;
+            case 5:
+                $message = esc_html__('Invalid sender number.', 'wp-sms');
+                break;
+            case 6:
+                $message = esc_html__('System is under maintenance.', 'wp-sms');
+                break;
+            case 7:
+                $message = esc_html__('Message contains a filtered word.', 'wp-sms');
+                break;
+            case 9:
+                $message = esc_html__('Sending from public lines via web service is not allowed.', 'wp-sms');
+                break;
+            case 10:
+                $message = esc_html__('User is not active.', 'wp-sms');
+                break;
+            case 11:
+                $message = esc_html__('Message not sent.', 'wp-sms');
+                break;
+            case 12:
+                $message = esc_html__('User documents are incomplete.', 'wp-sms');
+                break;
+            case 14:
+                $message = esc_html__('Message contains a link.', 'wp-sms');
+                break;
+            case 15:
+                $message = esc_html__('Cannot send to more than one recipient without including "لغو11".', 'wp-sms');
+                break;
+            case 16:
+                $message = esc_html__('No recipient number found.', 'wp-sms');
+                break;
+            case 17:
+                $message = esc_html__('Message text is empty.', 'wp-sms');
+                break;
+            case 18:
+                $message = esc_html__('Invalid recipient number.', 'wp-sms');
+                break;
+            case 35:
+                $message = esc_html__('Number is in the telecom blacklist.', 'wp-sms');
+                break;
+            default:
+                $message = esc_html__('Unknown error occurred.', 'wp-sms');
+                break;
+        }
+
+        return $message;
     }
 }

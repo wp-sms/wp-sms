@@ -106,10 +106,10 @@ class farazsms extends Gateway
 <p><strong>نکات مهم</strong></p>
 <ul>
   <li>نام متغیرها باید دقیقاً یکسان باشند؛ مانند <code>%billing_first_name%</code> و <code>%order_id%</code>.</li>
-  <li>اگر <code>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
+  <li>اگر <code style='direction: rtl'>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
 </ul></div>";
 
-        $this->api_key       = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
+        $this->api_key = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
     }
 
     /**
