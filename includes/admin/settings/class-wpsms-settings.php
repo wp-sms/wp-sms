@@ -947,7 +947,7 @@ class Settings
 
                 if (is_array($form_fields) && count($form_fields)) {
                     foreach ($form_fields as $key => $label) {
-                        $variables["field-{$key}"] = '';
+                        $variables["field-{$key}"] = $label;
                     }
                 }
 
@@ -1051,7 +1051,7 @@ class Settings
 
                     if (is_array($form_fields) && count($form_fields)) {
                         foreach ($form_fields as $key => $value) {
-                            $variables["field-{$key}"] = '';
+                            $variables["field-{$key}"] = $value;
                         }
                     }
 

@@ -47,10 +47,14 @@ class Integrations
 
         $get_group_result = Newsletter::getGroups();
 
+        $messageVariables     = $this->getMessageVariables();
+        $messageVariablesText = NotificationFactory::getContactForm7($messageVariables)->printVariables();
+
         $args = [
-            'get_group_result'  => $get_group_result,
-            'cf7_options'       => $cf7_options,
-            'cf7_options_field' => $cf7_options_field,
+            'get_group_result'       => $get_group_result,
+            'cf7_options'            => $cf7_options,
+            'cf7_options_field'      => $cf7_options_field,
+            'message_variables_text' => $messageVariablesText
         ];
 
         echo Helper::loadTemplate('wpcf7-form.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
