@@ -25,11 +25,6 @@ export const FieldWrapper = ({
           </Label>
         )}
 
-        {schema.readonly && (
-          <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
-            Read Only
-          </Badge>
-        )}
 
         {schema.tag && <TagBadge tag={schema.tag} />}
       </div>
