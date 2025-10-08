@@ -65,6 +65,11 @@ class Field
 
     public function toArray(): array
     {
+
+        // if the default is not set, use the first option key
+        if (!$this->default && $this->options) {
+            $this->default = array_keys($this->options)[0];
+        }
         $array = [
             'key'         => $this->key,
             'type'        => $this->type,

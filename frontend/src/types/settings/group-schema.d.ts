@@ -89,6 +89,7 @@ type SchemaSection = {
   order: number
   readOnly: boolean
   subtitle: string
+  tag: string | null
   title: string
 }
 
