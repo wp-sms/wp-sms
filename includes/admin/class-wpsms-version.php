@@ -194,9 +194,9 @@ class Version
             $licenseIsStillValid = wp_sms_check_remote_license($addOnKey, wp_sms_get_license_key($addOnKey));
 
             if ($licenseIsStillValid) {
-                Option::updateOption("license_{$addOnKey}_status", 'pro');
+                Option::updateOption("license_{$addOnKey}_status", true);
             } else {
-                Option::updateOption("license_{$addOnKey}_status");
+                Option::updateOption("license_{$addOnKey}_status", false);
             }
         }
     }
