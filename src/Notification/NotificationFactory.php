@@ -25,6 +25,7 @@ use WP_SMS\Notification\Handler\BuddyPressUserCommentsNotification;
 use WP_SMS\Notification\Handler\GravityFormsNotification;
 use WP_SMS\Notification\Handler\QuformNotification;
 use WP_SMS\Notification\Handler\EasyDigitalDownloadsNotification;
+use WP_SMS\Notification\Handler\WPJobManagerNotification;
 
 class NotificationFactory
 {
@@ -229,5 +230,13 @@ class NotificationFactory
     public static function getEasyDigitalDownloads($eddData = [])
     {
         return new EasyDigitalDownloadsNotification($eddData);
+    }
+
+    /**
+     * @return WPJobManagerNotification
+     */
+    public static function getWPJobManager($jobData = [])
+    {
+        return new WPJobManagerNotification($jobData);
     }
 }

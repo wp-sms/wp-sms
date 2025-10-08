@@ -793,19 +793,7 @@ class Settings
                     'id'   => 'job_notify_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
-                            esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
-                            '<code>%job_id%</code>',
-                            '<code>%job_title%</code>',
-                            '<code>%job_description%</code>',
-                            '<code>%job_location%</code>',
-                            '<code>%job_type%</code>',
-                            '<code>%job_mobile%</code>',
-                            '<code>%company_name%</code>',
-                            '<code>%website%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWPJobManager()->printVariables()
                 ),
                 'job_notify_employer'             => array(
                     'id'   => 'job_notify_employer',
@@ -823,19 +811,7 @@ class Settings
                     'id'   => 'job_notify_employer_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
-                            esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
-                            '<code>%job_id%</code>',
-                            '<code>%job_title%</code>',
-                            '<code>%job_description%</code>',
-                            '<code>%job_location%</code>',
-                            '<code>%job_type%</code>',
-                            '<code>%job_mobile%</code>',
-                            '<code>%company_name%</code>',
-                            '<code>%website%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWPJobManager()->printVariables()
                 )
             );
         } else {

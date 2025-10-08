@@ -104,6 +104,7 @@ return array(
     'WP_SMS\\Notification\\Handler\\OtpNotification' => $baseDir . '/src/Notification/Handler/OtpNotification.php',
     'WP_SMS\\Notification\\Handler\\QuformNotification' => $baseDir . '/src/Notification/Handler/QuformNotification.php',
     'WP_SMS\\Notification\\Handler\\SubscriberNotification' => $baseDir . '/src/Notification/Handler/SubscriberNotification.php',
+    'WP_SMS\\Notification\\Handler\\WPJobManagerNotification' => $baseDir . '/src/Notification/Handler/WPJobManagerNotification.php',
     'WP_SMS\\Notification\\Handler\\WooCommerceAdminOrderNotification' => $baseDir . '/src/Notification/Handler/WooCommerceAdminOrderNotification.php',
     'WP_SMS\\Notification\\Handler\\WooCommerceCouponNotification' => $baseDir . '/src/Notification/Handler/WooCommerceCouponNotification.php',
     'WP_SMS\\Notification\\Handler\\WooCommerceCustomerNotification' => $baseDir . '/src/Notification/Handler/WooCommerceCustomerNotification.php',
