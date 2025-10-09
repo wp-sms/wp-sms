@@ -46,7 +46,6 @@ class OptionMigration extends AbstractMigrationOperation
                 // TODO: Add logging for successful migration
             }
         } catch (Exception $e) {
-            dd($e);
             $this->setErrorStatus($e->getMessage());
         }
     }
