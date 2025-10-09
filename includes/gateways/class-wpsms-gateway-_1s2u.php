@@ -30,6 +30,7 @@ class _1s2u extends \WP_SMS\Gateway
             'password' => [
                 'id'   => 'gateway_password',
                 'name' => 'Password',
+                'type' => 'password',
                 'desc' => 'Enter your password.',
             ],
             'from'     => [
