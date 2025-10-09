@@ -44,7 +44,8 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'key' => 'chatbox_title',
                         'label' => __('Title', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
+                        'description' => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms'),
+                        'default' => 'Chat with Us!'
                     ]),
                 ]
             ]),
@@ -57,7 +58,8 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'key' => 'chatbox_button_text',
                         'label' => __('Text', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
+                        'description' => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms'),
+                        'default' => 'Talk to Us'
                     ]),
                     new Field([
                         'key' => 'chatbox_button_position',
@@ -67,7 +69,8 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'options' => [
                             'bottom_right' => __('Bottom Right', 'wp-sms'),
                             'bottom_left' => __('Bottom Left', 'wp-sms'),
-                        ]
+                        ],
+                        'default' => 'bottom_right'
                     ]),
                 ]
             ]),
@@ -152,37 +155,43 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'key' => 'chatbox_color',
                         'label' => __('Chatbox Color', 'wp-sms'),
                         'type' => 'color',
-                        'description' => __('Choose your chat button\'s background color and header color.', 'wp-sms')
+                        'description' => __('Choose your chat button\'s background color and header color.', 'wp-sms'),
+                        'default' => '#F88E40'
                     ]),
                     new Field([
                         'key' => 'chatbox_text_color',
                         'label' => __('Chatbox Text Color', 'wp-sms'),
                         'type' => 'color',
-                        'description' => __('Select the color for your button and header text.', 'wp-sms')
+                        'description' => __('Select the color for your button and header text.', 'wp-sms'),
+                        'default' => '#FFFFFF'
                     ]),
                     new Field([
                         'key' => 'chatbox_footer_text',
                         'label' => __('Footer Text', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms')
+                        'description' => __('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms'),
+                        'default' => ''
                     ]),
                     new Field([
                         'key' => 'chatbox_footer_text_color',
                         'label' => __('Footer Text Color', 'wp-sms'),
                         'type' => 'color',
-                        'description' => __('Select your footer text color.', 'wp-sms')
+                        'description' => __('Select your footer text color.', 'wp-sms'),
+                        'default' => '#5C5C5C'
                     ]),
                     new Field([
                         'key' => 'chatbox_footer_link_title',
                         'label' => __('Footer Link Title', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms')
+                        'description' => __('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms'),
+                        'default' => ''
                     ]),
                     new Field([
                         'key' => 'chatbox_footer_link_url',
                         'label' => __('Footer Link URL', 'wp-sms'),
                         'type' => 'text',
-                        'description' => __('Enter the URL of the chatbox footer link.', 'wp-sms')
+                        'description' => __('Enter the URL of the chatbox footer link.', 'wp-sms'),
+                        'default' => ''
                     ]),
                     new Field([
                         'key' => 'chatbox_animation_effect',
@@ -193,13 +202,15 @@ class MessageButtonSettings extends AbstractSettingGroup
                             '' => __('None', 'wp-sms'),
                             'fade' => __('Fade In', 'wp-sms'),
                             'slide' => __('Slide Up', 'wp-sms'),
-                        ]
+                        ],
+                        'default' => ''
                     ]),
                     new Field([
                         'key' => 'chatbox_disable_logo',
                         'label' => __('Disable WP SMS Logo', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Check this box to disable the WP SMS logo in the footer of the chatbox.', 'wp-sms')
+                        'description' => __('Check this box to disable the WP SMS logo in the footer of the chatbox.', 'wp-sms'),
+                        'default' => false
                     ]),
                 ]
             ]),
@@ -212,14 +223,16 @@ class MessageButtonSettings extends AbstractSettingGroup
                         'key' => 'chatbox_links_enabled',
                         'label' => __('Resource Links', 'wp-sms'),
                         'type' => 'checkbox',
-                        'description' => __('Turn on to show resource links in the chatbox.', 'wp-sms')
+                        'description' => __('Turn on to show resource links in the chatbox.', 'wp-sms'),
+                        'default' => false
                     ]),
                     new Field([
                         'key' => 'chatbox_links_title',
                         'label' => __('Section Title', 'wp-sms'),
                         'type' => 'text',
                         'description' => __('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms'),
-                        'show_if' => ['chatbox_links_enabled' => true]
+                        'show_if' => ['chatbox_links_enabled' => true],
+                        'default' => 'Quick Links'
                     ]),
                     new Field([
                         'key' => 'chatbox_links',

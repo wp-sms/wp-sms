@@ -2,12 +2,14 @@ import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
 
+import { Chatbox } from '@/components/chatbox/chatbox'
 import { SchemaForm } from '@/components/form/schema-form'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
 import { useSaveSettingsValues } from '@/services/settings/use-save-settings-values'
+import type { ChatboxSettings } from '@/types/chatbox'
 
 export const Route = createFileRoute('/settings/_layout/$name')({
   loader: ({ context, params }) => {
@@ -43,5 +45,12 @@ function RouteComponent() {
     await mutateAsync(values)
   }
 
-  return <SchemaForm formSchema={schema} defaultValues={defaultValues} onSubmit={handleSubmit} />
+  const showChatbox = name === 'message_button'
+
+  return (
+    <>
+      <SchemaForm formSchema={schema} defaultValues={defaultValues} onSubmit={handleSubmit} />
+      {showChatbox && <Chatbox settings={defaultValues as Partial<ChatboxSettings>} />}
+    </>
+  )
 }
