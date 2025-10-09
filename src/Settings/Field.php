@@ -67,7 +67,7 @@ class Field
     {
 
         // if the default is not set, use the first option key
-        if (!$this->default && $this->options) {
+        if (!$this->default && $this->options && is_array($this->options)) {
             $this->default = array_keys($this->options)[0];
         }
         $array = [
