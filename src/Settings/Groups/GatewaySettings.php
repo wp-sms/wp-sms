@@ -227,7 +227,7 @@ class GatewaySettings extends AbstractSettingGroup {
             ],
             'gateway_password' => [
                 'name' => __('API Password', 'wp-sms'),
-                'type' => 'text',
+                'type' => 'password',
                 'description' => __('Your API password or token if required.', 'wp-sms'),
             ],
             'gateway_sender_id' => [
