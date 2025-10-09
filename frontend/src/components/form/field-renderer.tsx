@@ -2,7 +2,7 @@ import { useStore } from '@tanstack/react-form'
 import { Settings } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
 
-import type { AppFormType } from '@/hooks/use-application-form'
+import type { AppFormType } from '@/hooks/use-form'
 import { withForm } from '@/hooks/use-form'
 import type { SchemaField } from '@/types/settings/group-schema'
 
@@ -169,6 +169,9 @@ export const FieldRenderer = withForm({
 
         case 'image':
           return <form.AppField name={schema.key} children={(field) => <field.ImageField schema={schema} />} />
+
+        case 'password':
+          return <form.AppField name={schema.key} children={(field) => <field.PasswordField schema={schema} />} />
 
         default:
           return <div>Unsupported field type: {schema.type}</div>

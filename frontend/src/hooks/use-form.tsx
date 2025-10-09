@@ -32,6 +32,11 @@ const TextField = lazy(() => import('@/components/form/fields/text-field').then(
 const TextareaField = lazy(() =>
   import('@/components/form/fields/textarea-field').then((m) => ({ default: m.TextareaField }))
 )
+const PasswordField = lazy(() =>
+  import('@/components/form/fields/password-field').then((m) => ({ default: m.PasswordField }))
+)
+
+export type AppFormType = ReturnType<typeof useAppForm>
 
 export const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
@@ -48,6 +53,7 @@ export const { useAppForm, withForm, withFieldGroup } = createFormHook({
     HtmlRenderer,
     Header,
     Notice,
+    PasswordField,
   },
   formComponents: {
     FormActions,
