@@ -46,9 +46,9 @@ class NotificationFactory
      * @param $orderId
      * @return WooCommerceOrderNotification
      */
-    public static function getWooCommerceOrder($orderId = false)
+    public static function getWooCommerceOrder($orderId = false, $wooData = [])
     {
-        return new WooCommerceOrderNotification($orderId);
+        return new WooCommerceOrderNotification($orderId, $wooData);
     }
 
     /**
