@@ -167,9 +167,12 @@ class Integrations
             $this->set_cf7_data();
         }
 
-        foreach ($this->cf7_data as $key => $value) {
-            $result[$key] = $value;
+        if (!empty($this->cf7_data) && is_array($this->cf7_data)) {
+            foreach ($this->cf7_data as $key => $value) {
+                $result[$key] = $value;
+            }
         }
+
 
         return $result;
     }
