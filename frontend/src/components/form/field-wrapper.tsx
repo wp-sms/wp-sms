@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import { type PropsWithChildren } from 'react'
 
-import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { TagBadge } from '@/components/ui/tag-badge'
 import type { SchemaField } from '@/types/settings/group-schema'

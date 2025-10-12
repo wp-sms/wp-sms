@@ -29,6 +29,7 @@ type SchemaFieldType =
   | 'header'
   | 'notice'
   | 'image'
+  | 'password'
 
 type SchemaFieldLayout =
   | '2-column'
