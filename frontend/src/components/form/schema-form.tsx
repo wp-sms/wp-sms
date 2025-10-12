@@ -1,5 +1,6 @@
+import { useBlocker } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { GroupTitle } from '@/components/layout/group-title'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -9,6 +10,7 @@ import type { GroupSchema, SchemaField } from '@/types/settings/group-schema'
 
 import { TagBadge } from '../ui/tag-badge'
 import { FieldRenderer } from './field-renderer'
+import { UnsavedChangesDialog } from './unsaved-changes-dialog'
 
 type SchemaFormProps = {
   formSchema: GroupSchema | null
@@ -18,6 +20,8 @@ type SchemaFormProps = {
 }
 
 export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction }: SchemaFormProps) => {
+  const [showDialog, setShowDialog] = useState(false)
+
   const form = useAppForm({
     defaultValues,
     onSubmit: async () => {
@@ -30,6 +34,28 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
       await onSubmit(dirtyValues)
     },
   })
+
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => form.state.isDirty,
+    enableBeforeUnload: form.state.isDirty,
+    withResolver: true,
+  })
+
+  useEffect(() => {
+    if (status === 'blocked') {
+      setShowDialog(true)
+    }
+  }, [status])
+
+  const handleStay = () => {
+    setShowDialog(false)
+    reset!()
+  }
+
+  const handleDiscard = () => {
+    setShowDialog(false)
+    proceed!()
+  }
 
   useEffect(() => {
     form.reset(defaultValues)
@@ -47,42 +73,46 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }}
-      className="flex flex-col gap-y-6"
-    >
-      <GroupTitle label={formSchema.label || ''} />
+    <>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          form.handleSubmit()
+        }}
+        className="flex flex-col gap-y-6"
+      >
+        <GroupTitle label={formSchema.label || ''} />
 
-      {formSchema.sections.map((section, index) => (
-        <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
-          <CardHeader>
-            <CardTitle>
-              {section.title}
-              {section.tag && <TagBadge className="ms-2" tag={section.tag} />}
-            </CardTitle>
-            {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
-          </CardHeader>
-          <CardContent className="flex flex-col gap-y-8">
-            {section.fields?.map((field) => (
-              <FieldRenderer
-                key={field.key}
-                form={form}
-                schema={field}
-                onOpenSubFields={onFieldAction}
-                onSubmit={onSubmit}
-              />
-            ))}
-          </CardContent>
-        </Card>
-      ))}
+        {formSchema.sections.map((section, index) => (
+          <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
+            <CardHeader>
+              <CardTitle>
+                {section.title}
+                {section.tag && <TagBadge className="ms-2" tag={section.tag} />}
+              </CardTitle>
+              {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
+            </CardHeader>
+            <CardContent className="flex flex-col gap-y-8">
+              {section.fields?.map((field) => (
+                <FieldRenderer
+                  key={field.key}
+                  form={form}
+                  schema={field}
+                  onOpenSubFields={onFieldAction}
+                  onSubmit={onSubmit}
+                />
+              ))}
+            </CardContent>
+          </Card>
+        ))}
 
-      <form.AppForm>
-        <form.FormActions />
-      </form.AppForm>
-    </form>
+        <form.AppForm>
+          <form.FormActions />
+        </form.AppForm>
+      </form>
+
+      <UnsavedChangesDialog open={showDialog} onStay={handleStay} onDiscard={handleDiscard} />
+    </>
   )
 }
