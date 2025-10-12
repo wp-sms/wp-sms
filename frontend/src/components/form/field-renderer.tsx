@@ -5,6 +5,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
 import type { AppFormType } from '@/hooks/use-form'
 import { withForm } from '@/hooks/use-form'
 import type { SchemaField } from '@/types/settings/group-schema'
+import { shouldShowField } from '@/utils/conditional-field-logic'
 
 import { Button } from '../ui/button'
 
@@ -71,7 +72,6 @@ interface ConditionalRendererProps {
 }
 
 const ConditionalRenderer = ({ form, schema, children }: ConditionalRendererProps) => {
-  // Get dependent field keys for this field
   const dependentFields = useMemo(() => {
     const showIfKeys = Object.keys(schema.showIf ?? {})
     const hideIfKeys = Object.keys(schema.hideIf ?? {})
@@ -82,7 +82,6 @@ const ConditionalRenderer = ({ form, schema, children }: ConditionalRendererProp
   const formValues = useStore(form.baseStore, (state) => {
     if (!shouldSubscribe) return {}
     const values = state.values as Record<string, unknown>
-    // Only return values for fields this component depends on
     return dependentFields.reduce(
       (acc, key) => {
         acc[key] = values[key]
@@ -93,18 +92,10 @@ const ConditionalRenderer = ({ form, schema, children }: ConditionalRendererProp
   })
 
   const shouldShow = useMemo(() => {
-    if (schema.hidden) return false
+    const allFormValues = shouldSubscribe ? formValues : (form.baseStore.state.values as Record<string, unknown>)
 
-    const shouldShowCondition = Object.entries(schema.showIf ?? {}).every(([key, expectedValue]) => {
-      return shouldSubscribe ? formValues[key] === expectedValue : form.getFieldValue(key) === expectedValue
-    })
-
-    const shouldHideCondition = Object.entries(schema.hideIf ?? {}).some(([key, expectedValue]) => {
-      return shouldSubscribe ? formValues[key] === expectedValue : form.getFieldValue(key) === expectedValue
-    })
-
-    return shouldShowCondition && !shouldHideCondition
-  }, [shouldSubscribe, formValues, schema.showIf, schema.hideIf, schema.hidden, form])
+    return shouldShowField(schema, allFormValues)
+  }, [shouldSubscribe, formValues, schema, form])
 
   if (!shouldShow) return null
 
