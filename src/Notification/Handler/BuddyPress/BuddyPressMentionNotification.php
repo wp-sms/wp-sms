@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_SMS\Notification\Handler;
+namespace WP_SMS\Notification\Handler\BuddyPress;
 
 use WP_SMS\Notification\Notification;
 
