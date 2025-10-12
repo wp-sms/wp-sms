@@ -215,6 +215,7 @@ class WP_SMS
         $this->include('includes/admin/class-wpsms-version.php');
 
         // Initializing managers.
+        (new AdminManager())->init();
         (new CronJobManager())->init();
         (new ControllerManager())->init();
         (new WebhookManager())->init();
@@ -247,8 +248,6 @@ class WP_SMS
             WidgetsManager::init();
             NoticeManager::getInstance();
 
-            // Initializing managers.
-            (new AdminManager())->init();
         }
 
         if (!is_admin()) {
