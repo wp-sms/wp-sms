@@ -123,6 +123,8 @@ class Install
 
         self::create_table($network_wide);
 
+        $this->checkIsFresh();
+
         add_option('wp_sms_db_version', WP_SMS_VERSION);
 
         // Delete notification new wp_version option
@@ -308,6 +310,27 @@ class Install
                 PRIMARY KEY  (ID),
                 KEY (phone_number)) $charset_collate";
             return dbDelta($query);
+        }
+    }
+
+    /**
+     * Checks whether the plugin is a fresh installation.
+     *
+     * @return void
+     */
+    private function checkIsFresh()
+    {
+        $version = get_option('wp_sms_db_version');
+
+        if (empty($version)) {
+            update_option('wp_sms_is_fresh', true);
+        } else {
+            update_option('wp_sms_is_fresh', false);
+        }
+
+        $installationTime = get_option('wp_sms_installation_time');
+        if (empty($installationTime)) {
+            update_option('wp_sms_installation_time', time());
         }
     }
 }
