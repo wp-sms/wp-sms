@@ -36,11 +36,15 @@ class Install
             foreach ($blog_ids as $blog_id) {
                 switch_to_blog($blog_id);
 
+                self::checkIsFresh();
+
                 call_user_func(array(__CLASS__, $method));
 
                 restore_current_blog();
             }
         } else {
+            self::checkIsFresh();
+            
             call_user_func(array(__CLASS__, $method));
         }
     }
@@ -122,8 +126,6 @@ class Install
         global $wp_sms_db_version;
 
         self::create_table($network_wide);
-
-        $this->checkIsFresh();
 
         add_option('wp_sms_db_version', WP_SMS_VERSION);
 
@@ -318,7 +320,7 @@ class Install
      *
      * @return void
      */
-    private function checkIsFresh()
+    private static function checkIsFresh()
     {
         $version = get_option('wp_sms_db_version');
 
