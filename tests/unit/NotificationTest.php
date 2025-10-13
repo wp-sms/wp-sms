@@ -37,15 +37,19 @@ class NotificationTest extends WP_UnitTestCase
     public function testPrintVariables()
     {
         $notification = NotificationFactory::getCustom();
-        $notification->registerVariables([
+        $variables = [
             '%age%'  => $this->faker->numberBetween(18, 60),
             '%name%' => $this->faker->firstName,
-        ]);
+        ];
+        $notification->registerVariables($variables);
 
-        $this->assertStringContainsString(
-            '<code>%age%</code> <code>%name%</code>',
-            $notification->printVariables()
-        );
+        $output = $notification->printVariables();
+
+        // Check that all keys and values exist in the output
+        foreach ($variables as $key => $value) {
+            $this->assertStringContainsString($key, $output, "Key {$key} is missing in the output.");
+            $this->assertStringContainsString((string) $value, $output, "Value {$value} is missing in the output.");
+        }
     }
 
     /**

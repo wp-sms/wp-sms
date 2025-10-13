@@ -53,7 +53,7 @@ class Notification
 
         $this->processMessage($message);
 
-        $finalMessage   = $this->parsedMessage;
+        $finalMessage     = $this->parsedMessage;
         $messageVariables = $this->parsedVariables;
 
         $response = wp_sms_send($to, $finalMessage, $isFlash, $senderId, $mediaUrls, $messageVariables);
@@ -89,7 +89,23 @@ class Notification
 
     public function printVariables()
     {
-        return "<code>" . implode("</code> <code>", array_keys($this->variables)) . "</code>";
+        $output = [];
+
+        foreach ($this->variables as $key => $value) {
+            if (is_string($value) && str_starts_with($value, 'get')) {
+                $value = substr($value, 3);
+                $value = preg_replace('/([A-Z])/', ' $1', $value);
+                $value = trim($value);
+            }
+
+            if (!empty($value)) {
+                $output[] = esc_html($value) . ': <code>' . esc_html($key) . '</code>';
+            } else {
+                $output[] = '<code>' . esc_html($key) . '</code>';
+            }
+        }
+
+        return implode(' ', $output);
     }
 
     public function getVariables()
