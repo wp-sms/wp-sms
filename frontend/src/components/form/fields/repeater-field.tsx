@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ConfirmAction } from '@/components/ui/confirm-action'
 import { useFieldContext } from '@/context/form-context'
 import type { SchemaField } from '@/types/settings/group-schema'
+import { shouldShowField } from '@/utils/conditional-field-logic'
 
 import { FieldRenderer } from '../field-renderer.tsx'
 import { FieldWrapper } from '../field-wrapper'
@@ -53,6 +54,9 @@ export const RepeaterField = ({ form, schema }: RepeaterFieldProps) => {
     }
     return []
   }, [fieldValue])
+
+  // Subscribe to form values for conditional rendering
+  const formValues = useStore(form.baseStore, (state) => state.values as Record<string, unknown>)
 
   const layout = '2-column'
 
@@ -109,15 +113,8 @@ export const RepeaterField = ({ form, schema }: RepeaterFieldProps) => {
                 return (
                   <section key={`${schema.key}-${item?.id || `item-${idx}`}`} className={layoutVariants({ layout })}>
                     {group?.fields?.map((subField) => {
-                      const shouldShow = Object.entries(subField?.showIf ?? {}).every(([key, expectedValue]) => {
-                        return form.getFieldValue(key) === expectedValue
-                      })
-
-                      const shouldHide = Object.entries(subField?.hideIf ?? {}).some(([key, expectedValue]) => {
-                        return form.getFieldValue(key) === expectedValue
-                      })
-
-                      if (!shouldShow || shouldHide || Boolean(subField?.hidden)) {
+                      // Check if field should be visible based on showIf/hideIf conditions
+                      if (!shouldShowField(subField, formValues)) {
                         return null
                       }
 
