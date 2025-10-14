@@ -4,6 +4,7 @@
 - **Fix:** Disabled caching to prevent duplicate responses for similar messages.
 - **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
 - **Fix:** PHP 8.1+ compatibility: avoid "Automatic conversion of false to array" warning.
+- **Enhancement:** Improved Kavenegar gateway to support sending template-based SMS messages with variable placeholders.
 
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
