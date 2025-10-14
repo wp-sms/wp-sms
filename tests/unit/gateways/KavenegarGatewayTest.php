@@ -40,17 +40,30 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     /** Test: normal (non-template) SMS sending should succeed. */
     public function test_send_simple_sms_success()
     {
+        $this->gateway->to  = ['09120000000', '09120000001'];
+        $this->gateway->msg = 'Test Message';
+
         $this->gateway->expects($this->once())
             ->method('request')
             ->with(
                 'GET',
                 $this->stringContains('/sms/send.json'),
                 $this->callback(function ($params) {
-                    return $params['receptor'] === '09120000000'
-                        && str_contains($params['message'], 'Test%20Message');
+                    $expectsRecipients =
+                        isset($params['receptor']) &&
+                        $params['receptor'] === '09120000000,09120000001';
+
+                    $msg            = $params['message'] ?? '';
+                    $expectsMessage =
+                        $msg === rawurlencode('Test Message') || $msg === 'Test Message';
+
+                    return $expectsRecipients
+                        && $expectsMessage
+                        && isset($params['apikey'])
+                        && isset($params['sender']) && $params['sender'] === $this->gateway->from;
                 })
             )
-            ->willReturn($this->makeResponse());
+            ->willReturn($this->makeResponse(200, 'OK'));
 
         $response = $this->gateway->SendSMS();
         $this->assertEquals(200, $response->return->status);
@@ -63,23 +76,40 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->gateway->to               = ['09120000001', '09120000002'];
         $this->gateway->templateId       = 1234;
         $this->gateway->messageVariables = [
-            'name'  => 'علی',
-            'order' => '9988'
+            'name'  => 'fake',
+            'order' => '9988',
         ];
 
         $this->gateway->expects($this->exactly(2))
             ->method('request')
-            ->with(
-                'GET',
-                $this->stringContains('/verify/lookup.json'),
-                $this->callback(function ($params) {
-                    return isset($params['template'], $params['token'], $params['token2'])
-                        && $params['template'] == 1234
-                        && $params['token'] === 'علی'
-                        && $params['token2'] === '9988';
-                })
+            ->withConsecutive(
+                [
+                    'GET',
+                    $this->stringContains('/verify/lookup.json'),
+                    $this->callback(function ($params) {
+                        return isset($params['apikey'], $params['template'], $params['token'], $params['token2'], $params['receptor'])
+                            && (int)$params['template'] === 1234
+                            && $params['token'] === 'fake'
+                            && $params['token2'] === '9988'
+                            && $params['receptor'] === '09120000001';
+                    })
+                ],
+                [
+                    'GET',
+                    $this->stringContains('/verify/lookup.json'),
+                    $this->callback(function ($params) {
+                        return isset($params['apikey'], $params['template'], $params['token'], $params['token2'], $params['receptor'])
+                            && (int)$params['template'] === 1234
+                            && $params['token'] === 'fake'
+                            && $params['token2'] === '9988'
+                            && $params['receptor'] === '09120000002';
+                    })
+                ]
             )
-            ->willReturn($this->makeResponse());
+            ->willReturnOnConsecutiveCalls(
+                $this->makeResponse(200, 'OK'),
+                $this->makeResponse(200, 'OK')
+            );
 
         $response = $this->gateway->SendSMS();
         $this->assertEquals(200, $response->return->status);
@@ -95,7 +125,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
 
         $result = $this->gateway->SendSMS();
         $this->assertInstanceOf(WP_Error::class, $result);
-        $this->assertEquals('invalid-template', $result->get_error_code());
+        $this->assertEquals('send-sms-error', $result->get_error_code());
     }
 
     /** Test: error when API key is missing. */
