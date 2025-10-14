@@ -3,7 +3,6 @@
 namespace unit;
 
 use WP_UnitTestCase;
-use WP_Error;
 use WP_SMS\Gateway\kavenegar;
 
 require_once dirname(__DIR__, 3) . '/includes/gateways/class-wpsms-gateway-kavenegar.php';
