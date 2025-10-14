@@ -9,7 +9,7 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table'
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -33,9 +33,9 @@ interface DataTableProps<TData, TValue> {
   rowCount: number
   pageSizeOptions?: number[]
   isLoading?: boolean
-  initialColumnVisibility?: VisibilityState
   sorting: ColumnSort[]
   onSortingChange: OnChangeFn<ColumnSort[]>
+  defaultVisibility?: { [key: string]: boolean }
 }
 
 export function DataTable<TData, TValue>({
@@ -46,23 +46,16 @@ export function DataTable<TData, TValue>({
   rowCount,
   pageSizeOptions = [5, 10, 20, 30, 40, 50],
   isLoading = false,
-  initialColumnVisibility = {},
   sorting,
   onSortingChange,
+  defaultVisibility = {},
 }: DataTableProps<TData, TValue>) {
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility)
-
-  // Update column visibility when initialColumnVisibility changes
-  useEffect(() => {
-    console.log('Setting column visibility:', initialColumnVisibility)
-    setColumnVisibility(initialColumnVisibility)
-  }, [initialColumnVisibility])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultVisibility)
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
     state: {
       columnVisibility,
       pagination,
@@ -73,6 +66,7 @@ export function DataTable<TData, TValue>({
     rowCount,
     manualSorting: true,
     onSortingChange,
+    onColumnVisibilityChange: setColumnVisibility,
   })
 
   return (

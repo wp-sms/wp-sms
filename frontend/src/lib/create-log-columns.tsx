@@ -1,4 +1,4 @@
-import { type ColumnDef, type VisibilityState } from '@tanstack/react-table'
+import { type ColumnDef } from '@tanstack/react-table'
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ interface ColumnConfig {
   visisble: boolean
 }
 
-export function createColumnsFromConfig<TData extends Record<string, unknown>>(
+export function createLogColumnsFromConfig<TData extends Record<string, unknown>>(
   columns: ColumnConfig[]
 ): ColumnDef<TData>[] {
   return columns.map((col) => ({
@@ -31,19 +31,6 @@ export function createColumnsFromConfig<TData extends Record<string, unknown>>(
         }
       : col.label,
     enableSorting: col.sortable,
-    enableHiding: col.visisble,
-    // enableHiding: true,
+    enableHiding: true,
   }))
-}
-
-export function getInitialColumnVisibility(columns: ColumnConfig[]): VisibilityState {
-  const visibility = columns.reduce((acc, col) => {
-    // Only set to false if explicitly false, otherwise default to true
-    if (col.visisble === false) {
-      acc[col.key] = false
-    }
-    return acc
-  }, {} as VisibilityState)
-
-  return visibility
 }

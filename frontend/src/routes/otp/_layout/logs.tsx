@@ -6,16 +6,11 @@ import { useMemo, useState } from 'react'
 import { DataTable } from '@/components/data-table'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
-import { createColumnsFromConfig, getInitialColumnVisibility } from '@/lib/create-columns'
+import { createLogColumnsFromConfig } from '@/lib/create-log-columns'
 import { getLogConfig } from '@/services/logs/get-log-config'
 import { getLogData } from '@/services/logs/get-log-data'
 
 export const Route = createFileRoute('/otp/_layout/logs')({
-  // loader: ({ context }) =>
-  //   Promise.all([
-  //     context.queryClient.ensureQueryData(getLogConfig({ slug: 'auth-events' })),
-  //     context.queryClient.ensureQueryData(getLogData({ slug: 'auth-events', page: 1, perPage: 10 })),
-  //   ]),
   component: RouteComponent,
   pendingComponent: () => <SettingsSchemaSkeleton />,
 })
@@ -47,12 +42,20 @@ function RouteComponent() {
     })
   )
 
-  const columns = useMemo(() => createColumnsFromConfig(configResult.data.columns), [configResult.data.columns])
+  const columns = useMemo(() => createLogColumnsFromConfig(configResult.data.columns), [configResult.data.columns])
+  const defaultVisibility = useMemo(() => {
+    if (!configResult.data?.columns) return {}
 
-  const initialColumnVisibility = useMemo(
-    () => getInitialColumnVisibility(configResult.data.columns),
-    [configResult.data.columns]
-  )
+    return configResult.data.columns.reduce(
+      (acc, column) => {
+        acc[column.key] = !!column.visisble
+        return acc
+      },
+      {} as Record<string, boolean>
+    )
+  }, [configResult.data?.columns])
+
+  console.log(defaultVisibility)
 
   const logDataResult = logDataResponse?.data
 
@@ -70,9 +73,9 @@ function RouteComponent() {
           onPaginationChange={setPagination}
           rowCount={logDataResult?.data.totalCount ?? 0}
           isLoading={isLoading || isPlaceholderData}
-          initialColumnVisibility={initialColumnVisibility}
           sorting={sorting}
           onSortingChange={setSorting}
+          defaultVisibility={defaultVisibility}
         />
       </CardContent>
     </Card>
