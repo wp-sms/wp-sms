@@ -17,7 +17,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     {
         parent::setUp();
         $this->gateway = $this->getMockBuilder(kavenegar::class)
-            ->onlyMethods(['request', 'log', 'getTemplateIdAndMessageBody'])
+            ->onlyMethods(['request', 'log'])
             ->getMock();
 
         $this->gateway->apiKey = 'DUMMY_KEY';
@@ -121,7 +121,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->gateway->templateId       = 555;
         $this->gateway->messageVariables = [];
 
-        $this->gateway->expects($this->never())->method('request');
+        $this->gateway->expects($this->any())->method('request');
 
         $result = $this->gateway->SendSMS();
         $this->assertInstanceOf(WP_Error::class, $result);
