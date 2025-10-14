@@ -61,9 +61,14 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     /** ✅ Test: template SMS sending should succeed */
     public function test_send_template_sms_success()
     {
+        // Arrange
         $this->gateway->to               = ['09120000001', '09120000002'];
         $this->gateway->templateId       = 1234;
         $this->gateway->messageVariables = ['name' => 'fake', 'order' => '9988'];
+
+        remove_all_filters('wp_sms_to');
+        remove_all_filters('wp_sms_from');
+        remove_all_filters('wp_sms_msg');
 
         $this->gateway->expects($this->exactly(2))
             ->method('request')
@@ -71,16 +76,28 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                 'GET',
                 $this->stringContains('/v1/DUMMY_KEY/verify/lookup.json'),
                 $this->callback(function ($params) {
-                    // در هر فراخوانی فقط وجود فیلدهای کلیدی کافی است
-                    return isset($params['template'], $params['receptor'], $params['token'], $params['token2'])
-                        && (int)$params['template'] === 1234;
-                })
+                    if (!isset($params['template'], $params['receptor'], $params['token'], $params['token2'])) {
+                        return false;
+                    }
+                    if ((int)$params['template'] !== 1234) {
+                        return false;
+                    }
+                    $allowed = ['09120000001', '09120000002'];
+                    return in_array($params['receptor'], $allowed, true);
+                }),
+                $this->anything(),
+                $this->anything()
             )
             ->willReturn($this->makeResponse(200, 'OK'));
 
+        // Act
         $response = $this->gateway->SendSMS();
-        $this->assertFalse(is_wp_error($response), 'SendSMS returned WP_Error: ' .
-            (is_wp_error($response) ? $response->get_error_code() . ' - ' . $response->get_error_message() : ''));
+
+        // Assert
+        $this->assertFalse(
+            is_wp_error($response),
+            'SendSMS returned WP_Error: ' . (is_wp_error($response) ? $response->get_error_code() . ' - ' . $response->get_error_message() : '')
+        );
         $this->assertEquals(200, $response->return->status);
     }
 }
