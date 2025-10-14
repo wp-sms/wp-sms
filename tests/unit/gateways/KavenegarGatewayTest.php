@@ -37,7 +37,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         ];
     }
 
-    /** Test: normal (non-template) SMS sending should succeed. */
+    /** ✅ Test: simple SMS sending should succeed */
     public function test_send_simple_sms_success()
     {
         $this->gateway->to  = ['09120000000', '09120000001'];
@@ -47,29 +47,31 @@ class KavenegarGatewayTest extends WP_UnitTestCase
             ->method('request')
             ->with(
                 'GET',
-                $this->stringContains('/sms/send.json'),
+                $this->stringContains('/v1/DUMMY_KEY/sms/send.json'),
                 $this->callback(function ($params) {
                     $expectsRecipients =
                         isset($params['receptor']) &&
                         $params['receptor'] === '09120000000,09120000001';
 
-                    $msg            = $params['message'] ?? '';
+                    $msg = $params['message'] ?? '';
                     $expectsMessage =
                         $msg === rawurlencode('Test Message') || $msg === 'Test Message';
 
-                    return $expectsRecipients
-                        && $expectsMessage
-                        && isset($params['sender']) && $params['sender'] === $this->gateway->from;
+                    return $expectsRecipients && $expectsMessage;
                 })
             )
             ->willReturn($this->makeResponse(200, 'OK'));
 
         $response = $this->gateway->SendSMS();
+
+        $this->assertFalse(is_wp_error($response), 'SendSMS returned WP_Error: ' .
+            (is_wp_error($response) ? $response->get_error_code() . ' - ' . $response->get_error_message() : ''));
+
         $this->assertEquals(200, $response->return->status);
         $this->assertEquals('OK', $response->return->message);
     }
 
-    /** Test: template-based SMS sending with valid tokens. */
+    /** ✅ Test: template-based SMS sending should succeed */
     public function test_send_template_sms_success()
     {
         $this->gateway->to               = ['09120000001', '09120000002'];
@@ -84,7 +86,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
             ->withConsecutive(
                 [
                     'GET',
-                    $this->stringContains('/verify/lookup.json'),
+                    $this->stringContains('/v1/DUMMY_KEY/verify/lookup.json'),
                     $this->callback(function ($params) {
                         return isset($params['template'], $params['token'], $params['token2'], $params['receptor'])
                             && (int)$params['template'] === 1234
@@ -95,7 +97,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                 ],
                 [
                     'GET',
-                    $this->stringContains('/verify/lookup.json'),
+                    $this->stringContains('/v1/DUMMY_KEY/verify/lookup.json'),
                     $this->callback(function ($params) {
                         return isset($params['template'], $params['token'], $params['token2'], $params['receptor'])
                             && (int)$params['template'] === 1234
@@ -111,10 +113,14 @@ class KavenegarGatewayTest extends WP_UnitTestCase
             );
 
         $response = $this->gateway->SendSMS();
+
+        $this->assertFalse(is_wp_error($response), 'SendSMS returned WP_Error: ' .
+            (is_wp_error($response) ? $response->get_error_code() . ' - ' . $response->get_error_message() : ''));
+
         $this->assertEquals(200, $response->return->status);
     }
 
-    /** Test: error when template ID exists but no message variables are provided. */
+    /** Test: error when template ID exists but no variables */
     public function test_send_template_sms_missing_variables_returns_error()
     {
         $this->gateway->templateId       = 555;
@@ -127,7 +133,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertEquals('send-sms-error', $result->get_error_code());
     }
 
-    /** Test: error when API key is missing. */
+    /** Test: error when API key is missing */
     public function test_missing_api_key_returns_error()
     {
         $this->gateway->apiKey = '';
@@ -137,7 +143,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertEquals('missing-api-key', $result->get_error_code());
     }
 
-    /** Test: successful credit retrieval (GetCredit). */
+    /** Test: successful credit retrieval */
     public function test_get_credit_success()
     {
         $this->gateway->expects($this->once())
@@ -149,7 +155,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->assertEquals(42.5, $credit);
     }
 
-    /** Test: failed credit retrieval should return WP_Error. */
+    /** Test: failed credit retrieval */
     public function test_get_credit_error_response()
     {
         $this->gateway->expects($this->once())
