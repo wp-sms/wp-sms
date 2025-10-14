@@ -10,7 +10,11 @@ export function getLogData(params: GetLogDataParams) {
     queryFn: async () => {
       const url = `/logs/${slug}/data`
       return clientRequest.get<GetLogDataResponse>(url, {
-        params: otherParams,
+        params: {
+          page: otherParams.page,
+          perPage: otherParams.perPage,
+          ...(otherParams.sorts ? { sorts: JSON.stringify(otherParams.sorts) } : {}),
+        },
       })
     },
     placeholderData: keepPreviousData,

@@ -100,6 +100,10 @@ interface GetLogDataParams {
   slug: 'auth-events'
   page: number
   perPage: number
+  sorts?: {
+    column: string
+    direction: 'ASC' | 'DESC'
+  }[]
 }
 
 type LogItem = {

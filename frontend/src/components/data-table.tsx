@@ -1,14 +1,23 @@
 import {
   type ColumnDef,
+  type ColumnSort,
   flexRender,
   getCoreRowModel,
   type OnChangeFn,
   type PaginationState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from 'lucide-react'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -16,14 +25,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  pagination?: {
+  pagination: {
     pageIndex: number
     pageSize: number
   }
-  onPaginationChange?: OnChangeFn<PaginationState>
-  rowCount?: number
+  onPaginationChange: OnChangeFn<PaginationState>
+  rowCount: number
   pageSizeOptions?: number[]
   isLoading?: boolean
+  initialColumnVisibility?: VisibilityState
+  sorting: ColumnSort[]
+  onSortingChange: OnChangeFn<ColumnSort[]>
 }
 
 export function DataTable<TData, TValue>({
@@ -34,20 +46,65 @@ export function DataTable<TData, TValue>({
   rowCount,
   pageSizeOptions = [5, 10, 20, 30, 40, 50],
   isLoading = false,
+  initialColumnVisibility = {},
+  sorting,
+  onSortingChange,
 }: DataTableProps<TData, TValue>) {
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility)
+
+  // Update column visibility when initialColumnVisibility changes
+  useEffect(() => {
+    console.log('Setting column visibility:', initialColumnVisibility)
+    setColumnVisibility(initialColumnVisibility)
+  }, [initialColumnVisibility])
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility,
+      pagination,
+      sorting,
+    },
     manualPagination: true,
-    state: { pagination },
     onPaginationChange,
     rowCount,
+    manualSorting: true,
+    onSortingChange,
   })
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-md border">
+      <div className="flex items-center justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns <ChevronDownIcon className="ml-2 size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -94,7 +151,7 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-between px-2">
         <div className="flex-1 text-sm text-muted-foreground">
-          {pagination && onPaginationChange && rowCount !== undefined ? (
+          {pagination && rowCount !== undefined ? (
             <>
               Showing {pagination.pageIndex * pagination.pageSize + 1} to{' '}
               {Math.min((pagination.pageIndex + 1) * pagination.pageSize, rowCount)} of {rowCount} results
