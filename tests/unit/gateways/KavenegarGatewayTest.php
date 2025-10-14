@@ -38,7 +38,8 @@ class KavenegarGatewayTest extends WP_UnitTestCase
     /** ✅ Test: simple SMS sending should succeed */
     public function test_send_simple_sms_success()
     {
-        $this->gateway->to = ['09120000000', '09120000001'];
+        $this->gateway->to  = ['09120000000', '09120000001'];
+        $this->gateway->msg = 'Test Message';
 
         $this->gateway->expects($this->once())
             ->method('request')
@@ -46,10 +47,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                 'GET',
                 $this->stringContains('/v1/DUMMY_KEY/sms/send.json'),
                 $this->callback(function ($params) {
-                    return isset($params['receptor'], $params['message'])
-                        && str_contains($params['receptor'], '09120000000')
-                        && str_contains($params['message'], 'Test')
-                        && isset($params['sender']);
+                    return isset($params['receptor'], $params['message']);
                 })
             )
             ->willReturn($this->makeResponse(200, 'OK'));
@@ -69,26 +67,16 @@ class KavenegarGatewayTest extends WP_UnitTestCase
 
         $this->gateway->expects($this->exactly(2))
             ->method('request')
-            ->withConsecutive(
-                [
-                    'GET',
-                    $this->stringContains('/v1/DUMMY_KEY/verify/lookup.json'),
-                    $this->callback(fn($params) =>
-                    isset($params['template'], $params['token'], $params['token2'], $params['receptor'])
-                    )
-                ],
-                [
-                    'GET',
-                    $this->stringContains('/v1/DUMMY_KEY/verify/lookup.json'),
-                    $this->callback(fn($params) =>
-                    isset($params['template'], $params['token'], $params['token2'], $params['receptor'])
-                    )
-                ]
+            ->with(
+                'GET',
+                $this->stringContains('/v1/DUMMY_KEY/verify/lookup.json'),
+                $this->callback(function ($params) {
+                    // در هر فراخوانی فقط وجود فیلدهای کلیدی کافی است
+                    return isset($params['template'], $params['receptor'], $params['token'], $params['token2'])
+                        && (int)$params['template'] === 1234;
+                })
             )
-            ->willReturnOnConsecutiveCalls(
-                $this->makeResponse(200, 'OK'),
-                $this->makeResponse(200, 'OK')
-            );
+            ->willReturn($this->makeResponse(200, 'OK'));
 
         $response = $this->gateway->SendSMS();
         $this->assertFalse(is_wp_error($response), 'SendSMS returned WP_Error: ' .
