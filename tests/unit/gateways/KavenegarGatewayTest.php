@@ -59,7 +59,6 @@ class KavenegarGatewayTest extends WP_UnitTestCase
 
                     return $expectsRecipients
                         && $expectsMessage
-                        && isset($params['apikey'])
                         && isset($params['sender']) && $params['sender'] === $this->gateway->from;
                 })
             )
@@ -87,7 +86,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                     'GET',
                     $this->stringContains('/verify/lookup.json'),
                     $this->callback(function ($params) {
-                        return isset($params['apikey'], $params['template'], $params['token'], $params['token2'], $params['receptor'])
+                        return isset($params['template'], $params['token'], $params['token2'], $params['receptor'])
                             && (int)$params['template'] === 1234
                             && $params['token'] === 'fake'
                             && $params['token2'] === '9988'
@@ -98,7 +97,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                     'GET',
                     $this->stringContains('/verify/lookup.json'),
                     $this->callback(function ($params) {
-                        return isset($params['apikey'], $params['template'], $params['token'], $params['token2'], $params['receptor'])
+                        return isset($params['template'], $params['token'], $params['token2'], $params['receptor'])
                             && (int)$params['template'] === 1234
                             && $params['token'] === 'fake'
                             && $params['token2'] === '9988'
