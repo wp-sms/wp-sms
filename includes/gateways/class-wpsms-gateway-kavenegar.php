@@ -74,7 +74,7 @@ class kavenegar extends Gateway
     /**
      * Gateway version.
      */
-    public $version = '1.0';
+    public $version = '1.1';
 
     /**
      * Constructor.
@@ -135,7 +135,12 @@ HTML;
     }
 
     /**
+     * Builds the full API endpoint URL for the SMS gateway.
      *
+     * @param string $method
+     * @param string $scope
+     *
+     * @return string
      */
     private function buildUrl($method, $scope = 'sms')
     {
