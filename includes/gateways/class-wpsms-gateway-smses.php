@@ -13,7 +13,7 @@ class smses extends Gateway
      *
      * @var string
      */
-    private $wsdl_link = "http://194.0.137.110:32161/bulk/";
+    private $wsdl_link = "bulk/";
 
     /**
      * Pricing page URL.
@@ -57,12 +57,38 @@ class smses extends Gateway
      */
     public $supportIncoming = true;
 
+    public $api_base_url;
+
     /**
      * Constructor.
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->help          = 'Destination number in international format (e.g., 34600000000).';
+        $this->gatewayFields = [
+            'username'     => [
+                'id'   => 'gateway_username',
+                'name' => 'API Username',
+                'desc' => 'Enter your API Username.',
+            ],
+            'password'     => [
+                'id'   => 'gateway_password',
+                'name' => 'API Password',
+                'desc' => 'Enter your API Password.',
+            ],
+            'from'         => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => '(alphanumeric or numeric depending on regulations).',
+            ],
+            'api_base_url' => [
+                'id'   => 'gateway_api_base_url',
+                'name' => 'API BASE URL',
+                'desc' => 'API Base URL.',
+            ]
+        ];
     }
 
     /**
@@ -82,31 +108,60 @@ class smses extends Gateway
         $this->msg  = apply_filters('wp_sms_msg', $this->msg);
 
         try {
+            // Returns array: [number => [status => success|error, ...]]
             $response = $this->sendSimpleSMS();
 
             if (is_wp_error($response)) {
                 $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
-
                 return $response;
             }
 
-            if (!empty($response->error)) {
-                return new WP_Error('send-sms-error', __('Failed to send SMS.', 'wp-sms'));
+            $successCount = 0;
+            $failCount    = 0;
+            $successNums  = [];
+            $failedNums   = [];
+
+            foreach ($response as $number => $result) {
+                if (($result['status'] ?? '') === 'success') {
+                    $successCount++;
+                    $successNums[] = $number;
+                } else {
+                    $failCount++;
+                    $failedNums[] = $number;
+                }
             }
 
-            $this->log($this->from, $this->msg, $this->to, $response);
+            // Build readable lists
+            $successList = $successNums ? implode(', ', $successNums) : 'None';
+            $failedList  = $failedNums ? implode(', ', $failedNums) : 'None';
 
-            /**
-             * Fires after an SMS is sent.
-             *
-             * @param object $response API response object.
-             */
-            do_action('wp_sms_send', $response);
+            // Prepare summary message
+            $summary = sprintf(
+                "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
+                $successCount,
+                $failCount,
+                $successList,
+                $failedList
+            );
 
+            // Throw exception if any failed
+            if ($failCount > 0) {
+                $errorMsg = sprintf(
+                    __('%d SMS message(s) failed to send. Failed numbers: %s', 'wp-sms'),
+                    $failCount,
+                    $failedList
+                );
+                throw new Exception($errorMsg);
+            }
+
+            // Log summary and details
+            $this->log($this->from, $this->msg, $this->to, $summary);
+
+            // All succeeded
             return $response;
+
         } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-
             return new WP_Error('send-sms-error', $e->getMessage());
         }
     }
@@ -118,6 +173,7 @@ class smses extends Gateway
      */
     public function GetCredit()
     {
+
         return null;
     }
 
@@ -132,6 +188,12 @@ class smses extends Gateway
         $receivers = $this->formatReceiverNumbers($this->to);
         $responses = [];
 
+        // Build base URL safely: no accidental double slashes.
+        $base       = rtrim((string)$this->api_base_url, "/");
+        $path       = trim((string)$this->wsdl_link, "/");
+        $apiBaseUrl = $base . "/" . $path . "/";               // e.g. https://host:port/bulk/
+        $endpoint   = $apiBaseUrl . 'sendsms';
+
         foreach ($receivers as $receiver) {
             $body = [
                 'type'     => 'text',
@@ -142,28 +204,61 @@ class smses extends Gateway
                 'sender'   => $this->from,
                 'receiver' => $receiver,
                 'text'     => $this->msg,
-                'dcs'      => 'gsm',
+                'dcs' => (isset($this->options['send_unicode']) && $this->options['send_unicode']) ? 'ucs' : 'gsm',
             ];
-            if (isset($this->options['send_unicode']) && $this->options['send_unicode']) {
-                $body['dcs'] = 'ucs';
-            }
-
-            if ($this->isflash) {
-                $body['flash'] = $this->isflash;
-            }
 
             $params = [
-                'headers' => array(
+                'headers'   => [
                     'Accept'       => 'application/json',
                     'Content-Type' => 'application/json',
-                ),
-                'body'    => json_encode($body),
+                ],
+                'body'      => json_encode($body),
+                // Consider flipping this to true in production:
+                'sslverify' => false,
             ];
 
-            $responses[] = $this->request('POST', $this->wsdl_link . 'sendsms', [], $params);
+            $response = $this->request('POST', $endpoint, [], $params, false);
+
+            // Normalize into the requested per-recipient shape
+            if (is_wp_error($response)) {
+                $resultMap[$receiver] = [
+                    'status'       => 'error',
+                    'errorMessage' => $response->get_error_message(),
+                ];
+                continue;
+            }
+
+            // API-level error from your sample log:
+            if (!empty($response->error)) {
+                $resultMap[$receiver] = [
+                    'status'       => 'error',
+                    'errorCode'    => isset($response->error->code) ? (int)$response->error->code : null,
+                    'errorMessage' => isset($response->error->message) ? (string)$response->error->message : __('Unknown error', 'wp-sms'),
+                ];
+                continue;
+            }
+
+            // Success shape: { "msgId":"<uuid>", "numParts":1 }
+            if (isset($response->msgId)) {
+                $resultMap[$receiver] = [
+                    'status'   => 'success',
+                    'msgId'    => (string)$response->msgId,
+                    'numParts' => (int)($response->numParts ?? 1),
+                ];
+
+                do_action('wp_sms_send', $response);
+
+                continue;
+            }
+
+            // Fallback/unknown response
+            $resultMap[$receiver] = [
+                'status'       => 'error',
+                'errorMessage' => __('Unexpected API response.', 'wp-sms'),
+            ];
         }
 
-        return end($responses);
+        return $resultMap;
     }
 
     /**
