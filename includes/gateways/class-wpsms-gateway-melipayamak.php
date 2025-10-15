@@ -23,11 +23,11 @@ class melipayamak extends Gateway
     public $tariff = "https://www.melipayamak.com/price/";
 
     /**
-     * Whether trial credit is supported.
+     * Determines how the account balance unit is represented.
      *
      * @var bool
      */
-    public $unitrial = true;
+    public $unitrial = false;
 
     /**
      * Unit for credit balance.
@@ -196,7 +196,7 @@ HTML;
                 return $response;
             }
 
-            if (isset($response->RetStatus) && $response->RetStatus !== 1) {
+            if (!isset($response->RetStatus) || $response->RetStatus != 1) {
                 throw new Exception($this->getErrorMessage($response->RetStatus));
             }
 
@@ -262,7 +262,7 @@ HTML;
      */
     private function sendSimpleSMS()
     {
-        $recipients          = $this->formatReceiverNumbers($this->to);
+        $recipients          = $this->to;
         $recipientsFormatted = count($recipients) > 1 ? implode(',', $recipients) : $recipients[0];
         $body                = [
             'username' => $this->username,
@@ -306,7 +306,7 @@ HTML;
             return new WP_Error('invalid-template', __('Message does not contain valid template placeholders.', 'wp-sms'));
         }
 
-        $receivers     = $this->formatReceiverNumbers($this->to);
+        $receivers     = $this->to;
         $responses     = [];
         $messageValues = array_values($this->messageVariables);
 
@@ -332,37 +332,6 @@ HTML;
     }
 
     /**
-     * Format receiver phone numbers.
-     *
-     * Ensures numbers are in local `09xxxxxxxxx` format.
-     *
-     * @param array|string $numbers Phone number(s).
-     *
-     * @return array Formatted phone numbers.
-     */
-    private function formatReceiverNumbers($numbers)
-    {
-        if (!is_array($numbers)) {
-            $numbers = [$numbers];
-        }
-
-        $formatted = [];
-        foreach ($numbers as $number) {
-            $clean = preg_replace('/\D+/', '', $number);
-
-            if (substr($clean, 0, 2) === '98') {
-                $formatted[] = '0' . substr($clean, 2);
-            } elseif (strlen($clean) === 10 && substr($clean, 0, 1) === '9') {
-                $formatted[] = '0' . $clean;
-            } else {
-                $formatted[] = $clean;
-            }
-        }
-
-        return $formatted;
-    }
-
-    /**
      * Get error message from the request error code.
      *
      * @param int|string $errorCode
@@ -372,58 +341,58 @@ HTML;
     {
         switch ($errorCode) {
             case 0:
-                $message = esc_html__('Invalid username or password.', 'wp-sms');
+                $message = esc_html__('نام کاربری یا رمز عبور اشتباه می باشد.', 'wp-sms');
                 break;
             case 2:
-                $message = esc_html__('Insufficient credit.', 'wp-sms');
+                $message = esc_html__('اعتبار کافی نمی باشد.', 'wp-sms');
                 break;
             case 3:
-                $message = esc_html__('Daily sending limit reached.', 'wp-sms');
+                $message = esc_html__('محدودیت در ارسال روزانه.', 'wp-sms');
                 break;
             case 4:
-                $message = esc_html__('Sending volume limit reached.', 'wp-sms');
+                $message = esc_html__('محدودیت در حجم ارسال.', 'wp-sms');
                 break;
             case 5:
-                $message = esc_html__('Invalid sender number.', 'wp-sms');
+                $message = esc_html__('شماره فرستنده معتبر نمی باشد.', 'wp-sms');
                 break;
             case 6:
-                $message = esc_html__('System is under maintenance.', 'wp-sms');
+                $message = esc_html__('سامانه در حال بروزرسانی می باشد.', 'wp-sms');
                 break;
             case 7:
-                $message = esc_html__('Message contains a filtered word.', 'wp-sms');
+                $message = esc_html__('متن حاوی کلمه فیلتر شده می باشد.', 'wp-sms');
                 break;
             case 9:
-                $message = esc_html__('Sending from public lines via web service is not allowed.', 'wp-sms');
+                $message = esc_html__('رسال از خطوط عمومی از طریق وب سرویس امکان پذیر نمی باشد.', 'wp-sms');
                 break;
             case 10:
-                $message = esc_html__('User is not active.', 'wp-sms');
+                $message = esc_html__('کاربر مورد نظر فعال نمی باشد.', 'wp-sms');
                 break;
             case 11:
-                $message = esc_html__('Message not sent.', 'wp-sms');
+                $message = esc_html__('ارسال نشده.', 'wp-sms');
                 break;
             case 12:
-                $message = esc_html__('User documents are incomplete.', 'wp-sms');
+                $message = esc_html__('مدارک کاربر کامل نمی باشد.', 'wp-sms');
                 break;
             case 14:
-                $message = esc_html__('Message contains a link.', 'wp-sms');
+                $message = esc_html__('متن حاوی لینک می باشد.', 'wp-sms');
                 break;
             case 15:
-                $message = esc_html__('Cannot send to more than one recipient without including "لغو11".', 'wp-sms');
+                $message = esc_html__('رسال به بیش از 1 شماره همراه بدون درج "لغو11" ممکن نیست.', 'wp-sms');
                 break;
             case 16:
-                $message = esc_html__('No recipient number found.', 'wp-sms');
+                $message = esc_html__('شماره گیرنده ای یافت نشد.', 'wp-sms');
                 break;
             case 17:
-                $message = esc_html__('Message text is empty.', 'wp-sms');
+                $message = esc_html__('متن پیامک خالی می باشد.', 'wp-sms');
                 break;
             case 18:
-                $message = esc_html__('Invalid recipient number.', 'wp-sms');
+                $message = esc_html__('شماره گیرنده نامعتبر است.', 'wp-sms');
                 break;
             case 35:
-                $message = esc_html__('Number is in the telecom blacklist.', 'wp-sms');
+                $message = esc_html__('در REST به معنای وجود شماره در لیست سیاه مخاربرات می‌باشد.', 'wp-sms');
                 break;
             default:
-                $message = esc_html__('Unknown error occurred.', 'wp-sms');
+                $message = esc_html__('خطای ناشناخته‌ای رخ داده است.', 'wp-sms');
                 break;
         }
 
