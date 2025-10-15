@@ -94,12 +94,16 @@ class smses extends Gateway
     /**
      * Send SMS message.
      *
-     * @return object|WP_Error Response object on success, WP_Error on failure.
+     * @return array|WP_Error Response object on success, WP_Error on failure.
      */
     public function SendSMS()
     {
         if (empty($this->username) || empty($this->password)) {
             return new WP_Error('missing-credentials', __('API Username and API Password are required.', 'wp-sms'));
+        }
+
+        if (empty($this->api_base_url)) {
+            return new WP_Error('missing-api-base-url', __('API Base URL is required.', 'wp-sms'));
         }
 
         // Filters for customization.
@@ -108,13 +112,7 @@ class smses extends Gateway
         $this->msg  = apply_filters('wp_sms_msg', $this->msg);
 
         try {
-            // Returns array: [number => [status => success|error, ...]]
             $response = $this->sendSimpleSMS();
-
-            if (is_wp_error($response)) {
-                $this->log($this->from, $this->msg, $this->to, $response->get_error_message(), 'error');
-                return $response;
-            }
 
             $successCount = 0;
             $failCount    = 0;
@@ -180,18 +178,18 @@ class smses extends Gateway
     /**
      * Send a simple SMS message.
      *
-     * @return object API response object.
+     * @return array API response object.
      * @throws Exception If request fails.
      */
     private function sendSimpleSMS()
     {
-        $receivers = $this->formatReceiverNumbers($this->to);
-        $responses = [];
+        $receivers = $this->to;
+        $resultMap = [];
 
         // Build base URL safely: no accidental double slashes.
         $base       = rtrim((string)$this->api_base_url, "/");
         $path       = trim((string)$this->wsdl_link, "/");
-        $apiBaseUrl = $base . "/" . $path . "/";               // e.g. https://host:port/bulk/
+        $apiBaseUrl = $base . "/" . $path . "/";
         $endpoint   = $apiBaseUrl . 'sendsms';
 
         foreach ($receivers as $receiver) {
@@ -204,17 +202,18 @@ class smses extends Gateway
                 'sender'   => $this->from,
                 'receiver' => $receiver,
                 'text'     => $this->msg,
-                'dcs' => (isset($this->options['send_unicode']) && $this->options['send_unicode']) ? 'ucs' : 'gsm',
+                'dcs'      => (isset($this->options['send_unicode']) && $this->options['send_unicode']) ? 'ucs' : 'gsm',
             ];
+            if ($this->isflash) {
+                $body['flash'] = $this->isflash;
+            }
 
             $params = [
-                'headers'   => [
+                'headers' => [
                     'Accept'       => 'application/json',
                     'Content-Type' => 'application/json',
                 ],
-                'body'      => json_encode($body),
-                // Consider flipping this to true in production:
-                'sslverify' => false,
+                'body'    => json_encode($body),
             ];
 
             $response = $this->request('POST', $endpoint, [], $params, false);
@@ -259,22 +258,5 @@ class smses extends Gateway
         }
 
         return $resultMap;
-    }
-
-    /**
-     * Format receiver numbers by removing all non-digit characters.
-     *
-     * @param string|string[] $numbers A phone number or an array of phone numbers.
-     * @return string[] An array of phone numbers containing only digits.
-     */
-    private function formatReceiverNumbers($numbers)
-    {
-        if (!is_array($numbers)) {
-            $numbers = [$numbers];
-        }
-
-        return array_map(function ($number) {
-            return preg_replace('/\D+/', '', $number);
-        }, $numbers);
     }
 }
