@@ -19,8 +19,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->gateway = $this->getMockBuilder(kavenegar::class)
             ->onlyMethods(['request', 'log'])
             ->getMock();
-
-        // مقداردهی بعد از ساخت mock
+        
         $this->gateway->apiKey = 'DUMMY_KEY';
         $this->gateway->from   = '5000';
         $this->gateway->msg    = 'Test Message';
