@@ -13,7 +13,7 @@ class smses extends Gateway
      *
      * @var string
      */
-    private $wsdl_link = "http://194.0.137.110:32161/bulk/";
+    private $wsdlLink = "http://194.0.137.110:32161/bulk/";
 
     /**
      * Pricing page URL.
@@ -23,7 +23,7 @@ class smses extends Gateway
     public $tariff = "https://sms.es/";
 
     /**
-     * Whether trial credit is supported.
+     * Determines how the account balance unit is represented.
      *
      * @var bool
      */
@@ -91,7 +91,7 @@ class smses extends Gateway
             }
 
             if (!empty($response->error)) {
-                return new WP_Error('send-sms-error', __('Failed to send SMS.', 'wp-sms'));
+                throw new Exception($response->error->message);
             }
 
             $this->log($this->from, $this->msg, $this->to, $response);
@@ -129,7 +129,7 @@ class smses extends Gateway
      */
     private function sendSimpleSMS()
     {
-        $receivers = $this->formatReceiverNumbers($this->to);
+        $receivers = $this->to;
         $responses = [];
 
         foreach ($receivers as $receiver) {
@@ -160,26 +160,9 @@ class smses extends Gateway
                 'body'    => json_encode($body),
             ];
 
-            $responses[] = $this->request('POST', $this->wsdl_link . 'sendsms', [], $params);
+            $responses[] = $this->request('POST', $this->wsdlLink . 'sendsms', [], $params);
         }
 
         return end($responses);
-    }
-
-    /**
-     * Format receiver numbers by removing all non-digit characters.
-     *
-     * @param string|string[] $numbers A phone number or an array of phone numbers.
-     * @return string[] An array of phone numbers containing only digits.
-     */
-    private function formatReceiverNumbers($numbers)
-    {
-        if (!is_array($numbers)) {
-            $numbers = [$numbers];
-        }
-
-        return array_map(function ($number) {
-            return preg_replace('/\D+/', '', $number);
-        }, $numbers);
     }
 }
