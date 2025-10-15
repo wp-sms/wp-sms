@@ -14,6 +14,7 @@ export function getLogData(params: GetLogDataParams) {
           page: otherParams.page,
           perPage: otherParams.perPage,
           ...(otherParams.sorts ? { sorts: JSON.stringify(otherParams.sorts) } : {}),
+          ...(otherParams.filters ? { filters: JSON.stringify(otherParams.filters) } : {}),
         },
       })
     },

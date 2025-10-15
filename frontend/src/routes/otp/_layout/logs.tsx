@@ -10,6 +10,8 @@ import { createLogColumnsFromConfig } from '@/lib/create-log-columns'
 import { getLogConfig } from '@/services/logs/get-log-config'
 import { getLogData } from '@/services/logs/get-log-data'
 
+import { LogFilters } from './-components/log-filters'
+
 export const Route = createFileRoute('/otp/_layout/logs')({
   component: RouteComponent,
   pendingComponent: () => <SettingsSchemaSkeleton />,
@@ -21,6 +23,8 @@ function RouteComponent() {
     pageSize: 10,
   })
   const [sorting, setSorting] = useState<SortingState>([])
+  const [filterValues, setFilterValues] = useState<Record<string, string | string[] | number | null>>({})
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, string | string[] | number | null>>({})
 
   const {
     data: { data: configResult },
@@ -39,6 +43,7 @@ function RouteComponent() {
         column: sort.id,
         direction: sort.desc ? 'DESC' : 'ASC',
       })),
+      filters: appliedFilters,
     })
   )
 
@@ -55,15 +60,28 @@ function RouteComponent() {
     )
   }, [configResult.data?.columns])
 
-  console.log(defaultVisibility)
-
   const logDataResult = logDataResponse?.data
+
+  const handleApplyFilters = () => {
+    setAppliedFilters(filterValues)
+    setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
+  }
+
+  const handleResetFilters = () => {
+    setFilterValues({})
+    setAppliedFilters({})
+    setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
+  }
 
   return (
     <Card className="flex flex-col gap-y-8 w-3/4">
       <CardHeader>
-        <CardTitle>{configResult.data.label}</CardTitle>
-        <CardDescription>{configResult.data.description}</CardDescription>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle>{configResult.data.label}</CardTitle>
+            <CardDescription>{configResult.data.description}</CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <DataTable
@@ -76,6 +94,15 @@ function RouteComponent() {
           sorting={sorting}
           onSortingChange={setSorting}
           defaultVisibility={defaultVisibility}
+          extra={
+            <LogFilters
+              filters={configResult.data.filters}
+              values={filterValues}
+              onChange={setFilterValues}
+              onApply={handleApplyFilters}
+              onReset={handleResetFilters}
+            />
+          }
         />
       </CardContent>
     </Card>

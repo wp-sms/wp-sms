@@ -104,6 +104,7 @@ interface GetLogDataParams {
     column: string
     direction: 'ASC' | 'DESC'
   }[]
+  filters: Record<string, string | string[] | number | null>
 }
 
 type LogItem = {

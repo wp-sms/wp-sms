@@ -36,6 +36,7 @@ interface DataTableProps<TData, TValue> {
   sorting: ColumnSort[]
   onSortingChange: OnChangeFn<ColumnSort[]>
   defaultVisibility?: { [key: string]: boolean }
+  extra?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
@@ -49,6 +50,7 @@ export function DataTable<TData, TValue>({
   sorting,
   onSortingChange,
   defaultVisibility = {},
+  extra,
 }: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultVisibility)
 
@@ -71,7 +73,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-4">
+        {extra}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
