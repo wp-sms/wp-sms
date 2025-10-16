@@ -93,7 +93,7 @@ class sms extends Gateway
         ];
 
         $this->help = "
-<div dir='rtl'><h3>ارسال پیامک با قالب (قالب خدماتی)</h3>
+<div dir='rtl'><h3>ارسال پیامک با قالب (خط خدماتی)</h3>
 <ol>
   <li><strong>قالب را در پنل پیامک ثبت و تأیید کنید</strong><br>
     متن قالب و متغیرها باید دقیقاً همان چیزی باشند که در افزونه مینویسید ولی بین <code>##</code> قرار بگیرد..<br>
@@ -204,13 +204,14 @@ class sms extends Gateway
                 ]
             ];
 
-            $response = $this->request('GET', $this->wsdl_link . 'credit', [], $params);
+            $response = $this->request('GET', $this->wsdl_link . 'credit', [], $params, false);
 
             if (isset($response->status) && $response->status === 1) {
                 return $response->data;
             }
 
-            return new WP_Error('account-credit-error', __('Failed to retrieve credit.', 'wp-sms'));
+            throw new Exception($response->message);
+
         } catch (Exception $e) {
             return new WP_Error('account-credit-error', $e->getMessage());
         }

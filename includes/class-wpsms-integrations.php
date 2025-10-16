@@ -3,6 +3,7 @@
 namespace WP_SMS;
 
 use WPCF7_MailTag;
+use WP_SMS\Notification\NotificationFactory;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -46,10 +47,14 @@ class Integrations
 
         $get_group_result = Newsletter::getGroups();
 
+        $messageVariables     = $this->getMessageVariables();
+        $messageVariablesText = NotificationFactory::getContactForm7($messageVariables)->printVariables();
+
         $args = [
-            'get_group_result'  => $get_group_result,
-            'cf7_options'       => $cf7_options,
-            'cf7_options_field' => $cf7_options_field,
+            'get_group_result'       => $get_group_result,
+            'cf7_options'            => $cf7_options,
+            'cf7_options_field'      => $cf7_options_field,
+            'message_variables_text' => $messageVariablesText
         ];
 
         echo Helper::loadTemplate('wpcf7-form.php', $args); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -65,30 +70,8 @@ class Integrations
     {
         $cf7_options       = get_option('wpcf7_sms_' . $form->id());
         $cf7_options_field = get_option('wpcf7_sms_form' . $form->id());
-        $this->set_cf7_data();
-
-        $cf7_tags  = ['_post_id', '_post_title', '_post_url', '_post_name', '_site_url', '_site_title'];
-        $form_tags = $this->cf7_data;
-
-        $replace_tags = function ($text) use ($cf7_tags, $form_tags) {
-            return preg_replace_callback('/%([a-zA-Z0-9._-]+)%/', function ($matches) use ($cf7_tags, $form_tags) {
-                $tag = $matches[1];
-
-                if (in_array($tag, $cf7_tags)) {
-                    return apply_filters(
-                        'wpcf7_special_mail_tags',
-                        null,
-                        $tag,
-                        '',
-                        new WPCF7_MailTag($tag, 'text', $tag)
-                    );
-                } elseif (array_key_exists($tag, $form_tags)) {
-                    return $form_tags[$tag];
-                } else {
-                    return $matches[0];
-                }
-            }, $text);
-        };
+        $messageVariables  = $this->getMessageVariables();
+        $notification      = NotificationFactory::getContactForm7($messageVariables);
 
         /**
          * Send SMS to the specific number or subscribers' group
@@ -105,11 +88,11 @@ class Integrations
                     break;
             }
 
-            $message = $replace_tags($cf7_options['message']);
+            $message = $cf7_options['message'];
 
             if ($to && count($to) && $message) {
                 foreach ($to as $number) {
-                    wp_sms_send($number, $message);
+                    $notification->send($message, $number);
                 }
             }
         }
@@ -118,7 +101,7 @@ class Integrations
          * Send SMS to a specific field
          */
         if (!empty($cf7_options_field['message']) && !empty($cf7_options_field['phone'])) {
-            $to = $replace_tags($cf7_options_field['phone']);
+            $to = $cf7_options_field['phone'];
 
             // Check if the type of the field is select.
             foreach ($form->scan_form_tags() as $scan_form_tag) {
@@ -139,11 +122,11 @@ class Integrations
             }
 
             $to      = is_array($to) ? $to : [$to];
-            $message = $replace_tags($cf7_options_field['message']);
+            $message = $cf7_options_field['message'];
 
             if ($to && count($to) && $message) {
                 foreach ($to as $number) {
-                    wp_sms_send($number, $message);
+                    $notification->send($message, $number);
                 }
             }
         }
@@ -160,6 +143,39 @@ class Integrations
         }
     }
 
+    /**
+     * Returns an associative array of all CF7 form data and special tags.
+     *
+     * @return array
+     */
+    private function getMessageVariables()
+    {
+        $cf7Tags = ['_post_id', '_post_title', '_post_url', '_post_name', '_site_url', '_site_title'];
+        $result  = [];
+
+        foreach ($cf7Tags as $tag) {
+            $result[$tag] = apply_filters(
+                'wpcf7_special_mail_tags',
+                null,
+                $tag,
+                '',
+                new \WPCF7_MailTag($tag, 'text', $tag)
+            );
+        }
+
+        if (empty($this->cf7_data)) {
+            $this->set_cf7_data();
+        }
+
+        if (!empty($this->cf7_data) && is_array($this->cf7_data)) {
+            foreach ($this->cf7_data as $key => $value) {
+                $result[$key] = $value;
+            }
+        }
+
+
+        return $result;
+    }
 }
 
 new Integrations();

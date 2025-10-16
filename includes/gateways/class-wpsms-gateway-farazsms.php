@@ -93,7 +93,7 @@ class farazsms extends Gateway
         ];
 
         $this->help = "
-<div dir='rtl'><h3>ارسال پیامک با پترن (الگوی خدماتی)</h3>
+<div dir='rtl'><h3>ارسال پیامک با پترن (خط خدماتی)</h3>
 <ol>
   <li><strong>الگو را در پنل پیامک ثبت و تأیید کنید</strong><br>
     متن الگو و متغیرها باید دقیقاً همان چیزی باشند که در افزونه می‌نویسید.<br>
@@ -201,13 +201,14 @@ class farazsms extends Gateway
                 ],
             ];
 
-            $response = $this->request('GET', $this->wsdl_link . 'ws/v1/account/balance', [], $params);
+            $response = $this->request('GET', $this->wsdl_link . 'ws/v1/account/balance', [], $params, false);
 
             if (isset($response->status) && $response->status === 'success') {
                 return $response->data->balance_amount;
             }
 
-            return new WP_Error('account-credit-error', __('Failed to retrieve credit.', 'wp-sms'));
+            throw new Exception($response->message);
+
         } catch (Exception $e) {
             return new WP_Error('account-credit-error', $e->getMessage());
         }
