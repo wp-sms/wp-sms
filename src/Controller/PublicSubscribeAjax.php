@@ -3,7 +3,7 @@
 namespace WP_SMS\Controller;
 
 use Exception;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\Services\Subscriber\SubscriberUtil;
 
 class PublicSubscribeAjax extends AjaxControllerAbstract

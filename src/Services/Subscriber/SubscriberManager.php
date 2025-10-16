@@ -3,7 +3,7 @@
 namespace WP_SMS\Services\Subscriber;
 
 use WP_SMS\Notification\NotificationFactory;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 
 class SubscriberManager
 {

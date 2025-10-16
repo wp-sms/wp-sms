@@ -4,7 +4,7 @@ namespace unit;
 
 use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_UnitTestCase;
 
 class NumberParserTest extends WP_UnitTestCase
@@ -79,7 +79,7 @@ class NumberParserTest extends WP_UnitTestCase
         $numberParser = new NumberParser($validNumber);
         $this->assertEquals($validNumber, $numberParser->getValidNumber());
 
-        Option::updateOption('international_mobile', true);
+        Option::updateOption('international_mobile', 'pro');
 
         // Assume invalid country code
         $invalidNumber = '+999' . $this->faker->numerify('########');

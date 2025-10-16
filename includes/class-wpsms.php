@@ -8,6 +8,7 @@ use WP_SMS\BackgroundProcess\Async\TableOperationProcess;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
+use WP_SMS\Migrations\MigrationManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\RestEndpoints\RestEndpointManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
@@ -190,8 +191,7 @@ class WP_SMS
      */
     public function includes()
     {
-        // Autoloader
-        require_once WP_SMS_DIR . "vendor/autoload.php";
+        
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');

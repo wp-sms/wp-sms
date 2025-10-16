@@ -4,6 +4,7 @@ namespace WP_SMS;
 
 use WP_Post;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Settings\Option;
 
 if (!defined('ABSPATH')) {
     exit;

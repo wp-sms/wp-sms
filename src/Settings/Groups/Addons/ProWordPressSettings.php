@@ -88,6 +88,12 @@ class ProWordPressSettings extends AbstractSettingGroup
         ];
     }
 
+    public function getMetaData(){
+        return [
+            'addon' => 'pro',
+        ];
+    }
+
     public function getFields(): array
     {
         // Legacy method - return all fields from all sections for backward compatibility
@@ -96,5 +102,11 @@ class ProWordPressSettings extends AbstractSettingGroup
             $allFields = array_merge($allFields, $section->getFields());
         }
         return $allFields;
+    }
+
+
+    public function getOptionKeyName(): ?string
+    {
+        return 'pro';
     }
 }

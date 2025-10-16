@@ -4,7 +4,6 @@ namespace WP_SMS\Settings;
 
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Groups\AdvancedSettings;
-use WP_SMS\Settings\Groups\FeatureSettings;
 use WP_SMS\Settings\Groups\GatewaySettings;
 use WP_SMS\Settings\Groups\GeneralSettings;
 use WP_SMS\Settings\Groups\MessageButtonSettings;
@@ -13,6 +12,15 @@ use WP_SMS\Settings\Groups\NotificationSettings;
 
 // Addons
 use WP_SMS\Settings\Groups\Addons\ProWordPressSettings;
+use WP_SMS\Settings\Groups\Addons\TwoWaySettings;
+use WP_SMS\Settings\Groups\Addons\FluentCRMSettings;
+use WP_SMS\Settings\Groups\Addons\FluentFormsSettings;
+use WP_SMS\Settings\Groups\Addons\FluentSupportSettings;
+use WP_SMS\Settings\Groups\Addons\BookingCalendarSettings;
+use WP_SMS\Settings\Groups\Addons\WooAppointmentsSettings;
+use WP_SMS\Settings\Groups\Addons\BookingPressSettings;
+use WP_SMS\Settings\Groups\Addons\WooBookingsSettings;
+
 
 // Integrations
 use WP_SMS\Settings\Groups\Integrations\AwesomeSupportSettings;
@@ -70,6 +78,14 @@ class SchemaRegistry
 
         // Addons
         $this->registerGroup(new ProWordPressSettings(), 'addons');
+        $this->registerGroup(new TwoWaySettings(), 'addons');
+        $this->registerGroup(new FluentCRMSettings(), 'addons');
+        $this->registerGroup(new FluentFormsSettings(), 'addons');
+        $this->registerGroup(new FluentSupportSettings(), 'addons');
+        $this->registerGroup(new BookingCalendarSettings(), 'addons');
+        $this->registerGroup(new WooAppointmentsSettings(), 'addons');
+        $this->registerGroup(new BookingPressSettings(), 'addons');
+        $this->registerGroup(new WooBookingsSettings(), 'addons');
 
         // Integrations with nested paths
         $this->registerGroup(new ContactForm7Settings(), 'integrations', 'integrations.contact_forms.contact_form_7');
@@ -324,6 +340,17 @@ class SchemaRegistry
     }
 
     /**
+     * Check if a group is an addon.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function isAddonGroup(string $name): bool
+    {
+        return $this->getGroupCategory($name) === 'addons';
+    }
+
+    /**
      * Format a path part into a readable label.
      *
      * @param string $part
@@ -356,6 +383,7 @@ class SchemaRegistry
         return [
             'label' => $group->getLabel(),
             'icon' => $group->getIcon(),
+            'addon' => $group->getOptionKeyName(),
             'sections' => array_map(function($section) {
                 return $section->toArray();
             }, $sections),

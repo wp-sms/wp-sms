@@ -42,7 +42,14 @@ function RouteComponent() {
   const defaultValues = valuesResult.data.data.data
 
   const handleSubmit = async (values: Record<string, unknown>) => {
-    await mutateAsync(values)
+    await mutateAsync({
+      ...values,
+      ...(schema?.addon
+        ? {
+            addon: schema.addon,
+          }
+        : {}),
+    })
   }
 
   const showChatbox = name === 'message_button'

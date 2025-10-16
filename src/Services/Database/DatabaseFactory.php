@@ -13,6 +13,7 @@ use WP_SMS\Services\Database\Operations\Insert;
 use WP_SMS\Services\Database\Operations\Inspect;
 use WP_SMS\Services\Database\Operations\Select;
 use WP_SMS\Services\Database\Operations\Update;
+use WP_SMS\Services\Database\Migrations\OptionMigration;
 
 /**
  * Factory for creating database operation and migration instances.
@@ -46,6 +47,7 @@ class DatabaseFactory
     private static $migrationTypes = [
         'schema' => SchemaMigration::class,
         'data'   => DataMigration::class,
+        'option' => OptionMigration::class,
     ];
 
     /**

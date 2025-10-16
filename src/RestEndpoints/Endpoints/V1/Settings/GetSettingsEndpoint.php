@@ -2,7 +2,7 @@
 
 namespace WP_SMS\RestEndpoints\Endpoints\V1\Settings;
 
-use WP_SMS\Option;
+use WP_SMS\Settings\Option;
 use WP_SMS\RestEndpoints\Abstracts\AbstractSettingsEndpoint;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\SchemaRegistry;
@@ -14,6 +14,8 @@ use WP_REST_Request;
  */
 class GetSettingsEndpoint extends AbstractSettingsEndpoint
 {
+
+
     /**
      * Register all GET settings value endpoints.
      */
@@ -84,10 +86,14 @@ class GetSettingsEndpoint extends AbstractSettingsEndpoint
      */
     protected static function resolveValues(array $groups): array
     {
-        $saved = Option::getOptions(false);
         $values = [];
 
         foreach ($groups as $group) {
+            $addon = $group->getOptionKeyName();
+            
+            // Get settings for this specific addon (or core if null)
+            $saved = Option::getOptions($addon);
+            
             foreach ($group->getFields() as $field) {
                 $key = $field->getKey();
                 $values[$key] = $saved[$key] ?? $field->default;

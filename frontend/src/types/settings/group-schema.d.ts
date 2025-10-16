@@ -97,6 +97,7 @@ type SchemaSection = {
 type GroupSchema = {
   icon: string
   label: string
+  addon?: string
   sections: SchemaSection[]
 }
 

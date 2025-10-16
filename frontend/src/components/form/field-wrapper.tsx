@@ -25,7 +25,7 @@ export const FieldWrapper = ({
         )}
 
 
-        {schema.tag && <TagBadge tag={schema.tag} />}
+        {schema.tag && schema.type !== 'checkbox' && <TagBadge tag={schema.tag} />}
       </div>
 
       <div className="flex gap-1.5 flex-col">
@@ -34,6 +34,8 @@ export const FieldWrapper = ({
           {schema.type === 'checkbox' && (
             <Label className={clsx(!!errors.length && 'text-destructive')} htmlFor={schema.key}>
               {schema.label}
+
+              {schema.tag && schema.type === 'checkbox' && <TagBadge tag={schema.tag} />}
             </Label>
           )}
         </div>
