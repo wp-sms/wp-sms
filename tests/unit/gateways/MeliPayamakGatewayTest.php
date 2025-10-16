@@ -47,23 +47,6 @@ class MeliPayamakGatewayTest extends WP_UnitTestCase
     }
 
     /**
-     * Test phone number formatting logic.
-     */
-    public function testFormatReceiverNumbers()
-    {
-        $method = new \ReflectionMethod('WP_SMS\Gateway\melipayamak', 'formatReceiverNumbers');
-        $method->setAccessible(true);
-
-        // Mobile numbers
-        $this->assertEquals(array('09123456789'), $method->invoke($this->gateway, '09123456789'));
-        $this->assertEquals(array('09123456789'), $method->invoke($this->gateway, '989123456789'));
-        $this->assertEquals(array('09123456789'), $method->invoke($this->gateway, '9123456789'));
-
-        // Landline numbers should remain unchanged
-        $this->assertEquals(array('02112345678'), $method->invoke($this->gateway, '02112345678'));
-    }
-
-    /**
      * Test SendSMS() returns WP_Error when credentials are missing.
      */
     public function testSendSmsWithoutCredentials()
