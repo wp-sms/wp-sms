@@ -83,6 +83,8 @@ class kavenegar extends Gateway
     {
         parent::__construct();
 
+        $this->validateNumber = "The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
+
         $this->gatewayFields = [
             'from'    => [
                 'id'           => 'gateway_sender_id',
@@ -200,6 +202,10 @@ HTML;
                 return $response;
             }
 
+            if (is_array($response) && isset($response['results']) && is_array($response['results'])) {
+                return $this->handleTemplateSendResponseOrThrow($response);
+            }
+
             if ($response->return->status != 200) {
                 throw new Exception($response->return->message);
             }
@@ -269,13 +275,17 @@ HTML;
     /**
      * Send SMS using template-based API (Service-Line).
      *
-     * @return object|WP_Error API response object, or WP_Error on failure.
+     * @return array|WP_Error API response object, or WP_Error on failure.
      * @throws Exception If request fails.
      */
     private function sendTemplateSMS()
     {
         if (empty($this->messageVariables)) {
             return new WP_Error('invalid-template', __('Message does not contain valid template placeholders.', 'wp-sms'));
+        }
+
+        if (empty($this->templateId)) {
+            return new WP_Error('invalid-template-id', esc_html__('Template ID is missing.', 'wp-sms'));
         }
 
         $tokens        = ['token', 'token2', 'token3', 'token10', 'token20'];
@@ -286,21 +296,137 @@ HTML;
         $tokensUsed = array_slice($tokens, 0, $count);
         $valuesUsed = array_slice($messageValues, 0, $count);
 
+        $valuesUsed = array_map(function ($v, $t) {
+            return in_array($t, ['token', 'token2', 'token3'])
+                ? str_replace(' ', '_', $v)
+                : $v;
+        }, $valuesUsed, $tokensUsed);
+
         $tokenParams = array_combine($tokensUsed, $valuesUsed);
 
-        $paramsBase = [
-                'template' => $this->templateId,
-            ] + $tokenParams;
+        $paramsBase = ['template' => $this->templateId] + $tokenParams;
 
-        $responses = [];
+        $results   = [];
+        $successes = 0;
+        $failures  = 0;
 
         foreach ($this->to as $receptor) {
             $params             = $paramsBase;
             $params['receptor'] = $receptor;
 
-            $responses[] = $this->request('GET', $this->buildUrl('lookup', 'verify'), $params);
+            $resp = $this->request('GET', $this->buildUrl('lookup', 'verify'), $params);
+
+            if (is_wp_error($resp)) {
+                $failures++;
+                $results[] = [
+                    'to'        => $receptor,
+                    'status'    => 'error',
+                    'errorType' => 'wp_error',
+                    'message'   => $resp->get_error_message(),
+                    'raw'       => null,
+                ];
+                continue;
+            }
+
+            if ($resp->return->status != 200) {
+                $failures++;
+                $results[] = [
+                    'to'      => $receptor,
+                    'status'  => 'error',
+                    'message' => $resp->return->message,
+                    'raw'     => $resp,
+                ];
+                continue;
+            }
+
+            $successes++;
+            $results[] = [
+                'to'     => $receptor,
+                'status' => 'ok',
+                'raw'    => $resp,
+            ];
         }
 
-        return end($responses);
+        $status = $failures == 0 ? 1 : ($successes > 0 ? 206 : 0);
+
+        return [
+            'status'  => $status,
+            'summary' => ['success' => $successes, 'failure' => $failures],
+            'results' => $results,
+        ];
+    }
+
+    /**
+     * Handle and log template (batch) send response.
+     * Throws Exception on partial/full failure with comma-separated failed numbers.
+     *
+     * @param array $response
+     * @return object  Casted object on full success
+     * @throws Exception
+     */
+    private function handleTemplateSendResponseOrThrow($response)
+    {
+        if (!isset($response['results']) || !is_array($response['results'])) {
+            throw new Exception(esc_html__('Invalid template response payload.', 'wp-sms'));
+        }
+
+        $successCount   = 0;
+        $failCount      = 0;
+        $successNumbers = [];
+        $failedNumbers  = [];
+
+        foreach ($response['results'] as $item) {
+            $toOne = $item['to'] ?? $this->to;
+
+            if (($item['status'] ?? '') == 'ok') {
+                $successCount++;
+                if (is_array($toOne)) {
+                    $successNumbers = array_merge($successNumbers, $toOne);
+                } else {
+                    $successNumbers[] = $toOne;
+                }
+            } else {
+                $failCount++;
+                if (is_array($toOne)) {
+                    $failedNumbers = array_merge($failedNumbers, $toOne);
+                } else {
+                    $failedNumbers[] = $toOne;
+                }
+            }
+        }
+
+        $successList = $successNumbers ? implode(', ', $successNumbers) : esc_html__('None', 'wp-sms');
+        $failedList  = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
+
+        $summary = sprintf(
+            "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
+            $successCount,
+            $failCount,
+            $successList,
+            $failedList
+        );
+
+        $status = $response['status'] ?? 0;
+
+        if ($status == 1) {
+            $obj = (object)$response;
+
+            $this->log($this->from, $this->msg, $this->to, $summary);
+
+            /**
+             * Fires after an SMS is sent.
+             *
+             * @param object $response API response object.
+             */
+            do_action('wp_sms_send', $obj);
+
+            return $obj;
+        }
+
+        if ($status == 206) {
+            throw new Exception($summary);
+        }
+
+        throw new Exception($summary);
     }
 }

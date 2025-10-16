@@ -129,12 +129,12 @@ class Notification
 
         $variables    = apply_filters('wp_sms_output_variables', $this->variables, $message);
         $finalMessage = $message;
+
         $replacedVars = [];
 
         foreach ($variables as $variable => $callBack) {
-            if (strpos($finalMessage, $variable) === false) continue;
-
-            $replacement = '';
+            $pos = strpos($message, $variable);
+            if ($pos === false) continue;
 
             if (is_callable([$this, $callBack])) {
                 try {
@@ -161,12 +161,17 @@ class Notification
                 $replacement = implode(', ', $replacement);
             }
 
-            $cleanKey                = trim($variable, '%');
-            $replacedVars[$cleanKey] = (string)$replacement;
-            $finalMessage            = str_replace($variable, (string)$replacement, $finalMessage);
+            $cleanKey = trim($variable, '%');
+
+            $replacedVars[$cleanKey] = [
+                'value' => (string)$replacement,
+                'pos'   => $pos,
+            ];
+
+            $finalMessage = str_replace($variable, (string)$replacement, $finalMessage);
         }
 
-        preg_match_all("/%order_(meta|item_meta)_(.+?)%/", $finalMessage, $matches);
+        preg_match_all("/%order_(meta|item_meta)_(.+?)%/", $message, $matches);
         $metaHandlers = [
             'meta'      => 'getMeta',
             'item_meta' => 'getItemMeta',
@@ -195,9 +200,17 @@ class Notification
                         $metaValue = implode(', ', $metaValue);
                     }
 
-                    $cleanKey                = trim($metaVariable, '%');
-                    $replacedVars[$cleanKey] = (string)$metaValue;
-                    $finalMessage            = str_replace($metaVariable, (string)$metaValue, $finalMessage);
+                    $cleanKey = trim($metaVariable, '%');
+
+                    $pos = strpos($message, $metaVariable);
+                    if ($pos === false) continue;
+
+                    $replacedVars[$cleanKey] = [
+                        'value' => (string)$metaValue,
+                        'pos'   => $pos,
+                    ];
+
+                    $finalMessage = str_replace($metaVariable, (string)$metaValue, $finalMessage);
                 } else {
                     \WP_SMS::log("Meta value for '{$metaVariable}' is null or not found.", 'warning');
                 }
@@ -211,8 +224,16 @@ class Notification
             }
         }
 
+        uasort($replacedVars, function ($a, $b) {
+            return $a['pos'] <=> $b['pos'];
+        });
+        $orderedVars = [];
+        foreach ($replacedVars as $k => $info) {
+            $orderedVars[$k] = $info['value'];
+        }
+
         $this->parsedMessage   = apply_filters('wp_sms_output_variables_message', $finalMessage, $message, $variables);
-        $this->parsedVariables = $replacedVars;
+        $this->parsedVariables = $orderedVars;
     }
 
     /**

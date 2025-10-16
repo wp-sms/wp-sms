@@ -19,7 +19,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $this->gateway = $this->getMockBuilder(kavenegar::class)
             ->onlyMethods(['request', 'log'])
             ->getMock();
-        
+
         $this->gateway->apiKey = 'DUMMY_KEY';
         $this->gateway->from   = '5000';
         $this->gateway->msg    = 'Test Message';
@@ -82,9 +82,7 @@ class KavenegarGatewayTest extends WP_UnitTestCase
                     }
                     $allowed = ['09120000001', '09120000002'];
                     return in_array($params['receptor'], $allowed, true);
-                }),
-                $this->anything(),
-                $this->anything()
+                })
             )
             ->willReturn($this->makeResponse(200, 'OK'));
 
@@ -92,10 +90,13 @@ class KavenegarGatewayTest extends WP_UnitTestCase
         $response = $this->gateway->SendSMS();
 
         // Assert
-        $this->assertFalse(
-            is_wp_error($response),
-            'SendSMS returned WP_Error: ' . (is_wp_error($response) ? $response->get_error_code() . ' - ' . $response->get_error_message() : '')
-        );
-        $this->assertEquals(200, $response->return->status);
+        $this->assertFalse(is_wp_error($response));
+
+        $this->assertIsObject($response);
+        $this->assertObjectHasProperty('status', $response);
+        $this->assertSame(1, $response->status);
+
+        $this->assertObjectHasProperty('summary', $response);
+        $this->assertSame(['success' => 2, 'failure' => 0], (array)$response->summary);
     }
 }
