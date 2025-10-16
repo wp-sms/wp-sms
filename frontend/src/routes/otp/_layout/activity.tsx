@@ -8,6 +8,12 @@ import { getReportConfig } from '@/services/reports/get-report-config'
 import { getReportData } from '@/services/reports/get-report-data'
 
 import { ActivityFilters } from './-components/activity-filters'
+import { DeliveryQualityWidget } from './-components/delivery-quality-widget'
+import { FunnelWidget } from './-components/funnel-widget'
+import { GeoHeatmapWidget } from './-components/geo-heatmap-widget'
+import { KpiWidget } from './-components/kpi-widget'
+import { MethodMixWidget } from './-components/method-mix-widget'
+import { VolumeChartWidget } from './-components/volume-chart-widget'
 
 export const Route = createFileRoute('/otp/_layout/activity')({
   component: RouteComponent,
@@ -39,7 +45,75 @@ function RouteComponent() {
     setAppliedFilters({})
   }
 
-  console.log(reportData)
+  const renderWidget = (widget: (typeof reportConfig.data.widgets)[0]) => {
+    if (!reportData) {
+      return (
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle>{widget.label}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+              Loading...
+            </div>
+          </CardContent>
+        </Card>
+      )
+    }
+
+    switch (widget.type) {
+      case 'kpi':
+        if (widget.id === 'health_snapshot' && reportData.health_snapshot) {
+          return <KpiWidget label={widget.label} kpis={reportData.health_snapshot.kpis} />
+        }
+        break
+
+      case 'funnel':
+        if (reportData.journey_funnels) {
+          const funnelType =
+            widget.id === 'login_funnel' ? 'loginFunnel' : 'registrationFunnel'
+          return (
+            <FunnelWidget
+              label={widget.label}
+              data={reportData.journey_funnels}
+              funnelType={funnelType}
+            />
+          )
+        }
+        break
+
+      case 'chart':
+        if (widget.id === 'volume_over_time' && reportData.volume_over_time) {
+          return <VolumeChartWidget label={widget.label} data={reportData.volume_over_time} />
+        }
+        if (widget.id === 'method_mix' && reportData.method_mix) {
+          return <MethodMixWidget label={widget.label} data={reportData.method_mix} />
+        }
+        if (widget.id === 'delivery_quality' && reportData.delivery_quality) {
+          return <DeliveryQualityWidget label={widget.label} data={reportData.delivery_quality} />
+        }
+        break
+
+      case 'map':
+        if (widget.id === 'geo_heatmap' && reportData.geo_heatmap) {
+          return <GeoHeatmapWidget label={widget.label} data={reportData.geo_heatmap} />
+        }
+        break
+    }
+
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>{widget.label}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+            No data available
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card className="flex flex-col">
@@ -65,11 +139,7 @@ function RouteComponent() {
               key={widget.id}
               className={`${getColStartClass(widget.layout.col)} ${getColSpanClass(widget.layout.span)}`}
             >
-              <Card>
-                <CardHeader>
-                  <CardTitle>{widget.label}</CardTitle>
-                </CardHeader>
-              </Card>
+              {renderWidget(widget)}
             </div>
           ))}
         </div>
