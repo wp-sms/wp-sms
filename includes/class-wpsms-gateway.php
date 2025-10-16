@@ -1526,7 +1526,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $notConfigured   = empty($gatewayName) || $gatewayName === 'default';
         $credentialIssue = self::hasCredentialIssue($sms);
 
-        $needsNotice = $versionChanged && ($notConfigured || $credentialIssue);
+        $needsNotice = ($notConfigured || $credentialIssue || $versionChanged);
 
         if ($needsNotice) {
             $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
