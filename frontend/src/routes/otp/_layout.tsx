@@ -10,11 +10,11 @@ export const Route = createFileRoute('/otp/_layout')({
 
 function RouteComponent() {
   return (
-    <div className="wrap flex w-full min-h-screen relative">
+    <div className="wrap flex w-full min-h-screen relative max-w-content">
       <SidebarProvider>
         <OTPSidebar />
         <SidebarInset>
-          <main className="p-6 flex-1">
+          <main className="p-6 flex-1 min-w-0 w-full max-w-full">
             <Outlet />
           </main>
         </SidebarInset>

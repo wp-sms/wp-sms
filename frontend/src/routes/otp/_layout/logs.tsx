@@ -74,7 +74,7 @@ function RouteComponent() {
   }
 
   return (
-    <Card className="flex flex-col gap-y-8 w-3/4">
+    <Card className="flex flex-col gap-y-8 w-full">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>

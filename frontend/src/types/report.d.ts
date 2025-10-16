@@ -53,6 +53,7 @@ interface GetReportConfigResponse {
 
 interface GetReportDataParams {
   slug: 'activity-overview'
+  filters?: Record<string, string | string[] | number | null>
 }
 
 interface KPI {
