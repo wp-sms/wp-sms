@@ -1518,15 +1518,12 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $gw         = $gatewayName ?: 'unknown';
         $currentVer = (isset($sms->version) && $sms->version !== '') ? (string)$sms->version : '1.0';
 
-        $storedVer      = Option::getOption('gateway_version');
-        $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
-
         Option::updateOption('gateway_version', $currentVer);
 
         $notConfigured   = empty($gatewayName) || $gatewayName === 'default';
         $credentialIssue = self::hasCredentialIssue($sms);
 
-        $needsNotice = ($notConfigured || $credentialIssue || $versionChanged);
+        $needsNotice = ($notConfigured || $credentialIssue);
 
         if ($needsNotice) {
             $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
