@@ -31,6 +31,10 @@ class Sms
     {
         global $sms;
 
+        if (is_null($sms) && function_exists('wp_sms_initial_gateway')) {
+            $sms = wp_sms_initial_gateway();
+        }
+
         $to = $parameters['to'];
 
         // Backward compatibility

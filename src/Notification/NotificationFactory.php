@@ -16,6 +16,16 @@ use WP_SMS\Notification\Handler\WooCommerceCustomerNotification;
 use WP_SMS\Notification\Handler\AwesomeSupportTicketNotification;
 use WP_SMS\Notification\Handler\FormidableNotification;
 use WP_SMS\Notification\Handler\WooCommerceAdminOrderNotification;
+use WP_SMS\Notification\Handler\OtpNotification;
+use WP_SMS\Notification\Handler\ContactForm7Notification;
+use WP_SMS\Notification\Handler\BuddyPress\BuddyPressWelcomeNotification;
+use WP_SMS\Notification\Handler\BuddyPress\BuddyPressMentionNotification;
+use WP_SMS\Notification\Handler\BuddyPress\BuddyPressPrivateMessageNotification;
+use WP_SMS\Notification\Handler\BuddyPress\BuddyPressUserCommentsNotification;
+use WP_SMS\Notification\Handler\GravityFormsNotification;
+use WP_SMS\Notification\Handler\QuformNotification;
+use WP_SMS\Notification\Handler\EasyDigitalDownloadsNotification;
+use WP_SMS\Notification\Handler\WPJobManagerNotification;
 
 class NotificationFactory
 {
@@ -36,9 +46,9 @@ class NotificationFactory
      * @param $orderId
      * @return WooCommerceOrderNotification
      */
-    public static function getWooCommerceOrder($orderId = false)
+    public static function getWooCommerceOrder($orderId = false, $wooData = [])
     {
-        return new WooCommerceOrderNotification($orderId);
+        return new WooCommerceOrderNotification($orderId, $wooData);
     }
 
     /**
@@ -150,4 +160,83 @@ class NotificationFactory
         return new FormidableNotification($form, $data);
     }
 
+    /**
+     * @return OtpNotification
+     */
+    public static function getOtp($phoneNumber = false, $code = false)
+    {
+        return new OtpNotification($phoneNumber, $code);
+    }
+
+    /**
+     * @return ContactForm7Notification
+     */
+    public static function getContactForm7($data = [])
+    {
+        return new ContactForm7Notification($data);
+    }
+
+    /**
+     * @return BuddyPressWelcomeNotification
+     */
+    public static function getBuddyPressWelcome($user = false)
+    {
+        return new BuddyPressWelcomeNotification($user);
+    }
+
+    /**
+     * @return BuddyPressMentionNotification
+     */
+    public static function getBuddyPressMention($bpData = [])
+    {
+        return new BuddyPressMentionNotification($bpData);
+    }
+
+    /**
+     * @return BuddyPressPrivateMessageNotification
+     */
+    public static function getBuddyPressPrivateMessage($bpData = [])
+    {
+        return new BuddyPressPrivateMessageNotification($bpData);
+    }
+
+    /**
+     * @return BuddyPressUserCommentsNotification
+     */
+    public static function getBuddyPressUserComments($bpData = [])
+    {
+        return new BuddyPressUserCommentsNotification($bpData);
+    }
+
+    /**
+     * @return GravityFormsNotification
+     */
+    public static function getGravityForms($gformData = [])
+    {
+        return new GravityFormsNotification($gformData);
+    }
+
+    /**
+     * @return QuformNotification
+     */
+    public static function getQuform($qfData = [])
+    {
+        return new QuformNotification($qfData);
+    }
+
+    /**
+     * @return EasyDigitalDownloadsNotification
+     */
+    public static function getEasyDigitalDownloads($eddData = [])
+    {
+        return new EasyDigitalDownloadsNotification($eddData);
+    }
+
+    /**
+     * @return WPJobManagerNotification
+     */
+    public static function getWPJobManager($jobData = [])
+    {
+        return new WPJobManagerNotification($jobData);
+    }
 }
