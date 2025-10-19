@@ -7,6 +7,7 @@
 - **Fix:** Delay anonymous data opt-in notice to 7 days after plugin activation.
 - **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
 - **New:** Display admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
+- **Enhancement:** Improved Kavenegar gateway to support sending template-based SMS messages with variable placeholders.
 
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
