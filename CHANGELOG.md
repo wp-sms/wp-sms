@@ -7,6 +7,7 @@
 - **Fix:** Delay anonymous data opt-in notice to 7 days after plugin activation.
 - **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
 - **Enhancement:** Improved Kavenegar gateway to support sending template-based SMS messages with variable placeholders.
+- **Fix:** Mask sensitive message variables (code, otp, post_password, coupon_code) in message before logging when WP_SMS_ENV is set to production.
 
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
