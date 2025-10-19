@@ -530,17 +530,21 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
+        /**
+         * @note In production mode (when WP_DEBUG is disabled or not defined),
+         *       this block masks sensitive message variables such as `code`, `otp`,
+         *       `post_password`, and `coupon_code` before logging.
+         *       This prevents sensitive information from being written to logs.
+         */
         if (!defined('WP_DEBUG') || WP_DEBUG === false) {
             $keysToMask = ['code', 'otp', 'post_password', 'coupon_code'];
 
             if (is_array($this->messageVariables) && !empty($this->messageVariables)) {
-                foreach ($this->messageVariables as $key => $value) {
-                    if (in_array($key, $keysToMask) && !empty($value)) {
-                        if (strpos($message, $value) !== false) {
-                            $message = str_replace($value, '***', $message);
-                        }
+                array_walk($this->messageVariables, function ($value, $key) use (&$message, $keysToMask) {
+                    if (in_array($key, $keysToMask) && !empty($value) && strpos($message, $value) !== false) {
+                        $message = str_replace($value, '***', $message);
                     }
-                }
+                });
             }
         }
 
