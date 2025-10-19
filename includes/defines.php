@@ -27,5 +27,3 @@ if (function_exists('current_datetime')) {
 } else {
     define('WP_SMS_CURRENT_DATE', get_date_from_gmt(current_time('mysql', true)));
 }
-
-define('WP_SMS_ENV', 'production');

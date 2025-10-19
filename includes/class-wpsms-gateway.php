@@ -530,7 +530,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
-        if (defined('WP_SMS_ENV') && WP_SMS_ENV === 'production') {
+        if (!defined('WP_DEBUG') || WP_DEBUG === false) {
             $keysToMask = ['code', 'otp', 'post_password', 'coupon_code'];
 
             if (is_array($this->messageVariables) && !empty($this->messageVariables)) {
