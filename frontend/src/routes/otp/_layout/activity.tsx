@@ -11,7 +11,7 @@ import { ActivityFilters } from './-components/activity-filters'
 import { DeliveryQualityWidget } from './-components/delivery-quality-widget'
 import { FunnelWidget } from './-components/funnel-widget'
 import { GeoHeatmapWidget } from './-components/geo-heatmap-widget'
-import { KpiWidget } from './-components/kpi-widget'
+import { Kpi } from './-components/kpi'
 import { MethodMixWidget } from './-components/method-mix-widget'
 import { VolumeChartWidget } from './-components/volume-chart-widget'
 
@@ -53,9 +53,7 @@ function RouteComponent() {
             <CardTitle>{widget.label}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-center h-[300px] text-muted-foreground">
-              Loading...
-            </div>
+            <div className="flex items-center justify-center h-[300px] text-muted-foreground">Loading...</div>
           </CardContent>
         </Card>
       )
@@ -64,21 +62,14 @@ function RouteComponent() {
     switch (widget.type) {
       case 'kpi':
         if (widget.id === 'health_snapshot' && reportData.health_snapshot) {
-          return <KpiWidget label={widget.label} kpis={reportData.health_snapshot.kpis} />
+          return <Kpi kpis={reportData.health_snapshot.kpis} />
         }
         break
 
       case 'funnel':
         if (reportData.journey_funnels) {
-          const funnelType =
-            widget.id === 'login_funnel' ? 'loginFunnel' : 'registrationFunnel'
-          return (
-            <FunnelWidget
-              label={widget.label}
-              data={reportData.journey_funnels}
-              funnelType={funnelType}
-            />
-          )
+          const funnelType = widget.id === 'login_funnel' ? 'loginFunnel' : 'registrationFunnel'
+          return <FunnelWidget label={widget.label} data={reportData.journey_funnels} funnelType={funnelType} />
         }
         break
 
@@ -107,9 +98,7 @@ function RouteComponent() {
           <CardTitle>{widget.label}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
-            No data available
-          </div>
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">No data available</div>
         </CardContent>
       </Card>
     )
